@@ -1,0 +1,429 @@
+{
+  "duration": 33.72,
+  "words": [
+    {
+      "word": "Sabías",
+      "start": 0.093,
+      "end": 0.572,
+      "is_english": false
+    },
+    {
+      "word": "que",
+      "start": 0.583,
+      "end": 0.8,
+      "is_english": false
+    },
+    {
+      "word": "embarrassed",
+      "start": 1.643,
+      "end": 2.379,
+      "is_english": true
+    },
+    {
+      "word": "NO",
+      "start": 2.877,
+      "end": 3.051,
+      "is_english": false
+    },
+    {
+      "word": "significa",
+      "start": 3.062,
+      "end": 3.595,
+      "is_english": false
+    },
+    {
+      "word": "embarazada",
+      "start": 3.606,
+      "end": 4.214,
+      "is_english": false
+    },
+    {
+      "word": "Muchos",
+      "start": 4.958,
+      "end": 5.295,
+      "is_english": false
+    },
+    {
+      "word": "hispanohablantes",
+      "start": 5.306,
+      "end": 5.98,
+      "is_english": false
+    },
+    {
+      "word": "cometen",
+      "start": 5.991,
+      "end": 6.382,
+      "is_english": false
+    },
+    {
+      "word": "este",
+      "start": 6.393,
+      "end": 6.599,
+      "is_english": false
+    },
+    {
+      "word": "error",
+      "start": 6.61,
+      "end": 6.936,
+      "is_english": false
+    },
+    {
+      "word": "En",
+      "start": 7.686,
+      "end": 7.838,
+      "is_english": false
+    },
+    {
+      "word": "inglés",
+      "start": 7.849,
+      "end": 8.393,
+      "is_english": false
+    },
+    {
+      "word": "embarrassed",
+      "start": 9.251,
+      "end": 10.001,
+      "is_english": true
+    },
+    {
+      "word": "significa",
+      "start": 10.485,
+      "end": 11.094,
+      "is_english": false
+    },
+    {
+      "word": "sentirse",
+      "start": 11.105,
+      "end": 11.572,
+      "is_english": false
+    },
+    {
+      "word": "avergonzado",
+      "start": 11.583,
+      "end": 12.246,
+      "is_english": false
+    },
+    {
+      "word": "o",
+      "start": 12.257,
+      "end": 12.366,
+      "is_english": false
+    },
+    {
+      "word": "incómodo",
+      "start": 12.377,
+      "end": 12.953,
+      "is_english": false
+    },
+    {
+      "word": "Por",
+      "start": 13.696,
+      "end": 13.827,
+      "is_english": false
+    },
+    {
+      "word": "ejemplo",
+      "start": 13.838,
+      "end": 14.294,
+      "is_english": false
+    },
+    {
+      "word": "I",
+      "start": 15.169,
+      "end": 15.239,
+      "is_english": true
+    },
+    {
+      "word": "was",
+      "start": 15.239,
+      "end": 15.364,
+      "is_english": true
+    },
+    {
+      "word": "so",
+      "start": 15.364,
+      "end": 15.641,
+      "is_english": true
+    },
+    {
+      "word": "embarrassed",
+      "start": 15.641,
+      "end": 16.378,
+      "is_english": true
+    },
+    {
+      "word": "when",
+      "start": 16.391,
+      "end": 16.489,
+      "is_english": true
+    },
+    {
+      "word": "I",
+      "start": 16.489,
+      "end": 16.572,
+      "is_english": true
+    },
+    {
+      "word": "forgot",
+      "start": 16.572,
+      "end": 16.975,
+      "is_english": true
+    },
+    {
+      "word": "her",
+      "start": 16.975,
+      "end": 17.058,
+      "is_english": true
+    },
+    {
+      "word": "name",
+      "start": 17.058,
+      "end": 17.419,
+      "is_english": true
+    },
+    {
+      "word": "Si",
+      "start": 17.925,
+      "end": 18.143,
+      "is_english": false
+    },
+    {
+      "word": "quieres",
+      "start": 18.154,
+      "end": 18.447,
+      "is_english": false
+    },
+    {
+      "word": "decir",
+      "start": 18.458,
+      "end": 18.719,
+      "is_english": false
+    },
+    {
+      "word": "embarazada",
+      "start": 18.73,
+      "end": 19.186,
+      "is_english": false
+    },
+    {
+      "word": "en",
+      "start": 19.197,
+      "end": 19.252,
+      "is_english": false
+    },
+    {
+      "word": "inglés",
+      "start": 19.262,
+      "end": 19.675,
+      "is_english": false
+    },
+    {
+      "word": "la",
+      "start": 19.893,
+      "end": 19.991,
+      "is_english": false
+    },
+    {
+      "word": "palabra",
+      "start": 20.002,
+      "end": 20.371,
+      "is_english": false
+    },
+    {
+      "word": "correcta",
+      "start": 20.382,
+      "end": 20.849,
+      "is_english": false
+    },
+    {
+      "word": "es",
+      "start": 20.86,
+      "end": 21.154,
+      "is_english": false
+    },
+    {
+      "word": "pregnant",
+      "start": 22.009,
+      "end": 22.468,
+      "is_english": true
+    },
+    {
+      "word": "Recuerda",
+      "start": 22.965,
+      "end": 23.52,
+      "is_english": false
+    },
+    {
+      "word": "embarrassed",
+      "start": 24.371,
+      "end": 25.121,
+      "is_english": true
+    },
+    {
+      "word": "tiene",
+      "start": 25.629,
+      "end": 25.847,
+      "is_english": false
+    },
+    {
+      "word": "doble",
+      "start": 25.858,
+      "end": 26.13,
+      "is_english": false
+    },
+    {
+      "word": "R",
+      "start": 26.14,
+      "end": 26.412,
+      "is_english": false
+    },
+    {
+      "word": "como",
+      "start": 26.619,
+      "end": 26.847,
+      "is_english": false
+    },
+    {
+      "word": "cuando",
+      "start": 26.858,
+      "end": 27.108,
+      "is_english": false
+    },
+    {
+      "word": "tu",
+      "start": 27.119,
+      "end": 27.227,
+      "is_english": false
+    },
+    {
+      "word": "cara",
+      "start": 27.238,
+      "end": 27.466,
+      "is_english": false
+    },
+    {
+      "word": "se",
+      "start": 27.477,
+      "end": 27.608,
+      "is_english": false
+    },
+    {
+      "word": "pone",
+      "start": 27.619,
+      "end": 27.858,
+      "is_english": false
+    },
+    {
+      "word": "ROJA",
+      "start": 27.869,
+      "end": 28.162,
+      "is_english": false
+    },
+    {
+      "word": "de",
+      "start": 28.173,
+      "end": 28.26,
+      "is_english": false
+    },
+    {
+      "word": "vergüenza",
+      "start": 28.271,
+      "end": 28.803,
+      "is_english": false
+    },
+    {
+      "word": "Conocías",
+      "start": 29.547,
+      "end": 30.069,
+      "is_english": false
+    },
+    {
+      "word": "este",
+      "start": 30.079,
+      "end": 30.275,
+      "is_english": false
+    },
+    {
+      "word": "falso",
+      "start": 30.286,
+      "end": 30.569,
+      "is_english": false
+    },
+    {
+      "word": "amigo",
+      "start": 30.579,
+      "end": 30.949,
+      "is_english": false
+    },
+    {
+      "word": "Cuéntame",
+      "start": 31.699,
+      "end": 32.058,
+      "is_english": false
+    },
+    {
+      "word": "en",
+      "start": 32.069,
+      "end": 32.123,
+      "is_english": false
+    },
+    {
+      "word": "los",
+      "start": 32.134,
+      "end": 32.243,
+      "is_english": false
+    },
+    {
+      "word": "comentarios",
+      "start": 32.253,
+      "end": 32.96,
+      "is_english": false
+    }
+  ],
+  "segments": [
+    {
+      "lang": "spanish",
+      "text": "¿Sabías que"
+    },
+    {
+      "lang": "english",
+      "text": "embarrassed"
+    },
+    {
+      "lang": "spanish",
+      "text": "NO significa embarazada?\nMuchos hispanohablantes cometen este error.\nEn inglés,"
+    },
+    {
+      "lang": "english",
+      "text": "embarrassed"
+    },
+    {
+      "lang": "spanish",
+      "text": "significa sentirse avergonzado o incómodo.\nPor ejemplo:"
+    },
+    {
+      "lang": "english",
+      "text": "I was so embarrassed when I forgot her name"
+    },
+    {
+      "lang": "spanish",
+      "text": ".\nSi quieres decir embarazada en inglés, la palabra correcta es"
+    },
+    {
+      "lang": "english",
+      "text": "pregnant"
+    },
+    {
+      "lang": "spanish",
+      "text": ".\nRecuerda:"
+    },
+    {
+      "lang": "english",
+      "text": "embarrassed"
+    },
+    {
+      "lang": "spanish",
+      "text": "tiene doble R, ¡como cuando tu cara se pone ROJA de vergüenza!\n¿Conocías este falso amigo? ¡Cuéntame en los comentarios!"
+    }
+  ]
+}
