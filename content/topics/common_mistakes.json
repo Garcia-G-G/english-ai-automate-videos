@@ -1,0 +1,12 @@
+[
+  {"id": "cm001", "wrong": "I have 25 years", "correct": "I am 25 years old", "explanation": "En inglés ERES tu edad, no la TIENES"},
+  {"id": "cm002", "wrong": "I am agree", "correct": "I agree", "explanation": "Agree es verbo, no necesita am"},
+  {"id": "cm003", "wrong": "People is", "correct": "People are", "explanation": "People es plural en inglés"},
+  {"id": "cm004", "wrong": "I am boring", "correct": "I am bored", "explanation": "-ED para sentir, -ING para causar"},
+  {"id": "cm005", "wrong": "Make a party", "correct": "Have/throw a party", "explanation": "Se usa throw a party o have a party"},
+  {"id": "cm006", "wrong": "Do a mistake", "correct": "Make a mistake", "explanation": "Make con: mistakes, decisions, money"},
+  {"id": "cm007", "wrong": "Say me", "correct": "Tell me", "explanation": "Tell + persona, Say + palabras"},
+  {"id": "cm008", "wrong": "Explain me", "correct": "Explain to me", "explanation": "Explain TO someone"},
+  {"id": "cm009", "wrong": "Depend of", "correct": "Depend on", "explanation": "Depend ON something"},
+  {"id": "cm010", "wrong": "Listen music", "correct": "Listen to music", "explanation": "Listen TO something"}
+]

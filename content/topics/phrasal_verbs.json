@@ -1,0 +1,12 @@
+[
+  {"id": "pv001", "topic": "give up", "spanish": "rendirse", "examples": ["I gave up smoking", "Don't give up on your dreams", "I give up! This is impossible"]},
+  {"id": "pv002", "topic": "look for", "spanish": "buscar", "examples": ["I'm looking for my keys", "She's looking for a new job", "What are you looking for?"]},
+  {"id": "pv003", "topic": "find out", "spanish": "descubrir", "examples": ["I found out the truth", "How did you find out?", "She'll find out eventually"]},
+  {"id": "pv004", "topic": "work out", "spanish": "hacer ejercicio / resolver", "examples": ["I work out every morning", "We need to work out this problem", "Things will work out"]},
+  {"id": "pv005", "topic": "hang out", "spanish": "pasar el rato", "examples": ["Let's hang out this weekend", "I was hanging out with friends", "Where do you usually hang out?"]},
+  {"id": "pv006", "topic": "figure out", "spanish": "descifrar", "examples": ["I can't figure out this puzzle", "Let me figure out what happened", "Did you figure it out?"]},
+  {"id": "pv007", "topic": "show up", "spanish": "aparecer", "examples": ["He didn't show up to the meeting", "She always shows up late", "Thanks for showing up"]},
+  {"id": "pv008", "topic": "break up", "spanish": "terminar relación", "examples": ["They broke up last month", "I don't want to break up", "Why did you break up?"]},
+  {"id": "pv009", "topic": "pick up", "spanish": "recoger", "examples": ["Can you pick me up?", "I picked up some groceries", "Pick up your clothes"]},
+  {"id": "pv010", "topic": "take off", "spanish": "despegar / quitarse", "examples": ["The plane is taking off", "Take off your shoes", "His career really took off"]}
+]

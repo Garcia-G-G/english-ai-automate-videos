@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(python src/tts.py:*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(ffprobe:*)",
+      "Bash(claude /plugin uninstall ralph-wiggum)",
+      "Bash(claude /plugin list:*)",
+      "Bash([ -n \"$ANTHROPIC_API_KEY\" ])",
+      "Bash(echo:*)"
+    ]
+  }
+}

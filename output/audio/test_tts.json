@@ -1,0 +1,67 @@
+{
+  "duration": 5.232,
+  "words": [
+    {
+      "word": "Hola",
+      "start": 0.093,
+      "end": 0.398,
+      "is_english": false
+    },
+    {
+      "word": "la",
+      "start": 0.67,
+      "end": 0.757,
+      "is_english": false
+    },
+    {
+      "word": "palabra",
+      "start": 0.767,
+      "end": 1.224,
+      "is_english": false
+    },
+    {
+      "word": "hello",
+      "start": 2.089,
+      "end": 2.492,
+      "is_english": true
+    },
+    {
+      "word": "significa",
+      "start": 2.973,
+      "end": 3.669,
+      "is_english": false
+    },
+    {
+      "word": "hola",
+      "start": 3.68,
+      "end": 3.897,
+      "is_english": false
+    },
+    {
+      "word": "en",
+      "start": 3.908,
+      "end": 3.984,
+      "is_english": false
+    },
+    {
+      "word": "inglés",
+      "start": 3.995,
+      "end": 4.473,
+      "is_english": false
+    }
+  ],
+  "segments": [
+    {
+      "lang": "spanish",
+      "text": "Hola, la palabra"
+    },
+    {
+      "lang": "english",
+      "text": "hello"
+    },
+    {
+      "lang": "spanish",
+      "text": "significa hola en inglés."
+    }
+  ]
+}

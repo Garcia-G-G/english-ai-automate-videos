@@ -1,0 +1,12 @@
+[
+  {"id": "ff001", "english": "actually", "spanish_trap": "actualmente", "real_meaning": "en realidad", "correct_english": "currently"},
+  {"id": "ff002", "english": "embarrassed", "spanish_trap": "embarazada", "real_meaning": "avergonzado", "correct_english": "pregnant"},
+  {"id": "ff003", "english": "sensible", "spanish_trap": "sensible", "real_meaning": "sensato", "correct_english": "sensitive"},
+  {"id": "ff004", "english": "library", "spanish_trap": "librería", "real_meaning": "biblioteca", "correct_english": "bookstore"},
+  {"id": "ff005", "english": "exit", "spanish_trap": "éxito", "real_meaning": "salida", "correct_english": "success"},
+  {"id": "ff006", "english": "constipated", "spanish_trap": "constipado", "real_meaning": "estreñido", "correct_english": "have a cold"},
+  {"id": "ff007", "english": "carpet", "spanish_trap": "carpeta", "real_meaning": "alfombra", "correct_english": "folder"},
+  {"id": "ff008", "english": "realize", "spanish_trap": "realizar", "real_meaning": "darse cuenta", "correct_english": "accomplish"},
+  {"id": "ff009", "english": "pretend", "spanish_trap": "pretender", "real_meaning": "fingir", "correct_english": "intend"},
+  {"id": "ff010", "english": "fabric", "spanish_trap": "fábrica", "real_meaning": "tela", "correct_english": "factory"}
+]
