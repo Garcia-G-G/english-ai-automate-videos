@@ -1,0 +1,20 @@
+# English AI Videos - Dependencies
+
+# Core
+openai>=1.0.0
+python-dotenv>=1.0.0
+
+# TTS & Audio
+edge-tts>=6.1.0
+openai-whisper>=20231117
+
+# Video Generation
+moviepy>=1.0.3
+Pillow>=10.0.0
+numpy>=1.24.0
+
+# Admin Dashboard
+streamlit>=1.30.0
+
+# Optional: Video Analysis
+opencv-python>=4.8.0

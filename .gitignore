@@ -1,2 +1,47 @@
+# Environment
 .env
+.env.local
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+.eggs/
+*.egg-info/
+*.egg
+
+# Generated output (audio, video, scripts)
+output/
+*.mp3
+*.mp4
+*.wav
+
+# Claude Code cache
+.claude/
+
+# Reference images (local only)
+references/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Jupyter
+.ipynb_checkpoints/

@@ -370,7 +370,7 @@ async def text_to_speech_hybrid(
     spanish_voice: str = DEFAULT_VOICE,
     english_voice: str = DEFAULT_ENGLISH_VOICE,
     spanish_rate: str = DEFAULT_RATE,
-    english_rate: str = "-10%",  # Slightly slower for clarity
+    english_rate: str = "+10%",  # Match Spanish pace for seamless flow
     pause_before_ms: int = None,  # Use default if None
     pause_after_ms: int = None,   # Use default if None
 ) -> dict:
@@ -440,6 +440,32 @@ async def text_to_speech_hybrid(
             is_english=is_english
         )
 
+        # Add audio segment
+        audio_segment = AudioSegment.from_mp3(BytesIO(audio_bytes))
+
+        # Only trim English segments (Spanish segments contain intentional pauses from "...")
+        if is_english:
+            # Trim leading/trailing silence for seamless English word transitions
+            def detect_silence_ms(sound, silence_threshold=-40.0, chunk_size=10):
+                """Detect milliseconds of silence at start of audio."""
+                trim_ms = 0
+                while trim_ms < len(sound):
+                    if sound[trim_ms:trim_ms+chunk_size].dBFS > silence_threshold:
+                        break
+                    trim_ms += chunk_size
+                return trim_ms
+
+            # Trim leading silence (keep just 30ms for natural breath)
+            lead_silence = detect_silence_ms(audio_segment)
+            if lead_silence > 50:
+                audio_segment = audio_segment[lead_silence - 30:]
+
+            # Trim trailing silence (keep just 30ms)
+            reversed_seg = audio_segment.reverse()
+            trail_silence = detect_silence_ms(reversed_seg)
+            if trail_silence > 50:
+                audio_segment = audio_segment[:-trail_silence + 30]
+
         # Adjust word timestamps by current offset
         for word in segment_words:
             all_words.append({
@@ -449,8 +475,6 @@ async def text_to_speech_hybrid(
                 "is_english": word["is_english"]
             })
 
-        # Add audio segment
-        audio_segment = AudioSegment.from_mp3(BytesIO(audio_bytes))
         combined += audio_segment
         current_time += len(audio_segment) / 1000.0
 

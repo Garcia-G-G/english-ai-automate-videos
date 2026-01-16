@@ -11,7 +11,26 @@
       "Bash(claude /plugin uninstall ralph-wiggum)",
       "Bash(claude /plugin list:*)",
       "Bash([ -n \"$ANTHROPIC_API_KEY\" ])",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 show:*)",
+      "WebSearch",
+      "Bash(for f in output/video/*polished*.mp4)",
+      "Bash(do echo \"$f:\")",
+      "Bash(done)",
+      "WebFetch(domain:blog.duolingo.com)",
+      "Bash(for topic in \"look for\" \"find out\" \"work out\")",
+      "Bash(do python3 main.py --category phrasal_verbs --topic \"$topic\" --type quiz)",
+      "Bash(for:*)",
+      "Bash(do echo \"=== $video ===\" python3 src/video_analyzer.py --video \"$video\" --compare)",
+      "Bash(wc:*)",
+      "Bash(python main.py:*)",
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(curl:*)",
+      "Bash(pkill:*)",
+      "Bash(tee:*)",
+      "Bash(do echo \"=== TEST $i ===\" python3 main.py --random --type quiz)"
     ]
   }
 }

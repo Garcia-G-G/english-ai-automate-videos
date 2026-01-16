@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Script Generator for English AI Videos
-Uses Claude API to generate lesson scripts from topic database.
+Uses OpenAI GPT to generate lesson scripts from topic database.
+Supports multiple video types: educational, quiz, true_false, fill_blank, pronunciation
 """
 
 import argparse
@@ -13,20 +14,22 @@ from pathlib import Path
 from datetime import datetime
 
 from dotenv import load_dotenv
-import anthropic
+from openai import OpenAI
 
 # Load .env file from project root
 ROOT = Path(__file__).parent.parent
 load_dotenv(ROOT / ".env")
 
-
-# Paths (already defined above)
+# Paths
 TOPICS_DIR = ROOT / "content" / "topics"
 OUTPUT_DIR = ROOT / "output" / "scripts"
 
-# Claude settings
-MODEL = "claude-3-haiku-20240307"  # Using Haiku for cost efficiency
+# OpenAI settings
+MODEL = "gpt-4o-mini"
 MAX_TOKENS = 2000
+
+# Supported video types
+VIDEO_TYPES = ["educational", "quiz", "true_false", "fill_blank", "pronunciation"]
 
 
 def load_topics(category: str) -> list:
@@ -49,7 +52,6 @@ def find_topic(category: str, topic_name: str) -> dict:
     topic_name_lower = topic_name.lower()
 
     for t in topics:
-        # Check various fields for match
         if t.get("english", "").lower() == topic_name_lower:
             return t
         if t.get("topic", "").lower() == topic_name_lower:
@@ -71,9 +73,8 @@ def get_random_topic() -> tuple:
     return category, topic
 
 
-def build_prompt(category: str, topic: dict) -> str:
-    """Build the prompt for Claude based on category and topic."""
-
+def build_prompt_educational(category: str, topic: dict) -> str:
+    """Build educational video prompt."""
     if category == "false_friends":
         return f"""Genera un script de 30-45 segundos para un video de TikTok/Reels enseñando inglés a hispanohablantes.
 
@@ -92,6 +93,7 @@ REGLAS IMPORTANTES:
 
 FORMATO JSON REQUERIDO:
 {{
+  "type": "educational",
   "hook": "Frase inicial que capte atención (con palabra inglés en 'comillas')",
   "full_script": "Script completo en español con palabras inglés en 'comillas simples'. Debe fluir naturalmente para ser leído en voz alta.",
   "english_phrases": ["lista", "de", "palabras", "inglés", "usadas"],
@@ -121,6 +123,7 @@ REGLAS IMPORTANTES:
 
 FORMATO JSON REQUERIDO:
 {{
+  "type": "educational",
   "hook": "Frase inicial que capte atención",
   "full_script": "Script completo en español con palabras inglés en 'comillas simples'",
   "english_phrases": ["lista", "de", "frases", "inglés"],
@@ -150,6 +153,7 @@ REGLAS IMPORTANTES:
 
 FORMATO JSON REQUERIDO:
 {{
+  "type": "educational",
   "hook": "Frase inicial que capte atención",
   "full_script": "Script completo en español con palabras inglés en 'comillas simples'",
   "english_phrases": ["lista", "de", "frases", "inglés"],
@@ -165,19 +169,240 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
         raise ValueError(f"Unknown category: {category}")
 
 
-def generate_script(category: str, topic: dict) -> dict:
-    """Call Claude API to generate a script."""
+def build_prompt_quiz(category: str, topic: dict) -> str:
+    """Build quiz video prompt."""
+    if category == "false_friends":
+        context = f"False Friend: '{topic['english']}' - significa '{topic['real_meaning']}', NO '{topic['spanish_trap']}'"
+    elif category == "phrasal_verbs":
+        context = f"Phrasal Verb: '{topic['topic']}' - significa '{topic['spanish']}'"
+    elif category == "common_mistakes":
+        context = f"Error común: '{topic['wrong']}' → Correcto: '{topic['correct']}'"
+    else:
+        context = str(topic)
 
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    return f"""Genera un QUIZ de 20-30 segundos para TikTok/Reels enseñando inglés a hispanohablantes.
+
+TEMA: {context}
+
+FORMATO DEL VIDEO:
+1. Pregunta en español (¿Cómo se dice X en inglés? o ¿Qué significa X?)
+2. 4 opciones DIFERENTES: A, B, C, D - solo UNA correcta
+3. Cuenta regresiva EN ESPAÑOL: "Piensa bien... Tres... dos... uno..."
+4. Revelar respuesta con explicación CORTA
+
+REGLAS ABSOLUTAS (NUNCA VIOLAR):
+1. Las 4 opciones DEBEN ser palabras/frases DIFERENTES. NUNCA repetir la misma palabra.
+   - MAL: A:'sensible', B:'sensible', C:'sensible', D:'sensible' ← PROHIBIDO
+   - BIEN: A:'sensitive', B:'sensible', C:'reasonable', D:'careful' ← CORRECTO
+2. La respuesta correcta debe ser la traducción EXACTA del tema
+3. Las opciones incorrectas deben ser confusiones comunes o palabras similares
+4. CUENTA REGRESIVA SIEMPRE EN ESPAÑOL: "Tres... dos... uno..." (NO "Three... two... one...")
+5. La explicación debe explicar POR QUÉ la respuesta correcta es correcta
+6. Explicación CORTA: 1-2 oraciones + un ejemplo simple
+
+EJEMPLO CORRECTO:
+Tema: False Friend 'library' significa 'biblioteca', NO 'librería'
+{{
+  "question": "¿Qué significa 'library' en inglés?",
+  "options": {{
+    "A": "'librería'",
+    "B": "'biblioteca'",
+    "C": "'libro'",
+    "D": "'lectura'"
+  }},
+  "correct": "B",
+  "explanation": "'Library' significa biblioteca. Por ejemplo: 'I study at the library' - Estudio en la biblioteca."
+}}
+
+EJEMPLO DE FULL_SCRIPT:
+"¿Qué significa 'library' en inglés? ... A, 'librería'. ... B, 'biblioteca'. ... C, 'libro'. ... D, 'lectura'. ... Piensa bien... Tres... dos... uno... ¡Correcto! 'Library' significa biblioteca. Por ejemplo: 'I study at the library' - Estudio en la biblioteca."
+
+FORMATO JSON:
+{{
+  "type": "quiz",
+  "question": "Pregunta en español",
+  "options": {{
+    "A": "opción 1 (DIFERENTE)",
+    "B": "opción 2 (DIFERENTE)",
+    "C": "opción 3 (DIFERENTE)",
+    "D": "opción 4 (DIFERENTE)"
+  }},
+  "correct": "letra correcta",
+  "explanation": "1-2 oraciones explicando POR QUÉ es correcta + ejemplo",
+  "full_script": "Script completo EN ESPAÑOL con countdown 'Tres... dos... uno...'",
+  "translations": {{"palabra_ingles": "traduccion_español"}},
+  "hashtags": ["#QuizIngles", "#AprendeIngles", "#TestTuIngles"]
+}}
+
+Responde SOLO con el JSON válido."""
+
+
+def build_prompt_true_false(category: str, topic: dict) -> str:
+    """Build true/false video prompt."""
+    if category == "false_friends":
+        context = f"False Friend: '{topic['english']}' - significa '{topic['real_meaning']}', NO '{topic['spanish_trap']}'"
+    elif category == "phrasal_verbs":
+        context = f"Phrasal Verb: '{topic['topic']}' - significa '{topic['spanish']}'"
+    elif category == "common_mistakes":
+        context = f"Error común: '{topic['wrong']}' → Correcto: '{topic['correct']}'"
+    else:
+        context = str(topic)
+
+    return f"""Genera un video de VERDADERO O FALSO de 15-25 segundos para TikTok/Reels enseñando inglés a hispanohablantes.
+
+TEMA: {context}
+
+IDIOMA CRÍTICO:
+- TODO en ESPAÑOL excepto la palabra/frase en inglés que enseñamos
+- La afirmación debe estar en ESPAÑOL
+- Solo la palabra inglés entre comillas simples
+
+FORMATO DEL VIDEO:
+1. Afirmación en ESPAÑOL (con palabra inglés en comillas): "¿'Library' significa librería? ¿Verdadero o falso?"
+2. Pausa para pensar: "Piensa bien... Tres... dos... uno..."
+3. Revelar respuesta con explicación CORTA (1-2 oraciones máximo)
+
+EJEMPLO CORRECTO de full_script:
+"¿'Give up' significa rendirse? ¿Verdadero o falso? ... Piensa bien... Tres... dos... uno... ¡Verdadero! 'Give up' sí significa rendirse. Por ejemplo: 'I give up' - Me rindo."
+
+EJEMPLO INCORRECTO (NO hacer esto):
+"Is 'library' the same as 'librería'?" ← MAL, debe ser en español
+
+REGLAS:
+1. Afirmación EN ESPAÑOL con solo la palabra inglés en inglés
+2. Puede ser verdadera o falsa (varía)
+3. Explicación CORTA: 1-2 oraciones máximo + un ejemplo simple
+4. Incluir cuenta regresiva: "Piensa bien... Tres... dos... uno..."
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "true_false",
+  "statement": "¿'palabra_ingles' significa X? ¿Verdadero o falso?",
+  "correct": true,
+  "explanation": "1-2 oraciones máximo. Corta y memorable.",
+  "full_script": "Script EN ESPAÑOL. Palabra inglés en 'comillas'. Explicación CORTA al final.",
+  "translations": {{"palabra_clave": "traduccion"}},
+  "hashtags": ["#VerdaderoOFalso", "#AprendeIngles", "#InglesRapido"]
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
+def build_prompt_fill_blank(category: str, topic: dict) -> str:
+    """Build fill-in-the-blank video prompt."""
+    if category == "false_friends":
+        context = f"Usar correctamente: '{topic['correct_english']}' (no confundir con '{topic['english']}')"
+    elif category == "phrasal_verbs":
+        context = f"Phrasal Verb: '{topic['topic']}' - significa '{topic['spanish']}'"
+    elif category == "common_mistakes":
+        context = f"Forma correcta: '{topic['correct']}' (error común: '{topic['wrong']}')"
+    else:
+        context = str(topic)
+
+    return f"""Genera un video de COMPLETA LA FRASE de 25-35 segundos para TikTok/Reels enseñando inglés.
+
+TEMA: {context}
+
+FORMATO DEL VIDEO:
+1. Mostrar frase en inglés con un espacio en blanco (___)
+2. Mostrar 4 opciones
+3. Pausa para pensar
+4. Revelar respuesta correcta
+
+REGLAS:
+1. La frase debe ser práctica y común
+2. El espacio en blanco debe testar el concepto clave
+3. Las opciones incorrectas deben ser errores comunes
+4. Incluir traducción de la frase completa
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "fill_blank",
+  "sentence": "I ___ to the store yesterday",
+  "blank_position": "went",
+  "options": ["go", "went", "gone", "going"],
+  "correct": "went",
+  "explanation": "Explicación gramatical COMPLETA - no la acortes",
+  "full_script": "Script narrado completo. DEBE terminar con explicación COMPLETA.",
+  "translation": "Traducción de la frase completa",
+  "hashtags": ["#CompletaLaFrase", "#AprendeIngles", "#GramaticaIngles"]
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
+def build_prompt_pronunciation(category: str, topic: dict) -> str:
+    """Build pronunciation video prompt."""
+    if category == "false_friends":
+        word = topic['english']
+    elif category == "phrasal_verbs":
+        word = topic['topic']
+    elif category == "common_mistakes":
+        word = topic.get('correct', '').split()[0] if topic.get('correct') else 'example'
+    else:
+        word = "example"
+
+    return f"""Genera un video de PRONUNCIACIÓN de 20-30 segundos para TikTok/Reels enseñando inglés.
+
+PALABRA: "{word}"
+
+FORMATO DEL VIDEO:
+1. Mostrar la palabra en grande
+2. "¿Cómo se pronuncia?"
+3. Mostrar error común de pronunciación
+4. Mostrar pronunciación correcta (fonética simplificada)
+5. Tip para recordar
+
+REGLAS:
+1. Usa fonética simplificada que hispanohablantes entiendan (ej: "KUMF-ter-bul")
+2. Identifica el error de pronunciación más común
+3. Da un tip memorable
+4. El script debe incluir cómo pronunciar la palabra
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "pronunciation",
+  "word": "{word}",
+  "phonetic": "Pronunciación fonética simplificada en mayúsculas",
+  "common_mistake": "Error de pronunciación común",
+  "tip": "Tip para recordar la pronunciación",
+  "full_script": "Script narrado con la palabra, error común, pronunciación correcta y tip.",
+  "translation": "traducción de la palabra",
+  "hashtags": ["#Pronunciacion", "#AprendeIngles", "#SpeakEnglish"]
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
+def build_prompt(category: str, topic: dict, video_type: str = "educational") -> str:
+    """Build prompt based on video type."""
+    if video_type == "educational":
+        return build_prompt_educational(category, topic)
+    elif video_type == "quiz":
+        return build_prompt_quiz(category, topic)
+    elif video_type == "true_false":
+        return build_prompt_true_false(category, topic)
+    elif video_type == "fill_blank":
+        return build_prompt_fill_blank(category, topic)
+    elif video_type == "pronunciation":
+        return build_prompt_pronunciation(category, topic)
+    else:
+        raise ValueError(f"Unknown video type: {video_type}. Choose from: {VIDEO_TYPES}")
+
+
+def generate_script(category: str, topic: dict, video_type: str = "educational") -> dict:
+    """Call OpenAI API to generate a script."""
+
+    api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
-        raise EnvironmentError("ANTHROPIC_API_KEY environment variable not set")
+        raise EnvironmentError("OPENAI_API_KEY environment variable not set. Add it to .env file.")
 
-    client = anthropic.Anthropic(api_key=api_key)
-    prompt = build_prompt(category, topic)
+    client = OpenAI(api_key=api_key)
+    prompt = build_prompt(category, topic, video_type)
 
-    print(f"Calling Claude API ({MODEL})...")
+    print(f"Calling OpenAI API ({MODEL}) for {video_type} video...")
 
-    message = client.messages.create(
+    response = client.chat.completions.create(
         model=MODEL,
         max_tokens=MAX_TOKENS,
         messages=[
@@ -185,11 +410,10 @@ def generate_script(category: str, topic: dict) -> dict:
         ]
     )
 
-    response_text = message.content[0].text.strip()
+    response_text = response.choices[0].message.content.strip()
 
     # Parse JSON from response
     try:
-        # Try to extract JSON if wrapped in markdown code blocks
         if "```json" in response_text:
             response_text = response_text.split("```json")[1].split("```")[0].strip()
         elif "```" in response_text:
@@ -201,10 +425,41 @@ def generate_script(category: str, topic: dict) -> dict:
         print(f"Raw response:\n{response_text}")
         raise
 
+    # Ensure type is set
+    script["type"] = video_type
+
+    # VALIDATION: For quiz type, ensure all 4 options are different
+    if video_type == "quiz" and "options" in script:
+        options = script["options"]
+        option_values = [v.lower().strip("'\"") for v in options.values()]
+        unique_values = set(option_values)
+
+        if len(unique_values) < len(option_values):
+            print(f"  WARNING: Quiz has duplicate options: {list(options.values())}")
+            print(f"  Regenerating with different options...")
+            # Retry once with explicit instruction
+            retry_prompt = prompt + "\n\nIMPORTANTE: Las 4 opciones A, B, C, D DEBEN ser palabras COMPLETAMENTE DIFERENTES. No repitas ninguna opción."
+            retry_response = client.chat.completions.create(
+                model=MODEL,
+                max_tokens=MAX_TOKENS,
+                messages=[{"role": "user", "content": retry_prompt}]
+            )
+            retry_text = retry_response.choices[0].message.content.strip()
+            try:
+                if "```json" in retry_text:
+                    retry_text = retry_text.split("```json")[1].split("```")[0].strip()
+                elif "```" in retry_text:
+                    retry_text = retry_text.split("```")[1].split("```")[0].strip()
+                script = json.loads(retry_text)
+                script["type"] = video_type
+            except:
+                print("  Retry failed, using original")
+
     # Add metadata
     script["_meta"] = {
         "category": category,
         "topic_id": topic.get("id", "unknown"),
+        "video_type": video_type,
         "generated_at": datetime.now().isoformat(),
         "model": MODEL
     }
@@ -216,8 +471,7 @@ def save_script(script: dict, name: str) -> Path:
     """Save script to output directory."""
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{name}_{timestamp}.json"
+    filename = f"{name}.json"
     path = OUTPUT_DIR / filename
 
     with open(path, 'w', encoding='utf-8') as f:
@@ -228,14 +482,18 @@ def save_script(script: dict, name: str) -> Path:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate English lesson scripts using Claude API",
+        description="Generate English lesson scripts using OpenAI GPT",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        epilog=f"""
+Video Types: {', '.join(VIDEO_TYPES)}
+
 Examples:
   python src/script_generator.py --list
   python src/script_generator.py --random
+  python src/script_generator.py --random --type quiz
   python src/script_generator.py --category false_friends --topic embarrassed
-  python src/script_generator.py -c phrasal_verbs -t "give up"
+  python src/script_generator.py --category false_friends --topic embarrassed --type true_false
+  python src/script_generator.py -c phrasal_verbs -t "give up" --type fill_blank
         """
     )
 
@@ -247,8 +505,11 @@ Examples:
                         help="Topic category (false_friends, phrasal_verbs, common_mistakes)")
     parser.add_argument("--topic", "-t", type=str,
                         help="Specific topic name")
+    parser.add_argument("--type", type=str, default="educational",
+                        choices=VIDEO_TYPES,
+                        help="Video type (default: educational)")
     parser.add_argument("--output", "-o", type=str,
-                        help="Output file path (default: auto-generated)")
+                        help="Output file name (without extension)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Show prompt without calling API")
 
@@ -264,6 +525,7 @@ Examples:
             for t in topics:
                 name = t.get("english") or t.get("topic") or t.get("wrong")
                 print(f"  - {name}")
+        print(f"\nVideo Types: {', '.join(VIDEO_TYPES)}")
         return
 
     # Determine category and topic
@@ -283,23 +545,24 @@ Examples:
     # Dry run - show prompt only
     if args.dry_run:
         print("\n" + "=" * 50)
-        print("PROMPT (dry run):")
+        print(f"PROMPT ({args.type} - dry run):")
         print("=" * 50)
-        print(build_prompt(category, topic))
+        print(build_prompt(category, topic, args.type))
         return
 
     # Generate script
-    print(f"\nGenerating script for: {category} → {topic_name}")
+    print(f"\nGenerating {args.type} script for: {category} → {topic_name}")
     print("-" * 50)
 
     try:
-        script = generate_script(category, topic)
+        script = generate_script(category, topic, args.type)
     except Exception as e:
         print(f"Error generating script: {e}")
         sys.exit(1)
 
     # Save script
-    output_name = args.output if args.output else topic_name.replace(" ", "_").lower()
+    type_suffix = f"_{args.type}" if args.type != "educational" else ""
+    output_name = args.output if args.output else f"{topic_name.replace(' ', '_').lower()}{type_suffix}"
     path = save_script(script, output_name)
 
     print(f"\nScript generated successfully!")
@@ -307,12 +570,28 @@ Examples:
     print("\n" + "=" * 50)
     print("SCRIPT PREVIEW:")
     print("=" * 50)
-    print(f"\nHook: {script.get('hook', 'N/A')}")
+    print(f"\nType: {script.get('type', 'N/A')}")
+
+    if args.type == "educational":
+        print(f"Hook: {script.get('hook', 'N/A')}")
+        print(f"Script: {script.get('full_script', 'N/A')[:200]}...")
+    elif args.type == "quiz":
+        print(f"Question: {script.get('question', 'N/A')}")
+        print(f"Options: {script.get('options', {})}")
+        print(f"Correct: {script.get('correct', 'N/A')}")
+    elif args.type == "true_false":
+        print(f"Statement: {script.get('statement', 'N/A')}")
+        print(f"Correct: {script.get('correct', 'N/A')}")
+    elif args.type == "fill_blank":
+        print(f"Sentence: {script.get('sentence', 'N/A')}")
+        print(f"Options: {script.get('options', [])}")
+        print(f"Correct: {script.get('correct', 'N/A')}")
+    elif args.type == "pronunciation":
+        print(f"Word: {script.get('word', 'N/A')}")
+        print(f"Phonetic: {script.get('phonetic', 'N/A')}")
+        print(f"Common mistake: {script.get('common_mistake', 'N/A')}")
+
     print(f"\nFull Script:\n{script.get('full_script', 'N/A')}")
-    print(f"\nEnglish Phrases: {script.get('english_phrases', [])}")
-    print(f"\nTip: {script.get('tip', 'N/A')}")
-    print(f"\nCTA: {script.get('cta', 'N/A')}")
-    print(f"\nHashtags: {' '.join(script.get('hashtags', []))}")
 
     return script
 
