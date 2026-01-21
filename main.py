@@ -77,12 +77,49 @@ def run_tts(text: str, audio_path: Path, script_data: dict = None, use_openai: b
         use_openai: Use OpenAI TTS (default: True, more reliable)
         script_path: Path to script JSON (enables automatic English detection)
     """
+    from dotenv import load_dotenv
+    load_dotenv()
+
     print(f"\n{'='*50}")
     print("STEP 2: Generating Audio (TTS)")
     print(f"{'='*50}")
     print(f"Output: {audio_path}")
 
-    if use_openai:
+    # Get TTS provider from environment (default: elevenlabs)
+    tts_provider = os.getenv("TTS_PROVIDER", "elevenlabs").lower()
+
+    if tts_provider == "elevenlabs":
+        # Use ElevenLabs TTS (best quality, multilingual)
+        if script_path and script_path.exists():
+            cmd = [
+                "python3", str(SRC / "tts_elevenlabs.py"),
+                "--script", str(script_path),
+                "-o", str(audio_path),
+            ]
+        else:
+            cmd = [
+                "python3", str(SRC / "tts_elevenlabs.py"),
+                "--test",
+                "--text", text,
+                "-o", str(audio_path),
+            ]
+        print("Engine: ElevenLabs TTS (eleven_multilingual_v2)")
+    elif tts_provider == "google":
+        # Use Google Cloud TTS (best for Spanish)
+        if script_path and script_path.exists():
+            cmd = [
+                "python3", str(SRC / "tts_google.py"),
+                "--script", str(script_path),
+                "-o", str(audio_path),
+            ]
+        else:
+            cmd = [
+                "python3", str(SRC / "tts_google.py"),
+                "--text", text,
+                "-o", str(audio_path),
+            ]
+        print("Engine: Google Cloud TTS")
+    elif use_openai or tts_provider == "openai":
         # Use OpenAI TTS (more reliable, better bilingual flow)
         # If we have a script path, use --script for automatic English detection
         if script_path and script_path.exists():

@@ -67,7 +67,7 @@ VOICES = {
     "shimmer": "Soft female, gentle",
 }
 
-DEFAULT_VOICE = "nova"
+DEFAULT_VOICE = "alloy"
 DEFAULT_MODEL = "tts-1"  # or "tts-1-hd" for higher quality
 DEFAULT_SPEED = 0.80  # Slow for natural pacing - no rushing, let it breathe (0.25 to 4.0)
 
@@ -704,139 +704,304 @@ def generate_quiz_audio_segmented(
     speed: float = DEFAULT_SPEED,
 ) -> dict:
     """
-    Generate quiz audio using SEGMENT-BASED architecture.
+    Generate quiz audio using ASSEMBLY APPROACH with pre-recorded audio library.
 
-    Each segment is generated separately, giving us EXACT timestamps.
-    No guessing, no estimation - we KNOW exactly when each part starts/ends.
-
-    Segments:
-    1. question - The question text
-    2. transition - "Escucha las opciones"
-    3. option_a - "Opción A, [text]"
-    4. option_b - "Opción B, [text]"
-    5. option_c - "Opción C, [text]"
-    6. option_d - "Opción D, [text]"
-    7. think - "Piensa bien"
-    8. countdown_3 - "Tres" + silence
-    9. countdown_2 - "Dos" + silence
-    10. countdown_1 - "Uno"
-    11. answer - "La respuesta correcta es [letter]"
-    12. explanation - The explanation
+    ARCHITECTURE:
+    1. Pre-recorded standard phrases (assets/audio/standard/) - perfect quality, reused
+    2. Cached English words (assets/audio/words/) - generated once, reused
+    3. Fresh TTS only for: question text, explanation
+    4. Assembly: [pre-recorded] + [silence] + [word/phrase] + [silence]
+    5. No re-encoding during concatenation (-c:a copy)
 
     Returns:
         Dictionary with exact segment timestamps and audio metadata
     """
     import shutil
+    import hashlib
 
+    # === PATHS ===
+    # Use the SPANISH library - these are the tested, approved audio files
+    SPANISH_DIR = Path(__file__).parent.parent / "assets" / "audio" / "spanish"
+    WORDS_DIR = Path(__file__).parent.parent / "assets" / "audio" / "words"
+    WORDS_DIR.mkdir(parents=True, exist_ok=True)
+
+    # === PAUSE DURATIONS ===
+    PAUSE_AFTER_QUESTION = 0.5
+    PAUSE_AFTER_TRANSITION = 0.8  # After "Escucha las opciones"
+    PAUSE_BETWEEN_LETTER_AND_CONTENT = 0.4
+    PAUSE_AFTER_OPTION = 0.6  # After each option A, B, C, D
+    PAUSE_AFTER_THINK = 0.5  # After "Piensa bien"
+    PAUSE_AFTER_COUNTDOWN = 1.0  # Between countdown numbers
+    PAUSE_AFTER_LAST_COUNT = 0.6
+    PAUSE_AFTER_ANSWER_PHRASE = 0.5  # After "Correcto..."
+    PAUSE_AFTER_ANSWER = 0.3  # Before explanation
+    PAUSE_AFTER_EXPLANATION = 0.5  # Ensure explanation has breathing room
+
+    # === SCRIPT DATA ===
     question = script.get('question', '¿Pregunta?')
     options = script.get('options', {})
     correct = script.get('correct', 'A')
     explanation = script.get('explanation', '')
 
-    # Clean question (remove ¿ for TTS, it handles intonation automatically)
     clean_question = question.replace('¿', '').strip()
+    correct_text = options.get(correct, '').strip("'\"")
 
-    # Get correct answer text
-    correct_text = options.get(correct, '')
+    # === TEMP DIRECTORY ===
+    temp_dir = tempfile.mkdtemp(prefix="quiz_assembly_")
 
-    # Define all segments with their text
-    # Each segment: (id, text, pause_after)
-    segment_defs = [
-        ('question', clean_question, 0.3),
-        ('transition', 'Escucha las opciones.', 0.4),
-        ('option_a', f"Opción A, {options.get('A', 'opción A')}.", 0.8),
-        ('option_b', f"Opción B, {options.get('B', 'opción B')}.", 0.8),
-        ('option_c', f"Opción C, {options.get('C', 'opción C')}.", 0.8),
-        ('option_d', f"Opción D, {options.get('D', 'opción D')}.", 0.8),
-        ('think', '¡Piensa bien!', 0.5),
-        ('countdown_3', 'Tres.', 1.0),  # 1 second pause after each countdown number
-        ('countdown_2', 'Dos.', 1.0),
-        ('countdown_1', 'Uno.', 0.5),
-        ('answer', f"¡Correcto! La respuesta es {correct}, {correct_text}.", 0.3),
-        ('explanation', explanation, 0.0),
-    ]
+    def get_or_generate_word(text: str) -> str:
+        """Get cached word audio or generate and cache it."""
+        # Create safe filename from text
+        safe_name = "".join(c if c.isalnum() else "_" for c in text.lower())
+        safe_name = safe_name[:50]  # Limit length
+        hash_suffix = hashlib.md5(text.encode()).hexdigest()[:8]
+        cache_path = WORDS_DIR / f"{safe_name}_{hash_suffix}.mp3"
 
-    # Create temp directory for segment files
-    temp_dir = tempfile.mkdtemp(prefix="quiz_segments_")
+        if cache_path.exists():
+            print(f"      [cached] {text}")
+            return str(cache_path)
+
+        # Generate with high quality
+        print(f"      [generating] {text}")
+        client = OpenAI()
+        with client.audio.speech.with_streaming_response.create(
+            model="tts-1-hd",
+            voice=voice,
+            input=text,
+            speed=1.0,  # Default speed - more consistent
+            response_format="mp3"
+        ) as response:
+            response.stream_to_file(str(cache_path))
+
+        return str(cache_path)
 
     try:
-        print("Generating audio segments...")
+        print("=" * 60)
+        print("QUIZ AUDIO ASSEMBLY")
+        print("=" * 60)
+        print(f"  Spanish audio library: {SPANISH_DIR}")
+        print(f"  Words cache: {WORDS_DIR}")
+        print()
 
         segments = []
         audio_files = []
         running_time = 0.0
 
-        for seg_id, text, pause_after in segment_defs:
-            if not text.strip():
-                continue
+        def add_audio(path: str, duration: float = None):
+            """Add audio file to sequence."""
+            nonlocal running_time
+            if duration is None:
+                duration = get_audio_duration(path)
+            audio_files.append(path)
+            start = running_time
+            running_time += duration
+            return start, running_time, duration
 
-            # Generate segment audio
-            seg_path = os.path.join(temp_dir, f"{seg_id}.mp3")
-            print(f"  [{seg_id}] Generating: {text[:50]}...")
+        def add_silence(duration: float):
+            """Add silence to sequence."""
+            nonlocal running_time
+            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
+            generate_silence(duration, silence_path)
+            audio_files.append(silence_path)
+            running_time += duration
 
-            duration = generate_segment_audio(text, seg_path, voice, model, speed)
-
-            # Record segment with EXACT timestamps
+        def add_segment(seg_id: str, text: str, start: float, end: float):
+            """Record segment metadata."""
             segment = {
                 'id': seg_id,
                 'text': text,
-                'start': round(running_time, 3),
-                'end': round(running_time + duration, 3),
-                'duration': round(duration, 3),
+                'start': round(start, 3),
+                'end': round(end, 3),
+                'duration': round(end - start, 3),
             }
             segments.append(segment)
-            audio_files.append(seg_path)
+            print(f"  [{seg_id}] {text[:50]}...")
+            print(f"    {start:.2f}s - {end:.2f}s ({end-start:.2f}s)")
+            return segment
 
-            print(f"    Duration: {duration:.2f}s, Start: {running_time:.2f}s, End: {running_time + duration:.2f}s")
+        # ============================================================
+        # 1. QUESTION (fresh TTS - variable content)
+        # ============================================================
+        print("\n[1] QUESTION")
+        q_path = os.path.join(temp_dir, "question.mp3")
+        client = OpenAI()
+        with client.audio.speech.with_streaming_response.create(
+            model="tts-1-hd",
+            voice=voice,
+            input=clean_question,
+            speed=1.0,
+            response_format="mp3"
+        ) as response:
+            response.stream_to_file(q_path)
+        q_start, q_end, _ = add_audio(q_path)
+        add_segment('question', clean_question, q_start, q_end)
+        add_silence(PAUSE_AFTER_QUESTION)
 
-            running_time += duration
+        # ============================================================
+        # 2-3. TRANSITION + OPTIONS - COMBINED in ONE TTS call
+        # TTS is inconsistent with short isolated words.
+        # Generating ALL options together in ONE call works reliably.
+        # ============================================================
+        print("\n[3] OPTIONS (combined generation)")
 
-            # Add pause after segment if specified
-            if pause_after > 0:
-                silence_path = os.path.join(temp_dir, f"{seg_id}_pause.mp3")
-                generate_silence(pause_after, silence_path)
-                audio_files.append(silence_path)
-                running_time += pause_after
+        # Build combined text for all options
+        option_lines = ["Escucha las opciones."]
+        option_words = {}
+        for letter in ['A', 'B', 'C', 'D']:
+            word = options.get(letter, '').strip("'\"")
+            option_words[letter] = word
+            option_lines.append(f"Opción {letter}, {word}.")
+
+        combined_text = "\n".join(option_lines)
+        print(f"  Combined text ({len(combined_text)} chars):")
+        for line in option_lines:
+            print(f"    {line}")
+
+        # Generate ALL options in ONE TTS call
+        combined_path = os.path.join(temp_dir, "options_combined.mp3")
+        with client.audio.speech.with_streaming_response.create(
+            model="tts-1-hd",
+            voice=voice,
+            input=combined_text,
+            speed=1.0,
+            response_format="mp3"
+        ) as response:
+            response.stream_to_file(combined_path)
+
+        combined_duration = get_audio_duration(combined_path)
+        print(f"  Combined duration: {combined_duration:.2f}s")
+
+        # Add the combined audio
+        combined_start = running_time
+        add_audio(combined_path)
+
+        # Estimate segment times (roughly equal distribution)
+        # First segment is "Escucha las opciones" (~1.5s)
+        # Then 4 options share the rest
+        transition_duration = 1.5
+        options_duration = combined_duration - transition_duration
+        per_option = options_duration / 4
+
+        # Add transition segment
+        add_segment('transition', 'Escucha las opciones.',
+                   combined_start, combined_start + transition_duration)
+
+        # Add option segments (estimated times)
+        for i, letter in enumerate(['A', 'B', 'C', 'D']):
+            opt_start = combined_start + transition_duration + (i * per_option)
+            opt_end = opt_start + per_option
+            add_segment(f'option_{letter.lower()}',
+                       f"Opción {letter}, {option_words[letter]}.",
+                       opt_start, opt_end)
+            print(f"  Option {letter}: {opt_start:.2f}s - {opt_end:.2f}s")
+
+        # Pause after all options
+        add_silence(PAUSE_AFTER_OPTION)
+
+        # ============================================================
+        # 4. THINK (pre-recorded)
+        # ============================================================
+        print("\n[4] THINK")
+        think_path = str(SPANISH_DIR / "piensa_bien.mp3")
+        think_start, think_end, _ = add_audio(think_path)
+        add_segment('think', '¡Piensa bien!', think_start, think_end)
+        add_silence(PAUSE_AFTER_THINK)
+
+        # ============================================================
+        # 5. COUNTDOWN (pre-recorded)
+        # ============================================================
+        print("\n[5] COUNTDOWN")
+        for num, name in [('3', 'tres'), ('2', 'dos'), ('1', 'uno')]:
+            cd_path = str(SPANISH_DIR / f"{name}.mp3")
+            cd_start, cd_end, _ = add_audio(cd_path)
+            add_segment(f'countdown_{num}', f'{name.capitalize()}.', cd_start, cd_end)
+            pause = PAUSE_AFTER_LAST_COUNT if num == '1' else PAUSE_AFTER_COUNTDOWN
+            add_silence(pause)
+
+        # ============================================================
+        # 6. ANSWER
+        # Generate FULL answer text as one sentence (like explanation and options)
+        # NOT single word! Single word = TTS doesn't know it's Spanish
+        # ============================================================
+        print("\n[6] ANSWER")
+        answer_start = running_time
+
+        # Generate COMPLETE answer as one full Spanish sentence
+        # This gives TTS full context to pronounce correctly
+        full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
+        print(f"  Answer: '{full_answer_text}'")
+
+        ans_path = os.path.join(temp_dir, "answer.mp3")
+        with client.audio.speech.with_streaming_response.create(
+            model="tts-1-hd",
+            voice=voice,
+            input=full_answer_text,
+            speed=1.0,
+            response_format="mp3"
+        ) as response:
+            response.stream_to_file(ans_path)
+        add_audio(ans_path)
+
+        answer_end = running_time
+        add_segment('answer', full_answer_text, answer_start, answer_end)
+        add_silence(PAUSE_AFTER_ANSWER)
+
+        # ============================================================
+        # 7. EXPLANATION (fresh TTS - MUST COMPLETE FULLY)
+        # ============================================================
+        if explanation.strip():
+            print("\n[7] EXPLANATION")
+            exp_path = os.path.join(temp_dir, "explanation.mp3")
+            with client.audio.speech.with_streaming_response.create(
+                model="tts-1-hd",
+                voice=voice,
+                input=explanation,
+                speed=1.0,
+                response_format="mp3"
+            ) as response:
+                response.stream_to_file(exp_path)
+            exp_start, exp_end, _ = add_audio(exp_path)
+            add_segment('explanation', explanation, exp_start, exp_end)
+            # Add breathing room after explanation
+            add_silence(PAUSE_AFTER_EXPLANATION)
 
         total_duration = running_time
-        print(f"\nTotal duration: {total_duration:.2f}s")
+        print(f"\n{'=' * 60}")
+        print(f"Total duration: {total_duration:.2f}s")
+        print(f"{'=' * 60}")
 
-        # Concatenate all segments with ffmpeg
-        print("Concatenating segments...")
+        # ============================================================
+        # CONCATENATE (no re-encoding)
+        # ============================================================
+        print("\nConcatenating audio files...")
         concat_list_path = os.path.join(temp_dir, "concat.txt")
         with open(concat_list_path, 'w') as f:
             for audio_file in audio_files:
                 f.write(f"file '{audio_file}'\n")
 
-        # Ensure output directory exists
         output_dir = os.path.dirname(output_path)
         if output_dir:
             os.makedirs(output_dir, exist_ok=True)
 
-        cmd_concat = [
+        cmd = [
             'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
             '-i', concat_list_path,
-            '-acodec', 'libmp3lame', '-q:a', '2',
+            '-c:a', 'copy',
             output_path
         ]
-        result = subprocess.run(cmd_concat, capture_output=True, timeout=120)
+        result = subprocess.run(cmd, capture_output=True, timeout=120)
 
         if result.returncode != 0:
             raise RuntimeError(f"ffmpeg concat failed: {result.stderr.decode()[:500]}")
 
         print(f"Audio saved: {output_path}")
 
-        # Build result with exact segment timestamps
-        # Create a lookup for easy access in video.py
-        segment_times = {}
-        for seg in segments:
-            segment_times[seg['id']] = {
-                'start': seg['start'],
-                'end': seg['end'],
-                'duration': seg['duration'],
-            }
+        # ============================================================
+        # BUILD RESULT
+        # ============================================================
+        segment_times = {seg['id']: {'start': seg['start'], 'end': seg['end'], 'duration': seg['duration']} for seg in segments}
 
-        result = {
+        return {
             'duration': round(total_duration, 3),
             'segments': segments,
             'segment_times': segment_times,
@@ -848,14 +1013,10 @@ def generate_quiz_audio_segmented(
             'full_script': script.get('full_script', ''),
             'translations': script.get('translations', {}),
             'hashtags': script.get('hashtags', []),
-            # Legacy compatibility - create words list from segments for analyzer
-            'words': [],  # We don't need Whisper words anymore
+            'words': [],
         }
 
-        return result
-
     finally:
-        # Cleanup temp files
         try:
             shutil.rmtree(temp_dir)
         except:
