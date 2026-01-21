@@ -1,0 +1,25 @@
+{
+  "model": "tts-1-hd",
+  "voice": "nova",
+  "speed": 0.85,
+  "files": {
+    "opcion_a.mp3": 0.744,
+    "opcion_b.mp3": 0.744,
+    "opcion_c.mp3": 0.624,
+    "opcion_d.mp3": 0.864,
+    "escucha_opciones.mp3": 1.104,
+    "piensa_bien.mp3": 0.816,
+    "tres.mp3": 0.6,
+    "dos.mp3": 0.624,
+    "uno.mp3": 0.576,
+    "correcto.mp3": 0.696,
+    "la_respuesta_es.mp3": 1.128,
+    "correcto_la_respuesta_es.mp3": 1.56,
+    "incorrecto.mp3": 0.768,
+    "la_respuesta_era.mp3": 1.2,
+    "letra_a.mp3": 0.624,
+    "letra_b.mp3": 0.624,
+    "letra_c.mp3": 0.624,
+    "letra_d.mp3": 0.648
+  }
+}
