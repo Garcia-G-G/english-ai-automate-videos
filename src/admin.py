@@ -429,13 +429,58 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Sidebar navigation
+# Sidebar navigation - unified single selector
 st.sidebar.title("🎬 Video Admin")
-page = st.sidebar.radio(
-    "Navigate",
-    ["🏠 Dashboard", "🎥 Generate", "📋 Queue", "✅ Review", "📤 Upload", "📚 Library", "⏰ Scheduler"],
-    index=0
-)
+
+# All pages in one list with visual separators
+all_pages = [
+    "🏠 Dashboard",
+    "🎥 Generate",
+    "📋 Queue",
+    "✅ Review",
+    "📤 Upload",
+    "📚 Library",
+    "---",  # Separator
+    "⏰ Scheduler",
+    "🎨 Style Guide",
+    "⚙️ Settings",
+    "📜 Logs"
+]
+
+# Filter out separator for radio, but show section headers
+st.sidebar.markdown("##### Main")
+main_pages = ["🏠 Dashboard", "🎥 Generate", "📋 Queue", "✅ Review", "📤 Upload", "📚 Library"]
+tool_pages = ["⏰ Scheduler", "🎨 Style Guide", "⚙️ Settings", "📜 Logs"]
+
+# Use session state to track current page
+if 'current_page' not in st.session_state:
+    st.session_state.current_page = "🏠 Dashboard"
+
+# Create clickable buttons for main pages
+for p in main_pages:
+    if st.sidebar.button(
+        p,
+        key=f"nav_{p}",
+        use_container_width=True,
+        type="primary" if st.session_state.current_page == p else "secondary"
+    ):
+        st.session_state.current_page = p
+        st.rerun()
+
+st.sidebar.markdown("##### Tools")
+
+# Create clickable buttons for tool pages
+for p in tool_pages:
+    if st.sidebar.button(
+        p,
+        key=f"nav_{p}",
+        use_container_width=True,
+        type="primary" if st.session_state.current_page == p else "secondary"
+    ):
+        st.session_state.current_page = p
+        st.rerun()
+
+page = st.session_state.current_page
 
 # Initialize session state
 if 'queue_items' not in st.session_state:
@@ -454,24 +499,38 @@ if 'scheduler_config' not in st.session_state:
 if page == "🏠 Dashboard":
     st.title("🎬 English AI Videos Dashboard")
 
-    # Stats
-    col1, col2, col3, col4 = st.columns(4)
-
+    # Gather all stats
     pending = get_pending_videos()
     approved = get_approved_videos()
     library = get_library_videos()
     active_jobs = get_active_jobs()
+    all_videos = pending + approved + library
+
+    # Calculate video type breakdown
+    type_counts = {}
+    for v in all_videos:
+        vtype = v.get("type", "unknown")
+        type_counts[vtype] = type_counts.get(vtype, 0) + 1
+
+    # Calculate storage
+    total_size = sum(v.get("size", 0) or v["path"].stat().st_size if v["path"].exists() else 0 for v in all_videos)
+    size_mb = total_size / (1024 * 1024)
+
+    # Main stats row
+    col1, col2, col3, col4, col5 = st.columns(5)
 
     with col1:
-        st.metric("📝 Pending Review", len(pending))
+        st.metric("📹 Total Videos", len(all_videos))
     with col2:
-        st.metric("✅ Approved", len(approved))
+        st.metric("📝 Pending", len(pending))
     with col3:
-        st.metric("📚 Library", len(library))
+        st.metric("✅ Approved", len(approved))
     with col4:
         st.metric("⚡ Active Jobs", len(active_jobs))
+    with col5:
+        st.metric("💾 Storage", f"{size_mb:.1f} MB")
 
-    # Active jobs section
+    # Active jobs section (prominent)
     if active_jobs:
         st.divider()
         st.subheader("⚡ Currently Generating")
@@ -479,51 +538,128 @@ if page == "🏠 Dashboard":
             with st.container():
                 col1, col2 = st.columns([3, 1])
                 with col1:
-                    st.markdown(f"**{job['video_type']}** - {job.get('topic', 'Selecting...')}")
+                    st.markdown(f"**{job['video_type'].upper()}** - {job.get('topic', 'Selecting...')}")
                     st.progress(job.get('progress', 0) / 100)
-                    st.caption(job.get('current_step', 'Initializing...'))
+                    st.caption(f"📍 {job.get('current_step', 'Initializing...')}")
                 with col2:
-                    st.write(f"Job: `{job['id']}`")
+                    st.code(job['id'])
+                    if job.get("status") == "running":
+                        time.sleep(2)
+                        st.rerun()
 
     st.divider()
 
-    # Quick actions
-    st.subheader("⚡ Quick Actions")
-    col1, col2, col3 = st.columns(3)
+    # Two column layout
+    col_left, col_right = st.columns([2, 1])
 
-    with col1:
-        if st.button("🎲 Generate Random Quiz", use_container_width=True):
-            job_id = create_job("quiz")
-            st.session_state.generating_job = job_id
-            st.switch_page("pages" if False else st.rerun())
-    with col2:
-        if st.button("📚 Generate Random Educational", use_container_width=True):
-            job_id = create_job("educational")
-            st.session_state.generating_job = job_id
-    with col3:
-        if st.button("❓ Generate Random True/False", use_container_width=True):
-            job_id = create_job("true_false")
-            st.session_state.generating_job = job_id
+    with col_left:
+        # Quick actions
+        st.subheader("⚡ Quick Actions")
+        action_cols = st.columns(4)
 
-    # Recent history
-    st.divider()
-    st.subheader("📊 Recent Generation History")
+        with action_cols[0]:
+            if st.button("🎲 Quiz", use_container_width=True, help="Generate random quiz"):
+                job_id = create_job("quiz")
+                st.session_state.generating_job = job_id
+                with st.spinner("Starting..."):
+                    run_pipeline_with_tracking(job_id, "quiz")
+                st.rerun()
 
-    history = get_job_history(5)
-    if history:
-        for job in history:
-            status_icon = "✅" if job["status"] == "completed" else "❌"
-            col1, col2, col3 = st.columns([3, 1, 1])
-            with col1:
-                st.write(f"{status_icon} **{job.get('topic', 'Unknown')}** ({job['video_type']})")
-            with col2:
-                st.write(job["status"])
-            with col3:
-                if job.get("completed_at"):
-                    completed = datetime.fromisoformat(job["completed_at"])
-                    st.write(completed.strftime("%H:%M"))
-    else:
-        st.info("No generation history yet")
+        with action_cols[1]:
+            if st.button("📚 Educational", use_container_width=True, help="Generate educational video"):
+                job_id = create_job("educational")
+                st.session_state.generating_job = job_id
+                with st.spinner("Starting..."):
+                    run_pipeline_with_tracking(job_id, "educational")
+                st.rerun()
+
+        with action_cols[2]:
+            if st.button("❓ True/False", use_container_width=True, help="Generate true/false video"):
+                job_id = create_job("true_false")
+                st.session_state.generating_job = job_id
+                with st.spinner("Starting..."):
+                    run_pipeline_with_tracking(job_id, "true_false")
+                st.rerun()
+
+        with action_cols[3]:
+            if st.button("📋 Batch (5)", use_container_width=True, help="Generate 5 random videos"):
+                for vtype in ["quiz", "educational", "true_false", "quiz", "educational"]:
+                    st.session_state.queue_items.append({"type": vtype, "category": None, "topic": None})
+                st.success("Added 5 videos to queue!")
+                st.rerun()
+
+        st.divider()
+
+        # Recent history
+        st.subheader("📊 Recent Activity")
+
+        history = get_job_history(8)
+        if history:
+            for job in history:
+                status = job.get("status", "unknown")
+                if status == "completed":
+                    icon = "✅"
+                elif status == "failed":
+                    icon = "❌"
+                else:
+                    icon = "⏳"
+
+                col1, col2, col3 = st.columns([3, 1, 1])
+                with col1:
+                    topic = job.get('topic', 'Unknown')
+                    if len(topic) > 25:
+                        topic = topic[:22] + "..."
+                    st.write(f"{icon} **{topic}**")
+                with col2:
+                    st.caption(job.get('video_type', 'N/A'))
+                with col3:
+                    if job.get("completed_at"):
+                        completed = datetime.fromisoformat(job["completed_at"])
+                        st.caption(completed.strftime("%H:%M"))
+        else:
+            st.info("No generation history yet")
+
+    with col_right:
+        # Video breakdown
+        st.subheader("📊 By Type")
+
+        if type_counts:
+            for vtype, count in sorted(type_counts.items(), key=lambda x: x[1], reverse=True):
+                pct = (count / len(all_videos) * 100) if all_videos else 0
+                st.write(f"**{vtype.replace('_', ' ').title()}**")
+                st.progress(pct / 100)
+                st.caption(f"{count} videos ({pct:.0f}%)")
+        else:
+            st.info("No videos yet")
+
+        st.divider()
+
+        # Pipeline status
+        st.subheader("🔧 Pipeline Status")
+
+        # Check components
+        components = {
+            "Script Generator": True,
+            "TTS (OpenAI)": True,
+            "Video Renderer": True,
+            "Backgrounds": True
+        }
+
+        try:
+            from backgrounds import BackgroundGenerator
+        except ImportError:
+            components["Backgrounds"] = False
+
+        for name, status in components.items():
+            if status:
+                st.write(f"🟢 {name}")
+            else:
+                st.write(f"🔴 {name}")
+
+        # Queue status
+        if st.session_state.queue_items:
+            st.divider()
+            st.write(f"📋 **Queue:** {len(st.session_state.queue_items)} items")
 
 
 # ============== GENERATE PAGE ==============
@@ -1034,6 +1170,412 @@ elif page == "⏰ Scheduler":
                     progress.progress((i + 1) / videos_per_batch)
 
                 status.success(f"✅ Batch complete!")
+
+
+# ============== STYLE GUIDE PAGE ==============
+elif page == "🎨 Style Guide":
+    st.title("🎨 Video Style Guide")
+
+    st.markdown("""
+    This guide shows the visual styles and animations used in your videos.
+    """)
+
+    # Background presets
+    st.subheader("🎨 Background Presets")
+
+    try:
+        from backgrounds import BACKGROUND_PRESETS, get_recommended_preset
+
+        recommended = get_recommended_preset()
+        st.success(f"**Recommended preset:** `{recommended}`")
+
+        # Group presets by type
+        presets_by_type = {}
+        for name, preset in BACKGROUND_PRESETS.items():
+            bg_type = preset.get("type", "unknown")
+            if bg_type not in presets_by_type:
+                presets_by_type[bg_type] = []
+            presets_by_type[bg_type].append((name, preset))
+
+        for bg_type, presets in presets_by_type.items():
+            with st.expander(f"**{bg_type.replace('_', ' ').title()}** ({len(presets)} presets)", expanded=False):
+                for name, preset in presets:
+                    col1, col2 = st.columns([1, 2])
+                    with col1:
+                        st.code(name)
+                    with col2:
+                        # Show key settings
+                        if "colors" in preset:
+                            colors = preset["colors"]
+                            st.write(f"Colors: {', '.join(colors[:3])}")
+                        elif "color" in preset:
+                            st.write(f"Color: {preset['color']}")
+                        elif "particle_colors" in preset:
+                            st.write(f"Particles: {', '.join(preset['particle_colors'][:3])}")
+                        elif "aurora_colors" in preset:
+                            st.write(f"Aurora: {', '.join(preset['aurora_colors'][:3])}")
+    except ImportError:
+        st.warning("Background system not available")
+
+    st.divider()
+
+    # Text styles
+    st.subheader("📝 Text Styles")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("**Spanish Text**")
+        st.markdown("""
+        - Font: Heavy (bold)
+        - Color: White (#FFFFFF)
+        - Size: 72px
+        - Animation: Pop scale (85% → 108% → 100%)
+        """)
+
+    with col2:
+        st.markdown("**English Text**")
+        st.markdown("""
+        - Font: Heavy (bold)
+        - Color: Cyan (#00E5FF)
+        - Size: 86px (1.2x scale)
+        - Effect: Glow (cyan shadow)
+        - Animation: Pop scale + highlight
+        """)
+
+    st.divider()
+
+    # Animation timing
+    st.subheader("⚡ Animation Timing")
+
+    st.markdown("""
+    | Animation | Duration | Description |
+    |-----------|----------|-------------|
+    | Pop Scale | 0.25s | Word entrance effect |
+    | Word Highlight | 0.15s | Current word emphasis |
+    | Bounce | 0.3s | Subtle vertical movement |
+    | Progress Bar | Full video | Green progress indicator |
+    """)
+
+    st.divider()
+
+    # Video types
+    st.subheader("🎬 Video Types")
+
+    for vtype in VIDEO_TYPES:
+        with st.expander(f"**{vtype.replace('_', ' ').title()}**"):
+            if vtype == "educational":
+                st.markdown("""
+                **Structure:** Hook → Meaning → Examples → Tip → CTA
+
+                **Features:**
+                - Word-by-word karaoke sync
+                - English word highlighting (cyan + glow)
+                - Translation display
+                - Progress bar
+                """)
+            elif vtype == "quiz":
+                st.markdown("""
+                **Structure:** Question → Options A/B/C/D → Timer → Reveal
+
+                **Features:**
+                - Animated option cards
+                - Countdown timer
+                - Correct answer highlight (green)
+                """)
+            elif vtype == "true_false":
+                st.markdown("""
+                **Structure:** Statement → ✓/✗ Options → Timer → Reveal
+
+                **Features:**
+                - Binary choice layout
+                - Timer animation
+                - Result reveal
+                """)
+            elif vtype == "fill_blank":
+                st.markdown("""
+                **Structure:** Sentence with ___ → Options → Reveal
+
+                **Features:**
+                - Blank indicator
+                - Multiple choice options
+                - Fill-in animation
+                """)
+            elif vtype == "pronunciation":
+                st.markdown("""
+                **Structure:** Word → Phonetic → Mistake → Correct
+
+                **Features:**
+                - IPA phonetic display
+                - Common mistake highlight
+                - Audio emphasis
+                """)
+
+
+# ============== SETTINGS PAGE ==============
+elif page == "⚙️ Settings":
+    st.title("⚙️ Settings")
+
+    import yaml
+
+    CONFIG_PATH = ROOT / "config.yaml"
+
+    def load_config():
+        if CONFIG_PATH.exists():
+            with open(CONFIG_PATH, 'r') as f:
+                return yaml.safe_load(f) or {}
+        return {}
+
+    def save_config(config):
+        with open(CONFIG_PATH, 'w') as f:
+            yaml.dump(config, f, default_flow_style=False)
+
+    config = load_config()
+
+    # Video settings
+    st.subheader("🎬 Video Settings")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        # Background preset
+        try:
+            from backgrounds import BACKGROUND_PRESETS, get_recommended_preset
+            preset_options = list(BACKGROUND_PRESETS.keys())
+            current_bg = config.get("video", {}).get("default_background", get_recommended_preset())
+
+            default_background = st.selectbox(
+                "Default Background",
+                options=preset_options,
+                index=preset_options.index(current_bg) if current_bg in preset_options else 0,
+                help="Background preset for new videos"
+            )
+        except ImportError:
+            default_background = st.text_input(
+                "Default Background",
+                value=config.get("video", {}).get("default_background", "aurora_borealis")
+            )
+
+        video_width = st.number_input(
+            "Width",
+            value=config.get("video", {}).get("width", 1080),
+            min_value=480,
+            max_value=2160
+        )
+
+    with col2:
+        video_height = st.number_input(
+            "Height",
+            value=config.get("video", {}).get("height", 1920),
+            min_value=854,
+            max_value=3840
+        )
+
+        video_fps = st.number_input(
+            "FPS",
+            value=config.get("video", {}).get("fps", 30),
+            min_value=24,
+            max_value=60
+        )
+
+    st.divider()
+
+    # Audio settings
+    st.subheader("🔊 Audio Settings")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        voice_id = st.text_input(
+            "Voice ID",
+            value=config.get("audio", {}).get("voice_id", "default"),
+            help="ElevenLabs voice ID"
+        )
+
+    with col2:
+        tts_model = st.selectbox(
+            "TTS Model",
+            options=["eleven_multilingual_v2", "eleven_monolingual_v1", "openai_tts"],
+            index=0
+        )
+
+    st.divider()
+
+    # Content settings
+    st.subheader("📝 Content Settings")
+
+    default_type = st.selectbox(
+        "Default Video Type",
+        options=VIDEO_TYPES,
+        index=VIDEO_TYPES.index(config.get("content", {}).get("default_type", "educational")) if config.get("content", {}).get("default_type", "educational") in VIDEO_TYPES else 0
+    )
+
+    st.divider()
+
+    # Output directories
+    st.subheader("📁 Output Directories")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.text_input(
+            "Videos",
+            value=config.get("output", {}).get("videos", "output/video"),
+            disabled=True
+        )
+    with col2:
+        st.text_input(
+            "Audio",
+            value=config.get("output", {}).get("audio", "output/audio"),
+            disabled=True
+        )
+    with col3:
+        st.text_input(
+            "Frames",
+            value=config.get("output", {}).get("frames", "output/frames"),
+            disabled=True
+        )
+
+    st.divider()
+
+    # Save button
+    if st.button("💾 Save Settings", type="primary", use_container_width=True):
+        new_config = {
+            "video": {
+                "default_background": default_background,
+                "width": video_width,
+                "height": video_height,
+                "fps": video_fps
+            },
+            "audio": {
+                "voice_id": voice_id,
+                "model": tts_model
+            },
+            "content": {
+                "default_type": default_type
+            },
+            "output": {
+                "videos": "output/video",
+                "audio": "output/audio",
+                "frames": "output/frames"
+            }
+        }
+        save_config(new_config)
+        st.success("✅ Settings saved!")
+        st.rerun()
+
+    # Show raw config
+    with st.expander("📄 Raw Config (config.yaml)"):
+        st.code(yaml.dump(config, default_flow_style=False), language="yaml")
+
+
+# ============== LOGS PAGE ==============
+elif page == "📜 Logs":
+    st.title("📜 Generation Logs")
+
+    # Job history as logs
+    st.subheader("📊 Recent Jobs")
+
+    jobs = load_jobs()
+    all_jobs = jobs.get("active", []) + jobs.get("history", [])
+
+    # Stats
+    col1, col2, col3, col4 = st.columns(4)
+
+    completed_jobs = [j for j in jobs.get("history", []) if j.get("status") == "completed"]
+    failed_jobs = [j for j in jobs.get("history", []) if j.get("status") == "failed"]
+
+    with col1:
+        st.metric("Total Jobs", len(all_jobs))
+    with col2:
+        st.metric("Active", len(jobs.get("active", [])))
+    with col3:
+        st.metric("Completed", len(completed_jobs))
+    with col4:
+        st.metric("Failed", len(failed_jobs))
+
+    st.divider()
+
+    # Filter
+    log_filter = st.selectbox(
+        "Filter",
+        ["All", "Active", "Completed", "Failed"]
+    )
+
+    if log_filter == "Active":
+        display_jobs = jobs.get("active", [])
+    elif log_filter == "Completed":
+        display_jobs = completed_jobs
+    elif log_filter == "Failed":
+        display_jobs = failed_jobs
+    else:
+        display_jobs = all_jobs
+
+    # Sort by most recent
+    display_jobs = sorted(display_jobs, key=lambda x: x.get("updated_at", x.get("created_at", "")), reverse=True)
+
+    st.write(f"Showing {len(display_jobs)} jobs")
+    st.divider()
+
+    # Display jobs
+    for job in display_jobs[:50]:  # Limit to 50
+        status = job.get("status", "unknown")
+        if status == "running":
+            icon = "🔄"
+            color = "blue"
+        elif status == "completed":
+            icon = "✅"
+            color = "green"
+        elif status == "failed":
+            icon = "❌"
+            color = "red"
+        else:
+            icon = "⏳"
+            color = "gray"
+
+        with st.expander(f"{icon} {job.get('topic', 'Unknown')} ({job.get('video_type', 'N/A')}) - {job.get('id', 'N/A')}"):
+            col1, col2 = st.columns(2)
+
+            with col1:
+                st.write(f"**Job ID:** `{job.get('id', 'N/A')}`")
+                st.write(f"**Type:** {job.get('video_type', 'N/A')}")
+                st.write(f"**Category:** {job.get('category', 'N/A')}")
+                st.write(f"**Status:** {status}")
+                st.write(f"**Progress:** {job.get('progress', 0)}%")
+
+            with col2:
+                st.write(f"**Created:** {job.get('created_at', 'N/A')}")
+                st.write(f"**Updated:** {job.get('updated_at', 'N/A')}")
+                if job.get("completed_at"):
+                    st.write(f"**Completed:** {job.get('completed_at')}")
+
+            if job.get("current_step"):
+                st.info(f"Last step: {job.get('current_step')}")
+
+            if job.get("error"):
+                st.error(f"Error: {job.get('error')}")
+
+            if job.get("video_path"):
+                st.write(f"**Output:** `{job.get('video_path')}`")
+
+    st.divider()
+
+    # Clear history button
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("🗑️ Clear Failed Jobs", use_container_width=True):
+            jobs["history"] = [j for j in jobs.get("history", []) if j.get("status") != "failed"]
+            save_jobs(jobs)
+            st.success("Failed jobs cleared!")
+            st.rerun()
+
+    with col2:
+        if st.button("🗑️ Clear All History", use_container_width=True):
+            jobs["history"] = []
+            save_jobs(jobs)
+            st.success("History cleared!")
+            st.rerun()
 
 
 # ============== SIDEBAR INFO ==============

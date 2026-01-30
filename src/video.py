@@ -19,15 +19,105 @@ import re
 import sys
 from typing import List, Dict, Tuple, Optional
 
+import yaml
+
 from moviepy import VideoClip, AudioFileClip
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
+
+# Import background system
+try:
+    from backgrounds import BackgroundGenerator, BACKGROUND_PRESETS, get_recommended_preset
+    BACKGROUNDS_AVAILABLE = True
+except ImportError:
+    BACKGROUNDS_AVAILABLE = False
 
 
 # Video settings
 VIDEO_WIDTH = 1080
 VIDEO_HEIGHT = 1920
 FPS = 30
+
+# ============== BACKGROUND CONFIGURATION ==============
+# Global background settings - can be changed per video
+CURRENT_BACKGROUND = {
+    "preset": None,  # None = use legacy gradient, or preset name like "bokeh_soft"
+    "type": None,    # Override type: "solid_vignette", "animated_gradient", "bokeh_particles", etc.
+    "options": {},   # Type-specific options
+    "duration": 30.0 # Video duration for animation cycling
+}
+
+# Background generator instance (lazy initialized)
+_bg_generator = None
+
+# Config file path
+CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
+
+def load_config() -> dict:
+    """Load configuration from config.yaml."""
+    if os.path.exists(CONFIG_PATH):
+        with open(CONFIG_PATH, 'r') as f:
+            return yaml.safe_load(f) or {}
+    return {}
+
+def get_default_background() -> str:
+    """Get a background based on config: random from enabled list, or fixed default."""
+    config = load_config()
+    video_config = config.get("video", {})
+
+    mode = video_config.get("background_mode", "random")
+
+    if mode == "random" and BACKGROUNDS_AVAILABLE:
+        enabled = video_config.get("enabled_backgrounds", [])
+        if enabled:
+            # Filter to only valid presets
+            valid = [bg for bg in enabled if bg in BACKGROUND_PRESETS]
+            if valid:
+                import random as _rand
+                choice = _rand.choice(valid)
+                return choice
+        # Fallback to fixed if no enabled list
+        mode = "fixed"
+
+    if BACKGROUNDS_AVAILABLE:
+        default_bg = video_config.get("default_background")
+        if default_bg and default_bg in BACKGROUND_PRESETS:
+            return default_bg
+        return get_recommended_preset()
+    return None
+
+def get_background_generator():
+    """Get or create the background generator instance."""
+    global _bg_generator
+    if _bg_generator is None and BACKGROUNDS_AVAILABLE:
+        _bg_generator = BackgroundGenerator(VIDEO_WIDTH, VIDEO_HEIGHT)
+    return _bg_generator
+
+def set_background(preset: str = None, bg_type: str = None, options: dict = None, duration: float = 30.0):
+    """
+    Configure the background for video generation.
+
+    Args:
+        preset: Preset name like "bokeh_soft", "purple_vibes", "dark_professional"
+        bg_type: Manual type override: "solid_vignette", "animated_gradient", "bokeh_particles"
+        options: Type-specific options
+        duration: Video duration for animation cycling
+
+    Examples:
+        set_background(preset="bokeh_soft")
+        set_background(bg_type="solid_vignette", options={"color": "#0a0a12"})
+    """
+    CURRENT_BACKGROUND["preset"] = preset
+    CURRENT_BACKGROUND["type"] = bg_type
+    CURRENT_BACKGROUND["options"] = options or {}
+    CURRENT_BACKGROUND["duration"] = duration
+
+def reset_background():
+    """Reset to legacy gradient background."""
+    CURRENT_BACKGROUND["preset"] = None
+    CURRENT_BACKGROUND["type"] = None
+    CURRENT_BACKGROUND["options"] = {}
+    CURRENT_BACKGROUND["duration"] = 30.0
 MARGIN_X = 80
 TEXT_AREA_WIDTH = VIDEO_WIDTH - (MARGIN_X * 2)
 
@@ -40,13 +130,16 @@ GRADIENT_COLORS = [
 
 # Colors - General
 COLOR_WHITE = (255, 255, 255)
-COLOR_YELLOW = (255, 230, 0)
+COLOR_YELLOW = (255, 215, 0)      # Gold yellow for English words
 COLOR_RED = (255, 60, 60)
 COLOR_GREEN = (50, 255, 100)
 COLOR_BLUE = (100, 150, 255)
 COLOR_ORANGE = (255, 165, 0)
 COLOR_CORRECT = (50, 255, 100)
 COLOR_WRONG = (255, 80, 80)
+COLOR_CYAN = (0, 212, 255)        # Cyan for Spanish text
+COLOR_ENGLISH = (255, 215, 0)     # Yellow for English words being taught
+COLOR_SPANISH = (0, 212, 255)     # Cyan for Spanish words
 
 # Quiz-specific colors - BEAUTIFUL PASTEL PALETTE (no harsh black)
 QUIZ_COLORS = {
@@ -100,6 +193,48 @@ CROSSFADE_OVERLAP = 0.15  # Start next word before previous fades out
 BOUNCE = 1.18  # Bounce amount
 MIN_DISPLAY = 0.9
 
+# ============== TIKTOK-VIRAL ANIMATION SYSTEM ==============
+# Professional animation presets for viral-quality videos
+
+# TikTok-style pop animation (85% -> 108% -> 100%) - MORE PRONOUNCED
+TIKTOK_POP_DURATION = 0.18  # Slightly longer for more visible effect
+TIKTOK_POP_START_SCALE = 0.85  # Start smaller for dramatic pop
+TIKTOK_POP_OVERSHOOT = 1.08  # More overshoot for bouncy feel
+TIKTOK_POP_FINAL = 1.0  # Settle at normal
+
+# Word highlight/karaoke system - HIGH CONTRAST
+WORD_HIGHLIGHT_ACTIVE = 1.0  # Current word full brightness
+WORD_HIGHLIGHT_PREVIOUS = 0.50  # Previous words more dimmed for contrast
+WORD_HIGHLIGHT_UPCOMING = 0.0  # Upcoming words hidden
+
+# English word styling - STAND OUT DRAMATICALLY
+ENGLISH_WORD_COLOR = (255, 215, 0)  # Yellow for English words being taught
+SPANISH_WORD_COLOR = (0, 212, 255)  # Cyan for Spanish words
+ENGLISH_WORD_SCALE = 1.20  # 20% larger for more impact
+ENGLISH_GLOW_COLOR = (0, 220, 255, 150)  # Stronger glow
+ENGLISH_GLOW_RADIUS = 14  # Larger glow radius
+
+# Alternative English colors
+ENGLISH_YELLOW = (255, 220, 0)  # Bright Gold #FFDC00
+ENGLISH_GRADIENT_START = (255, 220, 0)  # Gold
+ENGLISH_GRADIENT_END = (255, 150, 0)  # Orange
+
+# Bounce/shake for emphasis - MORE VISIBLE
+BOUNCE_AMPLITUDE = 6  # More pixels of movement
+BOUNCE_FREQUENCY = 10  # Slightly slower for visibility
+BOUNCE_DURATION = 0.30  # Longer bounce duration
+
+# Smooth transition timing
+WORD_FADE_IN = 0.06  # Very fast fade in for snappy appearance
+WORD_FADE_OUT = 0.20  # Slightly longer fade out
+GROUP_TRANSITION = 0.25  # Longer crossfade for smoothness
+
+# Visual hierarchy sizes - LARGER FOR IMPACT
+SIZE_MAIN_SPANISH = 90  # Main Spanish text
+SIZE_ENGLISH_WORD = 145  # Big English word (hero)
+SIZE_TRANSLATION = 55  # Translation text
+SIZE_CONTEXT = 75  # Context/example text
+
 # Staggered animation delays for options
 OPTION_STAGGER = 0.15  # Delay between each option appearing
 SLIDE_DISTANCE = 300  # How far options slide in from
@@ -109,9 +244,19 @@ BAR_HEIGHT = 10
 BAR_Y = VIDEO_HEIGHT - 70
 BAR_MARGIN = 40
 
-# Emphasis words
-EMPHASIS = {'no', 'nunca', 'siempre', 'muy', 'roja', 'correcta',
-            'error', 'recuerda', 'importante', 'cuidado', 'doble'}
+# Emphasis words - words that get bounce animation
+EMPHASIS = {
+    # Negatives & warnings
+    'no', 'nunca', 'cuidado', 'error', 'ojo',
+    # Intensifiers
+    'muy', 'siempre', 'realmente', 'verdaderamente',
+    # Key phrases
+    'recuerda', 'importante', 'significa', 'diferente',
+    # Action words
+    'correcta', 'correcto', 'incorrecto', 'significa',
+    # Common in lessons
+    'pero', 'sino', 'ejemplo', 'realidad',
+}
 
 _fonts = {}
 
@@ -161,7 +306,41 @@ for i in range(20):  # Reduced for performance
 
 
 def gradient(w: int, h: int, t: float) -> np.ndarray:
-    """Create VIBRANT ANIMATED background - OPTIMIZED with numpy."""
+    """
+    Create animated background.
+
+    Uses cached frames for speed if available, otherwise generates on-the-fly.
+    """
+    # Check if custom background is configured
+    if BACKGROUNDS_AVAILABLE and (CURRENT_BACKGROUND["preset"] or CURRENT_BACKGROUND["type"]):
+        bg = get_background_generator()
+        if bg:
+            # Fast path 1: static frame (fastest)
+            static = bg.get_static_frame()
+            if static is not None:
+                return static
+
+            # Fast path 2: cached animation frames
+            if bg.has_cache():
+                return bg.get_cached_frame(t)
+
+            # Slow path: generate on-the-fly
+            if CURRENT_BACKGROUND["preset"]:
+                return bg.render_from_preset(
+                    t,
+                    CURRENT_BACKGROUND["preset"],
+                    duration=CURRENT_BACKGROUND["duration"]
+                )
+            elif CURRENT_BACKGROUND["type"]:
+                return bg.render_frame(
+                    t,
+                    bg_type=CURRENT_BACKGROUND["type"],
+                    options=CURRENT_BACKGROUND["options"],
+                    duration=CURRENT_BACKGROUND["duration"]
+                )
+
+    # ===== LEGACY VIBRANT GRADIENT =====
+    # (kept for backward compatibility)
 
     # ===== BASE GRADIENT WITH COLOR BREATHING =====
     idx = int(t / 5) % len(GRADIENT_COLORS)
@@ -402,6 +581,237 @@ def get_scale(t: float, start: float, duration: float = 0.2) -> float:
         return 1.0
     progress = elapsed / duration
     return ease_out_back(progress)
+
+
+# ============== TIKTOK-VIRAL ANIMATION FUNCTIONS ==============
+
+def tiktok_pop_scale(t: float, start: float, duration: float = TIKTOK_POP_DURATION) -> float:
+    """
+    TikTok-style pop animation: 90% -> 105% -> 100%
+    Creates a snappy, dynamic pop-in effect.
+    """
+    if t < start:
+        return 0.0
+
+    elapsed = t - start
+    if elapsed >= duration:
+        return TIKTOK_POP_FINAL
+
+    progress = elapsed / duration
+
+    # Phase 1: 0-50% of duration - grow from 90% to 105%
+    if progress < 0.5:
+        phase_progress = progress / 0.5
+        eased = ease_out_cubic(phase_progress)
+        return TIKTOK_POP_START_SCALE + (TIKTOK_POP_OVERSHOOT - TIKTOK_POP_START_SCALE) * eased
+
+    # Phase 2: 50-100% of duration - settle from 105% to 100%
+    else:
+        phase_progress = (progress - 0.5) / 0.5
+        eased = ease_out_cubic(phase_progress)
+        return TIKTOK_POP_OVERSHOOT - (TIKTOK_POP_OVERSHOOT - TIKTOK_POP_FINAL) * eased
+
+
+def word_highlight_alpha(t: float, word_start: float, word_end: float,
+                         is_current: bool = False, is_previous: bool = False) -> float:
+    """
+    Get alpha multiplier for karaoke-style word highlighting.
+    Current word: full brightness
+    Previous words: dimmed
+    Upcoming words: hidden until their time
+    """
+    if t < word_start:
+        # Upcoming word - hidden
+        return WORD_HIGHLIGHT_UPCOMING
+
+    if is_current or (word_start <= t <= word_end):
+        # Current word being spoken - full brightness
+        return WORD_HIGHLIGHT_ACTIVE
+
+    if is_previous or t > word_end:
+        # Previous word - dimmed but visible
+        return WORD_HIGHLIGHT_PREVIOUS
+
+    return WORD_HIGHLIGHT_ACTIVE
+
+
+def bounce_offset(t: float, start: float, duration: float = BOUNCE_DURATION) -> Tuple[int, int]:
+    """
+    Calculate bounce/shake offset for emphasis animation.
+    Returns (x_offset, y_offset) in pixels.
+    """
+    if t < start:
+        return (0, 0)
+
+    elapsed = t - start
+    if elapsed >= duration:
+        return (0, 0)
+
+    # Decaying oscillation
+    progress = elapsed / duration
+    decay = 1.0 - progress  # Linear decay
+
+    # Oscillate with decreasing amplitude
+    oscillation = math.sin(elapsed * BOUNCE_FREQUENCY * 2 * math.pi)
+
+    x_offset = int(BOUNCE_AMPLITUDE * oscillation * decay * 0.3)  # Less horizontal
+    y_offset = int(BOUNCE_AMPLITUDE * abs(oscillation) * decay)  # More vertical bounce
+
+    return (x_offset, -y_offset)  # Negative Y = upward bounce
+
+
+def draw_glow(
+    img: Image.Image,
+    text: str,
+    x: int, y: int,
+    f: ImageFont.FreeTypeFont,
+    glow_color: Tuple[int, int, int],
+    glow_radius: int = ENGLISH_GLOW_RADIUS,
+    glow_alpha: int = 100
+):
+    """
+    Draw a glow effect behind text.
+    Creates multiple offset copies with decreasing alpha for blur effect.
+    """
+    # Create a temporary image for the glow
+    bbox = f.getbbox(text)
+    if not bbox:
+        return
+
+    text_w = bbox[2] - bbox[0]
+    text_h = bbox[3] - bbox[1]
+
+    # Draw glow layers (outer to inner)
+    for radius in range(glow_radius, 0, -2):
+        alpha = int(glow_alpha * (1 - radius / glow_radius) * 0.5)
+        if alpha <= 0:
+            continue
+
+        glow_layer = Image.new('RGBA', img.size, (0, 0, 0, 0))
+        glow_draw = ImageDraw.Draw(glow_layer)
+
+        # Draw text at multiple offsets for blur effect
+        for dx in range(-radius, radius + 1, max(1, radius // 2)):
+            for dy in range(-radius, radius + 1, max(1, radius // 2)):
+                if dx * dx + dy * dy <= radius * radius:
+                    glow_draw.text(
+                        (x + dx, y + dy),
+                        text,
+                        font=f,
+                        fill=(*glow_color, alpha)
+                    )
+
+        img.paste(glow_layer, (0, 0), glow_layer)
+
+
+def draw_text_with_glow(
+    draw: ImageDraw.Draw,
+    img: Image.Image,
+    text: str,
+    x: int, y: int,
+    f: ImageFont.FreeTypeFont,
+    color: Tuple[int, int, int],
+    alpha: int = 255,
+    outline: int = OUTLINE_THICK,
+    glow: bool = False,
+    glow_color: Tuple[int, int, int] = ENGLISH_WORD_COLOR,
+    glow_radius: int = ENGLISH_GLOW_RADIUS
+) -> Tuple[int, int]:
+    """
+    Draw text with optional glow effect for English words.
+    Returns (width, height) of text.
+    """
+    if alpha <= 0:
+        return (0, 0)
+
+    bbox = draw.textbbox((0, 0), text, font=f)
+    w = bbox[2] - bbox[0]
+    h = bbox[3] - bbox[1]
+
+    # Draw glow first (behind text)
+    if glow:
+        draw_glow(img, text, x, y, f, glow_color, glow_radius, alpha // 3)
+
+    # Draw outline
+    out_color = (0, 0, 0, alpha)
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1),
+                  (-1, -1), (1, 1), (-1, 1), (1, -1)]
+
+    for dist in [outline, outline - 2, outline - 4]:
+        if dist <= 0:
+            continue
+        for dx, dy in directions:
+            draw.text((x + dx * dist, y + dy * dist), text, font=f, fill=out_color)
+
+    for dist in range(1, min(4, outline), 2):
+        for dx, dy in directions:
+            draw.text((x + dx * dist, y + dy * dist), text, font=f, fill=out_color)
+
+    # Draw main text
+    draw.text((x, y), text, font=f, fill=(*color, alpha))
+
+    return (w, h)
+
+
+def get_word_animation_state(
+    t: float,
+    word_start: float,
+    word_end: float,
+    group_start: float,
+    group_end: float,
+    is_english: bool = False,
+    is_emphasis: bool = False
+) -> Dict:
+    """
+    Calculate complete animation state for a word at time t.
+    Returns dict with scale, alpha, offset, color_mult, etc.
+    """
+    state = {
+        'scale': 1.0,
+        'alpha': 0,
+        'offset_x': 0,
+        'offset_y': 0,
+        'is_active': False,
+        'brightness': 1.0,
+    }
+
+    # Not yet visible
+    if t < group_start:
+        return state
+
+    # Calculate if this word is currently being spoken
+    is_current = word_start <= t <= word_end
+    is_spoken = t > word_end
+
+    # Pop-in animation when word first appears
+    if t >= word_start:
+        state['scale'] = tiktok_pop_scale(t, word_start)
+        state['alpha'] = int(255 * min(1.0, (t - word_start) / WORD_FADE_IN)) if t >= word_start else 0
+
+    # Karaoke highlighting
+    if is_current:
+        state['is_active'] = True
+        state['brightness'] = WORD_HIGHLIGHT_ACTIVE
+        state['alpha'] = 255
+
+        # Add bounce for emphasis words
+        if is_emphasis:
+            bx, by = bounce_offset(t, word_start)
+            state['offset_x'] = bx
+            state['offset_y'] = by
+
+    elif is_spoken:
+        # Previous word - dim it
+        state['brightness'] = WORD_HIGHLIGHT_PREVIOUS
+        state['alpha'] = int(255 * WORD_HIGHLIGHT_PREVIOUS)
+        state['scale'] = 1.0  # No more scale animation
+
+    # Fade out when group ends
+    if t > group_end:
+        fade_progress = min(1.0, (t - group_end) / WORD_FADE_OUT)
+        state['alpha'] = int(state['alpha'] * (1 - ease_out_cubic(fade_progress)))
+
+    return state
 
 
 def draw_sparkles(draw: ImageDraw.Draw, center_x: int, center_y: int, t: float, start_time: float, radius: int = 150):
@@ -1464,8 +1874,201 @@ def create_frame_quiz(
 # EDUCATIONAL VIDEO TYPE (original word-by-word sync)
 # ============================================================
 
+def clean_word_for_display(word: str) -> str:
+    """
+    Clean a word for display - remove stray quotes, fix spacing.
+
+    This fixes bugs like:
+    - "'Pick" -> "Pick"
+    - "up'" -> "up"
+    - "ropa'." -> "ropa."
+    - "clothes'" -> "clothes"
+
+    Preserves:
+    - Internal apostrophes: "don't" -> "don't"
+    - Punctuation at end: "ropa." -> "ropa."
+    """
+    if not word:
+        return word
+
+    # Remove leading quotes
+    while word and word[0] in "'\"`":
+        word = word[1:]
+
+    # Remove trailing quotes (but preserve punctuation after)
+    # Handle cases like "up'," or "ropa'."
+    result = []
+    i = 0
+    while i < len(word):
+        char = word[i]
+        # Check if this is a trailing quote before punctuation or end
+        if char in "'\"`":
+            # Look ahead - is this end of word or followed by punctuation?
+            remaining = word[i+1:]
+            if not remaining or all(c in '.,!?;:' for c in remaining):
+                # Skip this quote, it's a stray trailing quote
+                i += 1
+                continue
+        result.append(char)
+        i += 1
+
+    return ''.join(result)
+
+
+def add_sentence_boundaries(words: List[Dict], full_script: str = None) -> List[Dict]:
+    """
+    Add segment_id and segment_end markers to words using full_script punctuation.
+
+    CRITICAL: Whisper word timestamps have NO punctuation and NO segment info.
+    This function uses the full_script text to determine where sentences end
+    and injects that info into the word list.
+    """
+    if not words:
+        return words
+
+    # If words already have segment_id set (from estimate_words_from_segments), skip
+    if words[0].get('segment_id') is not None:
+        return words
+
+    # Split full_script into sentences to build a word-to-sentence map
+    if full_script:
+        # Split script into sentences on .!? followed by space or end
+        sentences = re.split(r'(?<=[.!?¿¡])\s+', full_script.strip())
+        # Build ordered list of script words with their sentence index
+        script_word_map = []
+        for sent_idx, sentence in enumerate(sentences):
+            sent_words = sentence.split()
+            for wi, sw in enumerate(sent_words):
+                is_last = (wi == len(sent_words) - 1)
+                # Clean for matching (strip punctuation and quotes)
+                cleaned = sw.strip("'\".,!?¿¡:;()[]")
+                script_word_map.append({
+                    'clean': cleaned.lower(),
+                    'sentence_id': sent_idx,
+                    'is_sentence_end': is_last
+                })
+
+        # Match words to script words using fuzzy sequential matching
+        script_idx = 0
+        for word in words:
+            word_clean = word['word'].strip("'\".,!?¿¡:;()[]").lower()
+
+            # Find the best match in script from current position
+            best_match = None
+            for j in range(script_idx, min(script_idx + 5, len(script_word_map))):
+                if script_word_map[j]['clean'] == word_clean:
+                    best_match = j
+                    break
+
+            if best_match is not None:
+                word['segment_id'] = script_word_map[best_match]['sentence_id']
+                word['segment_end'] = script_word_map[best_match]['is_sentence_end']
+                script_idx = best_match + 1
+            else:
+                # No match found - inherit from previous word
+                if script_idx > 0 and script_idx <= len(script_word_map):
+                    prev = script_word_map[min(script_idx - 1, len(script_word_map) - 1)]
+                    word['segment_id'] = prev['sentence_id']
+                    word['segment_end'] = False
+                else:
+                    word['segment_id'] = 0
+                    word['segment_end'] = False
+    else:
+        # No script - assign all to segment 0, use time gaps as boundaries
+        for word in words:
+            word['segment_id'] = 0
+            word['segment_end'] = False
+
+    return words
+
+
+def estimate_words_from_segments(segments: List[Dict], english_phrases: List[str] = None) -> List[Dict]:
+    """
+    Estimate word-level timestamps from segment timestamps.
+    Used when TTS doesn't provide word-level timing.
+
+    Args:
+        segments: List of segments with 'text', 'start', 'end'
+        english_phrases: List of English words/phrases to detect
+
+    Returns:
+        List of word dicts with estimated 'start', 'end', 'word', 'is_english', 'segment_id'
+    """
+    if not segments:
+        return []
+
+    # Build set of English words (cleaned, lowercase)
+    english_set = set()
+    if english_phrases:
+        for phrase in english_phrases:
+            for word in phrase.lower().split():
+                cleaned = word.strip('.,!?¿¡:;\'"')
+                if cleaned:
+                    english_set.add(cleaned)
+
+    words = []
+
+    for seg_idx, seg in enumerate(segments):
+        text = seg.get('text', '')
+        seg_start = seg.get('start', 0)
+        seg_end = seg.get('end', seg_start + 1)
+        seg_duration = seg_end - seg_start
+
+        # Split segment text into words
+        seg_words = text.split()
+        if not seg_words:
+            continue
+
+        # Estimate timing: distribute time proportionally by word length
+        total_chars = sum(len(w) for w in seg_words)
+        if total_chars == 0:
+            total_chars = len(seg_words)
+
+        current_time = seg_start
+
+        for word_idx, raw_word in enumerate(seg_words):
+            # CRITICAL: Clean the word before storing
+            display_word = clean_word_for_display(raw_word)
+
+            # Time proportion based on word length (rough estimation)
+            word_duration = seg_duration * (len(raw_word) / total_chars)
+            word_duration = max(0.1, min(word_duration, 1.5))  # Clamp to reasonable range
+
+            word_end = min(current_time + word_duration, seg_end)
+
+            # Detect if this is an English word using CLEANED word
+            clean_for_lookup = display_word.lower().strip('.,!?¿¡:;')
+            is_english = clean_for_lookup in english_set
+
+            # Skip empty words
+            if not display_word.strip():
+                current_time = word_end
+                continue
+
+            # Track segment boundary - last word in segment gets marker
+            is_segment_end = (word_idx == len(seg_words) - 1)
+
+            words.append({
+                'word': display_word,  # Store CLEANED word
+                'start': current_time,
+                'end': word_end,
+                'is_english': is_english,
+                'segment_id': seg_idx,
+                'segment_end': is_segment_end  # Mark segment boundaries
+            })
+
+            current_time = word_end
+
+    return words
+
+
 def group_words(words: List[Dict]) -> List[Dict]:
-    """Group words into display phrases."""
+    """
+    Group words into display phrases.
+
+    CRITICAL: Never mix words from different segments (sentences).
+    Each segment represents a logical unit (sentence/phrase) from TTS.
+    """
     if not words:
         return []
 
@@ -1476,10 +2079,11 @@ def group_words(words: List[Dict]) -> List[Dict]:
                 'conocías', 'cuéntame'}
 
     gap_th = 0.35
-    max_words = 7
+    max_words = 5  # Reduced from 7 for better readability
 
     groups = []
     current = []
+    current_segment = None
     i = 0
 
     while i < len(words):
@@ -1487,14 +2091,32 @@ def group_words(words: List[Dict]) -> List[Dict]:
         text = w['word']
         lower = text.lower().strip('.,!?¿¡')
         is_en = w.get('is_english', False)
+        word_segment = w.get('segment_id', 0)
+        is_segment_end = w.get('segment_end', False)
+
+        # CRITICAL: Check for segment boundary FIRST
+        # Never mix words from different segments
+        if current and current_segment is not None and word_segment != current_segment:
+            groups.append(current)
+            current = []
+            current_segment = None
 
         if is_en:
             if current:
                 groups.append(current)
                 current = []
+                current_segment = None
             en_group = []
+            en_segment = word_segment
             while i < len(words) and words[i].get('is_english', False):
+                # Also respect segment boundaries within English groups
+                if words[i].get('segment_id', 0) != en_segment:
+                    break
                 en_group.append(words[i])
+                # Check if this is end of segment
+                if words[i].get('segment_end', False):
+                    i += 1
+                    break
                 i += 1
             groups.append(en_group)
             continue
@@ -1506,12 +2128,19 @@ def group_words(words: List[Dict]) -> List[Dict]:
             gap = w['start'] - prev['end']
             prev_text = prev['word']
 
+            # Time gap break
             if gap > gap_th:
                 should_break = True
-            if prev_text.endswith(('.', '!', '?')):
+            # Punctuation break (end of sentence within segment)
+            if prev_text.rstrip().endswith(('.', '!', '?', ':')):
                 should_break = True
-            if text[0].isupper() and lower in starters:
+            # Previous word was segment end - MUST break
+            if prev.get('segment_end', False):
                 should_break = True
+            # Starter word with capital
+            if text and text[0].isupper() and lower in starters:
+                should_break = True
+            # Max words reached (but not on connectors)
             if len(current) >= max_words and lower not in connectors:
                 should_break = True
 
@@ -1520,6 +2149,7 @@ def group_words(words: List[Dict]) -> List[Dict]:
             current = []
 
         current.append(w)
+        current_segment = word_segment
         i += 1
 
     if current:
@@ -1539,7 +2169,17 @@ def group_words(words: List[Dict]) -> List[Dict]:
             end = start + 0.033  # 1 frame flash for zero-duration words
 
         has_en = any(x.get('is_english', False) for x in g)
-        text = ' '.join(x['word'] for x in g)
+
+        # Clean each word and join - ensures no stray quotes in display text
+        cleaned_words = []
+        for w in g:
+            cleaned = clean_word_for_display(w['word'])
+            if cleaned:
+                cleaned_words.append(cleaned)
+                # Also update the word dict for rendering
+                w['word'] = cleaned
+
+        text = ' '.join(cleaned_words)
 
         result.append({
             'words': g,
@@ -1610,120 +2250,387 @@ def create_frame_educational(
     duration: float,
     translations: Dict = None
 ) -> np.ndarray:
-    """Create frame for educational video type."""
+    """
+    Create frame for educational video type - TIKTOK VIRAL QUALITY.
+
+    Features:
+    - Word-by-word karaoke animation
+    - Pop-in effect (90% -> 105% -> 100%)
+    - Current word highlighted, previous words dimmed
+    - English words in cyan with glow effect
+    - Bounce animation for emphasis words
+    - Smooth crossfade transitions
+    """
     bg = gradient(VIDEO_WIDTH, VIDEO_HEIGHT, t)
     frame = Image.fromarray(bg, 'RGB').convert('RGBA')
     draw = ImageDraw.Draw(frame, 'RGBA')
 
     translations = translations or {}
 
-    # PRIORITY 1: Find group currently being spoken (voice says these words NOW)
+    # Find active group and check for fade-out of previous group
     active = None
+    fade_out_group = None
+
     for g in groups:
         if g['start'] <= t <= g['end']:
             active = g
             break
 
-    # PRIORITY 2: Only if nothing actively spoken, show fade-out of previous group
+    # Check for fade-out period (show previous group fading)
     if active is None:
         for g in groups:
-            if g['end'] < t <= g['end'] + FADE_OUT:
-                active = g
+            if g['end'] < t <= g['end'] + GROUP_TRANSITION:
+                fade_out_group = g
                 break
 
+    # Render fade-out group first (behind active)
+    if fade_out_group:
+        _render_group_tiktok(
+            t, fade_out_group, draw, frame, translations,
+            is_fading_out=True
+        )
+
+    # Render active group
     if active:
-        text = active['text']
-        is_en = active['english']
-        start = active['start']
-        end = active['end']
-
-        scale = get_scale(t, start, POP_DURATION)
-        alpha = get_alpha(t, start, FADE_IN)
-
-        # Fade out with smooth easing
-        if t > end:
-            fade_progress = min(1.0, (t - end) / FADE_OUT)
-            # Use smooth sine-based fade for less jarring transitions
-            eased_fade = ease_in_out_sine(fade_progress)
-            alpha = int(255 * (1 - eased_fade))
-
-        if alpha > 0 and scale > 0:
-            if is_en:
-                fsize = int(FONT_SIZE_ENGLISH * min(1.0, scale))
-            else:
-                fsize = int(FONT_SIZE_SPANISH * min(1.0, scale))
-
-            f = font(fsize)
-            lines = line_break(text, f, TEXT_AREA_WIDTH - 40)
-
-            line_h = int(fsize * 1.35)
-            total_h = len(lines) * line_h
-
-            # Translation for English phrases
-            trans = ""
-            if is_en:
-                trans = translations.get(text.lower().strip(), "")
-                if trans:
-                    tf = font(FONT_SIZE_TRANS)
-                    trans_lines = line_break(f"({trans})", tf, TEXT_AREA_WIDTH - 60)
-                    total_h += len(trans_lines) * int(FONT_SIZE_TRANS * 1.3) + 40
-
-            base_y = (VIDEO_HEIGHT - total_h) // 2 - 30
-            cur_y = base_y
-
-            if is_en:
-                # HUGE yellow English text
-                for line in lines:
-                    bbox = draw.textbbox((0, 0), line, font=f)
-                    lw = bbox[2] - bbox[0]
-                    lx = (VIDEO_WIDTH - lw) // 2
-                    draw_text_solid(draw, line, lx, cur_y, f, COLOR_YELLOW, alpha, outline=8)
-                    cur_y += line_h
-            else:
-                # Spanish text - white with emphasis words in yellow
-                for line in lines:
-                    bbox = draw.textbbox((0, 0), line, font=f)
-                    lw = bbox[2] - bbox[0]
-                    lx = (VIDEO_WIDTH - lw) // 2
-
-                    wx = lx
-                    for word in line.split():
-                        clean = word.lower().strip('.,!?¿¡:;')
-
-                        if clean in EMPHASIS:
-                            wf = font(int(fsize * 1.05))
-                            wc = COLOR_YELLOW
-                        else:
-                            wf = f
-                            wc = COLOR_WHITE
-
-                        ww, _ = draw_text_solid(draw, word, wx, cur_y, wf, wc, alpha)
-
-                        sp_bbox = draw.textbbox((0, 0), " ", font=f)
-                        wx += ww + (sp_bbox[2] - sp_bbox[0])
-
-                    cur_y += line_h
-
-            # Translation with line wrapping
-            if trans:
-                cur_y += 20
-                tf = font(FONT_SIZE_TRANS)
-                trans_text = f"({trans})"
-                trans_lines = line_break(trans_text, tf, TEXT_AREA_WIDTH - 60)
-                trans_line_h = int(FONT_SIZE_TRANS * 1.3)
-
-                for tline in trans_lines:
-                    bbox = draw.textbbox((0, 0), tline, font=tf)
-                    tw = bbox[2] - bbox[0]
-                    tx = (VIDEO_WIDTH - tw) // 2
-                    draw_text_solid(draw, tline, tx, cur_y, tf, (220, 220, 240), int(alpha * 0.9), outline=4)
-                    cur_y += trans_line_h
+        _render_group_tiktok(
+            t, active, draw, frame, translations,
+            is_fading_out=False
+        )
 
     # Progress bar
     progress = min(1.0, t / duration)
     draw_progress_bar(draw, progress)
 
     return np.array(frame.convert('RGB'))
+
+
+def _render_group_tiktok(
+    t: float,
+    group: Dict,
+    draw: ImageDraw.Draw,
+    frame: Image.Image,
+    translations: Dict,
+    is_fading_out: bool = False
+):
+    """
+    Render a word group with TikTok-viral animations.
+
+    - Word-by-word karaoke highlighting
+    - Pop animations for each word
+    - Glow effects for English words
+    - Bounce for emphasis words
+    """
+    text = group['text']
+    is_en = group['english']
+    start = group['start']
+    end = group['end']
+    words = group.get('words', [])
+
+    # Calculate base group alpha (for fade out)
+    group_alpha = 255
+    if is_fading_out:
+        fade_progress = min(1.0, (t - end) / GROUP_TRANSITION)
+        eased = ease_in_out_sine(fade_progress)
+        group_alpha = int(255 * (1 - eased))
+
+    if group_alpha <= 0:
+        return
+
+    # Determine font sizes based on content type
+    if is_en:
+        base_size = SIZE_ENGLISH_WORD
+    else:
+        base_size = SIZE_MAIN_SPANISH
+
+    f = font(base_size)
+
+    # Calculate layout
+    lines = line_break(text, f, TEXT_AREA_WIDTH - 60)
+    line_h = int(base_size * 1.4)
+    total_h = len(lines) * line_h
+
+    # Add translation height for English
+    trans = ""
+    if is_en:
+        trans = translations.get(text.lower().strip(), "")
+        if trans:
+            tf = font(SIZE_TRANSLATION)
+            trans_lines = line_break(f"({trans})", tf, TEXT_AREA_WIDTH - 80)
+            total_h += len(trans_lines) * int(SIZE_TRANSLATION * 1.3) + 50
+
+    base_y = (VIDEO_HEIGHT - total_h) // 2 - 40
+    cur_y = base_y
+
+    # === WORD-BY-WORD KARAOKE RENDERING ===
+    if words and not is_en:
+        # Spanish text with word-level timing and animations
+        _render_spanish_karaoke(
+            t, words, start, end, group_alpha,
+            draw, frame, cur_y, base_size, is_fading_out
+        )
+    elif is_en:
+        # English text - big, bold, with glow
+        _render_english_hero(
+            t, text, start, end, group_alpha,
+            draw, frame, cur_y, translations, is_fading_out
+        )
+    else:
+        # Fallback: render whole text without word timing
+        _render_text_simple(
+            t, text, start, end, group_alpha,
+            draw, frame, cur_y, base_size, is_en, is_fading_out
+        )
+
+
+def _render_spanish_karaoke(
+    t: float,
+    words: List[Dict],
+    group_start: float,
+    group_end: float,
+    group_alpha: int,
+    draw: ImageDraw.Draw,
+    frame: Image.Image,
+    base_y: int,
+    base_size: int,
+    is_fading_out: bool
+):
+    """
+    Render Spanish text with word-by-word karaoke highlighting.
+    Each word pops in when spoken, then dims for following words.
+    """
+    f = font(base_size)
+
+    # Build display text from words
+    word_texts = [w['word'] for w in words]
+    full_text = ' '.join(word_texts)
+
+    # Line break the full text
+    lines = line_break(full_text, f, TEXT_AREA_WIDTH - 60)
+    line_h = int(base_size * 1.4)
+
+    # Map words to their positions
+    word_idx = 0
+    cur_y = base_y
+
+    for line in lines:
+        line_words = line.split()
+        if not line_words:
+            cur_y += line_h
+            continue
+
+        # Calculate line width for centering
+        bbox = draw.textbbox((0, 0), line, font=f)
+        line_w = bbox[2] - bbox[0]
+        start_x = (VIDEO_WIDTH - line_w) // 2
+
+        wx = start_x
+
+        for display_word in line_words:
+            if word_idx >= len(words):
+                break
+
+            word_data = words[word_idx]
+            word_start = word_data['start']
+            word_end = word_data['end']
+            is_english_word = word_data.get('is_english', False)
+            clean_word = display_word.lower().strip('.,!?¿¡:;\'\"')
+            is_emphasis = clean_word in EMPHASIS
+
+            # Get animation state for this word
+            state = get_word_animation_state(
+                t, word_start, word_end, group_start, group_end,
+                is_english=is_english_word, is_emphasis=is_emphasis
+            )
+
+            # Apply group fade
+            word_alpha = int(state['alpha'] * group_alpha / 255)
+
+            if word_alpha > 0:
+                # Determine word styling
+                # COLOR SCHEME: English = Yellow, Spanish = Cyan
+                if is_english_word:
+                    # English word being taught - YELLOW with glow
+                    word_color = ENGLISH_WORD_COLOR  # Yellow
+                    word_font_size = int(base_size * ENGLISH_WORD_SCALE)
+                    use_glow = True
+                elif state['is_active']:
+                    # Currently spoken Spanish word - CYAN, full brightness
+                    word_color = SPANISH_WORD_COLOR  # Cyan
+                    word_font_size = base_size
+                    use_glow = False
+                else:
+                    # Previous Spanish word - dimmed cyan
+                    word_color = (0, 170, 210)  # Dimmed cyan
+                    word_font_size = base_size
+                    use_glow = False
+
+                wf = font(word_font_size)
+
+                # Apply scale animation
+                if state['scale'] != 1.0 and state['scale'] > 0:
+                    scaled_size = int(word_font_size * state['scale'])
+                    wf = font(max(10, scaled_size))
+
+                # Calculate bounce offset
+                offset_x = state['offset_x']
+                offset_y = state['offset_y']
+
+                # Draw the word
+                if use_glow and not is_fading_out:
+                    draw_text_with_glow(
+                        draw, frame, display_word,
+                        wx + offset_x, cur_y + offset_y,
+                        wf, word_color, word_alpha,
+                        outline=10, glow=True,
+                        glow_color=ENGLISH_WORD_COLOR
+                    )
+                else:
+                    draw_text_solid(
+                        draw, display_word,
+                        wx + offset_x, cur_y + offset_y,
+                        wf, word_color, word_alpha,
+                        outline=8
+                    )
+
+            # Advance x position - CRITICAL: use base font for consistent spacing
+            # This ensures words line up correctly regardless of individual scaling
+            bbox = draw.textbbox((0, 0), display_word, font=f)
+            word_w = bbox[2] - bbox[0]
+
+            # Add extra space if word is scaled larger (English/emphasis)
+            # This prevents overlap from larger fonts
+            if word_alpha > 0:
+                if is_english_word:
+                    word_w = int(word_w * ENGLISH_WORD_SCALE)
+                elif is_emphasis:
+                    word_w = int(word_w * 1.08)
+
+            space_bbox = draw.textbbox((0, 0), " ", font=f)
+            space_w = space_bbox[2] - space_bbox[0]
+            wx += word_w + space_w
+
+            word_idx += 1
+
+        cur_y += line_h
+
+
+def _render_english_hero(
+    t: float,
+    text: str,
+    start: float,
+    end: float,
+    group_alpha: int,
+    draw: ImageDraw.Draw,
+    frame: Image.Image,
+    base_y: int,
+    translations: Dict,
+    is_fading_out: bool
+):
+    """
+    Render English text as the hero element - big, bold, with glow.
+    This is for English phrases that are the main focus.
+    """
+    # Pop animation for the whole phrase
+    scale = tiktok_pop_scale(t, start)
+    alpha = group_alpha
+
+    if scale <= 0 or alpha <= 0:
+        return
+
+    # Large English text
+    eng_size = int(SIZE_ENGLISH_WORD * scale)
+    ef = font(eng_size)
+
+    # Line break
+    lines = line_break(text, ef, TEXT_AREA_WIDTH - 80)
+    line_h = int(eng_size * 1.3)
+
+    cur_y = base_y
+
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=ef)
+        lw = bbox[2] - bbox[0]
+        lx = (VIDEO_WIDTH - lw) // 2
+
+        # Draw with glow for impact
+        if not is_fading_out:
+            draw_text_with_glow(
+                draw, frame, line,
+                lx, cur_y, ef,
+                ENGLISH_WORD_COLOR, alpha,
+                outline=12, glow=True,
+                glow_color=ENGLISH_WORD_COLOR,
+                glow_radius=12
+            )
+        else:
+            draw_text_solid(draw, line, lx, cur_y, ef, ENGLISH_WORD_COLOR, alpha, outline=10)
+
+        cur_y += line_h
+
+    # Translation below
+    trans = translations.get(text.lower().strip(), "")
+    if trans:
+        cur_y += 30
+        tf = font(SIZE_TRANSLATION)
+        trans_text = f"({trans})"
+        trans_lines = line_break(trans_text, tf, TEXT_AREA_WIDTH - 100)
+        trans_line_h = int(SIZE_TRANSLATION * 1.3)
+
+        for tline in trans_lines:
+            bbox = draw.textbbox((0, 0), tline, font=tf)
+            tw = bbox[2] - bbox[0]
+            tx = (VIDEO_WIDTH - tw) // 2
+            # Softer color for translation
+            draw_text_solid(draw, tline, tx, cur_y, tf, (220, 220, 240), int(alpha * 0.85), outline=4)
+            cur_y += trans_line_h
+
+
+def _render_text_simple(
+    t: float,
+    text: str,
+    start: float,
+    end: float,
+    group_alpha: int,
+    draw: ImageDraw.Draw,
+    frame: Image.Image,
+    base_y: int,
+    base_size: int,
+    is_english: bool,
+    is_fading_out: bool
+):
+    """
+    Simple text rendering fallback when no word timing available.
+    Still uses pop animation and proper styling.
+    """
+    scale = tiktok_pop_scale(t, start)
+    alpha = group_alpha
+
+    if scale <= 0 or alpha <= 0:
+        return
+
+    fsize = int(base_size * scale)
+    f = font(fsize)
+
+    lines = line_break(text, f, TEXT_AREA_WIDTH - 60)
+    line_h = int(fsize * 1.4)
+    cur_y = base_y
+
+    color = ENGLISH_WORD_COLOR if is_english else SPANISH_WORD_COLOR  # Yellow for English, Cyan for Spanish
+
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=f)
+        lw = bbox[2] - bbox[0]
+        lx = (VIDEO_WIDTH - lw) // 2
+
+        if is_english and not is_fading_out:
+            draw_text_with_glow(
+                draw, frame, line, lx, cur_y, f,
+                color, alpha, outline=10, glow=True
+            )
+        else:
+            draw_text_solid(draw, line, lx, cur_y, f, color, alpha, outline=8)
+
+        cur_y += line_h
 
 
 # ============================================================
@@ -2065,48 +2972,77 @@ def create_frame_pronunciation(
     tip = data.get('tip', '')
     translation = data.get('translation', '')
 
-    # Timeline
-    word_phase = duration * 0.25
-    mistake_phase = duration * 0.50
-    phonetic_phase = duration * 0.80
+    # Timeline phases
+    word_phase = duration * 0.25      # Show word
+    mistake_phase = duration * 0.50   # Show incorrect
+    phonetic_phase = duration * 0.80  # Show correct (replace incorrect)
+
+    # ============ LAYOUT ZONES (no overlapping) ============
+    # Zone 1: Title area (word + translation)
+    ZONE_TITLE_Y = 300
+    ZONE_TRANSLATION_Y = 470
+    ZONE_QUESTION_Y = 570
+
+    # Zone 2: Incorrect section (needs room for multi-line text)
+    ZONE_INCORRECT_LABEL_Y = 670
+    ZONE_INCORRECT_TEXT_Y = 740
+
+    # Zone 3: Correct section (appears well below incorrect to avoid overlap)
+    ZONE_CORRECT_LABEL_Y = 1050     # When showing with incorrect - much lower!
+    ZONE_CORRECT_TEXT_Y = 1130      # When showing with incorrect
+    ZONE_CORRECT_FINAL_LABEL_Y = 670   # When incorrect is gone - moves up
+    ZONE_CORRECT_FINAL_TEXT_Y = 770    # When incorrect is gone
+
+    # Zone 4: Tip
+    ZONE_TIP_Y = 950
+
+    # ============ RENDER ============
 
     # Big word (always visible)
     wf = font(FONT_SIZE_BIG_WORD)
     w_alpha = get_alpha(t, 0, 0.3)
-    draw_text_centered(draw, word, 400, wf, COLOR_YELLOW, w_alpha, outline=10)
+    draw_text_centered(draw, word, ZONE_TITLE_Y, wf, COLOR_YELLOW, w_alpha, outline=10)
 
     # Translation under word
     if translation:
         tf = font(48)
-        draw_text_centered(draw, f"({translation})", 580, tf, (200, 200, 220), int(w_alpha * 0.8), outline=4)
+        draw_text_centered(draw, f"({translation})", ZONE_TRANSLATION_Y, tf, (200, 200, 220), int(w_alpha * 0.8), outline=4)
 
-    # "¿Cómo se pronuncia?"
+    # "¿Cómo se pronuncia?" - only before showing mistake
     if t < mistake_phase:
         qf = font(56)
-        draw_text_centered(draw, "Como se pronuncia?", 680, qf, COLOR_WHITE, w_alpha, outline=5)
+        draw_text_centered(draw, "Como se pronuncia?", ZONE_QUESTION_Y, qf, COLOR_WHITE, w_alpha, outline=5)
 
-    # Common mistake
+    # Common mistake section - shows during middle phase
     if word_phase < t < phonetic_phase:
         m_alpha = get_alpha(t, word_phase, 0.3)
-        mf = font(72)
-        draw_text_centered(draw, "Incorrecto:", 750, font(44), COLOR_RED, m_alpha, outline=4)
-        draw_text_centered(draw, common_mistake, 820, mf, COLOR_RED, m_alpha, outline=6)
+        mf = font(64)  # Slightly smaller to prevent overflow
+        draw_text_centered(draw, "Incorrecto:", ZONE_INCORRECT_LABEL_Y, font(40), COLOR_RED, m_alpha, outline=4)
+        draw_text_centered(draw, common_mistake, ZONE_INCORRECT_TEXT_Y, mf, COLOR_RED, m_alpha, outline=6)
 
-    # Correct phonetic
+    # Correct phonetic section
     if t > mistake_phase:
         p_alpha = get_alpha(t, mistake_phase, 0.3)
-        pf = font(80)
+        pf = font(72)
 
-        y_offset = 750 if t > phonetic_phase else 930
+        # Position depends on whether incorrect is still showing
+        if t < phonetic_phase:
+            # Both showing - correct goes below incorrect
+            label_y = ZONE_CORRECT_LABEL_Y
+            text_y = ZONE_CORRECT_TEXT_Y
+        else:
+            # Only correct showing - move up to main position
+            label_y = ZONE_CORRECT_FINAL_LABEL_Y
+            text_y = ZONE_CORRECT_FINAL_TEXT_Y
 
-        draw_text_centered(draw, "Correcto:", y_offset, font(44), COLOR_GREEN, p_alpha, outline=4)
-        draw_text_centered(draw, phonetic, y_offset + 70, pf, COLOR_GREEN, p_alpha, outline=6)
+        draw_text_centered(draw, "Correcto:", label_y, font(40), COLOR_GREEN, p_alpha, outline=4)
+        draw_text_centered(draw, phonetic, text_y, pf, COLOR_GREEN, p_alpha, outline=6)
 
-    # Tip
+    # Tip - only after phonetic phase
     if t > phonetic_phase and tip:
         tip_alpha = get_alpha(t, phonetic_phase, 0.3)
-        tipf = font(48)
-        draw_text_centered(draw, tip, 1080, tipf, COLOR_WHITE, tip_alpha, outline=4, max_width=TEXT_AREA_WIDTH - 100)
+        tipf = font(44)
+        draw_text_centered(draw, tip, ZONE_TIP_Y, tipf, COLOR_WHITE, tip_alpha, outline=4, max_width=TEXT_AREA_WIDTH - 100)
 
     # Progress bar
     progress = min(1.0, t / duration)
@@ -2130,9 +3066,24 @@ def generate_video(
     data_path: str,
     output_path: str,
     video_type: str = None,
-    fps: int = FPS
+    fps: int = FPS,
+    background: str = None,
+    background_options: dict = None,
+    fast_mode: bool = False
 ) -> str:
-    """Generate video based on type."""
+    """
+    Generate video based on type.
+
+    Args:
+        audio_path: Path to audio file
+        data_path: Path to JSON data file
+        output_path: Output video path
+        video_type: Video type (educational, quiz, etc.)
+        fps: Frames per second
+        background: Background preset name or type (e.g., "bokeh_soft", "purple_vibes")
+        background_options: Custom background options
+        fast_mode: Use static background and optimized settings for speed
+    """
 
     print(f"Loading audio: {audio_path}")
     audio = AudioFileClip(audio_path)
@@ -2140,6 +3091,38 @@ def generate_video(
 
     print(f"Loading data: {data_path}")
     data = load_data(data_path)
+
+    # Configure background with pre-rendering for speed
+    if background:
+        if BACKGROUNDS_AVAILABLE and background in BACKGROUND_PRESETS:
+            set_background(preset=background, duration=duration)
+            print(f"Background: {background} (preset)")
+
+            bg = get_background_generator()
+            if bg:
+                import time as _time
+                _bg_start = _time.time()
+
+                if fast_mode:
+                    # Fast mode: render static frame once
+                    print("Fast mode: rendering static background...")
+                    bg.render_static_once(background)
+                    print(f"Background rendered in {_time.time() - _bg_start:.1f}s")
+                else:
+                    # Normal mode: pre-render short loop
+                    print("Pre-rendering background loop...")
+                    loop_duration = min(5.0, duration)  # 5 second loop
+                    bg.pre_render_loop(background, loop_duration=loop_duration, show_progress=False)
+                    print(f"Background pre-rendered in {_time.time() - _bg_start:.1f}s")
+
+        elif BACKGROUNDS_AVAILABLE:
+            set_background(bg_type=background, options=background_options or {}, duration=duration)
+            print(f"Background: {background} (custom)")
+        else:
+            print(f"Warning: Background system not available, using legacy gradient")
+    else:
+        reset_background()
+        print("Background: legacy gradient")
 
     # Determine video type
     if video_type is None:
@@ -2151,13 +3134,31 @@ def generate_video(
     # Create appropriate frame generator
     if video_type == 'educational':
         words = data.get('words', [])
+
+        # If no word timestamps, estimate from segments
         if not words:
-            print("Error: No word timestamps found for educational video!")
-            return None
+            segments = data.get('segments', [])
+            if segments:
+                print("No word timestamps found, estimating from segments...")
+                english_phrases = data.get('english_phrases', [])
+                words = estimate_words_from_segments(segments, english_phrases)
+                print(f"Estimated {len(words)} word timestamps from {len(segments)} segments")
+            else:
+                print("Error: No word timestamps or segments found for educational video!")
+                return None
+
+        # CRITICAL: Add sentence boundaries to words before grouping
+        full_script = data.get('full_script', '')
+        words = add_sentence_boundaries(words, full_script)
 
         groups = group_words(words)
         translations = data.get('translations', {})
         print(f"Phrase groups: {len(groups)}")
+
+        # Debug: show groups with sentence info
+        for i, g in enumerate(groups):
+            seg_ids = set(w.get('segment_id', '?') for w in g.get('words', []))
+            print(f"  {i+1}. [{g['start']:.2f}s-{g['end']:.2f}s] seg={seg_ids} \"{g['text']}\"")
 
         def frame_gen(t):
             return create_frame_educational(t, groups, duration, translations)
@@ -2220,15 +3221,43 @@ def generate_video(
         os.makedirs(out_dir, exist_ok=True)
 
     print(f"Writing video: {output_path}")
-    video.write_videofile(
-        output_path,
-        fps=fps,
-        codec='libx264',
-        audio_codec='aac',
-        preset='medium',
-        threads=4,
-        logger='bar'
-    )
+
+    # Use hardware encoding on Mac for speed, with fallback to software
+    import platform
+    if platform.system() == 'Darwin':
+        # Mac: use VideoToolbox hardware encoder
+        try:
+            video.write_videofile(
+                output_path,
+                fps=fps,
+                codec='h264_videotoolbox',
+                audio_codec='aac',
+                threads=4,
+                logger='bar',
+                ffmpeg_params=['-q:v', '65']  # Quality (1-100, higher is better)
+            )
+        except Exception as e:
+            print(f"Hardware encoding failed, falling back to software: {e}")
+            video.write_videofile(
+                output_path,
+                fps=fps,
+                codec='libx264',
+                audio_codec='aac',
+                preset='ultrafast',
+                threads=4,
+                logger='bar'
+            )
+    else:
+        # Other platforms: fast software encoding
+        video.write_videofile(
+            output_path,
+            fps=fps,
+            codec='libx264',
+            audio_codec='aac',
+            preset='ultrafast',
+            threads=4,
+            logger='bar'
+        )
 
     print(f"\nVideo created: {output_path}")
     return output_path
@@ -2236,14 +3265,36 @@ def generate_video(
 
 def main():
     parser = argparse.ArgumentParser(description="Generate TikTok-style video (multi-type)")
-    parser.add_argument("-a", "--audio", required=True, help="MP3 audio file")
+    parser.add_argument("-a", "--audio", help="MP3 audio file")
     parser.add_argument("-d", "--data", help="JSON data file (defaults to audio path with .json)")
     parser.add_argument("-o", "--output", default="output/video/output.mp4", help="Output MP4")
     parser.add_argument("-t", "--type", choices=['educational', 'quiz', 'true_false', 'fill_blank', 'pronunciation'],
                         help="Video type (auto-detected from data if not specified)")
     parser.add_argument("--fps", type=int, default=FPS, help="FPS")
+    parser.add_argument("-b", "--background", default=None,
+                        help="Background preset (bokeh_soft, purple_vibes, dark_professional, etc.) or type")
+    parser.add_argument("--fast", action="store_true",
+                        help="Fast mode: use static background and optimized settings")
+    parser.add_argument("--list-backgrounds", action="store_true",
+                        help="List available background presets")
 
     args = parser.parse_args()
+
+    # List backgrounds if requested
+    if args.list_backgrounds:
+        if BACKGROUNDS_AVAILABLE:
+            print("Available background presets:")
+            for name, preset in BACKGROUND_PRESETS.items():
+                print(f"  {name}: {preset['type']}")
+            print(f"\nRecommended: {get_recommended_preset()}")
+        else:
+            print("Background system not available")
+        sys.exit(0)
+
+    # Audio is required for video generation
+    if not args.audio:
+        print("Error: Audio file (-a/--audio) is required", file=sys.stderr)
+        sys.exit(1)
 
     if not args.data:
         args.data = args.audio.rsplit('.', 1)[0] + '.json'
@@ -2256,7 +3307,17 @@ def main():
         print(f"Error: Data file not found: {args.data}", file=sys.stderr)
         sys.exit(1)
 
-    generate_video(args.audio, args.data, args.output, args.type, args.fps)
+    # Use config default if no background specified
+    background = args.background
+
+    # Fast mode: use static dark background
+    if args.fast:
+        background = "dark_professional"
+        print("Fast mode: using static background")
+    elif background is None:
+        background = get_default_background()
+
+    generate_video(args.audio, args.data, args.output, args.type, args.fps, background, fast_mode=args.fast)
 
 
 if __name__ == "__main__":
