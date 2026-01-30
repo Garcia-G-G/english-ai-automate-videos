@@ -1,0 +1,562 @@
+[
+  {
+    "id": "sl001",
+    "topic": "lowkey",
+    "spanish": "discretamente, un poco",
+    "meaning": "Secretly, somewhat, a little bit",
+    "example": "I lowkey love that song",
+    "category": "internet_slang",
+    "difficulty": "intermediate",
+    "tags": ["gen_z", "social_media"]
+  },
+  {
+    "id": "sl002",
+    "topic": "highkey",
+    "spanish": "abiertamente, definitivamente",
+    "meaning": "Openly, definitely, without hiding it",
+    "example": "I'm highkey obsessed with that show",
+    "category": "internet_slang",
+    "difficulty": "intermediate",
+    "tags": ["gen_z", "social_media"]
+  },
+  {
+    "id": "sl003",
+    "topic": "no cap",
+    "spanish": "sin mentir, en serio",
+    "meaning": "No lie, for real, honestly",
+    "example": "No cap, that was the best pizza ever",
+    "category": "internet_slang",
+    "difficulty": "intermediate",
+    "tags": ["gen_z", "african_american_vernacular"]
+  },
+  {
+    "id": "sl004",
+    "topic": "slay",
+    "spanish": "arrasador, excelente",
+    "meaning": "To do something really well, to be awesome or impressive",
+    "example": "You totally slayed that presentation",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "positive"]
+  },
+  {
+    "id": "sl005",
+    "topic": "vibe",
+    "spanish": "ambiente, sensación, onda",
+    "meaning": "A feeling, atmosphere, or energy someone or something gives off",
+    "example": "This coffee shop has great vibes",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "common"]
+  },
+  {
+    "id": "sl006",
+    "topic": "ghosting",
+    "spanish": "desaparecer, dejar de responder",
+    "meaning": "To suddenly stop responding to someone's messages and cut off all communication",
+    "example": "He ghosted her after three dates",
+    "category": "internet_slang",
+    "difficulty": "intermediate",
+    "tags": ["dating", "social_media", "negative"]
+  },
+  {
+    "id": "sl007",
+    "topic": "simp",
+    "spanish": "tipo que hace cualquier cosa por alguien",
+    "meaning": "Someone who does too much for a person they like, being overly submissive",
+    "example": "Stop being a simp and set some boundaries",
+    "category": "internet_slang",
+    "difficulty": "intermediate",
+    "tags": ["gen_z", "dating"]
+  },
+  {
+    "id": "sl008",
+    "topic": "flex",
+    "spanish": "presumir, alardear",
+    "meaning": "To show off or boast about something",
+    "example": "He's flexing his new car on Instagram",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "social_media"]
+  },
+  {
+    "id": "sl009",
+    "topic": "salty",
+    "spanish": "resentido, amargado",
+    "meaning": "Bitter, upset, or angry about something",
+    "example": "Don't be salty just because you lost the game",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "emotional"]
+  },
+  {
+    "id": "sl010",
+    "topic": "shook",
+    "spanish": "sorprendido, conmocionado",
+    "meaning": "Shocked, surprised, or very emotionally affected by something",
+    "example": "I'm shook by that plot twist in the movie",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "emotional"]
+  },
+  {
+    "id": "sl011",
+    "topic": "tea",
+    "spanish": "chisme, cotilleo",
+    "meaning": "Gossip or interesting information about someone",
+    "example": "Tell me the tea! What happened between them?",
+    "category": "internet_slang",
+    "difficulty": "intermediate",
+    "tags": ["gen_z", "social_media"]
+  },
+  {
+    "id": "sl012",
+    "topic": "mood",
+    "spanish": "mismo sentimiento, totalmente de acuerdo",
+    "meaning": "Used to agree with someone or express that you relate to something",
+    "example": "I don't want to work today. Mood.",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "social_media"]
+  },
+  {
+    "id": "sl013",
+    "topic": "sus",
+    "spanish": "sospechoso, raro",
+    "meaning": "Suspicious or questionable, something seems off",
+    "example": "That story sounds sus to me",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "gaming"]
+  },
+  {
+    "id": "sl014",
+    "topic": "bet",
+    "spanish": "está bien, vale, de acuerdo",
+    "meaning": "Okay, agreed, sounds good, I'll do it",
+    "example": "You wanna grab lunch later? Bet, let's go",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "agreement"]
+  },
+  {
+    "id": "sl015",
+    "topic": "fire",
+    "spanish": "excelente, increíble, genial",
+    "meaning": "Really good, excellent, impressive, amazing",
+    "example": "That new album is fire!",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "positive"]
+  },
+  {
+    "id": "sl016",
+    "topic": "lit",
+    "spanish": "emocionante, brillante, excelente",
+    "meaning": "Exciting, excellent, amazing, or a great time",
+    "example": "That party was lit!",
+    "category": "internet_slang",
+    "difficulty": "beginner",
+    "tags": ["gen_z", "positive"]
+  },
+  {
+    "id": "sl017",
+    "topic": "gonna",
+    "spanish": "voy a",
+    "meaning": "Going to (future tense), informal contraction",
+    "example": "I'm gonna go to the store later",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "contractions"]
+  },
+  {
+    "id": "sl018",
+    "topic": "wanna",
+    "spanish": "quiero, quieres",
+    "meaning": "Want to, informal contraction",
+    "example": "Do you wanna go see a movie?",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "contractions"]
+  },
+  {
+    "id": "sl019",
+    "topic": "gotta",
+    "spanish": "tengo que, tienes que",
+    "meaning": "Have to, must, got to (informal)",
+    "example": "I gotta finish this homework tonight",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "contractions"]
+  },
+  {
+    "id": "sl020",
+    "topic": "kinda",
+    "spanish": "más o menos, como",
+    "meaning": "Kind of, somewhat, sort of",
+    "example": "That movie was kinda boring",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "contractions"]
+  },
+  {
+    "id": "sl021",
+    "topic": "sorta",
+    "spanish": "más o menos, como",
+    "meaning": "Sort of, kind of, somewhat",
+    "example": "I'm sorta tired today",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "contractions"]
+  },
+  {
+    "id": "sl022",
+    "topic": "lemme",
+    "spanish": "déjame",
+    "meaning": "Let me, informal contraction",
+    "example": "Lemme check my schedule real quick",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "contractions"]
+  },
+  {
+    "id": "sl023",
+    "topic": "gimme",
+    "spanish": "dame",
+    "meaning": "Give me, informal contraction",
+    "example": "Gimme a minute to get ready",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "contractions"]
+  },
+  {
+    "id": "sl024",
+    "topic": "y'all",
+    "spanish": "ustedes, vosotros",
+    "meaning": "You all, plural form of 'you' (especially Southern US)",
+    "example": "Y'all should come visit us sometime",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "regional", "southern_us"]
+  },
+  {
+    "id": "sl025",
+    "topic": "ain't",
+    "spanish": "no soy, no estoy, no tiene",
+    "meaning": "Am not, is not, are not, have not (very informal, non-standard)",
+    "example": "I ain't got time for that",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "non_standard"]
+  },
+  {
+    "id": "sl026",
+    "topic": "dunno",
+    "spanish": "no sé",
+    "meaning": "Don't know, informal contraction",
+    "example": "What time is the movie? Dunno, let me check",
+    "category": "everyday_informal",
+    "difficulty": "beginner",
+    "tags": ["spoken_english", "contractions"]
+  },
+  {
+    "id": "sl027",
+    "topic": "gotcha",
+    "spanish": "entendido, de acuerdo",
+    "meaning": "Got you, I understand, agreed",
+    "example": "I'll pick you up at 5pm. Gotcha!",
+    "category": "common_slang",
+    "difficulty": "beginner",
+    "tags": ["agreement", "common"]
+  },
+  {
+    "id": "sl028",
+    "topic": "cool",
+    "spanish": "genial, bien, vale",
+    "meaning": "Good, great, excellent, acceptable",
+    "example": "That sounds cool to me",
+    "category": "common_slang",
+    "difficulty": "beginner",
+    "tags": ["positive", "common"]
+  },
+  {
+    "id": "sl029",
+    "topic": "awesome",
+    "spanish": "impresionante, excelente",
+    "meaning": "Excellent, fantastic, amazing",
+    "example": "This pizza is awesome!",
+    "category": "common_slang",
+    "difficulty": "beginner",
+    "tags": ["positive", "common"]
+  },
+  {
+    "id": "sl030",
+    "topic": "bummer",
+    "spanish": "pena, lástima, mal asunto",
+    "meaning": "An unfortunate situation or disappointing event",
+    "example": "You can't come? Aw, that's a bummer",
+    "category": "common_slang",
+    "difficulty": "intermediate",
+    "tags": ["negative", "disappointment"]
+  },
+  {
+    "id": "sl031",
+    "topic": "chill",
+    "spanish": "relajarse, calmarse",
+    "meaning": "To relax, calm down, or hang out casually",
+    "example": "Let's just chill at home tonight",
+    "category": "common_slang",
+    "difficulty": "beginner",
+    "tags": ["casual", "common"]
+  },
+  {
+    "id": "sl032",
+    "topic": "hang out",
+    "spanish": "pasar tiempo, juntarse",
+    "meaning": "To spend time with someone casually, to socialize",
+    "example": "Wanna hang out this weekend?",
+    "category": "common_slang",
+    "difficulty": "beginner",
+    "tags": ["social", "common"]
+  },
+  {
+    "id": "sl033",
+    "topic": "freak out",
+    "spanish": "asustarse, enojarse, alterarse",
+    "meaning": "To become very worried, upset, or angry",
+    "example": "Don't freak out, everything is going to be fine",
+    "category": "common_slang",
+    "difficulty": "intermediate",
+    "tags": ["emotional", "common"]
+  },
+  {
+    "id": "sl034",
+    "topic": "rip off",
+    "spanish": "estafa, robo, engaño",
+    "meaning": "To cheat or overcharge someone; an act of deception or theft",
+    "example": "This restaurant is a total rip off",
+    "category": "common_slang",
+    "difficulty": "intermediate",
+    "tags": ["negative", "deception"]
+  },
+  {
+    "id": "sl035",
+    "topic": "screw up",
+    "spanish": "cometer un error, meter la pata",
+    "meaning": "To make a mistake or do something wrong",
+    "example": "I screwed up on that test",
+    "category": "common_slang",
+    "difficulty": "intermediate",
+    "tags": ["negative", "mistakes"]
+  },
+  {
+    "id": "sl036",
+    "topic": "nailed it",
+    "spanish": "lo conseguiste, lo hiciste bien",
+    "meaning": "Did something perfectly or very well",
+    "example": "You nailed it with that presentation!",
+    "category": "common_slang",
+    "difficulty": "beginner",
+    "tags": ["positive", "accomplishment"]
+  },
+  {
+    "id": "sl037",
+    "topic": "mate",
+    "spanish": "amigo, colega, compañero",
+    "meaning": "Friend, buddy, used in British and Australian English",
+    "example": "Cheers, mate! See you later",
+    "category": "british_slang",
+    "difficulty": "beginner",
+    "tags": ["british", "friendship"]
+  },
+  {
+    "id": "sl038",
+    "topic": "cheers",
+    "spanish": "salud, gracias, adiós",
+    "meaning": "Thank you, goodbye, or a toast (British/Australian)",
+    "example": "Cheers for your help!",
+    "category": "british_slang",
+    "difficulty": "beginner",
+    "tags": ["british", "thanks"]
+  },
+  {
+    "id": "sl039",
+    "topic": "brilliant",
+    "spanish": "brillante, excelente, genial",
+    "meaning": "Excellent, wonderful, fantastic (British)",
+    "example": "That's a brilliant idea!",
+    "category": "british_slang",
+    "difficulty": "beginner",
+    "tags": ["british", "positive"]
+  },
+  {
+    "id": "sl040",
+    "topic": "rubbish",
+    "spanish": "basura, malo, terrible",
+    "meaning": "Terrible, awful, bad quality (British)",
+    "example": "The weather has been rubbish all week",
+    "category": "british_slang",
+    "difficulty": "intermediate",
+    "tags": ["british", "negative"]
+  },
+  {
+    "id": "sl041",
+    "topic": "knackered",
+    "spanish": "agotado, cansado",
+    "meaning": "Very tired, exhausted (British)",
+    "example": "I'm absolutely knackered after that workout",
+    "category": "british_slang",
+    "difficulty": "intermediate",
+    "tags": ["british", "tired"]
+  },
+  {
+    "id": "sl042",
+    "topic": "dodgy",
+    "spanish": "sospechoso, dudoso, de mala calidad",
+    "meaning": "Suspicious, questionable, or of poor quality (British)",
+    "example": "That deal sounds a bit dodgy to me",
+    "category": "british_slang",
+    "difficulty": "intermediate",
+    "tags": ["british", "suspicious"]
+  },
+  {
+    "id": "sl043",
+    "topic": "cheeky",
+    "spanish": "descarado, atrevido, burlón",
+    "meaning": "Playfully rude or disrespectful in a humorous way (British)",
+    "example": "Don't be cheeky with me!",
+    "category": "british_slang",
+    "difficulty": "intermediate",
+    "tags": ["british", "playful"]
+  },
+  {
+    "id": "sl044",
+    "topic": "gutted",
+    "spanish": "destrozado, devastado, decepcionado",
+    "meaning": "Very disappointed or upset (British)",
+    "example": "I'm gutted that the match was cancelled",
+    "category": "british_slang",
+    "difficulty": "intermediate",
+    "tags": ["british", "disappointed"]
+  },
+  {
+    "id": "sl045",
+    "topic": "sorted",
+    "spanish": "arreglado, solucionado, listo",
+    "meaning": "Arranged, solved, taken care of (British)",
+    "example": "Don't worry, I've got it all sorted",
+    "category": "british_slang",
+    "difficulty": "intermediate",
+    "tags": ["british", "solutions"]
+  },
+  {
+    "id": "sl046",
+    "topic": "fancy",
+    "spanish": "apetecer, querer, desear",
+    "meaning": "To want to do something or feel like doing something (British)",
+    "example": "Fancy a drink after work?",
+    "category": "british_slang",
+    "difficulty": "intermediate",
+    "tags": ["british", "desires"]
+  },
+  {
+    "id": "sl047",
+    "topic": "ASAP",
+    "spanish": "lo antes posible",
+    "meaning": "As soon as possible, abbreviation used in workplace communication",
+    "example": "I need this report ASAP",
+    "category": "workplace_informal",
+    "difficulty": "beginner",
+    "tags": ["workplace", "abbreviations"]
+  },
+  {
+    "id": "sl048",
+    "topic": "FYI",
+    "spanish": "para tu información",
+    "meaning": "For your information, used to share information in professional settings",
+    "example": "FYI, the meeting has been moved to 3pm",
+    "category": "workplace_informal",
+    "difficulty": "beginner",
+    "tags": ["workplace", "abbreviations"]
+  },
+  {
+    "id": "sl049",
+    "topic": "heads up",
+    "spanish": "aviso previo, te aviso",
+    "meaning": "A warning or advance notice about something",
+    "example": "Heads up - there's going to be traffic on the highway",
+    "category": "workplace_informal",
+    "difficulty": "beginner",
+    "tags": ["workplace", "warning"]
+  },
+  {
+    "id": "sl050",
+    "topic": "touch base",
+    "spanish": "ponerse en contacto, comunicarse",
+    "meaning": "To check in or communicate with someone briefly",
+    "example": "Let me touch base with you tomorrow",
+    "category": "workplace_informal",
+    "difficulty": "intermediate",
+    "tags": ["workplace", "communication"]
+  },
+  {
+    "id": "sl051",
+    "topic": "circle back",
+    "spanish": "volver al tema, retomar",
+    "meaning": "To return to a topic or issue at a later time",
+    "example": "Let's circle back on this issue next week",
+    "category": "workplace_informal",
+    "difficulty": "intermediate",
+    "tags": ["workplace", "communication"]
+  },
+  {
+    "id": "sl052",
+    "topic": "LOL",
+    "spanish": "jajaja, me rio mucho",
+    "meaning": "Laugh out loud, used to indicate something is funny",
+    "example": "That meme is hilarious LOL",
+    "category": "texting_abbreviations",
+    "difficulty": "beginner",
+    "tags": ["texting", "internet", "laughter"]
+  },
+  {
+    "id": "sl053",
+    "topic": "OMG",
+    "spanish": "¡Dios mío!, ¡ay Dios!",
+    "meaning": "Oh my God, used to express surprise or shock",
+    "example": "OMG, you won't believe what just happened!",
+    "category": "texting_abbreviations",
+    "difficulty": "beginner",
+    "tags": ["texting", "internet", "surprise"]
+  },
+  {
+    "id": "sl054",
+    "topic": "BRB",
+    "spanish": "ahora vuelvo, un momento",
+    "meaning": "Be right back, indicates someone will return shortly",
+    "example": "I need to grab some food, BRB",
+    "category": "texting_abbreviations",
+    "difficulty": "beginner",
+    "tags": ["texting", "internet"]
+  },
+  {
+    "id": "sl055",
+    "topic": "IMO",
+    "spanish": "en mi opinión",
+    "meaning": "In my opinion, used to preface a personal viewpoint",
+    "example": "IMO, that's not the best choice",
+    "category": "texting_abbreviations",
+    "difficulty": "beginner",
+    "tags": ["texting", "internet", "opinions"]
+  },
+  {
+    "id": "sl056",
+    "topic": "TBH",
+    "spanish": "para ser honesto, para decirte la verdad",
+    "meaning": "To be honest, used when stating something truthfully or bluntly",
+    "example": "TBH, I didn't really enjoy that movie",
+    "category": "texting_abbreviations",
+    "difficulty": "beginner",
+    "tags": ["texting", "internet", "honesty"]
+  }
+]

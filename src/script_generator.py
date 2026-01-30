@@ -46,20 +46,24 @@ def list_categories() -> list:
     return [f.stem for f in TOPICS_DIR.glob("*.json")]
 
 
+def get_topic_name(topic: dict) -> str:
+    """Extract display name from any topic format."""
+    return (topic.get("english") or topic.get("topic") or topic.get("wrong")
+            or topic.get("word") or topic.get("word_a") or topic.get("id") or "unknown")
+
+
 def find_topic(category: str, topic_name: str) -> dict:
     """Find a specific topic by name in a category."""
     topics = load_topics(category)
     topic_name_lower = topic_name.lower()
 
+    # Search all common name fields
+    search_fields = ["english", "topic", "wrong", "id", "word", "word_a",
+                     "phrasal_verb", "english_word"]
     for t in topics:
-        if t.get("english", "").lower() == topic_name_lower:
-            return t
-        if t.get("topic", "").lower() == topic_name_lower:
-            return t
-        if t.get("wrong", "").lower() == topic_name_lower:
-            return t
-        if t.get("id", "").lower() == topic_name_lower:
-            return t
+        for field in search_fields:
+            if t.get(field, "").lower() == topic_name_lower:
+                return t
 
     raise ValueError(f"Topic '{topic_name}' not found in category '{category}'")
 
@@ -73,22 +77,126 @@ def get_random_topic() -> tuple:
     return category, topic
 
 
-def build_prompt_educational(category: str, topic: dict) -> str:
-    """Build educational video prompt."""
+def _topic_context(category: str, topic: dict) -> str:
+    """Build context string from any topic format for GPT prompts."""
     if category == "false_friends":
-        return f"""Genera un script de 30-45 segundos para un video de TikTok/Reels enseñando inglés a hispanohablantes.
+        return (f"False Friend - \"{topic['english']}\"\n"
+                f"- Los hispanohablantes piensan que significa: \"{topic['spanish_trap']}\"\n"
+                f"- En realidad significa: \"{topic['real_meaning']}\"\n"
+                f"- La palabra correcta en inglés para \"{topic['spanish_trap']}\" es: \"{topic.get('correct_english', '')}\"")
+    elif category == "phrasal_verbs":
+        examples = ", ".join(topic.get("examples", []))
+        return (f"Phrasal Verb - \"{topic['topic']}\"\n"
+                f"- Significado en español: \"{topic['spanish']}\"\n"
+                f"- Ejemplos de uso: {examples}")
+    elif category == "common_mistakes":
+        return (f"Error Común\n"
+                f"- Error frecuente: \"{topic['wrong']}\"\n"
+                f"- Forma correcta: \"{topic['correct']}\"\n"
+                f"- Explicación: \"{topic['explanation']}\"")
+    elif category == "pronunciation":
+        return (f"Pronunciación - \"{topic.get('word', '')}\"\n"
+                f"- Fonética: \"{topic.get('phonetic', '')}\"\n"
+                f"- Error común: \"{topic.get('common_mistake', '')}\"\n"
+                f"- Tip: \"{topic.get('tip', '')}\"")
+    elif category == "grammar":
+        return (f"Gramática - \"{topic['topic']}\"\n"
+                f"- Error: \"{topic.get('wrong', '')}\"\n"
+                f"- Correcto: \"{topic.get('correct', '')}\"\n"
+                f"- Explicación: \"{topic.get('explanation', '')}\"")
+    elif category == "idioms":
+        return (f"Idiom/Expresión - \"{topic['topic']}\"\n"
+                f"- Significado: \"{topic.get('meaning', topic.get('spanish', ''))}\"\n"
+                f"- Traducción literal: \"{topic.get('literal', '')}\"\n"
+                f"- Ejemplo: \"{topic.get('example', '')}\"")
+    elif category == "slang":
+        return (f"Slang - \"{topic['topic']}\"\n"
+                f"- Significado: \"{topic.get('meaning', '')}\"\n"
+                f"- En español: \"{topic.get('spanish', '')}\"\n"
+                f"- Ejemplo: \"{topic.get('example', '')}\"")
+    elif category == "confusing_words":
+        return (f"Palabras Confusas - \"{topic['topic']}\"\n"
+                f"- {topic.get('word_a', '')}: {topic.get('meaning_a', '')}\n"
+                f"- {topic.get('word_b', '')}: {topic.get('meaning_b', '')}\n"
+                f"- Ejemplo A: \"{topic.get('example_a', '')}\"\n"
+                f"- Ejemplo B: \"{topic.get('example_b', '')}\"\n"
+                f"- Tip: \"{topic.get('tip', '')}\"")
+    elif category == "business":
+        phrases = ", ".join(topic.get("phrases", [])[:3])
+        return (f"Business English - \"{topic['topic']}\"\n"
+                f"- Tema: \"{topic.get('spanish', '')}\"\n"
+                f"- Frases clave: {phrases}\n"
+                f"- Error: \"{topic.get('wrong', '')}\"\n"
+                f"- Correcto: \"{topic.get('correct', '')}\"")
+    elif category == "travel":
+        phrases = ", ".join(topic.get("phrases", [])[:3])
+        vocab = ", ".join(topic.get("vocabulary", [])[:5])
+        return (f"Travel English - \"{topic['topic']}\"\n"
+                f"- Situación: \"{topic.get('spanish', '')}\"\n"
+                f"- Frases clave: {phrases}\n"
+                f"- Vocabulario: {vocab}")
+    elif category == "social":
+        formal = ", ".join(topic.get("formal", [])[:3])
+        informal = ", ".join(topic.get("informal", [])[:3])
+        return (f"Social English - \"{topic['topic']}\"\n"
+                f"- Tema: \"{topic.get('spanish', '')}\"\n"
+                f"- Formal: {formal}\n"
+                f"- Informal: {informal}\n"
+                f"- Error: \"{topic.get('wrong', '')}\"\n"
+                f"- Correcto: \"{topic.get('correct', '')}\"")
+    elif category == "cultural":
+        return (f"Diferencia Cultural - \"{topic['topic']}\"\n"
+                f"- En países anglosajones: \"{topic.get('english_culture', '')}\"\n"
+                f"- En países hispanos: \"{topic.get('spanish_culture', '')}\"\n"
+                f"- Tip: \"{topic.get('tip', '')}\"")
+    elif category == "spanish_specific":
+        pairs = ", ".join(topic.get("pairs", topic.get("examples_correct", []))[:3])
+        return (f"Desafío para Hispanohablantes - \"{topic['topic']}\"\n"
+                f"- Problema: \"{topic.get('problem', '')}\"\n"
+                f"- Ejemplos: {pairs}\n"
+                f"- Tip: \"{topic.get('tip', '')}\"")
+    else:
+        # Generic fallback - dump key fields
+        name = get_topic_name(topic)
+        return f"Tema: \"{name}\"\nDatos: {json.dumps(topic, ensure_ascii=False)[:500]}"
 
-TEMA: False Friend - "{topic['english']}"
-- Los hispanohablantes piensan que significa: "{topic['spanish_trap']}"
-- En realidad significa: "{topic['real_meaning']}"
-- La palabra correcta en inglés para "{topic['spanish_trap']}" es: "{topic['correct_english']}"
+
+def _category_hashtags(category: str) -> list:
+    """Get relevant hashtags for a category."""
+    base = ["#AprendeIngles", "#InglesConTiktok"]
+    extra = {
+        "false_friends": ["#FalseFriends", "#FalsosAmigos"],
+        "phrasal_verbs": ["#PhrasalVerbs", "#VerbosEnIngles"],
+        "common_mistakes": ["#ErroresComunes", "#CommonMistakes"],
+        "pronunciation": ["#Pronunciacion", "#SpeakEnglish"],
+        "grammar": ["#GramaticaIngles", "#EnglishGrammar"],
+        "idioms": ["#Idioms", "#ExpresionesEnIngles"],
+        "slang": ["#Slang", "#InglesInformal"],
+        "confusing_words": ["#ConfusingWords", "#PalabrasConfusas"],
+        "business": ["#BusinessEnglish", "#InglesDeNegocios"],
+        "travel": ["#TravelEnglish", "#InglesParaViajar"],
+        "social": ["#SocialEnglish", "#Conversacion"],
+        "cultural": ["#CulturalDifferences", "#CulturaInglesa"],
+        "spanish_specific": ["#SpanishSpeakers", "#TipsDeIngles"],
+    }
+    return base + extra.get(category, ["#LearnEnglish"])
+
+
+def build_prompt_educational(category: str, topic: dict) -> str:
+    """Build educational video prompt for any category."""
+    context = _topic_context(category, topic)
+    hashtags = _category_hashtags(category)
+
+    return f"""Genera un script de 30-45 segundos para un video de TikTok/Reels enseñando inglés a hispanohablantes.
+
+TEMA: {context}
 
 REGLAS IMPORTANTES:
 1. El script debe ser en ESPAÑOL, con las palabras en inglés entre comillas simples
 2. Ejemplo: "La palabra 'embarrassed' NO significa embarazada"
 3. Incluye un ejemplo práctico de uso en inglés
 4. Usa un tono energético y educativo como profesor de TikTok
-5. Incluye un tip memorable para recordar la diferencia
+5. Incluye un tip memorable para recordar
 6. Termina con una pregunta o call-to-action
 
 FORMATO JSON REQUERIDO:
@@ -100,85 +208,16 @@ FORMATO JSON REQUERIDO:
   "translations": {{"palabra_ingles": "traduccion_español"}},
   "tip": "Tip memorable para recordar",
   "cta": "Call to action final",
-  "hashtags": ["#AprendeIngles", "#FalseFriends", "#InglesConTiktok"]
+  "hashtags": {json.dumps(hashtags, ensure_ascii=False)}
 }}
 
 Responde SOLO con el JSON, sin explicaciones adicionales."""
-
-    elif category == "phrasal_verbs":
-        examples = ", ".join(topic.get("examples", []))
-        return f"""Genera un script de 30-45 segundos para un video de TikTok/Reels enseñando inglés a hispanohablantes.
-
-TEMA: Phrasal Verb - "{topic['topic']}"
-- Significado en español: "{topic['spanish']}"
-- Ejemplos de uso: {examples}
-
-REGLAS IMPORTANTES:
-1. El script debe ser en ESPAÑOL, con las palabras en inglés entre comillas simples
-2. Ejemplo: "El phrasal verb 'give up' significa rendirse"
-3. Incluye 2-3 ejemplos prácticos de uso
-4. Usa un tono energético y educativo
-5. Incluye un tip para recordar el significado
-6. Termina con una pregunta o call-to-action
-
-FORMATO JSON REQUERIDO:
-{{
-  "type": "educational",
-  "hook": "Frase inicial que capte atención",
-  "full_script": "Script completo en español con palabras inglés en 'comillas simples'",
-  "english_phrases": ["lista", "de", "frases", "inglés"],
-  "translations": {{"frase_ingles": "traduccion_español"}},
-  "tip": "Tip memorable para recordar",
-  "cta": "Call to action final",
-  "hashtags": ["#AprendeIngles", "#PhrasalVerbs", "#InglesConTiktok"]
-}}
-
-Responde SOLO con el JSON, sin explicaciones adicionales."""
-
-    elif category == "common_mistakes":
-        return f"""Genera un script de 30-45 segundos para un video de TikTok/Reels enseñando inglés a hispanohablantes.
-
-TEMA: Error Común
-- Error frecuente: "{topic['wrong']}"
-- Forma correcta: "{topic['correct']}"
-- Explicación: "{topic['explanation']}"
-
-REGLAS IMPORTANTES:
-1. El script debe ser en ESPAÑOL, con las palabras en inglés entre comillas simples
-2. Muestra el error y luego la corrección
-3. Incluye ejemplos prácticos
-4. Usa un tono energético y educativo
-5. Incluye un tip para evitar el error
-6. Termina con una pregunta o call-to-action
-
-FORMATO JSON REQUERIDO:
-{{
-  "type": "educational",
-  "hook": "Frase inicial que capte atención",
-  "full_script": "Script completo en español con palabras inglés en 'comillas simples'",
-  "english_phrases": ["lista", "de", "frases", "inglés"],
-  "translations": {{"frase_ingles": "traduccion_español"}},
-  "tip": "Tip memorable para recordar",
-  "cta": "Call to action final",
-  "hashtags": ["#AprendeIngles", "#ErroresComunes", "#InglesConTiktok"]
-}}
-
-Responde SOLO con el JSON, sin explicaciones adicionales."""
-
-    else:
-        raise ValueError(f"Unknown category: {category}")
 
 
 def build_prompt_quiz(category: str, topic: dict) -> str:
     """Build quiz video prompt."""
-    if category == "false_friends":
-        context = f"False Friend: '{topic['english']}' - significa '{topic['real_meaning']}', NO '{topic['spanish_trap']}'"
-    elif category == "phrasal_verbs":
-        context = f"Phrasal Verb: '{topic['topic']}' - significa '{topic['spanish']}'"
-    elif category == "common_mistakes":
-        context = f"Error común: '{topic['wrong']}' → Correcto: '{topic['correct']}'"
-    else:
-        context = str(topic)
+    context = _topic_context(category, topic)
+    hashtags = ["#QuizIngles", "#AprendeIngles", "#TestTuIngles"] + _category_hashtags(category)[:1]
 
     return f"""Genera un QUIZ de 20-30 segundos para TikTok/Reels enseñando inglés a hispanohablantes.
 
@@ -231,7 +270,7 @@ FORMATO JSON:
   "explanation": "1-2 oraciones explicando POR QUÉ es correcta + ejemplo",
   "full_script": "Script completo EN ESPAÑOL con countdown 'Tres... dos... uno...'",
   "translations": {{"palabra_ingles": "traduccion_español"}},
-  "hashtags": ["#QuizIngles", "#AprendeIngles", "#TestTuIngles"]
+  "hashtags": {json.dumps(hashtags[:4], ensure_ascii=False)}
 }}
 
 Responde SOLO con el JSON válido."""
@@ -239,14 +278,7 @@ Responde SOLO con el JSON válido."""
 
 def build_prompt_true_false(category: str, topic: dict) -> str:
     """Build true/false video prompt."""
-    if category == "false_friends":
-        context = f"False Friend: '{topic['english']}' - significa '{topic['real_meaning']}', NO '{topic['spanish_trap']}'"
-    elif category == "phrasal_verbs":
-        context = f"Phrasal Verb: '{topic['topic']}' - significa '{topic['spanish']}'"
-    elif category == "common_mistakes":
-        context = f"Error común: '{topic['wrong']}' → Correcto: '{topic['correct']}'"
-    else:
-        context = str(topic)
+    context = _topic_context(category, topic)
 
     return f"""Genera un video de VERDADERO O FALSO de 15-25 segundos para TikTok/Reels enseñando inglés a hispanohablantes.
 
@@ -282,7 +314,7 @@ FORMATO JSON REQUERIDO:
   "explanation": "1-2 oraciones máximo. Corta y memorable.",
   "full_script": "Script EN ESPAÑOL. Palabra inglés en 'comillas'. Explicación CORTA al final.",
   "translations": {{"palabra_clave": "traduccion"}},
-  "hashtags": ["#VerdaderoOFalso", "#AprendeIngles", "#InglesRapido"]
+  "hashtags": {json.dumps(["#VerdaderoOFalso", "#AprendeIngles"] + _category_hashtags(category)[:1], ensure_ascii=False)}
 }}
 
 Responde SOLO con el JSON, sin explicaciones adicionales."""
@@ -290,14 +322,7 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_fill_blank(category: str, topic: dict) -> str:
     """Build fill-in-the-blank video prompt."""
-    if category == "false_friends":
-        context = f"Usar correctamente: '{topic['correct_english']}' (no confundir con '{topic['english']}')"
-    elif category == "phrasal_verbs":
-        context = f"Phrasal Verb: '{topic['topic']}' - significa '{topic['spanish']}'"
-    elif category == "common_mistakes":
-        context = f"Forma correcta: '{topic['correct']}' (error común: '{topic['wrong']}')"
-    else:
-        context = str(topic)
+    context = _topic_context(category, topic)
 
     return f"""Genera un video de COMPLETA LA FRASE de 25-35 segundos para TikTok/Reels enseñando inglés.
 
@@ -333,14 +358,7 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_pronunciation(category: str, topic: dict) -> str:
     """Build pronunciation video prompt."""
-    if category == "false_friends":
-        word = topic['english']
-    elif category == "phrasal_verbs":
-        word = topic['topic']
-    elif category == "common_mistakes":
-        word = topic.get('correct', '').split()[0] if topic.get('correct') else 'example'
-    else:
-        word = "example"
+    word = get_topic_name(topic)
 
     return f"""Genera un video de PRONUNCIACIÓN de 20-30 segundos para TikTok/Reels enseñando inglés.
 

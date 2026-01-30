@@ -1,0 +1,40 @@
+# English AI Videos Configuration
+# ================================
+
+# Video Generation Settings
+video:
+  # Background mode: "random" picks from enabled list, "fixed" uses default_background
+  background_mode: "random"
+
+  # Used when background_mode is "fixed"
+  default_background: "aurora_borealis"
+
+  # Backgrounds available for random selection
+  enabled_backgrounds:
+    - energetic_orbs
+    - aurora_borealis
+    - rising_stars
+    - bokeh_soft
+    - purple_vibes
+
+  # Video dimensions (TikTok vertical format)
+  width: 1080
+  height: 1920
+  fps: 30
+
+# Audio/TTS Settings
+audio:
+  # Voice settings for ElevenLabs
+  voice_id: "default"
+  model: "eleven_multilingual_v2"
+
+# Output Directories
+output:
+  videos: "output/video"
+  audio: "output/audio"
+  frames: "output/frames"
+
+# Content Generation
+content:
+  # Default video type: educational, quiz, true_false, fill_blank, pronunciation
+  default_type: "educational"

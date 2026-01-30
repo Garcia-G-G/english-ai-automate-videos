@@ -1,0 +1,562 @@
+[
+  {
+    "id": "pr001",
+    "word": "ship vs sheep",
+    "phonetic": "SHIP (short i) vs SHEEP (long ee)",
+    "common_mistake": "Confundir el sonido i corto con ee largo",
+    "tip": "Ship tiene un sonido /ɪ/ corto (como en 'sí' español). Sheep tiene /iː/ largo (como en 'sí' pero extendido)",
+    "category": "minimal_pairs",
+    "difficulty": "beginner",
+    "tags": ["very_common", "vowel"]
+  },
+  {
+    "id": "pr002",
+    "word": "bit vs beat",
+    "phonetic": "BIT (short i) vs BEAT (long ee)",
+    "common_mistake": "Pronunciar ambas con el mismo sonido",
+    "tip": "Bit: sonido corto /ɪ/. Beat: sonido largo /iː/ - mantén la vocal prolongada",
+    "category": "minimal_pairs",
+    "difficulty": "beginner",
+    "tags": ["very_common", "vowel"]
+  },
+  {
+    "id": "pr003",
+    "word": "cat vs cut",
+    "phonetic": "KAT (a corta) vs KUT (u sin redondear)",
+    "common_mistake": "Usar sonido /a/ español para ambas",
+    "tip": "Cat: /æ/ (boca más abierta). Cut: /ʌ/ (sonido más central, diferente al 'u' español)",
+    "category": "minimal_pairs",
+    "difficulty": "beginner",
+    "tags": ["very_common", "vowel"]
+  },
+  {
+    "id": "pr004",
+    "word": "full vs fool",
+    "phonetic": "FUL (u corta) vs FOOL (oo larga)",
+    "common_mistake": "Pronunciar ambas igual",
+    "tip": "Full: /ʊ/ corta (labios redondeados, corta). Fool: /uː/ larga (labios redondeados, prolongada)",
+    "category": "minimal_pairs",
+    "difficulty": "beginner",
+    "tags": ["very_common", "vowel"]
+  },
+  {
+    "id": "pr005",
+    "word": "pull vs pool",
+    "phonetic": "PUL (u corta) vs POOL (oo larga)",
+    "common_mistake": "Confundir las dos duraciones",
+    "tip": "Pull: /ʊ/ corta (como en 'pull', no prolongues). Pool: /uː/ larga (como en 'pool', suena más larga y profunda)",
+    "category": "minimal_pairs",
+    "difficulty": "beginner",
+    "tags": ["very_common", "vowel"]
+  },
+  {
+    "id": "pr006",
+    "word": "knight",
+    "phonetic": "NAIT",
+    "common_mistake": "Pronunciar la 'k' y la 'gh'",
+    "tip": "La K al principio es SILENT. La GH también es SILENT. Solo suena como 'nait' (como 'night' en inglés)",
+    "category": "silent_letters",
+    "difficulty": "beginner",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr007",
+    "word": "psychology",
+    "phonetic": "sai-KOL-o-jee",
+    "common_mistake": "Pronunciar la P inicial",
+    "tip": "La P al principio es SILENT. Comienza con 's' como en 'science'",
+    "category": "silent_letters",
+    "difficulty": "intermediate",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr008",
+    "word": "Wednesday",
+    "phonetic": "WENZ-day",
+    "common_mistake": "Pronunciar todas las letras: 'wed-nes-day'",
+    "tip": "Se pronuncia WENZ-day, no 'wed-nes-day'. La D es SILENT en la pronunciación rápida",
+    "category": "silent_letters",
+    "difficulty": "intermediate",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr009",
+    "word": "salmon",
+    "phonetic": "SAM-un",
+    "common_mistake": "Pronunciar la L: 'sal-mon'",
+    "tip": "La L es SILENT. Se pronuncia SAM-un (como en 'same' + 'un')",
+    "category": "silent_letters",
+    "difficulty": "beginner",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr010",
+    "word": "receipt",
+    "phonetic": "ri-SEET",
+    "common_mistake": "Pronunciar la P: 're-sep-it'",
+    "tip": "La P es SILENT completamente. Se pronuncia ri-SEET",
+    "category": "silent_letters",
+    "difficulty": "intermediate",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr011",
+    "word": "think",
+    "phonetic": "THING (con TH sordo)",
+    "common_mistake": "Reemplazar con 'sink' o 's'",
+    "tip": "TH sordo: coloca la lengua entre los dientes, sin vibración. Suena como 'θ' (no como 's')",
+    "category": "th_sounds",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr012",
+    "word": "this",
+    "phonetic": "DIS (con TH sonoro)",
+    "common_mistake": "Reemplazar con 'dis' o 'zis'",
+    "tip": "TH sonoro: lengua entre dientes CON vibración de cuerdas vocales. Suena como 'ð' (diferente de 's' y 'z')",
+    "category": "th_sounds",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr013",
+    "word": "three",
+    "phonetic": "TREE (con TH sordo inicial)",
+    "common_mistake": "Decir 'tree' con T normal, o 'fry'",
+    "tip": "TH sordo: θ + R. Lengua entre dientes para el TH, luego R con vibración",
+    "category": "th_sounds",
+    "difficulty": "intermediate",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr014",
+    "word": "bath",
+    "phonetic": "BATH (con TH sordo final)",
+    "common_mistake": "Pronunciar la T como 'bat' español",
+    "tip": "Termina con TH sordo (lengua entre dientes), no con 't' española. BAθ",
+    "category": "th_sounds",
+    "difficulty": "beginner",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr015",
+    "word": "breathe",
+    "phonetic": "BREED (con TH sonoro final)",
+    "common_mistake": "Confundir con 'breath' (sustantivo) que es sordo",
+    "tip": "Verbo 'breathe': TH SONORO final ð. Sustantivo 'breath': TH SORDO final θ",
+    "category": "th_sounds",
+    "difficulty": "intermediate",
+    "tags": ["confusing"]
+  },
+  {
+    "id": "pr016",
+    "word": "beach",
+    "phonetic": "BEECH (ee larga)",
+    "common_mistake": "Pronunciar como 'bitch' con sonido i corta",
+    "tip": "Sonido /iː/ largo. BEECH (como en 'see' pero con B). Labios estirados hacia atrás",
+    "category": "vowel_sounds",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr017",
+    "word": "sheet",
+    "phonetic": "SHEET (ee larga)",
+    "common_mistake": "Pronunciar como 'shit' con sonido i corta",
+    "tip": "Sonido /iː/ largo. SHEET (como en 'meet' pero con SH). Vocal prolongada",
+    "category": "vowel_sounds",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr018",
+    "word": "live (verb)",
+    "phonetic": "LIV (short i)",
+    "common_mistake": "Pronunciar como 'leave' con ee larga",
+    "tip": "Verbo: /ɪ/ corta (LIV). Sustantivo 'live' (música en vivo): /aɪ/ diptongo",
+    "category": "vowel_sounds",
+    "difficulty": "intermediate",
+    "tags": ["confusing"]
+  },
+  {
+    "id": "pr019",
+    "word": "sit",
+    "phonetic": "SIT (short i)",
+    "common_mistake": "Pronunciar como 'seat' con ee larga",
+    "tip": "SIT: /ɪ/ corta (vocal corta de 'sí' español). SEAT: /iː/ larga (ee extendida)",
+    "category": "vowel_sounds",
+    "difficulty": "beginner",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr020",
+    "word": "hit",
+    "phonetic": "HIT (short i)",
+    "common_mistake": "Pronunciar como 'heat' con ee larga",
+    "tip": "HIT: /ɪ/ corta (rápida). HEAT: /iː/ larga (prolongada). Mantén la diferencia de duración",
+    "category": "vowel_sounds",
+    "difficulty": "beginner",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr021",
+    "word": "REcord (noun)",
+    "phonetic": "REK-urd (estrés en primera sílaba)",
+    "common_mistake": "reCORD (estrés en segunda sílaba)",
+    "tip": "Sustantivo: REcord (disco). Verbo: reCORD (grabar). El estrés cambia el significado",
+    "category": "word_stress",
+    "difficulty": "intermediate",
+    "tags": ["confusing", "spanish_specific"]
+  },
+  {
+    "id": "pr022",
+    "word": "PREsent (noun)",
+    "phonetic": "PREZ-ent (estrés en primera sílaba)",
+    "common_mistake": "preSENT (estrés en segunda sílaba)",
+    "tip": "Sustantivo: PREsent (regalo). Verbo: preSENT (presentar). El estrés cambia el significado",
+    "category": "word_stress",
+    "difficulty": "intermediate",
+    "tags": ["confusing", "spanish_specific"]
+  },
+  {
+    "id": "pr023",
+    "word": "OBject (noun)",
+    "phonetic": "AHB-jekt (estrés en primera sílaba)",
+    "common_mistake": "obJECT (estrés en segunda sílaba)",
+    "tip": "Sustantivo: OBject (objeto). Verbo: obJECT (objetar). El estrés cambia el significado",
+    "category": "word_stress",
+    "difficulty": "intermediate",
+    "tags": ["confusing", "spanish_specific"]
+  },
+  {
+    "id": "pr024",
+    "word": "PERmit (noun)",
+    "phonetic": "PER-mit (estrés en primera sílaba)",
+    "common_mistake": "perMIT (estrés en segunda sílaba)",
+    "tip": "Sustantivo: PERmit (permiso). Verbo: perMIT (permitir). El estrés cambia el significado",
+    "category": "word_stress",
+    "difficulty": "intermediate",
+    "tags": ["confusing", "spanish_specific"]
+  },
+  {
+    "id": "pr025",
+    "word": "CONtract (noun)",
+    "phonetic": "KAH-n-trakt (estrés en primera sílaba)",
+    "common_mistake": "conTRACT (estrés en segunda sílaba)",
+    "tip": "Sustantivo: CONtract (contrato). Verbo: conTRACT (contraer). El estrés cambia el significado",
+    "category": "word_stress",
+    "difficulty": "intermediate",
+    "tags": ["confusing", "spanish_specific"]
+  },
+  {
+    "id": "pr026",
+    "word": "gonna",
+    "phonetic": "GAH-na",
+    "common_mistake": "Pronunciar como 'going to' cuidadosamente",
+    "tip": "Lenguaje informal: 'gonna' = 'going to'. Se pronuncia rápido y conectado: GAH-na",
+    "category": "connected_speech",
+    "difficulty": "intermediate",
+    "tags": ["colloquial", "spoken_english"]
+  },
+  {
+    "id": "pr027",
+    "word": "wanna",
+    "phonetic": "WAH-na",
+    "common_mistake": "Pronunciar como 'want to' cuidadosamente",
+    "tip": "Lenguaje informal: 'wanna' = 'want to'. Se pronuncia: WAH-na (muy conectado)",
+    "category": "connected_speech",
+    "difficulty": "intermediate",
+    "tags": ["colloquial", "spoken_english"]
+  },
+  {
+    "id": "pr028",
+    "word": "gotta",
+    "phonetic": "GAH-ta",
+    "common_mistake": "Pronunciar como 'got to' cuidadosamente",
+    "tip": "Lenguaje informal: 'gotta' = 'got to' o 'have got to'. Se pronuncia: GAH-ta",
+    "category": "connected_speech",
+    "difficulty": "intermediate",
+    "tags": ["colloquial", "spoken_english"]
+  },
+  {
+    "id": "pr029",
+    "word": "lemme",
+    "phonetic": "LEM-ee",
+    "common_mistake": "Pronunciar como 'let me' cuidadosamente",
+    "tip": "Lenguaje informal: 'lemme' = 'let me'. Se pronuncia rápido y conectado: LEM-ee",
+    "category": "connected_speech",
+    "difficulty": "intermediate",
+    "tags": ["colloquial", "spoken_english"]
+  },
+  {
+    "id": "pr030",
+    "word": "dunno",
+    "phonetic": "duh-NO o DUN-no",
+    "common_mistake": "Pronunciar como 'don't know' cuidadosamente",
+    "tip": "Lenguaje informal: 'dunno' = 'don't know'. Se pronuncia: DUN-no o 'duh-NO' con estrés variable",
+    "category": "connected_speech",
+    "difficulty": "intermediate",
+    "tags": ["colloquial", "spoken_english"]
+  },
+  {
+    "id": "pr031",
+    "word": "water (British vs American)",
+    "phonetic": "American: WAH-ter, British: WAH-tuh",
+    "common_mistake": "Pronunciar el 't' fuerte en ambos",
+    "tip": "American: sonido 'd' suave entre vocales (WAH-der). British: más cercano a WAH-ter. Ambas aceptables",
+    "category": "british_american",
+    "difficulty": "intermediate",
+    "tags": ["accent_differences"]
+  },
+  {
+    "id": "pr032",
+    "word": "schedule (British vs American)",
+    "phonetic": "American: SKED-jool, British: SHED-yool",
+    "common_mistake": "Pronunciar siempre igual",
+    "tip": "American: SKED-jool (s suena como 'sk'). British: SHED-yool. Aprende ambas",
+    "category": "british_american",
+    "difficulty": "intermediate",
+    "tags": ["accent_differences", "very_common"]
+  },
+  {
+    "id": "pr033",
+    "word": "aluminium (British vs American)",
+    "phonetic": "American: a-LOO-mi-num, British: al-yoo-MIN-i-um",
+    "common_mistake": "Pronunciar igual",
+    "tip": "American: a-LOO-mi-num (sin la 'i' final). British: al-yoo-MIN-i-um (con todas las letras)",
+    "category": "british_american",
+    "difficulty": "intermediate",
+    "tags": ["accent_differences"]
+  },
+  {
+    "id": "pr034",
+    "word": "privacy (British vs American)",
+    "phonetic": "American: PRIV-uh-see, British: PRIV-uh-see o PRAY-vuh-see",
+    "common_mistake": "Pronunciar siempre igual",
+    "tip": "American: PRIV-uh-see (primera vocal como 'i'). British: varía entre PRIV-uh-see y PRAY-vuh-see",
+    "category": "british_american",
+    "difficulty": "intermediate",
+    "tags": ["accent_differences"]
+  },
+  {
+    "id": "pr035",
+    "word": "advertisement (British vs American)",
+    "phonetic": "American: AD-ver-tize-ment, British: ad-VER-tis-ment",
+    "common_mistake": "Pronunciar siempre igual",
+    "tip": "American: estrés en primera sílaba (AD-ver...). British: estrés en segunda (ad-VER...)",
+    "category": "british_american",
+    "difficulty": "intermediate",
+    "tags": ["accent_differences", "spanish_specific"]
+  },
+  {
+    "id": "pr036",
+    "word": "thirteen vs thirty",
+    "phonetic": "thir-TEEN vs THIR-tee",
+    "common_mistake": "Pronunciar con estrés igual",
+    "tip": "13: thir-TEEN (estrés en segunda sílaba, sonido 'ee' largo). 30: THIR-tee (estrés en primera, más rápido)",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr037",
+    "word": "fourteen vs forty",
+    "phonetic": "for-TEEN vs FOR-tee",
+    "common_mistake": "Confundir los números",
+    "tip": "14: for-TEEN (estrés en segunda, 'ee' largo). 40: FOR-tee (estrés en primera, más rápido)",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr038",
+    "word": "fifteen vs fifty",
+    "phonetic": "fif-TEEN vs FIF-tee",
+    "common_mistake": "Confundir los números",
+    "tip": "15: fif-TEEN (estrés en segunda). 50: FIF-tee (estrés en primera). Aprende el patrón",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr039",
+    "word": "sixteen vs sixty",
+    "phonetic": "sik-STEEN vs SIK-stee",
+    "common_mistake": "Confundir los números",
+    "tip": "16: sik-STEEN (estrés en segunda, ee largo). 60: SIK-stee (estrés en primera)",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr040",
+    "word": "seventeen vs seventy",
+    "phonetic": "sev-un-TEEN vs SEV-un-tee",
+    "common_mistake": "Confundir los números",
+    "tip": "17: sev-un-TEEN (estrés en última, 'ee' largo). 70: SEV-un-tee (estrés en primera)",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr041",
+    "word": "their vs there vs they're",
+    "phonetic": "THAIR (posesivo) vs THAIR (lugar) vs THAIR (they are)",
+    "common_mistake": "Pronunciar igual pero confundir significados",
+    "tip": "Los tres suenan IGUAL (/ðɛr/ o THAIR). El significado diferencia: their=posesivo, there=lugar, they're=they are",
+    "category": "homophones",
+    "difficulty": "intermediate",
+    "tags": ["very_common", "confusing"]
+  },
+  {
+    "id": "pr042",
+    "word": "your vs you're",
+    "phonetic": "YOUR (posesivo) vs YOR (you are)",
+    "common_mistake": "Pronunciar diferente cuando suenan igual",
+    "tip": "Suenan IGUAL: YOUR. Significado diferencia: your=posesivo, you're=you are",
+    "category": "homophones",
+    "difficulty": "beginner",
+    "tags": ["very_common", "confusing"]
+  },
+  {
+    "id": "pr043",
+    "word": "its vs it's",
+    "phonetic": "ITS (posesivo) vs ITS (it is)",
+    "common_mistake": "Pronunciar diferente cuando suenan igual",
+    "tip": "Suenan IGUAL: ITS. Significado diferencia: its=posesivo, it's=it is",
+    "category": "homophones",
+    "difficulty": "beginner",
+    "tags": ["very_common", "confusing"]
+  },
+  {
+    "id": "pr044",
+    "word": "to vs too vs two",
+    "phonetic": "TOO (preposición/dirección) vs TOO (también/demasiado) vs TOO (número 2)",
+    "common_mistake": "Pronunciar diferente cuando suenan igual",
+    "tip": "Los tres suenan IGUAL: TOO. Significado diferencia: to=preposición, too=también/demasiado, two=número 2",
+    "category": "homophones",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr045",
+    "word": "know vs no",
+    "phonetic": "NOH (saber) vs NOH (negación)",
+    "common_mistake": "Pronunciar diferente cuando suenan igual",
+    "tip": "Suenan IGUAL: NOH. Significado diferencia: know=saber, no=negación",
+    "category": "homophones",
+    "difficulty": "beginner",
+    "tags": ["very_common"]
+  },
+  {
+    "id": "pr046",
+    "word": "very vs berry",
+    "phonetic": "VAIR-ee (con V) vs BAIR-ee (con B)",
+    "common_mistake": "Pronunciar igual, confundir V y B",
+    "tip": "V: labio inferior con dientes superiores (fricativa). B: oclusiva bilabial. Sonidos DIFERENTES",
+    "category": "spanish_specific",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr047",
+    "word": "jump",
+    "phonetic": "JUMP (con sonido DJ)",
+    "common_mistake": "Pronunciar como 'yump' o 'tump'",
+    "tip": "Comienza con DJ (como 'j' en 'adjunto'): DJ-UM-P. No es 'y' ni 't'",
+    "category": "spanish_specific",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr048",
+    "word": "house",
+    "phonetic": "HOUS (con H fuerte)",
+    "common_mistake": "Pronunciar sin la H (como español 'ouse') o H silenciosa",
+    "tip": "La H en inglés SE PRONUNCIA (no como en español donde es silenciosa). Expira aire fuerte al inicio",
+    "category": "spanish_specific",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr049",
+    "word": "wanted",
+    "phonetic": "WAN-tid (3 sílabas)",
+    "common_mistake": "Pronunciar como 'wantid' o 'wantad'",
+    "tip": "Sufijo -ED: Se pronuncia como sílaba separada después de consonantes /t/ o /d/. wan-TID",
+    "category": "spanish_specific",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr050",
+    "word": "cats",
+    "phonetic": "KATS (sonido S)",
+    "common_mistake": "Pronunciar 'katses' o 'katz'",
+    "tip": "Después de consonantes sordas, -S suena como /s/ (KATS). No añadas sílaba extra",
+    "category": "spanish_specific",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr051",
+    "word": "dogs",
+    "phonetic": "DOGZ (sonido Z)",
+    "common_mistake": "Pronunciar 'dogses' o 'dogs' con S sorda",
+    "tip": "Después de consonantes sonoras, -S suena como /z/ (DOGZ). No añadas sílaba extra",
+    "category": "spanish_specific",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr052",
+    "word": "short i vs long ee",
+    "phonetic": "/ɪ/ (short) vs /iː/ (long)",
+    "common_mistake": "Pronunciar todas las vocales igual",
+    "tip": "Spanish no tiene esta distinción. Practica: sit/seat, bit/beat, fit/feet. Duración es la clave",
+    "category": "spanish_specific",
+    "difficulty": "beginner",
+    "tags": ["very_common", "spanish_specific", "fundamental"]
+  },
+  {
+    "id": "pr053",
+    "word": "street",
+    "phonetic": "STREET (iniciar con consonante + consonante)",
+    "common_mistake": "Insertar vocal: 'e-street' o 'es-treet'",
+    "tip": "En español: consonante + vocal siempre. Aquí: ST- es posible. Practica sin parar entre letras",
+    "category": "spanish_specific",
+    "difficulty": "intermediate",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr054",
+    "word": "word-final consonants",
+    "phonetic": "Ejemplos: help, sing, desk, fast",
+    "common_mistake": "Suavizar o alargar la vocal final",
+    "tip": "Inglés permite consonantes finales. Español prefer vocal final. Mantén consonante corta: HELP (no 'helpe')",
+    "category": "spanish_specific",
+    "difficulty": "intermediate",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr055",
+    "word": "about",
+    "phonetic": "uh-BOWT (sonido schwa inicial)",
+    "common_mistake": "Pronunciar 'a' clara como en español 'a'",
+    "tip": "Vocal reducida (schwa /ə/): sonido central débil, casi como 'uh'. No es 'a' clara",
+    "category": "spanish_specific",
+    "difficulty": "intermediate",
+    "tags": ["very_common", "spanish_specific"]
+  },
+  {
+    "id": "pr056",
+    "word": "banana",
+    "phonetic": "buh-NAH-nuh (schwas en posiciones débiles)",
+    "common_mistake": "Pronunciar todas las vocales igual",
+    "tip": "Primera y última vocal: schwa /ə/ (reducida). Segunda: /a/ (clara). buh-NAH-nuh",
+    "category": "spanish_specific",
+    "difficulty": "intermediate",
+    "tags": ["very_common", "spanish_specific"]
+  }
+]

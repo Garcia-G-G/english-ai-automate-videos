@@ -20,6 +20,7 @@ Usage:
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime
@@ -59,6 +60,7 @@ sys.path.insert(0, str(SRC))
 from script_generator import (
     generate_script,
     get_random_topic,
+    get_topic_name,
     find_topic,
     list_categories,
     load_topics,
@@ -176,7 +178,8 @@ def run_tts(text: str, audio_path: Path, script_data: dict = None, use_openai: b
     return audio_path, json_path
 
 
-def run_video(audio_path: Path, data_path: Path, video_path: Path, video_type: str = None) -> Path:
+def run_video(audio_path: Path, data_path: Path, video_path: Path,
+              video_type: str = None, background: str = None) -> Path:
     """Run video generator."""
     cmd = [
         "python3", str(SRC / "video.py"),
@@ -187,11 +190,15 @@ def run_video(audio_path: Path, data_path: Path, video_path: Path, video_type: s
 
     if video_type:
         cmd.extend(["-t", video_type])
+    if background:
+        cmd.extend(["-b", background])
 
     print(f"\n{'='*50}")
     print("STEP 3: Generating Video")
     print(f"{'='*50}")
     print(f"Type: {video_type or 'auto-detect'}")
+    if background:
+        print(f"Background: {background}")
     print(f"Output: {video_path}")
 
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -245,7 +252,7 @@ def list_scripts():
             print(f"    {rel_path}: {hook}...")
 
 
-def run_pipeline(script_data: dict, output_name: str, video_type: str = None) -> Path:
+def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None) -> Path:
     """Run the full pipeline from script to video."""
 
     # Determine video type from script data if not provided
@@ -273,7 +280,7 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None) ->
         return None
 
     # Step 3: Video
-    video_result = run_video(audio_result, json_path, video_path, video_type)
+    video_result = run_video(audio_result, json_path, video_path, video_type, background)
     if not video_result or not video_result.exists():
         print("Video generation failed!")
         return None
@@ -290,7 +297,7 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None) ->
     return video_result
 
 
-def run_from_text(text: str, name: str = None, video_type: str = "educational") -> Path:
+def run_from_text(text: str, name: str = None, video_type: str = "educational", background: str = None) -> Path:
     """Run pipeline directly from text input."""
     if not name:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -303,10 +310,10 @@ def run_from_text(text: str, name: str = None, video_type: str = "educational") 
         "translations": {}
     }
 
-    return run_pipeline(script_data, name, video_type)
+    return run_pipeline(script_data, name, video_type, background)
 
 
-def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational") -> Path:
+def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational", background: str = None) -> Path:
     """Generate a script with GPT and run the full pipeline."""
 
     print(f"\n{'='*50}")
@@ -345,7 +352,7 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
     print(f"  Script: {script_data.get('full_script', 'N/A')[:100]}...")
 
     # Run rest of pipeline
-    return run_pipeline(script_data, output_name, video_type)
+    return run_pipeline(script_data, output_name, video_type, background)
 
 
 def main():
@@ -388,6 +395,8 @@ Examples:
                         help="Direct text input (Spanish with 'English' in quotes)")
     parser.add_argument("--name", "-n", type=str,
                         help="Output name (without extension)")
+    parser.add_argument("--background", "--bg", type=str, default=None,
+                        help="Background preset (e.g. aurora_borealis, energetic_orbs). Default: random")
     parser.add_argument("--batch", "-b", type=int,
                         help="Generate multiple videos from random topics")
 
@@ -401,14 +410,22 @@ Examples:
     # List topics mode
     if args.list_topics:
         print("\nAvailable Categories and Topics:")
-        print("=" * 50)
-        for cat in list_categories():
+        print("=" * 60)
+        total = 0
+        for cat in sorted(list_categories()):
             topics = load_topics(cat)
-            print(f"\n{cat} ({len(topics)} topics):")
-            for t in topics:
-                name = t.get("english") or t.get("topic") or t.get("wrong")
-                print(f"  - {name}")
-        print(f"\nVideo Types: {', '.join(VIDEO_TYPES)}")
+            total += len(topics)
+            print(f"\n  {cat} ({len(topics)} topics):")
+            for t in topics[:10]:  # Show first 10
+                name = get_topic_name(t)
+                diff = t.get("difficulty", "")
+                diff_str = f" [{diff}]" if diff else ""
+                print(f"    - {name}{diff_str}")
+            if len(topics) > 10:
+                print(f"    ... and {len(topics) - 10} more")
+        print(f"\n{'='*60}")
+        print(f"Total: {total} topics across {len(list_categories())} categories")
+        print(f"Video Types: {', '.join(VIDEO_TYPES)}")
         return
 
     # Batch mode
@@ -420,14 +437,14 @@ Examples:
             print(f"{'#'*50}")
 
             category, topic = get_random_topic()
-            topic_name = topic.get("english") or topic.get("topic") or topic.get("wrong")
-            generate_and_run(category, topic, topic_name, args.type)
+            topic_name = get_topic_name(topic)
+            generate_and_run(category, topic, topic_name, args.type, args.background)
         return
 
     # Text mode
     if args.text:
         name = args.name or None
-        run_from_text(args.text, name, args.type)
+        run_from_text(args.text, name, args.type, args.background)
         return
 
     # Script mode (use existing script)
@@ -442,20 +459,20 @@ Examples:
 
         # Use script's type unless overridden
         video_type = args.type if args.type != "educational" else script_data.get('type', 'educational')
-        run_pipeline(script_data, name, video_type)
+        run_pipeline(script_data, name, video_type, args.background)
         return
 
     # Category + Topic mode (generate with GPT)
     if args.category and args.topic:
         topic = find_topic(args.category, args.topic)
-        generate_and_run(args.category, topic, args.topic, args.type)
+        generate_and_run(args.category, topic, args.topic, args.type, args.background)
         return
 
     # Random mode (generate with GPT)
     if args.random:
         category, topic = get_random_topic()
-        topic_name = topic.get("english") or topic.get("topic") or topic.get("wrong")
-        generate_and_run(category, topic, topic_name, args.type)
+        topic_name = get_topic_name(topic)
+        generate_and_run(category, topic, topic_name, args.type, args.background)
         return
 
     # No arguments - show help
