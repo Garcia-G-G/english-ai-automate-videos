@@ -6,6 +6,8 @@ with outline, glow, karaoke highlighting, and TikTok pop animations.
 """
 
 import math
+import os
+from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
 from PIL import Image, ImageDraw, ImageFont
@@ -67,18 +69,47 @@ BAR_MARGIN = 40
 _fonts = {}
 
 
+def _get_font_paths():
+    """Return font search paths: bundled → macOS → Linux → Windows."""
+    project_root = Path(__file__).resolve().parent.parent.parent
+    bundled = project_root / "assets" / "fonts" / "Inter-Bold.ttf"
+
+    paths = [str(bundled)]
+
+    paths += [
+        "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
+        "/System/Library/Fonts/Helvetica.ttc",
+        os.path.expanduser("~/Library/Fonts/Inter-Bold.ttf"),
+    ]
+
+    paths += [
+        "/usr/share/fonts/truetype/inter/Inter-Bold.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
+    ]
+
+    paths += [
+        "C:\\Windows\\Fonts\\Inter-Bold.ttf",
+        "C:\\Windows\\Fonts\\arialbd.ttf",
+        "C:\\Windows\\Fonts\\arial.ttf",
+    ]
+
+    return paths
+
+
+_font_paths = None
+
+
 def font(size: int) -> ImageFont.FreeTypeFont:
     """Get or load a font at the given size."""
+    global _font_paths
     if size in _fonts:
         return _fonts[size]
 
-    paths = [
-        "/System/Library/Fonts/Supplemental/Impact.ttf",
-        "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-        "/System/Library/Fonts/Helvetica.ttc",
-    ]
+    if _font_paths is None:
+        _font_paths = _get_font_paths()
 
-    for p in paths:
+    for p in _font_paths:
         try:
             f = ImageFont.truetype(p, size)
             _fonts[size] = f

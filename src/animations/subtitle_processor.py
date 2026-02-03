@@ -58,9 +58,61 @@ class SubtitleProcessor:
     STARTERS = {'sabías', 'muchos', 'en', 'por', 'si', 'recuerda',
                 'conocías', 'cuéntame'}
 
+    # Compound words that Whisper might split incorrectly
+    COMPOUND_WORDS = {
+        ('wi', 'fi'): 'WiFi',
+        ('i', 'phone'): 'iPhone',
+        ('you', 'tube'): 'YouTube',
+        ('face', 'book'): 'Facebook',
+        ('whats', 'app'): 'WhatsApp',
+        ('tik', 'tok'): 'TikTok',
+        ('snap', 'chat'): 'Snapchat',
+        ('pay', 'pal'): 'PayPal',
+        ('net', 'flix'): 'Netflix',
+        ('e', 'mail'): 'email',
+        ('blue', 'tooth'): 'Bluetooth',
+    }
+
     def __init__(self, gap_threshold: float = 0.35, max_words_per_group: int = 5):
         self.gap_threshold = gap_threshold
         self.max_words = max_words_per_group
+
+    def merge_compound_words(self, words: List[Dict]) -> List[Dict]:
+        """
+        Merge compound words that Whisper incorrectly split.
+
+        E.g., "Wi" + "Fi" → "WiFi"
+        """
+        if not words or len(words) < 2:
+            return words
+
+        result = []
+        i = 0
+
+        while i < len(words):
+            if i < len(words) - 1:
+                w1 = words[i]['word'].lower().strip('.,!?')
+                w2 = words[i + 1]['word'].lower().strip('.,!?')
+                compound_key = (w1, w2)
+
+                if compound_key in self.COMPOUND_WORDS:
+                    # Merge the two words
+                    merged = {
+                        'word': self.COMPOUND_WORDS[compound_key],
+                        'start': words[i]['start'],
+                        'end': words[i + 1]['end'],
+                        'is_english': words[i].get('is_english', False) or words[i + 1].get('is_english', False),
+                        'segment_id': words[i].get('segment_id', 0),
+                        'segment_end': words[i + 1].get('segment_end', False),
+                    }
+                    result.append(merged)
+                    i += 2
+                    continue
+
+            result.append(words[i])
+            i += 1
+
+        return result
 
     def estimate_words_from_segments(
         self,
@@ -145,6 +197,9 @@ class SubtitleProcessor:
         """
         if not words:
             return []
+
+        # Merge compound words first (e.g., "Wi Fi" → "WiFi")
+        words = self.merge_compound_words(words)
 
         groups = []
         current = []

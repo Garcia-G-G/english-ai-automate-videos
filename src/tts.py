@@ -15,11 +15,14 @@ Supports multiple approaches for better English pronunciation:
 import asyncio
 import argparse
 import json
+import logging
 import os
 import re
 import sys
 import tempfile
 from io import BytesIO
+
+logger = logging.getLogger(__name__)
 
 import edge_tts
 

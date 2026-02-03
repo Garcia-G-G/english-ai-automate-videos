@@ -12,6 +12,7 @@ Advantages:
 - Consistent output
 """
 
+import logging
 import os
 import re
 import subprocess
@@ -19,9 +20,20 @@ import tempfile
 from pathlib import Path
 from typing import Optional
 
+logger = logging.getLogger(__name__)
+
 from dotenv import load_dotenv
 from elevenlabs import ElevenLabs
 from elevenlabs.types import VoiceSettings
+
+from tts_common import (
+    get_audio_duration, generate_silence,
+    extract_english_words_from_script, SPANISH_FILTER,
+    ASSETS_DIR, SPANISH_DIR, WORDS_DIR,
+    PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
+    PAUSE_AFTER_COUNTDOWN, PAUSE_AFTER_LAST_COUNT, PAUSE_AFTER_ANSWER,
+    PAUSE_AFTER_EXPLANATION,
+)
 
 # Load environment variables
 load_dotenv(Path(__file__).parent.parent / ".env")
@@ -55,50 +67,11 @@ DEFAULT_SIMILARITY = 0.75     # High similarity to original voice
 DEFAULT_STYLE = 0.0           # Neutral style for educational content
 DEFAULT_SPEAKER_BOOST = True  # Enhance speaker clarity
 
-# Audio library paths (same as other modules)
-ASSETS_DIR = Path(__file__).parent.parent / "assets" / "audio"
-SPANISH_DIR = ASSETS_DIR / "spanish"
-WORDS_DIR = ASSETS_DIR / "words"
-
-# Timing constants
-PAUSE_AFTER_QUESTION = 0.5
-PAUSE_AFTER_OPTION = 0.6
-PAUSE_AFTER_THINK = 0.5
-PAUSE_AFTER_COUNTDOWN = 1.0
-PAUSE_AFTER_LAST_COUNT = 0.6
-PAUSE_AFTER_ANSWER = 0.3
-PAUSE_AFTER_EXPLANATION = 0.5
-
-
 def get_client() -> ElevenLabs:
     """Get ElevenLabs client."""
     if not ELEVENLABS_API_KEY:
         raise ValueError("ELEVENLABS_API_KEY not set in environment")
     return ElevenLabs(api_key=ELEVENLABS_API_KEY)
-
-
-def get_audio_duration(audio_path: str) -> float:
-    """Get duration of an audio file using ffprobe."""
-    cmd = [
-        'ffprobe', '-v', 'error',
-        '-show_entries', 'format=duration',
-        '-of', 'default=noprint_wrappers=1:nokey=1',
-        audio_path
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-    return float(result.stdout.strip())
-
-
-def generate_silence(duration: float, output_path: str) -> None:
-    """Generate a silence audio file of specified duration."""
-    cmd = [
-        'ffmpeg', '-y',
-        '-f', 'lavfi', '-i', f'anullsrc=r=44100:cl=mono',
-        '-t', str(duration),
-        '-acodec', 'libmp3lame', '-q:a', '2',
-        output_path
-    ]
-    subprocess.run(cmd, capture_output=True, timeout=30)
 
 
 def generate_segment_audio(
@@ -150,34 +123,6 @@ def generate_segment_audio(
     return get_audio_duration(output_path)
 
 
-def extract_english_words_from_script(script: dict) -> set:
-    """
-    Extract English teaching words from script.
-    """
-    english_words = set()
-
-    SPANISH_FILTER = {
-        'resfriado', 'embarazada', 'biblioteca', 'librería', 'sensible',
-        'actualmente', 'pretender', 'éxito', 'recordar', 'realizar',
-        'soportar', 'avergonzado', 'confundido', 'desesperado',
-        'continuar', 'rendirse', 'progresar', 'crecer',
-    }
-
-    question = script.get('question', '')
-    quoted_pattern = r"'([^']+)'"
-
-    is_que_significa = '¿qué significa' in question.lower() or 'que significa' in question.lower()
-
-    if is_que_significa:
-        for match in re.findall(quoted_pattern, question):
-            for word in match.lower().split():
-                clean = re.sub(r'[^\w]', '', word)
-                if clean and len(clean) > 1 and clean not in SPANISH_FILTER:
-                    english_words.add(clean)
-
-    return english_words
-
-
 def generate_quiz_audio_segmented(
     script: dict,
     output_path: str,
@@ -209,7 +154,7 @@ def generate_quiz_audio_segmented(
 
     # Extract English words
     english_words = extract_english_words_from_script(script)
-    print(f"  English words detected: {english_words}")
+    logger.info("English words detected: %s", english_words)
 
     # Create temp directory for assembly
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -245,21 +190,20 @@ def generate_quiz_audio_segmented(
                 'duration': round(end - start, 3),
             }
             segments.append(segment)
-            print(f"  [{seg_id}] {text[:50]}...")
-            print(f"    {start:.2f}s - {end:.2f}s ({end-start:.2f}s)")
+            logger.debug("[%s] %s...", seg_id, text[:50])
+            logger.debug("  %0.2fs - %0.2fs (%0.2fs)", start, end, end - start)
             return segment
 
-        print("=" * 60)
-        print("ELEVENLABS TTS - QUIZ AUDIO")
-        print("=" * 60)
-        print(f"  Voice ID: {voice_id}")
-        print(f"  Model: {MODEL_ID}")
-        print()
+        logger.info("=" * 60)
+        logger.info("ELEVENLABS TTS - QUIZ AUDIO")
+        logger.info("=" * 60)
+        logger.info("Voice ID: %s", voice_id)
+        logger.info("Model: %s", MODEL_ID)
 
         # ============================================================
         # 1. QUESTION
         # ============================================================
-        print("\n[1] QUESTION")
+        logger.info("[1] QUESTION")
         q_path = os.path.join(temp_dir, "question.mp3")
         generate_segment_audio(
             text=question,
@@ -276,7 +220,7 @@ def generate_quiz_audio_segmented(
         # 2-3. TRANSITION + OPTIONS (COMBINED)
         # Generate all options in ONE call for consistency
         # ============================================================
-        print("\n[2-3] OPTIONS (combined)")
+        logger.info("[2-3] OPTIONS (combined)")
 
         # Build combined text
         option_lines = ["Escucha las opciones."]
@@ -287,9 +231,9 @@ def generate_quiz_audio_segmented(
             option_lines.append(f"Opción {letter}, {word}.")
 
         combined_text = " ".join(option_lines)
-        print(f"  Combined text ({len(combined_text)} chars):")
+        logger.debug("Combined text (%d chars):", len(combined_text))
         for line in option_lines:
-            print(f"    {line}")
+            logger.debug("  %s", line)
 
         # Generate combined options
         combined_path = os.path.join(temp_dir, "options_combined.mp3")
@@ -302,7 +246,7 @@ def generate_quiz_audio_segmented(
         )
 
         combined_duration = get_audio_duration(combined_path)
-        print(f"  Combined duration: {combined_duration:.2f}s")
+        logger.debug("Combined duration: %.2fs", combined_duration)
 
         # Add combined audio
         combined_start = running_time
@@ -328,7 +272,7 @@ def generate_quiz_audio_segmented(
         # ============================================================
         # 4. THINK (pre-recorded or generate)
         # ============================================================
-        print("\n[4] THINK")
+        logger.info("[4] THINK")
         think_path = str(SPANISH_DIR / "piensa_bien.mp3")
         if os.path.exists(think_path):
             think_start, think_end, _ = add_audio(think_path)
@@ -343,7 +287,7 @@ def generate_quiz_audio_segmented(
         # ============================================================
         # 5. COUNTDOWN (pre-recorded or generate)
         # ============================================================
-        print("\n[5] COUNTDOWN")
+        logger.info("[5] COUNTDOWN")
         for num, name in [('3', 'tres'), ('2', 'dos'), ('1', 'uno')]:
             cd_path = str(SPANISH_DIR / f"{name}.mp3")
             if os.path.exists(cd_path):
@@ -359,10 +303,10 @@ def generate_quiz_audio_segmented(
         # ============================================================
         # 6. ANSWER
         # ============================================================
-        print("\n[6] ANSWER")
+        logger.info("[6] ANSWER")
         answer_start = running_time
         full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
-        print(f"  Answer: '{full_answer_text}'")
+        logger.debug("Answer: '%s'", full_answer_text)
 
         ans_path = os.path.join(temp_dir, "answer.mp3")
         generate_segment_audio(full_answer_text, ans_path, voice_id)
@@ -376,7 +320,7 @@ def generate_quiz_audio_segmented(
         # 7. EXPLANATION
         # ============================================================
         if explanation.strip():
-            print("\n[7] EXPLANATION")
+            logger.info("[7] EXPLANATION")
             exp_path = os.path.join(temp_dir, "explanation.mp3")
             generate_segment_audio(
                 text=explanation,
@@ -390,14 +334,14 @@ def generate_quiz_audio_segmented(
             add_silence(PAUSE_AFTER_EXPLANATION)
 
         total_duration = running_time
-        print(f"\n{'=' * 60}")
-        print(f"Total duration: {total_duration:.2f}s")
-        print(f"{'=' * 60}")
+        logger.info("=" * 60)
+        logger.info("Total duration: %.2fs", total_duration)
+        logger.info("=" * 60)
 
         # ============================================================
         # CONCATENATE
         # ============================================================
-        print("\nConcatenating audio files...")
+        logger.info("Concatenating audio files...")
         concat_list_path = os.path.join(temp_dir, "concat.txt")
         with open(concat_list_path, 'w') as f:
             for audio_file in audio_files:
@@ -413,10 +357,10 @@ def generate_quiz_audio_segmented(
         ]
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
         if result.returncode != 0:
-            print(f"FFmpeg error: {result.stderr}")
+            logger.error("FFmpeg error: %s", result.stderr)
             raise RuntimeError(f"FFmpeg concatenation failed: {result.stderr}")
 
-        print(f"Audio saved: {output_path}")
+        logger.info("Audio saved: %s", output_path)
 
         # Build result
         segment_times = {seg['id']: {
@@ -446,7 +390,7 @@ def generate_quiz_audio_segmented(
         import json
         with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(result, f, ensure_ascii=False, indent=2)
-        print(f"Timestamps saved: {json_path}")
+        logger.info("Timestamps saved: %s", json_path)
 
         return result
 
@@ -456,12 +400,11 @@ def list_voices() -> None:
     client = get_client()
     response = client.voices.get_all()
 
-    print("\nAvailable ElevenLabs voices:")
+    logger.info("Available ElevenLabs voices:")
     for voice in response.voices:
-        print(f"  {voice.name} (ID: {voice.voice_id})")
+        logger.info("  %s (ID: %s)", voice.name, voice.voice_id)
         if voice.labels:
-            print(f"    Labels: {voice.labels}")
-        print()
+            logger.debug("    Labels: %s", voice.labels)
 
 
 def test_voice(
@@ -473,8 +416,8 @@ def test_voice(
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
     voice_id = voice_id or DEFAULT_VOICE_ID
 
-    print(f"Testing voice: {voice_id}")
-    print(f"Text: {text}")
+    logger.info("Testing voice: %s", voice_id)
+    logger.debug("Text: %s", text)
 
     duration = generate_segment_audio(
         text=text,
@@ -482,8 +425,8 @@ def test_voice(
         voice_id=voice_id,
     )
 
-    print(f"Duration: {duration:.2f}s")
-    print(f"Saved: {output_path}")
+    logger.info("Duration: %.2fs", duration)
+    logger.info("Saved: %s", output_path)
 
 
 def regenerate_audio_library(voice_id: str = None) -> None:
@@ -512,14 +455,13 @@ def regenerate_audio_library(voice_id: str = None) -> None:
         "correcto_d.mp3": "Correcto. La respuesta es D.",
     }
 
-    print(f"Regenerating audio library with ElevenLabs voice: {voice_id}")
-    print(f"Output directory: {SPANISH_DIR}")
-    print()
+    logger.info("Regenerating audio library with ElevenLabs voice: %s", voice_id)
+    logger.info("Output directory: %s", SPANISH_DIR)
 
     for filename, text in phrases.items():
         output_path = str(SPANISH_DIR / filename)
-        print(f"  Generating: {filename}")
-        print(f"    Text: {text}")
+        logger.info("Generating: %s", filename)
+        logger.debug("  Text: %s", text)
 
         try:
             duration = generate_segment_audio(
@@ -527,14 +469,12 @@ def regenerate_audio_library(voice_id: str = None) -> None:
                 output_path=output_path,
                 voice_id=voice_id,
             )
-            print(f"    Duration: {duration:.2f}s")
-            print(f"    Saved: {output_path}")
+            logger.info("  Duration: %.2fs", duration)
+            logger.info("  Saved: %s", output_path)
         except Exception as e:
-            print(f"    ERROR: {e}")
+            logger.error("  %s", e)
 
-        print()
-
-    print("Audio library regeneration complete!")
+    logger.info("Audio library regeneration complete!")
 
 
 if __name__ == "__main__":

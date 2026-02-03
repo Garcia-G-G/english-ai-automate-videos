@@ -7,6 +7,7 @@ Supports multiple video types: educational, quiz, true_false, fill_blank, pronun
 
 import argparse
 import json
+import logging
 import os
 import random
 import sys
@@ -15,6 +16,8 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 from openai import OpenAI
+
+logger = logging.getLogger(__name__)
 
 # Load .env file from project root
 ROOT = Path(__file__).parent.parent
@@ -408,6 +411,110 @@ def build_prompt(category: str, topic: dict, video_type: str = "educational") ->
         raise ValueError(f"Unknown video type: {video_type}. Choose from: {VIDEO_TYPES}")
 
 
+def validate_and_clean_script(script: dict, video_type: str) -> dict:
+    """
+    Validate and clean generated script for TTS compatibility.
+
+    Ensures:
+    - English phrases are properly quoted
+    - No orphaned quotes
+    - Script flows naturally for speech
+    - Required fields are present
+    """
+    import re
+
+    errors = []
+    warnings = []
+
+    # Required fields by type
+    required_fields = {
+        "educational": ["full_script", "english_phrases", "hook"],
+        "quiz": ["full_script", "question", "options", "correct", "explanation"],
+        "true_false": ["full_script", "statement", "correct", "explanation"],
+        "fill_blank": ["full_script", "sentence", "options", "correct"],
+        "pronunciation": ["full_script", "word", "phonetic"],
+    }
+
+    # Check required fields
+    for field in required_fields.get(video_type, ["full_script"]):
+        if field not in script or not script[field]:
+            errors.append(f"Missing required field: {field}")
+
+    if errors:
+        script["_validation_errors"] = errors
+        return script
+
+    full_script = script.get("full_script", "")
+
+    # Fix common quote issues
+    # 1. Normalize quotes: smart quotes to straight quotes
+    full_script = full_script.replace("'", "'").replace("'", "'")
+    full_script = full_script.replace(""", '"').replace(""", '"')
+
+    # 2. Count quotes - should be balanced
+    single_quotes = full_script.count("'")
+    if single_quotes % 2 != 0:
+        warnings.append(f"Unbalanced single quotes ({single_quotes})")
+        # Try to fix by finding orphaned quotes
+        # This is a simple heuristic - remove trailing orphan quote
+        if full_script.count("'") % 2 != 0:
+            # Find all quoted sections
+            parts = full_script.split("'")
+            if len(parts) > 1:
+                # Rebuild with balanced quotes
+                fixed = []
+                for i, part in enumerate(parts):
+                    fixed.append(part)
+                    if i < len(parts) - 1:
+                        # Add quote only if it looks like start/end of English phrase
+                        next_part = parts[i + 1] if i + 1 < len(parts) else ""
+                        # Check if next part starts with English word pattern
+                        if re.match(r'^[A-Za-z]', next_part):
+                            fixed.append("'")
+                full_script = "".join(fixed)
+
+    # 3. Ensure english_phrases matches quoted words in script
+    if "english_phrases" in script:
+        quoted = re.findall(r"'([^']+)'", full_script)
+        current_phrases = set(p.lower() for p in script["english_phrases"])
+        found_phrases = set(q.lower() for q in quoted)
+
+        # Add any quoted phrases not in the list
+        for phrase in found_phrases:
+            phrase_words = phrase.split()
+            # Only add if it looks like English (at least one English word)
+            if any(len(w) > 1 for w in phrase_words):
+                if phrase not in current_phrases:
+                    script["english_phrases"].append(phrase)
+                    warnings.append(f"Added missing phrase: '{phrase}'")
+
+    # 4. Clean up script for TTS
+    # Remove multiple spaces
+    full_script = re.sub(r'\s+', ' ', full_script)
+    # Ensure proper spacing around punctuation
+    full_script = re.sub(r'\s+([.,!?;:])', r'\1', full_script)
+    full_script = re.sub(r'([.,!?;:])([A-Za-z])', r'\1 \2', full_script)
+
+    # 5. Validate countdown for quiz/true_false
+    if video_type in ["quiz", "true_false"]:
+        spanish_countdown = any(x in full_script.lower() for x in ["tres", "dos", "uno"])
+        english_countdown = any(x in full_script.lower() for x in ["three", "two", "one"])
+
+        if english_countdown and not spanish_countdown:
+            warnings.append("Countdown is in English, should be Spanish (Tres, dos, uno)")
+            # Auto-fix
+            full_script = re.sub(r'\bthree\b', 'Tres', full_script, flags=re.IGNORECASE)
+            full_script = re.sub(r'\btwo\b', 'dos', full_script, flags=re.IGNORECASE)
+            full_script = re.sub(r'\bone\b', 'uno', full_script, flags=re.IGNORECASE)
+
+    script["full_script"] = full_script.strip()
+
+    if warnings:
+        script["_validation_warnings"] = warnings
+
+    return script
+
+
 def generate_script(category: str, topic: dict, video_type: str = "educational") -> dict:
     """Call OpenAI API to generate a script."""
 
@@ -418,12 +525,14 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
     client = OpenAI(api_key=api_key)
     prompt = build_prompt(category, topic, video_type)
 
-    print(f"Calling OpenAI API ({MODEL}) for {video_type} video...")
+    logger.info(f"Calling OpenAI API ({MODEL}) for {video_type} video...")
 
     response = client.chat.completions.create(
         model=MODEL,
         max_tokens=MAX_TOKENS,
+        temperature=0.7,  # Slightly creative but consistent
         messages=[
+            {"role": "system", "content": "You are an expert bilingual Spanish-English teacher creating viral TikTok content. Always respond with valid JSON only."},
             {"role": "user", "content": prompt}
         ]
     )
@@ -439,8 +548,8 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
 
         script = json.loads(response_text)
     except json.JSONDecodeError as e:
-        print(f"Warning: Failed to parse JSON response: {e}")
-        print(f"Raw response:\n{response_text}")
+        logger.warning(f"Failed to parse JSON response: {e}")
+        logger.debug(f"Raw response:\n{response_text}")
         raise
 
     # Ensure type is set
@@ -453,8 +562,8 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
         unique_values = set(option_values)
 
         if len(unique_values) < len(option_values):
-            print(f"  WARNING: Quiz has duplicate options: {list(options.values())}")
-            print(f"  Regenerating with different options...")
+            logger.warning(f"Quiz has duplicate options: {list(options.values())}")
+            logger.info("Regenerating with different options...")
             # Retry once with explicit instruction
             retry_prompt = prompt + "\n\nIMPORTANTE: Las 4 opciones A, B, C, D DEBEN ser palabras COMPLETAMENTE DIFERENTES. No repitas ninguna opción."
             retry_response = client.chat.completions.create(
@@ -471,7 +580,7 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
                 script = json.loads(retry_text)
                 script["type"] = video_type
             except:
-                print("  Retry failed, using original")
+                logger.warning("Retry failed, using original")
 
     # Add metadata
     script["_meta"] = {
@@ -481,6 +590,14 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
         "generated_at": datetime.now().isoformat(),
         "model": MODEL
     }
+
+    # Validate and clean script for TTS compatibility
+    script = validate_and_clean_script(script, video_type)
+
+    if script.get("_validation_errors"):
+        logger.warning(f"Script validation errors: {script['_validation_errors']}")
+    if script.get("_validation_warnings"):
+        logger.info(f"Script validation warnings: {script['_validation_warnings']}")
 
     return script
 

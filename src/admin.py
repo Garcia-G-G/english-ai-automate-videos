@@ -166,7 +166,8 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             topic = find_topic(category, topic_name)
         else:
             category, topic = get_random_topic()
-            topic_name = topic.get("english") or topic.get("topic") or topic.get("wrong")
+            topic_name = (topic.get("english") or topic.get("topic") or topic.get("wrong")
+                         or topic.get("word") or topic.get("sentence") or str(topic))
 
         update_job(job_id,
                    category=category,
@@ -208,18 +209,42 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         audio_dir.mkdir(parents=True, exist_ok=True)
         audio_path = audio_dir / f"{unique_name}.mp3"
 
+        # Validate script text before TTS
         full_script = script_data.get('full_script', '')
+        if not full_script or len(full_script.strip()) < 10:
+            raise Exception(f"Script has empty or too short full_script (length={len(full_script)}). Script keys: {list(script_data.keys())}")
+
+        print(f"[Pipeline] Script text: {len(full_script)} chars, starts with: {full_script[:100]}...")
+
+        # Save script to a temp JSON for --script mode (avoids CLI escaping issues)
+        tts_script_path = audio_dir / f"{unique_name}.json"
+        with open(tts_script_path, 'w', encoding='utf-8') as f:
+            json.dump(script_data, f, ensure_ascii=False, indent=2)
 
         tts_cmd = [
             "python3", str(ROOT / "src" / "tts_openai.py"),
-            full_script,
-            "-o", str(audio_path)
+            "--script", str(tts_script_path.resolve()),
+            "-o", str(audio_path.resolve())
         ]
 
-        tts_result = subprocess.run(tts_cmd, capture_output=True, text=True)
+        tts_result = subprocess.run(tts_cmd, capture_output=True, text=True, timeout=300)
+
+        if tts_result.stdout:
+            print(f"[TTS stdout]: {tts_result.stdout[-1000:]}")
+        if tts_result.stderr:
+            print(f"[TTS stderr]: {tts_result.stderr[-1000:]}")
 
         if tts_result.returncode != 0:
-            raise Exception(f"TTS failed: {tts_result.stderr}")
+            raise Exception(f"TTS failed: {tts_result.stderr[-500:]}")
+
+        if not audio_path.exists():
+            raise Exception(f"TTS completed but audio file not created: {audio_path}")
+
+        audio_size = audio_path.stat().st_size
+        if audio_size < 1000:
+            raise Exception(f"TTS audio suspiciously small ({audio_size} bytes): {audio_path}")
+
+        print(f"[Pipeline] Audio verified: {audio_path.name} ({audio_size:,} bytes)")
 
         update_job(job_id,
                    current_step=f"Step 3/4: Audio generated - {audio_path.name}",
@@ -242,22 +267,34 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                    current_step="Step 4/4: Rendering video (this may take a minute)...",
                    progress=60)
 
+        # Verify audio and data files exist before rendering
+        json_path = audio_path.with_suffix('.json')
+        if not audio_path.exists():
+            raise Exception(f"Audio file missing before video render: {audio_path}")
+        if not json_path.exists():
+            raise Exception(f"TTS data file missing: {json_path}")
+
         pending_type_dir = PENDING_DIR / video_type
         pending_type_dir.mkdir(parents=True, exist_ok=True)
         video_path = pending_type_dir / f"{unique_name}.mp4"
 
         video_cmd = [
-            "python3", str(ROOT / "src" / "video.py"),
-            "-a", str(audio_path),
-            "-d", str(json_path),
-            "-o", str(video_path),
+            "python3", "-m", "video",
+            "-a", str(audio_path.resolve()),
+            "-d", str(json_path.resolve()),
+            "-o", str(video_path.resolve()),
             "-t", video_type
         ]
 
-        video_result = subprocess.run(video_cmd, capture_output=True, text=True)
+        video_result = subprocess.run(video_cmd, capture_output=True, text=True, cwd=str(ROOT / "src"), timeout=600)
+
+        if video_result.stdout:
+            print(f"[Video stdout]: {video_result.stdout[-1000:]}")
+        if video_result.stderr:
+            print(f"[Video stderr]: {video_result.stderr[-1000:]}")
 
         if video_result.returncode != 0:
-            raise Exception(f"Video generation failed: {video_result.stderr}")
+            raise Exception(f"Video generation failed: {video_result.stderr[-500:]}")
 
         update_job(job_id,
                    current_step=f"Step 4/4: Video rendered - {video_path.name}",
@@ -282,8 +319,11 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         complete_job(job_id, success=True, video_path=str(video_path))
 
     except Exception as e:
-        result["error"] = str(e)
-        complete_job(job_id, success=False, error=str(e))
+        import traceback
+        error_msg = f"{str(e)}\n{traceback.format_exc()}"
+        result["error"] = error_msg
+        complete_job(job_id, success=False, error=error_msg[:2000])
+        print(f"[Pipeline ERROR]: {error_msg}")
 
     return result
 

@@ -18,6 +18,11 @@ from .easing import (
 
 from .subtitle_processor import SubtitleProcessor, clean_word_for_display
 
+from .styles import (
+    AnimationStyle, CleanPopStyle, EnergeticStyle, KaraokeStyle,
+    STYLES, get_style,
+)
+
 from .text_renderer import (
     font, line_break,
     draw_text_solid, draw_text_with_glow, draw_text_centered,
@@ -53,4 +58,7 @@ __all__ = [
     'ENGLISH_WORD_SCALE', 'OUTLINE_THICK',
     'EMPHASIS', 'VIDEO_WIDTH', 'VIDEO_HEIGHT', 'TEXT_AREA_WIDTH',
     'MARGIN_X', 'GROUP_TRANSITION',
+    # Animation styles
+    'AnimationStyle', 'CleanPopStyle', 'EnergeticStyle', 'KaraokeStyle',
+    'STYLES', 'get_style',
 ]
