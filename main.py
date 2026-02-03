@@ -19,12 +19,27 @@ Usage:
 """
 
 import argparse
+import fnmatch
 import json
+import logging
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
+
+
+def setup_logging(verbose: bool = False):
+    """Configure logging for the entire application."""
+    level = logging.DEBUG if verbose else logging.INFO
+    logging.basicConfig(
+        level=level,
+        format='%(asctime)s [%(name)s] %(levelname)s: %(message)s',
+        datefmt='%H:%M:%S'
+    )
 
 # Paths
 ROOT = Path(__file__).parent
@@ -82,86 +97,44 @@ def run_tts(text: str, audio_path: Path, script_data: dict = None, use_openai: b
     from dotenv import load_dotenv
     load_dotenv()
 
-    print(f"\n{'='*50}")
-    print("STEP 2: Generating Audio (TTS)")
-    print(f"{'='*50}")
-    print(f"Output: {audio_path}")
+    from tts_providers import get_tts_provider
+
+    logger.info("=" * 50)
+    logger.info("STEP 2: Generating Audio (TTS)")
+    logger.info("=" * 50)
+    logger.info("Output: %s", audio_path)
 
     # Get TTS provider from environment (default: elevenlabs)
-    tts_provider = os.getenv("TTS_PROVIDER", "elevenlabs").lower()
+    provider_name = os.getenv("TTS_PROVIDER", "elevenlabs").lower()
 
-    if tts_provider == "elevenlabs":
-        # Use ElevenLabs TTS (best quality, multilingual)
-        if script_path and script_path.exists():
-            cmd = [
-                "python3", str(SRC / "tts_elevenlabs.py"),
-                "--script", str(script_path),
-                "-o", str(audio_path),
-            ]
-        else:
-            cmd = [
-                "python3", str(SRC / "tts_elevenlabs.py"),
-                "--test",
-                "--text", text,
-                "-o", str(audio_path),
-            ]
-        print("Engine: ElevenLabs TTS (eleven_multilingual_v2)")
-    elif tts_provider == "google":
-        # Use Google Cloud TTS (best for Spanish)
-        if script_path and script_path.exists():
-            cmd = [
-                "python3", str(SRC / "tts_google.py"),
-                "--script", str(script_path),
-                "-o", str(audio_path),
-            ]
-        else:
-            cmd = [
-                "python3", str(SRC / "tts_google.py"),
-                "--text", text,
-                "-o", str(audio_path),
-            ]
-        print("Engine: Google Cloud TTS")
-    elif use_openai or tts_provider == "openai":
-        # Use OpenAI TTS (more reliable, better bilingual flow)
-        # If we have a script path, use --script for automatic English detection
-        if script_path and script_path.exists():
-            cmd = [
-                "python3", str(SRC / "tts_openai.py"),
-                "--script", str(script_path),
-                "-o", str(audio_path),
-            ]
-            print("Engine: OpenAI TTS + Whisper (auto English detection)")
-        else:
-            cmd = [
-                "python3", str(SRC / "tts_openai.py"),
-                text,
-                "-o", str(audio_path),
-            ]
-            print("Engine: OpenAI TTS + Whisper")
-    else:
-        # Use Edge TTS (free, but can be unreliable)
-        cmd = [
-            "python3", str(SRC / "tts.py"),
-            text,
-            "-o", str(audio_path),
-            "--mode", "hybrid",
-            "--rate", "+15%"
-        ]
-        print("Engine: Edge TTS (hybrid mode)")
+    # "openai" flag from legacy callers
+    if provider_name not in ("elevenlabs", "google", "openai", "edge"):
+        provider_name = "openai" if use_openai else "edge"
 
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    logger.info("Engine: %s", provider_name)
 
-    if result.returncode != 0:
-        print(f"TTS Error: {result.stderr}")
-        # Fallback to Edge TTS if OpenAI fails
-        if use_openai:
-            print("Falling back to Edge TTS...")
+    try:
+        provider = get_tts_provider(provider_name)
+
+        if script_data:
+            # Primary path: generate from structured script data
+            result = provider.generate_from_script(
+                script_data, str(audio_path),
+                script_path=str(script_path) if script_path else None,
+            )
+        else:
+            # Simple text-only path
+            result = provider.generate_audio(text, str(audio_path))
+
+    except Exception as e:
+        logger.error("TTS failed (%s): %s", provider_name, e)
+        # Fallback to Edge TTS if primary provider fails
+        if provider_name != "edge":
+            logger.warning("Falling back to Edge TTS...")
             return run_tts(text, audio_path, script_data, use_openai=False)
         return None, None
 
-    print(result.stdout)
-
-    # Merge script data with TTS timestamps for video generation
+    # Merge script data with TTS result for video generation
     json_path = audio_path.with_suffix('.json')
     if json_path.exists() and script_data:
         with open(json_path, 'r', encoding='utf-8') as f:
@@ -182,7 +155,7 @@ def run_video(audio_path: Path, data_path: Path, video_path: Path,
               video_type: str = None, background: str = None) -> Path:
     """Run video generator."""
     cmd = [
-        "python3", str(SRC / "video.py"),
+        "python3", "-m", "video",
         "-a", str(audio_path),
         "-d", str(data_path),
         "-o", str(video_path)
@@ -193,22 +166,22 @@ def run_video(audio_path: Path, data_path: Path, video_path: Path,
     if background:
         cmd.extend(["-b", background])
 
-    print(f"\n{'='*50}")
-    print("STEP 3: Generating Video")
-    print(f"{'='*50}")
-    print(f"Type: {video_type or 'auto-detect'}")
+    logger.info("=" * 50)
+    logger.info("STEP 3: Generating Video")
+    logger.info("=" * 50)
+    logger.info("Type: %s", video_type or 'auto-detect')
     if background:
-        print(f"Background: {background}")
-    print(f"Output: {video_path}")
+        logger.info("Background: %s", background)
+    logger.info("Output: %s", video_path)
 
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(SRC))
 
     if result.returncode != 0:
-        print(f"Video Error: {result.stderr}")
-        print(f"Stdout: {result.stdout}")
+        logger.error("Video generation failed: %s", result.stderr)
+        logger.debug("Stdout: %s", result.stdout)
         return None
 
-    print(result.stdout)
+    logger.debug(result.stdout)
     return video_path
 
 
@@ -226,11 +199,11 @@ def list_scripts():
     all_scripts = list(scripts_dir.glob("*.json")) + list(scripts_dir.glob("*/*.json"))
 
     if not all_scripts:
-        print("No scripts found in output/scripts/")
+        logger.info("No scripts found in output/scripts/")
         return
 
-    print("\nAvailable Scripts:")
-    print("=" * 50)
+    logger.info("Available Scripts:")
+    logger.info("=" * 50)
 
     # Group by type
     by_type = {}
@@ -245,11 +218,11 @@ def list_scripts():
             pass
 
     for vtype in sorted(by_type.keys()):
-        print(f"\n  [{vtype}]")
+        logger.info("  [%s]", vtype)
         for s, data in by_type[vtype]:
             hook = data.get('hook', data.get('question', data.get('statement', 'No preview')))[:35]
             rel_path = s.relative_to(scripts_dir)
-            print(f"    {rel_path}: {hook}...")
+            logger.info("    %s: %s...", rel_path, hook)
 
 
 def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None) -> Path:
@@ -265,34 +238,34 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
     # Extract text for TTS
     full_script = script_data.get('full_script', '')
     if not full_script:
-        print("Error: Script has no 'full_script' field")
+        logger.error("Script has no 'full_script' field")
         return None
 
     # Save script first so TTS can use automatic English detection
     with open(script_path, 'w', encoding='utf-8') as f:
         json.dump(script_data, f, ensure_ascii=False, indent=2)
-    print(f"Script saved: {script_path.relative_to(ROOT)}")
+    logger.info("Script saved: %s", script_path.relative_to(ROOT))
 
     # Step 2: TTS (pass script_path for automatic English detection)
     audio_result, json_path = run_tts(full_script, audio_path, script_data, script_path=script_path)
     if not audio_result or not audio_result.exists():
-        print("TTS failed!")
+        logger.error("TTS failed!")
         return None
 
     # Step 3: Video
     video_result = run_video(audio_result, json_path, video_path, video_type, background)
     if not video_result or not video_result.exists():
-        print("Video generation failed!")
+        logger.error("Video generation failed!")
         return None
 
-    print(f"\n{'='*50}")
-    print("PIPELINE COMPLETE!")
-    print(f"{'='*50}")
-    print(f"Type: {video_type}")
-    print(f"Script: {script_path.relative_to(ROOT)}")
-    print(f"Audio: {audio_result.relative_to(ROOT)}")
-    print(f"Video: {video_result.relative_to(ROOT)}")
-    print(f"{'='*50}")
+    logger.info("=" * 50)
+    logger.info("PIPELINE COMPLETE!")
+    logger.info("=" * 50)
+    logger.info("Type: %s", video_type)
+    logger.info("Script: %s", script_path.relative_to(ROOT))
+    logger.info("Audio: %s", audio_result.relative_to(ROOT))
+    logger.info("Video: %s", video_result.relative_to(ROOT))
+    logger.info("=" * 50)
 
     return video_result
 
@@ -316,40 +289,40 @@ def run_from_text(text: str, name: str = None, video_type: str = "educational", 
 def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational", background: str = None) -> Path:
     """Generate a script with GPT and run the full pipeline."""
 
-    print(f"\n{'='*50}")
-    print("STEP 1: Generating Script (GPT)")
-    print(f"{'='*50}")
-    print(f"Category: {category}")
-    print(f"Topic: {topic_name}")
-    print(f"Video Type: {video_type}")
+    logger.info("=" * 50)
+    logger.info("STEP 1: Generating Script (GPT)")
+    logger.info("=" * 50)
+    logger.info("Category: %s", category)
+    logger.info("Topic: %s", topic_name)
+    logger.info("Video Type: %s", video_type)
 
     try:
         script_data = generate_script(category, topic, video_type)
     except Exception as e:
-        print(f"Script generation failed: {e}")
+        logger.error("Script generation failed: %s", e)
         return None
 
     # Output name for pipeline
     output_name = topic_name.replace(' ', '_').lower()
 
     # Show preview based on type
-    print(f"\nScript Preview:")
+    logger.info("Script Preview:")
     if video_type == "educational":
-        print(f"  Hook: {script_data.get('hook', 'N/A')}")
+        logger.info("  Hook: %s", script_data.get('hook', 'N/A'))
     elif video_type == "quiz":
-        print(f"  Question: {script_data.get('question', 'N/A')}")
-        print(f"  Options: {script_data.get('options', {})}")
+        logger.info("  Question: %s", script_data.get('question', 'N/A'))
+        logger.info("  Options: %s", script_data.get('options', {}))
     elif video_type == "true_false":
-        print(f"  Statement: {script_data.get('statement', 'N/A')}")
-        print(f"  Correct: {script_data.get('correct', 'N/A')}")
+        logger.info("  Statement: %s", script_data.get('statement', 'N/A'))
+        logger.info("  Correct: %s", script_data.get('correct', 'N/A'))
     elif video_type == "fill_blank":
-        print(f"  Sentence: {script_data.get('sentence', 'N/A')}")
-        print(f"  Correct: {script_data.get('correct', 'N/A')}")
+        logger.info("  Sentence: %s", script_data.get('sentence', 'N/A'))
+        logger.info("  Correct: %s", script_data.get('correct', 'N/A'))
     elif video_type == "pronunciation":
-        print(f"  Word: {script_data.get('word', 'N/A')}")
-        print(f"  Phonetic: {script_data.get('phonetic', 'N/A')}")
+        logger.info("  Word: %s", script_data.get('word', 'N/A'))
+        logger.info("  Phonetic: %s", script_data.get('phonetic', 'N/A'))
 
-    print(f"  Script: {script_data.get('full_script', 'N/A')[:100]}...")
+    logger.info("  Script: %s...", script_data.get('full_script', 'N/A')[:100])
 
     # Run rest of pipeline
     return run_pipeline(script_data, output_name, video_type, background)
@@ -399,8 +372,13 @@ Examples:
                         help="Background preset (e.g. aurora_borealis, energetic_orbs). Default: random")
     parser.add_argument("--batch", "-b", type=int,
                         help="Generate multiple videos from random topics")
+    parser.add_argument("--verbose", "-v", action="store_true",
+                        help="Enable verbose/debug logging")
 
     args = parser.parse_args()
+
+    # Configure logging
+    setup_logging(verbose=args.verbose)
 
     # List scripts mode
     if args.list_scripts:
@@ -479,5 +457,115 @@ Examples:
     parser.print_help()
 
 
+def _human_size(size_bytes: int) -> str:
+    """Convert bytes to human-readable string."""
+    for unit in ("B", "KB", "MB", "GB"):
+        if abs(size_bytes) < 1024:
+            return f"{size_bytes:.1f} {unit}"
+        size_bytes /= 1024
+    return f"{size_bytes:.1f} TB"
+
+
+# ANSI color helpers
+_BOLD = "\033[1m"
+_RED = "\033[91m"
+_GREEN = "\033[92m"
+_YELLOW = "\033[93m"
+_CYAN = "\033[96m"
+_RESET = "\033[0m"
+
+
+def clean_output():
+    """Delete generated output files with filtering options."""
+    parser = argparse.ArgumentParser(
+        prog="main.py clean",
+        description="Delete generated output files (video, audio, scripts).",
+    )
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Show what would be deleted without deleting")
+    parser.add_argument("--older-than", type=int, default=None, metavar="DAYS",
+                        help="Only delete files older than N days")
+    parser.add_argument("--pattern", type=str, default=None,
+                        help='Only delete files matching glob pattern (e.g. "*.mp4")')
+    parser.add_argument("--type", type=str, default="all",
+                        choices=["video", "audio", "scripts", "all"],
+                        help="Which subfolder to clean (default: all)")
+    parser.add_argument("--verbose", "-v", action="store_true",
+                        help="Show each file being deleted")
+    parser.add_argument("--yes", "-y", action="store_true",
+                        help="Skip confirmation prompt")
+    args = parser.parse_args(sys.argv[2:])
+
+    # Determine which subdirectories to scan
+    subdirs = ["video", "audio", "scripts"] if args.type == "all" else [args.type]
+
+    now = time.time()
+    collected: list[Path] = []
+
+    for sub in subdirs:
+        target = OUTPUT_DIR / sub
+        if not target.exists():
+            continue
+        for f in target.rglob("*"):
+            if not f.is_file():
+                continue
+            if args.pattern and not fnmatch.fnmatch(f.name, args.pattern):
+                continue
+            if args.older_than is not None:
+                age_days = (now - f.stat().st_mtime) / 86400
+                if age_days < args.older_than:
+                    continue
+            collected.append(f)
+
+    if not collected:
+        print(f"{_GREEN}Nothing to delete.{_RESET}")
+        return
+
+    total_size = sum(f.stat().st_size for f in collected)
+
+    # Summary
+    print(f"\n{_BOLD}Clean Summary{_RESET}")
+    print(f"  {_CYAN}Files:{_RESET}      {len(collected)}")
+    print(f"  {_CYAN}Total size:{_RESET} {_human_size(total_size)}")
+    print(f"  {_CYAN}Location:{_RESET}   {OUTPUT_DIR}")
+    if args.pattern:
+        print(f"  {_CYAN}Pattern:{_RESET}    {args.pattern}")
+    if args.older_than is not None:
+        print(f"  {_CYAN}Older than:{_RESET} {args.older_than} days")
+    if args.type != "all":
+        print(f"  {_CYAN}Type:{_RESET}       {args.type}")
+    print()
+
+    if args.dry_run:
+        print(f"{_YELLOW}Dry run -- no files will be deleted.{_RESET}\n")
+        for f in sorted(collected):
+            sz = _human_size(f.stat().st_size)
+            print(f"  {f.relative_to(OUTPUT_DIR)}  ({sz})")
+        return
+
+    # Confirmation
+    if not args.yes:
+        answer = input(f"{_RED}Delete {len(collected)} file(s) ({_human_size(total_size)})? [y/N] {_RESET}")
+        if answer.strip().lower() not in ("y", "yes"):
+            print("Aborted.")
+            return
+
+    deleted = 0
+    for f in collected:
+        try:
+            sz = _human_size(f.stat().st_size)
+            f.unlink()
+            deleted += 1
+            if args.verbose:
+                print(f"  {_RED}deleted{_RESET} {f.relative_to(OUTPUT_DIR)}  ({sz})")
+        except OSError as e:
+            print(f"  {_YELLOW}error{_RESET}   {f.relative_to(OUTPUT_DIR)}: {e}")
+
+    print(f"\n{_GREEN}Deleted {deleted} file(s).{_RESET}")
+
+
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:2] == ["clean"]:
+        clean_output()
+    else:
+        main()

@@ -22,6 +22,9 @@ video:
   height: 1920
   fps: 30
 
+  # Animation style: clean_pop, energetic, karaoke
+  animation_style: "clean_pop"
+
 # Audio/TTS Settings
 audio:
   # Voice settings for ElevenLabs

@@ -12,11 +12,14 @@ Background Types:
 - ken_burns: Slow zoom/pan on static image
 """
 
+import logging
 import math
 import numpy as np
 from typing import List, Tuple, Dict, Optional
 from PIL import Image, ImageDraw, ImageFilter
 import random
+
+logger = logging.getLogger(__name__)
 
 # Video dimensions
 DEFAULT_WIDTH = 1080
@@ -251,7 +254,7 @@ class BackgroundGenerator:
         num_frames = int(loop_duration * fps)
 
         if show_progress:
-            print(f"Pre-rendering {num_frames} frames for {preset_name}...")
+            logger.info(f"Pre-rendering {num_frames} frames for {preset_name}...")
 
         for i in range(num_frames):
             t = i / fps
@@ -259,10 +262,10 @@ class BackgroundGenerator:
             self._frame_cache[i] = frame
 
             if show_progress and (i + 1) % 30 == 0:
-                print(f"  {i + 1}/{num_frames} frames ({(i + 1) / num_frames * 100:.0f}%)")
+                logger.debug(f"  {i + 1}/{num_frames} frames ({(i + 1) / num_frames * 100:.0f}%)")
 
         if show_progress:
-            print(f"  Done! Cached {num_frames} frames")
+            logger.info(f"Done! Cached {num_frames} frames")
 
         return num_frames
 

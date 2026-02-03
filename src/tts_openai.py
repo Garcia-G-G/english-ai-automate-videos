@@ -13,6 +13,7 @@ Much better than edge-tts for bilingual content:
 
 import argparse
 import json
+import logging
 import os
 import sys
 import tempfile
@@ -21,8 +22,19 @@ from pathlib import Path
 
 import re
 
+logger = logging.getLogger(__name__)
+
 from dotenv import load_dotenv
 from openai import OpenAI
+
+from tts_common import (
+    get_audio_duration, generate_silence,
+    extract_english_words_from_script, SPANISH_FILTER,
+    ASSETS_DIR, SPANISH_DIR, WORDS_DIR,
+    PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
+    PAUSE_AFTER_COUNTDOWN, PAUSE_AFTER_LAST_COUNT, PAUSE_AFTER_ANSWER,
+    PAUSE_AFTER_EXPLANATION,
+)
 
 # Load environment variables from .env file
 load_dotenv(Path(__file__).parent.parent / ".env")
@@ -70,95 +82,6 @@ VOICES = {
 DEFAULT_VOICE = "alloy"
 DEFAULT_MODEL = "tts-1"  # or "tts-1-hd" for higher quality
 DEFAULT_SPEED = 0.80  # Slow for natural pacing - no rushing, let it breathe (0.25 to 4.0)
-
-
-def extract_english_words_from_script(script: dict) -> set:
-    """
-    Automatically extract English teaching words from script metadata.
-    These are the ONLY words that should be pronounced in English.
-    Everything else should be Spanish.
-
-    Strategy:
-    1. Extract words in SINGLE QUOTES from full_script - these are always English
-    2. From english_phrases list if provided
-    3. From translations VALUES (not keys)
-
-    Note: Options may be Spanish (for "what does X mean?" quizzes) or English
-    (for "how do you say X?" quizzes). We use quotes as the primary indicator.
-    """
-    english_words = set()
-
-    # Common Spanish words to filter out (even if extracted)
-    # These appear frequently in Spanish quiz questions/answers
-    SPANISH_FILTER = {
-        # False friends - Spanish words that look like English
-        'resfriado', 'estreñido', 'confundido', 'constante', 'embarazada',
-        'biblioteca', 'librería', 'sensible', 'sensitivo', 'actualmente',
-        'pretender', 'éxito', 'recordar', 'realizar', 'soportar',
-        # Common Spanish verbs and adjectives
-        'soy', 'eres', 'somos', 'son', 'estoy', 'estas', 'estamos', 'están',
-        'tengo', 'tienes', 'tiene', 'tenemos', 'tienen',
-        'aburrido', 'aburrida', 'cansado', 'cansada', 'emocionado', 'emocionada',
-        'interesado', 'interesada', 'asustado', 'asustada',
-        'hacer', 'decir', 'buscar', 'encontrar', 'ver', 'dar', 'ir', 'venir',
-        # Common Spanish articles, prepositions, conjunctions
-        'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas',
-        'de', 'del', 'en', 'que', 'es', 'al', 'por', 'con', 'para', 'como',
-        'más', 'pero', 'sus', 'le', 'ya', 'se', 'desde', 'porque', 'cuando',
-        'muy', 'sin', 'sobre', 'ser', 'entre', 'después', 'antes', 'durante',
-        'también', 'fue', 'había', 'hay', 'está', 'esto', 'eso', 'ese', 'esta',
-        # Quiz-specific Spanish words
-        'significa', 'respuesta', 'correcta', 'opciones', 'pregunta',
-        'traducción', 'inglés', 'español', 'dice', 'cómo', 'qué', 'cuál',
-        'fiesta', 'libro', 'palabra', 'frase', 'verbo',
-    }
-
-    question = script.get('question', '')
-    quoted_pattern = r"'([^']+)'"
-
-    # Determine quiz type based on question structure:
-    # Type A: "¿Cómo se dice X en inglés?" → X is Spanish, correct option is English
-    # Type B: "¿Qué significa X en inglés?" → X is English, options are Spanish
-    is_como_se_dice = '¿cómo se dice' in question.lower() or 'como se dice' in question.lower()
-    is_que_significa = '¿qué significa' in question.lower() or 'que significa' in question.lower()
-
-    if is_como_se_dice:
-        # For "how do you say X" questions, extract from the CORRECT OPTION (English)
-        # NOT from the question's quoted text (which is Spanish)
-        correct_letter = script.get('correct', '')
-        options = script.get('options', {})
-        if correct_letter in options:
-            correct_option = options[correct_letter]
-            clean_option = re.sub(r"['\".!?,]", '', correct_option)
-            for word in clean_option.lower().split():
-                if len(word) > 1 and word not in SPANISH_FILTER:
-                    english_words.add(word)
-    elif is_que_significa:
-        # For "what does X mean" questions, X is English
-        for match in re.findall(quoted_pattern, question):
-            for word in match.lower().split():
-                clean = re.sub(r'[^\w]', '', word)
-                if clean and len(clean) > 1 and clean not in SPANISH_FILTER:
-                    english_words.add(clean)
-    else:
-        # Fallback: extract quoted words from question (assume English)
-        for match in re.findall(quoted_pattern, question):
-            for word in match.lower().split():
-                clean = re.sub(r'[^\w]', '', word)
-                if clean and len(clean) > 1 and clean not in SPANISH_FILTER:
-                    english_words.add(clean)
-
-    # SECONDARY: From english_phrases list if explicitly provided
-    for phrase in script.get('english_phrases', []):
-        for word in phrase.lower().split():
-            clean = re.sub(r'[^\w]', '', word)
-            if clean and len(clean) > 1 and clean not in SPANISH_FILTER:
-                english_words.add(clean)
-
-    # NOTE: We don't extract from 'translations' field because its format varies
-    # (sometimes values are English, sometimes Spanish depending on quiz type)
-
-    return english_words
 
 
 def prepare_bilingual_text(text: str, english_words: set) -> str:
@@ -324,10 +247,10 @@ def text_to_speech(
     processed_text = preprocess_for_pauses(text)
 
     # Generate speech
-    print(f"Generating speech with OpenAI TTS...")
-    print(f"  Voice: {voice}")
-    print(f"  Model: {model}")
-    print(f"  Speed: {speed}")
+    logger.info("Generating speech with OpenAI TTS...")
+    logger.debug("  Voice: %s", voice)
+    logger.debug("  Model: %s", model)
+    logger.debug("  Speed: %s", speed)
 
     with client.audio.speech.with_streaming_response.create(
         model=model,
@@ -337,11 +260,11 @@ def text_to_speech(
         response_format="mp3"
     ) as response:
         response.stream_to_file(output_path)
-    print(f"  Audio saved: {output_path}")
-    print(f"  Processed text: {processed_text[:100]}...")
+    logger.info("  Audio saved: %s", output_path)
+    logger.debug("  Processed text: %s...", processed_text[:100])
 
     # Extract timestamps using Whisper
-    print(f"Extracting word timestamps with Whisper...")
+    logger.info("Extracting word timestamps with Whisper...")
     timestamps = extract_timestamps_whisper(output_path, client, original_text=text,
                                             explicit_english=explicit_english)
 
@@ -350,9 +273,9 @@ def text_to_speech(
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(timestamps, f, indent=2, ensure_ascii=False)
 
-    print(f"  Timestamps saved: {json_path}")
-    print(f"  Duration: {timestamps['duration']:.2f}s")
-    print(f"  Words: {len(timestamps['words'])}")
+    logger.info("  Timestamps saved: %s", json_path)
+    logger.info("  Duration: %.2fs", timestamps['duration'])
+    logger.debug("  Words: %d", len(timestamps['words']))
 
     return timestamps
 
@@ -377,11 +300,15 @@ def extract_english_phrases(text: str) -> set:
 
 def is_english_word(word: str, english_from_script: set = None) -> bool:
     """
-    Determine if a word is English based on context.
+    Determine if a word is an English TEACHING word.
 
-    Uses:
-    1. Words extracted from single quotes in the script (highest priority)
-    2. Common English word list (excluding Spanish-English overlap)
+    IMPORTANT: Only returns True for words that are explicitly part of the
+    teaching phrase (from english_phrases). Common English words like
+    "the", "is", "with" are NOT marked as English unless they're part of
+    the teaching phrase.
+
+    This ensures only the words being taught are highlighted in yellow,
+    not every English word in the sentence.
     """
     clean_word = re.sub(r'[^\w]', '', word.lower())
 
@@ -389,16 +316,9 @@ def is_english_word(word: str, english_from_script: set = None) -> bool:
     if not clean_word:
         return False
 
-    # HIGHEST PRIORITY: If it's from the script's English phrases (quoted)
+    # ONLY mark as English if it's from the explicit teaching phrases
+    # This is the key fix: we no longer use the broad ENGLISH_WORDS set
     if english_from_script and clean_word in english_from_script:
-        return True
-
-    # Skip Spanish-English overlap words unless explicitly quoted
-    if clean_word in SPANISH_ENGLISH_OVERLAP:
-        return False
-
-    # Check distinctly English words list
-    if clean_word in ENGLISH_WORDS:
         return True
 
     return False
@@ -515,7 +435,7 @@ def fix_countdown_timing(
             break
 
     if countdown_start_idx < 0 or countdown_end_idx < 0:
-        print("  No countdown found to fix")
+        logger.info("  No countdown found to fix")
         return timestamps
 
     # Get timestamps
@@ -529,7 +449,7 @@ def fix_countdown_timing(
     else:
         cut_time = max(0, countdown_start_time - 0.1)
 
-    print(f"  Fixing countdown timing (starts at {countdown_start_time:.2f}s)")
+    logger.info("  Fixing countdown timing (starts at %.2fs)", countdown_start_time)
 
     # Create temp directory for working files
     temp_dir = tempfile.mkdtemp(prefix="countdown_fix_")
@@ -607,7 +527,7 @@ def fix_countdown_timing(
         result = subprocess.run(cmd_concat, capture_output=True, timeout=60)
 
         if result.returncode != 0:
-            print(f"  Warning: ffmpeg concat failed: {result.stderr.decode()[:200]}")
+            logger.warning("ffmpeg concat failed: %s", result.stderr.decode()[:200])
             return timestamps
 
         # 7. Replace original audio
@@ -615,18 +535,18 @@ def fix_countdown_timing(
         shutil.copy2(output_temp, audio_path)
 
         # 8. Re-run Whisper to get updated timestamps
-        print(f"  Re-extracting timestamps after countdown fix...")
+        logger.info("  Re-extracting timestamps after countdown fix...")
         new_timestamps = extract_timestamps_whisper(audio_path, client, explicit_english=explicit_english)
 
         # Preserve metadata from original
         new_timestamps['text'] = timestamps.get('text', new_timestamps.get('text', ''))
 
-        print(f"  New duration: {new_timestamps['duration']:.2f}s (added {new_timestamps['duration'] - timestamps['duration']:.2f}s)")
+        logger.info("  New duration: %.2fs (added %.2fs)", new_timestamps['duration'], new_timestamps['duration'] - timestamps['duration'])
 
         return new_timestamps
 
     except Exception as e:
-        print(f"  Warning: Countdown fix failed: {e}")
+        logger.warning("Countdown fix failed: %s", e)
         return timestamps
 
     finally:
@@ -636,18 +556,6 @@ def fix_countdown_timing(
             shutil.rmtree(temp_dir)
         except:
             pass
-
-
-def get_audio_duration(audio_path: str) -> float:
-    """Get duration of an audio file using ffprobe."""
-    cmd = [
-        'ffprobe', '-v', 'error',
-        '-show_entries', 'format=duration',
-        '-of', 'default=noprint_wrappers=1:nokey=1',
-        audio_path
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-    return float(result.stdout.strip())
 
 
 def generate_segment_audio(
@@ -684,18 +592,6 @@ def generate_segment_audio(
     return get_audio_duration(output_path)
 
 
-def generate_silence(duration: float, output_path: str) -> None:
-    """Generate a silence audio file of specified duration."""
-    cmd = [
-        'ffmpeg', '-y',
-        '-f', 'lavfi', '-i', f'anullsrc=r=44100:cl=stereo',
-        '-t', str(duration),
-        '-acodec', 'libmp3lame', '-q:a', '2',
-        output_path
-    ]
-    subprocess.run(cmd, capture_output=True, timeout=30)
-
-
 def generate_quiz_audio_segmented(
     script: dict,
     output_path: str,
@@ -721,21 +617,10 @@ def generate_quiz_audio_segmented(
 
     # === PATHS ===
     # Use the SPANISH library - these are the tested, approved audio files
-    SPANISH_DIR = Path(__file__).parent.parent / "assets" / "audio" / "spanish"
-    WORDS_DIR = Path(__file__).parent.parent / "assets" / "audio" / "words"
-    WORDS_DIR.mkdir(parents=True, exist_ok=True)
-
-    # === PAUSE DURATIONS ===
-    PAUSE_AFTER_QUESTION = 0.5
+    # === PAUSE DURATIONS (extras beyond tts_common) ===
     PAUSE_AFTER_TRANSITION = 0.8  # After "Escucha las opciones"
     PAUSE_BETWEEN_LETTER_AND_CONTENT = 0.4
-    PAUSE_AFTER_OPTION = 0.6  # After each option A, B, C, D
-    PAUSE_AFTER_THINK = 0.5  # After "Piensa bien"
-    PAUSE_AFTER_COUNTDOWN = 1.0  # Between countdown numbers
-    PAUSE_AFTER_LAST_COUNT = 0.6
     PAUSE_AFTER_ANSWER_PHRASE = 0.5  # After "Correcto..."
-    PAUSE_AFTER_ANSWER = 0.3  # Before explanation
-    PAUSE_AFTER_EXPLANATION = 0.5  # Ensure explanation has breathing room
 
     # === SCRIPT DATA ===
     question = script.get('question', '¿Pregunta?')
@@ -758,11 +643,11 @@ def generate_quiz_audio_segmented(
         cache_path = WORDS_DIR / f"{safe_name}_{hash_suffix}.mp3"
 
         if cache_path.exists():
-            print(f"      [cached] {text}")
+            logger.debug("      [cached] %s", text)
             return str(cache_path)
 
         # Generate with high quality
-        print(f"      [generating] {text}")
+        logger.debug("      [generating] %s", text)
         client = OpenAI()
         with client.audio.speech.with_streaming_response.create(
             model="tts-1-hd",
@@ -776,12 +661,11 @@ def generate_quiz_audio_segmented(
         return str(cache_path)
 
     try:
-        print("=" * 60)
-        print("QUIZ AUDIO ASSEMBLY")
-        print("=" * 60)
-        print(f"  Spanish audio library: {SPANISH_DIR}")
-        print(f"  Words cache: {WORDS_DIR}")
-        print()
+        logger.info("=" * 60)
+        logger.info("QUIZ AUDIO ASSEMBLY")
+        logger.info("=" * 60)
+        logger.debug("  Spanish audio library: %s", SPANISH_DIR)
+        logger.debug("  Words cache: %s", WORDS_DIR)
 
         segments = []
         audio_files = []
@@ -801,7 +685,7 @@ def generate_quiz_audio_segmented(
             """Add silence to sequence."""
             nonlocal running_time
             silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(duration, silence_path)
+            generate_silence(duration, silence_path, channels="stereo")
             audio_files.append(silence_path)
             running_time += duration
 
@@ -815,14 +699,14 @@ def generate_quiz_audio_segmented(
                 'duration': round(end - start, 3),
             }
             segments.append(segment)
-            print(f"  [{seg_id}] {text[:50]}...")
-            print(f"    {start:.2f}s - {end:.2f}s ({end-start:.2f}s)")
+            logger.info("  [%s] %s...", seg_id, text[:50])
+            logger.debug("    %.2fs - %.2fs (%.2fs)", start, end, end-start)
             return segment
 
         # ============================================================
         # 1. QUESTION (fresh TTS - variable content)
         # ============================================================
-        print("\n[1] QUESTION")
+        logger.info("[1] QUESTION")
         q_path = os.path.join(temp_dir, "question.mp3")
         client = OpenAI()
         with client.audio.speech.with_streaming_response.create(
@@ -842,7 +726,7 @@ def generate_quiz_audio_segmented(
         # TTS is inconsistent with short isolated words.
         # Generating ALL options together in ONE call works reliably.
         # ============================================================
-        print("\n[3] OPTIONS (combined generation)")
+        logger.info("[3] OPTIONS (combined generation)")
 
         # Build combined text for all options
         option_lines = ["Escucha las opciones."]
@@ -853,9 +737,9 @@ def generate_quiz_audio_segmented(
             option_lines.append(f"Opción {letter}, {word}.")
 
         combined_text = "\n".join(option_lines)
-        print(f"  Combined text ({len(combined_text)} chars):")
+        logger.debug("  Combined text (%d chars):", len(combined_text))
         for line in option_lines:
-            print(f"    {line}")
+            logger.debug("    %s", line)
 
         # Generate ALL options in ONE TTS call
         combined_path = os.path.join(temp_dir, "options_combined.mp3")
@@ -869,7 +753,7 @@ def generate_quiz_audio_segmented(
             response.stream_to_file(combined_path)
 
         combined_duration = get_audio_duration(combined_path)
-        print(f"  Combined duration: {combined_duration:.2f}s")
+        logger.debug("  Combined duration: %.2fs", combined_duration)
 
         # Add the combined audio
         combined_start = running_time
@@ -893,7 +777,7 @@ def generate_quiz_audio_segmented(
             add_segment(f'option_{letter.lower()}',
                        f"Opción {letter}, {option_words[letter]}.",
                        opt_start, opt_end)
-            print(f"  Option {letter}: {opt_start:.2f}s - {opt_end:.2f}s")
+            logger.debug("  Option %s: %.2fs - %.2fs", letter, opt_start, opt_end)
 
         # Pause after all options
         add_silence(PAUSE_AFTER_OPTION)
@@ -901,7 +785,7 @@ def generate_quiz_audio_segmented(
         # ============================================================
         # 4. THINK (pre-recorded)
         # ============================================================
-        print("\n[4] THINK")
+        logger.info("[4] THINK")
         think_path = str(SPANISH_DIR / "piensa_bien.mp3")
         think_start, think_end, _ = add_audio(think_path)
         add_segment('think', '¡Piensa bien!', think_start, think_end)
@@ -910,7 +794,7 @@ def generate_quiz_audio_segmented(
         # ============================================================
         # 5. COUNTDOWN (pre-recorded)
         # ============================================================
-        print("\n[5] COUNTDOWN")
+        logger.info("[5] COUNTDOWN")
         for num, name in [('3', 'tres'), ('2', 'dos'), ('1', 'uno')]:
             cd_path = str(SPANISH_DIR / f"{name}.mp3")
             cd_start, cd_end, _ = add_audio(cd_path)
@@ -923,13 +807,13 @@ def generate_quiz_audio_segmented(
         # Generate FULL answer text as one sentence (like explanation and options)
         # NOT single word! Single word = TTS doesn't know it's Spanish
         # ============================================================
-        print("\n[6] ANSWER")
+        logger.info("[6] ANSWER")
         answer_start = running_time
 
         # Generate COMPLETE answer as one full Spanish sentence
         # This gives TTS full context to pronounce correctly
         full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
-        print(f"  Answer: '{full_answer_text}'")
+        logger.debug("  Answer: '%s'", full_answer_text)
 
         ans_path = os.path.join(temp_dir, "answer.mp3")
         with client.audio.speech.with_streaming_response.create(
@@ -950,7 +834,7 @@ def generate_quiz_audio_segmented(
         # 7. EXPLANATION (fresh TTS - MUST COMPLETE FULLY)
         # ============================================================
         if explanation.strip():
-            print("\n[7] EXPLANATION")
+            logger.info("[7] EXPLANATION")
             exp_path = os.path.join(temp_dir, "explanation.mp3")
             with client.audio.speech.with_streaming_response.create(
                 model="tts-1-hd",
@@ -966,14 +850,14 @@ def generate_quiz_audio_segmented(
             add_silence(PAUSE_AFTER_EXPLANATION)
 
         total_duration = running_time
-        print(f"\n{'=' * 60}")
-        print(f"Total duration: {total_duration:.2f}s")
-        print(f"{'=' * 60}")
+        logger.info("=" * 60)
+        logger.info("Total duration: %.2fs", total_duration)
+        logger.info("=" * 60)
 
         # ============================================================
         # CONCATENATE (no re-encoding)
         # ============================================================
-        print("\nConcatenating audio files...")
+        logger.info("Concatenating audio files...")
         concat_list_path = os.path.join(temp_dir, "concat.txt")
         with open(concat_list_path, 'w') as f:
             for audio_file in audio_files:
@@ -994,7 +878,7 @@ def generate_quiz_audio_segmented(
         if result.returncode != 0:
             raise RuntimeError(f"ffmpeg concat failed: {result.stderr.decode()[:500]}")
 
-        print(f"Audio saved: {output_path}")
+        logger.info("Audio saved: %s", output_path)
 
         # ============================================================
         # BUILD RESULT
@@ -1069,7 +953,7 @@ def generate_true_false_audio_segmented(
     temp_dir = tempfile.mkdtemp(prefix="tf_segments_")
 
     try:
-        print("Generating true/false audio segments...")
+        logger.info("Generating true/false audio segments...")
 
         segments = []
         audio_files = []
@@ -1080,7 +964,7 @@ def generate_true_false_audio_segmented(
                 continue
 
             seg_path = os.path.join(temp_dir, f"{seg_id}.mp3")
-            print(f"  [{seg_id}] Generating: {text[:50]}...")
+            logger.info("  [%s] Generating: %s...", seg_id, text[:50])
 
             duration = generate_segment_audio(text, seg_path, voice, model, speed)
 
@@ -1094,7 +978,7 @@ def generate_true_false_audio_segmented(
             segments.append(segment)
             audio_files.append(seg_path)
 
-            print(f"    Duration: {duration:.2f}s, Start: {running_time:.2f}s")
+            logger.debug("    Duration: %.2fs, Start: %.2fs", duration, running_time)
 
             running_time += duration
 
@@ -1105,7 +989,7 @@ def generate_true_false_audio_segmented(
                 running_time += pause_after
 
         total_duration = running_time
-        print(f"\nTotal duration: {total_duration:.2f}s")
+        logger.info("Total duration: %.2fs", total_duration)
 
         # Concatenate
         concat_list_path = os.path.join(temp_dir, "concat.txt")
@@ -1125,7 +1009,7 @@ def generate_true_false_audio_segmented(
         ]
         subprocess.run(cmd_concat, capture_output=True, timeout=120)
 
-        print(f"Audio saved: {output_path}")
+        logger.info("Audio saved: %s", output_path)
 
         segment_times = {}
         for seg in segments:
@@ -1185,7 +1069,7 @@ def generate_from_script(
     with open(script_path, "r", encoding="utf-8") as f:
         script = json.load(f)
 
-    video_type = script.get('type', 'quiz')
+    video_type = script.get('type', 'educational')
 
     # Determine output path
     if output_dir is None:
@@ -1195,11 +1079,11 @@ def generate_from_script(
     script_name = os.path.splitext(os.path.basename(script_path))[0]
     output_path = os.path.join(output_dir, f"{script_name}.mp3")
 
-    print(f"\n{'='*60}")
-    print(f"SEGMENT-BASED TTS GENERATION")
-    print(f"Type: {video_type}")
-    print(f"Output: {output_path}")
-    print(f"{'='*60}\n")
+    logger.info("=" * 60)
+    logger.info("SEGMENT-BASED TTS GENERATION")
+    logger.info("Type: %s", video_type)
+    logger.info("Output: %s", output_path)
+    logger.info("=" * 60)
 
     # Use segment-based generation based on video type
     if video_type == 'quiz':
@@ -1207,32 +1091,35 @@ def generate_from_script(
     elif video_type == 'true_false':
         result = generate_true_false_audio_segmented(script, output_path, voice, model, speed)
     else:
-        # Fallback to old method for other types
-        print(f"Using legacy TTS for type: {video_type}")
+        # educational, fill_blank, pronunciation — use text_to_speech with English hints
+        logger.info("Using text_to_speech for type: %s", video_type)
         text = script.get("full_script", "")
         if not text:
-            raise ValueError("Script file missing 'full_script' field")
+            raise ValueError(f"Script missing 'full_script' field for type '{video_type}'")
 
-        timestamps = text_to_speech(text, output_path, voice=voice, model=model, speed=speed)
+        english_words = extract_english_words_from_script(script)
+        timestamps = text_to_speech(text, output_path, voice=voice, model=model, speed=speed,
+                                    explicit_english=list(english_words))
         result = {**timestamps}
         result["type"] = video_type
-        result["question"] = script.get("question", "")
-        result["options"] = script.get("options", {})
-        result["correct"] = script.get("correct", "")
-        result["explanation"] = script.get("explanation", "")
-        result["full_script"] = text
-        result["translations"] = script.get("translations", {})
-        result["hashtags"] = script.get("hashtags", [])
+        # Copy all script metadata so the companion JSON is complete
+        for key in ('question', 'options', 'correct', 'explanation',
+                    'full_script', 'translations', 'hashtags',
+                    'english_phrases', 'tip', 'cta', 'sentence', 'word', 'phonetic'):
+            if key in script:
+                result[key] = script[key]
+        if 'full_script' not in result:
+            result["full_script"] = text
 
     # Save result JSON
     json_path = output_path.rsplit(".", 1)[0] + ".json"
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
 
-    print(f"\nTimestamps saved: {json_path}")
-    print(f"\nSegment timestamps:")
+    logger.info("Timestamps saved: %s", json_path)
+    logger.info("Segment timestamps:")
     for seg in result.get('segments', []):
-        print(f"  {seg['id']}: {seg['start']:.2f}s - {seg['end']:.2f}s ({seg['duration']:.2f}s)")
+        logger.debug("  %s: %.2fs - %.2fs (%.2fs)", seg['id'], seg['start'], seg['end'], seg['duration'])
 
     return result
 
@@ -1241,23 +1128,23 @@ def test_voices(text: str, output_dir: str = "output/audio/voice_tests"):
     """Test all available voices with the same text."""
     os.makedirs(output_dir, exist_ok=True)
 
-    print(f"\nTesting all voices with: {text[:50]}...")
-    print("=" * 60)
+    logger.info("Testing all voices with: %s...", text[:50])
+    logger.info("=" * 60)
 
     for voice, description in VOICES.items():
-        print(f"\n[{voice}] {description}")
+        logger.info("[%s] %s", voice, description)
         output_path = os.path.join(output_dir, f"test_{voice}.mp3")
 
         try:
             result = text_to_speech(text, output_path, voice=voice)
-            print(f"  Duration: {result['duration']:.2f}s")
-            print(f"  Output: {output_path}")
+            logger.info("  Duration: %.2fs", result['duration'])
+            logger.info("  Output: %s", output_path)
         except Exception as e:
-            print(f"  Error: {e}")
+            logger.error("  %s", e)
 
-    print("\n" + "=" * 60)
-    print(f"Voice test files saved to: {output_dir}/")
-    print("Listen to each and pick the best for your content!")
+    logger.info("=" * 60)
+    logger.info("Voice test files saved to: %s/", output_dir)
+    logger.info("Listen to each and pick the best for your content!")
 
 
 async def main():
