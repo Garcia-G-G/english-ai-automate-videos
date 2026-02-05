@@ -7,9 +7,18 @@ VIDEO_WIDTH = 1080
 VIDEO_HEIGHT = 1920
 FPS = 30
 
-# Layout
+# Layout - Safe areas for TikTok (keep text in middle 70% to avoid UI overlap)
 MARGIN_X = 80
 TEXT_AREA_WIDTH = VIDEO_WIDTH - (MARGIN_X * 2)
+SAFE_AREA_TOP = int(VIDEO_HEIGHT * 0.15)      # 15% from top
+SAFE_AREA_BOTTOM = int(VIDEO_HEIGHT * 0.85)   # 15% from bottom
+SAFE_AREA_HEIGHT = SAFE_AREA_BOTTOM - SAFE_AREA_TOP  # Middle 70%
+TEXT_CENTER_Y = VIDEO_HEIGHT // 2 - 40        # Slightly above center
+
+# Subtitle formatting (BBC guidelines)
+MAX_CHARS_PER_LINE = 40
+MAX_LINES_PER_SUBTITLE = 2
+MIN_GAP_BETWEEN_SUBTITLES = 0.25  # 250ms minimum gap
 
 # Gradient - vibrant pink/purple/blue
 GRADIENT_COLORS = [
@@ -60,13 +69,17 @@ FONT_SIZE_TIMER = 220
 FONT_SIZE_BIG_WORD = 160
 OUTLINE_THICK = 12
 
-# Animation
-POP_DURATION = 0.22
-FADE_IN = 0.25
-FADE_OUT = 0.40
-CROSSFADE_OVERLAP = 0.15
-BOUNCE = 1.18
-MIN_DISPLAY = 0.9
+# Animation timing (based on commercial tool analysis)
+# Word pop: 150-250ms with ease-out-back, 110-120% overshoot
+POP_DURATION = 0.18          # 180ms pop animation
+FADE_IN = 0.15               # 150ms fade-in
+FADE_OUT = 0.35              # 350ms fade-out
+CROSSFADE_OVERLAP = 0.10     # 100ms overlap for smooth transitions
+BOUNCE = 1.12                # 112% overshoot (sweet spot for TikTok)
+MIN_DISPLAY = 0.8            # Minimum display time in seconds
+
+# Pre-roll: Display text 50-100ms BEFORE audio for perfect sync
+ANTICIPATION_MS = 80         # 80ms pre-roll (Netflix standard: 1-2 frames)
 
 # English word styling
 ENGLISH_WORD_COLOR = (255, 215, 0)

@@ -6,9 +6,70 @@ Handles:
 - Intelligent word grouping with sentence boundary respect
 - English/Spanish word detection
 - Overlap resolution and seamless transitions
+- BBC-style subtitle formatting (max chars/lines)
 """
 
 from typing import List, Dict, Optional
+
+# Constants from TikTok subtitle guide
+MIN_GAP_MS = 50              # Minimum gap between words (50ms)
+MIN_SUBTITLE_GAP_MS = 250    # Minimum gap between subtitle changes (250ms)
+MAX_CHARS_PER_LINE = 40      # BBC guideline
+MAX_LINES = 2                # Maximum lines per subtitle
+
+
+def fix_overlapping_timestamps(words: List[Dict], min_gap_ms: float = MIN_GAP_MS) -> List[Dict]:
+    """
+    Fix overlapping timestamps by adjusting end times.
+
+    Prevents text overlap when AI-generated timestamps have conflicts.
+    """
+    if not words or len(words) < 2:
+        return words
+
+    for i in range(1, len(words)):
+        gap = words[i]["start"] - words[i-1]["end"]
+        if gap < min_gap_ms / 1000:
+            # Adjust previous word's end time
+            words[i-1]["end"] = words[i]["start"] - (min_gap_ms / 1000)
+            # Ensure end > start
+            if words[i-1]["end"] <= words[i-1]["start"]:
+                words[i-1]["end"] = words[i-1]["start"] + 0.05
+    return words
+
+
+def validate_subtitle_text(text: str, max_chars: int = MAX_CHARS_PER_LINE,
+                           max_lines: int = MAX_LINES) -> Dict:
+    """
+    Validate subtitle text against BBC guidelines.
+
+    Returns dict with is_valid, suggested_splits, warnings.
+    """
+    result = {
+        "is_valid": True,
+        "warnings": [],
+        "suggested_splits": []
+    }
+
+    lines = text.split('\n') if '\n' in text else [text]
+
+    if len(lines) > max_lines:
+        result["is_valid"] = False
+        result["warnings"].append(f"Too many lines: {len(lines)} (max {max_lines})")
+
+    for i, line in enumerate(lines):
+        if len(line) > max_chars:
+            result["is_valid"] = False
+            result["warnings"].append(f"Line {i+1} too long: {len(line)} chars (max {max_chars})")
+
+            # Suggest split point
+            words = line.split()
+            mid = len(words) // 2
+            split1 = ' '.join(words[:mid])
+            split2 = ' '.join(words[mid:])
+            result["suggested_splits"].append((split1, split2))
+
+    return result
 
 
 def clean_word_for_display(word: str) -> str:
@@ -187,6 +248,9 @@ class SubtitleProcessor:
 
                 current_time = word_end
 
+        # Fix any overlapping timestamps
+        words = fix_overlapping_timestamps(words)
+
         return words
 
     def group_words(self, words: List[Dict]) -> List[Dict]:
@@ -328,13 +392,25 @@ class SubtitleProcessor:
 
         result = filtered
 
-        # Fix end times for seamless transitions
+        # Fix end times for seamless transitions with minimum gap
+        min_gap = MIN_SUBTITLE_GAP_MS / 1000  # 250ms minimum gap
+
         for i in range(len(result)):
             if i < len(result) - 1:
                 next_start = result[i + 1]['start']
+                gap = next_start - result[i]['end']
+
+                # If gap is too small, adjust for smooth transition
+                if gap < min_gap and gap > 0:
+                    # Split the difference - end current slightly early
+                    result[i]['end'] = next_start - (min_gap / 2)
+
+                # Fix overlap
                 if result[i]['end'] > next_start:
-                    result[i]['end'] = next_start
+                    result[i]['end'] = next_start - 0.033
+
+                # Ensure valid timing
                 if result[i]['end'] <= result[i]['start']:
-                    result[i]['end'] = result[i]['start'] + 0.033
+                    result[i]['end'] = result[i]['start'] + 0.1
 
         return result
