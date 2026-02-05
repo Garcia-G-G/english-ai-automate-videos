@@ -653,7 +653,7 @@ def generate_quiz_audio_segmented(
             model="tts-1-hd",
             voice=voice,
             input=text,
-            speed=1.0,  # Default speed - more consistent
+            speed=0.9,  # Bug A4 fix: Slightly slower for clarity (was 1.0)
             response_format="mp3"
         ) as response:
             response.stream_to_file(str(cache_path))
@@ -713,7 +713,7 @@ def generate_quiz_audio_segmented(
             model="tts-1-hd",
             voice=voice,
             input=clean_question,
-            speed=1.0,
+            speed=0.9,  # Bug A4 fix: Slower for clarity
             response_format="mp3"
         ) as response:
             response.stream_to_file(q_path)
@@ -747,7 +747,7 @@ def generate_quiz_audio_segmented(
             model="tts-1-hd",
             voice=voice,
             input=combined_text,
-            speed=1.0,
+            speed=0.9,  # Bug A4 fix: Slower for clarity
             response_format="mp3"
         ) as response:
             response.stream_to_file(combined_path)
@@ -820,7 +820,7 @@ def generate_quiz_audio_segmented(
             model="tts-1-hd",
             voice=voice,
             input=full_answer_text,
-            speed=1.0,
+            speed=0.9,  # Bug A4 fix: Slower for clarity
             response_format="mp3"
         ) as response:
             response.stream_to_file(ans_path)
@@ -840,7 +840,7 @@ def generate_quiz_audio_segmented(
                 model="tts-1-hd",
                 voice=voice,
                 input=explanation,
-                speed=1.0,
+                speed=0.9,  # Bug A4 fix: Slower for clarity
                 response_format="mp3"
             ) as response:
                 response.stream_to_file(exp_path)
