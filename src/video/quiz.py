@@ -29,8 +29,9 @@ OPTIONS_ZONE_BOTTOM = int(VIDEO_HEIGHT * 0.72)
 # Countdown/answer zone: bottom 25%
 COUNTDOWN_ZONE_TOP = int(VIDEO_HEIGHT * 0.75)
 
-# Visual anticipation: show visual 80ms BEFORE audio (feels perfectly synced)
-VISUAL_ANTICIPATION = 0.08
+# Visual anticipation: show visual 150ms BEFORE audio
+# Bug A2 fix: Increased from 80ms to 150ms because audio was still leading visual
+VISUAL_ANTICIPATION = 0.15
 from .backgrounds import gradient
 from .utils import (
     font, line_break, draw_text_solid, draw_text_centered,
