@@ -213,6 +213,42 @@ def extract_english_words_from_script(script: dict) -> set:
 
 # ============== TEXT PREPROCESSING FOR TTS ==============
 
+def clean_for_tts(text: str) -> str:
+    """
+    Clean text for TTS - remove visual-only elements.
+
+    Bug A3 fix: Removes blanks, formatting characters, and other
+    elements that should be displayed but not spoken.
+
+    Examples:
+        "In my opinion, we should ___ the meeting" -> "In my opinion, we should the meeting"
+        "What does **important** mean?" -> "What does important mean?"
+    """
+    if not text:
+        return text
+
+    # Remove blanks (visual only in fill-in-the-blank)
+    text = text.replace('___', '')
+    text = text.replace('__', '')
+    # Single underscore between words should become space
+    text = re.sub(r'(?<=\w)_(?=\w)', ' ', text)
+
+    # Remove markdown formatting
+    text = text.replace('**', '')
+    text = text.replace('*', '')
+    text = text.replace('##', '')
+    text = text.replace('#', '')
+    text = text.replace('`', '')
+
+    # Remove brackets used for display hints
+    text = re.sub(r'\[.*?\]', '', text)
+
+    # Clean up multiple spaces
+    text = ' '.join(text.split())
+
+    return text.strip()
+
+
 def preprocess_text_for_tts(text: str, target_language: str = "es") -> str:
     """
     Preprocess text for optimal TTS output.

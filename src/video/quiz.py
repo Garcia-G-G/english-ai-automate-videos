@@ -14,7 +14,23 @@ from animations.easing import (
 from .constants import (
     VIDEO_WIDTH, VIDEO_HEIGHT, QUIZ_COLORS, COLOR_WHITE, COLOR_YELLOW,
     FONT_SIZE_QUESTION, TEXT_AREA_WIDTH,
+    SAFE_AREA_TOP, SAFE_AREA_BOTTOM,
 )
+
+# Layout zones (based on TikTok best practices)
+# Question zone: top 40% of screen
+QUESTION_ZONE_TOP = SAFE_AREA_TOP
+QUESTION_ZONE_BOTTOM = int(VIDEO_HEIGHT * 0.40)
+
+# Options zone: 40% to 72% of screen
+OPTIONS_ZONE_TOP = int(VIDEO_HEIGHT * 0.42)
+OPTIONS_ZONE_BOTTOM = int(VIDEO_HEIGHT * 0.72)
+
+# Countdown/answer zone: bottom 25%
+COUNTDOWN_ZONE_TOP = int(VIDEO_HEIGHT * 0.75)
+
+# Visual anticipation: show visual 80ms BEFORE audio (feels perfectly synced)
+VISUAL_ANTICIPATION = 0.08
 from .backgrounds import gradient
 from .utils import (
     font, line_break, draw_text_solid, draw_text_centered,
@@ -399,18 +415,43 @@ def draw_quiz_question_box(
     draw: ImageDraw.Draw,
     question: str,
     y: int,
-    alpha: int = 255
+    alpha: int = 255,
+    max_height: int = None
 ):
-    """Draw a gradient question box."""
+    """Draw a gradient question box with dynamic font sizing.
+
+    Bug A1 fix: Dynamically reduces font size if text would overflow max_height.
+    """
     box_padding = 40
     box_margin = 50
+    max_width = VIDEO_WIDTH - box_margin * 2 - box_padding * 2
 
-    qf = font(52)
-    lines = line_break(question, qf, VIDEO_WIDTH - box_margin * 2 - box_padding * 2)
-    line_height = int(52 * 1.4)
+    # If max_height specified, dynamically adjust font size
+    if max_height is None:
+        max_height = QUESTION_ZONE_BOTTOM - y - 40  # Leave 40px gap before buttons
+
+    # Start with preferred font size, shrink if needed
+    font_size = 52
+    min_font_size = 36
+
+    while font_size >= min_font_size:
+        qf = font(font_size)
+        lines = line_break(question, qf, max_width)
+        line_height = int(font_size * 1.4)
+        text_height = len(lines) * line_height
+        box_height = text_height + box_padding * 2
+
+        if box_height <= max_height:
+            break
+        font_size -= 2
+
+    # Final calculation with chosen font size
+    qf = font(font_size)
+    lines = line_break(question, qf, max_width)
+    line_height = int(font_size * 1.4)
     text_height = len(lines) * line_height
-
     box_height = text_height + box_padding * 2
+
     box_x = box_margin
     box_y = y
     box_width = VIDEO_WIDTH - box_margin * 2
@@ -597,32 +638,38 @@ def create_frame_quiz(
 
     question_visible = t >= 0
 
-    show_option_a = t >= seg_start('option_a', 999)
-    show_option_b = t >= seg_start('option_b', 999)
-    show_option_c = t >= seg_start('option_c', 999)
-    show_option_d = t >= seg_start('option_d', 999)
+    # Bug A2 fix: Visual appears VISUAL_ANTICIPATION seconds BEFORE audio
+    # This makes the video feel perfectly synced (Netflix standard)
+    show_option_a = t >= seg_start('option_a', 999) - VISUAL_ANTICIPATION
+    show_option_b = t >= seg_start('option_b', 999) - VISUAL_ANTICIPATION
+    show_option_c = t >= seg_start('option_c', 999) - VISUAL_ANTICIPATION
+    show_option_d = t >= seg_start('option_d', 999) - VISUAL_ANTICIPATION
 
+    # Bug A2 fix: Visual anticipation for all timed elements
     think_start = seg_start('think', duration * 0.5)
-    show_timer = t >= think_start
+    show_timer = t >= think_start - VISUAL_ANTICIPATION
 
     countdown_start = seg_start('countdown_3', think_start + 0.5)
 
     answer_time = seg_start('answer', duration * 0.7)
-    show_answer = t >= answer_time
+    show_answer = t >= answer_time - VISUAL_ANTICIPATION
 
     explanation_time = seg_start('explanation', answer_time + 1.5)
     show_explanation = t >= explanation_time
 
-    # Draw question box
+    # Draw question box (Bug A1 fix: use proper zones, dynamic font sizing)
     if question_visible:
         q_alpha = get_alpha(t, 0, 0.4)
         clean_question = question.replace('¿', '').replace('?', '?')
-        draw_quiz_question_box(frame, draw, clean_question, 180, q_alpha)
+        # Question starts at safe area top, max height is zone bottom
+        question_y = QUESTION_ZONE_TOP
+        max_question_height = QUESTION_ZONE_BOTTOM - QUESTION_ZONE_TOP - 20
+        draw_quiz_question_box(frame, draw, clean_question, question_y, q_alpha, max_question_height)
         draw = ImageDraw.Draw(frame, 'RGBA')
 
-    # Draw soft cream background for options area
-    options_bg_y = 420
-    options_bg_height = 500
+    # Draw soft cream background for options area (Bug A1 fix: use options zone)
+    options_bg_y = OPTIONS_ZONE_TOP
+    options_bg_height = OPTIONS_ZONE_BOTTOM - OPTIONS_ZONE_TOP
     light_bg = QUIZ_COLORS['light_bg']
     draw.rounded_rectangle(
         [30, options_bg_y, VIDEO_WIDTH - 30, options_bg_y + options_bg_height],
@@ -630,11 +677,11 @@ def create_frame_quiz(
         fill=(*light_bg, 200)
     )
 
-    # Draw options
+    # Draw options (Bug A1 fix: position in options zone)
     opt_w = VIDEO_WIDTH - 120
     opt_h = 80
     opt_gap = 22
-    opt_start_y = 460
+    opt_start_y = OPTIONS_ZONE_TOP + 40  # Start 40px into the options zone
 
     option_data = [
         ('A', seg_start('option_a', 999), show_option_a),
@@ -679,10 +726,10 @@ def create_frame_quiz(
             sparkle_center_y = y_pos + opt_h // 2
             draw_sparkles(draw, sparkle_center_x, sparkle_center_y, t, answer_time, radius=200)
 
-    # "Piensa bien" text
+    # "Piensa bien" text (Bug A1 fix: position in countdown zone)
     if show_timer and not show_answer and t < countdown_start:
-        think_alpha = get_alpha(t, think_start, 0.3)
-        think_y = 920
+        think_alpha = get_alpha(t, think_start - VISUAL_ANTICIPATION, 0.3)
+        think_y = COUNTDOWN_ZONE_TOP
 
         tf = font(48)
         think_text = "¡Piensa bien!"
@@ -691,10 +738,10 @@ def create_frame_quiz(
         tx = (VIDEO_WIDTH - tw) // 2
         draw_text_solid(draw, think_text, tx, think_y, tf, COLOR_YELLOW, think_alpha, outline=5)
 
-    # Countdown timer
-    if show_timer and not show_answer and t >= countdown_start:
+    # Countdown timer (Bug A1 fix: position in countdown zone)
+    if show_timer and not show_answer and t >= countdown_start - VISUAL_ANTICIPATION:
         timer_center_x = VIDEO_WIDTH // 2
-        timer_center_y = 1000
+        timer_center_y = COUNTDOWN_ZONE_TOP + 100
 
         cd3_start = seg_start('countdown_3', 0)
         cd2_start = seg_start('countdown_2', 0)
