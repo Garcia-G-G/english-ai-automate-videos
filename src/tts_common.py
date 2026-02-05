@@ -26,13 +26,14 @@ WORDS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 # ============== TIMING CONSTANTS ==============
+# Bug A3 fix: Increased pauses to ensure countdown completes before answer
 
 PAUSE_AFTER_QUESTION = 0.5
 PAUSE_AFTER_OPTION = 0.6
-PAUSE_AFTER_THINK = 0.5
-PAUSE_AFTER_COUNTDOWN = 1.0
-PAUSE_AFTER_LAST_COUNT = 0.6
-PAUSE_AFTER_ANSWER = 0.3
+PAUSE_AFTER_THINK = 1.0      # Increased: more suspense before countdown starts
+PAUSE_AFTER_COUNTDOWN = 1.0  # Keep: good pacing between numbers
+PAUSE_AFTER_LAST_COUNT = 1.0 # Increased: dramatic pause before answer reveal
+PAUSE_AFTER_ANSWER = 0.4     # Slightly increased for breathing room
 PAUSE_AFTER_EXPLANATION = 0.5
 
 
