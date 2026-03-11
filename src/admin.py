@@ -23,7 +23,7 @@ import uuid
 logger = logging.getLogger(__name__)
 
 # Setup paths
-ROOT = Path(__file__).parent.parent
+ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from dotenv import load_dotenv
