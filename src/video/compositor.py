@@ -147,6 +147,12 @@ def _encode(
 
             frame_rgb = frame_generator(t)
 
+            if frame_rgb.shape[:2] != (height, width):
+                raise ValueError(
+                    f"Frame {frame_num} has shape {frame_rgb.shape[:2]}, "
+                    f"expected ({height}, {width})"
+                )
+
             if frame_rgb.dtype != np.uint8:
                 frame_rgb = np.clip(frame_rgb, 0, 255).astype(np.uint8)
 

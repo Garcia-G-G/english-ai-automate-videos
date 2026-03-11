@@ -1,22 +1,28 @@
 #!/usr/bin/env python3
 """
 Background Generator for TikTok-style Videos
-Supports multiple professional background styles.
+Supports multiple professional background styles including photo-based backgrounds.
 
 Background Types:
 - solid_vignette: Solid color with darker edges
 - animated_gradient: Smooth color transitions over time
 - bokeh_particles: Dark background with floating soft circles
 - abstract_waves: Subtle animated wave patterns
-- video_loop: Loop a background video
-- ken_burns: Slow zoom/pan on static image
+- dynamic_glow_orbs: Floating glowing orbs
+- particle_flow: Directional particles
+- light_rays: Cinematic light beams
+- aurora: Northern lights
+- static_gradient: Multi-stop gradient (no animation)
+- photo_kenburns: Real photograph with slow zoom/pan (Ken Burns effect)
 """
 
 import logging
 import math
+import os
 import numpy as np
 from typing import List, Tuple, Dict, Optional
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
+from pathlib import Path
 import random
 
 logger = logging.getLogger(__name__)
@@ -25,6 +31,9 @@ logger = logging.getLogger(__name__)
 DEFAULT_WIDTH = 1080
 DEFAULT_HEIGHT = 1920
 DEFAULT_FPS = 30
+
+# Photo backgrounds directory
+ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets" / "backgrounds"
 
 
 # ============== COLOR UTILITIES ==============
@@ -118,7 +127,7 @@ BACKGROUND_PRESETS = {
         "max_size": 80
     },
 
-    # === DYNAMIC / ENERGETIC (NEW) ===
+    # === DYNAMIC / ENERGETIC ===
     "energetic_orbs": {
         "type": "dynamic_glow_orbs",
         "base_color": "#0a0a14",
@@ -141,7 +150,7 @@ BACKGROUND_PRESETS = {
         "movement_speed": "fast"
     },
 
-    # === PARTICLE FLOW (NEW) ===
+    # === PARTICLE FLOW ===
     "rising_stars": {
         "type": "particle_flow",
         "base_color": "#0a0a14",
@@ -167,7 +176,7 @@ BACKGROUND_PRESETS = {
         "speed": 0.8
     },
 
-    # === CINEMATIC (NEW) ===
+    # === CINEMATIC ===
     "cinematic_rays": {
         "type": "light_rays",
         "base_color": "#0a0a12",
@@ -183,7 +192,7 @@ BACKGROUND_PRESETS = {
         "ray_opacity": 0.10
     },
 
-    # === AURORA / NORTHERN LIGHTS (NEW) ===
+    # === AURORA / NORTHERN LIGHTS ===
     "aurora_borealis": {
         "type": "aurora",
         "base_color": "#050510",
@@ -202,7 +211,299 @@ BACKGROUND_PRESETS = {
         "orb_colors": ["#00d4ff", "#a855f7", "#ff6bb3", "#ffd700"],
         "orb_count": 10,
         "movement_speed": "medium"
-    }
+    },
+
+    # === VIBRANT TIKTOK BACKGROUNDS ===
+
+    "neon_city": {
+        "type": "dynamic_glow_orbs",
+        "base_color": "#0c0820",
+        "orb_colors": ["#ff2d95", "#00f5ff", "#bf5af2", "#ff6b35"],
+        "orb_count": 16,
+        "movement_speed": "medium",
+        "orb_size_min": 120,
+        "orb_size_max": 280
+    },
+    "galaxy_swirl": {
+        "type": "aurora",
+        "base_color": "#06061a",
+        "aurora_colors": ["#ff44cc", "#4466ff", "#00ffaa", "#ff9933"]
+    },
+    "electric_dreams": {
+        "type": "bokeh_particles",
+        "base_color": "#06061a",
+        "particle_colors": ["#00ffff", "#ff00ff", "#ffff00", "#00ff88", "#ff4488"],
+        "num_particles": 22,
+        "min_size": 25,
+        "max_size": 90
+    },
+    "sunset_glow": {
+        "type": "animated_gradient",
+        "colors": ["#1a0a2e", "#5c1a4a", "#8a3a2a", "#5c1a4a", "#1a0a2e"],
+        "cycle_duration": 8.0
+    },
+    "ocean_waves": {
+        "type": "aurora",
+        "base_color": "#040818",
+        "aurora_colors": ["#0088ff", "#00ccff", "#00ffcc", "#0066dd"]
+    },
+    "purple_rain": {
+        "type": "dynamic_glow_orbs",
+        "base_color": "#0c0820",
+        "orb_colors": ["#9b59b6", "#e74c8c", "#8e44ad", "#d63384", "#bf5af2"],
+        "orb_count": 14,
+        "movement_speed": "slow",
+        "orb_size_min": 120,
+        "orb_size_max": 260
+    },
+    "fire_ice": {
+        "type": "dynamic_glow_orbs",
+        "base_color": "#0a0a14",
+        "orb_colors": ["#ff4500", "#ff8c00", "#00bfff", "#00ffff", "#ff69b4"],
+        "orb_count": 12,
+        "movement_speed": "medium",
+        "orb_size_min": 120,
+        "orb_size_max": 260
+    },
+    "candy_pop": {
+        "type": "bokeh_particles",
+        "base_color": "#0a0814",
+        "particle_colors": ["#ff6bb3", "#ffd700", "#00d4ff", "#a855f7", "#ff4466", "#44ff88"],
+        "num_particles": 20,
+        "min_size": 30,
+        "max_size": 100
+    },
+    "midnight_blue": {
+        "type": "animated_gradient",
+        "colors": ["#0a1628", "#1a3a6c", "#0f2a5c", "#1a2a4c", "#0a1628"],
+        "cycle_duration": 10.0
+    },
+    "northern_vivid": {
+        "type": "aurora",
+        "base_color": "#040410",
+        "aurora_colors": ["#00ff66", "#00ddff", "#cc44ff", "#ff44aa", "#ffaa00"]
+    },
+
+    # ================================================================
+    # === SEMI-STATIC GRADIENTS (bonitos, divertidos, no distraen) ===
+    # ================================================================
+    # These render ONCE and stay the same every frame.
+    # Beautiful multi-color gradients with vignette — no animation.
+
+    # Sunset dream — warm pink-to-orange diagonal gradient
+    "static_sunset": {
+        "type": "static_gradient",
+        "colors": ["#1a0533", "#5c1a6b", "#c2185b", "#ff6f00"],
+        "direction": "diagonal",
+        "vignette_strength": 0.35
+    },
+
+    # Ocean blue — deep navy to teal, calming and clean
+    "static_ocean": {
+        "type": "static_gradient",
+        "colors": ["#0a0a20", "#0d3b66", "#1a8a8a", "#00bfa5"],
+        "direction": "vertical",
+        "vignette_strength": 0.30
+    },
+
+    # Purple dream — rich dark purple to lavender
+    "static_purple": {
+        "type": "static_gradient",
+        "colors": ["#0a0015", "#2d1b69", "#7c3aed", "#c084fc"],
+        "direction": "diagonal",
+        "vignette_strength": 0.35
+    },
+
+    # Neon night — bright purple/cyan center fading to dark edges
+    "static_neon": {
+        "type": "static_gradient",
+        "colors": ["#6b3fa0", "#3a1a6b", "#1a1a4e", "#0c0c2e"],
+        "direction": "radial",
+        "vignette_strength": 0.25
+    },
+
+    # Emerald — deep green gradient, fresh and modern
+    "static_emerald": {
+        "type": "static_gradient",
+        "colors": ["#041210", "#0d3320", "#1a6b4a", "#34d399"],
+        "direction": "vertical",
+        "vignette_strength": 0.30
+    },
+
+    # Rose gold — warm pinkish glow, very TikTok
+    "static_rosegold": {
+        "type": "static_gradient",
+        "colors": ["#2a0a20", "#6b1a45", "#d4548a", "#f4a9c0"],
+        "direction": "diagonal",
+        "vignette_strength": 0.28
+    },
+
+    # Midnight — purple glow center fading to deep blue edges
+    "static_midnight": {
+        "type": "static_gradient",
+        "colors": ["#3a3a8c", "#1a2a5c", "#0f1a3a", "#050510"],
+        "direction": "radial",
+        "vignette_strength": 0.20
+    },
+
+    # Candy gradient — playful pink/purple/blue
+    "static_candy": {
+        "type": "static_gradient",
+        "colors": ["#1a0a2e", "#6b1a8a", "#d63384", "#ff6bb3"],
+        "direction": "diagonal",
+        "vignette_strength": 0.30
+    },
+
+    # Fire — dark warm reds and oranges
+    "static_fire": {
+        "type": "static_gradient",
+        "colors": ["#1a0a08", "#5c1a0a", "#b34700", "#ff6f00"],
+        "direction": "vertical",
+        "vignette_strength": 0.35
+    },
+
+    # Galaxy — bright purple center glow fading to dark space
+    "static_galaxy": {
+        "type": "static_gradient",
+        "colors": ["#5a3a9c", "#2a1a5c", "#0f0a2e", "#030308"],
+        "direction": "radial",
+        "vignette_strength": 0.15
+    },
+
+    # Teal vibes — modern teal-to-dark-blue
+    "static_teal": {
+        "type": "static_gradient",
+        "colors": ["#0a0a1a", "#0a2a3a", "#0d5c5c", "#14b8a6"],
+        "direction": "diagonal",
+        "vignette_strength": 0.30
+    },
+
+    # Cotton candy — soft pastel pink and blue on dark base
+    "static_cotton": {
+        "type": "static_gradient",
+        "colors": ["#0f0a1a", "#2a1a4a", "#7c5ab8", "#a8d8ea"],
+        "direction": "diagonal",
+        "vignette_strength": 0.30
+    },
+
+    # ================================================================
+    # === PHOTO-BASED BACKGROUNDS (Ken Burns effect on real images) ===
+    # ================================================================
+    # These use real photographs with slow zoom/pan animation.
+    # Place images in assets/backgrounds/<category>/ to use.
+    # Dark overlay ensures text readability.
+
+    # Earth from space — like the reference quiz videos
+    "photo_earth": {
+        "type": "photo_kenburns",
+        "category": "earth",
+        "overlay_opacity": 0.12,
+        "blur_radius": 0,
+        "zoom_range": (1.08, 1.28),
+        "pan_speed": 0.7,
+        "color_tint": None,
+    },
+    # City at night — urban energy, neon lights
+    "photo_city": {
+        "type": "photo_kenburns",
+        "category": "city",
+        "overlay_opacity": 0.12,
+        "blur_radius": 0,
+        "zoom_range": (1.06, 1.24),
+        "pan_speed": 0.6,
+        "color_tint": None,
+    },
+    # Ocean/sunset — warm, calming vocabulary/educational backdrop
+    "photo_ocean": {
+        "type": "photo_kenburns",
+        "category": "ocean",
+        "overlay_opacity": 0.08,
+        "blur_radius": 0,
+        "zoom_range": (1.06, 1.22),
+        "pan_speed": 0.5,
+        "color_tint": None,
+    },
+    # Nature — forests, mountains, greenery
+    "photo_nature": {
+        "type": "photo_kenburns",
+        "category": "nature",
+        "overlay_opacity": 0.12,
+        "blur_radius": 0,
+        "zoom_range": (1.08, 1.26),
+        "pan_speed": 0.65,
+        "color_tint": None,
+    },
+    # Abstract textures — patterns, feathers, fabrics (like reference turtle video)
+    "photo_abstract": {
+        "type": "photo_kenburns",
+        "category": "abstract",
+        "overlay_opacity": 0.08,
+        "blur_radius": 1,
+        "zoom_range": (1.08, 1.30),
+        "pan_speed": 0.8,
+        "color_tint": None,
+    },
+
+    # City blurred heavy — for text-heavy layouts (quiz, pronunciation)
+    "photo_city_blur": {
+        "type": "photo_kenburns",
+        "category": "city",
+        "overlay_opacity": 0.25,
+        "blur_radius": 4,
+        "zoom_range": (1.04, 1.14),
+        "pan_speed": 0.3,
+        "color_tint": "#0a0020",
+    },
+    # Clouds from above — dramatic sky and atmosphere
+    "photo_clouds": {
+        "type": "photo_kenburns",
+        "category": "clouds",
+        "overlay_opacity": 0.08,
+        "blur_radius": 0,
+        "zoom_range": (1.06, 1.22),
+        "pan_speed": 0.5,
+        "color_tint": None,
+    },
+    # Earth dramatic — high contrast, deep dark overlay
+    "photo_earth_dark": {
+        "type": "photo_kenburns",
+        "category": "earth",
+        "overlay_opacity": 0.25,
+        "blur_radius": 0,
+        "zoom_range": (1.05, 1.18),
+        "pan_speed": 0.5,
+        "color_tint": "#000010",
+    },
+    # Ocean vibrant — less overlay, more color
+    "photo_ocean_vibrant": {
+        "type": "photo_kenburns",
+        "category": "ocean",
+        "overlay_opacity": 0.05,
+        "blur_radius": 0,
+        "zoom_range": (1.08, 1.24),
+        "pan_speed": 0.6,
+        "color_tint": None,
+    },
+    # Sunset — warm dramatic skies (like reference vocabulary videos)
+    "photo_sunset": {
+        "type": "photo_kenburns",
+        "category": "sunset",
+        "overlay_opacity": 0.08,
+        "blur_radius": 0,
+        "zoom_range": (1.06, 1.22),
+        "pan_speed": 0.5,
+        "color_tint": None,
+    },
+    # Galaxy — cosmic deep space backgrounds
+    "photo_galaxy": {
+        "type": "photo_kenburns",
+        "category": "galaxy",
+        "overlay_opacity": 0.08,
+        "blur_radius": 0,
+        "zoom_range": (1.08, 1.28),
+        "pan_speed": 0.7,
+        "color_tint": None,
+    },
 }
 
 
@@ -332,7 +633,9 @@ class BackgroundGenerator:
         """
         options = options or {}
 
-        if bg_type == "solid_vignette":
+        if bg_type == "static_gradient":
+            return self.static_gradient(**options)
+        elif bg_type == "solid_vignette":
             return self.solid_vignette(t, **options)
         elif bg_type == "animated_gradient":
             return self.animated_gradient(t, duration=duration, **options)
@@ -348,6 +651,8 @@ class BackgroundGenerator:
             return self.light_rays(t, **options)
         elif bg_type == "aurora":
             return self.aurora(t, **options)
+        elif bg_type == "photo_kenburns":
+            return self.photo_kenburns(t, duration=duration, **options)
         else:
             # Default to solid vignette
             return self.solid_vignette(t, color="#0a0a12")
@@ -392,6 +697,82 @@ class BackgroundGenerator:
         vignette = np.clip(vignette, 0.3, 1.0)  # Don't go too dark
 
         # Apply vignette
+        for c in range(3):
+            img[:, :, c] *= vignette
+
+        return np.clip(img, 0, 255).astype(np.uint8)
+
+    # ============== STATIC GRADIENT (semi-static, no animation) ==============
+
+    def static_gradient(self, colors: List[str] = None,
+                        direction: str = "vertical",
+                        vignette_strength: float = 0.30) -> np.ndarray:
+        """
+        Beautiful multi-color gradient — rendered once, same every frame.
+        Semi-static: no animation, no moving particles, just a pretty gradient.
+
+        Supports vertical, diagonal, and radial directions.
+
+        Args:
+            colors: List of 2-4 hex colors (top→bottom or inner→outer)
+            direction: "vertical", "diagonal", or "radial"
+            vignette_strength: How dark the edges get (0-1)
+        """
+        if colors is None:
+            colors = ["#0a0a20", "#1a1a4e", "#4a1a6b", "#00d4ff"]
+
+        rgb_colors = [np.array(hex_to_rgb(c), dtype=np.float32) for c in colors]
+        img = np.zeros((self.height, self.width, 3), dtype=np.float32)
+
+        y_coords = np.arange(self.height, dtype=np.float32).reshape(-1, 1)
+        x_coords = np.arange(self.width, dtype=np.float32).reshape(1, -1)
+
+        # Calculate the gradient ratio (0→1) based on direction
+        if direction == "radial":
+            # Radial: center=0, edges=1
+            center_y, center_x = self.height / 2, self.width / 2
+            max_dist = math.sqrt(center_x**2 + center_y**2)
+            ratio = np.sqrt((x_coords - center_x)**2 + (y_coords - center_y)**2) / max_dist
+        elif direction == "diagonal":
+            # Diagonal: top-left=0, bottom-right=1
+            ratio = (y_coords / self.height * 0.6 + x_coords / self.width * 0.4)
+        else:
+            # Vertical: top=0, bottom=1
+            ratio = y_coords / self.height * np.ones((1, self.width))
+
+        ratio = np.clip(ratio, 0.0, 1.0)
+
+        # Multi-stop color interpolation
+        n_stops = len(rgb_colors)
+        if n_stops == 1:
+            for c in range(3):
+                img[:, :, c] = rgb_colors[0][c]
+        else:
+            # Scale ratio to number of segments
+            scaled = ratio * (n_stops - 1)
+            for seg in range(n_stops - 1):
+                # Mask for this segment
+                mask = (scaled >= seg) & (scaled < seg + 1) if seg < n_stops - 2 else (scaled >= seg)
+                local_t = np.clip(scaled - seg, 0.0, 1.0)
+                # Smooth easing per segment
+                local_t_smooth = local_t * local_t * (3 - 2 * local_t)  # smoothstep
+
+                for c_ch in range(3):
+                    blended = rgb_colors[seg][c_ch] + (rgb_colors[seg + 1][c_ch] - rgb_colors[seg][c_ch]) * local_t_smooth
+                    img[:, :, c_ch] = np.where(mask, blended, img[:, :, c_ch])
+
+        # Add subtle noise/grain for visual richness (very subtle)
+        noise = np.random.default_rng(42).normal(0, 3.0, (self.height, self.width))
+        for c in range(3):
+            img[:, :, c] += noise
+
+        # Apply vignette
+        center_y, center_x = self.height / 2, self.width / 2
+        max_dist = math.sqrt(center_x**2 + center_y**2)
+        dist = np.sqrt((x_coords - center_x)**2 + (y_coords - center_y)**2) / max_dist
+        vignette = 1.0 - (dist ** 1.6) * vignette_strength
+        vignette = np.clip(vignette, 0.3, 1.0)
+
         for c in range(3):
             img[:, :, c] *= vignette
 
@@ -659,7 +1040,9 @@ class BackgroundGenerator:
     def dynamic_glow_orbs(self, t: float, base_color: str = "#0a0a14",
                           orb_colors: List[str] = None,
                           orb_count: int = 10,
-                          movement_speed: str = "medium") -> np.ndarray:
+                          movement_speed: str = "medium",
+                          orb_size_min: int = 80,
+                          orb_size_max: int = 220) -> np.ndarray:
         """
         Floating glowing orbs with MORE presence and movement than bokeh.
         More visible, more dynamic, more engaging.
@@ -670,6 +1053,8 @@ class BackgroundGenerator:
             orb_colors: Colors for orbs
             orb_count: Number of orbs (8-15 recommended)
             movement_speed: "slow", "medium", "fast"
+            orb_size_min: Minimum orb radius (default 80)
+            orb_size_max: Maximum orb radius (default 220)
         """
         if orb_colors is None:
             orb_colors = ["#00d4ff", "#ff6bb3", "#a855f7", "#22d3ee"]
@@ -677,14 +1062,14 @@ class BackgroundGenerator:
         speed_mult = {"slow": 0.3, "medium": 0.6, "fast": 1.0}.get(movement_speed, 0.6)
 
         # Initialize orb data (cached)
-        if not hasattr(self, '_glow_orbs') or len(self._glow_orbs) != orb_count:
+        if not hasattr(self, '_glow_orbs') or not self._glow_orbs or len(self._glow_orbs) != orb_count:
             random.seed(123)
             self._glow_orbs = []
             for i in range(orb_count):
                 self._glow_orbs.append({
                     'x': random.random(),
                     'y': random.random(),
-                    'size': random.randint(80, 220),  # LARGER than bokeh
+                    'size': random.randint(orb_size_min, orb_size_max),
                     'speed_x': (random.random() - 0.5) * 0.025,
                     'speed_y': -random.random() * 0.015 - 0.008,  # Float upward
                     'alpha': random.random() * 0.35 + 0.15,  # MORE visible
@@ -998,6 +1383,360 @@ class BackgroundGenerator:
         return np.clip(img, 0, 255).astype(np.uint8)
 
 
+    # ============== PHOTO KEN BURNS ==============
+
+    def _load_photo(self, category: str) -> Optional[Image.Image]:
+        """Load a random photo from assets/backgrounds/<category>/."""
+        if not hasattr(self, '_photo_cache'):
+            self._photo_cache = {}
+
+        # Return cached photo for this category
+        if category in self._photo_cache:
+            return self._photo_cache[category]
+
+        cat_dir = ASSETS_DIR / category
+        if not cat_dir.exists():
+            logger.warning("Photo category dir not found: %s", cat_dir)
+            return None
+
+        # Find all image files
+        extensions = {'.jpg', '.jpeg', '.png', '.webp', '.bmp'}
+        images = [f for f in cat_dir.iterdir()
+                  if f.suffix.lower() in extensions and f.is_file()]
+
+        if not images:
+            logger.warning("No images in %s/", category)
+            return None
+
+        # Pick one using SystemRandom (not affected by global seed)
+        chosen = random.SystemRandom().choice(images)
+        logger.info("Loading photo background: %s", chosen.name)
+
+        try:
+            img = Image.open(chosen).convert('RGB')
+
+            # Scale to cover the video frame (crop to fill)
+            img_ratio = img.width / img.height
+            target_ratio = self.width / self.height
+
+            # We need extra margin for Ken Burns zoom (max 1.3x)
+            margin = 1.35
+            target_w = int(self.width * margin)
+            target_h = int(self.height * margin)
+
+            if img_ratio > target_ratio:
+                # Image is wider: scale by height, crop width
+                new_h = target_h
+                new_w = int(new_h * img_ratio)
+            else:
+                # Image is taller: scale by width, crop height
+                new_w = target_w
+                new_h = int(new_w / img_ratio)
+
+            img = img.resize((new_w, new_h), Image.LANCZOS)
+            self._photo_cache[category] = img
+            return img
+
+        except Exception as e:
+            logger.error("Failed to load photo %s: %s", chosen, e)
+            return None
+
+    def photo_kenburns(self, t: float, category: str = "earth",
+                       overlay_opacity: float = 0.35,
+                       blur_radius: int = 2,
+                       zoom_range: tuple = (1.05, 1.20),
+                       pan_speed: float = 0.3,
+                       color_tint: str = None,
+                       duration: float = 30.0) -> np.ndarray:
+        """
+        Real photograph background with Ken Burns effect (slow zoom + pan).
+        Applies dark overlay and optional blur for text readability.
+
+        Like the reference TikTok videos: Earth from space, city scenes,
+        ocean sunsets, architecture, etc.
+
+        Args:
+            t: Current time in seconds
+            category: Image subfolder in assets/backgrounds/
+            overlay_opacity: Dark overlay strength (0=none, 1=black)
+            blur_radius: Gaussian blur amount (0=sharp)
+            zoom_range: (min_zoom, max_zoom) for Ken Burns
+            pan_speed: How fast the camera pans (0=still, 1=fast)
+            color_tint: Optional hex color tint overlay
+            duration: Total video duration
+        """
+        photo = self._load_photo(category)
+
+        if photo is None:
+            # Fallback to a dark gradient if no photo available
+            logger.info("No photo for '%s', using fallback gradient", category)
+            return self.animated_gradient(t, colors=["#0a0a14", "#1a1a3a", "#0a1a2a", "#0a0a14"])
+
+        # Ken Burns: calculate zoom and pan for current time
+        zoom_min, zoom_max = zoom_range
+        cycle = duration if duration > 0 else 30.0
+
+        # Dynamic zoom — two layered oscillations for organic feel
+        zoom_slow = (math.sin(t * math.pi * 2 / cycle) + 1) / 2
+        zoom_fast = (math.sin(t * 0.8) + 1) / 2 * 0.3  # subtle fast pulse
+        zoom_t = min(1.0, zoom_slow + zoom_fast)
+        zoom = zoom_min + (zoom_max - zoom_min) * zoom_t
+
+        # Dynamic pan — layered lissajous with drift for cinematic motion
+        pan_x = (math.sin(t * 0.4 * pan_speed) * 0.4
+                 + math.sin(t * 0.17 * pan_speed + 1.2) * 0.3)
+        pan_y = (math.sin(t * 0.3 * pan_speed + 0.7) * 0.4
+                 + math.cos(t * 0.13 * pan_speed + 2.1) * 0.25)
+
+        # Calculate crop region
+        crop_w = int(self.width / zoom)
+        crop_h = int(self.height / zoom)
+
+        # Center point with pan offset
+        max_offset_x = (photo.width - crop_w) // 2
+        max_offset_y = (photo.height - crop_h) // 2
+
+        center_x = photo.width // 2 + int(pan_x * max_offset_x)
+        center_y = photo.height // 2 + int(pan_y * max_offset_y)
+
+        # Crop box
+        left = max(0, center_x - crop_w // 2)
+        top = max(0, center_y - crop_h // 2)
+        right = min(photo.width, left + crop_w)
+        bottom = min(photo.height, top + crop_h)
+
+        # Ensure minimum size
+        if right - left < crop_w:
+            left = max(0, right - crop_w)
+        if bottom - top < crop_h:
+            top = max(0, bottom - crop_h)
+
+        # Crop and resize to video dimensions
+        cropped = photo.crop((left, top, right, bottom))
+        frame = cropped.resize((self.width, self.height), Image.LANCZOS)
+
+        # Apply blur if requested
+        if blur_radius > 0:
+            frame = frame.filter(ImageFilter.GaussianBlur(radius=blur_radius))
+
+        # Convert to numpy
+        img = np.array(frame, dtype=np.float32)
+
+        # Apply color tint if specified
+        if color_tint:
+            tint_rgb = hex_to_rgb(color_tint)
+            tint_strength = 0.25
+            for c in range(3):
+                img[:, :, c] = img[:, :, c] * (1 - tint_strength) + tint_rgb[c] * tint_strength
+
+        # Apply dark overlay for text readability (subtle — let the photo shine)
+        if overlay_opacity > 0:
+            img *= (1.0 - overlay_opacity)
+
+        # Apply gentle vignette (just darken edges, keep center bright)
+        y_coords = np.arange(self.height).reshape(-1, 1)
+        x_coords = np.arange(self.width).reshape(1, -1)
+        center_y, center_x = self.height / 2, self.width / 2
+        max_dist = math.sqrt(center_x**2 + center_y**2)
+        dist = np.sqrt((x_coords - center_x)**2 + (y_coords - center_y)**2) / max_dist
+        vignette = 1.0 - (dist ** 2.0) * 0.25
+        vignette = np.clip(vignette, 0.55, 1.0)
+
+        for c in range(3):
+            img[:, :, c] *= vignette
+
+        # === DYNAMIC OVERLAY EFFECTS (category-aware, make photos feel alive) ===
+
+        # Category-specific effect profiles (boosted for more dynamism)
+        _EFFECT_PROFILES = {
+            'earth':    {'breath': (0.06, 0.04, 0.08), 'particle_color': (200, 220, 255), 'particle_count': 30, 'particle_size': (2, 6), 'leak_color': (180, 200, 255), 'leak_strength': 0.07},
+            'city':     {'breath': (0.08, 0.05, 0.09), 'particle_color': (255, 200, 255), 'particle_count': 22, 'particle_size': (2, 5), 'leak_color': (255, 180, 220), 'leak_strength': 0.08},
+            'ocean':    {'breath': (0.04, 0.07, 0.08), 'particle_color': (180, 230, 255), 'particle_count': 28, 'particle_size': (2, 6), 'leak_color': (140, 200, 255), 'leak_strength': 0.08},
+            'nature':   {'breath': (0.05, 0.08, 0.04), 'particle_color': (220, 255, 200), 'particle_count': 24, 'particle_size': (2, 7), 'leak_color': (255, 240, 180), 'leak_strength': 0.07},
+            'abstract': {'breath': (0.08, 0.06, 0.09), 'particle_color': (255, 220, 255), 'particle_count': 20, 'particle_size': (3, 8), 'leak_color': (255, 200, 255), 'leak_strength': 0.08},
+            'clouds':   {'breath': (0.05, 0.05, 0.06), 'particle_color': (255, 240, 230), 'particle_count': 16, 'particle_size': (3, 9), 'leak_color': (255, 220, 200), 'leak_strength': 0.09},
+            'sunset':   {'breath': (0.09, 0.05, 0.03), 'particle_color': (255, 200, 120), 'particle_count': 26, 'particle_size': (2, 6), 'leak_color': (255, 180, 100), 'leak_strength': 0.10},
+            'galaxy':   {'breath': (0.06, 0.05, 0.09), 'particle_color': (200, 180, 255), 'particle_count': 35, 'particle_size': (1, 4), 'leak_color': (180, 160, 255), 'leak_strength': 0.06},
+        }
+        profile = _EFFECT_PROFILES.get(category, _EFFECT_PROFILES['earth'])
+
+        # 1. Color breathing — category-tuned hue shift (layered for organic feel)
+        br, bg_b, bb = profile['breath']
+        breath_r = 1.0 + br * math.sin(t * 0.8) + br * 0.3 * math.sin(t * 1.7 + 0.5)
+        breath_g = 1.0 + bg_b * math.sin(t * 0.6 + 1.0) + bg_b * 0.3 * math.sin(t * 1.4 + 1.8)
+        breath_b = 1.0 + bb * math.sin(t * 0.9 + 2.0) + bb * 0.3 * math.sin(t * 2.0 + 0.3)
+        img[:, :, 0] *= breath_r
+        img[:, :, 1] *= breath_g
+        img[:, :, 2] *= breath_b
+
+        # 2. Floating particles — category-specific style
+        cache_key = f'_particles_{category}'
+        if not hasattr(self, cache_key):
+            rng = random.Random(hash(category) + 12345)
+            particles = []
+            p_count = profile['particle_count']
+            p_min, p_max = profile['particle_size']
+            for _ in range(p_count):
+                particles.append({
+                    'x': rng.random(),
+                    'y': rng.random(),
+                    'size': rng.randint(p_min, p_max),
+                    'speed_y': -(rng.random() * 0.015 + 0.005),
+                    'drift_x': (rng.random() - 0.5) * 0.008,
+                    'brightness': rng.random() * 0.4 + 0.6,
+                    'phase': rng.random() * math.pi * 2,
+                    'twinkle_speed': rng.random() * 2.5 + 1.0,
+                })
+            setattr(self, cache_key, particles)
+
+        h, w = self.height, self.width
+        p_color = profile['particle_color']
+        for p in getattr(self, cache_key):
+            px = ((p['x'] + p['drift_x'] * t * 30 + math.sin(t * 0.7 + p['phase']) * 0.04) % 1.0)
+            py = ((p['y'] + p['speed_y'] * t * 30 + math.sin(t * 0.5 + p['phase'] * 0.7) * 0.015) % 1.0)
+            cx, cy = int(px * w), int(py * h)
+            twinkle = 0.5 + 0.5 * math.sin(t * p['twinkle_speed'] + p['phase'])
+            alpha = p['brightness'] * twinkle * 0.7
+            size = p['size']
+
+            y_min, y_max = max(0, cy - size), min(h, cy + size + 1)
+            x_min, x_max = max(0, cx - size), min(w, cx + size + 1)
+            if y_max > y_min and x_max > x_min:
+                yy, xx = np.ogrid[y_min:y_max, x_min:x_max]
+                dist_p = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2)
+                particle_mask = dist_p <= size
+                glow = np.exp(-2.0 * (dist_p / max(size, 1)) ** 2) * particle_mask * alpha
+                img[y_min:y_max, x_min:x_max, 0] += p_color[0] * glow
+                img[y_min:y_max, x_min:x_max, 1] += p_color[1] * glow
+                img[y_min:y_max, x_min:x_max, 2] += p_color[2] * glow
+
+        # 3. Moving light leak — category-colored glow
+        leak_r, leak_g, leak_b = profile['leak_color']
+        leak_str = profile['leak_strength']
+        lx = w * (0.6 + 0.3 * math.sin(t * 0.25) + 0.1 * math.sin(t * 0.6))
+        ly = h * (0.25 + 0.2 * math.sin(t * 0.3 + 0.8) + 0.05 * math.cos(t * 0.7))
+        lr = max(w, h) * 0.5
+        y_full = np.arange(h).reshape(-1, 1)
+        x_full = np.arange(w).reshape(1, -1)
+        dist_leak = np.sqrt((x_full - lx) ** 2 + (y_full - ly) ** 2)
+        leak_area = dist_leak < lr
+        leak_intensity = leak_str * ((1 - dist_leak / lr) ** 2) * leak_area
+        leak_pulse = 0.7 + 0.3 * math.sin(t * 0.25)
+        img[:, :, 0] += leak_r * leak_intensity * leak_pulse
+        img[:, :, 1] += leak_g * leak_intensity * leak_pulse
+        img[:, :, 2] += leak_b * leak_intensity * leak_pulse
+
+        return np.clip(img, 0, 255).astype(np.uint8)
+
+
+# ============== PHOTO DOWNLOAD HELPER ==============
+
+def get_available_photo_categories() -> Dict[str, int]:
+    """Return available photo categories and image count per category."""
+    categories = {}
+    if ASSETS_DIR.exists():
+        extensions = {'.jpg', '.jpeg', '.png', '.webp', '.bmp'}
+        for cat_dir in ASSETS_DIR.iterdir():
+            if cat_dir.is_dir():
+                count = sum(1 for f in cat_dir.iterdir()
+                           if f.suffix.lower() in extensions and f.is_file())
+                categories[cat_dir.name] = count
+    return categories
+
+
+def download_sample_backgrounds():
+    """
+    Download sample royalty-free backgrounds for each category.
+    Uses Pexels API (free tier, 200 req/month).
+
+    Set PEXELS_API_KEY in .env to enable, or manually place images in:
+        assets/backgrounds/earth/
+        assets/backgrounds/city/
+        assets/backgrounds/ocean/
+        assets/backgrounds/nature/
+        assets/backgrounds/abstract/
+    """
+    import requests
+    from dotenv import load_dotenv
+    load_dotenv()
+
+    api_key = os.environ.get("PEXELS_API_KEY")
+    if not api_key:
+        print("=" * 60)
+        print("PHOTO BACKGROUND SETUP")
+        print("=" * 60)
+        print()
+        print("Option 1: Add PEXELS_API_KEY to .env (free at pexels.com/api)")
+        print("          Then run: python3 src/backgrounds.py --download")
+        print()
+        print("Option 2: Manually place images in these folders:")
+        for cat in ["earth", "city", "ocean", "nature", "abstract"]:
+            cat_path = ASSETS_DIR / cat
+            cat_path.mkdir(parents=True, exist_ok=True)
+            print(f"  assets/backgrounds/{cat}/")
+        print()
+        print("Recommended image specs:")
+        print("  - Resolution: 1080x1920 or larger (vertical preferred)")
+        print("  - Format: JPG or PNG")
+        print("  - 3-5 images per category for variety")
+        print()
+        print("Search terms for free stock photos (Pexels, Unsplash, Pixabay):")
+        print("  earth: 'earth from space', 'planet night', 'earth satellite'")
+        print("  city:  'city night aerial', 'neon street', 'times square'")
+        print("  ocean: 'ocean sunset', 'tropical beach', 'sea waves aerial'")
+        print("  nature:'mountain landscape', 'forest aerial', 'northern lights photo'")
+        print("  abstract:'blue feather texture', 'neon abstract', 'colorful smoke'")
+        print("=" * 60)
+        return
+
+    headers = {"Authorization": api_key}
+    search_queries = {
+        "earth": "earth from space night",
+        "city": "city night aerial neon",
+        "ocean": "ocean sunset tropical",
+        "nature": "mountain forest landscape",
+        "abstract": "abstract colorful texture",
+    }
+
+    for category, query in search_queries.items():
+        cat_dir = ASSETS_DIR / category
+        cat_dir.mkdir(parents=True, exist_ok=True)
+
+        existing = list(cat_dir.glob("*.jpg")) + list(cat_dir.glob("*.png"))
+        if len(existing) >= 3:
+            print(f"  {category}: already has {len(existing)} images, skipping")
+            continue
+
+        print(f"  Downloading {category} backgrounds...")
+        try:
+            resp = requests.get(
+                "https://api.pexels.com/v1/search",
+                headers=headers,
+                params={"query": query, "per_page": 5, "orientation": "portrait"},
+                timeout=15
+            )
+            resp.raise_for_status()
+            data = resp.json()
+
+            for i, photo in enumerate(data.get("photos", [])[:5]):
+                # Get portrait-sized image
+                url = photo["src"].get("large2x", photo["src"]["large"])
+                img_resp = requests.get(url, timeout=30)
+                img_resp.raise_for_status()
+
+                filename = cat_dir / f"{category}_{i+1}.jpg"
+                with open(filename, 'wb') as f:
+                    f.write(img_resp.content)
+                size_mb = len(img_resp.content) / (1024 * 1024)
+                print(f"    Downloaded: {filename.name} ({size_mb:.1f} MB)")
+
+        except Exception as e:
+            print(f"    Error downloading {category}: {e}")
+
+    print("\nDone! Photo backgrounds are ready to use.")
+    print("Use presets: photo_earth, photo_city, photo_ocean, photo_nature, photo_abstract")
+
+
 # ============== UTILITY FUNCTIONS ==============
 
 def list_presets() -> List[str]:
@@ -1026,22 +1765,37 @@ def get_recommended_preset() -> str:
 
 if __name__ == "__main__":
     import argparse
-    from PIL import Image
 
-    parser = argparse.ArgumentParser(description="Background Generator Test")
+    parser = argparse.ArgumentParser(description="Background Generator")
     parser.add_argument("--preset", default="bokeh_soft", help="Preset name")
     parser.add_argument("--list", action="store_true", help="List all presets")
+    parser.add_argument("--download", action="store_true", help="Download sample photo backgrounds")
+    parser.add_argument("--photos", action="store_true", help="Show photo background status")
     parser.add_argument("--time", type=float, default=0.0, help="Time for frame")
     parser.add_argument("-o", "--output", default="test_bg.png", help="Output file")
 
     args = parser.parse_args()
 
-    if args.list:
+    if args.download:
+        download_sample_backgrounds()
+    elif args.photos:
+        categories = get_available_photo_categories()
+        print("Photo Background Status:")
+        print("=" * 40)
+        if categories:
+            for cat, count in sorted(categories.items()):
+                status = f"{count} images" if count > 0 else "EMPTY - add images!"
+                print(f"  {cat}: {status}")
+        else:
+            print("  No categories found. Run --download or add images manually.")
+        print(f"\nDirectory: {ASSETS_DIR}")
+    elif args.list:
         print("Available presets:")
         for name in list_presets():
             info = get_preset_info(name)
             print(f"  {name}: {info['type']}")
         print(f"\nRecommended default: {get_recommended_preset()}")
+        print(f"\nPhoto presets: photo_earth, photo_city, photo_ocean, photo_nature, photo_abstract")
     else:
         print(f"Generating frame with preset: {args.preset}")
         bg = BackgroundGenerator()

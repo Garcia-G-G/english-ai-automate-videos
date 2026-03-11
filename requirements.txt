@@ -3,6 +3,7 @@
 # Core
 openai>=1.0.0
 python-dotenv>=1.0.0
+pyyaml>=6.0
 
 # TTS & Audio
 edge-tts>=6.1.0
@@ -15,6 +16,11 @@ numpy>=1.24.0
 
 # Admin Dashboard
 streamlit>=1.30.0
+
+# Social Media Uploads
+google-api-python-client>=2.100.0
+google-auth-oauthlib>=1.1.0
+requests>=2.31.0
 
 # Optional: Video Analysis
 opencv-python>=4.8.0
