@@ -1791,7 +1791,7 @@ def get_recommended_preset() -> str:
     Return the recommended default preset based on TikTok best practices.
     Dynamic backgrounds with visible movement work best for engagement.
     """
-    return "aurora_borealis"  # Northern lights - beautiful flowing colors, viral TikTok style
+    return "photo_earth"  # Real photo with Ken Burns — cinematic and dynamic
 
 
 # ============== CLI FOR TESTING ==============
