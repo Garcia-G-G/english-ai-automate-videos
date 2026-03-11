@@ -1,7 +1,6 @@
 """Edge TTS provider — wraps tts.py (free, local)."""
 
 import asyncio
-import json
 import logging
 from typing import Dict
 
@@ -20,27 +19,16 @@ class EdgeTTSProvider(TTSProvider):
         self.mode = mode
 
     def generate_from_script(self, script_data: Dict, output_path: str, **kwargs) -> Dict:
-        """Edge TTS doesn't have segment-based generation.
-
-        For any script type, it generates audio from the full_script text
-        and returns word-level timestamps.
-        """
+        """Edge TTS generates audio from full_script for all types."""
         text = script_data.get('full_script', '')
         if not text:
             raise ValueError("Script missing 'full_script' field")
 
+        from tts_common import clean_for_tts
+        text = clean_for_tts(text)
         result = self.generate_audio(text, output_path, **kwargs)
-
-        video_type = script_data.get('type', 'educational')
-        result['type'] = video_type
-        for key in ('question', 'options', 'correct', 'explanation',
-                    'full_script', 'translations', 'hashtags',
-                    'english_phrases', 'statement', 'sentence',
-                    'word', 'phonetic', 'common_mistake', 'tip'):
-            if key in script_data:
-                result[key] = script_data[key]
-
-        self._save_json(output_path, result)
+        self.copy_script_metadata(script_data, result)
+        self.save_json(output_path, result)
         return result
 
     def generate_audio(self, text: str, output_path: str, **kwargs) -> Dict:
@@ -53,8 +41,7 @@ class EdgeTTSProvider(TTSProvider):
             english_voice = kwargs.get('english_voice', DEFAULT_ENGLISH_VOICE)
             result = asyncio.run(text_to_speech_hybrid(
                 text, output_path,
-                spanish_voice=voice,
-                english_voice=english_voice,
+                spanish_voice=voice, english_voice=english_voice,
                 spanish_rate=rate,
             ))
         elif mode == "ssml":
@@ -69,9 +56,3 @@ class EdgeTTSProvider(TTSProvider):
             ))
 
         return result
-
-    @staticmethod
-    def _save_json(output_path: str, result: Dict):
-        json_path = output_path.rsplit('.', 1)[0] + '.json'
-        with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(result, f, indent=2, ensure_ascii=False)

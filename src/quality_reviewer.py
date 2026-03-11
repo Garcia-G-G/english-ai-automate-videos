@@ -34,6 +34,36 @@ import numpy as np
 HISTORY_DIR = Path(__file__).parent.parent / "output" / "reviews"
 HISTORY_DIR.mkdir(parents=True, exist_ok=True)
 
+# ============== QUALITY THRESHOLDS ==============
+
+# Video basics
+EXPECTED_WIDTH = 1080
+EXPECTED_HEIGHT = 1920
+MIN_FPS = 24
+GOOD_FPS = 30
+MIN_DURATION = 10       # seconds - very short
+MAX_DURATION = 60       # seconds - too long for TikTok
+
+# Audio
+MIN_SAMPLE_RATE = 44100
+CLIPPING_THRESHOLD_DB = -1.0     # max volume above this = clipping
+QUIET_THRESHOLD_DB = -25         # mean volume below this = too quiet
+GOOD_VOLUME_RANGE_DB = (-20, -10)  # comfortable listening range
+
+# Speaking rate (words per minute)
+MAX_SPEAKING_RATE_WPM = 200   # too fast
+MIN_SPEAKING_RATE_WPM = 100   # too slow
+
+# Countdown gaps (seconds)
+COUNTDOWN_MIN_GAP = 0.8
+COUNTDOWN_MAX_GAP = 1.3
+
+# Visual thresholds
+DARK_BRIGHTNESS = 80     # out of 255
+BRIGHT_BRIGHTNESS = 200  # out of 255
+FROZEN_THRESHOLD = 5     # avg pixel diff - below = mostly static
+JARRING_THRESHOLD = 50   # avg pixel diff - above = dramatic changes
+
 
 class QualityReviewer:
     """
@@ -182,40 +212,40 @@ class QualityReviewer:
         print(f"   FPS: {fps:.0f}")
 
         # Check resolution
-        if width != 1080 or height != 1920:
-            if width == 1920 and height == 1080:
+        if width != EXPECTED_WIDTH or height != EXPECTED_HEIGHT:
+            if width == EXPECTED_HEIGHT and height == EXPECTED_WIDTH:
                 self.add_finding(
                     'critical', 'video',
                     f"The video is in landscape format ({width}x{height}). TikTok/Reels need portrait format.",
-                    "Change VIDEO_WIDTH and VIDEO_HEIGHT in constants.py to 1080x1920."
+                    f"Change VIDEO_WIDTH and VIDEO_HEIGHT in constants.py to {EXPECTED_WIDTH}x{EXPECTED_HEIGHT}."
                 )
             else:
                 self.add_finding(
                     'warning', 'video',
-                    f"Resolution is {width}x{height}. Standard TikTok is 1080x1920.",
-                    "Consider using 1080x1920 for optimal quality on TikTok/Reels."
+                    f"Resolution is {width}x{height}. Standard TikTok is {EXPECTED_WIDTH}x{EXPECTED_HEIGHT}.",
+                    f"Consider using {EXPECTED_WIDTH}x{EXPECTED_HEIGHT} for optimal quality on TikTok/Reels."
                 )
         else:
-            self.add_positive("Resolution is perfect for TikTok/Reels (1080x1920)")
+            self.add_positive(f"Resolution is perfect for TikTok/Reels ({EXPECTED_WIDTH}x{EXPECTED_HEIGHT})")
 
         # Check FPS
-        if fps < 24:
+        if fps < MIN_FPS:
             self.add_finding(
                 'warning', 'video',
                 f"Frame rate is only {fps:.0f} FPS. Videos may look choppy.",
-                "Increase FPS to at least 24, ideally 30 for smooth playback."
+                f"Increase FPS to at least {MIN_FPS}, ideally {GOOD_FPS} for smooth playback."
             )
-        elif fps >= 30:
+        elif fps >= GOOD_FPS:
             self.add_positive(f"Smooth frame rate ({fps:.0f} FPS)")
 
         # Check duration
-        if duration < 10:
+        if duration < MIN_DURATION:
             self.add_finding(
                 'warning', 'content',
                 f"Video is very short ({duration:.0f}s). This might not engage viewers.",
                 "Aim for at least 15-30 seconds for TikTok educational content."
             )
-        elif duration > 60:
+        elif duration > MAX_DURATION:
             self.add_finding(
                 'suggestion', 'content',
                 f"Video is {duration:.0f}s long. TikTok viewers prefer 15-45 second videos.",
@@ -263,7 +293,7 @@ class QualityReviewer:
             print(f"   Sample rate: {sample_rate} Hz")
             print(f"   Channels: {channels}")
 
-            if sample_rate < 44100:
+            if sample_rate < MIN_SAMPLE_RATE:
                 self.add_finding(
                     'warning', 'audio',
                     f"Audio sample rate is low ({sample_rate} Hz). This might sound muffled.",
@@ -295,7 +325,7 @@ class QualityReviewer:
 
             if max_vol is not None:
                 print(f"   Max volume: {max_vol:.1f} dB")
-                if max_vol > -1.0:
+                if max_vol > CLIPPING_THRESHOLD_DB:
                     self.add_finding(
                         'warning', 'audio',
                         f"Audio might be clipping (max volume: {max_vol:.1f} dB). This can cause distortion.",
@@ -304,13 +334,13 @@ class QualityReviewer:
 
             if mean_vol is not None:
                 print(f"   Mean volume: {mean_vol:.1f} dB")
-                if mean_vol < -25:
+                if mean_vol < QUIET_THRESHOLD_DB:
                     self.add_finding(
                         'warning', 'audio',
                         f"Audio is quite quiet (mean: {mean_vol:.1f} dB). Viewers might not hear well.",
                         "Increase TTS volume or normalize audio to around -14 dB."
                     )
-                elif -20 <= mean_vol <= -10:
+                elif GOOD_VOLUME_RANGE_DB[0] <= mean_vol <= GOOD_VOLUME_RANGE_DB[1]:
                     self.add_positive("Audio volume is at a good level")
 
         except subprocess.TimeoutExpired:
@@ -359,13 +389,13 @@ class QualityReviewer:
 
             print(f"   Speaking rate: {words_per_minute:.0f} words/minute")
 
-            if words_per_minute > 200:
+            if words_per_minute > MAX_SPEAKING_RATE_WPM:
                 self.add_finding(
                     'warning', 'timing',
                     f"Speaking rate is too fast ({words_per_minute:.0f} words/min). Viewers can't follow.",
                     "Slow down the TTS speed (try 0.85-0.95x) or add more pauses."
                 )
-            elif words_per_minute < 100:
+            elif words_per_minute < MIN_SPEAKING_RATE_WPM:
                 self.add_finding(
                     'suggestion', 'timing',
                     f"Speaking rate is slow ({words_per_minute:.0f} words/min). Might lose attention.",
@@ -407,13 +437,13 @@ class QualityReviewer:
 
         print(f"   Countdown: 3→2 gap={gap_3_2:.2f}s, 2→1 gap={gap_2_1:.2f}s")
 
-        if gap_3_2 < 0.8 or gap_2_1 < 0.8:
+        if gap_3_2 < COUNTDOWN_MIN_GAP or gap_2_1 < COUNTDOWN_MIN_GAP:
             self.add_finding(
                 'critical', 'timing',
                 f"Countdown is too fast! Gaps are {gap_3_2:.2f}s and {gap_2_1:.2f}s (need ~1s each).",
                 "Add ellipsis (...) after each number in the script: 'Tres... dos... uno...'"
             )
-        elif 0.8 <= gap_3_2 <= 1.3 and 0.8 <= gap_2_1 <= 1.3:
+        elif COUNTDOWN_MIN_GAP <= gap_3_2 <= COUNTDOWN_MAX_GAP and COUNTDOWN_MIN_GAP <= gap_2_1 <= COUNTDOWN_MAX_GAP:
             self.add_positive("Countdown timing is good (about 1 second per number)")
         else:
             self.add_finding(
@@ -515,13 +545,13 @@ class QualityReviewer:
         avg_brightness = np.mean(brightness_values)
         print(f"   Average brightness: {avg_brightness:.0f}/255")
 
-        if avg_brightness < 80:
+        if avg_brightness < DARK_BRIGHTNESS:
             self.add_finding(
                 'warning', 'visual',
                 f"Video is quite dark (brightness: {avg_brightness:.0f}/255). Text might be hard to read.",
                 "Use a brighter background or increase text brightness."
             )
-        elif avg_brightness > 200:
+        elif avg_brightness > BRIGHT_BRIGHTNESS:
             self.add_finding(
                 'suggestion', 'visual',
                 f"Video is very bright (brightness: {avg_brightness:.0f}/255). Might wash out on screens.",
@@ -538,13 +568,13 @@ class QualityReviewer:
                 diffs.append(diff)
 
             avg_diff = np.mean(diffs)
-            if avg_diff < 5:
+            if avg_diff < FROZEN_THRESHOLD:
                 self.add_finding(
                     'critical', 'visual',
                     "The video appears mostly static - animations might not be working.",
                     "Check that create_frame_educational() is being called for each frame."
                 )
-            elif avg_diff > 50:
+            elif avg_diff > JARRING_THRESHOLD:
                 self.add_finding(
                     'suggestion', 'visual',
                     "Visual changes are quite dramatic. Might be jarring to watch.",

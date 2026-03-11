@@ -30,11 +30,28 @@ WORDS_DIR.mkdir(parents=True, exist_ok=True)
 
 PAUSE_AFTER_QUESTION = 0.5
 PAUSE_AFTER_OPTION = 0.6
-PAUSE_AFTER_THINK = 1.0      # Increased: more suspense before countdown starts
+PAUSE_AFTER_THINK = 1.5      # Gap after "piensa bien" before countdown starts
 PAUSE_AFTER_COUNTDOWN = 1.0  # Keep: good pacing between numbers
 PAUSE_AFTER_LAST_COUNT = 1.0 # Increased: dramatic pause before answer reveal
 PAUSE_AFTER_ANSWER = 0.4     # Slightly increased for breathing room
 PAUSE_AFTER_EXPLANATION = 0.5
+
+
+# ============== SEGMENT SPEEDS ==============
+# Per-segment-type TTS speed for natural pacing.
+# Slower = more deliberate; range 0.25–4.0 (OpenAI API).
+# Language learners need more time to process, especially English words.
+SEGMENT_SPEEDS = {
+    'question':     0.88,  # Question/statement: clear, confident
+    'statement':    0.88,  # True/false statements
+    'sentence':     0.88,  # Fill-blank sentences
+    'options':      0.82,  # Options: slower, let viewer read + listen
+    'english_word': 0.78,  # Teaching words: slowest, clear pronunciation
+    'answer':       0.85,  # Answer reveal: moderate
+    'explanation':  0.85,  # Explanation: conversational
+    'cached_phrase': 0.82, # Pre-generated words in cache
+    'default':      0.85,  # Fallback
+}
 
 
 # ============== SPANISH FILTER ==============
@@ -70,6 +87,9 @@ SPANISH_FILTER = {
 
 def get_audio_duration(audio_path: str) -> float:
     """Get duration of an audio file using ffprobe."""
+    import os
+    if not os.path.isfile(audio_path):
+        raise FileNotFoundError(f"Audio file not found: {audio_path}")
     cmd = [
         'ffprobe', '-v', 'error',
         '-show_entries', 'format=duration',
@@ -77,7 +97,10 @@ def get_audio_duration(audio_path: str) -> float:
         audio_path
     ]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-    return float(result.stdout.strip())
+    raw = result.stdout.strip()
+    if not raw:
+        raise RuntimeError(f"ffprobe returned no duration for {audio_path}")
+    return float(raw)
 
 
 def generate_silence(duration: float, output_path: str,
@@ -206,8 +229,17 @@ def extract_english_words_from_script(script: dict) -> set:
             if clean:  # No length filter - include "I", "a", etc.
                 english_words.add(clean)
 
-    # NOTE: We don't extract from 'translations' field because its format varies
-    # (sometimes values are English, sometimes Spanish depending on quiz type)
+    # TERTIARY: If no english_phrases provided, extract quoted words from full_script
+    # Only as fallback - english_phrases is the canonical source
+    if not english_words:
+        full_script = script.get('full_script', '')
+        if full_script:
+            quoted_pattern = r"'([^']+)'"
+            for match in re.findall(quoted_pattern, full_script):
+                for word in match.lower().split():
+                    clean = re.sub(r'[^\w]', '', word)
+                    if clean and clean not in SPANISH_FILTER:
+                        english_words.add(clean)
 
     return english_words
 

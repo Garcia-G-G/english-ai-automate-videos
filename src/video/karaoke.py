@@ -4,8 +4,7 @@ Shows multiple lines of text with word-by-word highlighting,
 inline translations for English words, and smooth TikTok-style animations.
 """
 
-import math
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple
 
 import numpy as np
 from PIL import Image, ImageDraw
@@ -18,8 +17,7 @@ from .constants import (
     VIDEO_WIDTH, VIDEO_HEIGHT, TEXT_AREA_WIDTH,
     ENGLISH_WORD_COLOR, SPANISH_WORD_COLOR,
 )
-from .backgrounds import gradient
-from .utils import font, draw_progress_bar
+from .utils import font, create_base_frame, finalize_frame
 
 # Karaoke-specific constants
 FONT_SIZE_MAIN = 52  # Smaller for more text on screen
@@ -62,25 +60,21 @@ def _blend_colors(c1: Tuple[int, int, int], c2: Tuple[int, int, int], t: float) 
 
 def create_frame_karaoke(
     t: float,
-    words: List[Dict],
+    data: Dict,
     duration: float,
-    translations: Dict = None,
-    full_script: str = ""
 ) -> np.ndarray:
     """Create frame with karaoke-style word highlighting.
 
     Args:
         t: Current time in seconds
-        words: List of word dicts with 'word', 'start', 'end', 'is_english'
+        data: Dict with 'words', 'translations', 'full_script'
         duration: Total video duration
-        translations: Dict mapping English words to Spanish translations
-        full_script: Original script text for line breaking
     """
-    bg = gradient(VIDEO_WIDTH, VIDEO_HEIGHT, t)
-    frame = Image.fromarray(bg, 'RGB').convert('RGBA')
-    draw = ImageDraw.Draw(frame, 'RGBA')
+    frame, draw = create_base_frame(t)
 
-    translations = translations or {}
+    words = data.get('words', [])
+    translations = data.get('translations', {}) or {}
+    full_script = data.get('full_script', '')
     # Normalize translation keys to lowercase for case-insensitive lookup
     translations_lower = {k.lower(): v for k, v in translations.items()}
 
@@ -97,11 +91,7 @@ def create_frame_karaoke(
     # Render lines with highlighting
     _render_karaoke_lines(draw, frame, lines, words, t, current_idx, translations_lower)
 
-    # Progress bar
-    progress = min(1.0, t / duration)
-    draw_progress_bar(draw, progress)
-
-    return np.array(frame.convert('RGB'))
+    return finalize_frame(frame, draw, t, duration)
 
 
 def _build_display_lines(

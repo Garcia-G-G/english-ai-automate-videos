@@ -1,7 +1,18 @@
 """Abstract base class for TTS providers."""
 
+import json
 from abc import ABC, abstractmethod
 from typing import Dict, Optional
+
+
+# Keys copied from script_data to result JSON in every provider.
+SCRIPT_DATA_KEYS = (
+    'question', 'options', 'correct', 'explanation',
+    'full_script', 'translations', 'hashtags',
+    'english_phrases', 'statement', 'sentence',
+    'word', 'phonetic', 'common_mistake', 'tip',
+    'translation', 'cta',
+)
 
 
 class TTSProvider(ABC):
@@ -30,22 +41,7 @@ class TTSProvider(ABC):
         output_path: str,
         **kwargs,
     ) -> Dict:
-        """Generate audio from a script dict.
-
-        This is the primary entry point used by the pipeline.
-
-        Args:
-            script_data: Parsed script JSON (must contain 'type' and
-                'full_script' at minimum).
-            output_path: Where to write the MP3 file.
-
-        Returns:
-            Result dict with at least:
-                duration: float
-                words: list[dict]  (may be empty for segment-based)
-                segments: list[dict]
-                segment_times: dict  (for quiz/true_false)
-        """
+        """Generate audio from a script dict."""
         pass
 
     @abstractmethod
@@ -55,18 +51,25 @@ class TTSProvider(ABC):
         output_path: str,
         **kwargs,
     ) -> Dict:
-        """Generate audio from raw text (simple/fallback flow).
-
-        Args:
-            text: Plain text to speak.
-            output_path: Where to write the MP3 file.
-
-        Returns:
-            Result dict with at least:
-                duration: float
-                words: list[dict]
-        """
+        """Generate audio from raw text (simple/fallback flow)."""
         pass
 
     def get_name(self) -> str:
         return self.name
+
+    # ── Shared helpers ────────────────────────────────────────────
+
+    @staticmethod
+    def save_json(output_path: str, result: Dict) -> None:
+        """Write the companion JSON next to the audio file."""
+        json_path = output_path.rsplit('.', 1)[0] + '.json'
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(result, f, indent=2, ensure_ascii=False)
+
+    @staticmethod
+    def copy_script_metadata(script_data: Dict, result: Dict) -> None:
+        """Copy standard script keys into the result dict."""
+        result['type'] = script_data.get('type', 'educational')
+        for key in SCRIPT_DATA_KEYS:
+            if key in script_data:
+                result[key] = script_data[key]

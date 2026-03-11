@@ -70,7 +70,8 @@ def get_output_paths(video_type: str, output_name: str) -> tuple:
         video_dir / f"{output_name}.mp4"
     )
 
-# Import script generator functions
+# Add src/ to PYTHONPATH so that top-level modules (script_generator, tts_openai, etc.)
+# can be imported without package prefixes.  All pipeline code lives under src/.
 sys.path.insert(0, str(SRC))
 from script_generator import (
     generate_script,
@@ -228,6 +229,13 @@ def list_scripts():
 def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None) -> Path:
     """Run the full pipeline from script to video."""
 
+    # Initialize cost tracker for this video
+    try:
+        from cost_tracker import reset_tracker
+        tracker = reset_tracker(video_id=output_name)
+    except ImportError:
+        tracker = None
+
     # Determine video type from script data if not provided
     if video_type is None:
         video_type = script_data.get('type', 'educational')
@@ -265,6 +273,12 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
     logger.info("Script: %s", script_path.relative_to(ROOT))
     logger.info("Audio: %s", audio_result.relative_to(ROOT))
     logger.info("Video: %s", video_result.relative_to(ROOT))
+
+    # Print and save cost report
+    if tracker and tracker.entries:
+        tracker.print_summary()
+        tracker.save()
+
     logger.info("=" * 50)
 
     return video_result
@@ -321,6 +335,10 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
     elif video_type == "pronunciation":
         logger.info("  Word: %s", script_data.get('word', 'N/A'))
         logger.info("  Phonetic: %s", script_data.get('phonetic', 'N/A'))
+    elif video_type == "vocabulary":
+        logger.info("  Title: %s", script_data.get('title', 'N/A'))
+        logger.info("  Difficulty: %s", script_data.get('difficulty', 'N/A'))
+        logger.info("  Pairs: %d", len(script_data.get('pairs', [])))
 
     logger.info("  Script: %s...", script_data.get('full_script', 'N/A')[:100])
 
@@ -567,5 +585,9 @@ def clean_output():
 if __name__ == "__main__":
     if sys.argv[1:2] == ["clean"]:
         clean_output()
+    elif sys.argv[1:2] == ["costs"]:
+        from src.cost_tracker import print_report
+        days = int(sys.argv[2]) if len(sys.argv) > 2 else 7
+        print_report(days)
     else:
         main()

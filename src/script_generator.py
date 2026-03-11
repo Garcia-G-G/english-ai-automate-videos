@@ -32,7 +32,7 @@ MODEL = "gpt-4o-mini"
 MAX_TOKENS = 2000
 
 # Supported video types
-VIDEO_TYPES = ["educational", "quiz", "true_false", "fill_blank", "pronunciation"]
+VIDEO_TYPES = ["educational", "quiz", "true_false", "fill_blank", "pronunciation", "vocabulary"]
 
 
 def load_topics(category: str) -> list:
@@ -395,6 +395,46 @@ FORMATO JSON REQUERIDO:
 Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 
+def build_prompt_vocabulary(category: str, topic: dict) -> str:
+    """Build vocabulary list video prompt."""
+    context = _topic_context(category, topic)
+    hashtags = ["#Vocabulario", "#AprendeIngles"] + _category_hashtags(category)[:1]
+
+    return f"""Genera un video de LISTA DE VOCABULARIO de 30-45 segundos para TikTok/Reels enseñando inglés a hispanohablantes.
+
+TEMA: {context}
+
+FORMATO DEL VIDEO:
+1. Título del tema (ej: "Vocabulario en el restaurante")
+2. Lista de 6-10 pares español/inglés, uno por uno
+3. Cada par: palabra en español → traducción en inglés
+
+REGLAS:
+1. Elige un tema coherente relacionado al contexto dado
+2. Entre 6 y 10 pares de palabras
+3. Incluye palabras útiles y prácticas
+4. El full_script debe leer cada par: "La cuenta, the bill. El mesero, the waiter."
+5. Nivel de dificultad: facil, medio, dificil, o experto
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "vocabulary",
+  "title": "Vocabulario: [tema]",
+  "difficulty": "medio",
+  "pairs": [
+    {{"spanish": "la cuenta", "english": "the bill"}},
+    {{"spanish": "el mesero", "english": "the waiter"}},
+    {{"spanish": "la propina", "english": "the tip"}}
+  ],
+  "full_script": "Vocabulario en el restaurante. La cuenta, the bill. El mesero, the waiter. La propina, the tip. ...",
+  "translations": {{"the bill": "la cuenta", "the waiter": "el mesero"}},
+  "english_phrases": ["the bill", "the waiter", "the tip"],
+  "hashtags": {json.dumps(hashtags[:4], ensure_ascii=False)}
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
 def build_prompt(category: str, topic: dict, video_type: str = "educational") -> str:
     """Build prompt based on video type."""
     if video_type == "educational":
@@ -407,6 +447,8 @@ def build_prompt(category: str, topic: dict, video_type: str = "educational") ->
         return build_prompt_fill_blank(category, topic)
     elif video_type == "pronunciation":
         return build_prompt_pronunciation(category, topic)
+    elif video_type == "vocabulary":
+        return build_prompt_vocabulary(category, topic)
     else:
         raise ValueError(f"Unknown video type: {video_type}. Choose from: {VIDEO_TYPES}")
 
@@ -433,6 +475,7 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
         "true_false": ["full_script", "statement", "correct", "explanation"],
         "fill_blank": ["full_script", "sentence", "options", "correct"],
         "pronunciation": ["full_script", "word", "phonetic"],
+        "vocabulary": ["full_script", "title", "pairs"],
     }
 
     # Check required fields
@@ -536,6 +579,17 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
             {"role": "user", "content": prompt}
         ]
     )
+
+    # Track cost
+    try:
+        from cost_tracker import get_tracker
+        if hasattr(response, 'usage') and response.usage:
+            get_tracker().log_openai_chat(
+                prompt_tokens=response.usage.prompt_tokens,
+                completion_tokens=response.usage.completion_tokens,
+                model=MODEL, label=f"script_{video_type}")
+    except Exception:
+        pass
 
     response_text = response.choices[0].message.content.strip()
 
@@ -725,6 +779,10 @@ Examples:
         print(f"Word: {script.get('word', 'N/A')}")
         print(f"Phonetic: {script.get('phonetic', 'N/A')}")
         print(f"Common mistake: {script.get('common_mistake', 'N/A')}")
+    elif args.type == "vocabulary":
+        print(f"Title: {script.get('title', 'N/A')}")
+        print(f"Difficulty: {script.get('difficulty', 'N/A')}")
+        print(f"Pairs: {len(script.get('pairs', []))}")
 
     print(f"\nFull Script:\n{script.get('full_script', 'N/A')}")
 

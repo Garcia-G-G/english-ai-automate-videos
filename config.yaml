@@ -7,15 +7,22 @@ video:
   background_mode: "random"
 
   # Used when background_mode is "fixed"
-  default_background: "aurora_borealis"
+  default_background: "photo_earth"
 
   # Backgrounds available for random selection
+  # Photo-based backgrounds with Ken Burns animation (DALL-E 3 generated)
   enabled_backgrounds:
-    - energetic_orbs
-    - aurora_borealis
-    - rising_stars
-    - bokeh_soft
-    - purple_vibes
+    - photo_earth
+    - photo_city
+    - photo_ocean
+    - photo_nature
+    - photo_abstract
+    - photo_clouds
+    - photo_sunset
+    - photo_galaxy
+    - photo_city_blur
+    - photo_earth_dark
+    - photo_ocean_vibrant
 
   # Video dimensions (TikTok vertical format)
   width: 1080
@@ -27,9 +34,20 @@ video:
 
 # Audio/TTS Settings
 audio:
+  # Provider: elevenlabs (primary), openai (fallback)
+  provider: "elevenlabs"
+
   # Voice settings for ElevenLabs
   voice_id: "default"
-  model: "eleven_multilingual_v2"
+  model: "eleven_v3"
+
+  # Humanization settings
+  global_speed: 1.0           # Natural speed — v3 handles pacing on its own
+  stability: 0.50             # Balanced: human but no hallucinated artifacts
+  similarity_boost: 0.80      # High fidelity to voice character
+  style: 0.05                 # Minimal — prevents filler-sound artifacts
+  speaker_boost: true         # Enhanced clarity for teaching
+  humanize: true              # Add natural pauses and breathing
 
 # Output Directories
 output:

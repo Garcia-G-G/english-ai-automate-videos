@@ -1,6 +1,10 @@
-# Environment
+# Environment & Secrets
 .env
-.env.local
+.env.*
+!.env.example
+.tokens/
+*.pem
+*.key
 
 # OS
 .DS_Store

@@ -38,6 +38,7 @@ Quality thresholds:
 
 import argparse
 import json
+import logging
 import os
 import sys
 import tempfile
@@ -50,9 +51,13 @@ import cv2
 import numpy as np
 from PIL import Image
 
+logger = logging.getLogger(__name__)
+
 # Reference images directory
 REFERENCES_DIR = Path(__file__).parent.parent / "references"
 TEMP_DIR = Path(tempfile.gettempdir()) / "video_analyzer"
+
+# ============== QUALITY THRESHOLDS ==============
 
 # Timing thresholds (seconds)
 COUNTDOWN_MIN_GAP = 0.8  # Minimum gap between 3→2, 2→1
@@ -60,6 +65,39 @@ COUNTDOWN_IDEAL_GAP = 1.0  # Ideal gap (~1 second per number)
 OPTION_MIN_GAP = 1.0  # Minimum gap between options A→B, B→C, etc.
 OPTION_IDEAL_GAP = 1.5  # Ideal gap for comfortable pacing
 TRANSITION_MIN_PAUSE = 0.5  # Minimum pause after question before options
+
+# Audio quality thresholds
+MIN_AUDIO_SAMPLE_RATE = 22050   # Hz
+CLIPPING_THRESHOLD_DB = -1.0    # max volume above this = possible clipping
+QUIET_THRESHOLD_DB = -30        # mean volume below this = too quiet
+
+# Animation thresholds
+GLITCH_ABS_THRESHOLD = 30       # absolute pixel diff for glitch detection
+FROZEN_FRAME_THRESHOLD = 1.0    # pixel diff below this = frozen
+FROZEN_RATIO_LIMIT = 0.5        # more than 50% frozen = problem
+ERRATIC_VARIANCE_FACTOR = 2.0   # std > mean * this = erratic
+
+# Pacing thresholds
+DURATION_MISMATCH_LIMIT = 1.0   # seconds - audio/video duration mismatch
+FAST_SPEECH_RATE = 4.0          # words/second - too fast
+SLIGHTLY_FAST_RATE = 3.5        # words/second - slightly fast
+SLOW_SPEECH_RATE = 1.5          # words/second - too slow
+RUSHED_WINDOW_RATE = 6.0        # words/second in a 5-word window = rushed
+
+# Visual quality thresholds
+DARK_PIXEL_RATIO_WARN = 0.1     # >10% dark pixels = warning
+DARK_PIXEL_RATIO_OK = 0.05      # <5% dark pixels = good
+DARK_PIXEL_RATIO_MED = 0.15     # <15% dark pixels = medium
+BRIGHTNESS_DIFF_WARN = 30       # brightness difference vs reference
+SHARPNESS_MIN = 500             # minimum text sharpness score
+SMOOTHNESS_MIN = 0.8            # minimum animation smoothness
+MAX_FRAME_DIFF_WARN = 50        # max diff between frames
+MARGIN_BALANCE_OK = 0.1         # acceptable margin balance deviation
+
+# Pass/fail thresholds
+PASS_SCORE_THRESHOLD = 70       # minimum combined score to pass
+PASS_CATEGORY_THRESHOLD = 70    # minimum per-category score
+PASS_VISUAL_THRESHOLD = 60      # minimum visual score (lower bar)
 
 
 def extract_frames(video_path: str, interval: float = 0.5, key_moments: List[float] = None) -> List[Tuple[float, np.ndarray]]:
@@ -113,7 +151,7 @@ def load_reference_images(directory: Path = REFERENCES_DIR) -> List[np.ndarray]:
     references = []
 
     if not directory.exists():
-        print(f"Warning: References directory not found: {directory}")
+        logger.warning("References directory not found: %s", directory)
         return references
 
     for ext in ['*.png', '*.jpg', '*.jpeg']:
@@ -122,7 +160,7 @@ def load_reference_images(directory: Path = REFERENCES_DIR) -> List[np.ndarray]:
                 img = Image.open(img_path).convert('RGB')
                 references.append(np.array(img))
             except Exception as e:
-                print(f"Warning: Could not load {img_path}: {e}")
+                logger.warning("Could not load %s: %s", img_path, e)
 
     return references
 
@@ -820,8 +858,8 @@ def analyze_audio_quality(video_path: str) -> Dict:
         duration = float(stream.get('duration', 0))
 
         # Check audio parameters
-        if sample_rate < 22050:
-            issues.append(f"Low audio sample rate: {sample_rate}Hz (should be >= 22050Hz)")
+        if sample_rate < MIN_AUDIO_SAMPLE_RATE:
+            issues.append(f"Low audio sample rate: {sample_rate}Hz (should be >= {MIN_AUDIO_SAMPLE_RATE}Hz)")
             score -= 20
 
         if channels < 1:
@@ -854,11 +892,11 @@ def analyze_audio_quality(video_path: str) -> Dict:
                     pass
 
         # Check for audio issues
-        if max_volume is not None and max_volume > -1.0:
+        if max_volume is not None and max_volume > CLIPPING_THRESHOLD_DB:
             issues.append(f"Audio may be clipping (max volume: {max_volume:.1f} dB)")
             score -= 15
 
-        if mean_volume is not None and mean_volume < -30:
+        if mean_volume is not None and mean_volume < QUIET_THRESHOLD_DB:
             issues.append(f"Audio too quiet (mean volume: {mean_volume:.1f} dB)")
             score -= 10
 
@@ -1026,7 +1064,7 @@ def detect_animation_glitches(frames: List[Tuple[float, np.ndarray]]) -> Dict:
     glitches = []
 
     for i, diff in enumerate(diffs):
-        if diff > glitch_threshold and diff > 30:  # Also check absolute threshold
+        if diff > glitch_threshold and diff > GLITCH_ABS_THRESHOLD:
             glitches.append({
                 'timestamp': timestamps[i],
                 'diff': diff,
@@ -1038,16 +1076,15 @@ def detect_animation_glitches(frames: List[Tuple[float, np.ndarray]]) -> Dict:
         score -= min(40, len(glitches) * 15)
 
     # Detect frozen frames (very low diff when animation expected)
-    frozen_threshold = 1.0  # Almost no change
-    frozen_count = sum(1 for d in diffs if d < frozen_threshold)
+    frozen_count = sum(1 for d in diffs if d < FROZEN_FRAME_THRESHOLD)
     frozen_ratio = frozen_count / len(diffs)
 
-    if frozen_ratio > 0.5:  # More than 50% frozen
+    if frozen_ratio > FROZEN_RATIO_LIMIT:
         issues.append(f"Too many frozen frames: {frozen_ratio*100:.0f}% of frames show no change")
         score -= 20
 
     # Check for erratic motion (high variance in diffs)
-    if std_diff > mean_diff * 2:  # Very high variance
+    if std_diff > mean_diff * ERRATIC_VARIANCE_FACTOR:
         issues.append(f"Erratic animation detected (variance too high)")
         score -= 15
 
@@ -1095,7 +1132,7 @@ def analyze_pacing(data: Dict, video_duration: float) -> Dict:
     # Check audio-video duration match
     if video_duration > 0:
         duration_diff = abs(video_duration - audio_duration)
-        if duration_diff > 1.0:
+        if duration_diff > DURATION_MISMATCH_LIMIT:
             issues.append(f"Audio/video duration mismatch: video={video_duration:.1f}s, audio={audio_duration:.1f}s")
             score -= 20
 
@@ -1104,13 +1141,13 @@ def analyze_pacing(data: Dict, video_duration: float) -> Dict:
     words_per_second = word_count / audio_duration if audio_duration > 0 else 0
 
     # Normal speaking rate is about 2-3 words per second
-    if words_per_second > 4.0:
+    if words_per_second > FAST_SPEECH_RATE:
         issues.append(f"Speaking too fast: {words_per_second:.1f} words/second (normal: 2-3)")
         score -= 25
-    elif words_per_second > 3.5:
+    elif words_per_second > SLIGHTLY_FAST_RATE:
         issues.append(f"Speaking slightly fast: {words_per_second:.1f} words/second")
         score -= 10
-    elif words_per_second < 1.5:
+    elif words_per_second < SLOW_SPEECH_RATE:
         issues.append(f"Speaking too slow: {words_per_second:.1f} words/second")
         score -= 10
 
@@ -1126,7 +1163,7 @@ def analyze_pacing(data: Dict, video_duration: float) -> Dict:
 
         if window_duration > 0:
             window_rate = window_size / window_duration
-            if window_rate > 6.0:  # Very rushed
+            if window_rate > RUSHED_WINDOW_RATE:
                 rushed_sections.append({
                     'start': start,
                     'end': end,
@@ -1163,7 +1200,7 @@ def generate_improvement_report(
     suggestions = []
 
     # Color analysis
-    if video_analysis['color']['dark_pixel_ratio'] > 0.1:
+    if video_analysis['color']['dark_pixel_ratio'] > DARK_PIXEL_RATIO_WARN:
         suggestions.append(
             f"Colors too dark: {video_analysis['color']['dark_pixel_ratio']*100:.1f}% dark pixels. "
             "References use more pastel backgrounds."
@@ -1177,7 +1214,7 @@ def generate_improvement_report(
         )
 
     # Brightness
-    if comparison.get('brightness_diff', 0) > 30 and reference_analysis:
+    if comparison.get('brightness_diff', 0) > BRIGHTNESS_DIFF_WARN and reference_analysis:
         if video_analysis['color']['brightness'] < reference_analysis['color']['brightness']:
             suggestions.append(
                 f"Video too dark compared to references. Brightness: {video_analysis['color']['brightness']:.0f} "
@@ -1185,7 +1222,7 @@ def generate_improvement_report(
             )
 
     # Text readability
-    if video_analysis['text']['sharpness'] < 500:
+    if video_analysis['text']['sharpness'] < SHARPNESS_MIN:
         suggestions.append(
             f"Text may lack sharpness. Current sharpness: {video_analysis['text']['sharpness']:.0f}. "
             "Consider using bolder fonts or stronger outlines."
@@ -1200,13 +1237,13 @@ def generate_improvement_report(
         )
 
     # Animation
-    if video_analysis['animation']['smoothness_score'] < 0.8:
+    if video_analysis['animation']['smoothness_score'] < SMOOTHNESS_MIN:
         suggestions.append(
             f"Animations may be jerky. Smoothness score: {video_analysis['animation']['smoothness_score']:.2f}. "
             "Consider smoother easing functions or higher frame rate."
         )
 
-    if video_analysis['animation']['max_frame_diff'] > 50:
+    if video_analysis['animation']['max_frame_diff'] > MAX_FRAME_DIFF_WARN:
         suggestions.append(
             f"Abrupt transitions detected (max diff: {video_analysis['animation']['max_frame_diff']:.0f}). "
             "References have smoother transitions."
@@ -1230,18 +1267,18 @@ def analyze_video(video_path: str, verbose: bool = True) -> Dict:
         Complete analysis dictionary
     """
     if verbose:
-        print(f"Analyzing video: {video_path}")
+        logger.info("Analyzing video: %s", video_path)
 
     # Extract frames
     if verbose:
-        print("  Extracting frames...")
+        logger.info("  Extracting frames...")
     frames = extract_frames(video_path, interval=0.5)
 
     if not frames:
         raise ValueError("No frames extracted from video")
 
     if verbose:
-        print(f"  Extracted {len(frames)} frames")
+        logger.info("  Extracted %s frames", len(frames))
 
     # Analyze frames
     color_analyses = []
@@ -1290,17 +1327,17 @@ def analyze_video(video_path: str, verbose: bool = True) -> Dict:
 def analyze_references(verbose: bool = True) -> Dict:
     """Analyze reference images."""
     if verbose:
-        print("Analyzing reference images...")
+        logger.info("Analyzing reference images...")
 
     references = load_reference_images()
 
     if not references:
         if verbose:
-            print("  No reference images found")
+            logger.info("  No reference images found")
         return None
 
     if verbose:
-        print(f"  Loaded {len(references)} reference images")
+        logger.info("  Loaded %s reference images", len(references))
 
     color_analyses = [analyze_color_palette(ref) for ref in references]
     text_analyses = [analyze_text_readability(ref) for ref in references]
@@ -1337,15 +1374,15 @@ def calculate_quality_score(video_analysis: Dict, reference_analysis: Dict = Non
     # Color quality (25 points)
     if video_analysis['color']['is_pastel']:
         score += 15
-    if video_analysis['color']['dark_pixel_ratio'] < 0.05:
+    if video_analysis['color']['dark_pixel_ratio'] < DARK_PIXEL_RATIO_OK:
         score += 10
-    elif video_analysis['color']['dark_pixel_ratio'] < 0.15:
+    elif video_analysis['color']['dark_pixel_ratio'] < DARK_PIXEL_RATIO_MED:
         score += 5
 
     # Layout quality (25 points)
     if video_analysis['layout']['is_centered']:
         score += 15
-    if video_analysis['layout']['margin_balance'] < 0.1:
+    if video_analysis['layout']['margin_balance'] < MARGIN_BALANCE_OK:
         score += 10
 
     # Animation quality (25 points)
@@ -1390,7 +1427,7 @@ Examples:
         parser.error("Please specify a video with --video")
 
     if not os.path.exists(args.video):
-        print(f"Error: Video not found: {args.video}")
+        logger.error("Video not found: %s", args.video)
         sys.exit(1)
 
     # Auto-detect audio JSON path if not provided
@@ -1410,12 +1447,12 @@ Examples:
 
     # NEW: Analyze audio quality (glitches, breaks)
     if args.verbose:
-        print("Analyzing audio quality...")
+        logger.info("Analyzing audio quality...")
     audio_quality = analyze_audio_quality(args.video)
 
     # NEW: Detect animation glitches
     if args.verbose:
-        print("Checking for animation glitches...")
+        logger.info("Checking for animation glitches...")
     animation_glitches = detect_animation_glitches(frames)
 
     # Analyze audio timing (for quiz videos)
@@ -1423,7 +1460,7 @@ Examples:
     audio_data = None
     if args.audio and os.path.exists(args.audio):
         if args.verbose:
-            print(f"Analyzing audio timing: {args.audio}")
+            logger.info("Analyzing audio timing: %s", args.audio)
         audio_timing = analyze_audio_timing(args.audio)
 
         # Load audio data for additional analysis
@@ -1434,7 +1471,7 @@ Examples:
     language_analysis = None
     if audio_data:
         if args.verbose:
-            print("Checking language correctness...")
+            logger.info("Checking language correctness...")
         language_analysis = analyze_language_correctness(audio_data)
 
     # NEW: Analyze pacing
@@ -1448,7 +1485,7 @@ Examples:
         cap.release()
 
         if args.verbose:
-            print("Analyzing pacing...")
+            logger.info("Analyzing pacing...")
         pacing_analysis = analyze_pacing(audio_data, video_duration)
 
     # Analyze references if requested
@@ -1548,231 +1585,231 @@ Examples:
     # Must pass ALL checks, not just combined score
     critical_failures = []
 
-    if audio_quality_score < 70:
+    if audio_quality_score < PASS_CATEGORY_THRESHOLD:
         critical_failures.append("Audio quality below threshold")
-    if glitch_score < 70:
+    if glitch_score < PASS_CATEGORY_THRESHOLD:
         critical_failures.append("Animation glitches detected")
-    if language_score < 70:
+    if language_score < PASS_CATEGORY_THRESHOLD:
         critical_failures.append("Language marking errors")
-    if pacing_score < 70:
+    if pacing_score < PASS_CATEGORY_THRESHOLD:
         critical_failures.append("Pacing issues")
-    if timing_score < 70 and audio_timing:
+    if timing_score < PASS_CATEGORY_THRESHOLD and audio_timing:
         critical_failures.append("Timing issues")
-    if visual_score < 60:
+    if visual_score < PASS_VISUAL_THRESHOLD:
         critical_failures.append("Visual quality below threshold")
 
-    passes_quality = len(critical_failures) == 0 and combined_score >= 70
+    passes_quality = len(critical_failures) == 0 and combined_score >= PASS_SCORE_THRESHOLD
 
     # Print results
-    print("\n" + "=" * 70)
-    print("VIDEO ANALYSIS REPORT")
-    print("=" * 70)
+    logger.info("\n" + "=" * 70)
+    logger.info("VIDEO ANALYSIS REPORT")
+    logger.info("=" * 70)
 
     # Overall result banner
     if passes_quality:
-        print("\n  ✓ PASS - Video meets quality standards")
+        logger.info("\n  ✓ PASS - Video meets quality standards")
     else:
-        print("\n  ✗ FAIL - Video needs improvements")
+        logger.info("\n  ✗ FAIL - Video needs improvements")
         if critical_failures:
-            print(f"\n  CRITICAL FAILURES:")
+            logger.info("\n  CRITICAL FAILURES:")
             for failure in critical_failures:
-                print(f"    ✗ {failure}")
+                logger.info("    ✗ %s", failure)
 
-    print(f"\n  SCORES:")
-    print(f"    Audio Quality:    {audio_quality_score}/100")
-    print(f"    Visual Quality:   {visual_score}/100")
+    logger.info("\n  SCORES:")
+    logger.info("    Audio Quality:    %s/100", audio_quality_score)
+    logger.info("    Visual Quality:   %s/100", visual_score)
     if audio_timing:
-        print(f"    Timing Quality:   {timing_score:.0f}/100")
-    print(f"    Animation:        {glitch_score}/100")
+        logger.info("    Timing Quality:   %.0f/100", timing_score)
+    logger.info("    Animation:        %s/100", glitch_score)
     if language_analysis:
-        print(f"    Language:         {language_score}/100")
+        logger.info("    Language:         %s/100", language_score)
     if pacing_analysis:
-        print(f"    Pacing:           {pacing_score}/100")
-    print(f"    ─────────────────────────")
-    print(f"    COMBINED SCORE:   {combined_score}/100")
+        logger.info("    Pacing:           %s/100", pacing_score)
+    logger.info("    ─────────────────────────")
+    logger.info("    COMBINED SCORE:   %s/100", combined_score)
 
     # Audio Quality Analysis (NEW)
-    print(f"\n{'=' * 70}")
-    print("AUDIO QUALITY ANALYSIS")
-    print("=" * 70)
+    logger.info(f"\n{'=' * 70}")
+    logger.info("AUDIO QUALITY ANALYSIS")
+    logger.info("=" * 70)
     if audio_quality.get('found'):
-        print(f"\n  Codec: {audio_quality.get('codec', 'unknown')}")
-        print(f"  Sample Rate: {audio_quality.get('sample_rate', 0)} Hz")
-        print(f"  Channels: {audio_quality.get('channels', 0)}")
-        print(f"  Duration: {audio_quality.get('duration', 0):.2f}s")
+        logger.info("\n  Codec: %s", audio_quality.get('codec', 'unknown'))
+        logger.info("  Sample Rate: %s Hz", audio_quality.get('sample_rate', 0))
+        logger.info("  Channels: %s", audio_quality.get('channels', 0))
+        logger.info("  Duration: %.2fs", audio_quality.get('duration', 0))
         if audio_quality.get('max_volume') is not None:
-            print(f"  Max Volume: {audio_quality.get('max_volume'):.1f} dB")
+            logger.info("  Max Volume: %.1f dB", audio_quality.get('max_volume'))
         if audio_quality.get('mean_volume') is not None:
-            print(f"  Mean Volume: {audio_quality.get('mean_volume'):.1f} dB")
-        print(f"  Score: {audio_quality_score}/100")
+            logger.info("  Mean Volume: %.1f dB", audio_quality.get('mean_volume'))
+        logger.info("  Score: %s/100", audio_quality_score)
         if audio_quality.get('issues'):
-            print("  Issues:")
+            logger.info("  Issues:")
             for issue in audio_quality['issues']:
-                print(f"    ⚠ {issue}")
+                logger.info("    ⚠ %s", issue)
     else:
-        print(f"\n  Error: {audio_quality.get('error', 'Unknown error')}")
+        logger.info("\n  Error: %s", audio_quality.get('error', 'Unknown error'))
 
     # Animation Glitch Analysis (NEW)
-    print(f"\n{'=' * 70}")
-    print("ANIMATION ANALYSIS")
-    print("=" * 70)
-    print(f"\n  Mean Frame Diff: {animation_glitches.get('mean_diff', 0):.2f}")
-    print(f"  Frozen Frame Ratio: {animation_glitches.get('frozen_ratio', 0)*100:.1f}%")
-    print(f"  Glitches Detected: {len(animation_glitches.get('glitches', []))}")
-    print(f"  Score: {glitch_score}/100")
+    logger.info(f"\n{'=' * 70}")
+    logger.info("ANIMATION ANALYSIS")
+    logger.info("=" * 70)
+    logger.info(f"\n  Mean Frame Diff: {animation_glitches.get('mean_diff', 0):.2f}")
+    logger.info(f"  Frozen Frame Ratio: {animation_glitches.get('frozen_ratio', 0)*100:.1f}%")
+    logger.info("  Glitches Detected: %s", len(animation_glitches.get('glitches', [])))
+    logger.info("  Score: %s/100", glitch_score)
     if animation_glitches.get('issues'):
-        print("  Issues:")
+        logger.info("  Issues:")
         for issue in animation_glitches['issues']:
-            print(f"    ⚠ {issue}")
+            logger.info("    ⚠ %s", issue)
 
     # Language Analysis (NEW)
     if language_analysis:
-        print(f"\n{'=' * 70}")
-        print("LANGUAGE ANALYSIS")
-        print("=" * 70)
-        print(f"\n  Total Words: {language_analysis.get('total_words', 0)}")
-        print(f"  Marked as English: {language_analysis.get('english_marked', 0)}")
+        logger.info(f"\n{'=' * 70}")
+        logger.info("LANGUAGE ANALYSIS")
+        logger.info("=" * 70)
+        logger.info("\n  Total Words: %s", language_analysis.get('total_words', 0))
+        logger.info("  Marked as English: %s", language_analysis.get('english_marked', 0))
         if language_analysis.get('wrong_spanish_as_english'):
-            print(f"  ⚠ Spanish incorrectly marked English: {language_analysis['wrong_spanish_as_english'][:5]}")
+            logger.info("  ⚠ Spanish incorrectly marked English: %s", language_analysis['wrong_spanish_as_english'][:5])
         if language_analysis.get('wrong_english_as_spanish'):
-            print(f"  ⚠ English not marked: {language_analysis['wrong_english_as_spanish'][:5]}")
-        print(f"  Score: {language_score}/100")
+            logger.info("  ⚠ English not marked: %s", language_analysis['wrong_english_as_spanish'][:5])
+        logger.info("  Score: %s/100", language_score)
 
     # Pacing Analysis (NEW)
     if pacing_analysis:
-        print(f"\n{'=' * 70}")
-        print("PACING ANALYSIS")
-        print("=" * 70)
-        print(f"\n  Audio Duration: {pacing_analysis.get('audio_duration', 0):.2f}s")
-        print(f"  Video Duration: {pacing_analysis.get('video_duration', 0):.2f}s")
-        print(f"  Words: {pacing_analysis.get('word_count', 0)}")
-        print(f"  Speaking Rate: {pacing_analysis.get('words_per_second', 0):.1f} words/sec")
-        print(f"  Rushed Sections: {pacing_analysis.get('rushed_sections', 0)}")
-        print(f"  Score: {pacing_score}/100")
+        logger.info(f"\n{'=' * 70}")
+        logger.info("PACING ANALYSIS")
+        logger.info("=" * 70)
+        logger.info(f"\n  Audio Duration: {pacing_analysis.get('audio_duration', 0):.2f}s")
+        logger.info(f"  Video Duration: {pacing_analysis.get('video_duration', 0):.2f}s")
+        logger.info("  Words: %s", pacing_analysis.get('word_count', 0))
+        logger.info(f"  Speaking Rate: {pacing_analysis.get('words_per_second', 0):.1f} words/sec")
+        logger.info("  Rushed Sections: %s", pacing_analysis.get('rushed_sections', 0))
+        logger.info("  Score: %s/100", pacing_score)
         if pacing_analysis.get('issues'):
-            print("  Issues:")
+            logger.info("  Issues:")
             for issue in pacing_analysis['issues']:
-                print(f"    ⚠ {issue}")
+                logger.info("    ⚠ %s", issue)
 
     # Audio timing details - handle different video types
     if audio_timing and not audio_timing.get('error'):
         video_type = audio_timing.get('video_type', 'quiz')
 
-        print(f"\n{'=' * 70}")
-        print(f"TIMING ANALYSIS ({video_type.replace('_', ' ').title()} Video)")
-        print("=" * 70)
+        logger.info(f"\n{'=' * 70}")
+        logger.info(f"TIMING ANALYSIS ({video_type.replace('_', ' ').title()} Video)")
+        logger.info("=" * 70)
 
         if video_type == 'true_false':
             # True/False specific output
             tf = audio_timing.get('true_false', {})
-            print(f"\n  TRUE/FALSE TIMING:")
+            logger.info("\n  TRUE/FALSE TIMING:")
             if tf.get('verdadero_time', -1) >= 0:
-                print(f"    Verdadero mentioned: {tf.get('verdadero_time', 0):.2f}s")
+                logger.info(f"    Verdadero mentioned: {tf.get('verdadero_time', 0):.2f}s")
             if tf.get('falso_time', -1) >= 0:
-                print(f"    Falso mentioned: {tf.get('falso_time', 0):.2f}s")
+                logger.info(f"    Falso mentioned: {tf.get('falso_time', 0):.2f}s")
             if tf.get('answer_time', -1) >= 0:
-                print(f"    Answer revealed: {tf.get('answer_time', 0):.2f}s")
-            print(f"    Score: {tf.get('score', 0)}/100")
+                logger.info(f"    Answer revealed: {tf.get('answer_time', 0):.2f}s")
+            logger.info("    Score: %s/100", tf.get('score', 0))
 
             # Countdown within true/false
             countdown = tf.get('countdown', {})
             if countdown.get('found'):
-                print(f"\n  COUNTDOWN:")
-                print(f"    Tres: {countdown.get('tres_time', 0):.2f}s")
-                print(f"    Dos:  {countdown.get('dos_time', 0):.2f}s  (gap: {countdown.get('gap_tres_dos', 0):.2f}s)")
-                print(f"    Uno:  {countdown.get('uno_time', 0):.2f}s  (gap: {countdown.get('gap_dos_uno', 0):.2f}s)")
-                print(f"    Score: {countdown.get('score', 0)}/100")
+                logger.info("\n  COUNTDOWN:")
+                logger.info(f"    Tres: {countdown.get('tres_time', 0):.2f}s")
+                logger.info(f"    Dos:  {countdown.get('dos_time', 0):.2f}s  (gap: {countdown.get('gap_tres_dos', 0):.2f}s)")
+                logger.info(f"    Uno:  {countdown.get('uno_time', 0):.2f}s  (gap: {countdown.get('gap_dos_uno', 0):.2f}s)")
+                logger.info("    Score: %s/100", countdown.get('score', 0))
 
             if tf.get('issues'):
-                print(f"\n  Issues:")
+                logger.info("\n  Issues:")
                 for issue in tf['issues']:
-                    print(f"    ⚠ {issue}")
+                    logger.info("    ⚠ %s", issue)
         else:
             # Quiz video timing output
             countdown = audio_timing.get('countdown', {})
             if countdown.get('found'):
-                print(f"\n  COUNTDOWN TIMING:")
-                print(f"    Tres: {countdown.get('tres_time', 0):.2f}s")
-                print(f"    Dos:  {countdown.get('dos_time', 0):.2f}s  (gap: {countdown.get('gap_tres_dos', 0):.2f}s)")
-                print(f"    Uno:  {countdown.get('uno_time', 0):.2f}s  (gap: {countdown.get('gap_dos_uno', 0):.2f}s)")
-                print(f"    Total duration: {countdown.get('total_duration', 0):.2f}s")
-                print(f"    Score: {countdown.get('score', 0)}/100")
+                logger.info("\n  COUNTDOWN TIMING:")
+                logger.info(f"    Tres: {countdown.get('tres_time', 0):.2f}s")
+                logger.info(f"    Dos:  {countdown.get('dos_time', 0):.2f}s  (gap: {countdown.get('gap_tres_dos', 0):.2f}s)")
+                logger.info(f"    Uno:  {countdown.get('uno_time', 0):.2f}s  (gap: {countdown.get('gap_dos_uno', 0):.2f}s)")
+                logger.info(f"    Total duration: {countdown.get('total_duration', 0):.2f}s")
+                logger.info("    Score: %s/100", countdown.get('score', 0))
                 if countdown.get('issues'):
                     for issue in countdown['issues']:
-                        print(f"    ⚠ {issue}")
+                        logger.info("    ⚠ %s", issue)
             else:
-                print(f"\n  COUNTDOWN: Not found - {countdown.get('error', 'unknown error')}")
+                logger.info("\n  COUNTDOWN: Not found - %s", countdown.get('error', 'unknown error'))
 
             # Option timing
             options = audio_timing.get('options', {})
             if options.get('found'):
-                print(f"\n  OPTION TIMING:")
+                logger.info("\n  OPTION TIMING:")
                 times = options.get('option_times', {})
                 gaps = options.get('gaps', {})
-                print(f"    A: {times.get('A', 0):.2f}s")
-                print(f"    B: {times.get('B', 0):.2f}s  (gap A→B: {gaps.get('A_to_B', 0):.2f}s)")
-                print(f"    C: {times.get('C', 0):.2f}s  (gap B→C: {gaps.get('B_to_C', 0):.2f}s)")
-                print(f"    D: {times.get('D', 0):.2f}s  (gap C→D: {gaps.get('C_to_D', 0):.2f}s)")
-                print(f"    Average gap: {options.get('average_gap', 0):.2f}s")
-                print(f"    Score: {options.get('score', 0)}/100")
+                logger.info(f"    A: {times.get('A', 0):.2f}s")
+                logger.info(f"    B: {times.get('B', 0):.2f}s  (gap A→B: {gaps.get('A_to_B', 0):.2f}s)")
+                logger.info(f"    C: {times.get('C', 0):.2f}s  (gap B→C: {gaps.get('B_to_C', 0):.2f}s)")
+                logger.info(f"    D: {times.get('D', 0):.2f}s  (gap C→D: {gaps.get('C_to_D', 0):.2f}s)")
+                logger.info(f"    Average gap: {options.get('average_gap', 0):.2f}s")
+                logger.info("    Score: %s/100", options.get('score', 0))
                 if options.get('issues'):
                     for issue in options['issues']:
-                        print(f"    ⚠ {issue}")
+                        logger.info("    ⚠ %s", issue)
             else:
-                print(f"\n  OPTIONS: Not found - {options.get('error', 'unknown error')}")
+                logger.info("\n  OPTIONS: Not found - %s", options.get('error', 'unknown error'))
 
             # Transition timing
             transition = audio_timing.get('transition', {})
             if transition.get('found'):
-                print(f"\n  QUESTION→OPTIONS TRANSITION:")
-                print(f"    'Opciones' ends: {transition.get('opciones_end_time', 0):.2f}s")
-                print(f"    First option: {transition.get('first_option_time', 0):.2f}s")
-                print(f"    Transition time: {transition.get('transition_time', 0):.2f}s")
-                print(f"    Score: {transition.get('score', 0)}/100")
+                logger.info("\n  QUESTION→OPTIONS TRANSITION:")
+                logger.info(f"    'Opciones' ends: {transition.get('opciones_end_time', 0):.2f}s")
+                logger.info(f"    First option: {transition.get('first_option_time', 0):.2f}s")
+                logger.info(f"    Transition time: {transition.get('transition_time', 0):.2f}s")
+                logger.info("    Score: %s/100", transition.get('score', 0))
                 if transition.get('issues'):
                     for issue in transition['issues']:
-                        print(f"    ⚠ {issue}")
+                        logger.info("    ⚠ %s", issue)
 
     # Visual analysis
-    print(f"\n{'=' * 70}")
-    print("VISUAL ANALYSIS")
-    print("=" * 70)
+    logger.info(f"\n{'=' * 70}")
+    logger.info("VISUAL ANALYSIS")
+    logger.info("=" * 70)
 
-    print(f"\n  Color Analysis:")
-    print(f"    Brightness: {video_analysis['color']['brightness']:.1f}")
-    print(f"    Saturation: {video_analysis['color']['saturation']:.1f}")
-    print(f"    Dark pixels: {video_analysis['color']['dark_pixel_ratio']*100:.1f}%")
-    print(f"    Pastel-like: {'Yes' if video_analysis['color']['is_pastel'] else 'No'}")
+    logger.info("\n  Color Analysis:")
+    logger.info(f"    Brightness: {video_analysis['color']['brightness']:.1f}")
+    logger.info(f"    Saturation: {video_analysis['color']['saturation']:.1f}")
+    logger.info(f"    Dark pixels: {video_analysis['color']['dark_pixel_ratio']*100:.1f}%")
+    logger.info(f"    Pastel-like: {'Yes' if video_analysis['color']['is_pastel'] else 'No'}")
 
-    print(f"\n  Layout Analysis:")
-    print(f"    Centered: {'Yes' if video_analysis['layout']['is_centered'] else 'No'}")
-    print(f"    X deviation: {video_analysis['layout']['center_x_deviation']*100:.1f}%")
-    print(f"    Y deviation: {video_analysis['layout']['center_y_deviation']*100:.1f}%")
+    logger.info("\n  Layout Analysis:")
+    logger.info(f"    Centered: {'Yes' if video_analysis['layout']['is_centered'] else 'No'}")
+    logger.info(f"    X deviation: {video_analysis['layout']['center_x_deviation']*100:.1f}%")
+    logger.info(f"    Y deviation: {video_analysis['layout']['center_y_deviation']*100:.1f}%")
 
-    print(f"\n  Animation Analysis:")
-    print(f"    Smoothness: {video_analysis['animation']['smoothness_score']*100:.1f}%")
-    print(f"    Max frame diff: {video_analysis['animation']['max_frame_diff']:.1f}")
+    logger.info("\n  Animation Analysis:")
+    logger.info(f"    Smoothness: {video_analysis['animation']['smoothness_score']*100:.1f}%")
+    logger.info(f"    Max frame diff: {video_analysis['animation']['max_frame_diff']:.1f}")
 
     if reference_analysis:
-        print(f"\n  Reference Comparison:")
-        print(f"    References analyzed: {reference_analysis['num_references']}")
-        print(f"    Reference brightness: {reference_analysis['color']['brightness']:.1f}")
+        logger.info("\n  Reference Comparison:")
+        logger.info("    References analyzed: %s", reference_analysis['num_references'])
+        logger.info(f"    Reference brightness: {reference_analysis['color']['brightness']:.1f}")
 
     # All Issues Summary
     if all_issues:
-        print(f"\n{'=' * 70}")
-        print("ALL ISSUES TO FIX")
-        print("=" * 70)
+        logger.info(f"\n{'=' * 70}")
+        logger.info("ALL ISSUES TO FIX")
+        logger.info("=" * 70)
         for i, issue in enumerate(all_issues, 1):
-            print(f"\n  {i}. {issue}")
+            logger.info("\n  %s. %s", i, issue)
 
     # Final summary
-    print(f"\n{'=' * 70}")
+    logger.info(f"\n{'=' * 70}")
     if passes_quality:
-        print("RESULT: ✓ PASS")
+        logger.info("RESULT: ✓ PASS")
     else:
-        print("RESULT: ✗ FAIL - Fix the issues above and regenerate")
-    print("=" * 70)
+        logger.info("RESULT: ✗ FAIL - Fix the issues above and regenerate")
+    logger.info("=" * 70)
 
     # Save results
     if args.output:
@@ -1791,7 +1828,7 @@ Examples:
         }
         with open(args.output, 'w') as f:
             json.dump(results, f, indent=2, default=str)
-        print(f"\nResults saved to: {args.output}")
+        logger.info("\nResults saved to: %s", args.output)
 
     # Return exit code based on pass/fail
     sys.exit(0 if passes_quality else 1)

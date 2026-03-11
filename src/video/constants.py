@@ -1,121 +1,80 @@
-"""Video constants — colors, sizes, quiz palette, animation timing."""
+"""Video constants — re-exports from config/ for backward compatibility.
 
-import math
+All canonical values live in src/config/.  This file re-exports them so
+existing ``from .constants import ...`` statements keep working.
+"""
 
-# Video settings
-VIDEO_WIDTH = 1080
-VIDEO_HEIGHT = 1920
-FPS = 30
+# Re-export everything from config modules
+from config.colors import (  # noqa: F401
+    WHITE as COLOR_WHITE,
+    YELLOW as COLOR_YELLOW,
+    RED as COLOR_RED,
+    GREEN as COLOR_GREEN,
+    BLUE as COLOR_BLUE,
+    ORANGE as COLOR_ORANGE,
+    CORRECT_GREEN as COLOR_CORRECT,
+    WRONG_RED as COLOR_WRONG,
+    CYAN as COLOR_CYAN,
+    ENGLISH_COLOR as COLOR_ENGLISH,
+    SPANISH_COLOR as COLOR_SPANISH,
+    ENGLISH_WORD_COLOR,
+    SPANISH_WORD_COLOR,
+    ENGLISH_GLOW_COLOR,
+    ENGLISH_YELLOW,
+    ENGLISH_GRADIENT_START,
+    ENGLISH_GRADIENT_END,
+    GRADIENT_COLORS,
+    QUIZ_COLORS,
+)
 
-# Layout - Safe areas for TikTok (keep text in middle 70% to avoid UI overlap)
-MARGIN_X = 80
-TEXT_AREA_WIDTH = VIDEO_WIDTH - (MARGIN_X * 2)
-SAFE_AREA_TOP = int(VIDEO_HEIGHT * 0.15)      # 15% from top
-SAFE_AREA_BOTTOM = int(VIDEO_HEIGHT * 0.85)   # 15% from bottom
-SAFE_AREA_HEIGHT = SAFE_AREA_BOTTOM - SAFE_AREA_TOP  # Middle 70%
-TEXT_CENTER_Y = VIDEO_HEIGHT // 2 - 40        # Slightly above center
+from config.layout import (  # noqa: F401
+    VIDEO_WIDTH,
+    VIDEO_HEIGHT,
+    FPS,
+    MARGIN_X,
+    TEXT_AREA_WIDTH,
+    SAFE_AREA_TOP,
+    SAFE_AREA_BOTTOM,
+    SAFE_AREA_HEIGHT,
+    TEXT_CENTER_Y,
+    MAX_CHARS_PER_LINE,
+    MAX_LINES_PER_SUBTITLE,
+    MIN_GAP_BETWEEN_SUBTITLES,
+    BAR_HEIGHT,
+    BAR_Y,
+    BAR_MARGIN,
+    OPTION_STAGGER,
+    SLIDE_DISTANCE,
+)
 
-# Subtitle formatting (BBC guidelines)
-MAX_CHARS_PER_LINE = 40
-MAX_LINES_PER_SUBTITLE = 2
-MIN_GAP_BETWEEN_SUBTITLES = 0.25  # 250ms minimum gap
+from config.typography import (  # noqa: F401
+    FONT_SIZE_ENGLISH,
+    FONT_SIZE_SPANISH,
+    FONT_SIZE_TRANS,
+    FONT_SIZE_QUESTION,
+    FONT_SIZE_OPTION,
+    FONT_SIZE_TIMER,
+    FONT_SIZE_BIG_WORD,
+    SIZE_MAIN_SPANISH,
+    SIZE_ENGLISH_WORD,
+    SIZE_TRANSLATION,
+    SIZE_CONTEXT,
+    OUTLINE_THICK,
+    ENGLISH_WORD_SCALE,
+    ENGLISH_GLOW_RADIUS,
+)
 
-# Gradient - vibrant pink/purple/blue
-GRADIENT_COLORS = [
-    [(255, 100, 180), (180, 80, 220), (80, 100, 220)],
-    [(255, 120, 200), (200, 60, 200), (100, 80, 240)],
-    [(240, 80, 160), (160, 60, 200), (60, 80, 200)],
-]
+from config.timing import (  # noqa: F401
+    POP_DURATION,
+    FADE_IN,
+    FADE_OUT,
+    CROSSFADE_OVERLAP,
+    BOUNCE,
+    MIN_DISPLAY,
+    ANTICIPATION_MS,
+    VISUAL_ANTICIPATION,
+    GROUP_TRANSITION,
+    EMPHASIS,
+)
 
-# Colors - General
-COLOR_WHITE = (255, 255, 255)
-COLOR_YELLOW = (255, 215, 0)
-COLOR_RED = (255, 60, 60)
-COLOR_GREEN = (50, 255, 100)
-COLOR_BLUE = (100, 150, 255)
-COLOR_ORANGE = (255, 165, 0)
-COLOR_CORRECT = (50, 255, 100)
-COLOR_WRONG = (255, 80, 80)
-COLOR_CYAN = (0, 212, 255)
-COLOR_ENGLISH = (255, 215, 0)
-COLOR_SPANISH = (0, 212, 255)
-
-# Quiz-specific colors - BEAUTIFUL PASTEL PALETTE
-QUIZ_COLORS = {
-    'question_grad_start': (255, 130, 170),
-    'question_grad_end': (150, 140, 255),
-    'option_bg': (100, 160, 230),
-    'option_bg_alt': (130, 180, 240),
-    'letter_circle': (255, 120, 130),
-    'letter_border': (255, 255, 255),
-    'correct_green': (100, 220, 160),
-    'correct_glow': (140, 235, 180),
-    'wrong_fade': (190, 185, 205),
-    'wrong_text': (130, 125, 145),
-    'countdown_bg': (255, 190, 160),
-    'countdown_text': (100, 70, 60),
-    'light_bg': (255, 252, 248),
-    'text_dark': (50, 45, 60),
-    'text_medium': (90, 85, 100),
-}
-
-# Typography
-FONT_SIZE_ENGLISH = 140
-FONT_SIZE_SPANISH = 90
-FONT_SIZE_TRANS = 56
-FONT_SIZE_QUESTION = 76
-FONT_SIZE_OPTION = 58
-FONT_SIZE_TIMER = 220
-FONT_SIZE_BIG_WORD = 160
-OUTLINE_THICK = 12
-
-# Animation timing (based on commercial tool analysis)
-# Word pop: 150-250ms with ease-out-back, 110-120% overshoot
-POP_DURATION = 0.18          # 180ms pop animation
-FADE_IN = 0.15               # 150ms fade-in
-FADE_OUT = 0.35              # 350ms fade-out
-CROSSFADE_OVERLAP = 0.10     # 100ms overlap for smooth transitions
-BOUNCE = 1.12                # 112% overshoot (sweet spot for TikTok)
-MIN_DISPLAY = 0.8            # Minimum display time in seconds
-
-# Pre-roll: Display text 50-100ms BEFORE audio for perfect sync
-ANTICIPATION_MS = 80         # 80ms pre-roll (Netflix standard: 1-2 frames)
-
-# English word styling
-ENGLISH_WORD_COLOR = (255, 215, 0)
-SPANISH_WORD_COLOR = (0, 212, 255)
-ENGLISH_WORD_SCALE = 1.20
-ENGLISH_GLOW_COLOR = (0, 220, 255, 150)
-ENGLISH_GLOW_RADIUS = 14
-
-# Alternative English colors
-ENGLISH_YELLOW = (255, 220, 0)
-ENGLISH_GRADIENT_START = (255, 220, 0)
-ENGLISH_GRADIENT_END = (255, 150, 0)
-
-# Smooth transition timing
-GROUP_TRANSITION = 0.25
-
-# Visual hierarchy sizes
-SIZE_MAIN_SPANISH = 90
-SIZE_ENGLISH_WORD = 145
-SIZE_TRANSLATION = 55
-SIZE_CONTEXT = 75
-
-# Staggered animation delays for options
-OPTION_STAGGER = 0.15
-SLIDE_DISTANCE = 300
-
-# Progress bar
-BAR_HEIGHT = 10
-BAR_Y = VIDEO_HEIGHT - 70
-BAR_MARGIN = 40
-
-# Emphasis words
-EMPHASIS = {
-    'no', 'nunca', 'cuidado', 'error', 'ojo',
-    'muy', 'siempre', 'realmente', 'verdaderamente',
-    'recuerda', 'importante', 'significa', 'diferente',
-    'correcta', 'correcto', 'incorrecto', 'significa',
-    'pero', 'sino', 'ejemplo', 'realidad',
-}
+# math is no longer needed here; remove the stale import

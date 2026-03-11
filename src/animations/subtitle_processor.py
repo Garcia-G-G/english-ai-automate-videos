@@ -122,6 +122,8 @@ class SubtitleProcessor:
     # Compound words that Whisper might split incorrectly
     COMPOUND_WORDS = {
         ('wi', 'fi'): 'WiFi',
+        ('wai', 'fai'): 'WiFi',       # Phonetic variant from TTS
+        ('why', 'fi'): 'WiFi',        # Whisper may hear it differently
         ('i', 'phone'): 'iPhone',
         ('you', 'tube'): 'YouTube',
         ('face', 'book'): 'Facebook',
@@ -134,7 +136,7 @@ class SubtitleProcessor:
         ('blue', 'tooth'): 'Bluetooth',
     }
 
-    def __init__(self, gap_threshold: float = 0.35, max_words_per_group: int = 5):
+    def __init__(self, gap_threshold: float = 0.35, max_words_per_group: int = 4):
         self.gap_threshold = gap_threshold
         self.max_words = max_words_per_group
 
@@ -194,12 +196,32 @@ class SubtitleProcessor:
             return []
 
         # Build set of English words
+        # Filter: only short phrases (≤5 words) — longer ones are likely bad data
+        # Exclude common Spanish words to prevent false positives
+        SPANISH_COMMON = {
+            'a', 'al', 'algo', 'alguien', 'ante', 'así', 'bien', 'bueno',
+            'cada', 'casa', 'casi', 'como', 'con', 'cual', 'cuando',
+            'de', 'del', 'decir', 'donde', 'el', 'ella', 'en', 'era',
+            'es', 'esa', 'ese', 'eso', 'esta', 'estar', 'este', 'esto',
+            'forma', 'fue', 'hay', 'hoy', 'ir', 'la', 'las', 'le', 'les',
+            'lo', 'los', 'más', 'me', 'mi', 'muy', 'nada', 'ni', 'no',
+            'nos', 'o', 'otra', 'otro', 'para', 'pero', 'por', 'puede',
+            'que', 'quien', 'se', 'ser', 'si', 'sin', 'sobre', 'son',
+            'su', 'sus', 'tan', 'te', 'ti', 'tiene', 'todo', 'tu', 'tus',
+            'un', 'una', 'uno', 'usar', 'usa', 'usan', 'va', 'vamos',
+            'ver', 'vez', 'vida', 'y', 'ya', 'yo', 'palabra', 'ejemplo',
+            'recuerda', 'cuando', 'veas', 'entonces', 'también', 'ahora',
+            'aceptar', 'invitación', 'divertida', 'casual',
+        }
         english_set = set()
         if english_phrases:
             for phrase in english_phrases:
-                for word in phrase.lower().split():
+                phrase_words = phrase.lower().split()
+                if len(phrase_words) > 5:
+                    continue  # Skip long phrases — likely bad AI data
+                for word in phrase_words:
                     cleaned = word.strip('.,!?¿¡:;\'"')
-                    if cleaned:
+                    if cleaned and cleaned not in SPANISH_COMMON:
                         english_set.add(cleaned)
 
         words = []
@@ -285,11 +307,27 @@ class SubtitleProcessor:
                 current_segment = None
 
             if is_en:
+                # Avoid orphan single-word groups before English phrases.
+                # Pull last 1-2 Spanish words into the English group if:
+                #   - current group has ≤2 words, OR
+                #   - last word is a short connector
+                prefix_words = []
                 if current:
-                    groups.append(current)
+                    if len(current) <= 2:
+                        # Small group — merge entirely with English
+                        prefix_words = list(current)
+                        current = []
+                    else:
+                        last_word = current[-1]
+                        last_lower = last_word['word'].lower().strip('.,!?¿¡')
+                        if last_lower in self.CONNECTORS or len(last_lower) <= 4:
+                            prefix_words = [current.pop()]
+                    if current:
+                        groups.append(current)
                     current = []
                     current_segment = None
-                en_group = []
+
+                en_group = prefix_words
                 en_segment = word_segment
                 while i < len(words) and words[i].get('is_english', False):
                     if words[i].get('segment_id', 0) != en_segment:

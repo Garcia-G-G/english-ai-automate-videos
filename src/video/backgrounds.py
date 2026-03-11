@@ -56,7 +56,9 @@ def get_default_background() -> str:
             valid = [bg for bg in enabled if bg in BACKGROUND_PRESETS]
             if valid:
                 import random as _rand
-                choice = _rand.choice(valid)
+                # Use SystemRandom to avoid being affected by global seed
+                _sysrand = _rand.SystemRandom()
+                choice = _sysrand.choice(valid)
                 return choice
         mode = "fixed"
 
@@ -123,6 +125,15 @@ def gradient(w: int, h: int, t: float) -> np.ndarray:
 
             if bg.has_cache():
                 return bg.get_cached_frame(t)
+
+            # Auto-cache static_gradient type (same every frame)
+            bg_type = CURRENT_BACKGROUND.get("type")
+            if CURRENT_BACKGROUND["preset"]:
+                preset_info = BACKGROUND_PRESETS.get(CURRENT_BACKGROUND["preset"], {})
+                bg_type = preset_info.get("type", bg_type)
+
+            if bg_type == "static_gradient" and CURRENT_BACKGROUND["preset"]:
+                return bg.render_static_once(CURRENT_BACKGROUND["preset"])
 
             if CURRENT_BACKGROUND["preset"]:
                 return bg.render_from_preset(

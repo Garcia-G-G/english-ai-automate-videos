@@ -29,11 +29,11 @@ from openai import OpenAI
 
 from tts_common import (
     get_audio_duration, generate_silence,
-    extract_english_words_from_script, SPANISH_FILTER,
-    ASSETS_DIR, SPANISH_DIR, WORDS_DIR,
+    extract_english_words_from_script,
+    SPANISH_DIR, WORDS_DIR,
     PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
-    PAUSE_AFTER_COUNTDOWN, PAUSE_AFTER_LAST_COUNT, PAUSE_AFTER_ANSWER,
-    PAUSE_AFTER_EXPLANATION,
+    PAUSE_AFTER_ANSWER, PAUSE_AFTER_EXPLANATION,
+    SEGMENT_SPEEDS,
 )
 
 # Load environment variables from .env file
@@ -243,6 +243,10 @@ def text_to_speech(
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
 
+    # Clean visual-only elements (blanks, markdown, brackets) before TTS
+    from tts_common import clean_for_tts
+    text = clean_for_tts(text)
+
     # Pre-process text for natural pauses
     processed_text = preprocess_for_pauses(text)
 
@@ -252,14 +256,11 @@ def text_to_speech(
     logger.debug("  Model: %s", model)
     logger.debug("  Speed: %s", speed)
 
-    with client.audio.speech.with_streaming_response.create(
-        model=model,
-        voice=voice,
-        input=processed_text,  # Use pre-processed text with proper pauses
-        speed=speed,
-        response_format="mp3"
-    ) as response:
-        response.stream_to_file(output_path)
+    _tts_with_retry(
+        client, output_path,
+        model=model, voice=voice, input=processed_text,
+        speed=speed, response_format="mp3",
+    )
     logger.info("  Audio saved: %s", output_path)
     logger.debug("  Processed text: %s...", processed_text[:100])
 
@@ -349,6 +350,15 @@ def extract_timestamps_whisper(audio_path: str, client: OpenAI = None, original_
             response_format="verbose_json",
             timestamp_granularities=["word"]
         )
+
+    # Track Whisper cost
+    try:
+        from cost_tracker import get_tracker
+        from tts_common import get_audio_duration
+        dur = get_audio_duration(audio_path)
+        get_tracker().log_openai_whisper(duration_seconds=dur, label="word_timestamps")
+    except Exception:
+        pass
 
     # Build English word set from explicit list or extract from quotes
     if explicit_english:
@@ -484,14 +494,11 @@ def fix_countdown_timing(
 
         for i, word in enumerate(countdown_words):
             clip_path = os.path.join(temp_dir, f"countdown_{i}.mp3")
-            with client.audio.speech.with_streaming_response.create(
-                model=model,
-                voice=voice,
-                input=word,
-                speed=speed,
-                response_format="mp3"
-            ) as response:
-                response.stream_to_file(clip_path)
+            _tts_with_retry(
+                client, clip_path,
+                model=model, voice=voice, input=word,
+                speed=speed, response_format="mp3",
+            )
             countdown_paths.append(clip_path)
 
         # 4. Create silence gap
@@ -558,6 +565,32 @@ def fix_countdown_timing(
             pass
 
 
+def _tts_with_retry(client, output_path: str, max_retries: int = 3, **kwargs) -> None:
+    """Call OpenAI TTS API with exponential backoff retry."""
+    import time as _time
+
+    # Track cost
+    try:
+        from cost_tracker import get_tracker
+        text = kwargs.get('input', '')
+        model = kwargs.get('model', 'tts-1')
+        get_tracker().log_openai_tts(characters=len(text), model=model, label="tts_segment")
+    except Exception:
+        pass
+
+    for attempt in range(max_retries):
+        try:
+            with client.audio.speech.with_streaming_response.create(**kwargs) as response:
+                response.stream_to_file(output_path)
+            return
+        except Exception as e:
+            if attempt == max_retries - 1:
+                raise
+            wait = 2 ** attempt
+            logger.warning("TTS API attempt %d failed (%s), retrying in %ds...", attempt + 1, e, wait)
+            _time.sleep(wait)
+
+
 def generate_segment_audio(
     text: str,
     output_path: str,
@@ -565,31 +598,17 @@ def generate_segment_audio(
     model: str = DEFAULT_MODEL,
     speed: float = DEFAULT_SPEED
 ) -> float:
-    """
-    Generate a single audio segment and return its duration.
-
-    Args:
-        text: Text to convert to speech
-        output_path: Path to save the audio file
-        voice: TTS voice
-        model: TTS model
-        speed: Speech speed
-
-    Returns:
-        Duration in seconds
-    """
+    """Generate a single audio segment and return its duration."""
     client = OpenAI()
-
-    with client.audio.speech.with_streaming_response.create(
-        model=model,
-        voice=voice,
-        input=text,
-        speed=speed,
-        response_format="mp3"
-    ) as response:
-        response.stream_to_file(output_path)
-
-    return get_audio_duration(output_path)
+    _tts_with_retry(
+        client, output_path,
+        model=model, voice=voice, input=text,
+        speed=speed, response_format="mp3",
+    )
+    duration = get_audio_duration(output_path)
+    if duration <= 0:
+        raise RuntimeError(f"TTS produced zero-length audio for: {text[:60]}")
+    return duration
 
 
 def generate_quiz_audio_segmented(
@@ -623,13 +642,15 @@ def generate_quiz_audio_segmented(
     PAUSE_AFTER_ANSWER_PHRASE = 0.5  # After "Correcto..."
 
     # === SCRIPT DATA ===
+    from tts_common import clean_for_tts
     question = script.get('question', '¿Pregunta?')
     options = script.get('options', {})
     correct = script.get('correct', 'A')
     explanation = script.get('explanation', '')
 
-    clean_question = question.replace('¿', '').strip()
-    correct_text = options.get(correct, '').strip("'\"")
+    clean_question = clean_for_tts(question.replace('¿', '').strip())
+    correct_text = clean_for_tts(options.get(correct, '').strip("'\""))
+    explanation = clean_for_tts(explanation)
 
     # === TEMP DIRECTORY ===
     temp_dir = tempfile.mkdtemp(prefix="quiz_assembly_")
@@ -649,14 +670,11 @@ def generate_quiz_audio_segmented(
         # Generate with high quality
         logger.debug("      [generating] %s", text)
         client = OpenAI()
-        with client.audio.speech.with_streaming_response.create(
-            model="tts-1-hd",
-            voice=voice,
-            input=text,
-            speed=0.9,  # Bug A4 fix: Slightly slower for clarity (was 1.0)
-            response_format="mp3"
-        ) as response:
-            response.stream_to_file(str(cache_path))
+        _tts_with_retry(
+            client, str(cache_path),
+            model="tts-1-hd", voice=voice, input=text,
+            speed=SEGMENT_SPEEDS['cached_phrase'], response_format="mp3",
+        )
 
         return str(cache_path)
 
@@ -709,14 +727,11 @@ def generate_quiz_audio_segmented(
         logger.info("[1] QUESTION")
         q_path = os.path.join(temp_dir, "question.mp3")
         client = OpenAI()
-        with client.audio.speech.with_streaming_response.create(
-            model="tts-1-hd",
-            voice=voice,
-            input=clean_question,
-            speed=0.9,  # Bug A4 fix: Slower for clarity
-            response_format="mp3"
-        ) as response:
-            response.stream_to_file(q_path)
+        _tts_with_retry(
+            client, q_path,
+            model="tts-1-hd", voice=voice, input=clean_question,
+            speed=SEGMENT_SPEEDS['question'], response_format="mp3",
+        )
         q_start, q_end, _ = add_audio(q_path)
         add_segment('question', clean_question, q_start, q_end)
         add_silence(PAUSE_AFTER_QUESTION)
@@ -743,14 +758,11 @@ def generate_quiz_audio_segmented(
 
         # Generate ALL options in ONE TTS call
         combined_path = os.path.join(temp_dir, "options_combined.mp3")
-        with client.audio.speech.with_streaming_response.create(
-            model="tts-1-hd",
-            voice=voice,
-            input=combined_text,
-            speed=0.9,  # Bug A4 fix: Slower for clarity
-            response_format="mp3"
-        ) as response:
-            response.stream_to_file(combined_path)
+        _tts_with_retry(
+            client, combined_path,
+            model="tts-1-hd", voice=voice, input=combined_text,
+            speed=SEGMENT_SPEEDS['options'], response_format="mp3",
+        )
 
         combined_duration = get_audio_duration(combined_path)
         logger.debug("  Combined duration: %.2fs", combined_duration)
@@ -792,15 +804,21 @@ def generate_quiz_audio_segmented(
         add_silence(PAUSE_AFTER_THINK)
 
         # ============================================================
-        # 5. COUNTDOWN (pre-recorded)
+        # 5. COUNTDOWN (VISUAL ONLY - audio is silent)
+        # The countdown numbers appear on screen during this silence.
+        # Total silence: ~7s (1.5s pre + 3 x 1.5s intervals + 1.0s before answer)
         # ============================================================
-        logger.info("[5] COUNTDOWN")
-        for num, name in [('3', 'tres'), ('2', 'dos'), ('1', 'uno')]:
-            cd_path = str(SPANISH_DIR / f"{name}.mp3")
-            cd_start, cd_end, _ = add_audio(cd_path)
-            add_segment(f'countdown_{num}', f'{name.capitalize()}.', cd_start, cd_end)
-            pause = PAUSE_AFTER_LAST_COUNT if num == '1' else PAUSE_AFTER_COUNTDOWN
-            add_silence(pause)
+        logger.info("[5] COUNTDOWN (visual only, audio silence)")
+        countdown_interval = 1.5  # 1.5 seconds per number for full visual display
+        for num in ['3', '2', '1']:
+            cd_start = running_time
+            add_silence(countdown_interval)
+            cd_end = running_time
+            add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
+            logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
+
+        # Dramatic pause before answer reveal - ensures "1" fully displays
+        add_silence(1.0)
 
         # ============================================================
         # 6. ANSWER
@@ -816,14 +834,11 @@ def generate_quiz_audio_segmented(
         logger.debug("  Answer: '%s'", full_answer_text)
 
         ans_path = os.path.join(temp_dir, "answer.mp3")
-        with client.audio.speech.with_streaming_response.create(
-            model="tts-1-hd",
-            voice=voice,
-            input=full_answer_text,
-            speed=0.9,  # Bug A4 fix: Slower for clarity
-            response_format="mp3"
-        ) as response:
-            response.stream_to_file(ans_path)
+        _tts_with_retry(
+            client, ans_path,
+            model="tts-1-hd", voice=voice, input=full_answer_text,
+            speed=SEGMENT_SPEEDS['answer'], response_format="mp3",
+        )
         add_audio(ans_path)
 
         answer_end = running_time
@@ -836,14 +851,11 @@ def generate_quiz_audio_segmented(
         if explanation.strip():
             logger.info("[7] EXPLANATION")
             exp_path = os.path.join(temp_dir, "explanation.mp3")
-            with client.audio.speech.with_streaming_response.create(
-                model="tts-1-hd",
-                voice=voice,
-                input=explanation,
-                speed=0.9,  # Bug A4 fix: Slower for clarity
-                response_format="mp3"
-            ) as response:
-                response.stream_to_file(exp_path)
+            _tts_with_retry(
+                client, exp_path,
+                model="tts-1-hd", voice=voice, input=explanation,
+                speed=SEGMENT_SPEEDS['explanation'], response_format="mp3",
+            )
             exp_start, exp_end, _ = add_audio(exp_path)
             add_segment('explanation', explanation, exp_start, exp_end)
             # Add breathing room after explanation
@@ -907,6 +919,205 @@ def generate_quiz_audio_segmented(
             pass
 
 
+def generate_fill_blank_audio_segmented(
+    script: dict,
+    output_path: str,
+    voice: str = DEFAULT_VOICE,
+    model: str = DEFAULT_MODEL,
+    speed: float = DEFAULT_SPEED,
+) -> dict:
+    """
+    Generate fill-in-the-blank audio using SEGMENT-BASED architecture.
+
+    Segments:
+    1. sentence - The sentence with blank read aloud
+    2. options - All options read together
+    3. think - "Piensa bien"
+    4. countdown_3/2/1 - VISUAL ONLY (silent), 1.5s each
+    5. answer - "La respuesta correcta es X"
+    6. explanation - The explanation
+    """
+    import shutil
+    from tts_common import clean_for_tts
+
+    sentence = script.get('sentence', '')
+    options = script.get('options', [])
+    correct = script.get('correct', '')
+    explanation = script.get('explanation', '')
+    translation = script.get('translation', '')
+
+    # Clean sentence for TTS (remove ___ blanks)
+    clean_sentence = clean_for_tts(sentence)
+
+    temp_dir = tempfile.mkdtemp(prefix="fb_segments_")
+
+    try:
+        logger.info("=" * 60)
+        logger.info("FILL-IN-THE-BLANK AUDIO ASSEMBLY")
+        logger.info("=" * 60)
+
+        segments = []
+        audio_files = []
+        running_time = 0.0
+        client = OpenAI()
+
+        def add_audio(path: str, duration: float = None):
+            nonlocal running_time
+            if duration is None:
+                duration = get_audio_duration(path)
+            audio_files.append(path)
+            start = running_time
+            running_time += duration
+            return start, running_time, duration
+
+        def add_silence(dur: float):
+            nonlocal running_time
+            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
+            generate_silence(dur, silence_path, channels="stereo")
+            audio_files.append(silence_path)
+            running_time += dur
+
+        def add_segment(seg_id: str, text: str, start: float, end: float):
+            segment = {
+                'id': seg_id,
+                'text': text,
+                'start': round(start, 3),
+                'end': round(end, 3),
+                'duration': round(end - start, 3),
+            }
+            segments.append(segment)
+            logger.info("  [%s] %s...", seg_id, text[:50])
+            return segment
+
+        # 1. SENTENCE
+        logger.info("[1] SENTENCE")
+        sentence_text = f"¿Cómo completarías esta frase? {clean_sentence}"
+        s_path = os.path.join(temp_dir, "sentence.mp3")
+        _tts_with_retry(
+            client, s_path,
+            model="tts-1-hd", voice=voice, input=sentence_text,
+            speed=SEGMENT_SPEEDS['sentence'], response_format="mp3",
+        )
+        s_start, s_end, _ = add_audio(s_path)
+        add_segment('sentence', sentence_text, s_start, s_end)
+        add_silence(PAUSE_AFTER_QUESTION)
+
+        # 2. OPTIONS
+        logger.info("[2] OPTIONS")
+        option_lines = ["Aquí van las opciones."]
+        for i, opt in enumerate(options[:4]):
+            option_lines.append(f"Opción {i+1}, {opt}.")
+        combined_text = "\n".join(option_lines)
+
+        opt_path = os.path.join(temp_dir, "options.mp3")
+        _tts_with_retry(
+            client, opt_path,
+            model="tts-1-hd", voice=voice, input=combined_text,
+            speed=SEGMENT_SPEEDS['options'], response_format="mp3",
+        )
+        opt_start, opt_end, _ = add_audio(opt_path)
+        add_segment('options', combined_text, opt_start, opt_end)
+        add_silence(PAUSE_AFTER_OPTION)
+
+        # 3. THINK
+        logger.info("[3] THINK")
+        think_path = str(SPANISH_DIR / "piensa_bien.mp3")
+        think_start, think_end, _ = add_audio(think_path)
+        add_segment('think', '¡Piensa bien!', think_start, think_end)
+        add_silence(PAUSE_AFTER_THINK)
+
+        # 4. COUNTDOWN (VISUAL ONLY - silent)
+        logger.info("[4] COUNTDOWN (visual only, audio silence)")
+        countdown_interval = 1.5
+        for num in ['3', '2', '1']:
+            cd_start = running_time
+            add_silence(countdown_interval)
+            cd_end = running_time
+            add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
+            logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
+
+        # Dramatic pause before answer
+        add_silence(1.0)
+
+        # 5. ANSWER
+        logger.info("[5] ANSWER")
+        answer_text = f"La respuesta correcta es '{correct}'."
+        ans_path = os.path.join(temp_dir, "answer.mp3")
+        _tts_with_retry(
+            client, ans_path,
+            model="tts-1-hd", voice=voice, input=answer_text,
+            speed=SEGMENT_SPEEDS['answer'], response_format="mp3",
+        )
+        ans_start, ans_end, _ = add_audio(ans_path)
+        add_segment('answer', answer_text, ans_start, ans_end)
+        add_silence(PAUSE_AFTER_ANSWER)
+
+        # 6. EXPLANATION
+        if explanation.strip():
+            logger.info("[6] EXPLANATION")
+            clean_explanation = clean_for_tts(explanation)
+            exp_path = os.path.join(temp_dir, "explanation.mp3")
+            _tts_with_retry(
+                client, exp_path,
+                model="tts-1-hd", voice=voice, input=clean_explanation,
+                speed=SEGMENT_SPEEDS['explanation'], response_format="mp3",
+            )
+            exp_start, exp_end, _ = add_audio(exp_path)
+            add_segment('explanation', clean_explanation, exp_start, exp_end)
+            add_silence(PAUSE_AFTER_EXPLANATION)
+
+        total_duration = running_time
+        logger.info("=" * 60)
+        logger.info("Total duration: %.2fs", total_duration)
+        logger.info("=" * 60)
+
+        # Concatenate
+        concat_list_path = os.path.join(temp_dir, "concat.txt")
+        with open(concat_list_path, 'w') as f:
+            for audio_file in audio_files:
+                f.write(f"file '{audio_file}'\n")
+
+        output_dir = os.path.dirname(output_path)
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
+
+        cmd = [
+            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
+            '-i', concat_list_path,
+            '-c:a', 'copy',
+            output_path
+        ]
+        result = subprocess.run(cmd, capture_output=True, timeout=120)
+        if result.returncode != 0:
+            raise RuntimeError(f"ffmpeg concat failed: {result.stderr.decode()[:500]}")
+
+        logger.info("Audio saved: %s", output_path)
+
+        segment_times = {seg['id']: {'start': seg['start'], 'end': seg['end'], 'duration': seg['duration']} for seg in segments}
+
+        return {
+            'duration': round(total_duration, 3),
+            'segments': segments,
+            'segment_times': segment_times,
+            'type': 'fill_blank',
+            'sentence': sentence,
+            'options': options,
+            'correct': correct,
+            'explanation': explanation,
+            'translation': translation,
+            'full_script': script.get('full_script', ''),
+            'translations': script.get('translations', {}),
+            'hashtags': script.get('hashtags', []),
+            'words': [],
+        }
+
+    finally:
+        try:
+            shutil.rmtree(temp_dir)
+        except:
+            pass
+
+
 def generate_true_false_audio_segmented(
     script: dict,
     output_path: str,
@@ -921,75 +1132,141 @@ def generate_true_false_audio_segmented(
     1. statement - The statement to evaluate
     2. options - "¿Verdadero o falso?"
     3. think - "Piensa bien"
-    4. countdown_3 - "Tres" + silence
-    5. countdown_2 - "Dos" + silence
-    6. countdown_1 - "Uno"
-    7. answer - "¡Verdadero!" or "¡Falso!"
-    8. explanation - The explanation
+    4. countdown_3/2/1 - VISUAL ONLY (silent), 1.5s each
+    5. answer - "¡Verdadero!" or "¡Falso!" with explanation
     """
     import shutil
+    from tts_common import clean_for_tts
 
     statement = script.get('statement', '')
     correct = script.get('correct', False)
     explanation = script.get('explanation', '')
 
-    # Clean statement
-    clean_statement = statement.replace('¿', '').replace('?', '').strip()
-
-    # Answer text
-    answer_word = "¡Verdadero!" if correct else "¡Falso!"
-
-    segment_defs = [
-        ('statement', clean_statement, 0.3),
-        ('options', '¿Verdadero o falso?', 0.5),
-        ('think', 'Piensa bien.', 0.5),
-        ('countdown_3', 'Tres.', 1.0),
-        ('countdown_2', 'Dos.', 1.0),
-        ('countdown_1', 'Uno.', 0.4),
-        ('answer', answer_word, 0.3),
-        ('explanation', explanation, 0.0),
-    ]
+    # Strip "¿Verdadero o falso?" from statement to avoid reading it twice
+    # (the options segment already says it)
+    import re as _re
+    stripped = _re.sub(r'\s*¿?\s*[Vv]erdadero\s+o\s+[Ff]also\s*\??\s*$', '', statement)
+    clean_statement = clean_for_tts(stripped.strip())
+    # Also remove leading ¿ if the statement is a question
+    clean_statement = clean_statement.lstrip('¿').strip()
+    answer_word = "Verdadero" if correct else "Falso"
 
     temp_dir = tempfile.mkdtemp(prefix="tf_segments_")
 
     try:
-        logger.info("Generating true/false audio segments...")
+        logger.info("=" * 60)
+        logger.info("TRUE/FALSE AUDIO ASSEMBLY")
+        logger.info("=" * 60)
 
         segments = []
         audio_files = []
         running_time = 0.0
+        client = OpenAI()
 
-        for seg_id, text, pause_after in segment_defs:
-            if not text.strip():
-                continue
+        def add_audio(path: str, duration: float = None):
+            nonlocal running_time
+            if duration is None:
+                duration = get_audio_duration(path)
+            audio_files.append(path)
+            start = running_time
+            running_time += duration
+            return start, running_time, duration
 
-            seg_path = os.path.join(temp_dir, f"{seg_id}.mp3")
-            logger.info("  [%s] Generating: %s...", seg_id, text[:50])
+        def add_silence(dur: float):
+            nonlocal running_time
+            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
+            generate_silence(dur, silence_path, channels="stereo")
+            audio_files.append(silence_path)
+            running_time += dur
 
-            duration = generate_segment_audio(text, seg_path, voice, model, speed)
-
+        def add_segment(seg_id: str, text: str, start: float, end: float):
             segment = {
                 'id': seg_id,
                 'text': text,
-                'start': round(running_time, 3),
-                'end': round(running_time + duration, 3),
-                'duration': round(duration, 3),
+                'start': round(start, 3),
+                'end': round(end, 3),
+                'duration': round(end - start, 3),
             }
             segments.append(segment)
-            audio_files.append(seg_path)
+            logger.info("  [%s] %s...", seg_id, text[:50])
+            return segment
 
-            logger.debug("    Duration: %.2fs, Start: %.2fs", duration, running_time)
+        # 1. STATEMENT
+        logger.info("[1] STATEMENT")
+        s_path = os.path.join(temp_dir, "statement.mp3")
+        _tts_with_retry(
+            client, s_path,
+            model="tts-1-hd", voice=voice, input=clean_statement,
+            speed=SEGMENT_SPEEDS['statement'], response_format="mp3",
+        )
+        s_start, s_end, _ = add_audio(s_path)
+        add_segment('statement', clean_statement, s_start, s_end)
+        add_silence(PAUSE_AFTER_QUESTION)
 
-            running_time += duration
+        # 2. OPTIONS
+        logger.info("[2] OPTIONS")
+        options_text = "¿Verdadero o falso?"
+        opt_path = os.path.join(temp_dir, "options.mp3")
+        _tts_with_retry(
+            client, opt_path,
+            model="tts-1-hd", voice=voice, input=options_text,
+            speed=SEGMENT_SPEEDS['options'], response_format="mp3",
+        )
+        opt_start, opt_end, _ = add_audio(opt_path)
+        add_segment('options', options_text, opt_start, opt_end)
+        add_silence(PAUSE_AFTER_OPTION)
 
-            if pause_after > 0:
-                silence_path = os.path.join(temp_dir, f"{seg_id}_pause.mp3")
-                generate_silence(pause_after, silence_path)
-                audio_files.append(silence_path)
-                running_time += pause_after
+        # 3. THINK
+        logger.info("[3] THINK")
+        think_path = str(SPANISH_DIR / "piensa_bien.mp3")
+        think_start, think_end, _ = add_audio(think_path)
+        add_segment('think', '¡Piensa bien!', think_start, think_end)
+        add_silence(PAUSE_AFTER_THINK)
+
+        # 4. COUNTDOWN (VISUAL ONLY - silent)
+        logger.info("[4] COUNTDOWN (visual only, audio silence)")
+        countdown_interval = 1.5
+        for num in ['3', '2', '1']:
+            cd_start = running_time
+            add_silence(countdown_interval)
+            cd_end = running_time
+            add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
+            logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
+
+        # Dramatic pause before answer
+        add_silence(1.0)
+
+        # 5. ANSWER
+        logger.info("[5] ANSWER")
+        answer_text = f"¡Correcto! La respuesta es {answer_word}."
+        ans_path = os.path.join(temp_dir, "answer.mp3")
+        _tts_with_retry(
+            client, ans_path,
+            model="tts-1-hd", voice=voice, input=answer_text,
+            speed=SEGMENT_SPEEDS['answer'], response_format="mp3",
+        )
+        ans_start, ans_end, _ = add_audio(ans_path)
+        add_segment('answer', answer_text, ans_start, ans_end)
+        add_silence(PAUSE_AFTER_ANSWER)
+
+        # 6. EXPLANATION
+        if explanation.strip():
+            logger.info("[6] EXPLANATION")
+            clean_explanation = clean_for_tts(explanation)
+            exp_path = os.path.join(temp_dir, "explanation.mp3")
+            _tts_with_retry(
+                client, exp_path,
+                model="tts-1-hd", voice=voice, input=clean_explanation,
+                speed=SEGMENT_SPEEDS['explanation'], response_format="mp3",
+            )
+            exp_start, exp_end, _ = add_audio(exp_path)
+            add_segment('explanation', clean_explanation, exp_start, exp_end)
+            add_silence(PAUSE_AFTER_EXPLANATION)
 
         total_duration = running_time
+        logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
+        logger.info("=" * 60)
 
         # Concatenate
         concat_list_path = os.path.join(temp_dir, "concat.txt")
@@ -1001,13 +1278,15 @@ def generate_true_false_audio_segmented(
         if output_dir:
             os.makedirs(output_dir, exist_ok=True)
 
-        cmd_concat = [
+        cmd = [
             'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
             '-i', concat_list_path,
-            '-acodec', 'libmp3lame', '-q:a', '2',
+            '-c:a', 'copy',
             output_path
         ]
-        subprocess.run(cmd_concat, capture_output=True, timeout=120)
+        result = subprocess.run(cmd, capture_output=True, timeout=120)
+        if result.returncode != 0:
+            raise RuntimeError(f"ffmpeg concat failed: {result.stderr.decode()[:500]}")
 
         logger.info("Audio saved: %s", output_path)
 
@@ -1031,6 +1310,154 @@ def generate_true_false_audio_segmented(
             'translations': script.get('translations', {}),
             'hashtags': script.get('hashtags', []),
             'words': [],
+        }
+
+    finally:
+        try:
+            shutil.rmtree(temp_dir)
+        except:
+            pass
+
+
+def generate_vocabulary_audio_segmented(
+    script: dict,
+    output_path: str,
+    voice: str = DEFAULT_VOICE,
+    model: str = DEFAULT_MODEL,
+    speed: float = DEFAULT_SPEED,
+) -> dict:
+    """
+    Generate vocabulary list audio using OpenAI TTS.
+
+    Segments:
+    1. title - The vocabulary topic title
+    2. pair_0..N - Each Spanish/English pair spoken sequentially
+    """
+    import shutil
+    from tts_common import clean_for_tts
+
+    title = script.get('title', 'Vocabulario del día')
+    pairs = script.get('pairs', [])
+
+    temp_dir = tempfile.mkdtemp(prefix="vocab_segments_")
+
+    try:
+        logger.info("=" * 60)
+        logger.info("VOCABULARY AUDIO ASSEMBLY")
+        logger.info("=" * 60)
+
+        segments = []
+        audio_files = []
+        running_time = 0.0
+        client = OpenAI()
+
+        def add_audio(path: str, duration: float = None):
+            nonlocal running_time
+            if duration is None:
+                duration = get_audio_duration(path)
+            audio_files.append(path)
+            start = running_time
+            running_time += duration
+            return start, running_time, duration
+
+        def add_silence(dur: float):
+            nonlocal running_time
+            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
+            generate_silence(dur, silence_path, channels="stereo")
+            audio_files.append(silence_path)
+            running_time += dur
+
+        def add_segment(seg_id: str, text: str, start: float, end: float):
+            segment = {
+                'id': seg_id,
+                'text': text,
+                'start': round(start, 3),
+                'end': round(end, 3),
+                'duration': round(end - start, 3),
+            }
+            segments.append(segment)
+            logger.info("  [%s] %s...", seg_id, text[:60])
+            return segment
+
+        # 1. TITLE
+        logger.info("[1] TITLE")
+        clean_title = clean_for_tts(title)
+        t_path = os.path.join(temp_dir, "title.mp3")
+        _tts_with_retry(
+            client, t_path,
+            model="tts-1-hd", voice=voice, input=clean_title,
+            speed=SEGMENT_SPEEDS.get('question', 0.95), response_format="mp3",
+        )
+        t_start, t_end, _ = add_audio(t_path)
+        add_segment('title', clean_title, t_start, t_end)
+        add_silence(0.8)  # Pause after title
+
+        # 2. PAIRS
+        for i, pair in enumerate(pairs):
+            spanish = pair.get('spanish', '')
+            english = pair.get('english', '')
+            logger.info("[%d] PAIR: %s → %s", i + 2, spanish, english)
+
+            pair_text = clean_for_tts(f"{spanish}... {english}.")
+            p_path = os.path.join(temp_dir, f"pair_{i}.mp3")
+            _tts_with_retry(
+                client, p_path,
+                model="tts-1-hd", voice=voice, input=pair_text,
+                speed=SEGMENT_SPEEDS.get('options', 0.95), response_format="mp3",
+            )
+            p_start, p_end, _ = add_audio(p_path)
+            add_segment(f'pair_{i}', pair_text, p_start, p_end)
+            add_silence(0.5)  # Pause between pairs
+
+        total_duration = running_time
+        logger.info("=" * 60)
+        logger.info("Total duration: %.2fs", total_duration)
+        logger.info("=" * 60)
+
+        # Concatenate
+        concat_list_path = os.path.join(temp_dir, "concat.txt")
+        with open(concat_list_path, 'w') as f:
+            for audio_file in audio_files:
+                f.write(f"file '{audio_file}'\n")
+
+        output_dir = os.path.dirname(output_path)
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
+
+        cmd = [
+            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
+            '-i', concat_list_path,
+            '-c:a', 'copy',
+            output_path
+        ]
+        result = subprocess.run(cmd, capture_output=True, timeout=120)
+        if result.returncode != 0:
+            raise RuntimeError(f"ffmpeg concat failed: {result.stderr.decode()[:500]}")
+
+        logger.info("Audio saved: %s", output_path)
+
+        segment_times = {}
+        for seg in segments:
+            segment_times[seg['id']] = {
+                'start': seg['start'],
+                'end': seg['end'],
+                'duration': seg['duration'],
+            }
+
+        return {
+            'duration': round(total_duration, 3),
+            'segments': segments,
+            'segment_times': segment_times,
+            'type': 'vocabulary',
+            'title': title,
+            'difficulty': script.get('difficulty', ''),
+            'pairs': pairs,
+            'full_script': script.get('full_script', ''),
+            'translations': script.get('translations', {}),
+            'english_phrases': script.get('english_phrases', []),
+            'hashtags': script.get('hashtags', []),
+            'words': [],
+            '_meta': script.get('_meta', {}),
         }
 
     finally:
@@ -1090,8 +1517,12 @@ def generate_from_script(
         result = generate_quiz_audio_segmented(script, output_path, voice, model, speed)
     elif video_type == 'true_false':
         result = generate_true_false_audio_segmented(script, output_path, voice, model, speed)
+    elif video_type == 'fill_blank':
+        result = generate_fill_blank_audio_segmented(script, output_path, voice, model, speed)
+    elif video_type == 'vocabulary':
+        result = generate_vocabulary_audio_segmented(script, output_path, voice, model, speed)
     else:
-        # educational, fill_blank, pronunciation — use text_to_speech with English hints
+        # educational, pronunciation — use text_to_speech with English hints
         logger.info("Using text_to_speech for type: %s", video_type)
         text = script.get("full_script", "")
         if not text:
