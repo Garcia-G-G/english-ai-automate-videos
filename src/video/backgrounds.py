@@ -31,8 +31,8 @@ CURRENT_BACKGROUND = {
 # Background generator instance (lazy initialized)
 _bg_generator = None
 
-# Config file path
-CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "config.yaml")
+# Config file path — resolve to absolute path so it works regardless of cwd
+CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "config.yaml")
 
 
 def load_config() -> dict:
