@@ -397,50 +397,50 @@ BACKGROUND_PRESETS = {
     "photo_earth": {
         "type": "photo_kenburns",
         "category": "earth",
-        "overlay_opacity": 0.12,
+        "overlay_opacity": 0.10,
         "blur_radius": 0,
-        "zoom_range": (1.08, 1.28),
-        "pan_speed": 0.7,
+        "zoom_range": (1.12, 1.45),
+        "pan_speed": 1.2,
         "color_tint": None,
     },
     # City at night — urban energy, neon lights
     "photo_city": {
         "type": "photo_kenburns",
         "category": "city",
-        "overlay_opacity": 0.12,
+        "overlay_opacity": 0.10,
         "blur_radius": 0,
-        "zoom_range": (1.06, 1.24),
-        "pan_speed": 0.6,
+        "zoom_range": (1.10, 1.40),
+        "pan_speed": 1.1,
         "color_tint": None,
     },
     # Ocean/sunset — warm, calming vocabulary/educational backdrop
     "photo_ocean": {
         "type": "photo_kenburns",
         "category": "ocean",
-        "overlay_opacity": 0.08,
+        "overlay_opacity": 0.06,
         "blur_radius": 0,
-        "zoom_range": (1.06, 1.22),
-        "pan_speed": 0.5,
+        "zoom_range": (1.10, 1.38),
+        "pan_speed": 1.0,
         "color_tint": None,
     },
     # Nature — forests, mountains, greenery
     "photo_nature": {
         "type": "photo_kenburns",
         "category": "nature",
-        "overlay_opacity": 0.12,
+        "overlay_opacity": 0.10,
         "blur_radius": 0,
-        "zoom_range": (1.08, 1.26),
-        "pan_speed": 0.65,
+        "zoom_range": (1.12, 1.42),
+        "pan_speed": 1.15,
         "color_tint": None,
     },
     # Abstract textures — patterns, feathers, fabrics (like reference turtle video)
     "photo_abstract": {
         "type": "photo_kenburns",
         "category": "abstract",
-        "overlay_opacity": 0.08,
+        "overlay_opacity": 0.06,
         "blur_radius": 1,
-        "zoom_range": (1.08, 1.30),
-        "pan_speed": 0.8,
+        "zoom_range": (1.14, 1.48),
+        "pan_speed": 1.3,
         "color_tint": None,
     },
 
@@ -448,60 +448,60 @@ BACKGROUND_PRESETS = {
     "photo_city_blur": {
         "type": "photo_kenburns",
         "category": "city",
-        "overlay_opacity": 0.25,
-        "blur_radius": 4,
-        "zoom_range": (1.04, 1.14),
-        "pan_speed": 0.3,
+        "overlay_opacity": 0.20,
+        "blur_radius": 3,
+        "zoom_range": (1.08, 1.25),
+        "pan_speed": 0.6,
         "color_tint": "#0a0020",
     },
     # Clouds from above — dramatic sky and atmosphere
     "photo_clouds": {
         "type": "photo_kenburns",
         "category": "clouds",
-        "overlay_opacity": 0.08,
+        "overlay_opacity": 0.06,
         "blur_radius": 0,
-        "zoom_range": (1.06, 1.22),
-        "pan_speed": 0.5,
+        "zoom_range": (1.10, 1.38),
+        "pan_speed": 1.0,
         "color_tint": None,
     },
     # Earth dramatic — high contrast, deep dark overlay
     "photo_earth_dark": {
         "type": "photo_kenburns",
         "category": "earth",
-        "overlay_opacity": 0.25,
+        "overlay_opacity": 0.20,
         "blur_radius": 0,
-        "zoom_range": (1.05, 1.18),
-        "pan_speed": 0.5,
+        "zoom_range": (1.10, 1.32),
+        "pan_speed": 0.9,
         "color_tint": "#000010",
     },
     # Ocean vibrant — less overlay, more color
     "photo_ocean_vibrant": {
         "type": "photo_kenburns",
         "category": "ocean",
-        "overlay_opacity": 0.05,
+        "overlay_opacity": 0.04,
         "blur_radius": 0,
-        "zoom_range": (1.08, 1.24),
-        "pan_speed": 0.6,
+        "zoom_range": (1.12, 1.40),
+        "pan_speed": 1.1,
         "color_tint": None,
     },
     # Sunset — warm dramatic skies (like reference vocabulary videos)
     "photo_sunset": {
         "type": "photo_kenburns",
         "category": "sunset",
-        "overlay_opacity": 0.08,
+        "overlay_opacity": 0.06,
         "blur_radius": 0,
-        "zoom_range": (1.06, 1.22),
-        "pan_speed": 0.5,
+        "zoom_range": (1.10, 1.38),
+        "pan_speed": 1.0,
         "color_tint": None,
     },
     # Galaxy — cosmic deep space backgrounds
     "photo_galaxy": {
         "type": "photo_kenburns",
         "category": "galaxy",
-        "overlay_opacity": 0.08,
+        "overlay_opacity": 0.06,
         "blur_radius": 0,
-        "zoom_range": (1.08, 1.28),
-        "pan_speed": 0.7,
+        "zoom_range": (1.14, 1.45),
+        "pan_speed": 1.2,
         "color_tint": None,
     },
 }
@@ -1476,17 +1476,20 @@ class BackgroundGenerator:
         zoom_min, zoom_max = zoom_range
         cycle = duration if duration > 0 else 30.0
 
-        # Dynamic zoom — two layered oscillations for organic feel
-        zoom_slow = (math.sin(t * math.pi * 2 / cycle) + 1) / 2
-        zoom_fast = (math.sin(t * 0.8) + 1) / 2 * 0.3  # subtle fast pulse
-        zoom_t = min(1.0, zoom_slow + zoom_fast)
+        # Dynamic zoom — three layered oscillations for organic, never-static feel
+        zoom_slow = (math.sin(t * math.pi * 2 / cycle) + 1) / 2       # full cycle
+        zoom_med = (math.sin(t * 1.2 + 0.7) + 1) / 2 * 0.35          # medium pulse
+        zoom_fast = (math.sin(t * 2.5 + 1.5) + 1) / 2 * 0.15         # fast shimmer
+        zoom_t = min(1.0, zoom_slow * 0.55 + zoom_med + zoom_fast)
         zoom = zoom_min + (zoom_max - zoom_min) * zoom_t
 
-        # Dynamic pan — layered lissajous with drift for cinematic motion
-        pan_x = (math.sin(t * 0.4 * pan_speed) * 0.4
-                 + math.sin(t * 0.17 * pan_speed + 1.2) * 0.3)
-        pan_y = (math.sin(t * 0.3 * pan_speed + 0.7) * 0.4
-                 + math.cos(t * 0.13 * pan_speed + 2.1) * 0.25)
+        # Dynamic pan — triple-layer lissajous with drift for cinematic motion
+        pan_x = (math.sin(t * 0.5 * pan_speed) * 0.45
+                 + math.sin(t * 0.22 * pan_speed + 1.2) * 0.35
+                 + math.sin(t * 0.9 * pan_speed + 3.0) * 0.15)
+        pan_y = (math.sin(t * 0.4 * pan_speed + 0.7) * 0.45
+                 + math.cos(t * 0.18 * pan_speed + 2.1) * 0.30
+                 + math.cos(t * 0.75 * pan_speed + 4.5) * 0.15)
 
         # Calculate crop region
         crop_w = int(self.width / zoom)
@@ -1547,29 +1550,29 @@ class BackgroundGenerator:
 
         # === DYNAMIC OVERLAY EFFECTS (category-aware, make photos feel alive) ===
 
-        # Category-specific effect profiles (boosted for more dynamism)
+        # Category-specific effect profiles (HIGH DYNAMICS — lots of movement)
         _EFFECT_PROFILES = {
-            'earth':    {'breath': (0.06, 0.04, 0.08), 'particle_color': (200, 220, 255), 'particle_count': 30, 'particle_size': (2, 6), 'leak_color': (180, 200, 255), 'leak_strength': 0.07},
-            'city':     {'breath': (0.08, 0.05, 0.09), 'particle_color': (255, 200, 255), 'particle_count': 22, 'particle_size': (2, 5), 'leak_color': (255, 180, 220), 'leak_strength': 0.08},
-            'ocean':    {'breath': (0.04, 0.07, 0.08), 'particle_color': (180, 230, 255), 'particle_count': 28, 'particle_size': (2, 6), 'leak_color': (140, 200, 255), 'leak_strength': 0.08},
-            'nature':   {'breath': (0.05, 0.08, 0.04), 'particle_color': (220, 255, 200), 'particle_count': 24, 'particle_size': (2, 7), 'leak_color': (255, 240, 180), 'leak_strength': 0.07},
-            'abstract': {'breath': (0.08, 0.06, 0.09), 'particle_color': (255, 220, 255), 'particle_count': 20, 'particle_size': (3, 8), 'leak_color': (255, 200, 255), 'leak_strength': 0.08},
-            'clouds':   {'breath': (0.05, 0.05, 0.06), 'particle_color': (255, 240, 230), 'particle_count': 16, 'particle_size': (3, 9), 'leak_color': (255, 220, 200), 'leak_strength': 0.09},
-            'sunset':   {'breath': (0.09, 0.05, 0.03), 'particle_color': (255, 200, 120), 'particle_count': 26, 'particle_size': (2, 6), 'leak_color': (255, 180, 100), 'leak_strength': 0.10},
-            'galaxy':   {'breath': (0.06, 0.05, 0.09), 'particle_color': (200, 180, 255), 'particle_count': 35, 'particle_size': (1, 4), 'leak_color': (180, 160, 255), 'leak_strength': 0.06},
+            'earth':    {'breath': (0.10, 0.07, 0.12), 'particle_color': (200, 220, 255), 'particle_count': 50, 'particle_size': (2, 10), 'leak_color': (180, 200, 255), 'leak_strength': 0.12, 'leak2_color': (255, 200, 180), 'leak2_strength': 0.08},
+            'city':     {'breath': (0.12, 0.08, 0.14), 'particle_color': (255, 200, 255), 'particle_count': 40, 'particle_size': (2, 9),  'leak_color': (255, 180, 220), 'leak_strength': 0.13, 'leak2_color': (180, 255, 255), 'leak2_strength': 0.09},
+            'ocean':    {'breath': (0.07, 0.11, 0.13), 'particle_color': (180, 230, 255), 'particle_count': 45, 'particle_size': (3, 10), 'leak_color': (140, 200, 255), 'leak_strength': 0.13, 'leak2_color': (255, 220, 160), 'leak2_strength': 0.08},
+            'nature':   {'breath': (0.08, 0.12, 0.06), 'particle_color': (220, 255, 200), 'particle_count': 42, 'particle_size': (2, 11), 'leak_color': (255, 240, 180), 'leak_strength': 0.11, 'leak2_color': (180, 255, 200), 'leak2_strength': 0.08},
+            'abstract': {'breath': (0.13, 0.09, 0.14), 'particle_color': (255, 220, 255), 'particle_count': 38, 'particle_size': (3, 12), 'leak_color': (255, 200, 255), 'leak_strength': 0.14, 'leak2_color': (200, 255, 220), 'leak2_strength': 0.10},
+            'clouds':   {'breath': (0.08, 0.08, 0.10), 'particle_color': (255, 240, 230), 'particle_count': 30, 'particle_size': (4, 14), 'leak_color': (255, 220, 200), 'leak_strength': 0.14, 'leak2_color': (200, 220, 255), 'leak2_strength': 0.09},
+            'sunset':   {'breath': (0.14, 0.08, 0.05), 'particle_color': (255, 200, 120), 'particle_count': 45, 'particle_size': (2, 10), 'leak_color': (255, 180, 100), 'leak_strength': 0.15, 'leak2_color': (255, 120, 200), 'leak2_strength': 0.10},
+            'galaxy':   {'breath': (0.10, 0.08, 0.14), 'particle_color': (200, 180, 255), 'particle_count': 60, 'particle_size': (1, 7),  'leak_color': (180, 160, 255), 'leak_strength': 0.10, 'leak2_color': (255, 180, 220), 'leak2_strength': 0.07},
         }
         profile = _EFFECT_PROFILES.get(category, _EFFECT_PROFILES['earth'])
 
-        # 1. Color breathing — category-tuned hue shift (layered for organic feel)
+        # 1. Color breathing — category-tuned hue shift (triple-layered for pulsing life)
         br, bg_b, bb = profile['breath']
-        breath_r = 1.0 + br * math.sin(t * 0.8) + br * 0.3 * math.sin(t * 1.7 + 0.5)
-        breath_g = 1.0 + bg_b * math.sin(t * 0.6 + 1.0) + bg_b * 0.3 * math.sin(t * 1.4 + 1.8)
-        breath_b = 1.0 + bb * math.sin(t * 0.9 + 2.0) + bb * 0.3 * math.sin(t * 2.0 + 0.3)
+        breath_r = 1.0 + br * math.sin(t * 1.2) + br * 0.4 * math.sin(t * 2.5 + 0.5) + br * 0.2 * math.sin(t * 4.0 + 1.0)
+        breath_g = 1.0 + bg_b * math.sin(t * 0.9 + 1.0) + bg_b * 0.4 * math.sin(t * 2.1 + 1.8) + bg_b * 0.2 * math.sin(t * 3.5 + 2.5)
+        breath_b = 1.0 + bb * math.sin(t * 1.4 + 2.0) + bb * 0.4 * math.sin(t * 2.8 + 0.3) + bb * 0.2 * math.sin(t * 4.5 + 3.0)
         img[:, :, 0] *= breath_r
         img[:, :, 1] *= breath_g
         img[:, :, 2] *= breath_b
 
-        # 2. Floating particles — category-specific style
+        # 2. Floating particles — MORE particles, BIGGER, FASTER, with trails
         cache_key = f'_particles_{category}'
         if not hasattr(self, cache_key):
             rng = random.Random(hash(category) + 12345)
@@ -1581,23 +1584,29 @@ class BackgroundGenerator:
                     'x': rng.random(),
                     'y': rng.random(),
                     'size': rng.randint(p_min, p_max),
-                    'speed_y': -(rng.random() * 0.015 + 0.005),
-                    'drift_x': (rng.random() - 0.5) * 0.008,
-                    'brightness': rng.random() * 0.4 + 0.6,
+                    'speed_y': -(rng.random() * 0.025 + 0.008),
+                    'drift_x': (rng.random() - 0.5) * 0.015,
+                    'brightness': rng.random() * 0.5 + 0.5,
                     'phase': rng.random() * math.pi * 2,
-                    'twinkle_speed': rng.random() * 2.5 + 1.0,
+                    'twinkle_speed': rng.random() * 3.5 + 1.5,
+                    'wobble_amp': rng.random() * 0.06 + 0.02,
+                    'wobble_speed': rng.random() * 1.5 + 0.5,
                 })
             setattr(self, cache_key, particles)
 
         h, w = self.height, self.width
         p_color = profile['particle_color']
         for p in getattr(self, cache_key):
-            px = ((p['x'] + p['drift_x'] * t * 30 + math.sin(t * 0.7 + p['phase']) * 0.04) % 1.0)
-            py = ((p['y'] + p['speed_y'] * t * 30 + math.sin(t * 0.5 + p['phase'] * 0.7) * 0.015) % 1.0)
+            # Particles with wobble for organic movement
+            wobble_x = math.sin(t * p['wobble_speed'] + p['phase']) * p['wobble_amp']
+            wobble_y = math.sin(t * p['wobble_speed'] * 0.7 + p['phase'] * 1.3) * p['wobble_amp'] * 0.5
+            px = ((p['x'] + p['drift_x'] * t * 40 + wobble_x) % 1.0)
+            py = ((p['y'] + p['speed_y'] * t * 40 + wobble_y) % 1.0)
             cx, cy = int(px * w), int(py * h)
-            twinkle = 0.5 + 0.5 * math.sin(t * p['twinkle_speed'] + p['phase'])
-            alpha = p['brightness'] * twinkle * 0.7
-            size = p['size']
+            twinkle = 0.4 + 0.6 * math.sin(t * p['twinkle_speed'] + p['phase'])
+            alpha = p['brightness'] * twinkle * 0.85
+            # Pulsating size
+            size = max(1, int(p['size'] * (0.8 + 0.4 * math.sin(t * 1.5 + p['phase']))))
 
             y_min, y_max = max(0, cy - size), min(h, cy + size + 1)
             x_min, x_max = max(0, cx - size), min(w, cx + size + 1)
@@ -1605,26 +1614,50 @@ class BackgroundGenerator:
                 yy, xx = np.ogrid[y_min:y_max, x_min:x_max]
                 dist_p = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2)
                 particle_mask = dist_p <= size
-                glow = np.exp(-2.0 * (dist_p / max(size, 1)) ** 2) * particle_mask * alpha
+                glow = np.exp(-1.8 * (dist_p / max(size, 1)) ** 2) * particle_mask * alpha
                 img[y_min:y_max, x_min:x_max, 0] += p_color[0] * glow
                 img[y_min:y_max, x_min:x_max, 1] += p_color[1] * glow
                 img[y_min:y_max, x_min:x_max, 2] += p_color[2] * glow
 
-        # 3. Moving light leak — category-colored glow
-        leak_r, leak_g, leak_b = profile['leak_color']
-        leak_str = profile['leak_strength']
-        lx = w * (0.6 + 0.3 * math.sin(t * 0.25) + 0.1 * math.sin(t * 0.6))
-        ly = h * (0.25 + 0.2 * math.sin(t * 0.3 + 0.8) + 0.05 * math.cos(t * 0.7))
-        lr = max(w, h) * 0.5
+        # 3. Moving light leak #1 — sweeping across the frame
         y_full = np.arange(h).reshape(-1, 1)
         x_full = np.arange(w).reshape(1, -1)
+
+        leak_r, leak_g, leak_b = profile['leak_color']
+        leak_str = profile['leak_strength']
+        lx = w * (0.5 + 0.4 * math.sin(t * 0.35) + 0.1 * math.sin(t * 0.8 + 1.0))
+        ly = h * (0.3 + 0.25 * math.sin(t * 0.4 + 0.8) + 0.1 * math.cos(t * 0.9 + 2.0))
+        lr = max(w, h) * 0.55
         dist_leak = np.sqrt((x_full - lx) ** 2 + (y_full - ly) ** 2)
         leak_area = dist_leak < lr
         leak_intensity = leak_str * ((1 - dist_leak / lr) ** 2) * leak_area
-        leak_pulse = 0.7 + 0.3 * math.sin(t * 0.25)
+        leak_pulse = 0.6 + 0.4 * math.sin(t * 0.35)
         img[:, :, 0] += leak_r * leak_intensity * leak_pulse
         img[:, :, 1] += leak_g * leak_intensity * leak_pulse
         img[:, :, 2] += leak_b * leak_intensity * leak_pulse
+
+        # 4. Moving light leak #2 — opposite corner, different rhythm
+        l2_r, l2_g, l2_b = profile.get('leak2_color', (255, 200, 180))
+        l2_str = profile.get('leak2_strength', 0.07)
+        lx2 = w * (0.4 + 0.35 * math.sin(t * 0.28 + 3.0) + 0.1 * math.cos(t * 0.65))
+        ly2 = h * (0.7 + 0.2 * math.cos(t * 0.32 + 1.5) + 0.08 * math.sin(t * 0.85 + 4.0))
+        lr2 = max(w, h) * 0.45
+        dist_leak2 = np.sqrt((x_full - lx2) ** 2 + (y_full - ly2) ** 2)
+        leak_area2 = dist_leak2 < lr2
+        leak_intensity2 = l2_str * ((1 - dist_leak2 / lr2) ** 2) * leak_area2
+        leak_pulse2 = 0.5 + 0.5 * math.sin(t * 0.4 + 1.5)
+        img[:, :, 0] += l2_r * leak_intensity2 * leak_pulse2
+        img[:, :, 1] += l2_g * leak_intensity2 * leak_pulse2
+        img[:, :, 2] += l2_b * leak_intensity2 * leak_pulse2
+
+        # 5. Shimmer wave — subtle horizontal light bands that scroll vertically
+        shimmer_speed = 1.8
+        shimmer_strength = 12.0
+        shimmer = shimmer_strength * np.sin(y_full * 0.015 + t * shimmer_speed)
+        shimmer += shimmer_strength * 0.5 * np.sin(y_full * 0.025 - t * shimmer_speed * 0.7 + 1.5)
+        img[:, :, 0] += shimmer
+        img[:, :, 1] += shimmer * 0.9
+        img[:, :, 2] += shimmer * 1.1
 
         return np.clip(img, 0, 255).astype(np.uint8)
 
