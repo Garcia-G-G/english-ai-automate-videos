@@ -58,7 +58,7 @@ output:
 # Character Mascot (animated lip-sync)
 character:
   enabled: true
-  name: "turtle"              # Character folder under assets/characters/
+  name: "owl"                 # Character folder under assets/characters/
   position_x: 50              # Bottom-left (avoids TikTok right-side buttons)
   position_y: 1500
   size: 280                   # Character size in pixels
