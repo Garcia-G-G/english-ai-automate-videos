@@ -91,7 +91,7 @@ def create_frame_karaoke(
     # Render lines with highlighting
     _render_karaoke_lines(draw, frame, lines, words, t, current_idx, translations_lower)
 
-    return finalize_frame(frame, draw, t, duration)
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
 
 
 def _build_display_lines(

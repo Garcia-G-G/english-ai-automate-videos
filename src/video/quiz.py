@@ -834,6 +834,15 @@ def create_frame_quiz(
     is_in_countdown = show_timer and not show_answer
     draw_quiz_timeline(draw, progress, is_countdown=is_in_countdown)
 
+    # Render animated character
+    try:
+        from .character import get_character_renderer
+        char = get_character_renderer()
+        if char:
+            char.render(frame, t, data.get('words', []))
+    except Exception:
+        pass
+
     draw_progress_bar(draw, progress)
 
     return np.array(frame.convert('RGB'))

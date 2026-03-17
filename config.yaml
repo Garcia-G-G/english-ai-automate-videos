@@ -55,6 +55,32 @@ output:
   audio: "output/audio"
   frames: "output/frames"
 
+# Character Mascot (animated lip-sync)
+character:
+  enabled: true
+  name: "turtle"              # Character folder under assets/characters/
+  position_x: 50              # Bottom-left (avoids TikTok right-side buttons)
+  position_y: 1500
+  size: 280                   # Character size in pixels
+  opacity: 0.92
+
+# Upload Settings
+upload:
+  # Platforms to upload to (requires API keys in .env)
+  platforms:
+    - tiktok
+    - youtube
+    # - instagram  # Requires public video URL hosting (S3/CloudFlare)
+
+  # Default hashtags per video type
+  hashtags:
+    educational: "#LearnEnglish #English #EnglishTips #AprendeInglés #Idiomas"
+    quiz: "#EnglishQuiz #QuizTime #LearnEnglish #AprendeInglés"
+    true_false: "#TrueOrFalse #EnglishQuiz #LearnEnglish #Idiomas"
+    fill_blank: "#FillInTheBlank #EnglishPractice #LearnEnglish"
+    pronunciation: "#Pronunciation #EnglishTips #SpeakEnglish"
+    vocabulary: "#Vocabulary #EnglishWords #LearnEnglish"
+
 # Content Generation
 content:
   # Default video type: educational, quiz, true_false, fill_blank, pronunciation

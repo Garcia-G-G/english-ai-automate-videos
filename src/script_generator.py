@@ -29,7 +29,7 @@ OUTPUT_DIR = ROOT / "output" / "scripts"
 
 # OpenAI settings
 MODEL = "gpt-4o-mini"
-MAX_TOKENS = 2000
+MAX_TOKENS = 3000
 
 # Supported video types
 VIDEO_TYPES = ["educational", "quiz", "true_false", "fill_blank", "pronunciation", "vocabulary"]
@@ -190,23 +190,35 @@ def build_prompt_educational(category: str, topic: dict) -> str:
     context = _topic_context(category, topic)
     hashtags = _category_hashtags(category)
 
-    return f"""Genera un script de 30-45 segundos para un video de TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un script de 45-75 segundos para un video de TikTok/Reels enseñando inglés a hispanohablantes.
 
 TEMA: {context}
 
 REGLAS IMPORTANTES:
 1. El script debe ser en ESPAÑOL, con las palabras en inglés entre comillas simples
 2. Ejemplo: "La palabra 'embarrassed' NO significa embarazada"
-3. Incluye un ejemplo práctico de uso en inglés
+3. Incluye AL MENOS 2-3 ejemplos prácticos de uso en inglés
 4. Usa un tono energético y educativo como profesor de TikTok
 5. Incluye un tip memorable para recordar
-6. Termina con una pregunta o call-to-action
+6. Añade 1-2 frases de práctica donde el espectador pueda repetir
+7. Termina con una pregunta o call-to-action
+8. El script debe ser más largo y sustancioso - queremos contenido de valor
+
+ESTRUCTURA SUGERIDA:
+- Hook potente (1 oración)
+- Explicación del concepto (2-3 oraciones)
+- Ejemplo 1 con contexto
+- Ejemplo 2 con contexto diferente
+- Ejemplo 3 (si aplica)
+- Tip memorable
+- Frase de práctica para repetir
+- Call to action
 
 FORMATO JSON REQUERIDO:
 {{
   "type": "educational",
   "hook": "Frase inicial que capte atención (con palabra inglés en 'comillas')",
-  "full_script": "Script completo en español con palabras inglés en 'comillas simples'. Debe fluir naturalmente para ser leído en voz alta.",
+  "full_script": "Script completo en español con palabras inglés en 'comillas simples'. Debe fluir naturalmente para ser leído en voz alta. MÍNIMO 45 segundos de contenido.",
   "english_phrases": ["lista", "de", "palabras", "inglés", "usadas"],
   "translations": {{"palabra_ingles": "traduccion_español"}},
   "tip": "Tip memorable para recordar",
@@ -222,59 +234,72 @@ def build_prompt_quiz(category: str, topic: dict) -> str:
     context = _topic_context(category, topic)
     hashtags = ["#QuizIngles", "#AprendeIngles", "#TestTuIngles"] + _category_hashtags(category)[:1]
 
-    return f"""Genera un QUIZ de 20-30 segundos para TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un QUIZ de 45-60 segundos con 3 PREGUNTAS para TikTok/Reels enseñando inglés a hispanohablantes.
 
 TEMA: {context}
 
-FORMATO DEL VIDEO:
+FORMATO DEL VIDEO (3 preguntas secuenciales):
+Para CADA pregunta:
 1. Pregunta en español (¿Cómo se dice X en inglés? o ¿Qué significa X?)
 2. 4 opciones DIFERENTES: A, B, C, D - solo UNA correcta
 3. Cuenta regresiva EN ESPAÑOL: "Piensa bien... Tres... dos... uno..."
 4. Revelar respuesta con explicación CORTA
 
+Secuencia: Pregunta 1 → Opciones → Countdown → Respuesta → Pregunta 2 → Opciones → Countdown → Respuesta → Pregunta 3 → Opciones → Countdown → Respuesta
+
 REGLAS ABSOLUTAS (NUNCA VIOLAR):
-1. Las 4 opciones DEBEN ser palabras/frases DIFERENTES. NUNCA repetir la misma palabra.
+1. Las 4 opciones de CADA pregunta DEBEN ser palabras/frases DIFERENTES. NUNCA repetir la misma palabra.
    - MAL: A:'sensible', B:'sensible', C:'sensible', D:'sensible' ← PROHIBIDO
    - BIEN: A:'sensitive', B:'sensible', C:'reasonable', D:'careful' ← CORRECTO
-2. La respuesta correcta debe ser la traducción EXACTA del tema
+2. La respuesta correcta debe ser la traducción EXACTA del concepto
 3. Las opciones incorrectas deben ser confusiones comunes o palabras similares
 4. CUENTA REGRESIVA SIEMPRE EN ESPAÑOL: "Tres... dos... uno..." (NO "Three... two... one...")
 5. La explicación debe explicar POR QUÉ la respuesta correcta es correcta
 6. Explicación CORTA: 1-2 oraciones + un ejemplo simple
+7. Las 3 preguntas deben estar RELACIONADAS al tema pero ser DIFERENTES entre sí
+8. Varía la dificultad: fácil → medio → difícil
 
-EJEMPLO CORRECTO:
-Tema: False Friend 'library' significa 'biblioteca', NO 'librería'
-{{
-  "question": "¿Qué significa 'library' en inglés?",
-  "options": {{
-    "A": "'librería'",
-    "B": "'biblioteca'",
-    "C": "'libro'",
-    "D": "'lectura'"
-  }},
-  "correct": "B",
-  "explanation": "'Library' significa biblioteca. Por ejemplo: 'I study at the library' - Estudio en la biblioteca."
-}}
-
-EJEMPLO DE FULL_SCRIPT:
-"¿Qué significa 'library' en inglés? ... A, 'librería'. ... B, 'biblioteca'. ... C, 'libro'. ... D, 'lectura'. ... Piensa bien... Tres... dos... uno... ¡Correcto! 'Library' significa biblioteca. Por ejemplo: 'I study at the library' - Estudio en la biblioteca."
+EJEMPLO DE FULL_SCRIPT (con 3 preguntas):
+"¡Quiz time! Pregunta número uno. ¿Qué significa 'library' en inglés? ... A, 'librería'. ... B, 'biblioteca'. ... C, 'libro'. ... D, 'lectura'. ... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B, 'Library' significa biblioteca. Por ejemplo: 'I study at the library'. ... Pregunta número dos. ¿Cómo se dice 'actualmente' en inglés? ... A, 'actually'. ... B, 'currently'. ... C, 'now'. ... D, 'lately'. ... Piensa bien... Tres... dos... uno... ¡La respuesta es B! 'Currently' significa actualmente. 'Actually' significa en realidad. ... Pregunta número tres. ..."
 
 FORMATO JSON:
 {{
   "type": "quiz",
-  "question": "Pregunta en español",
+  "question": "Primera pregunta en español (para compatibilidad)",
   "options": {{
     "A": "opción 1 (DIFERENTE)",
     "B": "opción 2 (DIFERENTE)",
     "C": "opción 3 (DIFERENTE)",
     "D": "opción 4 (DIFERENTE)"
   }},
-  "correct": "letra correcta",
-  "explanation": "1-2 oraciones explicando POR QUÉ es correcta + ejemplo",
-  "full_script": "Script completo EN ESPAÑOL con countdown 'Tres... dos... uno...'",
+  "correct": "letra correcta de la primera pregunta",
+  "explanation": "Explicación de la primera pregunta",
+  "questions": [
+    {{
+      "question": "Pregunta 1 en español",
+      "options": {{"A": "opción1", "B": "opción2", "C": "opción3", "D": "opción4"}},
+      "correct": "letra correcta",
+      "explanation": "1-2 oraciones + ejemplo"
+    }},
+    {{
+      "question": "Pregunta 2 en español",
+      "options": {{"A": "opción1", "B": "opción2", "C": "opción3", "D": "opción4"}},
+      "correct": "letra correcta",
+      "explanation": "1-2 oraciones + ejemplo"
+    }},
+    {{
+      "question": "Pregunta 3 en español",
+      "options": {{"A": "opción1", "B": "opción2", "C": "opción3", "D": "opción4"}},
+      "correct": "letra correcta",
+      "explanation": "1-2 oraciones + ejemplo"
+    }}
+  ],
+  "full_script": "Script completo EN ESPAÑOL narrando LAS 3 PREGUNTAS secuencialmente con countdown 'Tres... dos... uno...' para cada una",
   "translations": {{"palabra_ingles": "traduccion_español"}},
   "hashtags": {json.dumps(hashtags[:4], ensure_ascii=False)}
 }}
+
+IMPORTANTE: Los campos question, options, correct, explanation del nivel raíz deben contener los datos de la PRIMERA pregunta. El array 'questions' contiene LAS 3 preguntas (incluyendo la primera). El full_script narra TODAS las preguntas.
 
 Responde SOLO con el JSON válido."""
 
@@ -283,42 +308,65 @@ def build_prompt_true_false(category: str, topic: dict) -> str:
     """Build true/false video prompt."""
     context = _topic_context(category, topic)
 
-    return f"""Genera un video de VERDADERO O FALSO de 15-25 segundos para TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un video de VERDADERO O FALSO de 40-55 segundos con 3 AFIRMACIONES para TikTok/Reels enseñando inglés a hispanohablantes.
 
 TEMA: {context}
 
 IDIOMA CRÍTICO:
 - TODO en ESPAÑOL excepto la palabra/frase en inglés que enseñamos
-- La afirmación debe estar en ESPAÑOL
+- Las afirmaciones deben estar en ESPAÑOL
 - Solo la palabra inglés entre comillas simples
 
-FORMATO DEL VIDEO:
+FORMATO DEL VIDEO (3 afirmaciones secuenciales):
+Para CADA afirmación:
 1. Afirmación en ESPAÑOL (con palabra inglés en comillas): "¿'Library' significa librería? ¿Verdadero o falso?"
 2. Pausa para pensar: "Piensa bien... Tres... dos... uno..."
 3. Revelar respuesta con explicación CORTA (1-2 oraciones máximo)
 
-EJEMPLO CORRECTO de full_script:
-"¿'Give up' significa rendirse? ¿Verdadero o falso? ... Piensa bien... Tres... dos... uno... ¡Verdadero! 'Give up' sí significa rendirse. Por ejemplo: 'I give up' - Me rindo."
+Secuencia: Afirmación 1 → Countdown → Respuesta → Afirmación 2 → Countdown → Respuesta → Afirmación 3 → Countdown → Respuesta
+
+EJEMPLO CORRECTO de full_script (con 3 afirmaciones):
+"¡Verdadero o falso! Número uno. ¿'Give up' significa rendirse? ¿Verdadero o falso? ... Piensa bien... Tres... dos... uno... ¡Verdadero! 'Give up' sí significa rendirse. Por ejemplo: 'I give up' - Me rindo. ... Número dos. ¿'Actually' significa actualmente? ¿Verdadero o falso? ... Piensa bien... Tres... dos... uno... ¡Falso! 'Actually' significa en realidad. ... Número tres. ..."
 
 EJEMPLO INCORRECTO (NO hacer esto):
 "Is 'library' the same as 'librería'?" ← MAL, debe ser en español
 
 REGLAS:
-1. Afirmación EN ESPAÑOL con solo la palabra inglés en inglés
-2. Puede ser verdadera o falsa (varía)
+1. Afirmaciones EN ESPAÑOL con solo la palabra inglés en inglés
+2. VARÍA entre verdaderas y falsas (NO todas iguales - mezcla)
 3. Explicación CORTA: 1-2 oraciones máximo + un ejemplo simple
-4. Incluir cuenta regresiva: "Piensa bien... Tres... dos... uno..."
+4. Incluir cuenta regresiva para cada afirmación: "Piensa bien... Tres... dos... uno..."
+5. Las 3 afirmaciones deben estar RELACIONADAS al tema pero ser DIFERENTES
 
 FORMATO JSON REQUERIDO:
 {{
   "type": "true_false",
-  "statement": "¿'palabra_ingles' significa X? ¿Verdadero o falso?",
+  "statement": "Primera afirmación (para compatibilidad)",
   "correct": true,
-  "explanation": "1-2 oraciones máximo. Corta y memorable.",
-  "full_script": "Script EN ESPAÑOL. Palabra inglés en 'comillas'. Explicación CORTA al final.",
+  "explanation": "Explicación de la primera afirmación",
+  "statements": [
+    {{
+      "statement": "¿'palabra_ingles' significa X? ¿Verdadero o falso?",
+      "correct": true,
+      "explanation": "1-2 oraciones + ejemplo"
+    }},
+    {{
+      "statement": "¿'palabra_ingles' significa Y? ¿Verdadero o falso?",
+      "correct": false,
+      "explanation": "1-2 oraciones + ejemplo"
+    }},
+    {{
+      "statement": "¿'palabra_ingles' significa Z? ¿Verdadero o falso?",
+      "correct": true,
+      "explanation": "1-2 oraciones + ejemplo"
+    }}
+  ],
+  "full_script": "Script EN ESPAÑOL narrando LAS 3 AFIRMACIONES secuencialmente. Palabra inglés en 'comillas'. Countdown para cada una.",
   "translations": {{"palabra_clave": "traduccion"}},
   "hashtags": {json.dumps(["#VerdaderoOFalso", "#AprendeIngles"] + _category_hashtags(category)[:1], ensure_ascii=False)}
 }}
+
+IMPORTANTE: Los campos statement, correct, explanation del nivel raíz deben contener los datos de la PRIMERA afirmación. El array 'statements' contiene LAS 3 afirmaciones (incluyendo la primera). El full_script narra TODAS las afirmaciones.
 
 Responde SOLO con el JSON, sin explicaciones adicionales."""
 
@@ -327,34 +375,70 @@ def build_prompt_fill_blank(category: str, topic: dict) -> str:
     """Build fill-in-the-blank video prompt."""
     context = _topic_context(category, topic)
 
-    return f"""Genera un video de COMPLETA LA FRASE de 25-35 segundos para TikTok/Reels enseñando inglés.
+    return f"""Genera un video de COMPLETA LA FRASE de 45-60 segundos con 3 FRASES para TikTok/Reels enseñando inglés.
 
 TEMA: {context}
 
-FORMATO DEL VIDEO:
+FORMATO DEL VIDEO (3 frases secuenciales):
+Para CADA frase:
 1. Mostrar frase en inglés con un espacio en blanco (___)
 2. Mostrar 4 opciones
-3. Pausa para pensar
-4. Revelar respuesta correcta
+3. Pausa para pensar: "Piensa bien... Tres... dos... uno..."
+4. Revelar respuesta correcta con explicación
+
+Secuencia: Frase 1 → Opciones → Countdown → Respuesta → Frase 2 → Opciones → Countdown → Respuesta → Frase 3 → Opciones → Countdown → Respuesta
 
 REGLAS:
-1. La frase debe ser práctica y común
+1. Las frases deben ser prácticas y comunes
 2. El espacio en blanco debe testar el concepto clave
 3. Las opciones incorrectas deben ser errores comunes
-4. Incluir traducción de la frase completa
+4. Incluir traducción de cada frase completa
+5. Las 3 frases deben estar RELACIONADAS al tema pero testar conceptos DIFERENTES
+6. Varía la dificultad: fácil → medio → difícil
+
+EJEMPLO DE FULL_SCRIPT (con 3 frases):
+"¡Completa la frase! Número uno. I ___ to the store yesterday. Las opciones son: A, go. B, went. C, gone. D, going. ... Piensa bien... Tres... dos... uno... ¡La respuesta es B, went! 'I went to the store yesterday' significa Fui a la tienda ayer. Usamos 'went' porque es pasado simple. ... Número dos. She has ___ there before. Las opciones son: A, go. B, went. C, been. D, going. ... Piensa bien... Tres... dos... uno... ¡La respuesta es C, been! ... Número tres. ..."
 
 FORMATO JSON REQUERIDO:
 {{
   "type": "fill_blank",
-  "sentence": "I ___ to the store yesterday",
-  "blank_position": "went",
-  "options": ["go", "went", "gone", "going"],
-  "correct": "went",
-  "explanation": "Explicación gramatical COMPLETA - no la acortes",
-  "full_script": "Script narrado completo. DEBE terminar con explicación COMPLETA.",
-  "translation": "Traducción de la frase completa",
+  "sentence": "Primera frase con ___ (para compatibilidad)",
+  "blank_position": "respuesta de la primera frase",
+  "options": ["opción1", "opción2", "opción3", "opción4"],
+  "correct": "respuesta correcta de la primera frase",
+  "explanation": "Explicación de la primera frase",
+  "translation": "Traducción de la primera frase completa",
+  "sentences": [
+    {{
+      "sentence": "I ___ to the store yesterday",
+      "blank_position": "went",
+      "options": ["go", "went", "gone", "going"],
+      "correct": "went",
+      "explanation": "Explicación gramatical",
+      "translation": "Fui a la tienda ayer"
+    }},
+    {{
+      "sentence": "She has ___ there before",
+      "blank_position": "been",
+      "options": ["go", "went", "been", "going"],
+      "correct": "been",
+      "explanation": "Explicación gramatical",
+      "translation": "Ella ha estado allí antes"
+    }},
+    {{
+      "sentence": "They are ___ to the park",
+      "blank_position": "going",
+      "options": ["go", "went", "gone", "going"],
+      "correct": "going",
+      "explanation": "Explicación gramatical",
+      "translation": "Ellos van al parque"
+    }}
+  ],
+  "full_script": "Script narrado completo narrando LAS 3 FRASES secuencialmente. DEBE incluir countdown para cada frase.",
   "hashtags": ["#CompletaLaFrase", "#AprendeIngles", "#GramaticaIngles"]
 }}
+
+IMPORTANTE: Los campos sentence, blank_position, options, correct, explanation, translation del nivel raíz deben contener los datos de la PRIMERA frase. El array 'sentences' contiene LAS 3 frases (incluyendo la primera). El full_script narra TODAS las frases.
 
 Responde SOLO con el JSON, sin explicaciones adicionales."""
 
@@ -539,7 +623,7 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
     full_script = re.sub(r'([.,!?;:])([A-Za-z])', r'\1 \2', full_script)
 
     # 5. Validate countdown for quiz/true_false
-    if video_type in ["quiz", "true_false"]:
+    if video_type in ["quiz", "true_false", "fill_blank"]:
         spanish_countdown = any(x in full_script.lower() for x in ["tres", "dos", "uno"])
         english_countdown = any(x in full_script.lower() for x in ["three", "two", "one"])
 
@@ -609,17 +693,27 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
     # Ensure type is set
     script["type"] = video_type
 
-    # VALIDATION: For quiz type, ensure all 4 options are different
-    if video_type == "quiz" and "options" in script:
-        options = script["options"]
-        option_values = [v.lower().strip("'\"") for v in options.values()]
-        unique_values = set(option_values)
+    # VALIDATION: For quiz type, ensure all 4 options are different (check all questions)
+    if video_type == "quiz":
+        has_duplicates = False
+        # Check root-level options
+        if "options" in script:
+            option_values = [v.lower().strip("'\"") for v in script["options"].values()]
+            if len(set(option_values)) < len(option_values):
+                has_duplicates = True
+                logger.warning(f"Quiz has duplicate options in root question: {list(script['options'].values())}")
+        # Check questions array
+        for i, q in enumerate(script.get("questions", [])):
+            if "options" in q:
+                option_values = [v.lower().strip("'\"") for v in q["options"].values()]
+                if len(set(option_values)) < len(option_values):
+                    has_duplicates = True
+                    logger.warning(f"Quiz has duplicate options in question {i+1}: {list(q['options'].values())}")
 
-        if len(unique_values) < len(option_values):
-            logger.warning(f"Quiz has duplicate options: {list(options.values())}")
+        if has_duplicates:
             logger.info("Regenerating with different options...")
             # Retry once with explicit instruction
-            retry_prompt = prompt + "\n\nIMPORTANTE: Las 4 opciones A, B, C, D DEBEN ser palabras COMPLETAMENTE DIFERENTES. No repitas ninguna opción."
+            retry_prompt = prompt + "\n\nIMPORTANTE: Las 4 opciones A, B, C, D de CADA pregunta DEBEN ser palabras COMPLETAMENTE DIFERENTES. No repitas ninguna opción."
             retry_response = client.chat.completions.create(
                 model=MODEL,
                 max_tokens=MAX_TOKENS,

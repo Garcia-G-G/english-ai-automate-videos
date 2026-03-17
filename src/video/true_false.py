@@ -612,4 +612,4 @@ def create_frame_true_false(
                 draw.text((lx, text_y), line, font=ef, fill=(*text_color, exp_alpha))
                 text_y += exp_line_h
 
-    return finalize_frame(frame, draw, t, duration)
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))

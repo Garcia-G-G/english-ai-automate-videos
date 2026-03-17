@@ -97,4 +97,4 @@ def create_frame_pronunciation(
         tipf = font(44)
         draw_text_centered(draw, tip, PRON_TIP_Y, tipf, COLOR_WHITE, tip_alpha, outline=4, max_width=max_w)
 
-    return finalize_frame(frame, draw, t, duration)
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))

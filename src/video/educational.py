@@ -124,7 +124,7 @@ def create_frame_educational(
     if active:
         _render_group_tiktok(t, active, draw, frame, translations, is_fading_out=False)
 
-    return finalize_frame(frame, draw, t, duration)
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
 
 
 def _lookup_translation(en_clean: str, translations: Dict, words: List[Dict] = None) -> str:
