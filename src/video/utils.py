@@ -545,8 +545,18 @@ def create_base_frame(t: float) -> Tuple[Image.Image, ImageDraw.Draw]:
 
 
 def finalize_frame(frame: Image.Image, draw: ImageDraw.Draw,
-                   t: float, duration: float) -> np.ndarray:
-    """Add progress bar and convert to numpy RGB array."""
+                   t: float, duration: float,
+                   words: list = None) -> np.ndarray:
+    """Add character, progress bar, and convert to numpy RGB array."""
+    # Render animated character with lip-sync
+    try:
+        from .character import get_character_renderer
+        char = get_character_renderer()
+        if char:
+            char.render(frame, t, words)
+    except Exception:
+        pass  # Character is optional — never block video rendering
+
     progress = min(1.0, t / duration)
     draw_progress_bar(draw, progress)
     return np.array(frame.convert('RGB'))

@@ -226,7 +226,67 @@ def list_scripts():
             logger.info("    %s: %s...", rel_path, hook)
 
 
-def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None) -> Path:
+def upload_video(video_path: Path, video_type: str, script_data: dict = None, platforms: list = None):
+    """Upload a video to configured social platforms."""
+    try:
+        from uploader import UploadManager, VideoMetadata
+        import yaml
+
+        # Load config for hashtags
+        config_path = ROOT / "config.yaml"
+        config = {}
+        if config_path.exists():
+            with open(config_path) as f:
+                config = yaml.safe_load(f) or {}
+
+        upload_config = config.get("upload", {})
+        if platforms is None:
+            platforms = upload_config.get("platforms", [])
+
+        if not platforms:
+            logger.warning("No upload platforms configured. Add platforms to config.yaml upload.platforms")
+            return
+
+        # Build metadata
+        hashtags = upload_config.get("hashtags", {}).get(video_type, "#LearnEnglish #English")
+        title = ""
+        if script_data:
+            title = (script_data.get("hook", "") or
+                     script_data.get("question", "") or
+                     script_data.get("statement", "") or
+                     script_data.get("title", "Learn English"))
+
+        description = f"{title}\n\n{hashtags}"
+
+        metadata = VideoMetadata(
+            title=title[:100] if title else "Learn English",
+            description=description,
+            hashtags=hashtags.replace("#", "").split(),
+            privacy="public",
+        )
+
+        manager = UploadManager()
+        results = manager.upload_all(
+            str(video_path),
+            title=metadata.title,
+            description=metadata.description,
+            hashtags=metadata.hashtags,
+            platforms=platforms,
+        )
+
+        for result in results:
+            if result.success:
+                logger.info("Uploaded to %s: %s", result.platform, result.url or result.upload_id)
+            else:
+                logger.error("Upload to %s failed: %s", result.platform, result.error)
+
+    except ImportError as e:
+        logger.error("Upload module not available: %s", e)
+    except Exception as e:
+        logger.error("Upload failed: %s", e)
+
+
+def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None, upload: bool = False) -> Path:
     """Run the full pipeline from script to video."""
 
     # Initialize cost tracker for this video
@@ -281,10 +341,15 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
 
     logger.info("=" * 50)
 
+    # Step 4: Upload (if requested)
+    if upload and video_result:
+        logger.info("STEP 4: Uploading to social platforms...")
+        upload_video(video_result, video_type, script_data)
+
     return video_result
 
 
-def run_from_text(text: str, name: str = None, video_type: str = "educational", background: str = None) -> Path:
+def run_from_text(text: str, name: str = None, video_type: str = "educational", background: str = None, upload: bool = False) -> Path:
     """Run pipeline directly from text input."""
     if not name:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -297,10 +362,10 @@ def run_from_text(text: str, name: str = None, video_type: str = "educational", 
         "translations": {}
     }
 
-    return run_pipeline(script_data, name, video_type, background)
+    return run_pipeline(script_data, name, video_type, background, upload=upload)
 
 
-def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational", background: str = None) -> Path:
+def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational", background: str = None, upload: bool = False) -> Path:
     """Generate a script with GPT and run the full pipeline."""
 
     logger.info("=" * 50)
@@ -343,7 +408,7 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
     logger.info("  Script: %s...", script_data.get('full_script', 'N/A')[:100])
 
     # Run rest of pipeline
-    return run_pipeline(script_data, output_name, video_type, background)
+    return run_pipeline(script_data, output_name, video_type, background, upload=upload)
 
 
 def main():
@@ -390,6 +455,8 @@ Examples:
                         help="Background preset (e.g. aurora_borealis, energetic_orbs). Default: random")
     parser.add_argument("--batch", "-b", type=int,
                         help="Generate multiple videos from random topics")
+    parser.add_argument("--upload", "-u", action="store_true",
+                        help="Upload video to configured platforms after generation")
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="Enable verbose/debug logging")
 
@@ -434,13 +501,13 @@ Examples:
 
             category, topic = get_random_topic()
             topic_name = get_topic_name(topic)
-            generate_and_run(category, topic, topic_name, args.type, args.background)
+            generate_and_run(category, topic, topic_name, args.type, args.background, upload=args.upload)
         return
 
     # Text mode
     if args.text:
         name = args.name or None
-        run_from_text(args.text, name, args.type, args.background)
+        run_from_text(args.text, name, args.type, args.background, upload=args.upload)
         return
 
     # Script mode (use existing script)
@@ -455,20 +522,20 @@ Examples:
 
         # Use script's type unless overridden
         video_type = args.type if args.type != "educational" else script_data.get('type', 'educational')
-        run_pipeline(script_data, name, video_type, args.background)
+        run_pipeline(script_data, name, video_type, args.background, upload=args.upload)
         return
 
     # Category + Topic mode (generate with GPT)
     if args.category and args.topic:
         topic = find_topic(args.category, args.topic)
-        generate_and_run(args.category, topic, args.topic, args.type, args.background)
+        generate_and_run(args.category, topic, args.topic, args.type, args.background, upload=args.upload)
         return
 
     # Random mode (generate with GPT)
     if args.random:
         category, topic = get_random_topic()
         topic_name = get_topic_name(topic)
-        generate_and_run(category, topic, topic_name, args.type, args.background)
+        generate_and_run(category, topic, topic_name, args.type, args.background, upload=args.upload)
         return
 
     # No arguments - show help

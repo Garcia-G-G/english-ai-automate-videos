@@ -214,7 +214,7 @@ def create_frame_vocabulary(
         card_top=card_top,
     )
 
-    return finalize_frame(frame, draw, t, duration)
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
 
 
 def _draw_vocab_rows(

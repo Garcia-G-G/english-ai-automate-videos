@@ -372,4 +372,4 @@ def create_frame_fill_blank(
                             padding_x=28, padding_y=12)
             draw = ImageDraw.Draw(frame, 'RGBA')
 
-    return finalize_frame(frame, draw, t, duration)
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
