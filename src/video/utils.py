@@ -539,7 +539,7 @@ def create_base_frame(t: float) -> Tuple[Image.Image, ImageDraw.Draw]:
     """
     from .backgrounds import gradient
     bg = gradient(VIDEO_WIDTH, VIDEO_HEIGHT, t)
-    frame = Image.fromarray(bg, 'RGB').convert('RGBA')
+    frame = Image.fromarray(bg).convert('RGBA')
     draw = ImageDraw.Draw(frame, 'RGBA')
     return frame, draw
 

@@ -35,7 +35,7 @@ load_dotenv(ROOT / ".env")
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 logger = logging.getLogger(__name__)
 
-DEFAULT_CHARACTER = "owl"
+DEFAULT_CHARACTER = "fox"
 ASSETS_DIR = ROOT / "assets" / "characters" / DEFAULT_CHARACTER
 
 # ============================================================
@@ -48,7 +48,7 @@ ASSETS_DIR = ROOT / "assets" / "characters" / DEFAULT_CHARACTER
 # - Same character across ALL variants — only the mouth/beak changes
 # - 1024x1024 square format for sprite use
 
-# ── OWL CHARACTER (primary — high-impact educational mascot) ──
+# ── OWL CHARACTER (legacy) ──
 OWL_BASE = (
     "A cute friendly cartoon owl mascot character, front-facing full body view, "
     "standing upright on two legs in a confident teacher pose with one wing raised as if waving. "
@@ -93,6 +93,56 @@ OWL_MOUTH_STATES = {
     ),
 }
 
+# ── FOX CHARACTER (primary — charismatic educational mascot) ──
+FOX_BASE = (
+    "A single cute friendly cartoon fox mascot character standing alone in the center of the image. "
+    "Front-facing full body view, standing upright on two legs in a confident charismatic pose "
+    "with one paw raised giving a thumbs-up. "
+    "CRITICAL: There is exactly ONE fox in this image. Do NOT draw multiple characters, "
+    "do NOT draw a character sheet, do NOT draw reference poses. Just ONE single fox character. "
+    "The fox has a sleek but slightly chubby body with bright warm orange-red fur, "
+    "a fluffy cream-white chest and belly, a big bushy tail with a white tip, "
+    "very large round expressive bright green eyes with big black pupils and a sparkle highlight, "
+    "thick expressive dark eyebrows, small rounded paws like hands, "
+    "a small cute black nose, pointed triangular ears with cream-white inner fur, "
+    "and darker orange-brown fur markings on the ears and paws. "
+    "The fox wears a small bright blue bow tie. "
+    "Simple clean cartoon style with flat shading, thick black outlines, bright saturated colors. "
+    "Pure solid white background, centered composition, no text, no other objects, "
+    "no shadows on background, no ground, no props. Just the ONE fox character. "
+    "Full body visible including feet and tail. "
+    "The character is designed as a viral educational mascot for language learning videos."
+)
+
+FOX_MOUTH_STATES = {
+    "mouth_closed": (
+        f"{FOX_BASE} "
+        "The fox's mouth is closed in a confident friendly smile, with a small curved line "
+        "showing a gentle grin, looking smart and approachable."
+    ),
+    "mouth_slightly_open": (
+        f"{FOX_BASE} "
+        "The fox's mouth is slightly open in a small friendly grin, showing just a hint of "
+        "tongue and teeth, as if about to say something clever."
+    ),
+    "mouth_open": (
+        f"{FOX_BASE} "
+        "The fox's mouth is open in a medium oval shape as if actively teaching a word, "
+        "showing a pink tongue and small white teeth, an enthusiastic speaking expression."
+    ),
+    "mouth_wide": (
+        f"{FOX_BASE} "
+        "The fox's mouth is wide open in an excited happy expression as if saying 'amazing!', "
+        "showing tongue and teeth, an enthusiastic and encouraging teaching expression."
+    ),
+    "mouth_o": (
+        f"{FOX_BASE} "
+        "The fox's mouth is shaped into a small round 'O' shape, lips pursed forward "
+        "as if saying 'ooh', a surprised and curious expression with raised eyebrows. "
+        "This is a single illustration of one fox, NOT a character sheet or reference page."
+    ),
+}
+
 # ── TURTLE CHARACTER (legacy) ──
 TURTLE_BASE = (
     "A cute friendly cartoon turtle mascot character, front-facing full body view, "
@@ -134,12 +184,13 @@ TURTLE_MOUTH_STATES = {
 
 # Registry of all characters
 CHARACTER_REGISTRY = {
+    "fox": FOX_MOUTH_STATES,
     "owl": OWL_MOUTH_STATES,
     "turtle": TURTLE_MOUTH_STATES,
 }
 
 # Active character (set by CLI or default)
-MOUTH_STATES = OWL_MOUTH_STATES
+MOUTH_STATES = FOX_MOUTH_STATES
 
 
 def generate_character_images(states: list[str] = None, character: str = None):

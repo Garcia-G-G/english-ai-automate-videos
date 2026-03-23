@@ -58,11 +58,11 @@ output:
 # Character Mascot (animated lip-sync)
 character:
   enabled: true
-  name: "owl"                 # Character folder under assets/characters/
+  name: "fox"                 # Character folder under assets/characters/
   position_x: 50              # Bottom-left (avoids TikTok right-side buttons)
-  position_y: 1500
-  size: 280                   # Character size in pixels
-  opacity: 0.92
+  position_y: 1450
+  size: 350                   # Character size in pixels (larger for better visibility)
+  opacity: 0.95
 
 # Upload Settings
 upload:

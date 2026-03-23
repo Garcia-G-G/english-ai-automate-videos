@@ -372,4 +372,14 @@ def create_frame_fill_blank(
                             padding_x=28, padding_y=12)
             draw = ImageDraw.Draw(frame, 'RGBA')
 
+    # Trigger character excitement on answer reveal
+    if show_answer and answer_time > 0 and abs(t - answer_time) < 0.05:
+        try:
+            from .character import get_character_renderer
+            char = get_character_renderer()
+            if char:
+                char.trigger_excitement(t)
+        except Exception:
+            pass
+
     return finalize_frame(frame, draw, t, duration, words=data.get('words', []))

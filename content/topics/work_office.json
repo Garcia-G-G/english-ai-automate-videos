@@ -1,0 +1,202 @@
+[
+  {
+    "id": "work001",
+    "topic": "to be swamped",
+    "spanish": "estar hasta arriba de trabajo",
+    "meaning": "To be extremely busy with too much work",
+    "example": "I can't go to lunch, I'm swamped with deadlines",
+    "category": "workload",
+    "difficulty": "intermediate",
+    "tags": ["work", "stress"]
+  },
+  {
+    "id": "work002",
+    "topic": "to call in sick",
+    "spanish": "llamar para decir que estás enfermo",
+    "meaning": "To notify your employer that you won't come to work due to illness",
+    "example": "I'm not feeling well, I think I'll call in sick tomorrow",
+    "category": "absence",
+    "difficulty": "beginner",
+    "tags": ["work", "health"]
+  },
+  {
+    "id": "work003",
+    "topic": "to get fired / to get laid off",
+    "spanish": "ser despedido / ser despedido por recortes",
+    "meaning": "Fired = dismissed for cause; Laid off = dismissed due to cuts",
+    "example": "He got fired for being late. She got laid off when the company downsized",
+    "category": "employment",
+    "difficulty": "intermediate",
+    "tags": ["work", "career"]
+  },
+  {
+    "id": "work004",
+    "topic": "deadline",
+    "spanish": "fecha límite, plazo",
+    "meaning": "The latest time by which something must be completed",
+    "example": "The deadline for the project is next Friday",
+    "category": "time_management",
+    "difficulty": "beginner",
+    "tags": ["work", "time"]
+  },
+  {
+    "id": "work005",
+    "topic": "to work overtime",
+    "spanish": "trabajar horas extras",
+    "meaning": "To work beyond your normal hours",
+    "example": "I've been working overtime every day this week",
+    "category": "hours",
+    "difficulty": "beginner",
+    "tags": ["work", "hours"]
+  },
+  {
+    "id": "work006",
+    "topic": "to multitask",
+    "spanish": "hacer varias cosas a la vez",
+    "meaning": "To do multiple tasks at the same time",
+    "example": "I'm great at multitasking — I can answer emails while on a call",
+    "category": "skills",
+    "difficulty": "beginner",
+    "tags": ["work", "skills"]
+  },
+  {
+    "id": "work007",
+    "topic": "to brainstorm",
+    "spanish": "hacer lluvia de ideas",
+    "meaning": "To generate ideas together as a group",
+    "example": "Let's brainstorm some solutions in tomorrow's meeting",
+    "category": "meetings",
+    "difficulty": "intermediate",
+    "tags": ["work", "creativity"]
+  },
+  {
+    "id": "work008",
+    "topic": "to follow up",
+    "spanish": "dar seguimiento",
+    "meaning": "To check on the progress of something after initial contact",
+    "example": "I'll follow up with the client next week about the proposal",
+    "category": "communication",
+    "difficulty": "intermediate",
+    "tags": ["work", "email"]
+  },
+  {
+    "id": "work009",
+    "topic": "to be promoted / to get a raise",
+    "spanish": "ser ascendido / recibir un aumento",
+    "meaning": "Promoted = higher position; Raise = higher salary",
+    "example": "She got promoted to manager and got a 20% raise",
+    "category": "career_growth",
+    "difficulty": "beginner",
+    "tags": ["work", "career"]
+  },
+  {
+    "id": "work010",
+    "topic": "remote work / work from home",
+    "spanish": "trabajo remoto / trabajar desde casa",
+    "meaning": "Working from a location outside the office, usually home",
+    "example": "I work from home three days a week now",
+    "category": "modern_work",
+    "difficulty": "beginner",
+    "tags": ["work", "lifestyle"]
+  },
+  {
+    "id": "work011",
+    "topic": "to network",
+    "spanish": "hacer networking, crear contactos",
+    "meaning": "To build professional relationships and connections",
+    "example": "I met some great people while networking at the conference",
+    "category": "career_growth",
+    "difficulty": "intermediate",
+    "tags": ["work", "social"]
+  },
+  {
+    "id": "work012",
+    "topic": "to resign / to quit",
+    "spanish": "renunciar",
+    "meaning": "To voluntarily leave your job",
+    "example": "He resigned after finding a better opportunity",
+    "category": "employment",
+    "difficulty": "beginner",
+    "tags": ["work", "career"]
+  },
+  {
+    "id": "work013",
+    "topic": "to be on the clock / off the clock",
+    "spanish": "estar en horario laboral / fuera de horario",
+    "meaning": "On the clock = during work hours; Off the clock = outside work hours",
+    "example": "I don't check emails when I'm off the clock",
+    "category": "work_life_balance",
+    "difficulty": "intermediate",
+    "tags": ["work", "boundaries"]
+  },
+  {
+    "id": "work014",
+    "topic": "to cc someone (carbon copy)",
+    "spanish": "poner en copia a alguien",
+    "meaning": "To include someone as a recipient in an email",
+    "example": "Please cc my manager on that email",
+    "category": "email",
+    "difficulty": "beginner",
+    "tags": ["work", "email"]
+  },
+  {
+    "id": "work015",
+    "topic": "to take a day off",
+    "spanish": "tomarse un día libre",
+    "meaning": "To not work on a day you normally would",
+    "example": "I'm taking Friday off to go to the dentist",
+    "category": "absence",
+    "difficulty": "beginner",
+    "tags": ["work", "time_off"]
+  },
+  {
+    "id": "work016",
+    "topic": "standup meeting",
+    "spanish": "reunión rápida de pie",
+    "meaning": "A short daily team meeting, often standing up",
+    "example": "We have a 15-minute standup every morning at 9",
+    "category": "meetings",
+    "difficulty": "intermediate",
+    "tags": ["work", "tech"]
+  },
+  {
+    "id": "work017",
+    "topic": "to burn out",
+    "spanish": "quemarse, agotarse profesionalmente",
+    "meaning": "To become exhausted from too much work or stress",
+    "example": "I burned out after working 60-hour weeks for months",
+    "category": "wellness",
+    "difficulty": "intermediate",
+    "tags": ["work", "health"]
+  },
+  {
+    "id": "work018",
+    "topic": "to onboard",
+    "spanish": "incorporar, dar inducción",
+    "meaning": "To integrate a new employee into the company",
+    "example": "HR will onboard you during your first week",
+    "category": "hiring",
+    "difficulty": "intermediate",
+    "tags": ["work", "hr"]
+  },
+  {
+    "id": "work019",
+    "topic": "to touch base",
+    "spanish": "ponerse en contacto brevemente",
+    "meaning": "To briefly check in or reconnect with someone",
+    "example": "Let's touch base next week about the project status",
+    "category": "communication",
+    "difficulty": "intermediate",
+    "tags": ["work", "meetings"]
+  },
+  {
+    "id": "work020",
+    "topic": "side hustle",
+    "spanish": "trabajo extra, negocio paralelo",
+    "meaning": "A secondary job or business in addition to your main job",
+    "example": "My side hustle is selling handmade jewelry online",
+    "category": "modern_work",
+    "difficulty": "intermediate",
+    "tags": ["work", "entrepreneurship"]
+  }
+]
