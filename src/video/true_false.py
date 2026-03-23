@@ -612,4 +612,14 @@ def create_frame_true_false(
                 draw.text((lx, text_y), line, font=ef, fill=(*text_color, exp_alpha))
                 text_y += exp_line_h
 
+    # Trigger character excitement on answer reveal
+    if show_answer and answer_time > 0 and abs(t - answer_time) < 0.05:
+        try:
+            from .character import get_character_renderer
+            char = get_character_renderer()
+            if char:
+                char.trigger_excitement(t)
+        except Exception:
+            pass
+
     return finalize_frame(frame, draw, t, duration, words=data.get('words', []))

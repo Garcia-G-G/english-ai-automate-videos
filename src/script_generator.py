@@ -158,6 +158,26 @@ def _topic_context(category: str, topic: dict) -> str:
                 f"- Problema: \"{topic.get('problem', '')}\"\n"
                 f"- Ejemplos: {pairs}\n"
                 f"- Tip: \"{topic.get('tip', '')}\"")
+    elif category == "technology":
+        return (f"Tech/Internet English - \"{topic['topic']}\"\n"
+                f"- En español: \"{topic.get('spanish', '')}\"\n"
+                f"- Significado: \"{topic.get('meaning', '')}\"\n"
+                f"- Ejemplo: \"{topic.get('example', '')}\"")
+    elif category == "everyday_expressions":
+        return (f"Expresión Cotidiana - \"{topic['topic']}\"\n"
+                f"- En español: \"{topic.get('spanish', '')}\"\n"
+                f"- Significado: \"{topic.get('meaning', '')}\"\n"
+                f"- Ejemplo: \"{topic.get('example', '')}\"")
+    elif category == "work_office":
+        return (f"Inglés de Oficina/Trabajo - \"{topic['topic']}\"\n"
+                f"- En español: \"{topic.get('spanish', '')}\"\n"
+                f"- Significado: \"{topic.get('meaning', '')}\"\n"
+                f"- Ejemplo: \"{topic.get('example', '')}\"")
+    elif category == "food_restaurant":
+        return (f"Inglés de Comida/Restaurante - \"{topic['topic']}\"\n"
+                f"- En español: \"{topic.get('spanish', '')}\"\n"
+                f"- Significado: \"{topic.get('meaning', '')}\"\n"
+                f"- Ejemplo: \"{topic.get('example', '')}\"")
     else:
         # Generic fallback - dump key fields
         name = get_topic_name(topic)
@@ -181,6 +201,10 @@ def _category_hashtags(category: str) -> list:
         "social": ["#SocialEnglish", "#Conversacion"],
         "cultural": ["#CulturalDifferences", "#CulturaInglesa"],
         "spanish_specific": ["#SpanishSpeakers", "#TipsDeIngles"],
+        "technology": ["#TechEnglish", "#InternetSlang", "#DigitalVocabulary"],
+        "everyday_expressions": ["#EverydayEnglish", "#ExpresionesEnIngles", "#DailyEnglish"],
+        "work_office": ["#WorkEnglish", "#OfficeEnglish", "#BusinessVocabulary"],
+        "food_restaurant": ["#FoodEnglish", "#RestaurantEnglish", "#FoodVocabulary"],
     }
     return base + extra.get(category, ["#LearnEnglish"])
 

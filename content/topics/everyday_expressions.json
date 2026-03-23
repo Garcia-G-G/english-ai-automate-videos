@@ -1,0 +1,302 @@
+[
+  {
+    "id": "exp001",
+    "topic": "my bad",
+    "spanish": "mi culpa, fue mi error",
+    "meaning": "An informal way to admit a mistake",
+    "example": "Oh, my bad! I thought the meeting was at 3, not 2",
+    "category": "apologies",
+    "difficulty": "beginner",
+    "tags": ["casual", "everyday"]
+  },
+  {
+    "id": "exp002",
+    "topic": "no worries",
+    "spanish": "no te preocupes, tranquilo",
+    "meaning": "It's okay, don't worry about it",
+    "example": "You forgot the milk? No worries, I'll grab some later",
+    "category": "reassurance",
+    "difficulty": "beginner",
+    "tags": ["casual", "polite"]
+  },
+  {
+    "id": "exp003",
+    "topic": "I'm down",
+    "spanish": "me apunto, estoy de acuerdo",
+    "meaning": "I agree, I want to do that",
+    "example": "Pizza for dinner? I'm totally down!",
+    "category": "agreement",
+    "difficulty": "beginner",
+    "tags": ["casual", "social"]
+  },
+  {
+    "id": "exp004",
+    "topic": "it's a no-brainer",
+    "spanish": "es obvio, no hay que pensarlo",
+    "meaning": "Something so obvious it requires no thought",
+    "example": "Free concert tickets? That's a no-brainer!",
+    "category": "decisions",
+    "difficulty": "intermediate",
+    "tags": ["everyday", "decisions"]
+  },
+  {
+    "id": "exp005",
+    "topic": "to be on the same page",
+    "spanish": "estar de acuerdo, pensar igual",
+    "meaning": "To have the same understanding about something",
+    "example": "Let's make sure we're on the same page before the presentation",
+    "category": "communication",
+    "difficulty": "intermediate",
+    "tags": ["work", "communication"]
+  },
+  {
+    "id": "exp006",
+    "topic": "long story short",
+    "spanish": "en resumen, para no hacer el cuento largo",
+    "meaning": "To summarize something without all the details",
+    "example": "Long story short, I missed my flight and had to take a bus",
+    "category": "storytelling",
+    "difficulty": "intermediate",
+    "tags": ["casual", "storytelling"]
+  },
+  {
+    "id": "exp007",
+    "topic": "it's not rocket science",
+    "spanish": "no es tan difícil, no es ciencia espacial",
+    "meaning": "It's not as complicated as you think",
+    "example": "Come on, it's not rocket science — just follow the recipe",
+    "category": "encouragement",
+    "difficulty": "intermediate",
+    "tags": ["humor", "everyday"]
+  },
+  {
+    "id": "exp008",
+    "topic": "to sleep on it",
+    "spanish": "consultarlo con la almohada",
+    "meaning": "To wait until the next day before making a decision",
+    "example": "It's a big decision — let me sleep on it",
+    "category": "decisions",
+    "difficulty": "intermediate",
+    "tags": ["decisions", "everyday"]
+  },
+  {
+    "id": "exp009",
+    "topic": "24/7 (twenty-four seven)",
+    "spanish": "las 24 horas, todo el tiempo",
+    "meaning": "All the time, constantly, without stopping",
+    "example": "This store is open 24/7 — you can go anytime",
+    "category": "time",
+    "difficulty": "beginner",
+    "tags": ["everyday", "time"]
+  },
+  {
+    "id": "exp010",
+    "topic": "heads up",
+    "spanish": "aviso previo, advertencia",
+    "meaning": "A warning or advance notice about something",
+    "example": "Heads up — the boss is in a bad mood today",
+    "category": "warnings",
+    "difficulty": "intermediate",
+    "tags": ["work", "communication"]
+  },
+  {
+    "id": "exp011",
+    "topic": "ASAP (as soon as possible)",
+    "spanish": "lo antes posible, cuanto antes",
+    "meaning": "As quickly as you can",
+    "example": "Please send me that report ASAP",
+    "category": "urgency",
+    "difficulty": "beginner",
+    "tags": ["work", "communication"]
+  },
+  {
+    "id": "exp012",
+    "topic": "by the way",
+    "spanish": "por cierto, a propósito",
+    "meaning": "Used to introduce a new topic in conversation",
+    "example": "By the way, did you hear about the new restaurant?",
+    "category": "conversation",
+    "difficulty": "beginner",
+    "tags": ["conversation", "everyday"]
+  },
+  {
+    "id": "exp013",
+    "topic": "to be up for something",
+    "spanish": "tener ganas de, estar dispuesto a",
+    "meaning": "To be willing or interested in doing something",
+    "example": "Are you up for grabbing coffee after work?",
+    "category": "invitations",
+    "difficulty": "intermediate",
+    "tags": ["social", "casual"]
+  },
+  {
+    "id": "exp014",
+    "topic": "I could use",
+    "spanish": "me vendría bien, necesito",
+    "meaning": "I need or would benefit from something",
+    "example": "I could use a vacation right about now",
+    "category": "needs",
+    "difficulty": "intermediate",
+    "tags": ["everyday", "emotions"]
+  },
+  {
+    "id": "exp015",
+    "topic": "that makes sense",
+    "spanish": "tiene sentido, entiendo",
+    "meaning": "I understand, that's logical",
+    "example": "Oh, that makes sense! Thanks for explaining",
+    "category": "understanding",
+    "difficulty": "beginner",
+    "tags": ["communication", "learning"]
+  },
+  {
+    "id": "exp016",
+    "topic": "I'm good",
+    "spanish": "estoy bien / no gracias",
+    "meaning": "I'm fine OR no thank you (depends on context)",
+    "example": "Want more coffee? — I'm good, thanks!",
+    "category": "responses",
+    "difficulty": "beginner",
+    "tags": ["casual", "polite"]
+  },
+  {
+    "id": "exp017",
+    "topic": "for real",
+    "spanish": "en serio, de verdad",
+    "meaning": "Seriously, truly, not joking",
+    "example": "You got the job? For real?! That's amazing!",
+    "category": "emphasis",
+    "difficulty": "beginner",
+    "tags": ["casual", "emphasis"]
+  },
+  {
+    "id": "exp018",
+    "topic": "to figure something out",
+    "spanish": "resolver algo, encontrar la solución",
+    "meaning": "To solve or understand something",
+    "example": "Don't worry, we'll figure it out together",
+    "category": "problem_solving",
+    "difficulty": "intermediate",
+    "tags": ["everyday", "work"]
+  },
+  {
+    "id": "exp019",
+    "topic": "what's the catch?",
+    "spanish": "¿cuál es la trampa?",
+    "meaning": "What's the hidden problem or disadvantage?",
+    "example": "Free vacation? What's the catch?",
+    "category": "suspicion",
+    "difficulty": "intermediate",
+    "tags": ["everyday", "skepticism"]
+  },
+  {
+    "id": "exp020",
+    "topic": "you nailed it",
+    "spanish": "lo clavaste, lo hiciste perfecto",
+    "meaning": "You did something perfectly",
+    "example": "Your presentation was amazing — you nailed it!",
+    "category": "compliments",
+    "difficulty": "intermediate",
+    "tags": ["encouragement", "work"]
+  },
+  {
+    "id": "exp021",
+    "topic": "hang in there",
+    "spanish": "aguanta, no te rindas",
+    "meaning": "Keep going, don't give up during a difficult time",
+    "example": "I know the exam is hard, but hang in there!",
+    "category": "encouragement",
+    "difficulty": "intermediate",
+    "tags": ["encouragement", "emotions"]
+  },
+  {
+    "id": "exp022",
+    "topic": "to go with the flow",
+    "spanish": "dejarse llevar, seguir la corriente",
+    "meaning": "To relax and accept what happens without resisting",
+    "example": "I don't have a plan — I'm just going with the flow",
+    "category": "attitude",
+    "difficulty": "intermediate",
+    "tags": ["lifestyle", "casual"]
+  },
+  {
+    "id": "exp023",
+    "topic": "to be a piece of cake",
+    "spanish": "ser pan comido, ser muy fácil",
+    "meaning": "Something that is very easy to do",
+    "example": "The test was a piece of cake — I finished in 10 minutes",
+    "category": "difficulty",
+    "difficulty": "intermediate",
+    "tags": ["everyday", "idiom"]
+  },
+  {
+    "id": "exp024",
+    "topic": "to have a blast",
+    "spanish": "pasarla increíble, divertirse mucho",
+    "meaning": "To have an amazing, fun time",
+    "example": "We had a blast at the beach party last night",
+    "category": "fun",
+    "difficulty": "intermediate",
+    "tags": ["social", "fun"]
+  },
+  {
+    "id": "exp025",
+    "topic": "not my cup of tea",
+    "spanish": "no es lo mío, no me gusta",
+    "meaning": "Not something I enjoy or prefer",
+    "example": "Horror movies are not my cup of tea — I prefer comedies",
+    "category": "preferences",
+    "difficulty": "intermediate",
+    "tags": ["preferences", "polite"]
+  },
+  {
+    "id": "exp026",
+    "topic": "once in a blue moon",
+    "spanish": "muy raramente, casi nunca",
+    "meaning": "Very rarely, almost never",
+    "example": "I only eat fast food once in a blue moon",
+    "category": "frequency",
+    "difficulty": "intermediate",
+    "tags": ["time", "idiom"]
+  },
+  {
+    "id": "exp027",
+    "topic": "hit me up",
+    "spanish": "contáctame, escríbeme",
+    "meaning": "Contact me, get in touch",
+    "example": "If you're free this weekend, hit me up!",
+    "category": "communication",
+    "difficulty": "beginner",
+    "tags": ["casual", "social"]
+  },
+  {
+    "id": "exp028",
+    "topic": "I'm not gonna lie",
+    "spanish": "no voy a mentir, siendo honesto",
+    "meaning": "Being honest, telling the truth",
+    "example": "I'm not gonna lie, that movie was terrible",
+    "category": "honesty",
+    "difficulty": "beginner",
+    "tags": ["casual", "emphasis"]
+  },
+  {
+    "id": "exp029",
+    "topic": "fair enough",
+    "spanish": "está bien, es justo",
+    "meaning": "That's reasonable, I accept your point",
+    "example": "You don't want to go out? Fair enough, let's stay in",
+    "category": "agreement",
+    "difficulty": "beginner",
+    "tags": ["conversation", "polite"]
+  },
+  {
+    "id": "exp030",
+    "topic": "it is what it is",
+    "spanish": "es lo que es, no se puede cambiar",
+    "meaning": "Accepting a situation that can't be changed",
+    "example": "The flight is delayed 3 hours — it is what it is",
+    "category": "acceptance",
+    "difficulty": "beginner",
+    "tags": ["philosophy", "casual"]
+  }
+]

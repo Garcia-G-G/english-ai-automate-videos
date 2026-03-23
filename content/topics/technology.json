@@ -1,0 +1,252 @@
+[
+  {
+    "id": "tech001",
+    "topic": "to Google",
+    "spanish": "buscar en Google",
+    "meaning": "To search for information online",
+    "example": "Just Google it if you don't know the answer",
+    "category": "tech_verbs",
+    "difficulty": "beginner",
+    "tags": ["internet", "everyday"]
+  },
+  {
+    "id": "tech002",
+    "topic": "go viral",
+    "spanish": "hacerse viral",
+    "meaning": "When content spreads rapidly online",
+    "example": "Her TikTok went viral overnight",
+    "category": "social_media",
+    "difficulty": "intermediate",
+    "tags": ["social_media", "trending"]
+  },
+  {
+    "id": "tech003",
+    "topic": "stream",
+    "spanish": "transmitir en vivo / ver en streaming",
+    "meaning": "To watch or broadcast content live online",
+    "example": "I stream movies on Netflix every night",
+    "category": "entertainment",
+    "difficulty": "beginner",
+    "tags": ["entertainment", "internet"]
+  },
+  {
+    "id": "tech004",
+    "topic": "swipe right / swipe left",
+    "spanish": "deslizar a la derecha / izquierda",
+    "meaning": "To accept or reject (from dating apps), now used broadly",
+    "example": "I'd swipe right on that restaurant — it looks amazing",
+    "category": "dating_apps",
+    "difficulty": "intermediate",
+    "tags": ["dating", "social_media"]
+  },
+  {
+    "id": "tech005",
+    "topic": "DM (direct message)",
+    "spanish": "mensaje directo",
+    "meaning": "A private message on social media",
+    "example": "She slid into my DMs to ask about the job",
+    "category": "social_media",
+    "difficulty": "beginner",
+    "tags": ["social_media", "communication"]
+  },
+  {
+    "id": "tech006",
+    "topic": "ghost someone",
+    "spanish": "dejar de responder, hacer ghosting",
+    "meaning": "To suddenly stop all communication with someone",
+    "example": "He ghosted me after three dates",
+    "category": "digital_communication",
+    "difficulty": "intermediate",
+    "tags": ["dating", "social"]
+  },
+  {
+    "id": "tech007",
+    "topic": "lag",
+    "spanish": "retrasarse, tener lag",
+    "meaning": "Delay in internet connection or response time",
+    "example": "The video call is lagging — I can't hear you properly",
+    "category": "tech_problems",
+    "difficulty": "beginner",
+    "tags": ["gaming", "internet"]
+  },
+  {
+    "id": "tech008",
+    "topic": "scroll",
+    "spanish": "desplazarse (en la pantalla)",
+    "meaning": "To move up or down through content on a screen",
+    "example": "I spent two hours scrolling through TikTok",
+    "category": "digital_actions",
+    "difficulty": "beginner",
+    "tags": ["social_media", "everyday"]
+  },
+  {
+    "id": "tech009",
+    "topic": "binge-watch",
+    "spanish": "ver de un tirón, maratonear",
+    "meaning": "To watch many episodes of a show in one sitting",
+    "example": "I binge-watched the entire season in one weekend",
+    "category": "entertainment",
+    "difficulty": "intermediate",
+    "tags": ["entertainment", "trending"]
+  },
+  {
+    "id": "tech010",
+    "topic": "unplug",
+    "spanish": "desconectarse",
+    "meaning": "To disconnect from technology and relax",
+    "example": "I need to unplug this weekend — no phone, no laptop",
+    "category": "wellness",
+    "difficulty": "intermediate",
+    "tags": ["wellness", "lifestyle"]
+  },
+  {
+    "id": "tech011",
+    "topic": "hack (life hack)",
+    "spanish": "truco, atajo ingenioso",
+    "meaning": "A clever shortcut or trick to solve a problem",
+    "example": "Here's a life hack: freeze your grapes for a cool snack",
+    "category": "everyday",
+    "difficulty": "intermediate",
+    "tags": ["social_media", "everyday"]
+  },
+  {
+    "id": "tech012",
+    "topic": "screenshot",
+    "spanish": "captura de pantalla",
+    "meaning": "An image of what's displayed on your screen",
+    "example": "Take a screenshot and send it to me",
+    "category": "digital_actions",
+    "difficulty": "beginner",
+    "tags": ["everyday", "tech"]
+  },
+  {
+    "id": "tech013",
+    "topic": "clickbait",
+    "spanish": "cebo de clics, título engañoso",
+    "meaning": "Misleading headlines designed to get clicks",
+    "example": "That article was total clickbait — the title was a lie",
+    "category": "media",
+    "difficulty": "intermediate",
+    "tags": ["media", "internet"]
+  },
+  {
+    "id": "tech014",
+    "topic": "spam",
+    "spanish": "correo basura, mensajes no deseados",
+    "meaning": "Unwanted messages or emails sent in bulk",
+    "example": "My inbox is full of spam — I need to unsubscribe",
+    "category": "email",
+    "difficulty": "beginner",
+    "tags": ["email", "internet"]
+  },
+  {
+    "id": "tech015",
+    "topic": "troll",
+    "spanish": "trol, provocador en internet",
+    "meaning": "Someone who posts inflammatory comments to provoke others",
+    "example": "Don't feed the trolls — just ignore the negative comments",
+    "category": "social_media",
+    "difficulty": "intermediate",
+    "tags": ["social_media", "internet_culture"]
+  },
+  {
+    "id": "tech016",
+    "topic": "meme",
+    "spanish": "meme",
+    "meaning": "A viral image, video, or text shared online for humor",
+    "example": "That cat meme has been everywhere this week",
+    "category": "internet_culture",
+    "difficulty": "beginner",
+    "tags": ["social_media", "humor"]
+  },
+  {
+    "id": "tech017",
+    "topic": "FOMO (fear of missing out)",
+    "spanish": "miedo a perderse algo",
+    "meaning": "Anxiety that others are having fun without you",
+    "example": "I have serious FOMO seeing everyone at the concert",
+    "category": "digital_wellness",
+    "difficulty": "intermediate",
+    "tags": ["social_media", "psychology"]
+  },
+  {
+    "id": "tech018",
+    "topic": "catfish",
+    "spanish": "hacerse pasar por otra persona online",
+    "meaning": "To pretend to be someone else online, especially in dating",
+    "example": "She was catfished — his profile photo was 10 years old",
+    "category": "dating_apps",
+    "difficulty": "advanced",
+    "tags": ["dating", "internet"]
+  },
+  {
+    "id": "tech019",
+    "topic": "glitch",
+    "spanish": "fallo, error técnico",
+    "meaning": "A small technical error or malfunction",
+    "example": "There's a glitch in the app — it keeps crashing",
+    "category": "tech_problems",
+    "difficulty": "beginner",
+    "tags": ["tech", "everyday"]
+  },
+  {
+    "id": "tech020",
+    "topic": "podcast",
+    "spanish": "podcast, programa de audio",
+    "meaning": "A digital audio program available for streaming or download",
+    "example": "I listen to podcasts during my commute",
+    "category": "entertainment",
+    "difficulty": "beginner",
+    "tags": ["entertainment", "learning"]
+  },
+  {
+    "id": "tech021",
+    "topic": "doomscrolling",
+    "spanish": "navegar compulsivamente noticias negativas",
+    "meaning": "Compulsively scrolling through bad news online",
+    "example": "I was doomscrolling at 3am and couldn't sleep",
+    "category": "digital_wellness",
+    "difficulty": "advanced",
+    "tags": ["wellness", "social_media"]
+  },
+  {
+    "id": "tech022",
+    "topic": "AI (artificial intelligence)",
+    "spanish": "inteligencia artificial",
+    "meaning": "Computer systems that can perform tasks requiring human intelligence",
+    "example": "AI is changing the way we work and learn",
+    "category": "emerging_tech",
+    "difficulty": "intermediate",
+    "tags": ["tech", "trending"]
+  },
+  {
+    "id": "tech023",
+    "topic": "deep fake",
+    "spanish": "video/imagen falsa generada por IA",
+    "meaning": "AI-generated fake video or audio of a real person",
+    "example": "That video is a deep fake — it's not really the president",
+    "category": "emerging_tech",
+    "difficulty": "advanced",
+    "tags": ["tech", "media"]
+  },
+  {
+    "id": "tech024",
+    "topic": "influencer",
+    "spanish": "influencer, persona influyente en redes",
+    "meaning": "Someone with a large social media following who can affect trends",
+    "example": "She's an influencer with 2 million followers on Instagram",
+    "category": "social_media",
+    "difficulty": "beginner",
+    "tags": ["social_media", "career"]
+  },
+  {
+    "id": "tech025",
+    "topic": "vlog",
+    "spanish": "videoblog",
+    "meaning": "A video blog documenting daily life or experiences",
+    "example": "I started a travel vlog to share my adventures",
+    "category": "content_creation",
+    "difficulty": "beginner",
+    "tags": ["social_media", "content"]
+  }
+]

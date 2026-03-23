@@ -1,0 +1,152 @@
+[
+  {
+    "id": "food001",
+    "topic": "to be starving",
+    "spanish": "estar muerto de hambre",
+    "meaning": "To be extremely hungry (informal exaggeration)",
+    "example": "I'm starving! Let's grab something to eat",
+    "category": "hunger",
+    "difficulty": "beginner",
+    "tags": ["food", "casual"]
+  },
+  {
+    "id": "food002",
+    "topic": "doggy bag / to-go box",
+    "spanish": "bolsa para llevar las sobras",
+    "meaning": "A container to take leftover food from a restaurant",
+    "example": "Can I get a doggy bag for the rest of my pasta?",
+    "category": "restaurant",
+    "difficulty": "intermediate",
+    "tags": ["restaurant", "culture"]
+  },
+  {
+    "id": "food003",
+    "topic": "to split the bill / to go Dutch",
+    "spanish": "dividir la cuenta",
+    "meaning": "Each person pays their own share of the meal",
+    "example": "Should we split the bill or is someone treating?",
+    "category": "paying",
+    "difficulty": "intermediate",
+    "tags": ["restaurant", "money"]
+  },
+  {
+    "id": "food004",
+    "topic": "to grab a bite",
+    "spanish": "comer algo rápido",
+    "meaning": "To eat something quick and casual",
+    "example": "Want to grab a bite before the movie?",
+    "category": "eating",
+    "difficulty": "beginner",
+    "tags": ["food", "casual"]
+  },
+  {
+    "id": "food005",
+    "topic": "tip / to tip",
+    "spanish": "propina / dejar propina",
+    "meaning": "Extra money given to a server for good service (15-20% in the US)",
+    "example": "In the US, you should tip at least 15% at restaurants",
+    "category": "restaurant",
+    "difficulty": "beginner",
+    "tags": ["restaurant", "culture"]
+  },
+  {
+    "id": "food006",
+    "topic": "comfort food",
+    "spanish": "comida reconfortante",
+    "meaning": "Food that makes you feel happy and nostalgic",
+    "example": "Mac and cheese is my ultimate comfort food",
+    "category": "food_types",
+    "difficulty": "intermediate",
+    "tags": ["food", "emotions"]
+  },
+  {
+    "id": "food007",
+    "topic": "foodie",
+    "spanish": "amante de la comida, gastronómico",
+    "meaning": "A person who loves food and enjoys trying new cuisines",
+    "example": "She's a total foodie — she always finds the best restaurants",
+    "category": "people",
+    "difficulty": "beginner",
+    "tags": ["food", "lifestyle"]
+  },
+  {
+    "id": "food008",
+    "topic": "to have a sweet tooth",
+    "spanish": "ser goloso, tener debilidad por lo dulce",
+    "meaning": "To really love sweet foods like candy and desserts",
+    "example": "I have a major sweet tooth — I eat chocolate every day",
+    "category": "preferences",
+    "difficulty": "intermediate",
+    "tags": ["food", "idiom"]
+  },
+  {
+    "id": "food009",
+    "topic": "to be full / stuffed",
+    "spanish": "estar lleno / estar a reventar",
+    "meaning": "Full = satisfied; Stuffed = ate way too much",
+    "example": "I'm so stuffed, I can't eat another bite!",
+    "category": "eating",
+    "difficulty": "beginner",
+    "tags": ["food", "casual"]
+  },
+  {
+    "id": "food010",
+    "topic": "on the house",
+    "spanish": "cortesía de la casa, gratis",
+    "meaning": "Free, paid for by the restaurant or bar",
+    "example": "The dessert is on the house — happy birthday!",
+    "category": "restaurant",
+    "difficulty": "intermediate",
+    "tags": ["restaurant", "idiom"]
+  },
+  {
+    "id": "food011",
+    "topic": "to order in / takeout",
+    "spanish": "pedir comida a domicilio / para llevar",
+    "meaning": "To have food delivered or pick it up instead of dining in",
+    "example": "I'm too tired to cook — let's order in tonight",
+    "category": "ordering",
+    "difficulty": "beginner",
+    "tags": ["food", "delivery"]
+  },
+  {
+    "id": "food012",
+    "topic": "brunch",
+    "spanish": "brunch (desayuno-almuerzo tardío)",
+    "meaning": "A late morning meal combining breakfast and lunch",
+    "example": "Let's meet for brunch on Sunday — I know a great spot",
+    "category": "meals",
+    "difficulty": "beginner",
+    "tags": ["food", "social"]
+  },
+  {
+    "id": "food013",
+    "topic": "to be picky / a picky eater",
+    "spanish": "ser quisquilloso con la comida",
+    "meaning": "Someone who only likes a few foods and refuses many others",
+    "example": "My kid is such a picky eater — he only eats plain pasta",
+    "category": "preferences",
+    "difficulty": "intermediate",
+    "tags": ["food", "personality"]
+  },
+  {
+    "id": "food014",
+    "topic": "to crave",
+    "spanish": "tener antojo de, desear intensamente",
+    "meaning": "To have a strong desire for a specific food",
+    "example": "I've been craving pizza all day!",
+    "category": "hunger",
+    "difficulty": "intermediate",
+    "tags": ["food", "desire"]
+  },
+  {
+    "id": "food015",
+    "topic": "to meal prep",
+    "spanish": "preparar las comidas con antelación",
+    "meaning": "To prepare meals ahead of time, usually for the week",
+    "example": "I meal prep every Sunday to save time during the week",
+    "category": "cooking",
+    "difficulty": "intermediate",
+    "tags": ["food", "health"]
+  }
+]

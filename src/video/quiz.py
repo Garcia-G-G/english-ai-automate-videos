@@ -834,15 +834,14 @@ def create_frame_quiz(
     is_in_countdown = show_timer and not show_answer
     draw_quiz_timeline(draw, progress, is_countdown=is_in_countdown)
 
-    # Render animated character
-    try:
-        from .character import get_character_renderer
-        char = get_character_renderer()
-        if char:
-            char.render(frame, t, data.get('words', []))
-    except Exception:
-        pass
+    # Trigger character excitement on correct answer reveal
+    if show_answer and answer_time > 0 and abs(t - answer_time) < 0.05:
+        try:
+            from .character import get_character_renderer
+            char = get_character_renderer()
+            if char:
+                char.trigger_excitement(t)
+        except Exception:
+            pass
 
-    draw_progress_bar(draw, progress)
-
-    return np.array(frame.convert('RGB'))
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
