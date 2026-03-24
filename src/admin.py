@@ -1030,6 +1030,18 @@ elif page == "Review":
                         elif video["type"] == "true_false":
                             st.write(f"**Statement:** {script.get('statement', 'N/A')}")
                         st.write(f"**Script:** {script.get('full_script', 'N/A')[:200]}...")
+                    # Show generated metadata preview
+                    try:
+                        from metadata_generator import generate_metadata
+                        category = script.get("_meta", {}).get("category", "")
+                        meta = generate_metadata(script, video["type"], category)
+                        st.markdown("---")
+                        st.markdown("**Generated Metadata:**")
+                        st.markdown(f"📌 **Title:** {meta['title']}")
+                        st.markdown(f"📝 **Description:** {meta['description'][:120]}...")
+                        st.markdown(f"🏷️ **Hashtags:** {' '.join(meta['hashtags'][:5])}")
+                    except ImportError:
+                        pass
                 if video["path"].exists():
                     st.video(str(video["path"]))
 
