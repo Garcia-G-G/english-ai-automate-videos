@@ -247,38 +247,48 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None, pl
             logger.warning("No upload platforms configured. Add platforms to config.yaml upload.platforms")
             return
 
-        # Build metadata
-        hashtags = upload_config.get("hashtags", {}).get(video_type, "#LearnEnglish #English")
-        title = ""
+        # Generate rich metadata from script
+        from metadata_generator import generate_metadata, adapt_for_platform
+
+        category = ""
         if script_data:
-            title = (script_data.get("hook", "") or
-                     script_data.get("question", "") or
-                     script_data.get("statement", "") or
-                     script_data.get("title", "Learn English"))
+            category = script_data.get("_meta", {}).get("category", "")
+        meta = generate_metadata(script_data or {}, video_type, category)
 
-        description = f"{title}\n\n{hashtags}"
-
-        metadata = VideoMetadata(
-            title=title[:100] if title else "Learn English",
-            description=description,
-            hashtags=hashtags.replace("#", "").split(),
-            privacy="public",
-        )
-
+        platform_map = {"tiktok": "tiktok", "youtube": "youtube", "instagram": "instagram"}
         manager = UploadManager()
-        results = manager.upload_all(
-            str(video_path),
-            title=metadata.title,
-            description=metadata.description,
-            hashtags=metadata.hashtags,
-            platforms=platforms,
-        )
 
-        for result in results:
-            if result.success:
-                logger.info("Uploaded to %s: %s", result.platform, result.url or result.upload_id)
-            else:
-                logger.error("Upload to %s failed: %s", result.platform, result.error)
+        for platform_name in platforms:
+            platform_key = platform_map.get(platform_name.lower(), platform_name.lower())
+            adapted = adapt_for_platform(meta, platform_key)
+
+            metadata = VideoMetadata(
+                title=adapted["title"],
+                description=adapted["description"],
+                hashtags=[h.lstrip("#") for h in adapted["hashtags"]],
+                privacy="public",
+            )
+
+            logger.info("Uploading to %s: '%s'", platform_name, adapted["title"][:60])
+
+            result = manager.upload(
+                platform_key,
+                str(video_path),
+                title=metadata.title,
+                description=metadata.full_description,
+                hashtags=metadata.hashtags,
+            )
+
+            if hasattr(result, 'success'):
+                if result.success:
+                    logger.info("Uploaded to %s: %s", platform_name, result.url or result.upload_id)
+                else:
+                    logger.error("Upload to %s failed: %s", platform_name, result.error)
+            elif isinstance(result, dict):
+                if result.get("success"):
+                    logger.info("Uploaded to %s", platform_name)
+                else:
+                    logger.error("Upload to %s failed: %s", platform_name, result.get("error"))
 
     except ImportError as e:
         logger.error("Upload module not available: %s", e)
