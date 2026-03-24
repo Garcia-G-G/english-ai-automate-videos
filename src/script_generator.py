@@ -227,6 +227,9 @@ REGLAS IMPORTANTES:
 6. Añade 1-2 frases de práctica donde el espectador pueda repetir
 7. Termina con una pregunta o call-to-action
 8. El script debe ser más largo y sustancioso - queremos contenido de valor
+9. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "Esta palabra NO significa lo que crees 😱 #English"
+10. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
+11. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
 
 ESTRUCTURA SUGERIDA:
 - Hook potente (1 oración)
@@ -241,6 +244,8 @@ ESTRUCTURA SUGERIDA:
 FORMATO JSON REQUERIDO:
 {{
   "type": "educational",
+  "video_title": "Título viral bilingüe ≤80 chars con curiosidad/reto/identidad",
+  "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "hook": "Frase inicial que capte atención (con palabra inglés en 'comillas')",
   "full_script": "Script completo en español con palabras inglés en 'comillas simples'. Debe fluir naturalmente para ser leído en voz alta. MÍNIMO 45 segundos de contenido.",
   "english_phrases": ["lista", "de", "palabras", "inglés", "usadas"],
@@ -282,6 +287,9 @@ REGLAS ABSOLUTAS (NUNCA VIOLAR):
 6. Explicación CORTA: 1-2 oraciones + un ejemplo simple
 7. Las 3 preguntas deben estar RELACIONADAS al tema pero ser DIFERENTES entre sí
 8. Varía la dificultad: fácil → medio → difícil
+9. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "¿Puedes acertar las 3? 🧠 English Quiz" o "Solo el 10% acierta la pregunta 3 😱"
+10. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
+11. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
 
 EJEMPLO DE FULL_SCRIPT (con 3 preguntas):
 "¡Quiz time! Pregunta número uno. ¿Qué significa 'library' en inglés? ... A, 'librería'. ... B, 'biblioteca'. ... C, 'libro'. ... D, 'lectura'. ... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B, 'Library' significa biblioteca. Por ejemplo: 'I study at the library'. ... Pregunta número dos. ¿Cómo se dice 'actualmente' en inglés? ... A, 'actually'. ... B, 'currently'. ... C, 'now'. ... D, 'lately'. ... Piensa bien... Tres... dos... uno... ¡La respuesta es B! 'Currently' significa actualmente. 'Actually' significa en realidad. ... Pregunta número tres. ..."
@@ -289,6 +297,8 @@ EJEMPLO DE FULL_SCRIPT (con 3 preguntas):
 FORMATO JSON:
 {{
   "type": "quiz",
+  "video_title": "Título viral bilingüe ≤80 chars con curiosidad/reto/identidad",
+  "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "question": "Primera pregunta en español (para compatibilidad)",
   "options": {{
     "A": "opción 1 (DIFERENTE)",
@@ -361,10 +371,15 @@ REGLAS:
 3. Explicación CORTA: 1-2 oraciones máximo + un ejemplo simple
 4. Incluir cuenta regresiva para cada afirmación: "Piensa bien... Tres... dos... uno..."
 5. Las 3 afirmaciones deben estar RELACIONADAS al tema pero ser DIFERENTES
+6. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "¿Verdadero o Falso? 🤔 Te va a sorprender"
+7. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
+8. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
 
 FORMATO JSON REQUERIDO:
 {{
   "type": "true_false",
+  "video_title": "Título viral bilingüe ≤80 chars con curiosidad/reto/identidad",
+  "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "statement": "Primera afirmación (para compatibilidad)",
   "correct": true,
   "explanation": "Explicación de la primera afirmación",
@@ -419,6 +434,9 @@ REGLAS:
 4. Incluir traducción de cada frase completa
 5. Las 3 frases deben estar RELACIONADAS al tema pero testar conceptos DIFERENTES
 6. Varía la dificultad: fácil → medio → difícil
+7. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "¿Puedes completar la frase? 💬 Test your English"
+8. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
+9. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
 
 EJEMPLO DE FULL_SCRIPT (con 3 frases):
 "¡Completa la frase! Número uno. I ___ to the store yesterday. Las opciones son: A, go. B, went. C, gone. D, going. ... Piensa bien... Tres... dos... uno... ¡La respuesta es B, went! 'I went to the store yesterday' significa Fui a la tienda ayer. Usamos 'went' porque es pasado simple. ... Número dos. She has ___ there before. Las opciones son: A, go. B, went. C, been. D, going. ... Piensa bien... Tres... dos... uno... ¡La respuesta es C, been! ... Número tres. ..."
@@ -426,6 +444,8 @@ EJEMPLO DE FULL_SCRIPT (con 3 frases):
 FORMATO JSON REQUERIDO:
 {{
   "type": "fill_blank",
+  "video_title": "Título viral bilingüe ≤80 chars con curiosidad/reto/identidad",
+  "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "sentence": "Primera frase con ___ (para compatibilidad)",
   "blank_position": "respuesta de la primera frase",
   "options": ["opción1", "opción2", "opción3", "opción4"],
@@ -487,10 +507,15 @@ REGLAS:
 2. Identifica el error de pronunciación más común
 3. Da un tip memorable
 4. El script debe incluir cómo pronunciar la palabra
+5. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "Llevas toda tu vida diciendo '{word}' MAL 😬"
+6. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
+7. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
 
 FORMATO JSON REQUERIDO:
 {{
   "type": "pronunciation",
+  "video_title": "Título viral bilingüe ≤80 chars con curiosidad/reto/identidad",
+  "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "word": "{word}",
   "phonetic": "Pronunciación fonética simplificada en mayúsculas",
   "common_mistake": "Error de pronunciación común",
@@ -523,10 +548,15 @@ REGLAS:
 3. Incluye palabras útiles y prácticas
 4. El full_script debe leer cada par: "La cuenta, the bill. El mesero, the waiter."
 5. Nivel de dificultad: facil, medio, dificil, o experto
+6. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "Palabras en inglés que NECESITAS saber 🔥"
+7. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
+8. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
 
 FORMATO JSON REQUERIDO:
 {{
   "type": "vocabulary",
+  "video_title": "Título viral bilingüe ≤80 chars con curiosidad/reto/identidad",
+  "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "title": "Vocabulario: [tema]",
   "difficulty": "medio",
   "pairs": [
@@ -659,6 +689,30 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
             full_script = re.sub(r'\bone\b', 'uno', full_script, flags=re.IGNORECASE)
 
     script["full_script"] = full_script.strip()
+
+    # Ensure video_title exists
+    if "video_title" not in script or not script.get("video_title"):
+        fallback = script.get("hook") or script.get("question") or script.get("statement") or script.get("word", "")
+        script["video_title"] = fallback[:80] if fallback else "Aprende inglés hoy 🦊"
+        warnings.append("Generated fallback video_title from script content")
+
+    # Ensure video_description exists
+    if "video_description" not in script or not script.get("video_description"):
+        title = script.get("video_title", "")
+        cta = script.get("cta", "Sígueme para más tips de inglés 🦊")
+        script["video_description"] = f"{title}\n\n{cta}"
+        warnings.append("Generated fallback video_description")
+
+    # Ensure hashtags is a list of 5-7 items with broad tags
+    hashtags = script.get("hashtags", [])
+    if isinstance(hashtags, str):
+        hashtags = [h.strip() for h in hashtags.split() if h.startswith("#")]
+    broad = {"#LearnEnglish", "#AprendeIngles"}
+    existing = {h.lstrip("#").lower() for h in hashtags}
+    for tag in broad:
+        if tag.lstrip("#").lower() not in existing:
+            hashtags.append(tag)
+    script["hashtags"] = hashtags[:7]
 
     if warnings:
         script["_validation_warnings"] = warnings
