@@ -1150,36 +1150,87 @@ elif page == "Upload":
 
         # Video list with upload buttons
         for video in approved:
-            col1, col2, col3 = st.columns([3, 2, 1])
+            with st.container():
+                col1, col2 = st.columns([3, 2])
 
-            with col1:
-                st.write(f"**{video['name']}**")
-                st.caption(f"{video['type']} | {video['created'].strftime('%Y-%m-%d %H:%M')}")
+                with col1:
+                    st.write(f"**{video['name']}**")
+                    st.caption(f"{video['type']} | {video['created'].strftime('%Y-%m-%d %H:%M')}")
 
-            with col2:
-                # Generate caption from metadata
-                caption = ""
-                hashtags = ""
-                if video.get("meta") and "script_data" in video["meta"]:
-                    script = video["meta"]["script_data"]
-                    caption = script.get("hook", script.get("question", script.get("statement", "")))
-                    tags = script.get("hashtags", ["#LearnEnglish", "#AprendeIngles"])
-                    hashtags = " ".join(tags) if isinstance(tags, list) else str(tags)
+                with col2:
+                    # Generate metadata from script
+                    script = {}
+                    category = ""
+                    if video.get("meta") and "script_data" in video["meta"]:
+                        script = video["meta"]["script_data"]
+                        category = script.get("_meta", {}).get("category", "")
 
-                with st.expander("Edit Caption"):
-                    vid_caption = st.text_area(
-                        "Caption",
-                        value=f"{caption}\n\n{hashtags}",
-                        key=f"caption_{video['name']}",
-                        height=80
-                    )
+                    try:
+                        from metadata_generator import generate_metadata, adapt_for_platform, regenerate_for_platform
+                        meta = generate_metadata(script, video.get("type", "educational"), category)
+                    except ImportError:
+                        meta = {
+                            "title": script.get("hook", script.get("question", script.get("statement", ""))),
+                            "description": "",
+                            "hashtags": script.get("hashtags", ["#LearnEnglish"]),
+                        }
 
-            with col3:
+                    # Session state keys for this video
+                    title_key = f"meta_title_{video['name']}"
+                    desc_key = f"meta_desc_{video['name']}"
+                    tags_key = f"meta_tags_{video['name']}"
+
+                    if title_key not in st.session_state:
+                        st.session_state[title_key] = meta["title"]
+                        st.session_state[desc_key] = meta["description"]
+                        st.session_state[tags_key] = " ".join(meta["hashtags"])
+
+                    with st.expander("Edit Title & Description"):
+                        st.session_state[title_key] = st.text_input(
+                            "Title", value=st.session_state[title_key], key=f"ti_{video['name']}"
+                        )
+                        st.session_state[desc_key] = st.text_area(
+                            "Description", value=st.session_state[desc_key], key=f"de_{video['name']}",
+                            height=80
+                        )
+                        st.session_state[tags_key] = st.text_input(
+                            "Hashtags", value=st.session_state[tags_key], key=f"ht_{video['name']}"
+                        )
+
+                        # Platform regeneration buttons
+                        regen_cols = st.columns(3)
+                        for i, (icon, pname, pkey) in enumerate([
+                            ("🎵", "TikTok", "tiktok"),
+                            ("▶️", "YouTube", "youtube"),
+                            ("📸", "Instagram", "instagram"),
+                        ]):
+                            with regen_cols[i]:
+                                if st.button(f"{icon} {pname}", key=f"regen_{pkey}_{video['name']}",
+                                             use_container_width=True, help=f"Regenerate for {pname}"):
+                                    try:
+                                        with st.spinner(f"Generating for {pname}..."):
+                                            result = regenerate_for_platform(
+                                                script, pkey, video.get("type", "educational")
+                                            )
+                                            st.session_state[title_key] = result.get("title", "")
+                                            st.session_state[desc_key] = result.get("description", "")
+                                            tags = result.get("hashtags", [])
+                                            st.session_state[tags_key] = " ".join(
+                                                f"#{t.lstrip('#')}" for t in tags
+                                            )
+                                            st.rerun()
+                                    except Exception as e:
+                                        st.error(f"Regeneration failed: {e}")
+
+                # Upload button
                 if target_platforms:
                     if st.button("📤 Upload", key=f"upload_{video['name']}", use_container_width=True):
                         try:
                             from uploader import get_upload_manager
                             manager = get_upload_manager()
+                            vid_title = st.session_state.get(title_key, "")
+                            vid_desc = st.session_state.get(desc_key, "")
+                            vid_tags = st.session_state.get(tags_key, "").split()
 
                             platform_map = {
                                 "TikTok": "tiktok",
@@ -1192,11 +1243,11 @@ elif page == "Upload":
                                     result = manager.upload(
                                         platform_key,
                                         str(video["path"]),
-                                        title=vid_caption.split("\n")[0][:100],
-                                        description=vid_caption,
-                                        hashtags=hashtags.split() if hashtags else []
+                                        title=vid_title[:100],
+                                        description=f"{vid_desc}\n\n{' '.join(vid_tags)}",
+                                        hashtags=[t.lstrip("#") for t in vid_tags]
                                     )
-                                    if result.get("success"):
+                                    if isinstance(result, dict) and result.get("success"):
                                         st.success(f"Uploaded to {platform_name}!")
                                         st.session_state.upload_history.append({
                                             "video": video["name"],
@@ -1204,10 +1255,13 @@ elif page == "Upload":
                                             "time": datetime.now().isoformat(),
                                             "status": "success"
                                         })
+                                    elif hasattr(result, 'success') and result.success:
+                                        st.success(f"Uploaded to {platform_name}!")
                                     else:
-                                        st.error(f"Failed: {result.get('error', 'Unknown error')}")
+                                        err = result.get("error", "Unknown") if isinstance(result, dict) else getattr(result, 'error', 'Unknown')
+                                        st.error(f"Failed: {err}")
                         except ImportError:
-                            st.error("Upload module not available. Check installation.")
+                            st.error("Upload module not available.")
                         except Exception as e:
                             st.error(f"Upload error: {str(e)}")
                 else:
@@ -1218,6 +1272,8 @@ elif page == "Upload":
                     unapprove_video(video['path'])
                     st.rerun()
 
+                st.markdown("---")
+
         # Bulk upload
         if target_platforms and len(approved) > 1:
             st.markdown("---")
@@ -1226,6 +1282,7 @@ elif page == "Upload":
                 progress = st.progress(0)
                 try:
                     from uploader import get_upload_manager
+                    from metadata_generator import generate_metadata, adapt_for_platform
                     manager = get_upload_manager()
 
                     bulk_platform_map = {
@@ -1234,18 +1291,23 @@ elif page == "Upload":
                         "Instagram Reels": "instagram",
                     }
                     for i, video in enumerate(approved):
-                        caption = ""
+                        script = {}
+                        category = ""
                         if video.get("meta") and "script_data" in video["meta"]:
                             script = video["meta"]["script_data"]
-                            caption = script.get("hook", script.get("question", ""))
+                            category = script.get("_meta", {}).get("category", "")
+
+                        meta = generate_metadata(script, video.get("type", "educational"), category)
 
                         for pname in target_platforms:
                             pkey = bulk_platform_map.get(pname, pname.lower())
+                            adapted = adapt_for_platform(meta, pkey)
                             manager.upload(
                                 pkey,
                                 str(video["path"]),
-                                title=caption[:100],
-                                description=caption,
+                                title=adapted["title"],
+                                description=adapted["description"],
+                                hashtags=[h.lstrip("#") for h in adapted["hashtags"]],
                             )
                         progress.progress((i + 1) / len(approved))
 
