@@ -216,6 +216,18 @@ def _render_group_tiktok(
         en_clean = re.sub(r'[^\w\s-]', '', en_display_text).strip().lower()
         trans_text = _lookup_translation(en_clean, translations, words if words else None)
 
+        # Don't show English card if translation is same as original (bad data)
+        if trans_text:
+            trans_clean = re.sub(r'[^\w\s]', '', trans_text).strip().lower()
+            en_check = re.sub(r'[^\w\s]', '', en_display_text).strip().lower()
+            if trans_clean == en_check or en_check in trans_clean or trans_clean in en_check:
+                trans_text = ""
+                en_display_text = ""
+
+    # Only show English card if we have a real translation
+    # (prevents showing Spanish words on the English highlight card)
+    show_en_card = bool(en_display_text and trans_text)
+
     # ── Main card height (text only — no translation) ──
     main_card_h = text_h + CARD_PADDING * 2
 
@@ -225,7 +237,7 @@ def _render_group_tiktok(
     _EN_CARD_GAP = 20
     en_card_h = 0
 
-    if has_en_words and (en_display_text or trans_text):
+    if show_en_card:
         en_font_size = _english_hero_size(en_display_text) if en_display_text else 80
         en_f = font(en_font_size)
         en_lines = line_break(en_display_text, en_f, _EN_CARD_W - _EN_CARD_PAD * 2 - 30) if en_display_text else []

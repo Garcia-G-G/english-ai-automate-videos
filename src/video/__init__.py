@@ -145,28 +145,48 @@ def generate_video(
         if english_phrases and words:
             import re as _re
             SPANISH_COMMON = {
-                'a', 'al', 'algo', 'alguien', 'ante', 'así', 'bien', 'bueno',
+                'a', 'al', 'algo', 'alguien', 'ante', 'asi', 'así', 'bien', 'bueno',
                 'cada', 'casa', 'casi', 'como', 'con', 'cual', 'cuando',
                 'de', 'del', 'decir', 'donde', 'el', 'ella', 'en', 'era',
                 'es', 'esa', 'ese', 'eso', 'esta', 'estar', 'este', 'esto',
                 'forma', 'fue', 'hay', 'hoy', 'ir', 'la', 'las', 'le', 'les',
-                'lo', 'los', 'más', 'me', 'mi', 'muy', 'nada', 'ni', 'no',
+                'lo', 'los', 'mas', 'más', 'me', 'mi', 'muy', 'nada', 'ni', 'no',
                 'nos', 'o', 'otra', 'otro', 'para', 'pero', 'por', 'puede',
-                'que', 'quien', 'se', 'ser', 'si', 'sin', 'sobre', 'son',
+                'que', 'qué', 'quien', 'se', 'ser', 'si', 'sin', 'sobre', 'son',
                 'su', 'sus', 'tan', 'te', 'ti', 'tiene', 'todo', 'tu', 'tus',
                 'un', 'una', 'uno', 'usar', 'usa', 'usan', 'va', 'vamos',
                 'ver', 'vez', 'vida', 'y', 'ya', 'yo', 'palabra', 'ejemplo',
-                'recuerda', 'cuando', 'veas', 'entonces', 'también', 'ahora',
-                'aceptar', 'invitación', 'divertida', 'casual',
+                'recuerda', 'cuando', 'veas', 'entonces', 'también', 'tambien', 'ahora',
+                'aceptar', 'invitación', 'invitacion', 'divertida', 'casual',
+                'gusta', 'gusto', 'increíble', 'increible', 'acuerdo', 'decir',
+                'puedes', 'puedo', 'quiero', 'significa', 'sigues', 'cierto',
+                'verdad', 'falso', 'correcto', 'incorrecto',
+                'piensa', 'repite', 'respuesta', 'pregunta', 'opción', 'opcion',
+                'frase', 'manera', 'lugar', 'momento', 'cosa', 'cosas',
+                'tipo', 'tipos', 'mundo', 'gente', 'personas', 'tiempo',
+                'nuevo', 'nueva', 'mejor', 'peor', 'grande', 'pequeño',
+                'buena', 'malo', 'mala', 'mismo', 'misma',
+                'mucho', 'mucha', 'muchos', 'muchas', 'poco', 'poca',
+                'siempre', 'nunca', 'solo', 'sólo', 'aquí', 'aqui',
+                'estoy', 'estás', 'está', 'estamos', 'están',
+                'soy', 'eres', 'somos', 'tengo', 'tienes', 'tenemos', 'tienen',
+                'hago', 'haces', 'hace', 'hacemos', 'hacen',
+                'sé', 'sabes', 'sabe', 'sabemos', 'saben', 'sabías', 'sabias',
+                'outfit', 'emocionante', 'escribir', 'leer', 'hablar',
+                'escuchar', 'entender', 'aprender', 'enseñar', 'practicar',
             }
             english_set = set()
             for phrase in english_phrases:
                 phrase_words = phrase.lower().split()
-                if len(phrase_words) > 5:
+                # Skip phrases with 4+ words — likely full Spanish sentences
+                if len(phrase_words) > 3:
                     continue
                 for w in phrase_words:
                     cleaned = _re.sub(r'[^\w]', '', w)
-                    if cleaned and cleaned not in SPANISH_COMMON:
+                    # Reject words with Spanish accents/ñ
+                    if any(c in cleaned for c in 'áéíóúñü'):
+                        continue
+                    if cleaned and cleaned not in SPANISH_COMMON and len(cleaned) > 1:
                         english_set.add(cleaned)
 
             fixed_count = 0
