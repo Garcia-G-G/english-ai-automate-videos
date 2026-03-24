@@ -46,8 +46,9 @@ VIDEO_DIR = OUTPUT_DIR / "video"
 PENDING_DIR = OUTPUT_DIR / "pending"
 APPROVED_DIR = OUTPUT_DIR / "approved"
 REJECTED_DIR = OUTPUT_DIR / "rejected"
+UPLOADED_DIR = OUTPUT_DIR / "uploaded"
 
-for d in [PENDING_DIR, APPROVED_DIR, REJECTED_DIR]:
+for d in [PENDING_DIR, APPROVED_DIR, REJECTED_DIR, UPLOADED_DIR]:
     d.mkdir(parents=True, exist_ok=True)
 
 # ============== PERSISTENT PROGRESS TRACKING ==============
@@ -391,6 +392,51 @@ def unapprove_video(video_path: Path):
         shutil.move(str(meta_path), str(dest_dir / meta_path.name))
 
 
+def move_to_uploaded(video_path: Path, upload_info: dict = None):
+    """Move video from approved to uploaded directory, saving upload metadata."""
+    video_type = video_path.parent.name
+    dest_dir = UPLOADED_DIR / video_type
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    dest_path = dest_dir / video_path.name
+    shutil.move(str(video_path), str(dest_path))
+    meta_path = video_path.with_suffix('.json')
+    dest_meta = dest_dir / meta_path.name
+    if meta_path.exists():
+        # Merge upload info into metadata
+        meta = {}
+        with open(meta_path, 'r') as f:
+            meta = json.load(f)
+        if upload_info:
+            meta["upload_info"] = upload_info
+        shutil.move(str(meta_path), str(dest_meta))
+        with open(dest_meta, 'w') as f:
+            json.dump(meta, f, ensure_ascii=False, indent=2)
+
+
+def get_uploaded_videos() -> list:
+    """Get all uploaded videos."""
+    videos = []
+    if not UPLOADED_DIR.exists():
+        return videos
+    for type_dir in UPLOADED_DIR.iterdir():
+        if type_dir.is_dir():
+            for video_file in type_dir.glob("*.mp4"):
+                meta_file = video_file.with_suffix('.json')
+                meta = {}
+                if meta_file.exists():
+                    with open(meta_file, 'r') as f:
+                        meta = json.load(f)
+                videos.append({
+                    "path": video_file,
+                    "type": type_dir.name,
+                    "name": video_file.stem,
+                    "meta": meta,
+                    "created": datetime.fromtimestamp(video_file.stat().st_mtime),
+                    "upload_info": meta.get("upload_info", {}),
+                })
+    return sorted(videos, key=lambda x: x["created"], reverse=True)
+
+
 def delete_video(video_path: Path):
     video_path.unlink(missing_ok=True)
     meta_path = video_path.with_suffix('.json')
@@ -723,15 +769,17 @@ if page == "Dashboard":
     pending = get_pending_videos()
     approved = get_approved_videos()
     library = get_library_videos()
+    uploaded = get_uploaded_videos()
     active_jobs = get_active_jobs()
-    all_videos = pending + approved + library
+    all_videos = pending + approved + library + uploaded
 
     # Metrics row
-    cols = st.columns(5)
+    cols = st.columns(6)
     metrics = [
         ("Total Videos", len(all_videos), "📹"),
         ("Pending", len(pending), "📝"),
         ("Approved", len(approved), "✅"),
+        ("Uploaded", len(uploaded), "📤"),
         ("Active Jobs", len(active_jobs), "⚡"),
         ("Storage", f"{sum(v.get('size', 0) or (v['path'].stat().st_size if v['path'].exists() else 0) for v in all_videos) / (1024*1024):.1f} MB", "💾"),
     ]
@@ -1169,6 +1217,9 @@ elif page == "Upload":
                 with col1:
                     st.write(f"**{video['name']}**")
                     st.caption(f"{video['type']} | {video['created'].strftime('%Y-%m-%d %H:%M')}")
+                    if video["path"].exists():
+                        with st.expander("Preview Video"):
+                            st.video(str(video["path"]))
 
                 with col2:
                     # Generate metadata from script
@@ -1250,6 +1301,8 @@ elif page == "Upload":
                                 "YouTube Shorts": "youtube",
                                 "Instagram Reels": "instagram",
                             }
+                            upload_success = False
+                            upload_platforms = []
                             for platform_name in target_platforms:
                                 platform_key = platform_map.get(platform_name, platform_name.lower())
                                 with st.spinner(f"Uploading to {platform_name}..."):
@@ -1260,19 +1313,29 @@ elif page == "Upload":
                                         description=f"{vid_desc}\n\n{' '.join(vid_tags)}",
                                         hashtags=[t.lstrip("#") for t in vid_tags]
                                     )
-                                    if isinstance(result, dict) and result.get("success"):
+                                    success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
+                                    if success:
                                         st.success(f"Uploaded to {platform_name}!")
+                                        upload_success = True
+                                        upload_platforms.append(platform_name)
                                         st.session_state.upload_history.append({
                                             "video": video["name"],
                                             "platform": platform_name,
                                             "time": datetime.now().isoformat(),
                                             "status": "success"
                                         })
-                                    elif hasattr(result, 'success') and result.success:
-                                        st.success(f"Uploaded to {platform_name}!")
                                     else:
                                         err = result.get("error", "Unknown") if isinstance(result, dict) else getattr(result, 'error', 'Unknown')
                                         st.error(f"Failed: {err}")
+
+                            # Move to uploaded if at least one platform succeeded
+                            if upload_success and video["path"].exists():
+                                move_to_uploaded(video["path"], {
+                                    "platforms": upload_platforms,
+                                    "uploaded_at": datetime.now().isoformat(),
+                                    "title": vid_title,
+                                })
+                                st.rerun()
                         except ImportError:
                             st.error("Upload module not available.")
                         except Exception as e:
@@ -1303,6 +1366,7 @@ elif page == "Upload":
                         "YouTube Shorts": "youtube",
                         "Instagram Reels": "instagram",
                     }
+                    uploaded_count = 0
                     for i, video in enumerate(approved):
                         script = {}
                         category = ""
@@ -1312,29 +1376,72 @@ elif page == "Upload":
 
                         meta = generate_metadata(script, video.get("type", "educational"), category)
 
+                        any_success = False
+                        platforms_done = []
                         for pname in target_platforms:
                             pkey = bulk_platform_map.get(pname, pname.lower())
                             adapted = adapt_for_platform(meta, pkey)
-                            manager.upload(
+                            result = manager.upload(
                                 pkey,
                                 str(video["path"]),
                                 title=adapted["title"],
                                 description=adapted["description"],
                                 hashtags=[h.lstrip("#") for h in adapted["hashtags"]],
                             )
+                            success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
+                            if success:
+                                any_success = True
+                                platforms_done.append(pname)
+
+                        if any_success and video["path"].exists():
+                            move_to_uploaded(video["path"], {
+                                "platforms": platforms_done,
+                                "uploaded_at": datetime.now().isoformat(),
+                                "title": meta["title"],
+                            })
+                            uploaded_count += 1
+
                         progress.progress((i + 1) / len(approved))
 
-                    st.success(f"Uploaded {len(approved)} videos!")
+                    st.success(f"Uploaded {uploaded_count} videos!")
+                    st.rerun()
                 except Exception as e:
                     st.error(f"Bulk upload error: {str(e)}")
 
-    # Upload history
-    if st.session_state.upload_history:
+    # Uploaded Videos section
+    uploaded = get_uploaded_videos()
+    if uploaded:
         st.markdown("---")
-        st.markdown('<div class="section-header">Upload History</div>', unsafe_allow_html=True)
-        for entry in reversed(st.session_state.upload_history[-10:]):
-            icon = "✅" if entry["status"] == "success" else "❌"
-            st.write(f"{icon} **{entry['video']}** → {entry['platform']} ({entry['time'][:16]})")
+        st.markdown(f'<div class="section-header">✅ Uploaded Videos ({len(uploaded)})</div>', unsafe_allow_html=True)
+
+        for video in uploaded:
+            with st.container():
+                col1, col2 = st.columns([3, 2])
+
+                with col1:
+                    st.write(f"**{video['name']}**")
+                    upload_info = video.get("upload_info", {})
+                    platforms_str = ", ".join(upload_info.get("platforms", ["Unknown"]))
+                    uploaded_at = upload_info.get("uploaded_at", "")[:16]
+                    st.caption(f"{video['type']} | Uploaded to: {platforms_str} | {uploaded_at}")
+
+                    if video["path"].exists():
+                        with st.expander("Preview Video"):
+                            st.video(str(video["path"]))
+
+                with col2:
+                    upload_title = upload_info.get("title", "")
+                    if upload_title:
+                        st.caption(f"Title: {upload_title[:60]}...")
+
+                st.markdown("---")
+
+    # Upload history (session)
+    if st.session_state.upload_history:
+        with st.expander("Recent Upload Log"):
+            for entry in reversed(st.session_state.upload_history[-10:]):
+                icon = "✅" if entry["status"] == "success" else "❌"
+                st.write(f"{icon} **{entry['video']}** → {entry['platform']} ({entry['time'][:16]})")
 
 
 # ============== LIBRARY PAGE ==============
@@ -1344,7 +1451,8 @@ elif page == "Library":
     library = get_library_videos()
     pending = get_pending_videos()
     approved = get_approved_videos()
-    all_videos = library + pending + approved
+    uploaded = get_uploaded_videos()
+    all_videos = library + pending + approved + uploaded
 
     if not all_videos:
         st.info("Library is empty. Generate some videos!")
