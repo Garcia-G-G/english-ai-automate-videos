@@ -216,14 +216,36 @@ def _build_fallback_title(script_data: dict, video_type: str) -> str:
 
 
 def _build_fallback_description(script_data: dict, video_type: str, title: str) -> str:
-    """Build description from script content."""
-    cta = script_data.get("cta", "Sígueme para más tips de inglés 🦊")
+    """Build description from script content — never repeats the title."""
+    hook = script_data.get("hook") or script_data.get("question") or script_data.get("statement") or ""
     tip = script_data.get("tip", "")
+    cta = script_data.get("cta", "Sígueme para más tips de inglés 🦊")
+    explanation = script_data.get("explanation", "")
 
-    parts = [title]
+    parts = []
+
+    # Use hook if it's different from the title
+    if hook and hook[:30] != title[:30]:
+        parts.append(hook)
+
+    # Add tip if available
     if tip:
         parts.append(f"💡 {tip}")
-    parts.append(f"\n{cta}")
+
+    # Add short explanation snippet for quiz/true_false types
+    if explanation and not tip:
+        parts.append(explanation[:120])
+
+    # Always end with CTA
+    if cta:
+        parts.append(cta)
+
+    # If we still have nothing meaningful, use script preview
+    if not parts:
+        script_preview = (script_data.get("full_script") or "")[:150]
+        if script_preview:
+            parts.append(script_preview)
+        parts.append("Sígueme para más tips de inglés 🦊")
 
     return "\n\n".join(parts)
 
