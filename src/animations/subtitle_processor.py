@@ -136,7 +136,7 @@ class SubtitleProcessor:
         ('blue', 'tooth'): 'Bluetooth',
     }
 
-    def __init__(self, gap_threshold: float = 0.35, max_words_per_group: int = 4):
+    def __init__(self, gap_threshold: float = 0.35, max_words_per_group: int = 8):
         self.gap_threshold = gap_threshold
         self.max_words = max_words_per_group
 
@@ -199,29 +199,57 @@ class SubtitleProcessor:
         # Filter: only short phrases (≤5 words) — longer ones are likely bad data
         # Exclude common Spanish words to prevent false positives
         SPANISH_COMMON = {
-            'a', 'al', 'algo', 'alguien', 'ante', 'así', 'bien', 'bueno',
+            'a', 'al', 'algo', 'alguien', 'ante', 'asi', 'así', 'bien', 'bueno',
             'cada', 'casa', 'casi', 'como', 'con', 'cual', 'cuando',
             'de', 'del', 'decir', 'donde', 'el', 'ella', 'en', 'era',
             'es', 'esa', 'ese', 'eso', 'esta', 'estar', 'este', 'esto',
             'forma', 'fue', 'hay', 'hoy', 'ir', 'la', 'las', 'le', 'les',
-            'lo', 'los', 'más', 'me', 'mi', 'muy', 'nada', 'ni', 'no',
+            'lo', 'los', 'mas', 'más', 'me', 'mi', 'muy', 'nada', 'ni', 'no',
             'nos', 'o', 'otra', 'otro', 'para', 'pero', 'por', 'puede',
-            'que', 'quien', 'se', 'ser', 'si', 'sin', 'sobre', 'son',
+            'que', 'qué', 'quien', 'se', 'ser', 'si', 'sin', 'sobre', 'son',
             'su', 'sus', 'tan', 'te', 'ti', 'tiene', 'todo', 'tu', 'tus',
             'un', 'una', 'uno', 'usar', 'usa', 'usan', 'va', 'vamos',
             'ver', 'vez', 'vida', 'y', 'ya', 'yo', 'palabra', 'ejemplo',
-            'recuerda', 'cuando', 'veas', 'entonces', 'también', 'ahora',
-            'aceptar', 'invitación', 'divertida', 'casual',
+            'recuerda', 'cuando', 'veas', 'entonces', 'también', 'tambien', 'ahora',
+            'aceptar', 'invitación', 'invitacion', 'divertida', 'casual',
+            # Common Spanish words that GPT puts in english_phrases by mistake
+            'gusta', 'gusto', 'increíble', 'increible', 'acuerdo', 'decir',
+            'puedes', 'puedo', 'quiero', 'significa', 'sigues', 'cierto',
+            'verdad', 'falso', 'correcto', 'incorrecto', 'ejemplo',
+            'piensa', 'repite', 'respuesta', 'pregunta', 'opción', 'opcion',
+            'frase', 'manera', 'lugar', 'momento', 'vez', 'cosa', 'cosas',
+            'tipo', 'tipos', 'mundo', 'gente', 'personas', 'tiempo',
+            'nuevo', 'nueva', 'mejor', 'peor', 'grande', 'pequeño',
+            'buena', 'malo', 'mala', 'mismo', 'misma', 'otro', 'otra',
+            'mucho', 'mucha', 'muchos', 'muchas', 'poco', 'poca',
+            'siempre', 'nunca', 'solo', 'sólo', 'aquí', 'aqui', 'allí', 'alli',
+            'este', 'estos', 'estas', 'ese', 'esos', 'esas',
+            'estoy', 'estás', 'estas', 'está', 'estamos', 'están',
+            'soy', 'eres', 'somos', 'tengo', 'tienes', 'tenemos', 'tienen',
+            'hago', 'haces', 'hace', 'hacemos', 'hacen',
+            'digo', 'dices', 'dice', 'dicen', 'decimos',
+            'sé', 'sabes', 'sabe', 'sabemos', 'saben', 'sabías', 'sabias',
+            'puedo', 'puedes', 'puede', 'podemos', 'pueden',
+            'quiero', 'quieres', 'quiere', 'queremos', 'quieren',
+            'necesito', 'necesitas', 'necesita', 'necesitamos',
+            'creo', 'crees', 'cree', 'creemos',
+            'outfit', 'tu',  # 'outfit' is borrowed but used in Spanish context
+            'emocionante', 'respondido', 'escribir', 'leer', 'hablar',
+            'escuchar', 'entender', 'aprender', 'enseñar', 'practicar',
         }
         english_set = set()
         if english_phrases:
             for phrase in english_phrases:
                 phrase_words = phrase.lower().split()
-                if len(phrase_words) > 5:
-                    continue  # Skip long phrases — likely bad AI data
+                # Skip phrases with 4+ words — likely full Spanish sentences
+                if len(phrase_words) > 3:
+                    continue
                 for word in phrase_words:
-                    cleaned = word.strip('.,!?¿¡:;\'"')
-                    if cleaned and cleaned not in SPANISH_COMMON:
+                    cleaned = word.strip('.,!?¿¡:;\'"🔥😱🤯')
+                    if cleaned and cleaned not in SPANISH_COMMON and len(cleaned) > 1:
+                        # Extra check: reject words with Spanish accents/ñ
+                        if any(c in cleaned for c in 'áéíóúñü'):
+                            continue
                         english_set.add(cleaned)
 
         words = []
