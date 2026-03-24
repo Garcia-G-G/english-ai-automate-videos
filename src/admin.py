@@ -1038,7 +1038,8 @@ elif page == "Review":
                         st.markdown("---")
                         st.markdown("**Generated Metadata:**")
                         st.markdown(f"📌 **Title:** {meta['title']}")
-                        st.markdown(f"📝 **Description:** {meta['description'][:120]}...")
+                        desc_preview = meta['description'].replace('\n', ' ')[:200]
+                        st.markdown(f"📝 **Description:** {desc_preview}...")
                         st.markdown(f"🏷️ **Hashtags:** {' '.join(meta['hashtags'][:5])}")
                     except ImportError:
                         pass
