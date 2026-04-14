@@ -1343,10 +1343,23 @@ elif page == "Upload":
                 else:
                     st.button("📤 Upload", key=f"upload_{video['name']}", disabled=True, use_container_width=True)
 
-                if st.button("↩️", key=f"unapprove_{video['name']}", use_container_width=True,
-                             help="Move back to pending"):
-                    unapprove_video(video['path'])
-                    st.rerun()
+                btn_cols = st.columns(2)
+                with btn_cols[0]:
+                    if video["path"].exists():
+                        with open(video["path"], "rb") as vf:
+                            st.download_button(
+                                "⬇️ Download",
+                                data=vf,
+                                file_name=video["path"].name,
+                                mime="video/mp4",
+                                key=f"dl_{video['name']}",
+                                use_container_width=True,
+                            )
+                with btn_cols[1]:
+                    if st.button("↩️", key=f"unapprove_{video['name']}", use_container_width=True,
+                                 help="Move back to pending"):
+                        unapprove_video(video['path'])
+                        st.rerun()
 
                 st.markdown("---")
 
@@ -1433,6 +1446,16 @@ elif page == "Upload":
                     upload_title = upload_info.get("title", "")
                     if upload_title:
                         st.caption(f"Title: {upload_title[:60]}...")
+                    if video["path"].exists():
+                        with open(video["path"], "rb") as vf:
+                            st.download_button(
+                                "⬇️ Download",
+                                data=vf,
+                                file_name=video["path"].name,
+                                mime="video/mp4",
+                                key=f"dl_uploaded_{video['name']}",
+                                use_container_width=True,
+                            )
 
                 st.markdown("---")
 
