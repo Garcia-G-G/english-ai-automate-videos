@@ -57,7 +57,7 @@ output:
 
 # Character Mascot (animated lip-sync)
 character:
-  enabled: true
+  enabled: false
   name: "fox"                 # Character folder under assets/characters/
   position_x: 50              # Bottom-left (avoids TikTok right-side buttons)
   position_y: 1450
