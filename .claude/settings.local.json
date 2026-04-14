@@ -30,7 +30,13 @@
       "Bash(curl:*)",
       "Bash(pkill:*)",
       "Bash(tee:*)",
-      "Bash(do echo \"=== TEST $i ===\" python3 main.py --random --type quiz)"
+      "Bash(do echo \"=== TEST $i ===\" python3 main.py --random --type quiz)",
+      "Bash(xargs:*)",
+      "Bash(claude --version:*)",
+      "Skill(ralph-loop:ralph-loop)",
+      "Bash(ffmpeg:*)",
+      "Bash(afplay:*)",
+      "Bash(PYTHONPATH=src python3:*)"
     ]
   }
 }
