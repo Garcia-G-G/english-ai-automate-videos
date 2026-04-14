@@ -204,10 +204,17 @@ def enhance_bilingual_text(text: str, english_words: set) -> str:
     return text
 
 def get_client() -> ElevenLabs:
-    """Get ElevenLabs client."""
+    """Get ElevenLabs client with generous timeout for TTS streaming."""
     if not ELEVENLABS_API_KEY:
         raise ValueError("ELEVENLABS_API_KEY not set in environment")
-    return ElevenLabs(api_key=ELEVENLABS_API_KEY)
+    import httpx
+    return ElevenLabs(
+        api_key=ELEVENLABS_API_KEY,
+        timeout=120.0,
+        httpx_client=httpx.Client(
+            timeout=httpx.Timeout(connect=10.0, read=120.0, write=30.0, pool=10.0),
+        ),
+    )
 
 
 def estimate_word_timestamps(text: str, duration: float, english_phrases: list = None) -> tuple:

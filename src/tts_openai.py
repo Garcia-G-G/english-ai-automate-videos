@@ -39,6 +39,14 @@ from tts_common import (
 # Load environment variables from .env file
 load_dotenv(Path(__file__).parent.parent / ".env")
 
+
+def _get_openai_client() -> OpenAI:
+    """Create OpenAI client with generous timeout for TTS streaming."""
+    import httpx
+    return OpenAI(
+        timeout=httpx.Timeout(connect=10.0, read=120.0, write=30.0, pool=10.0),
+    )
+
 # English words that are DISTINCTLY English (not Spanish-English overlap)
 ENGLISH_WORDS = {
     # Phrasal verbs with "give"
@@ -236,7 +244,7 @@ def text_to_speech(
     Returns:
         Dictionary with duration and word timestamps
     """
-    client = OpenAI()
+    client = _get_openai_client()
 
     # Ensure output directory exists
     output_dir = os.path.dirname(output_path)
@@ -340,7 +348,7 @@ def extract_timestamps_whisper(audio_path: str, client: OpenAI = None, original_
         Dictionary with duration and word timestamps
     """
     if client is None:
-        client = OpenAI()
+        client = _get_openai_client()
 
     with open(audio_path, "rb") as audio_file:
         # Use verbose_json to get word-level timestamps
@@ -465,7 +473,7 @@ def fix_countdown_timing(
     temp_dir = tempfile.mkdtemp(prefix="countdown_fix_")
 
     try:
-        client = OpenAI()
+        client = _get_openai_client()
 
         # 1. Extract audio BEFORE countdown
         before_path = os.path.join(temp_dir, "before.mp3")
@@ -599,7 +607,7 @@ def generate_segment_audio(
     speed: float = DEFAULT_SPEED
 ) -> float:
     """Generate a single audio segment and return its duration."""
-    client = OpenAI()
+    client = _get_openai_client()
     _tts_with_retry(
         client, output_path,
         model=model, voice=voice, input=text,
@@ -669,7 +677,7 @@ def generate_quiz_audio_segmented(
 
         # Generate with high quality
         logger.debug("      [generating] %s", text)
-        client = OpenAI()
+        client = _get_openai_client()
         _tts_with_retry(
             client, str(cache_path),
             model="tts-1-hd", voice=voice, input=text,
@@ -726,7 +734,7 @@ def generate_quiz_audio_segmented(
         # ============================================================
         logger.info("[1] QUESTION")
         q_path = os.path.join(temp_dir, "question.mp3")
-        client = OpenAI()
+        client = _get_openai_client()
         _tts_with_retry(
             client, q_path,
             model="tts-1-hd", voice=voice, input=clean_question,
@@ -959,7 +967,7 @@ def generate_fill_blank_audio_segmented(
         segments = []
         audio_files = []
         running_time = 0.0
-        client = OpenAI()
+        client = _get_openai_client()
 
         def add_audio(path: str, duration: float = None):
             nonlocal running_time
@@ -1161,7 +1169,7 @@ def generate_true_false_audio_segmented(
         segments = []
         audio_files = []
         running_time = 0.0
-        client = OpenAI()
+        client = _get_openai_client()
 
         def add_audio(path: str, duration: float = None):
             nonlocal running_time
@@ -1349,7 +1357,7 @@ def generate_vocabulary_audio_segmented(
         segments = []
         audio_files = []
         running_time = 0.0
-        client = OpenAI()
+        client = _get_openai_client()
 
         def add_audio(path: str, duration: float = None):
             nonlocal running_time
