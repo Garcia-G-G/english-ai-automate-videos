@@ -108,6 +108,9 @@ def _encode(
 
     cmd = [
         "ffmpeg", "-y",
+        # Quiet stderr: stats/progress lines can fill the un-drained
+        # stderr PIPE (64KB) mid-encode and deadlock the whole pipeline.
+        "-nostats", "-loglevel", "error",
         # --- raw video from stdin ---
         "-f", "rawvideo",
         "-vcodec", "rawvideo",
