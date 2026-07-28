@@ -1,0 +1,67 @@
+{
+  "type": "quiz",
+  "video_title": "¿Puedes acertar las 3? 🧠 Idioms Quiz",
+  "video_description": "¡Pon a prueba tu inglés con este quiz de modismos! ¿Cuánto sabes? 🤔✨",
+  "question": "¿Qué significa 'scared stiff' en inglés?",
+  "options": {
+    "A": "asustado rígido",
+    "B": "muy asustado",
+    "C": "sin miedo",
+    "D": "tranquilo"
+  },
+  "correct": "B",
+  "explanation": "'Scared stiff' significa 'muy asustado'. Por ejemplo, 'I was scared stiff when I saw the ghost costume.'",
+  "questions": [
+    {
+      "question": "¿Qué significa 'scared stiff' en inglés?",
+      "options": {
+        "A": "asustado rígido",
+        "B": "muy asustado",
+        "C": "sin miedo",
+        "D": "tranquilo"
+      },
+      "correct": "B",
+      "explanation": "'Scared stiff' significa 'muy asustado'. Por ejemplo, 'I was scared stiff when I saw the ghost costume.'"
+    },
+    {
+      "question": "¿Cómo se dice 'asustado rígido' en inglés?",
+      "options": {
+        "A": "scared stiff",
+        "B": "terrified",
+        "C": "frightened",
+        "D": "shocked"
+      },
+      "correct": "A",
+      "explanation": "'Asustado rígido' se traduce como 'scared stiff'. Este modismo se usa para describir un miedo extremo."
+    },
+    {
+      "question": "¿Cuál es un sinónimo de 'scared stiff'?",
+      "options": {
+        "A": "excited",
+        "B": "afraid",
+        "C": "calm",
+        "D": "happy"
+      },
+      "correct": "B",
+      "explanation": "'Afraid' es un sinónimo que también significa tener miedo. 'Scared stiff' es una forma más intensa de expresar miedo."
+    }
+  ],
+  "full_script": "¡Quiz time! Pregunta número uno. ¿Qué significa 'scared stiff' en inglés?... A, 'asustado rígido'.... B, 'muy asustado'.... C, 'sin miedo'.... D, 'tranquilo'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B, 'scared stiff' significa muy asustado. Por ejemplo: 'I was scared stiff when I saw the ghost costume.'... Pregunta número dos. ¿Cómo se dice 'asustado rígido' en inglés?... A, 'scared stiff'.... B, 'terrified'.... C, 'frightened'.... D, 'shocked'.... Piensa bien... Tres... dos... uno... ¡La respuesta es A! 'Asustado rígido' se traduce como 'scared stiff'. Este modismo se usa para describir un miedo extremo.... Pregunta número tres. ¿Cuál es un sinónimo de 'scared stiff'?... A, 'excited'.... B, 'afraid'.... C, 'calm'.... D, 'happy'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B, 'afraid' es un sinónimo que también significa tener miedo. 'Scared stiff' es una forma más intensa de expresar miedo.",
+  "translations": {
+    "scared stiff": "asustado rígido"
+  },
+  "hashtags": [
+    "#QuizIngles",
+    "#AprendeIngles",
+    "#TestTuIngles",
+    "#Idioms",
+    "#LearnEnglish"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id078",
+    "video_type": "quiz",
+    "generated_at": "2026-04-16T08:31:26.820658",
+    "model": "gpt-4o-mini"
+  }
+}

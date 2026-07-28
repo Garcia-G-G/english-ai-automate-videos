@@ -1,0 +1,27 @@
+{
+  "type": "fill_blank",
+  "sentence": "The Sahara is a vast ___",
+  "blank_position": "desert",
+  "options": [
+    "dessert",
+    "desert",
+    "deserted",
+    "deserts"
+  ],
+  "correct": "desert",
+  "explanation": "La palabra 'desert' se refiere a un área seca y arenosa con poca lluvia. Es un sustantivo. Por otro lado, 'dessert' se refiere a un plato dulce que se come después de una comida principal. Recuerda que 'desert' tiene una sola 's' y se relaciona con lugares arenosos, mientras que 'dessert' tiene dos 's' y se relaciona con cosas dulces.",
+  "full_script": "Hoy vamos a aprender la diferencia entre 'desert' y 'dessert'. Completa la frase: 'The Sahara is a vast ___'. Aquí tienes las opciones: 1. dessert 2. desert 3. deserted 4. deserts. Tómate un momento para pensar... La respuesta correcta es 'desert'. Recuerda: 'desert' es un lugar seco, mientras que 'dessert' es algo dulce. ¡Practica estas palabras y mejorarás tu inglés!",
+  "translation": "El Sahara es un vasto desierto",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprendeIngles",
+    "#GramaticaIngles"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw037",
+    "video_type": "fill_blank",
+    "generated_at": "2026-02-10T17:56:42.813125",
+    "model": "gpt-4o-mini"
+  }
+}

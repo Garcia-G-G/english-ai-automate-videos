@@ -1,0 +1,68 @@
+{
+  "type": "quiz",
+  "video_title": "¿Puedes acertar las 3? 🧠 Confunde 'lay' y 'lie'!",
+  "video_description": "¡Pon a prueba tu inglés! 🗣️ Aprende la diferencia entre 'lay' y 'lie'. ¡Comenta tu respuesta! 💬",
+  "question": "¿Cómo se dice 'poner algo' en inglés?",
+  "options": {
+    "A": "lay",
+    "B": "lie",
+    "C": "place",
+    "D": "set"
+  },
+  "correct": "A",
+  "explanation": "'Lay' significa 'poner algo'. Es un verbo transitivo, necesita un objeto. Ejemplo: 'I will lay the book on the table.'",
+  "questions": [
+    {
+      "question": "¿Cómo se dice 'poner algo' en inglés?",
+      "options": {
+        "A": "lay",
+        "B": "lie",
+        "C": "place",
+        "D": "set"
+      },
+      "correct": "A",
+      "explanation": "'Lay' significa 'poner algo'. Es un verbo transitivo, necesita un objeto. Ejemplo: 'I will lay the book on the table.'"
+    },
+    {
+      "question": "¿Qué significa 'lie' en inglés?",
+      "options": {
+        "A": "mentira",
+        "B": "recostarse",
+        "C": "acostarse",
+        "D": "sentarse"
+      },
+      "correct": "B",
+      "explanation": "'Lie' significa 'recostarse', es un verbo intransitivo. Ejemplo: 'I like to lie down after work.'"
+    },
+    {
+      "question": "¿Cuál de estas oraciones es correcta?",
+      "options": {
+        "A": "I lay down for a nap.",
+        "B": "I lie my coat on the bed.",
+        "C": "I lay my head on the pillow.",
+        "D": "I lie down to sleep."
+      },
+      "correct": "D",
+      "explanation": "'I lie down to sleep.' es correcto porque 'lie' se usa sin objeto. 'Lay' necesita un objeto como 'the coat'."
+    }
+  ],
+  "full_script": "¡Quiz time! Pregunta número uno. ¿Cómo se dice 'poner algo' en inglés?... A, 'lay'.... B, 'lie'.... C, 'place'.... D, 'set'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es A, 'Lay' significa 'poner algo'. Por ejemplo: 'I will lay the book on the table.'... Pregunta número dos. ¿Qué significa 'lie' en inglés?... A, 'mentira'.... B, 'recostarse'.... C, 'acostarse'.... D, 'sentarse'.... Piensa bien... Tres... dos... uno... ¡La respuesta es B! 'Lie' significa 'recostarse', es un verbo intransitivo. Por ejemplo: 'I like to lie down after work.'... Pregunta número tres. ¿Cuál de estas oraciones es correcta?... A, 'I lay down for a nap.'.... B, 'I lie my coat on the bed.'.... C, 'I lay my head on the pillow.'.... D, 'I lie down to sleep.'.... Piensa bien... Tres... dos... uno... ¡La respuesta es D! 'I lie down to sleep.' es correcto porque 'lie' se usa sin objeto. 'Lay' necesita un objeto como 'the coat'.",
+  "translations": {
+    "lay": "poner",
+    "lie": "recostarse"
+  },
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#LayVsLie",
+    "#InglesFacil",
+    "#QuizIngles"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw014",
+    "video_type": "quiz",
+    "generated_at": "2026-04-16T08:20:45.992774",
+    "model": "gpt-4o-mini"
+  }
+}

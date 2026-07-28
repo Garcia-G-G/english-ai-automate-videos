@@ -1,0 +1,23 @@
+{
+  "type": "true_false",
+  "statement": "'Actually' means 'currently' in English.",
+  "correct": false,
+  "explanation": "'Actually' actually means 'en realidad', not 'currently'.",
+  "full_script": "'Actually' means 'currently' in English. ¿Verdadero o falso? Pausa... ✗ Falso. 'Actually' en inglés significa 'en realidad', no 'actualmente'. Es un ejemplo de 'false friend'.",
+  "translations": {
+    "actually": "en realidad",
+    "currently": "actualmente"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprendeIngles",
+    "#InglesRapido"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff001",
+    "video_type": "true_false",
+    "generated_at": "2026-01-13T17:52:56.432397",
+    "model": "gpt-4o-mini"
+  }
+}
