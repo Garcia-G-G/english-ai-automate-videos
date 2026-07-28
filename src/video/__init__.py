@@ -38,6 +38,17 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+def peak_rss_mb() -> float:
+    """Peak resident set size of this process, in MB.
+
+    ru_maxrss is bytes on macOS/BSD and kilobytes on Linux.
+    """
+    import platform
+    import resource
+    raw = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    return raw / (1024 * 1024) if platform.system() == "Darwin" else raw / 1024
+
+
 def generate_video(
     audio_path: str,
     data_path: str,
@@ -105,7 +116,9 @@ def generate_video(
                     logger.info("Pre-rendering background loop...")
                     loop_duration = min(5.0, duration)
                     bg.pre_render_loop(background, loop_duration=loop_duration, show_progress=False)
-                    logger.info(f"Background pre-rendered in {_time.time() - _bg_start:.1f}s")
+                    logger.info(
+                        "Background pre-rendered in %.1fs (peak RSS %.0f MB)",
+                        _time.time() - _bg_start, peak_rss_mb())
 
         elif BACKGROUNDS_AVAILABLE:
             set_background(bg_type=background, options=background_options or {}, duration=duration)
@@ -275,7 +288,13 @@ def generate_video(
         logger.error(f"Unknown video type: {video_type}")
         return None
 
-    logger.info("Generating video frames...")
+    # One-line render summary — if this render ever times out, the log alone
+    # must say what it was doing (type, size, how many frames, how much RAM).
+    logger.info(
+        "RENDER START type=%s frames=%d res=%dx%d fps=%d duration=%.2fs "
+        "background=%s peak_rss=%.0fMB",
+        video_type, int(duration * fps), VIDEO_WIDTH, VIDEO_HEIGHT, fps,
+        duration, background or "none", peak_rss_mb())
 
     if renderer == "ffmpeg":
         try:
@@ -362,6 +381,15 @@ def generate_video(
 
 
 def main():
+    # This process runs as a subprocess of main.py / admin.py. Without a
+    # handler every logger.info() below is discarded, which is why the
+    # 2026-04-16 render timeouts left no evidence of what they were doing.
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s [%(name)s] %(levelname)s: %(message)s',
+        datefmt='%H:%M:%S'
+    )
+
     parser = argparse.ArgumentParser(description="Generate TikTok-style video (multi-type)")
     parser.add_argument("-a", "--audio", help="MP3 audio file")
     parser.add_argument("-d", "--data", help="JSON data file (defaults to audio path with .json)")

@@ -143,12 +143,27 @@ def _encode(
     )
 
     t_start = _time.time()
+    t_last = t_start
 
     try:
         for frame_num in range(total_frames):
             t = frame_num / fps
 
             frame_rgb = frame_generator(t)
+
+            # Progress every 100 frames. A timeout that shows these lines
+            # advancing was slow; one that shows them stop dead was stalled.
+            if frame_num and frame_num % 100 == 0:
+                now = _time.time()
+                logger.info(
+                    "  frame %d/%d (%.0f%%) elapsed=%.1fs last100=%.4f s/frame "
+                    "avg=%.4f s/frame eta=%.0fs",
+                    frame_num, total_frames, 100.0 * frame_num / total_frames,
+                    now - t_start, (now - t_last) / 100,
+                    (now - t_start) / frame_num,
+                    (now - t_start) / frame_num * (total_frames - frame_num),
+                )
+                t_last = now
 
             if frame_rgb.shape[:2] != (height, width):
                 raise ValueError(
@@ -182,9 +197,11 @@ def _encode(
 
         elapsed = _time.time() - t_start
         render_fps = total_frames / elapsed if elapsed > 0 else 0
+        from . import peak_rss_mb
         logger.info(
-            "Video rendered: %s (%.1fs, %.0f fps)",
-            output_path, elapsed, render_fps,
+            "RENDER DONE %s (%.1fs, %.0f fps, %.4f s/frame, peak_rss=%.0fMB)",
+            output_path, elapsed, render_fps, elapsed / total_frames,
+            peak_rss_mb(),
         )
         return output_path
 
