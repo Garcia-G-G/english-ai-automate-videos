@@ -1,0 +1,84 @@
+{
+  "purpose": "Known-bad videos kept as regression cases for the schema validation and QA-gate work. Each entry records an observed, reproducible defect. Media is NOT versioned (see README).",
+  "recorded_on": "2026-07-28",
+  "cases": [
+    {
+      "id": "fabric_educational_20260116_192025",
+      "script": "scripts/educational/fabric_20260116_192025.json",
+      "source_media": "output/pending/educational/fabric_20260116_192025.mp4",
+      "video_type": "educational",
+      "defects": [
+        {
+          "kind": "missing_required_field",
+          "detail": "script has no 'full_script'; only 'segments'. The educational renderer falls back to estimating word timings from segments.",
+          "gate": "schema validation must reject a script with no full_script"
+        },
+        {
+          "kind": "spanish_word_in_english_phrases",
+          "detail": "english_phrases = ['fabric', 'tela', 'factory'] — 'tela' is Spanish and gets rendered with English styling and an anglo accent.",
+          "gate": "english_phrases must not contain Spanish tokens"
+        },
+        {
+          "kind": "zero_word_timestamps",
+          "detail": "companion TTS JSON has words: [] (0 entries).",
+          "gate": "educational output must carry word timestamps"
+        }
+      ]
+    },
+    {
+      "id": "fabric_quiz_20260116_201133",
+      "script": "scripts/quiz/fabric_20260116_201133.json",
+      "source_media": "output/pending/quiz/fabric_20260116_201133.mp4",
+      "video_type": "quiz",
+      "defects": [
+        {
+          "kind": "same_topic_as_known_bad_educational",
+          "detail": "the 'fabric' pair; kept together so a fix can be checked against both renderers.",
+          "gate": "n/a - companion case"
+        }
+      ]
+    },
+    {
+      "id": "cool_20260416_084217",
+      "script": "scripts/quiz/cool_20260416_084217.json",
+      "source_media": "output/pending/quiz/cool_20260416_084217.mp4",
+      "video_type": "quiz",
+      "job_id": "3e0dd307",
+      "defects": [
+        {
+          "kind": "render_timeout",
+          "detail": "dashboard job timed out at 600s on 2026-04-16. Cause: undrained ffmpeg stderr PIPE deadlock, fixed in d96c65b. Renders in 124.1s today (1107 frames, 0.1121 s/frame) — the slowest whole-video rate measured, and the basis for the 1200s timeout arithmetic.",
+          "gate": "must render end-to-end within the render timeout"
+        }
+      ]
+    },
+    {
+      "id": "scared_stiff_20260416_083126",
+      "script": "scripts/quiz/scared_stiff_20260416_083126.json",
+      "source_media": "output/pending/quiz/scared_stiff_20260416_083126.mp4",
+      "video_type": "quiz",
+      "job_id": "3d42776b",
+      "defects": [
+        {
+          "kind": "render_timeout",
+          "detail": "timed out at 600s; its partial mp4 stops at 867 of 1083 frames, which is how the deadlock was identified. Renders in 91s today.",
+          "gate": "must render end-to-end within the render timeout"
+        }
+      ]
+    },
+    {
+      "id": "lay_vs_lie_20260416_082045",
+      "script": "scripts/quiz/lay_vs_lie_20260416_082045.json",
+      "source_media": "output/pending/quiz/lay_vs_lie_20260416_082045.mp4",
+      "video_type": "quiz",
+      "job_id": "bbecac57",
+      "defects": [
+        {
+          "kind": "render_timeout",
+          "detail": "timed out at 600s; partial mp4 stops at 939 of 1083 frames.",
+          "gate": "must render end-to-end within the render timeout"
+        }
+      ]
+    }
+  ]
+}

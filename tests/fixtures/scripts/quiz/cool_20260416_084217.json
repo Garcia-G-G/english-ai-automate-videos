@@ -1,0 +1,70 @@
+{
+  "type": "quiz",
+  "video_title": "¿Puedes acertar las 3? 🧠 Slang Quiz",
+  "video_description": "¡Pon a prueba tu inglés con este quiz de slang! 🤔💬 ¿Cuánto sabes? ¡Comenta abajo!",
+  "question": "¿Qué significa 'cool' en inglés?",
+  "options": {
+    "A": "genial",
+    "B": "frío",
+    "C": "bueno",
+    "D": "feo"
+  },
+  "correct": "A",
+  "explanation": "'Cool' significa 'genial' en inglés. Se usa para expresar que algo es bueno o aceptable. Por ejemplo: 'That movie was really cool!'",
+  "questions": [
+    {
+      "question": "¿Qué significa 'cool' en inglés?",
+      "options": {
+        "A": "genial",
+        "B": "frío",
+        "C": "bueno",
+        "D": "feo"
+      },
+      "correct": "A",
+      "explanation": "'Cool' significa 'genial' en inglés. Se usa para expresar que algo es bueno o aceptable. Por ejemplo: 'That movie was really cool!'"
+    },
+    {
+      "question": "¿Cómo se dice 'eso es genial' en inglés?",
+      "options": {
+        "A": "That's cool",
+        "B": "That is good",
+        "C": "That's awesome",
+        "D": "That's nice"
+      },
+      "correct": "A",
+      "explanation": "'That's cool' es la forma correcta de decir 'eso es genial'. Se utiliza en situaciones informales. Por ejemplo: 'Your idea? That's cool!'"
+    },
+    {
+      "question": "¿Cuál de las siguientes no es un sinónimo de 'cool'?",
+      "options": {
+        "A": "awesome",
+        "B": "great",
+        "C": "lame",
+        "D": "fantastic"
+      },
+      "correct": "C",
+      "explanation": "'Lame' significa aburrido o poco interesante, lo opuesto de 'cool'. Por ejemplo: 'That party was lame!'"
+    }
+  ],
+  "full_script": "¡Quiz time! Pregunta número uno. ¿Qué significa 'cool en inglés?... A, 'genial.... B, 'frío.... C, 'bueno.... D, 'feo.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es A, 'Cool significa genial. Por ejemplo: 'That movie was really cool!... Pregunta número dos. ¿Cómo se dice 'eso es genial en inglés?... A, 'That's cool.... B, 'That is good.... C, 'That's awesome.... D, 'That's nice.... Piensa bien... Tres... dos... uno... ¡La respuesta es A! 'That's cool significa 'eso es genial. Por ejemplo: 'Your idea? That's cool!... Pregunta número tres. ¿Cuál de las siguientes no es un sinónimo de 'cool?... A, 'awesome.... B, 'great.... C, 'lame.... D, 'fantastic.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es C, 'lame significa aburrido, lo opuesto de 'cool. Por ejemplo: 'That party was lame!",
+  "translations": {
+    "cool": "genial"
+  },
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#SlangQuiz",
+    "#EnglishSlang",
+    "#TestTuIngles"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl028",
+    "video_type": "quiz",
+    "generated_at": "2026-04-16T08:42:17.743863",
+    "model": "gpt-4o-mini"
+  },
+  "_validation_warnings": [
+    "Unbalanced single quotes (51)"
+  ]
+}

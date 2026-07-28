@@ -1,0 +1,28 @@
+{
+  "hook": "¡Cuidado! 'Actually' NO significa actualmente",
+  "full_script": "¡Cuidado! 'Actually' NO significa actualmente. Este es uno de los errores más comunes. En inglés, 'actually' significa 'en realidad' o 'de hecho'. Por ejemplo: 'Actually, I don't like coffee'. Si quieres decir actualmente, la palabra correcta es 'currently'. Por ejemplo: 'I'm currently working from home'. Recuerda: 'actually' es para corregir o aclarar algo. ¿Tú también confundías estas palabras? ¡Sígueme para más tips!",
+  "english_phrases": [
+    "actually",
+    "Actually, I don't like coffee",
+    "currently",
+    "I'm currently working from home"
+  ],
+  "translations": {
+    "actually": "en realidad",
+    "currently": "actualmente",
+    "actually, i don't like coffee": "En realidad, no me gusta el café",
+    "i'm currently working from home": "Actualmente estoy trabajando desde casa"
+  },
+  "tip": "Actually es para corregir o aclarar, currently es para el presente",
+  "cta": "¿Tú también confundías estas palabras? ¡Sígueme para más tips!",
+  "hashtags": [
+    "#AprendeIngles",
+    "#FalseFriends",
+    "#Actually",
+    "#InglesBasico"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff001"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "type": "vocabulary",
+  "title": "Vocabulario: Pronunciación - Pull vs Pool",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "tirar",
+      "english": "pull"
+    },
+    {
+      "spanish": "piscina",
+      "english": "pool"
+    },
+    {
+      "spanish": "jalar",
+      "english": "pull"
+    },
+    {
+      "spanish": "aguas",
+      "english": "pool"
+    },
+    {
+      "spanish": "sujetar",
+      "english": "pull"
+    },
+    {
+      "spanish": "reflejar",
+      "english": "pool"
+    }
+  ],
+  "full_script": "Vocabulario: Pronunciación - Pull vs Pool. Tirar, pull. Piscina, pool. Jalar, pull. Aguas, pool. Sujetar, pull. Reflejar, pool.",
+  "translations": {
+    "pull": "tirar",
+    "pool": "piscina"
+  },
+  "english_phrases": [
+    "pull",
+    "pool"
+  ],
+  "hashtags": [
+    "#Pronunciación",
+    "#AprendeIngles",
+    "#InglésParaHispanohablantes"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr005",
+    "video_type": "vocabulary",
+    "generated_at": "2026-02-10T18:33:00.420907",
+    "model": "gpt-4o-mini"
+  }
+}

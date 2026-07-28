@@ -1,0 +1,28 @@
+{
+  "type": "quiz",
+  "question": "¿Qué significa 'fabric' en inglés?",
+  "options": {
+    "A": "'fábrica'",
+    "B": "'tela'",
+    "C": "'fabricar'",
+    "D": "'textura'"
+  },
+  "correct": "B",
+  "explanation": "'Fabric' significa tela. Por ejemplo: 'This shirt is made of cotton fabric' - Esta camisa está hecha de tela de algodón.",
+  "full_script": "¿Qué significa 'fabric' en inglés? ... A, 'fábrica'. ... B, 'tela'. ... C, 'fabricar'. ... D, 'textura'. ... Piensa bien... Tres... dos... uno... ¡Correcto! 'Fabric' significa tela. Por ejemplo: 'This shirt is made of cotton fabric' - Esta camisa está hecha de tela de algodón.",
+  "translations": {
+    "fabric": "tela"
+  },
+  "hashtags": [
+    "#QuizIngles",
+    "#AprendeIngles",
+    "#TestTuIngles"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff010",
+    "video_type": "quiz",
+    "generated_at": "2026-01-16T20:11:33.891168",
+    "model": "gpt-4o-mini"
+  }
+}

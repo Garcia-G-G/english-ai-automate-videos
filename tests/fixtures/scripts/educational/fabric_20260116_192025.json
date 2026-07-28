@@ -1,0 +1,58 @@
+{
+  "type": "educational",
+  "segments": [
+    {
+      "id": "hook",
+      "text": "¡Cuidado con la palabra 'fabric'!"
+    },
+    {
+      "id": "intro",
+      "text": "Muchos creen que significa 'fábrica'."
+    },
+    {
+      "id": "reveal",
+      "text": "Pero en realidad, 'fabric' significa 'tela'."
+    },
+    {
+      "id": "example1",
+      "text": "Por ejemplo: 'This fabric is soft' significa 'Esta tela es suave'."
+    },
+    {
+      "id": "example2",
+      "text": "La palabra correcta para 'fábrica' es 'factory'."
+    },
+    {
+      "id": "tip",
+      "text": "Piensa en 'fábrica' como un lugar para hacer cosas."
+    },
+    {
+      "id": "contrast",
+      "text": "Así que, recuerda, 'fabric' es para tela, no fábrica."
+    },
+    {
+      "id": "cta",
+      "text": "¿Conocías esta diferencia? ¡Comenta abajo!"
+    }
+  ],
+  "english_phrases": [
+    "fabric",
+    "tela",
+    "factory"
+  ],
+  "translations": {
+    "fabric": "tela",
+    "factory": "fábrica"
+  },
+  "hashtags": [
+    "#AprendeIngles",
+    "#FalseFriends",
+    "#InglesConTiktok"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff010",
+    "video_type": "educational",
+    "generated_at": "2026-01-16T19:20:25.021528",
+    "model": "gpt-4o-mini"
+  }
+}

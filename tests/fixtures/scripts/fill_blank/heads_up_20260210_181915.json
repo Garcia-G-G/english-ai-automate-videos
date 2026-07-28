@@ -1,0 +1,30 @@
+{
+  "type": "fill_blank",
+  "sentence": "Heads up - there's going to be ___ on the highway",
+  "blank_position": "traffic",
+  "options": [
+    "accidents",
+    "traffic",
+    "delays",
+    "construction"
+  ],
+  "correct": "traffic",
+  "explanation": "La frase 'Heads up - there's going to be traffic on the highway' significa que se está dando un aviso previo sobre la posibilidad de tráfico en la carretera. En inglés, 'heads up' se utiliza para alertar a alguien sobre algo que va a suceder. En este caso, la respuesta correcta es 'traffic', que se refiere a la congestión de vehículos en la carretera. Las otras opciones son incorrectas porque aunque pueden ser condiciones en la carretera, no son la respuesta adecuada para esta frase específica. Recuerda que usar 'heads up' es una forma coloquial de avisar a alguien.",
+  "full_script": "¡Hola a todos! Hoy vamos a practicar un poco de slang en inglés. Completa la frase: 'Heads up - there's going to be ___ on the highway. Ahora, elige entre estas opciones: 1. accidents 2. traffic 3. delays 4. construction. Piensa bien antes de responder... ¡Listo! La respuesta correcta es 'traffic. 'Heads up significa que se está dando un aviso previo sobre algo que va a suceder. ¡Sigue practicando tu inglés!",
+  "translation": "Aviso previo - habrá tráfico en la carretera",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprendeIngles",
+    "#GramaticaIngles"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl049",
+    "video_type": "fill_blank",
+    "generated_at": "2026-02-10T18:19:15.468217",
+    "model": "gpt-4o-mini"
+  },
+  "_validation_warnings": [
+    "Unbalanced single quotes (7)"
+  ]
+}
