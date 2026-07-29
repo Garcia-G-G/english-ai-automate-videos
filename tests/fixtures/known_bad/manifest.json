@@ -1,45 +1,65 @@
 {
-  "purpose": "Known-bad videos kept as regression cases for the schema validation and QA-gate work. Each entry records an observed, reproducible defect. Media is NOT versioned (see README).",
+  "purpose": "Known-bad cases kept as regression fixtures for the schema-validation, audio-segmentation and QA-gate work. Each entry records an observed, reproducible defect and the assertion that should catch it. Cases are grouped by the layer they live in, because they need different kinds of gate: acoustic defects are invisible to JSON inspection and require a waveform check.",
   "recorded_on": "2026-07-28",
-  "cases": [
+
+  "acoustic_cases": [
+    {
+      "id": "afabric_option_letter_elision",
+      "layer": "audio",
+      "summary": "The option letter is elided into the following word, so 'Opción A, fábrica' is heard as 'Opción afábrica' — the 'afabric' defect.",
+      "tts_input": "Escucha las opciones. Opción A, fábrica. Opción B, tela. Opción C, fabricar. Opción D, textura.",
+      "source_script": "scripts/quiz/fabric_20260116_201133.json",
+      "mechanism": {
+        "detail": "src/tts_elevenlabs.py builds f'Opción {letter}, {word}.' per option, joins all four plus the transition line with ' ', and sends the whole thing in ONE TTS call. The letter and the word are separated only by a comma inside a single utterance, so the model elides the bare vowel into the word that follows it.",
+        "sites": [
+          "src/tts_elevenlabs.py:562  option_lines.append(f\"Opción {letter}, {word}.\")",
+          "src/tts_elevenlabs.py:565  combined_text = \" \".join(option_lines)",
+          "src/tts_elevenlabs.py:570  generate_segment_audio(text=combined_text, ...)"
+        ],
+        "verified_at_commit": "afd5c19"
+      },
+      "assertion": "At least 250 ms of silence between each option letter and its word (4 boundaries: A/fábrica, B/tela, C/fabricar, D/textura).",
+      "status": "FAILS BY CONSTRUCTION at current HEAD",
+      "notes": [
+        "NOT detectable from any script JSON. The script is well-formed; the defect exists only in the rendered waveform. This is why the QA gate for it must be waveform-based rather than schema-based.",
+        "Not specific to the fabric quiz. Every quiz built by generate_quiz_audio_segmented has the same construction, so this input is a representative, not an outlier.",
+        "Stored as an input string plus an assertion, not as a media file, so it survives the audio-segmentation rework: today it must fail, afterwards it must pass. That before/after is the point of keeping it."
+      ]
+    }
+  ],
+
+  "schema_cases": [
     {
       "id": "fabric_educational_20260116_192025",
+      "layer": "script_json",
+      "summary": "Three independent script-level defects in one file. Unrelated to the 'afabric' acoustic defect above — they share a topic, not a root cause.",
       "script": "scripts/educational/fabric_20260116_192025.json",
       "source_media": "output/pending/educational/fabric_20260116_192025.mp4",
       "video_type": "educational",
       "defects": [
         {
           "kind": "missing_required_field",
-          "detail": "script has no 'full_script'; only 'segments'. The educational renderer falls back to estimating word timings from segments.",
-          "gate": "schema validation must reject a script with no full_script"
+          "detail": "No 'full_script' key; the script carries only 'segments'. The educational renderer falls back to estimating word timings from segments.",
+          "assertion": "schema validation must reject an educational script with no full_script"
         },
         {
-          "kind": "spanish_word_in_english_phrases",
-          "detail": "english_phrases = ['fabric', 'tela', 'factory'] — 'tela' is Spanish and gets rendered with English styling and an anglo accent.",
-          "gate": "english_phrases must not contain Spanish tokens"
+          "kind": "spanish_token_in_english_phrases",
+          "detail": "english_phrases = ['fabric', 'tela', 'factory']. 'tela' is Spanish, so it gets English styling in the renderer and an anglo accent in TTS. Same failure class as commit de81e7f.",
+          "assertion": "english_phrases must contain no Spanish tokens"
         },
         {
           "kind": "zero_word_timestamps",
-          "detail": "companion TTS JSON has words: [] (0 entries).",
-          "gate": "educational output must carry word timestamps"
+          "detail": "The companion TTS JSON has words: [] (0 entries), so there is nothing to drive word-level karaoke.",
+          "assertion": "educational TTS output must carry a non-empty words array"
         }
       ]
-    },
-    {
-      "id": "fabric_quiz_20260116_201133",
-      "script": "scripts/quiz/fabric_20260116_201133.json",
-      "source_media": "output/pending/quiz/fabric_20260116_201133.mp4",
-      "video_type": "quiz",
-      "defects": [
-        {
-          "kind": "same_topic_as_known_bad_educational",
-          "detail": "the 'fabric' pair; kept together so a fix can be checked against both renderers.",
-          "gate": "n/a - companion case"
-        }
-      ]
-    },
+    }
+  ],
+
+  "render_cases": [
     {
       "id": "cool_20260416_084217",
+      "layer": "render",
       "script": "scripts/quiz/cool_20260416_084217.json",
       "source_media": "output/pending/quiz/cool_20260416_084217.mp4",
       "video_type": "quiz",
@@ -47,13 +67,14 @@
       "defects": [
         {
           "kind": "render_timeout",
-          "detail": "dashboard job timed out at 600s on 2026-04-16. Cause: undrained ffmpeg stderr PIPE deadlock, fixed in d96c65b. Renders in 124.1s today (1107 frames, 0.1121 s/frame) — the slowest whole-video rate measured, and the basis for the 1200s timeout arithmetic.",
-          "gate": "must render end-to-end within the render timeout"
+          "detail": "Dashboard job timed out at 600s on 2026-04-16. Root cause: undrained ffmpeg stderr PIPE deadlock, fixed in d96c65b. Renders in 124.1s today (1107 frames, 0.1121 s/frame) — the slowest whole-video rate measured, and the basis for the RENDER_TIMEOUT_S arithmetic.",
+          "assertion": "must render end-to-end within the render timeout"
         }
       ]
     },
     {
       "id": "scared_stiff_20260416_083126",
+      "layer": "render",
       "script": "scripts/quiz/scared_stiff_20260416_083126.json",
       "source_media": "output/pending/quiz/scared_stiff_20260416_083126.mp4",
       "video_type": "quiz",
@@ -61,13 +82,14 @@
       "defects": [
         {
           "kind": "render_timeout",
-          "detail": "timed out at 600s; its partial mp4 stops at 867 of 1083 frames, which is how the deadlock was identified. Renders in 91s today.",
-          "gate": "must render end-to-end within the render timeout"
+          "detail": "Timed out at 600s. Its partial mp4 stops at 867 of 1083 frames, which is the evidence that identified the deadlock. Renders in 91s today.",
+          "assertion": "must render end-to-end within the render timeout"
         }
       ]
     },
     {
       "id": "lay_vs_lie_20260416_082045",
+      "layer": "render",
       "script": "scripts/quiz/lay_vs_lie_20260416_082045.json",
       "source_media": "output/pending/quiz/lay_vs_lie_20260416_082045.mp4",
       "video_type": "quiz",
@@ -75,8 +97,8 @@
       "defects": [
         {
           "kind": "render_timeout",
-          "detail": "timed out at 600s; partial mp4 stops at 939 of 1083 frames.",
-          "gate": "must render end-to-end within the render timeout"
+          "detail": "Timed out at 600s. Partial mp4 stops at 939 of 1083 frames.",
+          "assertion": "must render end-to-end within the render timeout"
         }
       ]
     }
