@@ -22,8 +22,6 @@ import argparse
 import fnmatch
 import json
 import logging
-import os
-import subprocess
 import sys
 import time
 from datetime import datetime
@@ -83,107 +81,17 @@ from script_generator import (
     save_script,
     VIDEO_TYPES
 )
+from pipeline import (
+    PipelineError,
+    generate_tts,
+    merge_script_into_tts,
+    render_video,
+    resolve_background,
+    resolve_profile,
+)
 
-
-def run_tts(text: str, audio_path: Path, script_data: dict = None, use_openai: bool = True, script_path: Path = None) -> tuple:
-    """Run TTS to generate audio and timestamps.
-
-    Args:
-        text: Text to convert to speech
-        audio_path: Output path for audio file
-        script_data: Script metadata to merge into timestamps
-        use_openai: Use OpenAI TTS (default: True, more reliable)
-        script_path: Path to script JSON (enables automatic English detection)
-    """
-    from dotenv import load_dotenv
-    load_dotenv()
-
-    from tts_providers import get_tts_provider
-
-    logger.info("=" * 50)
-    logger.info("STEP 2: Generating Audio (TTS)")
-    logger.info("=" * 50)
-    logger.info("Output: %s", audio_path)
-
-    # Get TTS provider from environment (default: elevenlabs)
-    provider_name = os.getenv("TTS_PROVIDER", "elevenlabs").lower()
-
-    # "openai" flag from legacy callers
-    if provider_name not in ("elevenlabs", "google", "openai", "edge"):
-        provider_name = "openai" if use_openai else "edge"
-
-    logger.info("Engine: %s", provider_name)
-
-    try:
-        provider = get_tts_provider(provider_name)
-
-        if script_data:
-            # Primary path: generate from structured script data
-            result = provider.generate_from_script(
-                script_data, str(audio_path),
-                script_path=str(script_path) if script_path else None,
-            )
-        else:
-            # Simple text-only path
-            result = provider.generate_audio(text, str(audio_path))
-
-    except Exception as e:
-        logger.error("TTS failed (%s): %s", provider_name, e)
-        # Fallback to Edge TTS if primary provider fails
-        if provider_name != "edge":
-            logger.warning("Falling back to Edge TTS...")
-            return run_tts(text, audio_path, script_data, use_openai=False)
-        return None, None
-
-    # Merge script data with TTS result for video generation
-    json_path = audio_path.with_suffix('.json')
-    if json_path.exists() and script_data:
-        with open(json_path, 'r', encoding='utf-8') as f:
-            tts_data = json.load(f)
-
-        # Merge all script_data into TTS data
-        for key, value in script_data.items():
-            if key not in tts_data or key != 'words':  # Don't overwrite words from TTS
-                tts_data[key] = value
-
-        with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(tts_data, f, ensure_ascii=False, indent=2)
-
-    return audio_path, json_path
-
-
-def run_video(audio_path: Path, data_path: Path, video_path: Path,
-              video_type: str = None, background: str = None) -> Path:
-    """Run video generator."""
-    cmd = [
-        "python3", "-m", "video",
-        "-a", str(audio_path),
-        "-d", str(data_path),
-        "-o", str(video_path)
-    ]
-
-    if video_type:
-        cmd.extend(["-t", video_type])
-    if background:
-        cmd.extend(["-b", background])
-
-    logger.info("=" * 50)
-    logger.info("STEP 3: Generating Video")
-    logger.info("=" * 50)
-    logger.info("Type: %s", video_type or 'auto-detect')
-    if background:
-        logger.info("Background: %s", background)
-    logger.info("Output: %s", video_path)
-
-    result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(SRC))
-
-    if result.returncode != 0:
-        logger.error("Video generation failed: %s", result.stderr)
-        logger.debug("Stdout: %s", result.stdout)
-        return None
-
-    logger.debug(result.stdout)
-    return video_path
+# Active audience profile (adults/kids), resolved in main()
+ACTIVE_PROFILE = {}
 
 
 def load_script(script_path: Path) -> dict:
@@ -296,8 +204,12 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None, pl
         logger.error("Upload failed: %s", e)
 
 
-def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None, upload: bool = False) -> Path:
+def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None,
+                 upload: bool = False, use_v2: bool = False, dry_run: bool = False) -> Path:
     """Run the full pipeline from script to video."""
+
+    # Profile default background (e.g. kids clips) when none was requested
+    background = resolve_background(ACTIVE_PROFILE, background)
 
     # Initialize cost tracker for this video
     try:
@@ -313,27 +225,32 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
     # Get organized output paths
     script_path, audio_path, tts_json_path, video_path = get_output_paths(video_type, output_name)
 
-    # Extract text for TTS
-    full_script = script_data.get('full_script', '')
-    if not full_script:
-        logger.error("Script has no 'full_script' field")
-        return None
-
     # Save script first so TTS can use automatic English detection
     with open(script_path, 'w', encoding='utf-8') as f:
         json.dump(script_data, f, ensure_ascii=False, indent=2)
     logger.info("Script saved: %s", script_path.relative_to(ROOT))
 
     # Step 2: TTS (pass script_path for automatic English detection)
-    audio_result, json_path = run_tts(full_script, audio_path, script_data, script_path=script_path)
-    if not audio_result or not audio_result.exists():
-        logger.error("TTS failed!")
+    try:
+        audio_result, json_path = generate_tts(
+            script_data, audio_path, script_path=script_path, dry_run=dry_run)
+    except (PipelineError, ValueError) as e:
+        logger.error("TTS failed: %s", e)
         return None
 
+    if dry_run:
+        logger.info("Dry run — stopping before audio/video generation")
+        return None
+
+    merge_script_into_tts(script_data, json_path)
+
     # Step 3: Video
-    video_result = run_video(audio_result, json_path, video_path, video_type, background)
-    if not video_result or not video_result.exists():
-        logger.error("Video generation failed!")
+    try:
+        video_result = render_video(audio_result, json_path, video_path,
+                                    video_type=video_type, background=background,
+                                    use_v2=use_v2)
+    except PipelineError as e:
+        logger.error("Video generation failed: %s", e)
         return None
 
     logger.info("=" * 50)
@@ -359,7 +276,8 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
     return video_result
 
 
-def run_from_text(text: str, name: str = None, video_type: str = "educational", background: str = None, upload: bool = False) -> Path:
+def run_from_text(text: str, name: str = None, video_type: str = "educational", background: str = None,
+                  upload: bool = False, use_v2: bool = False, dry_run: bool = False) -> Path:
     """Run pipeline directly from text input."""
     if not name:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -372,10 +290,13 @@ def run_from_text(text: str, name: str = None, video_type: str = "educational", 
         "translations": {}
     }
 
-    return run_pipeline(script_data, name, video_type, background, upload=upload)
+    return run_pipeline(script_data, name, video_type, background, upload=upload,
+                        use_v2=use_v2, dry_run=dry_run)
 
 
-def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational", background: str = None, upload: bool = False) -> Path:
+def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational",
+                     background: str = None, upload: bool = False, use_v2: bool = False,
+                     dry_run: bool = False) -> Path:
     """Generate a script with GPT and run the full pipeline."""
 
     logger.info("=" * 50)
@@ -418,7 +339,8 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
     logger.info("  Script: %s...", script_data.get('full_script', 'N/A')[:100])
 
     # Run rest of pipeline
-    return run_pipeline(script_data, output_name, video_type, background, upload=upload)
+    return run_pipeline(script_data, output_name, video_type, background, upload=upload,
+                        use_v2=use_v2, dry_run=dry_run)
 
 
 def main():
@@ -463,17 +385,30 @@ Examples:
                         help="Output name (without extension)")
     parser.add_argument("--background", "--bg", type=str, default=None,
                         help="Background preset (e.g. aurora_borealis, energetic_orbs). Default: random")
+    parser.add_argument("--profile", type=str, default=None,
+                        choices=["adults", "kids"],
+                        help="Audience profile (voice, backgrounds, topics). Default: config.yaml profile")
     parser.add_argument("--batch", "-b", type=int,
                         help="Generate multiple videos from random topics")
     parser.add_argument("--upload", "-u", action="store_true",
                         help="Upload video to configured platforms after generation")
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="Enable verbose/debug logging")
+    parser.add_argument("--v2", action="store_true",
+                        help="Use the v2 render engine (educational only; "
+                             "other types fall back to v1)")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Resolve and log the TTS plan (provider, model, voice, "
+                             "per-segment language_code) without calling any API")
 
     args = parser.parse_args()
 
     # Configure logging
     setup_logging(verbose=args.verbose)
+
+    # Resolve audience profile (arg > env VIDEO_PROFILE > config.yaml > adults)
+    global ACTIVE_PROFILE
+    ACTIVE_PROFILE = resolve_profile(args.profile)
 
     # List scripts mode
     if args.list_scripts:
@@ -509,15 +444,18 @@ Examples:
             print(f"# VIDEO {i+1} of {args.batch} [{args.type}]")
             print(f"{'#'*50}")
 
-            category, topic = get_random_topic()
+            category, topic = get_random_topic(
+                allowed_categories=ACTIVE_PROFILE.get("content", {}).get("categories"))
             topic_name = get_topic_name(topic)
-            generate_and_run(category, topic, topic_name, args.type, args.background, upload=args.upload)
+            generate_and_run(category, topic, topic_name, args.type, args.background,
+                             upload=args.upload, use_v2=args.v2, dry_run=args.dry_run)
         return
 
     # Text mode
     if args.text:
         name = args.name or None
-        run_from_text(args.text, name, args.type, args.background, upload=args.upload)
+        run_from_text(args.text, name, args.type, args.background, upload=args.upload,
+                      use_v2=args.v2, dry_run=args.dry_run)
         return
 
     # Script mode (use existing script)
@@ -532,20 +470,24 @@ Examples:
 
         # Use script's type unless overridden
         video_type = args.type if args.type != "educational" else script_data.get('type', 'educational')
-        run_pipeline(script_data, name, video_type, args.background, upload=args.upload)
+        run_pipeline(script_data, name, video_type, args.background, upload=args.upload,
+                     use_v2=args.v2, dry_run=args.dry_run)
         return
 
     # Category + Topic mode (generate with GPT)
     if args.category and args.topic:
         topic = find_topic(args.category, args.topic)
-        generate_and_run(args.category, topic, args.topic, args.type, args.background, upload=args.upload)
+        generate_and_run(args.category, topic, args.topic, args.type, args.background,
+                         upload=args.upload, use_v2=args.v2, dry_run=args.dry_run)
         return
 
     # Random mode (generate with GPT)
     if args.random:
-        category, topic = get_random_topic()
+        category, topic = get_random_topic(
+            allowed_categories=ACTIVE_PROFILE.get("content", {}).get("categories"))
         topic_name = get_topic_name(topic)
-        generate_and_run(category, topic, topic_name, args.type, args.background, upload=args.upload)
+        generate_and_run(category, topic, topic_name, args.type, args.background,
+                         upload=args.upload, use_v2=args.v2, dry_run=args.dry_run)
         return
 
     # No arguments - show help

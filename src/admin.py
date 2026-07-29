@@ -17,7 +17,6 @@ import time
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
-import subprocess
 import uuid
 
 logger = logging.getLogger(__name__)
@@ -37,6 +36,10 @@ from script_generator import (
     load_topics,
     VIDEO_TYPES
 )
+
+# Shared pipeline — the SAME TTS dispatch, merge and renderer the CLI uses.
+import pipeline
+from cost_tracker import reset_tracker
 
 # Output directories
 OUTPUT_DIR = ROOT / "output"
@@ -132,17 +135,33 @@ def get_job_history(limit: int = 5) -> list:
 # ============== PIPELINE WITH PROGRESS TRACKING ==============
 
 def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = None,
-                                topic_name: str = None) -> dict:
+                                topic_name: str = None, script_data: dict = None,
+                                background: str = None, dry_run: bool = False) -> dict:
+    """Generate one video through the shared pipeline (src/pipeline.py).
+
+    Same TTS dispatch, same merge and same renderer as main.py — only the
+    output layout differs (videos land in output/pending/<type>/ for review).
+
+    Args:
+        script_data: Use this script instead of generating one with GPT.
+        dry_run:     Resolve and log the TTS plan only; no API calls, no render.
+    """
     result = {"success": False, "video_path": None, "error": None}
 
     try:
         update_job(job_id, status="running", step_number=1,
                    current_step="Selecting topic...", progress=5)
 
-        if category and topic_name:
+        # Audience profile (voice, backgrounds, topics) — same resolution as the CLI
+        profile = pipeline.resolve_profile()
+
+        if script_data is not None:
+            topic_name = topic_name or script_data.get("word") or script_data.get("topic") or "script"
+        elif category and topic_name:
             topic = find_topic(category, topic_name)
         else:
-            category, topic = get_random_topic()
+            category, topic = get_random_topic(
+                allowed_categories=profile.get("content", {}).get("categories"))
             topic_name = (topic.get("english") or topic.get("topic") or topic.get("wrong")
                          or topic.get("word") or topic.get("sentence") or str(topic))
 
@@ -150,16 +169,20 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                    current_step=f"Topic: '{topic_name}'", progress=10)
 
         # Step 2: Generate script
-        update_job(job_id, step_number=2,
-                   current_step="Generating script with GPT...", progress=15)
-
-        script_data = generate_script(category, topic, video_type)
+        if script_data is None:
+            update_job(job_id, step_number=2,
+                       current_step="Generating script with GPT...", progress=15)
+            script_data = generate_script(category, topic, video_type)
 
         import re as _re
         output_name = _re.sub(r'[^\w\-]', '_', topic_name).strip('_').lower()
         output_name = _re.sub(r'_+', '_', output_name)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         unique_name = f"{output_name}_{timestamp}"
+
+        # Cost tracking for this video (TTS now runs in-process, so the
+        # tracker survives long enough to be saved).
+        tracker = reset_tracker(video_id=unique_name)
 
         script_dir = SCRIPTS_DIR / video_type
         script_dir.mkdir(parents=True, exist_ok=True)
@@ -170,94 +193,50 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
 
         update_job(job_id, current_step=f"Script generated", progress=30)
 
-        # Step 3: Generate TTS audio
-        tts_provider = os.getenv("TTS_PROVIDER", "elevenlabs").lower()
-        tts_modules = {
-            "elevenlabs": "tts_elevenlabs",
-            "openai": "tts_openai",
-            "google": "tts_google",
-            "edge": "tts",
-        }
-        tts_module = tts_modules.get(tts_provider, "tts_elevenlabs")
-
+        # Step 3: Generate TTS audio.
+        # The TTS input is script_path (under output/scripts/); its output is
+        # audio_path + audio_path.json.  Distinct files on purpose — the old
+        # code passed a copy of the script at the audio JSON path, which the
+        # TTS then overwrote with its own result.
         update_job(job_id, step_number=3,
-                   current_step=f"Generating audio ({tts_provider})...", progress=35)
+                   current_step=f"Generating audio ({pipeline.resolve_provider_name()})...",
+                   progress=35)
 
         audio_dir = AUDIO_DIR / video_type
         audio_dir.mkdir(parents=True, exist_ok=True)
         audio_path = audio_dir / f"{unique_name}.mp3"
 
-        full_script = script_data.get('full_script', '')
-        if not full_script or len(full_script.strip()) < 10:
-            raise Exception(f"Script text too short ({len(full_script)} chars)")
+        audio_path, json_path = pipeline.generate_tts(
+            script_data, audio_path, script_path=script_path, dry_run=dry_run)
 
-        tts_script_path = audio_dir / f"{unique_name}.json"
-        with open(tts_script_path, 'w', encoding='utf-8') as f:
-            json.dump(script_data, f, ensure_ascii=False, indent=2)
-
-        tts_cmd = [
-            "python3", str(ROOT / "src" / f"{tts_module}.py"),
-            "--script", str(tts_script_path.resolve()),
-            "-o", str(audio_path.resolve())
-        ]
-
-        tts_env = os.environ.copy()
-        tts_env["PYTHONPATH"] = str(ROOT / "src")
-
-        tts_result = subprocess.run(tts_cmd, capture_output=True, text=True,
-                                    timeout=300, cwd=str(ROOT), env=tts_env)
-
-        if tts_result.returncode != 0:
-            raise Exception(f"TTS failed: {tts_result.stderr[-500:]}")
-        if not audio_path.exists():
-            raise Exception(f"Audio file not created")
-        if audio_path.stat().st_size < 1000:
-            raise Exception(f"Audio file too small ({audio_path.stat().st_size} bytes)")
+        if dry_run:
+            update_job(job_id, current_step="Dry run complete", progress=100)
+            complete_job(job_id, success=True)
+            result["success"] = True
+            result["dry_run"] = True
+            return result
 
         update_job(job_id, current_step="Audio generated", progress=55)
 
-        # Merge script data with TTS timestamps
-        json_path = audio_path.with_suffix('.json')
-        if json_path.exists():
-            with open(json_path, 'r', encoding='utf-8') as f:
-                tts_data = json.load(f)
-            for key, value in script_data.items():
-                if key not in ('words', 'segments', 'duration', 'segment_times'):
-                    tts_data[key] = value
-            with open(json_path, 'w', encoding='utf-8') as f:
-                json.dump(tts_data, f, ensure_ascii=False, indent=2)
+        pipeline.merge_script_into_tts(script_data, json_path)
 
         # Step 4: Render video
         update_job(job_id, step_number=4,
                    current_step="Rendering video...", progress=60)
 
-        json_path = audio_path.with_suffix('.json')
-        if not json_path.exists():
-            raise Exception(f"TTS data file missing")
+        video_path = PENDING_DIR / video_type / f"{unique_name}.mp4"
 
-        pending_type_dir = PENDING_DIR / video_type
-        pending_type_dir.mkdir(parents=True, exist_ok=True)
-        video_path = pending_type_dir / f"{unique_name}.mp4"
-
-        video_cmd = [
-            "python3", "-m", "video",
-            "-a", str(audio_path.resolve()),
-            "-d", str(json_path.resolve()),
-            "-o", str(video_path.resolve()),
-            "-t", video_type
-        ]
-
-        video_result = subprocess.run(video_cmd, capture_output=True, text=True,
-                                      cwd=str(ROOT / "src"), timeout=600)
-
-        if video_result.returncode != 0:
-            raise Exception(f"Video render failed: {video_result.stderr[-500:]}")
-        if not video_path.exists():
-            raise Exception("Video file not created")
-        if video_path.stat().st_size < 1000:
-            raise Exception(f"Video file too small ({video_path.stat().st_size} bytes)")
+        pipeline.render_video(
+            audio_path, json_path, video_path,
+            video_type=video_type,
+            background=pipeline.resolve_background(profile, background),
+            timeout=pipeline.RENDER_TIMEOUT_S,
+        )
 
         update_job(job_id, current_step="Video rendered", progress=95)
+
+        if tracker and tracker.entries:
+            tracker.save()
 
         # Save metadata
         meta_path = video_path.with_suffix('.json')
@@ -275,6 +254,13 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         result["video_path"] = str(video_path)
         complete_job(job_id, success=True, video_path=str(video_path))
 
+    except pipeline.PipelineError as e:
+        # Already carries the renderer's own output — a Python traceback of the
+        # subprocess wrapper would only bury it.
+        error_msg = str(e)
+        result["error"] = error_msg
+        complete_job(job_id, success=False, error=error_msg[:2000])
+        logger.error("[Pipeline ERROR]: %s", error_msg)
     except Exception as e:
         import traceback
         error_msg = f"{str(e)}\n{traceback.format_exc()}"

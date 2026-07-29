@@ -49,10 +49,29 @@ class ElevenLabsTTSProvider(TTSProvider):
                 script=script_data, output_path=output_path, voice_id=voice_id,
             )
         else:
-            # educational, pronunciation — single TTS call
+            # educational, pronunciation — segment-based bilingual TTS.
+            # Each ES/EN segment is generated with an explicit language_code
+            # so the Spanish narration keeps a native accent and only the
+            # marked English terms get an anglo accent (see tts_bilingual).
             text = script_data.get('full_script', '')
             if not text:
                 raise ValueError("Script missing 'full_script' field")
+
+            import os as _os
+            use_bilingual = _os.getenv(
+                "ELEVENLABS_BILINGUAL", "1").strip() not in ("0", "false")
+            if use_bilingual:
+                try:
+                    from tts_bilingual import generate_bilingual_narration
+                    result = generate_bilingual_narration(
+                        script_data, output_path, voice_id=voice_id)
+                    self.copy_script_metadata(script_data, result)
+                    self.save_json(output_path, result)
+                    return result
+                except Exception as e:
+                    logger.warning(
+                        "Bilingual segment TTS failed (%s) — falling back to "
+                        "legacy single-call path", e)
 
             from tts_common import clean_for_tts
             tts_text = clean_for_tts(text)
