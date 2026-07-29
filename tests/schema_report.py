@@ -27,6 +27,10 @@ def main() -> int:
     rows = []
     for path in sorted(FIXTURES.glob("*/*.json")):
         video_type = path.parent.name
+        if video_type == "current":
+            # Present-tense tier; its type comes from the filename, and it is
+            # reported by tests/test_current_fixtures.py instead.
+            continue
         data = json.loads(path.read_text(encoding="utf-8"))
         _, errors, warnings = check_script(
             data, video_type=video_type, source=str(path.relative_to(ROOT)))

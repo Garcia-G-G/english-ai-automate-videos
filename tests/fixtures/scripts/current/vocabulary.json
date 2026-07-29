@@ -1,0 +1,76 @@
+{
+  "type": "vocabulary",
+  "video_title": "¡Inglés de Restaurante que NECESITAS! 🍽️",
+  "video_description": "¿Listo para ordenar en inglés? 🤔 Aprende vocabulario útil y sorprende en tu próxima salida. ¡Sigue para más! ✨",
+  "title": "Vocabulario: Inglés de Comida/Restaurante",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "la cuenta",
+      "english": "the bill"
+    },
+    {
+      "spanish": "el mesero",
+      "english": "the waiter"
+    },
+    {
+      "spanish": "la propina",
+      "english": "the tip"
+    },
+    {
+      "spanish": "el menú",
+      "english": "the menu"
+    },
+    {
+      "spanish": "la comida",
+      "english": "the food"
+    },
+    {
+      "spanish": "la bebida",
+      "english": "the drink"
+    },
+    {
+      "spanish": "reservar",
+      "english": "to reserve"
+    },
+    {
+      "spanish": "la mesa",
+      "english": "the table"
+    }
+  ],
+  "full_script": "Vocabulario en el restaurante. La cuenta, the bill. El mesero, the waiter. La propina, the tip. El menú, the menu. La comida, the food. La bebida, the drink. Reservar, to reserve. La mesa, the table.",
+  "translations": {
+    "the bill": "la cuenta",
+    "the waiter": "el mesero",
+    "the tip": "la propina",
+    "the menu": "el menú",
+    "the food": "la comida",
+    "the drink": "la bebida",
+    "to reserve": "reservar",
+    "the table": "la mesa"
+  },
+  "english_phrases": [
+    "the bill",
+    "the waiter",
+    "the tip",
+    "the menu",
+    "the food",
+    "the drink",
+    "to reserve",
+    "the table"
+  ],
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#Vocabulario",
+    "#InglésDeComida",
+    "#Restaurante"
+  ],
+  "_meta": {
+    "category": "food_restaurant",
+    "topic_id": "food001",
+    "video_type": "vocabulary",
+    "generated_at": "2026-07-29T13:18:41.811682",
+    "model": "gpt-4o-mini"
+  }
+}

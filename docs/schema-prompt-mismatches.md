@@ -37,9 +37,20 @@ Every fixture in the corpus except three is older than both:
 
 **Consequence:** for anything the prompts gained after 2026-03-17, the corpus
 contains evidence for `quiz` and for no other type. Absence of a post-2026-03
-field in a January fixture is age, not refusal. Several items below are marked
-UNDECIDABLE for this reason, and the honest fix is to capture one fresh
-generation per type — not to guess from the corpus.
+field in a January fixture is age, not refusal.
+
+### Resolved 2026-07-29 by a fresh generation
+
+One script per type was generated from the prompts at HEAD and stored as a
+separate tier, `tests/fixtures/scripts/current/`
+(`tests/regenerate_current_fixtures.py`, ~$0.003, script generation only).
+This closed every UNDECIDABLE below, and answered the larger question the
+historical corpus could not: **all 6/6 current scripts validate clean against
+the schema, with zero lint warnings.** The schema derived from history accepts
+present-tense output.
+
+It also surfaced M11, a live bug that the historical corpus had no way to
+show.
 
 ---
 
@@ -66,9 +77,14 @@ historical fixtures to enforce something the generator already guarantees.
 Only `metadata_generator.py:75-76` reads them, and it reads with a `""`
 default.
 
-**Follow-up:** UNDECIDABLE until one fresh generation per type is captured.
-If a non-quiz type turns out to systematically drop `video_title`, that is a
-prompt bug worth fixing at the prompt, and the schema should then require it.
+**RESOLVED 2026-07-29.** All six freshly generated scripts carry a non-empty
+`video_title` **and** `video_description`. There is no prompt bug and no
+type-specific gap; the historical absence was purely age.
+
+The schema keeps both Optional so the historical tier still validates, and
+`tests/test_current_fixtures.py::test_publishing_metadata_is_emitted_by_every_type`
+pins the present-tense contract instead. That split is the point of having
+two tiers: the model tolerates history, the test enforces today.
 
 ---
 
@@ -83,10 +99,19 @@ not in any renderer. Only the root-level `question` / `options` / `correct` /
 `explanation` are ever rendered, so elements `[1]` and `[2]` are generated,
 billed, and discarded. A "3-question quiz" renders one question.
 
-Corpus: `questions` present in all 3 post-2026-03-17 quizzes (so GPT does
-comply); `statements` and `sentences` present in zero fixtures, but every
-true_false and fill_blank fixture predates the prompt that asks for them —
-UNDECIDABLE whether those two are emitted today.
+Historical corpus: `questions` present in all 3 post-2026-03-17 quizzes;
+`statements` and `sentences` present in zero fixtures, but every true_false
+and fill_blank fixture predates the prompt that asks for them.
+
+**RESOLVED 2026-07-29.** The fresh generation emits all three arrays, 3 items
+each, on all three types. GPT complies fully. So the payload is dead **in the
+reader, not the writer**: elements `[1]` and `[2]` are generated, billed, and
+discarded on every quiz, true_false and fill_blank the pipeline produces. A
+"3-question quiz" renders exactly one question.
+
+That reframes the deletion decision. It is not "strip an unused field" — it
+is "either wire up questions 2 and 3, or stop paying GPT to write them."
+Still out of scope for this step; recorded so the choice is made on the facts.
 
 **Ruling: encoded OPTIONAL with a `DEAD PAYLOAD` comment at each of the three
 sites, and not deleted.** Deleting them is a content decision (does the
@@ -110,8 +135,14 @@ containing 3 or 4:
 | pronunciation | `:535` | 3 (hardcoded literal) |
 | vocabulary | `:580` | 3 |
 
-GPT follows the example over the rule: **all 12 fixtures carry 3–5 hashtags,
-none carries 5–7.**
+Historically GPT followed the example over the rule: **all 12 historical
+fixtures carry 3–5 hashtags, none carries 5–7.**
+
+**RESOLVED 2026-07-29 — current output complies.** All six fresh scripts carry
+exactly 5 hashtags. Today's model follows the rule and ignores the
+contradictory example, so this is a latent prompt defect rather than a live
+one. The contradiction is still worth removing, because nothing guarantees the
+next model resolves it the same way.
 
 **Ruling: lint, not schema.** Hashtag count is decoration; it cannot make a
 lesson wrong. `ScriptBase.lint()` reports it. The fix belongs in the prompts.
@@ -133,6 +164,10 @@ The slice can only ever yield `#AprendeIngles`, so the duplicate is
 unconditional. `quiz/accepting_invitations.json` shows it verbatim:
 `["#QuizIngles", "#AprendeIngles", "#TestTuIngles", "#AprendeIngles"]` — a
 4-item list carrying 3 distinct tags.
+
+**Latent as of 2026-07-29:** none of the six fresh scripts contains a
+duplicate — GPT silently dropped the repeat rather than copying the example.
+The generator bug is still there; only the model's tolerance is hiding it.
 
 **Ruling: lint (`hashtags contains duplicates`).** The real fix is `[:2]` or a
 dedupe in `_category_hashtags`, and it belongs in a prompt commit, not here.
@@ -221,6 +256,57 @@ Stated as ABSOLUTE in the prompts, checked by nothing:
 - educational rule 1 (`:232`): English words must be inside single quotes.
   This is the rule the quote mangler at `:642-643` was supposed to protect and
   does not — **task 4**.
+
+---
+
+## M11 — `correct: false` is read as "missing", and skips the whole cleaner
+
+Found by the fresh generation, not by the historical corpus — which is the
+best argument for having generated it.
+
+`tests/fixtures/scripts/current/true_false.json` carries
+`"correct": false` (a real JSON boolean, first statement is FALSE) and *also*
+carries `"_validation_errors": ["Missing required field: correct"]`.
+
+The required-field check at `script_generator.py:630-632` is:
+
+```python
+for field in required_fields.get(video_type, ["full_script"]):
+    if field not in script or not script[field]:
+        errors.append(f"Missing required field: {field}")
+```
+
+`not False` is `True`. A legitimate `correct: false` is indistinguishable
+from a missing key.
+
+**The consequence is not a spurious log line.** `validate_and_clean_script`
+returns early at `:634-636` the moment `errors` is non-empty, so everything
+below that point is skipped for the affected script:
+
+- quote normalisation (`:640-643`)
+- the unbalanced-quote repair (`:646-665`)
+- the `english_phrases` scrape (`:667-680`)
+- whitespace / punctuation cleanup for TTS (`:682-687`)
+- **the Spanish-countdown check and auto-fix (`:689-699`)** — so a true_false
+  script that counts down in English ships that way
+- `script["full_script"] = full_script.strip()` (`:701`)
+- the `video_title` / `video_description` fallbacks (`:703-714`)
+- hashtag normalisation (`:716-725`)
+
+This fires on **any true_false video whose first statement is false** —
+roughly half of them, since prompt rule 2 (`:380`) explicitly demands a mix of
+true and false. Those videos have silently bypassed the entire cleaning stage
+for as long as `correct` has been in `required_fields`.
+
+`0` of the historical fixtures show it: the only true_false fixture is from
+2026-01-13 and has no `_validation_errors` key at all, so the check either
+postdates it or `required_fields` did. The bug is live at HEAD and was
+reproduced on the first fresh generation.
+
+**Ruling: fixed by task 2.** A presence check must test presence
+(`field not in script`), not truthiness — and the pydantic model already does
+exactly that, since `StrictBool` accepts `False` as a valid value. This is a
+concrete example of the class of bug the schema replaces.
 
 ---
 

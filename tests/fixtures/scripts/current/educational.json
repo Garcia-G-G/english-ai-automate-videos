@@ -1,0 +1,49 @@
+{
+  "type": "educational",
+  "video_title": "¡Cuidado! 'Actually' NO significa lo que piensas 😱 #FalseFriends",
+  "video_description": "¡Aprende sobre los 'false friends'! 🤓💬 Practica con nosotros y mejora tu inglés. #LearnEnglish",
+  "hook": "¿Sabías que 'actually' NO significa lo que crees? 🤔",
+  "full_script": "Hola, amigos! Hoy vamos a hablar de un 'false friend muy común: la palabra 'actually. Muchos hispanohablantes creen que significa 'actualmente, ¡pero en realidad significa 'en realidad o 'de hecho! Por ejemplo, si dices: 'Actually, I don't like coffee, estás diciendo 'En realidad, no me gusta el café. Otro ejemplo: 'Actually, she is my sister, que significa 'De hecho, ella es mi hermana. Y un tercero podría ser: 'I thought you were coming. Actually, I was busy, que se traduce como 'Pensé que venías. En realidad, estaba ocupado. Tip para recordar: piensa que 'actually es lo que usas para corregir o aclarar algo. Ahora, vamos a practicar juntos: repite después de mí: 'Actually, I love learning English. ¿Listos para más? ¡Déjame en los comentarios qué palabra te confunde más! 🎉",
+  "english_phrases": [
+    "actually",
+    "currently",
+    "love",
+    "de hecho! por ejemplo, si dices: ",
+    "i thought you were coming. actually, i was busy, que se traduce como ",
+    "actually es lo que usas para corregir o aclarar algo. \n\nahora, vamos a practicar juntos: repite después de mí: ",
+    "false friend muy común: la palabra ",
+    "t like coffee, estás diciendo ",
+    "actualmente, ¡pero en realidad significa ",
+    "actually, she is my sister, que significa "
+  ],
+  "translations": {
+    "actually": "en realidad",
+    "currently": "actualmente"
+  },
+  "tip": "Piensa en 'actually' como una forma de aclarar información.",
+  "cta": "¿Qué otra palabra te confunde? ¡Comenta abajo!",
+  "hashtags": [
+    "#AprendeIngles",
+    "#InglesConTiktok",
+    "#FalseFriends",
+    "#FalsosAmigos",
+    "#LearnEnglish"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff001",
+    "video_type": "educational",
+    "generated_at": "2026-07-29T13:18:00.343030",
+    "model": "gpt-4o-mini"
+  },
+  "_validation_warnings": [
+    "Unbalanced single quotes (27)",
+    "Added missing phrase: 'de hecho! por ejemplo, si dices: '",
+    "Added missing phrase: 'i thought you were coming. actually, i was busy, que se traduce como '",
+    "Added missing phrase: 'actually es lo que usas para corregir o aclarar algo. \n\nahora, vamos a practicar juntos: repite después de mí: '",
+    "Added missing phrase: 'false friend muy común: la palabra '",
+    "Added missing phrase: 't like coffee, estás diciendo '",
+    "Added missing phrase: 'actualmente, ¡pero en realidad significa '",
+    "Added missing phrase: 'actually, she is my sister, que significa '"
+  ]
+}

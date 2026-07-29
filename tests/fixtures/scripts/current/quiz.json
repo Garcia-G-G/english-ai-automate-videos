@@ -1,0 +1,67 @@
+{
+  "type": "quiz",
+  "video_title": "¿Puedes entender el slang 'lowkey'? 🤔 English Quiz",
+  "video_description": "¡Pon a prueba tu inglés con este divertido quiz! 🎉 ¿Cuántas respuestas acertarás? ¡Comenta abajo! 💬",
+  "question": "¿Qué significa 'lowkey' en inglés?",
+  "options": {
+    "A": "discretamente",
+    "B": "rápidamente",
+    "C": "fácilmente",
+    "D": "literalmente"
+  },
+  "correct": "A",
+  "explanation": "'Lowkey' significa 'discretamente' y se usa para expresar algo de manera sutil. Por ejemplo: 'I lowkey enjoy this movie'.",
+  "questions": [
+    {
+      "question": "¿Qué significa 'lowkey' en inglés?",
+      "options": {
+        "A": "discretamente",
+        "B": "rápidamente",
+        "C": "fácilmente",
+        "D": "literalmente"
+      },
+      "correct": "A",
+      "explanation": "'Lowkey' significa 'discretamente' y se usa para expresar algo de manera sutil. Por ejemplo: 'I lowkey enjoy this movie'."
+    },
+    {
+      "question": "¿Cómo se dice 'me gusta un poco' en inglés usando 'lowkey'?",
+      "options": {
+        "A": "I lowkey like it",
+        "B": "I highkey like it",
+        "C": "I somewhat like it",
+        "D": "I really like it"
+      },
+      "correct": "A",
+      "explanation": "La frase correcta es 'I lowkey like it', que indica que te gusta de manera sutil. 'Highkey' es lo contrario y significa 'abiertamente'."
+    },
+    {
+      "question": "¿En qué contexto se usa 'lowkey' normalmente?",
+      "options": {
+        "A": "Para expresar algo evidente",
+        "B": "Para ser muy directo",
+        "C": "Para hacer algo a escondidas",
+        "D": "Para hablar en voz alta"
+      },
+      "correct": "C",
+      "explanation": "'Lowkey' se usa a menudo para referirse a algo que se hace discretamente o en secreto. Por ejemplo: 'I lowkey want to leave the party'."
+    }
+  ],
+  "full_script": "¡Quiz time! Pregunta número uno. ¿Qué significa 'lowkey' en inglés?... A, 'discretamente'.... B, 'rápidamente'.... C, 'fácilmente'.... D, 'literalmente'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es A, 'lowkey' significa discretamente. Por ejemplo: 'I lowkey enjoy this movie'.... Pregunta número dos. ¿Cómo se dice 'me gusta un poco' en inglés usando 'lowkey'?... A, 'I lowkey like it'.... B, 'I highkey like it'.... C, 'I somewhat like it'.... D, 'I really like it'.... Piensa bien... Tres... dos... uno... ¡La respuesta es A! 'I lowkey like it' indica que te gusta de manera sutil.... Pregunta número tres. ¿En qué contexto se usa 'lowkey' normalmente?... A, 'Para expresar algo evidente'.... B, 'Para ser muy directo'.... C, 'Para hacer algo a escondidas'.... D, 'Para hablar en voz alta'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es C, 'lowkey' se usa para referirse a algo que se hace discretamente o en secreto. Por ejemplo: 'I lowkey want to leave the party'.",
+  "translations": {
+    "lowkey": "discretamente"
+  },
+  "hashtags": [
+    "#QuizIngles",
+    "#AprendeIngles",
+    "#SlangIngles",
+    "#InglesDivertido",
+    "#LearnEnglish"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl001",
+    "video_type": "quiz",
+    "generated_at": "2026-07-29T13:18:12.188702",
+    "model": "gpt-4o-mini"
+  }
+}
