@@ -19,13 +19,22 @@ dict at script_generator.py:620-627 — NOT hand-written from the prompts. Where
 the prompts disagree with reality the prompt is treated as suspect; see
 docs/schema-prompt-mismatches.md for the full diff and the ruling on each.
 
-STRICTNESS
-----------
-``extra="allow"``. Script JSON is merged with TTS output downstream
-(pipeline.merge_script_into_tts) and carries private keys (``_meta``,
-``_validation_warnings``), so an unknown key is normal, not a defect. Every
-key that is load-bearing for correctness is declared explicitly; validation
-enforces presence and *shape* of those, and stays out of the way otherwise.
+STRICTNESS — two models, two policies
+-------------------------------------
+``Script*`` models use ``extra="forbid"``. Their producer is GPT, which is
+untrusted: a hallucinated key is a signal, not noise.
+
+``*RenderData`` models use ``extra="allow"``. Their producer is our own
+pipeline (``merge_script_into_tts`` folds TTS output into the script dict),
+and typos there are caught by tests rather than by pydantic. Left loose on
+purpose — it gets tightened in Step 2, when the audio contract has to be
+precise anyway and a typed ``segment_times`` becomes a direct asset.
+
+THE RULE FOR ``forbid`` IN PRODUCTION: an unknown key must be VISIBLE but
+NOT FATAL. Fatal in the test suite; logged and dropped in the pipeline. A
+hallucinated extra key from GPT must never kill an unattended batch run —
+whereas a *missing* ``correct`` must, because that ships a wrong lesson.
+``validate_script(..., drop_unknown=True)`` implements the lenient half.
 
 Two severities:
   * model validation  — hard. Raises ScriptValidationError. Reserved for
@@ -103,7 +112,9 @@ class ScriptBase(BaseModel):
     lives on the subclass, because the differences ARE the contract.
     """
 
-    model_config = ConfigDict(extra="allow", populate_by_name=True)
+    # forbid: the producer is GPT. See the module docstring for why this is
+    # fatal in tests but lenient (log + drop) in the pipeline.
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
 
     # `type` selects both the TTS path (pipeline.py:143) and the renderer
     # (video/__init__.py:100). Both currently default it to "educational" on
@@ -126,26 +137,12 @@ class ScriptBase(BaseModel):
 
     # Private bookkeeping. Named without the underscore because pydantic
     # treats leading-underscore attributes as private; the alias maps them.
+    # Declared rather than tolerated, because extra="forbid".
     meta: Dict[str, Any] = Field(default_factory=dict, alias="_meta")
     validation_warnings: List[str] = Field(default_factory=list,
                                            alias="_validation_warnings")
-
-    # ── TTS-owned keys ────────────────────────────────────────────────
-    # Not part of the script contract. They are absent from every fixture
-    # (tests/fixtures/README.md: "These scripts are the inputs to TTS"), and
-    # get merged in later by pipeline.merge_script_into_tts. Declared so the
-    # renderer-input validator has somewhere to hang, and so round-tripping a
-    # merged dict through a model does not drop them.
-    #
-    # NOTE `segments` collides: pipeline.TTS_OWNED_KEYS claims it, but the
-    # educational script format also uses it for [{id, text}] narration
-    # blocks (fixtures/scripts/educational/fabric_20260116_192025.json).
-    # Left unshaped on purpose — do not tighten it without resolving which
-    # producer wins.
-    words: Optional[List[Dict[str, Any]]] = None
-    segment_times: Optional[Dict[str, Any]] = None
-    duration: Optional[float] = None
-    segments: Optional[List[Dict[str, Any]]] = None
+    validation_errors: List[str] = Field(default_factory=list,
+                                         alias="_validation_errors")
 
     def lint(self) -> List[str]:
         """Advisory checks. Never raises, never blocks a render."""
@@ -193,6 +190,18 @@ class EducationalScript(ScriptBase, _TranslationsMixin):
 
     tip: Optional[str] = None
     cta: Optional[str] = None
+
+    # LEGACY narration blocks, [{id, text}]. No prompt in
+    # script_generator.py's history ever emitted this key — the one fixture
+    # carrying it (educational/fabric_20260116_192025.json) came from a
+    # generator that no longer exists. video/__init__.py:175-180 still has a
+    # live fallback that estimates word timings from it.
+    #
+    # NOTE this key COLLIDES with pipeline.TTS_OWNED_KEYS, which claims
+    # `segments` for timing data. Declared here unshaped, and again on
+    # _RenderExtras, precisely because the two producers disagree. Do not
+    # tighten either without resolving which one wins.
+    segments: Optional[List[Dict[str, Any]]] = None
 
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -440,6 +449,75 @@ SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
 }
 
 
+# ─────────────────────────────────────────────────────────────────────────
+# Renderer input — script merged with TTS output
+# ─────────────────────────────────────────────────────────────────────────
+
+class _RenderExtras(BaseModel):
+    """The keys pipeline.merge_script_into_tts folds in on top of a script.
+
+    ``extra="allow"`` here, unlike the Script models: the producer is our own
+    pipeline rather than GPT. Deliberately loose for now — Step 2 tightens it,
+    when a typed ``segment_times`` becomes a direct asset for the drift table.
+    Until then, over-specifying it would only invent a contract nobody has
+    measured.
+    """
+
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+    # pipeline.TTS_OWNED_KEYS — never overwritten by script data.
+    words: Optional[List[Dict[str, Any]]] = None
+    segment_times: Optional[Dict[str, Any]] = None
+    duration: Optional[float] = None
+    segments: Optional[List[Dict[str, Any]]] = None
+
+
+class EducationalRenderData(_RenderExtras, EducationalScript):
+    # Explicit, not inherited: pydantic merges model_config across bases
+    # and the Script side's extra="forbid" wins the merge otherwise.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class QuizRenderData(_RenderExtras, QuizScript):
+    # Explicit, not inherited: pydantic merges model_config across bases
+    # and the Script side's extra="forbid" wins the merge otherwise.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class TrueFalseRenderData(_RenderExtras, TrueFalseScript):
+    # Explicit, not inherited: pydantic merges model_config across bases
+    # and the Script side's extra="forbid" wins the merge otherwise.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class FillBlankRenderData(_RenderExtras, FillBlankScript):
+    # Explicit, not inherited: pydantic merges model_config across bases
+    # and the Script side's extra="forbid" wins the merge otherwise.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class PronunciationRenderData(_RenderExtras, PronunciationScript):
+    # Explicit, not inherited: pydantic merges model_config across bases
+    # and the Script side's extra="forbid" wins the merge otherwise.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class VocabularyRenderData(_RenderExtras, VocabularyScript):
+    # Explicit, not inherited: pydantic merges model_config across bases
+    # and the Script side's extra="forbid" wins the merge otherwise.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
+    "educational": EducationalRenderData,
+    "quiz": QuizRenderData,
+    "true_false": TrueFalseRenderData,
+    "fill_blank": FillBlankRenderData,
+    "pronunciation": PronunciationRenderData,
+    "vocabulary": VocabularyRenderData,
+}
+
+
 def model_for(video_type: str) -> Type[ScriptBase]:
     try:
         return SCRIPT_MODELS[video_type]
@@ -449,23 +527,8 @@ def model_for(video_type: str) -> Type[ScriptBase]:
             [f"unknown video type; expected one of {', '.join(VIDEO_TYPES)}"])
 
 
-def validate_script(data: Dict[str, Any],
-                    video_type: Optional[str] = None,
-                    source: Optional[str] = None) -> ScriptBase:
-    """Validate a script dict, or raise ScriptValidationError.
-
-    Args:
-        data: the parsed script JSON.
-        video_type: expected type. When given it selects the model AND is
-            checked against ``data["type"]`` — a caller that knows it asked
-            for a quiz should not silently get an educational model back.
-            When omitted the type is read from the data, which is required.
-        source: file path, for the error message.
-
-    Returns:
-        The validated model. Use ``.model_dump(by_alias=True)`` to get a dict
-        back with ``_meta`` / ``_validation_warnings`` spelled correctly.
-    """
+def _resolve_type(data: Dict[str, Any], video_type: Optional[str],
+                  source: Optional[str]) -> str:
     if not isinstance(data, dict):
         raise ScriptValidationError(
             video_type, [f"script must be a JSON object, got "
@@ -477,23 +540,88 @@ def validate_script(data: Dict[str, Any],
         if not declared:
             raise ScriptValidationError(
                 None,
-                ["type: field required (and no video_type was passed to "
-                 "validate_script, so it cannot be inferred)"],
+                ["type: field required (and no video_type was passed, so it "
+                 "cannot be inferred)"],
                 source)
-        video_type = declared
-    elif declared is not None and declared != video_type:
+        return declared
+
+    if declared is not None and declared != video_type:
         raise ScriptValidationError(
             video_type,
             [f"type: script declares {declared!r} but caller expected "
              f"{video_type!r}"],
             source)
+    return video_type
 
-    model = model_for(video_type)
+
+def _validate_with(model: Type[ScriptBase], data: Dict[str, Any],
+                   video_type: str, source: Optional[str],
+                   drop_unknown: bool, on_drop) -> ScriptBase:
     try:
         return model.model_validate(data)
     except ValidationError as exc:
+        unknown = sorted({
+            str(e["loc"][0]) for e in exc.errors()
+            if e["type"] == "extra_forbidden" and e["loc"]
+        })
+        if drop_unknown and unknown:
+            # VISIBLE BUT NOT FATAL. A hallucinated extra key from GPT must
+            # not kill an unattended batch run; a missing `correct` still
+            # must, so we drop only the unknown keys and re-validate.
+            if on_drop is not None:
+                on_drop(unknown)
+            trimmed = {k: v for k, v in data.items() if k not in set(unknown)}
+            try:
+                return model.model_validate(trimmed)
+            except ValidationError as exc2:
+                raise ScriptValidationError(
+                    video_type, _format_pydantic_errors(exc2),
+                    source) from None
         raise ScriptValidationError(
             video_type, _format_pydantic_errors(exc), source) from None
+
+
+def validate_script(data: Dict[str, Any],
+                    video_type: Optional[str] = None,
+                    source: Optional[str] = None,
+                    *,
+                    drop_unknown: bool = False,
+                    on_drop=None) -> ScriptBase:
+    """Validate a script dict, or raise ScriptValidationError.
+
+    Args:
+        data: the parsed script JSON.
+        video_type: expected type. When given it selects the model AND is
+            checked against ``data["type"]`` — a caller that knows it asked
+            for a quiz should not silently get an educational model back.
+            When omitted the type is read from the data, which is required.
+        source: file path, for the error message.
+        drop_unknown: when True, unknown keys are removed and reported
+            through ``on_drop`` instead of failing. Pipeline call sites pass
+            True; tests pass False so a stray key is fatal there.
+        on_drop: callable taking the sorted list of dropped key names.
+
+    Returns:
+        The validated model. Use ``.model_dump(by_alias=True)`` to get a dict
+        back with ``_meta`` / ``_validation_warnings`` spelled correctly.
+    """
+    video_type = _resolve_type(data, video_type, source)
+    return _validate_with(model_for(video_type), data, video_type, source,
+                          drop_unknown, on_drop)
+
+
+def validate_render_data(data: Dict[str, Any],
+                         video_type: Optional[str] = None,
+                         source: Optional[str] = None) -> ScriptBase:
+    """Validate renderer input — a script merged with TTS output.
+
+    Same per-type requirements as validate_script, plus tolerance for the
+    TTS-owned keys and anything else our own pipeline attaches. There is no
+    ``drop_unknown`` because these models already allow extras.
+    """
+    video_type = _resolve_type(data, video_type, source)
+    return _validate_with(RENDER_MODELS[video_type], data, video_type, source,
+                          False, None)
 
 
 def check_script(data: Dict[str, Any],

@@ -17,6 +17,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from script_schema import validate_script
+
 logger = logging.getLogger(__name__)
 
 # Load .env file from project root
@@ -626,10 +628,27 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
         "vocabulary": ["full_script", "title", "pairs"],
     }
 
-    # Check required fields
+    # Check required fields.
+    #
+    # This is now only a GUARD for the cleaning code below — the authoritative
+    # contract is src/script_schema.py, enforced at the end of generate_script.
+    #
+    # `not script[field]` used to stand in for "missing", which made a
+    # legitimate true_false `correct: false` indistinguishable from an absent
+    # key: `not False` is True. Because errors trigger an early return at the
+    # bottom of this block, roughly half of all true_false scripts (prompt
+    # rule 2 demands a true/false mix) silently skipped EVERY cleaning step —
+    # quote normalisation, the english_phrases scrape, the whitespace pass,
+    # the Spanish-countdown auto-fix, the video_title fallback and the hashtag
+    # normalisation. See docs/schema-prompt-mismatches.md M11.
+    #
+    # Presence is now tested as presence. Empty strings and empty collections
+    # still count as missing; False and 0 do not.
     for field in required_fields.get(video_type, ["full_script"]):
-        if field not in script or not script[field]:
+        if field not in script:
             errors.append(f"Missing required field: {field}")
+        elif isinstance(script[field], (str, list, dict)) and not script[field]:
+            errors.append(f"Empty required field: {field}")
 
     if errors:
         script["_validation_errors"] = errors
@@ -834,6 +853,37 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
         logger.warning(f"Script validation errors: {script['_validation_errors']}")
     if script.get("_validation_warnings"):
         logger.info(f"Script validation warnings: {script['_validation_warnings']}")
+
+    # VALIDATION POINT 1 of 3: generator output.
+    #
+    # Everything above this line only ever LOGGED its findings and returned
+    # the script anyway, so a script missing `correct` went on to render
+    # option A in green with sparkles and "Respuesta: A". This raises instead.
+    #
+    # drop_unknown=True: a hallucinated extra key from GPT is logged and
+    # dropped rather than killing an unattended batch run. A missing or
+    # malformed load-bearing field still raises.
+    dropped = []
+    validate_script(
+        script, video_type,
+        source=f"<generated {video_type}/{topic.get('id', 'unknown')}>",
+        drop_unknown=True,
+        on_drop=dropped.extend,
+    )
+
+    # Note the script itself is returned unchanged, not the validated model
+    # dumped back to a dict. Validation's job here is to REJECT, not to
+    # normalise — round-tripping through model_dump would quietly reshape
+    # saved scripts (key order, empty bookkeeping keys, alias handling) for
+    # no benefit. The only mutation is removing keys that are not in the
+    # schema, and only after they have been logged.
+    for key in dropped:
+        script.pop(key, None)
+
+    if dropped:
+        logger.warning(
+            "Dropped %d key(s) not in the %s schema: %s",
+            len(dropped), video_type, ", ".join(dropped))
 
     return script
 

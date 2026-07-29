@@ -36,6 +36,8 @@ try:
 except ImportError:  # dotenv is optional at import time
     pass
 
+from script_schema import validate_script  # noqa: E402
+
 # Providers the factory knows about (tts_providers.get_tts_provider).
 VALID_PROVIDERS = ("elevenlabs", "openai", "google", "edge")
 
@@ -236,9 +238,20 @@ def generate_tts(script_data: Dict,
     if script_data is None:
         raise ValueError("generate_tts requires script_data (there is no text-only mode)")
 
-    full_script = script_data.get('full_script', '')
-    if not full_script or len(full_script.strip()) < 10:
-        raise ValueError(f"Script text too short ({len(full_script)} chars)")
+    # VALIDATION POINT 2 of 3: TTS input.
+    #
+    # A script can reach here without passing point 1 — main.py --script loads
+    # a JSON file straight off disk, and the dashboard replays saved scripts.
+    # Both bypass the generator entirely, so this is not a redundant check.
+    #
+    # It subsumes the old full_script length test, which is now a min_length
+    # constraint on the model (script_schema.ScriptBase.full_script).
+    dropped = []
+    validate_script(script_data, source=str(script_path) if script_path else None,
+                    drop_unknown=True, on_drop=dropped.extend)
+    if dropped:
+        logger.warning("Script carries %d key(s) not in the schema: %s",
+                       len(dropped), ", ".join(dropped))
 
     audio_path = Path(audio_path)
     audio_path.parent.mkdir(parents=True, exist_ok=True)
