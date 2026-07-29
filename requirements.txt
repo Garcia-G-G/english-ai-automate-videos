@@ -10,7 +10,9 @@ edge-tts>=6.1.0
 openai-whisper>=20231117
 
 # Video Generation
-moviepy>=1.0.3
+# moviepy intentionally NOT listed: the ffmpeg compositor is the only
+# renderer the pipeline uses. --renderer moviepy still exists as an
+# explicit escape hatch, and needs moviepy installed by hand.
 Pillow>=10.0.0
 numpy>=1.24.0
 
