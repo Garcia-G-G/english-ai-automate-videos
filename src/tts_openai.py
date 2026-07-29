@@ -1475,94 +1475,6 @@ def generate_vocabulary_audio_segmented(
             pass
 
 
-def generate_from_script(
-    script_path: str,
-    output_dir: str = None,
-    voice: str = DEFAULT_VOICE,
-    model: str = DEFAULT_MODEL,
-    speed: float = DEFAULT_SPEED,
-) -> dict:
-    """
-    Generate TTS audio from a script JSON file.
-
-    Uses SEGMENT-BASED architecture for quiz and true_false videos:
-    - Each segment generated separately with EXACT timestamps
-    - No guessing, no estimation
-    - Perfect audio-visual sync guaranteed
-
-    Args:
-        script_path: Path to the script JSON file
-        output_dir: Output directory
-        voice: Voice to use
-        model: TTS model
-        speed: Speech speed
-
-    Returns:
-        Dictionary with audio path and exact segment timestamps
-    """
-    # Load script
-    with open(script_path, "r", encoding="utf-8") as f:
-        script = json.load(f)
-
-    video_type = script.get('type', 'educational')
-
-    # Determine output path
-    if output_dir is None:
-        output_dir = f"output/audio/{video_type}"
-    os.makedirs(output_dir, exist_ok=True)
-
-    script_name = os.path.splitext(os.path.basename(script_path))[0]
-    output_path = os.path.join(output_dir, f"{script_name}.mp3")
-
-    logger.info("=" * 60)
-    logger.info("SEGMENT-BASED TTS GENERATION")
-    logger.info("Type: %s", video_type)
-    logger.info("Output: %s", output_path)
-    logger.info("=" * 60)
-
-    # Use segment-based generation based on video type
-    if video_type == 'quiz':
-        result = generate_quiz_audio_segmented(script, output_path, voice, model, speed)
-    elif video_type == 'true_false':
-        result = generate_true_false_audio_segmented(script, output_path, voice, model, speed)
-    elif video_type == 'fill_blank':
-        result = generate_fill_blank_audio_segmented(script, output_path, voice, model, speed)
-    elif video_type == 'vocabulary':
-        result = generate_vocabulary_audio_segmented(script, output_path, voice, model, speed)
-    else:
-        # educational, pronunciation — use text_to_speech with English hints
-        logger.info("Using text_to_speech for type: %s", video_type)
-        text = script.get("full_script", "")
-        if not text:
-            raise ValueError(f"Script missing 'full_script' field for type '{video_type}'")
-
-        english_words = extract_english_words_from_script(script)
-        timestamps = text_to_speech(text, output_path, voice=voice, model=model, speed=speed,
-                                    explicit_english=list(english_words))
-        result = {**timestamps}
-        result["type"] = video_type
-        # Copy all script metadata so the companion JSON is complete
-        for key in ('question', 'options', 'correct', 'explanation',
-                    'full_script', 'translations', 'hashtags',
-                    'english_phrases', 'tip', 'cta', 'sentence', 'word', 'phonetic'):
-            if key in script:
-                result[key] = script[key]
-        if 'full_script' not in result:
-            result["full_script"] = text
-
-    # Save result JSON
-    json_path = output_path.rsplit(".", 1)[0] + ".json"
-    with open(json_path, "w", encoding="utf-8") as f:
-        json.dump(result, f, indent=2, ensure_ascii=False)
-
-    logger.info("Timestamps saved: %s", json_path)
-    logger.info("Segment timestamps:")
-    for seg in result.get('segments', []):
-        logger.debug("  %s: %.2fs - %.2fs (%.2fs)", seg['id'], seg['start'], seg['end'], seg['duration'])
-
-    return result
-
-
 def test_voices(text: str, output_dir: str = "output/audio/voice_tests"):
     """Test all available voices with the same text."""
     os.makedirs(output_dir, exist_ok=True)
@@ -1595,7 +1507,6 @@ Available voices: {', '.join(VOICES.keys())}
 
 Examples:
   python src/tts_openai.py "Hola! Como se dice 'give up' en ingles?" -o output.mp3
-  python src/tts_openai.py --script output/scripts/quiz/look_for.json -o output.mp3
   python src/tts_openai.py "Test text" -o test.mp3 --voice onyx
   python src/tts_openai.py "Test" --test-voices
   python src/tts_openai.py --list-voices
@@ -1605,8 +1516,6 @@ Examples:
     parser.add_argument("text", nargs="?", help="Text to convert to speech")
     parser.add_argument("-o", "--output", default="output/audio/openai_test.mp3",
                         help="Output MP3 file path")
-    parser.add_argument("--script", "-s", type=str,
-                        help="Script JSON file (uses automatic English detection)")
     parser.add_argument("--voice", default=DEFAULT_VOICE, choices=list(VOICES.keys()),
                         help=f"Voice to use (default: {DEFAULT_VOICE})")
     parser.add_argument("--model", default=DEFAULT_MODEL, choices=["tts-1", "tts-1-hd"],
@@ -1630,22 +1539,6 @@ Examples:
         if not args.text:
             args.text = "Hola! Vamos con un quiz. Como se dice 'give up' en ingles? La respuesta es 'give up', que significa rendirse."
         test_voices(args.text)
-        return
-
-    # Script mode - uses automatic English detection from script metadata
-    if args.script:
-        try:
-            # Derive output path from script if not provided
-            output_dir = os.path.dirname(args.output) if args.output != "output/audio/openai_test.mp3" else None
-            result = generate_from_script(args.script, output_dir, args.voice, args.model)
-            print(f"\nSuccess!")
-            print(f"  Audio: {args.output}")
-            print(f"  Duration: {result['duration']:.2f}s")
-        except Exception as e:
-            print(f"Error: {e}")
-            import traceback
-            traceback.print_exc()
-            sys.exit(1)
         return
 
     if not args.text:
