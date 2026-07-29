@@ -1,0 +1,52 @@
+[
+  {
+    "id": "kn001",
+    "topic": "count to five",
+    "spanish": "contar hasta cinco",
+    "meaning": "Counting from one to five: one, two, three, four, five",
+    "example": "Let's count! One, two, three, four, five. ¡Uno, dos, tres, cuatro, cinco!",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["kids", "numbers", "ages_3_7"]
+  },
+  {
+    "id": "kn002",
+    "topic": "one and two",
+    "spanish": "uno y dos",
+    "meaning": "The numbers one and two, counting small things",
+    "example": "One ball, two balls! ¡Una pelota, dos pelotas!",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["kids", "numbers", "ages_3_7"]
+  },
+  {
+    "id": "kn003",
+    "topic": "three little fingers",
+    "spanish": "tres deditos",
+    "meaning": "The number three, shown with fingers",
+    "example": "Show me three fingers! ¡Muéstrame tres deditos! One, two, three!",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["kids", "numbers", "ages_3_7"]
+  },
+  {
+    "id": "kn004",
+    "topic": "count to ten",
+    "spanish": "contar hasta diez",
+    "meaning": "Counting from one to ten",
+    "example": "Can you count to ten? Six, seven, eight, nine, ten! ¡Hasta diez!",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["kids", "numbers", "ages_3_7"]
+  },
+  {
+    "id": "kn005",
+    "topic": "how many?",
+    "spanish": "¿cuántos hay?",
+    "meaning": "Asking 'how many' and answering with a number",
+    "example": "How many stars? ¿Cuántas estrellas? Three stars!",
+    "category": "numbers",
+    "difficulty": "beginner",
+    "tags": ["kids", "numbers", "ages_3_7", "question"]
+  }
+]

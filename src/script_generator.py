@@ -71,9 +71,19 @@ def find_topic(category: str, topic_name: str) -> dict:
     raise ValueError(f"Topic '{topic_name}' not found in category '{category}'")
 
 
-def get_random_topic() -> tuple:
-    """Get a random topic from a random category."""
+def get_random_topic(allowed_categories: list = None) -> tuple:
+    """Get a random topic from a random category.
+
+    Args:
+        allowed_categories: Optional list to restrict the category pool
+            (e.g. a profile's content.categories). Falls back to all
+            categories if none of them exist.
+    """
     categories = list_categories()
+    if allowed_categories:
+        filtered = [c for c in categories if c in allowed_categories]
+        if filtered:
+            categories = filtered
     category = random.choice(categories)
     topics = load_topics(category)
     topic = random.choice(topics)

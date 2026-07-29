@@ -1,0 +1,52 @@
+[
+  {
+    "id": "ka001",
+    "topic": "the cat says meow",
+    "spanish": "el gato hace miau",
+    "meaning": "The word 'cat' and the sound it makes",
+    "example": "The cat says meow! ¡El gato hace miau!",
+    "category": "animals",
+    "difficulty": "beginner",
+    "tags": ["kids", "animals", "sounds", "ages_3_7"]
+  },
+  {
+    "id": "ka002",
+    "topic": "the dog says woof",
+    "spanish": "el perro hace guau",
+    "meaning": "The word 'dog' and the sound it makes",
+    "example": "The dog says woof woof! ¡El perro hace guau guau!",
+    "category": "animals",
+    "difficulty": "beginner",
+    "tags": ["kids", "animals", "sounds", "ages_3_7"]
+  },
+  {
+    "id": "ka003",
+    "topic": "little bird",
+    "spanish": "pajarito",
+    "meaning": "The word 'bird' and how birds fly and sing",
+    "example": "The bird can fly! ¡El pájaro puede volar! Tweet tweet!",
+    "category": "animals",
+    "difficulty": "beginner",
+    "tags": ["kids", "animals", "ages_3_7"]
+  },
+  {
+    "id": "ka004",
+    "topic": "big elephant",
+    "spanish": "elefante grande",
+    "meaning": "The word 'elephant' and the word 'big'",
+    "example": "The elephant is big! ¡El elefante es grande!",
+    "category": "animals",
+    "difficulty": "beginner",
+    "tags": ["kids", "animals", "adjectives", "ages_3_7"]
+  },
+  {
+    "id": "ka005",
+    "topic": "the fish swims",
+    "spanish": "el pez nada",
+    "meaning": "The word 'fish' and the action 'swim'",
+    "example": "The fish swims in the water! ¡El pez nada en el agua!",
+    "category": "animals",
+    "difficulty": "beginner",
+    "tags": ["kids", "animals", "actions", "ages_3_7"]
+  }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "id": "kc001",
+    "topic": "red",
+    "spanish": "rojo",
+    "meaning": "The color red, like an apple or a fire truck",
+    "example": "The apple is red! La manzana es roja",
+    "category": "colors",
+    "difficulty": "beginner",
+    "tags": ["kids", "colors", "ages_3_7"]
+  },
+  {
+    "id": "kc002",
+    "topic": "blue",
+    "spanish": "azul",
+    "meaning": "The color blue, like the sky or the sea",
+    "example": "The sky is blue! El cielo es azul",
+    "category": "colors",
+    "difficulty": "beginner",
+    "tags": ["kids", "colors", "ages_3_7"]
+  },
+  {
+    "id": "kc003",
+    "topic": "yellow",
+    "spanish": "amarillo",
+    "meaning": "The color yellow, like the sun or a banana",
+    "example": "The sun is yellow! El sol es amarillo",
+    "category": "colors",
+    "difficulty": "beginner",
+    "tags": ["kids", "colors", "ages_3_7"]
+  },
+  {
+    "id": "kc004",
+    "topic": "green",
+    "spanish": "verde",
+    "meaning": "The color green, like grass or a frog",
+    "example": "The frog is green! La rana es verde",
+    "category": "colors",
+    "difficulty": "beginner",
+    "tags": ["kids", "colors", "ages_3_7"]
+  },
+  {
+    "id": "kc005",
+    "topic": "rainbow colors",
+    "spanish": "los colores del arcoíris",
+    "meaning": "All the colors together: red, orange, yellow, green, blue, purple",
+    "example": "Look, a rainbow! ¡Mira, un arcoíris! Red, orange, yellow...",
+    "category": "colors",
+    "difficulty": "beginner",
+    "tags": ["kids", "colors", "ages_3_7", "review"]
+  }
+]
