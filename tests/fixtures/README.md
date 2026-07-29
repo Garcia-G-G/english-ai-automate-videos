@@ -63,6 +63,33 @@ versioned** — those files are 22–31 MB each and belong in git-lfs or nowhere
 If `output/` gets cleaned the mp4s are gone; the scripts here are enough to
 regenerate them, and the defect descriptions stand on their own.
 
+## Known gap in the planned QA gate — read before designing it
+
+The planned assertion "declared `segment_times` vs measured audio boundaries"
+**cannot cover every video type**, because not every type emits
+`segment_times` at all.
+
+| type | emits `segment_times`? |
+|---|---|
+| quiz, true_false, fill_blank, vocabulary | yes — segment-based TTS builds them |
+| **educational** | **no** — uses the word timeline instead |
+| **pronunciation** | **no** — same bilingual path as educational |
+
+Measured across the TTS output in `output/audio/`: quiz 42/64, fill_blank
+15/25, true_false 10/14, vocabulary 2/2 — versus pronunciation 0/14. The 6/51
+educational files that do carry it are legacy output from the old single-call
+path; the current bilingual path emits none, confirmed on two fresh runs
+(2026-07-28) where `segment_times` was absent from both.
+
+This is by design, not a bug: `tts_bilingual` produces per-word global
+timings, and the educational renderer consumes those directly.
+
+**Consequence:** a gate built only on `segment_times` would silently pass
+educational and pronunciation by checking nothing. Those two need a separate
+assertion against the word timeline (`words[].start` / `words[].end` vs
+measured audio). Do not design the gate assuming one assertion covers all six
+types.
+
 ## Regenerating a case
 
 ```bash
