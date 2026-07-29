@@ -25,10 +25,12 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from script_schema import (  # noqa: E402
     FillBlankScript,
+    QuizRenderData,
     QuizScript,
     ScriptValidationError,
     TrueFalseScript,
     check_script,
+    validate_render_data,
     validate_script,
 )
 
@@ -186,6 +188,94 @@ def test_dead_arrays_are_optional_and_preserved():
 
     assert TrueFalseScript.model_fields["statements"].default is None
     assert FillBlankScript.model_fields["sentences"].default is None
+
+
+# ── Strictness policy: two models, two settings ──────────────────────────
+
+def test_script_forbids_extras_and_renderdata_allows_them():
+    assert QuizScript.model_config["extra"] == "forbid"
+    assert QuizRenderData.model_config["extra"] == "allow"
+
+
+def test_unknown_key_is_fatal_when_strict():
+    """Test-suite behaviour: a hallucinated key from GPT is a signal."""
+    data = dict(load("quiz/fabric_20260116_201133.json"), hallucinated="x")
+    with pytest.raises(ScriptValidationError, match="hallucinated"):
+        validate_script(data)
+
+
+def test_unknown_key_is_visible_but_not_fatal_when_lenient():
+    """Pipeline behaviour: log and drop. An extra key must never kill an
+    unattended batch run."""
+    data = dict(load("quiz/fabric_20260116_201133.json"), hallucinated="x")
+    seen = []
+    model = validate_script(data, drop_unknown=True, on_drop=seen.extend)
+    assert seen == ["hallucinated"]
+    assert not hasattr(model, "hallucinated")
+
+
+def test_lenient_still_raises_on_a_missing_load_bearing_field():
+    """The asymmetry that matters: an extra key is survivable, a missing
+    `correct` is not."""
+    data = dict(load("quiz/fabric_20260116_201133.json"), hallucinated="x")
+    del data["correct"]
+    with pytest.raises(ScriptValidationError, match="correct"):
+        validate_script(data, drop_unknown=True, on_drop=lambda k: None)
+
+
+def test_renderdata_accepts_tts_keys_that_the_script_model_rejects():
+    merged = dict(load("quiz/fabric_20260116_201133.json"),
+                  words=[{"word": "hola", "start": 0.0, "end": 0.4}],
+                  duration=12.3,
+                  segment_times={"question": {"start": 0.0, "end": 2.0}})
+    with pytest.raises(ScriptValidationError, match="words"):
+        validate_script(merged)
+    model = validate_render_data(merged)
+    assert model.duration == 12.3
+    assert len(model.words) == 1
+
+
+def test_renderdata_still_enforces_correctness():
+    """Loose about extras, not about the lesson."""
+    merged = dict(load("quiz/fabric_20260116_201133.json"), duration=12.3)
+    del merged["correct"]
+    with pytest.raises(ScriptValidationError, match="correct"):
+        validate_render_data(merged, source="merged.json")
+
+
+# ── M11 regression ───────────────────────────────────────────────────────
+
+def test_correct_false_is_not_reported_as_missing():
+    """docs/schema-prompt-mismatches.md M11.
+
+    `not script['correct']` is True when correct is False, so a legitimate
+    true_false script whose first statement is FALSE was recorded as
+    "Missing required field: correct" — and validate_and_clean_script then
+    returned early, skipping every cleaning step including the
+    Spanish-countdown auto-fix and the video_title fallback. Prompt rule 2
+    demands a true/false mix, so this hit roughly half of all true_false
+    videos.
+    """
+    from script_generator import validate_and_clean_script
+
+    data = load("true_false/actually.json")
+    assert data["correct"] is False, "fixture must exercise the False branch"
+
+    cleaned = validate_and_clean_script(dict(data), "true_false")
+    assert "_validation_errors" not in cleaned
+
+    # and the early return no longer fires, so cleaning actually ran
+    assert cleaned["full_script"] == cleaned["full_script"].strip()
+    assert cleaned.get("video_title")
+
+
+def test_empty_required_field_is_still_caught():
+    """Fixing the False case must not stop catching genuinely empty ones."""
+    from script_generator import validate_and_clean_script
+
+    data = dict(load("true_false/actually.json"), statement="")
+    cleaned = validate_and_clean_script(data, "true_false")
+    assert cleaned["_validation_errors"] == ["Empty required field: statement"]
 
 
 if __name__ == "__main__":

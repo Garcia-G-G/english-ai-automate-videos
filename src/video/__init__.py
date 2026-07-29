@@ -11,6 +11,7 @@ import os
 import sys
 
 from animations.subtitle_processor import SubtitleProcessor
+from script_schema import validate_render_data
 
 from .constants import FPS, VIDEO_WIDTH, VIDEO_HEIGHT
 from .backgrounds import (
@@ -80,6 +81,26 @@ def generate_video(
             renderer; educational only — other types fall back to v1)
     """
 
+    logger.info(f"Loading data: {data_path}")
+    data = load_data(data_path)
+
+    # VALIDATION POINT 3 of 3: renderer input.
+    #
+    # This is the last gate before pixels. Every renderer below reads its
+    # fields with a plausible-wrong default — quiz.py:582 defaults `correct`
+    # to 'A', fill_blank.py:313 to "I ___ to school", pronunciation.py:42 to
+    # the literal word "word" — and there is no "unknown" state anywhere in
+    # the render path. So a data failure that gets this far does not look
+    # like a failure: it ships as a polished, confidently incorrect lesson
+    # that no audio or visual check will catch.
+    #
+    # Loud is the whole point. Nothing renders unless the data is right.
+    #
+    # Runs BEFORE the audio probe on purpose: the cheap failure should come
+    # first, and there is no reason to spend an ffprobe subprocess on a
+    # script we are about to reject.
+    validate_render_data(data, video_type, source=str(data_path))
+
     logger.info(f"Loading audio: {audio_path}")
 
     # Get duration without importing MoviePy when using ffmpeg renderer
@@ -90,9 +111,6 @@ def generate_video(
         from moviepy import AudioFileClip
         audio = AudioFileClip(audio_path)
         duration = audio.duration
-
-    logger.info(f"Loading data: {data_path}")
-    data = load_data(data_path)
 
     # Resolve v2 engine early — v2 renders its own background, so the
     # background system below is skipped entirely when it is active.
