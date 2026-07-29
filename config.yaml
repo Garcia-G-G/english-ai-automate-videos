@@ -103,6 +103,11 @@ profiles:
     # hereda todo del config base (comportamiento actual)
   kids:
     audio:
+      # KNOWN ISSUE: this placeholder is NOT validated anywhere. Confirmed by
+      # dry-run with profile: kids — it resolves straight through to
+      # voice_id=KIDS_VOICE_ID_PENDIENTE and would be sent to the ElevenLabs
+      # API verbatim, failing at call time rather than at config load.
+      # Replace with a real voice id before using the kids profile.
       voice_id: "KIDS_VOICE_ID_PENDIENTE"   # se reemplaza al elegir voz
       model: "eleven_v3"
       stability: 0.55
