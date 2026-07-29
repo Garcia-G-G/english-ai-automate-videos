@@ -605,7 +605,7 @@ if __name__ == "__main__":
     if sys.argv[1:2] == ["clean"]:
         clean_output()
     elif sys.argv[1:2] == ["costs"]:
-        from src.cost_tracker import print_report
+        from cost_tracker import print_report
         days = int(sys.argv[2]) if len(sys.argv) > 2 else 7
         print_report(days)
     else:
