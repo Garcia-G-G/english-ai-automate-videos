@@ -19,6 +19,16 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
+# Streamlit installs no handler of its own, so without this every
+# logger.* call in this module and in src/pipeline.py is discarded --
+# including the render progress lines and the error path at the bottom of
+# run_pipeline_with_tracking. Same format as main.py:setup_logging.
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(name)s] %(levelname)s: %(message)s',
+    datefmt='%H:%M:%S'
+)
+
 logger = logging.getLogger(__name__)
 
 # Setup paths
