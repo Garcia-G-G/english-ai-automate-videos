@@ -1372,7 +1372,6 @@ if __name__ == "__main__":
     import json
 
     parser = argparse.ArgumentParser(description="ElevenLabs TTS Module")
-    parser.add_argument("--script", "-s", help="Path to script JSON file")
     parser.add_argument("--list-voices", "-l", action="store_true", help="List available voices")
     parser.add_argument("--test", "-t", action="store_true", help="Test TTS with sample text")
     parser.add_argument("--text", default="Hola, ¿qué significa 'embarrassed' en inglés?", help="Text to test")
@@ -1383,118 +1382,6 @@ if __name__ == "__main__":
 
     if args.list_voices:
         list_voices()
-    elif args.script:
-        from tts_common import clean_for_tts
-
-        with open(args.script, 'r', encoding='utf-8') as f:
-            script_data = json.load(f)
-
-        video_type = script_data.get('type', 'quiz')
-        os.makedirs(os.path.dirname(args.output) or '.', exist_ok=True)
-
-        if video_type == 'quiz':
-            result = generate_quiz_audio_segmented(
-                script=script_data, output_path=args.output, voice_id=args.voice,
-            )
-        elif video_type == 'fill_blank':
-            result = generate_fill_blank_audio_segmented(
-                script=script_data, output_path=args.output, voice_id=args.voice,
-            )
-        elif video_type == 'true_false':
-            result = generate_true_false_audio_segmented(
-                script=script_data, output_path=args.output, voice_id=args.voice,
-            )
-        elif video_type == 'vocabulary':
-            result = generate_vocabulary_audio_segmented(
-                script=script_data, output_path=args.output, voice_id=args.voice,
-            )
-        else:
-            # educational, pronunciation — single TTS call
-            text = script_data.get('full_script', '')
-            if not text:
-                print(f"Script missing 'full_script' for type '{video_type}'")
-                import sys; sys.exit(1)
-            tts_text = clean_for_tts(text)
-            english_words_set = extract_english_words_from_script(script_data)
-            duration = generate_segment_audio(
-                tts_text, args.output, voice_id=args.voice,
-                segment_type='explanation', english_words=english_words_set,
-            )
-            english_phrases = script_data.get('english_phrases', [])
-
-            # --- Get REAL word timestamps from Whisper ---
-            whisper_words = []
-            try:
-                from tts_openai import extract_timestamps_whisper
-                logger.info("Extracting real word timestamps with Whisper...")
-                whisper_result = extract_timestamps_whisper(
-                    args.output,
-                    original_text=text,
-                    explicit_english=english_phrases,
-                )
-                whisper_words = whisper_result.get('words', [])
-                whisper_duration = whisper_result.get('duration', duration)
-                if whisper_words:
-                    duration = whisper_duration
-                    logger.info("Whisper: got %d real word timestamps", len(whisper_words))
-                else:
-                    logger.warning("Whisper returned no words, falling back to estimation")
-            except Exception as e:
-                logger.warning("Whisper failed (%s), falling back to character estimation", e)
-
-            if whisper_words:
-                # Use real Whisper timestamps — add sentence boundaries
-                from video.educational import add_sentence_boundaries
-                words_with_segments = add_sentence_boundaries(whisper_words, text)
-
-                # Build segments from sentence boundaries
-                segments = []
-                current_seg_id = None
-                seg_words = []
-                for w in words_with_segments:
-                    sid = w.get('segment_id', 0)
-                    if sid != current_seg_id:
-                        if seg_words:
-                            segments.append({
-                                'start': seg_words[0]['start'],
-                                'end': seg_words[-1]['end'],
-                                'text': ' '.join(sw['word'] for sw in seg_words),
-                            })
-                        seg_words = [w]
-                        current_seg_id = sid
-                    else:
-                        seg_words.append(w)
-                if seg_words:
-                    segments.append({
-                        'start': seg_words[0]['start'],
-                        'end': seg_words[-1]['end'],
-                        'text': ' '.join(sw['word'] for sw in seg_words),
-                    })
-
-                result = {
-                    'duration': duration,
-                    'words': words_with_segments,
-                    'segments': segments,
-                }
-            else:
-                # Fallback: estimate timestamps from character count
-                est_words, est_segments = estimate_word_timestamps(text, duration, english_phrases)
-                result = {'duration': duration, 'words': est_words, 'segments': est_segments}
-
-            for key in ('type', 'question', 'options', 'correct', 'explanation',
-                        'full_script', 'translations', 'hashtags', 'word', 'phonetic',
-                        'english_phrases', 'tip', 'sentence'):
-                if key in script_data:
-                    result[key] = script_data[key]
-
-            # Save companion JSON
-            json_out = args.output.replace('.mp3', '.json')
-            with open(json_out, 'w', encoding='utf-8') as f:
-                json.dump(result, f, ensure_ascii=False, indent=2)
-
-        print(f"\nSuccess!")
-        print(f"  Audio: {args.output}")
-        print(f"  Duration: {result['duration']:.2f}s")
     elif args.test:
         test_voice(args.text, args.voice, args.output)
     else:

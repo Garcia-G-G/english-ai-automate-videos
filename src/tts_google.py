@@ -475,7 +475,6 @@ if __name__ == "__main__":
     import json
 
     parser = argparse.ArgumentParser(description="Google Cloud TTS Module")
-    parser.add_argument("--script", "-s", help="Path to script JSON file (for quiz generation)")
     parser.add_argument("--list-voices", "-l", action="store_true", help="List available voices")
     parser.add_argument("--language", default="es", help="Language code for listing voices")
     parser.add_argument("--test", "-t", action="store_true", help="Test TTS with sample text")
@@ -488,26 +487,6 @@ if __name__ == "__main__":
 
     if args.list_voices:
         list_voices(args.language)
-    elif args.script:
-        # Generate audio from script JSON file
-        with open(args.script, 'r', encoding='utf-8') as f:
-            script_data = json.load(f)
-
-        video_type = script_data.get('type', 'quiz')
-
-        if video_type == 'quiz':
-            result = generate_quiz_audio_segmented(
-                script=script_data,
-                output_path=args.output,
-                voice=args.voice,
-                speed=args.speed,
-            )
-            print(f"\nSuccess!")
-            print(f"  Audio: {args.output}")
-            print(f"  Duration: {result['duration']:.2f}s")
-        else:
-            print(f"Unsupported video type: {video_type}")
-            print("Currently only 'quiz' type is supported.")
     elif args.test:
         test_voice(args.text, args.voice, args.output)
     else:
