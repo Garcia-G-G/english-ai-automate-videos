@@ -1,0 +1,72 @@
+{
+  "type": "fill_blank",
+  "video_title": "¿Puedes completar la frase? 💬 Present Simple vs Present Continuous",
+  "video_description": "¡Pon a prueba tu inglés! 🤔 Completa las frases y aprende gramática. ¡Dale play! 🎥",
+  "sentence": "I ___ every day.",
+  "blank_position": "work",
+  "options": [
+    "am work",
+    "work",
+    "working",
+    "works"
+  ],
+  "correct": "work",
+  "explanation": "Usamos 'work' en presente simple para rutinas diarias.",
+  "translation": "Trabajo todos los días.",
+  "sentences": [
+    {
+      "sentence": "I ___ every day.",
+      "blank_position": "work",
+      "options": [
+        "am work",
+        "work",
+        "working",
+        "works"
+      ],
+      "correct": "work",
+      "explanation": "Usamos 'work' en presente simple para rutinas diarias.",
+      "translation": "Trabajo todos los días."
+    },
+    {
+      "sentence": "She is ___ right now.",
+      "blank_position": "working",
+      "options": [
+        "work",
+        "worked",
+        "working",
+        "works"
+      ],
+      "correct": "working",
+      "explanation": "Usamos 'working' en presente continuo para acciones en progreso.",
+      "translation": "Ella está trabajando ahora mismo."
+    },
+    {
+      "sentence": "They ___ to the gym on Mondays.",
+      "blank_position": "go",
+      "options": [
+        "go",
+        "going",
+        "gone",
+        "goes"
+      ],
+      "correct": "go",
+      "explanation": "Usamos 'go' en presente simple para hábitos regulares.",
+      "translation": "Ellos van al gimnasio los lunes."
+    }
+  ],
+  "full_script": "¡Completa la frase! Número uno. I ___ every day. Las opciones son: A, am work. B, work. C, working. D, works.... Piensa bien... Tres... dos... uno... ¡La respuesta es B, work! 'I work every day' significa Trabajo todos los días. Usamos 'work' en presente simple para rutinas diarias.... Número dos. She is ___ right now. Las opciones son: A, work. B, worked. C, working. D, works.... Piensa bien... Tres... dos... uno... ¡La respuesta es C, working! 'She is working right now' significa Ella está trabajando ahora mismo. Usamos 'working' en presente continuo para acciones en progreso.... Número tres. They ___ to the gym on Mondays. Las opciones son: A, go. B, going. C, gone. D, goes.... Piensa bien... Tres... dos... uno... ¡La respuesta es A, go! 'They go to the gym on Mondays' significa Ellos van al gimnasio los lunes. Usamos 'go' en presente simple para hábitos regulares.",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#PresentSimple",
+    "#PresentContinuous",
+    "#GramáticaIngles"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr001",
+    "video_type": "fill_blank",
+    "generated_at": "2026-07-29T13:18:30.648359",
+    "model": "gpt-4o-mini"
+  }
+}

@@ -66,8 +66,15 @@ EXPECTED = {
 }
 
 
+#: `scripts/current/` is the present-tense tier and is tested separately by
+#: tests/test_current_fixtures.py. Excluded here on purpose — mixing the two
+#: would make a regenerated `current` file look like corpus drift.
+NOT_HISTORICAL = {"current"}
+
+
 def corpus():
-    return sorted(FIXTURES.glob("*/*.json"))
+    return sorted(p for p in FIXTURES.glob("*/*.json")
+                  if p.parent.name not in NOT_HISTORICAL)
 
 
 def load(rel):

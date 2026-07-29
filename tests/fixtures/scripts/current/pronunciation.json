@@ -1,0 +1,25 @@
+{
+  "type": "pronunciation",
+  "video_title": "¿Dices 'ship' o 'sheep' MAL? ¡Descúbrelo! 😱",
+  "video_description": "¡Aprende a diferenciar estas palabras! 🐑🚢 Practica y mejora tu inglés. Let's go! 👇",
+  "word": "ship vs sheep",
+  "phonetic": "SHIP vs SHIP",
+  "common_mistake": "Pronunciar 'sheep' como 'ship'",
+  "tip": "Recuerda: 'sheep' tiene más 'e' en la boca, como un 'largo' sonido.",
+  "full_script": "¡Mira! 'SHIP' (barco) y 'SHEEP' (oveja) son diferentes. Error común: pronunciar 'sheep' como 'ship'. La pronunciación correcta es: 'SHIP' (SHIP) y 'SHEEP' (SHIP). Tip: Recuerda que 'sheep' tiene más 'e' en la boca. ¡Practica!",
+  "translation": "barco vs oveja",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#Pronunciacion",
+    "#EnglishTips",
+    "#ShipVsSheep"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr001",
+    "video_type": "pronunciation",
+    "generated_at": "2026-07-29T13:18:34.564465",
+    "model": "gpt-4o-mini"
+  }
+}

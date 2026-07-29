@@ -1,0 +1,47 @@
+{
+  "type": "true_false",
+  "video_title": "¿Verdadero o Falso? 🤔 ¡Descubre la verdad sobre 'actually'!",
+  "video_description": "¡Ponte a prueba con este juego de verdadero o falso! 🎉 Let's learn together! 💪",
+  "statement": "¿'Actually' significa actualmente? ¿Verdadero o falso?",
+  "correct": false,
+  "explanation": "'Actually' significa en realidad, no actualmente. Por ejemplo: 'Actually, I like pizza' - En realidad, me gusta la pizza.",
+  "statements": [
+    {
+      "statement": "¿'Actually' significa actualmente? ¿Verdadero o falso?",
+      "correct": false,
+      "explanation": "'Actually' significa en realidad, no actualmente. Por ejemplo: 'Actually, I like pizza' - En realidad, me gusta la pizza."
+    },
+    {
+      "statement": "¿'Actually' significa en realidad? ¿Verdadero o falso?",
+      "correct": true,
+      "explanation": "'Actually' de hecho se traduce como en realidad. Por ejemplo: 'Actually, it's true' - En realidad, es cierto."
+    },
+    {
+      "statement": "¿'Currently' significa actualmente? ¿Verdadero o falso?",
+      "correct": true,
+      "explanation": "'Currently' es la palabra correcta para decir actualmente en inglés. Por ejemplo: 'I am currently studying' - Actualmente estoy estudiando."
+    }
+  ],
+  "full_script": "¡Verdadero o falso! Número uno. ¿'Actually' significa actualmente? ¿Verdadero o falso? ... Piensa bien... Tres... dos... uno... ¡Falso! 'Actually' significa en realidad. Por ejemplo: 'Actually, I like pizza' - En realidad, me gusta la pizza. ... Número dos. ¿'Actually' significa en realidad? ¿Verdadero o falso? ... Piensa bien... Tres... dos... uno... ¡Verdadero! 'Actually' de hecho se traduce como en realidad. Por ejemplo: 'Actually, it's true' - En realidad, es cierto. ... Número tres. ¿'Currently' significa actualmente? ¿Verdadero o falso? ... Piensa bien... Tres... dos... uno... ¡Verdadero! 'Currently' es la palabra correcta para decir actualmente en inglés. Por ejemplo: 'I am currently studying' - Actualmente estoy estudiando.",
+  "translations": {
+    "actually": "en realidad",
+    "currently": "actualmente"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprendeIngles",
+    "#FalseFriends",
+    "#LearnEnglish",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff001",
+    "video_type": "true_false",
+    "generated_at": "2026-07-29T13:18:20.004252",
+    "model": "gpt-4o-mini"
+  },
+  "_validation_errors": [
+    "Missing required field: correct"
+  ]
+}
