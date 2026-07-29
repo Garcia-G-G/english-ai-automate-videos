@@ -60,6 +60,7 @@ def generate_video(
     fast_mode: bool = False,
     renderer: str = "ffmpeg",
     karaoke_mode: bool = False,
+    engine_version: str = "v1",
 ) -> str:
     """
     Generate video based on type.
@@ -75,6 +76,8 @@ def generate_video(
         fast_mode: Use static background and optimized settings for speed
         renderer: "ffmpeg" (fast, default) or "moviepy" (legacy fallback)
         karaoke_mode: Use karaoke-style renderer with inline translations
+        engine_version: "v1" (legacy renderers) or "v2" (design-system
+            renderer; educational only — other types fall back to v1)
     """
 
     logger.info(f"Loading audio: {audio_path}")
@@ -91,14 +94,41 @@ def generate_video(
     logger.info(f"Loading data: {data_path}")
     data = load_data(data_path)
 
+    # Resolve v2 engine early — v2 renders its own background, so the
+    # background system below is skipped entirely when it is active.
+    if video_type is None:
+        video_type = data.get('type', 'educational')
+
+    use_v2 = engine_version == "v2"
+    if use_v2 and video_type != "educational":
+        logger.warning(
+            "v2 engine only supports 'educational' (got '%s') — falling back to v1",
+            video_type)
+        use_v2 = False
+    if use_v2:
+        background = None
+
     # Configure background with pre-rendering for speed
     # Auto-select from config.yaml if no background specified
-    if not background and BACKGROUNDS_AVAILABLE:
+    if not background and BACKGROUNDS_AVAILABLE and not use_v2:
         background = get_default_background()
         if background:
             logger.info(f"Auto-selected background: {background}")
 
-    if background:
+    # Clip-library background: "clips" (with background_options) or "clips:<dir>"
+    if background == "clips" or (background and background.startswith("clips:")):
+        options = dict(background_options or {})
+        if background.startswith("clips:"):
+            options["dir"] = background.split(":", 1)[1]
+        clips_dir = options.get("dir", "")
+        if clips_dir and not os.path.isabs(clips_dir):
+            # Resolve relative to project root (parent of src/)
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            options["dir"] = os.path.join(project_root, clips_dir)
+        set_background(bg_type="clips", options=options, duration=duration)
+        logger.info(f"Background: clips from {options.get('dir')}")
+
+    elif background:
         if BACKGROUNDS_AVAILABLE and background in BACKGROUND_PRESETS:
             set_background(preset=background, duration=duration)
             logger.info(f"Background: {background} (preset)")
@@ -228,7 +258,16 @@ def generate_video(
         # Pack computed data into the data dict for uniform (t, data, duration) signature
         data['_groups'] = groups
 
-        if karaoke_mode:
+        if use_v2:
+            from .v2 import EducationalRendererV2
+            try:
+                from profiles import get_active_profile
+                profile_name = get_active_profile().get("name", "adults")
+            except Exception:
+                profile_name = os.getenv("VIDEO_PROFILE", "adults")
+            logger.info(f"Engine v2 active (profile: {profile_name})")
+            frame_gen = EducationalRendererV2(data, duration, profile_name)
+        elif karaoke_mode:
             logger.info("Using karaoke-style renderer with inline translations")
             def frame_gen(t):
                 return create_frame_karaoke(t, data, duration)
@@ -292,9 +331,9 @@ def generate_video(
     # must say what it was doing (type, size, how many frames, how much RAM).
     logger.info(
         "RENDER START type=%s frames=%d res=%dx%d fps=%d duration=%.2fs "
-        "background=%s peak_rss=%.0fMB",
+        "background=%s engine=%s peak_rss=%.0fMB",
         video_type, int(duration * fps), VIDEO_WIDTH, VIDEO_HEIGHT, fps,
-        duration, background or "none", peak_rss_mb())
+        duration, background or "none", "v2" if use_v2 else "v1", peak_rss_mb())
 
     if renderer == "ffmpeg":
         try:
@@ -405,6 +444,9 @@ def main():
                         help="Rendering backend: ffmpeg (fast, default) or moviepy (legacy)")
     parser.add_argument("--karaoke", action="store_true",
                         help="Use karaoke-style renderer with inline translations")
+    parser.add_argument("--v2", action="store_true",
+                        help="Use the v2 render engine (educational only; "
+                             "other types fall back to v1)")
     parser.add_argument("--list-backgrounds", action="store_true",
                         help="List available background presets")
 
@@ -445,7 +487,8 @@ def main():
 
     result = generate_video(args.audio, args.data, args.output, args.type, args.fps, background,
                             fast_mode=args.fast, renderer=args.renderer,
-                            karaoke_mode=getattr(args, 'karaoke', False))
+                            karaoke_mode=getattr(args, 'karaoke', False),
+                            engine_version="v2" if getattr(args, 'v2', False) else "v1")
     if result is None:
         print("Error: Video generation failed - no output produced", file=sys.stderr)
         sys.exit(1)

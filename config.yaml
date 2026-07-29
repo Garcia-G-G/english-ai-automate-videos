@@ -41,6 +41,15 @@ audio:
   voice_id: "default"
   model: "eleven_v3"
 
+  # Bilingual segment-based narration (tts_bilingual.py)
+  # Base narration language and the accent for marked English terms.
+  narration_lang: "es"          # native Latin-American Spanish narration
+  english_accent: "en-US"       # accent for English teaching words
+  # Model for per-segment synthesis — MUST support language_code
+  # (eleven_turbo_v2_5 or eleven_flash_v2_5; eleven_v3 does NOT).
+  segment_model: "eleven_turbo_v2_5"
+  english_speed_factor: 0.92    # short EN terms read slightly slower
+
   # Humanization settings
   global_speed: 1.0           # Natural speed — v3 handles pacing on its own
   stability: 0.50             # Balanced: human but no hallucinated artifacts
@@ -85,3 +94,23 @@ upload:
 content:
   # Default video type: educational, quiz, true_false, fill_blank, pronunciation
   default_type: "educational"
+
+# Active profile: adults | kids
+profile: "adults"
+
+profiles:
+  adults:
+    # hereda todo del config base (comportamiento actual)
+  kids:
+    audio:
+      voice_id: "KIDS_VOICE_ID_PENDIENTE"   # se reemplaza al elegir voz
+      model: "eleven_v3"
+      stability: 0.55
+      style: 0.30
+      global_speed: 0.95
+    video:
+      background_mode: "clips"
+      clips_dir: "assets/clips/kids"
+      animation_style: "clean_pop"
+    content:
+      categories: ["kids_colors", "kids_numbers", "kids_animals"]

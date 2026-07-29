@@ -56,25 +56,30 @@ VOICES = {
 }
 
 # Default voice (english-teacher - custom bilingual educational voice)
-DEFAULT_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "ZOgeDYxfyev5qgOXq2lN")
+# VIDEO_PROFILE_VOICE_ID (set by src/profiles.py) takes precedence — load_dotenv
+# above uses override=True, so .env would clobber a plain ELEVENLABS_VOICE_ID.
+DEFAULT_VOICE_ID = (os.getenv("VIDEO_PROFILE_VOICE_ID")
+                    or os.getenv("ELEVENLABS_VOICE_ID", "ZOgeDYxfyev5qgOXq2lN"))
 
 # Model — eleven_v3: best quality, 74 languages, emotional control via text cues
 # NOTE: v3 does NOT support SSML <break> tags — use "..." or narrative text for pauses
-MODEL_ID = "eleven_v3"
+MODEL_ID = (os.getenv("VIDEO_PROFILE_TTS_MODEL")
+            or os.getenv("ELEVENLABS_MODEL", "eleven_v3"))
 
 # ============== VOICE SETTINGS ==============
 # Stability 0.50: expressive enough to sound human, stable enough to avoid
 #   hallucinated mini-words / random vocalizations
 # Style 0.05: minimal — just enough warmth, prevents filler-sound artifacts
-DEFAULT_STABILITY = 0.50
+# Profile overrides (VIDEO_PROFILE_* set by src/profiles.py) fall back to defaults
+DEFAULT_STABILITY = float(os.getenv("VIDEO_PROFILE_TTS_STABILITY", "0.50"))
 DEFAULT_SIMILARITY = 0.80
-DEFAULT_STYLE = 0.05
+DEFAULT_STYLE = float(os.getenv("VIDEO_PROFILE_TTS_STYLE", "0.05"))
 DEFAULT_SPEAKER_BOOST = True
 
 # ============== SPEED CONTROL ==============
 # All 1.0 — ElevenLabs v3 handles pacing naturally.
 # Structure kept so we can fine-tune individual segments later.
-GLOBAL_SPEED = 1.0
+GLOBAL_SPEED = float(os.getenv("VIDEO_PROFILE_TTS_SPEED", "1.0"))
 SEGMENT_SPEEDS = {
     'question':     1.0,
     'transition':   1.0,

@@ -31,6 +31,10 @@ CURRENT_BACKGROUND = {
 # Background generator instance (lazy initialized)
 _bg_generator = None
 
+# Clip-library background instance (lazy initialized, keyed by dir/duration/size)
+_clip_bg = None
+_clip_bg_key = None
+
 # Config file path — resolve to absolute path so it works regardless of cwd
 CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "config.yaml")
 
@@ -110,11 +114,39 @@ for i in range(20):
     })
 
 
+def _get_clip_background(w: int, h: int):
+    """Get or (re)create the ClipLibraryBackground for current settings."""
+    global _clip_bg, _clip_bg_key
+    from .clip_background import ClipLibraryBackground
+
+    options = CURRENT_BACKGROUND.get("options") or {}
+    clips_dir = options.get("dir")
+    if not clips_dir:
+        raise ValueError("Background type 'clips' requires options={'dir': <clips directory>}")
+
+    key = (clips_dir, CURRENT_BACKGROUND["duration"], w, h)
+    if _clip_bg is None or _clip_bg_key != key:
+        if _clip_bg is not None:
+            _clip_bg.close()
+        _clip_bg = ClipLibraryBackground(
+            clips_dir, w, h,
+            duration=CURRENT_BACKGROUND["duration"],
+            seed=options.get("seed"),
+            dim=options.get("dim", 0.35),
+        )
+        _clip_bg_key = key
+    return _clip_bg
+
+
 def gradient(w: int, h: int, t: float) -> np.ndarray:
     """Create animated background.
 
     Uses cached frames for speed if available, otherwise generates on-the-fly.
     """
+    # Clip-library background (real video clips)
+    if CURRENT_BACKGROUND["type"] == "clips":
+        return _get_clip_background(w, h).get_frame(t)
+
     # Check if custom background is configured
     if BACKGROUNDS_AVAILABLE and (CURRENT_BACKGROUND["preset"] or CURRENT_BACKGROUND["type"]):
         bg = get_background_generator()
