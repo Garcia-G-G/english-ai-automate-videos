@@ -6,7 +6,12 @@ python-dotenv>=1.0.0
 pyyaml>=6.0
 
 # TTS & Audio
-edge-tts>=6.1.0
+elevenlabs>=1.0.0                  # src/tts_elevenlabs.py, src/tts_bilingual.py
+google-cloud-texttospeech>=2.14.0  # src/tts_google.py
+edge-tts>=6.1.0                    # src/tts.py
+pydub>=0.25.1                      # src/tts.py
+# Not imported anywhere today. Kept deliberately: local Whisper is planned
+# for the timestamp work. Remove it if that plan changes.
 openai-whisper>=20231117
 
 # Video Generation
@@ -23,6 +28,7 @@ streamlit>=1.30.0
 google-api-python-client>=2.100.0
 google-auth-oauthlib>=1.1.0
 requests>=2.31.0
+httpx>=0.24.0                      # src/tts_elevenlabs.py, src/tts_openai.py
 
 # Optional: Video Analysis
 opencv-python>=4.8.0
