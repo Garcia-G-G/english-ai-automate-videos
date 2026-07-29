@@ -336,25 +336,25 @@ def generate_video(
         duration, background or "none", "v2" if use_v2 else "v1", peak_rss_mb())
 
     if renderer == "ffmpeg":
-        try:
-            from .compositor import render_video_ffmpeg
-            return render_video_ffmpeg(
-                frame_gen,
-                audio_path,
-                output_path,
-                duration,
-                fps=fps,
-                width=VIDEO_WIDTH,
-                height=VIDEO_HEIGHT,
-                preset="ultrafast" if fast_mode else "medium",
-                use_hardware=True,
-            )
-        except Exception as e:
-            logger.warning(f"FFmpeg renderer failed: {e}")
-            logger.warning("Falling back to MoviePy renderer")
-            renderer = "moviepy"
+        # No fallback. This used to be wrapped in a bare `except Exception`
+        # that retried under MoviePy, which turned every data bug into a
+        # misattributed "FFmpeg renderer failed" and hid the real error.
+        # MoviePy is still reachable, but only by asking for it explicitly
+        # with --renderer moviepy.
+        from .compositor import render_video_ffmpeg
+        return render_video_ffmpeg(
+            frame_gen,
+            audio_path,
+            output_path,
+            duration,
+            fps=fps,
+            width=VIDEO_WIDTH,
+            height=VIDEO_HEIGHT,
+            preset="ultrafast" if fast_mode else "medium",
+            use_hardware=True,
+        )
 
-    # MoviePy renderer (legacy fallback)
+    # MoviePy renderer (legacy, explicit opt-in only)
     from moviepy import VideoClip, AudioFileClip
 
     if not isinstance(audio_path, str):
