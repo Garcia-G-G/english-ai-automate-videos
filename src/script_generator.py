@@ -18,6 +18,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from script_schema import validate_script
+from tts_common import SPANISH_FILTER
 
 logger = logging.getLogger(__name__)
 
@@ -657,9 +658,53 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
     full_script = script.get("full_script", "")
 
     # Fix common quote issues
-    # 1. Normalize quotes: smart quotes to straight quotes
-    full_script = full_script.replace("'", "'").replace("'", "'")
-    full_script = full_script.replace(""", '"').replace(""", '"')
+    # 1. Normalize typographic quotes to straight ones.
+    #
+    # The mappings are written as \u escapes DELIBERATELY. The previous
+    # version had literal smart quotes in the source and something along the
+    # way normalised them to ASCII, leaving `.replace("'", "'")` — an
+    # apostrophe-to-apostrophe no-op that did nothing for as long as it
+    # existed. Escapes cannot be silently de-smartened by an editor, so the
+    # bug cannot come back the way it arrived.
+    #
+    # This is load-bearing, not cosmetic: gpt-4o-mini emits U+2019 in
+    # contractions, and every quote-aware step below (the balance check at 2,
+    # the contraction mask at 1b, the phrase scrape at 3) keys on ASCII "'".
+    # A typographic apostrophe slipping through re-creates the exact desync
+    # that 1b exists to prevent.
+    #
+    # The second line here used to read `.replace(""", '"')`, in which Python
+    # sees a TRIPLE-quoted string and the statement collapses to replacing the
+    # literal substring `, '"').replace(` with `"`. Harmless, and nonsense.
+    _SMART_APOSTROPHES = "\u2018\u2019\u201a\u201b\u2032"   # left/right single, low-9, high-rev-9, prime
+    _SMART_DOUBLES = "\u201c\u201d\u201e\u201f\u2033"       # left/right double, low-9, high-rev-9, dbl-prime
+    full_script = full_script.translate(
+        {ord(c): "'" for c in _SMART_APOSTROPHES}
+        | {ord(c): '"' for c in _SMART_DOUBLES}
+    )
+
+    # 1b. Mask contraction apostrophes.
+    #
+    # An apostrophe between two letters is a contraction — "can't", "Let's",
+    # "I'm" — not a quote delimiter. Steps 2 and 3 below both treat every
+    # apostrophe as a delimiter, and that single mistake is the root of the
+    # english_phrases corruption:
+    #
+    #   "Hoy aprendemos 'I can't be swamped' que significa..."
+    #     -> 3 apostrophes, so step 2 calls it unbalanced
+    #     -> the repair drops the REAL closing quote (" que" fails its
+    #        ^[A-Za-z] test) and keeps the one inside "can't"
+    #     -> step 3 then pairs quote 1 with the contraction and captures
+    #        "I can", and every later pair is shifted by one, so it starts
+    #        capturing the Spanish narration BETWEEN phrases.
+    #
+    # That is where "i can", "m swamped with deadlines" and ", que significa "
+    # came from: 184 distinct artefacts across the 172-script corpus.
+    #
+    # Masking here fixes both steps at once, because both consume the masked
+    # text. The mask is reverted at 4. below, before anything is stored.
+    _CONTRACTION = "\x00"
+    full_script = re.sub(r"(?<=[A-Za-z])'(?=[A-Za-z])", _CONTRACTION, full_script)
 
     # 2. Count quotes - should be balanced
     single_quotes = full_script.count("'")
@@ -684,21 +729,59 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
                 full_script = "".join(fixed)
 
     # 3. Ensure english_phrases matches quoted words in script
+    #
+    # english_phrases is not decoration: it drives is_english, which drives
+    # BOTH the on-screen word styling and the TTS accent. Anything wrongly
+    # listed here is spoken in an English accent. Same failure class as the
+    # 'tela' defect in tests/fixtures/known_bad/manifest.json.
+    #
+    # Two bugs used to feed it, and the first is the serious one:
+    #
+    #   a) re.findall(r"'([^']+)'") pairs apostrophes POSITIONALLY. The first
+    #      contraction — "can't", "Let's", "I'm" — consumes one delimiter and
+    #      shifts every pair after it by one, so from that point the regex
+    #      captures the Spanish narration BETWEEN the intended phrases. That
+    #      is where "', que significa '" and "'m swamped with deadlines'"
+    #      came from: 105 artefacts across the historical corpus.
+    #
+    #   b) the only guard was `any(len(w) > 1 ...)`, which admits any span
+    #      containing a two-letter word — so "me gusta tu outfit" and
+    #      "qué increíble" were both filed as English.
     if "english_phrases" in script:
-        quoted = re.findall(r"'([^']+)'", full_script)
-        current_phrases = set(p.lower() for p in script["english_phrases"])
-        found_phrases = set(q.lower() for q in quoted)
+        # (a) Contractions were masked at 1b, so this pairing can no longer
+        # desynchronise. Restore them in the captured text.
+        quoted = [q.replace(_CONTRACTION, "'")
+                  for q in re.findall(r"'([^']+)'", full_script)]
 
-        # Add any quoted phrases not in the list
-        for phrase in found_phrases:
-            phrase_words = phrase.split()
-            # Only add if it looks like English (at least one English word)
-            if any(len(w) > 1 for w in phrase_words):
+        current_phrases = set(p.lower() for p in script["english_phrases"])
+        found_phrases = set(q.lower().strip() for q in quoted)
+
+        for phrase in sorted(found_phrases):
+            # (b) Require a STRICT MAJORITY of non-Spanish tokens, not merely
+            # one. "at least one English word" admits "me gusta tu outfit",
+            # where a single loanword drags three Spanish words into an
+            # English accent. Ties resolve to English: several stoplist words
+            # are ambiguous across both languages — "me" above all — and
+            # rejecting on a tie throws out the two-word lesson phrases that
+            # are the entire point of this pipeline ("explain me", "tell me").
+            # Tokens are matched without punctuation so "outfit," and "outfit"
+            # behave the same.
+            tokens = [w for w in re.findall(r"[a-záéíóúñü]+", phrase) if len(w) > 1]
+            spanish = sum(1 for w in tokens if w in SPANISH_FILTER)
+            if not tokens or spanish * 2 > len(tokens):
                 if phrase not in current_phrases:
-                    script["english_phrases"].append(phrase)
-                    warnings.append(f"Added missing phrase: '{phrase}'")
+                    warnings.append(f"Skipped non-English quoted span: '{phrase}'")
+                continue
+
+            if phrase not in current_phrases:
+                script["english_phrases"].append(phrase)
+                current_phrases.add(phrase)
+                warnings.append(f"Added missing phrase: '{phrase}'")
 
     # 4. Clean up script for TTS
+    # Restore the contraction apostrophes masked at 1b, so everything stored
+    # or spoken from here on is the real text.
+    full_script = full_script.replace(_CONTRACTION, "'")
     # Remove multiple spaces
     full_script = re.sub(r'\s+', ' ', full_script)
     # Ensure proper spacing around punctuation
