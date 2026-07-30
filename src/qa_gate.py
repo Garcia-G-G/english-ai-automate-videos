@@ -1,0 +1,343 @@
+#!/usr/bin/env python3
+"""QA gate — measures RENDERED AUDIO, never the generator's self-report.
+
+    python3 src/qa_gate.py                      # whole corpus -> output/qa/
+    python3 src/qa_gate.py output/audio/quiz/cool_20260416_084217.json
+
+REPORT MODE ONLY. Writes output/qa/<name>.json, prints a summary, moves no
+files, never changes the exit code. Blocking is switched on in Step 3 by
+flipping BLOCKING below.
+
+Why this exists at all: the repo carried two analyzers (quality_reviewer.py,
+video_analyzer.py) that audited the JSON the generator produced about itself.
+A generator that miscomputes a timestamp writes that same wrong timestamp into
+its own report, so those tools agreed with the bug and caught nothing. Every
+number here comes out of ffmpeg reading the waveform.
+
+CALIBRATION — measured, not guessed. See docs/qa-gate-calibration.md.
+
+  Noise floor, from regions ffmpeg actually finds quiet, edges inset 60 ms:
+
+    eleven_v3          n=288   p10 -91.0   median -65.2   p90 -54.7 dB
+    eleven_turbo_v2_5  n=169   p10 -71.2   median -62.4   p90 -55.3 dB
+
+  The two differ in SHAPE, not at the decision boundary. v3's p10 is exactly
+  -91.0 dB — 16-bit digital silence — because the quiz path splices anullsrc
+  between segments (tts_elevenlabs.py:622-633). turbo has no synthesized
+  silence at all, so its quiet is entirely LAME room tone and its floor is
+  unimodal. At the p90 end, where the threshold decision is actually made,
+  they agree within 0.6 dB. One threshold therefore serves both, and that is
+  a measured conclusion rather than an assumption.
+
+  SILENCE_THRESHOLD_DB = -45: about 5 dB above the loudest silence observed in
+  either model, and about 27 dB below speech (whole-file mean runs -15 to
+  -18 dB). A boundary-stability sweep is flat from -30 to -60 dB and collapses
+  at -70 (5 speech regions instead of ~20, p90 drift 3.8 s), because at -70
+  only the spliced digital silence is visible and every natural pause is
+  swallowed.
+
+  SILENCE_MIN_DUR = 0.10, deliberately shorter than any threshold applied to
+  it. silencedetect with d=0.25 cannot tell "exactly 250 ms" from "not
+  detected"; durations are compared in Python instead.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import logging
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger(__name__)
+
+ROOT = Path(__file__).resolve().parent.parent
+AUDIO_DIR = ROOT / "output" / "audio"
+QA_DIR = ROOT / "output" / "qa"
+
+#: Step 3 flips this. Until then the gate reports and nothing else.
+BLOCKING = False
+
+SILENCE_THRESHOLD_DB = -45.0
+SILENCE_MIN_DUR = 0.10
+EDGE_INSET = 0.06
+
+#: Model routing, from pipeline.py:157. Recorded per artifact because the TTS
+#: JSONs do NOT store which TTS model produced them — `_meta.model` is the
+#: SCRIPT generator (gpt-4o-mini). Only 3 .ttsplan.json files carry model_id.
+TURBO_TYPES = frozenset({"educational", "pronunciation"})
+V3_TYPES = frozenset({"quiz", "true_false", "fill_blank", "vocabulary"})
+
+#: Declared segments that sit on spliced digital silence rather than speech.
+#: TRAP (a): the quiz countdown is ~7 s of anullsrc carrying THREE declared
+#: segments, so any "detected regions == declared segments" count can never
+#: reconcile. These are checked against the declared SILENCE MAP — they must
+#: contain no speech — and excluded from boundary drift.
+SILENT_SEGMENT_PREFIXES = ("countdown_",)
+
+_VOL_RE = re.compile(r"\[Parsed_volumedetect.*?\]\s*(\w+):\s*(-?[\d.]+|-inf)")
+_SIL_RE = re.compile(r"silence_(start|end):\s*(-?[\d.]+)")
+_DUR_RE = re.compile(r"Duration:\s*(\d+):(\d+):([\d.]+)")
+
+
+# ── ffmpeg primitives ────────────────────────────────────────────────
+
+def _run(cmd: List[str]) -> str:
+    return subprocess.run(cmd, capture_output=True, text=True).stderr
+
+
+def probe_duration(path: str) -> Optional[float]:
+    r = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "csv=p=0", path],
+        capture_output=True, text=True,
+    )
+    try:
+        return float(r.stdout.strip())
+    except (TypeError, ValueError):
+        return None
+
+
+def volumedetect(path: str, ss: float = None, t: float = None) -> Dict[str, float]:
+    cmd = ["ffmpeg", "-hide_banner", "-nostats"]
+    if ss is not None:
+        cmd += ["-ss", f"{ss:.4f}"]
+    if t is not None:
+        cmd += ["-t", f"{t:.4f}"]
+    cmd += ["-i", path, "-af", "volumedetect", "-f", "null", "-"]
+    out = {}
+    for k, v in _VOL_RE.findall(_run(cmd)):
+        out[k] = float("-inf") if v == "-inf" else float(v)
+    return out
+
+
+def silence_regions(path: str, threshold_db: float = SILENCE_THRESHOLD_DB,
+                    min_dur: float = SILENCE_MIN_DUR) -> Tuple[List[Tuple[float, float]], Optional[float]]:
+    """Silent (start, end) spans, plus the file duration ffmpeg reports."""
+    stderr = _run(["ffmpeg", "-hide_banner", "-nostats", "-i", path, "-af",
+                   f"silencedetect=noise={threshold_db}dB:d={min_dur}",
+                   "-f", "null", "-"])
+    duration = None
+    m = _DUR_RE.search(stderr)
+    if m:
+        duration = int(m.group(1)) * 3600 + int(m.group(2)) * 60 + float(m.group(3))
+    spans, cur = [], None
+    for kind, val in _SIL_RE.findall(stderr):
+        if kind == "start":
+            cur = float(val)
+        elif cur is not None:
+            spans.append((cur, float(val)))
+            cur = None
+    if cur is not None and duration is not None:
+        spans.append((cur, duration))
+    return spans, duration
+
+
+def speech_regions(path: str, **kw) -> Tuple[List[Tuple[float, float]], Optional[float]]:
+    """Complement of the silence spans."""
+    spans, duration = silence_regions(path, **kw)
+    out, t = [], 0.0
+    for s, e in spans:
+        if s - t > 0.05:
+            out.append((t, s))
+        t = e
+    if duration is not None and duration - t > 0.05:
+        out.append((t, duration))
+    return out, duration
+
+
+# ── check 1: the drift table ─────────────────────────────────────────
+
+def _nearest_edge(edges: List[float], x: float) -> Optional[float]:
+    return min(edges, key=lambda e: abs(e - x)) if edges else None
+
+
+def _is_silent_segment(name: str) -> bool:
+    return name.startswith(SILENT_SEGMENT_PREFIXES)
+
+
+def drift_table(data: Dict, mp3: str) -> Dict:
+    """Declared segment boundaries vs boundaries measured on the waveform.
+
+    The centrepiece. For each declared entry in segment_times, emit declared,
+    measured and delta for both edges. Segments declared over spliced silence
+    are reported separately against the silence map rather than matched to a
+    speech boundary they can never have.
+    """
+    st = data.get("segment_times") or {}
+    if not st:
+        return {"available": False,
+                "reason": "no segment_times — this type declares a word timeline instead"}
+
+    sp, duration = speech_regions(mp3)
+    starts = [s for s, _ in sp]
+    ends = [e for _, e in sp]
+
+    rows, silent_rows = [], []
+    for name, v in sorted(st.items(), key=lambda kv: (kv[1] or {}).get("start", 0)
+                          if isinstance(kv[1], dict) else 0):
+        if not isinstance(v, dict) or "start" not in v:
+            continue
+        d_start, d_end = float(v["start"]), float(v.get("end", v["start"]))
+
+        if _is_silent_segment(name):
+            # TRAP (a): assert against the declared silence map. This segment
+            # claims a span that should contain NO speech.
+            overlap = sum(max(0.0, min(d_end, e) - max(d_start, s)) for s, e in sp)
+            vol = volumedetect(mp3, ss=d_start, t=max(0.01, d_end - d_start))
+            silent_rows.append({
+                "segment": name,
+                "declared_start": round(d_start, 3),
+                "declared_end": round(d_end, 3),
+                "speech_overlap_s": round(overlap, 3),
+                "max_volume_db": vol.get("max_volume"),
+                "verdict": "SPEECH_IN_DECLARED_SILENCE" if overlap > 0.05 else "ok",
+            })
+            continue
+
+        m_start = _nearest_edge(starts, d_start)
+        m_end = _nearest_edge(ends, d_end)
+        rows.append({
+            "segment": name,
+            "declared_start": round(d_start, 3),
+            "measured_start": round(m_start, 3) if m_start is not None else None,
+            "delta_start": round(m_start - d_start, 3) if m_start is not None else None,
+            "declared_end": round(d_end, 3),
+            "measured_end": round(m_end, 3) if m_end is not None else None,
+            "delta_end": round(m_end - d_end, 3) if m_end is not None else None,
+        })
+
+    deltas = [abs(r["delta_start"]) for r in rows if r["delta_start"] is not None]
+    deltas += [abs(r["delta_end"]) for r in rows if r["delta_end"] is not None]
+    deltas.sort()
+    return {
+        "available": True,
+        "threshold_db": SILENCE_THRESHOLD_DB,
+        "n_declared": len(rows) + len(silent_rows),
+        "n_speech_regions": len(sp),
+        "rows": rows,
+        "declared_silence": silent_rows,
+        "abs_drift_median": round(deltas[len(deltas) // 2], 3) if deltas else None,
+        "abs_drift_p90": round(deltas[int(len(deltas) * 0.9) - 1], 3) if deltas else None,
+        "abs_drift_max": round(deltas[-1], 3) if deltas else None,
+    }
+
+
+# ── per-artifact report ──────────────────────────────────────────────
+
+def model_for(video_type: Optional[str]) -> str:
+    if video_type in TURBO_TYPES:
+        return "eleven_turbo_v2_5"
+    if video_type in V3_TYPES:
+        return "eleven_v3"
+    return "unknown"
+
+
+def analyze(json_path: Path) -> Optional[Dict]:
+    mp3 = str(json_path)[:-5] + ".mp3"
+    if not os.path.exists(mp3):
+        return None
+    try:
+        data = json.loads(json_path.read_text(encoding="utf-8"))
+    except (ValueError, OSError):
+        return None
+    if not isinstance(data, dict):
+        return None
+
+    vtype = data.get("type")
+    actual = probe_duration(mp3)
+    declared = data.get("duration")
+
+    report = {
+        "artifact": str(json_path.relative_to(ROOT)),
+        "audio": str(Path(mp3).relative_to(ROOT)),
+        "video_type": vtype,
+        "tts_model": model_for(vtype),
+        "declared_duration": declared,
+        "measured_duration": round(actual, 3) if actual else None,
+        "duration_delta": (round(actual - declared, 3)
+                           if actual and isinstance(declared, (int, float)) else None),
+        "has_segment_times": bool(data.get("segment_times")),
+        "n_words": len(data.get("words") or []),
+        "checks": {},
+    }
+    report["checks"]["drift_table"] = drift_table(data, mp3)
+    return report
+
+
+def _summarise(reports: List[Dict]) -> None:
+    from collections import Counter, defaultdict
+    print(f"\n{'='*78}\nQA GATE BASELINE — report mode, nothing blocked\n{'='*78}")
+    print(f"artifacts analyzed : {len(reports)}")
+
+    by_type = Counter(r["video_type"] for r in reports)
+    print(f"\n{'type':16}{'model':20}{'n':>5}{'w/ segtimes':>13}{'drift med':>11}{'drift p90':>11}")
+    groups = defaultdict(list)
+    for r in reports:
+        groups[(r["video_type"], r["tts_model"])].append(r)
+    for (t, m), rs in sorted(groups.items(), key=lambda x: str(x[0][0])):
+        seg = [r for r in rs if r["checks"]["drift_table"].get("available")]
+        meds = sorted(r["checks"]["drift_table"]["abs_drift_median"] for r in seg
+                      if r["checks"]["drift_table"].get("abs_drift_median") is not None)
+        p90s = sorted(r["checks"]["drift_table"]["abs_drift_p90"] for r in seg
+                      if r["checks"]["drift_table"].get("abs_drift_p90") is not None)
+        med = f"{meds[len(meds)//2]:.3f}" if meds else "-"
+        p90 = f"{p90s[len(p90s)//2]:.3f}" if p90s else "-"
+        print(f"  {str(t):14}{m:20}{len(rs):>5}{len(seg):>13}{med:>11}{p90:>11}")
+
+    nodrift = [r for r in reports if not r["checks"]["drift_table"].get("available")]
+    print(f"\nNOT COVERED by the drift table: {len(nodrift)} of {len(reports)} artifacts")
+    nt = Counter(r["video_type"] for r in nodrift)
+    for t, n in nt.most_common():
+        print(f"   {str(t):16} {n:>4}   (declares a word timeline, not segment_times)")
+    print("   -> this is the gap check 2 exists to close.\n")
+
+    speech_in_silence = [r for r in reports
+                         for row in r["checks"]["drift_table"].get("declared_silence", [])
+                         if row["verdict"] != "ok"]
+    print(f"declared-silence violations (speech where silence was declared): "
+          f"{len(speech_in_silence)}")
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description="QA gate over rendered audio artifacts")
+    ap.add_argument("targets", nargs="*", help="artifact JSONs (default: whole corpus)")
+    ap.add_argument("--out", default=str(QA_DIR))
+    args = ap.parse_args(argv)
+
+    if args.targets:
+        paths = [Path(t).resolve() for t in args.targets]
+    else:
+        paths = sorted(p for p in AUDIO_DIR.rglob("*.json")
+                       if not p.name.endswith(".ttsplan.json"))
+
+    outdir = Path(args.out)
+    outdir.mkdir(parents=True, exist_ok=True)
+
+    reports = []
+    for i, p in enumerate(paths, 1):
+        r = analyze(p)
+        if r is None:
+            continue
+        reports.append(r)
+        name = str(p.relative_to(AUDIO_DIR)).replace("/", "__")[:-5]
+        (outdir / f"{name}.json").write_text(
+            json.dumps(r, indent=2, ensure_ascii=False), encoding="utf-8")
+        if i % 25 == 0:
+            print(f"  ... {i}/{len(paths)}", file=sys.stderr)
+
+    (outdir / "_baseline_summary.json").write_text(
+        json.dumps({"n": len(reports), "threshold_db": SILENCE_THRESHOLD_DB,
+                    "blocking": BLOCKING, "reports": reports},
+                   indent=2, ensure_ascii=False), encoding="utf-8")
+    _summarise(reports)
+    return 0            # never non-zero in report mode
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.WARNING)
+    sys.exit(main())
