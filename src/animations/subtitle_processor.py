@@ -10,6 +10,7 @@ Handles:
 """
 
 from typing import List, Dict, Optional
+from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
 # Constants from TikTok subtitle guide
 MIN_GAP_MS = 50              # Minimum gap between words (50ms)
@@ -198,45 +199,10 @@ class SubtitleProcessor:
         # Build set of English words
         # Filter: only short phrases (≤5 words) — longer ones are likely bad data
         # Exclude common Spanish words to prevent false positives
-        SPANISH_COMMON = {
-            'a', 'al', 'algo', 'alguien', 'ante', 'asi', 'así', 'bien', 'bueno',
-            'cada', 'casa', 'casi', 'como', 'con', 'cual', 'cuando',
-            'de', 'del', 'decir', 'donde', 'el', 'ella', 'en', 'era',
-            'es', 'esa', 'ese', 'eso', 'esta', 'estar', 'este', 'esto',
-            'forma', 'fue', 'hay', 'hoy', 'ir', 'la', 'las', 'le', 'les',
-            'lo', 'los', 'mas', 'más', 'me', 'mi', 'muy', 'nada', 'ni', 'no',
-            'nos', 'o', 'otra', 'otro', 'para', 'pero', 'por', 'puede',
-            'que', 'qué', 'quien', 'se', 'ser', 'si', 'sin', 'sobre', 'son',
-            'su', 'sus', 'tan', 'te', 'ti', 'tiene', 'todo', 'tu', 'tus',
-            'un', 'una', 'uno', 'usar', 'usa', 'usan', 'va', 'vamos',
-            'ver', 'vez', 'vida', 'y', 'ya', 'yo', 'palabra', 'ejemplo',
-            'recuerda', 'cuando', 'veas', 'entonces', 'también', 'tambien', 'ahora',
-            'aceptar', 'invitación', 'invitacion', 'divertida', 'casual',
-            # Common Spanish words that GPT puts in english_phrases by mistake
-            'gusta', 'gusto', 'increíble', 'increible', 'acuerdo', 'decir',
-            'puedes', 'puedo', 'quiero', 'significa', 'sigues', 'cierto',
-            'verdad', 'falso', 'correcto', 'incorrecto', 'ejemplo',
-            'piensa', 'repite', 'respuesta', 'pregunta', 'opción', 'opcion',
-            'frase', 'manera', 'lugar', 'momento', 'vez', 'cosa', 'cosas',
-            'tipo', 'tipos', 'mundo', 'gente', 'personas', 'tiempo',
-            'nuevo', 'nueva', 'mejor', 'peor', 'grande', 'pequeño',
-            'buena', 'malo', 'mala', 'mismo', 'misma', 'otro', 'otra',
-            'mucho', 'mucha', 'muchos', 'muchas', 'poco', 'poca',
-            'siempre', 'nunca', 'solo', 'sólo', 'aquí', 'aqui', 'allí', 'alli',
-            'este', 'estos', 'estas', 'ese', 'esos', 'esas',
-            'estoy', 'estás', 'estas', 'está', 'estamos', 'están',
-            'soy', 'eres', 'somos', 'tengo', 'tienes', 'tenemos', 'tienen',
-            'hago', 'haces', 'hace', 'hacemos', 'hacen',
-            'digo', 'dices', 'dice', 'dicen', 'decimos',
-            'sé', 'sabes', 'sabe', 'sabemos', 'saben', 'sabías', 'sabias',
-            'puedo', 'puedes', 'puede', 'podemos', 'pueden',
-            'quiero', 'quieres', 'quiere', 'queremos', 'quieren',
-            'necesito', 'necesitas', 'necesita', 'necesitamos',
-            'creo', 'crees', 'cree', 'creemos',
-            'outfit', 'tu',  # 'outfit' is borrowed but used in Spanish context
-            'emocionante', 'respondido', 'escribir', 'leer', 'hablar',
-            'escuchar', 'entender', 'aprender', 'enseñar', 'practicar',
-        }
+        # Was a local 220-word fork of the Spanish stoplist. All five
+        # copies are now one canonical 275-word set in tts_common, whose
+        # comment records why. ADD WORDS THERE, never here.
+        SPANISH_COMMON = SPANISH_FILTER
         english_set = set()
         if english_phrases:
             for phrase in english_phrases:

@@ -27,6 +27,7 @@ from .true_false import create_frame_true_false, resolve_true_false_timestamps
 from .fill_blank import create_frame_fill_blank
 from .pronunciation import create_frame_pronunciation
 from .vocabulary import create_frame_vocabulary
+from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
 # Re-export from top-level src/backgrounds.py (on sys.path via main.py)
 try:
@@ -214,37 +215,10 @@ def generate_video(
         english_phrases = data['english_phrases']
         if english_phrases and words:
             import re as _re
-            SPANISH_COMMON = {
-                'a', 'al', 'algo', 'alguien', 'ante', 'asi', 'así', 'bien', 'bueno',
-                'cada', 'casa', 'casi', 'como', 'con', 'cual', 'cuando',
-                'de', 'del', 'decir', 'donde', 'el', 'ella', 'en', 'era',
-                'es', 'esa', 'ese', 'eso', 'esta', 'estar', 'este', 'esto',
-                'forma', 'fue', 'hay', 'hoy', 'ir', 'la', 'las', 'le', 'les',
-                'lo', 'los', 'mas', 'más', 'me', 'mi', 'muy', 'nada', 'ni', 'no',
-                'nos', 'o', 'otra', 'otro', 'para', 'pero', 'por', 'puede',
-                'que', 'qué', 'quien', 'se', 'ser', 'si', 'sin', 'sobre', 'son',
-                'su', 'sus', 'tan', 'te', 'ti', 'tiene', 'todo', 'tu', 'tus',
-                'un', 'una', 'uno', 'usar', 'usa', 'usan', 'va', 'vamos',
-                'ver', 'vez', 'vida', 'y', 'ya', 'yo', 'palabra', 'ejemplo',
-                'recuerda', 'cuando', 'veas', 'entonces', 'también', 'tambien', 'ahora',
-                'aceptar', 'invitación', 'invitacion', 'divertida', 'casual',
-                'gusta', 'gusto', 'increíble', 'increible', 'acuerdo', 'decir',
-                'puedes', 'puedo', 'quiero', 'significa', 'sigues', 'cierto',
-                'verdad', 'falso', 'correcto', 'incorrecto',
-                'piensa', 'repite', 'respuesta', 'pregunta', 'opción', 'opcion',
-                'frase', 'manera', 'lugar', 'momento', 'cosa', 'cosas',
-                'tipo', 'tipos', 'mundo', 'gente', 'personas', 'tiempo',
-                'nuevo', 'nueva', 'mejor', 'peor', 'grande', 'pequeño',
-                'buena', 'malo', 'mala', 'mismo', 'misma',
-                'mucho', 'mucha', 'muchos', 'muchas', 'poco', 'poca',
-                'siempre', 'nunca', 'solo', 'sólo', 'aquí', 'aqui',
-                'estoy', 'estás', 'está', 'estamos', 'están',
-                'soy', 'eres', 'somos', 'tengo', 'tienes', 'tenemos', 'tienen',
-                'hago', 'haces', 'hace', 'hacemos', 'hacen',
-                'sé', 'sabes', 'sabe', 'sabemos', 'saben', 'sabías', 'sabias',
-                'outfit', 'emocionante', 'escribir', 'leer', 'hablar',
-                'escuchar', 'entender', 'aprender', 'enseñar', 'practicar',
-            }
+            # Was a local 194-word fork of the Spanish stoplist. All five
+            # copies are now one canonical 275-word set in tts_common, whose
+            # comment records why. ADD WORDS THERE, never here.
+            SPANISH_COMMON = SPANISH_FILTER
             english_set = set()
             for phrase in english_phrases:
                 phrase_words = phrase.lower().split()
