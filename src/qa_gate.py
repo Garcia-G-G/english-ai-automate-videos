@@ -66,6 +66,26 @@ SILENCE_THRESHOLD_DB = -45.0
 SILENCE_MIN_DUR = 0.10
 EDGE_INSET = 0.06
 
+#: Check 3. The assertion from tests/fixtures/known_bad/manifest.json
+#: (afabric_option_letter_elision), reproduced from audio instead of asserted
+#: on an input string.
+LETTER_WORD_MIN_SILENCE = 0.250
+
+#: Check 5. Clipping: volumedetect max_volume above this is clipped or nearly.
+CLIP_MAX_DB = -1.0
+
+#: Check 5. Dead air, in seconds, for silence NOT explained by the declared
+#: structure. Measured over 837 silence regions in 40 artifacts: p50 0.32,
+#: p90 0.70, p95 1.13, then a hard jump to p99 7.09 which is the intentional
+#: countdown block. 1.5 s sits above p95 and far below the countdown, so it
+#: catches unexplained gaps without firing on designed ones.
+DEAD_AIR_S = 1.5
+
+#: Check 2 span tolerance. Measured: last_word_end / measured_duration has
+#: median 0.98 over 66 artifacts, 0 of 66 exceeding 1.02, 2 of 66 under 0.90.
+SPAN_MIN_COVERAGE = 0.90
+SPAN_MAX_COVERAGE = 1.02
+
 #: Model routing, from pipeline.py:157. Recorded per artifact because the TTS
 #: JSONs do NOT store which TTS model produced them — `_meta.model` is the
 #: SCRIPT generator (gpt-4o-mini). Only 3 .ttsplan.json files carry model_id.
@@ -227,6 +247,273 @@ def drift_table(data: Dict, mp3: str) -> Dict:
     }
 
 
+# ── check 2: word timeline, at SENTENCE granularity ──────────────────
+
+def sentence_timeline(data: Dict, mp3: str) -> Dict:
+    """For types that declare a word timeline instead of segment_times.
+
+    DELIBERATELY NOT A WORD-LEVEL ASSERTION. Word-timeline gaps measure -7 to
+    -30 dB — they land mid-speech — so individual word boundaries cannot be
+    validated against silence. Doing it anyway would produce a check that can
+    never fire, which is how the analyzers this replaces ended up useless.
+    Validating word boundaries needs forced alignment, i.e. ASR, deferred.
+
+    What IS honestly verifiable without ASR, and is what this does:
+      1. SPAN     — last_word_end vs measured duration
+      2. SENTENCE — words grouped by add_sentence_boundaries' segment_id, and
+                    those spans validated against silence exactly as check 1
+                    validates segments
+      3. COUNT    — detected speech regions vs sentence count
+    """
+    words = data.get("words") or []
+    if not words:
+        return {"available": False, "reason": "no word timeline either"}
+
+    sp, duration = speech_regions(mp3)
+    starts = [s for s, _ in sp]
+    ends = [e for _, e in sp]
+
+    out: Dict = {
+        "available": True,
+        "granularity": "sentence",
+        "covers": ["span: last_word_end vs measured duration",
+                   "sentence spans vs measured silence boundaries",
+                   "speech-region count vs sentence count"],
+        "does_not_cover": [
+            "individual word boundaries — word-timeline gaps measure -7 to "
+            "-30 dB (mid-speech), so there is no non-ASR instrument at that "
+            "granularity",
+            "what was actually said — needs ASR, deferred",
+        ],
+    }
+
+    # 1. SPAN
+    last_end = max((w.get("end", 0.0) for w in words if isinstance(w, dict)), default=0.0)
+    if duration:
+        cov = last_end / duration
+        out["span"] = {
+            "last_word_end": round(last_end, 3),
+            "measured_duration": round(duration, 3),
+            "coverage": round(cov, 4),
+            "verdict": ("ok" if SPAN_MIN_COVERAGE <= cov <= SPAN_MAX_COVERAGE
+                        else ("TIMELINE_EXCEEDS_AUDIO" if cov > SPAN_MAX_COVERAGE
+                              else "TIMELINE_UNDERRUNS_AUDIO")),
+        }
+
+    # 2. SENTENCE spans, via the renderer's own grouping
+    try:
+        sys.path.insert(0, str(ROOT / "src"))
+        from video.educational import add_sentence_boundaries
+        grouped = add_sentence_boundaries([dict(w) for w in words],
+                                          data.get("full_script") or "")
+    except Exception as e:                      # noqa: BLE001 - report, never crash
+        out["sentences"] = {"error": f"could not group: {e}"}
+        return out
+
+    buckets: Dict[int, List[Dict]] = {}
+    for w in grouped:
+        buckets.setdefault(w.get("segment_id", 0), []).append(w)
+
+    rows = []
+    for sid in sorted(buckets):
+        ws = buckets[sid]
+        s = min(w["start"] for w in ws if "start" in w)
+        e = max(w["end"] for w in ws if "end" in w)
+        m_s = _nearest_edge(starts, s)
+        m_e = _nearest_edge(ends, e)
+        rows.append({
+            "sentence_id": sid,
+            "n_words": len(ws),
+            "declared_start": round(s, 3),
+            "measured_start": round(m_s, 3) if m_s is not None else None,
+            "delta_start": round(m_s - s, 3) if m_s is not None else None,
+            "declared_end": round(e, 3),
+            "measured_end": round(m_e, 3) if m_e is not None else None,
+            "delta_end": round(m_e - e, 3) if m_e is not None else None,
+        })
+
+    d = sorted(abs(r[k]) for r in rows for k in ("delta_start", "delta_end")
+               if r[k] is not None)
+    out["sentences"] = {
+        "n_sentences": len(rows),
+        "rows": rows,
+        "abs_drift_median": round(d[len(d) // 2], 3) if d else None,
+        "abs_drift_p90": round(d[int(len(d) * 0.9) - 1], 3) if d else None,
+        "abs_drift_max": round(d[-1], 3) if d else None,
+    }
+
+    # 3. COUNT
+    out["region_count"] = {
+        "speech_regions": len(sp),
+        "sentences": len(rows),
+        "delta": len(sp) - len(rows),
+    }
+    return out
+
+
+# ── check 3: letter-to-word silence in quiz options ──────────────────
+
+def letter_to_word(data: Dict, mp3: str) -> Dict:
+    """>= 250 ms between an option letter and its word.
+
+    Fails by construction today: tts_elevenlabs.py:562 builds
+    f"Opción {letter}, {word}." and :565 joins all four options plus the
+    transition into ONE utterance sent in a single TTS call, so letter and
+    word are separated only by a comma inside one breath. That is the
+    'afabric' defect — "Opción A, fábrica" heard as "Opción afábrica".
+
+    Non-ASR method, from structure rather than from words. Each option should
+    be spoken as TWO chunks — the letter, a pause, then the word — so N
+    options should yield 2N speech chunks. Chunks are assigned to options by
+    which declared option span contains their midpoint, and an option's
+    letter-to-word gap is the first gap BETWEEN its own chunks. Gaps between
+    chunks of different options are between-option pauses and are excluded by
+    construction.
+
+    An option spoken as a SINGLE chunk has no internal gap at all: its letter
+    is fully elided into its word. That is reported as 0.0 s — the worst case,
+    not a missing measurement.
+
+        cool_20260416   7 chunks / 4 options -> gaps 0.171 0.171 0.216, D elided
+        fabric_20260116 4 chunks / 4 options -> ALL FOUR fully elided
+
+    An earlier version split the gap distribution at its own midpoint. It
+    worked on cool, where the pauses are cleanly bimodal, and broke on fabric,
+    where every option is one chunk and the smallest BETWEEN-option gap
+    (1.314 s) was misread as a letter gap — reporting 3/4 failing instead of
+    4/4. Assigning chunks to options first removes the guess.
+    """
+    st = data.get("segment_times") or {}
+    opts = {k: v for k, v in st.items()
+            if k.startswith("option_") and isinstance(v, dict) and "end" in v}
+    if len(opts) < 2:
+        return {"available": False,
+                "reason": "fewer than 2 per-option segment_times (not a quiz, or older format)"}
+
+    sp, _ = speech_regions(mp3)
+    rows, between = [], []
+    prev_last_end = None
+
+    for name, v in sorted(opts.items(), key=lambda kv: float(kv[1]["start"])):
+        s, e = float(v["start"]), float(v["end"])
+        mine = [(a, b) for a, b in sp if s <= (a + b) / 2.0 <= e]
+        mine.sort()
+        if prev_last_end is not None and mine:
+            between.append(round(mine[0][0] - prev_last_end, 3))
+        if mine:
+            prev_last_end = mine[-1][1]
+
+        inner = [round(b_s - a_e, 3) for (_, a_e), (b_s, _) in zip(mine, mine[1:])]
+        gap = inner[0] if inner else 0.0
+        rows.append({
+            "option": name,
+            "span": [round(s, 3), round(e, 3)],
+            "n_chunks": len(mine),
+            "gap_s": gap,
+            "all_internal_gaps_s": inner,
+            "verdict": ("ok" if gap >= LETTER_WORD_MIN_SILENCE
+                        else "LETTER_ELIDED_INTO_WORD"),
+            "note": None if inner else "single chunk — letter fully elided into word",
+        })
+
+    measured = [r["gap_s"] for r in rows]
+    total_chunks = sum(r["n_chunks"] for r in rows)
+    return {
+        "available": True,
+        "required_s": LETTER_WORD_MIN_SILENCE,
+        "n_options": len(opts),
+        "speech_chunks": total_chunks,
+        "expected_chunks": 2 * len(opts),
+        "between_option_gaps_s": between,
+        "letter_to_word_gaps_s": measured,
+        "rows": rows,
+        "worst_s": min(measured) if measured else None,
+        "best_s": max(measured) if measured else None,
+        "n_failing": sum(1 for r in rows if r["verdict"] != "ok"),
+        "n_fully_elided": sum(1 for r in rows if not r["all_internal_gaps_s"]),
+        "verdict": "ok" if all(r["verdict"] == "ok" for r in rows) else "LETTER_ELIDED_INTO_WORD",
+    }
+
+
+# ── check 4: segment count ───────────────────────────────────────────
+
+def segment_count(data: Dict, mp3: str) -> Dict:
+    """Detected speech regions vs declared SPEECH segments.
+
+    TRAP (a): declared segments sitting on spliced silence are excluded from
+    the expected count — three countdown segments over one 7 s anullsrc block
+    can never appear as three speech regions.
+    """
+    st = data.get("segment_times") or {}
+    if not st:
+        return {"available": False, "reason": "no segment_times"}
+    speech_declared = [k for k, v in st.items()
+                       if isinstance(v, dict) and "start" in v and not _is_silent_segment(k)]
+    silent_declared = [k for k in st if _is_silent_segment(k)]
+    sp, _ = speech_regions(mp3)
+    return {
+        "available": True,
+        "declared_speech_segments": len(speech_declared),
+        "declared_silent_segments": len(silent_declared),
+        "detected_speech_regions": len(sp),
+        "delta": len(sp) - len(speech_declared),
+        "note": "detected regions normally EXCEED declared segments: one "
+                "declared segment can contain several sentences, each with "
+                "its own internal pauses",
+    }
+
+
+# ── check 5: clipping and dead air ───────────────────────────────────
+
+def _declared_silence_envelope(data: Dict) -> List[Tuple[float, float]]:
+    """Spans where silence is intended: declared-silent segments, plus the
+    gaps between consecutive declared segments."""
+    st = data.get("segment_times") or {}
+    spans = []
+    for k, v in st.items():
+        if isinstance(v, dict) and "start" in v and "end" in v and _is_silent_segment(k):
+            spans.append((float(v["start"]), float(v["end"])))
+    ordered = sorted((float(v["start"]), float(v["end"])) for v in st.values()
+                     if isinstance(v, dict) and "start" in v and "end" in v)
+    for (s0, e0), (s1, _e1) in zip(ordered, ordered[1:]):
+        if s1 > e0:
+            spans.append((e0, s1))
+    return spans
+
+
+def levels(data: Dict, mp3: str) -> Dict:
+    vol = volumedetect(mp3)
+    mx = vol.get("max_volume")
+    sil, duration = silence_regions(mp3)
+    env = _declared_silence_envelope(data)
+
+    dead = []
+    for s, e in sil:
+        w = e - s
+        if w < DEAD_AIR_S:
+            continue
+        covered = sum(max(0.0, min(e, be) - max(s, bs)) for bs, be in env)
+        if covered < 0.5 * w:          # more than half of it is unexplained
+            dead.append({"start": round(s, 3), "duration": round(w, 3),
+                         "explained_s": round(covered, 3)})
+
+    return {
+        "available": True,
+        "max_volume_db": mx,
+        "mean_volume_db": vol.get("mean_volume"),
+        "clipping": {
+            "threshold_db": CLIP_MAX_DB,
+            "verdict": "CLIPPED" if (mx is not None and mx > CLIP_MAX_DB) else "ok",
+        },
+        "dead_air": {
+            "threshold_s": DEAD_AIR_S,
+            "regions": dead,
+            "total_s": round(sum(r["duration"] for r in dead), 3),
+            "verdict": "DEAD_AIR" if dead else "ok",
+        },
+    }
+
+
 # ── per-artifact report ──────────────────────────────────────────────
 
 def model_for(video_type: Optional[str]) -> str:
@@ -265,8 +552,48 @@ def analyze(json_path: Path) -> Optional[Dict]:
         "n_words": len(data.get("words") or []),
         "checks": {},
     }
-    report["checks"]["drift_table"] = drift_table(data, mp3)
+    report["checks"]["drift_table"] = drift_table(data, mp3)          # 1
+    report["checks"]["sentence_timeline"] = sentence_timeline(data, mp3)  # 2
+    report["checks"]["letter_to_word"] = letter_to_word(data, mp3)    # 3
+    report["checks"]["segment_count"] = segment_count(data, mp3)      # 4
+    report["checks"]["levels"] = levels(data, mp3)                    # 5
+
+    # An artifact is COVERED if at least one timing check could run on it.
+    # Reported explicitly so the coverage number cannot quietly become
+    # "everything passed" when it means "nothing was looked at".
+    report["covered_by"] = [
+        n for n in ("drift_table", "sentence_timeline")
+        if report["checks"][n].get("available")
+    ]
+    report["flags"] = _collect_flags(report)
     return report
+
+
+def _collect_flags(report: Dict) -> List[str]:
+    f = []
+    c = report["checks"]
+    for row in c["drift_table"].get("declared_silence", []):
+        if row["verdict"] != "ok":
+            f.append(f"speech_in_declared_silence:{row['segment']}")
+    stl = c["sentence_timeline"]
+    if stl.get("available") and stl.get("span", {}).get("verdict", "ok") != "ok":
+        f.append(f"span:{stl['span']['verdict']}")
+    if c["letter_to_word"].get("available") and c["letter_to_word"]["verdict"] != "ok":
+        f.append(f"letter_to_word:{c['letter_to_word']['n_failing']}_options")
+    if c["levels"]["clipping"]["verdict"] != "ok":
+        f.append("clipping")
+    if c["levels"]["dead_air"]["verdict"] != "ok":
+        f.append(f"dead_air:{c['levels']['dead_air']['total_s']}s")
+    if not report["covered_by"]:
+        f.append("UNCOVERED_no_timing_declaration")
+    # educational and pronunciation render WORD-level karaoke, so an empty
+    # word array is a defect even when segment_times is present and the drift
+    # table is happy. This is the audio-visible half of the
+    # fabric_educational_20260116_192025 known-bad case: segment_times exist,
+    # words: [] does not, and nothing drives the karaoke.
+    if report["video_type"] in TURBO_TYPES and report["n_words"] == 0:
+        f.append("no_word_timeline")
+    return f
 
 
 def _summarise(reports: List[Dict]) -> None:
@@ -289,18 +616,61 @@ def _summarise(reports: List[Dict]) -> None:
         p90 = f"{p90s[len(p90s)//2]:.3f}" if p90s else "-"
         print(f"  {str(t):14}{m:20}{len(rs):>5}{len(seg):>13}{med:>11}{p90:>11}")
 
-    nodrift = [r for r in reports if not r["checks"]["drift_table"].get("available")]
-    print(f"\nNOT COVERED by the drift table: {len(nodrift)} of {len(reports)} artifacts")
-    nt = Counter(r["video_type"] for r in nodrift)
-    for t, n in nt.most_common():
-        print(f"   {str(t):16} {n:>4}   (declares a word timeline, not segment_times)")
-    print("   -> this is the gap check 2 exists to close.\n")
+    # ── coverage, stated so it cannot be mistaken for "passed" ──
+    by_cov = Counter()
+    for r in reports:
+        by_cov[tuple(r["covered_by"]) or ("NONE",)] += 1
+    print(f"\n{'COVERAGE':16}{'n':>6}")
+    for k, n in by_cov.most_common():
+        print(f"  {'+'.join(k):14}{n:>6}")
+    uncovered = [r for r in reports if not r["covered_by"]]
+    if uncovered:
+        print(f"\n  {len(uncovered)} artifacts have NO timing declaration at all "
+              f"(no segment_times, no words) — checked only for level/dead-air:")
+        for t, n in Counter(r["video_type"] for r in uncovered).most_common():
+            print(f"     {str(t):16}{n:>4}")
 
-    speech_in_silence = [r for r in reports
+    # ── check 2 ──
+    st2 = [r for r in reports if r["checks"]["sentence_timeline"].get("available")]
+    spans = [r["checks"]["sentence_timeline"].get("span") for r in st2]
+    spans = [s for s in spans if s]
+    bad_span = [s for s in spans if s["verdict"] != "ok"]
+    sdr = sorted(r["checks"]["sentence_timeline"]["sentences"]["abs_drift_median"]
+                 for r in st2
+                 if r["checks"]["sentence_timeline"].get("sentences", {}).get("abs_drift_median") is not None)
+    print(f"\nCHECK 2 sentence timeline : {len(st2)} artifacts")
+    print(f"   span ok {len(spans)-len(bad_span)}/{len(spans)}   "
+          f"sentence drift median-of-medians "
+          f"{sdr[len(sdr)//2]:.3f}s" if sdr else "")
+
+    # ── check 3 ──
+    l2w = [r for r in reports if r["checks"]["letter_to_word"].get("available")]
+    fails = [r for r in l2w if r["checks"]["letter_to_word"]["verdict"] != "ok"]
+    worst = sorted(r["checks"]["letter_to_word"]["worst_s"] for r in l2w
+                   if r["checks"]["letter_to_word"]["worst_s"] is not None)
+    print(f"\nCHECK 3 letter-to-word    : {len(l2w)} artifacts with per-option spans")
+    if worst:
+        print(f"   FAILING (<{LETTER_WORD_MIN_SILENCE}s): {len(fails)}/{len(l2w)}"
+              f"   worst gap: min={worst[0]:.3f}s median={worst[len(worst)//2]:.3f}s max={worst[-1]:.3f}s")
+
+    # ── check 4 / 5 ──
+    sc = [r["checks"]["segment_count"] for r in reports if r["checks"]["segment_count"].get("available")]
+    if sc:
+        dl = sorted(x["delta"] for x in sc)
+        print(f"\nCHECK 4 segment count     : {len(sc)} artifacts   "
+              f"detected-minus-declared median={dl[len(dl)//2]}  range {dl[0]}..{dl[-1]}")
+    clip = [r for r in reports if r["checks"]["levels"]["clipping"]["verdict"] != "ok"]
+    dead = [r for r in reports if r["checks"]["levels"]["dead_air"]["verdict"] != "ok"]
+    print(f"\nCHECK 5 levels            : clipping {len(clip)}/{len(reports)}   "
+          f"dead-air {len(dead)}/{len(reports)} (>{DEAD_AIR_S}s unexplained)")
+
+    speech_in_silence = [1 for r in reports
                          for row in r["checks"]["drift_table"].get("declared_silence", [])
                          if row["verdict"] != "ok"]
-    print(f"declared-silence violations (speech where silence was declared): "
+    print(f"\ndeclared-silence violations (speech where silence was declared): "
           f"{len(speech_in_silence)}")
+    print(f"\nartifacts with at least one flag: "
+          f"{sum(1 for r in reports if r['flags'])}/{len(reports)}")
 
 
 def main(argv=None) -> int:

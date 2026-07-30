@@ -1,0 +1,39 @@
+
+==============================================================================
+QA GATE BASELINE — report mode, nothing blocked
+==============================================================================
+artifacts analyzed : 195
+
+type            model                   n  w/ segtimes  drift med  drift p90
+  None          unknown                27            0          -          -
+  educational   eleven_turbo_v2_5      50            6      0.330      0.690
+  fill_blank    eleven_v3              24           15      0.050      0.233
+  pronunciation eleven_turbo_v2_5      14            0          -          -
+  quiz          eleven_v3              64           42      0.173      0.505
+  true_false    eleven_v3              14           10      0.084      0.186
+  vocabulary    eleven_v3               2            2      0.039      0.074
+
+COVERAGE             n
+  sentence_timeline    91
+  drift_table       73
+  NONE              29
+  drift_table+sentence_timeline     2
+
+  29 artifacts have NO timing declaration at all (no segment_times, no words) — checked only for level/dead-air:
+     None              18
+     pronunciation      6
+     educational        5
+
+CHECK 2 sentence timeline : 93 artifacts
+   span ok 86/93   sentence drift median-of-medians 0.094s
+
+CHECK 3 letter-to-word    : 42 artifacts with per-option spans
+   FAILING (<0.25s): 38/42   worst gap: min=0.000s median=0.000s max=0.565s
+
+CHECK 4 segment count     : 75 artifacts   detected-minus-declared median=10  range 1..26
+
+CHECK 5 levels            : clipping 39/195   dead-air 18/195 (>1.5s unexplained)
+
+declared-silence violations (speech where silence was declared): 78
+
+artifacts with at least one flag: 114/195

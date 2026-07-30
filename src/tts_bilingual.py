@@ -350,6 +350,14 @@ def _build_result(script_data: Dict, words: List[Dict], duration: float,
         "duration": round(duration, 3),
         "words": words,
         "segments": segments,
+        # Written FORWARD only — never backfilled onto the existing corpus.
+        # Backfilling would write today's INFERENCE about which model ran into
+        # a data file where it would later be read as a recorded measurement,
+        # which is the exact failure this project has been unwinding: the
+        # generator's self-report becoming the oracle. Named tts_model_id, not
+        # model_id, because _meta.model in these same files holds the SCRIPT
+        # model (gpt-4o-mini) and a bare `model` here would read as the TTS one.
+        "tts_model_id": settings.get("model_id"),
         "tts_calls": [{k: c[k] for k in
                        ("index", "lang", "text", "speed", "pause_after")}
                       for c in calls],

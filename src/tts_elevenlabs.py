@@ -701,6 +701,15 @@ def generate_quiz_audio_segmented(
             'duration': total_duration,
             'segments': segments,
             'segment_times': segment_times,
+            # Written FORWARD only — never backfilled onto the existing
+            # corpus. Backfilling would write today's INFERENCE about which
+            # model ran into a data file where it would later be read as a
+            # recorded measurement, which is the exact failure this project
+            # has been unwinding: the generator's self-report becoming the
+            # oracle. Named tts_model_id, not model_id, because _meta.model
+            # in these same files holds the SCRIPT model (gpt-4o-mini) and a
+            # bare `model` here would read as the TTS one.
+            'tts_model_id': MODEL_ID,
             'type': 'quiz',
             'question': script.get('question', ''),
             'options': options,
@@ -911,6 +920,15 @@ def generate_fill_blank_audio_segmented(
             'duration': round(total_duration, 3),
             'segments': segments,
             'segment_times': segment_times,
+            # Written FORWARD only — never backfilled onto the existing
+            # corpus. Backfilling would write today's INFERENCE about which
+            # model ran into a data file where it would later be read as a
+            # recorded measurement, which is the exact failure this project
+            # has been unwinding: the generator's self-report becoming the
+            # oracle. Named tts_model_id, not model_id, because _meta.model
+            # in these same files holds the SCRIPT model (gpt-4o-mini) and a
+            # bare `model` here would read as the TTS one.
+            'tts_model_id': MODEL_ID,
             'type': 'fill_blank',
             'sentence': sentence,
             'options': options,
@@ -1132,6 +1150,15 @@ def generate_true_false_audio_segmented(
             'duration': round(total_duration, 3),
             'segments': segments,
             'segment_times': segment_times,
+            # Written FORWARD only — never backfilled onto the existing
+            # corpus. Backfilling would write today's INFERENCE about which
+            # model ran into a data file where it would later be read as a
+            # recorded measurement, which is the exact failure this project
+            # has been unwinding: the generator's self-report becoming the
+            # oracle. Named tts_model_id, not model_id, because _meta.model
+            # in these same files holds the SCRIPT model (gpt-4o-mini) and a
+            # bare `model` here would read as the TTS one.
+            'tts_model_id': MODEL_ID,
             'type': 'true_false',
             'statement': statement,
             'correct': correct,
@@ -1295,6 +1322,15 @@ def generate_vocabulary_audio_segmented(
             'duration': round(total_duration, 3),
             'segments': segments,
             'segment_times': segment_times,
+            # Written FORWARD only — never backfilled onto the existing
+            # corpus. Backfilling would write today's INFERENCE about which
+            # model ran into a data file where it would later be read as a
+            # recorded measurement, which is the exact failure this project
+            # has been unwinding: the generator's self-report becoming the
+            # oracle. Named tts_model_id, not model_id, because _meta.model
+            # in these same files holds the SCRIPT model (gpt-4o-mini) and a
+            # bare `model` here would read as the TTS one.
+            'tts_model_id': MODEL_ID,
             'type': 'vocabulary',
             'title': title,
             'difficulty': script.get('difficulty', ''),
