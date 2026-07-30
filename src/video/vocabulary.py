@@ -77,9 +77,13 @@ def create_frame_vocabulary(
     """Create frame for vocabulary-list video type."""
     frame, draw = create_base_frame(t)
 
-    title = data.get('title', 'Vocabulario del día')
+    # No defaults. 'Vocabulario del día' rendered as a real title over
+    # somebody else's lesson, and [] rendered an empty one.
+    title = data['title']
+    pairs: List[Dict] = data['pairs']
+
+    # Genuinely optional — '' hides the difficulty badge.
     difficulty = data.get('difficulty', '')
-    pairs: List[Dict] = data.get('pairs', [])
     st = data.get('segment_times', {})
 
     # Fallback if segment_times missing or empty
@@ -328,7 +332,9 @@ def _draw_vocab_rows(
         )
 
         # ── Spanish text (left column, right-aligned to divider) ─
-        es_text = pair.get('spanish', '')
+        # No default: a blank half-row is a broken lesson, and
+        # script_schema.VocabPair requires both sides.
+        es_text = pair['spanish']
         lf, _, _, _ = fit_text_font(es_text, _ROW_FONT, 28, left_col_w)
         lbbox = draw.textbbox((0, 0), es_text, font=lf)
         lw = lbbox[2] - lbbox[0]
@@ -339,7 +345,7 @@ def _draw_vocab_rows(
                         COLOR_WHITE, row_alpha, outline=4)
 
         # ── English text (right column, left-aligned from divider)
-        en_text = pair.get('english', '')
+        en_text = pair['english']
         rf, _, _, _ = fit_text_font(en_text, _ROW_FONT, 28, right_col_w)
         rbbox = draw.textbbox((0, 0), en_text, font=rf)
         rh = rbbox[3] - rbbox[1]

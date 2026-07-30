@@ -577,10 +577,25 @@ def create_frame_quiz(
     """Create frame for quiz video using EXACT segment timestamps."""
     frame, draw = create_base_frame(t)
 
-    question = data.get('question', 'Question?')
-    options = data.get('options', {})
-    correct = data.get('correct', 'A')
-    explanation = data.get('explanation', '')
+    # No defaults on these four. They are load-bearing for correctness and
+    # script_schema.QuizRenderData has already guaranteed them at
+    # video/__init__.py's validation gate. `correct` in particular used to
+    # default to 'A', which rendered option A with a green card, a glow,
+    # sparkles and "Respuesta: A" — a confidently wrong lesson that no audio
+    # or visual check catches, because the video is technically perfect.
+    question = data['question']
+    options = data['options']
+    correct = data['correct']
+    explanation = data['explanation']
+
+    # These two keep their defaults because no producer emits them: no quiz
+    # prompt writes `difficulty`, and nothing anywhere writes
+    # `question_number`. Both are always ''. See M8 in
+    # docs/schema-prompt-mismatches.md — dead reads, not optional fields.
+    #
+    # LATENT COLLISION if a producer ever starts emitting difficulty:
+    # draw_difficulty_badge centres at y=100 and draw_quiz_timeline draws at
+    # timeline_y=100, so the badge and the timeline would overlap.
     difficulty = data.get('difficulty', '')
     question_number = data.get('question_number', '')
 
@@ -662,7 +677,9 @@ def create_frame_quiz(
         if not should_show:
             continue
 
-        opt_text = options.get(letter, f"Option {letter}")
+        # No default: "Option C" would render as a real, selectable answer.
+        # QuizRenderData guarantees options has exactly keys A-D.
+        opt_text = options[letter]
         y_pos = opt_start_y + i * (opt_card_h + opt_gap)
 
         # Stagger: each option appears STAGGER seconds after the previous

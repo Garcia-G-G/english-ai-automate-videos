@@ -56,10 +56,20 @@ logger = logging.getLogger(__name__)
 _ACCENT_TEAL = (0, 180, 200)
 
 
-def parse_true_false_timestamps(data: Dict) -> Dict:
-    """Parse word timestamps for true/false video."""
+def parse_true_false_timestamps(data: Dict, duration: float) -> Dict:
+    """Parse word timestamps for true/false video.
+
+    `duration` is a required parameter, not a lookup. It used to be
+    `data.get('duration', 10)`, which shadowed the real value: the only
+    caller, resolve_true_false_timestamps, already holds the audio duration
+    measured from the rendered mp3 (video/__init__.py:110) and passed it in.
+    The two backstops below (`duration * 0.15`, `duration * 0.40`) are the
+    whole reason the value matters — on a 45s video they fired at 1.5s and
+    4.0s instead of 6.75s and 18.0s. Same class as the offset_x shadowing at
+    educational.py:522: the correct value is in scope and ignored in favour
+    of a lookup with a bad default.
+    """
     words = data.get('words', [])
-    duration = data.get('duration', 10)
 
     ts = {
         'statement_end': 0,
@@ -122,7 +132,7 @@ def resolve_true_false_timestamps(data: Dict, duration: float) -> Dict:
 
     logger.info("True/false timestamps: falling back to parse_true_false_timestamps")
 
-    ts = parse_true_false_timestamps(data)
+    ts = parse_true_false_timestamps(data, duration)
 
     def _entry(start: float, end: float = None) -> Dict:
         if end is None:
@@ -289,9 +299,15 @@ def create_frame_true_false(
     """Create frame for true/false video type with card-based modern design."""
     frame, draw = create_base_frame(t)
 
-    statement = data.get('statement', 'Statement')
-    correct = data.get('correct', True)
-    explanation = data.get('explanation', '')
+    # No defaults. `correct` defaulting to True was the worst of the set:
+    # a missing answer rendered VERDADERO, and true_false has TWO
+    # independent paths to the wrong answer that BOTH bias toward true —
+    # this default, and a string "false" surviving as truthy. That is
+    # systematic bias, not random error. The string case is now blocked by
+    # StrictBool in script_schema; this is the other half.
+    statement = data['statement']
+    correct = data['correct']
+    explanation = data['explanation']
 
     st = data.get('segment_times', {})
 

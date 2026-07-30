@@ -74,7 +74,8 @@ def create_frame_karaoke(
 
     words = data.get('words', [])
     translations = data.get('translations', {}) or {}
-    full_script = data.get('full_script', '')
+    # No default — required by the schema for every video type.
+    full_script = data['full_script']
     # Normalize translation keys to lowercase for case-insensitive lookup
     translations_lower = {k.lower(): v for k, v in translations.items()}
 

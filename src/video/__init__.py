@@ -86,13 +86,14 @@ def generate_video(
 
     # VALIDATION POINT 3 of 3: renderer input.
     #
-    # This is the last gate before pixels. Every renderer below reads its
-    # fields with a plausible-wrong default — quiz.py:582 defaults `correct`
-    # to 'A', fill_blank.py:313 to "I ___ to school", pronunciation.py:42 to
-    # the literal word "word" — and there is no "unknown" state anywhere in
-    # the render path. So a data failure that gets this far does not look
-    # like a failure: it ships as a polished, confidently incorrect lesson
-    # that no audio or visual check will catch.
+    # This is the last gate before pixels, and the renderers below now depend
+    # on it: their plausible-wrong defaults have been deleted, so they index
+    # load-bearing keys directly. `correct` used to default to 'A',
+    # `sentence` to "I ___ to school", `word` to the literal string "word".
+    # There is no "unknown" state anywhere in the render path, so a data
+    # failure that got this far did not look like a failure — it shipped as a
+    # polished, confidently incorrect lesson that no audio or visual check
+    # catches, because the video is technically perfect.
     #
     # Loud is the whole point. Nothing renders unless the data is right.
     #
@@ -114,8 +115,12 @@ def generate_video(
 
     # Resolve v2 engine early — v2 renders its own background, so the
     # background system below is skipped entirely when it is active.
+    #
+    # No default: falling back to 'educational' routed a quiz through the
+    # educational renderer in silence. validate_render_data above has already
+    # required `type`.
     if video_type is None:
-        video_type = data.get('type', 'educational')
+        video_type = data['type']
 
     use_v2 = engine_version == "v2"
     if use_v2 and video_type != "educational":
@@ -177,9 +182,9 @@ def generate_video(
         reset_background()
         logger.info("Background: legacy gradient (no presets available)")
 
-    # Determine video type
+    # Determine video type (second, redundant resolution — see line 117)
     if video_type is None:
-        video_type = data.get('type', 'educational')
+        video_type = data['type']
 
     logger.info(f"Video type: {video_type}")
     logger.info(f"Duration: {duration:.2f}s")
@@ -193,7 +198,10 @@ def generate_video(
             segments = data.get('segments', [])
             if segments:
                 logger.info("No word timestamps found, estimating from segments...")
-                english_phrases = data.get('english_phrases', [])
+                # No default: EducationalScript requires english_phrases
+                # (min_length 1), and this list drives is_english — which
+                # controls both word styling and the TTS accent.
+                english_phrases = data['english_phrases']
                 words = processor.estimate_words_from_segments(segments, english_phrases)
                 logger.info(f"Estimated {len(words)} word timestamps from {len(segments)} segments")
             else:
@@ -202,7 +210,8 @@ def generate_video(
 
         # Sanitize is_english flags: rebuild from english_phrases with filtering
         # This fixes bad data where entire Spanish sentences are in english_phrases
-        english_phrases = data.get('english_phrases', [])
+        # No default — required by EducationalScript. See above.
+        english_phrases = data['english_phrases']
         if english_phrases and words:
             import re as _re
             SPANISH_COMMON = {
@@ -262,7 +271,9 @@ def generate_video(
                 logger.info(f"Sanitized is_english flags: fixed {fixed_count} words")
                 logger.info(f"English words: {english_set}")
 
-        full_script = data.get('full_script', '')
+        # No default: sentence boundaries derived from '' silently drop
+        # every boundary. full_script is required by the schema.
+        full_script = data['full_script']
         words = add_sentence_boundaries(words, full_script)
 
         groups = processor.group_words(words)
