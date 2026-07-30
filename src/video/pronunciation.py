@@ -39,8 +39,13 @@ def create_frame_pronunciation(
     """Create frame for pronunciation video type."""
     frame, draw = create_base_frame(t)
 
-    word = data.get('word', 'word')
-    phonetic = data.get('phonetic', '')
+    # No defaults. `word` fell back to the literal string "word", producing
+    # a lesson on how to pronounce the word "word".
+    word = data['word']
+    phonetic = data['phonetic']
+
+    # Genuinely optional — each '' hides its panel. Absence renders less; it
+    # never fabricates a lesson.
     common_mistake = data.get('common_mistake', '')
     tip = data.get('tip', '')
     translation = data.get('translation', '')

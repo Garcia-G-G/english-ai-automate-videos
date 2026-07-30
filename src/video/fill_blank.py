@@ -310,9 +310,16 @@ def create_frame_fill_blank(
     """Create frame for fill-in-the-blank video type — card-based layout."""
     frame, draw = create_base_frame(t)
 
-    sentence = data.get('sentence', 'I ___ to school')
-    options = data.get('options', ['go', 'went', 'gone', 'going'])
-    correct = data.get('correct', options[0] if options else '')
+    # No defaults. The old ones taught a whole fabricated lesson: sentence
+    # fell back to "I ___ to school" with options ['go','went','gone',
+    # 'going'], and `correct` silently marked the FIRST option right.
+    # FillBlankRenderData guarantees all three at the validation gate.
+    sentence = data['sentence']
+    options = data['options']
+    correct = data['correct']
+
+    # Genuinely optional — '' hides the translation subtitle. A missing
+    # translation renders less; it never renders something false.
     translation = data.get('translation', '')
     st = data.get('segment_times', {})
 
