@@ -34,26 +34,14 @@ Each segment is ``{"text": str, "lang": "es"|"en", "pause_after": float}``.
 
 import re
 from typing import Dict, List
+from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
 # Spanish words that AI-generated english_phrases sometimes contain by
 # mistake — never treat these single words as English.
-_SPANISH_COMMON = {
-    'a', 'al', 'algo', 'alguien', 'ante', 'asi', 'así', 'bien', 'bueno',
-    'cada', 'casa', 'casi', 'como', 'con', 'cual', 'cuando', 'de', 'del',
-    'decir', 'donde', 'el', 'ella', 'en', 'era', 'es', 'esa', 'ese', 'eso',
-    'esta', 'estar', 'este', 'esto', 'forma', 'fue', 'hay', 'hoy', 'ir',
-    'la', 'las', 'le', 'les', 'lo', 'los', 'mas', 'más', 'me', 'mi', 'muy',
-    'nada', 'ni', 'no', 'nos', 'o', 'otra', 'otro', 'para', 'pero', 'por',
-    'puede', 'que', 'qué', 'quien', 'se', 'ser', 'si', 'sin', 'sobre',
-    'son', 'su', 'sus', 'tan', 'te', 'ti', 'tiene', 'todo', 'tu', 'tus',
-    'un', 'una', 'uno', 'usar', 'usa', 'usan', 'va', 'vamos', 'ver', 'vez',
-    'vida', 'y', 'ya', 'yo', 'palabra', 'ejemplo', 'recuerda', 'veas',
-    'entonces', 'también', 'tambien', 'ahora', 'gusta', 'gusto', 'acuerdo',
-    'puedes', 'puedo', 'quiero', 'significa', 'sigues', 'cierto', 'verdad',
-    'falso', 'correcto', 'incorrecto', 'piensa', 'repite', 'respuesta',
-    'pregunta', 'frase', 'manera', 'lugar', 'momento', 'cosa', 'cosas',
-    'mundo', 'gente', 'personas', 'tiempo', 'siempre', 'nunca', 'solo',
-}
+# Was a local 129-word fork of the Spanish stoplist. All five
+# copies are now one canonical 275-word set in tts_common, whose
+# comment records why. ADD WORDS THERE, never here.
+_SPANISH_COMMON = SPANISH_FILTER
 
 _SPANISH_CHARS = set('áéíóúñüÁÉÍÓÚÑÜ¿¡')
 

@@ -33,6 +33,7 @@ from tts_common import (
     PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
     PAUSE_AFTER_ANSWER, PAUSE_AFTER_EXPLANATION,
 )
+from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
 # Load environment variables (override=True so .env always wins over stale process env)
 load_dotenv(Path(__file__).parent.parent / ".env", override=True)
@@ -245,21 +246,10 @@ def estimate_word_timestamps(text: str, duration: float, english_phrases: list =
     # Build english set for is_english detection
     # Filter: only use short phrases (≤5 words) — longer ones are likely bad data
     # Also exclude common Spanish words that often leak in
-    SPANISH_COMMON = {
-        'a', 'al', 'algo', 'alguien', 'ante', 'así', 'bien', 'bueno',
-        'cada', 'casa', 'casi', 'como', 'con', 'cual', 'cuando',
-        'de', 'del', 'decir', 'donde', 'el', 'ella', 'en', 'era',
-        'es', 'esa', 'ese', 'eso', 'esta', 'estar', 'este', 'esto',
-        'forma', 'fue', 'hay', 'hoy', 'ir', 'la', 'las', 'le', 'les',
-        'lo', 'los', 'más', 'me', 'mi', 'muy', 'nada', 'ni', 'no',
-        'nos', 'o', 'otra', 'otro', 'para', 'pero', 'por', 'puede',
-        'que', 'quien', 'se', 'ser', 'si', 'sin', 'sobre', 'son',
-        'su', 'sus', 'tan', 'te', 'ti', 'tiene', 'todo', 'tu', 'tus',
-        'un', 'una', 'uno', 'usar', 'usa', 'usan', 'va', 'vamos',
-        'ver', 'vez', 'vida', 'y', 'ya', 'yo', 'palabra', 'ejemplo',
-        'recuerda', 'cuando', 'veas', 'entonces', 'también', 'ahora',
-        'aceptar', 'invitación', 'divertida', 'casual',
-    }
+    # Was a local 99-word fork of the Spanish stoplist. All five
+    # copies are now one canonical 275-word set in tts_common, whose
+    # comment records why. ADD WORDS THERE, never here.
+    SPANISH_COMMON = SPANISH_FILTER
     english_set = set()
     if english_phrases:
         for phrase in english_phrases:

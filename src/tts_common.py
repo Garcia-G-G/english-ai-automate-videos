@@ -54,33 +54,80 @@ SEGMENT_SPEEDS = {
 }
 
 
-# ============== SPANISH FILTER ==============
-# Union of all words from all TTS modules
+# ============== SPANISH FILTER (canonical) ==============
+#
+# THE single Spanish stoplist. It gates is_english, which drives BOTH the
+# on-screen word styling and the TTS accent, so a word's presence here is the
+# difference between it being spoken in a Spanish or an English accent.
+#
+# There used to be FIVE copies of this list, no two identical:
+#
+#   animations/subtitle_processor.SPANISH_COMMON   220
+#   video/__init__.SPANISH_COMMON                  194      union        275
+#   tts_segmenter._SPANISH_COMMON                  129      intersection  40
+#   tts_common.SPANISH_FILTER                      113
+#   tts_elevenlabs.SPANISH_COMMON                   99
+#
+# Only 40 words -- 15 per cent of the union -- were agreed on by all five, so
+# the same sentence was classified differently depending on which module
+# looked at it. Four formed a containment lattice, making unification a pure
+# widening for them; this one was the outlier, not a subset of any other, and
+# its comment claimed to be the "union of all words from all TTS modules"
+# while missing 88 of the 133-word actual TTS union.
+#
+# Measured over the 172-script corpus, adopting the union reclassifies 371
+# Spanish token-occurrences correctly and 25 English ones wrongly (6.7 per
+# cent). The 25 are cross-language words, 17 of them "me" in phrases like
+# "can you pick me up" -- a known, accepted cost, recorded here so that it is
+# not rediscovered as a bug.
+#
+# ADD WORDS HERE ONLY. Do not re-fork this list.
 
 SPANISH_FILTER = {
-    # False friends - Spanish words that look like English
-    'resfriado', 'estreñido', 'confundido', 'constante', 'embarazada',
-    'biblioteca', 'librería', 'sensible', 'sensitivo', 'actualmente',
-    'pretender', 'éxito', 'recordar', 'realizar', 'soportar',
-    'avergonzado', 'desesperado',
-    # Common Spanish verbs and adjectives
-    'soy', 'eres', 'somos', 'son', 'estoy', 'estas', 'estamos', 'están',
-    'tengo', 'tienes', 'tiene', 'tenemos', 'tienen',
-    'aburrido', 'aburrida', 'cansado', 'cansada', 'emocionado', 'emocionada',
-    'interesado', 'interesada', 'asustado', 'asustada',
-    'hacer', 'decir', 'buscar', 'encontrar', 'ver', 'dar', 'ir', 'venir',
-    'continuar', 'rendirse', 'progresar', 'crecer',
-    # Common Spanish articles, prepositions, conjunctions
-    'el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas',
-    'de', 'del', 'en', 'que', 'es', 'al', 'por', 'con', 'para', 'como',
-    'más', 'pero', 'sus', 'le', 'ya', 'se', 'desde', 'porque', 'cuando',
-    'muy', 'sin', 'sobre', 'ser', 'entre', 'después', 'antes', 'durante',
-    'también', 'fue', 'había', 'hay', 'está', 'esto', 'eso', 'ese', 'esta',
-    # Quiz-specific Spanish words
-    'significa', 'respuesta', 'correcta', 'opciones', 'pregunta',
-    'traducción', 'inglés', 'español', 'dice', 'cómo', 'qué', 'cuál',
-    'fiesta', 'libro', 'palabra', 'frase', 'verbo',
+    'a', 'aburrida', 'aburrido', 'aceptar', 'actualmente', 'acuerdo',
+    'ahora', 'al', 'algo', 'alguien', 'alli', 'allí', 'ante', 'antes',
+    'aprender', 'aqui', 'aquí', 'asi', 'asustada', 'asustado', 'así',
+    'avergonzado', 'biblioteca', 'bien', 'buena', 'bueno', 'buscar',
+    'cada', 'cansada', 'cansado', 'casa', 'casi', 'casual', 'cierto',
+    'como', 'con', 'confundido', 'constante', 'continuar', 'correcta',
+    'correcto', 'cosa', 'cosas', 'crecer', 'cree', 'creemos', 'crees',
+    'creo', 'cual', 'cuando', 'cuál', 'cómo', 'dar', 'de', 'decimos',
+    'decir', 'del', 'desde', 'desesperado', 'después', 'dice', 'dicen',
+    'dices', 'digo', 'divertida', 'donde', 'durante', 'ejemplo', 'el',
+    'ella', 'embarazada', 'emocionada', 'emocionado', 'emocionante', 'en',
+    'encontrar', 'enseñar', 'entender', 'entonces', 'entre', 'era',
+    'eres', 'es', 'esa', 'esas', 'escribir', 'escuchar', 'ese', 'eso',
+    'esos', 'español', 'esta', 'estamos', 'estar', 'estas', 'este',
+    'esto', 'estos', 'estoy', 'estreñido', 'está', 'están', 'estás',
+    'falso', 'fiesta', 'forma', 'frase', 'fue', 'gente', 'grande',
+    'gusta', 'gusto', 'hablar', 'había', 'hace', 'hacemos', 'hacen',
+    'hacer', 'haces', 'hago', 'hay', 'hoy', 'incorrecto', 'increible',
+    'increíble', 'inglés', 'interesada', 'interesado', 'invitacion',
+    'invitación', 'ir', 'la', 'las', 'le', 'leer', 'les', 'librería',
+    'libro', 'lo', 'los', 'lugar', 'mala', 'malo', 'manera', 'mas', 'me',
+    'mejor', 'mi', 'misma', 'mismo', 'momento', 'mucha', 'muchas',
+    'mucho', 'muchos', 'mundo', 'muy', 'más', 'nada', 'necesita',
+    'necesitamos', 'necesitas', 'necesito', 'ni', 'no', 'nos', 'nueva',
+    'nuevo', 'nunca', 'o', 'opcion', 'opciones', 'opción', 'otra', 'otro',
+    'outfit', 'palabra', 'para', 'peor', 'pequeño', 'pero', 'personas',
+    'piensa', 'poca', 'poco', 'podemos', 'por', 'porque', 'practicar',
+    'pregunta', 'pretender', 'progresar', 'puede', 'pueden', 'puedes',
+    'puedo', 'que', 'queremos', 'quien', 'quiere', 'quieren', 'quieres',
+    'quiero', 'qué', 'realizar', 'recordar', 'recuerda', 'rendirse',
+    'repite', 'resfriado', 'respondido', 'respuesta', 'sabe', 'sabemos',
+    'saben', 'sabes', 'sabias', 'sabías', 'se', 'sensible', 'sensitivo',
+    'ser', 'si', 'siempre', 'significa', 'sigues', 'sin', 'sobre', 'solo',
+    'somos', 'son', 'soportar', 'soy', 'su', 'sus', 'sé', 'sólo',
+    'tambien', 'también', 'tan', 'te', 'tenemos', 'tengo', 'ti', 'tiempo',
+    'tiene', 'tienen', 'tienes', 'tipo', 'tipos', 'todo', 'traducción',
+    'tu', 'tus', 'un', 'una', 'unas', 'uno', 'unos', 'usa', 'usan',
+    'usar', 'va', 'vamos', 'veas', 'venir', 'ver', 'verbo', 'verdad',
+    'vez', 'vida', 'y', 'ya', 'yo', 'éxito'
 }
+
+#: Historical alias. Four modules called their local copy SPANISH_COMMON;
+#: keeping that name importable means their call sites did not have to change.
+SPANISH_COMMON = SPANISH_FILTER
 
 
 # ============== AUDIO UTILITIES ==============

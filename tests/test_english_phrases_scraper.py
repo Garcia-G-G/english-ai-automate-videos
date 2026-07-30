@@ -25,8 +25,6 @@ spans; the fixed one appends 727, dropping 127 — 184 distinct artefacts.
 import sys
 from pathlib import Path
 
-import pytest
-
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
@@ -134,18 +132,12 @@ def test_no_typographic_quote_survives_into_the_cleaned_script():
 
 
 #: Both spans below are rejected only when the stoplist actually contains
-#: their tokens. tts_common.SPANISH_FILTER (113 words) does not; the unified
-#: 275-word set from task 6 does. These two are therefore the pinned,
-#: executable statement of what task 6 buys — they flip to passing the moment
-#: the five stoplists are unified, and strict=True makes the suite say so.
-needs_unified_stoplist = pytest.mark.xfail(
-    strict=True,
-    reason="task 6: needs the unified 275-word stoplist; "
-           "SPANISH_FILTER (113) lacks 'gusta'/'tu'/'increíble'",
-)
+#: their tokens. Until the five forked stoplists were unified, the 113-word
+#: tts_common.SPANISH_FILTER lacked 'gusta'/'tu'/'increible' and these two
+#: were xfail(strict=True). The canonical 275-word set made them pass, which
+#: is exactly the behaviour change that unification bought.
 
 
-@needs_unified_stoplist
 def test_spanish_span_with_one_loanword_is_rejected():
     """A single English loanword must not drag a Spanish sentence into an
     English accent. Requires the unified stoplist to catch every token."""
@@ -154,7 +146,6 @@ def test_spanish_span_with_one_loanword_is_rejected():
     assert "me gusta tu outfit" not in got
 
 
-@needs_unified_stoplist
 def test_entirely_spanish_span_is_rejected():
     got = scrape("Puedes decir 'qué increíble' cuando algo te sorprende.")
 
