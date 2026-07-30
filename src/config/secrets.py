@@ -123,6 +123,29 @@ def get_api_status() -> dict:
     return statuses
 
 
+def voice_id_pattern() -> str:
+    """The ElevenLabs voice-id format, as a regex.
+
+    Exposed so config.yaml profile voice ids are checked against the SAME
+    rule as the ELEVENLABS_VOICE_ID env var, rather than a second copy of it
+    drifting in profiles.py.
+    """
+    return _KEY_DEFINITIONS["ELEVENLABS_VOICE_ID"]["pattern"]
+
+
+def is_valid_voice_id(value: Optional[str]) -> bool:
+    """True if `value` is a well-formed ElevenLabs voice id.
+
+    A placeholder like "KIDS_VOICE_ID_PENDIENTE" is 22 characters, so a bare
+    length check passes it; the underscores are what make it fail. Before
+    this was wired up, such a placeholder resolved straight through
+    profiles.apply_profile_env and reached the ElevenLabs API verbatim,
+    failing at call time — after a video had already been scripted — rather
+    than at config load.
+    """
+    return bool(value) and bool(re.match(voice_id_pattern(), value))
+
+
 def validate_all_keys() -> dict:
     """Validate all keys and return categorized warnings and errors.
 
