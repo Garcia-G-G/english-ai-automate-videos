@@ -13,11 +13,17 @@ Environment variables:
 """
 
 import argparse
+import hmac
 import json
 import logging
 import os
+import secrets
 import sys
+import threading
 import time
+import webbrowser
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import parse_qs, quote, urlparse
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -139,6 +145,129 @@ def _load_token(platform: str) -> Optional[dict]:
         except (json.JSONDecodeError, OSError) as exc:
             logger.warning("Failed to read %s token: %s", platform, exc)
     return None
+
+
+# ---------------------------------------------------------------------------
+# Loopback OAuth listener
+# ---------------------------------------------------------------------------
+#
+# Replaces redirect_uri=urn:ietf:wg:oauth:2.0:oob, which Google shut down: the
+# authorize URL no longer shows a code, so the exchange failed with 400 every
+# time and the old input() prompt sat waiting for something that could never
+# arrive.
+#
+# The OAuth client is a Desktop app, and Desktop clients accept
+# http://127.0.0.1:<any port> without the URI being registered in the console.
+# No console change is needed.
+
+#: Hard ceiling on waiting for the browser callback. A hang in an unattended
+#: run is the failure class already removed from the render path, so this is
+#: never allowed to block forever.
+LOOPBACK_TIMEOUT_S = 180
+
+
+class _LoopbackHandler(BaseHTTPRequestHandler):
+    """One-shot handler: capture ?code=, verify ?state=, tell the user to close
+    the tab."""
+
+    # Set by the server factory below.
+    expected_state: str = ""
+    result: dict = {}
+    done: Optional[threading.Event] = None
+
+    def do_GET(self) -> None:                      # noqa: N802 - stdlib name
+        query = parse_qs(urlparse(self.path).query)
+        code = (query.get("code") or [""])[0]
+        state = (query.get("state") or [""])[0]
+        error = (query.get("error") or [""])[0]
+
+        if error:
+            outcome = {"error": error}
+            title, body = "Authorization denied", f"Google returned: {error}"
+        elif not hmac.compare_digest(state, self.expected_state):
+            # CSRF guard. A callback whose state does not match ours was not
+            # started by us, so the code in it is not ours to exchange.
+            outcome = {"error": "state_mismatch"}
+            title, body = "Rejected", "state parameter did not match."
+        elif not code:
+            outcome = {"error": "no_code"}
+            title, body = "No code", "The callback carried no authorization code."
+        else:
+            outcome = {"code": code}
+            title, body = "Authorized", "You can close this tab and return to the terminal."
+
+        self.send_response(200 if "code" in outcome else 400)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.end_headers()
+        self.wfile.write(
+            f"<!doctype html><meta charset=utf-8><title>{title}</title>"
+            f"<body style='font:16px system-ui;padding:3rem;max-width:34rem'>"
+            f"<h2>{title}</h2><p>{body}</p></body>".encode("utf-8")
+        )
+
+        # Only the FIRST callback counts. A browser prefetch or a reload must
+        # not overwrite a code we already captured.
+        if not type(self).result:
+            type(self).result = outcome
+        if type(self).done is not None:
+            type(self).done.set()
+
+    def log_message(self, fmt: str, *args) -> None:
+        # BaseHTTPRequestHandler logs to stderr by default, which would splice
+        # request lines into the middle of the CLI's own output.
+        logger.debug("loopback: " + fmt, *args)
+
+
+def run_loopback_auth(build_auth_url, timeout: Optional[int] = None) -> dict:
+    """Serve one OAuth callback on 127.0.0.1 and return {"code"} or {"error"}.
+
+    `build_auth_url(redirect_uri, state)` returns the provider's authorize URL.
+    The port is chosen by the OS (bind to 0, then read it back) — hardcoding a
+    port guarantees an eventual collision with something else on the machine.
+
+    Always returns; never raises for a protocol-level failure, and never
+    blocks past `timeout`.
+
+    The timeout resolves HERE, not as a default argument. A default is bound
+    at def time, so `LOOPBACK_TIMEOUT_S` could never be overridden — including
+    by a test trying to prove the timeout works, which then waited the full
+    180 s and looked exactly like the hang it was written to rule out.
+    """
+    timeout = LOOPBACK_TIMEOUT_S if timeout is None else timeout
+    state = secrets.token_urlsafe(32)
+
+    # Port 0 => the OS picks a free one; server_address reports which.
+    server = HTTPServer(("127.0.0.1", 0), _LoopbackHandler)
+    port = server.server_address[1]
+    redirect_uri = f"http://127.0.0.1:{port}/"
+
+    done = threading.Event()
+    _LoopbackHandler.expected_state = state
+    _LoopbackHandler.result = {}
+    _LoopbackHandler.done = done
+
+    url = build_auth_url(redirect_uri, state)
+
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        print(f"listening on {redirect_uri} (timeout {timeout}s)\n")
+        print("If your browser does not open, paste this URL into it:\n")
+        print(f"  {url}\n")
+        try:
+            webbrowser.open(url)
+        except Exception:                          # noqa: BLE001
+            # Headless, no DISPLAY, no handler — the printed URL above is the
+            # fallback, so this must never be fatal.
+            logger.debug("webbrowser.open failed", exc_info=True)
+
+        if not done.wait(timeout):
+            return {"error": "timeout", "redirect_uri": redirect_uri}
+        return dict(_LoopbackHandler.result, redirect_uri=redirect_uri)
+    finally:
+        server.shutdown()
+        server.server_close()
+        _LoopbackHandler.done = None
 
 
 # ---------------------------------------------------------------------------
@@ -396,6 +525,10 @@ class YouTubeUploader(BaseUploader):
         self.client_id = os.getenv("YOUTUBE_CLIENT_ID", "")
         self.client_secret = os.getenv("YOUTUBE_CLIENT_SECRET", "")
         self._token_data: Optional[dict] = _load_token(self.PLATFORM)
+        #: Why the last authenticate() failed, for callers that need to tell
+        #: "the browser never came back" (no code) from "Google rejected the
+        #: code we did get" (exchange failure). Those are different exit codes.
+        self.last_auth_error: Optional[str] = None
 
     # -- public interface ----------------------------------------------------
 
@@ -415,17 +548,53 @@ class YouTubeUploader(BaseUploader):
             if self._refresh_token():
                 return True
 
-        # OAuth2 authorization-code flow (manual paste)
-        auth_url = (
-            f"{YOUTUBE_AUTH_URL}?client_id={self.client_id}"
-            f"&redirect_uri=urn:ietf:wg:oauth:2.0:oob"
-            f"&response_type=code"
-            f"&scope={'%20'.join(YOUTUBE_SCOPES)}"
-            f"&access_type=offline&prompt=consent"
-        )
-        logger.info("YouTube: open this URL to authorize:\n%s", auth_url)
-        auth_code = input("Paste the authorization code: ").strip()
-        return self._exchange_code(auth_code)
+        # OAuth2 authorization-code flow over a loopback listener.
+        #
+        # This used to build the URL with redirect_uri=urn:ietf:wg:oauth:2.0:oob
+        # and then block on input() waiting for a pasted code. Google shut that
+        # flow down: the authorize page no longer displays a code, so the
+        # prompt waited for something that could never arrive and the exchange
+        # failed with 400 every time.
+        #
+        # There is deliberately NO input() fallback. Any remaining input() in
+        # an automatable path is a latent hang.
+        def build_url(redirect_uri: str, state: str) -> str:
+            return (
+                f"{YOUTUBE_AUTH_URL}?client_id={self.client_id}"
+                f"&redirect_uri={quote(redirect_uri, safe='')}"
+                f"&response_type=code"
+                f"&scope={quote(' '.join(YOUTUBE_SCOPES), safe='')}"
+                f"&state={quote(state, safe='')}"
+                # access_type=offline + prompt=consent is what makes Google
+                # return a refresh_token; without both, re-authorizing an
+                # already-approved app yields an access_token only.
+                f"&access_type=offline&prompt=consent"
+            )
+
+        self.last_auth_error = None
+        outcome = run_loopback_auth(build_url)
+
+        if "code" not in outcome:
+            reason = outcome.get("error", "unknown")
+            if reason == "timeout":
+                logger.error(
+                    "YouTube: no callback within %ss. Authorization was not "
+                    "completed in the browser.", LOOPBACK_TIMEOUT_S)
+            elif reason == "state_mismatch":
+                logger.error(
+                    "YouTube: callback state did not match — rejected. The "
+                    "response did not come from the request we started.")
+            else:
+                logger.error("YouTube: authorization failed (%s).", reason)
+            self.last_auth_error = reason
+            return False
+
+        # The redirect_uri in the exchange must byte-match the one used in the
+        # authorize request, so it is threaded through rather than re-derived.
+        if self._exchange_code(outcome["code"], outcome["redirect_uri"]):
+            return True
+        self.last_auth_error = "exchange_failed"
+        return False
 
     def upload_video(
         self,
@@ -565,14 +734,17 @@ class YouTubeUploader(BaseUploader):
             return True
         return time.time() >= self._token_data.get("expires_at", 0) - 60
 
-    def _exchange_code(self, code: str) -> bool:
+    def _exchange_code(self, code: str, redirect_uri: str) -> bool:
+        # redirect_uri is passed in, not hardcoded: Google requires it to
+        # byte-match the one used in the authorize request, and that one now
+        # carries an OS-assigned port that differs on every run.
         try:
             resp = requests.post(YOUTUBE_TOKEN_URL, data={
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
                 "code": code,
                 "grant_type": "authorization_code",
-                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
+                "redirect_uri": redirect_uri,
             }, timeout=30)
             resp.raise_for_status()
             data = resp.json()
@@ -1067,7 +1239,13 @@ def cmd_auth(platform: str) -> int:
         print(f"  rm {before['path']}\n")
 
     print(f"--- {platform} OAuth ---")
-    print("Open the URL below, approve, then paste the code back here.\n")
+    if platform == "youtube":
+        # Loopback: the browser delivers the code back to a local listener,
+        # so there is nothing to paste and nothing reads stdin.
+        print("A browser will open. Approve there and this will finish on "
+              "its own.\n")
+    else:
+        print("Open the URL below, approve, then paste the code back here.\n")
 
     try:
         ok = uploader.authenticate()
@@ -1093,6 +1271,21 @@ def cmd_auth(platform: str) -> int:
 
     print()
     if not ok:
+        # Exit 3 is "no authorization code was ever received" — the browser
+        # never came back, the user denied, or the state did not match. Exit 1
+        # is reserved for the case where a code DID arrive and the provider
+        # then rejected the exchange. Different problems, different fixes.
+        reason = getattr(uploader, "last_auth_error", None)
+        if reason in ("timeout", "no_code", "state_mismatch", "access_denied"):
+            hint = {
+                "timeout": f"no browser callback within {LOOPBACK_TIMEOUT_S}s — "
+                           "authorization was not completed",
+                "no_code": "the callback carried no authorization code",
+                "state_mismatch": "callback state did not match; rejected as CSRF",
+                "access_denied": "authorization was denied in the browser",
+            }[reason]
+            print(f"{platform}: NO CODE RECEIVED — {hint}.", file=sys.stderr)
+            return 3
         print(f"{platform}: AUTH FAILED — no token stored.", file=sys.stderr)
         return 1
 

@@ -181,6 +181,133 @@ def test_duration_never_negative():
     assert U._fmt_duration(-500) == "0m"
 
 
+# ── loopback listener ────────────────────────────────────────────────
+
+def _drive_callback(query_for_state, timeout=10, delay=0.25):
+    """Run the listener while a fake browser hits the callback."""
+    import threading, urllib.request
+    holder = {}
+
+    def build(redirect_uri, state):
+        holder["uri"], holder["state"] = redirect_uri, state
+        return "https://example.invalid/authorize"
+
+    def hit():
+        time.sleep(delay)
+        try:
+            urllib.request.urlopen(
+                holder["uri"] + query_for_state(holder["state"]), timeout=5).read()
+        except Exception:
+            pass
+
+    threading.Thread(target=hit, daemon=True).start()
+    return U.run_loopback_auth(build, timeout=timeout), holder
+
+
+@pytest.fixture(autouse=True)
+def _no_browser(monkeypatch):
+    monkeypatch.setattr(U.webbrowser, "open", lambda url: True)
+
+
+def test_loopback_captures_the_code():
+    out, holder = _drive_callback(lambda st: f"?code=THE_CODE&state={st}")
+
+    assert out["code"] == "THE_CODE"
+    # the exchange must reuse the exact redirect_uri from the authorize step
+    assert out["redirect_uri"] == holder["uri"]
+
+
+def test_loopback_rejects_a_mismatched_state():
+    """CSRF guard, not decoration: a callback we did not start carries a code
+    that is not ours to exchange."""
+    out, _ = _drive_callback(lambda st: "?code=ATTACKER_CODE&state=not-our-state")
+
+    assert out["error"] == "state_mismatch"
+    assert "code" not in out
+
+
+def test_loopback_surfaces_a_denied_authorization():
+    out, _ = _drive_callback(lambda st: f"?error=access_denied&state={st}")
+
+    assert out["error"] == "access_denied"
+
+
+def test_loopback_reports_a_callback_with_no_code():
+    out, _ = _drive_callback(lambda st: f"?state={st}")
+
+    assert out["error"] == "no_code"
+
+
+def test_loopback_times_out_instead_of_hanging():
+    started = time.time()
+    out = U.run_loopback_auth(lambda uri, st: "https://example.invalid/", timeout=2)
+
+    assert out["error"] == "timeout"
+    assert time.time() - started < 6, "did not return promptly after the timeout"
+
+
+def test_timeout_is_resolved_at_call_time_not_bound_as_a_default(monkeypatch):
+    """A default argument binds at def time, so LOOPBACK_TIMEOUT_S could not
+    be overridden — a test of the timeout then waited the full 180 s and looked
+    exactly like the hang it was meant to disprove."""
+    import inspect
+    assert inspect.signature(U.run_loopback_auth).parameters["timeout"].default is None
+
+    monkeypatch.setattr(U, "LOOPBACK_TIMEOUT_S", 1)
+    started = time.time()
+    U.run_loopback_auth(lambda uri, st: "https://example.invalid/")
+
+    assert time.time() - started < 5
+
+
+def test_each_run_binds_a_fresh_os_assigned_port():
+    """Hardcoding a port guarantees an eventual collision."""
+    uris = set()
+    for _ in range(3):
+        _, holder = _drive_callback(lambda st: f"?code=X&state={st}")
+        uris.add(holder["uri"])
+
+    assert len(uris) == 3
+    assert all(u.startswith("http://127.0.0.1:") for u in uris)
+
+
+def test_state_is_unpredictable_and_long():
+    seen = set()
+    for _ in range(3):
+        _, holder = _drive_callback(lambda st: f"?code=X&state={st}")
+        seen.add(holder["state"])
+
+    assert len(seen) == 3
+    assert all(len(s) >= 32 for s in seen)
+
+
+def test_youtube_auth_path_contains_no_input_call():
+    """Any remaining input() in an automatable path is a latent hang."""
+    import ast
+    tree = ast.parse((ROOT / "src" / "uploader.py").read_text(encoding="utf-8"))
+    cls = next(n for n in tree.body
+               if isinstance(n, ast.ClassDef) and n.name == "YouTubeUploader")
+    calls = [n for n in ast.walk(cls)
+             if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+             and n.func.id == "input"]
+
+    assert not calls, f"input() still present at lines {[c.lineno for c in calls]}"
+
+
+def test_youtube_no_longer_uses_the_dead_oob_redirect():
+    """AST, not grep: the OOB URI is still named in the comments that explain
+    why it was removed, and a source-substring check flags those as failures."""
+    import ast
+    tree = ast.parse((ROOT / "src" / "uploader.py").read_text(encoding="utf-8"))
+    cls = next(n for n in tree.body
+               if isinstance(n, ast.ClassDef) and n.name == "YouTubeUploader")
+    literals = [n.value for n in ast.walk(cls)
+                if isinstance(n, ast.Constant) and isinstance(n.value, str)]
+
+    assert not any("oauth:2.0:oob" in v for v in literals), (
+        "the OOB flow is shut down by Google; the exchange fails with 400")
+
+
 # ── CLI wiring ───────────────────────────────────────────────────────
 
 def test_status_is_local_only_and_always_succeeds(token_dir, monkeypatch, capsys):
