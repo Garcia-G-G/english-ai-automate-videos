@@ -357,7 +357,13 @@ def _build_result(script_data: Dict, words: List[Dict], duration: float,
         # generator's self-report becoming the oracle. Named tts_model_id, not
         # model_id, because _meta.model in these same files holds the SCRIPT
         # model (gpt-4o-mini) and a bare `model` here would read as the TTS one.
-        "tts_model_id": settings.get("model_id"),
+        # Taken from the calls actually made, not from resolve_settings() —
+        # `calls` records what was really sent, which is the point of recording
+        # it at all. (The first version read a `settings` local that does not
+        # exist in this scope; it raised NameError on every educational
+        # generation and no test caught it, because nothing exercised this
+        # module. tests/test_tts_bilingual_result.py now does.)
+        "tts_model_id": (calls[0].get("model_id") if calls else None),
         "tts_calls": [{k: c[k] for k in
                        ("index", "lang", "text", "speed", "pause_after")}
                       for c in calls],
