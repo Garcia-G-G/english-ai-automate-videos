@@ -351,10 +351,9 @@ def generate_quiz_audio_segmented(
 
         ans_path = os.path.join(temp_dir, "answer.mp3")
         generate_segment_audio(full_answer_text, ans_path, voice, speed)
-        add_audio(ans_path)
+        _, _, _, answer_end_speech = add_audio(ans_path)
 
-        answer_end = running_time
-        add_segment('answer', full_answer_text, answer_start, answer_end)
+        add_segment('answer', full_answer_text, answer_start, answer_end_speech)
         add_silence(PAUSE_AFTER_ANSWER)
 
         # ============================================================

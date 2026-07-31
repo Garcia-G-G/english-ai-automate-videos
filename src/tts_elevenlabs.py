@@ -682,10 +682,9 @@ def generate_quiz_audio_segmented(
             segment_type='answer',
             english_words=english_words,
         )
-        add_audio(ans_path)
+        _, _, _, answer_end_speech = add_audio(ans_path)
 
-        answer_end = running_time
-        add_segment('answer', full_answer_text, answer_start, answer_end)
+        add_segment('answer', full_answer_text, answer_start, answer_end_speech)
         add_silence(PAUSE_AFTER_ANSWER)
 
         # ============================================================
@@ -830,8 +829,11 @@ def generate_fill_blank_audio_segmented(
                 duration = get_audio_duration(path)
             audio_files.append(path)
             start = running_time
+            # speech_end: where the VOICE stops, vs running_time where the
+            # CLIP stops. Segments must be recorded against the former.
+            speech_end = start + measure_speech_end(path)
             running_time += duration
-            return start, running_time, duration
+            return start, running_time, duration, speech_end
 
         def add_silence(dur: float):
             nonlocal running_time
@@ -1059,8 +1061,11 @@ def generate_true_false_audio_segmented(
                 duration = get_audio_duration(path)
             audio_files.append(path)
             start = running_time
+            # speech_end: where the VOICE stops, vs running_time where the
+            # CLIP stops. Segments must be recorded against the former.
+            speech_end = start + measure_speech_end(path)
             running_time += duration
-            return start, running_time, duration
+            return start, running_time, duration, speech_end
 
         def add_silence(dur: float):
             nonlocal running_time
@@ -1275,8 +1280,11 @@ def generate_vocabulary_audio_segmented(
                 duration = get_audio_duration(path)
             audio_files.append(path)
             start = running_time
+            # speech_end: where the VOICE stops, vs running_time where the
+            # CLIP stops. Segments must be recorded against the former.
+            speech_end = start + measure_speech_end(path)
             running_time += duration
-            return start, running_time, duration
+            return start, running_time, duration, speech_end
 
         def add_silence(dur: float):
             nonlocal running_time

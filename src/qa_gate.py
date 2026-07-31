@@ -439,7 +439,24 @@ def letter_to_word(data: Dict, mp3: str) -> Dict:
             prev_last_end = mine[-1][1]
 
         inner = [round(b_s - a_e, 3) for (_, a_e), (b_s, _) in zip(mine, mine[1:])]
-        gap = inner[0] if inner else 0.0
+        # The LARGEST internal gap, not the first.
+        #
+        # An option is usually two chunks — "Opción A," | pause | "fábrica." —
+        # and then there is only one gap to choose. But the TTS sometimes puts
+        # its own short pause INSIDE the letter clip, between "Opción" and the
+        # letter, producing three chunks and two gaps. Taking the first then
+        # measures that intra-letter pause (0.110 s) instead of the real
+        # letter-to-word boundary (0.496 s) and reports a false failure.
+        #
+        # The largest is the right pick because the letter-to-word gap is
+        # SPLICED — PAUSE_LETTER_TO_WORD plus both clips' edge silence — while
+        # anything the model inserts on its own is incidental and shorter.
+        #
+        # LIMIT, stated rather than hidden: without ASR the gate cannot tell
+        # which chunk is the letter and which is the word. If a word were ever
+        # split by a pause longer than the spliced one, this would measure that
+        # instead. No case of it exists in the corpus or in fresh output.
+        gap = max(inner) if inner else 0.0
         rows.append({
             "option": name,
             "span": [round(s, 3), round(e, 3)],
