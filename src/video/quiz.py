@@ -667,7 +667,19 @@ def create_frame_quiz(
     # ── 3. Question box (white card with accent bar) ────────────
     if question_visible:
         q_alpha = get_alpha(t, 0, 0.4)
-        clean_question = question.replace('¿', '').replace('?', '?')
+        # The opening ¿ is DRAWN. It used to be deleted right here.
+        #
+        # Spanish requires the inverted mark, and the data has always carried
+        # it correctly — fabric_20260116_201133.json holds
+        # "¿Qué significa 'fabric' en inglés?". The renderer stripped it, so
+        # every quiz shipped with an orthography error on screen. On a channel
+        # teaching Spanish speakers, that costs more credibility than any of
+        # the timing defects fixed so far.
+        #
+        # The `.replace('?', '?')` alongside it was ASCII-to-ASCII, a no-op —
+        # the same shape as the smart-quote no-op found in script_generator.
+        # Both are gone; the question is drawn as written.
+        clean_question = question
         max_question_height = QUESTION_ZONE_BOTTOM - question_y - 20
 
         accent = DIFFICULTY_COLORS.get(difficulty) if difficulty else None
