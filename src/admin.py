@@ -388,6 +388,51 @@ def unapprove_video(video_path: Path):
         shutil.move(str(meta_path), str(dest_dir / meta_path.name))
 
 
+def reconcile_platform_target(state: dict, platform_name: str,
+                              enabled: bool) -> bool:
+    """Decide what the upload-target checkbox should show, and store it.
+
+    The checkbox mixes TWO kinds of state, which is why neither obvious fix
+    is right on its own:
+
+      derived  — whether the platform is configured/authenticated. Recomputed
+                 from the environment on every rerun.
+      user     — whether the operator wants to publish there this time.
+
+    Dropping the `key` and letting `value=` win would destroy the user half:
+    unticking YouTube would silently re-tick on the next rerun. Keeping the
+    key alone destroys the derived half, which is the live bug — a keyed
+    Streamlit widget IGNORES `value=` once session_state[key] exists, so the
+    ticked state froze at whatever it was the FIRST time the widget rendered.
+    Now that YouTube auth works, a session that rendered before auth succeeded
+    keeps showing YouTube unavailable forever.
+
+    The dangerous direction is the other one: a platform that WAS configured
+    and no longer is stays ticked, and a disabled checkbox still returns its
+    stored value — so the upload would be attempted against a platform with no
+    credentials.
+
+    Rules:
+      * not available        -> forced off, always. Never target a platform we
+                               cannot authenticate to.
+      * became available     -> default on, because that is what the operator
+                               almost certainly wants right after connecting.
+      * still available      -> leave the operator's choice alone.
+    """
+    key = f"target_{platform_name}"
+    seen_key = f"_target_seen_{platform_name}"
+    previously = state.get(seen_key)
+
+    if not enabled:
+        state[key] = False
+    elif previously != enabled:
+        # Transitioned unavailable -> available (or first ever render).
+        state[key] = True
+
+    state[seen_key] = enabled
+    return state[key]
+
+
 def metadata_session_keys(video_name: str) -> tuple:
     """The three session_state keys the Upload page edits for one video."""
     return (f"meta_title_{video_name}", f"meta_desc_{video_name}",
@@ -1249,9 +1294,13 @@ elif page == "Upload":
         for col, platform in zip(tcols, platforms):
             with col:
                 enabled = platform_status.get(platform["name"], False)
+                # Reconcile the derived half (auth status) with the user half
+                # (chosen targets) BEFORE rendering. No `value=` — a keyed
+                # widget ignores it, which is the bug this replaces.
+                reconcile_platform_target(
+                    st.session_state, platform["name"], enabled)
                 if st.checkbox(
                     f"{platform['icon']} {platform['name']}",
-                    value=enabled,
                     disabled=not enabled,
                     key=f"target_{platform['name']}"
                 ):
