@@ -12,9 +12,11 @@ Environment variables:
     INSTAGRAM_ACCESS_TOKEN, INSTAGRAM_BUSINESS_ACCOUNT_ID
 """
 
+import argparse
 import json
 import logging
 import os
+import sys
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -915,3 +917,266 @@ def get_upload_manager() -> UploadManager:
             "INSTAGRAM_ACCESS_TOKEN, etc.) to enable uploads."
         )
     return manager
+
+
+# ---------------------------------------------------------------------------
+# CLI — auth and status only
+# ---------------------------------------------------------------------------
+#
+# Until this existed the ONLY way to trigger OAuth was to run the full
+# pipeline with upload enabled, which meant generating and paying for a video
+# in order to authenticate. These two commands touch neither generation nor
+# upload, and spend nothing.
+#
+# The upload path, the redirect URIs and the loopback listener are Step 5 and
+# are deliberately untouched here.
+
+#: Platforms with an interactive OAuth authorization-code flow. Instagram is
+#: excluded on purpose: it authenticates from a long-lived token in
+#: INSTAGRAM_ACCESS_TOKEN and has no code to exchange, so `auth` would have
+#: nothing to do. `status` still reports it.
+OAUTH_PLATFORMS = ("youtube", "tiktok")
+
+
+def _describe_token(platform: str) -> dict:
+    """Local-only view of a stored token. Makes no network calls."""
+    path = TOKEN_DIR / f"{platform}_token.json"
+    data = _load_token(platform)
+    if data is None:
+        return {"platform": platform, "path": str(path), "present": False}
+
+    expires_at = data.get("expires_at")
+    remaining = (expires_at - time.time()) if isinstance(expires_at, (int, float)) else None
+
+    # A file is not a token unless it carries an access_token.
+    #
+    # This is not defensive padding. TikTok's token endpoint answers a bad
+    # request with HTTP 200 and an error BODY, so raise_for_status() does not
+    # fire and _exchange_code persists the error payload verbatim — then
+    # stamps it with expires_at = now + 24h. The result is a file that looks
+    # like a fresh valid token and contains
+    # {"error": "invalid_request", "error_description": ...}.
+    #
+    # Reporting that as "valid" would make this command confidently wrong
+    # about the one thing it exists to answer. The underlying persist bug is
+    # in the upload path and is left for Step 5; this stops the CLI repeating
+    # it. See docs/recorded-debt.md.
+    error = data.get("error")
+    usable = bool(data.get("access_token"))
+
+    return {
+        "platform": platform,
+        "path": str(path),
+        "present": True,
+        "expires_at": expires_at,
+        "expires_in_s": remaining,
+        # A minute of slack, matching the uploaders' own _token_expired.
+        "valid": bool(usable and remaining is not None and remaining > 60),
+        "has_access_token": usable,
+        "error": error,
+        "has_refresh_token": bool(data.get("refresh_token")),
+        "scope": data.get("scope"),
+    }
+
+
+def _fmt_expiry(info: dict) -> str:
+    if not info.get("present"):
+        return "-"
+    exp = info.get("expires_at")
+    if not isinstance(exp, (int, float)):
+        return "unknown (no expires_at in token)"
+    stamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(exp))
+    secs = info["expires_in_s"]
+    if secs is None:
+        return stamp
+    if secs <= 0:
+        return f"{stamp}  (EXPIRED {_fmt_duration(-secs)} ago)"
+    return f"{stamp}  (in {_fmt_duration(secs)})"
+
+
+def _fmt_duration(seconds: float) -> str:
+    seconds = int(max(0, seconds))
+    days, rem = divmod(seconds, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes = rem // 60
+    if days:
+        return f"{days}d {hours}h"
+    if hours:
+        return f"{hours}h {minutes}m"
+    return f"{minutes}m"
+
+
+def _cli_logging() -> None:
+    """Send INFO to stdout with no prefix.
+
+    The uploaders emit the authorization URL through logger.info. Without a
+    handler that line goes nowhere, which is why the URL was invisible when
+    auth was only reachable from the pipeline. A bare format keeps the URL
+    copy-pasteable.
+    """
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter("%(message)s"))
+    root = logging.getLogger()
+    root.handlers = [handler]
+    root.setLevel(logging.INFO)
+
+
+def cmd_auth(platform: str) -> int:
+    """Run ONLY the OAuth flow for one platform. No upload, no generation."""
+    _cli_logging()
+
+    uploader = UploadManager().uploaders[platform]
+
+    if not uploader.is_configured():
+        env = {"youtube": "YOUTUBE_CLIENT_ID / YOUTUBE_CLIENT_SECRET",
+               "tiktok": "TIKTOK_CLIENT_KEY / TIKTOK_CLIENT_SECRET"}[platform]
+        print(f"\n{platform}: NOT CONFIGURED — set {env} in .env", file=sys.stderr)
+        return 2
+
+    before = _describe_token(platform)
+    if before["present"] and before["valid"]:
+        print(f"{platform}: a valid token already exists "
+              f"(expires {_fmt_expiry(before)}).")
+        print("Delete it to force a fresh authorization:")
+        print(f"  rm {before['path']}\n")
+
+    print(f"--- {platform} OAuth ---")
+    print("Open the URL below, approve, then paste the code back here.\n")
+
+    try:
+        ok = uploader.authenticate()
+    except EOFError:
+        print("\nNo authorization code on stdin. Run this in a terminal, or "
+              "pipe the code:\n"
+              f"  echo '<code>' | python -m uploader auth --platform {platform}",
+              file=sys.stderr)
+        return 3
+    except KeyboardInterrupt:
+        print("\nCancelled.", file=sys.stderr)
+        return 130
+
+    after = _describe_token(platform)
+
+    print()
+    if not ok:
+        print(f"{platform}: AUTH FAILED — no token stored.", file=sys.stderr)
+        return 1
+
+    # authenticate() returning True is not proof a token was obtained — see
+    # _describe_token. Check the artifact, not the return value.
+    if not after.get("has_access_token"):
+        sys.stdout.flush()
+        print(f"\n{platform}: AUTH FAILED — the stored file has no access_token.",
+              file=sys.stderr)
+        if after.get("error"):
+            print(f"  provider error: {after['error']}", file=sys.stderr)
+        print(f"  the response was written to {after['path']} anyway; delete it.",
+              file=sys.stderr)
+        return 1
+
+    print(f"{platform}: OK")
+    print(f"  token stored at : {after['path']}")
+    print(f"  expires         : {_fmt_expiry(after)}")
+    print(f"  refresh_token   : {'yes' if after['has_refresh_token'] else 'NO'}")
+    if after.get("scope"):
+        print(f"  scope           : {after['scope']}")
+    sys.stdout.flush()
+
+    if not after["has_refresh_token"]:
+        # Without a refresh token every future run needs a human, which
+        # defeats an automated publish path — so this is a failure, not a
+        # warning, even though a usable access_token was returned.
+        print("\nFAIL: no refresh_token in the response.", file=sys.stderr)
+        if platform == "youtube":
+            print("Google only returns one with access_type=offline AND "
+                  "prompt=consent, and only on the FIRST consent for an app. "
+                  "Revoke access at https://myaccount.google.com/permissions "
+                  "and retry.", file=sys.stderr)
+        else:
+            print("Re-authorize and confirm the app requests offline access.",
+                  file=sys.stderr)
+        return 4
+
+    return 0
+
+
+def cmd_status() -> int:
+    """Local report on every platform's stored token. No network calls."""
+    manager = UploadManager()
+
+    print(f"token directory: {TOKEN_DIR}\n")
+    print(f"{'platform':12}{'configured':>12}{'token':>9}{'valid':>8}"
+          f"{'refresh':>9}  expires")
+    print("-" * 78)
+
+    for name in ("youtube", "tiktok", "instagram"):
+        up = manager.uploaders[name]
+        info = _describe_token(name)
+        configured = "yes" if up.is_configured() else "no"
+
+        if name == "instagram":
+            # No OAuth code flow: the token IS the env var, so there is no
+            # file to inspect and no expiry we can see locally.
+            print(f"{name:12}{configured:>12}{'env':>9}{'-':>8}{'-':>9}  "
+                  f"static INSTAGRAM_ACCESS_TOKEN (not inspectable locally)")
+            continue
+
+        detail = _fmt_expiry(info)
+        if info.get("present") and not info.get("has_access_token"):
+            detail = (f"CORRUPT — no access_token"
+                      + (f", stored error: {info['error']}" if info.get("error") else ""))
+        print(f"{name:12}{configured:>12}"
+              f"{('yes' if info['present'] else 'no'):>9}"
+              f"{('yes' if info.get('valid') else 'no'):>8}"
+              f"{('yes' if info.get('has_refresh_token') else 'no'):>9}  "
+              f"{detail}")
+
+    print("\nvalidity is checked against the stored expires_at only — no "
+          "network calls, no API spend.")
+    print(f"to authenticate:  python -m uploader auth --platform "
+          f"{'|'.join(OAUTH_PLATFORMS)}")
+    return 0
+
+
+def _load_env() -> None:
+    """Load .env before any uploader is constructed.
+
+    uploader.py is the only env-reading module in src/ that does NOT call
+    load_dotenv at import — it has always been imported by pipeline.py or
+    admin.py, which load it first. Run standalone that assumption breaks, and
+    every platform reports "not configured" while .env holds valid
+    credentials.
+
+    Done HERE rather than at module import so the upload path keeps exactly
+    the import-time behaviour it has today. The uploaders read os.getenv in
+    __init__, so this must run before UploadManager() is constructed.
+    """
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        return
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+
+def main(argv=None) -> int:
+    _load_env()
+    parser = argparse.ArgumentParser(
+        prog="python -m uploader",
+        description="OAuth and token inspection. Never uploads, never "
+                    "generates, never spends.",
+    )
+    sub = parser.add_subparsers(dest="command", required=True)
+
+    p_auth = sub.add_parser("auth", help="run the OAuth flow for one platform")
+    p_auth.add_argument("--platform", required=True, choices=OAUTH_PLATFORMS)
+
+    sub.add_parser("status", help="show stored token state for every platform")
+
+    args = parser.parse_args(argv)
+    if args.command == "auth":
+        return cmd_auth(args.platform)
+    return cmd_status()
+
+
+if __name__ == "__main__":
+    sys.exit(main())
