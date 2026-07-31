@@ -4,6 +4,7 @@ import json
 import logging
 import math
 import os
+import re
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
@@ -144,6 +145,39 @@ def instrument_serif_italic(size: int) -> ImageFont.FreeTypeFont:
     f = ImageFont.truetype(str(_INSTRUMENT_ITALIC), size)
     _brand_fonts[key] = f
     return f
+
+
+def strip_display_quotes(text: str) -> str:
+    """Remove the single quotes that mark English terms, for DISPLAY only.
+
+    The quotes are STRUCTURAL, not decorative: the generator prompt requires
+    English terms to be single-quoted, and validate_and_clean_script's
+    english_phrases scrape reads them back out of full_script. They must stay
+    in the data and are only removed at the moment of drawing — which is why
+    this lives at the draw site rather than anywhere upstream.
+
+    Applied where the quotes distinguish nothing. It is NOT blanket: the quiz
+    QUESTION keeps its quotes, because there the mark is doing real work — it
+    is the use-mention distinction, and "¿Qué significa 'fabric' en inglés?"
+    is correct Spanish orthography on a channel that teaches language. In the
+    four options every entry is quoted, so the mark separates nothing and is
+    pure visual noise.
+
+    A precedent already existed at quiz.py:822 and true_false.py:587, applied
+    to `explanation` alone; those now route through here so the behaviour is
+    one function instead of scattered .replace calls.
+
+    Only DELIMITER quotes are removed. An apostrophe between two letters is a
+    contraction — "don't", "it's" — and stripping it would render "dont",
+    which is a spelling error on a channel that teaches English. Same
+    distinction the english_phrases scraper draws in script_generator.
+    """
+    if not text:
+        return text
+    # Mask contractions, drop the remaining quotes, restore.
+    masked = re.sub(r"(?<=[A-Za-z])['\u2018\u2019](?=[A-Za-z])", "\x00", text)
+    stripped = masked.replace("'", "").replace("\u2018", "").replace("\u2019", "")
+    return stripped.replace("\x00", "'")
 
 
 def load_data(path: str) -> dict:

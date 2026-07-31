@@ -42,6 +42,7 @@ from config.timing import (
     TF_QUESTION_FADE_DURATION as QUESTION_FADE_DURATION,
 )
 from .utils import (
+    strip_display_quotes,
     font, line_break, draw_text_solid, draw_text_centered,
     draw_progress_bar, draw_sparkles, draw_gradient_rounded_rect,
     fit_text_font, draw_rounded_card, draw_progress_timer_bar,
@@ -584,7 +585,7 @@ def create_frame_true_false(
             max_exp_w = CARD_WIDTH - exp_padding * 2
             max_exp_h = SAFE_AREA_BOTTOM - exp_y - exp_padding * 2
 
-            clean_exp = explanation.replace("'", "").strip()
+            clean_exp = strip_display_quotes(explanation).strip()
             ef, exp_font_size, exp_lines, exp_text_h = fit_text_font(
                 clean_exp, 42, 28, max_exp_w, max_exp_h,
             )
