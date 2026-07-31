@@ -169,3 +169,56 @@ The QA gate cannot help: it reads audio, and these are display timings.
 Deriving them needs the layout work plus a way to measure on-screen text
 against the waveform. Annotated in place as INHERITED-UNVALIDATED so nobody
 mistakes them for calibrated.
+
+---
+
+## 9. TikTok token exchange persists error responses as tokens (Step 5)
+
+`TikTokUploader._exchange_code` (`src/uploader.py`) posts with `json=` and
+checks only `raise_for_status()`. TikTok answers a malformed token request
+with **HTTP 200 and an error body**, so nothing raises, and `_persist_token`
+writes the error payload to `.tokens/tiktok_token.json` — stamping it with
+`expires_at = now + 24h`:
+
+```json
+{"error": "invalid_request",
+ "error_description": "Only `application/x-www-form-urlencoded` is accepted as Content-Type.",
+ "expires_at": 1785617724.16}
+```
+
+Three consequences:
+
+1. `_exchange_code` returns **True** on failure, so `authenticate()` reports
+   success.
+2. The file then looks like a fresh valid token for 24 hours, and
+   `authenticate()` reuses it instead of re-authorizing — the failure is
+   self-perpetuating.
+3. The error text says TikTok requires `application/x-www-form-urlencoded`
+   while the code sends JSON, which means **the TikTok code exchange has never
+   worked**. YouTube's equivalent already uses `data=` and is correct.
+
+Found by the new `python -m uploader auth` command, which is the first way to
+exercise this path without a full paid pipeline run.
+
+**Not fixed here** — `_exchange_code` is the upload path, which Step 5 owns.
+The CLI defends itself instead: `_describe_token` treats a file with no
+`access_token` as CORRUPT rather than valid, so `status` and `auth` cannot
+repeat the lie. Fixing it properly means sending form-encoded data AND
+treating an `error` key in a 200 response as a failure.
+
+---
+
+## 10. `uploader.py` never loads `.env`
+
+Every other env-reading module in `src/` calls `load_dotenv` at import.
+`uploader.py` does not — it has always been imported by `pipeline.py` or
+`admin.py`, which load it first, so the omission was invisible.
+
+Run standalone it sees no credentials and reports every platform as "not
+configured" while `.env` holds valid ones.
+
+The CLI calls `_load_env()` inside `main()` rather than at module import, so
+the upload path keeps exactly its current import-time behaviour. Moving it to
+module scope would be tidier and is safe as far as anyone can tell, but it
+changes import-time side effects for every existing caller — a Step 5
+decision, not a drive-by.
