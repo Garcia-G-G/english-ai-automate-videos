@@ -122,6 +122,15 @@ def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -
     """Use GPT to regenerate metadata optimized for a specific platform."""
     from openai import OpenAI
 
+    # Load .env at the ENTRY POINT, not at import.
+    #
+    # Without this the key is absent when this module is invoked standalone,
+    # the function silently takes its fallback branch, and the result looks
+    # exactly like "the API call never fires" — which is the wrong conclusion
+    # and the one I nearly reported while diagnosing the dashboard.
+    from env_setup import ensure_env_loaded
+    ensure_env_loaded()
+
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         meta = generate_metadata(script_data, video_type)

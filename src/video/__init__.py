@@ -295,6 +295,11 @@ def generate_video(
                 from profiles import get_active_profile
                 profile_name = get_active_profile().get("name", "adults")
             except Exception:
+                # SAFE WITHOUT .env, deliberately. This is the except branch
+                # for get_active_profile() failing, and "adults" is the
+                # intended default rather than a fallback standing in for a
+                # missing credential. Nothing here can silently authenticate
+                # as the wrong thing.
                 profile_name = os.getenv("VIDEO_PROFILE", "adults")
             logger.info(f"Engine v2 active (profile: {profile_name})")
             frame_gen = EducationalRendererV2(data, duration, profile_name)
