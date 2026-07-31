@@ -462,7 +462,16 @@ def generate_quiz_audio_segmented(
 
     # Extract script data
     from tts_common import clean_for_tts
-    question = clean_for_tts(script.get('question', '').replace('¿', '').replace('?', '?'))
+    # The ¿ is KEPT. It used to be stripped here, alongside a
+    # .replace('?', '?') that was ASCII-to-ASCII and did nothing.
+    # The inverted mark is a Spanish orthographic signal the model
+    # is trained on; deleting it before synthesis destroys
+    # information for no stated reason. NOTE: an audible
+    # improvement is NOT measured — with and without produced
+    # identical duration and a 1.3 dB mean-level difference, which
+    # is inside run-to-run variance. This is 'do not discard input',
+    # not 'this demonstrably sounds better'.
+    question = clean_for_tts(script.get('question', ''))
     options = script.get('options', {})
     correct = script.get('correct', 'A')
     explanation = clean_for_tts(script.get('explanation', ''))
@@ -1039,7 +1048,8 @@ def generate_true_false_audio_segmented(
     # Strip "¿Verdadero o falso?" from statement to avoid reading it twice
     stripped = re.sub(r'\s*¿?\s*[Vv]erdadero\s+o\s+[Ff]also\s*\??\s*$', '', statement)
     clean_statement = clean_for_tts(stripped.strip())
-    clean_statement = clean_statement.lstrip('¿').strip()
+    # ¿ kept — see the note on the quiz question above.
+    clean_statement = clean_statement.strip()
     answer_word = "Verdadero" if correct else "Falso"
 
     english_words = extract_english_words_from_script(script)

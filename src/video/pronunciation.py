@@ -69,7 +69,7 @@ def create_frame_pronunciation(
     # Question — visible until mistake_phase
     if t < mistake_phase:
         qf = font(56)
-        draw_text_centered(draw, "Como se pronuncia?", PRON_QUESTION_Y, qf, COLOR_WHITE, w_alpha, outline=5, max_width=max_w)
+        draw_text_centered(draw, "¿Cómo se pronuncia?", PRON_QUESTION_Y, qf, COLOR_WHITE, w_alpha, outline=5, max_width=max_w)
 
     # Common mistake — fades in at word_phase, gradually fades out toward phonetic_phase
     if word_phase < t < phonetic_phase:

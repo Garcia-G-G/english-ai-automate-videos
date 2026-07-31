@@ -186,7 +186,16 @@ def generate_quiz_audio_segmented(
         Dictionary with exact segment timestamps and audio metadata
     """
     # Extract script data
-    question = script.get('question', '').replace('¿', '').replace('?', '?')
+    # The ¿ is KEPT. It used to be stripped here, alongside a
+    # .replace('?', '?') that was ASCII-to-ASCII and did nothing.
+    # The inverted mark is a Spanish orthographic signal the model
+    # is trained on; deleting it before synthesis destroys
+    # information for no stated reason. NOTE: an audible
+    # improvement is NOT measured — with and without produced
+    # identical duration and a 1.3 dB mean-level difference, which
+    # is inside run-to-run variance. This is 'do not discard input',
+    # not 'this demonstrably sounds better'.
+    question = script.get('question', '')
     options = script.get('options', {})
     correct = script.get('correct', 'A')
     explanation = script.get('explanation', '')
