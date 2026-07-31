@@ -34,6 +34,7 @@ from tts_common import (
     PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
     PAUSE_AFTER_ANSWER, PAUSE_AFTER_EXPLANATION,
     SEGMENT_SPEEDS,
+    PAUSE_LETTER_TO_WORD, PAUSE_BETWEEN_OPTIONS,
 )
 
 # Load environment variables from .env file
@@ -745,59 +746,62 @@ def generate_quiz_audio_segmented(
         add_silence(PAUSE_AFTER_QUESTION)
 
         # ============================================================
-        # 2-3. TRANSITION + OPTIONS - COMBINED in ONE TTS call
-        # TTS is inconsistent with short isolated words.
-        # Generating ALL options together in ONE call works reliably.
+        # 2-3. TRANSITION + OPTIONS — one TTS call per part, every
+        #      boundary MEASURED
         # ============================================================
-        logger.info("[3] OPTIONS (combined generation)")
+        # Was one combined call with invented boundaries — transition_duration
+        # = 1.5 and per_option = options_duration / 4. See the equivalent
+        # block in tts_elevenlabs.py for the measurements that condemned it:
+        # non-option boundaries within 0.12 s, option starts off by up to
+        # 0.70 s, and the letter elided into its word on 38 of 42 artifacts.
+        #
+        # The old comment here claimed short isolated words are unreliable.
+        # That is why each part keeps its own retry via _tts_with_retry rather
+        # than being merged back together.
+        logger.info("[3] OPTIONS (split: letter | silence | word)")
 
-        # Build combined text for all options
-        option_lines = ["Escucha las opciones."]
         option_words = {}
         for letter in ['A', 'B', 'C', 'D']:
-            word = options.get(letter, '').strip("'\"")
-            option_words[letter] = word
-            option_lines.append(f"Opción {letter}, {word}.")
+            option_words[letter] = options.get(letter, '').strip("'\"")
 
-        combined_text = "\n".join(option_lines)
-        logger.debug("  Combined text (%d chars):", len(combined_text))
-        for line in option_lines:
-            logger.debug("    %s", line)
-
-        # Generate ALL options in ONE TTS call
-        combined_path = os.path.join(temp_dir, "options_combined.mp3")
+        trans_path = os.path.join(temp_dir, "transition.mp3")
         _tts_with_retry(
-            client, combined_path,
-            model="tts-1-hd", voice=voice, input=combined_text,
+            client, trans_path,
+            model="tts-1-hd", voice=voice, input="Escucha las opciones.",
             speed=SEGMENT_SPEEDS['options'], response_format="mp3",
         )
+        trans_start, trans_end, _ = add_audio(trans_path)
+        add_segment('transition', 'Escucha las opciones.', trans_start, trans_end)
+        add_silence(PAUSE_BETWEEN_OPTIONS)
 
-        combined_duration = get_audio_duration(combined_path)
-        logger.debug("  Combined duration: %.2fs", combined_duration)
-
-        # Add the combined audio
-        combined_start = running_time
-        add_audio(combined_path)
-
-        # Estimate segment times (roughly equal distribution)
-        # First segment is "Escucha las opciones" (~1.5s)
-        # Then 4 options share the rest
-        transition_duration = 1.5
-        options_duration = combined_duration - transition_duration
-        per_option = options_duration / 4
-
-        # Add transition segment
-        add_segment('transition', 'Escucha las opciones.',
-                   combined_start, combined_start + transition_duration)
-
-        # Add option segments (estimated times)
         for i, letter in enumerate(['A', 'B', 'C', 'D']):
-            opt_start = combined_start + transition_duration + (i * per_option)
-            opt_end = opt_start + per_option
+            word = option_words[letter]
+
+            letter_path = os.path.join(temp_dir, f"option_{letter}_letter.mp3")
+            _tts_with_retry(
+                client, letter_path,
+                model="tts-1-hd", voice=voice, input=f"Opción {letter},",
+                speed=SEGMENT_SPEEDS['options'], response_format="mp3",
+            )
+            letter_start, _le, _ = add_audio(letter_path)
+
+            add_silence(PAUSE_LETTER_TO_WORD)
+
+            word_path = os.path.join(temp_dir, f"option_{letter}_word.mp3")
+            _tts_with_retry(
+                client, word_path,
+                model="tts-1-hd", voice=voice, input=f"{word}.",
+                speed=SEGMENT_SPEEDS['options'], response_format="mp3",
+            )
+            _ws, word_end, _ = add_audio(word_path)
+
             add_segment(f'option_{letter.lower()}',
-                       f"Opción {letter}, {option_words[letter]}.",
-                       opt_start, opt_end)
-            logger.debug("  Option %s: %.2fs - %.2fs", letter, opt_start, opt_end)
+                        f"Opción {letter}, {word}.", letter_start, word_end)
+            logger.debug("  Option %s: %.2fs - %.2fs (measured)",
+                         letter, letter_start, word_end)
+
+            if i < 3:
+                add_silence(PAUSE_BETWEEN_OPTIONS)
 
         # Pause after all options
         add_silence(PAUSE_AFTER_OPTION)

@@ -32,6 +32,7 @@ from tts_common import (
     PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
     PAUSE_AFTER_COUNTDOWN, PAUSE_AFTER_LAST_COUNT, PAUSE_AFTER_ANSWER,
     PAUSE_AFTER_EXPLANATION,
+    PAUSE_LETTER_TO_WORD, PAUSE_BETWEEN_OPTIONS,
 )
 
 # Load environment variables
@@ -258,53 +259,45 @@ def generate_quiz_audio_segmented(
         add_silence(PAUSE_AFTER_QUESTION)
 
         # ============================================================
-        # 2-3. TRANSITION + OPTIONS (COMBINED)
+        # 2-3. TRANSITION + OPTIONS — one TTS call per part, every
+        #      boundary MEASURED
         # ============================================================
-        logger.info("[2-3] OPTIONS (combined)")
+        # Was one combined call with invented boundaries — transition_duration
+        # = 1.5 and per_option = options_duration / 4. See the equivalent
+        # block in tts_elevenlabs.py for the measurements that condemned it.
+        logger.info("[2-3] OPTIONS (split: letter | silence | word)")
 
-        # Build combined text
-        option_lines = ["Escucha las opciones."]
         option_words = {}
         for letter in ['A', 'B', 'C', 'D']:
-            word = options.get(letter, '').strip("'\"")
-            option_words[letter] = word
-            option_lines.append(f"Opción {letter}, {word}.")
+            option_words[letter] = options.get(letter, '').strip("'\"")
 
-        combined_text = "\n".join(option_lines)
-        logger.debug("Combined text (%d chars):", len(combined_text))
-        for line in option_lines:
-            logger.debug("  %s", line)
-
-        # Generate combined options
-        combined_path = os.path.join(temp_dir, "options_combined.mp3")
-        generate_segment_audio(
-            text=combined_text,
-            output_path=combined_path,
-            voice=voice,
-            speed=speed,
-        )
-
-        combined_duration = get_audio_duration(combined_path)
-        logger.debug("Combined duration: %.2fs", combined_duration)
-
-        # Add combined audio
-        combined_start = running_time
-        add_audio(combined_path)
-
-        # Estimate segment times
-        transition_duration = 1.5
-        options_duration = combined_duration - transition_duration
-        per_option = options_duration / 4
-
-        add_segment('transition', 'Escucha las opciones.',
-                   combined_start, combined_start + transition_duration)
+        trans_path = os.path.join(temp_dir, "transition.mp3")
+        generate_segment_audio(text="Escucha las opciones.",
+                               output_path=trans_path, voice=voice, speed=speed)
+        trans_start, trans_end, _ = add_audio(trans_path)
+        add_segment('transition', 'Escucha las opciones.', trans_start, trans_end)
+        add_silence(PAUSE_BETWEEN_OPTIONS)
 
         for i, letter in enumerate(['A', 'B', 'C', 'D']):
-            opt_start = combined_start + transition_duration + (i * per_option)
-            opt_end = opt_start + per_option
+            word = option_words[letter]
+
+            letter_path = os.path.join(temp_dir, f"option_{letter}_letter.mp3")
+            generate_segment_audio(text=f"Opción {letter},",
+                                   output_path=letter_path, voice=voice, speed=speed)
+            letter_start, _le, _ = add_audio(letter_path)
+
+            add_silence(PAUSE_LETTER_TO_WORD)
+
+            word_path = os.path.join(temp_dir, f"option_{letter}_word.mp3")
+            generate_segment_audio(text=f"{word}.",
+                                   output_path=word_path, voice=voice, speed=speed)
+            _ws, word_end, _ = add_audio(word_path)
+
             add_segment(f'option_{letter.lower()}',
-                       f"Opción {letter}, {option_words[letter]}.",
-                       opt_start, opt_end)
+                        f"Opción {letter}, {word}.", letter_start, word_end)
+
+            if i < 3:
+                add_silence(PAUSE_BETWEEN_OPTIONS)
 
         add_silence(PAUSE_AFTER_OPTION)
 

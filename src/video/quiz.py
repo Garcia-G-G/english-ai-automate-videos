@@ -125,6 +125,22 @@ def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
             piensa_time = w['start']
             break
 
+    # LAST REMAINING /4 ESTIMATOR, and deliberately still here.
+    #
+    # The three GENERATOR copies of this arithmetic are gone — quiz options are
+    # now emitted as measured segments (tts_elevenlabs / tts_openai /
+    # tts_google). This one is different in kind: it is a RENDER-side fallback
+    # that only runs when an artifact carries no segment_times at all and the
+    # keyword scan failed to locate an option. Every artifact produced from
+    # now on has measured boundaries and never reaches this branch.
+    #
+    # Deleting it would not make anything more correct; it would leave
+    # option_b/c/d at 0.0 for the 22 historical quiz artifacts that have no
+    # segment_times, stacking every option card at t=0 instead of spreading
+    # them approximately. A bad estimate beats a known-wrong constant here.
+    #
+    # It becomes safe to delete once the historical corpus is either
+    # regenerated or retired. Flagged rather than removed.
     if timestamps['option_a'] > 0 and piensa_time > timestamps['option_a']:
         options_duration = piensa_time - timestamps['option_a']
         gap = options_duration / 4
