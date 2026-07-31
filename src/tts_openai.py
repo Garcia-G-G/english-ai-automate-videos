@@ -28,7 +28,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from tts_common import (
-    get_audio_duration, generate_silence,
+    get_audio_duration, generate_silence, measure_speech_end,
     extract_english_words_from_script,
     SPANISH_DIR, WORDS_DIR,
     PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
@@ -699,14 +699,22 @@ def generate_quiz_audio_segmented(
         running_time = 0.0
 
         def add_audio(path: str, duration: float = None):
-            """Add audio file to sequence."""
+            """Add audio file to sequence.
+
+            Returns (start, file_end, duration, speech_end). `speech_end` is
+            where the VOICE stops; `file_end` is where the CLIP stops, and the
+            two differ by the trailing silence every TTS model leaves behind.
+            Segments must be recorded against speech_end — see
+            tts_common.measure_speech_end. The audio itself is untouched.
+            """
             nonlocal running_time
             if duration is None:
                 duration = get_audio_duration(path)
             audio_files.append(path)
             start = running_time
+            speech_end = start + measure_speech_end(path)
             running_time += duration
-            return start, running_time, duration
+            return start, running_time, duration, speech_end
 
         def add_silence(duration: float):
             """Add silence to sequence."""
@@ -741,8 +749,8 @@ def generate_quiz_audio_segmented(
             model="tts-1-hd", voice=voice, input=clean_question,
             speed=SEGMENT_SPEEDS['question'], response_format="mp3",
         )
-        q_start, q_end, _ = add_audio(q_path)
-        add_segment('question', clean_question, q_start, q_end)
+        q_start, q_end, _, q_end_speech = add_audio(q_path)
+        add_segment('question', clean_question, q_start, q_end_speech)
         add_silence(PAUSE_AFTER_QUESTION)
 
         # ============================================================
@@ -770,8 +778,8 @@ def generate_quiz_audio_segmented(
             model="tts-1-hd", voice=voice, input="Escucha las opciones.",
             speed=SEGMENT_SPEEDS['options'], response_format="mp3",
         )
-        trans_start, trans_end, _ = add_audio(trans_path)
-        add_segment('transition', 'Escucha las opciones.', trans_start, trans_end)
+        trans_start, trans_end, _, trans_end_speech = add_audio(trans_path)
+        add_segment('transition', 'Escucha las opciones.', trans_start, trans_end_speech)
         add_silence(PAUSE_BETWEEN_OPTIONS)
 
         for i, letter in enumerate(['A', 'B', 'C', 'D']):
@@ -783,7 +791,7 @@ def generate_quiz_audio_segmented(
                 model="tts-1-hd", voice=voice, input=f"Opción {letter},",
                 speed=SEGMENT_SPEEDS['options'], response_format="mp3",
             )
-            letter_start, _le, _ = add_audio(letter_path)
+            letter_start, _le, _, le_speech = add_audio(letter_path)
 
             add_silence(PAUSE_LETTER_TO_WORD)
 
@@ -793,10 +801,10 @@ def generate_quiz_audio_segmented(
                 model="tts-1-hd", voice=voice, input=f"{word}.",
                 speed=SEGMENT_SPEEDS['options'], response_format="mp3",
             )
-            _ws, word_end, _ = add_audio(word_path)
+            _ws, word_end, _, word_end_speech = add_audio(word_path)
 
             add_segment(f'option_{letter.lower()}',
-                        f"Opción {letter}, {word}.", letter_start, word_end)
+                        f"Opción {letter}, {word}.", letter_start, word_end_speech)
             logger.debug("  Option %s: %.2fs - %.2fs (measured)",
                          letter, letter_start, word_end)
 
@@ -811,8 +819,8 @@ def generate_quiz_audio_segmented(
         # ============================================================
         logger.info("[4] THINK")
         think_path = str(SPANISH_DIR / "piensa_bien.mp3")
-        think_start, think_end, _ = add_audio(think_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end)
+        think_start, think_end, _, think_end_speech = add_audio(think_path)
+        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
         add_silence(PAUSE_AFTER_THINK)
 
         # ============================================================
@@ -868,8 +876,8 @@ def generate_quiz_audio_segmented(
                 model="tts-1-hd", voice=voice, input=explanation,
                 speed=SEGMENT_SPEEDS['explanation'], response_format="mp3",
             )
-            exp_start, exp_end, _ = add_audio(exp_path)
-            add_segment('explanation', explanation, exp_start, exp_end)
+            exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
+            add_segment('explanation', explanation, exp_start, exp_end_speech)
             # Add breathing room after explanation
             add_silence(PAUSE_AFTER_EXPLANATION)
 
@@ -1010,8 +1018,8 @@ def generate_fill_blank_audio_segmented(
             model="tts-1-hd", voice=voice, input=sentence_text,
             speed=SEGMENT_SPEEDS['sentence'], response_format="mp3",
         )
-        s_start, s_end, _ = add_audio(s_path)
-        add_segment('sentence', sentence_text, s_start, s_end)
+        s_start, s_end, _, s_end_speech = add_audio(s_path)
+        add_segment('sentence', sentence_text, s_start, s_end_speech)
         add_silence(PAUSE_AFTER_QUESTION)
 
         # 2. OPTIONS
@@ -1027,15 +1035,15 @@ def generate_fill_blank_audio_segmented(
             model="tts-1-hd", voice=voice, input=combined_text,
             speed=SEGMENT_SPEEDS['options'], response_format="mp3",
         )
-        opt_start, opt_end, _ = add_audio(opt_path)
-        add_segment('options', combined_text, opt_start, opt_end)
+        opt_start, opt_end, _, opt_end_speech = add_audio(opt_path)
+        add_segment('options', combined_text, opt_start, opt_end_speech)
         add_silence(PAUSE_AFTER_OPTION)
 
         # 3. THINK
         logger.info("[3] THINK")
         think_path = str(SPANISH_DIR / "piensa_bien.mp3")
-        think_start, think_end, _ = add_audio(think_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end)
+        think_start, think_end, _, think_end_speech = add_audio(think_path)
+        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
         add_silence(PAUSE_AFTER_THINK)
 
         # 4. COUNTDOWN (VISUAL ONLY - silent)
@@ -1060,8 +1068,8 @@ def generate_fill_blank_audio_segmented(
             model="tts-1-hd", voice=voice, input=answer_text,
             speed=SEGMENT_SPEEDS['answer'], response_format="mp3",
         )
-        ans_start, ans_end, _ = add_audio(ans_path)
-        add_segment('answer', answer_text, ans_start, ans_end)
+        ans_start, ans_end, _, ans_end_speech = add_audio(ans_path)
+        add_segment('answer', answer_text, ans_start, ans_end_speech)
         add_silence(PAUSE_AFTER_ANSWER)
 
         # 6. EXPLANATION
@@ -1074,8 +1082,8 @@ def generate_fill_blank_audio_segmented(
                 model="tts-1-hd", voice=voice, input=clean_explanation,
                 speed=SEGMENT_SPEEDS['explanation'], response_format="mp3",
             )
-            exp_start, exp_end, _ = add_audio(exp_path)
-            add_segment('explanation', clean_explanation, exp_start, exp_end)
+            exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
+            add_segment('explanation', clean_explanation, exp_start, exp_end_speech)
             add_silence(PAUSE_AFTER_EXPLANATION)
 
         total_duration = running_time
@@ -1211,8 +1219,8 @@ def generate_true_false_audio_segmented(
             model="tts-1-hd", voice=voice, input=clean_statement,
             speed=SEGMENT_SPEEDS['statement'], response_format="mp3",
         )
-        s_start, s_end, _ = add_audio(s_path)
-        add_segment('statement', clean_statement, s_start, s_end)
+        s_start, s_end, _, s_end_speech = add_audio(s_path)
+        add_segment('statement', clean_statement, s_start, s_end_speech)
         add_silence(PAUSE_AFTER_QUESTION)
 
         # 2. OPTIONS
@@ -1224,15 +1232,15 @@ def generate_true_false_audio_segmented(
             model="tts-1-hd", voice=voice, input=options_text,
             speed=SEGMENT_SPEEDS['options'], response_format="mp3",
         )
-        opt_start, opt_end, _ = add_audio(opt_path)
-        add_segment('options', options_text, opt_start, opt_end)
+        opt_start, opt_end, _, opt_end_speech = add_audio(opt_path)
+        add_segment('options', options_text, opt_start, opt_end_speech)
         add_silence(PAUSE_AFTER_OPTION)
 
         # 3. THINK
         logger.info("[3] THINK")
         think_path = str(SPANISH_DIR / "piensa_bien.mp3")
-        think_start, think_end, _ = add_audio(think_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end)
+        think_start, think_end, _, think_end_speech = add_audio(think_path)
+        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
         add_silence(PAUSE_AFTER_THINK)
 
         # 4. COUNTDOWN (VISUAL ONLY - silent)
@@ -1257,8 +1265,8 @@ def generate_true_false_audio_segmented(
             model="tts-1-hd", voice=voice, input=answer_text,
             speed=SEGMENT_SPEEDS['answer'], response_format="mp3",
         )
-        ans_start, ans_end, _ = add_audio(ans_path)
-        add_segment('answer', answer_text, ans_start, ans_end)
+        ans_start, ans_end, _, ans_end_speech = add_audio(ans_path)
+        add_segment('answer', answer_text, ans_start, ans_end_speech)
         add_silence(PAUSE_AFTER_ANSWER)
 
         # 6. EXPLANATION
@@ -1271,8 +1279,8 @@ def generate_true_false_audio_segmented(
                 model="tts-1-hd", voice=voice, input=clean_explanation,
                 speed=SEGMENT_SPEEDS['explanation'], response_format="mp3",
             )
-            exp_start, exp_end, _ = add_audio(exp_path)
-            add_segment('explanation', clean_explanation, exp_start, exp_end)
+            exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
+            add_segment('explanation', clean_explanation, exp_start, exp_end_speech)
             add_silence(PAUSE_AFTER_EXPLANATION)
 
         total_duration = running_time
@@ -1400,8 +1408,8 @@ def generate_vocabulary_audio_segmented(
             model="tts-1-hd", voice=voice, input=clean_title,
             speed=SEGMENT_SPEEDS.get('question', 0.95), response_format="mp3",
         )
-        t_start, t_end, _ = add_audio(t_path)
-        add_segment('title', clean_title, t_start, t_end)
+        t_start, t_end, _, t_end_speech = add_audio(t_path)
+        add_segment('title', clean_title, t_start, t_end_speech)
         add_silence(0.8)  # Pause after title
 
         # 2. PAIRS
@@ -1417,8 +1425,8 @@ def generate_vocabulary_audio_segmented(
                 model="tts-1-hd", voice=voice, input=pair_text,
                 speed=SEGMENT_SPEEDS.get('options', 0.95), response_format="mp3",
             )
-            p_start, p_end, _ = add_audio(p_path)
-            add_segment(f'pair_{i}', pair_text, p_start, p_end)
+            p_start, p_end, _, p_end_speech = add_audio(p_path)
+            add_segment(f'pair_{i}', pair_text, p_start, p_end_speech)
             add_silence(0.5)  # Pause between pairs
 
         total_duration = running_time

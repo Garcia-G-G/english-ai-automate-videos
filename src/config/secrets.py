@@ -23,6 +23,18 @@ _KEY_DEFINITIONS = {
         "pattern": r"^sk-.{20,}$",
         "description": "OpenAI API key (must start with 'sk-')",
     },
+    # STALE PATTERN — DO NOT WIRE THIS UP WITHOUT FIXING IT FIRST.
+    #
+    # The live key in .env is 64 characters. This regex demands exactly 32, so
+    # it would REJECT a working key. ElevenLabs widened the format at some
+    # point and nothing here followed, because nothing imports this module.
+    #
+    # This file is now HALF-WIRED, which is the trap: voice_id_pattern() /
+    # is_valid_voice_id() below are live and enforced by profiles.py, while
+    # this entry sits next to them unused and wrong. Anyone wiring up
+    # validate_all_keys() next will reasonably assume the neighbouring
+    # patterns are as trustworthy as the one that already works. They are not.
+    # Verify each pattern against a real key before enabling it.
     "ELEVENLABS_API_KEY": {
         "required": False,
         "pattern": r"^[a-f0-9]{32}$",

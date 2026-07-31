@@ -151,6 +151,80 @@ SPANISH_COMMON = SPANISH_FILTER
 
 # ============== AUDIO UTILITIES ==============
 
+# Threshold for locating the edge of speech inside a clip.
+#
+# THE SINGLE SOURCE. src/qa_gate.py imports this rather than keeping its own
+# copy, so the number the generator DECLARES and the number the gate MEASURES
+# can never drift apart — which is the whole failure mode this project has
+# been unwinding, and exactly what five forked Spanish stoplists cost us.
+#
+# Calibrated empirically, not guessed; full derivation in
+# docs/qa-gate-calibration.md. -45 dB sits ~5 dB above the loudest silence
+# observed in either TTS model and ~27 dB below speech.
+SPEECH_EDGE_THRESHOLD_DB = -45.0
+SPEECH_EDGE_MIN_DUR = 0.10
+
+
+def measure_speech_end(audio_path: str, threshold_db: float = None,
+                       min_dur: float = None) -> float:
+    """Offset inside a clip where SPEECH ends, ignoring trailing silence.
+
+    A TTS clip does not end when its speech ends — the model leaves anywhere
+    from 0.3 to 1.3 s of trailing silence in the file. Recording the FILE end
+    as the segment end makes the renderer hold text on screen long after the
+    voice has stopped. Measured over the corpus: quiz option ends overran by
+    0.32-0.42 s, `think` by 0.245 s, and old-generator educational segments by
+    up to 1.29 s.
+
+    The audio is NOT trimmed. Trailing silence is real pacing and stays in the
+    mix; only the DECLARED end changes, so the renderer follows the voice
+    instead of the file.
+
+    Falls back to the full duration when no speech edge is found — a clip that
+    is silent throughout, or one ffmpeg cannot parse, must not silently report
+    a zero-length segment.
+    """
+    import re
+    import subprocess
+
+    threshold_db = SPEECH_EDGE_THRESHOLD_DB if threshold_db is None else threshold_db
+    min_dur = SPEECH_EDGE_MIN_DUR if min_dur is None else min_dur
+
+    duration = get_audio_duration(audio_path)
+    try:
+        proc = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
+             f"silencedetect=noise={threshold_db}dB:d={min_dur}",
+             "-f", "null", "-"],
+            capture_output=True, text=True, timeout=60,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return duration
+
+    # Trailing silence is the LAST silence region, provided it runs to the end
+    # of the file. Do not look for an unterminated silence_start — ffmpeg
+    # closes the final region at EOF (verified on 8.0.1: 27 starts, 27 ends),
+    # so an "open start" heuristic silently never fires and every clip reports
+    # its full duration.
+    spans, start = [], None
+    for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
+        if kind == "start":
+            start = float(value)
+        elif start is not None:
+            spans.append((start, float(value)))
+            start = None
+    if start is not None:                      # genuinely unterminated
+        spans.append((start, duration))
+
+    if not spans:
+        return duration
+
+    last_start, last_end = spans[-1]
+    if last_end >= duration - 0.05 and last_start > 0:
+        return min(last_start, duration)
+    return duration
+
+
 def get_audio_duration(audio_path: str) -> float:
     """Get duration of an audio file using ffprobe."""
     import os
