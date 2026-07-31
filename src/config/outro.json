@@ -1,0 +1,41 @@
+{
+  "_comment": [
+    "Outro copy, as weighted variants so the CTA can be A/B tested later.",
+    "",
+    "Each variant is rendered ONCE to assets/outro/<id>.mp4 and reused for",
+    "every video that draws it. Selection is per video; SYNTHESIS is not.",
+    "Any change to `spoken` invalidates that variant's cache and costs one",
+    "TTS call (~40 chars, ~$0.009) the next time it is selected.",
+    "",
+    "`weight` is relative, not a percentage. Set a weight to 0 to retire a",
+    "variant without deleting it or renumbering the others.",
+    "",
+    "`spoken` is what the voice says; `line_1`/`line_2` are what appears on",
+    "screen. They are deliberately separate: the URL reads better split onto",
+    "its own line visually, but must be spoken as one phrase."
+  ],
+  "default_variant": "aprende-ingles",
+  "variants": [
+    {
+      "id": "aprende-ingles",
+      "weight": 3,
+      "spoken": "Aprende inglés en learningroutes.com",
+      "line_1": "Aprende inglés en",
+      "line_2": "learningroutes.com"
+    },
+    {
+      "id": "sigue-aprendiendo",
+      "weight": 1,
+      "spoken": "Sigue aprendiendo en learningroutes.com",
+      "line_1": "Sigue aprendiendo en",
+      "line_2": "learningroutes.com"
+    },
+    {
+      "id": "mas-lecciones",
+      "weight": 1,
+      "spoken": "Más lecciones en learningroutes.com",
+      "line_1": "Más lecciones en",
+      "line_2": "learningroutes.com"
+    }
+  ]
+}

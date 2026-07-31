@@ -412,3 +412,46 @@ def render_video(audio_path,
 
     logger.info("Video created: %s (%d bytes)", video_path, video_path.stat().st_size)
     return video_path
+
+
+def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dict:
+    """Gate the artifact, and append the outro ONLY if it passes.
+
+    ORDER MATTERS AND IT IS THIS WAY ROUND. A rejected video gets no outro:
+    the outro is a call to action pointing at Learning Routes, and putting the
+    brand on the end of something the gate just refused is worse than shipping
+    nothing. Appending first and gating after would also mean measuring a file
+    whose audio has a concat seam in it, which is not the artifact the gate
+    was calibrated against.
+
+    Returns a dict describing what happened. Never raises for a rejection —
+    one bad video must not take a batch down.
+    """
+    from qa_gate import analyze, verdict
+    from video.outro import append_outro, measure_seam, select_variant
+
+    # Resolve first: qa_gate.analyze reports paths relative to the project
+    # root and raises on a relative input, and callers pass whatever they have.
+    video_path = Path(video_path).resolve()
+    report = analyze(Path(audio_json_path).resolve())
+    if report is None:
+        return {"video": str(video_path), "gate": "NO_REPORT",
+                "outro_appended": False,
+                "reason": "no paired audio artifact to gate"}
+
+    v = verdict(report)
+    if v["verdict"] != "PASS":
+        logger.warning("QA gate REJECTED %s (%s) — no outro appended",
+                       audio_json_path, v["blocking_flags"])
+        return {"video": str(video_path), "gate": "REJECT",
+                "blocking_flags": v["blocking_flags"], "outro_appended": False}
+
+    variant = select_variant(seed=variant_seed or str(video_path))
+    seam_t = float(report.get("measured_duration") or 0.0)
+    final = append_outro(str(video_path), variant)
+    seam = measure_seam(final, seam_t) if seam_t else None
+
+    # Logged so a later A/B read can attribute performance to copy.
+    logger.info("outro variant %s appended to %s", variant["id"], final)
+    return {"video": final, "gate": "PASS", "outro_appended": True,
+            "outro_variant": variant["id"], "seam": seam}
