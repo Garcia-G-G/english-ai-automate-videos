@@ -99,7 +99,33 @@ def _ensure_token_dir() -> Path:
     return TOKEN_DIR
 
 
+class TokenPersistError(RuntimeError):
+    """Raised when a payload that is not a token is offered to the store."""
+
+
 def _save_token(platform: str, data: dict) -> None:
+    # A payload without access_token is not a token, and writing it is worse
+    # than dropping it.
+    #
+    # TikTok answers a malformed token request with HTTP 200 and an error
+    # BODY, so raise_for_status() never fires, _exchange_code returns True,
+    # and the error JSON was persisted as the token — stamped with
+    # expires_at = now + 24h by _persist_token. The file then looked like a
+    # fresh valid token, so authenticate() REUSED it rather than
+    # re-authorizing, and the failure perpetuated itself for a day.
+    #
+    # This is the single choke point: both platforms' _persist_token funnel
+    # through here, so the guard covers every platform at once. It raises
+    # rather than returning False because a silent no-op write is how the
+    # original bug stayed invisible.
+    if not isinstance(data, dict) or not data.get("access_token"):
+        detail = ""
+        if isinstance(data, dict) and data.get("error"):
+            detail = f" (provider error: {data['error']})"
+        raise TokenPersistError(
+            f"refusing to store a {platform} token with no access_token{detail}"
+        )
+
     token_path = _ensure_token_dir() / f"{platform}_token.json"
     token_path.write_text(json.dumps(data, indent=2))
     logger.debug("Saved %s token to %s", platform, token_path)
@@ -1045,6 +1071,14 @@ def cmd_auth(platform: str) -> int:
 
     try:
         ok = uploader.authenticate()
+    except TokenPersistError as exc:
+        # The store refused the payload. This is the intended outcome when a
+        # provider returns an error body with HTTP 200 — nothing was written.
+        sys.stdout.flush()
+        print(f"\n{platform}: AUTH FAILED — {exc}", file=sys.stderr)
+        print("  nothing was written; the previous token (if any) is intact.",
+              file=sys.stderr)
+        return 1
     except EOFError:
         print("\nNo authorization code on stdin. Run this in a terminal, or "
               "pipe the code:\n"
