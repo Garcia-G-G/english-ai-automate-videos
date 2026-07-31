@@ -157,5 +157,85 @@ def test_regenerate_button_writes_the_key_the_widget_reads():
     assert 'st.session_state[title_key] = result.get("title"' in src
 
 
+# ── what actually gets PUBLISHED ─────────────────────────────────────
+
+def _admin():
+    import logging
+    logging.getLogger("streamlit").setLevel(logging.CRITICAL)
+    sys.path.insert(0, str(ROOT / "src"))
+    import admin
+    return admin
+
+
+SCRIPT = {"question": "¿Qué significa 'fabric' en inglés?",
+          "full_script": "¿Qué significa 'fabric' en inglés?",
+          "hashtags": ["#LearnEnglish"]}
+
+
+def test_operator_text_wins_over_generated_metadata():
+    """Fixing the widget does not prove the UPLOAD uses the new value. The
+    bulk path used to call generate_metadata(script, ...) at upload time and
+    never look at session_state, so it published text the operator never saw —
+    worse than the display bug, because it looks like it worked."""
+    admin = _admin()
+    name = "vid"
+    tk, dk, gk = admin.metadata_session_keys(name)
+    state = {tk: "OPERATOR TITLE", dk: "OPERATOR DESC", gk: "#a #b"}
+
+    got = admin.resolve_upload_metadata(name, SCRIPT, "youtube", "quiz", "", state)
+
+    assert got["source"] == "session"
+    assert got["title"] == "OPERATOR TITLE"
+    assert got["description"] == "OPERATOR DESC"
+    assert got["hashtags"] == ["a", "b"]
+
+
+def test_falls_back_to_generated_when_the_session_is_empty():
+    admin = _admin()
+
+    got = admin.resolve_upload_metadata("vid", SCRIPT, "youtube", "quiz", "", {})
+
+    assert got["source"] == "generated"
+    assert got["title"]
+
+
+def test_operator_text_is_used_verbatim_for_every_platform():
+    """The operator already chose it. Re-adapting it per platform would be the
+    same class of silent substitution this resolver exists to stop."""
+    admin = _admin()
+    name = "vid"
+    tk, dk, gk = admin.metadata_session_keys(name)
+    state = {tk: "CHOSEN", dk: "D", gk: "#x"}
+
+    titles = {admin.resolve_upload_metadata(name, SCRIPT, p, "quiz", "", state)["title"]
+              for p in ("youtube", "tiktok", "instagram")}
+
+    assert titles == {"CHOSEN"}
+
+
+def test_blank_session_title_does_not_shadow_generated_metadata():
+    """An empty string is not an operator choice."""
+    admin = _admin()
+    name = "vid"
+    tk, _dk, _gk = admin.metadata_session_keys(name)
+
+    got = admin.resolve_upload_metadata(name, SCRIPT, "youtube", "quiz", "",
+                                        {tk: "   "})
+
+    assert got["source"] == "generated"
+
+
+def test_both_upload_paths_use_the_one_resolver():
+    """They used to disagree; a second call to generate_metadata inside an
+    upload handler is how they drifted apart."""
+    src = ADMIN.read_text(encoding="utf-8")
+
+    assert src.count("resolve_upload_metadata(") >= 3, (
+        "expected the definition plus both upload call sites")
+    assert "adapted = adapt_for_platform(meta, pkey)" not in src, (
+        "bulk upload is adapting generated metadata again, bypassing the "
+        "operator's text")
+
+
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-v"]))

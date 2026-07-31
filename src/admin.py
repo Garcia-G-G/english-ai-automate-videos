@@ -388,6 +388,60 @@ def unapprove_video(video_path: Path):
         shutil.move(str(meta_path), str(dest_dir / meta_path.name))
 
 
+def metadata_session_keys(video_name: str) -> tuple:
+    """The three session_state keys the Upload page edits for one video."""
+    return (f"meta_title_{video_name}", f"meta_desc_{video_name}",
+            f"meta_tags_{video_name}")
+
+
+def resolve_upload_metadata(video_name: str, script: dict, platform: str,
+                            video_type: str = "educational",
+                            category: str = "", state: dict = None) -> dict:
+    """The title/description/hashtags that will actually be PUBLISHED.
+
+    ONE resolver for both upload paths. They used to disagree:
+
+      single upload  read st.session_state — the operator's text
+      bulk upload    called generate_metadata(script, ...) at upload time and
+                     never looked at session_state at all
+
+    So a bulk upload published metadata the operator never saw, while the
+    screen showed something else. That is worse than the regeneration bug it
+    sat behind, because it looks like it worked.
+
+    WHAT THE OPERATOR APPROVED WINS. If the session holds edited or
+    regenerated text, it is used verbatim for every platform — the operator
+    already chose it, and silently re-adapting it per platform would be the
+    same class of substitution. Only when the session has nothing do we
+    generate and adapt.
+    """
+    state = {} if state is None else state
+    title_key, desc_key, tags_key = metadata_session_keys(video_name)
+
+    from metadata_generator import adapt_for_platform, generate_metadata
+
+    approved_title = (state.get(title_key) or "").strip()
+    approved_desc = (state.get(desc_key) or "").strip()
+    approved_tags = (state.get(tags_key) or "").split()
+
+    if approved_title:
+        return {
+            "title": approved_title,
+            "description": approved_desc,
+            "hashtags": [t.lstrip("#") for t in approved_tags],
+            "source": "session",       # surfaced so a dry run can prove it
+        }
+
+    adapted = adapt_for_platform(
+        generate_metadata(script, video_type, category), platform)
+    return {
+        "title": adapted["title"],
+        "description": adapted["description"],
+        "hashtags": [h.lstrip("#") for h in adapted["hashtags"]],
+        "source": "generated",
+    }
+
+
 def move_to_uploaded(video_path: Path, upload_info: dict = None):
     """Move video from approved to uploaded directory, saving upload metadata."""
     video_type = video_path.parent.name
@@ -1306,9 +1360,16 @@ elif page == "Upload":
                         try:
                             from uploader import get_upload_manager
                             manager = get_upload_manager()
-                            vid_title = st.session_state.get(title_key, "")
-                            vid_desc = st.session_state.get(desc_key, "")
-                            vid_tags = st.session_state.get(tags_key, "").split()
+                            # Same resolver as the bulk path, so the two
+                            # cannot drift apart again.
+                            _resolved = resolve_upload_metadata(
+                                video["name"], script, "", 
+                                video.get("type", "educational"), category,
+                                st.session_state,
+                            )
+                            vid_title = _resolved["title"]
+                            vid_desc = _resolved["description"]
+                            vid_tags = _resolved["hashtags"]
 
                             platform_map = {
                                 "TikTok": "tiktok",
@@ -1401,19 +1462,25 @@ elif page == "Upload":
                             script = video["meta"]["script_data"]
                             category = script.get("_meta", {}).get("category", "")
 
-                        meta = generate_metadata(script, video.get("type", "educational"), category)
-
                         any_success = False
                         platforms_done = []
                         for pname in target_platforms:
                             pkey = bulk_platform_map.get(pname, pname.lower())
-                            adapted = adapt_for_platform(meta, pkey)
+                            # Was generate_metadata(script, ...) + adapt, which
+                            # ignored session_state entirely and published text
+                            # the operator never saw. One resolver now serves
+                            # both upload paths.
+                            adapted = resolve_upload_metadata(
+                                video["name"], script, pkey,
+                                video.get("type", "educational"), category,
+                                st.session_state,
+                            )
                             result = manager.upload(
                                 pkey,
                                 str(video["path"]),
                                 title=adapted["title"],
                                 description=adapted["description"],
-                                hashtags=[h.lstrip("#") for h in adapted["hashtags"]],
+                                hashtags=adapted["hashtags"],
                             )
                             success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
                             if success:
