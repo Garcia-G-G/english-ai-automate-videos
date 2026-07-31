@@ -320,6 +320,8 @@ class TikTokUploader(BaseUploader):
         self.client_key = os.getenv("TIKTOK_CLIENT_KEY", "")
         self.client_secret = os.getenv("TIKTOK_CLIENT_SECRET", "")
         self._token_data: Optional[dict] = _load_token(self.PLATFORM)
+        #: Why the last authenticate() failed. Mirrors YouTubeUploader.
+        self.last_auth_error: Optional[str] = None
 
     # -- public interface ----------------------------------------------------
 
@@ -340,15 +342,31 @@ class TikTokUploader(BaseUploader):
             if self._refresh_token():
                 return True
 
-        # Full OAuth2 flow requires user interaction in browser
-        auth_url = (
-            f"{TIKTOK_AUTH_URL}?client_key={self.client_key}"
-            f"&response_type=code&scope=video.upload,video.publish"
-            f"&redirect_uri=https://localhost/callback"
+        # NO PROMPT. This used to print an authorize URL and then block on
+        # input() waiting for a pasted code.
+        #
+        # The dashboard reaches this path. A prompt there does not ask anyone
+        # anything — it hangs the worker on a stdin that will never be
+        # answered, and the request simply never returns. That is the last
+        # instance of the hang class already removed from the render path and
+        # from the YouTube auth path.
+        #
+        # It could not have succeeded in any case: _exchange_code posts with
+        # json= while TikTok requires application/x-www-form-urlencoded, so
+        # the exchange has never once worked (docs/recorded-debt.md item 9).
+        # Even a correctly pasted code would fail.
+        #
+        # Interactive TikTok authorization belongs behind an explicit operator
+        # command, not inside a code path a web request can enter.
+        logger.error(
+            "TikTok: no valid token and no non-interactive way to obtain one. "
+            "Run `make auth-tiktok` from a terminal. "
+            "NOTE: TikTok auth cannot currently succeed — the token exchange "
+            "sends JSON where the API requires form encoding "
+            "(docs/recorded-debt.md item 9)."
         )
-        logger.info("TikTok: open this URL to authorize:\n%s", auth_url)
-        auth_code = input("Paste the authorization code: ").strip()
-        return self._exchange_code(auth_code)
+        self.last_auth_error = "no_token_and_no_interactive_path"
+        return False
 
     def upload_video(
         self,

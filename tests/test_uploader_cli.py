@@ -294,6 +294,37 @@ def test_youtube_auth_path_contains_no_input_call():
     assert not calls, f"input() still present at lines {[c.lineno for c in calls]}"
 
 
+@pytest.mark.parametrize("module", ["uploader.py", "pipeline.py"])
+def test_no_stdin_prompt_anywhere_in_the_upload_path(module):
+    """The dashboard reaches these modules. A prompt there does not ask
+    anyone anything — it hangs the worker on a stdin nobody will answer and
+    the request never returns.
+
+    Streamlit's st.text_input/st.number_input in admin.py are UI widgets, not
+    stdin reads, which is why this checks for a bare `input(` call rather
+    than an attribute call.
+    """
+    import ast
+    tree = ast.parse((ROOT / "src" / module).read_text(encoding="utf-8"))
+    hits = [n.lineno for n in ast.walk(tree)
+            if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+            and n.func.id == "input"]
+
+    assert not hits, f"{module} still prompts on stdin at lines {hits}"
+
+
+def test_tiktok_auth_fails_fast_instead_of_prompting(token_dir, monkeypatch):
+    """TikTok cannot succeed today anyway — _exchange_code sends JSON where
+    the API requires form encoding — so the prompt could only ever hang."""
+    monkeypatch.setenv("TIKTOK_CLIENT_KEY", "k")
+    monkeypatch.setenv("TIKTOK_CLIENT_SECRET", "s")
+    up = U.TikTokUploader()
+
+    # No stdin available at all: a prompt would raise, a fail-fast returns.
+    assert up.authenticate() is False
+    assert up.last_auth_error == "no_token_and_no_interactive_path"
+
+
 def test_youtube_no_longer_uses_the_dead_oob_redirect():
     """AST, not grep: the OOB URI is still named in the comments that explain
     why it was removed, and a source-substring check flags those as failures."""
