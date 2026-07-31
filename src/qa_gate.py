@@ -99,6 +99,22 @@ V3_TYPES = frozenset({"quiz", "true_false", "fill_blank", "vocabulary"})
 #: contain no speech — and excluded from boundary drift.
 SILENT_SEGMENT_PREFIXES = ("countdown_",)
 
+#: A countdown is only SILENT when its segment text is the bracketed
+#: placeholder the silent path writes: '[3]', '[2]', '[1]'.
+#:
+#: "countdown means silent" is NOT a safe assumption and asserting it cost the
+#: baseline 78 false violations. Two eras and one LIVE provider speak the
+#: countdown aloud and record the spoken word as the segment text:
+#:
+#:   tts_elevenlabs / tts_openai   add_segment(..., f'[{num}]', ...)   silent
+#:   tts_google                    add_segment(..., f'{name}.', ...)   SPOKEN
+#:
+#: So the evidence has to come from the artifact, not from a guess about which
+#: generator produced it. A segment whose text is 'Tres.' is supposed to
+#: contain the word "tres", and flagging it for containing speech is the gate
+#: being wrong, not the audio.
+_SILENT_TEXT = re.compile(r"^\s*\[\s*\d+\s*\]\s*$")
+
 _VOL_RE = re.compile(r"\[Parsed_volumedetect.*?\]\s*(\w+):\s*(-?[\d.]+|-inf)")
 _SIL_RE = re.compile(r"silence_(start|end):\s*(-?[\d.]+)")
 _DUR_RE = re.compile(r"Duration:\s*(\d+):(\d+):([\d.]+)")
@@ -176,8 +192,26 @@ def _nearest_edge(edges: List[float], x: float) -> Optional[float]:
     return min(edges, key=lambda e: abs(e - x)) if edges else None
 
 
-def _is_silent_segment(name: str) -> bool:
-    return name.startswith(SILENT_SEGMENT_PREFIXES)
+def _silent_segment_ids(data: Dict) -> set:
+    """Segment ids the artifact itself declares as silence.
+
+    Read from the `segments` array's text, never inferred from the id alone —
+    see _SILENT_TEXT. An artifact with no `segments` array falls back to the
+    id prefix, which is the old behaviour and the best available guess.
+    """
+    segs = data.get("segments") or []
+    by_id = {s.get("id"): s.get("text") for s in segs if isinstance(s, dict)}
+    out = set()
+    for name in (data.get("segment_times") or {}):
+        if not name.startswith(SILENT_SEGMENT_PREFIXES):
+            continue
+        text = by_id.get(name)
+        if text is None:
+            out.add(name)                      # no evidence either way
+        elif _SILENT_TEXT.match(str(text)):
+            out.add(name)                      # '[3]' -> genuinely silent
+        # else: 'Tres.' -> spoken on purpose, not a silence declaration
+    return out
 
 
 def drift_table(data: Dict, mp3: str) -> Dict:
@@ -196,6 +230,7 @@ def drift_table(data: Dict, mp3: str) -> Dict:
     sp, duration = speech_regions(mp3)
     starts = [s for s, _ in sp]
     ends = [e for _, e in sp]
+    silent_ids = _silent_segment_ids(data)
 
     rows, silent_rows = [], []
     for name, v in sorted(st.items(), key=lambda kv: (kv[1] or {}).get("start", 0)
@@ -204,7 +239,7 @@ def drift_table(data: Dict, mp3: str) -> Dict:
             continue
         d_start, d_end = float(v["start"]), float(v.get("end", v["start"]))
 
-        if _is_silent_segment(name):
+        if name in silent_ids:
             # TRAP (a): assert against the declared silence map. This segment
             # claims a span that should contain NO speech.
             overlap = sum(max(0.0, min(d_end, e) - max(d_start, s)) for s, e in sp)
@@ -447,9 +482,10 @@ def segment_count(data: Dict, mp3: str) -> Dict:
     st = data.get("segment_times") or {}
     if not st:
         return {"available": False, "reason": "no segment_times"}
+    silent_ids = _silent_segment_ids(data)
     speech_declared = [k for k, v in st.items()
-                       if isinstance(v, dict) and "start" in v and not _is_silent_segment(k)]
-    silent_declared = [k for k in st if _is_silent_segment(k)]
+                       if isinstance(v, dict) and "start" in v and k not in silent_ids]
+    silent_declared = [k for k in st if k in silent_ids]
     sp, _ = speech_regions(mp3)
     return {
         "available": True,
@@ -469,9 +505,10 @@ def _declared_silence_envelope(data: Dict) -> List[Tuple[float, float]]:
     """Spans where silence is intended: declared-silent segments, plus the
     gaps between consecutive declared segments."""
     st = data.get("segment_times") or {}
+    silent_ids = _silent_segment_ids(data)
     spans = []
     for k, v in st.items():
-        if isinstance(v, dict) and "start" in v and "end" in v and _is_silent_segment(k):
+        if isinstance(v, dict) and "start" in v and "end" in v and k in silent_ids:
             spans.append((float(v["start"]), float(v["end"])))
     ordered = sorted((float(v["start"]), float(v["end"])) for v in st.values()
                      if isinstance(v, dict) and "start" in v and "end" in v)

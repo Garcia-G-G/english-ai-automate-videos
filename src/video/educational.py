@@ -23,6 +23,7 @@ from .utils import (
     get_word_animation_state, fit_text_font,
     create_base_frame, finalize_frame,
 )
+from .v2 import timing_engine as TE
 from config.layout import CARD_MARGIN_X, CARD_PADDING, CARD_RADIUS, CARD_WIDTH
 from config.colors import CARD_COLORS
 
@@ -103,26 +104,28 @@ def create_frame_educational(
     groups = data.get('_groups', [])
     translations = data.get('translations', {}) or {}
 
-    active = None
-    fade_out_group = None
-
+    # Visibility comes from timing_engine's display windows, not from the raw
+    # audio timestamps.
+    #
+    # This used to select on `g['start'] <= t <= g['end']` — the AUDIO span —
+    # and then fade a group only AFTER its end and only when no other group
+    # was active. Two consequences, both reported as bugs: back-to-back groups
+    # popped out with no exit animation, and a group left the screen the
+    # instant its audio ended, with no cushion on the last word.
+    #
+    # display_start/display_end enforce the golden rule (never leave before
+    # the last word + 350 ms) and group_alpha owns the smoothstep in and out,
+    # so there is no separate fade-out pass any more.
+    #
+    # Falls back to the audio span for any group the engine did not window —
+    # see the AssertionError path in video/__init__.py.
     for g in groups:
-        if g['start'] <= t <= g['end']:
-            active = g
-            break
-
-    # Only search for fade-out if no active group, and within transition window
-    if active is None:
-        for g in groups:
-            if g['end'] < t <= g['end'] + GROUP_TRANSITION:
-                fade_out_group = g
-                break
-
-    if fade_out_group:
-        _render_group_tiktok(t, fade_out_group, draw, frame, translations, is_fading_out=True)
-
-    if active:
-        _render_group_tiktok(t, active, draw, frame, translations, is_fading_out=False)
+        if 'display_start' in g:
+            alpha = TE.group_alpha(g, t)
+            if alpha > 0.008:
+                _render_group_tiktok(t, g, draw, frame, translations, alpha=alpha)
+        elif g['start'] <= t <= g['end']:
+            _render_group_tiktok(t, g, draw, frame, translations, alpha=1.0)
 
     return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
 
@@ -167,7 +170,7 @@ def _render_group_tiktok(
     draw: ImageDraw.Draw,
     frame: Image.Image,
     translations: Dict,
-    is_fading_out: bool = False
+    alpha: float = 1.0,
 ):
     """Render a word group with TikTok-viral animations inside a rounded card.
 
@@ -180,20 +183,21 @@ def _render_group_tiktok(
     end = group['end']
     words = group.get('words', [])
 
-    group_alpha = 255
-    if is_fading_out:
-        fade_progress = min(1.0, (t - end) / GROUP_TRANSITION)
-        eased = ease_in_out_sine(fade_progress)
-        group_alpha = int(255 * (1 - eased))
-
+    # `alpha` (0..1) comes from timing_engine.group_alpha, which already
+    # applies the smoothstep for both entrance and exit and guarantees the
+    # two transitions fit inside the window without overlapping.
+    group_alpha = int(255 * max(0.0, min(1.0, alpha)))
     if group_alpha <= 2:
         return
 
-    # ── Slide-out to the left during fade-out ──
-    slide_out_x = 0
-    if is_fading_out:
-        fade_progress = min(1.0, (t - end) / GROUP_TRANSITION)
-        slide_out_x = int(-300 * ease_in_out_sine(fade_progress))
+    # ── Slide-out to the left while EXITING ──
+    # Must test the exit specifically: `alpha < 1` is also true during the
+    # entrance, and treating a fade-IN as a fade-out would slide the group in
+    # from the wrong side and suppress the bounce and glow below.
+    d_end = group.get('display_end')
+    fade_out = group.get('fade_out', 0.0)
+    is_fading_out = d_end is not None and fade_out > 0 and t > d_end - fade_out
+    slide_out_x = int(-300 * (1.0 - alpha)) if is_fading_out else 0
 
     # Dynamic font size — shrink for long text, max 2 lines
     max_w = CARD_WIDTH - CARD_PADDING * 2 - 40

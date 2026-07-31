@@ -34,6 +34,12 @@ from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+#: Length of the CTA tail reserved at the end of an educational video. Lives
+#: here, with the timing logic, because BOTH engines need it: v2 for its
+#: layout phases and v1 for timing_engine's `content_end`. Previously a
+#: v2-private constant, which is why v1 had no CTA reservation at all.
+CTA_LEN = 2.5
+
 TAIL_PAD = 0.35        # golden-rule cushion after the last word (s)
 MIN_HOLD = 1.2         # absolute minimum display time (s)
 PER_CHAR = 0.045       # reading-speed floor (s per character)

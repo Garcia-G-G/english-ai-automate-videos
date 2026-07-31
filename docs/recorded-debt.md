@@ -99,3 +99,28 @@ via check 2 at sentence granularity and which cannot be fixed without ASR.
 The `measure_speech_end` fix from scope item (b) is still correct and still
 applied — it just cannot reach educational, because educational does not use
 the `add_audio` / `add_segment` path at all.
+
+---
+
+## 6. The committed baseline mixes four generator eras
+
+`tests/baselines/qa_baseline_2026-07-30.json` spans four generator eras.
+**Any target derived from it must be liveness-checked before use.**
+
+This is the general form of an error made twice in Step 3:
+
+- **T3** targeted educational segment END drift. No live generator emits
+  educational `segment_times` at all — the six artifacts that have them come
+  from three dead eras. Target withdrawn.
+- **T4** targeted 78 declared-silence violations. Every one of them comes from
+  the spoken-countdown era; the 38 live-era artifacts have **zero**. The
+  target was measuring dead code, and the gate itself was wrong to assume
+  "countdown means silent" — `tts_google` speaks it today.
+
+The check is cheap: compare the artifact's shape against what the live
+generator actually emits (segment ids, segment text, characteristic widths),
+not against what the corpus contains. Liveness is a property of the producing
+code, and the corpus cannot report it.
+
+It will recur, because the corpus is the only large sample available and it is
+permanently historical.

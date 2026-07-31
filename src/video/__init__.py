@@ -258,6 +258,34 @@ def generate_video(
             seg_ids = set(w.get('segment_id', '?') for w in g.get('words', []))
             logger.debug(f"{i+1}. [{g['start']:.2f}s-{g['end']:.2f}s] seg={seg_ids} \"{g['text']}\"")
 
+        # Display windows, for BOTH engines.
+        #
+        # timing_engine used to be reachable only from v2, so the v1 path —
+        # which is what actually renders today — kept using raw audio
+        # timestamps as display windows and faded a group only AFTER its end,
+        # and only when no other group was active. Back-to-back groups
+        # therefore popped out with no exit animation.
+        #
+        # It derives display_start / display_end from the audio timestamps
+        # WITHOUT modifying them, and enforces the golden rule: a group never
+        # leaves the screen before its last word ends + 350 ms. It replaces
+        # the SubtitleProcessor end-trim removed in the same commit.
+        #
+        # content_end reserves the CTA tail so text never collides with it.
+        from .v2 import timing_engine as TE
+        cta_start = max(0.0, duration - TE.CTA_LEN)
+        try:
+            groups = TE.compute_display_windows(groups, duration,
+                                                content_end=cta_start)
+            logger.info("Timing windows (v1):\n%s", TE.debug_table(groups))
+        except AssertionError:
+            # validate_windows found an invariant violation. Render rather
+            # than abort — but say so loudly, because it means the windows
+            # are not trustworthy and the frame logic will fall back to raw
+            # audio timestamps for any group missing display_start.
+            logger.exception("timing_engine rejected its own windows; "
+                             "falling back to raw audio timestamps")
+
         # Pack computed data into the data dict for uniform (t, data, duration) signature
         data['_groups'] = groups
 
