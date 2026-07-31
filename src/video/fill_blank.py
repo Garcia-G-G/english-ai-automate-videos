@@ -18,6 +18,7 @@ from config.layout import (
     TIMER_BAR_X, TIMER_BAR_Y, TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT,
 )
 from .utils import (
+    strip_display_quotes,
     font, draw_text_solid, draw_text_centered,
     draw_rounded_card, draw_circle_number, draw_progress_timer_bar,
     draw_pill_badge, draw_sparkles, fit_text_font,
@@ -230,7 +231,7 @@ def _draw_option_cards(t, draw, frame, options, correct, show_answer,
     opt_x = (VIDEO_WIDTH - _OPT_W) // 2
     letters = 'ABCD'
 
-    for i, opt in enumerate(options[:4]):
+    for i, opt in enumerate(strip_display_quotes(o) for o in options[:4]):
         delay = options_start + i * _OPT_STAGGER
         if t < delay:
             continue

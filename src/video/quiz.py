@@ -28,6 +28,7 @@ from config.layout import (
 )
 from config.colors import COUNTDOWN_COLORS, DIFFICULTY_COLORS
 from .utils import (
+    strip_display_quotes,
     font, line_break, draw_text_solid, draw_text_centered,
     draw_progress_bar, draw_sparkles, slide_in_x,
     fit_text_font,
@@ -695,7 +696,12 @@ def create_frame_quiz(
 
         # No default: "Option C" would render as a real, selectable answer.
         # QuizRenderData guarantees options has exactly keys A-D.
-        opt_text = options[letter]
+        # Strip at the DRAW site: the quotes stay in the data because the
+        # generator prompt requires them and the english_phrases scrape reads
+        # them back. All four options carry them, so on screen they separate
+        # nothing. The QUESTION deliberately keeps its quotes — see
+        # utils.strip_display_quotes.
+        opt_text = strip_display_quotes(options[letter])
         y_pos = opt_start_y + i * (opt_card_h + opt_gap)
 
         # Stagger: each option appears STAGGER seconds after the previous
@@ -819,7 +825,7 @@ def create_frame_quiz(
         max_exp_w = CARD_WIDTH - exp_padding * 2
         max_exp_h = SAFE_AREA_BOTTOM - exp_y - exp_padding * 2
 
-        clean_exp = explanation.replace("'", "").strip()
+        clean_exp = strip_display_quotes(explanation).strip()
         ef, exp_font_size, exp_lines, exp_text_h = fit_text_font(
             clean_exp, 42, 28, max_exp_w, max_exp_h
         )
