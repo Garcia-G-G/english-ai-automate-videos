@@ -1235,7 +1235,30 @@ elif page == "Upload":
                             "hashtags": script.get("hashtags", ["#LearnEnglish"]),
                         }
 
-                    # Session state keys for this video
+                    # ONE key per field — the widget's key IS the storage.
+                    #
+                    # This used to use two keys per field: meta_title_<name>
+                    # for storage and ti_<name> for the widget, written as
+                    #
+                    #   st.session_state[title_key] = st.text_input(
+                    #       "Title", value=st.session_state[title_key],
+                    #       key=f"ti_{name}")
+                    #
+                    # A Streamlit widget with a `key` keeps its value in
+                    # st.session_state[key], and once that entry exists the
+                    # `value=` argument is IGNORED on every rerun. So the
+                    # regenerate button wrote the (paid-for) API result to the
+                    # storage key, called st.rerun(), and the widget then
+                    # returned its STALE text — which was assigned straight
+                    # back over the new value on the very next line.
+                    #
+                    # Typing still worked, because that updates the widget key
+                    # first; only writes originating outside the widget were
+                    # lost. Hence the symptom: no error, no change, and a
+                    # billed API call discarded every press.
+                    #
+                    # With a single key the button writes the same entry the
+                    # widget reads, so there is nothing left to clobber.
                     title_key = f"meta_title_{video['name']}"
                     desc_key = f"meta_desc_{video['name']}"
                     tags_key = f"meta_tags_{video['name']}"
@@ -1246,16 +1269,11 @@ elif page == "Upload":
                         st.session_state[tags_key] = " ".join(meta["hashtags"])
 
                     with st.expander("Edit Title & Description"):
-                        st.session_state[title_key] = st.text_input(
-                            "Title", value=st.session_state[title_key], key=f"ti_{video['name']}"
-                        )
-                        st.session_state[desc_key] = st.text_area(
-                            "Description", value=st.session_state[desc_key], key=f"de_{video['name']}",
-                            height=80
-                        )
-                        st.session_state[tags_key] = st.text_input(
-                            "Hashtags", value=st.session_state[tags_key], key=f"ht_{video['name']}"
-                        )
+                        # No `value=` and no assignment: the widget reads and
+                        # writes session_state[key] itself.
+                        st.text_input("Title", key=title_key)
+                        st.text_area("Description", key=desc_key, height=80)
+                        st.text_input("Hashtags", key=tags_key)
 
                         # Platform regeneration buttons
                         regen_cols = st.columns(3)
