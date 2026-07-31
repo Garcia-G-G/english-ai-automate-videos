@@ -26,7 +26,7 @@ from dotenv import load_dotenv
 from google.cloud import texttospeech
 
 from tts_common import (
-    get_audio_duration, generate_silence,
+    get_audio_duration, generate_silence, measure_speech_end,
     extract_english_words_from_script, SPANISH_FILTER,
     ASSETS_DIR, SPANISH_DIR, WORDS_DIR,
     PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
@@ -205,14 +205,22 @@ def generate_quiz_audio_segmented(
         running_time = 0.0
 
         def add_audio(path: str, duration: float = None):
-            """Add audio file to sequence."""
+            """Add audio file to sequence.
+
+            Returns (start, file_end, duration, speech_end). `speech_end` is
+            where the VOICE stops; `file_end` is where the CLIP stops, and the
+            two differ by the trailing silence every TTS model leaves behind.
+            Segments must be recorded against speech_end — see
+            tts_common.measure_speech_end. The audio itself is untouched.
+            """
             nonlocal running_time
             if duration is None:
                 duration = get_audio_duration(path)
             audio_files.append(path)
             start = running_time
+            speech_end = start + measure_speech_end(path)
             running_time += duration
-            return start, running_time, duration
+            return start, running_time, duration, speech_end
 
         def add_silence(duration: float):
             """Add silence to sequence."""
@@ -254,8 +262,8 @@ def generate_quiz_audio_segmented(
             speed=speed,
             english_words=english_words,
         )
-        q_start, q_end, _ = add_audio(q_path)
-        add_segment('question', question, q_start, q_end)
+        q_start, q_end, _, q_end_speech = add_audio(q_path)
+        add_segment('question', question, q_start, q_end_speech)
         add_silence(PAUSE_AFTER_QUESTION)
 
         # ============================================================
@@ -274,8 +282,8 @@ def generate_quiz_audio_segmented(
         trans_path = os.path.join(temp_dir, "transition.mp3")
         generate_segment_audio(text="Escucha las opciones.",
                                output_path=trans_path, voice=voice, speed=speed)
-        trans_start, trans_end, _ = add_audio(trans_path)
-        add_segment('transition', 'Escucha las opciones.', trans_start, trans_end)
+        trans_start, trans_end, _, trans_end_speech = add_audio(trans_path)
+        add_segment('transition', 'Escucha las opciones.', trans_start, trans_end_speech)
         add_silence(PAUSE_BETWEEN_OPTIONS)
 
         for i, letter in enumerate(['A', 'B', 'C', 'D']):
@@ -284,17 +292,17 @@ def generate_quiz_audio_segmented(
             letter_path = os.path.join(temp_dir, f"option_{letter}_letter.mp3")
             generate_segment_audio(text=f"Opción {letter},",
                                    output_path=letter_path, voice=voice, speed=speed)
-            letter_start, _le, _ = add_audio(letter_path)
+            letter_start, _le, _, le_speech = add_audio(letter_path)
 
             add_silence(PAUSE_LETTER_TO_WORD)
 
             word_path = os.path.join(temp_dir, f"option_{letter}_word.mp3")
             generate_segment_audio(text=f"{word}.",
                                    output_path=word_path, voice=voice, speed=speed)
-            _ws, word_end, _ = add_audio(word_path)
+            _ws, word_end, _, word_end_speech = add_audio(word_path)
 
             add_segment(f'option_{letter.lower()}',
-                        f"Opción {letter}, {word}.", letter_start, word_end)
+                        f"Opción {letter}, {word}.", letter_start, word_end_speech)
 
             if i < 3:
                 add_silence(PAUSE_BETWEEN_OPTIONS)
@@ -307,14 +315,14 @@ def generate_quiz_audio_segmented(
         logger.info("[4] THINK")
         think_path = str(SPANISH_DIR / "piensa_bien.mp3")
         if os.path.exists(think_path):
-            think_start, think_end, _ = add_audio(think_path)
-            add_segment('think', '¡Piensa bien!', think_start, think_end)
+            think_start, think_end, _, think_end_speech = add_audio(think_path)
+            add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
         else:
             # Generate if not pre-recorded
             think_gen_path = os.path.join(temp_dir, "think.mp3")
             generate_segment_audio("¡Piensa bien!", think_gen_path, voice, speed)
-            think_start, think_end, _ = add_audio(think_gen_path)
-            add_segment('think', '¡Piensa bien!', think_start, think_end)
+            think_start, think_end, _, think_end_speech = add_audio(think_gen_path)
+            add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
         add_silence(PAUSE_AFTER_THINK)
 
         # ============================================================
@@ -324,12 +332,12 @@ def generate_quiz_audio_segmented(
         for num, name in [('3', 'tres'), ('2', 'dos'), ('1', 'uno')]:
             cd_path = str(SPANISH_DIR / f"{name}.mp3")
             if os.path.exists(cd_path):
-                cd_start, cd_end, _ = add_audio(cd_path)
+                cd_start, cd_end, _, cd_end_speech = add_audio(cd_path)
             else:
                 cd_gen_path = os.path.join(temp_dir, f"countdown_{num}.mp3")
                 generate_segment_audio(f"{name.capitalize()}.", cd_gen_path, voice, speed)
-                cd_start, cd_end, _ = add_audio(cd_gen_path)
-            add_segment(f'countdown_{num}', f'{name.capitalize()}.', cd_start, cd_end)
+                cd_start, cd_end, _, cd_end_speech = add_audio(cd_gen_path)
+            add_segment(f'countdown_{num}', f'{name.capitalize()}.', cd_start, cd_end_speech)
             pause = PAUSE_AFTER_LAST_COUNT if num == '1' else PAUSE_AFTER_COUNTDOWN
             add_silence(pause)
 
@@ -362,8 +370,8 @@ def generate_quiz_audio_segmented(
                 speed=speed,
                 english_words=english_words,
             )
-            exp_start, exp_end, _ = add_audio(exp_path)
-            add_segment('explanation', explanation, exp_start, exp_end)
+            exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
+            add_segment('explanation', explanation, exp_start, exp_end_speech)
             add_silence(PAUSE_AFTER_EXPLANATION)
 
         total_duration = running_time
