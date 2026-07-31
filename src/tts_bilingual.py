@@ -70,6 +70,13 @@ def _norm_lang(code: str, default: str) -> str:
 
 def resolve_settings() -> Dict:
     """Voice / model / language settings honoring profile env overrides."""
+    # Load .env at the ENTRY POINT, not at import. Without it a standalone
+    # run silently falls back to the HARDCODED default voice below and
+    # produces audio in the wrong voice — output that sounds fine and is
+    # wrong, which is worse than a visible failure.
+    from env_setup import ensure_env_loaded
+    ensure_env_loaded()
+
     cfg = _load_audio_config()
     voice_id = (os.getenv("VIDEO_PROFILE_VOICE_ID")
                 or os.getenv("ELEVENLABS_VOICE_ID")
