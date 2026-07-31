@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 # Timeline
 HOOK_END = 3.0
-CTA_LEN = 2.5
+CTA_LEN = TE.CTA_LEN   # single source, see timing_engine
 WORD_ANTICIPATION = 0.08  # highlight words slightly before their audio
 # NOTE: group visibility windows/fades now live in timing_engine.py
 

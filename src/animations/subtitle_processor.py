@@ -424,25 +424,20 @@ class SubtitleProcessor:
 
         result = filtered
 
-        # Fix end times for seamless transitions with minimum gap
-        min_gap = MIN_SUBTITLE_GAP_MS / 1000  # 250ms minimum gap
-
-        for i in range(len(result)):
-            if i < len(result) - 1:
-                next_start = result[i + 1]['start']
-                gap = next_start - result[i]['end']
-
-                # If gap is too small, adjust for smooth transition
-                if gap < min_gap and gap > 0:
-                    # Split the difference - end current slightly early
-                    result[i]['end'] = next_start - (min_gap / 2)
-
-                # Fix overlap
-                if result[i]['end'] > next_start:
-                    result[i]['end'] = next_start - 0.033
-
-                # Ensure valid timing
-                if result[i]['end'] <= result[i]['start']:
-                    result[i]['end'] = result[i]['start'] + 0.1
-
+        # NOTE: this used to trim each group's `end` to make room for the next
+        # one — `end = next_start - min_gap/2`, then `next_start - 0.033`.
+        #
+        # That mutation was removed, and it is a real cause of the reported
+        # "animation runs ahead of the voice": it moved a group's end EARLIER
+        # whenever two groups were close, so the text vanished while the audio
+        # was still speaking its last word. Worse, it edited AUDIO timestamps
+        # in order to solve a DISPLAY problem, which meant every later
+        # consumer inherited a group whose `end` no longer described the
+        # sound.
+        #
+        # Display windows are now owned by video/v2/timing_engine.py, which
+        # derives display_start / display_end from these timestamps without
+        # modifying them and enforces the golden rule (never leave the screen
+        # before the last word ends + 350 ms). Overlapping or degenerate group
+        # timings are handled there; that is why nothing replaces this block.
         return result
