@@ -435,9 +435,21 @@ def preprocess_text_for_tts(text: str, target_language: str = "es") -> str:
     if not text:
         return text
 
-    # 1. Normalize quotes
-    text = text.replace("'", "'").replace("'", "'")
-    text = text.replace(""", '"').replace(""", '"')
+    # 1. Normalize typographic quotes to straight ones.
+    #
+    # EXACT TWIN of the bug fixed in script_generator: the first line was
+    # .replace("'", "'"), apostrophe to apostrophe, a no-op; the second read
+    # .replace(""", '"'), in which Python sees a TRIPLE-quoted string and the
+    # statement collapses to replacing the literal substring `, '"').replace(`
+    # with `"`. Neither has ever normalized anything, so smart quotes have
+    # always reached the TTS models raw.
+    #
+    # Written as \u escapes so an editor cannot silently de-smarten them back
+    # into a no-op, which is how the original was born.
+    _SMART_APOS = "\u2018\u2019\u201a\u201b\u2032"
+    _SMART_DBL = "\u201c\u201d\u201e\u201f\u2033"
+    text = text.translate({ord(c): "'" for c in _SMART_APOS}
+                          | {ord(c): '"' for c in _SMART_DBL})
 
     # 2. Clean up multiple spaces
     text = re.sub(r'\s+', ' ', text)
