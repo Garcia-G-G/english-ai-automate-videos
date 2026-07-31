@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, features
 
 from animations.easing import ease_out_back, ease_out_cubic
 from .constants import (
@@ -77,6 +77,72 @@ def font(size: int) -> ImageFont.FreeTypeFont:
 
     f = ImageFont.load_default()
     _fonts[size] = f
+    return f
+
+
+# ── Learning Routes brand faces ──────────────────────────────────────
+#
+# Manrope (body/UI) and Instrument Serif (headings) are the Learning Routes
+# faces. NEITHER was in this repo before Step 4a — the only mention of Manrope
+# anywhere was a line in _audit/ROADMAP.md, and no code referenced it. Both are
+# now bundled under assets/fonts/ with their OFL licences.
+
+_BRAND_FONT_DIR = Path(__file__).resolve().parent.parent.parent / "assets" / "fonts"
+_MANROPE_VF = _BRAND_FONT_DIR / "Manrope[wght].ttf"
+_INSTRUMENT_ITALIC = _BRAND_FONT_DIR / "InstrumentSerif-Italic.ttf"
+
+_brand_fonts: dict = {}
+
+
+class BrandFontMissing(RuntimeError):
+    """Raised when a brand face is absent. Never falls back silently."""
+
+
+def manrope(size: int, weight: str = "SemiBold") -> ImageFont.FreeTypeFont:
+    """Manrope at an explicit weight.
+
+    Manrope ships as a VARIABLE font whose default instance is **ExtraLight**
+    — the thinnest weight it has. `ImageFont.truetype("Manrope[wght].ttf", n)`
+    therefore returns hairline text, which is precisely wrong for a watermark
+    that has to survive a bright photo. The weight is always set explicitly
+    here; there is no default-instance path.
+
+    Raises rather than substituting another face. A watermark that silently
+    renders in Inter is a brand defect that looks like success.
+    """
+    key = ("manrope", size, weight)
+    if key in _brand_fonts:
+        return _brand_fonts[key]
+
+    if not _MANROPE_VF.exists():
+        raise BrandFontMissing(f"Manrope not found at {_MANROPE_VF}")
+
+    f = ImageFont.truetype(str(_MANROPE_VF), size)
+    try:
+        f.set_variation_by_name(weight)
+    except Exception as exc:                       # noqa: BLE001
+        # Old FreeType without variable-font support would leave ExtraLight in
+        # place and produce an invisible watermark. Fail loudly instead.
+        raise BrandFontMissing(
+            f"could not set Manrope weight {weight!r} "
+            f"(FreeType {features.version('freetype2')}): {exc}"
+        ) from exc
+
+    _brand_fonts[key] = f
+    return f
+
+
+def instrument_serif_italic(size: int) -> ImageFont.FreeTypeFont:
+    """Instrument Serif Italic — the Learning Routes heading face."""
+    key = ("instrument-italic", size)
+    if key in _brand_fonts:
+        return _brand_fonts[key]
+
+    if not _INSTRUMENT_ITALIC.exists():
+        raise BrandFontMissing(f"Instrument Serif not found at {_INSTRUMENT_ITALIC}")
+
+    f = ImageFont.truetype(str(_INSTRUMENT_ITALIC), size)
+    _brand_fonts[key] = f
     return f
 
 
@@ -559,6 +625,15 @@ def finalize_frame(frame: Image.Image, draw: ImageDraw.Draw,
 
     progress = min(1.0, t / duration)
     draw_progress_bar(draw, progress)
+
+    # Brand watermark, LAST so nothing can draw over it.
+    #
+    # Applied here rather than in each renderer because all seven call this
+    # function — one site instead of seven that each have to remember. Import
+    # is local to avoid a circular import (brand imports from utils).
+    from .brand import draw_watermark
+    draw_watermark(frame)
+
     return np.array(frame.convert('RGB'))
 
 
