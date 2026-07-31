@@ -243,6 +243,7 @@ REGLAS IMPORTANTES:
 9. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "Esta palabra NO significa lo que crees 😱 #English"
 10. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
 11. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
+12. ORTOGRAFIA OBLIGATORIA: toda pregunta abre con ¿ y cierra con ?; toda exclamacion abre con ¡ y cierra con !. Sin excepcion, en TODOS los campos (question, statement, sentence, explanation, hook, full_script).
 
 ESTRUCTURA SUGERIDA:
 - Hook potente (1 oración)
@@ -303,6 +304,7 @@ REGLAS ABSOLUTAS (NUNCA VIOLAR):
 9. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "¿Puedes acertar las 3? 🧠 English Quiz" o "Solo el 10% acierta la pregunta 3 😱"
 10. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
 11. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
+12. ORTOGRAFIA OBLIGATORIA: toda pregunta abre con ¿ y cierra con ?; toda exclamacion abre con ¡ y cierra con !. Sin excepcion, en TODOS los campos (question, statement, sentence, explanation, hook, full_script).
 
 EJEMPLO DE FULL_SCRIPT (con 3 preguntas):
 "¡Quiz time! Pregunta número uno. ¿Qué significa 'library' en inglés? ... A, 'librería'. ... B, 'biblioteca'. ... C, 'libro'. ... D, 'lectura'. ... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B, 'Library' significa biblioteca. Por ejemplo: 'I study at the library'. ... Pregunta número dos. ¿Cómo se dice 'actualmente' en inglés? ... A, 'actually'. ... B, 'currently'. ... C, 'now'. ... D, 'lately'. ... Piensa bien... Tres... dos... uno... ¡La respuesta es B! 'Currently' significa actualmente. 'Actually' significa en realidad. ... Pregunta número tres. ..."
@@ -801,6 +803,48 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
             full_script = re.sub(r'\bone\b', 'uno', full_script, flags=re.IGNORECASE)
 
     script["full_script"] = full_script.strip()
+
+    # 5b. Spanish opening marks — ¿ and ¡ — repaired deterministically.
+    #
+    # Spanish requires the inverted mark; English does not, and the model
+    # drops it often enough to matter: 18 of 174 corpus scripts have a `?`
+    # with no `¿`, and 20 have a `!` with no `¡`. On a channel teaching
+    # Spanish speakers, an orthography error on screen costs more credibility
+    # than a timing defect.
+    #
+    # A prompt rule was added at the same time, but a rule only ever buys
+    # partial compliance — the corpus already contained eleven ¿ examples and
+    # still missed 10%. This repairs it, the way the Spanish-countdown
+    # auto-fix above does, so the outcome does not depend on the model
+    # cooperating.
+    #
+    # Only sentences that already END in ? or ! are touched, and only when the
+    # opener is absent, so correctly-written copy is never altered.
+    def _add_opening_marks(text: str) -> tuple:
+        if not text:
+            return text, 0
+        fixed, n = [], 0
+        for part in re.split(r'(?<=[.!?])\s+', text):
+            stripped = part.strip()
+            if stripped.endswith('?') and '¿' not in stripped:
+                part = part.replace(stripped, '¿' + stripped, 1); n += 1
+            elif stripped.endswith('!') and '¡' not in stripped:
+                part = part.replace(stripped, '¡' + stripped, 1); n += 1
+            fixed.append(part)
+        return ' '.join(fixed), n
+
+    total_marks = 0
+    for field in ("question", "statement", "sentence", "explanation",
+                  "hook", "full_script", "tip", "cta"):
+        value = script.get(field)
+        if isinstance(value, str) and value:
+            repaired, n = _add_opening_marks(value)
+            if n:
+                script[field] = repaired
+                total_marks += n
+    if total_marks:
+        warnings.append(
+            f"Added {total_marks} missing Spanish opening mark(s) (¿ / ¡)")
 
     # Ensure video_title exists
     if "video_title" not in script or not script.get("video_title"):
