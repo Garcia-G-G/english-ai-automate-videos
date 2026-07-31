@@ -30,6 +30,25 @@ WORDS_DIR.mkdir(parents=True, exist_ok=True)
 
 PAUSE_AFTER_QUESTION = 0.5
 PAUSE_AFTER_OPTION = 0.6
+
+# Quiz options are generated as separate clips — letter, silence, word — so
+# both pauses below are SPLICED, not hoped for from the model's prosody.
+#
+# PAUSE_LETTER_TO_WORD exists because "Opción A, fábrica." sent as one
+# utterance is heard as "Opción afábrica": the model elides a bare vowel into
+# the word after it. Measured over the corpus, 38 of 42 quiz artifacts had a
+# letter-to-word gap under the 250 ms the QA gate requires, and several had
+# no gap at all — the letter was not a separate speech chunk.
+#
+# 0.30 rather than 0.25 leaves 50 ms of margin so mp3 frame quantisation and
+# the gate's -45 dB edge detection cannot round a passing clip under the bar.
+PAUSE_LETTER_TO_WORD = 0.30
+
+# Must stay comfortably LARGER than PAUSE_LETTER_TO_WORD. The QA gate
+# separates the two by size to tell "gap inside one option" from "gap between
+# two options", and a listener needs the same cue to hear four options rather
+# than eight fragments. 2:1 keeps both unambiguous.
+PAUSE_BETWEEN_OPTIONS = 0.60
 PAUSE_AFTER_THINK = 1.5      # Gap after "piensa bien" before countdown starts
 PAUSE_AFTER_COUNTDOWN = 1.0  # Keep: good pacing between numbers
 PAUSE_AFTER_LAST_COUNT = 1.0 # Increased: dramatic pause before answer reveal
