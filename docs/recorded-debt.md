@@ -124,3 +124,48 @@ code, and the corpus cannot report it.
 
 It will recur, because the corpus is the only large sample available and it is
 permanently historical.
+
+---
+
+## 7. Educational has a systematic sentence-drift tail (measured, not blocking)
+
+Three freshly generated educational artifacts, check-2 sentence drift:
+
+| artifact | sentences | median | p90 | max |
+|---|---|---|---|---|
+| actually | 10 | 0.065 | 0.524 | **1.148** |
+| give_up | 6 | 0.052 | 0.072 | 0.126 |
+| freak_out | 9 | 0.070 | 0.529 | **3.205** |
+
+Two of three exceed 0.9 s, so the tail is **systematic, not a one-off**. The
+median is good — better than the same artifact's historical 0.135 — but
+individual sentences land up to 3.2 s from where they are declared.
+
+This is mechanism B from `docs/step3-timing-spec.md`: char-proportional word
+estimation that was never aligned to the waveform. Fixing it needs forced
+alignment, i.e. ASR, which is deliberately deferred.
+
+**Deliberately NOT a blocking flag.** Blocking on it would reject educational
+wholesale for a limitation we have decided not to remove yet. It is measured,
+reported in every QA report, and recorded here so that when ASR lands there is
+a number to beat.
+
+---
+
+## 8. `timing_engine` constants are INHERITED-UNVALIDATED — and now ship
+
+`TAIL_PAD`, `MIN_HOLD`, `PER_CHAR`, `HOLD_GAP`, `HOLD_RELEASE`, `FADE_IN`,
+`FADE_OUT`, `MERGE_MAX_CHARS`, `MERGE_SHORT_AUDIO`, `MERGE_MAX_GAP`, `CTA_LEN`.
+None has a recorded derivation.
+
+The engine's **invariants** are tested (`tests/test_timing_engine.py`) and its
+logic is sound. The specific numbers are not measured against anything.
+
+This mattered less when the engine was reachable only from the dormant v2
+renderer. Step 3 wired it into v1, so these values now affect **every video
+that ships**.
+
+The QA gate cannot help: it reads audio, and these are display timings.
+Deriving them needs the layout work plus a way to measure on-screen text
+against the waveform. Annotated in place as INHERITED-UNVALIDATED so nobody
+mistakes them for calibrated.

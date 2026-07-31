@@ -40,6 +40,17 @@ logger = logging.getLogger(__name__)
 #: v2-private constant, which is why v1 had no CTA reservation at all.
 CTA_LEN = 2.5
 
+# ── INHERITED-UNVALIDATED ───────────────────────────────────────────
+# Every constant below came from v2 and none has a recorded derivation. They
+# are plausible and the engine's INVARIANTS are tested
+# (tests/test_timing_engine.py), but the specific values are not measured
+# against anything.
+#
+# This matters more now than it did: Step 3 wired this engine into the v1
+# path, so these numbers affect EVERY video that ships, not a dormant renderer.
+# The QA gate cannot check them — it reads audio, and these are display
+# timings. Deriving them needs the layout work plus a way to measure
+# on-screen text, which is a later step. Recorded in docs/recorded-debt.md.
 TAIL_PAD = 0.35        # golden-rule cushion after the last word (s)
 MIN_HOLD = 1.2         # absolute minimum display time (s)
 PER_CHAR = 0.045       # reading-speed floor (s per character)
