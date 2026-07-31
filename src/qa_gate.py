@@ -59,38 +59,120 @@ ROOT = Path(__file__).resolve().parent.parent
 AUDIO_DIR = ROOT / "output" / "audio"
 QA_DIR = ROOT / "output" / "qa"
 
-#: Step 3 flips this. Until then the gate reports and nothing else.
-BLOCKING = False
-
-SILENCE_THRESHOLD_DB = -45.0
-SILENCE_MIN_DUR = 0.10
-EDGE_INSET = 0.06
-
-#: Check 3. The assertion from tests/fixtures/known_bad/manifest.json
-#: (afabric_option_letter_elision), reproduced from audio instead of asserted
-#: on an input string.
-LETTER_WORD_MIN_SILENCE = 0.250
-
-#: Check 5. Clipping: volumedetect max_volume above this is clipped or nearly.
-CLIP_MAX_DB = -1.0
-
-#: Check 5. Dead air, in seconds, for silence NOT explained by the declared
-#: structure. Measured over 837 silence regions in 40 artifacts: p50 0.32,
-#: p90 0.70, p95 1.13, then a hard jump to p99 7.09 which is the intentional
-#: countdown block. 1.5 s sits above p95 and far below the countdown, so it
-#: catches unexplained gaps without firing on designed ones.
-DEAD_AIR_S = 1.5
-
-#: Check 2 span tolerance. Measured: last_word_end / measured_duration has
-#: median 0.98 over 66 artifacts, 0 of 66 exceeding 1.02, 2 of 66 under 0.90.
-SPAN_MIN_COVERAGE = 0.90
-SPAN_MAX_COVERAGE = 1.02
-
 #: Model routing, from pipeline.py:157. Recorded per artifact because the TTS
 #: JSONs do NOT store which TTS model produced them — `_meta.model` is the
 #: SCRIPT generator (gpt-4o-mini). Only 3 .ttsplan.json files carry model_id.
 TURBO_TYPES = frozenset({"educational", "pronunciation"})
 V3_TYPES = frozenset({"quiz", "true_false", "fill_blank", "vocabulary"})
+
+#: When True, `verdict()` returns REJECT for a failing artifact and the
+#: pipeline writes it to output/rejected/ with its report. The gate NEVER
+#: exits non-zero and NEVER aborts a batch — one bad video must not take the
+#: run down with it.
+BLOCKING = True
+
+#: Per-type timing requirement. NOT "segment_times required" globally — that
+#: would reject every educational video, which legitimately carries a word
+#: timeline instead and is checked by check 2 at sentence granularity.
+#:
+#:   quiz / true_false / fill_blank / vocabulary -> segment_times
+#:   educational / pronunciation                 -> word timeline
+#:   neither                                     -> REJECT
+REQUIRES_SEGMENT_TIMES = V3_TYPES
+REQUIRES_WORD_TIMELINE = TURBO_TYPES
+
+#: Flags that REJECT when BLOCKING. Everything else is reported and shipped.
+#:
+#: Deliberately NOT here: any sentence-drift measure for educational. Fresh
+#: output shows a systematic tail (max drift 1.148 s and 3.205 s on two of
+#: three artifacts), but that is mechanism B — char-proportional word
+#: estimation never aligned to the waveform — which needs ASR and is
+#: explicitly deferred. Blocking on a defect we have decided not to fix yet
+#: would reject educational wholesale for a known, accepted limitation.
+BLOCKING_FLAGS = (
+    "letter_to_word",                    # option letter elided into its word
+    "speech_in_declared_silence",        # countdown drawn over speech
+    "clipping",                          # samples pinned at full scale
+    "dead_air",                          # unexplained silence
+    "UNCOVERED_no_timing_declaration",   # nothing to check against
+    "missing_required_timing",           # wrong timing kind for the type
+    "no_word_timeline",                  # word karaoke with no timeline
+)
+
+# ── THRESHOLD PROVENANCE ────────────────────────────────────────────
+# Every constant below is either DERIVED (with the measurement recorded
+# beside it) or INHERITED-UNVALIDATED (with its source named). Nothing is
+# allowed to be a bare number.
+#
+# The rule exists because CLIP_MAX_DB = -1.0 was carried over from
+# quality_reviewer.py — a module deleted for shipping unvalidated numbers —
+# and it turned out to be wrong in both directions: 24 false positives out of
+# 39 flags, and it would have rejected 100% of freshly-fixed output. Numbers
+# are the LAST thing to harvest from code you are deleting for its numbers.
+
+#: DERIVED. See the calibration block above and docs/qa-gate-calibration.md.
+SILENCE_THRESHOLD_DB = -45.0
+
+#: DERIVED, from trap (c): must be SHORTER than any threshold applied to its
+#: output, because silencedetect with d=X cannot distinguish "exactly X" from
+#: "not detected". The shortest consumer is LETTER_WORD_MIN_SILENCE at 0.250,
+#: so anything <= ~0.2 works; 0.10 leaves room for a shorter one later.
+SILENCE_MIN_DUR = 0.10
+
+#: INHERITED-UNVALIDATED — chosen by me during calibration to stop speech at a
+#: region's edge leaking into a floor measurement, never swept. It only
+#: affects the CALIBRATION harness, not any live verdict, which is why it has
+#: survived unmeasured. If it is ever used in a check, derive it first.
+EDGE_INSET = 0.06
+
+#: Check 3. INHERITED, and deliberately so — this is a PRODUCT assertion, not
+#: a measurement. It comes from tests/fixtures/known_bad/manifest.json
+#: (afabric_option_letter_elision): "at least 250 ms of silence between each
+#: option letter and its word". The gate reproduces that verdict from audio
+#: rather than from an input string. A test pins the two together so the
+#: manifest and the gate cannot drift apart.
+LETTER_WORD_MIN_SILENCE = 0.250
+
+#: Check 5. CLIPPING, as a COUNT of samples pinned at full scale — not a peak
+#: level. DERIVED, 2026-07-30, over all 191 measurable corpus artifacts.
+#:
+#: The previous rule was `max_volume > -1.0 dB`, INHERITED UNVALIDATED from
+#: quality_reviewer._check_audio_quality — a module deleted for shipping
+#: unvalidated numbers. Carrying its number forward was the same mistake in
+#: miniature. Measured, that rule flagged 39 of 191 artifacts: 24 had fewer
+#: than 100 full-scale samples per million and were merely normalised, not
+#: clipped, and only 2 were real. It also failed every fresh artifact
+#: (-0.5 to -0.7 dB), which would have rejected 100% of freshly-fixed output.
+#:
+#: max_volume cannot separate "normalised to -0.5 dB" from "limited and
+#: clipped" — both peak near full scale. What differs is how MANY samples sit
+#: there. histogram_0db counts exactly that.
+#:
+#:   full-scale samples per million, 191 artifacts:
+#:     p10..p75  0.0        three quarters have none at all
+#:     p90       27.1
+#:     p95      132.5
+#:     p99      475.9
+#:     then     17851.8    vocabulary/pull_vs_pool
+#:              81629.6    educational/he_said_me_the_truth
+#:
+#: A 38x gap between p99 and the nearest real case. Any threshold in
+#: 1000-5000 ppm flags the same two artifacts, so 1000 is chosen: ~2x above
+#: p99, ~18x below the nearest true positive. Not a knife edge in either
+#: direction.
+CLIP_FULLSCALE_PPM = 1000.0
+
+#: Check 5. DERIVED. Dead air, in seconds, for silence NOT explained by the
+#: declared structure. Measured over 837 silence regions in 40 artifacts: p50 0.32,
+#: p90 0.70, p95 1.13, then a hard jump to p99 7.09 which is the intentional
+#: countdown block. 1.5 s sits above p95 and far below the countdown, so it
+#: catches unexplained gaps without firing on designed ones.
+DEAD_AIR_S = 1.5
+
+#: Check 2 span tolerance. DERIVED. Measured: last_word_end / measured_duration has
+#: median 0.98 over 66 artifacts, 0 of 66 exceeding 1.02, 2 of 66 under 0.90.
+SPAN_MIN_COVERAGE = 0.90
+SPAN_MAX_COVERAGE = 1.02
 
 #: Declared segments that sit on spliced digital silence rather than speech.
 #: TRAP (a): the quiz countdown is ~7 s of anullsrc carrying THREE declared
@@ -145,9 +227,18 @@ def volumedetect(path: str, ss: float = None, t: float = None) -> Dict[str, floa
     if t is not None:
         cmd += ["-t", f"{t:.4f}"]
     cmd += ["-i", path, "-af", "volumedetect", "-f", "null", "-"]
+    stderr = _run(cmd)
     out = {}
-    for k, v in _VOL_RE.findall(_run(cmd)):
+    for k, v in _VOL_RE.findall(stderr):
         out[k] = float("-inf") if v == "-inf" else float(v)
+    # n_samples is printed TWICE — an empty first instance reporting 0, then
+    # the real one. Take the max, never the first, and never `x or default`:
+    # a legitimate 0.0 is falsy and would silently become the default. That
+    # is the same shape as `not False` treating a real value as missing.
+    counts = [int(x) for x in re.findall(r"n_samples:\s*(\d+)", stderr)]
+    out["n_samples"] = float(max(counts)) if counts else 0.0
+    out["histogram_0db"] = float(
+        max((int(x) for x in re.findall(r"histogram_0db:\s*(\d+)", stderr)), default=0))
     return out
 
 
@@ -538,6 +629,9 @@ def _declared_silence_envelope(data: Dict) -> List[Tuple[float, float]]:
 def levels(data: Dict, mp3: str) -> Dict:
     vol = volumedetect(mp3)
     mx = vol.get("max_volume")
+    n_samples = vol.get("n_samples") or 0.0
+    at_full_scale = vol.get("histogram_0db") or 0.0
+    ppm = (at_full_scale / n_samples * 1e6) if n_samples else 0.0
     sil, duration = silence_regions(mp3)
     env = _declared_silence_envelope(data)
 
@@ -556,8 +650,11 @@ def levels(data: Dict, mp3: str) -> Dict:
         "max_volume_db": mx,
         "mean_volume_db": vol.get("mean_volume"),
         "clipping": {
-            "threshold_db": CLIP_MAX_DB,
-            "verdict": "CLIPPED" if (mx is not None and mx > CLIP_MAX_DB) else "ok",
+            "threshold_ppm": CLIP_FULLSCALE_PPM,
+            "full_scale_samples": int(at_full_scale),
+            "n_samples": int(n_samples),
+            "full_scale_ppm": round(ppm, 1),
+            "verdict": "CLIPPED" if ppm >= CLIP_FULLSCALE_PPM else "ok",
         },
         "dead_air": {
             "threshold_s": DEAD_AIR_S,
@@ -640,6 +737,17 @@ def _collect_flags(report: Dict) -> List[str]:
         f.append(f"dead_air:{c['levels']['dead_air']['total_s']}s")
     if not report["covered_by"]:
         f.append("UNCOVERED_no_timing_declaration")
+    # Per-type timing requirement. A quiz without segment_times has no measured
+    # option boundaries and the renderer would fall back to the /4 estimator at
+    # video/quiz.py:130 — inventing timing and presenting it as sound. An
+    # educational without a word timeline has nothing to drive its karaoke.
+    # Different types, different requirement; one global rule would be wrong
+    # for both.
+    vt = report["video_type"]
+    if vt in REQUIRES_SEGMENT_TIMES and not report["has_segment_times"]:
+        f.append("missing_required_timing")
+    elif vt in REQUIRES_WORD_TIMELINE and report["n_words"] == 0:
+        f.append("missing_required_timing")
     # educational and pronunciation render WORD-level karaoke, so an empty
     # word array is a defect even when segment_times is present and the drift
     # table is happy. This is the audio-visible half of the
@@ -648,6 +756,28 @@ def _collect_flags(report: Dict) -> List[str]:
     if report["video_type"] in TURBO_TYPES and report["n_words"] == 0:
         f.append("no_word_timeline")
     return f
+
+
+def verdict(report: Dict) -> Dict:
+    """PASS / REJECT for one artifact, plus the reasons.
+
+    The pipeline calls this. It NEVER raises and never affects an exit code:
+    a rejected video is moved aside and the batch continues. One bad artifact
+    taking down a whole run is a worse failure than the artifact.
+
+    With BLOCKING False every artifact passes and the flags are advisory,
+    which is how this ran for all of Step 2.
+    """
+    blocking = [f for f in report.get("flags", [])
+                if f.split(":")[0] in BLOCKING_FLAGS]
+    return {
+        "artifact": report.get("artifact"),
+        "video_type": report.get("video_type"),
+        "blocking_enabled": BLOCKING,
+        "verdict": "REJECT" if (BLOCKING and blocking) else "PASS",
+        "blocking_flags": blocking,
+        "advisory_flags": [f for f in report.get("flags", []) if f not in blocking],
+    }
 
 
 def _summarise(reports: List[Dict]) -> None:
