@@ -1365,11 +1365,32 @@ elif page == "Upload":
                     title_key = f"meta_title_{video['name']}"
                     desc_key = f"meta_desc_{video['name']}"
                     tags_key = f"meta_tags_{video['name']}"
+                    pending_key = f"_meta_pending_{video['name']}"
 
                     if title_key not in st.session_state:
                         st.session_state[title_key] = meta["title"]
                         st.session_state[desc_key] = meta["description"]
                         st.session_state[tags_key] = " ".join(meta["hashtags"])
+
+                    # Apply a staged regeneration BEFORE the widgets exist.
+                    #
+                    # Streamlit forbids writing session_state[k] once the
+                    # widget owning k has been instantiated this run, and the
+                    # regenerate buttons render BELOW these fields — so the
+                    # button handler cannot assign to them directly:
+                    #
+                    #   StreamlitAPIException: st.session_state.meta_title_x
+                    #   cannot be modified after the widget with key
+                    #   meta_title_x is instantiated
+                    #
+                    # So the handler stages its result under a separate key
+                    # and reruns; the write lands here, at the top of the next
+                    # run, while the widget keys are still free.
+                    pending = st.session_state.pop(pending_key, None)
+                    if pending:
+                        st.session_state[title_key] = pending["title"]
+                        st.session_state[desc_key] = pending["description"]
+                        st.session_state[tags_key] = pending["hashtags"]
 
                     with st.expander("Edit Title & Description"):
                         # No `value=` and no assignment: the widget reads and
@@ -1393,12 +1414,15 @@ elif page == "Upload":
                                             result = regenerate_for_platform(
                                                 script, pkey, video.get("type", "educational")
                                             )
-                                            st.session_state[title_key] = result.get("title", "")
-                                            st.session_state[desc_key] = result.get("description", "")
+                                            # Stage, do not assign: these
+                                            # widgets already exist this run.
                                             tags = result.get("hashtags", [])
-                                            st.session_state[tags_key] = " ".join(
-                                                f"#{t.lstrip('#')}" for t in tags
-                                            )
+                                            st.session_state[pending_key] = {
+                                                "title": result.get("title", ""),
+                                                "description": result.get("description", ""),
+                                                "hashtags": " ".join(
+                                                    f"#{t.lstrip('#')}" for t in tags),
+                                            }
                                             st.rerun()
                                     except Exception as e:
                                         st.error(f"Regeneration failed: {e}")
