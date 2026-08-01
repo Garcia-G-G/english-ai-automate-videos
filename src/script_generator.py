@@ -242,7 +242,7 @@ REGLAS IMPORTANTES:
 8. El script debe ser más largo y sustancioso - queremos contenido de valor
 9. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "Esta palabra NO significa lo que crees 😱 #English"
 10. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
-11. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
+11. Los hashtags deben ser AL MENOS 12, en capas: 2-3 amplios (#LearnEnglish #AprendeIngles), 2-3 del formato del video (#EnglishQuiz, #CompletaLaFrase), y el resto de nicho/audiencia (#InglesParaHispanohablantes, #EstudiaIngles). Nunca repitas un hashtag.
 12. ORTOGRAFIA OBLIGATORIA: toda pregunta abre con ¿ y cierra con ?; toda exclamacion abre con ¡ y cierra con !. Sin excepcion, en TODOS los campos (question, statement, sentence, explanation, hook, full_script).
 
 ESTRUCTURA SUGERIDA:
@@ -303,7 +303,7 @@ REGLAS ABSOLUTAS (NUNCA VIOLAR):
 8. Varía la dificultad: fácil → medio → difícil
 9. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "¿Puedes acertar las 3? 🧠 English Quiz" o "Solo el 10% acierta la pregunta 3 😱"
 10. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
-11. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
+11. Los hashtags deben ser AL MENOS 12, en capas: 2-3 amplios (#LearnEnglish #AprendeIngles), 2-3 del formato del video (#EnglishQuiz, #CompletaLaFrase), y el resto de nicho/audiencia (#InglesParaHispanohablantes, #EstudiaIngles). Nunca repitas un hashtag.
 12. ORTOGRAFIA OBLIGATORIA: toda pregunta abre con ¿ y cierra con ?; toda exclamacion abre con ¡ y cierra con !. Sin excepcion, en TODOS los campos (question, statement, sentence, explanation, hook, full_script).
 
 EJEMPLO DE FULL_SCRIPT (con 3 preguntas):
@@ -494,7 +494,7 @@ FORMATO JSON REQUERIDO:
     }}
   ],
   "full_script": "Script narrado completo narrando LAS 3 FRASES secuencialmente. DEBE incluir countdown para cada frase.",
-  "hashtags": ["#CompletaLaFrase", "#AprendeIngles", "#GramaticaIngles"]
+  "hashtags": ["#CompletaLaFrase", "#AprendeIngles", "#LearnEnglish", "#GramaticaIngles", "#PracticaIngles", "#InglesParaHispanohablantes", "#EstudiaIngles", "#InglesFacil", "#EnglishPractice", "#AprenderIngles", "#InglesDiario", "#HablarIngles"]
 }}
 
 IMPORTANTE: Los campos sentence, blank_position, options, correct, explanation, translation del nivel raíz deben contener los datos de la PRIMERA frase. El array 'sentences' contiene LAS 3 frases (incluyendo la primera). El full_script narra TODAS las frases.
@@ -537,7 +537,7 @@ FORMATO JSON REQUERIDO:
   "tip": "Tip para recordar la pronunciación",
   "full_script": "Script narrado con la palabra, error común, pronunciación correcta y tip.",
   "translation": "traducción de la palabra",
-  "hashtags": ["#Pronunciacion", "#AprendeIngles", "#SpeakEnglish"]
+  "hashtags": ["#Pronunciacion", "#AprendeIngles", "#LearnEnglish", "#SpeakEnglish", "#PronunciacionIngles", "#InglesParaHispanohablantes", "#EstudiaIngles", "#InglesFacil", "#EnglishPractice", "#AprenderIngles", "#InglesDiario", "#HablarIngles"]
 }}
 
 Responde SOLO con el JSON, sin explicaciones adicionales."""
@@ -859,16 +859,31 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
         script["video_description"] = f"{title}\n\n{cta}"
         warnings.append("Generated fallback video_description")
 
-    # Ensure hashtags is a list of 5-7 items with broad tags
+    # Hashtags: top up to the target, never truncate to it.
+    #
+    # This used to end with `hashtags[:7]`, a silent cap that threw away
+    # anything past seven no matter what the prompt asked for. Raising the
+    # prompt rule alone would have changed nothing — GPT returned 12 and this
+    # line kept 7.
+    #
+    # Padding is delegated to metadata_generator._ensure_hashtags so the tiers
+    # and the dedup live in ONE place; here we only normalise, add the broad
+    # tags, and drop duplicates.
     hashtags = script.get("hashtags", [])
     if isinstance(hashtags, str):
         hashtags = [h.strip() for h in hashtags.split() if h.startswith("#")]
-    broad = {"#LearnEnglish", "#AprendeIngles"}
-    existing = {h.lstrip("#").lower() for h in hashtags}
-    for tag in broad:
-        if tag.lstrip("#").lower() not in existing:
-            hashtags.append(tag)
-    script["hashtags"] = hashtags[:7]
+
+    seen, deduped = set(), []
+    for tag in hashtags:
+        name = str(tag).strip().lstrip("#")
+        if name and name.lower() not in seen:
+            seen.add(name.lower())
+            deduped.append(f"#{name}")
+    for tag in ("#LearnEnglish", "#AprendeIngles"):
+        if tag.lstrip("#").lower() not in seen:
+            seen.add(tag.lstrip("#").lower())
+            deduped.append(tag)
+    script["hashtags"] = deduped
 
     if warnings:
         script["_validation_warnings"] = warnings

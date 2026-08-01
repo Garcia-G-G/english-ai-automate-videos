@@ -75,9 +75,29 @@ class VideoMetadata:
 
     @property
     def full_description(self) -> str:
+        """Description plus hashtags — appended only if not already present.
+
+        LIVE DEFECT, found in the published-video audit: every video published
+        so far carries its hashtag block TWICE. metadata_generator's
+        adapt_for_platform already appends the tags to the description, and
+        this then appended them again, so YouTube received:
+
+            <description>
+
+            #CompletaLaFrase #AprendeIngles ...
+
+            #CompletaLaFrase #AprendeIngles ...
+
+        The uploader is handed an already-adapted description AND the raw tag
+        list, and cannot tell from the arguments alone whether the caller
+        adapted. So it checks: if the first tag is already in the description,
+        the block is there and is not repeated.
+        """
         parts = [self.description]
         if self.hashtags:
-            parts.append(self.hashtag_string)
+            first = f"#{self.hashtags[0].lstrip('#')}"
+            if first not in (self.description or ""):
+                parts.append(self.hashtag_string)
         return "\n\n".join(parts)
 
 
