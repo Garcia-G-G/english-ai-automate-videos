@@ -149,12 +149,119 @@ def test_metadata_widget_results_are_not_assigned_back_over_storage():
         "— let the widget own its key instead")
 
 
-def test_regenerate_button_writes_the_key_the_widget_reads():
-    """Both must name the same session_state entry, or the write is lost."""
+def test_regenerate_result_reaches_the_key_the_widget_reads():
+    """The regenerated value must end up in the widget's own key.
+
+    It gets there via the pending stage rather than a direct assignment: the
+    buttons render BELOW the fields, so a direct write raises
+    StreamlitAPIException. This asserts the route exists end to end — the
+    handler stages, and the top of the next run applies the stage onto
+    title_key.
+    """
     src = ADMIN.read_text(encoding="utf-8")
 
     assert 'st.text_input("Title", key=title_key)' in src
-    assert 'st.session_state[title_key] = result.get("title"' in src
+    assert 'st.session_state[pending_key] = {' in src, "handler does not stage"
+    assert 'st.session_state[title_key] = pending["title"]' in src, (
+        "the stage is never applied to the widget key")
+
+
+# ── the staged write ─────────────────────────────────────────────────
+
+class StreamlitWithInstantiation(FakeStreamlit):
+    """Adds the rule that produced the reported failure: session_state[k] is
+    read-only once the widget owning k has rendered this run."""
+
+    class APIException(Exception):
+        pass
+
+    def __init__(self):
+        super().__init__()
+        self.instantiated = set()
+
+    def new_run(self):
+        self.instantiated = set()
+
+    def assign(self, key, value):
+        if key in self.instantiated:
+            raise self.APIException(
+                f"st.session_state.{key} cannot be modified after the widget "
+                f"with key {key} is instantiated")
+        self.session_state[key] = value
+
+    def text_input(self, _label=None, value=None, key=None, **_kw):
+        self.instantiated.add(key)
+        return self.session_state.get(key)
+
+
+TITLE_KEY = "meta_title_foodie_20260731_163822"
+PENDING_KEY = "_meta_pending_foodie_20260731_163822"
+
+
+def test_assigning_a_widget_key_after_render_raises():
+    """The reported error, reproduced. The regenerate buttons render BELOW the
+    fields, so the handler cannot write the widget keys directly."""
+    st = StreamlitWithInstantiation()
+    st.session_state[TITLE_KEY] = "ORIGINAL"
+    st.new_run()
+    st.text_input(key=TITLE_KEY)
+
+    with pytest.raises(StreamlitWithInstantiation.APIException, match="cannot be modified"):
+        st.assign(TITLE_KEY, "REGENERATED")
+
+
+def test_staged_write_survives_the_rerun_and_lands():
+    """Stage under a non-widget key, rerun, apply before the widgets exist."""
+    st = StreamlitWithInstantiation()
+    st.session_state[TITLE_KEY] = "ORIGINAL"
+
+    st.new_run()
+    st.text_input(key=TITLE_KEY)
+    st.assign(PENDING_KEY, {"title": "REGENERATED"})      # no exception
+
+    st.new_run()                                          # st.rerun()
+    pending = st.session_state.pop(PENDING_KEY, None)
+    if pending:
+        st.assign(TITLE_KEY, pending["title"])
+    st.text_input(key=TITLE_KEY)
+
+    assert st.session_state[TITLE_KEY] == "REGENERATED"
+
+
+def test_the_staged_value_is_consumed_once():
+    """Left in place it would overwrite the operator's edits on every rerun."""
+    st = StreamlitWithInstantiation()
+    st.session_state[PENDING_KEY] = {"title": "REGENERATED"}
+
+    st.session_state.pop(PENDING_KEY, None)
+
+    assert PENDING_KEY not in st.session_state
+
+
+def test_the_button_handler_never_assigns_a_widget_key():
+    """AST guard: the handler must stage, not assign."""
+    import ast
+    tree = ast.parse(ADMIN.read_text(encoding="utf-8"))
+    offenders = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Assign):
+            continue
+        for t in node.targets:
+            if not (isinstance(t, ast.Subscript)
+                    and "session_state" in ast.dump(t.value)):
+                continue
+            sub = ast.dump(t.slice)
+            if any(k in sub for k in ("title_key", "desc_key", "tags_key")):
+                offenders.append(node.lineno)
+
+    # Only the initial seeding and the pending-apply may write these, and both
+    # run before the widgets are instantiated.
+    src_lines = ADMIN.read_text(encoding="utf-8").splitlines()
+    for ln in offenders:
+        window = "\n".join(src_lines[max(0, ln - 14):ln])
+        assert ("not in st.session_state" in window) or ("pending" in window), (
+            f"admin.py:{ln} writes a widget key outside the seed/pending "
+            "blocks — it will raise once the widget has rendered")
 
 
 # ── what actually gets PUBLISHED ─────────────────────────────────────
