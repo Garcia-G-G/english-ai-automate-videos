@@ -54,16 +54,56 @@ TITLE_TEMPLATES = {
     ],
 }
 
-BROAD_HASHTAGS = ["#LearnEnglish", "#AprendeIngles"]
+# ── Hashtag strategy ────────────────────────────────────────────────
+#
+# Researched 2026-08-01; sources in docs/metadata-best-practices.md.
+#
+# The recommended mix everywhere is TIERED, not a flat list:
+#   broad    high volume, low specificity  — reach
+#   type     what kind of video this is    — categorisation
+#   niche    the actual topic/audience     — the people who convert
+#
+# PER-PLATFORM COUNTS DIFFER, and one number for all three is wrong:
+#
+#   youtube    3-5 recommended. HARD CLIFF: more than 15 and YouTube
+#              ignores EVERY hashtag on the video, so the cap is a
+#              correctness constraint, not a preference.
+#   instagram  5-15 targeted; 30 allowed. 10+ sits comfortably in band.
+#   tiktok     3-5 recommended; diminishing returns past 10-15; 30 max.
+#
+# HASHTAG_TARGET is the requested floor for the generated POOL. Each
+# platform then takes its own slice in adapt_for_platform, so the pool can
+# be rich without spamming a platform that punishes volume.
+HASHTAG_TARGET = 12
+
+PLATFORM_HASHTAGS = {
+    "youtube": 10,     # above the 3-5 guidance, deliberately — see the doc
+    "instagram": 12,
+    "tiktok": 10,
+}
+
+#: Exceeding this makes YouTube discard ALL hashtags on the video. Never
+#: raise it; it is a platform rule, not a style choice.
+YOUTUBE_HASHTAG_HARD_CAP = 15
+
+BROAD_HASHTAGS = ["#LearnEnglish", "#AprendeIngles", "#InglesOnline"]
 
 TYPE_HASHTAGS = {
-    "educational": ["#EnglishTips", "#InglesFacil"],
-    "quiz": ["#EnglishQuiz", "#QuizTime"],
-    "true_false": ["#TrueOrFalse", "#VerdaderoOFalso"],
-    "fill_blank": ["#FillInTheBlank", "#CompletaLaFrase"],
-    "pronunciation": ["#Pronunciation", "#SpeakEnglish"],
-    "vocabulary": ["#Vocabulary", "#EnglishWords"],
+    "educational": ["#EnglishTips", "#InglesFacil", "#ClasesDeIngles"],
+    "quiz": ["#EnglishQuiz", "#QuizTime", "#RetoDeIngles"],
+    "true_false": ["#TrueOrFalse", "#VerdaderoOFalso", "#RetoDeIngles"],
+    "fill_blank": ["#FillInTheBlank", "#CompletaLaFrase", "#PracticaIngles"],
+    "pronunciation": ["#Pronunciation", "#SpeakEnglish", "#PronunciacionIngles"],
+    "vocabulary": ["#Vocabulary", "#EnglishWords", "#VocabularioIngles"],
 }
+
+#: Audience/intent tags. Spanish-first, because the audience searches in
+#: Spanish even when the subject is English.
+NICHE_HASHTAGS = [
+    "#InglesParaHispanohablantes", "#AprenderIngles", "#EnglishForSpanishSpeakers",
+    "#IdiomasEnCasa", "#EstudiaIngles", "#InglesDiario", "#EnglishPractice",
+    "#HablarIngles", "#InglesRapido", "#EnglishLearning",
+]
 
 
 def generate_metadata(script_data: dict, video_type: str, category: str = "") -> dict:
@@ -95,27 +135,45 @@ def generate_metadata(script_data: dict, video_type: str, category: str = "") ->
 
 
 def adapt_for_platform(metadata: dict, platform: str) -> dict:
-    """Adapt metadata for a specific platform's requirements."""
+    """Adapt metadata for one platform's rules.
+
+    Returns `hashtags` ALREADY SLICED to that platform's count, and a
+    description that already contains them. Callers must NOT append the
+    hashtag list again — see the note in uploader.VideoMetadata.
+    """
     title = metadata["title"]
     description = metadata["description"]
-    hashtags = metadata["hashtags"]
-    hashtag_str = " ".join(f"#{h.lstrip('#')}" for h in hashtags)
+    all_tags = metadata["hashtags"]
+
+    limit = PLATFORM_HASHTAGS.get(platform, HASHTAG_TARGET)
+    if platform == "youtube":
+        # Hard platform rule, not a preference: past this, YouTube discards
+        # every hashtag on the video.
+        limit = min(limit, YOUTUBE_HASHTAG_HARD_CAP)
+    tags = all_tags[:limit]
+    hashtag_str = " ".join(f"#{h.lstrip('#')}" for h in tags)
 
     if platform == "youtube":
+        # Hashtags go in the DESCRIPTION, not the title: the first three
+        # render as clickable links above the title, and a clean title keeps
+        # the keywords readable. #Shorts is the exception — it must appear
+        # for the Shorts shelf.
         yt_title = title[:95]
         if "#Shorts" not in yt_title:
             yt_title = f"{yt_title[:90]} #Shorts" if len(yt_title) > 90 else f"{yt_title} #Shorts"
         yt_title = yt_title[:100]
         yt_desc = f"{description}\n\n{hashtag_str}"
-        return {"title": yt_title, "description": yt_desc[:5000], "hashtags": hashtags}
+        return {"title": yt_title, "description": yt_desc[:5000], "hashtags": tags}
 
     elif platform == "instagram":
+        # No title field; the caption is everything. Keyword-first, because
+        # Instagram now indexes caption text more heavily than tags.
         ig_caption = f"{title}\n\n{description}\n\n{hashtag_str}"
-        return {"title": "", "description": ig_caption[:2200], "hashtags": hashtags}
+        return {"title": "", "description": ig_caption[:2200], "hashtags": tags}
 
     else:  # tiktok
         tk_caption = f"{title}\n\n{description}\n\n{hashtag_str}"
-        return {"title": title[:150], "description": tk_caption[:2200], "hashtags": hashtags}
+        return {"title": title[:150], "description": tk_caption[:2200], "hashtags": tags}
 
 
 def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -> dict:
@@ -138,11 +196,38 @@ def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -
 
     client = OpenAI(api_key=api_key)
 
+    # Per-platform guidance, researched 2026-08-01. Full sources and the
+    # numbers behind each line are in docs/metadata-best-practices.md.
     platform_instructions = {
-        "tiktok": "TikTok: caption visible ~80 chars before '...more'. Use emojis, curiosity gaps, bilingual hooks. Hashtags inline.",
-        "youtube": "YouTube Shorts: title max 100 chars (searchable!). Include keywords. Description for SEO. Add #Shorts.",
-        "instagram": "Instagram Reels: caption max 2200 chars. Visual hook, storytelling, emojis. Hashtags at the end.",
+        "tiktok": (
+            "TikTok. Ideal caption 150-300 characters — that band measurably "
+            "outperforms longer captions on reach. The FIRST 80-120 characters "
+            "must carry the whole hook, because that is all a viewer sees "
+            "before the 'more' cut. Everything after it is for search. Front-"
+            "load the concrete payoff, not a greeting."
+        ),
+        "youtube": (
+            "YouTube Shorts. The title is a SEARCH SURFACE — put the real "
+            "keyword a learner would type ('significado', 'cómo se dice', the "
+            "English word itself) in the first 40 characters, and keep it "
+            "under 70 so nothing is truncated on mobile. No hashtags in the "
+            "title; they belong in the description. Description line 1 is one "
+            "sentence of context that repeats the main keyword naturally."
+        ),
+        "instagram": (
+            "Instagram Reels. The caption hook must land in under 80 "
+            "characters, before the 'Read More' cut. Instagram now indexes "
+            "caption KEYWORDS more heavily than hashtags, so write the topic "
+            "in plain words in the first line rather than relying on tags."
+        ),
     }
+
+    # The audience searches in SPANISH even though the subject is English.
+    audience_note = (
+        "AUDIENCE: Spanish speakers learning English. Write the hook in "
+        "Spanish; keep the English term itself in English. A title that is "
+        "entirely in English will not be found by the people it is for."
+    )
 
     hook = script_data.get("hook") or script_data.get("question") or script_data.get("statement") or ""
     full_script_preview = (script_data.get("full_script") or "")[:200]
@@ -155,11 +240,13 @@ Video type: {video_type}
 Topic/Hook: {hook}
 Content preview: {full_script_preview}
 
+{audience_note}
+
 Return JSON only:
 {{
-  "title": "Bilingual attention-grabbing title (Spanish + English keywords)",
-  "description": "2-3 line description with emojis, value prop, and CTA",
-  "hashtags": ["5-7 hashtags without #, mix of broad and niche"]
+  "title": "Spanish hook + the English term. Front-load the searchable keyword.",
+  "description": "First line = the hook, self-contained. Then 1-2 lines of value. Then a CTA. Emojis sparingly, where they replace a word rather than decorate one.",
+  "hashtags": ["at least {HASHTAG_TARGET} hashtags without #, TIERED: 2-3 broad reach tags, 2-3 that name the video format, and the rest niche/audience tags a Spanish-speaking learner would actually follow"]
 }}"""
 
     try:
@@ -260,22 +347,40 @@ def _build_fallback_description(script_data: dict, video_type: str, title: str) 
 
 
 def _ensure_hashtags(hashtags: list, video_type: str, category: str = "") -> list:
-    """Ensure hashtags meet quality bar: 5-7 tags, tiered."""
-    clean = []
+    """Build a tiered pool of at least HASHTAG_TARGET tags.
+
+    Tiers, in order: whatever the script already produced, then broad, then
+    type-specific, then niche/audience. Order matters — the first three are
+    what YouTube surfaces as clickable links above the title, and on Instagram
+    the earliest tags carry the most weight.
+
+    Deduplication is case-insensitive and runs against a LIVE set. The previous
+    version snapshotted `existing_lower` once and then appended without
+    updating it, so a tag appearing in two tiers could be emitted twice.
+    """
+    out: List[str] = []
     seen = set()
-    for h in hashtags:
-        h = h.strip().lstrip("#")
-        if h and h.lower() not in seen:
-            clean.append(f"#{h}")
-            seen.add(h.lower())
 
-    existing_lower = {h.lstrip("#").lower() for h in clean}
-    for broad in BROAD_HASHTAGS:
-        if broad.lstrip("#").lower() not in existing_lower:
-            clean.insert(0, broad)
+    def add(tag: str) -> None:
+        name = tag.strip().lstrip("#")
+        if not name:
+            return
+        key = name.lower()
+        if key in seen:
+            return
+        seen.add(key)
+        out.append(f"#{name}")
 
-    for type_tag in TYPE_HASHTAGS.get(video_type, []):
-        if type_tag.lstrip("#").lower() not in existing_lower and len(clean) < 7:
-            clean.append(type_tag)
+    for h in hashtags or []:
+        add(h)
+    for tier in (BROAD_HASHTAGS, TYPE_HASHTAGS.get(video_type, [])):
+        for tag in tier:
+            add(tag)
+    if category:
+        add(f"#{category.replace('_', '').title()}")
+    for tag in NICHE_HASHTAGS:
+        if len(out) >= HASHTAG_TARGET:
+            break
+        add(tag)
 
-    return clean[:7]
+    return out
