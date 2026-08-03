@@ -502,17 +502,24 @@ def resolve_upload_metadata(video_name: str, script: dict, platform: str,
     state = {} if state is None else state
     title_key, desc_key, tags_key = metadata_session_keys(video_name)
 
-    from metadata_generator import adapt_for_platform, generate_metadata
+    from metadata_generator import (adapt_for_platform, compose_description,
+                                    generate_metadata)
 
     approved_title = (state.get(title_key) or "").strip()
     approved_desc = (state.get(desc_key) or "").strip()
     approved_tags = (state.get(tags_key) or "").split()
 
     if approved_title:
+        tags = [t.lstrip("#") for t in approved_tags]
         return {
             "title": approved_title,
-            "description": approved_desc,
-            "hashtags": [t.lstrip("#") for t in approved_tags],
+            # Composed HERE, through the one composer, because the operator
+            # edits the body and the hashtags in two separate fields and the
+            # uploader no longer joins them. Item 1 briefly sent the raw body
+            # alone, which would have published the operator's text with no
+            # hashtags at all.
+            "description": compose_description(approved_desc, tags),
+            "hashtags": tags,
             "source": "session",       # surfaced so a dry run can prove it
         }
 

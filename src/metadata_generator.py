@@ -134,6 +134,29 @@ def generate_metadata(script_data: dict, video_type: str, category: str = "") ->
     }
 
 
+def compose_description(description: str, hashtags: List[str]) -> str:
+    """Attach the hashtag block to a description. THE ONLY PLACE THIS HAPPENS.
+
+    Composition is owned HERE, upstream, not by the uploader. The uploader's
+    job is to send what it is given; it has no platform knowledge and cannot
+    tell an already-composed description from a raw one. When both appended,
+    every published video carried its hashtag block twice.
+
+    Idempotent as a backstop — if the block is already present it is not added
+    again — but callers should still append exactly once. The guard is there so
+    a future third caller cannot silently reintroduce the defect, not as a
+    licence to append blindly.
+    """
+    body = (description or "").rstrip()
+    if not hashtags:
+        return body
+    block = " ".join(f"#{h.lstrip('#')}" for h in hashtags)
+    first = f"#{hashtags[0].lstrip('#')}"
+    if first and first in body:
+        return body
+    return f"{body}\n\n{block}" if body else block
+
+
 def adapt_for_platform(metadata: dict, platform: str) -> dict:
     """Adapt metadata for one platform's rules.
 
@@ -151,7 +174,6 @@ def adapt_for_platform(metadata: dict, platform: str) -> dict:
         # every hashtag on the video.
         limit = min(limit, YOUTUBE_HASHTAG_HARD_CAP)
     tags = all_tags[:limit]
-    hashtag_str = " ".join(f"#{h.lstrip('#')}" for h in tags)
 
     if platform == "youtube":
         # Hashtags go in the DESCRIPTION, not the title: the first three
@@ -162,17 +184,17 @@ def adapt_for_platform(metadata: dict, platform: str) -> dict:
         if "#Shorts" not in yt_title:
             yt_title = f"{yt_title[:90]} #Shorts" if len(yt_title) > 90 else f"{yt_title} #Shorts"
         yt_title = yt_title[:100]
-        yt_desc = f"{description}\n\n{hashtag_str}"
+        yt_desc = compose_description(description, tags)
         return {"title": yt_title, "description": yt_desc[:5000], "hashtags": tags}
 
     elif platform == "instagram":
         # No title field; the caption is everything. Keyword-first, because
         # Instagram now indexes caption text more heavily than tags.
-        ig_caption = f"{title}\n\n{description}\n\n{hashtag_str}"
+        ig_caption = compose_description(f"{title}\n\n{description}", tags)
         return {"title": "", "description": ig_caption[:2200], "hashtags": tags}
 
     else:  # tiktok
-        tk_caption = f"{title}\n\n{description}\n\n{hashtag_str}"
+        tk_caption = compose_description(f"{title}\n\n{description}", tags)
         return {"title": title[:150], "description": tk_caption[:2200], "hashtags": tags}
 
 

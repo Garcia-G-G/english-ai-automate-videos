@@ -293,7 +293,11 @@ def test_operator_text_wins_over_generated_metadata():
 
     assert got["source"] == "session"
     assert got["title"] == "OPERATOR TITLE"
-    assert got["description"] == "OPERATOR DESC"
+    # The BODY is the operator's verbatim; the hashtag block is appended here
+    # because the operator edits body and tags in two separate fields and the
+    # uploader no longer composes (see test_metadata_quality).
+    assert got["description"].startswith("OPERATOR DESC")
+    assert got["description"].count("#a") == 1
     assert got["hashtags"] == ["a", "b"]
 
 
