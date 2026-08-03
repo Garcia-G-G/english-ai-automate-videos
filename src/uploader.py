@@ -75,12 +75,11 @@ class VideoMetadata:
 
     @property
     def full_description(self) -> str:
-        """Description plus hashtags — appended only if not already present.
+        """The description, as given. THE UPLOADER DOES NOT COMPOSE.
 
-        LIVE DEFECT, found in the published-video audit: every video published
-        so far carries its hashtag block TWICE. metadata_generator's
-        adapt_for_platform already appends the tags to the description, and
-        this then appended them again, so YouTube received:
+        LIVE DEFECT this resolves: every video published so far carried its
+        hashtag block TWICE. metadata_generator.adapt_for_platform appended
+        the tags, and this appended them again, so YouTube received:
 
             <description>
 
@@ -88,17 +87,24 @@ class VideoMetadata:
 
             #CompletaLaFrase #AprendeIngles ...
 
-        The uploader is handed an already-adapted description AND the raw tag
-        list, and cannot tell from the arguments alone whether the caller
-        adapted. So it checks: if the first tag is already in the description,
-        the block is there and is not repeated.
+        OWNERSHIP: composition belongs to metadata_generator.compose_description,
+        upstream, and the uploader is a transport. That direction rather than
+        the reverse because composition is PLATFORM-SPECIFIC — YouTube puts
+        hashtags in the description while Instagram and TikTok build a single
+        caption from title + body + tags — and this dataclass has no platform
+        knowledge. It cannot tell an already-composed description from a raw
+        one, which is exactly how the duplicate arose.
+
+        An earlier pass fixed this by checking whether the first tag was
+        already present and skipping. That worked but left BOTH sides
+        composing, so the invariant depended on a substring test rather than
+        on one side simply not doing it.
+
+        `hashtags` stays on the dataclass: YouTube takes a SEPARATE `tags`
+        array in the API body, which is not the same thing as hashtags in the
+        description text.
         """
-        parts = [self.description]
-        if self.hashtags:
-            first = f"#{self.hashtags[0].lstrip('#')}"
-            if first not in (self.description or ""):
-                parts.append(self.hashtag_string)
-        return "\n\n".join(parts)
+        return self.description or ""
 
 
 @dataclass

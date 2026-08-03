@@ -117,12 +117,51 @@ def test_hashtag_block_is_not_published_twice(platform):
     assert body.count(first) == 1, f"{platform}: hashtag block duplicated"
 
 
-def test_hashtags_are_still_appended_when_the_caller_did_not_adapt():
-    """The guard must not swallow the tags for a caller that passes a raw
-    description — only skip when they are demonstrably already there."""
+def test_the_uploader_does_not_compose_at_all():
+    """Ownership: metadata_generator.compose_description composes, the
+    uploader transports. A raw description passed to VideoMetadata comes back
+    unchanged — the caller is responsible for composing first."""
     body = VideoMetadata("T", "A plain description", ["#Alpha", "#Beta"]).full_description
 
-    assert "#Alpha" in body and "#Beta" in body
+    assert body == "A plain description"
+
+
+def test_compose_description_is_the_single_composer():
+    body = MG.compose_description("Body text", ["Alpha", "#Beta"])
+
+    assert body == "Body text\n\n#Alpha #Beta"
+
+
+def test_compose_is_idempotent_as_a_backstop():
+    """A future third caller must not be able to reintroduce the duplicate."""
+    once = MG.compose_description("Body", ["Alpha", "Beta"])
+    twice = MG.compose_description(once, ["Alpha", "Beta"])
+
+    assert once == twice
+
+
+def test_compose_handles_an_empty_body_and_empty_tags():
+    assert MG.compose_description("", ["Alpha"]) == "#Alpha"
+    assert MG.compose_description("Body", []) == "Body"
+
+
+def test_the_operator_path_still_gets_its_hashtags():
+    """resolve_upload_metadata composes for the session branch, because the
+    operator edits body and hashtags in two separate fields and the uploader
+    no longer joins them."""
+    import logging
+    logging.getLogger("streamlit").setLevel(logging.CRITICAL)
+    sys.path.insert(0, str(ROOT / "src"))
+    import admin
+
+    tk, dk, gk = admin.metadata_session_keys("vid")
+    state = {tk: "Operator title", dk: "Operator body", gk: "#One #Two"}
+
+    got = admin.resolve_upload_metadata("vid", SCRIPT, "youtube", "quiz", "", state)
+
+    assert got["source"] == "session"
+    assert "#One" in got["description"], "operator hashtags were dropped"
+    assert got["description"].count("#One") == 1
 
 
 # ── description shape ────────────────────────────────────────────────
