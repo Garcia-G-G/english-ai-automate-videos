@@ -225,14 +225,45 @@ def _draw_filled(draw, prefix, correct, suffix, sf, cy, t, answer_time):
 
 # ── Option cards ─────────────────────────────────────────────────
 
+def option_reveal_times(st, options_start, n=4):
+    """When each option card should appear, in seconds.
+
+    MEASURED, not staggered. Each card lands when its own option is actually
+    spoken, read from the per-option segment_times the split generator now
+    emits (option_1..option_4).
+
+    _OPT_STAGGER = 0.10 put all four cards on screen within 0.4 s while the
+    narration took ~11 s to read them, so the screen was static for the rest
+    of the block. Retention on two published fill_blanks decays across exactly
+    that window.
+
+    FALLBACK, not a guess: if any per-option boundary is missing — an older
+    artifact, a generator that did not emit them — this returns the previous
+    constant-stagger schedule unchanged. A partially-measured schedule would
+    be worse than a consistent approximation, so it is all or nothing.
+    """
+    measured = []
+    for i in range(n):
+        start = seg_start(st, f'option_{i + 1}', -1.0)
+        if start < 0:
+            return [options_start + i * _OPT_STAGGER for i in range(n)], False
+        measured.append(start)
+    if any(b < a for a, b in zip(measured, measured[1:])):
+        # Out of order means the data is not trustworthy; fall back rather
+        # than reveal cards in the wrong sequence.
+        return [options_start + i * _OPT_STAGGER for i in range(n)], False
+    return measured, True
+
+
 def _draw_option_cards(t, draw, frame, options, correct, show_answer,
-                       options_start, answer_time):
+                       options_start, answer_time, reveal_times=None):
     """4 stacked option cards with circle letters and slide-in."""
     opt_x = (VIDEO_WIDTH - _OPT_W) // 2
     letters = 'ABCD'
 
     for i, opt in enumerate(strip_display_quotes(o) for o in options[:4]):
-        delay = options_start + i * _OPT_STAGGER
+        delay = (reveal_times[i] if reveal_times and i < len(reveal_times)
+                 else options_start + i * _OPT_STAGGER)
         if t < delay:
             continue
 
@@ -342,8 +373,14 @@ def create_frame_fill_blank(
 
     # ── 2. Stacked option cards ─────────────────────────────────────
     if t > options_start:
+        reveal, measured = option_reveal_times(st, options_start, len(options[:4]))
+        if t < 0.04:
+            logger.info("fill_blank option reveal: %s (%s)",
+                        [round(x, 2) for x in reveal],
+                        "measured" if measured else "FALLBACK constant stagger")
         draw = _draw_option_cards(t, draw, frame, options, correct,
-                                  show_answer, options_start, answer_time)
+                                  show_answer, options_start, answer_time,
+                                  reveal_times=reveal)
 
     # ── 3. Timer bar + countdown number ─────────────────────────────
     cd3 = seg_start(st, 'countdown_3', 0)

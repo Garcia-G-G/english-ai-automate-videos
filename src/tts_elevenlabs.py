@@ -440,6 +440,76 @@ def generate_segment_audio(
     return duration
 
 
+def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
+                       stability, similarity_boost, english_words,
+                       add_audio, add_silence, add_segment, seg_ids,
+                       label_text=lambda lab: f"Opción {lab},"):
+    """Speak an options block as one TTS call PER PART, measuring every clip.
+
+    Extracted from generate_quiz_audio_segmented so quiz and fill_blank share
+    one implementation. They differ only in their labels (A-D vs 1-4) and
+    their transition line; the structure — transition, then
+    label | spliced silence | word, each measured — is identical.
+
+    Two defects this shape fixes, both first found on quiz in Step 3:
+
+      invented boundaries  A single combined call has no per-option
+                           timestamps, so the old code guessed them with
+                           transition_duration = 1.5 and options_duration / 4.
+                           Measured on a real quiz the option starts were off
+                           by up to 0.70 s.
+      letter elision       "Opción A, fábrica." in one utterance is heard as
+                           "Opción afábrica" — the model elides a bare vowel
+                           into the word after it. Separate clips with spliced
+                           silence give it nothing to elide within.
+
+    Returns the list of per-option {'id','start','end'} spans, so a renderer
+    can reveal each card when its own option is actually spoken instead of on
+    a fixed stagger.
+    """
+    spans = []
+
+    trans_path = os.path.join(temp_dir, "opt_transition.mp3")
+    generate_segment_audio(
+        text=transition_text, output_path=trans_path, voice_id=voice_id,
+        stability=stability, similarity_boost=similarity_boost,
+        segment_type='transition', english_words=english_words,
+    )
+    t_start, _t_end, _d, t_end_speech = add_audio(trans_path)
+    add_segment('transition', transition_text, t_start, t_end_speech)
+    add_silence(PAUSE_BETWEEN_OPTIONS)
+
+    for i, (lab, word) in enumerate(zip(labels, words)):
+        lab_path = os.path.join(temp_dir, f"opt_{lab}_label.mp3")
+        generate_segment_audio(
+            text=label_text(lab), output_path=lab_path, voice_id=voice_id,
+            stability=stability, similarity_boost=similarity_boost,
+            segment_type='options', english_words=english_words,
+        )
+        lab_start, _le, _ld, _lab_end_speech = add_audio(lab_path)
+
+        # The gap that makes the label its own token. Spliced silence, not a
+        # punctuation hint the model is free to ignore.
+        add_silence(PAUSE_LETTER_TO_WORD)
+
+        word_path = os.path.join(temp_dir, f"opt_{lab}_word.mp3")
+        generate_segment_audio(
+            text=f"{word}.", output_path=word_path, voice_id=voice_id,
+            stability=stability, similarity_boost=similarity_boost,
+            segment_type='options', english_words=english_words,
+        )
+        _ws, _we, _wd, word_end_speech = add_audio(word_path)
+
+        seg_id = seg_ids[i]
+        add_segment(seg_id, f"{label_text(lab)} {word}.", lab_start, word_end_speech)
+        spans.append({'id': seg_id, 'start': lab_start, 'end': word_end_speech})
+
+        if i < len(labels) - 1:
+            add_silence(PAUSE_BETWEEN_OPTIONS)
+
+    return spans
+
+
 def generate_quiz_audio_segmented(
     script: dict,
     output_path: str,
@@ -586,64 +656,16 @@ def generate_quiz_audio_segmented(
         # is no single utterance for it to elide within.
         logger.info("[2-3] OPTIONS (split: letter | silence | word)")
 
-        option_words = {}
-        for letter in ['A', 'B', 'C', 'D']:
-            option_words[letter] = options.get(letter, '').strip("'\"")
-
-        # -- transition, measured --
-        trans_path = os.path.join(temp_dir, "transition.mp3")
-        generate_segment_audio(
-            text="Escucha las opciones.",
-            output_path=trans_path,
-            voice_id=voice_id,
-            stability=stability,
-            similarity_boost=similarity_boost,
-            segment_type='transition',
+        emit_split_options(
+            labels=['A', 'B', 'C', 'D'],
+            words=[options.get(L, '').strip("'\"") for L in ['A', 'B', 'C', 'D']],
+            transition_text="Escucha las opciones.",
+            temp_dir=temp_dir, voice_id=voice_id,
+            stability=stability, similarity_boost=similarity_boost,
             english_words=english_words,
+            add_audio=add_audio, add_silence=add_silence, add_segment=add_segment,
+            seg_ids=['option_a', 'option_b', 'option_c', 'option_d'],
         )
-        trans_start, trans_end, _, trans_end_speech = add_audio(trans_path)
-        add_segment('transition', 'Escucha las opciones.', trans_start, trans_end_speech)
-        add_silence(PAUSE_BETWEEN_OPTIONS)
-
-        # -- each option: "Opción X," | silence | "word." --
-        for i, letter in enumerate(['A', 'B', 'C', 'D']):
-            word = option_words[letter]
-
-            letter_path = os.path.join(temp_dir, f"option_{letter}_letter.mp3")
-            generate_segment_audio(
-                text=f"Opción {letter},",
-                output_path=letter_path,
-                voice_id=voice_id,
-                stability=stability,
-                similarity_boost=similarity_boost,
-                segment_type='options',
-                english_words=english_words,
-            )
-            letter_start, _letter_end, _, letter_end_speech = add_audio(letter_path)
-
-            # The gap that makes the letter its own token. Spliced silence,
-            # not a punctuation hint the model is free to ignore.
-            add_silence(PAUSE_LETTER_TO_WORD)
-
-            word_path = os.path.join(temp_dir, f"option_{letter}_word.mp3")
-            generate_segment_audio(
-                text=f"{word}.",
-                output_path=word_path,
-                voice_id=voice_id,
-                stability=stability,
-                similarity_boost=similarity_boost,
-                segment_type='options',
-                english_words=english_words,
-            )
-            _word_start, word_end, _, word_end_speech = add_audio(word_path)
-
-            # Measured span: start of the letter to end of the word.
-            add_segment(f'option_{letter.lower()}',
-                        f"Opción {letter}, {word}.",
-                        letter_start, word_end_speech)
-
-            if i < 3:
-                add_silence(PAUSE_BETWEEN_OPTIONS)
 
         add_silence(PAUSE_AFTER_OPTION)
 
@@ -876,21 +898,39 @@ def generate_fill_blank_audio_segmented(
         add_segment('sentence', sentence_text, s_start, s_end_speech)
         add_silence(PAUSE_AFTER_QUESTION)
 
-        # 2. OPTIONS
-        logger.info("[2] OPTIONS")
-        option_lines = ["Aquí van las opciones."]
-        for i, opt in enumerate(options[:4]):
-            option_lines.append(f"Opción {i+1}, {opt}.")
-        combined_text = " ".join(option_lines)
+        # 2. OPTIONS — one TTS call per part, every boundary measured.
+        #
+        # Was a single combined call: "Aquí van las opciones. Opción 1, eat.
+        # Opción 2, ..." — about 11 s of narration with 22-32% of it internal
+        # silence, over a screen that stopped changing 0.4 s in. Retention
+        # measured on two published fill_blanks decays through exactly that
+        # window (see _audit/RETENTION_BASELINE.md), and the equivalent quiz
+        # block was split for the same reason in Step 3.
+        #
+        # Same helper as quiz. The only differences are the labels (1-4 rather
+        # than A-D) and the transition line.
+        logger.info("[2] OPTIONS (split: label | silence | word)")
+        opt_words = [str(o).strip("'\"") for o in options[:4]]
+        opt_labels = [str(i + 1) for i in range(len(opt_words))]
+        opt_seg_ids = [f"option_{i + 1}" for i in range(len(opt_words))]
 
-        opt_path = os.path.join(temp_dir, "options.mp3")
-        generate_segment_audio(
-            text=combined_text, output_path=opt_path, voice_id=voice_id,
+        block_start = running_time
+        option_spans = emit_split_options(
+            labels=opt_labels, words=opt_words,
+            transition_text="Aquí van las opciones.",
+            temp_dir=temp_dir, voice_id=voice_id,
             stability=stability, similarity_boost=similarity_boost,
-            segment_type='options', english_words=english_words,
+            english_words=english_words,
+            add_audio=add_audio, add_silence=add_silence, add_segment=add_segment,
+            seg_ids=opt_seg_ids,
         )
-        opt_start, opt_end, _, opt_end_speech = add_audio(opt_path)
-        add_segment('options', combined_text, opt_start, opt_end_speech)
+
+        # Keep the whole-block `options` segment as well. The renderer and the
+        # QA gate both read it, and dropping it would break them for the sake
+        # of a rename; the per-option spans are additive.
+        add_segment('options', "Aquí van las opciones. " +
+                    " ".join(f"Opción {l}, {w}." for l, w in zip(opt_labels, opt_words)),
+                    block_start, option_spans[-1]['end'] if option_spans else block_start)
         add_silence(PAUSE_AFTER_OPTION)
 
         # 3. THINK
