@@ -42,13 +42,44 @@ PAUSE_AFTER_OPTION = 0.6
 #
 # 0.30 rather than 0.25 leaves 50 ms of margin so mp3 frame quantisation and
 # the gate's -45 dB edge detection cannot round a passing clip under the bar.
+# PINNED BY THE 300ms FLOOR — do not lower without re-measuring.
+#
+# The MEASURED gap is this splice plus whatever leading/trailing silence the
+# two clips happen to carry, and that contribution is not controllable and
+# varies wildly: measured across two scripts it ranged 0.020s to 0.312s. At
+# the worst observed edge (0.020s) a splice of 0.30 measures 0.320s — only
+# 20ms of headroom over the 300ms floor and 70ms over the gate's 250ms bar.
+# Any reduction here risks a gap that fails the gate on some scripts and
+# passes on others, which is the worst possible failure shape.
 PAUSE_LETTER_TO_WORD = 0.30
 
 # Must stay comfortably LARGER than PAUSE_LETTER_TO_WORD. The QA gate
 # separates the two by size to tell "gap inside one option" from "gap between
 # two options", and a listener needs the same cue to hear four options rather
 # than eight fragments. 2:1 keeps both unambiguous.
-PAUSE_BETWEEN_OPTIONS = 0.60
+# LOWERED 0.60 -> 0.15 to claw back block duration after the R1 split.
+#
+# BUDGET, measured on continuous_vs_continual:
+#   block = speech + clip-intrinsic silence + 4*PBO + 4*PLW
+# With PLW pinned at 0.30 by the floor above, reaching the pre-R1 11.12s
+# needs PBO = -0.09. It is NOT reachable; the floor at PBO=0 is ~11.6s.
+#
+# MEASURED RESULT: 13.958s -> 12.984s. The arithmetic says 4*0.45 = 1.80s
+# should have come off; only 0.974s did.
+#
+# THE DOMINANT TERM IS NOT THESE CONSTANTS. Clip-intrinsic silence — the
+# leading/trailing quiet inside each of the nine TTS clips — measured 1.957s
+# in one run and 2.916s in another OF THE SAME SCRIPT. That ~1s of run-to-run
+# variance is larger than half the savings these constants can produce, so
+# block duration is only loosely controllable from here. Trimming it (the
+# measure_speech_end helper already computes where each clip's speech ends)
+# would remove ~2s AND make both gaps exactly what these numbers say.
+#
+# A predicted inversion did NOT occur, and the prediction is recorded because
+# it was wrong: at 0.15 the between-option gap still MEASURES larger than the
+# letter-to-word gap (0.710-0.992 vs 0.473-0.552), because the word clips
+# carry 0.56-0.84s of their own trailing silence. The grouping cue survives.
+PAUSE_BETWEEN_OPTIONS = 0.15
 PAUSE_AFTER_THINK = 1.5      # Gap after "piensa bien" before countdown starts
 PAUSE_AFTER_COUNTDOWN = 1.0  # Keep: good pacing between numbers
 PAUSE_AFTER_LAST_COUNT = 1.0 # Increased: dramatic pause before answer reveal
