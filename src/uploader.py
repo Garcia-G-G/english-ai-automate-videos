@@ -47,8 +47,11 @@ YOUTUBE_UPLOAD_URL = "https://www.googleapis.com/upload/youtube/v3/videos"
 YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/videos"
 YOUTUBE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 YOUTUBE_TOKEN_URL = "https://oauth2.googleapis.com/token"
-YOUTUBE_SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
-
+YOUTUBE_SCOPES = [
+    "https://www.googleapis.com/auth/youtube.upload",
+    "https://www.googleapis.com/auth/youtube.readonly",
+    "https://www.googleapis.com/auth/yt-analytics.readonly",
+]
 INSTAGRAM_GRAPH_URL = "https://graph.facebook.com/v19.0"
 
 # Retry / polling settings
@@ -584,13 +587,38 @@ class YouTubeUploader(BaseUploader):
             logger.error("YouTube client ID/secret not set in environment.")
             return False
 
-        if self._token_data and not self._token_expired():
-            logger.info("YouTube: reusing existing token.")
-            return True
-
-        if self._token_data and self._token_data.get("refresh_token"):
-            if self._refresh_token():
+        # SCOPE CHECK BEFORE ANY REUSE.
+        #
+        # This is why widening YOUTUBE_SCOPES did nothing. Both shortcuts below
+        # test only whether the stored token is UNEXPIRED, never whether it
+        # still covers what the code now asks for:
+        #
+        #   reuse    an unexpired narrow token returns True, and the first
+        #            call to a newly-needed endpoint 403s with
+        #            ACCESS_TOKEN_SCOPE_INSUFFICIENT — far from the cause
+        #   refresh  worse, because it LOOKS like it should fix it. A refresh
+        #            exchanges a refresh_token for a new access_token carrying
+        #            THE SAME SCOPES THE ORIGINAL GRANT HAD. Google will never
+        #            widen scope on refresh; only a fresh consent does that.
+        #
+        # So editing the constant produced a token that was valid, unexpired,
+        # refreshable, and still missing the scope — with no error anywhere
+        # until an API call failed. A missing scope now forces full re-consent
+        # regardless of expiry.
+        missing = self._missing_scopes()
+        if missing:
+            logger.warning(
+                "YouTube: stored token is missing %d required scope(s): %s. "
+                "A refresh cannot add them — forcing re-consent.",
+                len(missing), ", ".join(s.rsplit("/", 1)[-1] for s in missing))
+        else:
+            if self._token_data and not self._token_expired():
+                logger.info("YouTube: reusing existing token.")
                 return True
+
+            if self._token_data and self._token_data.get("refresh_token"):
+                if self._refresh_token():
+                    return True
 
         # OAuth2 authorization-code flow over a loopback listener.
         #
@@ -777,6 +805,19 @@ class YouTubeUploader(BaseUploader):
         if not self._token_data:
             return True
         return time.time() >= self._token_data.get("expires_at", 0) - 60
+
+    def _missing_scopes(self) -> list:
+        """Scopes YOUTUBE_SCOPES requires that the stored token does not have.
+
+        Google returns the granted scopes as a space-separated `scope` string
+        on the token response. A token with no `scope` field at all is treated
+        as satisfying nothing: it predates this check, and assuming it is
+        adequate is exactly the failure mode being fixed.
+        """
+        if not self._token_data:
+            return list(YOUTUBE_SCOPES)
+        granted = set((self._token_data.get("scope") or "").split())
+        return [s for s in YOUTUBE_SCOPES if s not in granted]
 
     def _exchange_code(self, code: str, redirect_uri: str) -> bool:
         # redirect_uri is passed in, not hardcoded: Google requires it to
@@ -1218,6 +1259,12 @@ def _describe_token(platform: str) -> dict:
         "error": error,
         "has_refresh_token": bool(data.get("refresh_token")),
         "scope": data.get("scope"),
+        # Surfaced locally so a narrow token is visible in `status` without
+        # waiting for an API call to 403. A token can be present, valid and
+        # refreshable while still lacking a scope the code now needs.
+        "missing_scopes": ([s for s in YOUTUBE_SCOPES
+                            if s not in set((data.get("scope") or "").split())]
+                           if platform == "youtube" else []),
     }
 
 
@@ -1396,6 +1443,9 @@ def cmd_status() -> int:
         if info.get("present") and not info.get("has_access_token"):
             detail = (f"CORRUPT — no access_token"
                       + (f", stored error: {info['error']}" if info.get("error") else ""))
+        if info.get("missing_scopes"):
+            short = ", ".join(x.rsplit("/", 1)[-1] for x in info["missing_scopes"])
+            detail = f"MISSING SCOPES: {short} — re-run auth"
         print(f"{name:12}{configured:>12}"
               f"{('yes' if info['present'] else 'no'):>9}"
               f"{('yes' if info.get('valid') else 'no'):>8}"
