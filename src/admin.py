@@ -388,6 +388,45 @@ def unapprove_video(video_path: Path):
         shutil.move(str(meta_path), str(dest_dir / meta_path.name))
 
 
+def _record_upload(st_module, video: dict, platform: str, result,
+                   sent_title: str, sent_description: str,
+                   sent_hashtags: list) -> None:
+    """Persist the publication, and SHOUT if that fails.
+
+    A video that is live but unrecorded is worse than a failed upload: a
+    failure can be retried, an unrecorded success has to be found by hand on
+    the platform. So a recording failure is surfaced in the UI rather than
+    swallowed — the upload itself already succeeded and cannot be undone, but
+    the operator has to know the id was lost.
+    """
+    from publication_log import PublicationRecordError, record_publication
+
+    upload_id = (result.get("upload_id") if isinstance(result, dict)
+                 else getattr(result, "upload_id", None))
+    url = (result.get("url") if isinstance(result, dict)
+           else getattr(result, "url", None))
+
+    try:
+        record_publication(
+            artifact=video["name"],
+            video_path=str(video["path"]),
+            video_type=video.get("type", ""),
+            platform=platform,
+            upload_id=upload_id,
+            url=url,
+            published_title=sent_title,
+            published_description=sent_description,
+            hashtags=sent_hashtags,
+        )
+    except PublicationRecordError as exc:
+        logger.exception("publication record failed")
+        st_module.error(
+            f"⚠️ Uploaded to {platform} (id={upload_id}) but FAILED TO RECORD "
+            f"it: {exc}. The video is live and this repo cannot name it — "
+            f"note the id now."
+        )
+
+
 def reconcile_platform_target(state: dict, platform_name: str,
                               enabled: bool) -> bool:
     """Decide what the upload-target checkbox should show, and store it.
@@ -1453,19 +1492,29 @@ elif page == "Upload":
                             upload_platforms = []
                             for platform_name in target_platforms:
                                 platform_key = platform_map.get(platform_name, platform_name.lower())
+                                # Build the EXACT strings once, then send and
+                                # record the same variables. Composing the
+                                # payload inside the call meant the record and
+                                # the request could describe different text.
+                                sent_title = vid_title[:100]
+                                sent_desc = vid_desc
+                                sent_tags = [t.lstrip("#") for t in vid_tags]
                                 with st.spinner(f"Uploading to {platform_name}..."):
                                     result = manager.upload(
                                         platform_key,
                                         str(video["path"]),
-                                        title=vid_title[:100],
-                                        description=f"{vid_desc}\n\n{' '.join(vid_tags)}",
-                                        hashtags=[t.lstrip("#") for t in vid_tags]
+                                        title=sent_title,
+                                        description=sent_desc,
+                                        hashtags=sent_tags,
                                     )
                                     success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
                                     if success:
                                         st.success(f"Uploaded to {platform_name}!")
                                         upload_success = True
                                         upload_platforms.append(platform_name)
+                                        _record_upload(
+                                            st, video, platform_key, result,
+                                            sent_title, sent_desc, sent_tags)
                                         st.session_state.upload_history.append({
                                             "video": video["name"],
                                             "platform": platform_name,
@@ -1559,6 +1608,10 @@ elif page == "Upload":
                             if success:
                                 any_success = True
                                 platforms_done.append(pname)
+                                _record_upload(
+                                    st, video, pkey, result,
+                                    adapted["title"], adapted["description"],
+                                    adapted["hashtags"])
 
                         if any_success and video["path"].exists():
                             move_to_uploaded(video["path"], {
