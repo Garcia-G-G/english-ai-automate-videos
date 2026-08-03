@@ -32,7 +32,7 @@ from tts_common import (
     extract_english_words_from_script,
     PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
     PAUSE_AFTER_ANSWER, PAUSE_AFTER_EXPLANATION,
-    PAUSE_LETTER_TO_WORD, PAUSE_BETWEEN_OPTIONS,
+    PAUSE_LETTER_TO_WORD, PAUSE_BETWEEN_OPTIONS, trim_clip_silence,
 )
 from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
@@ -468,6 +468,23 @@ def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
     a fixed stagger.
     """
     spans = []
+    trimmed_total = 0.0
+
+    def _trim(path):
+        """Trim to measured speech, leaving TRIM_TAIL_PAD.
+
+        Clip-intrinsic silence is 36% of a raw options block and — worse —
+        NOT REPRODUCIBLE: the same script produced 1.957s of it on one run and
+        2.916s on another, so block duration could not be compared between
+        renders. Trimming to a measured boundary is what makes it
+        deterministic; the shorter block is the secondary benefit.
+        """
+        nonlocal trimmed_total
+        r = trim_clip_silence(path)
+        trimmed_total += r["before"] - r["after"]
+        if not r["trimmed"] and r["reason"]:
+            logger.debug("no trim on %s: %s", os.path.basename(path), r["reason"])
+        return r
 
     trans_path = os.path.join(temp_dir, "opt_transition.mp3")
     generate_segment_audio(
@@ -475,6 +492,7 @@ def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
         stability=stability, similarity_boost=similarity_boost,
         segment_type='transition', english_words=english_words,
     )
+    _trim(trans_path)
     t_start, _t_end, _d, t_end_speech = add_audio(trans_path)
     add_segment('transition', transition_text, t_start, t_end_speech)
     add_silence(PAUSE_BETWEEN_OPTIONS)
@@ -486,6 +504,7 @@ def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
             stability=stability, similarity_boost=similarity_boost,
             segment_type='options', english_words=english_words,
         )
+        _trim(lab_path)
         lab_start, _le, _ld, _lab_end_speech = add_audio(lab_path)
 
         # The gap that makes the label its own token. Spliced silence, not a
@@ -498,6 +517,7 @@ def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
             stability=stability, similarity_boost=similarity_boost,
             segment_type='options', english_words=english_words,
         )
+        _trim(word_path)
         _ws, _we, _wd, word_end_speech = add_audio(word_path)
 
         seg_id = seg_ids[i]
@@ -507,6 +527,8 @@ def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
         if i < len(labels) - 1:
             add_silence(PAUSE_BETWEEN_OPTIONS)
 
+    logger.info("options: trimmed %.3fs of clip-intrinsic silence across %d clips",
+                trimmed_total, 1 + 2 * len(labels))
     return spans
 
 

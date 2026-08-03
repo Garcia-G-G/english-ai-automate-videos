@@ -10,6 +10,7 @@ Single source of truth for:
 """
 
 import logging
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -57,29 +58,25 @@ PAUSE_LETTER_TO_WORD = 0.30
 # separates the two by size to tell "gap inside one option" from "gap between
 # two options", and a listener needs the same cue to hear four options rather
 # than eight fragments. 2:1 keeps both unambiguous.
-# LOWERED 0.60 -> 0.15 to claw back block duration after the R1 split.
+# RAISED BACK 0.15 -> 0.40 now that clip-intrinsic silence is trimmed.
 #
-# BUDGET, measured on continuous_vs_continual:
-#   block = speech + clip-intrinsic silence + 4*PBO + 4*PLW
-# With PLW pinned at 0.30 by the floor above, reaching the pre-R1 11.12s
-# needs PBO = -0.09. It is NOT reachable; the floor at PBO=0 is ~11.6s.
+# 0.15 was a compromise forced by silence we did not control: with each clip
+# carrying 0.5-1.4s of its own trailing quiet, the only way to shorten the
+# block was to shrink the deliberate gaps. Trimming removes ~4.3s of that, so
+# the gaps can be what they should be.
 #
-# MEASURED RESULT: 13.958s -> 12.984s. The arithmetic says 4*0.45 = 1.80s
-# should have come off; only 0.974s did.
+# 0.40 keeps the ORDERING intact — the gap between two options must read as
+# larger than the gap inside one, or the label stops grouping with its word.
+# With the clips trimmed, the measured gaps are now essentially the constants
+# themselves (the deliberate 0.08s tail sits below silencedetect's 0.10s
+# window), so 0.40 vs 0.30 is a real 1.33:1 separation rather than one masked
+# by whatever silence the model happened to emit.
 #
-# THE DOMINANT TERM IS NOT THESE CONSTANTS. Clip-intrinsic silence — the
-# leading/trailing quiet inside each of the nine TTS clips — measured 1.957s
-# in one run and 2.916s in another OF THE SAME SCRIPT. That ~1s of run-to-run
-# variance is larger than half the savings these constants can produce, so
-# block duration is only loosely controllable from here. Trimming it (the
-# measure_speech_end helper already computes where each clip's speech ends)
-# would remove ~2s AND make both gaps exactly what these numbers say.
-#
-# A predicted inversion did NOT occur, and the prediction is recorded because
-# it was wrong: at 0.15 the between-option gap still MEASURES larger than the
-# letter-to-word gap (0.710-0.992 vs 0.473-0.552), because the word clips
-# carry 0.56-0.84s of their own trailing silence. The grouping cue survives.
-PAUSE_BETWEEN_OPTIONS = 0.15
+# The prediction that 0.15 would invert the ordering was refuted at the time
+# ONLY because clip trailing silence was inflating the between-option gap.
+# Remove that and the prediction holds, which is why this goes back up in the
+# SAME commit as the trim rather than after it.
+PAUSE_BETWEEN_OPTIONS = 0.40
 PAUSE_AFTER_THINK = 1.5      # Gap after "piensa bien" before countdown starts
 PAUSE_AFTER_COUNTDOWN = 1.0  # Keep: good pacing between numbers
 PAUSE_AFTER_LAST_COUNT = 1.0 # Increased: dramatic pause before answer reveal
@@ -254,6 +251,130 @@ def measure_speech_end(audio_path: str, threshold_db: float = None,
     if last_end >= duration - 0.05 and last_start > 0:
         return min(last_start, duration)
     return duration
+
+
+#: Deliberate tail left on every trimmed clip.
+#:
+#: NOT zero. Trimming to the exact speech end cuts the decay of a final
+#: consonant — the release of a plosive, the fade of a fricative — and sounds
+#: clipped. 0.08s preserves it.
+#:
+#: It is also deliberately BELOW SPEECH_EDGE_MIN_DUR (0.10s), so the tail we
+#: leave is shorter than silencedetect's own detection window. The tail
+#: therefore never registers as a silence region, which means the gaps a
+#: listener and the QA gate measure are exactly the spliced constants —
+#: deterministic by construction rather than by luck.
+TRIM_TAIL_PAD = 0.08
+
+#: Leading silence is already small (0-0.096s measured), so this only avoids
+#: clipping the attack of the first phoneme.
+TRIM_LEAD_PAD = 0.02
+
+
+def measure_speech_start(audio_path: str, threshold_db: float = None,
+                         min_dur: float = 0.03) -> float:
+    """Offset where speech STARTS, i.e. the length of the leading silence.
+
+    Uses a shorter min_dur than measure_speech_end because leading silence is
+    an order of magnitude smaller — measured 0.000s to 0.096s across real
+    option clips, all of which would be invisible at the 0.10s window.
+    """
+    import re
+    import subprocess
+
+    threshold_db = SPEECH_EDGE_THRESHOLD_DB if threshold_db is None else threshold_db
+    try:
+        proc = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
+             f"silencedetect=noise={threshold_db}dB:d={min_dur}",
+             "-f", "null", "-"],
+            capture_output=True, text=True, timeout=60,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return 0.0
+
+    spans, start = [], None
+    for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
+        if kind == "start":
+            start = float(value)
+        elif start is not None:
+            spans.append((start, float(value)))
+            start = None
+    # Leading silence only counts if it begins at the very top of the file.
+    if spans and spans[0][0] <= 0.02:
+        return spans[0][1]
+    return 0.0
+
+
+def trim_clip_silence(audio_path: str, out_path: str = None) -> dict:
+    """Trim a TTS clip to its speech, leaving TRIM_TAIL_PAD at the end.
+
+    WHY: measured across nine real option clips, 4.87s of 13.36s — 36% — was
+    leading or trailing silence, and the word clips were up to 67% silence
+    ("dessert." is 0.743s of speech in a 2.160s file). That silence is also
+    NON-REPRODUCIBLE: the same script produced 1.957s of it on one run and
+    2.916s on another, which made block duration unmeasurable.
+
+    NEVER CUTS SPEECH. The trim is computed from measured boundaries and then
+    verified: if the trimmed clip does not retain the speech the original had,
+    the original is kept and a warning is logged. Losing a word to save 200ms
+    is not a trade worth making silently.
+
+    Returns a dict describing what happened, so a caller can log or assert on
+    it rather than trusting that it worked.
+    """
+    import subprocess
+
+    out_path = out_path or audio_path
+    before = get_audio_duration(audio_path)
+    lead = measure_speech_start(audio_path)
+    speech_end = measure_speech_end(audio_path)
+
+    start = max(0.0, lead - TRIM_LEAD_PAD)
+    end = min(before, speech_end + TRIM_TAIL_PAD)
+    result = {"path": audio_path, "before": before, "lead": lead,
+              "speech_end": speech_end, "start": start, "end": end,
+              "trimmed": False, "after": before, "reason": None}
+
+    if end - start < 0.05:
+        result["reason"] = "would leave under 50ms; refusing"
+        return result
+    if before - (end - start) < 0.02:
+        result["reason"] = "nothing meaningful to remove"
+        return result
+
+    tmp = f"{out_path}.trim.mp3"
+    try:
+        proc = subprocess.run(
+            ["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{start:.3f}",
+             "-to", f"{end:.3f}", "-i", audio_path, "-c:a", "libmp3lame",
+             "-q:a", "2", "-ar", "44100", "-ac", "1", tmp],
+            capture_output=True, text=True, timeout=60,
+        )
+        if proc.returncode != 0 or not os.path.exists(tmp):
+            result["reason"] = f"ffmpeg failed: {proc.stderr[:120]}"
+            return result
+
+        # OVER-TRIM GUARD. Compare the speech actually retained against the
+        # speech the original carried; a shortfall means we cut into it.
+        orig_speech = speech_end - lead
+        new_speech = measure_speech_end(tmp) - measure_speech_start(tmp)
+        if new_speech + 0.05 < orig_speech:
+            logger.warning("trim would lose speech in %s (%.3fs -> %.3fs); keeping original",
+                           audio_path, orig_speech, new_speech)
+            result["reason"] = "over-trim guard tripped"
+            os.remove(tmp)
+            return result
+
+        os.replace(tmp, out_path)
+        result.update(trimmed=True, after=get_audio_duration(out_path))
+        return result
+    finally:
+        if os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
 
 
 def get_audio_duration(audio_path: str) -> float:
