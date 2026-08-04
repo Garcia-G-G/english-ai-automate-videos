@@ -120,6 +120,47 @@ def record_publication(
     return row
 
 
+def record_upload_result(*, artifact: str, video_path: str, video_type: str,
+                         platform: str, result, sent_title: str,
+                         sent_description: str, sent_hashtags: List[str],
+                         ledger_path: Optional[Path] = None) -> Dict:
+    """Record a publication from an uploader `result`, whatever shape it is.
+
+    THE ONLY RECORDER. It lives here rather than in admin.py because admin.py
+    imports streamlit at module scope, and the headless path in main.py — the
+    one unattended publishing will run — cannot pay that import or the
+    dashboard-level side effects (basicConfig, load_dotenv) that come with it.
+    A second recorder in main.py was the alternative, and two recorders drift.
+
+    The result shape is normalised HERE for the same reason. `manager.upload()`
+    returns an UploadResult from some backends and a plain dict from others,
+    and every caller that unpacks it by hand is a place the id can be dropped
+    silently — which is exactly how the ids were lost before the ledger
+    existed.
+
+    Raises PublicationRecordError. Callers must handle it: the upload has
+    already happened and cannot be undone, so a failure here means a video is
+    live that this repo cannot name. That is louder-than-usual by design.
+    """
+    upload_id = (result.get("upload_id") if isinstance(result, dict)
+                 else getattr(result, "upload_id", None))
+    url = (result.get("url") if isinstance(result, dict)
+           else getattr(result, "url", None))
+
+    return record_publication(
+        artifact=artifact,
+        video_path=video_path,
+        video_type=video_type,
+        platform=platform,
+        upload_id=upload_id,
+        url=url,
+        published_title=sent_title,
+        published_description=sent_description,
+        hashtags=sent_hashtags,
+        ledger_path=ledger_path,
+    )
+
+
 def read_ledger(ledger_path: Optional[Path] = None) -> List[Dict]:
     """Every recorded publication, oldest first. Bad lines are skipped loudly."""
     path = Path(ledger_path) if ledger_path else LEDGER_PATH

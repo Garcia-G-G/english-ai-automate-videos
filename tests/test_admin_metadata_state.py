@@ -336,16 +336,55 @@ def test_blank_session_title_does_not_shadow_generated_metadata():
     assert got["source"] == "generated"
 
 
-def test_both_upload_paths_use_the_one_resolver():
+def test_all_three_upload_paths_use_the_one_resolver():
     """They used to disagree; a second call to generate_metadata inside an
-    upload handler is how they drifted apart."""
-    src = ADMIN.read_text(encoding="utf-8")
+    upload handler is how they drifted apart.
 
-    assert src.count("resolve_upload_metadata(") >= 3, (
-        "expected the definition plus both upload call sites")
-    assert "adapted = adapt_for_platform(meta, pkey)" not in src, (
+    This counted call sites inside admin.py while the definition also lived
+    there. The definition has since moved to upload_metadata.py so main.py's
+    headless path can import it without streamlit — and main.py was the THIRD
+    path, which had its own inline copy the whole time. Counting per file is
+    what the check actually meant.
+    """
+    admin_src = ADMIN.read_text(encoding="utf-8")
+    main_src = (ROOT / "main.py").read_text(encoding="utf-8")
+
+    assert admin_src.count("resolve_upload_metadata(") >= 2, (
+        "expected both dashboard upload call sites")
+    assert "resolve_upload_metadata(" in main_src, (
+        "main.py --batch --upload is resolving its own metadata again")
+
+    assert "adapted = adapt_for_platform(meta, pkey)" not in admin_src, (
         "bulk upload is adapting generated metadata again, bypassing the "
         "operator's text")
+    assert "adapt_for_platform(meta, platform_key)" not in main_src, (
+        "main.py is adapting generated metadata inline again")
+
+
+def test_the_resolver_is_defined_once_and_is_importable_headless():
+    """upload_metadata.py must not pull in streamlit, or main.py cannot use
+    it — which is the reason main.py had its own copy."""
+    import ast
+    defs = 0
+    for f in ("src/admin.py", "src/upload_metadata.py", "main.py"):
+        tree = ast.parse((ROOT / f).read_text(encoding="utf-8"))
+        defs += sum(1 for n in ast.walk(tree)
+                    if isinstance(n, ast.FunctionDef)
+                    and n.name == "resolve_upload_metadata")
+    assert defs == 1, f"expected one definition, found {defs}"
+
+    # AST, not a substring: the module's own docstring explains WHY it avoids
+    # streamlit, and a text search trips on that explanation.
+    tree = ast.parse((ROOT / "src" / "upload_metadata.py").read_text(encoding="utf-8"))
+    imported = set()
+    for n in ast.walk(tree):
+        if isinstance(n, ast.Import):
+            imported |= {a.name.split(".")[0] for a in n.names}
+        elif isinstance(n, ast.ImportFrom) and n.module:
+            imported.add(n.module.split(".")[0])
+
+    assert "streamlit" not in imported, (
+        "upload_metadata imports streamlit; main.py cannot use it headless")
 
 
 if __name__ == "__main__":
