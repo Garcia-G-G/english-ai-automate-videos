@@ -398,32 +398,29 @@ def _record_upload(st_module, video: dict, platform: str, result,
     the platform. So a recording failure is surfaced in the UI rather than
     swallowed — the upload itself already succeeded and cannot be undone, but
     the operator has to know the id was lost.
-    """
-    from publication_log import PublicationRecordError, record_publication
 
-    upload_id = (result.get("upload_id") if isinstance(result, dict)
-                 else getattr(result, "upload_id", None))
-    url = (result.get("url") if isinstance(result, dict)
-           else getattr(result, "url", None))
+    This is now only the UI half. The recording itself lives in
+    publication_log.record_upload_result, so main.py's headless path uses the
+    same recorder rather than a second one that could drift from it.
+    """
+    from publication_log import PublicationRecordError, record_upload_result
 
     try:
-        record_publication(
+        record_upload_result(
             artifact=video["name"],
             video_path=str(video["path"]),
             video_type=video.get("type", ""),
             platform=platform,
-            upload_id=upload_id,
-            url=url,
-            published_title=sent_title,
-            published_description=sent_description,
-            hashtags=sent_hashtags,
+            result=result,
+            sent_title=sent_title,
+            sent_description=sent_description,
+            sent_hashtags=sent_hashtags,
         )
     except PublicationRecordError as exc:
         logger.exception("publication record failed")
         st_module.error(
-            f"⚠️ Uploaded to {platform} (id={upload_id}) but FAILED TO RECORD "
-            f"it: {exc}. The video is live and this repo cannot name it — "
-            f"note the id now."
+            f"⚠️ Uploaded to {platform} but FAILED TO RECORD it: {exc}. "
+            f"The video is live and this repo cannot name it — note the id now."
         )
 
 
@@ -472,65 +469,13 @@ def reconcile_platform_target(state: dict, platform_name: str,
     return state[key]
 
 
-def metadata_session_keys(video_name: str) -> tuple:
-    """The three session_state keys the Upload page edits for one video."""
-    return (f"meta_title_{video_name}", f"meta_desc_{video_name}",
-            f"meta_tags_{video_name}")
-
-
-def resolve_upload_metadata(video_name: str, script: dict, platform: str,
-                            video_type: str = "educational",
-                            category: str = "", state: dict = None) -> dict:
-    """The title/description/hashtags that will actually be PUBLISHED.
-
-    ONE resolver for both upload paths. They used to disagree:
-
-      single upload  read st.session_state — the operator's text
-      bulk upload    called generate_metadata(script, ...) at upload time and
-                     never looked at session_state at all
-
-    So a bulk upload published metadata the operator never saw, while the
-    screen showed something else. That is worse than the regeneration bug it
-    sat behind, because it looks like it worked.
-
-    WHAT THE OPERATOR APPROVED WINS. If the session holds edited or
-    regenerated text, it is used verbatim for every platform — the operator
-    already chose it, and silently re-adapting it per platform would be the
-    same class of substitution. Only when the session has nothing do we
-    generate and adapt.
-    """
-    state = {} if state is None else state
-    title_key, desc_key, tags_key = metadata_session_keys(video_name)
-
-    from metadata_generator import (adapt_for_platform, compose_description,
-                                    generate_metadata)
-
-    approved_title = (state.get(title_key) or "").strip()
-    approved_desc = (state.get(desc_key) or "").strip()
-    approved_tags = (state.get(tags_key) or "").split()
-
-    if approved_title:
-        tags = [t.lstrip("#") for t in approved_tags]
-        return {
-            "title": approved_title,
-            # Composed HERE, through the one composer, because the operator
-            # edits the body and the hashtags in two separate fields and the
-            # uploader no longer joins them. Item 1 briefly sent the raw body
-            # alone, which would have published the operator's text with no
-            # hashtags at all.
-            "description": compose_description(approved_desc, tags),
-            "hashtags": tags,
-            "source": "session",       # surfaced so a dry run can prove it
-        }
-
-    adapted = adapt_for_platform(
-        generate_metadata(script, video_type, category), platform)
-    return {
-        "title": adapted["title"],
-        "description": adapted["description"],
-        "hashtags": [h.lstrip("#") for h in adapted["hashtags"]],
-        "source": "generated",
-    }
+# The resolver moved to upload_metadata.py so main.py's headless upload path
+# can import it without pulling in streamlit and this module's import-time
+# side effects. Re-exported here because both dashboard call sites below, and
+# the tests, reach it as admin.resolve_upload_metadata.
+from upload_metadata import (  # noqa: E402,F401
+    NO_OPERATOR_EDITS, metadata_session_keys, resolve_upload_metadata,
+)
 
 
 def move_to_uploaded(video_path: Path, upload_info: dict = None):

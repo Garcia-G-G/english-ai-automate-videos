@@ -134,74 +134,155 @@ def list_scripts():
             logger.info("    %s: %s...", rel_path, hook)
 
 
-def upload_video(video_path: Path, video_type: str, script_data: dict = None, platforms: list = None):
-    """Upload a video to configured social platforms."""
+def upload_video(video_path: Path, video_type: str, script_data: dict = None,
+                 platforms: list = None, artifact: str = None) -> dict:
+    """Upload a video to configured social platforms, and RECORD each success.
+
+    This is the path `--batch N --upload` runs, i.e. the one that will publish
+    unattended. Two things about it were wrong.
+
+    IT NEVER RECORDED ANYTHING. `publication_log` had zero callers outside
+    admin.py, so an unattended publication left no trace this repo could join
+    to the live video — the exact defect the ledger was written to fix, at the
+    one place with no operator watching. It now goes through the same
+    `record_upload_result` the dashboard uses.
+
+    IT RESOLVED ITS OWN METADATA. It called generate_metadata +
+    adapt_for_platform inline, a third copy of the resolver, so it could drift
+    from what the dashboard publishes for the same script. It now calls
+    `resolve_upload_metadata` with NO_OPERATOR_EDITS — headless, so there is
+    no operator text, and it says so explicitly instead of relying on a
+    default. Behaviour is unchanged: with an empty state the resolver runs the
+    same generate + adapt it replaced.
+
+    RETURNS a summary rather than None, and does NOT swallow. The old body was
+    wrapped in a bare `except Exception` that logged one line and returned, so
+    in batch mode an upload failure was invisible to the caller. Errors are
+    now logged with a traceback and returned in `errors`. What a batch should
+    DO about a failure — abort, continue, exit non-zero — is deliberately not
+    decided here; the caller gets the facts to decide with.
+    """
+    from publication_log import PublicationRecordError, record_upload_result
+    from upload_metadata import NO_OPERATOR_EDITS, resolve_upload_metadata
+
+    artifact = artifact or Path(video_path).stem
+    outcome = {"artifact": artifact, "uploaded": [], "recorded": [],
+               "unrecorded": [], "errors": []}
+
     try:
         from uploader import UploadManager, VideoMetadata
         import yaml
+    except ImportError as e:
+        logger.exception("upload module not available")
+        outcome["errors"].append({"platform": None, "stage": "import",
+                                  "error": str(e)})
+        return outcome
 
-        # Load config for hashtags
-        config_path = ROOT / "config.yaml"
-        config = {}
-        if config_path.exists():
-            with open(config_path) as f:
-                config = yaml.safe_load(f) or {}
+    config_path = ROOT / "config.yaml"
+    config = {}
+    if config_path.exists():
+        with open(config_path) as f:
+            config = yaml.safe_load(f) or {}
 
-        upload_config = config.get("upload", {})
-        if platforms is None:
-            platforms = upload_config.get("platforms", [])
+    upload_config = config.get("upload", {})
+    if platforms is None:
+        platforms = upload_config.get("platforms", [])
 
-        if not platforms:
-            logger.warning("No upload platforms configured. Add platforms to config.yaml upload.platforms")
-            return
+    if not platforms:
+        logger.warning("No upload platforms configured. Add platforms to config.yaml upload.platforms")
+        return outcome
 
-        # Generate rich metadata from script
-        from metadata_generator import generate_metadata, adapt_for_platform
+    category = ""
+    if script_data:
+        category = script_data.get("_meta", {}).get("category", "")
 
-        category = ""
-        if script_data:
-            category = script_data.get("_meta", {}).get("category", "")
-        meta = generate_metadata(script_data or {}, video_type, category)
+    platform_map = {"tiktok": "tiktok", "youtube": "youtube", "instagram": "instagram"}
+    manager = UploadManager()
 
-        platform_map = {"tiktok": "tiktok", "youtube": "youtube", "instagram": "instagram"}
-        manager = UploadManager()
+    for platform_name in platforms:
+        platform_key = platform_map.get(platform_name.lower(), platform_name.lower())
 
-        for platform_name in platforms:
-            platform_key = platform_map.get(platform_name.lower(), platform_name.lower())
-            adapted = adapt_for_platform(meta, platform_key)
+        try:
+            resolved = resolve_upload_metadata(
+                artifact, script_data or {}, platform_key, video_type,
+                category, NO_OPERATOR_EDITS,
+            )
 
             metadata = VideoMetadata(
-                title=adapted["title"],
-                description=adapted["description"],
-                hashtags=[h.lstrip("#") for h in adapted["hashtags"]],
+                title=resolved["title"],
+                description=resolved["description"],
+                hashtags=[h.lstrip("#") for h in resolved["hashtags"]],
                 privacy="public",
             )
 
-            logger.info("Uploading to %s: '%s'", platform_name, adapted["title"][:60])
+            # The strings the API is actually handed. record_upload_result
+            # documents that these -- not the pre-adaptation text -- are what
+            # must be recorded, so they are captured from the same locals the
+            # upload call reads rather than recomposed afterwards.
+            sent_title = metadata.title
+            sent_description = metadata.full_description
+            sent_hashtags = metadata.hashtags
+
+            logger.info("Uploading to %s (%s metadata): '%s'",
+                        platform_name, resolved["source"], sent_title[:60])
 
             result = manager.upload(
                 platform_key,
                 str(video_path),
-                title=metadata.title,
-                description=metadata.full_description,
-                hashtags=metadata.hashtags,
+                title=sent_title,
+                description=sent_description,
+                hashtags=sent_hashtags,
             )
+        except Exception as e:                          # noqa: BLE001
+            # Kept per-platform: a YouTube failure must not stop Instagram,
+            # and it must not vanish either.
+            logger.exception("Upload to %s raised", platform_name)
+            outcome["errors"].append({"platform": platform_name,
+                                      "stage": "upload", "error": str(e)})
+            continue
 
-            if hasattr(result, 'success'):
-                if result.success:
-                    logger.info("Uploaded to %s: %s", platform_name, result.url or result.upload_id)
-                else:
-                    logger.error("Upload to %s failed: %s", platform_name, result.error)
-            elif isinstance(result, dict):
-                if result.get("success"):
-                    logger.info("Uploaded to %s", platform_name)
-                else:
-                    logger.error("Upload to %s failed: %s", platform_name, result.get("error"))
+        if isinstance(result, dict):
+            success = bool(result.get("success"))
+            error = result.get("error")
+            ident = result.get("url") or result.get("upload_id")
+        else:
+            success = bool(getattr(result, "success", False))
+            error = getattr(result, "error", None)
+            ident = getattr(result, "url", None) or getattr(result, "upload_id", None)
 
-    except ImportError as e:
-        logger.error("Upload module not available: %s", e)
-    except Exception as e:
-        logger.error("Upload failed: %s", e)
+        if not success:
+            logger.error("Upload to %s failed: %s", platform_name, error)
+            outcome["errors"].append({"platform": platform_name,
+                                      "stage": "upload", "error": str(error)})
+            continue
+
+        logger.info("Uploaded to %s: %s", platform_name, ident)
+        outcome["uploaded"].append(platform_name)
+
+        try:
+            record_upload_result(
+                artifact=artifact,
+                video_path=str(video_path),
+                video_type=video_type or "",
+                platform=platform_key,
+                result=result,
+                sent_title=sent_title,
+                sent_description=sent_description,
+                sent_hashtags=sent_hashtags,
+            )
+            outcome["recorded"].append(platform_name)
+        except PublicationRecordError as exc:
+            # The upload already happened. There is no operator to show a
+            # banner to, so this is CRITICAL and carried in the outcome: a
+            # video is live that this repo cannot name.
+            logger.critical(
+                "PUBLISHED BUT NOT RECORDED: %s -> %s (%s). %s",
+                artifact, platform_name, ident, exc)
+            outcome["unrecorded"].append(platform_name)
+            outcome["errors"].append({"platform": platform_name,
+                                      "stage": "record", "error": str(exc)})
+
+    return outcome
 
 
 def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None,
@@ -271,7 +352,14 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
     # Step 4: Upload (if requested)
     if upload and video_result:
         logger.info("STEP 4: Uploading to social platforms...")
-        upload_video(video_result, video_type, script_data)
+        # video_result.stem is the ledger key, matching the dashboard's
+        # video["name"] (admin.py:315) so both paths write joinable rows.
+        outcome = upload_video(video_result, video_type, script_data,
+                               artifact=video_result.stem)
+        if outcome.get("errors"):
+            logger.error("Upload finished with %d error(s) for %s: %s",
+                         len(outcome["errors"]), outcome["artifact"],
+                         outcome["errors"])
 
     return video_result
 

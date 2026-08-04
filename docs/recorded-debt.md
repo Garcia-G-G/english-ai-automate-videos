@@ -222,3 +222,20 @@ the upload path keeps exactly its current import-time behaviour. Moving it to
 module scope would be tidier and is safe as far as anyone can tell, but it
 changes import-time side effects for every existing caller — a Step 5
 decision, not a drive-by.
+
+## `_build_fallback_title` re-randomises per platform
+
+`generate_metadata` falls back to `random.choice(TITLE_TEMPLATES[...])` when
+the script carries no `video_title`. Both admin's bulk path and — since
+main.py joined the shared resolver — main.py call the resolver once per
+platform, so on such a script YouTube and TikTok can be handed different
+fallback titles for the same video.
+
+main.py previously called `generate_metadata` once and adapted per platform,
+which did not have this property. Joining the shared resolver traded that away
+for having one resolver instead of three; the trade is deliberate.
+
+Not reachable for anything `--batch` renders today: all 12 most recent scripts
+carry `video_title`. The 160 scripts in `output/scripts` without one are
+pre-April artifacts. Fixing it properly means splitting generate from adapt in
+the resolver's contract, which changes admin's two paths as well.
