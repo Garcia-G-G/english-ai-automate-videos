@@ -134,6 +134,46 @@ def list_scripts():
             logger.info("    %s: %s...", rel_path, hook)
 
 
+def move_uploaded_artifact(video_path: Path, outcome: dict) -> Path:
+    """Move a published video (and its sidecar) to output/uploaded/<type>/.
+
+    Mirrors admin.move_to_uploaded, which this path never had. Returns the new
+    location, or the original path if nothing was moved.
+
+    Deliberately called only when a publication was RECORDED. Moving on a bare
+    upload success would take the file out of reach while the ledger still
+    said nothing was published — the worst of both states.
+    """
+    import shutil
+
+    uploaded_dir = OUTPUT_DIR / "uploaded" / (video_path.parent.name or "unknown")
+    uploaded_dir.mkdir(parents=True, exist_ok=True)
+    dest = uploaded_dir / video_path.name
+
+    if dest.exists():
+        logger.warning("%s already exists in uploaded/; leaving %s in place",
+                       dest.name, video_path)
+        return video_path
+
+    shutil.move(str(video_path), str(dest))
+    sidecar = video_path.with_suffix(".json")
+    if sidecar.exists():
+        info = {"platforms": outcome.get("recorded", []),
+                "uploaded_at": datetime.now().isoformat()}
+        try:
+            data = json.loads(sidecar.read_text(encoding="utf-8"))
+            if isinstance(data, dict):
+                data["upload_info"] = info
+                sidecar.write_text(json.dumps(data, indent=2, ensure_ascii=False),
+                                   encoding="utf-8")
+        except (json.JSONDecodeError, OSError):
+            logger.warning("could not annotate %s with upload_info", sidecar)
+        shutil.move(str(sidecar), str(uploaded_dir / sidecar.name))
+
+    logger.info("moved %s -> %s", video_path.name, uploaded_dir)
+    return dest
+
+
 def upload_video(video_path: Path, video_type: str, script_data: dict = None,
                  platforms: list = None, artifact: str = None) -> dict:
     """Upload a video to configured social platforms, and RECORD each success.
@@ -162,12 +202,16 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
     DO about a failure — abort, continue, exit non-zero — is deliberately not
     decided here; the caller gets the facts to decide with.
     """
-    from publication_log import PublicationRecordError, record_upload_result
+    from publication_log import (ATTEMPT_FAILED, ATTEMPT_PUBLISHED,
+                                 ATTEMPT_SESSION, ATTEMPT_STARTED,
+                                 PublicationRecordError, record_attempt,
+                                 record_upload_result)
+    from upload_guard import SKIP_DONE, SKIP_HOLD, decide
     from upload_metadata import NO_OPERATOR_EDITS, resolve_upload_metadata
 
     artifact = artifact or Path(video_path).stem
     outcome = {"artifact": artifact, "uploaded": [], "recorded": [],
-               "unrecorded": [], "errors": []}
+               "unrecorded": [], "skipped": [], "held": [], "errors": []}
 
     try:
         from uploader import UploadManager, VideoMetadata
@@ -202,6 +246,26 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
     for platform_name in platforms:
         platform_key = platform_map.get(platform_name.lower(), platform_name.lower())
 
+        # IDEMPOTENCY. Ask before uploading, not after. See upload_guard.
+        verdict = decide(artifact, platform_key, manager=manager)
+        if verdict.action == SKIP_DONE:
+            logger.info("Skipping %s: %s (id=%s)", platform_name,
+                        verdict.reason, verdict.upload_id)
+            outcome["skipped"].append(platform_name)
+            if verdict.recovered:
+                outcome["recorded"].append(platform_name)
+            continue
+        if verdict.action == SKIP_HOLD:
+            logger.critical(
+                "HOLDING %s -> %s: %s. NOT uploading and NOT marking failed; "
+                "a human must check whether it is already live.",
+                artifact, platform_name, verdict.reason)
+            outcome["held"].append(platform_name)
+            outcome["errors"].append({"platform": platform_name,
+                                      "stage": "guard",
+                                      "error": verdict.reason})
+            continue
+
         try:
             resolved = resolve_upload_metadata(
                 artifact, script_data or {}, platform_key, video_type,
@@ -226,12 +290,28 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
             logger.info("Uploading to %s (%s metadata): '%s'",
                         platform_name, resolved["source"], sent_title[:60])
 
+            # The attempt lands BEFORE a byte moves. If this process dies
+            # anywhere below, the next run sees an open attempt instead of
+            # "never uploaded" and reconciles rather than re-publishing.
+            file_size = Path(video_path).stat().st_size
+            record_attempt(artifact=artifact, platform=platform_key,
+                           status=ATTEMPT_STARTED, video_path=str(video_path),
+                           file_size=file_size, detail=sent_title)
+
+            def _session(uri, size, _p=platform_key, _t=sent_title):
+                """Called by the uploader the moment the resumable session
+                exists and before any video bytes are sent."""
+                record_attempt(artifact=artifact, platform=_p,
+                               status=ATTEMPT_SESSION, video_path=str(video_path),
+                               session_uri=uri, file_size=size, detail=_t)
+
             result = manager.upload(
                 platform_key,
                 str(video_path),
                 title=sent_title,
                 description=sent_description,
                 hashtags=sent_hashtags,
+                on_session=_session,
             )
         except Exception as e:                          # noqa: BLE001
             # Kept per-platform: a YouTube failure must not stop Instagram,
@@ -245,13 +325,24 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
             success = bool(result.get("success"))
             error = result.get("error")
             ident = result.get("url") or result.get("upload_id")
+            got_id = result.get("upload_id")
+            session_uri = result.get("session_uri")
         else:
             success = bool(getattr(result, "success", False))
             error = getattr(result, "error", None)
             ident = getattr(result, "url", None) or getattr(result, "upload_id", None)
+            got_id = getattr(result, "upload_id", None)
+            session_uri = getattr(result, "session_uri", None)
 
         if not success:
             logger.error("Upload to %s failed: %s", platform_name, error)
+            # Close the attempt ONLY when the platform said it failed. An
+            # attempt left open would hold every future run; one closed on a
+            # guess would let a live video be published twice.
+            record_attempt(artifact=artifact, platform=platform_key,
+                           status=ATTEMPT_FAILED, video_path=str(video_path),
+                           session_uri=session_uri, file_size=file_size,
+                           detail=str(error))
             outcome["errors"].append({"platform": platform_name,
                                       "stage": "upload", "error": str(error)})
             continue
@@ -271,6 +362,10 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
                 sent_hashtags=sent_hashtags,
             )
             outcome["recorded"].append(platform_name)
+            record_attempt(artifact=artifact, platform=platform_key,
+                           status=ATTEMPT_PUBLISHED, video_path=str(video_path),
+                           session_uri=session_uri, upload_id=got_id,
+                           file_size=file_size, detail="recorded")
         except PublicationRecordError as exc:
             # The upload already happened. There is no operator to show a
             # banner to, so this is CRITICAL and carried in the outcome: a
@@ -278,9 +373,30 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
             logger.critical(
                 "PUBLISHED BUT NOT RECORDED: %s -> %s (%s). %s",
                 artifact, platform_name, ident, exc)
+            # The attempt row is what saves the next run. It stays OPEN
+            # (status=session) carrying the URI and now the id, so the guard
+            # reconciles instead of publishing a second copy.
+            record_attempt(artifact=artifact, platform=platform_key,
+                           status=ATTEMPT_SESSION, video_path=str(video_path),
+                           session_uri=session_uri, upload_id=got_id,
+                           file_size=file_size,
+                           detail=f"published but record failed: {exc}")
             outcome["unrecorded"].append(platform_name)
             outcome["errors"].append({"platform": platform_name,
                                       "stage": "record", "error": str(exc)})
+
+    # SECOND DUPLICATE VECTOR. This path never moved the file the way
+    # admin.move_to_uploaded does, so a published video stayed in the render
+    # tree looking unpublished. Only moved once a publication is RECORDED --
+    # moving on a bare upload success would hide the file while the ledger
+    # still said nothing was published, which is the worst of both states.
+    if outcome["recorded"]:
+        try:
+            move_uploaded_artifact(video_path, outcome)
+        except Exception:                                  # noqa: BLE001
+            logger.exception(
+                "could not move %s out of the render tree; the ledger still "
+                "records the publication", video_path)
 
     return outcome
 

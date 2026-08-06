@@ -235,7 +235,57 @@ main.py previously called `generate_metadata` once and adapted per platform,
 which did not have this property. Joining the shared resolver traded that away
 for having one resolver instead of three; the trade is deliberate.
 
-Not reachable for anything `--batch` renders today: all 12 most recent scripts
-carry `video_title`. The 160 scripts in `output/scripts` without one are
-pre-April artifacts. Fixing it properly means splitting generate from adapt in
-the resolver's contract, which changes admin's two paths as well.
+ASLEEP BY CODE, NOT BY DATA — checked 2026-08-06. The earlier note said this
+was unreachable because recent scripts happen to carry `video_title`, which
+would be a property of GPT output and could change on any prompt edit. It is
+stronger than that.
+
+`script_schema` marks `video_title` Optional, so the schema alone guarantees
+nothing. But `validate_and_clean_script` (script_generator.py:849-853)
+synthesises a fallback for every script, and `generate_script` calls it on the
+`--batch` path. Verified on a real script of each of the five types with
+`video_title` deleted: all five came back with one.
+
+The single path that SKIPS the synthesis is the early return on a missing
+required field (script_generator.py:655-658). That cannot reach an upload:
+the legacy `required_fields` map and the pydantic required set are identical
+per type, so any script that takes the early return also raises at validation
+point 1 and never renders.
+
+So the fallback title cannot fire unattended. Fixing the per-platform
+re-randomisation properly still means splitting generate from adapt in the
+resolver's contract, which changes admin's two paths as well.
+
+## The idempotency key is (artifact name, platform) — and what it misses
+
+The guard added for the duplicate-publication defect keys on the artifact
+name plus the platform, matching what the ledger and `unrecorded_platforms`
+already key on. A content hash would be a truer identity, but introducing a
+second identity would mean two guards that can disagree about whether the
+same video is published, and disagreement is how the first duplicate
+happened.
+
+THE CASE IT DOES NOT COVER: **the same artifact name for different content.**
+Re-render a topic to fix a bad video, keep the name, and the guard reads the
+old publication row and refuses to publish the new file — silently, forever,
+because a skip is not an error. This is the T3 failure mode moved one step
+back.
+
+Normal renders are safe: names carry a timestamp
+(`foodie_20260731_163822`), so a re-render gets a new name and publishes.
+The exposed route is `--name` / `run_from_text`, where the operator supplies
+a name with no timestamp; publishing twice under one name is then indist-
+inguishable from a duplicate.
+
+Not fixed here because the safe direction is the one it already takes:
+refusing to publish is recoverable by a human, a second live video is not.
+The escape hatch when it bites is to remove the artifact's ledger row, which
+is a deliberate append-only violation and should stay manual.
+
+SECOND HOLE: a resumable session URI that 404s. Google's protocol says an
+expired URI tells you nothing about whether the upload completed first, so
+the guard HOLDS — it neither retries nor skips, and logs CRITICAL. That is a
+video needing a human to check the channel by hand. It cannot be resolved
+from the session alone; resolving it automatically would mean matching
+recent channel uploads by title, which is a fuzzy match on the one decision
+that must not be fuzzy.

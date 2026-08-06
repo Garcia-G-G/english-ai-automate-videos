@@ -50,14 +50,22 @@ def rig(tmp_path, monkeypatch):
     ledger = tmp_path / "ledger.jsonl"
     monkeypatch.setattr(PL, "LEDGER_PATH", ledger)
     monkeypatch.setattr(PL, "LEDGER_DIR", tmp_path)
+    # The idempotency work added an attempt log and a post-publish file move.
+    # Both must land in tmp_path, not in the repo's real output/.
+    monkeypatch.setattr(PL, "ATTEMPTS_PATH", tmp_path / "attempts.jsonl")
+    monkeypatch.setattr(main, "OUTPUT_DIR", tmp_path)
 
     sent = []
 
     class FakeManager:
+        # on_session is passed by the real manager.upload as of the
+        # idempotency change; the stub must accept it.
         def upload(self, platform, path, title=None, description=None,
-                   hashtags=None):
+                   hashtags=None, on_session=None):
             sent.append({"platform": platform, "path": path, "title": title,
                          "description": description, "hashtags": hashtags})
+            if on_session:
+                on_session("https://upload.example/s/1", 17)
             return rig.result
 
     fake_uploader = types.ModuleType("uploader")

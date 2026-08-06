@@ -320,6 +320,23 @@ def get_pending_videos() -> list:
 
 
 def get_approved_videos() -> list:
+    """Videos awaiting upload, each annotated with what the ledger knows.
+
+    THE SECOND DUPLICATE VECTOR. main.py never moves an uploaded file the way
+    move_to_uploaded does for the dashboard, so an already-published video
+    stays sitting in approved/ where this function lists it as ready to
+    upload. The operator then uploads it again BY HAND — and a hand upload is
+    exactly how hPdSoqjvu3E happened.
+
+    Moving the file (main.py now does) is not sufficient on its own: a move
+    can fail, a re-render puts the file back, and the operator can move it
+    back. The ledger is the authority on what is published, so the list
+    consults it. The two fixes cover different failure modes and both are
+    applied — the move keeps disk state honest, this keeps the DECISION
+    honest even when disk state is not.
+    """
+    from publication_log import find_by_artifact
+
     videos = []
     if not APPROVED_DIR.exists():
         return videos
@@ -331,11 +348,15 @@ def get_approved_videos() -> list:
                 if meta_file.exists():
                     with open(meta_file, 'r') as f:
                         meta = json.load(f)
+                published = find_by_artifact(video_file.stem)
                 videos.append({
                     "path": video_file,
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "published_to": sorted({r.get("platform") for r in published
+                                            if r.get("platform")}),
+                    "published_rows": published,
                     "created": datetime.fromtimestamp(video_file.stat().st_mtime)
                 })
     return sorted(videos, key=lambda x: x["created"], reverse=True)
@@ -388,6 +409,82 @@ def unapprove_video(video_path: Path):
         shutil.move(str(meta_path), str(dest_dir / meta_path.name))
 
 
+def _guard_decide(artifact: str, platform: str, manager=None):
+    """Ask the idempotency guard before uploading. See upload_guard."""
+    from upload_guard import decide
+    return decide(artifact, platform, manager=manager)
+
+
+def _guard_notice(st_module, artifact: str, platform_label: str, verdict) -> None:
+    """Tell the operator why an upload did not happen.
+
+    A guard that silently skips is indistinguishable from a broken button,
+    and the operator's next move would be to upload by hand — which is the
+    route that produced the duplicate in the first place.
+    """
+    from upload_guard import SKIP_DONE
+    if verdict.action == SKIP_DONE:
+        st_module.info(
+            f"⏭️ {platform_label}: already published"
+            + (f" (id={verdict.upload_id})" if verdict.upload_id else "")
+            + f" — {verdict.reason}. Not uploading again."
+        )
+    else:
+        st_module.warning(
+            f"⏸️ {platform_label}: HELD — {verdict.reason}. This video may "
+            f"already be live. Check the channel before forcing an upload."
+        )
+
+
+def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
+                    **kwargs):
+    """manager.upload, with the attempt persisted before a byte is sent.
+
+    The dashboard needs this for the same reason main.py does: the window
+    between a live video and its ledger row is structural, not specific to
+    the unattended path.
+    """
+    import os as _os
+
+    from publication_log import (ATTEMPT_FAILED, ATTEMPT_PUBLISHED,
+                                 ATTEMPT_SESSION, ATTEMPT_STARTED,
+                                 record_attempt)
+
+    try:
+        size = _os.path.getsize(video_path)
+    except OSError:
+        size = 0
+
+    record_attempt(artifact=artifact, platform=platform,
+                   status=ATTEMPT_STARTED, video_path=video_path,
+                   file_size=size, detail=str(kwargs.get("title", ""))[:120])
+
+    def _session(uri, sz):
+        record_attempt(artifact=artifact, platform=platform,
+                       status=ATTEMPT_SESSION, video_path=video_path,
+                       session_uri=uri, file_size=sz,
+                       detail=str(kwargs.get("title", ""))[:120])
+
+    result = manager.upload(platform, video_path, on_session=_session, **kwargs)
+
+    ok = (result.get("success") if isinstance(result, dict)
+          else getattr(result, "success", False))
+    uri = (result.get("session_uri") if isinstance(result, dict)
+           else getattr(result, "session_uri", None))
+    vid = (result.get("upload_id") if isinstance(result, dict)
+           else getattr(result, "upload_id", None))
+
+    # On success the attempt is closed only AFTER _record_upload writes the
+    # ledger row, so it is left open here deliberately. On failure it is
+    # closed now, because the platform said nothing was created.
+    if not ok:
+        record_attempt(artifact=artifact, platform=platform,
+                       status=ATTEMPT_FAILED, video_path=video_path,
+                       session_uri=uri, file_size=size,
+                       detail=str(result)[:200])
+    return result
+
+
 def _record_upload(st_module, video: dict, platform: str, result,
                    sent_title: str, sent_description: str,
                    sent_hashtags: list) -> None:
@@ -403,7 +500,14 @@ def _record_upload(st_module, video: dict, platform: str, result,
     publication_log.record_upload_result, so main.py's headless path uses the
     same recorder rather than a second one that could drift from it.
     """
-    from publication_log import PublicationRecordError, record_upload_result
+    from publication_log import (ATTEMPT_PUBLISHED, ATTEMPT_SESSION,
+                                 PublicationRecordError, record_attempt,
+                                 record_upload_result)
+
+    uri = (result.get("session_uri") if isinstance(result, dict)
+           else getattr(result, "session_uri", None))
+    vid = (result.get("upload_id") if isinstance(result, dict)
+           else getattr(result, "upload_id", None))
 
     try:
         record_upload_result(
@@ -416,8 +520,18 @@ def _record_upload(st_module, video: dict, platform: str, result,
             sent_description=sent_description,
             sent_hashtags=sent_hashtags,
         )
+        # Only now is the attempt closed: the video is live AND named.
+        record_attempt(artifact=video["name"], platform=platform,
+                       status=ATTEMPT_PUBLISHED, video_path=str(video["path"]),
+                       session_uri=uri, upload_id=vid, detail="recorded")
     except PublicationRecordError as exc:
         logger.exception("publication record failed")
+        # Leave the attempt OPEN, now carrying the id. That open row is what
+        # stops the next run from publishing a second copy.
+        record_attempt(artifact=video["name"], platform=platform,
+                       status=ATTEMPT_SESSION, video_path=str(video["path"]),
+                       session_uri=uri, upload_id=vid,
+                       detail=f"published but record failed: {exc}")
         st_module.error(
             f"⚠️ Uploaded to {platform} but FAILED TO RECORD it: {exc}. "
             f"The video is live and this repo cannot name it — note the id now."
@@ -1307,6 +1421,21 @@ elif page == "Upload":
                 with col1:
                     st.write(f"**{video['name']}**")
                     st.caption(f"{video['type']} | {video['created'].strftime('%Y-%m-%d %H:%M')}")
+                    # A published video can still be sitting here (main.py did
+                    # not move it, or a move failed). Say so before the
+                    # operator presses upload — the manual route is how the
+                    # first duplicate happened.
+                    if video.get("published_to"):
+                        ids = ", ".join(
+                            f"{r.get('platform')}={r.get('upload_id')}"
+                            for r in video.get("published_rows", [])
+                            if r.get("upload_id"))
+                        st.warning(
+                            f"⚠️ ALREADY PUBLISHED to "
+                            f"{', '.join(video['published_to'])}"
+                            + (f" ({ids})" if ids else "")
+                            + ". Uploading again would create a duplicate."
+                        )
                     if video["path"].exists():
                         with st.expander("Preview Video"):
                             st.video(str(video["path"]))
@@ -1451,8 +1580,18 @@ elif page == "Upload":
                                 sent_title = vid_title[:100]
                                 sent_desc = vid_desc
                                 sent_tags = [t.lstrip("#") for t in vid_tags]
+                                # IDEMPOTENCY. Same guard as the headless
+                                # path; the manual route is how the first
+                                # duplicate happened.
+                                _v = _guard_decide(video["name"], platform_key,
+                                                   manager=manager)
+                                if not _v.should_upload:
+                                    _guard_notice(st, video["name"], platform_name, _v)
+                                    continue
                                 with st.spinner(f"Uploading to {platform_name}..."):
-                                    result = manager.upload(
+                                    result = _guarded_upload(
+                                        manager,
+                                        video["name"],
                                         platform_key,
                                         str(video["path"]),
                                         title=sent_title,
@@ -1549,7 +1688,13 @@ elif page == "Upload":
                                 video.get("type", "educational"), category,
                                 st.session_state,
                             )
-                            result = manager.upload(
+                            _v = _guard_decide(video["name"], pkey, manager=manager)
+                            if not _v.should_upload:
+                                _guard_notice(st, video["name"], pname, _v)
+                                continue
+                            result = _guarded_upload(
+                                manager,
+                                video["name"],
                                 pkey,
                                 str(video["path"]),
                                 title=adapted["title"],
