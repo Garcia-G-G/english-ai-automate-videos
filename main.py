@@ -134,6 +134,32 @@ def list_scripts():
             logger.info("    %s: %s...", rel_path, hook)
 
 
+def _note_failure(entry: dict, stage: str, exc) -> None:
+    """Record a stage failure in the run report, if one is being kept.
+
+    Tolerant of entry=None so every existing caller of run_pipeline keeps
+    working unchanged, and tolerant of its own errors because a reporting bug
+    must never be what takes a batch down — that would be this module's own
+    defect, one level up.
+    """
+    if entry is None:
+        return
+    try:
+        entry.update(status="failed", stage=stage, reason=str(exc)[:1000])
+    except Exception:                                      # noqa: BLE001
+        logger.exception("could not record the %s failure in the report", stage)
+
+
+def _report_upload(entry: dict, outcome: dict) -> None:
+    if entry is None:
+        return
+    try:
+        from batch_report import record_upload_outcome
+        record_upload_outcome(entry, outcome)
+    except Exception:                                      # noqa: BLE001
+        logger.exception("could not fold the upload outcome into the report")
+
+
 def move_uploaded_artifact(video_path: Path, outcome: dict) -> Path:
     """Move a published video (and its sidecar) to output/uploaded/<type>/.
 
@@ -211,7 +237,8 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
 
     artifact = artifact or Path(video_path).stem
     outcome = {"artifact": artifact, "uploaded": [], "recorded": [],
-               "unrecorded": [], "skipped": [], "held": [], "errors": []}
+               "unrecorded": [], "skipped": [], "skip_details": [],
+               "held": [], "errors": []}
 
     try:
         from uploader import UploadManager, VideoMetadata
@@ -252,6 +279,12 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
             logger.info("Skipping %s: %s (id=%s)", platform_name,
                         verdict.reason, verdict.upload_id)
             outcome["skipped"].append(platform_name)
+            # Carry the id the guard believes is already live, so a skip in
+            # the batch report can be checked against the channel rather
+            # than taken on trust.
+            outcome["skip_details"].append({"platform": platform_name,
+                                            "upload_id": verdict.upload_id,
+                                            "reason": verdict.reason})
             if verdict.recovered:
                 outcome["recorded"].append(platform_name)
             continue
@@ -402,7 +435,8 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
 
 
 def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None,
-                 upload: bool = False, use_v2: bool = False, dry_run: bool = False) -> Path:
+                 upload: bool = False, use_v2: bool = False, dry_run: bool = False,
+                 entry: dict = None) -> Path:
     """Run the full pipeline from script to video."""
 
     # Profile default background (e.g. kids clips) when none was requested
@@ -433,6 +467,9 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
             script_data, audio_path, script_path=script_path, dry_run=dry_run)
     except (PipelineError, ValueError) as e:
         logger.error("TTS failed: %s", e)
+        # R1 took fill_blank to nine TTS calls per video, so this fires more
+        # often than it used to and nobody is watching when it does.
+        _note_failure(entry, "tts", e)
         return None
 
     if dry_run:
@@ -448,6 +485,7 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
                                     use_v2=use_v2)
     except PipelineError as e:
         logger.error("Video generation failed: %s", e)
+        _note_failure(entry, "render", e)
         return None
 
     logger.info("=" * 50)
@@ -476,6 +514,15 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
             logger.error("Upload finished with %d error(s) for %s: %s",
                          len(outcome["errors"]), outcome["artifact"],
                          outcome["errors"])
+        if entry is not None:
+            from batch_report import quarantine
+            entry["artifact_path"] = str(video_result)
+            _report_upload(entry, outcome)
+            # A video that failed to publish is quarantined so it is findable
+            # with a reason. Held/unrecorded ones are NOT moved: they may be
+            # live, and moving them would suggest they are not.
+            if entry["status"] == "failed" and not entry["needs_human"]:
+                quarantine(video_result, entry)
 
     return video_result
 
@@ -500,7 +547,7 @@ def run_from_text(text: str, name: str = None, video_type: str = "educational", 
 
 def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational",
                      background: str = None, upload: bool = False, use_v2: bool = False,
-                     dry_run: bool = False) -> Path:
+                     dry_run: bool = False, entry: dict = None) -> Path:
     """Generate a script with GPT and run the full pipeline."""
 
     logger.info("=" * 50)
@@ -514,6 +561,7 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
         script_data = generate_script(category, topic, video_type)
     except Exception as e:
         logger.error("Script generation failed: %s", e)
+        _note_failure(entry, "script", e)
         return None
 
     # Output name for pipeline
@@ -544,7 +592,7 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
 
     # Run rest of pipeline
     return run_pipeline(script_data, output_name, video_type, background, upload=upload,
-                        use_v2=use_v2, dry_run=dry_run)
+                        use_v2=use_v2, dry_run=dry_run, entry=entry)
 
 
 def main():
@@ -642,7 +690,10 @@ Examples:
 
     # Batch mode
     if args.batch:
+        from batch_report import BatchReport
+
         print(f"\nBatch mode: Generating {args.batch} {args.type} videos")
+        report = BatchReport(kind="batch")
         for i in range(args.batch):
             print(f"\n{'#'*50}")
             print(f"# VIDEO {i+1} of {args.batch} [{args.type}]")
@@ -651,8 +702,34 @@ Examples:
             category, topic = get_random_topic(
                 allowed_categories=ACTIVE_PROFILE.get("content", {}).get("categories"))
             topic_name = get_topic_name(topic)
-            generate_and_run(category, topic, topic_name, args.type, args.background,
-                             upload=args.upload, use_v2=args.v2, dry_run=args.dry_run)
+            entry = report.start_video(
+                topic_name.replace(" ", "_").lower(), args.type, topic_name)
+            try:
+                generate_and_run(category, topic, topic_name, args.type, args.background,
+                                 upload=args.upload, use_v2=args.v2,
+                                 dry_run=args.dry_run, entry=entry)
+            except Exception as exc:                       # noqa: BLE001
+                # ONE VIDEO MUST NEVER ABORT THE BATCH. Everything below
+                # already returns rather than raising, so this is the backstop
+                # for what nobody anticipated -- and it records rather than
+                # swallows.
+                logger.exception("video %d of %d raised", i + 1, args.batch)
+                _note_failure(entry, entry.get("stage") or "unknown", exc)
+
+        path = report.write()
+        c = report.counts()
+        print(f"\n{'#'*50}")
+        print(f"# BATCH COMPLETE: {c['published']} published, "
+              f"{c['skipped']} skipped, {c['failed']} failed, "
+              f"{c['needs_human']} NEED A HUMAN")
+        if report.needs_human:
+            print("#")
+            for item in report.needs_human:
+                print(f"#  !! {item['artifact']} / {item.get('platform')}: "
+                      f"{item.get('why')}")
+                print(f"#     {item.get('check')}")
+        print(f"# report: {path}")
+        print(f"{'#'*50}")
         return
 
     # Text mode
