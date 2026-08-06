@@ -78,6 +78,46 @@ ATTEMPT_FAILED = "failed"        # confirmed NOT live; safe to retry
 ATTEMPT_UNKNOWN = "unknown"      # could not be determined; needs a human
 
 
+#: The real files, captured at import before any test can monkeypatch them.
+_REAL_LEDGER = LEDGER_PATH
+_REAL_ATTEMPTS = ATTEMPTS_PATH
+
+
+def _refuse_real_path(path: Path) -> None:
+    """Under pytest, refuse to write to the real ledger or attempt log.
+
+    A test once wrote 13 fixture rows into the real attempts file. The ledger
+    is append-only and records irreversible events, so a poisoned row cannot
+    be rewritten away — only appended around. Same category as .tokens/: no
+    recovery story, so the protection has to be structural rather than
+    remembered.
+
+    tests/conftest.py redirects both paths for every test, which handles the
+    common case. This covers what a fixture cannot: a test that re-imports
+    this module, patches the globals back, computes a path itself, or spawns
+    a subprocess that inherits PYTEST_CURRENT_TEST.
+
+    Deliberately keyed on the RESOLVED path, not on the module global, so
+    reassigning LEDGER_PATH to the same file is still caught.
+    """
+    if "PYTEST_CURRENT_TEST" not in os.environ:
+        return
+    try:
+        resolved = Path(path).resolve()
+    except OSError:
+        return
+    for real, name in ((_REAL_LEDGER, "the publication ledger"),
+                       (_REAL_ATTEMPTS, "the attempt log")):
+        if resolved == Path(real).resolve():
+            raise PublicationRecordError(
+                f"REFUSING to write to {name} ({resolved}) from a test. "
+                f"It is append-only and records irreversible events, so a "
+                f"fixture row cannot be removed afterwards. Use the "
+                f"ledger_path/attempts_path argument or the autouse fixture "
+                f"in tests/conftest.py."
+            )
+
+
 class PublicationRecordError(RuntimeError):
     """Raised when a publication happened but could not be recorded.
 
@@ -111,6 +151,7 @@ def record_publication(
     Raises PublicationRecordError if the row cannot be persisted.
     """
     path = Path(ledger_path) if ledger_path else LEDGER_PATH
+    _refuse_real_path(path)
 
     row = {
         "schema": SCHEMA_VERSION,
@@ -241,6 +282,7 @@ def record_attempt(*, artifact: str, platform: str, status: str,
     — the caller checks the return value.
     """
     path = Path(attempts_path) if attempts_path else ATTEMPTS_PATH
+    _refuse_real_path(path)
 
     row = {
         "schema": SCHEMA_VERSION,
