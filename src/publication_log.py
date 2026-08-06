@@ -47,7 +47,35 @@ ROOT = Path(__file__).resolve().parent.parent
 LEDGER_DIR = ROOT / "output" / "published"
 LEDGER_PATH = LEDGER_DIR / "ledger.jsonl"
 
+#: Attempts live in their OWN file, not as status rows in the ledger.
+#:
+#: The append-only reasoning in the module docstring applies to both — an
+#: attempt is an event that cannot be un-happened either, so it gets the same
+#: append + fsync discipline. What does NOT carry over is the namespace.
+#:
+#: Every existing reader of the ledger means "this was published" by a row's
+#: existence. `unrecorded_platforms` is exactly that: a platform is recorded
+#: if a row names it. Putting attempt rows in the same file would silently
+#: change what that function returns — a platform with an open attempt and no
+#: publication would report as already recorded, and the guard would skip a
+#: video that was never published. Its existing tests would still pass,
+#: because they know nothing about attempts.
+#:
+#: The two files also have different lifecycles. A publication is an answer
+#: and never changes. An attempt is a QUESTION — "did this land?" — that gets
+#: resolved later by a second row. Keeping questions out of the answer log is
+#: what lets the answer log stay a set of facts.
+ATTEMPTS_PATH = LEDGER_DIR / "attempts.jsonl"
+
 SCHEMA_VERSION = 1
+
+#: Attempt lifecycle. Append-only: the latest row for an (artifact, platform)
+#: pair wins, earlier rows stay as history.
+ATTEMPT_STARTED = "started"      # about to upload; no bytes sent yet
+ATTEMPT_SESSION = "session"      # a resumable session URI exists
+ATTEMPT_PUBLISHED = "published"  # confirmed live, ledger row written
+ATTEMPT_FAILED = "failed"        # confirmed NOT live; safe to retry
+ATTEMPT_UNKNOWN = "unknown"      # could not be determined; needs a human
 
 
 class PublicationRecordError(RuntimeError):
@@ -187,6 +215,97 @@ def find_by_upload_id(upload_id: str, ledger_path: Optional[Path] = None) -> Opt
     for r in read_ledger(ledger_path):
         if r.get("upload_id") == upload_id:
             return r
+    return None
+
+
+def record_attempt(*, artifact: str, platform: str, status: str,
+                   video_path: str = "", session_uri: Optional[str] = None,
+                   upload_id: Optional[str] = None,
+                   file_size: Optional[int] = None,
+                   detail: str = "", attempts_path: Optional[Path] = None) -> Dict:
+    """Append one attempt event. Returns the row written.
+
+    Written BEFORE any bytes are uploaded. That is the whole point: between
+    `manager.upload()` returning a live video and `record_publication()`
+    running, nothing on disk said an upload was in flight, so a retry could
+    not tell "already published" from "never uploaded". hPdSoqjvu3E and
+    IvO969ZeQsM are that window — the same video, three minutes apart.
+
+    `session_uri` is the reconciliation handle. Querying it answers the
+    question definitively: Google returns 201 with the video resource if the
+    upload already completed, 308 if it did not. Every failure path in
+    uploader.py used to discard it.
+
+    Unlike record_publication this does NOT raise on failure. An attempt that
+    cannot be written is a reason to refuse the upload, not to crash after it
+    — the caller checks the return value.
+    """
+    path = Path(attempts_path) if attempts_path else ATTEMPTS_PATH
+
+    row = {
+        "schema": SCHEMA_VERSION,
+        "artifact": artifact,
+        "platform": platform,
+        "status": status,
+        "video_path": str(video_path),
+        "session_uri": session_uri,
+        "upload_id": upload_id,
+        "file_size": file_size,
+        "detail": detail,
+        "at": datetime.now().isoformat(),
+    }
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    line = json.dumps(row, ensure_ascii=False)
+    with open(path, "a", encoding="utf-8") as fh:
+        fh.write(line + "\n")
+        fh.flush()
+        os.fsync(fh.fileno())
+
+    logger.info("attempt %s: %s -> %s", status, artifact, platform)
+    return row
+
+
+def read_attempts(attempts_path: Optional[Path] = None) -> List[Dict]:
+    """Every attempt event, oldest first. Bad lines are skipped loudly."""
+    path = Path(attempts_path) if attempts_path else ATTEMPTS_PATH
+    if not path.exists():
+        return []
+    rows = []
+    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip():
+            continue
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError:
+            logger.error("attempts.jsonl:%d is not valid JSON; skipping", n)
+    return rows
+
+
+def latest_attempt(artifact: str, platform: str,
+                   attempts_path: Optional[Path] = None) -> Optional[Dict]:
+    """The most recent attempt row for this artifact+platform, or None.
+
+    Append-only means the state of an attempt is its LAST row, not its first.
+    A `started` row followed by a `failed` row is a closed attempt.
+    """
+    match = [r for r in read_attempts(attempts_path)
+             if r.get("artifact") == artifact and r.get("platform") == platform]
+    return match[-1] if match else None
+
+
+def open_attempt(artifact: str, platform: str,
+                 attempts_path: Optional[Path] = None) -> Optional[Dict]:
+    """An attempt that started and never reached a terminal state.
+
+    This is the dangerous state and the reason the guard cannot be
+    `unrecorded_platforms` alone: no publication row exists, so the ledger
+    says "never published", while the video may well be live.
+    """
+    row = latest_attempt(artifact, platform, attempts_path)
+    if row and row.get("status") in (ATTEMPT_STARTED, ATTEMPT_SESSION,
+                                     ATTEMPT_UNKNOWN):
+        return row
     return None
 
 

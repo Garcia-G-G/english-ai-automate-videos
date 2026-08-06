@@ -212,19 +212,31 @@ def test_upload_path_persists_the_id_returned_by_a_stubbed_api(ledger, monkeypat
 
 
 def test_both_admin_upload_paths_record(monkeypatch):
-    """AST guard: every manager.upload() success branch must record."""
+    """AST guard: every upload success branch must record.
+
+    This counted direct `manager.upload` calls back when the two dashboard
+    paths each made one. Both now go through `_guarded_upload`, which persists
+    an attempt before any byte is sent — so the call sites to count are the
+    wrapper's, and exactly one raw `manager.upload` should remain: the one
+    inside the wrapper.
+    """
     import ast
     src = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
 
     assert src.count("_record_upload(") >= 3, (
         "expected the helper definition plus both upload call sites")
+    assert src.count("_guarded_upload(") >= 3, (
+        "expected the wrapper definition plus both upload call sites")
+
     tree = ast.parse(src)
     uploads = [n for n in ast.walk(tree)
                if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
                and n.func.attr == "upload"
                and isinstance(n.func.value, ast.Name)
                and n.func.value.id == "manager"]
-    assert len(uploads) == 2, f"expected 2 manager.upload call sites, found {len(uploads)}"
+    assert len(uploads) == 1, (
+        f"expected exactly one raw manager.upload (inside _guarded_upload), "
+        f"found {len(uploads)} — an upload path may be bypassing the guard")
 
 
 if __name__ == "__main__":

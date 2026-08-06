@@ -119,6 +119,10 @@ class UploadResult:
     url: Optional[str] = None
     error: Optional[str] = None
     raw_response: Optional[dict] = None
+    #: YouTube resumable session URI. Carried on FAILURE results too -- it is
+    #: the only thing that can later answer "did that upload actually land?",
+    #: and every failure path below used to discard it.
+    session_uri: Optional[str] = None
 
 
 # ---------------------------------------------------------------------------
@@ -674,7 +678,15 @@ class YouTubeUploader(BaseUploader):
         title: str,
         description: str,
         hashtags: Optional[list[str]] = None,
+        on_session=None,
     ) -> UploadResult:
+        """Upload one video.
+
+        `on_session(uri, file_size)` is invoked as soon as the resumable
+        session exists and BEFORE any video bytes are sent, so the caller can
+        persist the URI. If this process dies mid-upload, that URI is the only
+        way the next run can tell "already live" from "never uploaded".
+        """
         if not self._token_data:
             return UploadResult(self.PLATFORM, False, error="Not authenticated.")
 
@@ -705,6 +717,7 @@ class YouTubeUploader(BaseUploader):
         }
 
         access_token = self._token_data["access_token"]
+        file_size = os.path.getsize(video_path)
 
         # Step 1 – initiate resumable upload
         try:
@@ -730,8 +743,17 @@ class YouTubeUploader(BaseUploader):
             return UploadResult(self.PLATFORM, False,
                                 error="No upload URL in init response.")
 
+        # The session now exists. Hand it to the caller BEFORE a single byte
+        # of video is sent, so an attempt row can carry it even if this
+        # process dies mid-chunk. Without this the URI lived only in a local
+        # and every error path threw it away.
+        if on_session is not None:
+            try:
+                on_session(upload_url, file_size)
+            except Exception:                            # noqa: BLE001
+                logger.exception("on_session callback failed; continuing")
+
         # Step 2 – upload file in chunks
-        file_size = os.path.getsize(video_path)
         try:
             with open(video_path, "rb") as fh:
                 offset = 0
@@ -753,7 +775,8 @@ class YouTubeUploader(BaseUploader):
                         logger.info("YouTube upload complete – id=%s", video_id)
                         return UploadResult(self.PLATFORM, True,
                                             upload_id=video_id, url=url,
-                                            raw_response=result_data)
+                                            raw_response=result_data,
+                                            session_uri=upload_url)
                     if resp.status_code == 308:
                         # Partially received, continue
                         range_header = resp.headers.get("Range", "")
@@ -765,9 +788,75 @@ class YouTubeUploader(BaseUploader):
                         resp.raise_for_status()
         except requests.RequestException as exc:
             logger.error("YouTube chunk upload failed: %s", exc)
-            return UploadResult(self.PLATFORM, False, error=str(exc))
+            return UploadResult(self.PLATFORM, False, error=str(exc),
+                                session_uri=upload_url)
 
-        return UploadResult(self.PLATFORM, False, error="Upload ended unexpectedly.")
+        return UploadResult(self.PLATFORM, False, error="Upload ended unexpectedly.",
+                            session_uri=upload_url)
+
+    def query_session(self, session_uri: str, file_size: int) -> dict:
+        """Ask YouTube what happened to an interrupted resumable session.
+
+        This is the only thing that can answer "is that video already live?"
+        without guessing. Per Google's resumable protocol, a zero-length PUT
+        with `Content-Range: bytes */<size>` returns:
+
+          200/201  the upload ALREADY COMPLETED. The body is the video
+                   resource, so this also hands back the video id — Google
+                   replays the original completion response.
+          308      Resume Incomplete. Bytes are still missing, so the video
+                   resource was never created and nothing is live.
+          404      the session URI EXPIRED. This says NOTHING about whether
+                   the upload completed before it expired.
+          4xx/5xx  the upload failed permanently.
+
+        Returns {"state", "upload_id", "detail"} where state is one of
+        published / incomplete / failed / unknown. `unknown` means a human has
+        to look; it is never treated as "safe to retry".
+        """
+        if not self._token_data:
+            return {"state": "unknown", "upload_id": None,
+                    "detail": "not authenticated"}
+
+        try:
+            resp = requests.put(
+                session_uri,
+                headers={
+                    "Authorization": f"Bearer {self._token_data['access_token']}",
+                    "Content-Length": "0",
+                    "Content-Range": f"bytes */{file_size}",
+                },
+                timeout=60,
+            )
+        except requests.RequestException as exc:
+            # A network failure tells us nothing about the upload's fate.
+            return {"state": "unknown", "upload_id": None, "detail": str(exc)}
+
+        if resp.status_code in (200, 201):
+            try:
+                data = resp.json()
+            except ValueError:
+                data = {}
+            return {"state": "published", "upload_id": data.get("id"),
+                    "detail": f"session replayed {resp.status_code}",
+                    "raw": data}
+
+        if resp.status_code == 308:
+            return {"state": "incomplete", "upload_id": None,
+                    "detail": f"Range={resp.headers.get('Range', '')!r}"}
+
+        if resp.status_code == 404:
+            # Expired. It may have completed before expiring and we cannot
+            # tell from here. Deliberately NOT "failed".
+            return {"state": "unknown", "upload_id": None,
+                    "detail": "session URI expired (404)"}
+
+        if 400 <= resp.status_code < 600:
+            return {"state": "failed", "upload_id": None,
+                    "detail": f"HTTP {resp.status_code}"}
+
+        return {"state": "unknown", "upload_id": None,
+                "detail": f"unexpected HTTP {resp.status_code}"}
 
     def get_upload_status(self, upload_id: str) -> UploadResult:
         if not self._token_data:
@@ -1119,6 +1208,10 @@ class UploadManager:
         target_platforms = platforms or self.configured_platforms
         results: list[UploadResult] = []
 
+        # Only the YouTube backend implements a resumable session. Forwarding
+        # this to TikTok/Instagram through **kwargs would TypeError.
+        on_session = kwargs.pop("on_session", None)
+
         for name in target_platforms:
             uploader = self.uploaders.get(name)
             if not uploader:
@@ -1137,8 +1230,11 @@ class UploadManager:
                                                 error="Authentication failed."))
                     continue
 
+                extra = dict(kwargs)
+                if on_session is not None and name == "youtube":
+                    extra["on_session"] = on_session
                 result = uploader.upload_video(
-                    video_path, title, description, hashtags, **kwargs,
+                    video_path, title, description, hashtags, **extra,
                 )
                 results.append(result)
                 logger.info("Upload to %s: %s", name,
@@ -1164,7 +1260,9 @@ class UploadManager:
                                   platforms=[platform], **kwargs)
         if results:
             r = results[0]
-            return {"success": r.success, "error": r.error, "upload_id": r.upload_id, "url": r.url}
+            return {"success": r.success, "error": r.error,
+                    "upload_id": r.upload_id, "url": r.url,
+                    "session_uri": r.session_uri}
         return {"success": False, "error": "No result returned"}
 
     def get_status(self, platform: str, upload_id: str) -> UploadResult:
