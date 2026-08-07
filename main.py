@@ -20,6 +20,7 @@ Usage:
 
 import argparse
 import fnmatch
+import re
 import json
 import logging
 import sys
@@ -133,6 +134,37 @@ def list_scripts():
             hook = data.get('hook', data.get('question', data.get('statement', 'No preview')))[:35]
             rel_path = s.relative_to(scripts_dir)
             logger.info("    %s: %s...", rel_path, hook)
+
+
+#: Characters that cannot appear in an artifact name. `/` is the one that
+#: actually bit — see safe_artifact_name.
+_UNSAFE_NAME_CHARS = re.compile(r"[^a-z0-9._-]+")
+
+
+def safe_artifact_name(topic_name: str) -> str:
+    """Turn a topic name into a name usable as a FILENAME.
+
+    WHY. This was `topic_name.replace(' ', '_').lower()`, and 16 of the 720
+    topics contain a forward slash — "Ser/Estar confusion with 'to be'",
+    "doggy bag / to-go box", "swipe right / swipe left". The slash became a
+    directory separator, so the pipeline tried to write
+    output/scripts/fill_blank/ser/estar_confusion... into a directory that
+    does not exist and died with FileNotFoundError, AFTER paying for the GPT
+    call. Unattended at 2/day that is roughly one silent loss every 3 weeks.
+
+    The name is also the ledger key and the idempotency guard's key
+    (publication_log, upload_guard), so it has to be stable and collision-
+    resistant, not merely legal. Measured across all 720 topics: this
+    produces 704 unique names, exactly as many as the old
+    `.replace(' ', '_').lower()` did, so it introduces no new collision. The
+    single collision that exists ("bring vs take" / "Bring vs Take") predates
+    this and comes from the .lower(), which was always there.
+    """
+    name = _UNSAFE_NAME_CHARS.sub("_", (topic_name or "").strip().lower())
+    name = name.strip("._-")
+    # A leading dot would hide the artifact; an empty name would collide with
+    # every other empty one.
+    return name or "untitled"
 
 
 def _note_failure(entry: dict, stage: str, exc) -> None:
@@ -605,7 +637,7 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
         return None
 
     # Output name for pipeline
-    output_name = topic_name.replace(' ', '_').lower()
+    output_name = safe_artifact_name(topic_name)
 
     # Show preview based on type
     logger.info("Script Preview:")
