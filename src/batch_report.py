@@ -40,10 +40,15 @@ logger = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parent.parent
 REPORT_DIR = ROOT / "output" / "batch_reports"
 
-#: Where an artifact that failed goes, so it is findable with a reason.
-#: output/rejected/ is the QA gate's; upload and render failures are a
-#: different class and get their own tree rather than being mixed in.
+#: Where an artifact that FAILED goes — a pipeline failure, so it is findable
+#: with a reason. Distinct from REJECTED_DIR below: a failure means a stage
+#: broke, a rejection means the artifact was produced and judged unfit. The
+#: remedies differ, so the trees differ.
 FAILED_DIR = ROOT / "output" / "failed"
+
+#: Where an artifact the QA GATE refused goes. This tree already means
+#: exactly that (admin.py:61 REJECTED_DIR) and is the correct destination.
+REJECTED_DIR = ROOT / "output" / "rejected"
 
 SCHEMA_VERSION = 1
 
@@ -52,6 +57,9 @@ ATTEMPTED = "attempted"
 PUBLISHED = "published"
 SKIPPED = "skipped"
 FAILED = "failed"
+#: The QA gate produced an artifact and refused it. NOT "failed": nothing
+#: broke, and the remedy is to look at the blocking flags, not at a traceback.
+REJECTED = "rejected"
 NEEDS_HUMAN = "needs_human"
 
 
@@ -83,6 +91,10 @@ class BatchReport:
         self.videos.append(entry)
         return entry
 
+    def reject(self, entry: Dict, blocking_flags, artifact_path=None) -> None:
+        """The gate produced an artifact and refused it."""
+        reject(entry, blocking_flags, artifact_path)
+
     def fail(self, entry: Dict, stage: str, reason: str,
              artifact_path=None) -> None:
         """A stage failed and the video did not publish."""
@@ -109,7 +121,7 @@ class BatchReport:
 
     def counts(self) -> Dict[str, int]:
         c = {ATTEMPTED: len(self.videos), PUBLISHED: 0, SKIPPED: 0,
-             FAILED: 0, NEEDS_HUMAN: 0}
+             REJECTED: 0, FAILED: 0, NEEDS_HUMAN: 0}
         for v in self.videos:
             if v["status"] in c:
                 c[v["status"]] += 1
@@ -152,14 +164,29 @@ class BatchReport:
     def _log_summary(self, path: Path) -> None:
         c = self.counts()
         logger.info("batch %s: %d attempted, %d published, %d skipped, "
-                    "%d failed, %d NEEDS A HUMAN -> %s",
+                    "%d rejected, %d failed, %d NEEDS A HUMAN -> %s",
                     self.run_id, c[ATTEMPTED], c[PUBLISHED], c[SKIPPED],
-                    c[FAILED], c[NEEDS_HUMAN], path)
+                    c[REJECTED], c[FAILED], c[NEEDS_HUMAN], path)
         for item in self.needs_human:
             logger.critical("NEEDS A HUMAN: %s/%s — %s. %s",
                             item["artifact"], item.get("platform"),
                             item.get("why"), item.get("check"))
 
+
+
+def reject(entry: Dict, blocking_flags, artifact_path=None) -> None:
+    """Mark one report entry as gate-rejected.
+
+    Module-level for the same reason as record_upload_outcome: main.py folds
+    a result in without holding a report object.
+    """
+    if entry is None:
+        return
+    entry.update(status=REJECTED, stage="gate",
+                 reason="QA gate: " + ", ".join(blocking_flags or []),
+                 blocking_flags=list(blocking_flags or []))
+    if artifact_path:
+        entry["artifact_path"] = str(artifact_path)
 
 
 def record_upload_outcome(entry: Dict, outcome: Dict) -> None:
@@ -222,24 +249,49 @@ def record_upload_outcome(entry: Dict, outcome: Dict) -> None:
         entry["reason"] = entry["failed"][0].get("reason")
 
 
-def quarantine(video_path, entry: Dict, failed_dir: Path = None) -> Optional[Path]:
-    """Move a failed artifact somewhere findable, with a reason beside it.
+def move_rejected(video_path, entry: Dict, report: Dict = None,
+                  rejected_dir: Path = None) -> Optional[Path]:
+    """Move a gate-rejected artifact to output/rejected/<type>/ with its report.
 
-    output/rejected/ belongs to the QA gate. An upload or render failure is a
-    different class with a different remedy, so it gets output/failed/ rather
-    than being mixed into a tree that means "the gate said no".
+    output/rejected/ already means "the QA gate said no" and is the right
+    destination. It is deliberately NOT output/failed/, which means a stage
+    broke: a rejection has an artifact to look at and blocking flags to read,
+    a failure has a traceback.
+    """
+    return _relocate(video_path, entry,
+                     Path(rejected_dir) if rejected_dir else REJECTED_DIR,
+                     ".rejection.json",
+                     {"blocking_flags": entry.get("blocking_flags", []),
+                      "gate_report": report or {}})
+
+
+def quarantine(video_path, entry: Dict, failed_dir: Path = None) -> Optional[Path]:
+    """Move a FAILED artifact somewhere findable, with a reason beside it.
+
+    A stage broke. See move_rejected for the gate's verdict, which is a
+    different class with a different remedy and its own tree.
+    """
+    return _relocate(video_path, entry,
+                     Path(failed_dir) if failed_dir else FAILED_DIR,
+                     ".failure.json", {"failed": entry.get("failed")})
+
+
+def _relocate(video_path, entry: Dict, dest_root: Path, suffix: str,
+              extra: Dict) -> Optional[Path]:
+    """Move an artifact out of the render tree with a machine-readable reason.
 
     The reason is written as JSON next to the file: an operator should not
     have to correlate a filename against a log to find out what happened.
+
+    Never raises — a bookkeeping failure must not be what takes a batch down.
     """
-    failed_dir = Path(failed_dir) if failed_dir else FAILED_DIR
     video_path = Path(video_path)
     if not video_path.exists():
         return None
 
     try:
         import shutil
-        dest_dir = failed_dir / (entry.get("type") or "unknown")
+        dest_dir = dest_root / (entry.get("type") or "unknown")
         dest_dir.mkdir(parents=True, exist_ok=True)
         dest = dest_dir / video_path.name
         if dest.exists():
@@ -247,15 +299,22 @@ def quarantine(video_path, entry: Dict, failed_dir: Path = None) -> Optional[Pat
         shutil.move(str(video_path), str(dest))
 
         reason = {"artifact": entry.get("artifact"), "stage": entry.get("stage"),
-                  "reason": entry.get("reason"), "failed": entry.get("failed"),
+                  "status": entry.get("status"), "reason": entry.get("reason"),
                   "at": datetime.now().isoformat()}
-        dest.with_suffix(".failure.json").write_text(
+        reason.update(extra or {})
+        dest.with_suffix(suffix).write_text(
             json.dumps(reason, indent=2, ensure_ascii=False), encoding="utf-8")
+
+        # The sidecar travels with the artifact, or the reason is orphaned.
+        side = video_path.with_suffix(".json")
+        if side.exists():
+            shutil.move(str(side), str(dest_dir / side.name))
+
         entry["artifact_path"] = str(dest)
-        logger.warning("quarantined %s -> %s", video_path.name, dest)
+        logger.warning("moved %s -> %s", video_path.name, dest)
         return dest
     except Exception:                                     # noqa: BLE001
-        logger.exception("could not quarantine %s", video_path)
+        logger.exception("could not relocate %s", video_path)
         return None
 
 
