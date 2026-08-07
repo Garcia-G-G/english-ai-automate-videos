@@ -83,6 +83,7 @@ from script_generator import (
 )
 from pipeline import (
     PipelineError,
+    finalize_video,
     generate_tts,
     merge_script_into_tts,
     render_video,
@@ -148,6 +149,23 @@ def _note_failure(entry: dict, stage: str, exc) -> None:
         entry.update(status="failed", stage=stage, reason=str(exc)[:1000])
     except Exception:                                      # noqa: BLE001
         logger.exception("could not record the %s failure in the report", stage)
+
+
+def _note_rejection(entry: dict, video_path, fin: dict) -> None:
+    """The gate refused this artifact. Its own category, not a failure.
+
+    Nothing broke: a video was produced and judged unfit. It goes to
+    output/rejected/, which already means exactly that, rather than the
+    output/failed/ tree that means a stage raised.
+    """
+    if entry is None:
+        return
+    try:
+        from batch_report import move_rejected, reject
+        reject(entry, fin.get("blocking_flags"))
+        move_rejected(video_path, entry, report=fin)
+    except Exception:                                      # noqa: BLE001
+        logger.exception("could not record the gate rejection")
 
 
 def _report_upload(entry: dict, outcome: dict) -> None:
@@ -488,6 +506,28 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
         _note_failure(entry, "render", e)
         return None
 
+    # Step 3b: FINALISE — gate, then outro. Same call the dashboard makes.
+    #
+    # Neither ran on this path before. The gate was built in Step 2 and
+    # flipped to BLOCKING in Step 3; the outro added in 4a is the Learning
+    # Routes CTA, i.e. the reason the channel exists. finalize_video had zero
+    # callers, so `--batch --upload` published ungated video with no CTA.
+    #
+    # finalize_video owns the ORDER and the reasoning for it (pipeline.py:418)
+    # — gate first, and a rejected video gets no outro, because putting the
+    # brand on the end of something the gate just refused is worse than
+    # shipping nothing.
+    fin = finalize_video(video_result, json_path, variant_seed=output_name)
+    if entry is not None:
+        entry["gate"] = fin.get("gate")
+        entry["outro_appended"] = bool(fin.get("outro_appended"))
+    if fin.get("gate") == "REJECT":
+        logger.warning("QA gate REJECTED %s — not uploading", output_name)
+        _note_rejection(entry, video_result, fin)
+        return None
+    if fin.get("video"):
+        video_result = Path(fin["video"])
+
     logger.info("=" * 50)
     logger.info("PIPELINE COMPLETE!")
     logger.info("=" * 50)
@@ -720,8 +760,8 @@ Examples:
         c = report.counts()
         print(f"\n{'#'*50}")
         print(f"# BATCH COMPLETE: {c['published']} published, "
-              f"{c['skipped']} skipped, {c['failed']} failed, "
-              f"{c['needs_human']} NEED A HUMAN")
+              f"{c['skipped']} skipped, {c['rejected']} rejected by the gate, "
+              f"{c['failed']} failed, {c['needs_human']} NEED A HUMAN")
         if report.needs_human:
             print("#")
             for item in report.needs_human:
