@@ -448,7 +448,16 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
 
     variant = select_variant(seed=variant_seed or str(video_path))
     seam_t = float(report.get("measured_duration") or 0.0)
-    final = append_outro(str(video_path), variant)
+
+    # THE ARTIFACT KEEPS ITS NAME. append_outro defaults to writing
+    # <name>_with_outro.mp4, which would change the stem — and the stem is the
+    # ledger's key and the idempotency guard's key (publication_log,
+    # upload_guard). A finalisation step must not rename the thing the
+    # publication record identifies, so the outro'd file replaces the original.
+    tmp_out = str(video_path).replace(".mp4", ".outro.tmp.mp4")
+    append_outro(str(video_path), variant, output_path=tmp_out)
+    os.replace(tmp_out, str(video_path))
+    final = str(video_path)
     seam = measure_seam(final, seam_t) if seam_t else None
 
     # Logged so a later A/B read can attribute performance to copy.

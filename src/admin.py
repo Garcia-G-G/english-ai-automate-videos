@@ -243,7 +243,22 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             timeout=pipeline.RENDER_TIMEOUT_S,
         )
 
-        update_job(job_id, current_step="Video rendered", progress=95)
+        update_job(job_id, current_step="Video rendered", progress=90)
+
+        # FINALISE: gate, then outro. Neither ran on this path before — the
+        # gate was built in Step 2, flipped to BLOCKING in Step 3, and the
+        # outro added in 4a, and finalize_video had zero callers, so the
+        # dashboard published ungated video with no Learning Routes CTA too.
+        # One function, both paths.
+        fin = pipeline.finalize_video(video_path, json_path,
+                                      variant_seed=unique_name)
+        result["gate"] = fin.get("gate")
+        result["outro_appended"] = fin.get("outro_appended")
+        result["blocking_flags"] = fin.get("blocking_flags", [])
+        if fin.get("video"):
+            video_path = Path(fin["video"])
+
+        update_job(job_id, current_step=f"Gate: {fin.get('gate')}", progress=95)
 
         if tracker and tracker.entries:
             tracker.save()
