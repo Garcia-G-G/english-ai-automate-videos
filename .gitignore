@@ -49,3 +49,6 @@ references/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Background contact sheets (regenerate: tools/background_contact_sheet.py)
+_audit/backgrounds/
