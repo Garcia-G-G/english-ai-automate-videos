@@ -13,10 +13,27 @@ Usage:
     python3 src/generate_backgrounds.py --list              # Show what exists
     python3 src/generate_backgrounds.py --preview earth     # Generate 1 preview
 
-Cost estimate (DALL-E 3, 1024x1792 portrait):
-    $0.080 per image
-    Default: 3 images x 6 categories = 18 images = ~$1.44
-    Full: 5 images x 6 categories = 30 images = ~$2.40
+THE MODEL THIS SCRIPT CALLS NO LONGER EXISTS. OpenAI removed dall-e-2 and
+dall-e-3 from the API on 2026-05-12; every call here now fails. The
+replacements are gpt-image-2, gpt-image-1 and gpt-image-1-mini, and they
+are not drop-in: quality is low/medium/high rather than standard/hd, the
+response carries base64 rather than a URL, and the sizes differ (portrait
+is 1024x1536, not 1024x1792 — a 2:3 frame instead of 1:1.75, so a little
+more of each image gets cropped away at 9:16).
+
+Picking one is a spend decision, so it is left to a human. Per image at
+1024x1536, from the image-generation guide:
+
+    gpt-image-2   low $0.005   medium $0.041   high $0.165
+    gpt-image-1   low $0.016   medium $0.063   high $0.250
+
+For comparison, the 40 images already in assets/ were dall-e-3 hd at
+1024x1792, which cost $0.120 each — about $4.80 for the set. (Both this
+file and cost_tracker.py record $0.080 for those, which was the price of
+*standard* quality at that size; the code asked for hd.)
+
+Generation is one-time asset spend. It is not charged per video: a video
+re-reads whatever PNGs are already on disk and pays nothing to do it.
 """
 
 import argparse
@@ -36,6 +53,14 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 ASSETS_DIR = ROOT / "assets" / "backgrounds"
+
+# The model every generate call names. Retired from the API on 2026-05-12;
+# see the module docstring for the replacements and what each costs. Kept
+# accurate rather than quietly updated, so the preflight below can say
+# exactly why nothing will generate instead of surfacing a bare 404.
+IMAGE_MODEL = "dall-e-3"
+IMAGE_MODEL_RETIRED_ON = "2026-05-12"
+IMAGE_MODEL_REPLACEMENTS = ("gpt-image-2", "gpt-image-1", "gpt-image-1-mini")
 
 # ============================================================
 # DALL-E 3 PROMPTS — carefully tuned for video backgrounds
@@ -269,6 +294,34 @@ BACKGROUND_PROMPTS = {
 }
 
 
+def prompt_supply(category: str) -> int:
+    """How many distinct images this category can currently produce.
+
+    This is the real ceiling, and the only one worth enforcing. Each image
+    comes from one hand-written prompt and is named after that prompt's
+    index, so asking for more images than there are prompts cannot produce
+    more images — ``BACKGROUND_PROMPTS[cat][:count]`` just runs out. Lifting
+    the ceiling for a category means writing prompts for it.
+    """
+    return len(BACKGROUND_PROMPTS.get(category, ()))
+
+
+def preflight() -> bool:
+    """Refuse to spend a run on a model the API no longer serves."""
+    logger.error("=" * 62)
+    logger.error("Cannot generate: %s was removed from the OpenAI API on %s.",
+                 IMAGE_MODEL, IMAGE_MODEL_RETIRED_ON)
+    logger.error("")
+    logger.error("Replacements: %s", ", ".join(IMAGE_MODEL_REPLACEMENTS))
+    logger.error("They are not drop-in — quality levels, response format and")
+    logger.error("portrait size all differ. See this file's docstring for the")
+    logger.error("per-image prices before choosing one.")
+    logger.error("")
+    logger.error("--list still works and reads only local files.")
+    logger.error("=" * 62)
+    return False
+
+
 def generate_images(category: str, count: int = 3, size: str = "1024x1792"):
     """Generate background images for a category using DALL-E 3."""
     from openai import OpenAI
@@ -306,7 +359,7 @@ def generate_images(category: str, count: int = 3, size: str = "1024x1792"):
 
         try:
             response = client.images.generate(
-                model="dall-e-3",
+                model=IMAGE_MODEL,
                 prompt=prompt,
                 size=size,
                 quality="hd",
@@ -400,9 +453,10 @@ Examples:
   python3 src/generate_backgrounds.py --list              # Show status
   python3 src/generate_backgrounds.py --preview ocean     # Quick 1-image test
 
-Categories: earth, city, ocean, nature, abstract, clouds
+Categories: earth, city, ocean, nature, abstract, clouds, sunset, galaxy
 
-Cost: ~$0.08 per image (DALL-E 3, 1024x1792 HD)
+NOTE: dall-e-3 was removed from the OpenAI API on 2026-05-12, so generation
+is currently inoperative and says so on startup. --list is unaffected.
         """
     )
 
@@ -410,7 +464,11 @@ Cost: ~$0.08 per image (DALL-E 3, 1024x1792 HD)
                         choices=list(BACKGROUND_PROMPTS.keys()),
                         help="Generate only this category")
     parser.add_argument("--count", "-n", type=int, default=3,
-                        help="Images per category (default: 3, max: 5)")
+                        help="Images per category (default: 3). The ceiling is "
+                             "how many prompts that category has — currently "
+                             f"{max(len(v) for v in BACKGROUND_PROMPTS.values())} "
+                             "everywhere. Asking for more warns and generates "
+                             "what exists.")
     parser.add_argument("--list", "-l", action="store_true",
                         help="List current background images")
     parser.add_argument("--preview", type=str, default=None,
@@ -424,49 +482,64 @@ Cost: ~$0.08 per image (DALL-E 3, 1024x1792 HD)
         return
 
     if args.preview:
+        if not preflight():
+            return 1
         logger.info("Generating 1 preview image for '%s'...", args.preview)
         results = generate_images(args.preview, count=1)
         if results:
             logger.info("Preview saved: %s", results[0])
         return
 
-    count = min(args.count, 5)
-
     if args.category:
         categories = [args.category]
     else:
         categories = list(BACKGROUND_PROMPTS.keys())
 
-    total_new = 0
-    total_cost = 0.0
+    # Per category, because supply is per category. Nothing is silently
+    # clamped: a request that outruns the prompts says so, and names the
+    # shortfall, because "it gave me 5" is otherwise indistinguishable from
+    # "it decided 5 was enough".
+    per_category = {cat: min(args.count, prompt_supply(cat)) for cat in categories}
+    short = {cat: prompt_supply(cat) for cat in categories
+             if args.count > prompt_supply(cat)}
+    if short:
+        logger.warning(
+            "Asked for %d per category, but these have fewer prompts: %s",
+            args.count,
+            ", ".join(f"{c} ({n})" for c, n in sorted(short.items())),
+        )
+        logger.warning("Write more prompts for them to raise their ceiling.")
 
-    # Check how many actually need generating
+    total_new = 0
     for cat in categories:
         cat_dir = ASSETS_DIR / cat
         cat_dir.mkdir(parents=True, exist_ok=True)
-        for i in range(count):
-            filepath = cat_dir / f"{cat}_{i+1:02d}.png"
-            if not filepath.exists():
+        for i in range(per_category[cat]):
+            if not (cat_dir / f"{cat}_{i+1:02d}.png").exists():
                 total_new += 1
 
     if total_new == 0:
         logger.info("All backgrounds already exist! Use --list to see them.")
         return
 
-    estimated_cost = total_new * 0.08
     logger.info("=" * 50)
-    logger.info("DALL-E 3 Background Generation")
+    logger.info("Background Generation")
     logger.info("=" * 50)
+    logger.info("Model: %s", IMAGE_MODEL)
     logger.info("Categories: %s", ", ".join(categories))
-    logger.info("Images per category: %d", count)
+    logger.info("Images per category: %s",
+                ", ".join(f"{c}={n}" for c, n in per_category.items()))
     logger.info("New images to generate: %d", total_new)
-    logger.info("Estimated cost: $%.2f", estimated_cost)
+    logger.info("One-time asset spend — videos re-read these files for free.")
     logger.info("=" * 50)
+
+    if not preflight():
+        return 1
 
     for cat in categories:
         logger.info("")
         logger.info("[%s] Generating backgrounds...", cat.upper())
-        results = generate_images(cat, count=count)
+        results = generate_images(cat, count=per_category[cat])
         logger.info("[%s] Generated %d images", cat.upper(), len(results))
 
     logger.info("")
@@ -477,4 +550,4 @@ Cost: ~$0.08 per image (DALL-E 3, 1024x1792 HD)
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main() or 0)
