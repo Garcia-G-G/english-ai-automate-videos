@@ -507,6 +507,29 @@ BACKGROUND_PRESETS = {
 }
 
 
+# Generated palettes join the same registry, so everything that already
+# understands a preset name — enabled_backgrounds, render_from_preset, the
+# admin dropdown, the contact sheet — understands them too, with no special
+# case anywhere. They are loaded from a baked file rather than sampled at
+# import because the contrast gate renders every candidate, which is far too
+# slow to pay on every process start. See src/palettes.py.
+try:
+    from palettes import load_palettes as _load_palettes
+
+    _GENERATED = _load_palettes()
+    BACKGROUND_PRESETS.update(_GENERATED)
+    if _GENERATED:
+        logger.debug("Registered %d generated palettes", len(_GENERATED))
+except Exception as e:  # never let a bad palette file stop a render
+    logger.warning("Could not load generated palettes: %s", e)
+    _GENERATED = {}
+
+
+def generated_preset_names() -> List[str]:
+    """Names of the palettes that came from src/palettes.py."""
+    return sorted(_GENERATED)
+
+
 # ============== BACKGROUND GENERATOR CLASS ==============
 
 class BackgroundGenerator:

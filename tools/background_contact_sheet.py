@@ -316,6 +316,9 @@ def main() -> int:
                     help="skip writing full-resolution single frames")
     ap.add_argument("--only", default=None,
                     help="substring filter on preset name")
+    ap.add_argument("--sample", type=int, default=None,
+                    help="evenly spaced subset of the selection, e.g. 24 of "
+                         "the generated palettes")
     ap.add_argument("--enabled", action="store_true",
                     help="render exactly the enabled_backgrounds set from "
                          "config.yaml, and report its contrast floor")
@@ -342,6 +345,13 @@ def main() -> int:
     else:
         names = [n for n in BACKGROUND_PRESETS
                  if not args.only or args.only in n]
+
+    if args.sample and args.sample < len(names):
+        # Evenly spaced rather than the first N, so the sheet reflects the
+        # whole set instead of whatever the generator happened to accept
+        # first — early palettes face an emptier distinctness gate.
+        step = len(names) / args.sample
+        names = [names[int(i * step)] for i in range(args.sample)]
 
     # One generator for the whole run, so presets sharing a photo category
     # (photo_earth / photo_earth_dark) show the same image and the difference
@@ -379,6 +389,11 @@ def main() -> int:
     if args.enabled:
         sheets = [("sheet_enabled",
                    f"enabled_backgrounds — {len(names)} presets in random rotation",
+                   list(tiles.values()))]
+    elif args.only:
+        sheets = [(f"sheet_{args.only.strip('_')}",
+                   f"'{args.only}' — {len(names)} presets"
+                   + (f", sampled evenly from {len(BACKGROUND_PRESETS)}" if args.sample else ""),
                    list(tiles.values()))]
     else:
         # Master sheet, then one per family.
