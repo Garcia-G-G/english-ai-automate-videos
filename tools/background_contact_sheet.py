@@ -42,6 +42,11 @@ import numpy.random  # noqa: E402,F401  — same reason: no lazy import mid-patc
 from PIL import Image, ImageDraw  # noqa: E402
 
 from backgrounds import BACKGROUND_PRESETS, BackgroundGenerator  # noqa: E402
+from text_contrast import (  # noqa: E402
+    WCAG_NORMAL_TEXT,
+    cycle_samples,
+    measure_over_time,
+)
 from video.brand import draw_watermark  # noqa: E402
 from video.constants import (  # noqa: E402
     ENGLISH_WORD_COLOR,
@@ -76,6 +81,11 @@ Y_SENTENCE = 1180
 
 DEFAULT_T = 3.0
 DEFAULT_DURATION = 30.0
+
+# How many instants an animated preset is sampled at when measuring its
+# contrast floor. The tile itself is still a single frame at --t; this only
+# affects the numbers.
+CYCLE_SAMPLES = 12
 
 # Families are drawn on their own sheet, in this order.
 FAMILY_ORDER = [
@@ -183,44 +193,26 @@ def overlay_reference_text(bg: np.ndarray) -> Image.Image:
 
 # ── measurement ──────────────────────────────────────────────────
 
-def _relative_luminance(rgb: np.ndarray) -> np.ndarray:
-    """WCAG relative luminance for an array of sRGB values in 0..255."""
-    c = rgb.astype(np.float64) / 255.0
-    lin = np.where(c <= 0.03928, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
-    return 0.2126 * lin[..., 0] + 0.7152 * lin[..., 1] + 0.0722 * lin[..., 2]
+def measure_contrast(gen: BackgroundGenerator, preset: str) -> Dict[str, float]:
+    """Worst contrast this preset reaches anywhere in its cycle.
 
-
-def _contrast_ratio(l1: float, l2: float) -> float:
-    hi, lo = max(l1, l2), min(l1, l2)
-    return (hi + 0.05) / (lo + 0.05)
-
-
-def measure_contrast(bg: np.ndarray) -> Dict[str, float]:
-    """Background luminance where the headline lands, and resulting contrast.
-
-    Measured on the bare background, before any text is drawn — this is the
-    surface the glyphs have to stand out from. Reported against the yellow
-    headline colour and against white.
-
-    Caveat worth remembering when reading these numbers: every string is drawn
-    with a 6px black outline, which props up legibility even where the raw
-    contrast here looks marginal.
+    Delegates to ``src/text_contrast.py`` so the sheet, the palette
+    generator's accept/reject gate and any quoted contrast floor are all
+    the same measurement. Animated presets are sampled across a full colour
+    cycle — one instant is not a floor.
     """
-    x0 = (VIDEO_WIDTH - TEXT_AREA_WIDTH) // 2
-    band = bg[Y_ENGLISH:Y_SPANISH, x0:x0 + TEXT_AREA_WIDTH]
-    lum = _relative_luminance(band)
-
-    l_mean = float(lum.mean())
-    l_bright = float(np.percentile(lum, 95))  # worst case for light text
-    l_yellow = float(_relative_luminance(np.array(ENGLISH_WORD_COLOR)))
-    l_white = 1.0
-
+    spec = BACKGROUND_PRESETS[preset]
+    m = measure_over_time(
+        lambda t: gen.render_from_preset(t, preset, duration=DEFAULT_DURATION),
+        cycle_samples(spec, n=CYCLE_SAMPLES),
+    )
     return {
-        "bg_luminance_mean": round(l_mean, 4),
-        "bg_luminance_p95": round(l_bright, 4),
-        "contrast_yellow_mean": round(_contrast_ratio(l_yellow, l_mean), 2),
-        "contrast_yellow_worst": round(_contrast_ratio(l_yellow, l_bright), 2),
-        "contrast_white_mean": round(_contrast_ratio(l_white, l_mean), 2),
+        "bg_luminance_mean": round(m["bg_luminance_mean"], 4),
+        "bg_luminance_p95": round(m["bg_luminance_p95"], 4),
+        "contrast_yellow_mean": round(m["contrast_mean"], 2),
+        "contrast_yellow_worst": round(m["contrast_worst"], 2),
+        "contrast_white_mean": round(m["contrast_white_mean"], 2),
+        "samples": m["samples"],
     }
 
 
@@ -269,7 +261,7 @@ def build_sheet(tiles: List[Tuple[str, Image.Image, str]], cols: int,
 
 def write_metrics(rows: List[dict], out_dir: Path) -> None:
     fields = [
-        "preset", "type", "enabled", "render_ms",
+        "preset", "type", "enabled", "render_ms", "samples",
         "bg_luminance_mean", "bg_luminance_p95",
         "contrast_yellow_mean", "contrast_yellow_worst", "contrast_white_mean",
     ]
@@ -324,6 +316,12 @@ def main() -> int:
                     help="skip writing full-resolution single frames")
     ap.add_argument("--only", default=None,
                     help="substring filter on preset name")
+    ap.add_argument("--enabled", action="store_true",
+                    help="render exactly the enabled_backgrounds set from "
+                         "config.yaml, and report its contrast floor")
+    ap.add_argument("--floor", type=float, default=WCAG_NORMAL_TEXT,
+                    help=f"contrast floor to check against (default "
+                         f"{WCAG_NORMAL_TEXT}, WCAG AA for normal text)")
     args = ap.parse_args()
 
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
@@ -335,8 +333,15 @@ def main() -> int:
         frames_dir.mkdir(exist_ok=True)
 
     on = enabled_presets()
-    names = [n for n in BACKGROUND_PRESETS
-             if not args.only or args.only in n]
+    if args.enabled:
+        missing = sorted(on - set(BACKGROUND_PRESETS))
+        if missing:
+            print(f"config names presets that do not exist: {', '.join(missing)}")
+            return 1
+        names = [n for n in BACKGROUND_PRESETS if n in on]
+    else:
+        names = [n for n in BACKGROUND_PRESETS
+                 if not args.only or args.only in n]
 
     # One generator for the whole run, so presets sharing a photo category
     # (photo_earth / photo_earth_dark) show the same image and the difference
@@ -355,14 +360,14 @@ def main() -> int:
             bg = render_background(gen, name, args.t)
             render_ms = (time.perf_counter() - t0) * 1000
 
-            metrics = measure_contrast(bg)
+            metrics = measure_contrast(gen, name)
             composed = overlay_reference_text(bg)
 
             if not args.no_full_res:
                 composed.save(frames_dir / f"{name}.png")
 
             sub = (f"{preset_type}\n{render_ms:.0f}ms  ·  "
-                   f"{metrics['contrast_yellow_mean']:.1f}:1"
+                   f"{metrics['contrast_yellow_worst']:.1f}:1 worst"
                    + ("  ·  ON" if name in on else ""))
             tiles[name] = (name, composed, sub)
 
@@ -371,20 +376,26 @@ def main() -> int:
                          **metrics})
             print(f"  [{i:2d}/{len(names)}] {name:24s} {render_ms:7.0f}ms")
 
-    # Master sheet, then one per family.
-    sheets = [("sheet_00_ALL", "All background presets — identical text on every tile",
-               list(tiles.values()))]
-    placed = set()
-    for idx, (family, types) in enumerate(FAMILY_ORDER, 1):
-        group = [tiles[n] for n in names
-                 if BACKGROUND_PRESETS[n].get("type") in types and n in tiles]
-        placed.update(n for n in names if BACKGROUND_PRESETS[n].get("type") in types)
-        if group:
-            sheets.append((f"sheet_{idx:02d}_{family}", f"{family} — {'/'.join(types)}", group))
+    if args.enabled:
+        sheets = [("sheet_enabled",
+                   f"enabled_backgrounds — {len(names)} presets in random rotation",
+                   list(tiles.values()))]
+    else:
+        # Master sheet, then one per family.
+        sheets = [("sheet_00_ALL", "All background presets — identical text on every tile",
+                   list(tiles.values()))]
+        placed = set()
+        for idx, (family, types) in enumerate(FAMILY_ORDER, 1):
+            group = [tiles[n] for n in names
+                     if BACKGROUND_PRESETS[n].get("type") in types and n in tiles]
+            placed.update(n for n in names if BACKGROUND_PRESETS[n].get("type") in types)
+            if group:
+                sheets.append((f"sheet_{idx:02d}_{family}",
+                               f"{family} — {'/'.join(types)}", group))
 
-    leftover = [tiles[n] for n in names if n not in placed]
-    if leftover:
-        sheets.append(("sheet_99_other", "other / unfamilied types", leftover))
+        leftover = [tiles[n] for n in names if n not in placed]
+        if leftover:
+            sheets.append(("sheet_99_other", "other / unfamilied types", leftover))
 
     for stem, title, group in sheets:
         sheet = build_sheet(group, args.cols, args.thumb_width, title)
@@ -395,9 +406,28 @@ def main() -> int:
     write_metrics(rows, out_dir)
     print(f"  wrote {(out_dir / 'metrics.md').relative_to(ROOT)}")
 
+    # static_gradient is rendered once and reused for every frame, so quoting
+    # a per-frame cost for it and multiplying by 1800 would be nonsense.
     slowest = max(rows, key=lambda r: r["render_ms"])
-    print(f"\nSlowest: {slowest['preset']} at {slowest['render_ms']:.0f}ms/frame "
-          f"(~{slowest['render_ms'] * 30 * 60 / 1000 / 60:.1f} min of CPU for a 60s video)")
+    if slowest["type"] == "static_gradient":
+        print(f"\nSlowest: {slowest['preset']} at {slowest['render_ms']:.0f}ms, "
+              f"paid once per video (static_gradient renders a single frame)")
+    else:
+        print(f"\nSlowest: {slowest['preset']} at {slowest['render_ms']:.0f}ms/frame "
+              f"(~{slowest['render_ms'] * 30 * 60 / 1000 / 60:.1f} min of CPU "
+              f"for a 60s video, before the 5s pre-render cache)")
+
+    # The floor is the worst preset in the set, because random selection means
+    # the worst one is the one some video is going to get.
+    worst = min(rows, key=lambda r: r["contrast_yellow_worst"])
+    below = [r for r in rows if r["contrast_yellow_worst"] < args.floor]
+    print(f"Contrast floor: {worst['contrast_yellow_worst']:.2f}:1 ({worst['preset']}), "
+          f"against a {args.floor}:1 gate")
+    if below:
+        print(f"  {len(below)} below the gate: "
+              + ", ".join(f"{r['preset']} {r['contrast_yellow_worst']:.2f}" for r in below))
+        return 2 if args.enabled else 0
+    print("  all presets clear the gate")
     return 0
 
 
