@@ -1788,10 +1788,18 @@ def get_preset_info(preset_name: str) -> Dict:
 
 def get_recommended_preset() -> str:
     """
-    Return the recommended default preset based on TikTok best practices.
-    Dynamic backgrounds with visible movement work best for engagement.
+    Return the recommended default preset.
+
+    This is the last fallback — reached when config names no usable
+    background at all — so it has to be a preset that cannot embarrass the
+    text. static_midnight measures 7.13:1 behind the headline, the third
+    best of the enabled set, and renders once instead of every frame.
+
+    It used to return photo_earth, which meant every fallback path quietly
+    reintroduced a photo background after the enabled list had moved away
+    from them.
     """
-    return "photo_earth"  # Real photo with Ken Burns — cinematic and dynamic
+    return "static_midnight"
 
 
 # ============== CLI FOR TESTING ==============

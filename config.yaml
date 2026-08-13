@@ -7,22 +7,46 @@ video:
   background_mode: "random"
 
   # Used when background_mode is "fixed"
-  default_background: "photo_earth"
+  default_background: "static_midnight"
 
-  # Backgrounds available for random selection
-  # Photo-based backgrounds with Ken Burns animation (DALL-E 3 generated)
+  # Backgrounds available for random selection.
+  #
+  # Gradients, not photographs. Every entry here clears 4.5:1 contrast
+  # against the yellow headline in the band the headline occupies, measured
+  # on the bare background before the 6px outline is drawn, and measured
+  # across the whole colour cycle for the animated ones rather than at a
+  # single instant. The floor of this set is 4.65:1 (static_purple).
+  #
+  # Re-measure after any edit here:
+  #   python3 tools/background_contact_sheet.py --enabled
+  #
+  # The 11 photo_* presets remain defined in src/backgrounds.py and are
+  # deliberately absent: six of them measured between 2.08:1 and 3.69:1,
+  # because a sunset or a cloudscape puts its brightest region exactly
+  # where the headline goes. The energetic and particle families are absent
+  # for the opposite reason — they render very nearly black.
+  #
+  # Dropped from this list for failing the gate, worst-case:
+  #   static_rosegold 3.14:1   static_candy 3.63:1   static_cotton 4.25:1
   enabled_backgrounds:
-    - photo_earth
-    - photo_city
-    - photo_ocean
-    - photo_nature
-    - photo_abstract
-    - photo_clouds
-    - photo_sunset
-    - photo_galaxy
-    - photo_city_blur
-    - photo_earth_dark
-    - photo_ocean_vibrant
+    # static_gradient — rendered once, identical every frame
+    - static_sunset
+    - static_ocean
+    - static_purple
+    - static_neon
+    - static_emerald
+    - static_midnight
+    - static_fire
+    - static_galaxy
+    - static_teal
+    # animated_gradient — slow colour cycle
+    - purple_vibes
+    - blue_calm
+    - warm_sunset
+    - deep_space
+    - ocean_depth
+    - midnight_blue
+    - sunset_glow
 
   # Video dimensions (TikTok vertical format)
   width: 1080
