@@ -52,3 +52,6 @@ references/
 
 # Background contact sheets (regenerate: tools/background_contact_sheet.py)
 _audit/backgrounds/
+
+# Ken Burns per-frame traces (regenerate: tools/kenburns_trace.py)
+_audit/kenburns/
