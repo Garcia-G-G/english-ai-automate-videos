@@ -760,17 +760,25 @@ class CharacterRenderer:
 
 _renderer: Optional[CharacterRenderer] = None
 
+# Whether get_character_renderer() has already decided. Separate from
+# `_renderer` because "disabled" and "no sprites" both resolve to None, and
+# None-as-unresolved sent every frame back through _load_config() — a full
+# yaml.safe_load of config.yaml per frame, ~9% of a real render.
+_renderer_resolved: bool = False
+
 
 def get_character_renderer() -> Optional[CharacterRenderer]:
     """Get or create the character renderer singleton.
 
     Returns None if the character system is disabled in config or if
-    sprite assets are missing.
+    sprite assets are missing. Config is read once per process.
     """
-    global _renderer
+    global _renderer, _renderer_resolved
 
-    if _renderer is not None:
-        return _renderer if _renderer.available else None
+    if _renderer_resolved:
+        return _renderer
+
+    _renderer_resolved = True
 
     config = _load_config()
     char_config = config.get("character", {})
@@ -779,7 +787,7 @@ def get_character_renderer() -> Optional[CharacterRenderer]:
         logger.debug("Character renderer disabled in config")
         return None
 
-    _renderer = CharacterRenderer(
+    renderer = CharacterRenderer(
         character_name=char_config.get("name", "fox"),
         position_x=char_config.get("position_x", 50),
         position_y=char_config.get("position_y", 1450),
@@ -787,8 +795,9 @@ def get_character_renderer() -> Optional[CharacterRenderer]:
         opacity=char_config.get("opacity", 0.95),
     )
 
-    if not _renderer.available:
+    if not renderer.available:
         logger.info("Character renderer created but no sprites found — disabled")
         return None
 
+    _renderer = renderer
     return _renderer
