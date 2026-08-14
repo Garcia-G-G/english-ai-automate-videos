@@ -13,6 +13,7 @@ import json
 import os
 import sys
 import shutil
+import threading
 import time
 from pathlib import Path
 from datetime import datetime
@@ -67,6 +68,11 @@ for d in [PENDING_DIR, APPROVED_DIR, REJECTED_DIR, UPLOADED_DIR]:
 # ============== PERSISTENT PROGRESS TRACKING ==============
 JOBS_FILE = OUTPUT_DIR / "generation_jobs.json"
 
+# Guards the whole read-modify-write of JOBS_FILE. Generation runs in worker
+# threads now, so create/update/complete interleave; without this a worker
+# reading before another's write and saving after it silently drops that job.
+_JOBS_LOCK = threading.RLock()
+
 
 def load_jobs() -> dict:
     if JOBS_FILE.exists():
@@ -79,8 +85,12 @@ def load_jobs() -> dict:
 
 
 def save_jobs(jobs: dict):
-    with open(JOBS_FILE, 'w') as f:
+    # Write-then-rename: a crash mid-write leaves the previous ledger intact
+    # rather than a truncated file that load_jobs() silently reads as empty.
+    tmp = JOBS_FILE.with_suffix(JOBS_FILE.suffix + ".tmp")
+    with open(tmp, 'w') as f:
         json.dump(jobs, f, indent=2, default=str)
+    os.replace(tmp, JOBS_FILE)
 
 
 def create_job(video_type: str, category: str = None, topic: str = None) -> str:
@@ -100,38 +110,41 @@ def create_job(video_type: str, category: str = None, topic: str = None) -> str:
         "video_path": None,
         "error": None
     }
-    jobs = load_jobs()
-    jobs["active"].append(job)
-    save_jobs(jobs)
+    with _JOBS_LOCK:
+        jobs = load_jobs()
+        jobs["active"].append(job)
+        save_jobs(jobs)
     return job_id
 
 
 def update_job(job_id: str, **kwargs):
-    jobs = load_jobs()
-    for job in jobs["active"]:
-        if job["id"] == job_id:
-            job.update(kwargs)
-            job["updated_at"] = datetime.now().isoformat()
-            break
-    save_jobs(jobs)
+    with _JOBS_LOCK:
+        jobs = load_jobs()
+        for job in jobs["active"]:
+            if job["id"] == job_id:
+                job.update(kwargs)
+                job["updated_at"] = datetime.now().isoformat()
+                break
+        save_jobs(jobs)
 
 
 def complete_job(job_id: str, success: bool, video_path: str = None, error: str = None):
-    jobs = load_jobs()
-    completed_job = None
-    for i, job in enumerate(jobs["active"]):
-        if job["id"] == job_id:
-            completed_job = jobs["active"].pop(i)
-            break
-    if completed_job:
-        completed_job["status"] = "completed" if success else "failed"
-        completed_job["progress"] = 100 if success else completed_job.get("progress", 0)
-        completed_job["video_path"] = video_path
-        completed_job["error"] = error
-        completed_job["completed_at"] = datetime.now().isoformat()
-        jobs["history"].insert(0, completed_job)
-        jobs["history"] = jobs["history"][:50]
-    save_jobs(jobs)
+    with _JOBS_LOCK:
+        jobs = load_jobs()
+        completed_job = None
+        for i, job in enumerate(jobs["active"]):
+            if job["id"] == job_id:
+                completed_job = jobs["active"].pop(i)
+                break
+        if completed_job:
+            completed_job["status"] = "completed" if success else "failed"
+            completed_job["progress"] = 100 if success else completed_job.get("progress", 0)
+            completed_job["video_path"] = video_path
+            completed_job["error"] = error
+            completed_job["completed_at"] = datetime.now().isoformat()
+            jobs["history"].insert(0, completed_job)
+            jobs["history"] = jobs["history"][:50]
+        save_jobs(jobs)
 
 
 def get_active_jobs() -> list:
@@ -294,6 +307,101 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         logger.error("[Pipeline ERROR]: %s", error_msg)
 
     return result
+
+
+# ============== RUNNING GENERATION OFF THE SCRIPT THREAD ==============
+#
+# Streamlit draws the page on the same thread that would run the pipeline, so
+# a synchronous call freezes the tab for the whole ~2-minute job and the
+# ledger's own progress cannot be drawn while it advances. Workers write to
+# the ledger; the page reads it.
+
+# One render at a time. The renderer is CPU-bound (97% of its wall clock is
+# frame generation), so two concurrent jobs do not finish sooner — measured
+# 2026-08-14, two jobs 12s apart took ~4.5 min each against a 109s median.
+# A second tab therefore queues instead of contending.
+_RENDER_LOCK = threading.Lock()
+
+# Job ids with a live worker in THIS process. An active row that is not here
+# has no thread behind it — see reap_orphaned_jobs.
+_LIVE_JOBS: set = set()
+_LIVE_JOBS_LOCK = threading.Lock()
+_WORKERS: list = []
+
+
+def start_generation(video_type: str, category: str = None, topic_name: str = None,
+                     **kwargs) -> str:
+    """Queue one video and return its job id immediately.
+
+    The job appears in the ledger before this returns, so the very next page
+    draw shows it as active.
+    """
+    job_id = create_job(video_type, category, topic_name)
+
+    with _LIVE_JOBS_LOCK:
+        _LIVE_JOBS.add(job_id)
+
+    def _worker():
+        try:
+            with _RENDER_LOCK:
+                run_pipeline_with_tracking(job_id, video_type, category,
+                                           topic_name, **kwargs)
+        except Exception:                                   # noqa: BLE001
+            # run_pipeline_with_tracking handles its own errors; this is the
+            # last resort so a worker cannot die leaving the row active.
+            logger.exception("Generation worker crashed (job %s)", job_id)
+            complete_job(job_id, success=False,
+                         error="Generation worker crashed — see dashboard logs")
+        finally:
+            with _LIVE_JOBS_LOCK:
+                _LIVE_JOBS.discard(job_id)
+
+    t = threading.Thread(target=_worker, name=f"generate-{job_id}", daemon=True)
+    _WORKERS.append(t)
+    t.start()
+    return job_id
+
+
+def wait_for_generations(timeout: float = None) -> bool:
+    """Block until queued generations finish. For tests and shutdown."""
+    deadline = time.monotonic() + timeout if timeout is not None else None
+    for t in list(_WORKERS):
+        remaining = None if deadline is None else max(0, deadline - time.monotonic())
+        t.join(timeout=remaining)
+        if t.is_alive():
+            return False
+    _WORKERS[:] = [t for t in _WORKERS if t.is_alive()]
+    return True
+
+
+def reap_orphaned_jobs() -> int:
+    """Fail active rows that no live worker owns, and report how many.
+
+    Workers are daemon threads: they die with the server, and the row they
+    were updating stays "running" forever. Two such rows were sitting in the
+    ledger with no process behind them.
+    """
+    with _JOBS_LOCK:
+        jobs = load_jobs()
+        with _LIVE_JOBS_LOCK:
+            orphans = [j for j in jobs["active"] if j["id"] not in _LIVE_JOBS]
+        if not orphans:
+            return 0
+        for job in orphans:
+            jobs["active"].remove(job)
+            job["status"] = "failed"
+            job["error"] = (
+                "Interrupted — the dashboard stopped while this job was at "
+                f"'{job.get('current_step', 'unknown step')}'. Nothing was left running."
+            )
+            job["completed_at"] = datetime.now().isoformat()
+            jobs["history"].insert(0, job)
+        jobs["history"] = jobs["history"][:50]
+        save_jobs(jobs)
+
+    logger.info("Reaped %d orphaned job(s) from a previous dashboard process",
+                len(orphans))
+    return len(orphans)
 
 
 # ============== HELPER FUNCTIONS ==============
@@ -746,6 +854,19 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+
+@st.cache_resource
+def _startup() -> dict:
+    """Once per server process, before the first page is drawn.
+
+    Guarded by cache_resource rather than run at import: importing this
+    module (tests, tooling) must not rewrite the real ledger.
+    """
+    return {"reaped": reap_orphaned_jobs()}
+
+
+_STARTUP = _startup()
+
 # ============== CUSTOM THEME CSS ==============
 st.markdown("""
 <style>
@@ -1033,10 +1154,22 @@ if page == "Dashboard":
 
     st.markdown("")
 
-    # Active jobs
-    if active_jobs:
-        st.markdown('<div class="section-header">⚡ Currently Generating</div>', unsafe_allow_html=True)
-        for job in active_jobs:
+    # Active jobs.
+    #
+    # A fragment, not a page-level rerun. The old version called st.rerun()
+    # from inside this loop, which abandons the rest of the draw — harmless
+    # while generation blocked the thread (nothing else could run anyway),
+    # but now that jobs run in the background it would hide Quick Generate
+    # and Recent Videos for as long as anything was rendering. run_every
+    # repaints only this block, and only while there is something to show.
+    @st.fragment(run_every="2s")
+    def _render_active_jobs():
+        jobs = get_active_jobs()
+        if not jobs:
+            return
+        st.markdown('<div class="section-header">⚡ Currently Generating</div>',
+                    unsafe_allow_html=True)
+        for job in jobs:
             c1, c2 = st.columns([3, 1])
             with c1:
                 st.markdown(f"**{job['video_type'].upper()}** — {job.get('topic', 'Selecting...')}")
@@ -1044,9 +1177,8 @@ if page == "Dashboard":
                 st.caption(job.get('current_step', 'Initializing...'))
             with c2:
                 st.code(job['id'])
-                if job.get("status") == "running":
-                    time.sleep(2)
-                    st.rerun()
+
+    _render_active_jobs()
 
     # Quick Actions + Recent Videos
     col_left, col_right = st.columns([2, 1])
@@ -1064,9 +1196,8 @@ if page == "Dashboard":
         for col, (label, vtype) in zip(action_cols, quick_types):
             with col:
                 if st.button(f"🎬 {label}", use_container_width=True, key=f"quick_{vtype}"):
-                    job_id = create_job(vtype)
-                    with st.spinner(f"Generating {label}..."):
-                        run_pipeline_with_tracking(job_id, vtype)
+                    job_id = start_generation(vtype)
+                    st.toast(f"{label} queued (job {job_id})")
                     st.rerun()
 
         st.markdown("")
@@ -1164,16 +1295,19 @@ elif page == "Generate":
     with col2:
         st.markdown('<div class="section-header">Generation Status</div>', unsafe_allow_html=True)
 
-        active_jobs = get_active_jobs()
-        if active_jobs:
-            for job in active_jobs:
+        # Same reason as the Dashboard panel: repaint this block, not the page.
+        @st.fragment(run_every="2s")
+        def _render_generation_status():
+            jobs = get_active_jobs()
+            if not jobs:
+                return
+            for job in jobs:
                 st.markdown(f"**{job['video_type'].upper()}** — {job.get('topic', 'Selecting...')}")
                 st.progress(job.get('progress', 0) / 100)
                 st.caption(job.get('current_step', 'Initializing...'))
-                if job["status"] == "running":
-                    time.sleep(1)
-                    st.rerun()
             st.markdown("---")
+
+        _render_generation_status()
 
         st.markdown("**Recent (Last 5)**")
         history = get_job_history(5)
@@ -1192,15 +1326,10 @@ elif page == "Generate":
             st.info("No videos generated yet.")
 
         if generate_btn:
-            job_id = create_job(video_type, category, topic_name)
-            st.success(f"Generation started! Job: `{job_id}`")
-            with st.spinner("Generating video..."):
-                result = run_pipeline_with_tracking(job_id, video_type, category, topic_name)
-            if result["success"]:
-                st.success("Video generated!")
-                st.balloons()
-            else:
-                st.error(f"Failed: {result.get('error', 'Unknown')[:300]}")
+            # Queued, not awaited: the outcome arrives in the job list above,
+            # which this page already renders from the ledger.
+            job_id = start_generation(video_type, category, topic_name)
+            st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
             st.rerun()
 
 
@@ -1259,24 +1388,17 @@ elif page == "Queue":
                 st.write(f"**{t}**: {count} videos")
 
             if start_btn:
+                # Queue them all at once. _RENDER_LOCK runs them one at a
+                # time, so this is the same serial order the old loop had —
+                # without holding the page open for the whole batch.
                 total = len(st.session_state.queue_items)
-                progress_bar = st.progress(0)
-                status_text = st.empty()
-                completed = 0
-                errors = 0
-
                 while st.session_state.queue_items:
                     item = st.session_state.queue_items.pop(0)
-                    job_id = create_job(item["type"])
-                    status_text.info(f"Processing {completed + 1}/{total}: {item['type']}...")
-                    result = run_pipeline_with_tracking(job_id, item["type"])
-                    if result["success"]:
-                        completed += 1
-                    else:
-                        errors += 1
-                    progress_bar.progress((completed + errors) / total)
+                    start_generation(item["type"])
 
-                status_text.success(f"Done! {completed} successful, {errors} failed")
+                st.success(f"Queued {total} video(s). They run one at a time — "
+                           "watch progress on the Generate page.")
+                st.rerun()
         else:
             st.info("Queue is empty. Add videos above!")
 
@@ -1924,15 +2046,11 @@ elif page == "Scheduler":
             if not selected_types:
                 st.error("Select at least one type!")
             else:
-                progress = st.progress(0)
-                status = st.empty()
                 for i in range(videos_per_batch):
-                    vtype = selected_types[i % len(selected_types)]
-                    job_id = create_job(vtype)
-                    status.info(f"Generating {i+1}/{videos_per_batch}: {vtype}...")
-                    run_pipeline_with_tracking(job_id, vtype)
-                    progress.progress((i + 1) / videos_per_batch)
-                status.success("Batch complete!")
+                    start_generation(selected_types[i % len(selected_types)])
+                st.success(f"Queued {videos_per_batch} video(s). They run one at "
+                           "a time — watch progress on the Generate page.")
+                st.rerun()
 
 
 # ============== SETTINGS PAGE ==============
