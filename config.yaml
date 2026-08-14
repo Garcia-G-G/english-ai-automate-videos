@@ -47,6 +47,13 @@ video:
     - ocean_depth
     - midnight_blue
     - sunset_glow
+    # Every palette in assets/palettes.json — sampled from a seed and put
+    # through three gates: 4.5:1 worst-case contrast, a CIELAB distance of 12
+    # from every other palette, and hue discipline (no complementary blends,
+    # nothing in the olive band, a chroma floor read off static_teal).
+    # Regenerate with `python3 -m palettes`; this line needs no edit when the
+    # count changes, which is the point of it not being a list of names.
+    - generated:*
 
   # Video dimensions (TikTok vertical format)
   width: 1080

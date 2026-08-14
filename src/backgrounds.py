@@ -530,6 +530,25 @@ def generated_preset_names() -> List[str]:
     return sorted(_GENERATED)
 
 
+# Config token meaning "every generated palette", so config.yaml does not have
+# to list them by name. Sixty names in a config file is another fixed pool: it
+# would have to be edited in lockstep with assets/palettes.json, and any drift
+# between the two would show up as a background that silently stopped being
+# picked. The whole point of generating them was to stop maintaining a list.
+GENERATED_TOKEN = "generated:*"
+
+
+def resolve_enabled(names) -> List[str]:
+    """Expand any tokens in an enabled_backgrounds list to real preset names."""
+    resolved = []
+    for name in names or ():
+        if name == GENERATED_TOKEN:
+            resolved.extend(generated_preset_names())
+        else:
+            resolved.append(name)
+    return resolved
+
+
 # ============== BACKGROUND GENERATOR CLASS ==============
 
 class BackgroundGenerator:
