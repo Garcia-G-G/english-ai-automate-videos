@@ -74,6 +74,14 @@ rglob("*.mp4") finds ['a.mp4']
 A folder of `.MP4` or `.mov` files reads as an empty folder — which raises
 `ValueError: No .mp4 clips found`, not a warning about extensions.
 
+### No synthetic camera
+
+`_fit` takes no time argument: one scale, computed from the clip's own
+dimensions, and a constant centre crop. Every frame of a given clip gets the
+same rectangle. Whatever motion a clip background has is the motion that was
+filmed — none of the Ken Burns zoom and pan in `docs/KENBURNS_DIAGNOSIS.md`
+applies here, and the two share no code.
+
 ### Resolution: it always fills the frame, and that is the problem
 
 `_fit` scales by `max(1080/w, 1920/h)` and centre-crops. Nothing is ever
