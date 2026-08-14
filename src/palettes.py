@@ -39,6 +39,7 @@ import argparse
 import colorsys
 import json
 import logging
+import math
 import random
 from pathlib import Path
 from typing import Dict, List, Sequence, Tuple
@@ -77,6 +78,52 @@ DEFAULT_MIN_DISTANCE = 12.0
 
 DIRECTIONS = ("vertical", "diagonal", "radial")
 
+# ── the hue-discipline gate ──────────────────────────────────────
+#
+# Contrast and distinctness both pass on palettes that simply look cheap:
+# complementary ramps that turn brown where the two ends meet, and anything
+# landing in the olive band. Three measurements catch it, and every threshold
+# below is read off the reference sets rather than chosen — the nine hand-made
+# gradients in rotation, plus the seven generated palettes the operator picked
+# out as working (gen_008, 011, 013, 028, 031, 038, 058).
+#
+# MUD_HUE_BAND. The hand-made stop hues run 7-55, 157-197 and 249-334: there
+# is a corridor from 55 to 157 that nothing occupies. That corridor is
+# yellow-green through green, which at these lightnesses is exactly where
+# olive and khaki live. Measured on the rendered frame, all nine hand-made
+# presets and all seven approved palettes put 0.0% of their lit pixels in it;
+# the rejected ones put up to 100% there. It is the single cleanest separator
+# of the three.
+MUD_HUE_BAND = (60.0, 150.0)
+MAX_MUD_FRACTION = 0.01
+
+# MAX_HUE_ARC. The smallest arc containing every stop hue. Complementary ramps
+# are wide by definition, and the ones called out — red-to-green at 125
+# degrees, 142, 148 — are the widest of the set. The hand-made presets reach
+# 97 (static_ocean) and the widest approved palette is gen_011 at 113, so the
+# bound sits just above what has already been accepted by eye. Note this
+# admits duotones as well as strictly analogous ramps: 113 degrees of purple
+# to teal is a duotone, and it was approved, so a separate allowlist for them
+# would be a second name for the same rule.
+MAX_HUE_ARC = 115.0
+
+# MIN_CHROMA_MEDIAN. Median chroma of the lit part of the rendered frame.
+# Derived as the hand-made minimum: static_teal measures 17.889, a genuinely
+# low-chroma preset that is nonetheless in rotation, so the floor cannot go
+# any higher without contradicting the reference it was read from. 17.8 is
+# that figure rounded down so static_teal clears its own gate.
+#
+# It is much the weakest of the three. The only palette it catches that the
+# other two miss is gen_053 at 17.720 — 0.169 below static_teal, a margin
+# with no meaning. Read this floor as excluding the flatly washed out, and
+# not as sorting anything marginal; the mud band and the arc do the work.
+MIN_CHROMA_MEDIAN = 17.8
+
+# Below this lightness a colour carries no perceptible hue, and these
+# gradients are meant to be near-black at one end. Measuring hue there would
+# be reading noise.
+MIN_LIT_L = 12.0
+
 
 # ── feature extraction ───────────────────────────────────────────
 
@@ -92,6 +139,91 @@ def palette_feature(frame: np.ndarray) -> np.ndarray:
     lab[..., 1] -= 128.0
     lab[..., 2] -= 128.0
     return lab.reshape(-1, 3)
+
+
+def _srgb_to_lab(hex_color: str):
+    """Exact sRGB -> CIELAB for a single hex colour (D65)."""
+    h = hex_color.lstrip("#")
+    rgb = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    lin = [c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4 for c in rgb]
+    r, g, b = lin
+    x = (r * 0.4124564 + g * 0.3575761 + b * 0.1804375) / 0.95047
+    y = (r * 0.2126729 + g * 0.7151522 + b * 0.0721750)
+    z = (r * 0.0193339 + g * 0.1191920 + b * 0.9503041) / 1.08883
+
+    def f(t):
+        return t ** (1 / 3) if t > 216 / 24389 else (841 / 108) * t + 4 / 29
+
+    fx, fy, fz = f(x), f(y), f(z)
+    return 116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz)
+
+
+def stop_hues(colors) -> List[float]:
+    """Hue angles of the stops light enough to have one."""
+    lch = []
+    for c in colors:
+        L, a, b = _srgb_to_lab(c)
+        lch.append((L, math.degrees(math.atan2(b, a)) % 360))
+    lit = [h for L, h in lch if L >= MIN_LIT_L]
+    if len(lit) < 2:
+        lit = [h for _, h in sorted(lch, key=lambda s: -s[0])[:2]]
+    return lit
+
+
+def hue_arc(hues: Sequence[float]) -> float:
+    """Smallest arc on the hue circle containing every hue.
+
+    The complement of the largest gap between neighbours — a ramp that spans
+    little of the wheel is analogous, one that spans most of it is passing
+    through the middle of the wheel, which is grey.
+    """
+    if len(hues) < 2:
+        return 0.0
+    hs = sorted(hues)
+    gaps = [(hs[(i + 1) % len(hs)] - hs[i]) % 360 for i in range(len(hs))]
+    return 360.0 - max(gaps)
+
+
+def frame_hue_stats(frame: np.ndarray) -> Dict[str, float]:
+    """Chroma and mud-band occupancy of the lit part of a rendered frame.
+
+    Measured on the render rather than the stop list because that is where
+    the fault appears: two clean complementary stops produce a brown band
+    between them that neither stop contains.
+    """
+    import cv2
+
+    small = cv2.resize(frame, (24, 40), interpolation=cv2.INTER_AREA)
+    lab = cv2.cvtColor(small, cv2.COLOR_RGB2LAB).astype(np.float64)
+    L = (lab[..., 0] * 100.0 / 255.0).ravel()
+    a = (lab[..., 1] - 128.0).ravel()
+    b = (lab[..., 2] - 128.0).ravel()
+    chroma = np.hypot(a, b)
+    hue = np.degrees(np.arctan2(b, a)) % 360
+
+    lit = L >= MIN_LIT_L
+    if lit.sum() < 10:
+        lit = L >= L.mean()
+
+    lo, hi = MUD_HUE_BAND
+    return {
+        "chroma_median": float(np.median(chroma[lit])),
+        "mud_fraction": float(np.mean((hue[lit] > lo) & (hue[lit] < hi))),
+    }
+
+
+def hue_discipline(spec: Dict, frame: np.ndarray) -> Dict:
+    """Does this palette look designed, by the three measures above?"""
+    arc = hue_arc(stop_hues(spec["colors"]))
+    stats = frame_hue_stats(frame)
+    reasons = []
+    if arc > MAX_HUE_ARC:
+        reasons.append(f"hue arc {arc:.0f} deg > {MAX_HUE_ARC:.0f}")
+    if stats["mud_fraction"] > MAX_MUD_FRACTION:
+        reasons.append(f"{stats['mud_fraction'] * 100:.0f}% of lit pixels in the olive band")
+    if stats["chroma_median"] < MIN_CHROMA_MEDIAN:
+        reasons.append(f"median chroma {stats['chroma_median']:.1f} < {MIN_CHROMA_MEDIAN}")
+    return {"ok": not reasons, "reasons": reasons, "hue_arc": arc, **stats}
 
 
 def feature_distance(f1: np.ndarray, f2: np.ndarray) -> float:
@@ -194,7 +326,8 @@ def generate(count: int = 60,
 
     accepted: List[Dict] = []
     features: List[np.ndarray] = []
-    stats = {"attempts": 0, "rejected_contrast": 0, "rejected_similar": 0}
+    stats = {"attempts": 0, "rejected_contrast": 0, "rejected_hue": 0,
+             "rejected_similar": 0}
 
     while len(accepted) < count and stats["attempts"] < max_attempts:
         stats["attempts"] += 1
@@ -211,6 +344,14 @@ def generate(count: int = 60,
             stats["rejected_contrast"] += 1
             continue
 
+        # Second, because it is cheaper than the distinctness comparison and
+        # rejects more: no point measuring how novel a palette is before
+        # establishing that it is worth having.
+        hue = hue_discipline(spec, frame)
+        if not hue["ok"]:
+            stats["rejected_hue"] += 1
+            continue
+
         feat = palette_feature(frame)
         if features:
             nearest = min(feature_distance(feat, f) for f in features)
@@ -223,6 +364,8 @@ def generate(count: int = 60,
         spec = dict(spec)
         spec["contrast_worst"] = round(metrics["contrast_worst"], 2)
         spec["contrast_mean"] = round(metrics["contrast_mean"], 2)
+        spec["hue_arc"] = round(hue["hue_arc"], 1)
+        spec["chroma_median"] = round(hue["chroma_median"], 1)
         spec["nearest_neighbour"] = (round(nearest, 1)
                                      if nearest != float("inf") else None)
         accepted.append(spec)
@@ -329,8 +472,14 @@ def main() -> int:
     print(f"\naccepted            {len(accepted)}")
     print(f"attempts            {stats['attempts']}")
     print(f"rejected, contrast  {stats['rejected_contrast']}")
+    print(f"rejected, hue       {stats['rejected_hue']}")
     print(f"rejected, similar   {stats['rejected_similar']}")
+    print(f"yield               {100 * len(accepted) / stats['attempts']:.1f}%")
     print(f"contrast floor      {worst}:1")
+    print(f"widest hue arc      {max(s['hue_arc'] for s in accepted):.0f} deg "
+          f"(gate {MAX_HUE_ARC:.0f})")
+    print(f"lowest chroma       {min(s['chroma_median'] for s in accepted):.1f} "
+          f"(gate {MIN_CHROMA_MEDIAN})")
     print(f"closest pair        {min(nearest):.1f} (gate {args.min_distance})")
     print(f"written to          {args.out}")
     return 0
