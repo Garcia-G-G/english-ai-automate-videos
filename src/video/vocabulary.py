@@ -15,7 +15,7 @@ from .constants import (
 )
 from config.layout import (
     CARD_MARGIN_X, CARD_PADDING, CARD_RADIUS, CARD_WIDTH,
-    VOCAB_ROW_HEIGHT, VOCAB_DIVIDER_X,
+    VOCAB_ROW_HEIGHT, VOCAB_DIVIDER_X, VOCAB_CARD_TOP_MIN,
     BAR_Y,
 )
 from config.colors import CARD_COLORS
@@ -36,7 +36,7 @@ _TITLE_MAX_FONT = 60
 _TITLE_MIN_FONT = 36
 _BADGE_X = 900
 _BADGE_Y = 110
-_CARD_TOP_MIN = 260      # card never above this
+_CARD_TOP_MIN = VOCAB_CARD_TOP_MIN   # card never above this
 _HEADER_H = 70           # coloured header strip inside the card
 _ROW_FONT = 42
 _HEADER_FONT = 34
