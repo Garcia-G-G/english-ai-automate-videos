@@ -1,16 +1,23 @@
 #!/usr/bin/env python3
-"""Generate a professional app icon for TikTok Developer Portal using DALL-E 3."""
+"""Generate a professional app icon for TikTok Developer Portal.
 
-import os
+Migrated off dall-e-3 (removed from the OpenAI API 2026-05-12) to
+gpt-image-1.5 via image_gen.py.
+"""
+
 import sys
-import requests
 from pathlib import Path
 from dotenv import load_dotenv
-from openai import OpenAI
+
+from image_gen import IMAGE_MODEL, SIZE_SQUARE, estimate, generate_image, get_client
 
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+QUALITY = "high"  # An app icon is a one-off; buy the good one.
+
+client = get_client()
+if client is None:
+    sys.exit(1)
 
 PROMPT = """Design a clean, modern app icon for an English language learning app called "English Unlimited".
 
@@ -29,28 +36,21 @@ Requirements:
 output_dir = Path("assets/branding")
 output_dir.mkdir(parents=True, exist_ok=True)
 
-print("Generating app icon with DALL-E 3...")
-response = client.images.generate(
-    model="dall-e-3",
-    prompt=PROMPT,
-    size="1024x1024",
-    quality="hd",
-    n=1,
-)
+print(f"Generating app icon with {IMAGE_MODEL} "
+      f"(~${estimate(1, QUALITY, SIZE_SQUARE):.3f})...")
 
-image_url = response.data[0].url
-revised_prompt = response.data[0].revised_prompt
-print(f"Revised prompt: {revised_prompt}")
-
-# Download
-img_data = requests.get(image_url).content
 output_path = output_dir / "app_icon.png"
-output_path.write_bytes(img_data)
+result = generate_image(client, PROMPT, output_path,
+                        size=SIZE_SQUARE, quality=QUALITY,
+                        label="app_icon")
+if result is None:
+    sys.exit(1)
 print(f"Saved to {output_path}")
 
 # Also copy to docs for website
 docs_path = Path("docs/icon.png")
-docs_path.write_bytes(img_data)
+docs_path.parent.mkdir(parents=True, exist_ok=True)
+docs_path.write_bytes(output_path.read_bytes())
 print(f"Also saved to {docs_path}")
 
 print("\nDone! Use assets/branding/app_icon.png as your TikTok app icon.")
