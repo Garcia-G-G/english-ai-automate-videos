@@ -203,8 +203,18 @@ class CharacterRenderer:
             try:
                 img = Image.open(path).convert("RGBA")
 
-                # Remove white/light background — make it transparent
-                img = self._remove_background(img)
+                # Remove white/light background — make it transparent.
+                # Only for sprites that arrived without one. _remove_background
+                # infers the background colour from the corner pixels' RGB,
+                # which is meaningless on an already-cut-out sprite: the
+                # corners are alpha-0 but still carry colour, and on a sprite
+                # whose corners happen to hold dark grey the function reads
+                # that as "the background is dark grey" and deletes every dark
+                # pixel in the character — the black brush outlines included.
+                if self._has_alpha(img):
+                    logger.debug("Sprite %s already has alpha — skipping keying", filename)
+                else:
+                    img = self._remove_background(img)
 
                 # Resize preserving aspect ratio, fitting within size x size
                 orig_w, orig_h = img.size
@@ -219,6 +229,17 @@ class CharacterRenderer:
 
         _sprite_cache[cache_key] = loaded
         return loaded
+
+    @staticmethod
+    def _has_alpha(img: Image.Image, min_transparent_fraction: float = 0.02) -> bool:
+        """True if the sprite already carries a real cut-out.
+
+        A fraction rather than "has an A channel", because convert("RGBA")
+        gives every image one. What distinguishes a cut-out sprite is that a
+        meaningful share of it is actually transparent.
+        """
+        alpha = np.asarray(img.getchannel("A"))
+        return float((alpha < 16).mean()) >= min_transparent_fraction
 
     @staticmethod
     def _remove_background(img: Image.Image, threshold: int = 220) -> Image.Image:
