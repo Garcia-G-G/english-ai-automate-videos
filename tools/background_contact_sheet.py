@@ -297,8 +297,10 @@ def write_metrics(rows: List[dict], out_dir: Path) -> None:
 
 def enabled_presets() -> set:
     import yaml
+    from backgrounds import resolve_enabled
     cfg = yaml.safe_load((ROOT / "config.yaml").read_text()) or {}
-    return set(cfg.get("video", {}).get("enabled_backgrounds", []) or [])
+    return set(resolve_enabled(
+        cfg.get("video", {}).get("enabled_backgrounds", []) or []))
 
 
 def main() -> int:
@@ -383,9 +385,11 @@ def main() -> int:
             if not args.no_full_res:
                 composed.save(frames_dir / f"{name}.png")
 
+            # The ON marker is redundant when the sheet IS the enabled set,
+            # and at narrow tile widths it runs into the next column.
             sub = (f"{preset_type}\n{render_ms:.0f}ms  ·  "
                    f"{metrics['contrast_yellow_worst']:.1f}:1 worst"
-                   + ("  ·  ON" if name in on else ""))
+                   + ("  ·  ON" if name in on and not args.enabled else ""))
             tiles[name] = (name, composed, sub)
 
             rows.append({"preset": name, "type": preset_type,

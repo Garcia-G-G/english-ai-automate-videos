@@ -9,7 +9,10 @@ from .constants import VIDEO_WIDTH, VIDEO_HEIGHT, GRADIENT_COLORS
 
 # Import background system
 try:
-    from backgrounds import BackgroundGenerator, BACKGROUND_PRESETS, get_recommended_preset
+    from backgrounds import (
+        BackgroundGenerator, BACKGROUND_PRESETS, get_recommended_preset,
+        resolve_enabled,
+    )
     BACKGROUNDS_AVAILABLE = True
 except ImportError:
     BACKGROUNDS_AVAILABLE = False
@@ -55,7 +58,7 @@ def get_default_background() -> str:
     mode = video_config.get("background_mode", "random")
 
     if mode == "random" and BACKGROUNDS_AVAILABLE:
-        enabled = video_config.get("enabled_backgrounds", [])
+        enabled = resolve_enabled(video_config.get("enabled_backgrounds", []))
         if enabled:
             valid = [bg for bg in enabled if bg in BACKGROUND_PRESETS]
             if valid:
