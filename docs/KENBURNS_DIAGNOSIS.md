@@ -1,7 +1,8 @@
 # Ken Burns: why the photo backgrounds move erratically
 
-Diagnosis only. Nothing is tuned, and the numbers below are the evidence for
-whoever does tune it.
+Diagnosis only, and deliberately left unfixed — see
+[Scope](#scope-this-serves-nothing-today). The numbers below are the evidence
+for whoever eventually does tune it.
 
 Reproduce with `python3 tools/kenburns_trace.py --preset photo_earth`; the
 per-frame trace lands in `_audit/kenburns/<preset>_trace.csv`.
@@ -144,8 +145,34 @@ sub-pixel cropping (a float crop box, or `Image.transform` with an affine
 matrix) removes the quantisation floor and only then can the amplitudes come
 down safely.
 
-## Scope
+## Scope: this serves nothing today
 
-This is the code path any future clip or photo background would use, which is
-why it was worth diagnosing with photos disabled. Nothing here has been
-changed.
+An earlier version of this document said the clip background would inherit
+this code path. **That is wrong, and it was the main argument for fixing
+something no feature currently uses.** Corrected here so nobody acts on it.
+
+`ClipLibraryBackground` shares no code with `photo_kenburns`:
+
+* `src/video/clip_background.py` imports `logging`, `random`, `pathlib`,
+  `cv2` and `numpy`, and nothing from `backgrounds.py`. One is OpenCV, the
+  other PIL.
+* `_fit()` (`src/video/clip_background.py:133`) takes no `t`. It computes one
+  scale from the clip's own dimensions and centre-crops with constant offsets
+  — the same rectangle on every frame of a given clip. There is no synthetic
+  camera: the motion in a clip background is the motion that was filmed.
+* Because the crop never moves, none of the faults above can occur there.
+  No zoom oscillators, no per-frame pan, and no truncation of a moving
+  offset. `_fit` rounds rather than truncates, and rounds a value that does
+  not change.
+
+So `photo_kenburns` is reachable only through the preset dispatch at
+`src/backgrounds.py:696`, for the eleven `photo_*` presets — all of which are
+disabled. **Nothing in the running system executes this code.**
+
+That is why it stays diagnosed and untouched. The fault is real and the
+measurements above are good, but the fix is not a knob: amplitude and
+sampling have to move together, and doing that carefully is a real piece of
+work for a feature nobody is using. Recorded as debt, deliberately unpaid.
+
+If photo backgrounds are ever re-enabled, start here. If clip backgrounds get
+built out, this document does not apply to them.
