@@ -346,6 +346,13 @@ def main() -> int:
         names = [n for n in BACKGROUND_PRESETS
                  if not args.only or args.only in n]
 
+    # What the sample was drawn FROM, which is the selection, not the whole
+    # registry. Labelling a sheet with len(BACKGROUND_PRESETS) once put
+    # "sampled evenly from 114" under 24 tiles drawn from 60 palettes — the
+    # 114 being every preset in the process, generated and hand-made alike,
+    # and no part of the population being sampled.
+    population = len(names)
+
     if args.sample and args.sample < len(names):
         # Evenly spaced rather than the first N, so the sheet reflects the
         # whole set instead of whatever the generator happened to accept
@@ -393,7 +400,8 @@ def main() -> int:
     elif args.only:
         sheets = [(f"sheet_{args.only.strip('_')}",
                    f"'{args.only}' — {len(names)} presets"
-                   + (f", sampled evenly from {len(BACKGROUND_PRESETS)}" if args.sample else ""),
+                   + (f", sampled evenly from {population}"
+                      if len(names) < population else ""),
                    list(tiles.values()))]
     else:
         # Master sheet, then one per family.
