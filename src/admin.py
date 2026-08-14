@@ -586,16 +586,39 @@ def reconcile_platform_target(state: dict, platform_name: str,
     """
     key = f"target_{platform_name}"
     seen_key = f"_target_seen_{platform_name}"
+    want_key = f"_target_want_{platform_name}"
+
+    # The widget key is not durable and the bookkeeping keys are. Streamlit
+    # garbage-collects a widget's key on any run where that widget is not
+    # rendered, and these checkboxes live inside `if approved:` — so an
+    # operator with nothing awaiting upload, or just sitting on another tab,
+    # loses `target_<platform>` while `_target_seen_<platform>` survives.
+    # That desync is what crashed here: `previously == enabled`, so neither
+    # branch below assigned, and the return read a key that was gone.
+    #
+    # So the operator's half is mirrored into a key Streamlit will not
+    # collect, captured here while the widget key is still around to read.
+    # Recovering by defaulting to on would have re-ticked a platform that was
+    # deliberately turned off, which is the regression this whole function
+    # exists to prevent.
+    if key in state:
+        state[want_key] = bool(state[key])
+
     previously = state.get(seen_key)
+    want = bool(state.get(want_key, True))
 
     if not enabled:
-        state[key] = False
+        want = False
     elif previously != enabled:
         # Transitioned unavailable -> available (or first ever render).
-        state[key] = True
+        want = True
 
+    # Assigned unconditionally: the caller renders a keyed widget straight
+    # after this, and every path has to leave it something to render.
+    state[key] = want
+    state[want_key] = want
     state[seen_key] = enabled
-    return state[key]
+    return want
 
 
 # The resolver moved to upload_metadata.py so main.py's headless upload path
