@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Character Sprite Generator using OpenAI DALL-E 3.
+Character Sprite Generator using OpenAI gpt-image.
 
 Generates an owl mascot character with different mouth/beak positions for
 lip-sync animation in English learning videos. Each image is a full
@@ -15,9 +15,18 @@ Usage:
     python3 src/generate_character.py --preview  # Generate 1 preview (closed)
     python3 src/generate_character.py --name owl # Specify character name
 
-Cost estimate (DALL-E 3, 1024x1024, standard quality):
-    $0.040 per image
-    5 mouth states = $0.20 total
+Migrated off dall-e-3, which OpenAI removed from the API on 2026-05-12.
+The call goes through image_gen.py; see that module for the model choice.
+
+Sprites are generated with a transparent background rather than the white
+one the old prompts asked for, so the compositor no longer has to key the
+white out. The prompt text still says "white background" for characters
+written before the migration — background="transparent" overrides it, and
+character.py's luminance keying still copes either way.
+
+Cost (gpt-image-1.5, 1024x1024):
+    low $0.009   medium $0.034   high $0.133  per image
+    5 mouth states at medium = $0.17
 """
 
 import argparse
@@ -28,6 +37,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+from image_gen import IMAGE_MODEL, SIZE_SQUARE, estimate, generate_image, get_client
+
 # Setup
 ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT / ".env")
@@ -36,6 +47,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 DEFAULT_CHARACTER = "fox"
+DEFAULT_QUALITY = "medium"
 ASSETS_DIR = ROOT / "assets" / "characters" / DEFAULT_CHARACTER
 
 # ============================================================
@@ -193,16 +205,12 @@ CHARACTER_REGISTRY = {
 MOUTH_STATES = FOX_MOUTH_STATES
 
 
-def generate_character_images(states: list[str] = None, character: str = None):
-    """Generate character images for the specified mouth states using DALL-E 3."""
-    from openai import OpenAI
-
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        logger.error("OPENAI_API_KEY not set in .env")
+def generate_character_images(states: list[str] = None, character: str = None,
+                              quality: str = DEFAULT_QUALITY):
+    """Generate character images for the specified mouth states."""
+    client = get_client()
+    if client is None:
         return []
-
-    client = OpenAI(api_key=api_key)
 
     char_name = character or DEFAULT_CHARACTER
     mouth_states = CHARACTER_REGISTRY.get(char_name, OWL_MOUTH_STATES)
@@ -214,8 +222,7 @@ def generate_character_images(states: list[str] = None, character: str = None):
         states = list(mouth_states.keys())
 
     generated = []
-    size = "1024x1024"
-    quality = "standard"
+    size = SIZE_SQUARE
 
     for i, state in enumerate(states):
         if state not in mouth_states:
@@ -236,42 +243,12 @@ def generate_character_images(states: list[str] = None, character: str = None):
         logger.info("  [%d/%d] Generating: %s", i + 1, len(states), filename)
         logger.info("  Mouth state: %s", state)
 
-        try:
-            response = client.images.generate(
-                model="dall-e-3",
-                prompt=prompt,
-                size=size,
-                quality=quality,
-                n=1,
-            )
-
-            image_url = response.data[0].url
-            revised_prompt = response.data[0].revised_prompt
-
-            # Track DALL-E cost
-            try:
-                from cost_tracker import get_tracker
-                get_tracker().log_dalle(count=1, size=size, quality=quality,
-                                        label=f"character_{char_name}_{state}")
-            except Exception:
-                pass
-
-            logger.info("  DALL-E revised prompt: %s...", revised_prompt[:100])
-
-            # Download the image
-            import requests
-            img_response = requests.get(image_url, timeout=60)
-            img_response.raise_for_status()
-
-            with open(filepath, 'wb') as f:
-                f.write(img_response.content)
-
-            size_mb = len(img_response.content) / (1024 * 1024)
-            logger.info("  Saved: %s (%.1f MB)", filename, size_mb)
-            generated.append(filepath)
-
-        except Exception as e:
-            logger.error("  Failed to generate %s: %s", filename, e)
+        result = generate_image(client, prompt, filepath,
+                                size=size, quality=quality,
+                                transparent=True,
+                                label=f"character_{char_name}_{state}")
+        if result:
+            generated.append(result)
 
     return generated
 
@@ -315,7 +292,8 @@ def list_characters(character: str = None):
     if missing:
         print(f"  Missing: {len(missing)} states")
         print(f"  Run: python3 src/generate_character.py --name {char_name}")
-        print(f"  Cost: ~$0.04 per image (DALL-E 3, 1024x1024, standard)")
+        print(f"  Cost: ~${estimate(1, DEFAULT_QUALITY, SIZE_SQUARE):.3f} per image "
+              f"({IMAGE_MODEL}, {SIZE_SQUARE}, {DEFAULT_QUALITY})")
     else:
         print("  All mouth states present!")
 
@@ -324,7 +302,7 @@ def list_characters(character: str = None):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate character mascot sprites using DALL-E 3",
+        description="Generate character mascot sprites using OpenAI gpt-image",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""
 Examples:
@@ -337,8 +315,8 @@ Available characters: {', '.join(CHARACTER_REGISTRY.keys())}
 
 Mouth states: closed, slightly_open, open, wide, o_shape
 
-Cost: ~$0.04 per image (DALL-E 3, 1024x1024, standard)
-Total: ~$0.20 for all 5 states
+Cost: ~$0.034 per image (gpt-image-1.5, 1024x1024, medium)
+Total: ~$0.17 for all 5 states. --quality changes the tier.
         """
     )
 
@@ -349,6 +327,10 @@ Total: ~$0.20 for all 5 states
     parser.add_argument("--name", "-n", default=DEFAULT_CHARACTER,
                         choices=list(CHARACTER_REGISTRY.keys()),
                         help=f"Character to generate (default: {DEFAULT_CHARACTER})")
+    parser.add_argument("--quality", "-q", default=DEFAULT_QUALITY,
+                        choices=["low", "medium", "high"],
+                        help=f"Image quality tier (default: {DEFAULT_QUALITY}). "
+                             "Drives the price per image.")
 
     args = parser.parse_args()
     char_name = args.name
@@ -359,7 +341,8 @@ Total: ~$0.20 for all 5 states
 
     if args.preview:
         logger.info("Generating 1 preview image (mouth_closed) for %s...", char_name)
-        results = generate_character_images(["mouth_closed"], character=char_name)
+        results = generate_character_images(["mouth_closed"], character=char_name,
+                                            quality=args.quality)
         if results:
             logger.info("Preview saved: %s", results[0])
         return
@@ -377,9 +360,9 @@ Total: ~$0.20 for all 5 states
         logger.info("All character sprites already exist! Use --list to see them.")
         return
 
-    estimated_cost = len(to_generate) * 0.04
+    estimated_cost = estimate(len(to_generate), args.quality, SIZE_SQUARE)
     logger.info("=" * 50)
-    logger.info("DALL-E 3 Character Sprite Generation")
+    logger.info("Character Sprite Generation (%s, %s)", IMAGE_MODEL, args.quality)
     logger.info("=" * 50)
     logger.info("Character: %s Mascot", char_name.title())
     logger.info("Mouth states to generate: %d / %d", len(to_generate), len(all_states))
@@ -387,7 +370,8 @@ Total: ~$0.20 for all 5 states
     logger.info("Estimated cost: $%.2f", estimated_cost)
     logger.info("=" * 50)
 
-    results = generate_character_images(to_generate, character=char_name)
+    results = generate_character_images(to_generate, character=char_name,
+                                        quality=args.quality)
     logger.info("")
     logger.info("Done! Generated %d character sprites.", len(results))
     logger.info("Run 'python3 src/generate_character.py --list --name %s' to see results.", char_name)

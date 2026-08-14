@@ -12,7 +12,7 @@ Usage:
     tracker.log_elevenlabs_tts(characters=1500)
     tracker.log_openai_tts(characters=800)
     tracker.log_openai_whisper(duration_seconds=28.5)
-    tracker.log_dalle(count=1)
+    tracker.log_image(count=1)
     tracker.print_summary()
     tracker.save()
 """
@@ -43,10 +43,11 @@ PRICING = {
     "tts-1-hd": {"per_1m_chars": 30.00},
     # OpenAI Whisper
     "whisper-1": {"per_minute": 0.006},
-    # OpenAI DALL-E 3
-    "dall-e-3-1024x1792-hd": {"per_image": 0.080},
-    "dall-e-3-1024x1024-hd": {"per_image": 0.080},
-    "dall-e-3-1024x1024-standard": {"per_image": 0.040},
+    # OpenAI images — priced in image_gen.PER_IMAGE_USD, which is keyed by
+    # (model, size, quality) and is the single source of truth. Nothing is
+    # duplicated here; log_image() reads it directly. dall-e-3 entries are
+    # gone with the model (retired from the API 2026-05-12), along with the
+    # $0.080 figure that under-reported hd calls by a third.
     # ElevenLabs TTS (Starter plan ~$5/30k chars, Creator ~$22/100k chars)
     # Using Creator plan rate: $0.22 per 1k chars = $220 per 1M chars
     "eleven_v3": {"per_1m_chars": 220.00},
@@ -97,13 +98,18 @@ class CostTracker:
         })
         return cost
 
-    def log_dalle(self, count: int = 1, size: str = "1024x1792",
-                  quality: str = "hd", label: str = "background_image"):
-        """Log a DALL-E 3 image generation call."""
-        key = f"dall-e-3-{size}-{quality}"
-        pricing = PRICING.get(key, PRICING["dall-e-3-1024x1792-hd"])
-        cost = count * pricing["per_image"]
-        self._add_entry("dalle3", "dall-e-3", cost, label, {
+    def log_image(self, count: int = 1, size: str = "1024x1536",
+                  quality: str = "medium", model: str = None,
+                  label: str = "background_image"):
+        """Log a gpt-image generation call."""
+        from image_gen import IMAGE_MODEL, price_per_image
+        model = model or IMAGE_MODEL
+        per_image = price_per_image(quality, size, model)
+        if per_image == 0.0:
+            logger.warning("No price for %s %s %s — logging $0.00",
+                           model, size, quality)
+        cost = count * per_image
+        self._add_entry("openai_image", model, cost, label, {
             "images": count,
             "size": size,
             "quality": quality,
@@ -142,6 +148,8 @@ class CostTracker:
     def cost_by_provider(self) -> dict:
         costs = {}
         for e in self.entries:
+            # "dalle3" is retired but still appears in cost logs already on
+            # disk, so it stays here to keep those reading correctly.
             provider = "openai" if e["api_type"].startswith("openai") or e["api_type"] == "dalle3" else "elevenlabs"
             costs[provider] = costs.get(provider, 0) + e["cost_usd"]
         return costs

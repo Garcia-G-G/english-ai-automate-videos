@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Background Generator using OpenAI DALL-E 3.
+AI Background Generator using OpenAI gpt-image.
 
 Generates realistic, high-quality background images for TikTok-style
 English learning videos. Images are saved to assets/backgrounds/<category>/
@@ -12,25 +12,17 @@ Usage:
     python3 src/generate_backgrounds.py --count 5          # 5 per category
     python3 src/generate_backgrounds.py --list              # Show what exists
     python3 src/generate_backgrounds.py --preview earth     # Generate 1 preview
+    python3 src/generate_backgrounds.py --quality high      # Override quality
 
-THE MODEL THIS SCRIPT CALLS NO LONGER EXISTS. OpenAI removed dall-e-2 and
-dall-e-3 from the API on 2026-05-12; every call here now fails. The
-replacements are gpt-image-2, gpt-image-1 and gpt-image-1-mini, and they
-are not drop-in: quality is low/medium/high rather than standard/hd, the
-response carries base64 rather than a URL, and the sizes differ (portrait
-is 1024x1536, not 1024x1792 — a 2:3 frame instead of 1:1.75, so a little
-more of each image gets cropped away at 9:16).
+Migrated off dall-e-3, which OpenAI removed from the API on 2026-05-12.
+The call now goes through image_gen.py; see that module for why the
+replacement is gpt-image-1.5 and what differs from the old API.
 
-Picking one is a spend decision, so it is left to a human. Per image at
-1024x1536, from the image-generation guide:
-
-    gpt-image-2   low $0.005   medium $0.041   high $0.165
-    gpt-image-1   low $0.016   medium $0.063   high $0.250
-
-For comparison, the 40 images already in assets/ were dall-e-3 hd at
-1024x1792, which cost $0.120 each — about $4.80 for the set. (Both this
-file and cost_tracker.py record $0.080 for those, which was the price of
-*standard* quality at that size; the code asked for hd.)
+The portrait frame changed with the model: 1024x1536 (2:3) rather than
+1024x1792 (1:1.75), so slightly more of each image survives the crop to
+9:16. Default quality here is medium ($0.050/image at this size); the 40
+images already in assets/ were dall-e-3 hd at $0.120 each, so a like-for-
+like regeneration is now cheaper, not dearer.
 
 Generation is one-time asset spend. It is not charged per video: a video
 re-reads whatever PNGs are already on disk and pays nothing to do it.
@@ -45,6 +37,8 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 
+from image_gen import IMAGE_MODEL, SIZE_PORTRAIT, estimate, generate_image, get_client
+
 # Setup
 ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT / ".env")
@@ -54,19 +48,13 @@ logger = logging.getLogger(__name__)
 
 ASSETS_DIR = ROOT / "assets" / "backgrounds"
 
-# The model every generate call names. Retired from the API on 2026-05-12;
-# see the module docstring for the replacements and what each costs. Kept
-# accurate rather than quietly updated, so the preflight below can say
-# exactly why nothing will generate instead of surfacing a bare 404.
-IMAGE_MODEL = "dall-e-3"
-IMAGE_MODEL_RETIRED_ON = "2026-05-12"
-IMAGE_MODEL_REPLACEMENTS = ("gpt-image-2", "gpt-image-1", "gpt-image-1-mini")
+DEFAULT_QUALITY = "medium"
 
 # ============================================================
-# DALL-E 3 PROMPTS — carefully tuned for video backgrounds
+# PROMPTS — carefully tuned for video backgrounds
 # ============================================================
 # Key principles:
-# - Portrait orientation (1024x1792) for TikTok 9:16
+# - Portrait orientation (1024x1536) for TikTok 9:16
 # - Rich detail but not too busy (text will overlay)
 # - Dark enough for white/yellow text readability
 # - Cinematic, dramatic lighting
@@ -306,32 +294,12 @@ def prompt_supply(category: str) -> int:
     return len(BACKGROUND_PROMPTS.get(category, ()))
 
 
-def preflight() -> bool:
-    """Refuse to spend a run on a model the API no longer serves."""
-    logger.error("=" * 62)
-    logger.error("Cannot generate: %s was removed from the OpenAI API on %s.",
-                 IMAGE_MODEL, IMAGE_MODEL_RETIRED_ON)
-    logger.error("")
-    logger.error("Replacements: %s", ", ".join(IMAGE_MODEL_REPLACEMENTS))
-    logger.error("They are not drop-in — quality levels, response format and")
-    logger.error("portrait size all differ. See this file's docstring for the")
-    logger.error("per-image prices before choosing one.")
-    logger.error("")
-    logger.error("--list still works and reads only local files.")
-    logger.error("=" * 62)
-    return False
-
-
-def generate_images(category: str, count: int = 3, size: str = "1024x1792"):
-    """Generate background images for a category using DALL-E 3."""
-    from openai import OpenAI
-
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        logger.error("OPENAI_API_KEY not set in .env")
+def generate_images(category: str, count: int = 3, size: str = SIZE_PORTRAIT,
+                    quality: str = DEFAULT_QUALITY):
+    """Generate background images for a category."""
+    client = get_client()
+    if client is None:
         return []
-
-    client = OpenAI(api_key=api_key)
 
     if category not in BACKGROUND_PROMPTS:
         logger.error("Unknown category: %s. Available: %s",
@@ -357,42 +325,11 @@ def generate_images(category: str, count: int = 3, size: str = "1024x1792"):
         logger.info("  [%d/%d] Generating: %s", i+1, count, filename)
         logger.info("  Prompt: %s...", prompt[:80])
 
-        try:
-            response = client.images.generate(
-                model=IMAGE_MODEL,
-                prompt=prompt,
-                size=size,
-                quality="hd",
-                n=1,
-            )
-
-            image_url = response.data[0].url
-            revised_prompt = response.data[0].revised_prompt
-
-            # Track DALL-E cost
-            try:
-                from cost_tracker import get_tracker
-                get_tracker().log_dalle(count=1, size=size, quality="hd",
-                                        label=f"bg_{category}")
-            except Exception:
-                pass
-
-            logger.info("  DALL-E revised prompt: %s...", revised_prompt[:100])
-
-            # Download the image
-            import requests
-            img_response = requests.get(image_url, timeout=60)
-            img_response.raise_for_status()
-
-            with open(filepath, 'wb') as f:
-                f.write(img_response.content)
-
-            size_mb = len(img_response.content) / (1024 * 1024)
-            logger.info("  Saved: %s (%.1f MB)", filename, size_mb)
-            generated.append(filepath)
-
-        except Exception as e:
-            logger.error("  Failed to generate %s: %s", filename, e)
+        result = generate_image(client, prompt, filepath,
+                                size=size, quality=quality,
+                                label=f"bg_{category}")
+        if result:
+            generated.append(result)
 
     return generated
 
@@ -437,13 +374,14 @@ def list_backgrounds():
 
     if total_images == 0:
         print("  Run: python3 src/generate_backgrounds.py")
-        print("  Cost: ~$1.44 for 3 images/category (DALL-E 3)")
+        print(f"  Cost: ~${estimate(3 * len(BACKGROUND_PROMPTS), DEFAULT_QUALITY):.2f} "
+              f"for 3 images/category ({IMAGE_MODEL}, {DEFAULT_QUALITY})")
     print("=" * 60)
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate AI background images using DALL-E 3",
+        description="Generate AI background images using OpenAI gpt-image",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -455,8 +393,8 @@ Examples:
 
 Categories: earth, city, ocean, nature, abstract, clouds, sunset, galaxy
 
-NOTE: dall-e-3 was removed from the OpenAI API on 2026-05-12, so generation
-is currently inoperative and says so on startup. --list is unaffected.
+Migrated off dall-e-3 (removed from the API 2026-05-12) to gpt-image-1.5.
+Quality is low/medium/high; --quality picks the tier. --list is free.
         """
     )
 
@@ -474,6 +412,10 @@ is currently inoperative and says so on startup. --list is unaffected.
     parser.add_argument("--preview", type=str, default=None,
                         choices=list(BACKGROUND_PROMPTS.keys()),
                         help="Generate just 1 image for preview")
+    parser.add_argument("--quality", "-q", type=str, default=DEFAULT_QUALITY,
+                        choices=["low", "medium", "high"],
+                        help=f"Image quality tier (default: {DEFAULT_QUALITY}). "
+                             "Drives the price per image.")
 
     args = parser.parse_args()
 
@@ -482,10 +424,9 @@ is currently inoperative and says so on startup. --list is unaffected.
         return
 
     if args.preview:
-        if not preflight():
-            return 1
-        logger.info("Generating 1 preview image for '%s'...", args.preview)
-        results = generate_images(args.preview, count=1)
+        logger.info("Generating 1 preview image for '%s' (~$%.3f)...",
+                    args.preview, estimate(1, args.quality))
+        results = generate_images(args.preview, count=1, quality=args.quality)
         if results:
             logger.info("Preview saved: %s", results[0])
         return
@@ -530,16 +471,16 @@ is currently inoperative and says so on startup. --list is unaffected.
     logger.info("Images per category: %s",
                 ", ".join(f"{c}={n}" for c, n in per_category.items()))
     logger.info("New images to generate: %d", total_new)
+    logger.info("Quality: %s", args.quality)
+    logger.info("Estimated cost: $%.2f", estimate(total_new, args.quality))
     logger.info("One-time asset spend — videos re-read these files for free.")
     logger.info("=" * 50)
-
-    if not preflight():
-        return 1
 
     for cat in categories:
         logger.info("")
         logger.info("[%s] Generating backgrounds...", cat.upper())
-        results = generate_images(cat, count=per_category[cat])
+        results = generate_images(cat, count=per_category[cat],
+                                  quality=args.quality)
         logger.info("[%s] Generated %d images", cat.upper(), len(results))
 
     logger.info("")
