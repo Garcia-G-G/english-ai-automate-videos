@@ -131,6 +131,62 @@ def test_platforms_are_tracked_independently():
     assert state[KEY] is True
 
 
+# ── the widget key is not permanent, and the sentinel is ─────────────
+
+def test_the_widget_key_can_vanish_while_the_sentinel_remains():
+    """The crash: KeyError 'target_TikTok' straight out of the dashboard.
+
+    Streamlit garbage-collects a widget's key when that widget is not
+    rendered on a run, and these checkboxes live inside `if approved:` —
+    so an operator with nothing awaiting upload, or simply sitting on
+    another tab, loses `target_<platform>`. The `_target_seen_<platform>`
+    sentinel is NOT a widget key, so it survives.
+
+    That leaves `previously == enabled` with no stored value to return,
+    which is precisely the state the traceback proves the dashboard reached.
+    """
+    state = {f"_target_seen_{YT}": True}
+
+    assert reconcile_platform_target(state, YT, enabled=True) is True
+
+
+def test_the_operator_choice_survives_the_widget_key_being_collected():
+    """Unticking must outlive a trip to another tab.
+
+    Losing the widget key must not silently re-tick a platform the operator
+    deliberately turned off — that is the exact regression this function was
+    written to prevent, and a garbage-collected key is no excuse for it.
+    """
+    state = {}
+    reconcile_platform_target(state, YT, enabled=True)      # defaults on
+    state[KEY] = False                                      # operator unticks
+    reconcile_platform_target(state, YT, enabled=True)      # a rerun happens
+
+    del state[KEY]                                          # Streamlit collects it
+
+    assert reconcile_platform_target(state, YT, enabled=True) is False
+
+
+def test_a_collected_key_on_an_unavailable_platform_stays_off():
+    """The dangerous direction, across the same boundary."""
+    state = {f"_target_seen_{YT}": True}
+
+    assert reconcile_platform_target(state, YT, enabled=False) is False
+    assert state[KEY] is False
+
+
+def test_the_function_always_leaves_the_widget_key_set():
+    """Whatever the entry state, the caller can render the widget after."""
+    for state in ({}, {f"_target_seen_{YT}": True}, {f"_target_seen_{YT}": False},
+                  {KEY: True}, {KEY: False, f"_target_seen_{YT}": True}):
+        for enabled in (True, False):
+            s = dict(state)
+            result = reconcile_platform_target(s, YT, enabled=enabled)
+            assert KEY in s, f"{state} + enabled={enabled} left no widget key"
+            assert s[KEY] is result
+            assert isinstance(result, bool)
+
+
 def test_the_widget_no_longer_passes_value():
     """A `value=` on this checkbox means the reconciliation was bypassed."""
     import ast
