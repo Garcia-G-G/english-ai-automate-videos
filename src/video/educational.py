@@ -15,7 +15,7 @@ from .constants import (
     ENGLISH_WORD_COLOR, ENGLISH_WORD_SCALE,
     ENGLISH_GLOW_RADIUS, GROUP_TRANSITION, EMPHASIS,
     SIZE_MAIN_SPANISH, SIZE_ENGLISH_WORD, SIZE_TRANSLATION,
-    SAFE_AREA_TOP, SAFE_AREA_BOTTOM,
+    SAFE_AREA_TOP, SAFE_AREA_BOTTOM, SAFE_AREA_HEIGHT,
 )
 from .utils import (
     font, line_break, draw_text_with_glow, draw_text_solid,
@@ -270,7 +270,7 @@ def _render_group_tiktok(
         bounce_offset_y = int(30 * (1 - eased))
 
     # Vertical centering with clamping
-    safe_h = SAFE_AREA_BOTTOM - SAFE_AREA_TOP
+    safe_h = SAFE_AREA_HEIGHT
     card_y = SAFE_AREA_TOP + (safe_h - total_h) // 2 + bounce_offset_y
     card_y = max(SAFE_AREA_TOP, card_y)
     if card_y + total_h > SAFE_AREA_BOTTOM:
