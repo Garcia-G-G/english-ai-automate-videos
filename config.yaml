@@ -98,7 +98,7 @@ output:
 # Character Mascot (animated lip-sync)
 character:
   enabled: false
-  name: "fox"                 # Character folder under assets/characters/
+  name: "bookworm"            # Character folder under assets/characters/
   position_x: 50              # Bottom-left (avoids TikTok right-side buttons)
   position_y: 1450
   size: 350                   # Character size in pixels (larger for better visibility)
