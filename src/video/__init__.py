@@ -51,6 +51,36 @@ def peak_rss_mb() -> float:
     return raw / (1024 * 1024) if platform.system() == "Darwin" else raw / 1024
 
 
+def prepare_background_cache(bg, preset: str, duration: float,
+                             fast_mode: bool = False) -> None:
+    """Warm `bg` for `preset`: one frame if it is static, a loop if it moves.
+
+    render_from_preset ignores t for a static_gradient, so pre-rendering a
+    loop of them produces N byte-identical 1080x1920x3 arrays and retains all
+    of them (150 frames ~ 930MB nominal). 69 of the 76 enabled presets are
+    static_gradient, so the loop path was the common one.
+    """
+    import time as _time
+
+    preset_type = (BACKGROUND_PRESETS.get(preset) or {}).get("type")
+    static = fast_mode or preset_type == "static_gradient"
+
+    _bg_start = _time.time()
+
+    if static:
+        logger.info("Rendering static background once (%s)...", preset_type or "fast mode")
+        bg.render_static_once(preset)
+        logger.info("Background rendered in %.1fs (peak RSS %.0f MB)",
+                    _time.time() - _bg_start, peak_rss_mb())
+        return
+
+    logger.info("Pre-rendering background loop...")
+    bg.pre_render_loop(preset, loop_duration=min(5.0, duration),
+                       show_progress=False)
+    logger.info("Background pre-rendered in %.1fs (peak RSS %.0f MB)",
+                _time.time() - _bg_start, peak_rss_mb())
+
+
 def generate_video(
     audio_path: str,
     data_path: str,
@@ -159,20 +189,8 @@ def generate_video(
 
             bg = get_background_generator()
             if bg:
-                import time as _time
-                _bg_start = _time.time()
-
-                if fast_mode:
-                    logger.info("Fast mode: rendering static background...")
-                    bg.render_static_once(background)
-                    logger.info(f"Background rendered in {_time.time() - _bg_start:.1f}s")
-                else:
-                    logger.info("Pre-rendering background loop...")
-                    loop_duration = min(5.0, duration)
-                    bg.pre_render_loop(background, loop_duration=loop_duration, show_progress=False)
-                    logger.info(
-                        "Background pre-rendered in %.1fs (peak RSS %.0f MB)",
-                        _time.time() - _bg_start, peak_rss_mb())
+                prepare_background_cache(bg, background, duration,
+                                         fast_mode=fast_mode)
 
         elif BACKGROUNDS_AVAILABLE:
             set_background(bg_type=background, options=background_options or {}, duration=duration)
