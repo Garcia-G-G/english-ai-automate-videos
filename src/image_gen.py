@@ -87,7 +87,16 @@ def estimate(count: int, quality: str, size: str = SIZE_PORTRAIT,
 
 
 def get_client():
-    """An OpenAI client, or None if the key is missing."""
+    """An OpenAI client, or None if the key is missing.
+
+    Loads .env first. Every caller happens to do this already, but a module
+    that reads a credential and relies on someone else having loaded it
+    reports "no API key" when run standalone — indistinguishable from a key
+    that is genuinely absent. See tests/test_env_loading.py.
+    """
+    from dotenv import load_dotenv
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         logger.error("OPENAI_API_KEY not set in .env")
