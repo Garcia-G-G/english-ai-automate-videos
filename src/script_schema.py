@@ -47,6 +47,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Literal, Optional, Type, Union
 
+from config.layout import VOCAB_MAX_ROWS
+
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -409,8 +411,22 @@ class VocabularyScript(ScriptBase, _TranslationsMixin):
     title: str = Field(min_length=1)
 
     # The prompt asks for 6-10 (script_generator.py:558). Hard floor is 2 —
-    # anything less is not a list — with the 6-10 window enforced as a lint.
-    pairs: List[VocabPair] = Field(min_length=2)
+    # anything less is not a list — with the 6-10 window kept as a lint,
+    # because overshooting the prompt is a generation quality signal rather
+    # than something that breaks a frame.
+    #
+    # The CEILING is different in kind and so is enforced here rather than in
+    # lint(). _draw_vocab_rows steps rows at VOCAB_ROW_HEIGHT with no clamp
+    # while only the CARD is clamped, so past a certain count the rows walk
+    # out of their own card: at 15 they cross SAFE_AREA_BOTTOM into the
+    # platform UI rail, and at 18 they leave the 1920px frame entirely. That
+    # is a layout invariant, not a style preference, and nothing downstream
+    # was catching it — validate_render_data never calls lint().
+    #
+    # VOCAB_MAX_ROWS (12) rather than the geometric limit (14) because the
+    # constant already declares the intent and two rows of margin costs
+    # nothing.
+    pairs: List[VocabPair] = Field(min_length=2, max_length=VOCAB_MAX_ROWS)
 
     # Free string rather than a Literal: the prompt names four values but the
     # renderer only prints it (video/vocabulary.py:81), so an unexpected word
