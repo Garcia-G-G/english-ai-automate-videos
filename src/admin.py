@@ -21,6 +21,8 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
+from run_log import attach_run_log, detach_run_log
+
 # Streamlit installs no handler of its own, so without this every
 # logger.* call in this module and in src/pipeline.py is discarded --
 # including the render progress lines and the error path at the bottom of
@@ -422,6 +424,10 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
                 logger.debug("heartbeat failed for job %s", job_id, exc_info=True)
 
     def _worker():
+        # One file per job, recorded on the row so a 3am failure can be read
+        # back from the ledger rather than from a console nobody kept.
+        log_path = attach_run_log(f"job-{job_id}")
+        update_job(job_id, log_path=str(log_path))
         try:
             with _RENDER_LOCK:
                 run_pipeline_with_tracking(job_id, video_type, category,
@@ -434,6 +440,7 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
                          error="Generation worker crashed — see dashboard logs")
         finally:
             stop_beating.set()
+            detach_run_log(log_path)
 
     threading.Thread(target=_heartbeat, name=f"heartbeat-{job_id}",
                      daemon=True).start()
