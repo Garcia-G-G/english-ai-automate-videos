@@ -55,3 +55,4 @@ _audit/backgrounds/
 
 # Ken Burns per-frame traces (regenerate: tools/kenburns_trace.py)
 _audit/kenburns/
+logs/
