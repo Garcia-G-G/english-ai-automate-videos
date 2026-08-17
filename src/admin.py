@@ -13,6 +13,7 @@ import json
 import os
 import sys
 import shutil
+import subprocess
 import threading
 import time
 from pathlib import Path
@@ -93,10 +94,81 @@ def save_jobs(jobs: dict):
     os.replace(tmp, JOBS_FILE)
 
 
+def _proc_start(pid: int) -> Optional[str]:
+    """OS start time for `pid`, or None if no such process is running.
+
+    Shelled out rather than taken from psutil, which is not a dependency
+    here. The value is only ever compared for equality, so its format does
+    not matter — only that the OS reports the same string for the same
+    process and a different one for a recycled pid.
+    """
+    try:
+        out = subprocess.run(["ps", "-p", str(pid), "-o", "lstart="],
+                             capture_output=True, text=True, timeout=5)
+    except Exception:                                       # noqa: BLE001
+        return None
+    return out.stdout.strip() or None
+
+
+#: Identity of THIS process. Recomputed whenever Streamlit re-executes the
+#: script, and that is the point: a process does not change its pid or its
+#: start time when its source is reloaded, so both survive the reload that
+#: wipes every in-memory registry.
+_OWNER_PID = os.getpid()
+_OWNER_STARTED = _proc_start(_OWNER_PID)
+
+
+def _owner_alive(job: dict) -> bool:
+    """Is the process that started this job still running?
+
+    This is the whole liveness test, and it deliberately does NOT consult
+    the heartbeat. A render stops stamping progress for minutes at a time
+    during encoding — one real job went 3m47s between updates — so any
+    staleness threshold either reaps live work or is too loose to catch
+    anything. Process liveness has no such window.
+
+    The previous version asked whether the job id was in an in-memory set.
+    That set is module state, Streamlit re-executes the module on any source
+    change, and the set comes back empty — so editing any watched file while
+    a render was running marked that render failed. It had exactly that
+    effect on 2026-08-17: job ab4ed292 was recorded as "Interrupted" at
+    15:51:51 and went on to render, pass the gate and ship at 15:57.
+    """
+    pid = job.get("owner_pid")
+    if not pid:
+        # Written before owners were recorded, so nothing can vouch for it.
+        return False
+    if pid == _OWNER_PID:
+        return True
+    started = _proc_start(pid)
+    if started is None:
+        return False
+    # A recycled pid is a different process wearing the same number.
+    return not job.get("owner_started") or started == job["owner_started"]
+
+
+def touch_heartbeat(job_id: str) -> None:
+    """Stamp a running job so its row shows the worker is still there.
+
+    Separate from update_job because `updated_at` means "progress changed"
+    and is read as such by the UI. A heartbeat is not progress.
+    """
+    with _JOBS_LOCK:
+        jobs = load_jobs()
+        for job in jobs["active"]:
+            if job["id"] == job_id:
+                job["heartbeat"] = datetime.now().isoformat()
+                save_jobs(jobs)
+                return
+
+
 def create_job(video_type: str, category: str = None, topic: str = None) -> str:
     job_id = str(uuid.uuid4())[:8]
     job = {
         "id": job_id,
+        "owner_pid": _OWNER_PID,
+        "owner_started": _OWNER_STARTED,
+        "heartbeat": datetime.now().isoformat(),
         "video_type": video_type,
         "category": category,
         "topic": topic,
@@ -322,11 +394,11 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
 # A second tab therefore queues instead of contending.
 _RENDER_LOCK = threading.Lock()
 
-# Job ids with a live worker in THIS process. An active row that is not here
-# has no thread behind it — see reap_orphaned_jobs.
-_LIVE_JOBS: set = set()
-_LIVE_JOBS_LOCK = threading.Lock()
 _WORKERS: list = []
+
+#: How often a running job stamps its row. Small enough that a dead worker is
+#: obvious, large enough that it is not a write loop.
+HEARTBEAT_SEC = 10
 
 
 def start_generation(video_type: str, category: str = None, topic_name: str = None,
@@ -338,8 +410,16 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
     """
     job_id = create_job(video_type, category, topic_name)
 
-    with _LIVE_JOBS_LOCK:
-        _LIVE_JOBS.add(job_id)
+    # The heartbeat is what a running job leaves behind, and it keeps
+    # ticking through the long encode, when nothing else writes to the row.
+    stop_beating = threading.Event()
+
+    def _heartbeat():
+        while not stop_beating.wait(HEARTBEAT_SEC):
+            try:
+                touch_heartbeat(job_id)
+            except Exception:                               # noqa: BLE001
+                logger.debug("heartbeat failed for job %s", job_id, exc_info=True)
 
     def _worker():
         try:
@@ -353,9 +433,10 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
             complete_job(job_id, success=False,
                          error="Generation worker crashed — see dashboard logs")
         finally:
-            with _LIVE_JOBS_LOCK:
-                _LIVE_JOBS.discard(job_id)
+            stop_beating.set()
 
+    threading.Thread(target=_heartbeat, name=f"heartbeat-{job_id}",
+                     daemon=True).start()
     t = threading.Thread(target=_worker, name=f"generate-{job_id}", daemon=True)
     _WORKERS.append(t)
     t.start()
@@ -383,8 +464,7 @@ def reap_orphaned_jobs() -> int:
     """
     with _JOBS_LOCK:
         jobs = load_jobs()
-        with _LIVE_JOBS_LOCK:
-            orphans = [j for j in jobs["active"] if j["id"] not in _LIVE_JOBS]
+        orphans = [j for j in jobs["active"] if not _owner_alive(j)]
         if not orphans:
             return 0
         for job in orphans:
