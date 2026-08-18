@@ -32,6 +32,11 @@ _SPANISH_ACTIVE = (0, 120, 200)      # dark blue — pops on cream
 _SPANISH_UPCOMING = (60, 70, 90)     # dark grey — readable on cream
 _SPANISH_PAST = (130, 140, 160)      # medium grey — subtle on cream
 
+# Alpha for a word the narrator has not reached yet, out of
+# 255. Low enough to read as "coming up" rather than as content, high enough
+# that the card looks occupied.
+_UPCOMING_ALPHA = 110
+
 # ── Translation styling (inside dark glassmorphism card) ─────────
 _TRANS_SIZE = 48
 _TRANS_COLOR = (230, 235, 250)       # bright on dark card background
@@ -494,6 +499,14 @@ def _render_spanish_karaoke(
             )
 
             word_alpha = int(state['alpha'] * group_alpha / 255)
+
+            # A word the narrator has not reached is drawn dimmed rather than
+            # not at all. The card is sized for the whole phrase from its first
+            # frame, so without this the opening seconds of every phrase show
+            # one or two words in a mostly empty card — measured at a median
+            # 70% of the card carrying no ink.
+            if state['alpha'] <= 0 and t < word_start:
+                word_alpha = int(_UPCOMING_ALPHA * group_alpha / 255)
 
             if word_alpha > 0:
                 if is_english_word:
