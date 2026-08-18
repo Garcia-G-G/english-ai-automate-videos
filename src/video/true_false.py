@@ -49,6 +49,7 @@ from .utils import (
     create_base_frame, finalize_frame,
     seg_start as _seg_start, seg_end as _seg_end,
     log_segment_timestamps, resolve_countdown_number,
+    font_line_height,
 )
 
 logger = logging.getLogger(__name__)
@@ -337,7 +338,7 @@ def create_frame_true_false(
         statement, 56, 36, max_text_w, max_text_h,
     )
 
-    line_h = int(q_font_size * 1.4)
+    line_h = font_line_height(qf)
     card_inner_h = len(q_lines) * line_h + card_padding * 2
     card_y = QUESTION_ZONE_TOP + (QUESTION_ZONE_HEIGHT - card_inner_h) // 2
 
@@ -589,7 +590,7 @@ def create_frame_true_false(
             ef, exp_font_size, exp_lines, exp_text_h = fit_text_font(
                 clean_exp, 42, 28, max_exp_w, max_exp_h,
             )
-            exp_line_h = int(exp_font_size * 1.4)
+            exp_line_h = font_line_height(ef)
             exp_height = len(exp_lines) * exp_line_h + exp_padding * 2
 
             # Light card
