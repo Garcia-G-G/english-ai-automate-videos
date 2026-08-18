@@ -238,18 +238,34 @@ def generate_video(
             # comment records why. ADD WORDS THERE, never here.
             SPANISH_COMMON = SPANISH_FILTER
             english_set = set()
+            dropped = []
             for phrase in english_phrases:
                 phrase_words = phrase.lower().split()
-                # Skip phrases with 4+ words — likely full Spanish sentences
-                if len(phrase_words) > 3:
-                    continue
                 for w in phrase_words:
                     cleaned = _re.sub(r'[^\w]', '', w)
-                    # Reject words with Spanish accents/ñ
+                    # Reject words with Spanish accents/ñ. This one is a
+                    # SEMANTIC test — a word carrying á/é/í/ó/ú/ñ/ü is Spanish
+                    # whatever its length — so it stays. Its sibling from the
+                    # same commit, "skip phrases of 4+ words", was a length
+                    # proxy for the same judgement and is gone; see below.
                     if any(c in cleaned for c in 'áéíóúñü'):
+                        dropped.append((phrase, w, 'spanish accent'))
                         continue
-                    if cleaned and cleaned not in SPANISH_COMMON and len(cleaned) > 1:
+                    if cleaned and cleaned in SPANISH_COMMON:
+                        dropped.append((phrase, w, 'spanish stoplist'))
+                        continue
+                    if cleaned and len(cleaned) > 1:
                         english_set.add(cleaned)
+
+            # Loud, with the text. This block used to discard 73% of Whisper's
+            # English flags without saying so, and the silence is why it
+            # survived four months past the bug it was written for.
+            if dropped:
+                logger.warning(
+                    "english_phrases: dropped %d word(s) from the English set",
+                    len(dropped))
+                for phrase, word, why in dropped:
+                    logger.warning("  %-16s %r from phrase %r", why, word, phrase)
 
             fixed_count = 0
             for w in words:
