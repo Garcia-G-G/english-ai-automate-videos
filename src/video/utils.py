@@ -147,6 +147,30 @@ def instrument_serif_italic(size: int) -> ImageFont.FreeTypeFont:
     return f
 
 
+def font_line_height(f: ImageFont.FreeTypeFont) -> int:
+    """Line-to-line advance for `f`, from the font's own metrics.
+
+    THE one source for line spacing. Before this there were three magic
+    multipliers doing the same job and disagreeing: int(size * 1.35) inside
+    draw_text_centered and the old fit_text_font, int(size * 1.4) at the card
+    sites in quiz, true_false and educational, and int(size * 1.3) for the
+    English hero and translation text.
+
+    Disagreeing multipliers are not a tidiness problem. fit_text_font decides
+    whether text FITS using one number while the caller sizes the card around
+    it using a larger one, so a block that passed the fit test could still
+    overflow the card built for it — which is how the quiz explanation card
+    ended up 24px past SAFE_AREA_BOTTOM.
+
+    ascent + descent is what the typeface says its own lines need, so it
+    tracks the font instead of guessing at it. At the sizes in use it runs
+    about 11% tighter than 1.4 and 8% tighter than 1.35, which is why cards
+    get slightly shorter rather than taller.
+    """
+    ascent, descent = f.getmetrics()
+    return ascent + descent
+
+
 def strip_display_quotes(text: str) -> str:
     """Remove the single quotes that mark English terms, for DISPLAY only.
 
@@ -358,7 +382,7 @@ def draw_text_centered(
         return 0
 
     lines = line_break(text, f, max_width)
-    line_h = int(f.size * 1.35)
+    line_h = font_line_height(f)
     total_h = 0
 
     for line in lines:

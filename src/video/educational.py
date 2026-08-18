@@ -22,6 +22,7 @@ from .utils import (
     draw_rounded_card, slide_in_x,
     get_word_animation_state, fit_text_font,
     create_base_frame, finalize_frame,
+    font_line_height,
 )
 from .v2 import timing_engine as TE
 from config.layout import CARD_MARGIN_X, CARD_PADDING, CARD_RADIUS, CARD_WIDTH
@@ -206,12 +207,12 @@ def _render_group_tiktok(
 
     # Dynamic font size — shrink for long text, max 2 lines
     max_w = CARD_WIDTH - CARD_PADDING * 2 - 40
-    max_h = int(SIZE_MAIN_SPANISH * 1.4 * 2.2)
+    max_h = int(font_line_height(font(SIZE_MAIN_SPANISH)) * 2.2)
     _, base_size, lines, _ = fit_text_font(text, SIZE_MAIN_SPANISH, 42, max_w, max_h)
     base_size = max(42, min(SIZE_MAIN_SPANISH, base_size))
 
     f = font(base_size)
-    line_h = int(base_size * 1.4)
+    line_h = font_line_height(f)
     text_h = len(lines) * line_h
 
     # ── Detect English content + translation for second card ──
@@ -465,7 +466,7 @@ def _render_spanish_karaoke(
     full_text = ' '.join(word_texts)
 
     lines = line_break(full_text, f, text_max_w)
-    line_h = int(base_size * 1.4)
+    line_h = font_line_height(f)
 
     word_idx = 0
     cur_y = base_y
@@ -730,7 +731,7 @@ def _render_text_simple(
     f = font(fsize)
 
     lines = line_break(text, f, TEXT_AREA_WIDTH - 60)
-    line_h = int(fsize * 1.4)
+    line_h = font_line_height(f)
     cur_y = base_y
 
     color = ENGLISH_WORD_COLOR if is_english else _SPANISH_ACTIVE
