@@ -348,8 +348,23 @@ def fit_text_font(text: str, max_font: int, min_font: int, max_width: int,
         # mismatch that put the quiz explanation card outside the safe band.
         if max_height is None or box.advance_height <= max_height:
             return box
+
+    # NOTHING IN THE RANGE FITS. The min font is returned anyway, and the
+    # block overflows whatever was budgeted for it.
+    #
+    # This is 6a's root surviving in its failure mode: the measurement is
+    # correct now, but "impossible layout" still ships as a silent overflow.
+    # It is left silent no longer. What it must NOT do is clamp or shrink
+    # past min_font — that changes what renders, and the fix for a budget
+    # nothing fits is the budget, which lives with the Y constants in 6c.
     f = font(min_font)
-    return measure_block(line_break(text, f, max_width), f)
+    box = measure_block(line_break(text, f, max_width), f)
+    logger.warning(
+        "fit_text_font: nothing in %d..%d fits a %dpx budget — returning %dpx "
+        "and overflowing by %dpx (%d lines, %dpx wide max). Text: %r",
+        max_font, min_font, max_height, min_font,
+        box.advance_height - max_height, len(box.lines), max_width, text)
+    return box
 
 
 def draw_glow(
