@@ -135,3 +135,39 @@ def watermark_bounds() -> Tuple[int, int, int, int]:
     if overlay is None:
         raise RuntimeError("watermark overlay unavailable")
     return overlay.getbbox()
+
+
+#: Alpha above which a pixel counts as part of the drawn mark. getbbox() is
+#: not usable for this: a Gaussian blur leaves a tail of near-zero alpha that
+#: reaches hundreds of pixels up the canvas, so its box describes the blur's
+#: mathematical support rather than anything a viewer can see.
+_INK_ALPHA = 8
+
+
+def watermark_top() -> int:
+    """Topmost row the watermark occupies, shadow included.
+
+    For any element that would otherwise size itself against
+    SAFE_AREA_BOTTOM. The mark sits just inside that floor, so a card
+    budgeted to the floor and the mark budgeted to the floor land on top of
+    each other — which is exactly what happened to the quiz explanation card.
+
+    Measured off the rendered overlay rather than recomputed from
+    WATERMARK_BOTTOM_GAP and a text height, so it stays correct if the mark's
+    size, weight, blur or gap changes. There is no ordering problem in asking
+    this before a card is laid out: the watermark's position depends only on
+    SAFE_AREA_BOTTOM, its own gap and its own measured text — never on the
+    content it has to stay clear of.
+    """
+    from .constants import VIDEO_WIDTH, VIDEO_HEIGHT
+    overlay = get_watermark_overlay((VIDEO_WIDTH, VIDEO_HEIGHT))
+    if overlay is None:
+        # No mark to avoid; the safe-area floor is the only constraint.
+        from .constants import SAFE_AREA_BOTTOM
+        return SAFE_AREA_BOTTOM
+    import numpy as _np
+    rows = _np.where((_np.asarray(overlay)[:, :, 3] > _INK_ALPHA).any(axis=1))[0]
+    if not len(rows):
+        from .constants import SAFE_AREA_BOTTOM
+        return SAFE_AREA_BOTTOM
+    return int(rows.min())

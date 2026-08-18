@@ -27,6 +27,7 @@ from config.layout import (
     TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT, TIMER_BAR_Y, TIMER_BAR_X,
 )
 from config.colors import COUNTDOWN_COLORS, DIFFICULTY_COLORS
+from .brand import watermark_top
 from .utils import (
     strip_display_quotes,
     font, line_break, draw_text_solid, draw_text_centered,
@@ -836,7 +837,10 @@ def create_frame_quiz(
         exp_y = exp_y_base + slide_offset
         exp_padding = 28
         max_exp_w = CARD_WIDTH - exp_padding * 2
-        max_exp_h = SAFE_AREA_BOTTOM - exp_y - exp_padding * 2
+        # Budget stops above the watermark, not at the safe-area floor.
+        # Both used to reach for SAFE_AREA_BOTTOM independently, so a
+        # card that filled its budget landed on the mark.
+        max_exp_h = watermark_top() - exp_y - exp_padding * 2
 
         clean_exp = strip_display_quotes(explanation).strip()
         ef, exp_font_size, exp_lines, exp_text_h = fit_text_font(
