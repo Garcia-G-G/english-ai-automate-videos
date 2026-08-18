@@ -100,11 +100,15 @@ def create_frame_vocabulary(
     # ── Title layout: fit title, compute where card starts ───────
     # Use fit_text_font to find the right size for the title
     title_max_w = TEXT_AREA_WIDTH - 160   # leave room for badge
-    tf_static, t_size_static, title_lines, title_total_h = fit_text_font(
+    title_box = fit_text_font(
         title, _TITLE_MAX_FONT, _TITLE_MIN_FONT, title_max_w,
     )
-    # Card starts below the title with some spacing
-    card_top = max(_CARD_TOP_MIN, _TITLE_Y + title_total_h + 30)
+    tf_static, t_size_static, title_lines = (
+        title_box.font, title_box.size, title_box.lines)
+    # ADVANCE, because the card is STACKED below the title rather than fitted
+    # around it. Ink would let the card creep up under a title whose last line
+    # happens to carry no descender.
+    card_top = max(_CARD_TOP_MIN, _TITLE_Y + title_box.advance_height + 30)
 
     # ── Card geometry (computed once, stable across frames) ───────
     card_x = CARD_MARGIN_X

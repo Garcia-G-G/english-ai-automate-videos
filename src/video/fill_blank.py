@@ -127,8 +127,12 @@ def _draw_sentence_card(t, draw, frame, sentence, correct, show_answer, answer_t
     else:
         display = sentence
 
-    sf, sz, lines, total_h = fit_text_font(display, 48, 32, _TEXT_MAX_W)
-    card_h = max(140, total_h + CARD_PADDING * 2 + 12)
+    box = fit_text_font(display, 48, 32, _TEXT_MAX_W)
+    sf, sz, lines = box.font, box.size, box.lines
+    # INK, because this card is sized around the text: it should hug the
+    # glyphs, not the line box, or the padding reads as larger at the top
+    # and bottom than at the sides.
+    card_h = max(140, box.height + CARD_PADDING * 2 + 12)
     card_y = _CARD_Y + bounce
 
     # White card
@@ -150,7 +154,10 @@ def _draw_sentence_card(t, draw, frame, sentence, correct, show_answer, answer_t
 
     # Multi-line or no blank → simple centered rendering
     if len(lines) > 1 or not parts:
-        ty = text_cy - total_h // 2
+        # ADVANCE, because draw_text_centered below steps line to line by a
+        # per-line advance rather than by ink, so the block it produces is
+        # advance-tall and has to be centred as such.
+        ty = text_cy - box.advance_height // 2
         color = _CORRECT_GREEN if show_answer else _TEXT_DARK
         draw_text_centered(draw, display, ty, sf, color, 255, outline=0,
                            max_width=_TEXT_MAX_W)
