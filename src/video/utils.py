@@ -5,6 +5,7 @@ import logging
 import math
 import os
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
@@ -254,20 +255,101 @@ def line_break(text: str, f: ImageFont.FreeTypeFont, max_w: int) -> List[str]:
     return lines
 
 
-def fit_text_font(text: str, max_font: int, min_font: int, max_width: int, max_height: int = None) -> tuple:
-    """Find largest font that fits text within bounds.
-    Returns (font_obj, actual_size, lines, total_height)."""
+@dataclass(frozen=True)
+class TextBox:
+    """A laid-out block of text and the box it actually occupies.
+
+    Every field is measured or derived from font metrics. The old return
+    value carried ``len(lines) * int(size * 1.35)`` as the height — a
+    constant that never consulted the font, while the width beside it came
+    from a real ``textbbox``. Callers received a number they believed was
+    the block height and positioned with it.
+
+    Unpacks as the historical ``(font, size, lines, height)`` so the ten
+    existing call sites keep working; ``height`` is now measured.
+
+    TWO HEIGHTS, ON PURPOSE. ``height`` is ink — the box the glyphs actually
+    fill, which is what you want to centre a block or to size a card around
+    it. ``advance_height`` is n * line_height — the space the block consumes
+    in flow, which is what you want before placing something underneath it.
+    ``size * 1.35`` was a rough stand-in for the second, so a caller that
+    advances past a block wants ``advance_height``, and one that fits a box
+    to it wants ``height``. They differ by roughly a third at these sizes,
+    which is large enough that guessing wrong is visible.
+    """
+
+    font: "ImageFont.FreeTypeFont"
+    size: int
+    lines: List[str]
+    height: int        # measured ink height of the whole laid-out block
+    width: int         # measured ink width, widest line
+    offset_x: int      # ink left edge relative to the draw origin
+    offset_y: int      # ink top edge relative to the draw origin
+    line_height: int   # ascent + descent, from the font
+
+    @property
+    def advance_height(self) -> int:
+        """Space this block consumes in flow, from the font's own metrics."""
+        return len(self.lines) * self.line_height
+
+    def __iter__(self):
+        return iter((self.font, self.size, self.lines, self.height))
+
+
+def measure_block(lines: List[str], f: "ImageFont.FreeTypeFont") -> TextBox:
+    """Measure a laid-out block as the callers actually draw it.
+
+    Callers render line i at ``y + i * line_height``, so the block is
+    composed the same way here rather than handed to PIL's multiline
+    helpers, whose spacing rules are not the ones in use. line_height comes
+    from the font's own ascent and descent, so a font with unusual metrics
+    reports its own spacing instead of inheriting a guess.
+    """
+    line_h = font_line_height(f)
+
+    if not lines:
+        return TextBox(f, f.size, [], 0, 0, 0, 0, line_h)
+
+    draw = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
+    tops, bottoms, lefts, rights = [], [], [], []
+    for i, line in enumerate(lines):
+        left, top, right, bottom = draw.textbbox((0, 0), line, font=f)
+        tops.append(i * line_h + top)
+        bottoms.append(i * line_h + bottom)
+        lefts.append(left)
+        rights.append(right)
+
+    top, bottom = min(tops), max(bottoms)
+    left, right = min(lefts), max(rights)
+    return TextBox(
+        font=f, size=f.size, lines=lines,
+        height=bottom - top, width=right - left,
+        offset_x=left, offset_y=top, line_height=line_h,
+    )
+
+
+def fit_text_font(text: str, max_font: int, min_font: int, max_width: int,
+                  max_height: int = None) -> TextBox:
+    """Largest font whose laid-out block fits inside the given bounds.
+
+    Returns a TextBox. It unpacks as (font, size, lines, height) for the
+    existing call sites, but the height is measured now rather than
+    estimated, so a site that passes ``max_height`` may select a different
+    size than it did before.
+    """
     for size in range(max_font, min_font - 1, -2):
         f = font(size)
-        lines = line_break(text, f, max_width)
-        line_h = int(size * 1.35)
-        total_h = len(lines) * line_h
-        if max_height is None or total_h <= max_height:
-            return f, size, lines, total_h
+        box = measure_block(line_break(text, f, max_width), f)
+        # Tested against ADVANCE, not ink. max_height is a budget for the
+        # space the block will occupy, and callers lay their lines out at
+        # line_height intervals, so the block's footprint in flow is
+        # advance-tall. Testing the ink lets a size through whose ink fits a
+        # card that its line boxes then overflow — the same fit-versus-build
+        # mismatch that put the quiz explanation card outside the safe band.
+        if max_height is None or box.advance_height <= max_height:
+            return box
     f = font(min_font)
-    lines = line_break(text, f, max_width)
-    total_h = len(lines) * int(min_font * 1.35)
-    return f, min_font, lines, total_h
+    return measure_block(line_break(text, f, max_width), f)
 
 
 def draw_glow(
