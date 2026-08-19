@@ -169,6 +169,20 @@ def generate_video(
         if background:
             logger.info(f"Auto-selected background: {background}")
 
+    # Per-video generated background: "photo:<path>". The image was made
+    # from this video's topic and has already cleared the contrast gate;
+    # there is no category to pick from.
+    if background and background.startswith("photo:"):
+        image_path = background.split(":", 1)[1]
+        set_background(bg_type="photo_kenburns",
+                       options={"image_path": image_path},
+                       duration=duration)
+        logger.info("Background: generated image %s", image_path)
+        bg = get_background_generator()
+        if bg:
+            # Ken Burns moves, so it cannot be cached as one static frame.
+            bg.clear_cache()
+
     # Clip-library background: "clips" (with background_options) or "clips:<dir>"
     if background == "clips" or (background and background.startswith("clips:")):
         options = dict(background_options or {})
