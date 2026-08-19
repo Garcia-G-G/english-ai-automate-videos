@@ -42,6 +42,37 @@ IMAGE_MODEL = "gpt-image-2"
 IMAGE_SIZE = "1024x1536"
 IMAGE_QUALITY = "medium"
 
+#: RENDER TREATMENT for a generated background, shared with the gate so the
+#: gate measures what actually ships.
+#:
+#: photo_kenburns defaults to overlay_opacity 0.35 and blur 2, tuned for the
+#: bright DALL-E photo set it was built for — knocking those down was the only
+#: way to get text over them. These images arrive with the dark band already
+#: composed in, so another 35% of darkening turned them black: the first batch
+#: rendered six videos whose backgrounds were invisible, and the contrast gate
+#: waved every one through at ~14.7:1 because black is extremely readable.
+#:
+#: The exposure is pinned in the prompt now, so the renderer does not need to
+#: pin it again.
+RENDER_OVERLAY_OPACITY = 0.10
+RENDER_BLUR_RADIUS = 1
+
+#: NO ZOOM for a generated background, and this is the important one.
+#:
+#: The prompt puts the picture in the top and bottom thirds and shadow across
+#: the middle. Ken Burns zoom crops INWARD from the centre, so any zoom above
+#: 1.0 throws away exactly the parts that carry the image and keeps the part
+#: that is deliberately empty. The first batch rendered six videos that were
+#: black from top to bottom for this reason, while the contrast gate passed
+#: every one at ~14.7:1 — black reads beautifully.
+#:
+#: At 1.0 the crop is the largest 9:16 rectangle inside the 2:3 source: full
+#: height, about 160px of spare width. kenburns_crop then pans within that
+#: spare width and cannot pan vertically at all, because there is no vertical
+#: slack to pan into. Horizontal drift over an intact composition, which is
+#: what this image was composed for.
+RENDER_ZOOM_RANGE = (1.0, 1.0)
+
 #: The exposure instruction, identical on every prompt. This is the part that
 #: keeps text readable, so it is not paraphrased per topic.
 EXPOSURE = (

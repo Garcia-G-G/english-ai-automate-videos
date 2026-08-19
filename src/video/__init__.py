@@ -174,8 +174,14 @@ def generate_video(
     # there is no category to pick from.
     if background and background.startswith("photo:"):
         image_path = background.split(":", 1)[1]
+        from topic_background import (RENDER_BLUR_RADIUS,
+                                      RENDER_OVERLAY_OPACITY,
+                                      RENDER_ZOOM_RANGE)
         set_background(bg_type="photo_kenburns",
-                       options={"image_path": image_path},
+                       options={"image_path": image_path,
+                                "overlay_opacity": RENDER_OVERLAY_OPACITY,
+                                "blur_radius": RENDER_BLUR_RADIUS,
+                                "zoom_range": RENDER_ZOOM_RANGE},
                        duration=duration)
         logger.info("Background: generated image %s", image_path)
         bg = get_background_generator()
