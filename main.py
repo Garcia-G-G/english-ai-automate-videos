@@ -493,9 +493,13 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
     background = resolve_background(ACTIVE_PROFILE, background)
 
     # Initialize cost tracker for this video
+    # get_tracker, not reset_tracker: generate_and_run has already opened the
+    # ledger for this artifact and charged the script generation to it.
+    # Resetting here would discard that. get_tracker only creates a new one
+    # when the id differs, so a direct caller still gets a clean ledger.
     try:
-        from cost_tracker import reset_tracker
-        tracker = reset_tracker(video_id=output_name)
+        from cost_tracker import get_tracker
+        tracker = get_tracker(video_id=output_name)
     except ImportError:
         tracker = None
 
@@ -559,6 +563,13 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
         return None
     if fin.get("video"):
         video_result = Path(fin["video"])
+
+    # Record what this run PRODUCED, before and regardless of upload. Doing
+    # it only in the upload branch below is what let a six-video batch report
+    # nothing at all.
+    if entry is not None:
+        from batch_report import record_render
+        record_render(entry, video_result, fin.get("gate"))
 
     logger.info("=" * 50)
     logger.info("PIPELINE COMPLETE!")
@@ -628,6 +639,18 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
     logger.info("Category: %s", category)
     logger.info("Topic: %s", topic_name)
     logger.info("Video Type: %s", video_type)
+
+    # Open this video's cost ledger BEFORE the GPT call, not after it.
+    # run_pipeline used to reset_tracker() on entry, which threw away the
+    # tracker holding the script-generation charge — so every openai_chat
+    # entry was logged at INFO and then discarded, and the saved ledger
+    # recorded ElevenLabs only. A tracker that silently loses a provider
+    # makes per-video spend unknowable the moment nobody is watching.
+    try:
+        from cost_tracker import reset_tracker
+        reset_tracker(video_id=safe_artifact_name(topic_name))
+    except ImportError:
+        pass
 
     try:
         script_data = generate_script(category, topic, video_type)
@@ -791,8 +814,10 @@ Examples:
         path = report.write()
         c = report.counts()
         print(f"\n{'#'*50}")
-        print(f"# BATCH COMPLETE: {c['published']} published, "
-              f"{c['skipped']} skipped, {c['rejected']} rejected by the gate, "
+        print(f"# BATCH COMPLETE: {c['attempted']} attempted, "
+              f"{c['rendered']} rendered, {c['gate_passed']} passed the gate")
+        print(f"#   {c['published']} published, {c['skipped']} skipped, "
+              f"{c['rejected']} rejected by the gate, "
               f"{c['failed']} failed, {c['needs_human']} NEED A HUMAN")
         if report.needs_human:
             print("#")
