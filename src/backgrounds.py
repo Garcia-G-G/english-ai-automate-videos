@@ -1511,6 +1511,19 @@ class BackgroundGenerator:
 
     # ============== PHOTO KEN BURNS ==============
 
+    def _load_image(self, path) -> Optional[Image.Image]:
+        """Load one specific image, cached by path."""
+        if not hasattr(self, "_image_cache"):
+            self._image_cache = {}
+        key = str(path)
+        if key not in self._image_cache:
+            try:
+                self._image_cache[key] = Image.open(key).convert("RGB")
+            except Exception as e:                          # noqa: BLE001
+                logger.error("Failed to load background image %s: %s", key, e)
+                self._image_cache[key] = None
+        return self._image_cache[key]
+
     def _load_photo(self, category: str) -> Optional[Image.Image]:
         """Load a random photo from assets/backgrounds/<category>/."""
         if not hasattr(self, '_photo_cache'):
@@ -1573,7 +1586,8 @@ class BackgroundGenerator:
                        zoom_range: tuple = (1.05, 1.20),
                        pan_speed: float = 0.3,
                        color_tint: str = None,
-                       duration: float = 30.0) -> np.ndarray:
+                       duration: float = 30.0,
+                       image_path: str = None) -> np.ndarray:
         """
         Real photograph background with Ken Burns effect (slow zoom + pan).
         Applies dark overlay and optional blur for text readability.
@@ -1591,7 +1605,10 @@ class BackgroundGenerator:
             color_tint: Optional hex color tint overlay
             duration: Total video duration
         """
-        photo = self._load_photo(category)
+        # An explicit image is the per-video path: the background was
+        # generated from this video's own topic and already cleared the
+        # contrast gate, so there is nothing to pick from a category.
+        photo = self._load_image(image_path) if image_path else self._load_photo(category)
 
         if photo is None:
             # Fallback to a dark gradient if no photo available
