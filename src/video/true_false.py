@@ -32,8 +32,8 @@ from config.layout import (
     TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT, TIMER_BAR_Y, TIMER_BAR_X,
 )
 from config.colors import (
-    VERDADERO_GRAD_TOP, VERDADERO_GRAD_BOT,
-    FALSO_GRAD_TOP, FALSO_GRAD_BOT,
+    CORRECT_GRAD_TOP, CORRECT_GRAD_BOT, CORRECT_BORDER, CORRECT_GLOW,
+    INCORRECT_GRAD_TOP, INCORRECT_GRAD_BOT,
     NEUTRAL_GRAD_TOP, NEUTRAL_GRAD_BOT,
     COUNTDOWN_COLORS,
 )
@@ -416,9 +416,15 @@ def create_frame_true_false(
         false_x = base_x_right + right_offset
         false_alpha = int(255 * min(1.0, right_elapsed / 0.3))
 
-        # Button labels with emoji
-        true_label = "\u2713 VERDADERO"
-        false_label = "\u2717 FALSO"
+        # Labels carry no verdict until there is one to carry, and then they
+        # carry it by CORRECTNESS. These used to be fixed to the option, so a
+        # video whose answer was FALSO showed the right answer with a cross on
+        # it and the wrong one with a tick.
+        true_label = "VERDADERO"
+        false_label = "FALSO"
+        if show_answer:
+            true_label = ("\u2713 " if correct else "\u2717 ") + true_label
+            false_label = ("\u2717 " if correct else "\u2713 ") + false_label
 
         if show_answer:
             answer_elapsed = t - answer_time
@@ -427,18 +433,18 @@ def create_frame_true_false(
                 # VERDADERO is correct
                 true_glow = glow_intensity(t, answer_time)
                 true_ps = pulse_scale(t, answer_time)
-                true_grad_top = VERDADERO_GRAD_TOP
-                true_grad_bot = VERDADERO_GRAD_BOT
-                true_border = (180, 255, 180)
+                true_grad_top = CORRECT_GRAD_TOP
+                true_grad_bot = CORRECT_GRAD_BOT
+                true_border = CORRECT_BORDER
                 true_border_w = max(3, int(5 * true_glow))
-                true_glow_c = (100, 255, 140)
+                true_glow_c = CORRECT_GLOW
                 true_glow_s = true_glow * 0.8
 
                 # Wrong fades to 25% + 10px outward slide
                 wrong_slide = int(10 * min(1.0, answer_elapsed / 0.4))
                 false_alpha = max(40, int(255 * 0.25))
-                false_grad_top = (140, 140, 150)
-                false_grad_bot = (100, 100, 110)
+                false_grad_top = INCORRECT_GRAD_TOP
+                false_grad_bot = INCORRECT_GRAD_BOT
                 false_border = None
                 false_border_w = 0
                 false_glow_c = None
@@ -473,18 +479,18 @@ def create_frame_true_false(
                 # FALSO is correct
                 false_glow = glow_intensity(t, answer_time)
                 false_ps = pulse_scale(t, answer_time)
-                false_grad_top = FALSO_GRAD_TOP
-                false_grad_bot = FALSO_GRAD_BOT
-                false_border = (255, 180, 180)
+                false_grad_top = CORRECT_GRAD_TOP
+                false_grad_bot = CORRECT_GRAD_BOT
+                false_border = CORRECT_BORDER
                 false_border_w = max(3, int(5 * false_glow))
-                false_glow_c = (255, 100, 100)
+                false_glow_c = CORRECT_GLOW
                 false_glow_s = false_glow * 0.8
 
                 # Wrong fades to 25% + 10px outward slide
                 wrong_slide = int(10 * min(1.0, answer_elapsed / 0.4))
                 true_alpha = max(40, int(255 * 0.25))
-                true_grad_top = (140, 140, 150)
-                true_grad_bot = (100, 100, 110)
+                true_grad_top = INCORRECT_GRAD_TOP
+                true_grad_bot = INCORRECT_GRAD_BOT
                 true_border = None
                 true_border_w = 0
                 true_glow_c = None
