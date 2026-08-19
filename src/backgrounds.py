@@ -590,6 +590,10 @@ class BackgroundGenerator:
             Number of frames cached
         """
         self._cache_preset = preset_name
+        # Drop any static frame from a previous preset. gradient() checks
+        # get_static_frame() BEFORE has_cache(), so a stale static frame wins
+        # over the loop we are about to render.
+        self._static_frame = None
         self._cache_fps = fps
         self._cache_duration = loop_duration
         self._frame_cache = {}
@@ -642,7 +646,15 @@ class BackgroundGenerator:
         Render a static background once and cache it.
         Much faster than animated - same frame every time.
         """
-        if not hasattr(self, '_static_frame') or self._static_frame is None:
+        # The preset has to be part of the condition. This used to render
+        # only when _static_frame was None, so the SECOND video in a process
+        # got the FIRST video's background and every one after it did too —
+        # invisible to a batch, where each video is its own process, and
+        # guaranteed in the dashboard, which renders every video in one
+        # long-running Streamlit process. _cache_preset was already being
+        # stored; nothing consulted it.
+        if (getattr(self, '_static_frame', None) is None
+                or getattr(self, '_cache_preset', None) != preset_name):
             self._static_frame = self.render_from_preset(0, preset_name, duration=30.0)
             self._cache_preset = preset_name
         return self._static_frame
