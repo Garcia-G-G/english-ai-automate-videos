@@ -190,7 +190,12 @@ def generate_video(
             bg.clear_cache()
 
     # Clip-library background: "clips" (with background_options) or "clips:<dir>"
-    if background == "clips" or (background and background.startswith("clips:")):
+    # ELIF, not IF. As a separate `if`, the generic `elif background:` at the
+    # end of this chain still ran for a "photo:<path>" spec, took the
+    # not-a-preset route and called set_background(bg_type="photo:/...") —
+    # silently replacing the image with a default gradient. The six videos
+    # rendered black-ish and nothing said why.
+    elif background == "clips" or (background and background.startswith("clips:")):
         options = dict(background_options or {})
         if background.startswith("clips:"):
             options["dir"] = background.split(":", 1)[1]
