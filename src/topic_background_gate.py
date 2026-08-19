@@ -51,13 +51,17 @@ def measure(image_path, width: int = 1080, height: int = 1920,
     ratios, samples = [], []
     for i in range(SAMPLES):
         t = duration * i / SAMPLES
+        from topic_background import RENDER_ZOOM_RANGE
         box = kenburns_crop(t, photo.width, photo.height, width, height,
-                            duration=duration)
+                            zoom_range=RENDER_ZOOM_RANGE, duration=duration)
         frame = photo.resize((width, height), Image.LANCZOS, box=box)
         # The renderer blurs and darkens before any text lands on it; gating
-        # the raw photo would measure something the viewer never sees.
-        frame = frame.filter(ImageFilter.GaussianBlur(radius=2))
-        arr = np.array(frame, dtype=np.float32) * (1.0 - 0.35)
+        # the raw photo would measure something the viewer never sees. These
+        # come from topic_background so the gate cannot drift from the
+        # treatment that ships.
+        from topic_background import RENDER_BLUR_RADIUS, RENDER_OVERLAY_OPACITY
+        frame = frame.filter(ImageFilter.GaussianBlur(radius=RENDER_BLUR_RADIUS))
+        arr = np.array(frame, dtype=np.float32) * (1.0 - RENDER_OVERLAY_OPACITY)
         m = measure_frame(arr.astype(np.uint8))
         # contrast_worst, not contrast_mean: the brightest patch under the
         # headline is what decides whether it can be read.
