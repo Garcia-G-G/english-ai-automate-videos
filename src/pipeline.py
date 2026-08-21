@@ -520,8 +520,9 @@ def render_video(audio_path,
     ]
     if video_type:
         cmd.extend(["-t", video_type])
-    if background:
-        cmd.extend(["-b", background])
+    # ALWAYS passed. resolve_background never returns None, and the renderer
+    # requires -b, so there is no path where the subprocess picks its own.
+    cmd.extend(["-b", background or TERMINAL_PRESET])
     if use_v2:
         cmd.append("--v2")
 
