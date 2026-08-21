@@ -51,30 +51,20 @@ def load_config() -> dict:
 
 
 def get_default_background() -> str:
-    """Get a background based on config."""
-    config = load_config()
-    video_config = config.get("video", {})
+    """DEPRECATED thin alias for pipeline's terminal tier. Do not add callers.
 
-    mode = video_config.get("background_mode", "random")
+    This used to hold its own copy of the rotation pick: same config key
+    (video.enabled_backgrounds), same resolve_enabled() expansion, same
+    membership filter, same SystemRandom choice as topic_background's
+    fallback. Two copies of one algorithm meant the pending palette cull
+    would have been applied to whichever one the author happened to be
+    looking at, and left the other serving the old rotation — and the other
+    one is what the dashboard reaches.
 
-    if mode == "random" and BACKGROUNDS_AVAILABLE:
-        enabled = resolve_enabled(video_config.get("enabled_backgrounds", []))
-        if enabled:
-            valid = [bg for bg in enabled if bg in BACKGROUND_PRESETS]
-            if valid:
-                import random as _rand
-                # Use SystemRandom to avoid being affected by global seed
-                _sysrand = _rand.SystemRandom()
-                choice = _sysrand.choice(valid)
-                return choice
-        mode = "fixed"
-
-    if BACKGROUNDS_AVAILABLE:
-        default_bg = video_config.get("default_background")
-        if default_bg and default_bg in BACKGROUND_PRESETS:
-            return default_bg
-        return get_recommended_preset()
-    return None
+    The body is now pipeline._terminal_preset, so there is one rotation.
+    """
+    from pipeline import _terminal_preset
+    return _terminal_preset()
 
 
 def get_background_generator():

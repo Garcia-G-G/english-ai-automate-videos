@@ -106,15 +106,181 @@ def resolve_profile(name: str = None) -> Dict:
     return profile
 
 
-def resolve_background(profile: Dict, background: str = None) -> Optional[str]:
-    """Return the profile's clips background when the caller didn't pass one."""
+#: The floor under tier 5. A literal, so the resolver can always answer.
+#:
+#: Returning None is what produced the defect this function exists to remove:
+#: main.py and admin.py both handed None to the renderer, and the renderer
+#: subprocess then picked its own palette — which is why every dashboard video
+#: had a gen_NNN background and not one had the generated image it had paid
+#: for. A resolver that can answer "I don't know" moves the decision somewhere
+#: nobody is looking.
+#:
+#: static_midnight measures 7.13:1 behind the headline and renders once rather
+#: than per frame.
+TERMINAL_PRESET = "static_midnight"
+
+
+def resolve_background(profile: Dict = None, background: str = None, *,
+                       topic: str = None, category: str = None,
+                       entry: Dict = None, fast_mode: bool = False,
+                       on_record=None) -> str:
+    """THE place a background is decided. Both entry points call this.
+
+    Returns a value generate_video accepts: a preset name, "clips:<dir>", or
+    "photo:<path>". NEVER None, and never raises — a background problem must
+    cost a plain background, never the video.
+
+    Priority, and the order is the specification:
+
+      0. fast mode              -> a cheap static preset
+      1. explicit `background`  -> returned untouched, because --background is
+                                   an instruction and not a default
+      2. profile clips mode     -> clips:<dir>
+      3. topic + category       -> generate an image, GATE it, and use it only
+                                   on PASS
+      4. background_mode fixed  -> the configured preset
+      5. terminal fallback      -> one preset from the enabled rotation, and
+                                   TERMINAL_PRESET if even that is empty
+
+    Tier 4 keys on background_mode == "fixed" rather than on
+    default_background being set, because default_background IS set in
+    config.yaml today; keying on it would make tier 5 unreachable and retire
+    the rotation the palette cull exists to curate. default_background is
+    still honoured, as the step above the literal inside tier 5.
+
+    This replaces main._background_for_topic and the `random` branch of
+    video.backgrounds.get_default_background, which were the same algorithm
+    written twice against the same config key — so applying the palette cull
+    would have fixed one path and left the other, which is the dashboard's.
+    """
+    # ── 0. fast mode ──
+    if fast_mode:
+        logger.info("background: fast mode -> dark_professional")
+        return "dark_professional"
+
+    # ── 1. an explicit instruction ──
     if background:
         return background
+
     video_cfg = (profile or {}).get("video", {}) or {}
+
+    # ── 2. the profile wants clips ──
     if video_cfg.get("background_mode") == "clips":
         clips_dir = video_cfg.get("clips_dir", "assets/clips")
+        logger.info("background: profile is clips mode -> %s", clips_dir)
         return f"clips:{clips_dir}"
-    return background
+
+    # ── 3. this video's own image ──
+    if topic:
+        resolved = _generated_background(topic, category, entry, on_record)
+        if resolved:
+            return resolved
+        # every failure inside there has already logged its reason
+
+    # ── 4. config pins one ──
+    cfg = _video_config()
+    if cfg.get("background_mode") == "fixed":
+        pinned = cfg.get("default_background")
+        if pinned:
+            logger.info("background: config is fixed -> %s", pinned)
+            return pinned
+
+    # ── 5. the floor ──
+    return _terminal_preset(cfg)
+
+
+def _video_config() -> Dict:
+    """The `video:` block of config.yaml, or an empty dict."""
+    try:
+        import yaml
+        cfg = yaml.safe_load(Path(ROOT / "config.yaml").read_text()) or {}
+        return cfg.get("video") or {}
+    except Exception:                                       # noqa: BLE001
+        return {}
+
+
+def _terminal_preset(cfg: Dict = None) -> str:
+    """One preset from the enabled rotation. Always returns something.
+
+    The single place the enabled rotation is read, so the palette cull can be
+    applied once and take effect on every path.
+    """
+    cfg = _video_config() if cfg is None else cfg
+    try:
+        from backgrounds import BACKGROUND_PRESETS, resolve_enabled
+        pool = [n for n in resolve_enabled(cfg.get("enabled_backgrounds") or [])
+                if n in BACKGROUND_PRESETS]
+        if pool:
+            import random as _random
+            # SystemRandom so a seeded global RNG cannot pin every video to
+            # the same background.
+            return _random.SystemRandom().choice(pool)
+        pinned = cfg.get("default_background")
+        if pinned and pinned in BACKGROUND_PRESETS:
+            logger.warning("background: enabled rotation is empty -> %s", pinned)
+            return pinned
+    except Exception:                                       # noqa: BLE001
+        logger.exception("background: could not read the rotation")
+    logger.warning("background: nothing usable configured -> %s", TERMINAL_PRESET)
+    return TERMINAL_PRESET
+
+
+def _generated_background(topic: str, category: str = None,
+                          entry: Dict = None, on_record=None):
+    """Generate an image for `topic` and gate it. None means "use a fallback".
+
+    The gate is BLOCKING: a refused image is never used, it becomes a
+    palette. Nothing in here raises.
+    """
+    def _record(payload):
+        if entry is not None:
+            entry["background"] = payload
+        if on_record is not None:
+            try:
+                on_record(payload)
+            except Exception:                               # noqa: BLE001
+                logger.exception("background: could not record the decision")
+
+    try:
+        from topic_background import generate_for_topic
+        from topic_background_gate import accept
+    except Exception:                                       # noqa: BLE001
+        logger.warning("background: generation unavailable for %r "
+                       "— falling back", topic)
+        _record({"source": "palette", "reason": "module unavailable"})
+        return None
+
+    try:
+        made = generate_for_topic(topic, category)
+    except Exception as exc:                                # noqa: BLE001
+        logger.exception("background: generation raised for %r", topic)
+        _record({"source": "palette", "reason": f"generation raised: {exc}"})
+        return None
+
+    if not made:
+        logger.warning("background: generation failed for %r — falling back", topic)
+        _record({"source": "palette", "reason": "generation failed"})
+        return None
+
+    verdict = accept(made["path"], topic=topic)
+    payload = {
+        "source": "generated" if verdict["passes"] else "palette",
+        "image": made["path"],
+        "worst_ratio": round(verdict["worst_ratio"], 3),
+        "floor": verdict["floor"],
+        "gate": "PASS" if verdict["passes"] else "REJECT",
+        "cost_usd": made.get("cost_usd"),
+    }
+    if not verdict["passes"]:
+        payload["reason"] = (f"gate refused {verdict['worst_ratio']:.2f}:1 "
+                             f"(floor {verdict['floor']})")
+        logger.warning("background: gate refused %.2f:1 for %r — falling back",
+                       verdict["worst_ratio"], topic)
+        _record(payload)
+        return None
+
+    _record(payload)
+    return f"photo:{made['path']}"
 
 
 # ── TTS ───────────────────────────────────────────────────────────────
