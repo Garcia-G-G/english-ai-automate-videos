@@ -332,10 +332,21 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         # which background a video got and whether the gate passed. It is a
         # callback rather than the batch `entry` dict because admin has no
         # such dict; the resolver takes either.
+        # Captured locally as well as written to the job row, because the
+        # job row is not durable: "Clear All History" wipes jobs["history"],
+        # and a video sitting in pending/ would lose its record while the
+        # artifact lived on. The artifact's json is the home; the row is a
+        # copy for convenience.
+        background_record = {}
+
+        def _record_background(payload):
+            background_record.update(payload)
+            update_job(job_id, background=payload)
+
         resolved_background = pipeline.resolve_background(
             profile, background,
             topic=topic_name, category=category,
-            on_record=lambda payload: update_job(job_id, background=payload),
+            on_record=_record_background,
         )
         update_job(job_id, current_step=f"Rendering video ({resolved_background})...")
 
@@ -358,10 +369,24 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         result["gate"] = fin.get("gate")
         result["outro_appended"] = fin.get("outro_appended")
         result["blocking_flags"] = fin.get("blocking_flags", [])
+        result["outro_variant"] = fin.get("outro_variant")
         if fin.get("video"):
             video_path = Path(fin["video"])
 
-        update_job(job_id, current_step=f"Gate: {fin.get('gate')}", progress=95)
+        # THE VERDICT, in three places on purpose.
+        #
+        # `result` alone is where it used to live, and _worker() calls this
+        # function without capturing the return, so it died there — which is
+        # how a gate REJECT reached output/pending/ with a green tick next to
+        # the videos that passed.
+        verdict_record = {
+            "gate": fin.get("gate"),
+            "blocking_flags": fin.get("blocking_flags", []),
+            "outro_appended": bool(fin.get("outro_appended")),
+            "outro_variant": fin.get("outro_variant"),
+        }
+        update_job(job_id, current_step=f"Gate: {fin.get('gate')}", progress=95,
+                   **verdict_record)
 
         if tracker and tracker.entries:
             tracker.save()
@@ -371,9 +396,18 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         with open(meta_path, 'w', encoding='utf-8') as f:
             json.dump({
                 "job_id": job_id,
+                # The cost ledger's join key. Ledger rows carry
+                # video_id == unique_name and the artifact is
+                # <unique_name>.mp4, so no mapping needs inventing.
+                "artifact": unique_name,
                 "video_type": video_type,
                 "category": category,
                 "topic": topic_name,
+                # The verdict lives with the artifact, so the two live or die
+                # together. Clearing job history cannot orphan a video from
+                # the reason it should not be published.
+                **verdict_record,
+                "background": background_record or None,
                 "script_data": script_data,
                 "created_at": datetime.now().isoformat()
             }, f, ensure_ascii=False, indent=2)
