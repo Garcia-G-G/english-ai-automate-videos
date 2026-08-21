@@ -489,8 +489,10 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
                  entry: dict = None) -> Path:
     """Run the full pipeline from script to video."""
 
-    # Profile default background (e.g. kids clips) when none was requested
-    background = resolve_background(ACTIVE_PROFILE, background)
+    # NO background resolution here. It happens once, in generate_and_run,
+    # before anything is generated. This call used to run AFTER the image had
+    # been made and returned `background` untouched, so a clips-mode profile
+    # was silently overridden by a generated image on the batch path.
 
     # Initialize cost tracker for this video
     # get_tracker, not reset_tracker: generate_and_run has already opened the
@@ -629,59 +631,6 @@ def run_from_text(text: str, name: str = None, video_type: str = "educational", 
 
 
 
-def _background_for_topic(topic_name: str, category: str, entry: dict = None):
-    """Generate a background for this topic, gate it, or fall back.
-
-    Returns whatever generate_video's `background` argument accepts: a
-    "photo:<path>" spec when the image passed, or a preset name when it did
-    not. Never raises — a background problem must not cost the video.
-    """
-    try:
-        from topic_background import generate_for_topic, fallback_preset
-        from topic_background_gate import accept
-    except Exception:                                       # noqa: BLE001
-        logger.warning("background generation unavailable — using a palette")
-        return None
-
-    def _fallback(reason):
-        preset = fallback_preset()
-        logger.warning("background: %s for %r — falling back to %s",
-                       reason, topic_name, preset)
-        if entry is not None:
-            entry["background"] = {"source": "palette", "preset": preset,
-                                   "reason": reason}
-        return preset
-
-    try:
-        made = generate_for_topic(topic_name, category)
-    except Exception as exc:                                # noqa: BLE001
-        logger.exception("background generation raised for %r", topic_name)
-        return _fallback(f"generation raised: {exc}")
-
-    if not made:
-        return _fallback("generation failed")
-
-    verdict = accept(made["path"], topic=topic_name)
-    if entry is not None:
-        entry["background"] = {
-            "source": "generated" if verdict["passes"] else "palette",
-            "image": made["path"],
-            "worst_ratio": round(verdict["worst_ratio"], 3),
-            "floor": verdict["floor"],
-            "gate": "PASS" if verdict["passes"] else "REJECT",
-            "cost_usd": made.get("cost_usd"),
-        }
-    if not verdict["passes"]:
-        preset = fallback_preset()
-        if entry is not None:
-            entry["background"]["preset"] = preset
-        logger.warning("background: gate refused %.2f:1 for %r — using %s",
-                       verdict["worst_ratio"], topic_name, preset)
-        return preset
-
-    return f"photo:{made['path']}"
-
-
 def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational",
                      background: str = None, upload: bool = False, use_v2: bool = False,
                      dry_run: bool = False, entry: dict = None) -> Path:
@@ -723,10 +672,12 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
     # presets measured at or under 3.7:1 behind the headline. A refused image
     # costs a palette; an ungated one costs an unreadable video.
     #
-    # Only when the caller did not ask for a specific background — an explicit
-    # --background is an instruction, not a default to be overridden.
-    if background is None:
-        background = _background_for_topic(topic_name, category, entry)
+    # One call, before anything is generated. Tier 1 inside the resolver
+    # returns an explicit --background untouched, so passing it through here
+    # cannot override the operator.
+    background = resolve_background(ACTIVE_PROFILE, background,
+                                    topic=topic_name, category=category,
+                                    entry=entry)
 
     # Show preview based on type
     logger.info("Script Preview:")
