@@ -50,23 +50,6 @@ def load_config() -> dict:
     return {}
 
 
-def get_default_background() -> str:
-    """DEPRECATED thin alias for pipeline's terminal tier. Do not add callers.
-
-    This used to hold its own copy of the rotation pick: same config key
-    (video.enabled_backgrounds), same resolve_enabled() expansion, same
-    membership filter, same SystemRandom choice as topic_background's
-    fallback. Two copies of one algorithm meant the pending palette cull
-    would have been applied to whichever one the author happened to be
-    looking at, and left the other serving the old rotation — and the other
-    one is what the dashboard reaches.
-
-    The body is now pipeline._terminal_preset, so there is one rotation.
-    """
-    from pipeline import _terminal_preset
-    return _terminal_preset()
-
-
 def get_background_generator():
     """Get or create the background generator instance."""
     global _bg_generator

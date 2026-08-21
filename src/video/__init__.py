@@ -16,7 +16,7 @@ from script_schema import validate_render_data
 from .constants import FPS, VIDEO_WIDTH, VIDEO_HEIGHT
 from .backgrounds import (
     set_background, reset_background, get_background_generator,
-    get_default_background, BACKGROUNDS_AVAILABLE,
+    BACKGROUNDS_AVAILABLE,
     CURRENT_BACKGROUND,
 )
 from .utils import load_data
@@ -162,12 +162,12 @@ def generate_video(
     if use_v2:
         background = None
 
-    # Configure background with pre-rendering for speed
-    # Auto-select from config.yaml if no background specified
-    if not background and BACKGROUNDS_AVAILABLE and not use_v2:
-        background = get_default_background()
-        if background:
-            logger.info(f"Auto-selected background: {background}")
+    # NOTHING IS CHOSEN HERE. pipeline.resolve_background decides, always
+    # returns a value, and -b carries it in. This used to fall back to a
+    # palette of its own whenever `background` arrived empty, which is what
+    # every dashboard render hit: admin.py resolved to None, pipeline omitted
+    # -b, and this line quietly picked a gen_NNN — so the generated image the
+    # video had paid for never reached the frame.
 
     # Per-video generated background: "photo:<path>". The image was made
     # from this video's topic and has already cleared the contrast gate;
@@ -531,7 +531,7 @@ def main():
     parser.add_argument("-t", "--type", choices=['educational', 'quiz', 'true_false', 'fill_blank', 'pronunciation', 'vocabulary'],
                         help="Video type (auto-detected from data if not specified)")
     parser.add_argument("--fps", type=int, default=FPS, help="FPS")
-    parser.add_argument("-b", "--background", default=None,
+    parser.add_argument("-b", "--background", required=True,
                         help="Background preset (bokeh_soft, purple_vibes, dark_professional, etc.) or type")
     parser.add_argument("--fast", action="store_true",
                         help="Fast mode: use static background and optimized settings")
@@ -572,13 +572,13 @@ def main():
         print(f"Error: Data file not found: {args.data}", file=sys.stderr)
         sys.exit(1)
 
+    # -b is required, so this is always a real value. The renderer does not
+    # decide a background; pipeline.resolve_background does, once.
+    #
+    # --fast no longer overrides it either. It still controls render settings
+    # below; it used to also replace the resolved background with a static
+    # preset, discarding a generated image after it had been paid for.
     background = args.background
-
-    if args.fast:
-        background = "dark_professional"
-        print("Fast mode: using static background")
-    elif background is None:
-        background = get_default_background()
 
     result = generate_video(args.audio, args.data, args.output, args.type, args.fps, background,
                             fast_mode=args.fast, renderer=args.renderer,
