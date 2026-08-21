@@ -323,10 +323,26 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
 
         video_path = PENDING_DIR / video_type / f"{unique_name}.mp4"
 
+        # The same resolver --batch uses, with the topic and category this
+        # job already has. Before this, the dashboard called it without them,
+        # got None back and rendered a palette — so the per-video generated
+        # backgrounds existed only on the --batch path.
+        #
+        # on_record puts the decision on the job, so the dashboard shows
+        # which background a video got and whether the gate passed. It is a
+        # callback rather than the batch `entry` dict because admin has no
+        # such dict; the resolver takes either.
+        resolved_background = pipeline.resolve_background(
+            profile, background,
+            topic=topic_name, category=category,
+            on_record=lambda payload: update_job(job_id, background=payload),
+        )
+        update_job(job_id, current_step=f"Rendering video ({resolved_background})...")
+
         pipeline.render_video(
             audio_path, json_path, video_path,
             video_type=video_type,
-            background=pipeline.resolve_background(profile, background),
+            background=resolved_background,
             timeout=pipeline.RENDER_TIMEOUT_S,
         )
 
