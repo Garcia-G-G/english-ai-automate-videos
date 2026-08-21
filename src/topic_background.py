@@ -226,7 +226,7 @@ CATEGORY_SCENES = {
         "a graffiti wall in bright colours",
         "a skate park ramp under a blue sky",
         "a row of painted shopfronts on a sunny street",
-        "a street corner with neon signage unlit in daylight",
+        "a street corner with bright painted signs and awnings",
     ],
     "kids_animals": [
         "soft toy animals on a bright shelf",
