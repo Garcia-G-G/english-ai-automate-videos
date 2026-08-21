@@ -25,11 +25,19 @@ March 2026.
 
 from __future__ import annotations
 
+import hashlib
 import logging
 import random
 import re
 from pathlib import Path
 from typing import Dict, Optional
+
+import sys as _sys
+_SRC = str(Path(__file__).resolve().parent)
+if _SRC not in _sys.path:
+    _sys.path.insert(0, _SRC)
+from config.layout import VIDEO_HEIGHT           # noqa: E402
+from text_contrast import HEADLINE_BOTTOM, HEADLINE_TOP  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -73,48 +81,301 @@ RENDER_BLUR_RADIUS = 1
 #: what this image was composed for.
 RENDER_ZOOM_RANGE = (1.0, 1.0)
 
-#: The exposure instruction, identical on every prompt. This is the part that
-#: keeps text readable, so it is not paraphrased per topic.
-EXPOSURE = (
-    "The centre of the frame is in deep shadow across a wide horizontal band, "
-    "with brightness only in the top third and the bottom third. "
-    "Cinematic photography, portrait orientation, shallow depth of field, "
-    "softly out of focus, rich dark tones. "
+#: The readability band, composited in code by apply_readability_scrim.
+#:
+#: SCRIM_FEATHER is deliberately larger than the band's own half-height: the
+#: failure mode here is a visible seam, and a seam is worse than the dark
+#: images this replaces. Falloff is a raised cosine, so the derivative is zero
+#: at both ends and there is no edge for the eye to catch.
+SCRIM_FEATHER = 300
+SCRIM_STRENGTH = 0.62
+
+#: The composition instruction, identical on every prompt.
+#:
+#: It used to ask for "deep shadow across the middle band" and "rich dark
+#: tones", and every scene stem asked for night or low light on top of that.
+#: The reason was the contrast gate — and the gate REWARDS darkness, because
+#: a darker background raises the ratio without limit. v_vs_b_sounds scored
+#: 14.882:1 against a 4.5 floor by being barely there. Nothing measured
+#: vividness, so there was never any pressure the other way, and eleven of
+#: fourteen images came out as the same dark room.
+#:
+#: Readability is now built in code — see apply_readability_scrim — so the
+#: generator is asked for a picture and not for a shadow. What it is still
+#: asked for is an UNCLUTTERED middle band, which is a composition
+#: instruction: keep the busy detail out of the centre, at any brightness.
+COMPOSITION = (
+    "Vivid, colourful and well lit, rich saturated colour. "
+    "The middle band across the centre of the frame is calm and uncluttered — "
+    "keep detail, subjects and busy texture in the upper and lower thirds and "
+    "leave the centre simple and open. "
+    "Portrait orientation, photographic, shallow depth of field, "
+    "softly out of focus. "
     "No text, no letters, no signage, no watermark, no legible faces, no people "
     "in the centre of the frame."
 )
 
-#: Scene stems per content category. The topic supplies the subject; these
-#: supply a setting that can plausibly hold one without becoming an
-#: illustration of the phrase, which is what produces literal-minded images.
+#: Scenes per category, built against content/topics/*.json rather than from
+#: memory. The previous dict had 11 keys for 20 real categories, so 11 fell
+#: through to a single DEFAULT stem — which is why eleven of fourteen images
+#: were the same room. It also carried two orphan keys, "daily_life" and
+#: "food", that no category ever used; the real ones are
+#: everyday_expressions and food_restaurant.
+#:
+#: Several per category, because one scene per category means two videos in
+#: the same category share a frame, and `social` alone appears six times in
+#: the job history.
 CATEGORY_SCENES = {
-    "business": "a dark modern office after hours, a desk and a laptop lit by one lamp",
-    "travel": "a dimly lit airport terminal at night, seats and a window onto the apron",
-    "social": "a low-lit bar table with glasses and a jacket over the chair",
-    "daily_life": "a kitchen counter at night lit by one warm bulb",
-    "idioms": "a worn wooden table with objects arranged on it in low light",
-    "phrasal_verbs": "a cluttered desk in a dark room, one lamp raking across it",
-    "false_friends": "two objects side by side on a shadowed surface, one lit",
-    "common_mistakes": "an open notebook and a pen on a dark desk, single light source",
-    "kids_animals": "a quiet room at dusk with soft toys on a shelf",
-    "food": "a dark table set with plates and linen, narrow window light",
-    "technology": "a dark room with a screen glow falling across a desk",
+    "business": [
+        "a bright modern office with glass walls and a city view",
+        "a sunlit meeting room with a whiteboard and coloured markers",
+        "a clean desk with an open laptop, a plant and a coffee cup",
+        "a busy co-working space with warm wood and yellow chairs",
+    ],
+    "work_office": [
+        "a tidy desk with stacked notebooks and a mug of pens",
+        "an office corridor with tall windows and green plants",
+        "a desk by a window with sunlight across the keyboard",
+        "a bright break room with mugs on an open shelf",
+    ],
+    "travel": [
+        "an airport window with a plane on the apron under a blue sky",
+        "a sunlit train platform with a suitcase and a departure board",
+        "a harbour with white boats and turquoise water",
+        "a market street with awnings and hanging lanterns",
+    ],
+    "social": [
+        "a rooftop terrace with string lights and potted plants",
+        "a cafe table with two cups and a slice of cake",
+        "a park bench under blossoming trees",
+        "a colourful bar counter with fruit and glassware",
+    ],
+    "everyday_expressions": [
+        "a kitchen counter with fruit in a bowl and a sunlit window",
+        "a hallway with a coat rack and a striped rug",
+        "a laundry line with bright clothes against the sky",
+        "a bookshelf with plants and framed pictures",
+    ],
+    "idioms": [
+        "a wooden table with scattered playing cards and a teapot",
+        "a workshop bench with tools laid out in rows",
+        "a windowsill with jars, a clock and a small cactus",
+        "a picnic blanket with a basket on green grass",
+    ],
+    "phrasal_verbs": [
+        "a desk covered in open notebooks, pens and sticky notes",
+        "a staircase with a bright window on the landing",
+        "a kitchen shelf with jars, tins and a kettle",
+        "a bicycle leaning on a painted wall",
+    ],
+    "false_friends": [
+        "two identical mugs side by side on a bright table",
+        "a pair of doors painted in contrasting colours",
+        "two plants in matching pots on a windowsill",
+        "a split-tone wall with two colours meeting",
+    ],
+    "confusing_words": [
+        "two labelled jars on a clean shelf",
+        "a fork in a garden path between hedges",
+        "two coloured pencils crossed on white paper",
+        "a mirror reflecting a bright room",
+    ],
+    "common_mistakes": [
+        "an open notebook with a pen and an eraser on a bright desk",
+        "a whiteboard with coloured marker strokes",
+        "a chalkboard with a clean surface and coloured chalk",
+        "crumpled paper beside a fresh notepad on a sunlit table",
+    ],
+    "grammar": [
+        "wooden letter blocks arranged on a light table",
+        "an open book with a ribbon marker in the sunlight",
+        "a card index box with coloured dividers",
+        "a typewriter on a bright desk with a plant behind it",
+    ],
+    "pronunciation": [
+        "a vintage microphone on a stand against a colourful wall",
+        "a radio studio desk with a bright pop filter",
+        "headphones on a yellow table beside a notebook",
+        "a speaker cabinet with a plant and warm daylight",
+    ],
+    "spanish_specific": [
+        "a tiled courtyard with terracotta pots and geraniums",
+        "a sunlit balcony with striped awnings",
+        "a painted door in a whitewashed wall with bougainvillea",
+        "a market stall with bright ceramics",
+    ],
+    "cultural": [
+        "a festival street with paper flags across the sky",
+        "a museum hall with tall windows and pale stone",
+        "a table set for a celebration with colourful dishes",
+        "a plaza with a fountain and painted facades",
+    ],
+    "food_restaurant": [
+        "a bright kitchen counter with fresh vegetables",
+        "a restaurant table by a window with a bowl of salad",
+        "a bakery display of pastries under warm daylight",
+        "a market stall with citrus fruit stacked in crates",
+    ],
+    "technology": [
+        "a clean desk with a laptop, a phone and a plant in daylight",
+        "a bright workshop bench with cables coiled neatly",
+        "a wall of small screens in a light room",
+        "a desk with a keyboard, a notebook and a mug by a window",
+    ],
+    "slang": [
+        "a graffiti wall in bright colours",
+        "a skate park ramp under a blue sky",
+        "a row of painted shopfronts on a sunny street",
+        "a street corner with neon signage unlit in daylight",
+    ],
+    "kids_animals": [
+        "soft toy animals on a bright shelf",
+        "a sunny meadow with butterflies",
+        "a colourful farmyard fence with painted animals",
+        "a child's bedroom with animal wallpaper in daylight",
+    ],
+    "kids_colors": [
+        "coloured pencils fanned out on white paper",
+        "paint pots in a rainbow row on a bright table",
+        "coloured balloons against a clear sky",
+        "a stack of bright building blocks",
+    ],
+    "kids_numbers": [
+        "wooden number blocks on a light rug",
+        "a bright abacus on a clean table",
+        "chalk numbers on a sunlit pavement",
+        "a colourful counting chart on a nursery wall",
+    ],
 }
-DEFAULT_SCENE = "a quiet interior at night, one warm light source, most of the frame in shadow"
+
+#: Light and time of day. No night, no low light — the readability band is
+#: composited afterwards and no longer has to be begged for here.
+LIGHT = [
+    "bright late-morning daylight",
+    "warm golden-hour sunlight with long highlights",
+    "clean soft daylight from a large window",
+    "crisp midday light with vivid colour",
+]
+
+#: Palette. An independent axis so two videos sharing a scene still differ.
+PALETTE = [
+    "a warm palette of amber, coral and cream",
+    "a cool palette of teal, sky blue and mint",
+    "a bold palette of saturated primary colours",
+    "a fresh palette of green, yellow and white",
+]
+
+#: Framing. Cheap to vary and it changes the picture more than its length
+#: suggests.
+FRAMING = [
+    "a wide establishing view",
+    "a close three-quarter view",
+    "an overhead flat-lay view",
+    "a low angle looking slightly up",
+]
+
+
+def prompt_space() -> dict:
+    """How many distinct prompts this table can produce."""
+    per_axis = len(LIGHT) * len(PALETTE) * len(FRAMING)
+    per_category = {c: len(v) * per_axis for c, v in CATEGORY_SCENES.items()}
+    return {
+        "categories": len(CATEGORY_SCENES),
+        "light": len(LIGHT), "palette": len(PALETTE), "framing": len(FRAMING),
+        "per_category_min": min(per_category.values()),
+        "total": sum(per_category.values()),
+    }
 
 
 def _slug(text: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", (text or "background").lower()).strip("_") or "background"
 
 
-def build_prompt(topic: str, category: str = None) -> str:
-    """The prompt for one video's background."""
-    scene = CATEGORY_SCENES.get((category or "").lower(), DEFAULT_SCENE)
+def _axis_pick(seq, seed_text: str, salt: str):
+    """Deterministic choice from `seq` for this topic. Same topic, same image."""
+    h = hashlib.sha256(f"{salt}:{seed_text}".encode("utf-8")).digest()
+    return seq[int.from_bytes(h[:4], "big") % len(seq)]
+
+
+def choose_axes(topic: str, category: str = None) -> dict:
+    """The (scene, light, palette, framing) this topic gets.
+
+    Deterministic on the topic slug so a re-run reproduces the image rather
+    than paying for a different one.
+    """
+    cat = (category or "").lower()
+    scenes = CATEGORY_SCENES.get(cat)
+    if not scenes:
+        # A category with no scenes is a bug in the table, not a case to
+        # absorb quietly — the old DEFAULT_SCENE swallowed eleven of them.
+        if cat:
+            logger.warning("background: category %r is not in CATEGORY_SCENES "
+                           "— add it; falling back to a generic table", cat)
+        scenes = [sc for v in CATEGORY_SCENES.values() for sc in v]
+    slug = _slug(topic)
+    return {
+        "category": cat or "unknown",
+        "scene": _axis_pick(scenes, slug, "scene"),
+        "light": _axis_pick(LIGHT, slug, "light"),
+        "palette": _axis_pick(PALETTE, slug, "palette"),
+        "framing": _axis_pick(FRAMING, slug, "framing"),
+    }
+
+
+def build_prompt(topic: str, category: str = None, axes: dict = None) -> str:
+    """The prompt for one video's background, composed from four axes."""
+    axes = axes or choose_axes(topic, category)
     return (
-        f"{scene.capitalize()}, evoking the idea of \"{topic}\" without "
-        f"illustrating it literally and without spelling anything out. "
-        f"{EXPOSURE}"
+        f"{axes['framing'].capitalize()} of {axes['scene']}, "
+        f"{axes['light']}, {axes['palette']}, "
+        f"evoking the idea of \"{topic}\" without illustrating it literally "
+        f"and without spelling anything out. {COMPOSITION}"
     )
+
+
+def apply_readability_scrim(image_path, out_path=None):
+    """Composite the readability band onto the image, in code.
+
+    THE POINT OF THIS. Contrast used to be requested in the prompt and then
+    checked by the gate, which meant the design was being driven by a
+    measurement that rewards darkness without limit — so the generator was
+    asked for darker and darker pictures and the operator got black frames.
+
+    The band is composed here instead, over the rows the gate measures, so
+    contrast is guaranteed by construction and the gate goes back to being a
+    safety net rather than the thing steering the art.
+
+    Soft and generous at both edges. A hard seam would look worse than the
+    dark images did, so the falloff is a raised cosine over a distance
+    comparable to the band itself, not a linear ramp over a few pixels.
+    """
+    from PIL import Image
+    import numpy as np
+
+    img = Image.open(image_path).convert("RGB")
+    w, h = img.size
+
+    # The rows the headline occupies, in this image's coordinates.
+    top = HEADLINE_TOP / VIDEO_HEIGHT * h
+    bottom = HEADLINE_BOTTOM / VIDEO_HEIGHT * h
+    feather = SCRIM_FEATHER / VIDEO_HEIGHT * h
+
+    y = np.arange(h, dtype=np.float32)
+    band = np.zeros(h, dtype=np.float32)
+    band[(y >= top) & (y <= bottom)] = 1.0
+
+    upper = (y < top) & (y > top - feather)
+    band[upper] = 0.5 * (1 + np.cos(np.pi * (top - y[upper]) / feather))
+    lower = (y > bottom) & (y < bottom + feather)
+    band[lower] = 0.5 * (1 + np.cos(np.pi * (y[lower] - bottom) / feather))
+
+    arr = np.asarray(img, dtype=np.float32)
+    darken = 1.0 - SCRIM_STRENGTH * band[:, None, None]
+    out = np.clip(arr * darken, 0, 255).astype(np.uint8)
+
+    dest = Path(out_path or image_path)
+    Image.fromarray(out).save(dest)
+    return dest
 
 
 def generate_for_topic(topic: str, category: str = None,
@@ -148,6 +409,14 @@ def generate_for_topic(topic: str, category: str = None,
     if result is None:
         logger.warning("background generation FAILED for %r", topic)
         return None
+
+    # Composite the readability band before anything else sees the file, so
+    # the gate measures — and the renderer draws — the same pixels.
+    try:
+        apply_readability_scrim(result)
+    except Exception:                                       # noqa: BLE001
+        logger.exception("background: could not apply the readability scrim "
+                         "to %s — the gate will judge it unscrimmed", result)
 
     return {
         "path": str(result),
