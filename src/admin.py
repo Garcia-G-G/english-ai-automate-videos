@@ -574,6 +574,7 @@ def get_pending_videos() -> list:
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "stage": "pending",
                     "created": datetime.fromtimestamp(video_file.stat().st_mtime)
                 })
     return sorted(videos, key=lambda x: x["created"], reverse=True)
@@ -614,6 +615,7 @@ def get_approved_videos() -> list:
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "stage": "approved",
                     "published_to": sorted({r.get("platform") for r in published
                                             if r.get("platform")}),
                     "published_rows": published,
@@ -634,9 +636,116 @@ def get_library_videos() -> list:
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "size": video_file.stat().st_size,
+                    # output/video/ is where `main.py --batch` stops. Until
+                    # promote_to_review existed this was a dead end.
+                    "stage": "batch",
                     "created": datetime.fromtimestamp(video_file.stat().st_mtime)
                 })
     return sorted(videos, key=lambda x: x["created"], reverse=True)
+
+
+def find_script_for(video_path: Path) -> Optional[Path]:
+    """The script that produced this artifact, if it is still on disk.
+
+    `main.py --batch` names the artifact after the script, so
+    output/scripts/<type>/<stem>.json is the match. Dashboard renders append a
+    timestamp to the stem, so a prefix search is the fallback, newest first.
+    """
+    type_dir = SCRIPTS_DIR / video_path.parent.name
+    if not type_dir.is_dir():
+        return None
+    exact = type_dir / f"{video_path.stem}.json"
+    if exact.exists():
+        return exact
+    matches = sorted(type_dir.glob(f"{video_path.stem}_*.json"), reverse=True)
+    return matches[0] if matches else None
+
+
+def promote_to_review(video_path: Path) -> dict:
+    """Put a `--batch` artifact onto the reviewed-and-published route.
+
+    output/video/ is where `main.py --batch` stops. Nothing in the dashboard
+    could move an artifact any further from there: Library offered preview and
+    download and that was the end of the road, so the six videos carrying the
+    first Learning Routes CTA have been unpublishable from the UI since
+    18 August.
+
+    Promotion is a MOVE INTO output/pending/, not a shortcut to upload. From
+    pending/ the artifact takes the identical route as anything the dashboard
+    rendered itself — Review approves it into approved/, Upload consults the
+    idempotency guard before a byte is sent. So this is a new DOOR into the
+    existing flow, not a second flow. This repo has had three upload paths
+    before and unifying them was Paso 5a.
+
+    The publication ledger is consulted here as well as at upload. Not because
+    the guard at the end is insufficient, but because an already-published
+    artifact sitting in the "ready to upload" list is the exact shape of the
+    mistake that published hPdSoqjvu3E twice, and the cheapest place to refuse
+    is before it ever joins the queue.
+
+    Returns a verdict dict rather than raising: this is called from a button.
+    """
+    from publication_log import find_by_artifact
+
+    artifact = video_path.stem
+    if not video_path.exists():
+        return {"ok": False, "reason": f"{video_path} no longer exists"}
+
+    published = find_by_artifact(artifact)
+    if published:
+        where = ", ".join(
+            f"{r.get('platform')}={r.get('upload_id')}" for r in published)
+        return {"ok": False, "artifact": artifact, "published_rows": published,
+                "reason": f"already published ({where}) — promoting it would "
+                          f"put a published video back in the upload queue"}
+
+    video_type = video_path.parent.name
+    dest_dir = PENDING_DIR / video_type
+    dest = dest_dir / video_path.name
+    if dest.exists():
+        return {"ok": False, "artifact": artifact,
+                "reason": f"{dest.relative_to(OUTPUT_DIR)} already exists; "
+                          f"refusing to overwrite it"}
+
+    script_path = find_script_for(video_path)
+    script_data, category, topic = {}, "", artifact.replace("_", " ")
+    if script_path:
+        try:
+            with open(script_path, "r", encoding="utf-8") as f:
+                script_data = json.load(f)
+            meta = script_data.get("_meta", {}) or {}
+            category = meta.get("category", "") or ""
+            topic = meta.get("topic") or script_data.get("word") or topic
+        except (json.JSONDecodeError, OSError) as e:
+            logger.warning("promote: could not read %s: %s", script_path, e)
+
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(video_path), str(dest))
+
+    # The same sidecar shape the dashboard writes, so Review and Upload cannot
+    # tell a promoted artifact from a natively rendered one. Without
+    # script_data the Upload page has no title to generate from and the
+    # operator would be typing metadata by hand for every one.
+    meta_path = dest.with_suffix(".json")
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump({
+            "artifact": artifact,
+            "video_type": video_type,
+            "category": category,
+            "topic": topic,
+            "script_data": script_data,
+            "promoted_from": "output/video",
+            "promoted_at": datetime.now().isoformat(),
+            "script_path": str(script_path) if script_path else None,
+            "created_at": datetime.now().isoformat(),
+        }, f, ensure_ascii=False, indent=2)
+
+    logger.info("promote: %s -> %s (script=%s)", video_path, dest,
+                script_path.name if script_path else "none")
+    return {"ok": True, "artifact": artifact, "dest": dest,
+            "meta_path": meta_path, "script_path": script_path,
+            "video_type": video_type, "category": category, "topic": topic,
+            "reason": "moved to pending; approve it in Review to upload"}
 
 
 def approve_video(video_path: Path):
@@ -914,6 +1023,7 @@ def get_uploaded_videos() -> list:
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "stage": "uploaded",
                     "created": datetime.fromtimestamp(video_file.stat().st_mtime),
                     "upload_info": meta.get("upload_info", {}),
                 })
@@ -2090,6 +2200,13 @@ elif page == "Library":
         with cols[2]:
             st.metric("Video Types", len(set(v["type"] for v in all_videos)))
 
+        stuck = [v for v in all_videos if v.get("stage") == "batch"]
+        if stuck:
+            st.info(
+                f"{len(stuck)} artifact(s) from `main.py --batch` are sitting "
+                f"in output/video/. Promote one to send it through Review and "
+                f"the guarded upload flow.")
+
         st.markdown("---")
 
         fc1, fc2 = st.columns([1, 3])
@@ -2118,6 +2235,23 @@ elif page == "Library":
                     st.caption(f"{video['type']} | {video['created'].strftime('%m/%d %H:%M')}")
                     if video["path"].exists():
                         st.video(str(video["path"]))
+                    # output/video/ artifacts had no road out of the library.
+                    # Promotion moves them into pending/, where they take the
+                    # same Review -> Approve -> guarded Upload route as
+                    # everything else.
+                    if video.get("stage") == "batch":
+                        if st.button("⬆️ Promote to Review",
+                                     key=f"promote_{video['path']}",
+                                     use_container_width=True):
+                            verdict = promote_to_review(video["path"])
+                            if verdict["ok"]:
+                                st.success(
+                                    f"{verdict['artifact']} → pending/"
+                                    f"{verdict['video_type']}/ — "
+                                    f"{verdict['reason']}")
+                                st.rerun()
+                            else:
+                                st.error(f"Not promoted: {verdict['reason']}")
                     if st.button("🗑️ Delete", key=f"del_{video['path']}", use_container_width=True):
                         delete_video(video["path"])
                         st.rerun()
