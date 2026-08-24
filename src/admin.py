@@ -934,9 +934,17 @@ def reconcile_platform_target(state: dict, platform_name: str,
     Rules:
       * not available        -> forced off, always. Never target a platform we
                                cannot authenticate to.
-      * became available     -> default on, because that is what the operator
-                               almost certainly wants right after connecting.
+      * became available     -> OFF. A destination the operator did not choose
+                               must not be armed.
       * still available      -> leave the operator's choice alone.
+
+    That middle rule used to default ON — "what the operator almost certainly
+    wants right after connecting". It is the wrong trade on a page whose
+    button publishes irreversibly. Every connected platform armed itself on
+    first render, so a distracted press published to a destination nobody
+    picked; during the E1 proof TikTok had to be unticked twice to keep a
+    demonstration upload off it. The cost of defaulting off is one extra
+    click. The cost of defaulting on is a video the operator cannot unpublish.
     """
     key = f"target_{platform_name}"
     seen_key = f"_target_seen_{platform_name}"
@@ -959,13 +967,14 @@ def reconcile_platform_target(state: dict, platform_name: str,
         state[want_key] = bool(state[key])
 
     previously = state.get(seen_key)
-    want = bool(state.get(want_key, True))
+    # Unseen means unchosen. The operator opts in per press.
+    want = bool(state.get(want_key, False))
 
     if not enabled:
         want = False
     elif previously != enabled:
         # Transitioned unavailable -> available (or first ever render).
-        want = True
+        want = False
 
     # Assigned unconditionally: the caller renders a keyed widget straight
     # after this, and every path has to leave it something to render.
@@ -982,6 +991,11 @@ def reconcile_platform_target(state: dict, platform_name: str,
 from upload_metadata import (  # noqa: E402,F401
     NO_OPERATOR_EDITS, metadata_session_keys, resolve_upload_metadata,
 )
+
+# Privacy is decided in exactly one place, uploader.PLATFORM_PRIVACY, and the
+# dashboard only reads it. Imported under a clearer name because at this call
+# site the question is "what does the page show", not "what does the API get".
+from uploader import privacy_label as platform_privacy_label  # noqa: E402,F401
 
 
 def move_to_uploaded(video_path: Path, upload_info: dict = None):
@@ -1743,6 +1757,7 @@ elif page == "Upload":
     platforms = [
         {
             "name": "TikTok",
+            "api": "tiktok",
             "icon": "🎵",
             "key": "TIKTOK_CLIENT_KEY",
             "desc": "Content Posting API",
@@ -1750,6 +1765,7 @@ elif page == "Upload":
         },
         {
             "name": "YouTube Shorts",
+            "api": "youtube",
             "icon": "▶️",
             "key": "YOUTUBE_CLIENT_ID",
             "desc": "YouTube Data API v3",
@@ -1757,6 +1773,7 @@ elif page == "Upload":
         },
         {
             "name": "Instagram Reels",
+            "api": "instagram",
             "icon": "📷",
             "key": "INSTAGRAM_ACCESS_TOKEN",
             "desc": "Graph API",
@@ -1771,6 +1788,11 @@ elif page == "Upload":
             platform_status[platform["name"]] = is_configured
             badge_class = "status-connected" if is_configured else "status-disconnected"
             badge_text = "CONNECTED" if is_configured else "NOT CONFIGURED"
+            # What this platform will publish AT, read from the one resolver
+            # the uploaders themselves use. On the page, before the press:
+            # the operator should never have to open a file to find out
+            # whether a video is going out to an audience of zero.
+            privacy = platform_privacy_label(platform["api"])
 
             st.markdown(f"""
             <div class="platform-card">
@@ -1778,6 +1800,9 @@ elif page == "Upload":
                 <div class="platform-name">{platform['name']}</div>
                 <div style="color:#94a3b8;font-size:0.85rem;margin-bottom:12px">{platform['desc']}</div>
                 <span class="status-badge {badge_class}">{badge_text}</span>
+                <div style="color:#cbd5e1;font-size:0.85rem;margin-top:10px">
+                    publishes as <strong>{privacy}</strong>
+                </div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -1811,8 +1836,11 @@ elif page == "Upload":
                 # widget ignores it, which is the bug this replaces.
                 reconcile_platform_target(
                     st.session_state, platform["name"], enabled)
+                # The privacy rides on the label, not a caption below it:
+                # the operator reads the thing they are about to tick.
                 if st.checkbox(
-                    f"{platform['icon']} {platform['name']}",
+                    f"{platform['icon']} {platform['name']} — "
+                    f"{platform_privacy_label(platform['api'])}",
                     disabled=not enabled,
                     key=f"target_{platform['name']}"
                 ):

@@ -291,7 +291,7 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
                "held": [], "errors": []}
 
     try:
-        from uploader import UploadManager, VideoMetadata
+        from uploader import UploadManager, VideoMetadata, resolve_privacy
         import yaml
     except ImportError as e:
         logger.exception("upload module not available")
@@ -355,11 +355,15 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
                 category, NO_OPERATOR_EDITS,
             )
 
+            # No privacy= here. It used to say privacy="public" and it was
+            # dead: this object is decomposed into three strings for the
+            # manager.upload() call below and then discarded, so the value
+            # never reached a request body. Privacy is resolved from the
+            # platform inside the uploader — uploader.PLATFORM_PRIVACY.
             metadata = VideoMetadata(
                 title=resolved["title"],
                 description=resolved["description"],
                 hashtags=[h.lstrip("#") for h in resolved["hashtags"]],
-                privacy="public",
             )
 
             # The strings the API is actually handed. record_upload_result
@@ -370,8 +374,9 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
             sent_description = metadata.full_description
             sent_hashtags = metadata.hashtags
 
-            logger.info("Uploading to %s (%s metadata): '%s'",
-                        platform_name, resolved["source"], sent_title[:60])
+            logger.info("Uploading to %s (%s metadata, privacy=%s): '%s'",
+                        platform_name, resolved["source"],
+                        resolve_privacy(platform_key), sent_title[:60])
 
             # The attempt lands BEFORE a byte moves. If this process dies
             # anywhere below, the next run sees an open attempt instead of

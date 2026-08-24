@@ -64,13 +64,71 @@ UPLOAD_TIMEOUT_SECONDS = 300
 # Data classes
 # ---------------------------------------------------------------------------
 
+#: What each platform publishes AT. ONE table, consulted by every entry
+#: point — main.py --batch, the dashboard, and the request bodies themselves.
+#:
+#: Before this existed, privacy had no reachable resolution site at all.
+#: VideoMetadata carried a `privacy` field defaulting to "private", main.py
+#: built one with privacy="public" — and then decomposed it into title,
+#: description and hashtags for the manager.upload() call and threw the object
+#: away. Every backend rebuilt its own VideoMetadata from those three strings,
+#: so the default won every time and BOTH entry points published private. The
+#: "public" at main.py:362 had never once reached the API.
+#:
+#: Per platform, because the correct answer differs per platform:
+#:
+#:   youtube    public. Publishing to an audience of zero is not publishing.
+#:   tiktok     private -> SELF_ONLY, REQUIRED while the client is unaudited.
+#:              An unaudited client may only post to the poster themselves.
+#:              Do not change this without the audit.
+#:   instagram  public — descriptive, not a control. The Graph API's
+#:              media_publish takes no privacy parameter; a Reel's visibility
+#:              follows the connected professional account. Recorded here so
+#:              the operator sees the truth on the page rather than a blank.
+PLATFORM_PRIVACY = {
+    "youtube": "public",
+    "tiktok": "private",
+    "instagram": "public",
+}
+
+#: An unknown platform gets the quiet answer. A wrong "private" is a support
+#: ticket; a wrong "public" is unpublishable.
+UNKNOWN_PLATFORM_PRIVACY = "private"
+
+#: What to show the operator, in each platform's own vocabulary. TikTok does
+#: not say "private" in its API, it says SELF_ONLY, and the page should not
+#: make the operator translate.
+_PRIVACY_LABELS = {
+    ("tiktok", "private"): "SELF_ONLY (only you)",
+    ("instagram", "public"): "public (follows the account)",
+}
+
+
+def resolve_privacy(platform: str) -> str:
+    """The privacy `platform` publishes at. The only place this is decided."""
+    return PLATFORM_PRIVACY.get((platform or "").lower(),
+                                UNKNOWN_PLATFORM_PRIVACY)
+
+
+def privacy_label(platform: str) -> str:
+    """`resolve_privacy`, phrased for the operator reading the Upload page."""
+    key = (platform or "").lower()
+    value = resolve_privacy(key)
+    return _PRIVACY_LABELS.get((key, value), value)
+
+
 @dataclass
 class VideoMetadata:
-    """Container for video metadata shared across platforms."""
+    """Container for video metadata shared across platforms.
+
+    No `privacy` field. It used to have one, and it was the trap: a container
+    that LOOKS like it carries the setting, whose value was discarded by every
+    caller before the request was built. Privacy is resolved from the platform
+    at the point the body is composed — see PLATFORM_PRIVACY.
+    """
     title: str
     description: str
     hashtags: list[str] = field(default_factory=list)
-    privacy: str = "private"  # private | public | unlisted
 
     @property
     def hashtag_string(self) -> str:
@@ -457,7 +515,8 @@ class TikTokUploader(BaseUploader):
                 "post_info": {
                     "title": meta.title[:150],
                     "description": meta.full_description[:2200],
-                    "privacy_level": "SELF_ONLY" if meta.privacy == "private"
+                    "privacy_level": "SELF_ONLY"
+                                     if resolve_privacy(self.PLATFORM) == "private"
                                      else "PUBLIC_TO_EVERYONE",
                     "disable_comment": False,
                     "disable_duet": False,
@@ -696,12 +755,7 @@ class YouTubeUploader(BaseUploader):
         shorts_tag = "#Shorts"
         yt_title = meta.title if shorts_tag in meta.title else f"{meta.title} {shorts_tag}"
 
-        privacy_map = {
-            "public": "public",
-            "unlisted": "unlisted",
-            "private": "private",
-        }
-        privacy_status = privacy_map.get(meta.privacy, "private")
+        privacy_status = resolve_privacy(self.PLATFORM)
 
         body = {
             "snippet": {
