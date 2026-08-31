@@ -30,6 +30,7 @@ from .models import (
     NativeLanguage,
     VideoArtifact,
 )
+from .workspaces import InvalidWorkspaceProfile, resolve_workspace_profile
 
 __all__ = [
     "ArtifactCost",
@@ -50,11 +51,13 @@ __all__ = [
     "InvalidTransition",
     "InvalidAudienceProfile",
     "InvalidArtifactId",
+    "InvalidWorkspaceProfile",
     "LearningLanguage",
     "Market",
     "NativeLanguage",
     "VideoArtifact",
     "normalize_audience",
     "resolve_audience_profile",
+    "resolve_workspace_profile",
     "transition",
 ]
