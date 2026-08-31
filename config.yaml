@@ -146,3 +146,64 @@ profiles:
       animation_style: "clean_pop"
     content:
       categories: ["kids_colors", "kids_numbers", "kids_animals"]
+
+workspaces:
+  youtube_es_en:
+    profile_schema_version: 1
+    workspace_id: "youtube_es_en"
+    market: "youtube"
+    native_language: "es"
+    learning_language: "en"
+    audio:
+      narration_lang: "es"
+      learning_lang: "en"
+      english_accent: "en-US"
+      segment_model: "eleven_turbo_v2_5"
+      voice_preference: "female"
+    subtitles:
+      bilingual: true
+      primary_language: "es"
+      learning_language: "en"
+      script: "latin"
+    metadata:
+      title_language: "es"
+      cover_language: "es"
+      hashtag_seed: ["AprendeIngles", "EnglishTips", "InglesReal"]
+    editorial:
+      explanation_language: "es"
+      adaptation: "spanish_locale"
+      translation_policy: "never_literal"
+    publication:
+      manual: true
+      automatic_publishing: false
+      initial_visibility: "private"
+
+  bilibili_zh_hans_en:
+    profile_schema_version: 1
+    workspace_id: "bilibili_zh_hans_en"
+    market: "bilibili"
+    native_language: "zh-Hans"
+    learning_language: "en"
+    audio:
+      narration_lang: "zh"
+      learning_lang: "en"
+      english_accent: "en-US"
+      segment_model: "eleven_turbo_v2_5"
+      voice_preference: "female"
+    subtitles:
+      bilingual: true
+      primary_language: "zh-Hans"
+      learning_language: "en"
+      script: "simplified_chinese"
+    metadata:
+      title_language: "zh-Hans"
+      cover_language: "zh-Hans"
+      hashtag_seed: ["英语学习", "实用英语", "英语表达"]
+    editorial:
+      explanation_language: "zh-Hans"
+      adaptation: "mandarin_cultural"
+      translation_policy: "never_mechanical_spanish_translation"
+    publication:
+      manual: true
+      automatic_publishing: false
+      initial_status: "draft"
