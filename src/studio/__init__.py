@@ -9,6 +9,11 @@ from .artifacts import (
     ArtifactWriteError,
     InvalidArtifactId,
 )
+from .audiences import (
+    InvalidAudienceProfile,
+    normalize_audience,
+    resolve_audience_profile,
+)
 from .lifecycle import InvalidTransition, transition
 from .models import (
     ArtifactCost,
@@ -43,10 +48,13 @@ __all__ = [
     "CreationMode",
     "CreationRequest",
     "InvalidTransition",
+    "InvalidAudienceProfile",
     "InvalidArtifactId",
     "LearningLanguage",
     "Market",
     "NativeLanguage",
     "VideoArtifact",
+    "normalize_audience",
+    "resolve_audience_profile",
     "transition",
 ]
