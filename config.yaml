@@ -126,20 +126,16 @@ content:
   # Default video type: educational, quiz, true_false, fill_blank, pronunciation
   default_type: "educational"
 
-# Active profile: adults | kids
+# Active profile: adults | children
 profile: "adults"
 
 profiles:
-  adults:
+  adults: {}
     # hereda todo del config base (comportamiento actual)
-  kids:
+  children:
     audio:
-      # KNOWN ISSUE: this placeholder is NOT validated anywhere. Confirmed by
-      # dry-run with profile: kids — it resolves straight through to
-      # voice_id=KIDS_VOICE_ID_PENDIENTE and would be sent to the ElevenLabs
-      # API verbatim, failing at call time rather than at config load.
-      # Replace with a real voice id before using the kids profile.
-      voice_id: "KIDS_VOICE_ID_PENDIENTE"   # se reemplaza al elegir voz
+      # Set CHILDREN_ELEVENLABS_VOICE_ID or configure a valid voice here.
+      voice_id: "default"
       model: "eleven_v3"
       stability: 0.55
       style: 0.30
