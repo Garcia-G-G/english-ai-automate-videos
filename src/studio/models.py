@@ -19,6 +19,20 @@ class CreationMode(str, Enum):
     DIRECTED = "directed"
 
 
+class Market(str, Enum):
+    YOUTUBE = "youtube"
+    BILIBILI = "bilibili"
+
+
+class NativeLanguage(str, Enum):
+    SPANISH = "es"
+    SIMPLIFIED_MANDARIN = "zh-Hans"
+
+
+class LearningLanguage(str, Enum):
+    ENGLISH = "en"
+
+
 class ArtifactState(str, Enum):
     DRAFT = "draft"
     WRITING = "writing"
@@ -35,11 +49,18 @@ class ArtifactState(str, Enum):
     ARCHIVED = "archived"
 
 
+class ArtifactRelation(str, Enum):
+    ADAPTATION = "adaptation"
+
+
 class PersistedModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
 class CreationRequest(PersistedModel):
+    market: Market = Market.YOUTUBE
+    native_language: NativeLanguage = NativeLanguage.SPANISH
+    learning_language: LearningLanguage = LearningLanguage.ENGLISH
     audience: Audience
     mode: CreationMode
     idea: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
@@ -54,6 +75,28 @@ class CreationRequest(PersistedModel):
     voice_id: Optional[str] = None
     background: Optional[str] = None
     notes: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_workspace(self):
+        workspace = (self.market, self.native_language, self.learning_language)
+        valid_workspaces = {
+            (
+                Market.YOUTUBE,
+                NativeLanguage.SPANISH,
+                LearningLanguage.ENGLISH,
+            ),
+            (
+                Market.BILIBILI,
+                NativeLanguage.SIMPLIFIED_MANDARIN,
+                LearningLanguage.ENGLISH,
+            ),
+        }
+        if workspace not in valid_workspaces:
+            raise ValueError(
+                "invalid workspace: expected youtube + es + en or "
+                "bilibili + zh-Hans + en"
+            )
+        return self
 
     @model_validator(mode="after")
     def validate_duration_range(self):
@@ -91,6 +134,18 @@ class ArtifactCost(PersistedModel):
     details: Dict[str, Any] = Field(default_factory=dict)
 
 
+class ArtifactLineage(PersistedModel):
+    source_artifact_id: Annotated[
+        str,
+        StringConstraints(strip_whitespace=True, min_length=1),
+    ]
+    relation: ArtifactRelation
+    preserved_learning_objective: Annotated[
+        str,
+        StringConstraints(strip_whitespace=True, min_length=1),
+    ]
+
+
 class VideoArtifact(PersistedModel):
     schema_version: int
     artifact_id: str
@@ -106,8 +161,15 @@ class VideoArtifact(PersistedModel):
     events: List[ArtifactEvent] = Field(default_factory=list)
     owner_decisions: List[Dict[str, Any]] = Field(default_factory=list)
     publications: List[Dict[str, Any]] = Field(default_factory=list)
-    youtube_snapshots: List[Dict[str, Any]] = Field(default_factory=list)
+    performance_snapshots: List[Dict[str, Any]] = Field(default_factory=list)
+    lineage: Optional[ArtifactLineage] = None
     error: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_lineage(self):
+        if self.lineage and self.lineage.source_artifact_id == self.artifact_id:
+            raise ValueError("source_artifact_id must differ from artifact_id")
+        return self
 
     @classmethod
     def new(
@@ -115,14 +177,16 @@ class VideoArtifact(PersistedModel):
         request: CreationRequest,
         artifact_id: str,
         now: datetime,
+        lineage: Optional[ArtifactLineage] = None,
     ) -> "VideoArtifact":
         return cls(
-            schema_version=1,
+            schema_version=2,
             artifact_id=artifact_id,
             created_at=now,
             updated_at=now,
             state=ArtifactState.DRAFT,
             request=request,
+            lineage=lineage,
             events=[
                 ArtifactEvent(
                     timestamp=now,
