@@ -42,7 +42,7 @@ import tempfile
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from tts_segmenter import segment_script, describe_segments
+from tts_segmenter import LANGUAGE_POLICIES, segment_script, describe_segments
 
 logger = logging.getLogger(__name__)
 
@@ -101,10 +101,16 @@ def resolve_settings() -> Dict:
     }
 
 
-def plan_calls(script_data: Dict, settings: Dict = None) -> List[Dict]:
+def plan_calls(script_data: Dict, settings: Dict = None,
+               language_policy=None) -> List[Dict]:
     """Build the ordered list of TTS calls (text, lang, voice, model...)."""
     settings = settings or resolve_settings()
-    segments = segment_script(script_data, settings["narration_lang"])
+    if language_policy is None:
+        native = settings.get("native_language", settings["narration_lang"])
+        language_policy = LANGUAGE_POLICIES.get(native)
+    if language_policy is None:
+        raise ValueError(f"unsupported native language policy: {native}")
+    segments = segment_script(script_data, language_policy=language_policy)
     calls = []
     for i, seg in enumerate(segments):
         lang = (settings["english_lang"] if seg["lang"] == "en"

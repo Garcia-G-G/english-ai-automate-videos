@@ -33,6 +33,7 @@ Each segment is ``{"text": str, "lang": "es"|"en", "pause_after": float}``.
 """
 
 import re
+from dataclasses import dataclass
 from typing import Dict, List
 from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
@@ -64,6 +65,33 @@ _ES_HINTS = _SPANISH_COMMON | {
 
 _EN_SUFFIXES = ('ing', 'ght', 'tion', 'ck', 'sh', ' th', 'oo', 'ee',
                 'ould', 'ay', 'ey', 'ow', 'aw', "'s", "n't", 'ed')
+
+
+@dataclass(frozen=True)
+class LanguagePolicy:
+    """One explicit native-narration and English-teaching language pair."""
+
+    native_language: str
+    narration_code: str
+    english_code: str = "en"
+
+
+LANGUAGE_POLICIES = {
+    "es": LanguagePolicy("es", "es"),
+    "zh-Hans": LanguagePolicy("zh-Hans", "zh"),
+}
+
+
+def _resolve_policy(narration_lang: str, language_policy) -> LanguagePolicy:
+    if language_policy is not None:
+        if not isinstance(language_policy, LanguagePolicy):
+            raise ValueError("invalid language policy")
+        return language_policy
+    if narration_lang != "es":
+        raise ValueError(
+            "non-Spanish narration requires an explicit language policy"
+        )
+    return LANGUAGE_POLICIES["es"]
 
 
 def looks_english(text: str) -> bool:
@@ -271,12 +299,15 @@ def _extend_en_spans(text: str, spans: list) -> list:
 
 
 def segment_text(text: str, english_terms: List[str],
-                 narration_lang: str = "es") -> List[Dict]:
+                 narration_lang: str = "es", *,
+                 language_policy: LanguagePolicy = None) -> List[Dict]:
     """Split ``text`` into ordered {text, lang, pause_after} segments.
 
     Priority: metadata terms > quoted spans (heuristic) > narration lang.
     English words embedded in a Spanish sentence become their own segment.
     """
+    policy = _resolve_policy(narration_lang, language_policy)
+    narration_lang = policy.narration_code
     text = (text or "").strip()
     if not text:
         return []
@@ -308,6 +339,9 @@ def segment_text(text: str, english_terms: List[str],
 
     spans.sort()
     spans = _extend_en_spans(text, spans)
+
+    if language_policy is not None:
+        return _policy_segments(text, spans, policy)
 
     # 3. Build the ordered segment list.
     segments: List[Dict] = []
@@ -373,7 +407,47 @@ def segment_text(text: str, english_terms: List[str],
     return merged
 
 
-def segment_script(script_data: Dict, narration_lang: str = "es") -> List[Dict]:
+def _policy_segments(text: str, spans: list, policy: LanguagePolicy) -> List[Dict]:
+    """Build a lossless source plan while keeping cleaned text for TTS."""
+    pieces = []
+    cursor = 0
+    for start, end, _ in spans:
+        if cursor < start:
+            pieces.append((cursor, start, policy.narration_code))
+        pieces.append((start, end, policy.english_code))
+        cursor = end
+    if cursor < len(text):
+        pieces.append((cursor, len(text), policy.narration_code))
+
+    merged = []
+    for start, end, lang in pieces:
+        if start == end:
+            continue
+        if merged and merged[-1][2] == lang and merged[-1][1] == start:
+            merged[-1] = (merged[-1][0], end, lang)
+        else:
+            merged.append((start, end, lang))
+
+    result = []
+    for index, (start, end, lang) in enumerate(merged):
+        source = text[start:end]
+        spoken = re.sub(r'\s+', ' ', source).strip().strip("'\"“”‘’")
+        if not spoken:
+            spoken = source
+        result.append({
+            "index": index,
+            "text": spoken,
+            "lang": lang,
+            "pause_after": _pause_for(source),
+            "source_text": source,
+            "source_start": start,
+            "source_end": end,
+        })
+    return result
+
+
+def segment_script(script_data: Dict, narration_lang: str = "es", *,
+                   language_policy: LanguagePolicy = None) -> List[Dict]:
     """Segment a script's ``full_script`` using its own metadata terms."""
     try:
         from tts_common import clean_for_tts
@@ -381,7 +455,12 @@ def segment_script(script_data: Dict, narration_lang: str = "es") -> List[Dict]:
         clean_for_tts = lambda t: t  # noqa: E731
     text = clean_for_tts(script_data.get('full_script', '') or '')
     terms = collect_english_terms(script_data)
-    return segment_text(text, terms, narration_lang)
+    return segment_text(
+        text,
+        terms,
+        narration_lang,
+        language_policy=language_policy,
+    )
 
 
 def describe_segments(segments: List[Dict]) -> str:
