@@ -8,7 +8,7 @@ import secrets
 from datetime import datetime, timezone
 from typing import Callable, List, Optional, Protocol, runtime_checkable
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 from .artifacts import ArtifactRepository
 from .lifecycle import transition
@@ -57,6 +57,7 @@ class ProductionResult(BaseModel):
     paths: ArtifactPaths = Field(default_factory=ArtifactPaths)
     costs: List[ArtifactCost] = Field(default_factory=list)
     production: dict = Field(default_factory=dict)
+    gates: List[dict[str, JsonValue]] = Field(default_factory=list)
 
 
 class AuthorResult(BaseModel):
@@ -214,6 +215,9 @@ class CreationService:
             )
             if not isinstance(produced, ProductionResult):
                 raise TypeError("producer.produce must return ProductionResult")
+            produced = ProductionResult.model_validate(
+                produced.model_dump(warnings=False)
+            )
         except Exception as exc:
             return self._production_failure(artifact, exc)
 
@@ -225,6 +229,10 @@ class CreationService:
                     *(cost.model_copy(deep=True) for cost in produced.costs),
                 ],
                 "production": copy.deepcopy(produced.production),
+                "gates": [
+                    *artifact.gates,
+                    *(copy.deepcopy(gate) for gate in produced.gates),
+                ],
                 "error": None,
             }
         )

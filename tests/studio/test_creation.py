@@ -582,9 +582,58 @@ def test_production_result_is_strict_coerces_nested_values_and_has_independent_d
     empty_one.paths.video = "changed.mp4"
     empty_one.costs.append(ArtifactCost(category="tts", amount=1))
     empty_one.production["changed"] = True
+    empty_one.gates.append({"kind": "qa", "status": "PASS"})
     assert empty_two == ProductionResult()
     with pytest.raises(ValidationError, match="extra_forbidden"):
         ProductionResult(unexpected=True)
+
+
+def test_production_gates_append_after_compatibility_and_round_trip_independently(
+    tmp_path,
+):
+    gate_records = [
+        {"kind": "final_qa", "version": 1, "status": "REJECT",
+         "blocking_flags": ["静音过长"]},
+        {"kind": "seam", "version": 1, "status": "observed",
+         "reason": "接缝已测量"},
+    ]
+    produced = ProductionResult(gates=gate_records)
+    producer = RecordingProducer(result=produced)
+    service, repository, _, _ = make_service(tmp_path, producer=producer)
+
+    result = service.create(youtube_request(), artifact_id="art_production_gates")
+    gate_records[0]["blocking_flags"].append("mutated input")
+    produced.gates[1]["reason"] = "mutated collaborator"
+
+    expected = [
+        {"kind": "compatibility", "status": "not_run", "version": 1},
+        {"kind": "final_qa", "version": 1, "status": "REJECT",
+         "blocking_flags": ["静音过长"]},
+        {"kind": "seam", "version": 1, "status": "observed",
+         "reason": "接缝已测量"},
+    ]
+    assert result.gates == expected
+    assert repository.snapshots[-2].gates == expected
+    assert repository.snapshots[-1].gates == expected
+    assert repository.load("art_production_gates").gates == expected
+
+
+def test_mutated_malformed_production_gates_block_without_corrupting_checkpoint(
+    tmp_path,
+):
+    malformed = ProductionResult.model_construct(gates=["not a gate record"])
+    producer = RecordingProducer(result=malformed)
+    service, repository, _, _ = make_service(tmp_path, producer=producer)
+
+    result = service.create(youtube_request(), artifact_id="art_bad_gates")
+
+    assert result.state.value == "blocked_production"
+    assert result.gates == [
+        {"kind": "compatibility", "status": "not_run", "version": 1}
+    ]
+    assert result.error.startswith("ValidationError:")
+    assert "gates.0" in result.error
+    assert repository.load("art_bad_gates") == result
 
 
 def test_result_values_unicode_and_accumulated_costs_persist_independently(tmp_path):
