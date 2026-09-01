@@ -9,6 +9,7 @@ from typing import Callable
 
 from .creation import AuthorResult, ProductionResult
 from .editorial_costs import cost_delta, invoke_with_costs
+from .media_validation import inspect_frames, probe_media, validate_timing, validate_video
 from .models import ArtifactPaths, CreationMode, Market
 
 
@@ -123,13 +124,21 @@ class TopicScriptAuthor:
 class LegacyProductionGateway:
     """Place canonical media paths around the existing production stages."""
 
-    def __init__(self, root: Path):
+    def __init__(
+        self,
+        root: Path,
+        *,
+        media_probe=probe_media,
+        frame_probe=inspect_frames,
+    ):
         self.root = Path(root)
         self._get_tracker = _get_tracker
         self._generate_tts = _generate_tts
         self._merge_script_into_tts = _merge_script_into_tts
         self._resolve_background = _resolve_background
         self._render_video = _render_video
+        self._media_probe = media_probe
+        self._frame_probe = frame_probe
 
     def produce(self, artifact, script: dict, profile: dict, progress) -> ProductionResult:
         artifact_dir = self._artifact_directory(artifact.artifact_id)
@@ -173,6 +182,9 @@ class LegacyProductionGateway:
         self._merge_script_into_tts(
             copy.deepcopy(canonical_script), metadata_path
         )
+        tts_metadata = self._read_metadata(metadata_path)
+        audio_probe = self._media_probe(produced_audio)
+        validate_timing(tts_metadata, audio_probe)
         progress("timing_merged", 55)
 
         audience_profile = copy.deepcopy(canonical_profile["audience"])
@@ -197,14 +209,20 @@ class LegacyProductionGateway:
         produced_video = self._required_output(
             produced_video, artifact_dir, "video output"
         )
+        video_probe = self._media_probe(produced_video)
+        frame_report = self._frame_probe(produced_video)
+        validate_video(video_probe, frame_report, float(tts_metadata["duration"]))
         progress("video_rendered", 95)
 
         production = {
             "background": selected_background,
             "video_type": canonical_script.get("type"),
             "tts_metadata": self._relative(metadata_path, artifact_dir),
+            "media_validation": {
+                **copy.deepcopy(video_probe),
+                **copy.deepcopy(frame_report),
+            },
         }
-        tts_metadata = self._read_metadata(metadata_path)
         for field in ("duration", "segments"):
             if field in tts_metadata:
                 production[field] = copy.deepcopy(tts_metadata[field])
