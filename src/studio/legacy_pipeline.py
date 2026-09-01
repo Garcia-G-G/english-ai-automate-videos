@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Callable
 
-from .creation import ProductionResult
+from .creation import AuthorFailure, AuthorResult, ProductionResult
 from .models import ArtifactCost, ArtifactPaths, CreationMode, Market
 
 
@@ -33,6 +33,12 @@ def _get_tracker(video_id=None):
     from cost_tracker import get_tracker
 
     return get_tracker(video_id=video_id)
+
+
+def _current_tracker():
+    from cost_tracker import get_tracker
+
+    return get_tracker()
 
 
 def _generate_tts(*args, **kwargs):
@@ -68,12 +74,14 @@ class TopicScriptAuthor:
         random_topic: Callable = _random_topic,
         topic_finder: Callable = _find_topic,
         generator: Callable = _generate_script,
+        tracker_getter: Callable = _current_tracker,
     ):
         self._random_topic = random_topic
         self._topic_finder = topic_finder
         self._generator = generator
+        self._tracker_getter = tracker_getter
 
-    def generate(self, request, profile: dict) -> dict:
+    def generate(self, request, profile: dict) -> AuthorResult:
         if request.market is not Market.YOUTUBE:
             raise ValueError(
                 "unsupported workspace: the legacy author supports only "
@@ -101,7 +109,20 @@ class TopicScriptAuthor:
                 allowed_categories=copy.deepcopy(allowed)
             )
 
-        return self._generator(category, copy.deepcopy(selected), video_type)
+        tracker = self._tracker_getter()
+        cost_start = len(tracker.entries)
+        try:
+            script = self._generator(
+                category, copy.deepcopy(selected), video_type
+            )
+        except Exception as exc:
+            raise AuthorFailure(
+                exc, costs=_cost_delta(tracker, cost_start)
+            ) from exc
+        return AuthorResult(
+            script=script,
+            costs=_cost_delta(tracker, cost_start),
+        )
 
 
 class LegacyProductionGateway:
@@ -193,7 +214,7 @@ class LegacyProductionGateway:
             if field in tts_metadata:
                 production[field] = copy.deepcopy(tts_metadata[field])
 
-        costs = [self._artifact_cost(entry) for entry in tracker.entries[cost_start:]]
+        costs = _cost_delta(tracker, cost_start)
         progress("production_complete", 100)
         return ProductionResult(
             paths=ArtifactPaths(
@@ -250,17 +271,22 @@ class LegacyProductionGateway:
             raise ValueError("TTS metadata output must contain an object")
         return value
 
-    @staticmethod
-    def _artifact_cost(entry: dict) -> ArtifactCost:
-        if not isinstance(entry, dict) or "cost_usd" not in entry:
-            raise ValueError("cost tracker returned invalid entry")
-        details = {
-            key: copy.deepcopy(value)
-            for key, value in entry.items()
-            if key not in {"api_type", "cost_usd", "timestamp"}
-        }
-        return ArtifactCost(
-            category=str(entry.get("api_type", "unknown")),
-            amount=entry["cost_usd"],
-            details=details,
-        )
+
+
+def _artifact_cost(entry: dict) -> ArtifactCost:
+    if not isinstance(entry, dict) or "cost_usd" not in entry:
+        raise ValueError("cost tracker returned invalid entry")
+    details = {
+        key: copy.deepcopy(value)
+        for key, value in entry.items()
+        if key not in {"api_type", "cost_usd", "timestamp"}
+    }
+    return ArtifactCost(
+        category=str(entry.get("api_type", "unknown")),
+        amount=entry["cost_usd"],
+        details=details,
+    )
+
+
+def _cost_delta(tracker, start: int) -> list[ArtifactCost]:
+    return [_artifact_cost(entry) for entry in tracker.entries[start:]]

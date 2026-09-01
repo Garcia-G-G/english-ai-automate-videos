@@ -15,6 +15,8 @@ from .audiences import (
     resolve_audience_profile,
 )
 from .creation import (
+    AuthorFailure,
+    AuthorResult,
     CreationService,
     ProductionGateway,
     ProductionResult,
@@ -42,6 +44,8 @@ from .workspaces import InvalidWorkspaceProfile, resolve_workspace_profile
 from .voices import InvalidVoiceProfile, resolve_voice_profile
 
 __all__ = [
+    "AuthorFailure",
+    "AuthorResult",
     "ArtifactCost",
     "ArtifactAlreadyExists",
     "ArtifactCorrupt",
