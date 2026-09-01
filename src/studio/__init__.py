@@ -21,6 +21,7 @@ from .creation import (
     ScriptAuthor,
 )
 from .lifecycle import InvalidTransition, transition
+from .legacy_pipeline import LegacyProductionGateway, TopicScriptAuthor
 from .models import (
     ArtifactCost,
     ArtifactEvent,
@@ -64,11 +65,13 @@ __all__ = [
     "InvalidWorkspaceProfile",
     "InvalidVoiceProfile",
     "LearningLanguage",
+    "LegacyProductionGateway",
     "Market",
     "NativeLanguage",
     "ProductionGateway",
     "ProductionResult",
     "ScriptAuthor",
+    "TopicScriptAuthor",
     "VideoArtifact",
     "normalize_audience",
     "resolve_audience_profile",
