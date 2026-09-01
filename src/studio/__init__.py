@@ -24,6 +24,11 @@ from .creation import (
     ProductionResult,
     ScriptAuthor,
 )
+from .composition import (
+    WorkspaceProductionGateway,
+    WorkspaceScriptAuthor,
+    build_creation_service,
+)
 from .lifecycle import InvalidTransition, transition
 from .legacy_pipeline import LegacyProductionGateway, TopicScriptAuthor
 from .models import (
@@ -81,6 +86,9 @@ __all__ = [
     "ScriptAuthor",
     "TopicScriptAuthor",
     "VideoArtifact",
+    "WorkspaceProductionGateway",
+    "WorkspaceScriptAuthor",
+    "build_creation_service",
     "normalize_audience",
     "resolve_audience_profile",
     "resolve_profile_bundle",
