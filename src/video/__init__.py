@@ -93,6 +93,7 @@ def generate_video(
     renderer: str = "ffmpeg",
     karaoke_mode: bool = False,
     engine_version: str = "v1",
+    native_language: str = "es",
 ) -> str:
     """
     Generate video based on type.
@@ -114,6 +115,8 @@ def generate_video(
 
     logger.info(f"Loading data: {data_path}")
     data = load_data(data_path)
+    from studio.renderer_presentation import resolve_presentation
+    presentation = resolve_presentation(native_language)
 
     # VALIDATION POINT 3 of 3: renderer input.
     #
@@ -361,7 +364,9 @@ def generate_video(
                 # as the wrong thing.
                 profile_name = os.getenv("VIDEO_PROFILE", "adults")
             logger.info(f"Engine v2 active (profile: {profile_name})")
-            frame_gen = EducationalRendererV2(data, duration, profile_name)
+            frame_gen = EducationalRendererV2(
+                data, duration, profile_name, presentation=presentation
+            )
         elif karaoke_mode:
             logger.info("Using karaoke-style renderer with inline translations")
             def frame_gen(t):
@@ -384,7 +389,7 @@ def generate_video(
                 logger.debug(f"{key}: {st[key].get('start', 0):.2f}s")
 
         def frame_gen(t):
-            return create_frame_quiz(t, data, duration)
+            return create_frame_quiz(t, data, duration, presentation=presentation)
 
     elif video_type == 'true_false':
         logger.info(f"Statement: {data.get('statement', 'N/A')}")
@@ -393,7 +398,7 @@ def generate_video(
         data = resolve_true_false_timestamps(data, duration)
 
         def frame_gen(t):
-            return create_frame_true_false(t, data, duration)
+            return create_frame_true_false(t, data, duration, presentation=presentation)
 
     elif video_type == 'fill_blank':
         logger.info(f"Sentence: {data.get('sentence', 'N/A')}")
@@ -416,7 +421,7 @@ def generate_video(
         logger.info(f"Difficulty: {data.get('difficulty', 'N/A')}")
 
         def frame_gen(t):
-            return create_frame_vocabulary(t, data, duration)
+            return create_frame_vocabulary(t, data, duration, presentation=presentation)
 
     else:
         logger.error(f"Unknown video type: {video_type}")
@@ -542,6 +547,7 @@ def main():
     parser.add_argument("--v2", action="store_true",
                         help="Use the v2 render engine (educational only; "
                              "other types fall back to v1)")
+    parser.add_argument("--native-language", choices=["es", "zh-Hans"], default="es")
     parser.add_argument("--list-backgrounds", action="store_true",
                         help="List available background presets")
 
@@ -583,7 +589,8 @@ def main():
     result = generate_video(args.audio, args.data, args.output, args.type, args.fps, background,
                             fast_mode=args.fast, renderer=args.renderer,
                             karaoke_mode=getattr(args, 'karaoke', False),
-                            engine_version="v2" if getattr(args, 'v2', False) else "v1")
+                            engine_version="v2" if getattr(args, 'v2', False) else "v1",
+                            native_language=args.native_language)
     if result is None:
         print("Error: Video generation failed - no output produced", file=sys.stderr)
         sys.exit(1)

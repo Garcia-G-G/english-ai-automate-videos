@@ -205,6 +205,7 @@ class LegacyProductionGateway:
             video_path,
             video_type=canonical_script.get("type"),
             background=selected_background,
+            native_language=canonical_profile["workspace"]["native_language"],
         )
         produced_video = self._required_output(
             produced_video, artifact_dir, "video output"

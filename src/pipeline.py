@@ -502,7 +502,8 @@ def render_video(audio_path,
                  background: str = None,
                  use_v2: bool = False,
                  timeout: float = None,
-                 font_path: str = None) -> Path:
+                 font_path: str = None,
+                 native_language: str = "es") -> Path:
     """Render the video via `python -m video`, streaming its output to the log.
 
     Raises RenderError (with the renderer's last output lines) on non-zero
@@ -526,6 +527,7 @@ def render_video(audio_path,
     cmd.extend(["-b", background or TERMINAL_PRESET])
     if use_v2:
         cmd.append("--v2")
+    cmd.extend(["--native-language", native_language])
 
     logger.info("=" * 50)
     logger.info("STEP 3: Generating Video")
