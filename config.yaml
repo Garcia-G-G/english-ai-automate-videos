@@ -207,3 +207,29 @@ workspaces:
       manual: true
       automatic_publishing: false
       initial_status: "draft"
+
+voices:
+  profile_schema_version: 1
+  matrix:
+    youtube_es_en:
+      adults:
+        locale: "es"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "warm", "confident"]
+      children:
+        locale: "es"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "clear", "expressive", "not_infantilized"]
+    bilibili_zh_hans_en:
+      adults:
+        locale: "zh-Hans"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "warm", "confident"]
+      children:
+        locale: "zh-Hans"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "clear", "expressive", "not_infantilized"]
