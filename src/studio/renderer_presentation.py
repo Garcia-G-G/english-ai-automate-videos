@@ -16,6 +16,9 @@ class RendererPresentation(BaseModel):
     learning_heading: str
     educational_adults: str
     educational_children: str
+    pronunciation_prompt: str
+    pronunciation_incorrect: str
+    pronunciation_correct: str
     native_field: str = "spanish"
     learning_field: str = "english"
 
@@ -28,6 +31,9 @@ _POLICIES = {
         native_heading="ESPAÑOL", learning_heading="INGLÉS",
         educational_adults="MINI CLASE DE INGLÉS",
         educational_children="¡INGLÉS PARA PEQUES!",
+        pronunciation_prompt="¿Cómo se pronuncia?",
+        pronunciation_incorrect="Incorrecto:",
+        pronunciation_correct="Correcto:",
     ),
     "zh-Hans": RendererPresentation(
         native_language="zh-Hans", question_number="问题 {number}",
@@ -36,6 +42,9 @@ _POLICIES = {
         native_heading="中文", learning_heading="英语",
         educational_adults="英语微课堂",
         educational_children="少儿英语小课堂",
+        pronunciation_prompt="怎么发音？",
+        pronunciation_incorrect="错误：",
+        pronunciation_correct="正确：",
     ),
 }
 
