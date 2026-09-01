@@ -14,6 +14,12 @@ from .audiences import (
     normalize_audience,
     resolve_audience_profile,
 )
+from .creation import (
+    CreationService,
+    ProductionGateway,
+    ProductionResult,
+    ScriptAuthor,
+)
 from .lifecycle import InvalidTransition, transition
 from .models import (
     ArtifactCost,
@@ -50,6 +56,7 @@ __all__ = [
     "Audience",
     "CreationMode",
     "CreationRequest",
+    "CreationService",
     "InvalidTransition",
     "InvalidAudienceProfile",
     "InvalidArtifactId",
@@ -59,6 +66,9 @@ __all__ = [
     "LearningLanguage",
     "Market",
     "NativeLanguage",
+    "ProductionGateway",
+    "ProductionResult",
+    "ScriptAuthor",
     "VideoArtifact",
     "normalize_audience",
     "resolve_audience_profile",
