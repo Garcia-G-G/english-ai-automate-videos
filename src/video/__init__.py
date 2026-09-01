@@ -413,7 +413,9 @@ def generate_video(
         logger.info(f"Phonetic: {data.get('phonetic', 'N/A')}")
 
         def frame_gen(t):
-            return create_frame_pronunciation(t, data, duration)
+            return create_frame_pronunciation(
+                t, data, duration, presentation=presentation
+            )
 
     elif video_type == 'vocabulary':
         pairs = data.get('pairs', [])

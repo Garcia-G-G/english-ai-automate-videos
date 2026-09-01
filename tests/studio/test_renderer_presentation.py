@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 
@@ -100,3 +101,73 @@ def test_zh_hans_policy_reaches_true_false_and_vocabulary_draw_calls(monkeypatch
     )
     assert {"中文", "英语", "你好", "hello"} <= set(drawn)
     assert not {"ESPAÑOL", "INGLÉS"} & set(drawn)
+
+
+@pytest.mark.parametrize(
+    ("native_language", "expected_labels", "excluded_labels"),
+    [
+        ("es", {"¿Cómo se pronuncia?", "Incorrecto:", "Correcto:"},
+         {"怎么发音？", "错误：", "正确："}),
+        ("zh-Hans", {"怎么发音？", "错误：", "正确："},
+         {"¿Cómo se pronuncia?", "Incorrecto:", "Correcto:"}),
+    ],
+)
+def test_pronunciation_draws_workspace_labels_and_preserves_lesson_content(
+    monkeypatch, native_language, expected_labels, excluded_labels
+):
+    import video.pronunciation as pronunciation
+    from studio.renderer_presentation import resolve_presentation
+
+    drawn = []
+    monkeypatch.setattr(
+        pronunciation, "draw_text_centered",
+        lambda draw, text, *args, **kwargs: drawn.append(text),
+    )
+    data = {
+        "word": "hello", "phonetic": "/həˈloʊ/", "translation": "你好",
+        "common_mistake": "哈喽", "tip": "保持气流",
+    }
+    policy = resolve_presentation(native_language)
+    for time in (1.0, 3.0, 5.0, 7.0):
+        pronunciation.create_frame_pronunciation(
+            time, data, 8.0, presentation=policy
+        )
+
+    assert expected_labels <= set(drawn)
+    assert not excluded_labels & set(drawn)
+    assert {"hello", "(你好)", "哈喽", "/həˈloʊ/", "保持气流"} <= set(drawn)
+
+
+def test_video_entry_passes_resolved_presentation_to_pronunciation(monkeypatch):
+    import tts_common
+    import video
+    import video.compositor as compositor
+
+    seen = []
+    monkeypatch.setattr(video, "load_data", lambda path: {
+        "type": "pronunciation", "full_script": "Say hello correctly.",
+        "word": "hello", "phonetic": "/həˈloʊ/",
+    })
+    monkeypatch.setattr(video, "validate_render_data", lambda *args, **kwargs: None)
+    monkeypatch.setattr(tts_common, "get_audio_duration", lambda path: 1.0)
+    monkeypatch.setattr(
+        video, "create_frame_pronunciation",
+        lambda t, data, duration, presentation=None: (
+            seen.append(presentation) or np.zeros((1920, 1080, 3), dtype=np.uint8)
+        ),
+    )
+
+    def render(frame, *args, **kwargs):
+        frame(0.5)
+        return "unused.mp4"
+
+    monkeypatch.setattr(compositor, "render_video_ffmpeg", render)
+
+    video.generate_video(
+        "unused.mp3", "unused.json", "unused.mp4",
+        video_type="pronunciation", background=None,
+        native_language="zh-Hans",
+    )
+    assert len(seen) == 1
+    assert seen[0].native_language == "zh-Hans"
+    assert seen[0].pronunciation_prompt == "怎么发音？"
