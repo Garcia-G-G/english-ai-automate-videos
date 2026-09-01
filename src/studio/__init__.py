@@ -47,6 +47,7 @@ from .models import (
     VideoArtifact,
 )
 from .profile_bundle import InvalidProfileBundle, resolve_profile_bundle
+from .provided_script import ProvidedScriptAuthor
 from .workspaces import InvalidWorkspaceProfile, resolve_workspace_profile
 from .voices import InvalidVoiceProfile, resolve_voice_profile
 
@@ -83,6 +84,7 @@ __all__ = [
     "NativeLanguage",
     "ProductionGateway",
     "ProductionResult",
+    "ProvidedScriptAuthor",
     "ScriptAuthor",
     "TopicScriptAuthor",
     "VideoArtifact",

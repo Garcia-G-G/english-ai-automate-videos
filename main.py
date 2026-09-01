@@ -45,12 +45,6 @@ ROOT = Path(__file__).parent
 SRC = ROOT / "src"
 OUTPUT_DIR = ROOT / "output"
 
-# Create base output directories
-(OUTPUT_DIR / "scripts").mkdir(parents=True, exist_ok=True)
-(OUTPUT_DIR / "audio").mkdir(parents=True, exist_ok=True)
-(OUTPUT_DIR / "video").mkdir(parents=True, exist_ok=True)
-
-
 def get_output_paths(video_type: str, output_name: str) -> tuple:
     """Get output paths organized by video type."""
     # Create type-specific folders
@@ -73,24 +67,14 @@ def get_output_paths(video_type: str, output_name: str) -> tuple:
 # can be imported without package prefixes.  All pipeline code lives under src/.
 sys.path.insert(0, str(SRC))
 from script_generator import (
-    generate_script,
     get_random_topic,
     get_topic_name,
     find_topic,
     list_categories,
     load_topics,
-    save_script,
     VIDEO_TYPES
 )
-from pipeline import (
-    PipelineError,
-    finalize_video,
-    generate_tts,
-    merge_script_into_tts,
-    render_video,
-    resolve_background,
-    resolve_profile,
-)
+from studio import CreationRequest, ProvidedScriptAuthor, build_creation_service
 
 # Active audience profile (adults/kids), resolved in main()
 ACTIVE_PROFILE = {}
@@ -492,134 +476,19 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
 def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None,
                  upload: bool = False, use_v2: bool = False, dry_run: bool = False,
                  entry: dict = None) -> Path:
-    """Run the full pipeline from script to video."""
-
-    # NO background resolution here. It happens once, in generate_and_run,
-    # before anything is generated. This call used to run AFTER the image had
-    # been made and returned `background` untouched, so a clips-mode profile
-    # was silently overridden by a generated image on the batch path.
-
-    # Initialize cost tracker for this video
-    # get_tracker, not reset_tracker: generate_and_run has already opened the
-    # ledger for this artifact and charged the script generation to it.
-    # Resetting here would discard that. get_tracker only creates a new one
-    # when the id differs, so a direct caller still gets a clean ledger.
-    try:
-        from cost_tracker import get_tracker
-        tracker = get_tracker(video_id=output_name)
-    except ImportError:
-        tracker = None
-
-    # Determine video type from script data if not provided
-    if video_type is None:
-        video_type = script_data.get('type', 'educational')
-
-    # Get organized output paths
-    script_path, audio_path, tts_json_path, video_path = get_output_paths(video_type, output_name)
-
-    # Save script first so TTS can use automatic English detection
-    with open(script_path, 'w', encoding='utf-8') as f:
-        json.dump(script_data, f, ensure_ascii=False, indent=2)
-    logger.info("Script saved: %s", script_path.relative_to(ROOT))
-
-    # Step 2: TTS (pass script_path for automatic English detection)
-    try:
-        audio_result, json_path = generate_tts(
-            script_data, audio_path, script_path=script_path, dry_run=dry_run)
-    except (PipelineError, ValueError) as e:
-        logger.error("TTS failed: %s", e)
-        # R1 took fill_blank to nine TTS calls per video, so this fires more
-        # often than it used to and nobody is watching when it does.
-        _note_failure(entry, "tts", e)
-        return None
-
-    if dry_run:
-        logger.info("Dry run — stopping before audio/video generation")
-        return None
-
-    merge_script_into_tts(script_data, json_path)
-
-    # Step 3: Video
-    try:
-        video_result = render_video(audio_result, json_path, video_path,
-                                    video_type=video_type, background=background,
-                                    use_v2=use_v2)
-    except PipelineError as e:
-        logger.error("Video generation failed: %s", e)
-        _note_failure(entry, "render", e)
-        return None
-
-    # Step 3b: FINALISE — gate, then outro. Same call the dashboard makes.
-    #
-    # Neither ran on this path before. The gate was built in Step 2 and
-    # flipped to BLOCKING in Step 3; the outro added in 4a is the Learning
-    # Routes CTA, i.e. the reason the channel exists. finalize_video had zero
-    # callers, so `--batch --upload` published ungated video with no CTA.
-    #
-    # finalize_video owns the ORDER and the reasoning for it (pipeline.py:418)
-    # — gate first, and a rejected video gets no outro, because putting the
-    # brand on the end of something the gate just refused is worse than
-    # shipping nothing.
-    fin = finalize_video(video_result, json_path, variant_seed=output_name)
-    if entry is not None:
-        entry["gate"] = fin.get("gate")
-        entry["outro_appended"] = bool(fin.get("outro_appended"))
-    if fin.get("gate") == "REJECT":
-        logger.warning("QA gate REJECTED %s — not uploading", output_name)
-        _note_rejection(entry, video_result, fin)
-        return None
-    if fin.get("video"):
-        video_result = Path(fin["video"])
-
-    # Record what this run PRODUCED, before and regardless of upload. Doing
-    # it only in the upload branch below is what let a six-video batch report
-    # nothing at all.
-    if entry is not None:
-        from batch_report import record_render
-        record_render(entry, video_result, fin.get("gate"))
-
-    logger.info("=" * 50)
-    logger.info("PIPELINE COMPLETE!")
-    logger.info("=" * 50)
-    logger.info("Type: %s", video_type)
-    logger.info("Script: %s", script_path.relative_to(ROOT))
-    logger.info("Audio: %s", audio_result.relative_to(ROOT))
-    logger.info("Video: %s", video_result.relative_to(ROOT))
-
-    # Print and save cost report
-    if tracker and tracker.entries:
-        tracker.print_summary()
-        tracker.save()
-
-    logger.info("=" * 50)
-
-    # Step 4: Upload (if requested)
-    if upload and video_result:
-        logger.info("STEP 4: Uploading to social platforms...")
-        # video_result.stem is the ledger key, matching the dashboard's
-        # video["name"] (admin.py:315) so both paths write joinable rows.
-        outcome = upload_video(video_result, video_type, script_data,
-                               artifact=video_result.stem)
-        if outcome.get("errors"):
-            logger.error("Upload finished with %d error(s) for %s: %s",
-                         len(outcome["errors"]), outcome["artifact"],
-                         outcome["errors"])
-        if entry is not None:
-            from batch_report import quarantine
-            entry["artifact_path"] = str(video_result)
-            _report_upload(entry, outcome)
-            # A video that failed to publish is quarantined so it is findable
-            # with a reason. Held/unrecorded ones are NOT moved: they may be
-            # live, and moving them would suggest they are not.
-            if entry["status"] == "failed" and not entry["needs_human"]:
-                quarantine(video_result, entry)
-
-    return video_result
+    """Compatibility wrapper for an owner-supplied script."""
+    artifact, video = run_creation(
+        workspace="youtube", audience="adults", idea=output_name,
+        mode="directed", artifact_id=output_name, video_type=video_type,
+        background=background, supplied_script=script_data, upload=upload,
+        dry_run=dry_run,
+    )
+    return video
 
 
 def run_from_text(text: str, name: str = None, video_type: str = "educational", background: str = None,
                   upload: bool = False, use_v2: bool = False, dry_run: bool = False) -> Path:
-    """Run pipeline directly from text input."""
+    """Create a canonical artifact from owner-supplied narration text."""
     if not name:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         name = f"quick_{timestamp}"
@@ -639,77 +508,59 @@ def run_from_text(text: str, name: str = None, video_type: str = "educational", 
 def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational",
                      background: str = None, upload: bool = False, use_v2: bool = False,
                      dry_run: bool = False, entry: dict = None) -> Path:
-    """Generate a script with GPT and run the full pipeline."""
+    """Compatibility wrapper for a directed canonical creation."""
+    _, video = run_creation(
+        workspace="youtube", audience="adults", idea=topic_name,
+        mode="directed", category=category, topic=topic_name,
+        video_type=video_type, background=background,
+        artifact_id=safe_artifact_name(topic_name), upload=upload,
+        dry_run=dry_run,
+    )
+    return video
 
-    logger.info("=" * 50)
-    logger.info("STEP 1: Generating Script (GPT)")
-    logger.info("=" * 50)
-    logger.info("Category: %s", category)
-    logger.info("Topic: %s", topic_name)
-    logger.info("Video Type: %s", video_type)
 
-    # Open this video's cost ledger BEFORE the GPT call, not after it.
-    # run_pipeline used to reset_tracker() on entry, which threw away the
-    # tracker holding the script-generation charge — so every openai_chat
-    # entry was logged at INFO and then discarded, and the saved ledger
-    # recorded ElevenLabs only. A tracker that silently loses a provider
-    # makes per-video spend unknowable the moment nobody is watching.
-    try:
-        from cost_tracker import reset_tracker
-        reset_tracker(video_id=safe_artifact_name(topic_name))
-    except ImportError:
-        pass
+def get_creation_service(*, root=None, **dependencies):
+    return build_creation_service(Path(root or OUTPUT_DIR / "artifacts"), **dependencies)
 
-    try:
-        script_data = generate_script(category, topic, video_type)
-    except Exception as e:
-        logger.error("Script generation failed: %s", e)
-        _note_failure(entry, "script", e)
-        return None
 
-    # Output name for pipeline
-    output_name = safe_artifact_name(topic_name)
-
-    # ── This video's own background ──────────────────────────────
-    #
-    # Generated from the topic, then GATED. The gate is the whole safety
-    # story: the previous photo set shipped without one and six of its eleven
-    # presets measured at or under 3.7:1 behind the headline. A refused image
-    # costs a palette; an ungated one costs an unreadable video.
-    #
-    # One call, before anything is generated. Tier 1 inside the resolver
-    # returns an explicit --background untouched, so passing it through here
-    # cannot override the operator.
-    background = resolve_background(ACTIVE_PROFILE, background,
-                                    topic=topic_name, category=category,
-                                    entry=entry)
-
-    # Show preview based on type
-    logger.info("Script Preview:")
-    if video_type == "educational":
-        logger.info("  Hook: %s", script_data.get('hook', 'N/A'))
-    elif video_type == "quiz":
-        logger.info("  Question: %s", script_data.get('question', 'N/A'))
-        logger.info("  Options: %s", script_data.get('options', {}))
-    elif video_type == "true_false":
-        logger.info("  Statement: %s", script_data.get('statement', 'N/A'))
-        logger.info("  Correct: %s", script_data.get('correct', 'N/A'))
-    elif video_type == "fill_blank":
-        logger.info("  Sentence: %s", script_data.get('sentence', 'N/A'))
-        logger.info("  Correct: %s", script_data.get('correct', 'N/A'))
-    elif video_type == "pronunciation":
-        logger.info("  Word: %s", script_data.get('word', 'N/A'))
-        logger.info("  Phonetic: %s", script_data.get('phonetic', 'N/A'))
-    elif video_type == "vocabulary":
-        logger.info("  Title: %s", script_data.get('title', 'N/A'))
-        logger.info("  Difficulty: %s", script_data.get('difficulty', 'N/A'))
-        logger.info("  Pairs: %d", len(script_data.get('pairs', [])))
-
-    logger.info("  Script: %s...", script_data.get('full_script', 'N/A')[:100])
-
-    # Run rest of pipeline
-    return run_pipeline(script_data, output_name, video_type, background, upload=upload,
-                        use_v2=use_v2, dry_run=dry_run, entry=entry)
+def run_creation(*, workspace, audience, idea, mode, root=None,
+                 artifact_id=None, category=None, topic=None, video_type=None,
+                 background=None, notes=None, supplied_script=None,
+                 upload=False, dry_run=False):
+    """Construct one typed request and delegate creation to Studio."""
+    if dry_run:
+        print(f"Dry run: planned {workspace}/{audience} creation; no artifact or paid call was made")
+        return None, None
+    dimensions = {
+        "youtube": ("youtube", "es", "en"),
+        "bilibili": ("bilibili", "zh-Hans", "en"),
+    }
+    if workspace not in dimensions:
+        raise ValueError(f"unsupported workspace: {workspace}")
+    market, native, learning = dimensions[workspace]
+    request = CreationRequest(
+        market=market, native_language=native, learning_language=learning,
+        audience=audience, mode=mode, idea=idea, category=category, topic=topic,
+        video_type=video_type, background=background, notes=notes,
+    )
+    dependencies = {"root": Path(root or OUTPUT_DIR / "artifacts")}
+    if supplied_script is not None:
+        author = ProvidedScriptAuthor(supplied_script)
+        dependencies["youtube_author"] = author
+        dependencies["bilibili_author"] = author
+    service = get_creation_service(**dependencies)
+    create_kwargs = {}
+    if artifact_id is not None:
+        create_kwargs["artifact_id"] = artifact_id
+    artifact = service.create(request, **create_kwargs)
+    repository_root = dependencies["root"]
+    video = (
+        repository_root / artifact.artifact_id / artifact.paths.video
+        if artifact.paths.video else None
+    )
+    if upload:
+        print("Upload refused: owner approval is required before publication")
+    return artifact, video
 
 
 def main():
@@ -754,8 +605,10 @@ Examples:
                         help="Output name (without extension)")
     parser.add_argument("--background", "--bg", type=str, default=None,
                         help="Background preset (e.g. aurora_borealis, energetic_orbs). Default: random")
-    parser.add_argument("--profile", type=str, default=None,
-                        choices=["adults", "kids"],
+    parser.add_argument("--workspace", choices=["youtube", "bilibili"], default="youtube",
+                        help="Editorial workspace (YouTube Spanish or Bilibili Chinese)")
+    parser.add_argument("--profile", type=str, default="adults",
+                        choices=["adults", "children", "kids"],
                         help="Audience profile (voice, backgrounds, topics). Default: config.yaml profile")
     parser.add_argument("--batch", "-b", type=int,
                         help="Generate multiple videos from random topics")
@@ -774,10 +627,6 @@ Examples:
 
     # Configure logging
     setup_logging(verbose=args.verbose)
-
-    # Resolve audience profile (arg > env VIDEO_PROFILE > config.yaml > adults)
-    global ACTIVE_PROFILE
-    ACTIVE_PROFILE = resolve_profile(args.profile)
 
     # List scripts mode
     if args.list_scripts:
@@ -805,6 +654,18 @@ Examples:
         print(f"Video Types: {', '.join(VIDEO_TYPES)}")
         return
 
+    audience = args.profile
+    if audience == "kids":
+        print("Warning: --profile kids is deprecated; using children")
+        audience = "children"
+
+    if args.dry_run:
+        print(
+            f"Dry run: planned {args.workspace}/{audience} {args.type} creation; "
+            "no artifact or paid call was made"
+        )
+        return
+
     # Batch mode
     if args.batch:
         from batch_report import BatchReport
@@ -816,15 +677,17 @@ Examples:
             print(f"# VIDEO {i+1} of {args.batch} [{args.type}]")
             print(f"{'#'*50}")
 
-            category, topic = get_random_topic(
-                allowed_categories=ACTIVE_PROFILE.get("content", {}).get("categories"))
-            topic_name = get_topic_name(topic)
+            topic_name = f"batch_{i + 1}"
             entry = report.start_video(
                 topic_name.replace(" ", "_").lower(), args.type, topic_name)
             try:
-                generate_and_run(category, topic, topic_name, args.type, args.background,
-                                 upload=args.upload, use_v2=args.v2,
-                                 dry_run=args.dry_run, entry=entry)
+                artifact, video = run_creation(
+                    workspace=args.workspace, audience=audience, idea=topic_name,
+                    mode="auto", video_type=args.type, background=args.background,
+                    upload=args.upload,
+                )
+                entry["artifact_id"] = artifact.artifact_id
+                entry["artifact_path"] = str(video) if video else None
             except Exception as exc:                       # noqa: BLE001
                 # ONE VIDEO MUST NEVER ABORT THE BATCH. Everything below
                 # already returns rather than raising, so this is the backstop
@@ -853,9 +716,13 @@ Examples:
 
     # Text mode
     if args.text:
-        name = args.name or None
-        run_from_text(args.text, name, args.type, args.background, upload=args.upload,
-                      use_v2=args.v2, dry_run=args.dry_run)
+        script = {"type": args.type, "full_script": args.text, "translations": {}}
+        run_creation(
+            workspace=args.workspace, audience=audience,
+            idea=args.name or "supplied text", mode="directed",
+            artifact_id=args.name, video_type=args.type, background=args.background,
+            supplied_script=script, upload=args.upload,
+        )
         return
 
     # Script mode (use existing script)
@@ -870,24 +737,29 @@ Examples:
 
         # Use script's type unless overridden
         video_type = args.type if args.type != "educational" else script_data.get('type', 'educational')
-        run_pipeline(script_data, name, video_type, args.background, upload=args.upload,
-                     use_v2=args.v2, dry_run=args.dry_run)
+        run_creation(
+            workspace=args.workspace, audience=audience, idea=name, mode="directed",
+            artifact_id=name, video_type=video_type, background=args.background,
+            supplied_script=script_data, upload=args.upload,
+        )
         return
 
     # Category + Topic mode (generate with GPT)
     if args.category and args.topic:
-        topic = find_topic(args.category, args.topic)
-        generate_and_run(args.category, topic, args.topic, args.type, args.background,
-                         upload=args.upload, use_v2=args.v2, dry_run=args.dry_run)
+        run_creation(
+            workspace=args.workspace, audience=audience, idea=args.topic,
+            mode="directed", category=args.category, topic=args.topic,
+            video_type=args.type, background=args.background, upload=args.upload,
+        )
         return
 
     # Random mode (generate with GPT)
     if args.random:
-        category, topic = get_random_topic(
-            allowed_categories=ACTIVE_PROFILE.get("content", {}).get("categories"))
-        topic_name = get_topic_name(topic)
-        generate_and_run(category, topic, topic_name, args.type, args.background,
-                         upload=args.upload, use_v2=args.v2, dry_run=args.dry_run)
+        run_creation(
+            workspace=args.workspace, audience=audience, idea="automatic lesson",
+            mode="auto", video_type=args.type, background=args.background,
+            upload=args.upload,
+        )
         return
 
     # No arguments - show help

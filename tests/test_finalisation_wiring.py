@@ -41,10 +41,9 @@ def _calls(path: Path, name: str):
 # ── both paths call it ───────────────────────────────────────────────
 
 def test_the_headless_path_finalises():
-    """`python main.py --batch N --upload` is the path 5a automates."""
-    assert _calls(ROOT / "main.py", "finalize_video"), (
-        "main.py does not finalise; --batch would publish ungated and with "
-        "no Learning Routes CTA")
+    """The CLI delegates production instead of owning finalisation."""
+    assert _calls(ROOT / "main.py", "build_creation_service")
+    assert not _calls(ROOT / "main.py", "finalize_video")
 
 
 def test_the_dashboard_path_finalises():
@@ -198,25 +197,16 @@ def test_the_two_trees_are_distinct():
 
 
 def test_a_rejected_video_is_not_uploaded():
-    """The gate blocking and then publishing anyway would make it decorative."""
+    """The canonical creation adapter never invokes the legacy uploader."""
     src = (ROOT / "main.py").read_text(encoding="utf-8")
     tree = ast.parse(src)
     fn = next(n for n in ast.walk(tree)
-              if isinstance(n, ast.FunctionDef) and n.name == "run_pipeline")
-
-    lines = src.splitlines()
-    rejects = [n.lineno for n in ast.walk(fn)
-               if isinstance(n, ast.Compare)
-               and any(isinstance(c, ast.Constant) and c.value == "REJECT"
-                       for c in n.comparators)]
-    assert rejects, "run_pipeline never checks for REJECT"
-
-    upload_line = next(n.lineno for n in ast.walk(fn)
-                       if isinstance(n, ast.Call)
-                       and isinstance(n.func, ast.Name)
-                       and n.func.id == "upload_video")
-    assert min(rejects) < upload_line, (
-        "the REJECT check happens after the upload call")
+              if isinstance(n, ast.FunctionDef) and n.name == "run_creation")
+    assert not any(
+        isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+        and n.func.id == "upload_video"
+        for n in ast.walk(fn)
+    )
 
 
 if __name__ == "__main__":
