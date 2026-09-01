@@ -67,6 +67,12 @@ def _render_video(*args, **kwargs):
     return pipeline.render_video(*args, **kwargs)
 
 
+def _finalize_video(*args, **kwargs):
+    import pipeline
+
+    return pipeline.finalize_video(*args, **kwargs)
+
+
 class TopicScriptAuthor:
     """Adapt typed requests to the current Spanish lesson generator."""
 
@@ -130,6 +136,7 @@ class LegacyProductionGateway:
         *,
         media_probe=probe_media,
         frame_probe=inspect_frames,
+        finalizer=_finalize_video,
     ):
         self.root = Path(root)
         self._get_tracker = _get_tracker
@@ -139,6 +146,7 @@ class LegacyProductionGateway:
         self._render_video = _render_video
         self._media_probe = media_probe
         self._frame_probe = frame_probe
+        self._finalize_video = finalizer
 
     def produce(self, artifact, script: dict, profile: dict, progress) -> ProductionResult:
         artifact_dir = self._artifact_directory(artifact.artifact_id)
@@ -211,9 +219,26 @@ class LegacyProductionGateway:
         produced_video = self._required_output(
             produced_video, artifact_dir, "video output"
         )
-        video_probe = self._media_probe(produced_video)
-        frame_report = self._frame_probe(produced_video)
-        validate_video(video_probe, frame_report, float(tts_metadata["duration"]))
+        finalized = self._finalize_video(
+            produced_video,
+            metadata_path,
+            variant_seed=artifact.artifact_id,
+        )
+        final_video, finalization, gate = self._validated_finalization(
+            finalized, produced_video, artifact_dir
+        )
+        video_probe = self._media_probe(final_video)
+        frame_report = self._frame_probe(final_video)
+        narration_duration = float(tts_metadata["duration"])
+        expected_duration = narration_duration
+        if finalization["outro_appended"]:
+            definitive_duration = float(video_probe.get("duration") or 0)
+            validate_video(video_probe, frame_report, definitive_duration)
+            tolerance = max(0.25, narration_duration * 0.05)
+            if definitive_duration < narration_duration - tolerance:
+                raise ValueError("finalized video is shorter than narration")
+        else:
+            validate_video(video_probe, frame_report, expected_duration)
         progress("video_rendered", 95)
 
         production = {
@@ -230,6 +255,7 @@ class LegacyProductionGateway:
                     canonical_script.get("type")
                 ).value,
             },
+            "finalization": finalization,
         }
         for field in ("duration", "segments"):
             if field in tts_metadata:
@@ -241,11 +267,61 @@ class LegacyProductionGateway:
             paths=ArtifactPaths(
                 script=self._relative(script_path, artifact_dir),
                 audio=self._relative(produced_audio, artifact_dir),
-                video=self._relative(produced_video, artifact_dir),
+                video=self._relative(final_video, artifact_dir),
             ),
             costs=costs,
             production=production,
+            gates=[gate],
         )
+
+    def _validated_finalization(
+        self, result, rendered_video: Path, artifact_dir: Path
+    ):
+        if type(result) is not dict:
+            raise TypeError("finalizer must return dict")
+        verdict = result.get("gate")
+        if verdict not in {"PASS", "REJECT", "NO_REPORT"}:
+            raise ValueError(f"finalizer returned unknown gate verdict: {verdict}")
+        if type(result.get("outro_appended")) is not bool:
+            raise ValueError("finalizer outro_appended must be bool")
+        if verdict != "PASS" and result["outro_appended"]:
+            raise ValueError("finalizer cannot append an outro without PASS")
+
+        blocking_flags = result.get("blocking_flags", [])
+        if (
+            not isinstance(blocking_flags, list)
+            or any(not isinstance(flag, str) for flag in blocking_flags)
+        ):
+            raise ValueError("finalizer blocking_flags must be a list of strings")
+        reason = result.get("reason")
+        if reason is not None and not isinstance(reason, str):
+            raise ValueError("finalizer reason must be a string")
+        variant = result.get("outro_variant")
+        if variant is not None and not isinstance(variant, str):
+            raise ValueError("finalizer outro_variant must be a string")
+
+        final_video = self._required_output(
+            result.get("video"), artifact_dir, "finalized video output"
+        )
+        if final_video != rendered_video.resolve():
+            raise ValueError("finalizer must preserve the canonical video path")
+
+        finalization = copy.deepcopy({
+            key: value for key, value in result.items() if key != "video"
+        })
+        try:
+            json.dumps(finalization, ensure_ascii=False)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("finalizer facts must be JSON-compatible") from exc
+        gate = {
+            "kind": "final_qa",
+            "version": 1,
+            "status": verdict,
+            "blocking_flags": copy.deepcopy(blocking_flags),
+        }
+        if reason is not None:
+            gate["reason"] = reason
+        return final_video, finalization, gate
 
     def _artifact_directory(self, artifact_id: str) -> Path:
         if (

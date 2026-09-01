@@ -5,7 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from studio.creation import AuthorFailure, AuthorResult, ProductionGateway, ScriptAuthor
+from studio.creation import (
+    AuthorFailure,
+    AuthorResult,
+    ProductionGateway,
+    ScriptAuthor,
+)
 from studio.models import CreationRequest, VideoArtifact
 
 
@@ -319,6 +324,10 @@ def gateway_fakes(tmp_path, *, background="static_midnight"):
          "width": 1080, "height": 1920, "frames": 75}
     )
     gateway._frame_probe = lambda path: {"nonblank": True, "changing": True}
+    gateway._finalize_video = lambda video, metadata, **kwargs: {
+        "video": str(video), "gate": "PASS", "outro_appended": True,
+        "outro_variant": "learning_routes_a", "seam": {"delta": 0.01},
+    }
     return gateway, calls, tracker
 
 
@@ -342,6 +351,118 @@ def test_youtube_valid_result_persists_shared_media_facts(tmp_path):
         "width": 1080, "height": 1920, "frames": 75,
         "nonblank": True, "changing": True,
     }
+
+
+@pytest.mark.parametrize(
+    ("verdict", "extra", "expected_gate"),
+    [
+        ("PASS", {"outro_variant": "学习路线", "seam": {"delta": 0.01}},
+         {"kind": "final_qa", "version": 1, "status": "PASS",
+          "blocking_flags": []}),
+        ("REJECT", {"blocking_flags": ["dead_air:5.0s"]},
+         {"kind": "final_qa", "version": 1, "status": "REJECT",
+          "blocking_flags": ["dead_air:5.0s"]}),
+        ("NO_REPORT", {"reason": "no paired audio artifact to gate"},
+         {"kind": "final_qa", "version": 1, "status": "NO_REPORT",
+          "blocking_flags": [], "reason": "no paired audio artifact to gate"}),
+    ],
+)
+def test_youtube_finalizes_then_validates_definitive_video(
+    tmp_path, verdict, extra, expected_gate
+):
+    (tmp_path / "art_01").mkdir()
+    gateway, calls, _ = gateway_fakes(tmp_path)
+    order = []
+
+    def finalize(video, metadata, *, variant_seed):
+        order.append(("finalize", Path(video).read_bytes(), variant_seed, metadata))
+        if verdict == "PASS":
+            Path(video).write_bytes(b"definitive")
+        return {
+            "video": str(video), "gate": verdict,
+            "outro_appended": verdict == "PASS", **copy.deepcopy(extra),
+        }
+
+    gateway._finalize_video = finalize
+    original_probe = gateway._media_probe
+
+    def probe(path):
+        if Path(path).suffix == ".mp4":
+            order.append(("probe", Path(path).read_bytes()))
+            value = original_probe(path)
+            if verdict == "PASS":
+                value["duration"] = 4.0
+            return value
+        return original_probe(path)
+
+    gateway._media_probe = probe
+    result = gateway.produce(
+        artifact(), {"type": "educational", "full_script": "hola"},
+        bundle(), lambda *args: None,
+    )
+
+    assert order[0][:3] == ("finalize", b"video", "art_01")
+    assert order[1] == (
+        "probe", b"definitive" if verdict == "PASS" else b"video"
+    )
+    assert result.gates == [expected_gate]
+    assert result.production["finalization"]["gate"] == verdict
+    assert result.production["finalization"]["outro_appended"] is (verdict == "PASS")
+    assert result.paths.video == "video/final.mp4"
+    assert not list((tmp_path / "art_01/video").glob("*_with_outro*"))
+
+
+def test_youtube_outro_must_not_make_definitive_video_shorter_than_narration(tmp_path):
+    (tmp_path / "art_01").mkdir()
+    gateway, _, _ = gateway_fakes(tmp_path)
+    original_probe = gateway._media_probe
+    gateway._media_probe = lambda path: (
+        {**original_probe(path), "duration": 1.0}
+        if Path(path).suffix == ".mp4" else original_probe(path)
+    )
+    with pytest.raises(ValueError, match="shorter than narration"):
+        gateway.produce(artifact(), {"type": "educational"}, bundle(),
+                        lambda *args: None)
+
+
+@pytest.mark.parametrize(
+    "finalized",
+    [None, [], {"video": "video/final.mp4", "gate": "MAYBE",
+                "outro_appended": False},
+     {"video": "../outside.mp4", "gate": "REJECT", "outro_appended": False},
+     {"video": "video/missing.mp4", "gate": "REJECT", "outro_appended": False}],
+)
+def test_youtube_rejects_malformed_or_unsafe_finalizer_results(tmp_path, finalized):
+    (tmp_path / "art_01").mkdir()
+    gateway, _, _ = gateway_fakes(tmp_path)
+    gateway._finalize_video = lambda *args, **kwargs: finalized
+    with pytest.raises((TypeError, ValueError, FileNotFoundError),
+                       match="final|gate|video"):
+        gateway.produce(artifact(), {"type": "educational"}, bundle(),
+                        lambda *args: None)
+
+
+def test_youtube_invalid_definitive_media_and_finalizer_exception_propagate(tmp_path):
+    (tmp_path / "art_01").mkdir()
+    gateway, _, _ = gateway_fakes(tmp_path)
+    gateway._finalize_video = lambda video, *args, **kwargs: {
+        "video": str(video), "gate": "PASS", "outro_appended": True,
+    }
+    original_probe = gateway._media_probe
+    gateway._media_probe = lambda path: (
+        {"duration": 0.0} if Path(path).suffix == ".mp4" else original_probe(path)
+    )
+    with pytest.raises(ValueError, match="video duration"):
+        gateway.produce(artifact(), {"type": "educational"}, bundle(),
+                        lambda *args: None)
+
+    error = RuntimeError("finalizer exploded")
+    gateway, _, _ = gateway_fakes(tmp_path)
+    gateway._finalize_video = lambda *args, **kwargs: (_ for _ in ()).throw(error)
+    with pytest.raises(RuntimeError) as caught:
+        gateway.produce(artifact(), {"type": "educational"}, bundle(),
+                        lambda *args: None)
+    assert caught.value is error
 
 
 def test_youtube_forwards_requested_engine_and_records_effective_fallback(tmp_path):
@@ -420,7 +541,15 @@ def test_gateway_paths_costs_and_available_metadata_are_exact(tmp_path):
             "nonblank": True, "changing": True,
         },
         "render_engine": {"requested": "v1", "effective": "v1"},
+        "finalization": {
+            "gate": "PASS", "outro_appended": True,
+            "outro_variant": "learning_routes_a", "seam": {"delta": 0.01},
+        },
     }
+    assert result.gates == [{
+        "kind": "final_qa", "version": 1, "status": "PASS",
+        "blocking_flags": [],
+    }]
 
 
 def test_gateway_inputs_and_collaborator_owned_values_are_not_mutated(tmp_path):
