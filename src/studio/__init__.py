@@ -15,6 +15,7 @@ from .audiences import (
     resolve_audience_profile,
 )
 from .bilibili import BilibiliScriptAuthor
+from .bilibili_production import BilibiliProductionGateway
 from .creation import (
     AuthorFailure,
     AuthorResult,
@@ -61,6 +62,7 @@ __all__ = [
     "ArtifactWriteError",
     "Audience",
     "BilibiliScriptAuthor",
+    "BilibiliProductionGateway",
     "CreationMode",
     "CreationRequest",
     "CreationService",

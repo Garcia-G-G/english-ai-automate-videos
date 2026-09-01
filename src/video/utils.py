@@ -32,7 +32,9 @@ def _get_font_paths():
     project_root = Path(__file__).resolve().parent.parent.parent
     bundled = project_root / "assets" / "fonts" / "Inter-Bold.ttf"
 
-    paths = [str(bundled)]
+    explicit = os.getenv("VIDEO_FONT_PATH")
+    paths = [explicit] if explicit else []
+    paths.append(str(bundled))
 
     # macOS
     paths += [
