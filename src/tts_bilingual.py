@@ -245,6 +245,8 @@ def generate_bilingual_narration(
     output_path: str,
     voice_id: Optional[str] = None,
     dry_run: Optional[bool] = None,
+    settings: Optional[Dict] = None,
+    language_policy=None,
 ) -> Dict:
     """Generate the full narration mp3 + timestamp dict for a script.
 
@@ -255,10 +257,10 @@ def generate_bilingual_narration(
     if dry_run is None:
         dry_run = os.getenv("TTS_DRY_RUN", "").strip() in ("1", "true", "yes")
 
-    settings = resolve_settings()
+    settings = dict(settings or resolve_settings())
     if voice_id:
         settings["voice_id"] = voice_id
-    calls = plan_calls(script_data, settings)
+    calls = plan_calls(script_data, settings, language_policy=language_policy)
     if not calls:
         raise ValueError("Script produced no TTS segments (empty full_script?)")
 

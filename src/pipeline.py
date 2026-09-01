@@ -501,7 +501,8 @@ def render_video(audio_path,
                  video_type: str = None,
                  background: str = None,
                  use_v2: bool = False,
-                 timeout: float = None) -> Path:
+                 timeout: float = None,
+                 font_path: str = None) -> Path:
     """Render the video via `python -m video`, streaming its output to the log.
 
     Raises RenderError (with the renderer's last output lines) on non-zero
@@ -535,6 +536,8 @@ def render_video(audio_path,
     logger.info("Output: %s", video_path)
 
     env = os.environ.copy()
+    if font_path:
+        env["VIDEO_FONT_PATH"] = str(Path(font_path).resolve())
     env["PYTHONPATH"] = os.pathsep.join(
         p for p in (str(SRC), env.get("PYTHONPATH", "")) if p)
 
