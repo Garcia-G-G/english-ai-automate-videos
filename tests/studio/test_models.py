@@ -208,3 +208,55 @@ def test_new_artifact_starts_with_draft_event():
     assert artifact.state.value == "draft"
     assert artifact.created_at == artifact.updated_at == now
     assert [(e.previous_state, e.next_state) for e in artifact.events] == [(None, "draft")]
+
+
+def test_direct_and_adapted_artifacts_have_independent_empty_production_metadata():
+    now = datetime(2026, 8, 31, 12, 0, tzinfo=timezone.utc)
+    request = CreationRequest(audience="adults", mode="auto", idea="actually")
+    direct = VideoArtifact.new(request, "art_direct", now)
+    adapted = VideoArtifact.new(
+        request,
+        "art_adapted",
+        now,
+        lineage=ArtifactLineage(
+            source_artifact_id="art_source",
+            relation="adaptation",
+            preserved_learning_objective="Use actually naturally",
+        ),
+    )
+
+    assert direct.production == adapted.production == {}
+    direct.production["stage"] = "rendered"
+    assert adapted.production == {}
+
+
+def test_explicit_nested_production_metadata_survives_strict_validation():
+    artifact = VideoArtifact.new(
+        CreationRequest(audience="children", mode="directed", idea="颜色练习"),
+        "art_zh_01",
+        datetime(2026, 8, 31, 12, 0, tzinfo=timezone.utc),
+    )
+    payload = artifact.model_dump()
+    payload["production"] = {
+        "background": {"selection_reason": "适合颜色课程", "recently_used": False},
+        "scrim": {"opacity": 0.28},
+        "versions": {"renderer": "render-v2", "tts": "eleven_turbo_v2_5"},
+        "stages": {"tts": "complete", "render": "pending"},
+    }
+
+    validated = VideoArtifact.model_validate(payload)
+
+    assert validated.production == payload["production"]
+
+
+def test_unknown_outer_artifact_field_remains_forbidden():
+    artifact = VideoArtifact.new(
+        CreationRequest(audience="adults", mode="auto", idea="actually"),
+        "art_01",
+        datetime(2026, 8, 31, 12, 0, tzinfo=timezone.utc),
+    )
+    payload = artifact.model_dump()
+    payload["production_metadata"] = {}
+
+    with pytest.raises(ValidationError, match="extra_forbidden"):
+        VideoArtifact.model_validate(payload)

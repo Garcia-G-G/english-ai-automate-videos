@@ -156,6 +156,7 @@ class VideoArtifact(PersistedModel):
     resolved_profile: Dict[str, Any] = Field(default_factory=dict)
     scripts: List[Dict[str, Any]] = Field(default_factory=list)
     gates: List[Dict[str, Any]] = Field(default_factory=list)
+    production: Dict[str, Any] = Field(default_factory=dict)
     paths: ArtifactPaths = Field(default_factory=ArtifactPaths)
     costs: List[ArtifactCost] = Field(default_factory=list)
     events: List[ArtifactEvent] = Field(default_factory=list)
