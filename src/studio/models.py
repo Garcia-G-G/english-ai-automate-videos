@@ -33,6 +33,14 @@ class LearningLanguage(str, Enum):
     ENGLISH = "en"
 
 
+class RenderEngine(str, Enum):
+    V1 = "v1"
+    V2 = "v2"
+
+    def effective_for(self, video_type: Optional[str]) -> "RenderEngine":
+        return self if video_type == "educational" else RenderEngine.V1
+
+
 class ArtifactState(str, Enum):
     DRAFT = "draft"
     WRITING = "writing"
@@ -61,6 +69,7 @@ class CreationRequest(PersistedModel):
     market: Market = Market.YOUTUBE
     native_language: NativeLanguage = NativeLanguage.SPANISH
     learning_language: LearningLanguage = LearningLanguage.ENGLISH
+    render_engine: RenderEngine = RenderEngine.V1
     audience: Audience
     mode: CreationMode
     idea: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]

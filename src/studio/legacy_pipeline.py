@@ -206,6 +206,7 @@ class LegacyProductionGateway:
             video_type=canonical_script.get("type"),
             background=selected_background,
             native_language=canonical_profile["workspace"]["native_language"],
+            use_v2=artifact.request.render_engine.value == "v2",
         )
         produced_video = self._required_output(
             produced_video, artifact_dir, "video output"
@@ -222,6 +223,12 @@ class LegacyProductionGateway:
             "media_validation": {
                 **copy.deepcopy(video_probe),
                 **copy.deepcopy(frame_report),
+            },
+            "render_engine": {
+                "requested": artifact.request.render_engine.value,
+                "effective": artifact.request.render_engine.effective_for(
+                    canonical_script.get("type")
+                ).value,
             },
         }
         for field in ("duration", "segments"):

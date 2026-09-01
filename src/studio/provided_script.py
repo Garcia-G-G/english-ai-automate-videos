@@ -14,4 +14,11 @@ class ProvidedScriptAuthor:
         self._script = copy.deepcopy(script)
 
     def generate(self, request, profile) -> AuthorResult:
+        from script_schema import validate_script
+
+        validate_script(
+            copy.deepcopy(self._script),
+            video_type=request.video_type,
+            source="owner-supplied script",
+        )
         return AuthorResult(script=copy.deepcopy(self._script))

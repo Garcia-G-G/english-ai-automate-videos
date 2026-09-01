@@ -44,6 +44,7 @@ from .models import (
     LearningLanguage,
     Market,
     NativeLanguage,
+    RenderEngine,
     VideoArtifact,
 )
 from .profile_bundle import InvalidProfileBundle, resolve_profile_bundle
@@ -86,6 +87,7 @@ __all__ = [
     "ProductionGateway",
     "ProductionResult",
     "ProvidedScriptAuthor",
+    "RenderEngine",
     "RendererPresentation",
     "ScriptAuthor",
     "TopicScriptAuthor",

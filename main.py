@@ -481,7 +481,7 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
         workspace="youtube", audience="adults", idea=output_name,
         mode="directed", artifact_id=output_name, video_type=video_type,
         background=background, supplied_script=script_data, upload=upload,
-        dry_run=dry_run,
+        use_v2=use_v2, dry_run=dry_run,
     )
     return video
 
@@ -514,7 +514,7 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
         mode="directed", category=category, topic=topic_name,
         video_type=video_type, background=background,
         artifact_id=safe_artifact_name(topic_name), upload=upload,
-        dry_run=dry_run,
+        use_v2=use_v2, dry_run=dry_run,
     )
     return video
 
@@ -526,7 +526,7 @@ def get_creation_service(*, root=None, **dependencies):
 def run_creation(*, workspace, audience, idea, mode, root=None,
                  artifact_id=None, category=None, topic=None, video_type=None,
                  background=None, notes=None, supplied_script=None,
-                 upload=False, dry_run=False):
+                 upload=False, use_v2=False, dry_run=False):
     """Construct one typed request and delegate creation to Studio."""
     if dry_run:
         print(f"Dry run: planned {workspace}/{audience} creation; no artifact or paid call was made")
@@ -542,6 +542,7 @@ def run_creation(*, workspace, audience, idea, mode, root=None,
         market=market, native_language=native, learning_language=learning,
         audience=audience, mode=mode, idea=idea, category=category, topic=topic,
         video_type=video_type, background=background, notes=notes,
+        render_engine="v2" if use_v2 else "v1",
     )
     dependencies = {"root": Path(root or OUTPUT_DIR / "artifacts")}
     if supplied_script is not None:
@@ -684,7 +685,7 @@ Examples:
                 artifact, video = run_creation(
                     workspace=args.workspace, audience=audience, idea=topic_name,
                     mode="auto", video_type=args.type, background=args.background,
-                    upload=args.upload,
+                    upload=args.upload, use_v2=args.v2,
                 )
                 entry["artifact_id"] = artifact.artifact_id
                 entry["artifact_path"] = str(video) if video else None
@@ -722,6 +723,7 @@ Examples:
             idea=args.name or "supplied text", mode="directed",
             artifact_id=args.name, video_type=args.type, background=args.background,
             supplied_script=script, upload=args.upload,
+            use_v2=args.v2,
         )
         return
 
@@ -741,6 +743,7 @@ Examples:
             workspace=args.workspace, audience=audience, idea=name, mode="directed",
             artifact_id=name, video_type=video_type, background=args.background,
             supplied_script=script_data, upload=args.upload,
+            use_v2=args.v2,
         )
         return
 
@@ -750,6 +753,7 @@ Examples:
             workspace=args.workspace, audience=audience, idea=args.topic,
             mode="directed", category=args.category, topic=args.topic,
             video_type=args.type, background=args.background, upload=args.upload,
+            use_v2=args.v2,
         )
         return
 
@@ -758,7 +762,7 @@ Examples:
         run_creation(
             workspace=args.workspace, audience=audience, idea="automatic lesson",
             mode="auto", video_type=args.type, background=args.background,
-            upload=args.upload,
+            upload=args.upload, use_v2=args.v2,
         )
         return
 

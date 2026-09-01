@@ -344,6 +344,22 @@ def test_youtube_valid_result_persists_shared_media_facts(tmp_path):
     }
 
 
+def test_youtube_forwards_requested_engine_and_records_effective_fallback(tmp_path):
+    (tmp_path / "art_01").mkdir()
+    item = artifact().model_copy(deep=True)
+    item.request = item.request.model_copy(
+        update={"render_engine": type(item.request.render_engine)("v2")}
+    )
+    gateway, calls, _ = gateway_fakes(tmp_path)
+    result = gateway.produce(item, {"type": "quiz", "full_script": "hola"},
+                             bundle(), lambda *args: None)
+    render = next(call for call in calls if call[0] == "render")
+    assert render[-1]["use_v2"] is True
+    assert result.production["render_engine"] == {
+        "requested": "v2", "effective": "v1"
+    }
+
+
 def test_gateway_delegates_stages_in_order_and_forwards_monotonic_progress(tmp_path):
     artifact_dir = tmp_path / "art_01"
     artifact_dir.mkdir()
@@ -403,6 +419,7 @@ def test_gateway_paths_costs_and_available_metadata_are_exact(tmp_path):
             "width": 1080, "height": 1920, "frames": 75,
             "nonblank": True, "changing": True,
         },
+        "render_engine": {"requested": "v1", "effective": "v1"},
     }
 
 
