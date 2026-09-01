@@ -162,6 +162,16 @@ def test_native_gateway_uses_exact_voice_and_returns_contained_truthful_result(t
     assert render_call[1]["native_language"] == "zh-Hans"
     assert [p for _, p in progress] == sorted(p for _, p in progress)
     assert (artifact, script, profile) == originals
+    assert result.gates == []
+
+
+def test_bilibili_gateway_has_no_legacy_youtube_finalizer_boundary():
+    import inspect
+    import studio.bilibili_production as module
+
+    source = inspect.getsource(module)
+    assert "finalize_video" not in source
+    assert "outro" not in source
 
 
 def test_bilibili_forwards_v2_and_records_effective_engine(tmp_path):
