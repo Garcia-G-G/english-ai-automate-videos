@@ -7,8 +7,9 @@ import json
 from pathlib import Path
 from typing import Callable
 
-from .creation import AuthorFailure, AuthorResult, ProductionResult
-from .models import ArtifactCost, ArtifactPaths, CreationMode, Market
+from .creation import AuthorResult, ProductionResult
+from .editorial_costs import cost_delta, invoke_with_costs
+from .models import ArtifactPaths, CreationMode, Market
 
 
 def _random_topic(*, allowed_categories):
@@ -110,19 +111,13 @@ class TopicScriptAuthor:
             )
 
         tracker = self._tracker_getter()
-        cost_start = len(tracker.entries)
-        try:
-            script = self._generator(
+        script, costs = invoke_with_costs(
+            tracker,
+            lambda: self._generator(
                 category, copy.deepcopy(selected), video_type
-            )
-        except Exception as exc:
-            raise AuthorFailure(
-                exc, costs=_cost_delta(tracker, cost_start)
-            ) from exc
-        return AuthorResult(
-            script=script,
-            costs=_cost_delta(tracker, cost_start),
+            ),
         )
+        return AuthorResult(script=script, costs=costs)
 
 
 class LegacyProductionGateway:
@@ -214,7 +209,7 @@ class LegacyProductionGateway:
             if field in tts_metadata:
                 production[field] = copy.deepcopy(tts_metadata[field])
 
-        costs = _cost_delta(tracker, cost_start)
+        costs = cost_delta(tracker, cost_start)
         progress("production_complete", 100)
         return ProductionResult(
             paths=ArtifactPaths(
@@ -270,23 +265,3 @@ class LegacyProductionGateway:
         if not isinstance(value, dict):
             raise ValueError("TTS metadata output must contain an object")
         return value
-
-
-
-def _artifact_cost(entry: dict) -> ArtifactCost:
-    if not isinstance(entry, dict) or "cost_usd" not in entry:
-        raise ValueError("cost tracker returned invalid entry")
-    details = {
-        key: copy.deepcopy(value)
-        for key, value in entry.items()
-        if key not in {"api_type", "cost_usd", "timestamp"}
-    }
-    return ArtifactCost(
-        category=str(entry.get("api_type", "unknown")),
-        amount=entry["cost_usd"],
-        details=details,
-    )
-
-
-def _cost_delta(tracker, start: int) -> list[ArtifactCost]:
-    return [_artifact_cost(entry) for entry in tracker.entries[start:]]

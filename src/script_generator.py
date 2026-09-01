@@ -606,7 +606,26 @@ def build_prompt(category: str, topic: dict, video_type: str = "educational") ->
         raise ValueError(f"Unknown video type: {video_type}. Choose from: {VIDEO_TYPES}")
 
 
-def validate_and_clean_script(script: dict, video_type: str) -> dict:
+SPANISH_CLEANUP_POLICY = {
+    "countdown": ("Tres", "dos", "uno"),
+    "countdown_label": "Spanish",
+    "opening_marks": True,
+    "fallback_title": "Aprende inglés hoy 🦊",
+    "fallback_cta": "Sígueme para más tips de inglés 🦊",
+    "broad_hashtags": ("#LearnEnglish", "#AprendeIngles"),
+}
+
+ZH_HANS_CLEANUP_POLICY = {
+    "countdown": ("三", "二", "一"),
+    "countdown_label": "Simplified Chinese",
+    "opening_marks": False,
+    "fallback_title": "今天学一个实用英语表达",
+    "fallback_cta": "用今天的表达造一个真实句子。",
+    "broad_hashtags": ("#LearnEnglish", "#英语学习"),
+}
+
+
+def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None) -> dict:
     """
     Validate and clean generated script for TTS compatibility.
 
@@ -617,6 +636,8 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
     - Required fields are present
     """
     import re
+
+    policy = cleanup_policy or SPANISH_CLEANUP_POLICY
 
     errors = []
     warnings = []
@@ -792,15 +813,24 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
 
     # 5. Validate countdown for quiz/true_false
     if video_type in ["quiz", "true_false", "fill_blank"]:
-        spanish_countdown = any(x in full_script.lower() for x in ["tres", "dos", "uno"])
+        expected_countdown = any(
+            x.lower() in full_script.lower() for x in policy["countdown"]
+        )
         english_countdown = any(x in full_script.lower() for x in ["three", "two", "one"])
 
-        if english_countdown and not spanish_countdown:
-            warnings.append("Countdown is in English, should be Spanish (Tres, dos, uno)")
+        if english_countdown and not expected_countdown:
+            warnings.append(
+                "Countdown is in English, should be "
+                f"{policy['countdown_label']} ({', '.join(policy['countdown'])})"
+            )
             # Auto-fix
-            full_script = re.sub(r'\bthree\b', 'Tres', full_script, flags=re.IGNORECASE)
-            full_script = re.sub(r'\btwo\b', 'dos', full_script, flags=re.IGNORECASE)
-            full_script = re.sub(r'\bone\b', 'uno', full_script, flags=re.IGNORECASE)
+            for english, replacement in zip(
+                ("three", "two", "one"), policy["countdown"]
+            ):
+                full_script = re.sub(
+                    rf'\b{english}\b', replacement, full_script,
+                    flags=re.IGNORECASE,
+                )
 
     script["full_script"] = full_script.strip()
 
@@ -833,29 +863,30 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
             fixed.append(part)
         return ' '.join(fixed), n
 
-    total_marks = 0
-    for field in ("question", "statement", "sentence", "explanation",
-                  "hook", "full_script", "tip", "cta"):
-        value = script.get(field)
-        if isinstance(value, str) and value:
-            repaired, n = _add_opening_marks(value)
-            if n:
-                script[field] = repaired
-                total_marks += n
-    if total_marks:
-        warnings.append(
-            f"Added {total_marks} missing Spanish opening mark(s) (¿ / ¡)")
+    if policy["opening_marks"]:
+        total_marks = 0
+        for field in ("question", "statement", "sentence", "explanation",
+                      "hook", "full_script", "tip", "cta"):
+            value = script.get(field)
+            if isinstance(value, str) and value:
+                repaired, n = _add_opening_marks(value)
+                if n:
+                    script[field] = repaired
+                    total_marks += n
+        if total_marks:
+            warnings.append(
+                f"Added {total_marks} missing Spanish opening mark(s) (¿ / ¡)")
 
     # Ensure video_title exists
     if "video_title" not in script or not script.get("video_title"):
         fallback = script.get("hook") or script.get("question") or script.get("statement") or script.get("word", "")
-        script["video_title"] = fallback[:80] if fallback else "Aprende inglés hoy 🦊"
+        script["video_title"] = fallback[:80] if fallback else policy["fallback_title"]
         warnings.append("Generated fallback video_title from script content")
 
     # Ensure video_description exists
     if "video_description" not in script or not script.get("video_description"):
         title = script.get("video_title", "")
-        cta = script.get("cta", "Sígueme para más tips de inglés 🦊")
+        cta = script.get("cta", policy["fallback_cta"])
         script["video_description"] = f"{title}\n\n{cta}"
         warnings.append("Generated fallback video_description")
 
@@ -879,7 +910,7 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
         if name and name.lower() not in seen:
             seen.add(name.lower())
             deduped.append(f"#{name}")
-    for tag in ("#LearnEnglish", "#AprendeIngles"):
+    for tag in policy["broad_hashtags"]:
         if tag.lstrip("#").lower() not in seen:
             seen.add(tag.lstrip("#").lower())
             deduped.append(tag)
@@ -894,12 +925,41 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
 def generate_script(category: str, topic: dict, video_type: str = "educational") -> dict:
     """Call OpenAI API to generate a script."""
 
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        raise EnvironmentError("OPENAI_API_KEY environment variable not set. Add it to .env file.")
+    return generate_script_from_prompt(
+        category=category,
+        topic=topic,
+        video_type=video_type,
+        prompt=build_prompt(category, topic, video_type),
+        system_instruction=(
+            "You are an expert bilingual Spanish-English teacher creating viral "
+            "TikTok content. Always respond with valid JSON only."
+        ),
+    )
 
-    client = OpenAI(api_key=api_key)
-    prompt = build_prompt(category, topic, video_type)
+
+def generate_script_from_prompt(
+    category: str,
+    topic: dict,
+    video_type: str,
+    prompt: str,
+    system_instruction: str,
+    *,
+    client=None,
+    cleanup_policy=None,
+    duplicate_options_instruction=(
+        "IMPORTANTE: Las 4 opciones A, B, C, D de CADA pregunta DEBEN ser palabras "
+        "COMPLETAMENTE DIFERENTES. No repitas ninguna opción."
+    ),
+) -> dict:
+    """Invoke, parse, clean, and validate one script with caller-owned policy."""
+
+    if client is None:
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            raise EnvironmentError(
+                "OPENAI_API_KEY environment variable not set. Add it to .env file."
+            )
+        client = OpenAI(api_key=api_key)
 
     logger.info(f"Calling OpenAI API ({MODEL}) for {video_type} video...")
 
@@ -908,7 +968,7 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
         max_tokens=MAX_TOKENS,
         temperature=0.7,  # Slightly creative but consistent
         messages=[
-            {"role": "system", "content": "You are an expert bilingual Spanish-English teacher creating viral TikTok content. Always respond with valid JSON only."},
+            {"role": "system", "content": system_instruction},
             {"role": "user", "content": prompt}
         ]
     )
@@ -962,7 +1022,7 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
         if has_duplicates:
             logger.info("Regenerating with different options...")
             # Retry once with explicit instruction
-            retry_prompt = prompt + "\n\nIMPORTANTE: Las 4 opciones A, B, C, D de CADA pregunta DEBEN ser palabras COMPLETAMENTE DIFERENTES. No repitas ninguna opción."
+            retry_prompt = prompt + "\n\n" + duplicate_options_instruction
             retry_response = client.chat.completions.create(
                 model=MODEL,
                 max_tokens=MAX_TOKENS,
@@ -989,7 +1049,9 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
     }
 
     # Validate and clean script for TTS compatibility
-    script = validate_and_clean_script(script, video_type)
+    script = validate_and_clean_script(
+        script, video_type, cleanup_policy=cleanup_policy
+    )
 
     if script.get("_validation_errors"):
         logger.warning(f"Script validation errors: {script['_validation_errors']}")
