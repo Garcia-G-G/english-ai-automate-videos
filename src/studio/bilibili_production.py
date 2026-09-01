@@ -136,6 +136,7 @@ class BilibiliProductionGateway:
             video_type=canonical_script.get("type"), background=selected,
             font_path=font_path,
             native_language=canonical_profile["workspace"]["native_language"],
+            use_v2=artifact.request.render_engine.value == "v2",
         )
         produced_video = self._required(produced_video, artifact_dir, "video")
         video_probe = self._media_probe(produced_video)
@@ -160,6 +161,12 @@ class BilibiliProductionGateway:
                 "voice_locale": "zh-Hans",
                 "subtitle_languages": ["zh-Hans", "en"],
                 "font": font_path,
+                "render_engine": {
+                    "requested": artifact.request.render_engine.value,
+                    "effective": artifact.request.render_engine.effective_for(
+                        canonical_script.get("type")
+                    ).value,
+                },
                 "media_validation": {**copy.deepcopy(video_probe), **copy.deepcopy(frame_report)},
             },
         )

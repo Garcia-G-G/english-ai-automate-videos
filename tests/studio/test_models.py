@@ -12,6 +12,7 @@ from studio.models import (
     LearningLanguage,
     Market,
     NativeLanguage,
+    RenderEngine,
     VideoArtifact,
 )
 
@@ -51,6 +52,18 @@ def test_legacy_request_defaults_to_youtube_spanish_workspace():
     assert dumped["market"] is Market.YOUTUBE
     assert dumped["native_language"] is NativeLanguage.SPANISH
     assert dumped["learning_language"] is LearningLanguage.ENGLISH
+    assert request.render_engine is RenderEngine.V1
+
+
+def test_creation_request_has_strict_serialized_renderer_selection():
+    request = CreationRequest(
+        audience="adults", mode="auto", idea="actually", render_engine="v2"
+    )
+    assert request.render_engine is RenderEngine.V2
+    assert request.model_dump(mode="json")["render_engine"] == "v2"
+    with pytest.raises(ValidationError, match="render_engine"):
+        CreationRequest(audience="adults", mode="auto", idea="actually",
+                        render_engine="future")
 
 
 @pytest.mark.parametrize("audience", ["adults", "children"])

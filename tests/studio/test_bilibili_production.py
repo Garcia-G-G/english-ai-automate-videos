@@ -164,6 +164,22 @@ def test_native_gateway_uses_exact_voice_and_returns_contained_truthful_result(t
     assert (artifact, script, profile) == originals
 
 
+def test_bilibili_forwards_v2_and_records_effective_engine(tmp_path):
+    (tmp_path / "art_bili").mkdir()
+    item = _artifact().model_copy(deep=True)
+    item.request = item.request.model_copy(
+        update={"render_engine": type(item.request.render_engine)("v2")}
+    )
+    gateway, calls = _gateway(tmp_path)
+    result = gateway.produce(item, {"type": "educational", "full_script": "你好 hello"},
+                             _profile(), lambda *args: None)
+    render = next(call for call in calls if call[0] == "render")
+    assert render[1]["use_v2"] is True
+    assert result.production["render_engine"] == {
+        "requested": "v2", "effective": "v2"
+    }
+
+
 def test_profile_mismatch_and_escaped_background_fail_before_tts(tmp_path):
     (tmp_path / "art_bili").mkdir()
     gateway, calls = _gateway(tmp_path)

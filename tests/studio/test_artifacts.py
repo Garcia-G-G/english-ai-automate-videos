@@ -163,6 +163,18 @@ def test_save_updates_existing_artifact_and_does_not_append_events(tmp_path):
     assert loaded.events == artifact.events
 
 
+def test_renderer_selection_round_trips_in_schema_v2_artifact(tmp_path):
+    repo = ArtifactRepository(tmp_path)
+    artifact = make_artifact()
+    artifact.request = artifact.request.model_copy(
+        update={"render_engine": type(artifact.request.render_engine)("v2")}
+    )
+    repo.create(artifact)
+    loaded = repo.load("art_01")
+    assert loaded.schema_version == 2
+    assert loaded.request.render_engine.value == "v2"
+
+
 def test_save_never_creates_missing_artifact(tmp_path):
     repo = ArtifactRepository(tmp_path)
 
