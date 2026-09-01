@@ -14,6 +14,8 @@ from studio.artifacts import (
     InvalidArtifactId,
 )
 from studio.creation import (
+    AuthorFailure,
+    AuthorResult,
     CreationService,
     ProductionGateway,
     ProductionResult,
@@ -111,13 +113,14 @@ class RecordingRepository(ArtifactRepository):
 
 
 class RecordingAuthor:
-    def __init__(self, *, result=None, error=None, mutate=False, log=None):
+    def __init__(self, *, result=None, error=None, costs=None, mutate=False, log=None):
         self.result = result or {
             "type": "educational",
             "full_script": "A valid generated lesson",
             "examples": ["That is actually useful."],
         }
         self.error = error
+        self.costs = costs or []
         self.mutate = mutate
         self.log = log
         self.calls = []
@@ -131,7 +134,9 @@ class RecordingAuthor:
             profile["audience"]["lessons"].append("mutated by author")
         if self.error:
             raise self.error
-        return self.result
+        if type(self.result) is not dict:
+            return self.result
+        return AuthorResult(script=self.result, costs=self.costs)
 
 
 class RecordingProducer:
@@ -210,6 +215,149 @@ def test_public_protocols_and_successful_orchestration(tmp_path):
     assert result.state.value == "ready_for_review"
     assert result == repository.load("safe_explicit_id")
     assert result.artifact_id == "safe_explicit_id"
+
+
+def test_author_result_persists_editorial_cost_before_production_cost(tmp_path):
+    editorial = ArtifactCost(
+        category="openai_chat",
+        amount=0.012,
+        details={"label": "script_educational"},
+    )
+    author = RecordingAuthor()
+    author.generate = lambda request, profile: AuthorResult(
+        script={"type": "educational", "full_script": "costed lesson"},
+        costs=[editorial],
+    )
+    service, repository, _, _ = make_service(tmp_path, author=author)
+
+    result = service.create(youtube_request(), artifact_id="art_author_cost")
+
+    assert [cost.category for cost in result.costs] == ["openai_chat", "tts"]
+    script_checkpoint = repository.snapshots[3]
+    assert script_checkpoint.scripts == [
+        {"type": "educational", "full_script": "costed lesson"}
+    ]
+    assert script_checkpoint.costs == [editorial]
+    assert repository.snapshots[2].costs == []
+
+
+def test_author_result_is_strict_and_has_independent_cost_defaults():
+    first = AuthorResult(script={"full_script": "one"})
+    second = AuthorResult(script={"full_script": "two"})
+
+    first.costs.append(ArtifactCost(category="openai_chat", amount=0.01))
+
+    assert second.costs == []
+    with pytest.raises(ValidationError, match="extra_forbidden"):
+        AuthorResult(script={}, unexpected=True)
+
+
+def test_charged_author_failure_persists_cost_and_original_error(tmp_path):
+    cause = ValueError("generated JSON was invalid")
+    editorial = ArtifactCost(category="openai_chat", amount=0.02)
+
+    class ChargedFailureAuthor:
+        def generate(self, request, profile):
+            raise AuthorFailure(cause, costs=[editorial])
+
+    producer = RecordingProducer()
+    service, repository, _, _ = make_service(
+        tmp_path, author=ChargedFailureAuthor(), producer=producer
+    )
+
+    result = service.create(youtube_request(), artifact_id="art_charged_failure")
+
+    assert result.state.value == "blocked_editorial"
+    assert result.costs == [editorial]
+    assert result.error == "ValueError: generated JSON was invalid"
+    assert result.events[-1].reason == (
+        "editorial_failed: ValueError: generated JSON was invalid"
+    )
+    assert repository.snapshots[-2].state.value == "writing"
+    assert repository.snapshots[-2].costs == [editorial]
+    assert producer.calls == []
+
+
+def test_author_checkpoint_repository_failure_propagates_without_partial_costs(tmp_path):
+    failure = ArtifactWriteError("author checkpoint failed")
+    repository = RecordingRepository(
+        tmp_path, fail_save_number=3, failure=failure
+    )
+    author = RecordingAuthor()
+    author.generate = lambda request, profile: AuthorResult(
+        script={"full_script": "charged lesson"},
+        costs=[ArtifactCost(category="openai_chat", amount=0.03)],
+    )
+    service, _, _, _ = make_service(
+        tmp_path, repository=repository, author=author
+    )
+
+    with pytest.raises(ArtifactWriteError) as raised:
+        service.create(youtube_request(), artifact_id="art_author_write_failure")
+
+    assert raised.value is failure
+    durable = repository.load("art_author_write_failure")
+    assert durable.scripts == []
+    assert durable.costs == []
+    assert durable.state.value == "writing"
+
+
+def test_malformed_author_ledger_blocks_without_corrupting_profile_checkpoint(tmp_path):
+    from studio.legacy_pipeline import TopicScriptAuthor
+
+    tracker = type("MalformedTracker", (), {"entries": []})()
+
+    def generate(*args):
+        tracker.entries.append({"api_type": "openai_chat"})
+        return {"full_script": "cannot attribute cost"}
+
+    author = TopicScriptAuthor(
+        random_topic=lambda **kwargs: ("travel", {"topic": "hotel"}),
+        generator=generate,
+        tracker_getter=lambda: tracker,
+    )
+    service, repository, _, producer = make_service(tmp_path, author=author)
+
+    result = service.create(youtube_request(), artifact_id="art_malformed_cost")
+
+    assert result.state.value == "blocked_editorial"
+    assert result.error == "ValueError: cost tracker returned invalid entry"
+    assert result.scripts == []
+    assert result.costs == []
+    assert repository.snapshots[-2].resolved_profile == profile_for(youtube_request())
+    assert repository.load("art_malformed_cost") == result
+    assert producer.calls == []
+
+
+def test_repeated_artifact_ids_receive_only_their_author_invocation_cost(tmp_path):
+    from studio.legacy_pipeline import TopicScriptAuthor
+
+    tracker = type("SharedTracker", (), {"entries": []})()
+    amounts = iter([0.011, 0.022])
+
+    def generate(*args):
+        tracker.entries.append({
+            "api_type": "openai_chat",
+            "cost_usd": next(amounts),
+            "label": "script",
+            "video_id": "shared_session",
+        })
+        return {"full_script": "lesson"}
+
+    author = TopicScriptAuthor(
+        random_topic=lambda **kwargs: ("travel", {"topic": "hotel"}),
+        generator=generate,
+        tracker_getter=lambda: tracker,
+    )
+    service, repository, _, _ = make_service(tmp_path, author=author)
+
+    first = service.create(youtube_request(), artifact_id="art_cost_one")
+    second = service.create(youtube_request(), artifact_id="art_cost_two")
+
+    assert [cost.amount for cost in first.costs] == [0.011, 0.25]
+    assert [cost.amount for cost in second.costs] == [0.022, 0.25]
+    assert repository.load("art_cost_one") == first
+    assert repository.load("art_cost_two") == second
 
 
 def test_every_success_checkpoint_is_a_distinct_persisted_snapshot(tmp_path):
@@ -476,7 +624,11 @@ EDITORIAL_FAILURES = [
     ("profile_exception", RuntimeError("profile unavailable"), "RuntimeError: profile unavailable"),
     ("profile_non_dict", ["not", "dict"], "TypeError: profile_resolver must return dict"),
     ("author_exception", RuntimeError("author unavailable"), "RuntimeError: author unavailable"),
-    ("author_non_dict", ["not", "dict"], "TypeError: author.generate must return dict"),
+    (
+        "author_non_result",
+        ["not", "result"],
+        "TypeError: author.generate must return AuthorResult",
+    ),
 ]
 
 

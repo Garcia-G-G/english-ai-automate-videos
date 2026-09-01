@@ -33,7 +33,7 @@ _COMPATIBILITY_GATE = {
 
 @runtime_checkable
 class ScriptAuthor(Protocol):
-    def generate(self, request: CreationRequest, profile: dict) -> dict:
+    def generate(self, request: CreationRequest, profile: dict) -> "AuthorResult":
         """Generate one script for a resolved creation request."""
 
 
@@ -57,6 +57,24 @@ class ProductionResult(BaseModel):
     paths: ArtifactPaths = Field(default_factory=ArtifactPaths)
     costs: List[ArtifactCost] = Field(default_factory=list)
     production: dict = Field(default_factory=dict)
+
+
+class AuthorResult(BaseModel):
+    """Strict script and invocation costs returned by a script author."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    script: dict
+    costs: List[ArtifactCost] = Field(default_factory=list)
+
+
+class AuthorFailure(Exception):
+    """An author failure carrying costs incurred before its original cause."""
+
+    def __init__(self, cause: Exception, *, costs: Optional[List[ArtifactCost]] = None):
+        self.cause = cause
+        self.costs = [cost.model_copy(deep=True) for cost in (costs or [])]
+        super().__init__(str(cause))
 
 
 def _utc_now() -> datetime:
@@ -138,14 +156,32 @@ class CreationService:
                 copy.deepcopy(request),
                 copy.deepcopy(profile),
             )
-            if type(generated) is not dict:
-                raise TypeError("author.generate must return dict")
+            if not isinstance(generated, AuthorResult):
+                raise TypeError("author.generate must return AuthorResult")
+        except AuthorFailure as failure:
+            if failure.costs:
+                artifact = artifact.model_copy(
+                    update={
+                        "costs": [
+                            *artifact.costs,
+                            *(cost.model_copy(deep=True) for cost in failure.costs),
+                        ]
+                    }
+                )
+                self.repository.save(artifact)
+            return self._editorial_failure(artifact, failure.cause)
         except Exception as exc:
             return self._editorial_failure(artifact, exc)
 
-        script = copy.deepcopy(generated)
+        script = copy.deepcopy(generated.script)
         artifact = artifact.model_copy(
-            update={"scripts": [*artifact.scripts, copy.deepcopy(script)]}
+            update={
+                "scripts": [*artifact.scripts, copy.deepcopy(script)],
+                "costs": [
+                    *artifact.costs,
+                    *(cost.model_copy(deep=True) for cost in generated.costs),
+                ],
+            }
         )
         self.repository.save(artifact)
 

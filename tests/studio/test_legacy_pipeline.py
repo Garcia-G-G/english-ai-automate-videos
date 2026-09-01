@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from studio.creation import ProductionGateway, ScriptAuthor
+from studio.creation import AuthorFailure, AuthorResult, ProductionGateway, ScriptAuthor
 from studio.models import CreationRequest, VideoArtifact
 
 
@@ -51,6 +51,13 @@ def artifact(artifact_id="art_01", **request_values):
     return VideoArtifact.new(request(**request_values), artifact_id, NOW)
 
 
+class Tracker:
+    def __init__(self):
+        self.entries = [
+            {"api_type": "old", "cost_usd": 9.0, "label": "earlier", "video_id": "old"}
+        ]
+
+
 def test_auto_author_delegates_selection_and_generation_once():
     calls = []
     topic = {"english": "actually", "gloss": "en realidad"}
@@ -65,7 +72,9 @@ def test_auto_author_delegates_selection_and_generation_once():
 
     from studio.legacy_pipeline import TopicScriptAuthor
 
-    author = TopicScriptAuthor(random_topic=select, generator=generate)
+    author = TopicScriptAuthor(
+        random_topic=select, generator=generate, tracker_getter=Tracker
+    )
     result = author.generate(request(), bundle())
 
     assert isinstance(author, ScriptAuthor)
@@ -73,8 +82,8 @@ def test_auto_author_delegates_selection_and_generation_once():
         ("select", ["false_friends", "travel"]),
         ("generate", "false_friends", topic, "educational"),
     ]
-    assert result["full_script"] == "¡Úsalo así!"
-    assert result["examples"] == ["你好"]
+    assert result.script["full_script"] == "¡Úsalo así!"
+    assert result.script["examples"] == ["你好"]
 
 
 def test_directed_author_delegates_exact_topic_and_type_once():
@@ -91,7 +100,9 @@ def test_directed_author_delegates_exact_topic_and_type_once():
 
     from studio.legacy_pipeline import TopicScriptAuthor
 
-    author = TopicScriptAuthor(topic_finder=find, generator=generate)
+    author = TopicScriptAuthor(
+        topic_finder=find, generator=generate, tracker_getter=Tracker
+    )
     result = author.generate(
         request(mode="directed", category="travel", topic="airport", video_type="quiz"),
         bundle(),
@@ -101,7 +112,108 @@ def test_directed_author_delegates_exact_topic_and_type_once():
         ("find", "travel", "airport"),
         ("generate", "travel", selected, "quiz"),
     ]
-    assert result == {"full_script": "¿Dónde está la puerta?"}
+    assert result == AuthorResult(script={"full_script": "¿Dónde está la puerta?"})
+
+
+def test_author_cost_delta_excludes_prior_entries_and_preserves_new_entry():
+    tracker = Tracker()
+
+    def generate(*args):
+        tracker.entries.append({
+            "api_type": "openai_chat",
+            "model": "gpt-4o-mini",
+            "cost_usd": 0.004,
+            "label": "script_educational",
+            "video_id": "session",
+            "prompt_tokens": 10,
+        })
+        return {"full_script": "costed"}
+
+    from studio.legacy_pipeline import TopicScriptAuthor
+
+    result = TopicScriptAuthor(
+        random_topic=lambda **kwargs: ("travel", {"topic": "hotel"}),
+        generator=generate,
+        tracker_getter=lambda: tracker,
+    ).generate(request(), bundle())
+
+    assert [cost.model_dump() for cost in result.costs] == [{
+        "category": "openai_chat",
+        "amount": 0.004,
+        "currency": "USD",
+        "details": {
+            "model": "gpt-4o-mini", "label": "script_educational",
+            "video_id": "session", "prompt_tokens": 10,
+        },
+    }]
+
+
+def test_author_failure_carries_delta_and_original_cause():
+    tracker = Tracker()
+    cause = ValueError("invalid generated JSON")
+
+    def generate(*args):
+        tracker.entries.append({
+            "api_type": "openai_chat", "cost_usd": 0.006,
+            "label": "script", "video_id": "session",
+        })
+        raise cause
+
+    from studio.legacy_pipeline import TopicScriptAuthor
+
+    author = TopicScriptAuthor(
+        random_topic=lambda **kwargs: ("travel", {"topic": "hotel"}),
+        generator=generate,
+        tracker_getter=lambda: tracker,
+    )
+    with pytest.raises(AuthorFailure) as raised:
+        author.generate(request(), bundle())
+
+    assert raised.value.cause is cause
+    assert [cost.amount for cost in raised.value.costs] == [0.006]
+
+
+def test_malformed_author_cost_fails_visibly():
+    tracker = Tracker()
+
+    def generate(*args):
+        tracker.entries.append({"api_type": "openai_chat"})
+        return {"full_script": "not safely attributable"}
+
+    from studio.legacy_pipeline import TopicScriptAuthor
+
+    author = TopicScriptAuthor(
+        random_topic=lambda **kwargs: ("travel", {"topic": "hotel"}),
+        generator=generate,
+        tracker_getter=lambda: tracker,
+    )
+    with pytest.raises(ValueError, match="cost tracker returned invalid entry"):
+        author.generate(request(), bundle())
+
+
+def test_repeated_author_calls_do_not_leak_costs():
+    tracker = Tracker()
+    amounts = iter([0.01, 0.02])
+
+    def generate(*args):
+        tracker.entries.append({
+            "api_type": "openai_chat", "cost_usd": next(amounts),
+            "label": "script", "video_id": "session",
+        })
+        return {"full_script": "lesson"}
+
+    from studio.legacy_pipeline import TopicScriptAuthor
+
+    author = TopicScriptAuthor(
+        random_topic=lambda **kwargs: ("travel", {"topic": "hotel"}),
+        generator=generate,
+        tracker_getter=lambda: tracker,
+    )
+    first = author.generate(request(idea="first"), bundle())
+    second = author.generate(request(idea="second"), bundle())
+
+    assert [cost.amount for cost in first.costs] == [0.01]
+    assert [cost.amount for cost in second.costs] == [0.02]
 
 
 @pytest.mark.parametrize("audience", ["adults", "children"])
@@ -120,7 +232,9 @@ def test_youtube_author_uses_nested_audience_profile_without_kids_leakage(audien
 
     profile = bundle(audience)
     original = copy.deepcopy(profile)
-    TopicScriptAuthor(random_topic=select, generator=generate).generate(
+    TopicScriptAuthor(
+        random_topic=select, generator=generate, tracker_getter=Tracker
+    ).generate(
         request(audience=audience), profile
     )
 
@@ -138,18 +252,12 @@ def test_bilibili_author_fails_before_selection_or_generation(audience):
         random_topic=lambda **kwargs: calls.append("select"),
         topic_finder=lambda *args: calls.append("find"),
         generator=lambda *args: calls.append("generate"),
+        tracker_getter=lambda: calls.append("tracker"),
     )
 
     with pytest.raises(ValueError, match="unsupported workspace.*bilibili.*zh-Hans"):
         author.generate(request(market="bilibili", audience=audience), bundle(audience))
     assert calls == []
-
-
-class Tracker:
-    def __init__(self):
-        self.entries = [
-            {"api_type": "old", "cost_usd": 9.0, "label": "earlier", "video_id": "old"}
-        ]
 
 
 def gateway_fakes(tmp_path, *, background="static_midnight"):
