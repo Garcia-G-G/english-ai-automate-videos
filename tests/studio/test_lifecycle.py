@@ -312,3 +312,27 @@ def test_schema_workspace_and_lineage_survive_transition():
     assert changed.schema_version == 2
     assert changed.request == original.request
     assert changed.lineage == original.lineage
+
+
+def test_transition_preserves_production_metadata_unchanged():
+    original = artifact_in_state().model_copy(
+        update={
+            "production": {
+                "background": {"selection_reason": "least_recently_used"},
+                "scrim": {"opacity": 0.25},
+                "stages": {"tts": "complete"},
+            }
+        }
+    )
+
+    changed = transition(
+        original,
+        "writing",
+        actor="system",
+        reason="start",
+        now=LATER,
+    )
+
+    assert changed.production == original.production
+    assert changed.model_dump()["production"] == original.model_dump()["production"]
+    assert len(changed.events) == len(original.events) + 1

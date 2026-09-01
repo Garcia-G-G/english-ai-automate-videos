@@ -108,6 +108,35 @@ def test_create_writes_utf8_final_newline_and_round_trips(tmp_path):
     assert repo.load("bili_01") == artifact
 
 
+def test_repository_round_trip_preserves_nested_production_metadata(tmp_path):
+    repo = ArtifactRepository(tmp_path)
+    metadata = {
+        "background": {"selection_reason": "避免近期重复", "recently_used": False},
+        "scrim": {"opacity": 0.32, "target": "字幕区域"},
+        "render": {"version": "render-v2", "settings": {"fps": 30}},
+        "stages": {"audio": "complete", "video": "pending"},
+    }
+    artifact = make_artifact("bili_production", chinese=True).model_copy(
+        update={"production": metadata}
+    )
+
+    repo.create(artifact)
+
+    assert repo.load("bili_production").production == metadata
+
+
+def test_schema_v2_payload_without_production_loads_empty_mapping(tmp_path):
+    artifact = make_artifact("legacy_v2")
+    payload = json.loads(artifact.model_dump_json())
+    payload.pop("production", None)
+    write_payload(tmp_path, "legacy_v2", json.dumps(payload))
+
+    loaded = ArtifactRepository(tmp_path).load("legacy_v2")
+
+    assert loaded.schema_version == 2
+    assert loaded.production == {}
+
+
 def test_create_atomically_claims_identity_without_overwriting(tmp_path):
     claimed = tmp_path / "art_01"
     claimed.mkdir()
