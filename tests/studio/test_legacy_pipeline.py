@@ -273,7 +273,11 @@ def gateway_fakes(tmp_path, *, background="static_midnight"):
         audio_path.write_bytes(b"audio")
         metadata = audio_path.with_suffix(".json")
         metadata.write_text(
-            json.dumps({"duration": 2.5, "words": [{"word": "hola"}], "segments": []}),
+            json.dumps({
+                "duration": 2.5,
+                "words": [{"word": "hola", "start": 0.0, "end": 2.5}],
+                "segments": [{"text": "hola", "start": 0.0, "end": 2.5}],
+            }),
             encoding="utf-8",
         )
         tracker.entries.append(
@@ -308,7 +312,36 @@ def gateway_fakes(tmp_path, *, background="static_midnight"):
     gateway._merge_script_into_tts = merge
     gateway._resolve_background = resolve
     gateway._render_video = render
+    gateway._media_probe = lambda path: (
+        {"duration": 2.5, "audio_streams": 1, "video_streams": 0}
+        if Path(path).suffix == ".mp3" else
+        {"duration": 2.5, "audio_streams": 1, "video_streams": 1,
+         "width": 1080, "height": 1920, "frames": 75}
+    )
+    gateway._frame_probe = lambda path: {"nonblank": True, "changing": True}
     return gateway, calls, tracker
+
+
+def test_youtube_zero_duration_audio_fails_before_background_and_render(tmp_path):
+    (tmp_path / "art_01").mkdir()
+    gateway, calls, _ = gateway_fakes(tmp_path)
+    gateway._media_probe = lambda path: {"duration": 0.0}
+    with pytest.raises(ValueError, match="audio duration"):
+        gateway.produce(artifact(), {"type": "educational", "full_script": "hola"},
+                        bundle(), lambda *args: None)
+    assert [call[0] for call in calls] == ["tracker", "tts", "merge"]
+
+
+def test_youtube_valid_result_persists_shared_media_facts(tmp_path):
+    (tmp_path / "art_01").mkdir()
+    gateway, _, _ = gateway_fakes(tmp_path)
+    result = gateway.produce(artifact(), {"type": "educational", "full_script": "hola"},
+                             bundle(), lambda *args: None)
+    assert result.production["media_validation"] == {
+        "duration": 2.5, "audio_streams": 1, "video_streams": 1,
+        "width": 1080, "height": 1920, "frames": 75,
+        "nonblank": True, "changing": True,
+    }
 
 
 def test_gateway_delegates_stages_in_order_and_forwards_monotonic_progress(tmp_path):
@@ -364,7 +397,12 @@ def test_gateway_paths_costs_and_available_metadata_are_exact(tmp_path):
         "video_type": "quiz",
         "tts_metadata": "audio/narration.json",
         "duration": 2.5,
-        "segments": [],
+        "segments": [{"text": "hola", "start": 0.0, "end": 2.5}],
+        "media_validation": {
+            "duration": 2.5, "audio_streams": 1, "video_streams": 1,
+            "width": 1080, "height": 1920, "frames": 75,
+            "nonblank": True, "changing": True,
+        },
     }
 
 

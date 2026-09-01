@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import subprocess
 from pathlib import Path
 
@@ -10,7 +11,7 @@ from pathlib import Path
 def probe_media(path: Path) -> dict:
     completed = subprocess.run(
         [
-            "ffprobe", "-v", "error", "-show_streams", "-show_format",
+            "ffprobe", "-v", "error", "-count_frames", "-show_streams", "-show_format",
             "-of", "json", str(path),
         ],
         capture_output=True,
@@ -23,7 +24,9 @@ def probe_media(path: Path) -> dict:
     streams = payload.get("streams") or []
     video = next((stream for stream in streams if stream.get("codec_type") == "video"), {})
     duration = payload.get("format", {}).get("duration") or video.get("duration") or 0
-    frames = video.get("nb_frames") or 0
+    declared_frames = video.get("nb_frames")
+    counted_frames = video.get("nb_read_frames")
+    frames = counted_frames if str(counted_frames).isdigit() else declared_frames
     return {
         "duration": float(duration),
         "audio_streams": sum(stream.get("codec_type") == "audio" for stream in streams),
@@ -31,6 +34,9 @@ def probe_media(path: Path) -> dict:
         "width": int(video.get("width") or 0),
         "height": int(video.get("height") or 0),
         "frames": int(frames) if str(frames).isdigit() else 0,
+        "declared_frames": (
+            int(declared_frames) if str(declared_frames).isdigit() else None
+        ),
     }
 
 
@@ -62,20 +68,34 @@ def validate_timing(metadata: dict, audio_probe: dict) -> None:
     probed = float(audio_probe.get("duration") or 0)
     if duration <= 0 or probed <= 0:
         raise ValueError("audio duration must be positive")
+    if int(audio_probe.get("audio_streams") or 0) < 1:
+        raise ValueError("audio probe must contain an audio stream")
     if abs(duration - probed) > max(0.25, duration * 0.05):
         raise ValueError("audio metadata duration disagrees with probed duration")
     words = metadata.get("words")
     segments = metadata.get("segments")
     if not isinstance(words, list) or not words or not isinstance(segments, list) or not segments:
         raise ValueError("timing data must contain non-empty words and segments")
-    previous = -1.0
-    for item in words:
-        if not isinstance(item, dict):
-            raise ValueError("timing word must be an object")
-        start, end = float(item.get("start", -1)), float(item.get("end", -1))
-        if start < previous or end < start or end > duration + 0.25:
-            raise ValueError("timing data must be monotonic")
-        previous = end
+    for collection, content_field in ((words, "word"), (segments, "text")):
+        previous = -1.0
+        for item in collection:
+            if not isinstance(item, dict) or not isinstance(item.get(content_field), str):
+                raise ValueError("timing entry must contain text and numeric bounds")
+            try:
+                start = float(item["start"])
+                end = float(item["end"])
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError("timing entry must contain text and numeric bounds") from exc
+            if (
+                not math.isfinite(start)
+                or not math.isfinite(end)
+                or start < 0
+                or start < previous
+                or end < start
+                or end > duration + 0.25
+            ):
+                raise ValueError("timing data must be monotonic and in range")
+            previous = end
 
 
 def validate_video(probe: dict, frames: dict, expected_duration: float) -> None:
