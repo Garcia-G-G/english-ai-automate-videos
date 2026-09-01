@@ -973,16 +973,7 @@ def generate_script_from_prompt(
         ]
     )
 
-    # Track cost
-    try:
-        from cost_tracker import get_tracker
-        if hasattr(response, 'usage') and response.usage:
-            get_tracker().log_openai_chat(
-                prompt_tokens=response.usage.prompt_tokens,
-                completion_tokens=response.usage.completion_tokens,
-                model=MODEL, label=f"script_{video_type}")
-    except Exception:
-        pass
+    _record_response_usage(response, video_type)
 
     response_text = response.choices[0].message.content.strip()
 
@@ -1028,6 +1019,7 @@ def generate_script_from_prompt(
                 max_tokens=MAX_TOKENS,
                 messages=[{"role": "user", "content": retry_prompt}]
             )
+            _record_response_usage(retry_response, video_type)
             retry_text = retry_response.choices[0].message.content.strip()
             try:
                 if "```json" in retry_text:
@@ -1036,7 +1028,7 @@ def generate_script_from_prompt(
                     retry_text = retry_text.split("```")[1].split("```")[0].strip()
                 script = json.loads(retry_text)
                 script["type"] = video_type
-            except:
+            except Exception:
                 logger.warning("Retry failed, using original")
 
     # Add metadata
@@ -1090,6 +1082,19 @@ def generate_script_from_prompt(
             len(dropped), video_type, ", ".join(dropped))
 
     return script
+
+
+def _record_response_usage(response, video_type: str) -> None:
+    """Record one completed model attempt, including retry attempts."""
+    try:
+        from cost_tracker import get_tracker
+        if hasattr(response, 'usage') and response.usage:
+            get_tracker().log_openai_chat(
+                prompt_tokens=response.usage.prompt_tokens,
+                completion_tokens=response.usage.completion_tokens,
+                model=MODEL, label=f"script_{video_type}")
+    except Exception:
+        pass
 
 
 def save_script(script: dict, name: str) -> Path:
