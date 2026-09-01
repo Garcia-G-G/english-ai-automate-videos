@@ -297,9 +297,13 @@ def _draw_countdown_number(
 def create_frame_true_false(
     t: float,
     data: Dict,
-    duration: float
+    duration: float,
+    presentation=None,
 ) -> np.ndarray:
     """Create frame for true/false video type with card-based modern design."""
+    if presentation is None:
+        from studio.renderer_presentation import resolve_presentation
+        presentation = resolve_presentation("es")
     frame, draw = create_base_frame(t)
 
     # No defaults. `correct` defaulting to True was the worst of the set:
@@ -420,8 +424,8 @@ def create_frame_true_false(
         # carry it by CORRECTNESS. These used to be fixed to the option, so a
         # video whose answer was FALSO showed the right answer with a cross on
         # it and the wrong one with a tick.
-        true_label = "VERDADERO"
-        false_label = "FALSO"
+        true_label = presentation.true_label
+        false_label = presentation.false_label
         if show_answer:
             true_label = ("\u2713 " if correct else "\u2717 ") + true_label
             false_label = ("\u2717 " if correct else "\u2713 ") + false_label

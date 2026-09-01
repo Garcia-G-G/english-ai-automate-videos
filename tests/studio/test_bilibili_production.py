@@ -158,6 +158,8 @@ def test_native_gateway_uses_exact_voice_and_returns_contained_truthful_result(t
     assert result.production["voice_id"] == "ChineseVoice123456789"
     assert result.production["subtitle_languages"] == ["zh-Hans", "en"]
     assert result.production["media_validation"]["frames"] == 30
+    render_call = next(call for call in calls if call[0] == "render")
+    assert render_call[1]["native_language"] == "zh-Hans"
     assert [p for _, p in progress] == sorted(p for _, p in progress)
     assert (artifact, script, profile) == originals
 

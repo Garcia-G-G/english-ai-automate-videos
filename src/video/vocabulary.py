@@ -73,8 +73,12 @@ def create_frame_vocabulary(
     t: float,
     data: Dict,
     duration: float,
+    presentation=None,
 ) -> np.ndarray:
     """Create frame for vocabulary-list video type."""
+    if presentation is None:
+        from studio.renderer_presentation import resolve_presentation
+        presentation = resolve_presentation("es")
     frame, draw = create_base_frame(t)
 
     # No defaults. 'Vocabulario del día' rendered as a real title over
@@ -190,7 +194,7 @@ def create_frame_vocabulary(
         # Header labels
         hf = font(_HEADER_FONT)
 
-        es_text = "ESPAÑOL"
+        es_text = presentation.native_heading
         es_bbox = draw.textbbox((0, 0), es_text, font=hf)
         es_w = es_bbox[2] - es_bbox[0]
         # Centre "ESPAÑOL" in the left column (card_x+8 .. div_x)
@@ -199,7 +203,7 @@ def create_frame_vocabulary(
         es_y = header_y + (_HEADER_H - (es_bbox[3] - es_bbox[1])) // 2 - 1
         draw_text_solid(draw, es_text, es_x, es_y, hf, COLOR_WHITE, header_alpha, outline=3)
 
-        en_text = "INGLÉS"
+        en_text = presentation.learning_heading
         en_bbox = draw.textbbox((0, 0), en_text, font=hf)
         en_w = en_bbox[2] - en_bbox[0]
         right_col_center = div_x + (card_x + CARD_WIDTH - 8 - div_x) // 2
@@ -219,7 +223,7 @@ def create_frame_vocabulary(
         t, draw, frame,
         pairs, st,
         card_x, first_row_y, card_h, card_alpha_f,
-        card_top=card_top,
+        card_top=card_top, presentation=presentation,
     )
 
     return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
@@ -236,6 +240,7 @@ def _draw_vocab_rows(
     card_h: int,
     card_visible: float,
     card_top: int = 290,
+    presentation=None,
 ):
     """Render vocabulary data rows with highlight and dim animations."""
     if card_visible <= 0:
@@ -338,7 +343,7 @@ def _draw_vocab_rows(
         # ── Spanish text (left column, right-aligned to divider) ─
         # No default: a blank half-row is a broken lesson, and
         # script_schema.VocabPair requires both sides.
-        es_text = pair['spanish']
+        es_text = pair[presentation.native_field]
         lf, _, _, _ = fit_text_font(es_text, _ROW_FONT, 28, left_col_w)
         lbbox = draw.textbbox((0, 0), es_text, font=lf)
         lw = lbbox[2] - lbbox[0]
@@ -349,7 +354,7 @@ def _draw_vocab_rows(
                         COLOR_WHITE, row_alpha, outline=4)
 
         # ── English text (right column, left-aligned from divider)
-        en_text = pair['english']
+        en_text = pair[presentation.learning_field]
         rf, _, _, _ = fit_text_font(en_text, _ROW_FONT, 28, right_col_w)
         rbbox = draw.textbbox((0, 0), en_text, font=rf)
         rh = rbbox[3] - rbbox[1]

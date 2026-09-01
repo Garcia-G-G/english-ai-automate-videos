@@ -591,9 +591,13 @@ def resolve_quiz_timestamps(data: Dict, duration: float) -> Dict:
 def create_frame_quiz(
     t: float,
     data: Dict,
-    duration: float
+    duration: float,
+    presentation=None,
 ) -> np.ndarray:
     """Create frame for quiz video using EXACT segment timestamps."""
+    if presentation is None:
+        from studio.renderer_presentation import resolve_presentation
+        presentation = resolve_presentation("es")
     frame, draw = create_base_frame(t)
 
     # No defaults on these four. They are load-bearing for correctness and
@@ -658,7 +662,7 @@ def create_frame_quiz(
     question_y = QUESTION_ZONE_TOP
     if question_number and question_visible:
         q_num_alpha = get_alpha(t, 0, 0.3)
-        qn_text = f"Pregunta {question_number}"
+        qn_text = presentation.question_number.format(number=question_number)
         qnf = font(32)
         bbox = draw.textbbox((0, 0), qn_text, font=qnf)
         qnw = bbox[2] - bbox[0]
@@ -759,7 +763,7 @@ def create_frame_quiz(
         think_y = COUNTDOWN_ZONE_TOP
 
         tf = font(48)
-        think_text = "¡Piensa bien!"
+        think_text = presentation.thinking
         bbox = draw.textbbox((0, 0), think_text, font=tf)
         tw = bbox[2] - bbox[0]
         tx = (VIDEO_WIDTH - tw) // 2
@@ -816,7 +820,7 @@ def create_frame_quiz(
         reveal_y = COUNTDOWN_ZONE_TOP + 20
 
         rf = font(48)
-        reveal_text = f"Respuesta: {correct}"
+        reveal_text = presentation.answer.format(answer=correct)
         bbox = draw.textbbox((0, 0), reveal_text, font=rf)
         tw = bbox[2] - bbox[0]
         tx = (VIDEO_WIDTH - tw) // 2

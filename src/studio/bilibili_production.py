@@ -135,6 +135,7 @@ class BilibiliProductionGateway:
             produced_audio, produced_metadata, video_path,
             video_type=canonical_script.get("type"), background=selected,
             font_path=font_path,
+            native_language=canonical_profile["workspace"]["native_language"],
         )
         produced_video = self._required(produced_video, artifact_dir, "video")
         video_probe = self._media_probe(produced_video)

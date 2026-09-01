@@ -48,6 +48,7 @@ from .models import (
 )
 from .profile_bundle import InvalidProfileBundle, resolve_profile_bundle
 from .provided_script import ProvidedScriptAuthor
+from .renderer_presentation import RendererPresentation, resolve_presentation
 from .workspaces import InvalidWorkspaceProfile, resolve_workspace_profile
 from .voices import InvalidVoiceProfile, resolve_voice_profile
 
@@ -85,6 +86,7 @@ __all__ = [
     "ProductionGateway",
     "ProductionResult",
     "ProvidedScriptAuthor",
+    "RendererPresentation",
     "ScriptAuthor",
     "TopicScriptAuthor",
     "VideoArtifact",
@@ -94,6 +96,7 @@ __all__ = [
     "normalize_audience",
     "resolve_audience_profile",
     "resolve_profile_bundle",
+    "resolve_presentation",
     "resolve_workspace_profile",
     "resolve_voice_profile",
     "transition",
