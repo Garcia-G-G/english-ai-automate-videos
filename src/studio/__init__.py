@@ -30,6 +30,7 @@ from .models import (
     NativeLanguage,
     VideoArtifact,
 )
+from .profile_bundle import InvalidProfileBundle, resolve_profile_bundle
 from .workspaces import InvalidWorkspaceProfile, resolve_workspace_profile
 from .voices import InvalidVoiceProfile, resolve_voice_profile
 
@@ -52,6 +53,7 @@ __all__ = [
     "InvalidTransition",
     "InvalidAudienceProfile",
     "InvalidArtifactId",
+    "InvalidProfileBundle",
     "InvalidWorkspaceProfile",
     "InvalidVoiceProfile",
     "LearningLanguage",
@@ -60,6 +62,7 @@ __all__ = [
     "VideoArtifact",
     "normalize_audience",
     "resolve_audience_profile",
+    "resolve_profile_bundle",
     "resolve_workspace_profile",
     "resolve_voice_profile",
     "transition",
