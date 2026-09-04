@@ -100,7 +100,12 @@ def _get_clip_background(w: int, h: int):
     if not clips_dir:
         raise ValueError("Background type 'clips' requires options={'dir': <clips directory>}")
 
-    key = (clips_dir, CURRENT_BACKGROUND["duration"], w, h)
+    # video_type is part of the key: it selects which rows the readability
+    # band covers, so two types sharing a clips directory must not share a
+    # cached background sized for the other one's layout.
+    video_type = options.get("video_type")
+    key = (clips_dir, CURRENT_BACKGROUND["duration"], w, h, video_type,
+           options.get("dim"), options.get("scrim"))
     if _clip_bg is None or _clip_bg_key != key:
         if _clip_bg is not None:
             _clip_bg.close()
@@ -108,7 +113,13 @@ def _get_clip_background(w: int, h: int):
             clips_dir, w, h,
             duration=CURRENT_BACKGROUND["duration"],
             seed=options.get("seed"),
-            dim=options.get("dim", 0.35),
+            # DEFAULT 0.0, not 0.35. The flat dim made dark footage black
+            # and still left bright footage unreadable; the measured band
+            # inside ClipLibraryBackground replaces it. A caller may still
+            # pin one explicitly.
+            dim=options.get("dim", 0.0),
+            video_type=video_type,
+            scrim=options.get("scrim"),
         )
         _clip_bg_key = key
     return _clip_bg

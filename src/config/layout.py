@@ -93,9 +93,15 @@ VOCAB_DIVIDER_X = 500
 # half the lie: the number is a floor the card may not rise above, not the
 # row where it starts. The card's real top is derived from the title height.
 VOCAB_CARD_TOP_MIN = 260
-# Declared but never enforced: _draw_vocab_rows takes len(pairs) uncapped,
-# so a deck longer than this overflows rather than truncating. Left as-is —
-# adding the cap would change rendering, which this pass does not do.
+# ENFORCED as of the duration work. This was logged debt for two passes:
+# "declared but never enforced — _draw_vocab_rows takes len(pairs) uncapped,
+# so a deck longer than this overflows rather than truncating". Raising the
+# prompt from 6-10 pairs to 10-12 to reach the duration band walked the deck
+# straight up to the limit, so the limit had to become real. video/
+# vocabulary.py truncates to this and logs when it does.
+#
+# 12 is the geometric floor minus a margin: 14 rows fit, 12 leaves the card
+# breathing room at the bottom rather than butting against the timer bar.
 VOCAB_MAX_ROWS = 12
 
 # ── Timer bar ────────────────────────────────────────────────────

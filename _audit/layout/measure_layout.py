@@ -54,14 +54,37 @@ FRAME_FNS = {
 }
 
 
-def content_mask(frame_rgb: np.ndarray, t: float) -> np.ndarray:
+_wm_cache = {}
+
+
+def watermark_ink() -> np.ndarray:
+    """Mask of the watermark's own pixels, shadow included.
+
+    Excluded from the centre-of-mass figure. The mark is drawn at
+    y1561-1599, inside the safe band and near its bottom edge, so it drags
+    the centre of mass down by a fixed amount that has nothing to do with
+    where a renderer put its content. On educational that single element
+    accounted for +25 of a +28px offset.
+    """
+    if "m" not in _wm_cache:
+        from video.brand import get_watermark_overlay
+        overlay = get_watermark_overlay((VIDEO_WIDTH, VIDEO_HEIGHT))
+        _wm_cache["m"] = np.asarray(overlay)[:, :, 3] > 8
+    return _wm_cache["m"]
+
+
+def content_mask(frame_rgb: np.ndarray, t: float,
+                 drop_watermark: bool = False) -> np.ndarray:
     """Pixels that the renderer drew, as opposed to background."""
     from video.backgrounds import gradient
     bg = np.asarray(gradient(VIDEO_WIDTH, VIDEO_HEIGHT, t)).astype(np.int16)
     if bg.shape != frame_rgb.shape:
         bg = bg[:, :, :3]
     delta = np.abs(frame_rgb.astype(np.int16) - bg).sum(axis=2)
-    return delta > DIFF_THRESHOLD
+    mask = delta > DIFF_THRESHOLD
+    if drop_watermark:
+        mask = mask & (~watermark_ink())
+    return mask
 
 
 def measure(video_type: str, data_path: str, audio_path: str) -> dict:
@@ -100,8 +123,15 @@ def measure(video_type: str, data_path: str, audio_path: str) -> dict:
     outside_above = outside_below = 0
     total_content = 0
 
+    com_clean_list = []
     for t, frame in captured:
         m = content_mask(frame[:, :, :3], t)
+        clean = content_mask(frame[:, :, :3], t, drop_watermark=True)
+        cband = clean[SAFE_AREA_TOP:SAFE_AREA_BOTTOM]
+        if cband.sum():
+            cys = np.arange(SAFE_AREA_TOP, SAFE_AREA_BOTTOM)
+            com_clean_list.append(
+                float((cband.sum(axis=1) * cys).sum() / cband.sum()))
         if not m.any():
             continue
         rows = m.sum(axis=1)
@@ -123,6 +153,7 @@ def measure(video_type: str, data_path: str, audio_path: str) -> dict:
 
     band_centre = (SAFE_AREA_TOP + SAFE_AREA_BOTTOM) / 2
     com = float(np.mean(com_list)) if com_list else float("nan")
+    com_clean = float(np.mean(com_clean_list)) if com_clean_list else float("nan")
 
     return {
         "type": video_type,
@@ -131,6 +162,8 @@ def measure(video_type: str, data_path: str, audio_path: str) -> dict:
         "band_area_pct": 100 * float(np.mean(band_area_frac)) if band_area_frac else 0.0,
         "band_rows_used_pct": 100 * len(band_rows_used) / band_h,
         "com": com,
+        "com_clean": com_clean,
+        "com_clean_offset": com_clean - band_centre,
         "band_centre": band_centre,
         "com_offset": com - band_centre,
         "content_top": int(used_rows.min()) if len(used_rows) else -1,
@@ -162,8 +195,8 @@ def main():
           f"(height {SAFE_AREA_BOTTOM - SAFE_AREA_TOP}, centre "
           f"{(SAFE_AREA_TOP + SAFE_AREA_BOTTOM) // 2})")
     print()
-    hdr = (f"{'type':14s} {'frames':>6s} {'band ink':>9s} {'rows used':>10s} "
-           f"{'CoM':>7s} {'vs centre':>10s} {'content y':>14s} {'above':>7s} {'below':>7s}")
+    hdr = (f"{'type':14s} {'frames':>6s} {'band ink':>9s} {'CoM':>6s} "
+           f"{'vs ctr':>7s} | {'CoM-wm':>7s} {'vs ctr':>7s} {'shift':>7s}")
     print(hdr)
     print("-" * len(hdr))
     for r in results:
@@ -171,9 +204,9 @@ def main():
             print(f"{r['type']:14s} {r['error']}")
             continue
         print(f"{r['type']:14s} {r['frames']:6d} {r['band_area_pct']:8.1f}% "
-              f"{r['band_rows_used_pct']:9.1f}% {r['com']:7.0f} "
-              f"{r['com_offset']:+9.0f} {r['content_top']:6d}..{r['content_bottom']:<6d} "
-              f"{r['outside_above_pct']:6.1f}% {r['outside_below_pct']:6.1f}%")
+              f"{r['com']:6.0f} {r['com_offset']:+7.0f} | "
+              f"{r['com_clean']:7.0f} {r['com_clean_offset']:+7.0f} "
+              f"{r['com_clean_offset'] - r['com_offset']:+7.0f}")
 
     out = ROOT / "_audit" / "layout" / "measurements.json"
     out.write_text(json.dumps(

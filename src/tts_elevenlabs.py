@@ -738,6 +738,25 @@ def generate_quiz_audio_segmented(
         _, _, _, answer_end_speech = add_audio(ans_path)
 
         add_segment('answer', full_answer_text, answer_start, answer_end_speech)
+
+        # REPEAT THE CORRECT ENGLISH, with a real pause first.
+        #
+        # The reveal is the one moment the learner knows which phrase is
+        # worth remembering, so it is the one moment repeating it teaches
+        # something. Declared as its own speech segment with spliced
+        # silence before it — not a longer countdown, not dead air.
+        for take in range(2, _takes('quiz') + 1):
+            add_silence(_repeat_pause())
+            rep_text = f"{correct_text}."
+            rep_path = os.path.join(temp_dir, f"answer_take{take}.mp3")
+            generate_segment_audio(
+                rep_text, rep_path, voice_id,
+                segment_type='answer',
+                english_words=english_words,
+            )
+            rep_start, _, _, rep_end_speech = add_audio(rep_path)
+            add_segment(f'repeat_answer_take{take}', rep_text,
+                        rep_start, rep_end_speech)
         add_silence(PAUSE_AFTER_ANSWER)
 
         # ============================================================
@@ -989,6 +1008,21 @@ def generate_fill_blank_audio_segmented(
         )
         ans_start, ans_end, _, ans_end_speech = add_audio(ans_path)
         add_segment('answer', answer_text, ans_start, ans_end_speech)
+
+        # Same repetition as quiz, same reason: the reveal is when the
+        # learner knows which phrase to keep.
+        for take in range(2, _takes('fill_blank') + 1):
+            add_silence(_repeat_pause())
+            rep_text = f"{correct}."
+            rep_path = os.path.join(temp_dir, f"answer_take{take}.mp3")
+            generate_segment_audio(
+                text=rep_text, output_path=rep_path, voice_id=voice_id,
+                stability=stability, similarity_boost=similarity_boost,
+                segment_type='answer', english_words=english_words,
+            )
+            rep_start, _, _, rep_end_speech = add_audio(rep_path)
+            add_segment(f'repeat_answer_take{take}', rep_text,
+                        rep_start, rep_end_speech)
         add_silence(PAUSE_AFTER_ANSWER)
 
         # 6. EXPLANATION
@@ -1309,6 +1343,20 @@ def generate_true_false_audio_segmented(
             pass
 
 
+def _takes(video_type: str) -> int:
+    """How many times the English is spoken, from config.yaml."""
+    from duration_spec import takes
+
+    return takes(video_type)
+
+
+def _repeat_pause() -> float:
+    """Seconds of REAL silence between takes, from config.yaml."""
+    from duration_spec import repetition_pause
+
+    return repetition_pause()
+
+
 def generate_vocabulary_audio_segmented(
     script: dict,
     output_path: str,
@@ -1396,7 +1444,14 @@ def generate_vocabulary_audio_segmented(
             english = pair.get('english', '')
             logger.info("[%d] PAIR: %s → %s", i + 2, spanish, english)
 
-            # Speak: "spanish, english."
+            # Speak: "spanish, english." then REPEAT the English alone.
+            #
+            # "Repeat after me", which is what language teaching actually
+            # does, and the reason vocabulary needed it is arithmetic: the
+            # card holds at most VOCAB_MAX_ROWS=12 pairs, and 12 pairs of
+            # content alone reach roughly 38s against a 50s floor. Content
+            # could not get there on its own, so the extra take is doing
+            # pedagogical work AND duration work rather than padding.
             pair_text = clean_for_tts(f"{spanish}... {english}.")
             p_path = os.path.join(temp_dir, f"pair_{i}.mp3")
             generate_segment_audio(
@@ -1406,6 +1461,23 @@ def generate_vocabulary_audio_segmented(
             )
             p_start, p_end, _, p_end_speech = add_audio(p_path)
             add_segment(f'pair_{i}', pair_text, p_start, p_end_speech)
+
+            for take in range(2, _takes('vocabulary') + 1):
+                # A REAL pause first — this is where the learner says it
+                # back. Declared as silence between two speech segments, so
+                # the gate matches each take to a speech boundary and never
+                # sees speech inside a declared-silent span.
+                add_silence(_repeat_pause())
+                r_text = clean_for_tts(f"{english}.")
+                r_path = os.path.join(temp_dir, f"pair_{i}_take{take}.mp3")
+                generate_segment_audio(
+                    text=r_text, output_path=r_path, voice_id=voice_id,
+                    stability=stability, similarity_boost=similarity_boost,
+                    segment_type='options', english_words=english_words,
+                )
+                r_start, r_end, _, r_end_speech = add_audio(r_path)
+                add_segment(f'repeat_{i}_take{take}', r_text, r_start, r_end_speech)
+
             add_silence(0.5)  # Pause between pairs
 
         total_duration = running_time

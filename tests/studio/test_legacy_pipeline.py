@@ -61,6 +61,11 @@ class Tracker:
         self.entries = [
             {"api_type": "old", "cost_usd": 9.0, "label": "earlier", "video_id": "old"}
         ]
+        self.saves = 0
+
+    def save(self):
+        """The gateway persists the ledger in a finally, on both paths."""
+        self.saves += 1
 
 
 def test_auto_author_delegates_selection_and_generation_once():
@@ -405,7 +410,11 @@ def test_youtube_finalizes_then_validates_definitive_video(
     assert order[1] == (
         "probe", b"definitive" if verdict == "PASS" else b"video"
     )
-    assert result.gates == [expected_gate]
+    # TWO gates now: the QA verdict and the duration verdict. Duration is
+    # recorded on every artifact, pass or fail — a silent pass is what let
+    # 20% of videos land in the 50-80s band unnoticed.
+    assert result.gates[0] == expected_gate
+    assert [g["kind"] for g in result.gates] == ["final_qa", "duration"]
     assert result.production["finalization"]["gate"] == verdict
     assert result.production["finalization"]["outro_appended"] is (verdict == "PASS")
     assert result.paths.video == "video/final.mp4"
@@ -497,7 +506,19 @@ def test_gateway_delegates_stages_in_order_and_forwards_monotonic_progress(tmp_p
         "tracker", "tts", "merge", "background", "render"
     ]
     background_call = next(call for call in calls if call[0] == "background")
-    assert background_call[3] == {}
+    # THE STUDIO PATH NOW PASSES ITS TOPIC. This assertion used to be
+    # `== {}`, pinning the omission recorded at legacy_pipeline.py:244 — the
+    # topic tier had nowhere to write, so the Studio path was given no topic
+    # and could only ever get a palette. The clip tier takes a destination
+    # inside the artifact, so the objection is gone and so is the omission.
+    assert background_call[3] == {
+        "topic": "actually",
+        "category": None,
+        "dest_dir": artifact_dir / "clips",
+        "duration": 2.5,
+    }
+    assert background_call[3]["dest_dir"].parent == artifact_dir, (
+        "footage belongs to THIS artifact, not a global directory")
     assert [percent for _, percent in progress] == sorted(percent for _, percent in progress)
     assert progress[-1][1] == 100
     assert result.paths.model_dump() == {
@@ -546,10 +567,17 @@ def test_gateway_paths_costs_and_available_metadata_are_exact(tmp_path):
             "outro_variant": "learning_routes_a", "seam": {"delta": 0.01},
         },
     }
-    assert result.gates == [{
+    assert result.gates[0] == {
         "kind": "final_qa", "version": 1, "status": "PASS",
         "blocking_flags": [],
-    }]
+    }
+    duration = result.gates[1]
+    assert duration["kind"] == "duration"
+    # The fake narration is 2.5s, so this MUST be recorded as out of band
+    # rather than passing quietly. That is the whole point of the record.
+    assert duration["status"] == "OUT_OF_BAND"
+    assert duration["band"] == [50.0, 80.0]
+    assert "under the 50s floor" in duration["reason"]
 
 
 def test_gateway_inputs_and_collaborator_owned_values_are_not_mutated(tmp_path):

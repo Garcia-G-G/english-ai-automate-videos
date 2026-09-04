@@ -537,13 +537,38 @@ def _render_spanish_karaoke(
                     scaled_size = int(word_font_size * state['scale'])
                     wf = font(max(10, scaled_size))
 
-                offset_x = state['offset_x']
+                # NAMED anim_offset_x, not offset_x. The parameter of the
+                # same name carries the CARD's horizontal offset and is read
+                # again for the next line's start_x; rebinding it here left
+                # every line after the first positioned by whatever the last
+                # word of the previous line happened to be animating.
+                anim_offset_x = state['offset_x']
                 offset_y = state['offset_y']
+
+                # THE POP MUST NOT PUSH THE NEXT WORD.
+                #
+                # The active word is drawn with a font scaled up to 1.08,
+                # but the cursor below advances using the BASE font, so a
+                # popping word overflows its own slot and collides with the
+                # word after it: "He didn'tshow up to the meeting" in
+                # art_20260903_175853. The apostrophe was a coincidence —
+                # didn't simply happened to be the word popping.
+                #
+                # Advancing by the scaled width instead would reflow the
+                # line on every frame and break the centring that
+                # line_break measured with the base font. So the enlarged
+                # glyphs are CENTRED on the base-font slot: the emphasis
+                # still reads, the layout never moves.
+                grow = 0
+                if wf is not f:
+                    base_w = draw.textbbox((0, 0), display_word, font=f)[2]
+                    scaled_w = draw.textbbox((0, 0), display_word, font=wf)[2]
+                    grow = (scaled_w - base_w) // 2
 
                 if use_glow and not is_fading_out:
                     draw_text_with_glow(
                         draw, frame, display_word,
-                        wx + offset_x, cur_y + offset_y,
+                        wx + anim_offset_x - grow, cur_y + offset_y,
                         wf, word_color, word_alpha,
                         outline=5, glow=True,
                         glow_color=ENGLISH_WORD_COLOR
@@ -551,7 +576,7 @@ def _render_spanish_karaoke(
                 else:
                     draw_text_solid(
                         draw, display_word,
-                        wx + offset_x, cur_y + offset_y,
+                        wx + anim_offset_x - grow, cur_y + offset_y,
                         wf, word_color, word_alpha,
                         outline=outline
                     )

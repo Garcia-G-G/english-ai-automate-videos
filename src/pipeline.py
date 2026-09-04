@@ -42,7 +42,8 @@ from script_schema import validate_script  # noqa: E402
 VALID_PROVIDERS = ("elevenlabs", "openai", "google", "edge")
 
 # Keys owned by the TTS result — never overwritten by script data.
-TTS_OWNED_KEYS = ('words', 'segments', 'duration', 'segment_times')
+TTS_OWNED_KEYS = ('words', 'segments', 'duration', 'segment_times',
+                  'timing_source', 'tts_calls')
 
 # How many lines of renderer output to keep for error messages.
 RENDER_LOG_TAIL = 80
@@ -123,6 +124,7 @@ TERMINAL_PRESET = "static_midnight"
 def resolve_background(profile: Dict = None, background: str = None, *,
                        topic: str = None, category: str = None,
                        entry: Dict = None, fast_mode: bool = False,
+                       dest_dir=None, duration: float = None,
                        on_record=None) -> str:
     """THE place a background is decided. Both entry points call this.
 
@@ -136,17 +138,35 @@ def resolve_background(profile: Dict = None, background: str = None, *,
       1. explicit `background`  -> returned untouched, because --background is
                                    an instruction and not a default
       2. profile clips mode     -> clips:<dir>
-      3. topic + category       -> generate an image, GATE it, and use it only
+      3. topic + a destination  -> fetch this video's OWN footage into that
+                                   directory and return clips:<that dir>
+      4. topic + category       -> generate an image, GATE it, and use it only
                                    on PASS
-      4. background_mode fixed  -> the configured preset
-      5. terminal fallback      -> one preset from the enabled rotation, and
+      5. background_mode fixed  -> the configured preset
+      6. terminal fallback      -> one preset from the enabled rotation, and
                                    TERMINAL_PRESET if even that is empty
 
-    Tier 4 keys on background_mode == "fixed" rather than on
+    WHERE TIER 3 SITS, AND WHY THERE.
+
+    Below tier 2, because tier 2 is a CONFIGURED instruction and this is a
+    default — same reasoning that keeps tier 1 above everything.
+
+    Above the generated image, because the owner has asked for moving
+    backgrounds repeatedly and a still with a Ken Burns pan is not one. It
+    is also strictly cheaper: clips cost $0.00 and displace a $0.041
+    gpt-image-2 call, so the tier that runs first is also the one that
+    spends nothing.
+
+    It requires `dest_dir` and fires only when given one. That is not a
+    limitation, it is the point: footage belongs to ONE artifact, the way
+    tier 4's image does. A caller with nowhere to put clips falls straight
+    through to tier 4 and behaves exactly as it did before.
+
+    Tier 5 keys on background_mode == "fixed" rather than on
     default_background being set, because default_background IS set in
-    config.yaml today; keying on it would make tier 5 unreachable and retire
+    config.yaml today; keying on it would make tier 6 unreachable and retire
     the rotation the palette cull exists to curate. default_background is
-    still honoured, as the step above the literal inside tier 5.
+    still honoured, as the step above the literal inside tier 6.
 
     This replaces main._background_for_topic and the `random` branch of
     video.backgrounds.get_default_background, which were the same algorithm
@@ -170,14 +190,22 @@ def resolve_background(profile: Dict = None, background: str = None, *,
         logger.info("background: profile is clips mode -> %s", clips_dir)
         return f"clips:{clips_dir}"
 
-    # ── 3. this video's own image ──
+    # ── 3. this video's own footage ──
+    if topic and dest_dir:
+        resolved = _clip_background(topic, category, dest_dir, duration,
+                                    entry, on_record)
+        if resolved:
+            return resolved
+        # every failure inside there has already logged its reason
+
+    # ── 4. this video's own image ──
     if topic:
         resolved = _generated_background(topic, category, entry, on_record)
         if resolved:
             return resolved
         # every failure inside there has already logged its reason
 
-    # ── 4. config pins one ──
+    # ── 5. config pins one ──
     cfg = _video_config()
     if cfg.get("background_mode") == "fixed":
         pinned = cfg.get("default_background")
@@ -185,7 +213,7 @@ def resolve_background(profile: Dict = None, background: str = None, *,
             logger.info("background: config is fixed -> %s", pinned)
             return pinned
 
-    # ── 5. the floor ──
+    # ── 6. the floor ──
     return _terminal_preset(cfg)
 
 
@@ -223,6 +251,56 @@ def _terminal_preset(cfg: Dict = None) -> str:
         logger.exception("background: could not read the rotation")
     logger.warning("background: nothing usable configured -> %s", TERMINAL_PRESET)
     return TERMINAL_PRESET
+
+
+def _clip_background(topic: str, category: str = None, dest_dir=None,
+                     duration: float = None, entry: Dict = None,
+                     on_record=None):
+    """Fetch this video's footage into `dest_dir`. None means "fall through".
+
+    Nothing in here raises. A background problem costs a background, never
+    the video — the same contract the image tier keeps, and the reason the
+    caller can treat None as "try the next tier" without a guard.
+
+    There is no gate call here, unlike the image tier. Contrast for a clip
+    cannot be settled at fetch time: the same file is a different picture at
+    t=2 and t=18, so it is measured against the composited scrim at render
+    time by clip_contrast.worst_over_clip. Fetching is fetching.
+    """
+    def _record(payload):
+        if entry is not None:
+            entry["background"] = payload
+        if on_record is not None:
+            try:
+                on_record(payload)
+            except Exception:                               # noqa: BLE001
+                logger.exception("background: could not record the decision")
+
+    try:
+        from topic_clips import fetch_for_topic
+    except Exception:                                       # noqa: BLE001
+        logger.exception("background: topic_clips is unavailable")
+        return None
+
+    try:
+        result = fetch_for_topic(topic, category, duration=duration or 30.0,
+                                 out_dir=Path(dest_dir))
+    except Exception:                                       # noqa: BLE001
+        # UnknownCategory lands here too. It is a real defect and it is
+        # logged as one, but it must not cost the video its render.
+        logger.exception("background: could not fetch clips for %r (%s)",
+                         topic, category)
+        return None
+
+    if not result:
+        logger.warning("background: no clips for %r (%s) — falling through "
+                       "to the image tier", topic, category)
+        return None
+
+    logger.info("background: %d clips (%.1f MB) for %r -> %s",
+                result["clip_count"], result["megabytes"], topic, result["dir"])
+    _record({"kind": "clips", **result})
+    return f"clips:{result['dir']}"
 
 
 def _generated_background(topic: str, category: str = None,
