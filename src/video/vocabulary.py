@@ -15,7 +15,8 @@ from .constants import (
 )
 from config.layout import (
     CARD_MARGIN_X, CARD_PADDING, CARD_RADIUS, CARD_WIDTH,
-    VOCAB_ROW_HEIGHT, VOCAB_DIVIDER_X,
+    VOCAB_ROW_HEIGHT, VOCAB_DIVIDER_X, VOCAB_CARD_TOP_MIN,
+    VOCAB_MAX_ROWS,
     BAR_Y,
 )
 from config.colors import CARD_COLORS
@@ -36,7 +37,7 @@ _TITLE_MAX_FONT = 60
 _TITLE_MIN_FONT = 36
 _BADGE_X = 900
 _BADGE_Y = 110
-_CARD_TOP_MIN = 260      # card never above this
+_CARD_TOP_MIN = VOCAB_CARD_TOP_MIN   # card never above this
 _HEADER_H = 70           # coloured header strip inside the card
 _ROW_FONT = 42
 _HEADER_FONT = 34
@@ -73,14 +74,29 @@ def create_frame_vocabulary(
     t: float,
     data: Dict,
     duration: float,
+    presentation=None,
 ) -> np.ndarray:
     """Create frame for vocabulary-list video type."""
+    if presentation is None:
+        from studio.renderer_presentation import resolve_presentation
+        presentation = resolve_presentation("es")
     frame, draw = create_base_frame(t)
 
     # No defaults. 'Vocabulario del día' rendered as a real title over
     # somebody else's lesson, and [] rendered an empty one.
     title = data['title']
     pairs: List[Dict] = data['pairs']
+    # THE CAP IS ENFORCED HERE. It was declared in config/layout.py and read
+    # by nobody, so a deck of 15 drew 15 rows and ran off the card. Truncate
+    # loudly rather than silently: a dropped pair is content the learner
+    # does not get, and it must be visible in the log.
+    if len(pairs) > VOCAB_MAX_ROWS:
+        logger.warning(
+            "Vocabulary: %d pairs exceeds VOCAB_MAX_ROWS=%d — rendering the "
+            "first %d and DROPPING %d. The script should not have produced "
+            "more than the card can hold.",
+            len(pairs), VOCAB_MAX_ROWS, VOCAB_MAX_ROWS, len(pairs) - VOCAB_MAX_ROWS)
+        pairs = pairs[:VOCAB_MAX_ROWS]
 
     # Genuinely optional — '' hides the difficulty badge.
     difficulty = data.get('difficulty', '')
@@ -100,11 +116,15 @@ def create_frame_vocabulary(
     # ── Title layout: fit title, compute where card starts ───────
     # Use fit_text_font to find the right size for the title
     title_max_w = TEXT_AREA_WIDTH - 160   # leave room for badge
-    tf_static, t_size_static, title_lines, title_total_h = fit_text_font(
+    title_box = fit_text_font(
         title, _TITLE_MAX_FONT, _TITLE_MIN_FONT, title_max_w,
     )
-    # Card starts below the title with some spacing
-    card_top = max(_CARD_TOP_MIN, _TITLE_Y + title_total_h + 30)
+    tf_static, t_size_static, title_lines = (
+        title_box.font, title_box.size, title_box.lines)
+    # ADVANCE, because the card is STACKED below the title rather than fitted
+    # around it. Ink would let the card creep up under a title whose last line
+    # happens to carry no descender.
+    card_top = max(_CARD_TOP_MIN, _TITLE_Y + title_box.advance_height + 30)
 
     # ── Card geometry (computed once, stable across frames) ───────
     card_x = CARD_MARGIN_X
@@ -186,7 +206,7 @@ def create_frame_vocabulary(
         # Header labels
         hf = font(_HEADER_FONT)
 
-        es_text = "ESPAÑOL"
+        es_text = presentation.native_heading
         es_bbox = draw.textbbox((0, 0), es_text, font=hf)
         es_w = es_bbox[2] - es_bbox[0]
         # Centre "ESPAÑOL" in the left column (card_x+8 .. div_x)
@@ -195,7 +215,7 @@ def create_frame_vocabulary(
         es_y = header_y + (_HEADER_H - (es_bbox[3] - es_bbox[1])) // 2 - 1
         draw_text_solid(draw, es_text, es_x, es_y, hf, COLOR_WHITE, header_alpha, outline=3)
 
-        en_text = "INGLÉS"
+        en_text = presentation.learning_heading
         en_bbox = draw.textbbox((0, 0), en_text, font=hf)
         en_w = en_bbox[2] - en_bbox[0]
         right_col_center = div_x + (card_x + CARD_WIDTH - 8 - div_x) // 2
@@ -215,7 +235,7 @@ def create_frame_vocabulary(
         t, draw, frame,
         pairs, st,
         card_x, first_row_y, card_h, card_alpha_f,
-        card_top=card_top,
+        card_top=card_top, presentation=presentation,
     )
 
     return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
@@ -232,6 +252,7 @@ def _draw_vocab_rows(
     card_h: int,
     card_visible: float,
     card_top: int = 290,
+    presentation=None,
 ):
     """Render vocabulary data rows with highlight and dim animations."""
     if card_visible <= 0:
@@ -334,7 +355,7 @@ def _draw_vocab_rows(
         # ── Spanish text (left column, right-aligned to divider) ─
         # No default: a blank half-row is a broken lesson, and
         # script_schema.VocabPair requires both sides.
-        es_text = pair['spanish']
+        es_text = pair[presentation.native_field]
         lf, _, _, _ = fit_text_font(es_text, _ROW_FONT, 28, left_col_w)
         lbbox = draw.textbbox((0, 0), es_text, font=lf)
         lw = lbbox[2] - lbbox[0]
@@ -345,7 +366,7 @@ def _draw_vocab_rows(
                         COLOR_WHITE, row_alpha, outline=4)
 
         # ── English text (right column, left-aligned from divider)
-        en_text = pair['english']
+        en_text = pair[presentation.learning_field]
         rf, _, _, _ = fit_text_font(en_text, _ROW_FONT, 28, right_col_w)
         rbbox = draw.textbbox((0, 0), en_text, font=rf)
         rh = rbbox[3] - rbbox[1]

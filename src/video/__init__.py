@@ -16,7 +16,7 @@ from script_schema import validate_render_data
 from .constants import FPS, VIDEO_WIDTH, VIDEO_HEIGHT
 from .backgrounds import (
     set_background, reset_background, get_background_generator,
-    get_default_background, BACKGROUNDS_AVAILABLE,
+    BACKGROUNDS_AVAILABLE,
     CURRENT_BACKGROUND,
 )
 from .utils import load_data
@@ -93,6 +93,7 @@ def generate_video(
     renderer: str = "ffmpeg",
     karaoke_mode: bool = False,
     engine_version: str = "v1",
+    native_language: str = "es",
 ) -> str:
     """
     Generate video based on type.
@@ -114,6 +115,8 @@ def generate_video(
 
     logger.info(f"Loading data: {data_path}")
     data = load_data(data_path)
+    from studio.renderer_presentation import resolve_presentation
+    presentation = resolve_presentation(native_language)
 
     # VALIDATION POINT 3 of 3: renderer input.
     #
@@ -162,18 +165,45 @@ def generate_video(
     if use_v2:
         background = None
 
-    # Configure background with pre-rendering for speed
-    # Auto-select from config.yaml if no background specified
-    if not background and BACKGROUNDS_AVAILABLE and not use_v2:
-        background = get_default_background()
-        if background:
-            logger.info(f"Auto-selected background: {background}")
+    # NOTHING IS CHOSEN HERE. pipeline.resolve_background decides, always
+    # returns a value, and -b carries it in. This used to fall back to a
+    # palette of its own whenever `background` arrived empty, which is what
+    # every dashboard render hit: admin.py resolved to None, pipeline omitted
+    # -b, and this line quietly picked a gen_NNN — so the generated image the
+    # video had paid for never reached the frame.
+
+    # Per-video generated background: "photo:<path>". The image was made
+    # from this video's topic and has already cleared the contrast gate;
+    # there is no category to pick from.
+    if background and background.startswith("photo:"):
+        image_path = background.split(":", 1)[1]
+        from topic_background import (RENDER_BLUR_RADIUS,
+                                      RENDER_OVERLAY_OPACITY,
+                                      RENDER_ZOOM_RANGE)
+        set_background(bg_type="photo_kenburns",
+                       options={"image_path": image_path,
+                                "overlay_opacity": RENDER_OVERLAY_OPACITY,
+                                "blur_radius": RENDER_BLUR_RADIUS,
+                                "zoom_range": RENDER_ZOOM_RANGE},
+                       duration=duration)
+        logger.info("Background: generated image %s", image_path)
+        bg = get_background_generator()
+        if bg:
+            # Ken Burns moves, so it cannot be cached as one static frame.
+            bg.clear_cache()
 
     # Clip-library background: "clips" (with background_options) or "clips:<dir>"
-    if background == "clips" or (background and background.startswith("clips:")):
+    # ELIF, not IF. As a separate `if`, the generic `elif background:` at the
+    # end of this chain still ran for a "photo:<path>" spec, took the
+    # not-a-preset route and called set_background(bg_type="photo:/...") —
+    # silently replacing the image with a default gradient. The six videos
+    # rendered black-ish and nothing said why.
+    elif background == "clips" or (background and background.startswith("clips:")):
         options = dict(background_options or {})
         if background.startswith("clips:"):
             options["dir"] = background.split(":", 1)[1]
+        # The band needs to know which layout's text zone to cover.
+        options.setdefault("video_type", video_type)
         clips_dir = options.get("dir", "")
         if clips_dir and not os.path.isabs(clips_dir):
             # Resolve relative to project root (parent of src/)
@@ -238,18 +268,34 @@ def generate_video(
             # comment records why. ADD WORDS THERE, never here.
             SPANISH_COMMON = SPANISH_FILTER
             english_set = set()
+            dropped = []
             for phrase in english_phrases:
                 phrase_words = phrase.lower().split()
-                # Skip phrases with 4+ words — likely full Spanish sentences
-                if len(phrase_words) > 3:
-                    continue
                 for w in phrase_words:
                     cleaned = _re.sub(r'[^\w]', '', w)
-                    # Reject words with Spanish accents/ñ
+                    # Reject words with Spanish accents/ñ. This one is a
+                    # SEMANTIC test — a word carrying á/é/í/ó/ú/ñ/ü is Spanish
+                    # whatever its length — so it stays. Its sibling from the
+                    # same commit, "skip phrases of 4+ words", was a length
+                    # proxy for the same judgement and is gone; see below.
                     if any(c in cleaned for c in 'áéíóúñü'):
+                        dropped.append((phrase, w, 'spanish accent'))
                         continue
-                    if cleaned and cleaned not in SPANISH_COMMON and len(cleaned) > 1:
+                    if cleaned and cleaned in SPANISH_COMMON:
+                        dropped.append((phrase, w, 'spanish stoplist'))
+                        continue
+                    if cleaned and len(cleaned) > 1:
                         english_set.add(cleaned)
+
+            # Loud, with the text. This block used to discard 73% of Whisper's
+            # English flags without saying so, and the silence is why it
+            # survived four months past the bug it was written for.
+            if dropped:
+                logger.warning(
+                    "english_phrases: dropped %d word(s) from the English set",
+                    len(dropped))
+                for phrase, word, why in dropped:
+                    logger.warning("  %-16s %r from phrase %r", why, word, phrase)
 
             fixed_count = 0
             for w in words:
@@ -320,7 +366,9 @@ def generate_video(
                 # as the wrong thing.
                 profile_name = os.getenv("VIDEO_PROFILE", "adults")
             logger.info(f"Engine v2 active (profile: {profile_name})")
-            frame_gen = EducationalRendererV2(data, duration, profile_name)
+            frame_gen = EducationalRendererV2(
+                data, duration, profile_name, presentation=presentation
+            )
         elif karaoke_mode:
             logger.info("Using karaoke-style renderer with inline translations")
             def frame_gen(t):
@@ -343,7 +391,7 @@ def generate_video(
                 logger.debug(f"{key}: {st[key].get('start', 0):.2f}s")
 
         def frame_gen(t):
-            return create_frame_quiz(t, data, duration)
+            return create_frame_quiz(t, data, duration, presentation=presentation)
 
     elif video_type == 'true_false':
         logger.info(f"Statement: {data.get('statement', 'N/A')}")
@@ -352,7 +400,7 @@ def generate_video(
         data = resolve_true_false_timestamps(data, duration)
 
         def frame_gen(t):
-            return create_frame_true_false(t, data, duration)
+            return create_frame_true_false(t, data, duration, presentation=presentation)
 
     elif video_type == 'fill_blank':
         logger.info(f"Sentence: {data.get('sentence', 'N/A')}")
@@ -367,7 +415,9 @@ def generate_video(
         logger.info(f"Phonetic: {data.get('phonetic', 'N/A')}")
 
         def frame_gen(t):
-            return create_frame_pronunciation(t, data, duration)
+            return create_frame_pronunciation(
+                t, data, duration, presentation=presentation
+            )
 
     elif video_type == 'vocabulary':
         pairs = data.get('pairs', [])
@@ -375,7 +425,7 @@ def generate_video(
         logger.info(f"Difficulty: {data.get('difficulty', 'N/A')}")
 
         def frame_gen(t):
-            return create_frame_vocabulary(t, data, duration)
+            return create_frame_vocabulary(t, data, duration, presentation=presentation)
 
     else:
         logger.error(f"Unknown video type: {video_type}")
@@ -490,7 +540,7 @@ def main():
     parser.add_argument("-t", "--type", choices=['educational', 'quiz', 'true_false', 'fill_blank', 'pronunciation', 'vocabulary'],
                         help="Video type (auto-detected from data if not specified)")
     parser.add_argument("--fps", type=int, default=FPS, help="FPS")
-    parser.add_argument("-b", "--background", default=None,
+    parser.add_argument("-b", "--background", required=True,
                         help="Background preset (bokeh_soft, purple_vibes, dark_professional, etc.) or type")
     parser.add_argument("--fast", action="store_true",
                         help="Fast mode: use static background and optimized settings")
@@ -501,6 +551,7 @@ def main():
     parser.add_argument("--v2", action="store_true",
                         help="Use the v2 render engine (educational only; "
                              "other types fall back to v1)")
+    parser.add_argument("--native-language", choices=["es", "zh-Hans"], default="es")
     parser.add_argument("--list-backgrounds", action="store_true",
                         help="List available background presets")
 
@@ -531,18 +582,19 @@ def main():
         print(f"Error: Data file not found: {args.data}", file=sys.stderr)
         sys.exit(1)
 
+    # -b is required, so this is always a real value. The renderer does not
+    # decide a background; pipeline.resolve_background does, once.
+    #
+    # --fast no longer overrides it either. It still controls render settings
+    # below; it used to also replace the resolved background with a static
+    # preset, discarding a generated image after it had been paid for.
     background = args.background
-
-    if args.fast:
-        background = "dark_professional"
-        print("Fast mode: using static background")
-    elif background is None:
-        background = get_default_background()
 
     result = generate_video(args.audio, args.data, args.output, args.type, args.fps, background,
                             fast_mode=args.fast, renderer=args.renderer,
                             karaoke_mode=getattr(args, 'karaoke', False),
-                            engine_version="v2" if getattr(args, 'v2', False) else "v1")
+                            engine_version="v2" if getattr(args, 'v2', False) else "v1",
+                            native_language=args.native_language)
     if result is None:
         print("Error: Video generation failed - no output produced", file=sys.stderr)
         sys.exit(1)

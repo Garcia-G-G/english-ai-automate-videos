@@ -55,3 +55,22 @@ _audit/backgrounds/
 
 # Ken Burns per-frame traces (regenerate: tools/kenburns_trace.py)
 _audit/kenburns/
+logs/
+
+# Pexels download cache. Regenerable by definition — topic_clips re-fetches
+# any missing query — and 453 MB of stock mp4 has no business in history.
+# The clips a video actually uses are hardlinked into its own artifact
+# directory under output/, which is already ignored.
+assets/clips/_cache/
+
+# Audit EVIDENCE — renders, contact sheets, frame dumps. 183 MB of PNG and
+# MP4 that document a finding once and are never read by code. The audit
+# MARKDOWN is tracked; the pictures it refers to are not, because a binary
+# blob in git history is permanent and cannot be removed without rewriting
+# every commit after it.
+_audit/**/*.png
+_audit/**/*.jpg
+_audit/**/*.jpeg
+_audit/**/*.mp4
+_audit/**/*.mov
+_to_delete/

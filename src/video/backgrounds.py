@@ -50,33 +50,6 @@ def load_config() -> dict:
     return {}
 
 
-def get_default_background() -> str:
-    """Get a background based on config."""
-    config = load_config()
-    video_config = config.get("video", {})
-
-    mode = video_config.get("background_mode", "random")
-
-    if mode == "random" and BACKGROUNDS_AVAILABLE:
-        enabled = resolve_enabled(video_config.get("enabled_backgrounds", []))
-        if enabled:
-            valid = [bg for bg in enabled if bg in BACKGROUND_PRESETS]
-            if valid:
-                import random as _rand
-                # Use SystemRandom to avoid being affected by global seed
-                _sysrand = _rand.SystemRandom()
-                choice = _sysrand.choice(valid)
-                return choice
-        mode = "fixed"
-
-    if BACKGROUNDS_AVAILABLE:
-        default_bg = video_config.get("default_background")
-        if default_bg and default_bg in BACKGROUND_PRESETS:
-            return default_bg
-        return get_recommended_preset()
-    return None
-
-
 def get_background_generator():
     """Get or create the background generator instance."""
     global _bg_generator
@@ -127,7 +100,12 @@ def _get_clip_background(w: int, h: int):
     if not clips_dir:
         raise ValueError("Background type 'clips' requires options={'dir': <clips directory>}")
 
-    key = (clips_dir, CURRENT_BACKGROUND["duration"], w, h)
+    # video_type is part of the key: it selects which rows the readability
+    # band covers, so two types sharing a clips directory must not share a
+    # cached background sized for the other one's layout.
+    video_type = options.get("video_type")
+    key = (clips_dir, CURRENT_BACKGROUND["duration"], w, h, video_type,
+           options.get("dim"), options.get("scrim"))
     if _clip_bg is None or _clip_bg_key != key:
         if _clip_bg is not None:
             _clip_bg.close()
@@ -135,7 +113,13 @@ def _get_clip_background(w: int, h: int):
             clips_dir, w, h,
             duration=CURRENT_BACKGROUND["duration"],
             seed=options.get("seed"),
-            dim=options.get("dim", 0.35),
+            # DEFAULT 0.0, not 0.35. The flat dim made dark footage black
+            # and still left bright footage unreadable; the measured band
+            # inside ClipLibraryBackground replaces it. A caller may still
+            # pin one explicitly.
+            dim=options.get("dim", 0.0),
+            video_type=video_type,
+            scrim=options.get("scrim"),
         )
         _clip_bg_key = key
     return _clip_bg

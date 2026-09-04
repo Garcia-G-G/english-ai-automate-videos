@@ -60,6 +60,21 @@ VERDADERO_GRAD_TOP = (76, 175, 80)       # #4CAF50
 VERDADERO_GRAD_BOT = (46, 125, 50)       # #2E7D32
 FALSO_GRAD_TOP = (244, 67, 54)           # #F44336
 FALSO_GRAD_BOT = (198, 40, 40)           # #C62828
+
+#: The REVEAL palette, keyed to correctness rather than to which option it is.
+#:
+#: VERDADERO_GRAD/FALSO_GRAD above are identity colours — green for true, red
+#: for false — and using them at the reveal meant that whenever the answer was
+#: FALSO the correct option was highlighted in red. An identity colour that
+#: contradicts the answer is worse than no identity colour, so the reveal uses
+#: these and the identity pair is not used there at all.
+CORRECT_GRAD_TOP = (76, 175, 80)         # #4CAF50
+CORRECT_GRAD_BOT = (46, 125, 50)         # #2E7D32
+CORRECT_BORDER = (180, 255, 180)
+CORRECT_GLOW = (100, 255, 140)
+#: The option that was not the answer. Grey, never the other identity colour.
+INCORRECT_GRAD_TOP = (140, 140, 150)
+INCORRECT_GRAD_BOT = (100, 100, 110)
 NEUTRAL_GRAD_TOP = (100, 160, 230)
 NEUTRAL_GRAD_BOT = (70, 120, 190)
 

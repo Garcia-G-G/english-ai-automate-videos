@@ -27,6 +27,7 @@ from config.layout import (
     TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT, TIMER_BAR_Y, TIMER_BAR_X,
 )
 from config.colors import COUNTDOWN_COLORS, DIFFICULTY_COLORS
+from .brand import watermark_top
 from .utils import (
     strip_display_quotes,
     font, line_break, draw_text_solid, draw_text_centered,
@@ -37,6 +38,7 @@ from .utils import (
     create_base_frame, finalize_frame,
     seg_start as _seg_start, seg_end as _seg_end,
     log_segment_timestamps, resolve_countdown_number,
+    font_line_height,
 )
 
 logger = logging.getLogger(__name__)
@@ -306,7 +308,7 @@ def draw_quiz_question_box(
         question, 52, 40, max_width, max_height - box_padding * 2
     )
 
-    line_height = int(font_size * 1.4)
+    line_height = font_line_height(ef)
     box_height = len(lines) * line_height + box_padding * 2
 
     # White rounded card with shadow
@@ -589,9 +591,13 @@ def resolve_quiz_timestamps(data: Dict, duration: float) -> Dict:
 def create_frame_quiz(
     t: float,
     data: Dict,
-    duration: float
+    duration: float,
+    presentation=None,
 ) -> np.ndarray:
     """Create frame for quiz video using EXACT segment timestamps."""
+    if presentation is None:
+        from studio.renderer_presentation import resolve_presentation
+        presentation = resolve_presentation("es")
     frame, draw = create_base_frame(t)
 
     # No defaults on these four. They are load-bearing for correctness and
@@ -656,7 +662,7 @@ def create_frame_quiz(
     question_y = QUESTION_ZONE_TOP
     if question_number and question_visible:
         q_num_alpha = get_alpha(t, 0, 0.3)
-        qn_text = f"Pregunta {question_number}"
+        qn_text = presentation.question_number.format(number=question_number)
         qnf = font(32)
         bbox = draw.textbbox((0, 0), qn_text, font=qnf)
         qnw = bbox[2] - bbox[0]
@@ -757,7 +763,7 @@ def create_frame_quiz(
         think_y = COUNTDOWN_ZONE_TOP
 
         tf = font(48)
-        think_text = "¡Piensa bien!"
+        think_text = presentation.thinking
         bbox = draw.textbbox((0, 0), think_text, font=tf)
         tw = bbox[2] - bbox[0]
         tx = (VIDEO_WIDTH - tw) // 2
@@ -814,7 +820,7 @@ def create_frame_quiz(
         reveal_y = COUNTDOWN_ZONE_TOP + 20
 
         rf = font(48)
-        reveal_text = f"Respuesta: {correct}"
+        reveal_text = presentation.answer.format(answer=correct)
         bbox = draw.textbbox((0, 0), reveal_text, font=rf)
         tw = bbox[2] - bbox[0]
         tx = (VIDEO_WIDTH - tw) // 2
@@ -835,13 +841,16 @@ def create_frame_quiz(
         exp_y = exp_y_base + slide_offset
         exp_padding = 28
         max_exp_w = CARD_WIDTH - exp_padding * 2
-        max_exp_h = SAFE_AREA_BOTTOM - exp_y - exp_padding * 2
+        # Budget stops above the watermark, not at the safe-area floor.
+        # Both used to reach for SAFE_AREA_BOTTOM independently, so a
+        # card that filled its budget landed on the mark.
+        max_exp_h = watermark_top() - exp_y - exp_padding * 2
 
         clean_exp = strip_display_quotes(explanation).strip()
         ef, exp_font_size, exp_lines, exp_text_h = fit_text_font(
             clean_exp, 42, 28, max_exp_w, max_exp_h
         )
-        exp_line_h = int(exp_font_size * 1.4)
+        exp_line_h = font_line_height(ef)
         exp_height = len(exp_lines) * exp_line_h + exp_padding * 2
 
         # Light card background

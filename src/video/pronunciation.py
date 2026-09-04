@@ -34,9 +34,13 @@ def _word_font_size(word: str) -> int:
 def create_frame_pronunciation(
     t: float,
     data: Dict,
-    duration: float
+    duration: float,
+    presentation=None,
 ) -> np.ndarray:
     """Create frame for pronunciation video type."""
+    if presentation is None:
+        from studio.renderer_presentation import resolve_presentation
+        presentation = resolve_presentation("es")
     frame, draw = create_base_frame(t)
 
     # No defaults. `word` fell back to the literal string "word", producing
@@ -69,7 +73,10 @@ def create_frame_pronunciation(
     # Question — visible until mistake_phase
     if t < mistake_phase:
         qf = font(56)
-        draw_text_centered(draw, "¿Cómo se pronuncia?", PRON_QUESTION_Y, qf, COLOR_WHITE, w_alpha, outline=5, max_width=max_w)
+        draw_text_centered(
+            draw, presentation.pronunciation_prompt, PRON_QUESTION_Y, qf,
+            COLOR_WHITE, w_alpha, outline=5, max_width=max_w,
+        )
 
     # Common mistake — fades in at word_phase, gradually fades out toward phonetic_phase
     if word_phase < t < phonetic_phase:
@@ -78,7 +85,11 @@ def create_frame_pronunciation(
         fade_out = max(0, 1.0 - ((t - mistake_phase) / (phonetic_phase - mistake_phase)))
         m_alpha = int(m_alpha * fade_out)
         mf = font(52)
-        draw_text_centered(draw, "Incorrecto:", PRON_INCORRECT_LABEL_Y, font(40), COLOR_RED, m_alpha, outline=4, max_width=max_w)
+        draw_text_centered(
+            draw, presentation.pronunciation_incorrect,
+            PRON_INCORRECT_LABEL_Y, font(40), COLOR_RED, m_alpha,
+            outline=4, max_width=max_w,
+        )
         draw_text_centered(draw, common_mistake, PRON_INCORRECT_TEXT_Y, mf, COLOR_RED, m_alpha, outline=6, max_width=max_w)
 
     # Correct phonetic
@@ -93,7 +104,10 @@ def create_frame_pronunciation(
             label_y = PRON_CORRECT_FINAL_LABEL_Y
             text_y = PRON_CORRECT_FINAL_TEXT_Y
 
-        draw_text_centered(draw, "Correcto:", label_y, font(40), COLOR_GREEN, p_alpha, outline=4, max_width=max_w)
+        draw_text_centered(
+            draw, presentation.pronunciation_correct, label_y, font(40),
+            COLOR_GREEN, p_alpha, outline=4, max_width=max_w,
+        )
         draw_text_centered(draw, phonetic, text_y, pf, COLOR_GREEN, p_alpha, outline=6, max_width=max_w)
 
     # Tip

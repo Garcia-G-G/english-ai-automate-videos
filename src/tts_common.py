@@ -707,3 +707,93 @@ def estimate_speech_duration(text: str, words_per_minute: int = 150) -> float:
     base_duration = (words / words_per_minute) * 60
 
     return base_duration + pauses
+
+
+# ── punctuation-only tokens in a word timeline ───────────────────────────
+#
+# ElevenLabs' character alignment returns punctuation as SEPARATE tokens
+# with their own start and end, because _chars_to_words splits on
+# whitespace and "hola , que" really does contain a lone comma. Nothing
+# merged them back, so a token whose entire content is a mark survived into
+# the word timeline and was treated as a word.
+#
+# The visible damage was in the karaoke — cards opening on ", que significa
+# uno", a period highlighted on its own after "a different size?", quote
+# marks floating as words in "' four ' balloons".
+#
+# THE INVISIBLE DAMAGE IS THE REASON THIS IS FIXED IN THE TIMELINE AND NOT
+# IN THE GROUPER. An orphan token carries its own SPAN, and those spans feed
+# measure_speech_end, the declared-silence envelope and the QA gate. The C
+# work measured '(noun)' holding 3.07 -> 4.12 — 1.05 s of declared speech
+# for something never said. Fixing only the display would have left the
+# timing polluted and the gate still reading a span that is not speech.
+
+#: Unicode categories that make a token punctuation rather than content.
+#: Symbol categories are included because '=' shows up as a token: the
+#: script generator writes mnemonics like "Assure = promise" into
+#: full_script and the narrator is handed an equals sign to say.
+_PUNCT_CATEGORIES = ("Pc", "Pd", "Pe", "Pf", "Pi", "Po", "Ps", "Sm", "Sk", "So")
+
+
+def is_punctuation_token(token) -> bool:
+    """True when a token's ENTIRE content is punctuation or symbols."""
+    import unicodedata
+
+    text = str(token or "").strip()
+    if not text:
+        return False
+    return all(unicodedata.category(ch) in _PUNCT_CATEGORIES for ch in text)
+
+
+def merge_punctuation_tokens(words, boundary_key: str = "segment_id"):
+    """Absorb punctuation-only tokens into the neighbouring real word.
+
+    NO TOKEN IS DROPPED AND NO TIME IS LOST. The mark is appended to the
+    preceding word, which keeps its own start and takes the punctuation's
+    end, so the span is absorbed rather than deleted and the timeline still
+    covers the same audio. A mark with no preceding word in its segment is
+    merged into the FOLLOWING word instead, which then takes the
+    punctuation's start.
+
+    Segment boundaries are respected when the words carry `boundary_key`,
+    so a period ending one sentence never attaches itself to the first word
+    of the next.
+    """
+    out = []
+    pending = []          # leading marks waiting for a word to attach to
+    for item in words or []:
+        if not isinstance(item, dict) or "word" not in item:
+            out.append(item)
+            continue
+
+        same_segment = bool(out) and (
+            boundary_key is None
+            or item.get(boundary_key) == out[-1].get(boundary_key))
+
+        if is_punctuation_token(item["word"]):
+            if out and same_segment:
+                previous = out[-1]
+                previous["word"] = f"{previous['word']}{str(item['word']).strip()}"
+                previous["end"] = max(float(previous["end"]), float(item["end"]))
+            else:
+                pending.append(item)
+            continue
+
+        merged = dict(item)
+        if pending:
+            # No preceding word in this segment: the marks lead instead.
+            merged["word"] = "".join(
+                str(p["word"]).strip() for p in pending) + str(merged["word"])
+            merged["start"] = min([float(merged["start"])]
+                                  + [float(p["start"]) for p in pending])
+            pending = []
+        out.append(merged)
+
+    # Trailing marks with nothing after them: give them to the last word.
+    for item in pending:
+        if out:
+            out[-1]["word"] = f"{out[-1]['word']}{str(item['word']).strip()}"
+            out[-1]["end"] = max(float(out[-1]["end"]), float(item["end"]))
+        else:
+            out.append(item)
+    return out

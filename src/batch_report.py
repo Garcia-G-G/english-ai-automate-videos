@@ -57,6 +57,13 @@ ATTEMPTED = "attempted"
 PUBLISHED = "published"
 SKIPPED = "skipped"
 FAILED = "failed"
+#: Counted independently of publishing, because publishing is optional and
+#: producing a video is not. With --upload off every outcome bucket stayed at
+#: zero, so a run that made six good videos and a run that made nothing
+#: printed the same summary line. These two are what a scheduled run has to
+#: be able to prove it did.
+RENDERED = "rendered"
+GATE_PASSED = "gate_passed"
 #: The QA gate produced an artifact and refused it. NOT "failed": nothing
 #: broke, and the remedy is to look at the blocking flags, not at a traceback.
 REJECTED = "rejected"
@@ -95,6 +102,10 @@ class BatchReport:
         """The gate produced an artifact and refused it."""
         reject(entry, blocking_flags, artifact_path)
 
+    def record_render(self, entry: Dict, video_path, gate: str = None) -> None:
+        """A video rendered and cleared the gate. Independent of publishing."""
+        record_render(entry, video_path, gate)
+
     def fail(self, entry: Dict, stage: str, reason: str,
              artifact_path=None) -> None:
         """A stage failed and the video did not publish."""
@@ -120,11 +131,19 @@ class BatchReport:
         return out
 
     def counts(self) -> Dict[str, int]:
-        c = {ATTEMPTED: len(self.videos), PUBLISHED: 0, SKIPPED: 0,
-             REJECTED: 0, FAILED: 0, NEEDS_HUMAN: 0}
+        # ATTEMPTED is the number of videos tried, taken from the list length
+        # and NOT incremented in the loop below. It used to be both, so a
+        # one-video run reported "2 attempted".
+        c = {ATTEMPTED: len(self.videos), RENDERED: 0, GATE_PASSED: 0,
+             PUBLISHED: 0, SKIPPED: 0, REJECTED: 0, FAILED: 0, NEEDS_HUMAN: 0}
         for v in self.videos:
-            if v["status"] in c:
-                c[v["status"]] += 1
+            if v.get("artifact_path"):
+                c[RENDERED] += 1
+            if v.get("gate") == "PASS":
+                c[GATE_PASSED] += 1
+            status = v.get("status")
+            if status != ATTEMPTED and status in c:
+                c[status] += 1
         return c
 
     def to_dict(self) -> Dict:
@@ -163,10 +182,12 @@ class BatchReport:
 
     def _log_summary(self, path: Path) -> None:
         c = self.counts()
-        logger.info("batch %s: %d attempted, %d published, %d skipped, "
-                    "%d rejected, %d failed, %d NEEDS A HUMAN -> %s",
-                    self.run_id, c[ATTEMPTED], c[PUBLISHED], c[SKIPPED],
-                    c[REJECTED], c[FAILED], c[NEEDS_HUMAN], path)
+        logger.info("batch %s: %d attempted, %d rendered, %d passed the gate; "
+                    "%d published, %d skipped, %d rejected, %d failed, "
+                    "%d NEEDS A HUMAN -> %s",
+                    self.run_id, c[ATTEMPTED], c[RENDERED], c[GATE_PASSED],
+                    c[PUBLISHED], c[SKIPPED], c[REJECTED], c[FAILED],
+                    c[NEEDS_HUMAN], path)
         for item in self.needs_human:
             logger.critical("NEEDS A HUMAN: %s/%s — %s. %s",
                             item["artifact"], item.get("platform"),
@@ -187,6 +208,26 @@ def reject(entry: Dict, blocking_flags, artifact_path=None) -> None:
                  blocking_flags=list(blocking_flags or []))
     if artifact_path:
         entry["artifact_path"] = str(artifact_path)
+
+
+def record_render(entry: Dict, video_path, gate: str = None) -> None:
+    """Record that a video was produced, before and regardless of upload.
+
+    stage and artifact_path used to be written only inside the upload
+    branch, so with --upload off a video that rendered, passed the gate and
+    got its outro still reported stage="script" and artifact_path=None — the
+    same shape as a run that died during script generation.
+
+    Status is deliberately left alone. Publishing outcomes own that field;
+    this records what the run PRODUCED, which is a different question.
+    """
+    if entry is None:
+        return
+    if video_path:
+        entry["artifact_path"] = str(video_path)
+    if gate:
+        entry["gate"] = gate
+    entry["stage"] = "gated" if gate == "PASS" else "rendered"
 
 
 def record_upload_outcome(entry: Dict, outcome: Dict) -> None:

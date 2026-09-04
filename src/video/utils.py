@@ -5,6 +5,7 @@ import logging
 import math
 import os
 import re
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
@@ -31,7 +32,9 @@ def _get_font_paths():
     project_root = Path(__file__).resolve().parent.parent.parent
     bundled = project_root / "assets" / "fonts" / "Inter-Bold.ttf"
 
-    paths = [str(bundled)]
+    explicit = os.getenv("VIDEO_FONT_PATH")
+    paths = [explicit] if explicit else []
+    paths.append(str(bundled))
 
     # macOS
     paths += [
@@ -147,6 +150,30 @@ def instrument_serif_italic(size: int) -> ImageFont.FreeTypeFont:
     return f
 
 
+def font_line_height(f: ImageFont.FreeTypeFont) -> int:
+    """Line-to-line advance for `f`, from the font's own metrics.
+
+    THE one source for line spacing. Before this there were three magic
+    multipliers doing the same job and disagreeing: int(size * 1.35) inside
+    draw_text_centered and the old fit_text_font, int(size * 1.4) at the card
+    sites in quiz, true_false and educational, and int(size * 1.3) for the
+    English hero and translation text.
+
+    Disagreeing multipliers are not a tidiness problem. fit_text_font decides
+    whether text FITS using one number while the caller sizes the card around
+    it using a larger one, so a block that passed the fit test could still
+    overflow the card built for it — which is how the quiz explanation card
+    ended up 24px past SAFE_AREA_BOTTOM.
+
+    ascent + descent is what the typeface says its own lines need, so it
+    tracks the font instead of guessing at it. At the sizes in use it runs
+    about 11% tighter than 1.4 and 8% tighter than 1.35, which is why cards
+    get slightly shorter rather than taller.
+    """
+    ascent, descent = f.getmetrics()
+    return ascent + descent
+
+
 def strip_display_quotes(text: str) -> str:
     """Remove the single quotes that mark English terms, for DISPLAY only.
 
@@ -198,6 +225,197 @@ def slide_in_x(t: float, start: float, duration: float = 0.4) -> float:
     return int(SLIDE_DISTANCE * (1 - min(1.0, eased)))
 
 
+class MissingCJKFont(RuntimeError):
+    """No installed font can draw the Han characters this text contains.
+
+    Raised rather than returning Inter, because Inter's answer for a Han
+    codepoint is .notdef — a blank box. Every Chinese character in
+    Inter-Bold renders to a byte-identical bitmap, so a silent fallback does
+    not degrade the frame, it replaces the entire script with tofu and looks
+    like a rendering style rather than a missing font.
+    """
+
+
+#: Ranges that need a Han-capable face. CJK Unified Ideographs and its
+#: Extension A, the two Kana blocks, Hangul, and the fullwidth punctuation
+#: block — 。，！？（） live there and appear in every Chinese sentence.
+_CJK_RANGES = (
+    (0x3000, 0x303F),    # CJK symbols and punctuation
+    (0x3040, 0x30FF),    # Hiragana + Katakana
+    (0x3400, 0x4DBF),    # CJK Unified Ideographs Extension A
+    (0x4E00, 0x9FFF),    # CJK Unified Ideographs
+    (0xAC00, 0xD7AF),    # Hangul syllables
+    (0xF900, 0xFAFF),    # CJK compatibility ideographs
+    (0xFF00, 0xFFEF),    # Halfwidth and fullwidth forms
+)
+
+#: Closing marks that may not begin a line, and opening marks that may not
+#: end one. Chinese has no spaces, so a break is legal between almost any
+#: two characters — these are the exceptions that make it read as typeset
+#: text rather than a fixed-width dump.
+_CJK_NO_LINE_START = "。，、！？：；）］｝」』〉》…‥ー々"
+_CJK_NO_LINE_END = "（［｛「『〈《"
+
+
+#: The ranges above as one compiled character class. line_break runs on
+#: every text element of every frame, and 100% of current production is
+#: Spanish — so the Han check is pure overhead on the path that actually
+#: ships. The pure-Python scan cost 37 µs on a 76-character line; at ~5 text
+#: elements over the 1800 frames of a 60s video that is a third of a second
+#: of CPU spent proving there is no Chinese in a Spanish sentence.
+_CJK_RE = re.compile(
+    "[" + "".join(f"\\u{lo:04x}-\\u{hi:04x}" for lo, hi in _CJK_RANGES) + "]"
+)
+
+
+def has_cjk(text: str) -> bool:
+    """True if any character needs a Han-capable font."""
+    return _CJK_RE.search(text) is not None
+
+
+def _get_cjk_font_paths():
+    """Han-capable faces: explicit → bundled → macOS → Linux → Windows."""
+    project_root = Path(__file__).resolve().parent.parent.parent
+    explicit = os.getenv("VIDEO_FONT_PATH_CJK")
+    paths = [explicit] if explicit else []
+    paths += [
+        str(project_root / "assets" / "fonts" / "NotoSansSC-Bold.otf"),
+        str(project_root / "assets" / "fonts" / "NotoSansSC-Bold.ttf"),
+    ]
+    paths += [                                                   # macOS
+        "/System/Library/Fonts/PingFang.ttc",
+        "/System/Library/Fonts/Hiragino Sans GB.ttc",
+        "/System/Library/Fonts/STHeiti Medium.ttc",
+        "/System/Library/Fonts/Supplemental/Songti.ttc",
+        "/Library/Fonts/Arial Unicode.ttf",
+    ]
+    paths += [                                                   # Linux
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
+        "/usr/share/fonts/opentype/noto/NotoSansCJKsc-Bold.otf",
+        "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+    ]
+    paths += [                                                   # Windows
+        "C:\\Windows\\Fonts\\msyhbd.ttc",
+        "C:\\Windows\\Fonts\\msyh.ttc",
+        "C:\\Windows\\Fonts\\simhei.ttf",
+    ]
+    return paths
+
+
+_cjk_fonts = {}
+_cjk_font_paths = None
+
+
+def cjk_font(size: int) -> ImageFont.FreeTypeFont:
+    """A Han-capable face at this size, or MissingCJKFont.
+
+    Deliberately does NOT fall back to ImageFont.load_default(): the default
+    is a Latin bitmap face, so falling back to it is the same tofu by
+    another route. Failing here is the same choice studio.voices makes when
+    a workspace has no voice configured — a market that cannot be rendered
+    correctly must not render incorrectly instead.
+    """
+    global _cjk_font_paths
+    if size in _cjk_fonts:
+        return _cjk_fonts[size]
+    if _cjk_font_paths is None:
+        _cjk_font_paths = _get_cjk_font_paths()
+    for candidate in _cjk_font_paths:
+        try:
+            f = ImageFont.truetype(candidate, size)
+        except Exception:
+            continue
+        _cjk_fonts[size] = f
+        return f
+    raise MissingCJKFont(
+        "no Han-capable font found. Set VIDEO_FONT_PATH_CJK, or place "
+        "NotoSansSC-Bold.otf in assets/fonts/."
+    )
+
+
+def font_for_text(text: str, size: int) -> ImageFont.FreeTypeFont:
+    """The face to draw this text with, chosen by script.
+
+    Latin text keeps Inter — the layout budgets in Paso 6a were measured
+    against Inter's metrics and swapping the face globally would invalidate
+    every one of them. Only text that actually contains Han characters is
+    routed to the CJK face.
+    """
+    return cjk_font(size) if has_cjk(text) else font(size)
+
+
+def _cjk_tokens(text: str) -> List[str]:
+    """Split into the smallest units a line may break between.
+
+    Latin runs stay whole because breaking English mid-word is wrong in any
+    script; Han characters are individually breakable because Chinese has no
+    spaces and a whole sentence is otherwise one unbreakable token. That is
+    not a theoretical problem: a 28-character Chinese sentence measured
+    1680px against an 800px box, because text.split() returned one item and
+    the packing loop had nothing to pack.
+    """
+    tokens: List[str] = []
+    latin: List[str] = []
+    for ch in text:
+        if ch.isspace():
+            if latin:
+                tokens.append("".join(latin))
+                latin = []
+            continue
+        if has_cjk(ch):
+            if latin:
+                tokens.append("".join(latin))
+                latin = []
+            tokens.append(ch)
+        else:
+            latin.append(ch)
+    if latin:
+        tokens.append("".join(latin))
+    return tokens
+
+
+def _join_cjk(tokens: List[str]) -> str:
+    """Re-join tokens, with a space only where Latin meets Latin."""
+    out = ""
+    for tok in tokens:
+        if out and not has_cjk(tok) and not has_cjk(out[-1]):
+            out += " "
+        out += tok
+    return out
+
+
+def _line_break_cjk(text: str, f: ImageFont.FreeTypeFont, max_w: int,
+                    draw) -> List[str]:
+    """Greedy packing over CJK-aware tokens, respecting kinsoku exceptions."""
+    tokens = _cjk_tokens(text)
+    lines: List[str] = []
+    current: List[str] = []
+
+    for tok in tokens:
+        candidate = current + [tok]
+        bbox = draw.textbbox((0, 0), _join_cjk(candidate), font=f)
+        if bbox[2] - bbox[0] <= max_w or not current:
+            current.append(tok)
+            continue
+        # A closing mark may not open the next line; keep it with this one
+        # even though that line is now over budget by one glyph.
+        if tok in _CJK_NO_LINE_START:
+            current.append(tok)
+            lines.append(_join_cjk(current))
+            current = []
+            continue
+        # An opening mark may not end a line; push it down with its content.
+        while current and current[-1] in _CJK_NO_LINE_END:
+            tok = current.pop() + tok
+        lines.append(_join_cjk(current))
+        current = [tok]
+
+    if current:
+        lines.append(_join_cjk(current))
+    return lines
+
+
 def line_break(text: str, f: ImageFont.FreeTypeFont, max_w: int) -> List[str]:
     """Smart line breaking."""
     if not text.strip():
@@ -209,6 +427,12 @@ def line_break(text: str, f: ImageFont.FreeTypeFont, max_w: int) -> List[str]:
     bbox = draw.textbbox((0, 0), text, font=f)
     if bbox[2] - bbox[0] <= max_w:
         return [text]
+
+    # Scripts without spaces cannot be packed by splitting on them. The
+    # Latin path below is left exactly as it was: Paso 6a measured the
+    # layout against its output, so any change here is a layout regression.
+    if has_cjk(text):
+        return _line_break_cjk(text, f, max_w, draw)
 
     words = text.split()
     lines = []
@@ -230,20 +454,116 @@ def line_break(text: str, f: ImageFont.FreeTypeFont, max_w: int) -> List[str]:
     return lines
 
 
-def fit_text_font(text: str, max_font: int, min_font: int, max_width: int, max_height: int = None) -> tuple:
-    """Find largest font that fits text within bounds.
-    Returns (font_obj, actual_size, lines, total_height)."""
+@dataclass(frozen=True)
+class TextBox:
+    """A laid-out block of text and the box it actually occupies.
+
+    Every field is measured or derived from font metrics. The old return
+    value carried ``len(lines) * int(size * 1.35)`` as the height — a
+    constant that never consulted the font, while the width beside it came
+    from a real ``textbbox``. Callers received a number they believed was
+    the block height and positioned with it.
+
+    Unpacks as the historical ``(font, size, lines, height)`` so the ten
+    existing call sites keep working; ``height`` is now measured.
+
+    TWO HEIGHTS, ON PURPOSE. ``height`` is ink — the box the glyphs actually
+    fill, which is what you want to centre a block or to size a card around
+    it. ``advance_height`` is n * line_height — the space the block consumes
+    in flow, which is what you want before placing something underneath it.
+    ``size * 1.35`` was a rough stand-in for the second, so a caller that
+    advances past a block wants ``advance_height``, and one that fits a box
+    to it wants ``height``. They differ by roughly a third at these sizes,
+    which is large enough that guessing wrong is visible.
+    """
+
+    font: "ImageFont.FreeTypeFont"
+    size: int
+    lines: List[str]
+    height: int        # measured ink height of the whole laid-out block
+    width: int         # measured ink width, widest line
+    offset_x: int      # ink left edge relative to the draw origin
+    offset_y: int      # ink top edge relative to the draw origin
+    line_height: int   # ascent + descent, from the font
+
+    @property
+    def advance_height(self) -> int:
+        """Space this block consumes in flow, from the font's own metrics."""
+        return len(self.lines) * self.line_height
+
+    def __iter__(self):
+        return iter((self.font, self.size, self.lines, self.height))
+
+
+def measure_block(lines: List[str], f: "ImageFont.FreeTypeFont") -> TextBox:
+    """Measure a laid-out block as the callers actually draw it.
+
+    Callers render line i at ``y + i * line_height``, so the block is
+    composed the same way here rather than handed to PIL's multiline
+    helpers, whose spacing rules are not the ones in use. line_height comes
+    from the font's own ascent and descent, so a font with unusual metrics
+    reports its own spacing instead of inheriting a guess.
+    """
+    line_h = font_line_height(f)
+
+    if not lines:
+        return TextBox(f, f.size, [], 0, 0, 0, 0, line_h)
+
+    draw = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
+    tops, bottoms, lefts, rights = [], [], [], []
+    for i, line in enumerate(lines):
+        left, top, right, bottom = draw.textbbox((0, 0), line, font=f)
+        tops.append(i * line_h + top)
+        bottoms.append(i * line_h + bottom)
+        lefts.append(left)
+        rights.append(right)
+
+    top, bottom = min(tops), max(bottoms)
+    left, right = min(lefts), max(rights)
+    return TextBox(
+        font=f, size=f.size, lines=lines,
+        height=bottom - top, width=right - left,
+        offset_x=left, offset_y=top, line_height=line_h,
+    )
+
+
+def fit_text_font(text: str, max_font: int, min_font: int, max_width: int,
+                  max_height: int = None) -> TextBox:
+    """Largest font whose laid-out block fits inside the given bounds.
+
+    Returns a TextBox. It unpacks as (font, size, lines, height) for the
+    existing call sites, but the height is measured now rather than
+    estimated, so a site that passes ``max_height`` may select a different
+    size than it did before.
+    """
     for size in range(max_font, min_font - 1, -2):
         f = font(size)
-        lines = line_break(text, f, max_width)
-        line_h = int(size * 1.35)
-        total_h = len(lines) * line_h
-        if max_height is None or total_h <= max_height:
-            return f, size, lines, total_h
+        box = measure_block(line_break(text, f, max_width), f)
+        # Tested against ADVANCE, not ink. max_height is a budget for the
+        # space the block will occupy, and callers lay their lines out at
+        # line_height intervals, so the block's footprint in flow is
+        # advance-tall. Testing the ink lets a size through whose ink fits a
+        # card that its line boxes then overflow — the same fit-versus-build
+        # mismatch that put the quiz explanation card outside the safe band.
+        if max_height is None or box.advance_height <= max_height:
+            return box
+
+    # NOTHING IN THE RANGE FITS. The min font is returned anyway, and the
+    # block overflows whatever was budgeted for it.
+    #
+    # This is 6a's root surviving in its failure mode: the measurement is
+    # correct now, but "impossible layout" still ships as a silent overflow.
+    # It is left silent no longer. What it must NOT do is clamp or shrink
+    # past min_font — that changes what renders, and the fix for a budget
+    # nothing fits is the budget, which lives with the Y constants in 6c.
     f = font(min_font)
-    lines = line_break(text, f, max_width)
-    total_h = len(lines) * int(min_font * 1.35)
-    return f, min_font, lines, total_h
+    box = measure_block(line_break(text, f, max_width), f)
+    logger.warning(
+        "fit_text_font: nothing in %d..%d fits a %dpx budget — returning %dpx "
+        "and overflowing by %dpx (%d lines, %dpx wide max). Text: %r",
+        max_font, min_font, max_height, min_font,
+        box.advance_height - max_height, len(box.lines), max_width, text)
+    return box
 
 
 def draw_glow(
@@ -358,7 +678,7 @@ def draw_text_centered(
         return 0
 
     lines = line_break(text, f, max_width)
-    line_h = int(f.size * 1.35)
+    line_h = font_line_height(f)
     total_h = 0
 
     for line in lines:

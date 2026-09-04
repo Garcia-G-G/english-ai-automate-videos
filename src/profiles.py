@@ -1,4 +1,4 @@
-"""Audience profiles (adults / kids) — voice, background and content overrides.
+"""Legacy adapter for canonical Adult and Children audience profiles.
 
 Profiles live in config.yaml under `profiles:`; the active one is chosen by
 (in priority order): explicit name > env VIDEO_PROFILE > config `profile:` > "adults".
@@ -6,7 +6,6 @@ Each profile deep-merges its overrides on top of the base audio/video/content
 sections, so an empty profile behaves exactly like the base config.
 """
 
-import copy
 import logging
 import os
 from pathlib import Path
@@ -14,13 +13,11 @@ from pathlib import Path
 import yaml
 
 from config.secrets import is_valid_voice_id, voice_id_pattern
+from studio.audiences import resolve_audience_profile
 
 logger = logging.getLogger(__name__)
 
 CONFIG_PATH = Path(__file__).parent.parent / "config.yaml"
-
-# Sections a profile can override
-_MERGEABLE_SECTIONS = ("audio", "video", "content")
 
 #: ElevenLabs models that accept `language_code`. The bilingual TTS path sends
 #: an explicit per-segment language_code so the model cannot guess the accent,
@@ -40,17 +37,6 @@ def _load_config() -> dict:
     return {}
 
 
-def _deep_merge(base: dict, override: dict) -> dict:
-    """Recursively merge override into a copy of base."""
-    result = copy.deepcopy(base)
-    for key, value in (override or {}).items():
-        if isinstance(value, dict) and isinstance(result.get(key), dict):
-            result[key] = _deep_merge(result[key], value)
-        else:
-            result[key] = copy.deepcopy(value)
-    return result
-
-
 def load_profiles() -> dict:
     """Read the `profiles:` section (and `profile:` default) from config.yaml."""
     config = _load_config()
@@ -67,19 +53,8 @@ def get_active_profile(name: str = None) -> dict:
     Returns a dict with at least the audio/video/content sections plus `name`.
     """
     config = _load_config()
-    profiles = config.get("profiles", {}) or {}
-
     resolved = name or os.getenv("VIDEO_PROFILE") or config.get("profile") or "adults"
-
-    overrides = profiles.get(resolved)
-    if overrides is None and resolved != "adults":
-        logger.warning("Profile '%s' not found in config.yaml, using base config", resolved)
-    overrides = overrides or {}
-
-    base = {section: config.get(section, {}) or {} for section in _MERGEABLE_SECTIONS}
-    merged = _deep_merge(base, {k: v for k, v in overrides.items() if k in _MERGEABLE_SECTIONS})
-    merged["name"] = resolved
-    return merged
+    return resolve_audience_profile(resolved, CONFIG_PATH, environ=os.environ)
 
 
 def apply_profile_env(profile: dict):
@@ -94,11 +69,6 @@ def apply_profile_env(profile: dict):
     voice_id = audio.get("voice_id")
     if voice_id and voice_id != "default":
         # Validate the FORMAT at config load, not at API call time.
-        #
-        # config.yaml carried voice_id: "KIDS_VOICE_ID_PENDIENTE" for the kids
-        # profile. Nothing checked it, so it resolved through here and was sent
-        # to the ElevenLabs API verbatim — failing mid-run, after the script had
-        # been generated and paid for, instead of before the run started.
         #
         # The rule comes from config/secrets.py, which already had a per-key
         # format regex for ELEVENLABS_VOICE_ID and was imported by nothing. It

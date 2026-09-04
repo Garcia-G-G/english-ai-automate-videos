@@ -36,7 +36,6 @@ from config.layout import (  # noqa: F401
     SAFE_AREA_TOP,
     SAFE_AREA_BOTTOM,
     SAFE_AREA_HEIGHT,
-    TEXT_CENTER_Y,
     MAX_CHARS_PER_LINE,
     MAX_LINES_PER_SUBTITLE,
     MIN_GAP_BETWEEN_SUBTITLES,

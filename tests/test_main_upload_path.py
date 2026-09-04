@@ -24,6 +24,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
+
+import uploader as _real_uploader  # noqa: E402
 sys.path.insert(0, str(ROOT))
 
 import publication_log as PL  # noqa: E402
@@ -72,15 +74,19 @@ def rig(tmp_path, monkeypatch):
     fake_uploader.UploadManager = FakeManager
 
     class VideoMetadata:
-        def __init__(self, title, description, hashtags, privacy="public"):
+        def __init__(self, title, description, hashtags):
             self.title, self.description = title, description
-            self.hashtags, self.privacy = hashtags, privacy
+            self.hashtags = hashtags
 
         @property
         def full_description(self):
             return self.description
 
     fake_uploader.VideoMetadata = VideoMetadata
+    # The REAL resolver, not a stand-in. A fake privacy table here would be a
+    # second place the answer is decided, which is the whole defect this stub
+    # is standing in front of.
+    fake_uploader.resolve_privacy = _real_uploader.resolve_privacy
     monkeypatch.setitem(sys.modules, "uploader", fake_uploader)
 
     video = tmp_path / "fabric_20260804_101010.mp4"

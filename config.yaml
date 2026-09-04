@@ -64,6 +64,176 @@ video:
   animation_style: "clean_pop"
 
 # Audio/TTS Settings
+# ─────────────────────────────────────────────────────────────────────
+# DURATION — the specification every video is measured against.
+#
+# Every video must land between 50 s and 80 s. Both edges: one educational
+# already measured 86.0 s, and the median educational measured 45.9 s, so
+# this is a BAND and not a floor. Before this block existed nothing in the
+# pipeline aimed at a duration at all — it was whatever the script model
+# happened to write, plus whatever fixed structure the type adds, and 27 of
+# 138 measured videos (20%) landed in range.
+#
+# THE MODEL
+#
+#     video = speech + declared_silence + outro
+#     target_words = (target_seconds - overhead) x rate
+#     overhead     = declared_silence + outro
+#
+# `rate` and `silence` below are MEASURED, from 138 PAIRED artifacts — one
+# narration sidecar and one rendered mp4 that are the same video. Unpaired
+# arithmetic (one group's audio mean against another group's video mean) is
+# what produced the earlier overhead estimate of ~20.8 s for educational,
+# against the 9.5 s measured here.
+#
+# TWO TRAPS, both found by measuring:
+#
+#   · `rate` is words of SPEECH per second of SPEECH, counted from the
+#     narration's `segments` — NOT from `full_script`. On quiz those differ
+#     enormously: full_script carries 140 words where the segments carry 53.
+#     A word target aimed at full_script would mean nothing for quiz.
+#   · `silence` is the declared silence INSIDE the narration (countdowns,
+#     think-pauses, the gaps between repeats). It never appears in
+#     video-minus-narration, which is why it was invisible before.
+#
+# Re-measure after any change to pacing, voice or model:
+#   python3 tools/measure_duration_spec.py
+duration:
+  band:
+    min_seconds: 50.0
+    max_seconds: 80.0
+    # What the generator aims at. Centred, so a model that misses by ±20%
+    # still lands inside the band rather than on its edge.
+    target_seconds: 65.0
+
+  # Appended after render, every video, all three variants exactly 4.000 s.
+  outro_seconds: 4.0
+
+  # rate: words/second of speech · silence: seconds declared inside narration
+  # n: paired artifacts the figures come from
+  # RATES CORRECTED for the umbrella double-count. quiz and fill_blank
+  # append an "options" segment that deliberately spans option_1..4, so
+  # summing every segment counted those words and their seconds twice.
+  # Excluding any span that contains another moved quiz 1.95 -> 2.07 and
+  # fill_blank 2.04 -> 1.90. true_false and vocabulary emit no umbrella and
+  # are unchanged. Leaving the old figures would have been preserving a
+  # known error on purpose.
+  #
+  # fixed_words: the SPOKEN words that are not the explanation — question,
+  # options, countdown, answer reveal. Measured per artifact as
+  # (total spoken - explanation), so the per-item budget is derived rather
+  # than apportioned by guesswork.
+  #
+  # items_spoken: how many of the authored items are actually synthesised.
+  # ONE, for all three multi-item types. The prompt demands three and GPT
+  # writes three; only the root-level question/options/correct/explanation
+  # is ever read (script_schema.py calls `questions` DEAD PAYLOAD). The
+  # per-item budget therefore sizes the item that ships, not the ones that
+  # are paid for and discarded.
+  types:
+    educational:   {rate: 2.59, silence: 5.5, n: 45}
+    pronunciation: {rate: 2.28, silence: 3.1, n: 12}
+    vocabulary:    {rate: 1.36, silence: 3.8, n: 6}
+    true_false:    {rate: 1.75, silence: 4.5, n: 16, fixed_words: 18, items_spoken: 1}
+    fill_blank:    {rate: 1.90, silence: 4.5, n: 23, fixed_words: 40, items_spoken: 1}
+    quiz:          {rate: 2.07, silence: 6.3, n: 56, fixed_words: 36, items_spoken: 1}
+
+
+  # ── REPETITION ────────────────────────────────────────────────────
+  # "Repeat after me" — the English phrase said more than once with a real
+  # pause between takes. This is the pedagogy language teaching actually
+  # uses, and it is NOT padding: no longer countdowns, no dead air, no
+  # looped clips. The owner's judgement is that current pacing is good, so
+  # the pause is generous enough to be usable and short enough not to drag.
+  #
+  # WHY IT DOES NOT TRIP THE QA GATE. Each take is its own DECLARED speech
+  # segment and each pause is real spliced silence between segments. The
+  # gate's speech_in_declared_silence check only treats ids prefixed
+  # "countdown_" as declared-silent (qa_gate.SILENT_SEGMENT_PREFIXES), so a
+  # "repeat_*" segment is matched against a speech boundary like any other
+  # line. The declaration and the waveform agree by construction.
+  repetition:
+    # Seconds of real silence between takes. Long enough for a learner to
+    # actually say the phrase back, which is the point of the pause.
+    pause_seconds: 0.9
+    # How many times the English is spoken, INCLUDING the first.
+    takes:
+      pronunciation: 3   # hearing it repeatedly IS the lesson here
+      vocabulary: 2
+      quiz: 2
+      fill_blank: 2
+
+# ─────────────────────────────────────────────────────────────────────
+# WHICH CATEGORIES EACH VIDEO TYPE MAY DRAW FROM.
+#
+# Video type and topic category used to be INDEPENDENT DRAWS.
+# legacy_pipeline's author resolved video_type from the request or the
+# profile, then called _random_topic() without consulting it, so any
+# pairing was possible and 43 of 221 rendered artifacts (19%) got one that
+# did not suit the type.
+#
+# The pronunciation column was the whole story: 0 of 20 pronunciation
+# videos ever drew from content/topics/pronunciation.json. That file holds
+# 56 minimal pairs and stress shifts — ship/sheep, bit/beat, REcord the
+# noun, water British vs American — and the type built for it had never
+# used it once. It was drawing "Asking for Help" from social and "Double
+# negatives (grammatical error)" from spanish_specific instead: phrases
+# that cannot be pronounced as a word.
+#
+# THIS LIST INTERSECTS with the audience profile's own `categories`. It
+# does not replace it — the kids gating stays where it is, and this adds
+# the type axis that was missing. An empty intersection RAISES; see
+# type_categories.resolve, and the note under `children` below.
+type_categories:
+  # The type teaches how a word SOUNDS. Only one file holds words chosen
+  # for how they sound.
+  pronunciation:
+    - pronunciation
+
+  # Needs a SET of related terms to fill 10-12 card rows. Topical
+  # categories are sets by nature; idioms/phrasal_verbs/slang are lists of
+  # expressions and work as well. Deliberately excluded: pronunciation
+  # (single words), false_friends and confusing_words (pairs, which belong
+  # to quiz), grammar (rules are not word pairs).
+  vocabulary:
+    [business, work_office, travel, food_restaurant, technology, social,
+     everyday_expressions, cultural, kids_animals, kids_colors, kids_numbers,
+     idioms, phrasal_verbs, slang]
+
+  # Needs a right answer with tempting distractors, which nearly everything
+  # supports — its measured mismatch was 1 in 72. Only sound cannot be
+  # quizzed on a silent card.
+  quiz:
+    [business, common_mistakes, confusing_words, cultural, everyday_expressions,
+     false_friends, food_restaurant, grammar, idioms, kids_animals, kids_colors,
+     kids_numbers, phrasal_verbs, slang, social, spanish_specific, technology,
+     travel, work_office]
+
+  # Needs a statement with a crisp truth value. False friends and common
+  # mistakes are ideal: "'Actually' means 'actualmente' — false". Topical
+  # categories are excluded because "the bill means la cuenta, true"
+  # teaches nothing. The tightest list here, and the least confident one.
+  true_false:
+    [false_friends, confusing_words, common_mistakes, idioms, phrasal_verbs,
+     slang, spanish_specific, grammar, cultural]
+
+  # Needs a sentence with ONE removable slot. Excluded: false_friends (the
+  # pair is the lesson, not the slot) and idioms (removing a word from an
+  # idiom usually destroys it — 3 of the measured mismatches).
+  fill_blank:
+    [phrasal_verbs, grammar, confusing_words, common_mistakes, spanish_specific,
+     business, work_office, travel, food_restaurant, technology, social,
+     everyday_expressions, cultural, kids_animals, kids_colors, kids_numbers]
+
+  # A general explainer handles any content. Excludes pronunciation only
+  # because text karaoke cannot convey sound.
+  educational:
+    [business, common_mistakes, confusing_words, cultural, everyday_expressions,
+     false_friends, food_restaurant, grammar, idioms, kids_animals, kids_colors,
+     kids_numbers, phrasal_verbs, slang, social, spanish_specific, technology,
+     travel, work_office]
+
+
 audio:
   # Provider: elevenlabs (primary), openai (fallback)
   provider: "elevenlabs"
@@ -126,20 +296,29 @@ content:
   # Default video type: educational, quiz, true_false, fill_blank, pronunciation
   default_type: "educational"
 
-# Active profile: adults | kids
+# API spend
+costs:
+  # Month-to-date spend is printed on Inicio against this number. It is a
+  # DISPLAY ceiling, not an enforced one — nothing refuses to render when the
+  # month crosses it; the point is that the operator sees it coming instead of
+  # discovering it on a statement. Remove the key and Inicio says "sin techo"
+  # rather than inventing a limit nobody set.
+  #
+  # PLACEHOLDER: 25.00 is a round number, not a decision. August 2026 came to
+  # $3.33 across 6 render days, so this is roughly 7x current usage. Set it to
+  # whatever the real budget is.
+  monthly_ceiling_usd: 25.00
+
+# Active profile: adults | children
 profile: "adults"
 
 profiles:
-  adults:
+  adults: {}
     # hereda todo del config base (comportamiento actual)
-  kids:
+  children:
     audio:
-      # KNOWN ISSUE: this placeholder is NOT validated anywhere. Confirmed by
-      # dry-run with profile: kids — it resolves straight through to
-      # voice_id=KIDS_VOICE_ID_PENDIENTE and would be sent to the ElevenLabs
-      # API verbatim, failing at call time rather than at config load.
-      # Replace with a real voice id before using the kids profile.
-      voice_id: "KIDS_VOICE_ID_PENDIENTE"   # se reemplaza al elegir voz
+      # Set CHILDREN_ELEVENLABS_VOICE_ID or configure a valid voice here.
+      voice_id: "default"
       model: "eleven_v3"
       stability: 0.55
       style: 0.30
@@ -150,3 +329,90 @@ profiles:
       animation_style: "clean_pop"
     content:
       categories: ["kids_colors", "kids_numbers", "kids_animals"]
+
+workspaces:
+  youtube_es_en:
+    profile_schema_version: 1
+    workspace_id: "youtube_es_en"
+    market: "youtube"
+    native_language: "es"
+    learning_language: "en"
+    audio:
+      narration_lang: "es"
+      learning_lang: "en"
+      english_accent: "en-US"
+      segment_model: "eleven_turbo_v2_5"
+      voice_preference: "female"
+    subtitles:
+      bilingual: true
+      primary_language: "es"
+      learning_language: "en"
+      script: "latin"
+    metadata:
+      title_language: "es"
+      cover_language: "es"
+      hashtag_seed: ["AprendeIngles", "EnglishTips", "InglesReal"]
+    editorial:
+      explanation_language: "es"
+      adaptation: "spanish_locale"
+      translation_policy: "never_literal"
+    publication:
+      manual: true
+      automatic_publishing: false
+      initial_visibility: "private"
+
+  bilibili_zh_hans_en:
+    profile_schema_version: 1
+    workspace_id: "bilibili_zh_hans_en"
+    market: "bilibili"
+    native_language: "zh-Hans"
+    learning_language: "en"
+    audio:
+      narration_lang: "zh"
+      learning_lang: "en"
+      english_accent: "en-US"
+      segment_model: "eleven_turbo_v2_5"
+      voice_preference: "female"
+    subtitles:
+      bilingual: true
+      primary_language: "zh-Hans"
+      learning_language: "en"
+      script: "simplified_chinese"
+    metadata:
+      title_language: "zh-Hans"
+      cover_language: "zh-Hans"
+      hashtag_seed: ["英语学习", "实用英语", "英语表达"]
+    editorial:
+      explanation_language: "zh-Hans"
+      adaptation: "mandarin_cultural"
+      translation_policy: "never_mechanical_spanish_translation"
+    publication:
+      manual: true
+      automatic_publishing: false
+      initial_status: "draft"
+
+voices:
+  profile_schema_version: 1
+  matrix:
+    youtube_es_en:
+      adults:
+        locale: "es"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "warm", "confident"]
+      children:
+        locale: "es"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "clear", "expressive", "not_infantilized"]
+    bilibili_zh_hans_en:
+      adults:
+        locale: "zh-Hans"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "warm", "confident"]
+      children:
+        locale: "zh-Hans"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "clear", "expressive", "not_infantilized"]

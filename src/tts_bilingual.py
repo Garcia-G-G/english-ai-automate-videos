@@ -42,7 +42,7 @@ import tempfile
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from tts_segmenter import segment_script, describe_segments
+from tts_segmenter import LANGUAGE_POLICIES, segment_script, describe_segments
 
 logger = logging.getLogger(__name__)
 
@@ -101,10 +101,32 @@ def resolve_settings() -> Dict:
     }
 
 
-def plan_calls(script_data: Dict, settings: Dict = None) -> List[Dict]:
+def plan_calls(script_data: Dict, settings: Dict = None,
+               language_policy=None) -> List[Dict]:
     """Build the ordered list of TTS calls (text, lang, voice, model...)."""
     settings = settings or resolve_settings()
-    segments = segment_script(script_data, settings["narration_lang"])
+    if language_policy is None:
+        native = settings.get("native_language", settings["narration_lang"])
+        language_policy = LANGUAGE_POLICIES.get(native)
+    if language_policy is None:
+        raise ValueError(f"unsupported native language policy: {native}")
+    segments = segment_script(script_data, language_policy=language_policy)
+
+    # REPETITION PAUSE, for the types that teach by repetition.
+    #
+    # The segmenter's pause_after is a STITCHING hint from trailing
+    # punctuation and tops out at 0.18s for a full stop. That is right for
+    # prose and useless for "repeat after me": 0.18s is not a pause a
+    # learner can say a word into, so a repeat without this override is
+    # three utterances run together rather than three takes.
+    #
+    # Applied only to short ENGLISH segments, and only for types whose
+    # config declares takes > 1. educational declares 1, so its pacing —
+    # which the owner judges good — is untouched by construction.
+    from duration_spec import repetition_pause, takes as _takes_for
+    repeat_takes = _takes_for(script_data.get("type"))
+    repeat_gap = repetition_pause() if repeat_takes > 1 else None
+
     calls = []
     for i, seg in enumerate(segments):
         lang = (settings["english_lang"] if seg["lang"] == "en"
@@ -117,7 +139,18 @@ def plan_calls(script_data: Dict, settings: Dict = None) -> List[Dict]:
             "text": seg["text"],
             "lang": lang,
             "is_english": seg["lang"] == "en",
-            "pause_after": seg["pause_after"],
+            # NO WORD-COUNT FILTER. The first version reused the <=6 words
+            # condition from english_speed_factor above, and a pronunciation
+            # topic of "How Are You? (Not a Real Question)" — 7 words — fell
+            # straight through it and got the 0.03s stitching gap instead of
+            # a pause. In a type that teaches by repetition every English
+            # utterance is something the learner repeats, whatever its
+            # length, so length is not the right question to ask.
+            "pause_after": (
+                repeat_gap
+                if (repeat_gap is not None and seg["lang"] == "en")
+                else seg["pause_after"]
+            ),
             "voice_id": settings["voice_id"],
             "model_id": settings["model_id"],
             "speed": max(0.7, min(1.2, speed)),
@@ -239,6 +272,8 @@ def generate_bilingual_narration(
     output_path: str,
     voice_id: Optional[str] = None,
     dry_run: Optional[bool] = None,
+    settings: Optional[Dict] = None,
+    language_policy=None,
 ) -> Dict:
     """Generate the full narration mp3 + timestamp dict for a script.
 
@@ -249,10 +284,10 @@ def generate_bilingual_narration(
     if dry_run is None:
         dry_run = os.getenv("TTS_DRY_RUN", "").strip() in ("1", "true", "yes")
 
-    settings = resolve_settings()
+    settings = dict(settings or resolve_settings())
     if voice_id:
         settings["voice_id"] = voice_id
-    calls = plan_calls(script_data, settings)
+    calls = plan_calls(script_data, settings, language_policy=language_policy)
     if not calls:
         raise ValueError("Script produced no TTS segments (empty full_script?)")
 
@@ -263,20 +298,102 @@ def generate_bilingual_narration(
     if dry_run:
         return _dry_run(calls, script_data, output_path, settings)
 
-    from tts_common import generate_silence
+    from tts_common import (generate_silence, measure_speech_end,
+                            merge_punctuation_tokens)
 
     temp_dir = tempfile.mkdtemp(prefix="el_bilingual_")
     audio_files: List[str] = []
     all_words: List[Dict] = []
     running = 0.0
+    asr_segments = estimated_segments = clamped_segments = 0
     try:
         for call in calls:
             seg_path = os.path.join(temp_dir, f"seg_{call['index']:03d}.mp3")
             logger.info("  [%02d] %-2s %s", call["index"], call["lang"],
                         call["text"][:70])
             res = _synthesize_segment(call, seg_path, settings)
-            seg_words = res["words"] or _estimate_words(call["text"],
-                                                        res["duration"])
+
+            # REAL TIMINGS, NOT AN ESTIMATE. This is D5.
+            #
+            # The fallback below splits a clip's duration in proportion to
+            # each token's character count. A uniform split cannot know
+            # that the voice pauses at a comma or stops 0.4 s before the
+            # file does, so the LAST word's end — which becomes the
+            # segment's declared end — routinely overran the real speech.
+            # Tolerable until pronunciation's 0.9 s repeat pauses turned it
+            # into a dead_air rejection on a correct artifact.
+            #
+            # Per CLIP rather than over the finished narration: each clip's
+            # [start, start+duration] is already exact because `running`
+            # accumulates real durations, so only the positions inside a
+            # clip were ever in doubt. Working per clip also keeps each
+            # word's language attribution exact — it is the call's language,
+            # by construction, with no alignment guesswork.
+            #
+            # Order of preference: what the TTS itself reported, then ASR,
+            # then the estimate. None of the three ever fabricates: ASR
+            # returns None when no backend is available and the estimate is
+            # what we had before.
+            seg_words = res["words"]
+            if not seg_words:
+                from asr_timings import fit_to_clip, transcribe_words
+                measured = transcribe_words(
+                    seg_path, language="en" if call["is_english"] else "es")
+                if measured:
+                    seg_words = fit_to_clip(measured, res["duration"])
+                    asr_segments += 1
+            if not seg_words:
+                seg_words = _estimate_words(call["text"], res["duration"])
+                estimated_segments += 1
+
+            # ABSORB PUNCTUATION-ONLY TOKENS FIRST.
+            #
+            # The alignment returns "," and "." as tokens with their own
+            # spans. Left alone they reach the karaoke as words — a period
+            # highlighted on its own after "a different size?" — AND they
+            # keep a declared span that is not speech, which the clamp
+            # below and the QA gate would then both read as real.
+            #
+            # Applied per CLIP, so a mark can only ever attach to a word
+            # from its own segment.
+            seg_words = merge_punctuation_tokens(seg_words, boundary_key=None)
+
+            # CLAMP THE DECLARED END TO WHERE THE VOICE ACTUALLY STOPS.
+            #
+            # THIS, not the estimate, is what produced the dead air. The
+            # ElevenLabs character alignment is real — measured, not
+            # guessed — but it runs to the END OF THE FILE, and a TTS clip
+            # keeps 0.3-1.3 s of trailing silence after the voice stops.
+            # On a pronunciation narration the word '(noun)' came back
+            # declared 3.07 -> 4.12 when speech had ended at 2.95: a 1.05 s
+            # "word" that is really the tail of the clip.
+            #
+            # The consequence was that a declared SPEECH span swallowed the
+            # silence next to it, so the gap between two declarations —
+            # which is all the QA gate counts as intended silence — shrank
+            # to 0.33 s where 1.6 s of real silence sat. The gate called it
+            # dead air and was right to.
+            #
+            # measure_speech_end is the function the segmented generators
+            # have used for this all along, and its own docstring names the
+            # defect: "old-generator educational segments overran by up to
+            # 1.29 s". The bilingual path simply never called it.
+            #
+            # The AUDIO IS NOT TRIMMED. Trailing silence is real pacing and
+            # stays in the mix; only the declaration moves, so the renderer
+            # follows the voice instead of the file.
+            speech_end = measure_speech_end(seg_path)
+            if speech_end > 0 and speech_end < res["duration"]:
+                clamped = []
+                for w in seg_words:
+                    start = min(float(w["start"]), speech_end)
+                    end = min(float(w["end"]), speech_end)
+                    if end > start:
+                        clamped.append({**w, "start": round(start, 3),
+                                        "end": round(end, 3)})
+                if clamped:
+                    seg_words = clamped
+                    clamped_segments += 1
             for w in seg_words:
                 all_words.append({
                     "word": w["word"],
@@ -312,7 +429,15 @@ def generate_bilingual_narration(
         from tts_common import get_audio_duration
         duration = get_audio_duration(output_path)
 
-        result = _build_result(script_data, all_words, duration, calls)
+        result = _build_result(
+            script_data, all_words, duration, calls,
+            timing_source={
+                "asr_segments": asr_segments,
+                "estimated_segments": estimated_segments,
+                "clamped_segments": clamped_segments,
+                "backend": (__import__("asr_timings").backend_name()
+                            if asr_segments else "elevenlabs_alignment"),
+            })
         logger.info("Bilingual narration done: %.2fs, %d words (%d EN)",
                     duration, len(result["words"]),
                     sum(1 for w in result["words"] if w["is_english"]))
@@ -326,7 +451,7 @@ def generate_bilingual_narration(
 
 
 def _build_result(script_data: Dict, words: List[Dict], duration: float,
-                  calls: List[Dict]) -> Dict:
+                  calls: List[Dict], timing_source: Dict = None) -> Dict:
     """Attach sentence boundaries + build renderer-ready segments."""
     full_script = script_data.get("full_script", "")
     try:
@@ -370,6 +495,15 @@ def _build_result(script_data: Dict, words: List[Dict], duration: float,
         # exist in this scope; it raised NameError on every educational
         # generation and no test caught it, because nothing exercised this
         # module. tests/test_tts_bilingual_result.py now does.)
+        # WHERE THE WORD TIMINGS CAME FROM. Recorded, not inferred: an
+        # artifact whose karaoke is driven by these numbers should say
+        # whether they were measured or estimated.
+        #
+        # PASSED IN, not read from an enclosing scope. The comment two
+        # paragraphs down records that reading a caller's local from here
+        # raised NameError on every educational generation for two commits;
+        # this is the same function and the same trap.
+        "timing_source": dict(timing_source or {}),
         "tts_model_id": (calls[0].get("model_id") if calls else None),
         "tts_calls": [{k: c[k] for k in
                        ("index", "lang", "text", "speed", "pause_after")}

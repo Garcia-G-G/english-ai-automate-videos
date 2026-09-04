@@ -16,6 +16,7 @@ from config.colors import COUNTDOWN_COLORS, QUIZ_COLORS
 from config.layout import (
     CARD_MARGIN_X, CARD_WIDTH, CARD_RADIUS, CARD_PADDING,
     TIMER_BAR_X, TIMER_BAR_Y, TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT,
+    FB_SENTENCE_Y, FB_OPTIONS_START_Y, FB_COUNTDOWN_CENTER_Y, FB_TRANSLATION_Y,
 )
 from .utils import (
     strip_display_quotes,
@@ -36,14 +37,17 @@ _FB_SEGMENT_KEYS = [
 ]
 
 # ── Layout ────────────────────────────────────────────────────────
-_CARD_Y = 250                # sentence card top
-_OPTIONS_Y = 520             # first option card top
+# Positions come from config.layout now. They used to be private copies
+# here, diverging from the public constants by up to 100px with nothing
+# reading the public ones.
+_CARD_Y = FB_SENTENCE_Y      # sentence card top
+_OPTIONS_Y = FB_OPTIONS_START_Y  # first option card top
 _OPT_W = 860                 # option card width
 _OPT_H = 75                  # option card height
 _OPT_GAP = 12                # vertical gap between option cards
 _OPT_STAGGER = 0.10          # 100ms stagger between options
-_COUNTDOWN_CY = 950          # countdown number center Y
-_TRANSLATION_CY = 1050       # translation pill center Y
+_COUNTDOWN_CY = FB_COUNTDOWN_CENTER_Y      # countdown number center Y
+_TRANSLATION_CY = FB_TRANSLATION_Y         # translation pill center Y
 _TEXT_MAX_W = CARD_WIDTH - CARD_PADDING * 2
 
 # ── Colors ────────────────────────────────────────────────────────
@@ -123,8 +127,12 @@ def _draw_sentence_card(t, draw, frame, sentence, correct, show_answer, answer_t
     else:
         display = sentence
 
-    sf, sz, lines, total_h = fit_text_font(display, 48, 32, _TEXT_MAX_W)
-    card_h = max(140, total_h + CARD_PADDING * 2 + 12)
+    box = fit_text_font(display, 48, 32, _TEXT_MAX_W)
+    sf, sz, lines = box.font, box.size, box.lines
+    # INK, because this card is sized around the text: it should hug the
+    # glyphs, not the line box, or the padding reads as larger at the top
+    # and bottom than at the sides.
+    card_h = max(140, box.height + CARD_PADDING * 2 + 12)
     card_y = _CARD_Y + bounce
 
     # White card
@@ -146,7 +154,10 @@ def _draw_sentence_card(t, draw, frame, sentence, correct, show_answer, answer_t
 
     # Multi-line or no blank → simple centered rendering
     if len(lines) > 1 or not parts:
-        ty = text_cy - total_h // 2
+        # ADVANCE, because draw_text_centered below steps line to line by a
+        # per-line advance rather than by ink, so the block it produces is
+        # advance-tall and has to be centred as such.
+        ty = text_cy - box.advance_height // 2
         color = _CORRECT_GREEN if show_answer else _TEXT_DARK
         draw_text_centered(draw, display, ty, sf, color, 255, outline=0,
                            max_width=_TEXT_MAX_W)

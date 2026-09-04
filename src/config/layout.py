@@ -15,7 +15,12 @@ TEXT_AREA_WIDTH = VIDEO_WIDTH - (MARGIN_X * 2)
 SAFE_AREA_TOP = int(VIDEO_HEIGHT * 0.15)       # 15% from top
 SAFE_AREA_BOTTOM = int(VIDEO_HEIGHT * 0.85)    # 15% from bottom
 SAFE_AREA_HEIGHT = SAFE_AREA_BOTTOM - SAFE_AREA_TOP
-TEXT_CENTER_Y = VIDEO_HEIGHT // 2 - 40         # Slightly above center
+# TEXT_CENTER_Y lived here as VIDEO_HEIGHT // 2 - 40 and no renderer ever
+# read it. Removed rather than left in place: educational.py is the only
+# type that centres text, and it derives the position from the safe band and
+# the measured block instead of anchoring to a fixed row. A constant that
+# names the canonical text centre, that nothing consults, and that disagrees
+# with how the centring actually works, is worse than no constant.
 
 # ── Subtitle formatting (BBC guidelines) ─────────────────────────
 MAX_CHARS_PER_LINE = 40
@@ -49,10 +54,16 @@ TF_BTN_GAP = 70
 TF_BTN_RADIUS = 30
 
 # ── Fill-in-the-blank layout ─────────────────────────────────────
-FB_SENTENCE_Y = 350
-FB_OPTIONS_START_Y = 600
-FB_COUNTDOWN_CENTER_Y = 920
-FB_TRANSLATION_Y = 1000
+# These four carried 350/600/920/1000 while fill_blank.py positioned from
+# private copies holding 250/520/950/1050, and nothing read the public ones.
+# Reconciled to the values that have actually been shipping, because the
+# alternative — making the renderer obey the public numbers — would move the
+# sentence card 100px and the options 80px, which is a retune wearing a
+# tidy-up's clothes. tests/test_layout_pins.py holds them still.
+FB_SENTENCE_Y = 250          # sentence card top
+FB_OPTIONS_START_Y = 520     # first option card top
+FB_COUNTDOWN_CENTER_Y = 950  # countdown number centre
+FB_TRANSLATION_Y = 1050      # translation pill centre
 
 # ── Pronunciation layout zones ───────────────────────────────────
 # Spread out to prevent overlap with large/wrapped text.
@@ -77,7 +88,20 @@ CARD_WIDTH = VIDEO_WIDTH - 2 * CARD_MARGIN_X  # 960px
 # ── Two-column vocabulary ────────────────────────────────────────
 VOCAB_ROW_HEIGHT = 90
 VOCAB_DIVIDER_X = 500
-VOCAB_START_Y = 350
+# Was VOCAB_START_Y = 350 and unread; vocabulary.py used a private
+# _CARD_TOP_MIN = 260. Renamed as well as revalued because the old name was
+# half the lie: the number is a floor the card may not rise above, not the
+# row where it starts. The card's real top is derived from the title height.
+VOCAB_CARD_TOP_MIN = 260
+# ENFORCED as of the duration work. This was logged debt for two passes:
+# "declared but never enforced — _draw_vocab_rows takes len(pairs) uncapped,
+# so a deck longer than this overflows rather than truncating". Raising the
+# prompt from 6-10 pairs to 10-12 to reach the duration band walked the deck
+# straight up to the limit, so the limit had to become real. video/
+# vocabulary.py truncates to this and logs when it does.
+#
+# 12 is the geometric floor minus a margin: 14 rows fit, 12 leaves the card
+# breathing room at the bottom rather than butting against the timer bar.
 VOCAB_MAX_ROWS = 12
 
 # ── Timer bar ────────────────────────────────────────────────────

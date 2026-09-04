@@ -71,8 +71,13 @@ def _lookup_translation(en_text: str, translations: Dict[str, str]) -> str:
 class EducationalRendererV2:
     """Callable frame generator: ``f(t) -> np.ndarray`` RGB (1920, 1080, 3)."""
 
-    def __init__(self, data: Dict, duration: float, profile_name: str = "adults"):
+    def __init__(self, data: Dict, duration: float, profile_name: str = "adults",
+                 presentation=None):
+        if presentation is None:
+            from studio.renderer_presentation import resolve_presentation
+            presentation = resolve_presentation("es")
         self.T: Tokens = get_tokens(profile_name)
+        self.presentation = presentation
         self.duration = duration
         self.translations: Dict[str, str] = data.get("translations", {}) or {}
         self.cta_start = max(0.0, duration - CTA_LEN)
@@ -423,7 +428,11 @@ class EducationalRendererV2:
         block_h = H["n_lines"] * H["line_h"]
         zone_top, zone_bot = self._body_top, self._body_bottom
         label_f = load_font(self.T.name, "text", D.TYPE_SCALE["caption"]["size"])
-        label = "MINI CLASE DE INGLÉS" if self.T.name == "adults" else "¡INGLÉS PARA PEQUES!"
+        label = (
+            self.presentation.educational_adults
+            if self.T.name == "adults"
+            else self.presentation.educational_children
+        )
         label_h = 70
         y0 = zone_top + (zone_bot - zone_top - block_h - label_h) // 2 + label_h
         y0 = max(y0, zone_top + label_h + 12)

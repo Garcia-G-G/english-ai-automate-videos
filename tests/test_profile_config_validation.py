@@ -32,6 +32,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import profiles  # noqa: E402
 from config.secrets import is_valid_voice_id, voice_id_pattern  # noqa: E402
+from studio.audiences import InvalidAudienceProfile  # noqa: E402
 
 VALID_VOICE = "ZOgeDYxfyev5qgOXq2lN"          # the real default voice id
 PLACEHOLDER = "KIDS_VOICE_ID_PENDIENTE"        # what config.yaml shipped
@@ -156,20 +157,67 @@ def test_every_language_code_model_is_accepted_without_warning(caplog):
 
 # ── the shipped config ───────────────────────────────────────────────
 
-def test_shipped_kids_profile_is_still_flagged():
-    """Documents reality rather than asserting a fix: config.yaml still holds
-    the placeholder, and loading that profile must now fail loudly. Delete
-    this test when a real kids voice id is set."""
-    kids = profiles.get_active_profile("kids")
-    voice = (kids.get("audio") or {}).get("voice_id")
+def test_shipped_profile_is_canonical_children_and_requires_voice(monkeypatch):
+    config = profiles._load_config()
+    assert "children" in config["profiles"]
+    assert "kids" not in config["profiles"]
 
-    if voice == PLACEHOLDER:
-        with pytest.raises(ValueError, match="voice_id"):
-            profiles.apply_profile_env(kids)
-    else:
-        assert is_valid_voice_id(voice), (
-            f"kids voice_id was changed to {voice!r}, which is still invalid"
-        )
+    monkeypatch.delenv("CHILDREN_ELEVENLABS_VOICE_ID", raising=False)
+    with pytest.raises(InvalidAudienceProfile, match="voice_id"):
+        profiles.get_active_profile("children")
+    with pytest.raises(InvalidAudienceProfile, match="voice_id"):
+        profiles.get_active_profile("kids")
+
+
+def test_get_active_profile_priority_and_legacy_normalization(tmp_path, monkeypatch):
+    config = tmp_path / "config.yaml"
+    config.write_text(
+        f"""
+profile: children
+audio: {{voice_id: default}}
+video: {{}}
+content: {{}}
+profiles:
+  adults: {{}}
+  children:
+    audio: {{voice_id: {VALID_VOICE}}}
+""",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(profiles, "CONFIG_PATH", config)
+    monkeypatch.setenv("VIDEO_PROFILE", "kids")
+
+    assert profiles.get_active_profile()["name"] == "children"
+    assert profiles.get_active_profile("adults")["name"] == "adults"
+
+    monkeypatch.delenv("VIDEO_PROFILE")
+    assert profiles.get_active_profile()["name"] == "children"
+
+    config.write_text(config.read_text().replace("profile: children", "profile: ''"))
+    assert profiles.get_active_profile()["name"] == "adults"
+
+
+def test_get_active_profile_does_not_rename_provider_exports(tmp_path, monkeypatch):
+    config = tmp_path / "config.yaml"
+    config.write_text(
+        f"""
+audio: {{voice_id: default}}
+video: {{}}
+content: {{}}
+profiles:
+  children:
+    audio: {{voice_id: {VALID_VOICE}}}
+""",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(profiles, "CONFIG_PATH", config)
+
+    child = profiles.get_active_profile("kids")
+    profiles.apply_profile_env(child)
+
+    assert child["name"] == "children"
+    assert os.environ["ELEVENLABS_VOICE_ID"] == VALID_VOICE
+    assert os.environ["VIDEO_PROFILE_VOICE_ID"] == VALID_VOICE
 
 
 if __name__ == "__main__":

@@ -15,13 +15,14 @@ from .constants import (
     ENGLISH_WORD_COLOR, ENGLISH_WORD_SCALE,
     ENGLISH_GLOW_RADIUS, GROUP_TRANSITION, EMPHASIS,
     SIZE_MAIN_SPANISH, SIZE_ENGLISH_WORD, SIZE_TRANSLATION,
-    SAFE_AREA_TOP, SAFE_AREA_BOTTOM,
+    SAFE_AREA_TOP, SAFE_AREA_BOTTOM, SAFE_AREA_HEIGHT,
 )
 from .utils import (
     font, line_break, draw_text_with_glow, draw_text_solid,
     draw_rounded_card, slide_in_x,
     get_word_animation_state, fit_text_font,
     create_base_frame, finalize_frame,
+    font_line_height,
 )
 from .v2 import timing_engine as TE
 from config.layout import CARD_MARGIN_X, CARD_PADDING, CARD_RADIUS, CARD_WIDTH
@@ -31,6 +32,11 @@ from config.colors import CARD_COLORS
 _SPANISH_ACTIVE = (0, 120, 200)      # dark blue — pops on cream
 _SPANISH_UPCOMING = (60, 70, 90)     # dark grey — readable on cream
 _SPANISH_PAST = (130, 140, 160)      # medium grey — subtle on cream
+
+# Alpha for a word the narrator has not reached yet, out of
+# 255. Low enough to read as "coming up" rather than as content, high enough
+# that the card looks occupied.
+_UPCOMING_ALPHA = 110
 
 # ── Translation styling (inside dark glassmorphism card) ─────────
 _TRANS_SIZE = 48
@@ -201,12 +207,12 @@ def _render_group_tiktok(
 
     # Dynamic font size — shrink for long text, max 2 lines
     max_w = CARD_WIDTH - CARD_PADDING * 2 - 40
-    max_h = int(SIZE_MAIN_SPANISH * 1.4 * 2.2)
+    max_h = int(font_line_height(font(SIZE_MAIN_SPANISH)) * 2.2)
     _, base_size, lines, _ = fit_text_font(text, SIZE_MAIN_SPANISH, 42, max_w, max_h)
     base_size = max(42, min(SIZE_MAIN_SPANISH, base_size))
 
     f = font(base_size)
-    line_h = int(base_size * 1.4)
+    line_h = font_line_height(f)
     text_h = len(lines) * line_h
 
     # ── Detect English content + translation for second card ──
@@ -270,7 +276,7 @@ def _render_group_tiktok(
         bounce_offset_y = int(30 * (1 - eased))
 
     # Vertical centering with clamping
-    safe_h = SAFE_AREA_BOTTOM - SAFE_AREA_TOP
+    safe_h = SAFE_AREA_HEIGHT
     card_y = SAFE_AREA_TOP + (safe_h - total_h) // 2 + bounce_offset_y
     card_y = max(SAFE_AREA_TOP, card_y)
     if card_y + total_h > SAFE_AREA_BOTTOM:
@@ -460,7 +466,7 @@ def _render_spanish_karaoke(
     full_text = ' '.join(word_texts)
 
     lines = line_break(full_text, f, text_max_w)
-    line_h = int(base_size * 1.4)
+    line_h = font_line_height(f)
 
     word_idx = 0
     cur_y = base_y
@@ -495,6 +501,14 @@ def _render_spanish_karaoke(
 
             word_alpha = int(state['alpha'] * group_alpha / 255)
 
+            # A word the narrator has not reached is drawn dimmed rather than
+            # not at all. The card is sized for the whole phrase from its first
+            # frame, so without this the opening seconds of every phrase show
+            # one or two words in a mostly empty card — measured at a median
+            # 70% of the card carrying no ink.
+            if state['alpha'] <= 0 and t < word_start:
+                word_alpha = int(_UPCOMING_ALPHA * group_alpha / 255)
+
             if word_alpha > 0:
                 if is_english_word:
                     word_color = ENGLISH_WORD_COLOR
@@ -523,13 +537,38 @@ def _render_spanish_karaoke(
                     scaled_size = int(word_font_size * state['scale'])
                     wf = font(max(10, scaled_size))
 
-                offset_x = state['offset_x']
+                # NAMED anim_offset_x, not offset_x. The parameter of the
+                # same name carries the CARD's horizontal offset and is read
+                # again for the next line's start_x; rebinding it here left
+                # every line after the first positioned by whatever the last
+                # word of the previous line happened to be animating.
+                anim_offset_x = state['offset_x']
                 offset_y = state['offset_y']
+
+                # THE POP MUST NOT PUSH THE NEXT WORD.
+                #
+                # The active word is drawn with a font scaled up to 1.08,
+                # but the cursor below advances using the BASE font, so a
+                # popping word overflows its own slot and collides with the
+                # word after it: "He didn'tshow up to the meeting" in
+                # art_20260903_175853. The apostrophe was a coincidence —
+                # didn't simply happened to be the word popping.
+                #
+                # Advancing by the scaled width instead would reflow the
+                # line on every frame and break the centring that
+                # line_break measured with the base font. So the enlarged
+                # glyphs are CENTRED on the base-font slot: the emphasis
+                # still reads, the layout never moves.
+                grow = 0
+                if wf is not f:
+                    base_w = draw.textbbox((0, 0), display_word, font=f)[2]
+                    scaled_w = draw.textbbox((0, 0), display_word, font=wf)[2]
+                    grow = (scaled_w - base_w) // 2
 
                 if use_glow and not is_fading_out:
                     draw_text_with_glow(
                         draw, frame, display_word,
-                        wx + offset_x, cur_y + offset_y,
+                        wx + anim_offset_x - grow, cur_y + offset_y,
                         wf, word_color, word_alpha,
                         outline=5, glow=True,
                         glow_color=ENGLISH_WORD_COLOR
@@ -537,7 +576,7 @@ def _render_spanish_karaoke(
                 else:
                     draw_text_solid(
                         draw, display_word,
-                        wx + offset_x, cur_y + offset_y,
+                        wx + anim_offset_x - grow, cur_y + offset_y,
                         wf, word_color, word_alpha,
                         outline=outline
                     )
@@ -717,7 +756,7 @@ def _render_text_simple(
     f = font(fsize)
 
     lines = line_break(text, f, TEXT_AREA_WIDTH - 60)
-    line_h = int(fsize * 1.4)
+    line_h = font_line_height(f)
     cur_y = base_y
 
     color = ENGLISH_WORD_COLOR if is_english else _SPANISH_ACTIVE

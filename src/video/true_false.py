@@ -32,8 +32,8 @@ from config.layout import (
     TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT, TIMER_BAR_Y, TIMER_BAR_X,
 )
 from config.colors import (
-    VERDADERO_GRAD_TOP, VERDADERO_GRAD_BOT,
-    FALSO_GRAD_TOP, FALSO_GRAD_BOT,
+    CORRECT_GRAD_TOP, CORRECT_GRAD_BOT, CORRECT_BORDER, CORRECT_GLOW,
+    INCORRECT_GRAD_TOP, INCORRECT_GRAD_BOT,
     NEUTRAL_GRAD_TOP, NEUTRAL_GRAD_BOT,
     COUNTDOWN_COLORS,
 )
@@ -41,6 +41,7 @@ from config.timing import (
     TF_SLIDE_DURATION as SLIDE_DURATION,
     TF_QUESTION_FADE_DURATION as QUESTION_FADE_DURATION,
 )
+from .brand import watermark_top
 from .utils import (
     strip_display_quotes,
     font, line_break, draw_text_solid, draw_text_centered,
@@ -49,6 +50,7 @@ from .utils import (
     create_base_frame, finalize_frame,
     seg_start as _seg_start, seg_end as _seg_end,
     log_segment_timestamps, resolve_countdown_number,
+    font_line_height,
 )
 
 logger = logging.getLogger(__name__)
@@ -295,9 +297,13 @@ def _draw_countdown_number(
 def create_frame_true_false(
     t: float,
     data: Dict,
-    duration: float
+    duration: float,
+    presentation=None,
 ) -> np.ndarray:
     """Create frame for true/false video type with card-based modern design."""
+    if presentation is None:
+        from studio.renderer_presentation import resolve_presentation
+        presentation = resolve_presentation("es")
     frame, draw = create_base_frame(t)
 
     # No defaults. `correct` defaulting to True was the worst of the set:
@@ -337,7 +343,7 @@ def create_frame_true_false(
         statement, 56, 36, max_text_w, max_text_h,
     )
 
-    line_h = int(q_font_size * 1.4)
+    line_h = font_line_height(qf)
     card_inner_h = len(q_lines) * line_h + card_padding * 2
     card_y = QUESTION_ZONE_TOP + (QUESTION_ZONE_HEIGHT - card_inner_h) // 2
 
@@ -414,9 +420,15 @@ def create_frame_true_false(
         false_x = base_x_right + right_offset
         false_alpha = int(255 * min(1.0, right_elapsed / 0.3))
 
-        # Button labels with emoji
-        true_label = "\u2713 VERDADERO"
-        false_label = "\u2717 FALSO"
+        # Labels carry no verdict until there is one to carry, and then they
+        # carry it by CORRECTNESS. These used to be fixed to the option, so a
+        # video whose answer was FALSO showed the right answer with a cross on
+        # it and the wrong one with a tick.
+        true_label = presentation.true_label
+        false_label = presentation.false_label
+        if show_answer:
+            true_label = ("\u2713 " if correct else "\u2717 ") + true_label
+            false_label = ("\u2717 " if correct else "\u2713 ") + false_label
 
         if show_answer:
             answer_elapsed = t - answer_time
@@ -425,18 +437,18 @@ def create_frame_true_false(
                 # VERDADERO is correct
                 true_glow = glow_intensity(t, answer_time)
                 true_ps = pulse_scale(t, answer_time)
-                true_grad_top = VERDADERO_GRAD_TOP
-                true_grad_bot = VERDADERO_GRAD_BOT
-                true_border = (180, 255, 180)
+                true_grad_top = CORRECT_GRAD_TOP
+                true_grad_bot = CORRECT_GRAD_BOT
+                true_border = CORRECT_BORDER
                 true_border_w = max(3, int(5 * true_glow))
-                true_glow_c = (100, 255, 140)
+                true_glow_c = CORRECT_GLOW
                 true_glow_s = true_glow * 0.8
 
                 # Wrong fades to 25% + 10px outward slide
                 wrong_slide = int(10 * min(1.0, answer_elapsed / 0.4))
                 false_alpha = max(40, int(255 * 0.25))
-                false_grad_top = (140, 140, 150)
-                false_grad_bot = (100, 100, 110)
+                false_grad_top = INCORRECT_GRAD_TOP
+                false_grad_bot = INCORRECT_GRAD_BOT
                 false_border = None
                 false_border_w = 0
                 false_glow_c = None
@@ -471,18 +483,18 @@ def create_frame_true_false(
                 # FALSO is correct
                 false_glow = glow_intensity(t, answer_time)
                 false_ps = pulse_scale(t, answer_time)
-                false_grad_top = FALSO_GRAD_TOP
-                false_grad_bot = FALSO_GRAD_BOT
-                false_border = (255, 180, 180)
+                false_grad_top = CORRECT_GRAD_TOP
+                false_grad_bot = CORRECT_GRAD_BOT
+                false_border = CORRECT_BORDER
                 false_border_w = max(3, int(5 * false_glow))
-                false_glow_c = (255, 100, 100)
+                false_glow_c = CORRECT_GLOW
                 false_glow_s = false_glow * 0.8
 
                 # Wrong fades to 25% + 10px outward slide
                 wrong_slide = int(10 * min(1.0, answer_elapsed / 0.4))
                 true_alpha = max(40, int(255 * 0.25))
-                true_grad_top = (140, 140, 150)
-                true_grad_bot = (100, 100, 110)
+                true_grad_top = INCORRECT_GRAD_TOP
+                true_grad_bot = INCORRECT_GRAD_BOT
                 true_border = None
                 true_border_w = 0
                 true_glow_c = None
@@ -583,13 +595,16 @@ def create_frame_true_false(
             exp_y = exp_y_base + slide_offset
             exp_padding = 28
             max_exp_w = CARD_WIDTH - exp_padding * 2
-            max_exp_h = SAFE_AREA_BOTTOM - exp_y - exp_padding * 2
+            # Budget stops above the watermark, not at the safe-area floor.
+            # Both used to reach for SAFE_AREA_BOTTOM independently, so a
+            # card that filled its budget landed on the mark.
+            max_exp_h = watermark_top() - exp_y - exp_padding * 2
 
             clean_exp = strip_display_quotes(explanation).strip()
             ef, exp_font_size, exp_lines, exp_text_h = fit_text_font(
                 clean_exp, 42, 28, max_exp_w, max_exp_h,
             )
-            exp_line_h = int(exp_font_size * 1.4)
+            exp_line_h = font_line_height(ef)
             exp_height = len(exp_lines) * exp_line_h + exp_padding * 2
 
             # Light card

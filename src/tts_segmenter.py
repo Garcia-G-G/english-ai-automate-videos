@@ -33,6 +33,7 @@ Each segment is ``{"text": str, "lang": "es"|"en", "pause_after": float}``.
 """
 
 import re
+from dataclasses import dataclass
 from typing import Dict, List
 from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
@@ -64,6 +65,33 @@ _ES_HINTS = _SPANISH_COMMON | {
 
 _EN_SUFFIXES = ('ing', 'ght', 'tion', 'ck', 'sh', ' th', 'oo', 'ee',
                 'ould', 'ay', 'ey', 'ow', 'aw', "'s", "n't", 'ed')
+
+
+@dataclass(frozen=True)
+class LanguagePolicy:
+    """One explicit native-narration and English-teaching language pair."""
+
+    native_language: str
+    narration_code: str
+    english_code: str = "en"
+
+
+LANGUAGE_POLICIES = {
+    "es": LanguagePolicy("es", "es"),
+    "zh-Hans": LanguagePolicy("zh-Hans", "zh"),
+}
+
+
+def _resolve_policy(narration_lang: str, language_policy) -> LanguagePolicy:
+    if language_policy is not None:
+        if not isinstance(language_policy, LanguagePolicy):
+            raise ValueError("invalid language policy")
+        return language_policy
+    if narration_lang != "es":
+        raise ValueError(
+            "non-Spanish narration requires an explicit language policy"
+        )
+    return LANGUAGE_POLICIES["es"]
 
 
 def looks_english(text: str) -> bool:
@@ -271,12 +299,15 @@ def _extend_en_spans(text: str, spans: list) -> list:
 
 
 def segment_text(text: str, english_terms: List[str],
-                 narration_lang: str = "es") -> List[Dict]:
+                 narration_lang: str = "es", *,
+                 language_policy: LanguagePolicy = None) -> List[Dict]:
     """Split ``text`` into ordered {text, lang, pause_after} segments.
 
     Priority: metadata terms > quoted spans (heuristic) > narration lang.
     English words embedded in a Spanish sentence become their own segment.
     """
+    policy = _resolve_policy(narration_lang, language_policy)
+    narration_lang = policy.narration_code
     text = (text or "").strip()
     if not text:
         return []
@@ -308,6 +339,9 @@ def segment_text(text: str, english_terms: List[str],
 
     spans.sort()
     spans = _extend_en_spans(text, spans)
+
+    if language_policy is not None:
+        return _policy_segments(text, spans, policy)
 
     # 3. Build the ordered segment list.
     segments: List[Dict] = []
@@ -373,7 +407,113 @@ def segment_text(text: str, english_terms: List[str],
     return merged
 
 
-def segment_script(script_data: Dict, narration_lang: str = "es") -> List[Dict]:
+#: Marks that CLOSE a clause and therefore belong to the chunk they end.
+#:
+#: DELIBERATELY EXCLUDES ¿ AND ¡. Spanish opens a question or an
+#: exclamation with them and they must stay at the head of their own chunk.
+#: A fix that ate those would be worse than the bug it fixes, so they are
+#: absent here and a test asserts it.
+#:
+#: Quote characters ARE included, and that took a measurement to settle.
+#: The English spans are matched INSIDE their quotes, so the Spanish chunk
+#: after one begins with the term's own CLOSING quote and only then the
+#: full stop — "'. Este verbo…". Excluding quotes stopped the scan on that
+#: first character and the period never moved. A leading quote on a
+#: non-first chunk is always a closer, because an opening quote sits at the
+#: END of the chunk before the span. Moving it is harmless either way:
+#: wrapping quotes are stripped from the spoken text a few lines below.
+_CLOSING_MARKS = ".,;:!?…)]»'\"“”’"
+
+
+def _reclaim_closing_marks(text: str, pieces: list) -> list:
+    """Move a chunk's LEADING closing punctuation back onto its predecessor.
+
+    THE DEFECT. Chunks are cut at the boundaries of the English spans
+    inside a sentence, so the Spanish chunk that follows an English term
+    begins at the character right after it — which is the full stop that
+    ENDED that sentence. The narration then carried chunks like
+    ".Este verbo es muy útil", and because the mark led the chunk it also
+    led the card the karaoke drew.
+
+    Four of 92 segments in one render opened this way: '.Este verbo…',
+    '.Por ejemplo…', '.Un tip para recordar…', '.Excelente,'.
+
+    Fixed HERE rather than in the word timeline. Merging a leading mark
+    backwards at timeline level would stretch the previous word's declared
+    end across the gap between two TTS clips, which re-creates the timing
+    defect that the declared-silence work removed. A chunk boundary has no
+    such cost: nothing has been synthesised yet, so moving the character
+    moves the audio with it.
+
+    Boundaries stay CONTIGUOUS and lossless — every character of `text`
+    still belongs to exactly one piece, so source_start/source_end remain a
+    faithful map back onto the script.
+    """
+    adjusted = []
+    for start, end, lang in pieces:
+        while adjusted and start < end and (
+                text[start] in _CLOSING_MARKS or text[start].isspace()):
+            # Whitespace moves too, so the mark does not end up orphaned
+            # from its sentence by a stray leading space.
+            previous_start, _previous_end, previous_lang = adjusted[-1]
+            adjusted[-1] = (previous_start, start + 1, previous_lang)
+            start += 1
+        if start < end:
+            adjusted.append((start, end, lang))
+    return adjusted
+
+
+def _policy_segments(text: str, spans: list, policy: LanguagePolicy) -> List[Dict]:
+    """Build a lossless source plan while keeping cleaned text for TTS."""
+    pieces = []
+    cursor = 0
+    for start, end, _ in spans:
+        if cursor < start:
+            pieces.append((cursor, start, policy.narration_code))
+        pieces.append((start, end, policy.english_code))
+        cursor = end
+    if cursor < len(text):
+        pieces.append((cursor, len(text), policy.narration_code))
+
+    merged = []
+    for start, end, lang in pieces:
+        if start == end:
+            continue
+        if merged and merged[-1][2] == lang and merged[-1][1] == start:
+            merged[-1] = (merged[-1][0], end, lang)
+        else:
+            merged.append((start, end, lang))
+
+    # A chunk must END with its own closing punctuation and must not BEGIN
+    # with someone else's.
+    merged = _reclaim_closing_marks(text, merged)
+
+    result = []
+    for index, (start, end, lang) in enumerate(merged):
+        source = text[start:end]
+        spoken = re.sub(r'\s+', ' ', source).strip().strip("'\"“”‘’")
+        # Drop quote marks that are NOT between letters, so a closing quote
+        # reclaimed from the next chunk does not reach the voice as
+        # "show up'." while "didn't" and "Let's" keep their apostrophes.
+        # Same expression the non-policy path has always used.
+        spoken = re.sub(r"(?<![A-Za-z])['\"“”‘’]|['\"“”‘’](?![A-Za-z])",
+                        '', spoken).strip()
+        if not spoken:
+            spoken = source
+        result.append({
+            "index": index,
+            "text": spoken,
+            "lang": lang,
+            "pause_after": _pause_for(source),
+            "source_text": source,
+            "source_start": start,
+            "source_end": end,
+        })
+    return result
+
+
+def segment_script(script_data: Dict, narration_lang: str = "es", *,
+                   language_policy: LanguagePolicy = None) -> List[Dict]:
     """Segment a script's ``full_script`` using its own metadata terms."""
     try:
         from tts_common import clean_for_tts
@@ -381,7 +521,12 @@ def segment_script(script_data: Dict, narration_lang: str = "es") -> List[Dict]:
         clean_for_tts = lambda t: t  # noqa: E731
     text = clean_for_tts(script_data.get('full_script', '') or '')
     terms = collect_english_terms(script_data)
-    return segment_text(text, terms, narration_lang)
+    return segment_text(
+        text,
+        terms,
+        narration_lang,
+        language_policy=language_policy,
+    )
 
 
 def describe_segments(segments: List[Dict]) -> str:
