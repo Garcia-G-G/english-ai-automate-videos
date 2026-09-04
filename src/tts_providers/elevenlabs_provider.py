@@ -95,7 +95,11 @@ class ElevenLabsTTSProvider(TTSProvider):
                     original_text=text,
                     explicit_english=english_phrases,
                 )
-                whisper_words = whisper_result.get('words', [])
+                # Same absorption as the bilingual path: Whisper also
+                # emits standalone punctuation tokens.
+                from tts_common import merge_punctuation_tokens
+                whisper_words = merge_punctuation_tokens(
+                    whisper_result.get('words', []), boundary_key=None)
                 whisper_duration = whisper_result.get('duration', duration)
                 if whisper_words:
                     duration = whisper_duration

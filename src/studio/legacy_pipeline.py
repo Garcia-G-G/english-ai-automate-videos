@@ -4,13 +4,16 @@ from __future__ import annotations
 
 import copy
 import json
+import logging
 from pathlib import Path
 from typing import Callable
 
 from .creation import AuthorResult, ProductionResult
-from .editorial_costs import cost_delta, invoke_with_costs
+from .editorial_costs import attach_costs, cost_delta, invoke_with_costs
 from .media_validation import inspect_frames, probe_media, validate_timing, validate_video
 from .models import ArtifactPaths, CreationMode, Market
+
+logger = logging.getLogger(__name__)
 
 
 def _random_topic(*, allowed_categories):
@@ -53,6 +56,12 @@ def _merge_script_into_tts(*args, **kwargs):
     import pipeline
 
     return pipeline.merge_script_into_tts(*args, **kwargs)
+
+
+def duration_check(*args, **kwargs):
+    from duration_spec import check
+
+    return check(*args, **kwargs)
 
 
 def _resolve_background(*args, **kwargs):
@@ -112,7 +121,24 @@ class TopicScriptAuthor:
             selected = self._topic_finder(request.category, topic_name)
             category = request.category
         else:
-            allowed = audience.get("content", {}).get("categories")
+            # THE TYPE CONSTRAINS THE DRAW NOW.
+            #
+            # This used to pass the audience's category list alone, so the
+            # video type and the topic category were independent draws and
+            # any pairing was possible: 43 of 221 rendered artifacts (19%)
+            # got a category that did not suit the type, and 0 of 20
+            # pronunciation videos ever drew from the pronunciation file.
+            #
+            # The mapping is NOT written here — it is config, because it is
+            # an editorial judgement that will be revised by whoever owns
+            # the content. This only intersects the two lists and refuses
+            # when they do not overlap.
+            from type_categories import resolve as _eligible_categories
+
+            allowed = _eligible_categories(
+                video_type,
+                audience.get("content", {}).get("categories"),
+            )
             category, selected = self._random_topic(
                 allowed_categories=copy.deepcopy(allowed)
             )
@@ -149,6 +175,45 @@ class LegacyProductionGateway:
         self._finalize_video = finalizer
 
     def produce(self, artifact, script: dict, profile: dict, progress) -> ProductionResult:
+        """Render one artifact, and record what it cost either way.
+
+        THE LEDGER IS WRITTEN IN A finally. Not because failure is expected,
+        but because this path never wrote it at all — `tracker.save()`
+        appeared only in admin.py, so every CLI render logged its spend to
+        the console and persisted none of it. The first real run of this
+        path spent $0.0734 on a script and a full TTS, was blocked before
+        the renderer, and left no row in output/costs/.
+
+        Iterating on a broken pipeline is exactly when spend accumulates
+        fastest and least visibly, and config.yaml carries a monthly ceiling
+        that reads output/costs/. A ceiling fed only by successes
+        under-counts precisely when it matters most.
+        """
+        tracker = self._get_tracker(video_id=artifact.artifact_id)
+        start = len(tracker.entries)
+        try:
+            return self._produce(artifact, script, profile, progress, tracker)
+        except Exception as exc:                               # noqa: BLE001
+            # The ledger below is the authoritative record; this is the copy
+            # the artifact shows, so it cannot say $0.0008 for a run that
+            # spent $0.0734. A BARE re-raise: the delegated stage's own
+            # exception must reach the caller unchanged.
+            attach_costs(exc, tracker, start)
+            raise
+        finally:
+            self._persist_costs(tracker)
+
+    @staticmethod
+    def _persist_costs(tracker) -> None:
+        """save() is a no-op with no entries, and must never mask the real
+        error — a failure to write the ledger is not what took the run down."""
+        try:
+            tracker.save()
+        except Exception:                                      # noqa: BLE001
+            logger.exception("could not persist the cost ledger")
+
+    def _produce(self, artifact, script: dict, profile: dict, progress,
+                 tracker) -> ProductionResult:
         artifact_dir = self._artifact_directory(artifact.artifact_id)
         if not artifact_dir.is_dir():
             raise FileNotFoundError(f"artifact directory missing: {artifact_dir}")
@@ -171,7 +236,6 @@ class LegacyProductionGateway:
         )
         progress("script_saved", 10)
 
-        tracker = self._get_tracker(video_id=artifact.artifact_id)
         cost_start = len(tracker.entries)
 
         produced_audio, metadata_path = self._generate_tts(
@@ -192,16 +256,66 @@ class LegacyProductionGateway:
         )
         tts_metadata = self._read_metadata(metadata_path)
         audio_probe = self._media_probe(produced_audio)
-        validate_timing(tts_metadata, audio_probe)
+        validate_timing(tts_metadata, audio_probe,
+                        canonical_script.get("type"))
+
+        # DURATION IS A SPECIFICATION NOW, and this is where it is judged.
+        #
+        # AFTER the synthesis, deliberately. Language models do not hit word
+        # counts precisely, so the word target the generator was given is a
+        # LEVER and not the specification — the specification is the
+        # duration, and the only honest way to know it is to measure the
+        # narration that actually came back. Checking the script's word
+        # count before synthesis would be measuring the lever.
+        #
+        # Recorded on the artifact whether it passes or fails: before this,
+        # nothing in the pipeline aimed at a duration and 20% of videos
+        # landed in band, which is exactly the kind of thing a silent pass
+        # keeps invisible.
+        duration_gate = duration_check(
+            canonical_script.get("type"),
+            float(tts_metadata.get("duration") or 0),
+        )
+        if duration_gate["status"] != "PASS":
+            logger.warning("duration %s: %s", duration_gate["status"],
+                           duration_gate.get("reason"))
         progress("timing_merged", 55)
 
         audience_profile = copy.deepcopy(canonical_profile["audience"])
-        # The legacy topic tier writes to global output/backgrounds and has no
-        # destination argument.  Omitting topic/category keeps all new media
-        # inside this artifact while retaining explicit/profile resolution.
+        # TOPIC AND CATEGORY ARE PASSED NOW, and this is the change.
+        #
+        # They used to be omitted, with the reason recorded here: "the legacy
+        # topic tier writes to global output/backgrounds and has no
+        # destination argument". That objection was correct and it is now
+        # obsolete — resolve_background's clip tier takes `dest_dir` and
+        # writes the footage inside this artifact, so passing the topic no
+        # longer leaks media into a global directory. The Studio path can
+        # finally receive a real background instead of a palette.
+        #
+        # The image tier below it still has no destination, so it is still
+        # reached only if the clip tier declines. That is deliberate: it
+        # keeps the artifact self-contained on the path that runs.
         selected_background = self._resolve_background(
             audience_profile,
             artifact.request.background,
+            # THE CATEGORY LIVES IN _meta, not at the top level. Reading
+            # canonical_script["category"] found None on every auto-mode
+            # video, the clip tier raised UnknownCategory and every batch
+            # render fell through to the $0.041 image tier — the feature
+            # wired but never reached. TopicScriptAuthor picks the category
+            # and the generator stamps it into _meta; that is the record.
+            #
+            # The topic seeds WHICH footage this video gets, so the idea
+            # ("batch_1" in batch mode) is the worst available choice and
+            # the script's own title is the best.
+            topic=(artifact.request.topic
+                   or canonical_script.get("video_title")
+                   or artifact.request.idea),
+            category=(artifact.request.category
+                      or (canonical_script.get("_meta") or {}).get("category")
+                      or canonical_script.get("category")),
+            dest_dir=artifact_dir / "clips",
+            duration=float(tts_metadata.get("duration") or 0) or None,
         )
         if not isinstance(selected_background, str) or not selected_background:
             raise ValueError("background resolver returned invalid output")
@@ -241,6 +355,19 @@ class LegacyProductionGateway:
             validate_video(video_probe, frame_report, expected_duration)
         progress("video_rendered", 95)
 
+        # Re-judged against the REAL video now that it exists. The
+        # projection above is what the pipeline could know before the
+        # render; this is what actually shipped, and the two are kept
+        # distinct in the record rather than one overwriting the other.
+        duration_gate = duration_check(
+            canonical_script.get("type"),
+            float(tts_metadata.get("duration") or 0),
+            measured_video_seconds=float(video_probe.get("duration") or 0),
+        )
+        if duration_gate["status"] != "PASS":
+            logger.warning("duration %s: %s", duration_gate["status"],
+                           duration_gate.get("reason"))
+
         production = {
             "background": selected_background,
             "video_type": canonical_script.get("type"),
@@ -271,7 +398,7 @@ class LegacyProductionGateway:
             ),
             costs=costs,
             production=production,
-            gates=[gate],
+            gates=[gate, duration_gate],
         )
 
     def _validated_finalization(

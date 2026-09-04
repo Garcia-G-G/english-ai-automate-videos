@@ -394,6 +394,14 @@ def extract_timestamps_whisper(audio_path: str, client: OpenAI = None, original_
                 "is_english": is_english_word(word_text, english_from_script)
             })
 
+    # Punctuation-only tokens are absorbed into the neighbouring word here
+    # too, so no consumer of this helper has to know about them.
+    try:
+        from tts_common import merge_punctuation_tokens
+        words = merge_punctuation_tokens(words, boundary_key=None)
+    except Exception:                                       # noqa: BLE001
+        logger.exception("could not merge punctuation tokens")
+
     # Calculate duration
     duration = transcript.duration if hasattr(transcript, 'duration') else 0
     if not duration and words:

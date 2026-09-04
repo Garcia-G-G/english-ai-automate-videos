@@ -4,14 +4,17 @@ from __future__ import annotations
 
 import copy
 import json
+import logging
 from pathlib import Path
 
 from PIL import ImageFont
 
 from .creation import ProductionResult
-from .editorial_costs import cost_delta
+from .editorial_costs import attach_costs, cost_delta
 from .media_validation import inspect_frames, probe_media, validate_timing, validate_video
 from .models import ArtifactPaths, Market
+
+logger = logging.getLogger(__name__)
 
 
 def _tracker(video_id=None):
@@ -91,7 +94,23 @@ class BilibiliProductionGateway:
         self._frame_probe = frame_probe
         self._font_resolver = font_resolver
 
-    def produce(self, artifact, script: dict, profile: dict, progress) -> ProductionResult:
+    def produce(self, artifact, script: dict, profile: dict, progress):
+        """Render, and record the spend either way — see
+        LegacyProductionGateway.produce for why this is a finally."""
+        tracker = self._tracker_getter(video_id=artifact.artifact_id)
+        start = len(tracker.entries)
+        try:
+            return self._produce(artifact, script, profile, progress, tracker)
+        except Exception as exc:                               # noqa: BLE001
+            attach_costs(exc, tracker, start)
+            raise
+        finally:
+            try:
+                tracker.save()
+            except Exception:                              # noqa: BLE001
+                logger.exception("could not persist the cost ledger")
+
+    def _produce(self, artifact, script: dict, profile: dict, progress, tracker) -> ProductionResult:
         self._validate_profile(artifact, profile)
         artifact_dir = (self.root.resolve() / artifact.artifact_id).resolve()
         if artifact_dir.parent != self.root.resolve() or not artifact_dir.is_dir():
@@ -108,7 +127,6 @@ class BilibiliProductionGateway:
         script_path.write_text(json.dumps(canonical_script, ensure_ascii=False, indent=2), encoding="utf-8")
         progress("script_saved", 10)
 
-        tracker = self._tracker_getter(video_id=artifact.artifact_id)
         start = len(tracker.entries)
         produced_audio, produced_metadata = self._synthesizer(
             copy.deepcopy(canonical_script), audio_path, metadata_path,
@@ -119,7 +137,8 @@ class BilibiliProductionGateway:
         produced_metadata = self._required(produced_metadata, artifact_dir, "timing")
         metadata = json.loads(produced_metadata.read_text(encoding="utf-8"))
         audio_probe = self._media_probe(produced_audio)
-        validate_timing(metadata, audio_probe)
+        validate_timing(metadata, audio_probe,
+                        canonical_script.get("type"))
         progress("audio_validated", 45)
 
         selected = self._background_resolver(

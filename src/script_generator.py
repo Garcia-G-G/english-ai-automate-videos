@@ -224,10 +224,15 @@ def _category_hashtags(category: str) -> list:
 
 def build_prompt_educational(category: str, topic: dict) -> str:
     """Build educational video prompt for any category."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("educational")
+
     context = _topic_context(category, topic)
     hashtags = _category_hashtags(category)
 
-    return f"""Genera un script de 45-75 segundos para un video de TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un script para un video de TikTok/Reels enseñando inglés a hispanohablantes.
+
+{duration_rule}
 
 TEMA: {context}
 
@@ -261,7 +266,7 @@ FORMATO JSON REQUERIDO:
   "video_title": "Título viral bilingüe ≤80 chars con curiosidad/reto/identidad",
   "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "hook": "Frase inicial que capte atención (con palabra inglés en 'comillas')",
-  "full_script": "Script completo en español con palabras inglés en 'comillas simples'. Debe fluir naturalmente para ser leído en voz alta. MÍNIMO 45 segundos de contenido.",
+  "full_script": "Script completo en español con palabras inglés en 'comillas simples'. Debe fluir naturalmente para ser leído en voz alta y respetar el número de palabras indicado arriba.",
   "english_phrases": ["lista", "de", "palabras", "inglés", "usadas"],
   "translations": {{"palabra_ingles": "traduccion_español"}},
   "tip": "Tip memorable para recordar",
@@ -274,10 +279,17 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_quiz(category: str, topic: dict) -> str:
     """Build quiz video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("quiz")
+    from duration_spec import per_item_instruction
+    duration_rule = duration_rule + "\n\n" + per_item_instruction("quiz")
+
     context = _topic_context(category, topic)
     hashtags = ["#QuizIngles", "#AprendeIngles", "#TestTuIngles"] + _category_hashtags(category)[:1]
 
-    return f"""Genera un QUIZ de 45-60 segundos con 3 PREGUNTAS para TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un QUIZ con 3 PREGUNTAS para TikTok/Reels enseñando inglés a hispanohablantes.
+
+{duration_rule}
 
 TEMA: {context}
 
@@ -286,7 +298,7 @@ Para CADA pregunta:
 1. Pregunta en español (¿Cómo se dice X en inglés? o ¿Qué significa X?)
 2. 4 opciones DIFERENTES: A, B, C, D - solo UNA correcta
 3. Cuenta regresiva EN ESPAÑOL: "Piensa bien... Tres... dos... uno..."
-4. Revelar respuesta con explicación CORTA
+4. Revelar respuesta con la explicación de enseñanza (longitud arriba)
 
 Secuencia: Pregunta 1 → Opciones → Countdown → Respuesta → Pregunta 2 → Opciones → Countdown → Respuesta → Pregunta 3 → Opciones → Countdown → Respuesta
 
@@ -298,7 +310,7 @@ REGLAS ABSOLUTAS (NUNCA VIOLAR):
 3. Las opciones incorrectas deben ser confusiones comunes o palabras similares
 4. CUENTA REGRESIVA SIEMPRE EN ESPAÑOL: "Tres... dos... uno..." (NO "Three... two... one...")
 5. La explicación debe explicar POR QUÉ la respuesta correcta es correcta
-6. Explicación CORTA: 1-2 oraciones + un ejemplo simple
+6. Explicación de ENSEÑANZA con la longitud en palabras indicada arriba: define, contrasta con la opción incorrecta más tentadora, da un ejemplo real y un matiz de uso
 7. Las 3 preguntas deben estar RELACIONADAS al tema pero ser DIFERENTES entre sí
 8. Varía la dificultad: fácil → medio → difícil
 9. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "¿Puedes acertar las 3? 🧠 English Quiz" o "Solo el 10% acierta la pregunta 3 😱"
@@ -322,25 +334,25 @@ FORMATO JSON:
     "D": "opción 4 (DIFERENTE)"
   }},
   "correct": "letra correcta de la primera pregunta",
-  "explanation": "Explicación de la primera pregunta",
+  "explanation": "Explicación DE ENSEÑANZA de la primera pregunta, con la longitud en palabras indicada arriba",
   "questions": [
     {{
       "question": "Pregunta 1 en español",
       "options": {{"A": "opción1", "B": "opción2", "C": "opción3", "D": "opción4"}},
       "correct": "letra correcta",
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }},
     {{
       "question": "Pregunta 2 en español",
       "options": {{"A": "opción1", "B": "opción2", "C": "opción3", "D": "opción4"}},
       "correct": "letra correcta",
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }},
     {{
       "question": "Pregunta 3 en español",
       "options": {{"A": "opción1", "B": "opción2", "C": "opción3", "D": "opción4"}},
       "correct": "letra correcta",
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }}
   ],
   "full_script": "Script completo EN ESPAÑOL narrando LAS 3 PREGUNTAS secuencialmente con countdown 'Tres... dos... uno...' para cada una",
@@ -355,9 +367,16 @@ Responde SOLO con el JSON válido."""
 
 def build_prompt_true_false(category: str, topic: dict) -> str:
     """Build true/false video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("true_false")
+    from duration_spec import per_item_instruction
+    duration_rule = duration_rule + "\n\n" + per_item_instruction("true_false")
+
     context = _topic_context(category, topic)
 
-    return f"""Genera un video de VERDADERO O FALSO de 40-55 segundos con 3 AFIRMACIONES para TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un video de VERDADERO O FALSO con 3 AFIRMACIONES para TikTok/Reels enseñando inglés a hispanohablantes.
+
+{duration_rule}
 
 TEMA: {context}
 
@@ -370,7 +389,7 @@ FORMATO DEL VIDEO (3 afirmaciones secuenciales):
 Para CADA afirmación:
 1. Afirmación en ESPAÑOL (con palabra inglés en comillas): "¿'Library' significa librería? ¿Verdadero o falso?"
 2. Pausa para pensar: "Piensa bien... Tres... dos... uno..."
-3. Revelar respuesta con explicación CORTA (1-2 oraciones máximo)
+3. Revelar respuesta con la explicación de enseñanza (longitud arriba)
 
 Secuencia: Afirmación 1 → Countdown → Respuesta → Afirmación 2 → Countdown → Respuesta → Afirmación 3 → Countdown → Respuesta
 
@@ -383,7 +402,7 @@ EJEMPLO INCORRECTO (NO hacer esto):
 REGLAS:
 1. Afirmaciones EN ESPAÑOL con solo la palabra inglés en inglés
 2. VARÍA entre verdaderas y falsas (NO todas iguales - mezcla)
-3. Explicación CORTA: 1-2 oraciones máximo + un ejemplo simple
+3. Explicación de ENSEÑANZA con la longitud en palabras indicada arriba: define, contrasta con el error más común, da un ejemplo real y un matiz de uso
 4. Incluir cuenta regresiva para cada afirmación: "Piensa bien... Tres... dos... uno..."
 5. Las 3 afirmaciones deben estar RELACIONADAS al tema pero ser DIFERENTES
 6. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "¿Verdadero o Falso? 🤔 Te va a sorprender"
@@ -397,22 +416,22 @@ FORMATO JSON REQUERIDO:
   "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "statement": "Primera afirmación (para compatibilidad)",
   "correct": true,
-  "explanation": "Explicación de la primera afirmación",
+  "explanation": "Explicación DE ENSEÑANZA de la primera afirmación, con la longitud en palabras indicada arriba",
   "statements": [
     {{
       "statement": "¿'palabra_ingles' significa X? ¿Verdadero o falso?",
       "correct": true,
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }},
     {{
       "statement": "¿'palabra_ingles' significa Y? ¿Verdadero o falso?",
       "correct": false,
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }},
     {{
       "statement": "¿'palabra_ingles' significa Z? ¿Verdadero o falso?",
       "correct": true,
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }}
   ],
   "full_script": "Script EN ESPAÑOL narrando LAS 3 AFIRMACIONES secuencialmente. Palabra inglés en 'comillas'. Countdown para cada una.",
@@ -427,9 +446,16 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_fill_blank(category: str, topic: dict) -> str:
     """Build fill-in-the-blank video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("fill_blank")
+    from duration_spec import per_item_instruction
+    duration_rule = duration_rule + "\n\n" + per_item_instruction("fill_blank")
+
     context = _topic_context(category, topic)
 
-    return f"""Genera un video de COMPLETA LA FRASE de 45-60 segundos con 3 FRASES para TikTok/Reels enseñando inglés.
+    return f"""Genera un video de COMPLETA LA FRASE con 3 FRASES para TikTok/Reels enseñando inglés.
+
+{duration_rule}
 
 TEMA: {context}
 
@@ -504,9 +530,14 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_pronunciation(category: str, topic: dict) -> str:
     """Build pronunciation video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("pronunciation")
+
     word = get_topic_name(topic)
 
-    return f"""Genera un video de PRONUNCIACIÓN de 20-30 segundos para TikTok/Reels enseñando inglés.
+    return f"""Genera un video de PRONUNCIACIÓN para TikTok/Reels enseñando inglés.
+
+{duration_rule}
 
 PALABRA: "{word}"
 
@@ -515,13 +546,23 @@ FORMATO DEL VIDEO:
 2. "¿Cómo se pronuncia?"
 3. Mostrar error común de pronunciación
 4. Mostrar pronunciación correcta (fonética simplificada)
-5. Tip para recordar
+5. REPETICIÓN GUIADA: el estudiante repite después de ti
+6. Una frase de ejemplo con la palabra en contexto
+7. Tip para recordar
 
 REGLAS:
 1. Usa fonética simplificada que hispanohablantes entiendan (ej: "KUMF-ter-bul")
 2. Identifica el error de pronunciación más común
 3. Da un tip memorable
 4. El script debe incluir cómo pronunciar la palabra
+4b. REPETICIÓN — esto es la pedagogía, no relleno. En full_script, la
+   palabra en inglés debe decirse TRES veces en total, cada una como su
+   propia oración corta y separada, para que el estudiante pueda repetirla
+   en la pausa. Escríbelo así:
+     "... Escucha y repite. '{word}'. Otra vez. '{word}'. Una vez más. '{word}'."
+   NO escribas las tres seguidas en una sola oración.
+4c. Incluye UNA frase de ejemplo en inglés que use la palabra en contexto,
+   y su traducción al español.
 5. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "Llevas toda tu vida diciendo '{word}' MAL 😬"
 6. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
 7. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
@@ -545,21 +586,26 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_vocabulary(category: str, topic: dict) -> str:
     """Build vocabulary list video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("vocabulary")
+
     context = _topic_context(category, topic)
     hashtags = ["#Vocabulario", "#AprendeIngles"] + _category_hashtags(category)[:1]
 
-    return f"""Genera un video de LISTA DE VOCABULARIO de 30-45 segundos para TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un video de LISTA DE VOCABULARIO para TikTok/Reels enseñando inglés a hispanohablantes.
+
+{duration_rule}
 
 TEMA: {context}
 
 FORMATO DEL VIDEO:
 1. Título del tema (ej: "Vocabulario en el restaurante")
-2. Lista de 6-10 pares español/inglés, uno por uno
+2. Lista de 10-12 pares español/inglés, uno por uno
 3. Cada par: palabra en español → traducción en inglés
 
 REGLAS:
 1. Elige un tema coherente relacionado al contexto dado
-2. Entre 6 y 10 pares de palabras
+2. Entre 10 y 12 pares de palabras (12 es el máximo que cabe en la tarjeta)
 3. Incluye palabras útiles y prácticas
 4. El full_script debe leer cada par: "La cuenta, the bill. El mesero, the waiter."
 5. Nivel de dificultad: facil, medio, dificil, o experto

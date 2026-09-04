@@ -202,6 +202,8 @@ def generate_video(
         options = dict(background_options or {})
         if background.startswith("clips:"):
             options["dir"] = background.split(":", 1)[1]
+        # The band needs to know which layout's text zone to cover.
+        options.setdefault("video_type", video_type)
         clips_dir = options.get("dir", "")
         if clips_dir and not os.path.isabs(clips_dir):
             # Resolve relative to project root (parent of src/)

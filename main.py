@@ -27,6 +27,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -519,8 +520,96 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
     return video
 
 
+#: States in which Studio stopped without producing a video. The artifact is
+#: still saved and still carries its error — that is the point of them.
+BLOCKED_STATES = frozenset({"blocked_editorial", "blocked_production"})
+
+
+def creation_failure(artifact) -> Optional[str]:
+    """The reason this artifact has no video, or None if it has one.
+
+    WHY THE CALLER INSPECTS RATHER THAN THE SERVICE RAISING.
+
+    CreationService.create() deliberately records the error on the artifact
+    and returns it — `_production_failure` saves the artifact precisely so
+    the id, the state, the reason and the costs survive the failure. Three
+    tests pin that contract (tests/studio/test_creation.py:630, 743, 776).
+    Raising instead would throw away the record the design exists to keep,
+    and the batch report would lose the artifact_id it needs to point the
+    operator at what to look at.
+
+    So the return value stays, and the CALLERS stop ignoring it. That is
+    where the bug actually was: run_creation received a blocked artifact and
+    reported nothing, so `except Exception` never fired and the batch
+    printed "1 attempted, 0 rendered, 0 failed" for a run that spent $0.07
+    and produced nothing.
+    """
+    if artifact is None:
+        return "creation returned no artifact"
+    state = getattr(artifact.state, "value", artifact.state)
+    if state in BLOCKED_STATES:
+        return getattr(artifact, "error", None) or f"creation stopped in {state}"
+    return None
+
+
+def creation_gate(artifact) -> Optional[str]:
+    """The QA verdict Studio recorded on this artifact, if it ran.
+
+    The batch report counts a pass from `entry["gate"]`, and the Studio path
+    never set it — so the first successful render printed "1 rendered,
+    0 passed the gate" for a video whose artifact says final_qa PASS. Same
+    class of defect as the silent failure: a report that does not match what
+    happened. Returns None when no gate ran, which stays distinct from
+    REJECT and must never be shown as a pass.
+    """
+    if artifact is None:
+        return None
+    for gate in reversed(getattr(artifact, "gates", None) or []):
+        kind = getattr(gate, "kind", None) or (
+            gate.get("kind") if isinstance(gate, dict) else None)
+        if kind != "final_qa":
+            continue
+        status = getattr(gate, "status", None) or (
+            gate.get("status") if isinstance(gate, dict) else None)
+        return status
+    return None
+
+
 def get_creation_service(*, root=None, **dependencies):
     return build_creation_service(Path(root or OUTPUT_DIR / "artifacts"), **dependencies)
+
+
+#: Nothing this CLI renders may publish itself. The owner approves first.
+#:
+#: This is a POLICY, not an unfinished wire. `upload_video` below still
+#: works and still holds the idempotency guard, the ledger write and the
+#: metadata resolution; what changed is that no unattended path may reach
+#: it. The reason is on the record: hPdSoqjvu3E went out twice, once from a
+#: hand upload against a queue that did not know the video was already
+#: live. An unattended `--batch N --upload` is that same gun, automated.
+#:
+#: If this is ever lifted, lift it deliberately and in a commit that says
+#: so — not as a side effect of rewiring the CLI.
+OWNER_APPROVAL_REQUIRED = (
+    "Upload refused: owner approval is required before publication."
+)
+
+
+def refuse_unattended_upload(artifact_id: str = None) -> str:
+    """Say plainly that nothing was published, and where the artifact is.
+
+    A refusal that only prints is indistinguishable from a broken flag: the
+    operator's next move is to publish by hand, which is the exact route
+    that produced the duplicate. So it logs at WARNING (the run log is what
+    gets read after an unattended batch), names the artifact, and returns
+    the message so a caller can assert on it.
+    """
+    message = OWNER_APPROVAL_REQUIRED
+    if artifact_id:
+        message += f" Artifact {artifact_id} is rendered and awaiting review."
+    logger.warning(message)
+    print(message)
+    return message
 
 
 def run_creation(*, workspace, audience, idea, mode, root=None,
@@ -559,8 +648,16 @@ def run_creation(*, workspace, audience, idea, mode, root=None,
         repository_root / artifact.artifact_id / artifact.paths.video
         if artifact.paths.video else None
     )
+    # A blocked artifact is a FAILED run. Say so here, so that every caller
+    # — batch and single alike — is loud even before it inspects the state.
+    failure = creation_failure(artifact)
+    if failure:
+        logger.error("creation failed for %s: %s", artifact.artifact_id, failure)
+        print(f"FAILED: {artifact.artifact_id} produced no video — {failure}")
+        return artifact, None
+
     if upload:
-        print("Upload refused: owner approval is required before publication")
+        refuse_unattended_upload(artifact.artifact_id)
     return artifact, video
 
 
@@ -614,7 +711,8 @@ Examples:
     parser.add_argument("--batch", "-b", type=int,
                         help="Generate multiple videos from random topics")
     parser.add_argument("--upload", "-u", action="store_true",
-                        help="Upload video to configured platforms after generation")
+                        help="(REFUSED) Unattended publication is disabled by policy; "
+                             "the owner approves and publishes from the dashboard")
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="Enable verbose/debug logging")
     parser.add_argument("--v2", action="store_true",
@@ -689,6 +787,13 @@ Examples:
                 )
                 entry["artifact_id"] = artifact.artifact_id
                 entry["artifact_path"] = str(video) if video else None
+                failure = creation_failure(artifact)
+                if failure:
+                    _note_failure(entry, "production", failure)
+                else:
+                    verdict = creation_gate(artifact)
+                    if verdict:
+                        entry["gate"] = verdict
             except Exception as exc:                       # noqa: BLE001
                 # ONE VIDEO MUST NEVER ABORT THE BATCH. Everything below
                 # already returns rather than raising, so this is the backstop

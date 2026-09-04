@@ -7,6 +7,8 @@ import math
 import subprocess
 from pathlib import Path
 
+from timing_contract import describe, required_timeline
+
 
 def probe_media(path: Path) -> dict:
     completed = subprocess.run(
@@ -63,7 +65,22 @@ def inspect_frames(path: Path) -> dict:
     return {"nonblank": nonblank, "changing": changing}
 
 
-def validate_timing(metadata: dict, audio_probe: dict) -> None:
+def validate_timing(metadata: dict, audio_probe: dict, video_type) -> None:
+    """Release-boundary check on the TTS output for ONE video type.
+
+    `video_type` is required, not inferred from the metadata and not
+    optional. This function previously demanded a non-empty `words` AND a
+    non-empty `segments` for everything, which no type on disk satisfies:
+    quiz/true_false/vocabulary ship `words: []` by design, and the OpenAI
+    quiz path ships `segments: []`. It blocked production for every type and
+    is why output/artifacts/ was empty. The requirement is per type, and
+    timing_contract is the one place that says which.
+
+    Everything else here is unchanged and none of it is duplicated
+    elsewhere: positive duration, a real audio stream, metadata agreeing
+    with the probe, and monotonic in-range bounds with text present on every
+    entry of whichever collections are actually carried.
+    """
     duration = float(metadata.get("duration") or 0)
     probed = float(audio_probe.get("duration") or 0)
     if duration <= 0 or probed <= 0:
@@ -72,13 +89,47 @@ def validate_timing(metadata: dict, audio_probe: dict) -> None:
         raise ValueError("audio probe must contain an audio stream")
     if abs(duration - probed) > max(0.25, duration * 0.05):
         raise ValueError("audio metadata duration disagrees with probed duration")
+
+    # Raises UnknownVideoType for a type with no declared requirement, which
+    # the contract treats as REJECT rather than as "needs nothing".
+    required = required_timeline(video_type)
+    carried = metadata.get(required)
+    if not isinstance(carried, list) or not carried:
+        raise ValueError(
+            f"timing data must contain a non-empty {required!r}: {describe(video_type)}"
+        )
+
+    # The other collection stays OPTIONAL, but if present it must still be
+    # well formed — a malformed word list on a quiz is a defect even though
+    # the quiz is not rendered from it.
     words = metadata.get("words")
     segments = metadata.get("segments")
-    if not isinstance(words, list) or not words or not isinstance(segments, list) or not segments:
-        raise ValueError("timing data must contain non-empty words and segments")
-    for collection, content_field in ((words, "word"), (segments, "text")):
+    checks = []
+    if isinstance(words, list) and words:
+        checks.append((words, "word"))
+    if isinstance(segments, list) and segments:
+        checks.append((segments, "text"))
+    for collection, content_field in checks:
+        # SORTED BY START, and a span may CONTAIN another span.
+        #
+        # This loop used to walk the list in file order and demand
+        # start >= previous_end. Both assumptions are wrong for the shape
+        # the generators actually emit: fill_blank and quiz append an
+        # umbrella "options" segment that deliberately spans option_1..4
+        # and is written after them, so a perfectly good sidecar read as
+        # non-monotonic and blocked production outright.
+        #
+        # The check that survives is the one that catches real corruption:
+        # every entry must have text, finite numeric bounds, a non-negative
+        # start, an end at or after its start, and an end inside the file.
+        # Overlap is not corruption here — it is how a group is declared.
+        try:
+            ordered = sorted(collection, key=lambda i: float(i["start"])
+                             if isinstance(i, dict) else 0.0)
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("timing entry must contain text and numeric bounds") from exc
         previous = -1.0
-        for item in collection:
+        for item in ordered:
             if not isinstance(item, dict) or not isinstance(item.get(content_field), str):
                 raise ValueError("timing entry must contain text and numeric bounds")
             try:
@@ -90,12 +141,12 @@ def validate_timing(metadata: dict, audio_probe: dict) -> None:
                 not math.isfinite(start)
                 or not math.isfinite(end)
                 or start < 0
-                or start < previous
+                or start < previous          # starts must not go backwards
                 or end < start
                 or end > duration + 0.25
             ):
                 raise ValueError("timing data must be monotonic and in range")
-            previous = end
+            previous = start
 
 
 def validate_video(probe: dict, frames: dict, expected_duration: float) -> None:

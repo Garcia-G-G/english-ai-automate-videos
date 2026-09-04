@@ -1,0 +1,225 @@
+🎬 English AI Videos
+MAIN
+
+🏠 Dashboard
+
+🎥 Generate
+
+📋 Queue
+
+✅ Review
+
+📤 Upload
+
+📚 Library
+
+TOOLS
+
+⏰ Scheduler
+
+⚙️ Settings
+
+📜 Logs
+
+API Keys: 4/5 configured
+
+Videos: 8 pending / 2 approved
+
+v2.0 - English AI Videos
+
+Deploy
+🏠 Inicio
+
+Cada bloque nombra artefactos concretos y la acción que los mueve. Si algo no se puede accionar, no está aquí.
+
+💸 Hoy $0.0000 · 2026-08 acumulado $3.33 de un techo de $25.00 (13%)
+11
+Sin promover
+output/video/
+→ Promover
+
+11 en la lista · 11 contados en disco por separado ✓
+
+rainbow_colors
+pronunciation · 2026-08-19 00:16 · 4.7 MB
+
+⬆️ Promover
+
+say_me
+vocabulary · 2026-08-19 00:15 · 5.6 MB
+
+⬆️ Promover
+
+the_cat_says_meow
+true_false · 2026-08-19 00:13 · 6.9 MB
+
+⬆️ Promover
+
+to_have_a_sweet_tooth
+fill_blank · 2026-08-19 00:11 · 7.4 MB
+
+⬆️ Promover
+
+hit_me_up
+quiz · 2026-08-19 00:09 · 7.8 MB
+
+⬆️ Promover
+
+go_viral
+educational · 2026-08-19 00:05 · 15.8 MB
+
+⬆️ Promover
+
+yellow
+true_false · 2026-08-18 18:32 · 3.3 MB
+
+⬆️ Promover
+
+remove
+pronunciation · 2026-08-18 17:49 · 2.1 MB
+
+⬆️ Promover
+
+blue
+vocabulary · 2026-08-18 17:49 · 2.5 MB
+
+⬆️ Promover
+
+big_elephant
+educational · 2026-08-18 17:42 · 7.5 MB
+
+⬆️ Promover
+
+repro_fresh_20260817
+educational · 2026-08-17 16:39 · 8.7 MB
+
+⬆️ Promover
+
+8
+Esperando revisión
+output/pending/
+→ Revisar
+
+8 en la lista · 8 contados en disco por separado ✓
+
+3 con PASS · 5 sin registro — (3/5) releídos de los sidecars por separado ✓
+
+5 de estos no llevan veredicto de la puerta QA. "sin registro" NO quiere decir que pasaran: quiere decir que nadie lo sabe. Son anteriores al commit que empezó a escribir el veredicto en el sidecar del artefacto.
+
+giving_compliments_20260821_135331
+quiz · 2026-08-21 14:09
+PASS
+
+👀 Revisar
+
+giving_compliments_20260821_133646
+quiz · 2026-08-21 13:53
+PASS
+
+👀 Revisar
+
+v_vs_b_sounds_20260821_124552
+educational · 2026-08-21 12:51
+PASS
+
+👀 Revisar
+
+dress_codes_20260820_223428
+educational · 2026-08-20 22:43
+sin registro
+
+👀 Revisar
+
+hang_in_there_20260820_192325
+educational · 2026-08-20 19:27
+sin registro
+
+👀 Revisar
+
+i_go_to_home_20260820_191435
+educational · 2026-08-20 19:20
+sin registro
+
+👀 Revisar
+
+giving_compliments_20260820_184027
+educational · 2026-08-20 18:44
+sin registro
+
+👀 Revisar
+
+meetings_agreeing_disagreeing_20260817_181509
+educational · 2026-08-17 18:18
+sin registro
+
+👀 Revisar
+
+2
+Aprobados sin subir
+output/approved/
+→ Subir
+
+2 en la lista · 2 contados en disco por separado ✓
+
+job_interviews_describing_experience_20260821_140935
+true_false · 2026-08-21 14:12
+PASS
+
+📤 Subir
+
+eye_contact_20260731_163224
+quiz · 2026-07-31 16:36
+sin registro
+
+📤 Subir
+
+17
+Publicados
+output/published/ledger.jsonl
+→ Abrir en la plataforma
+
+17 en la lista · 17 contados en disco por separado ✓
+
+▶ abrir · job_interviews_describing_experience_20260824_163458 · youtube · 2026-08-26
+▶ abrir · giving_compliments_20260824_163457 · youtube · 2026-08-26
+▶ abrir · my_bad · youtube · 2026-08-24
+▶ abrir · break_the_ice · youtube · 2026-08-24
+▶ abrir · on_the_house_20260821_141307 · youtube · 2026-08-24
+▶ abrir · breathe_20260821_141707 · youtube · 2026-08-24
+keyboard_arrow_right
+
+Las otras 11 publicaciones del registro
+
+19
+Fallaron
+generation_jobs.json
+→ leer el log
+❌ Giving Compliments · educational · 2026-08-17 15:51 · job ab4ed292
+Interrupted — the dashboard stopped while this job was at 'Rendering video...'. Nothing was left running.
+
+📜 sin log_path en el registro del job
+
+❌ Phone calls: Leaving voicemail · fill_blank · 2026-08-11 16:42 · job 1091a70e
+TTS failed (elevenlabs): cannot import name 'trim_clip_silence' from 'tts_common' (/Users/go/Downloads/english-ai-videos/src/tts_common.py)
+
+📜 sin log_path en el registro del job
+
+❌ deep fake · fill_blank · 2026-08-11 16:42 · job 08d25cc6
+TTS failed (elevenlabs): cannot import name 'trim_clip_silence' from 'tts_common' (/Users/go/Downloads/english-ai-videos/src/tts_common.py)
+
+📜 sin log_path en el registro del job
+
+keyboard_arrow_right
+
+Los otros 16 fallos del historial
+
+Generar
+→ crear un artefacto nuevo
+
+🎬 Quiz
+
+🎬 Educational
+
+🎬 True/False
+
+🎬 Vocabulary

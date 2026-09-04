@@ -407,6 +407,62 @@ def segment_text(text: str, english_terms: List[str],
     return merged
 
 
+#: Marks that CLOSE a clause and therefore belong to the chunk they end.
+#:
+#: DELIBERATELY EXCLUDES ¿ AND ¡. Spanish opens a question or an
+#: exclamation with them and they must stay at the head of their own chunk.
+#: A fix that ate those would be worse than the bug it fixes, so they are
+#: absent here and a test asserts it.
+#:
+#: Quote characters ARE included, and that took a measurement to settle.
+#: The English spans are matched INSIDE their quotes, so the Spanish chunk
+#: after one begins with the term's own CLOSING quote and only then the
+#: full stop — "'. Este verbo…". Excluding quotes stopped the scan on that
+#: first character and the period never moved. A leading quote on a
+#: non-first chunk is always a closer, because an opening quote sits at the
+#: END of the chunk before the span. Moving it is harmless either way:
+#: wrapping quotes are stripped from the spoken text a few lines below.
+_CLOSING_MARKS = ".,;:!?…)]»'\"“”’"
+
+
+def _reclaim_closing_marks(text: str, pieces: list) -> list:
+    """Move a chunk's LEADING closing punctuation back onto its predecessor.
+
+    THE DEFECT. Chunks are cut at the boundaries of the English spans
+    inside a sentence, so the Spanish chunk that follows an English term
+    begins at the character right after it — which is the full stop that
+    ENDED that sentence. The narration then carried chunks like
+    ".Este verbo es muy útil", and because the mark led the chunk it also
+    led the card the karaoke drew.
+
+    Four of 92 segments in one render opened this way: '.Este verbo…',
+    '.Por ejemplo…', '.Un tip para recordar…', '.Excelente,'.
+
+    Fixed HERE rather than in the word timeline. Merging a leading mark
+    backwards at timeline level would stretch the previous word's declared
+    end across the gap between two TTS clips, which re-creates the timing
+    defect that the declared-silence work removed. A chunk boundary has no
+    such cost: nothing has been synthesised yet, so moving the character
+    moves the audio with it.
+
+    Boundaries stay CONTIGUOUS and lossless — every character of `text`
+    still belongs to exactly one piece, so source_start/source_end remain a
+    faithful map back onto the script.
+    """
+    adjusted = []
+    for start, end, lang in pieces:
+        while adjusted and start < end and (
+                text[start] in _CLOSING_MARKS or text[start].isspace()):
+            # Whitespace moves too, so the mark does not end up orphaned
+            # from its sentence by a stray leading space.
+            previous_start, _previous_end, previous_lang = adjusted[-1]
+            adjusted[-1] = (previous_start, start + 1, previous_lang)
+            start += 1
+        if start < end:
+            adjusted.append((start, end, lang))
+    return adjusted
+
+
 def _policy_segments(text: str, spans: list, policy: LanguagePolicy) -> List[Dict]:
     """Build a lossless source plan while keeping cleaned text for TTS."""
     pieces = []
@@ -428,10 +484,20 @@ def _policy_segments(text: str, spans: list, policy: LanguagePolicy) -> List[Dic
         else:
             merged.append((start, end, lang))
 
+    # A chunk must END with its own closing punctuation and must not BEGIN
+    # with someone else's.
+    merged = _reclaim_closing_marks(text, merged)
+
     result = []
     for index, (start, end, lang) in enumerate(merged):
         source = text[start:end]
         spoken = re.sub(r'\s+', ' ', source).strip().strip("'\"“”‘’")
+        # Drop quote marks that are NOT between letters, so a closing quote
+        # reclaimed from the next chunk does not reach the voice as
+        # "show up'." while "didn't" and "Let's" keep their apostrophes.
+        # Same expression the non-policy path has always used.
+        spoken = re.sub(r"(?<![A-Za-z])['\"“”‘’]|['\"“”‘’](?![A-Za-z])",
+                        '', spoken).strip()
         if not spoken:
             spoken = source
         result.append({

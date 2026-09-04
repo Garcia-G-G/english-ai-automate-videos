@@ -16,6 +16,7 @@ from .constants import (
 from config.layout import (
     CARD_MARGIN_X, CARD_PADDING, CARD_RADIUS, CARD_WIDTH,
     VOCAB_ROW_HEIGHT, VOCAB_DIVIDER_X, VOCAB_CARD_TOP_MIN,
+    VOCAB_MAX_ROWS,
     BAR_Y,
 )
 from config.colors import CARD_COLORS
@@ -85,6 +86,17 @@ def create_frame_vocabulary(
     # somebody else's lesson, and [] rendered an empty one.
     title = data['title']
     pairs: List[Dict] = data['pairs']
+    # THE CAP IS ENFORCED HERE. It was declared in config/layout.py and read
+    # by nobody, so a deck of 15 drew 15 rows and ran off the card. Truncate
+    # loudly rather than silently: a dropped pair is content the learner
+    # does not get, and it must be visible in the log.
+    if len(pairs) > VOCAB_MAX_ROWS:
+        logger.warning(
+            "Vocabulary: %d pairs exceeds VOCAB_MAX_ROWS=%d — rendering the "
+            "first %d and DROPPING %d. The script should not have produced "
+            "more than the card can hold.",
+            len(pairs), VOCAB_MAX_ROWS, VOCAB_MAX_ROWS, len(pairs) - VOCAB_MAX_ROWS)
+        pairs = pairs[:VOCAB_MAX_ROWS]
 
     # Genuinely optional — '' hides the difficulty badge.
     difficulty = data.get('difficulty', '')

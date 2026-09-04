@@ -70,7 +70,13 @@ class AuthorResult(BaseModel):
 
 
 class AuthorFailure(Exception):
-    """An author failure carrying costs incurred before its original cause."""
+    """An author failure carrying costs incurred before its original cause.
+
+    Money is spent BEFORE the step that fails, not by it. The production
+    half of create() records the same thing a different way — see
+    editorial_costs.attach_costs for why it annotates the original
+    exception rather than replacing it with a wrapper like this one.
+    """
 
     def __init__(self, cause: Exception, *, costs: Optional[List[ArtifactCost]] = None):
         self.cause = cause
@@ -160,16 +166,7 @@ class CreationService:
             if not isinstance(generated, AuthorResult):
                 raise TypeError("author.generate must return AuthorResult")
         except AuthorFailure as failure:
-            if failure.costs:
-                artifact = artifact.model_copy(
-                    update={
-                        "costs": [
-                            *artifact.costs,
-                            *(cost.model_copy(deep=True) for cost in failure.costs),
-                        ]
-                    }
-                )
-                self.repository.save(artifact)
+            artifact = self._record_costs(artifact, failure.costs)
             return self._editorial_failure(artifact, failure.cause)
         except Exception as exc:
             return self._editorial_failure(artifact, exc)
@@ -219,6 +216,11 @@ class CreationService:
                 produced.model_dump(warnings=False)
             )
         except Exception as exc:
+            # A run blocked at the renderer has still bought its script and
+            # its TTS. Record that before recording the failure, or the
+            # artifact reports $0.0008 for a run that spent $0.0734.
+            from .editorial_costs import costs_of
+            artifact = self._record_costs(artifact, costs_of(exc))
             return self._production_failure(artifact, exc)
 
         artifact = artifact.model_copy(
@@ -276,6 +278,32 @@ class CreationService:
     @staticmethod
     def _error(exc: Exception) -> str:
         return f"{exc.__class__.__name__}: {exc}"
+
+    def _record_costs(
+        self,
+        artifact: VideoArtifact,
+        costs: List[ArtifactCost],
+    ) -> VideoArtifact:
+        """Checkpoint spend onto the artifact BEFORE recording the failure.
+
+        A separate save, deliberately: the transition to blocked_* is a
+        second write, and if it were the only one the spend would ride on
+        the same record as the failure and be lost if that write failed.
+        Costs are the thing least able to be reconstructed later, so they
+        land first.
+        """
+        if not costs:
+            return artifact
+        recorded = artifact.model_copy(
+            update={
+                "costs": [
+                    *artifact.costs,
+                    *(cost.model_copy(deep=True) for cost in costs),
+                ]
+            }
+        )
+        self.repository.save(recorded)
+        return recorded
 
     def _editorial_failure(
         self,

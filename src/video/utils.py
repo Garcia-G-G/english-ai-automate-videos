@@ -225,6 +225,197 @@ def slide_in_x(t: float, start: float, duration: float = 0.4) -> float:
     return int(SLIDE_DISTANCE * (1 - min(1.0, eased)))
 
 
+class MissingCJKFont(RuntimeError):
+    """No installed font can draw the Han characters this text contains.
+
+    Raised rather than returning Inter, because Inter's answer for a Han
+    codepoint is .notdef — a blank box. Every Chinese character in
+    Inter-Bold renders to a byte-identical bitmap, so a silent fallback does
+    not degrade the frame, it replaces the entire script with tofu and looks
+    like a rendering style rather than a missing font.
+    """
+
+
+#: Ranges that need a Han-capable face. CJK Unified Ideographs and its
+#: Extension A, the two Kana blocks, Hangul, and the fullwidth punctuation
+#: block — 。，！？（） live there and appear in every Chinese sentence.
+_CJK_RANGES = (
+    (0x3000, 0x303F),    # CJK symbols and punctuation
+    (0x3040, 0x30FF),    # Hiragana + Katakana
+    (0x3400, 0x4DBF),    # CJK Unified Ideographs Extension A
+    (0x4E00, 0x9FFF),    # CJK Unified Ideographs
+    (0xAC00, 0xD7AF),    # Hangul syllables
+    (0xF900, 0xFAFF),    # CJK compatibility ideographs
+    (0xFF00, 0xFFEF),    # Halfwidth and fullwidth forms
+)
+
+#: Closing marks that may not begin a line, and opening marks that may not
+#: end one. Chinese has no spaces, so a break is legal between almost any
+#: two characters — these are the exceptions that make it read as typeset
+#: text rather than a fixed-width dump.
+_CJK_NO_LINE_START = "。，、！？：；）］｝」』〉》…‥ー々"
+_CJK_NO_LINE_END = "（［｛「『〈《"
+
+
+#: The ranges above as one compiled character class. line_break runs on
+#: every text element of every frame, and 100% of current production is
+#: Spanish — so the Han check is pure overhead on the path that actually
+#: ships. The pure-Python scan cost 37 µs on a 76-character line; at ~5 text
+#: elements over the 1800 frames of a 60s video that is a third of a second
+#: of CPU spent proving there is no Chinese in a Spanish sentence.
+_CJK_RE = re.compile(
+    "[" + "".join(f"\\u{lo:04x}-\\u{hi:04x}" for lo, hi in _CJK_RANGES) + "]"
+)
+
+
+def has_cjk(text: str) -> bool:
+    """True if any character needs a Han-capable font."""
+    return _CJK_RE.search(text) is not None
+
+
+def _get_cjk_font_paths():
+    """Han-capable faces: explicit → bundled → macOS → Linux → Windows."""
+    project_root = Path(__file__).resolve().parent.parent.parent
+    explicit = os.getenv("VIDEO_FONT_PATH_CJK")
+    paths = [explicit] if explicit else []
+    paths += [
+        str(project_root / "assets" / "fonts" / "NotoSansSC-Bold.otf"),
+        str(project_root / "assets" / "fonts" / "NotoSansSC-Bold.ttf"),
+    ]
+    paths += [                                                   # macOS
+        "/System/Library/Fonts/PingFang.ttc",
+        "/System/Library/Fonts/Hiragino Sans GB.ttc",
+        "/System/Library/Fonts/STHeiti Medium.ttc",
+        "/System/Library/Fonts/Supplemental/Songti.ttc",
+        "/Library/Fonts/Arial Unicode.ttf",
+    ]
+    paths += [                                                   # Linux
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc",
+        "/usr/share/fonts/opentype/noto/NotoSansCJKsc-Bold.otf",
+        "/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc",
+    ]
+    paths += [                                                   # Windows
+        "C:\\Windows\\Fonts\\msyhbd.ttc",
+        "C:\\Windows\\Fonts\\msyh.ttc",
+        "C:\\Windows\\Fonts\\simhei.ttf",
+    ]
+    return paths
+
+
+_cjk_fonts = {}
+_cjk_font_paths = None
+
+
+def cjk_font(size: int) -> ImageFont.FreeTypeFont:
+    """A Han-capable face at this size, or MissingCJKFont.
+
+    Deliberately does NOT fall back to ImageFont.load_default(): the default
+    is a Latin bitmap face, so falling back to it is the same tofu by
+    another route. Failing here is the same choice studio.voices makes when
+    a workspace has no voice configured — a market that cannot be rendered
+    correctly must not render incorrectly instead.
+    """
+    global _cjk_font_paths
+    if size in _cjk_fonts:
+        return _cjk_fonts[size]
+    if _cjk_font_paths is None:
+        _cjk_font_paths = _get_cjk_font_paths()
+    for candidate in _cjk_font_paths:
+        try:
+            f = ImageFont.truetype(candidate, size)
+        except Exception:
+            continue
+        _cjk_fonts[size] = f
+        return f
+    raise MissingCJKFont(
+        "no Han-capable font found. Set VIDEO_FONT_PATH_CJK, or place "
+        "NotoSansSC-Bold.otf in assets/fonts/."
+    )
+
+
+def font_for_text(text: str, size: int) -> ImageFont.FreeTypeFont:
+    """The face to draw this text with, chosen by script.
+
+    Latin text keeps Inter — the layout budgets in Paso 6a were measured
+    against Inter's metrics and swapping the face globally would invalidate
+    every one of them. Only text that actually contains Han characters is
+    routed to the CJK face.
+    """
+    return cjk_font(size) if has_cjk(text) else font(size)
+
+
+def _cjk_tokens(text: str) -> List[str]:
+    """Split into the smallest units a line may break between.
+
+    Latin runs stay whole because breaking English mid-word is wrong in any
+    script; Han characters are individually breakable because Chinese has no
+    spaces and a whole sentence is otherwise one unbreakable token. That is
+    not a theoretical problem: a 28-character Chinese sentence measured
+    1680px against an 800px box, because text.split() returned one item and
+    the packing loop had nothing to pack.
+    """
+    tokens: List[str] = []
+    latin: List[str] = []
+    for ch in text:
+        if ch.isspace():
+            if latin:
+                tokens.append("".join(latin))
+                latin = []
+            continue
+        if has_cjk(ch):
+            if latin:
+                tokens.append("".join(latin))
+                latin = []
+            tokens.append(ch)
+        else:
+            latin.append(ch)
+    if latin:
+        tokens.append("".join(latin))
+    return tokens
+
+
+def _join_cjk(tokens: List[str]) -> str:
+    """Re-join tokens, with a space only where Latin meets Latin."""
+    out = ""
+    for tok in tokens:
+        if out and not has_cjk(tok) and not has_cjk(out[-1]):
+            out += " "
+        out += tok
+    return out
+
+
+def _line_break_cjk(text: str, f: ImageFont.FreeTypeFont, max_w: int,
+                    draw) -> List[str]:
+    """Greedy packing over CJK-aware tokens, respecting kinsoku exceptions."""
+    tokens = _cjk_tokens(text)
+    lines: List[str] = []
+    current: List[str] = []
+
+    for tok in tokens:
+        candidate = current + [tok]
+        bbox = draw.textbbox((0, 0), _join_cjk(candidate), font=f)
+        if bbox[2] - bbox[0] <= max_w or not current:
+            current.append(tok)
+            continue
+        # A closing mark may not open the next line; keep it with this one
+        # even though that line is now over budget by one glyph.
+        if tok in _CJK_NO_LINE_START:
+            current.append(tok)
+            lines.append(_join_cjk(current))
+            current = []
+            continue
+        # An opening mark may not end a line; push it down with its content.
+        while current and current[-1] in _CJK_NO_LINE_END:
+            tok = current.pop() + tok
+        lines.append(_join_cjk(current))
+        current = [tok]
+
+    if current:
+        lines.append(_join_cjk(current))
+    return lines
+
+
 def line_break(text: str, f: ImageFont.FreeTypeFont, max_w: int) -> List[str]:
     """Smart line breaking."""
     if not text.strip():
@@ -236,6 +427,12 @@ def line_break(text: str, f: ImageFont.FreeTypeFont, max_w: int) -> List[str]:
     bbox = draw.textbbox((0, 0), text, font=f)
     if bbox[2] - bbox[0] <= max_w:
         return [text]
+
+    # Scripts without spaces cannot be packed by splitting on them. The
+    # Latin path below is left exactly as it was: Paso 6a measured the
+    # layout against its output, so any change here is a layout regression.
+    if has_cjk(text):
+        return _line_break_cjk(text, f, max_w, draw)
 
     words = text.split()
     lines = []

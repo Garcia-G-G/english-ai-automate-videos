@@ -348,29 +348,24 @@ def apply_readability_scrim(image_path, out_path=None):
     Soft and generous at both edges. A hard seam would look worse than the
     dark images did, so the falloff is a raised cosine over a distance
     comparable to the band itself, not a linear ramp over a few pixels.
+
+    THE CURVE ITSELF NOW LIVES IN clip_contrast.scrim_profile, and this
+    calls it. It was written here first, for stills; moving backgrounds need
+    the identical band and a second copy of a raised cosine is exactly the
+    kind of duplicate that drifts one edit at a time until a still and a
+    clip are darkened differently for no stated reason.
     """
     from PIL import Image
     import numpy as np
 
+    from clip_contrast import scrim_profile
+
     img = Image.open(image_path).convert("RGB")
     w, h = img.size
 
-    # The rows the headline occupies, in this image's coordinates.
-    top = HEADLINE_TOP / VIDEO_HEIGHT * h
-    bottom = HEADLINE_BOTTOM / VIDEO_HEIGHT * h
-    feather = SCRIM_FEATHER / VIDEO_HEIGHT * h
-
-    y = np.arange(h, dtype=np.float32)
-    band = np.zeros(h, dtype=np.float32)
-    band[(y >= top) & (y <= bottom)] = 1.0
-
-    upper = (y < top) & (y > top - feather)
-    band[upper] = 0.5 * (1 + np.cos(np.pi * (top - y[upper]) / feather))
-    lower = (y > bottom) & (y < bottom + feather)
-    band[lower] = 0.5 * (1 + np.cos(np.pi * (y[lower] - bottom) / feather))
-
     arr = np.asarray(img, dtype=np.float32)
-    darken = 1.0 - SCRIM_STRENGTH * band[:, None, None]
+    darken = scrim_profile(h, zone=(HEADLINE_TOP, HEADLINE_BOTTOM),
+                           feather=SCRIM_FEATHER, strength=SCRIM_STRENGTH)
     out = np.clip(arr * darken, 0, 255).astype(np.uint8)
 
     dest = Path(out_path or image_path)
