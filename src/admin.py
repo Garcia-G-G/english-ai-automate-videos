@@ -61,6 +61,10 @@ SCRIPTS_DIR = OUTPUT_DIR / "scripts"
 AUDIO_DIR = OUTPUT_DIR / "audio"
 VIDEO_DIR = OUTPUT_DIR / "video"
 PENDING_DIR = OUTPUT_DIR / "pending"
+# This video's own footage. The clip tier writes here and the renderer
+# reads from here; --batch keeps its clips inside the artifact directory,
+# and the dashboard has no artifact, so it gets one folder per video.
+CLIPS_DIR = OUTPUT_DIR / "clips"
 APPROVED_DIR = OUTPUT_DIR / "approved"
 REJECTED_DIR = OUTPUT_DIR / "rejected"
 UPLOADED_DIR = OUTPUT_DIR / "uploaded"
@@ -255,10 +259,41 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         if script_data is not None:
             topic_name = topic_name or script_data.get("word") or script_data.get("topic") or "script"
         elif category and topic_name:
+            # An explicit pick is still a pairing, and a bad pairing ships a
+            # false lesson rather than an ugly one. Refusing is loud and
+            # fixable; the video is not.
+            from type_categories import resolve as _eligible_categories, NoEligibleCategory
+
+            allowed = _eligible_categories(
+                video_type, profile.get("content", {}).get("categories"))
+            if category not in allowed:
+                raise NoEligibleCategory(
+                    f"a {video_type!r} video cannot be about a {category!r} "
+                    f"topic. Allowed for this type and audience: "
+                    f"{', '.join(allowed)}. Change the category, or widen the "
+                    f"type's list in config.yaml under type_categories.")
             topic = find_topic(category, topic_name)
         else:
-            category, topic = get_random_topic(
-                allowed_categories=profile.get("content", {}).get("categories"))
+            # VIDEO TYPE AND TOPIC CATEGORY WERE INDEPENDENT DRAWS HERE.
+            # type_categories.resolve was written for exactly this and had one
+            # caller, studio/legacy_pipeline.py:136 — the --batch door. On this
+            # door nothing constrained the pairing, and the result is on disk:
+            # of the 19 pronunciation scripts under output/scripts/, ZERO drew
+            # from content/topics/pronunciation.json. They drew from social,
+            # false_friends, business, cultural... A `business` topic reaching
+            # the pronunciation prompt is how "Job Interviews: Describing
+            # experience" got a phonetic transcription whose "correct" answer
+            # was the mistake the same script names.
+            #
+            # It intersects with the profile's own list rather than replacing
+            # it: the profile says who the video is for, this says what the
+            # type can teach. Both must hold. NoEligibleCategory is raised, not
+            # defaulted — an unconstrained draw is the bug.
+            from type_categories import resolve as _eligible_categories
+
+            allowed = _eligible_categories(
+                video_type, profile.get("content", {}).get("categories"))
+            category, topic = get_random_topic(allowed_categories=allowed)
             topic_name = (topic.get("english") or topic.get("topic") or topic.get("wrong")
                          or topic.get("word") or topic.get("sentence") or str(topic))
 
@@ -343,9 +378,33 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             background_record.update(payload)
             update_job(job_id, background=payload)
 
+        # dest_dir AND duration, both of them.
+        #
+        # pipeline.py:194 guards the clip tier with `if topic and dest_dir`.
+        # This call passed neither, so tier 3 was never evaluated on the
+        # dashboard and every video fell to tier 4, the generated image. It is
+        # not a preference that lost — it is a branch that was never reached.
+        # Measured over output/generation_jobs.json: 50 jobs, 0 with clips,
+        # $0.902 spent on stills the free tier would have replaced.
+        #
+        # duration decides how much footage to fetch. Without it the tier uses
+        # a 30s default, which under-fetches for anything in the upper half of
+        # the duration band and makes the playlist loop.
+        clips_dir = CLIPS_DIR / unique_name
+        tts_duration = None
+        try:
+            with open(json_path, encoding="utf-8") as _f:
+                tts_duration = float(json.load(_f).get("duration") or 0) or None
+        except Exception:                                       # noqa: BLE001
+            # A missing duration costs a shorter playlist, never the video.
+            logger.warning("background: could not read the duration from %s; "
+                           "the clip tier will use its own default", json_path)
+
         resolved_background = pipeline.resolve_background(
             profile, background,
             topic=topic_name, category=category,
+            dest_dir=clips_dir,
+            duration=tts_duration,
             on_record=_record_background,
         )
         update_job(job_id, current_step=f"Rendering video ({resolved_background})...")
