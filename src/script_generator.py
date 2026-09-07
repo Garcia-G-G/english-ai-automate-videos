@@ -74,23 +74,72 @@ def find_topic(category: str, topic_name: str) -> dict:
     raise ValueError(f"Topic '{topic_name}' not found in category '{category}'")
 
 
-def get_random_topic(allowed_categories: list = None) -> tuple:
-    """Get a random topic from a random category.
+def get_random_topic(allowed_categories: list = None,
+                     prefer_unused: bool = True) -> tuple:
+    """A topic to make a video about, drawn uniformly and preferring a new one.
 
     Args:
-        allowed_categories: Optional list to restrict the category pool
-            (e.g. a profile's content.categories). Falls back to all
-            categories if none of them exist.
+        allowed_categories: Optional list to restrict the pool (e.g. a
+            profile's content.categories, or type_categories.resolve()).
+            Falls back to all categories if none of them exist.
+        prefer_unused: Draw from topics with no script on disk while any
+            remain. Pass False for a plain uniform draw over everything.
+
+    TWO DEFECTS, BOTH VISIBLE IN THE OUTPUT.
+
+    1. THE DRAW WAS NOT UNIFORM. It was random.choice(categories) and then
+       random.choice(topics), which weights every topic by 1/len(its
+       category). A kids_animals topic (5 in the file) came up 21x more often
+       than a phrasal_verbs one (105) — and phrasal_verbs and idioms together
+       hold 187 topics that were effectively unreachable. Flattening the pool
+       first is the whole fix: one draw over (category, topic) pairs.
+
+    2. NOTHING REMEMBERED ANYTHING. Measured when Garcia reported seeing the
+       same subject four times: 720 topics on disk, 160 ever generated,
+       social/so008 eleven times. Every video drew as if it were the first.
+
+    The two compound — the biased draw kept returning to the small categories
+    and nothing noticed it had been there before.
+
+    Preference, not exclusion. When the fresh pool empties the draw falls back
+    to the LEAST-used topic rather than to a uniform one, so the degradation is
+    "the oldest subject comes round again" and never "the one you have already
+    seen eleven times". At 2 videos a day and 560 untouched topics, the
+    fallback is about nine months away.
     """
     categories = list_categories()
     if allowed_categories:
         filtered = [c for c in categories if c in allowed_categories]
         if filtered:
             categories = filtered
-    category = random.choice(categories)
-    topics = load_topics(category)
-    topic = random.choice(topics)
-    return category, topic
+
+    pool = [(c, t) for c in categories for t in load_topics(c)]
+    if not pool:
+        raise ValueError(
+            f"no topics for categories {categories!r} — check content/topics/")
+
+    if prefer_unused:
+        try:
+            from topic_history import partition
+            fresh, stale = partition(pool)
+            if fresh:
+                return random.choice(fresh)
+            if stale:
+                # Everything has been made at least once. Take from the least
+                # used, and say so: it is the signal that the topic files need
+                # more content, not a condition to hide.
+                logger.info(
+                    "topic pool exhausted for %s — every one of %d topics has "
+                    "been generated; drawing from the least used",
+                    ", ".join(sorted(categories)), len(pool))
+                least = stale[: max(1, len(stale) // 10)]
+                return random.choice(least)
+        except Exception:                                       # noqa: BLE001
+            # History is an optimisation. A video must never fail because a
+            # file in output/scripts/ could not be read.
+            logger.exception("topic history unavailable — drawing uniformly")
+
+    return random.choice(pool)
 
 
 def _topic_context(category: str, topic: dict) -> str:
