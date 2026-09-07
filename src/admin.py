@@ -53,7 +53,149 @@ from script_generator import (
 
 # Shared pipeline — the SAME TTS dispatch, merge and renderer the CLI uses.
 import pipeline
+import topic_history
 from cost_tracker import reset_tracker
+
+
+# ============== WHAT THE DASHBOARD IS ALLOWED TO OFFER ==============
+#
+# UNA CAPACIDAD SIN PUERTA ES UNA CAPACIDAD QUE NO EXISTE.
+#
+# Every list below is READ from the place the engine reads it, never restated
+# here. That is not tidiness, it is the actual defect being fixed: the
+# scheduler offered four of the six video types because the UI wrote the list
+# out by hand, and fill_blank and pronunciation could not be produced from the
+# unattended batch at all. A second hand-written list under "5 of Each Type"
+# queued three types and reported fifteen videos.
+#
+# A hand-written copy in the UI cannot be caught by a test of the engine,
+# because the engine is correct. So the copies are gone, and
+# test_dashboard_doors asserts by AST that none comes back.
+
+
+#: Display names for the video types. NOT a gate on what may be offered —
+#: unknown types get a readable label from their own name, so adding a
+#: seventh type to VIDEO_TYPES makes it appear on every screen with no edit
+#: here. A dict that had to be extended per type would be the same defect one
+#: layer down.
+_TYPE_LABELS = {
+    "true_false": "True/False",
+}
+
+
+def type_label(video_type: str) -> str:
+    """Human label for a video type, for checkboxes and selectboxes."""
+    return _TYPE_LABELS.get(video_type,
+                            str(video_type).replace("_", " ").title())
+
+
+def scheduler_default_types() -> list:
+    """Types the unattended batch offers: all of them, from the one list."""
+    return list(VIDEO_TYPES)
+
+
+def _declared_profiles() -> list:
+    """Every audience profile named in config.yaml, resolvable or not."""
+    from profiles import load_profiles
+
+    # load_profiles returns {"default": <name>, "profiles": {...}} — the
+    # names are one level down, and the default is guaranteed to be among
+    # them even when config.yaml declares no profiles section at all.
+    loaded = load_profiles()
+    names = set((loaded.get("profiles") or {}).keys())
+    names.add(loaded.get("default") or "adults")
+    return sorted(names)
+
+
+def _profile_status() -> tuple:
+    """(available, {name: why not}) — resolved by actually resolving them.
+
+    A SELECTBOX IN FRONT OF A BROKEN PATH IS WORSE THAN NO SELECTBOX, and
+    `children` is exactly that today: it is declared in config.yaml with its
+    own audio settings and its own topic categories, and it CANNOT BE
+    RESOLVED, because its voice_id is the literal "default" and
+    audiences._validated_voice rejects that. Offering it would raise
+    InvalidAudienceProfile after the operator had already picked a topic.
+    Set CHILDREN_ELEVENLABS_VOICE_ID (or a real voice_id under
+    profiles.children.audio in config.yaml) and it appears here by itself.
+    """
+    # get_active_profile, NOT pipeline.resolve_profile: the latter calls
+    # apply_profile_env and pins os.environ["VIDEO_PROFILE"], so probing
+    # every declared profile with it would leave the process configured as
+    # whichever one happened to be tried last. A probe must not change the
+    # thing it is probing.
+    from profiles import get_active_profile
+
+    available, blocked = [], {}
+    for name in _declared_profiles():
+        try:
+            get_active_profile(name)
+        except Exception as exc:                                # noqa: BLE001
+            blocked[name] = str(exc)
+        else:
+            available.append(name)
+    return available, blocked
+
+
+def available_profiles() -> list:
+    """Audience profiles that actually resolve — what the UI may offer.
+
+    pipeline.resolve_profile(name) has always taken a name; admin called it
+    with none, so no profile but the config default was ever selectable.
+    """
+    return _profile_status()[0]
+
+
+def unavailable_profiles() -> dict:
+    """{name: reason} for declared profiles that cannot be resolved.
+
+    Shown on the page rather than swallowed: "children unavailable" with no
+    reason is the same dead end as no control at all.
+    """
+    return _profile_status()[1]
+
+
+def available_backgrounds() -> list:
+    """Backgrounds a person may pick, from config.yaml's enabled list.
+
+    'generated:*' is a WILDCARD the resolver expands per video, not something
+    anyone can select; offering it would be a control that does nothing.
+    """
+    import yaml
+
+    try:
+        config = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
+        logger.warning("could not read config.yaml for the background list")
+        return []
+    enabled = ((config or {}).get("video") or {}).get("enabled_backgrounds") or []
+    return [b for b in enabled if isinstance(b, str) and "*" not in b]
+
+
+def v2_supported(video_type: str) -> bool:
+    """Whether the v2 render engine can render this type.
+
+    video/__init__.py falls back to v1 with a warning for anything but
+    educational. Offering v2 for six types would be a control that silently
+    does nothing for five of them.
+    """
+    return video_type == "educational"
+
+
+def topic_memory_report(allowed_categories=None) -> dict:
+    """What topic_history already computes, shaped for a screen.
+
+    coverage() was written for exactly this and its only caller was its own
+    test — the memory was computed and never rendered. `percent_used` is
+    derived here rather than stored so the screen cannot go stale, and the
+    repeats list arrives worst-first because it is the part that answers
+    "why do I keep seeing the same video".
+    """
+    report = dict(topic_history.coverage(allowed_categories))
+    total = report.get("total") or 0
+    report["percent_used"] = (100.0 * report.get("used", 0) / total) if total else 0.0
+    return report
+
 
 # Output directories
 OUTPUT_DIR = ROOT / "output"
@@ -237,15 +379,29 @@ def get_job_history(limit: int = 5) -> list:
 
 def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = None,
                                 topic_name: str = None, script_data: dict = None,
-                                background: str = None, dry_run: bool = False) -> dict:
+                                background: str = None, dry_run: bool = False,
+                                profile_name: str = None,
+                                use_v2: bool = False) -> dict:
     """Generate one video through the shared pipeline (src/pipeline.py).
 
     Same TTS dispatch, same merge and same renderer as main.py — only the
     output layout differs (videos land in output/pending/<type>/ for review).
 
     Args:
-        script_data: Use this script instead of generating one with GPT.
-        dry_run:     Resolve and log the TTS plan only; no API calls, no render.
+        script_data:  Use this script instead of generating one with GPT.
+        background:   Preset name, or None to let the profile's resolver pick.
+        dry_run:      Generate the script, resolve and log the TTS plan, then
+                      stop. Skips the TTS call and the render. NOT free: the
+                      GPT script call happens before this takes effect.
+        profile_name: Audience profile ("adults", "children"), or None for the
+                      config default.
+        use_v2:       Render with the v2 engine. Educational only; see below.
+
+    THREE OF THESE FIVE WERE ALREADY HERE AND UNREACHABLE. `background` and
+    `dry_run` were parameters no caller ever set, and resolve_profile has
+    always taken a name that this function never passed — so `children` was
+    configured, tested and impossible to select. The signature is the door;
+    it was narrower than the engine behind it.
     """
     result = {"success": False, "video_path": None, "error": None}
 
@@ -253,8 +409,18 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         update_job(job_id, status="running", step_number=1,
                    current_step="Selecting topic...", progress=5)
 
+        # v2 renders only educational — video/__init__.py falls back to v1
+        # with a warning for anything else. Refused HERE as well so the job
+        # row records what actually ran, rather than claiming v2 for a video
+        # the renderer quietly downgraded.
+        if use_v2 and not v2_supported(video_type):
+            logger.warning("v2 does not render %r — using v1", video_type)
+            update_job(job_id, current_step=f"v2 unavailable for {video_type}; using v1")
+            use_v2 = False
+
         # Audience profile (voice, backgrounds, topics) — same resolution as the CLI
-        profile = pipeline.resolve_profile()
+        profile = pipeline.resolve_profile(profile_name)
+        update_job(job_id, profile=profile.get("name"), engine="v2" if use_v2 else "v1")
 
         if script_data is not None:
             topic_name = topic_name or script_data.get("word") or script_data.get("topic") or "script"
@@ -400,19 +566,41 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             logger.warning("background: could not read the duration from %s; "
                            "the clip tier will use its own default", json_path)
 
-        resolved_background = pipeline.resolve_background(
-            profile, background,
-            topic=topic_name, category=category,
-            dest_dir=clips_dir,
-            duration=tts_duration,
-            on_record=_record_background,
-        )
+        if use_v2:
+            # v2 RENDERS ITS OWN BACKGROUND — video/__init__.py sets
+            # `background = None` whenever it is active. Resolving one anyway
+            # fetched 25.4 MB of Pexels footage for the first v2 video through
+            # this door and then discarded every frame of it. Free in dollars,
+            # but it is a download, a gate run and a job row claiming a
+            # background the video does not have.
+            resolved_background = pipeline.TERMINAL_PRESET
+            background_record = {"kind": "engine", "engine": "v2",
+                                 "note": "v2 renders its own background"}
+        else:
+            resolved_background = pipeline.resolve_background(
+                profile, background,
+                topic=topic_name, category=category,
+                dest_dir=clips_dir,
+                duration=tts_duration,
+                on_record=_record_background,
+            )
+
+        # AN EXPLICIT CHOICE LEAVES NO RECORD OF ITS OWN. resolve_background's
+        # tier 1 returns an instruction untouched and never calls on_record —
+        # that callback describes FETCHED clips and GENERATED images, and a
+        # preset is neither. So a hand-picked background recorded None, and
+        # the dashboard could not show what the operator had chosen.
+        if not background_record:
+            background_record = {"kind": "preset", "preset": resolved_background,
+                                 "requested": background}
+        update_job(job_id, background=background_record)
         update_job(job_id, current_step=f"Rendering video ({resolved_background})...")
 
         pipeline.render_video(
             audio_path, json_path, video_path,
             video_type=video_type,
             background=resolved_background,
+            use_v2=use_v2,
             timeout=pipeline.RENDER_TIMEOUT_S,
         )
 
@@ -1729,6 +1917,7 @@ main_pages = {
 }
 
 tool_pages = {
+    "Topics": "🧠",
     "Scheduler": "⏰",
     "Settings": "⚙️",
     "Logs": "📜",
@@ -1781,7 +1970,9 @@ if 'scheduler_config' not in st.session_state:
     st.session_state.scheduler_config = {
         "videos_per_batch": 5,
         "interval_minutes": 60,
-        "types": ["quiz", "educational", "true_false", "vocabulary"]
+        # All six, from the one list. Four were written out here by hand,
+        # which is how fill_blank and pronunciation became unproducible.
+        "types": scheduler_default_types(),
     }
 if 'upload_history' not in st.session_state:
     st.session_state.upload_history = []
@@ -2178,6 +2369,51 @@ elif page == "Generate":
                 topic_names = [t.get("english") or t.get("topic") or t.get("wrong") for t in topics]
                 topic_name = st.selectbox("Topic", topic_names)
 
+        # ── the controls the engine has always accepted ──
+        #
+        # Each of these is a parameter run_pipeline_with_tracking already
+        # took, or a name pipeline.resolve_profile already resolved. None of
+        # them had a widget, which is the whole reason this page had three
+        # controls for an engine with seven.
+        with st.expander("Options", expanded=False):
+            profiles = available_profiles()
+            profile_name = st.selectbox(
+                "Audience profile", profiles,
+                index=profiles.index("adults") if "adults" in profiles else 0,
+                help="Voice, backgrounds and topic categories.")
+
+            # Named with its reason rather than silently missing. A profile
+            # that is declared but cannot resolve is a fixable configuration
+            # problem, and hiding it makes it an invisible one.
+            for name, reason in unavailable_profiles().items():
+                st.caption(f"Profile '{name}' unavailable — {reason}")
+
+            backgrounds = available_backgrounds()
+            background_choice = st.selectbox(
+                "Background", ["Auto (profile decides)"] + backgrounds,
+                help="Auto runs the tiered resolver — clips first, then a "
+                     "generated image. Pick a preset to pin one.")
+            background = None if background_choice.startswith("Auto") else background_choice
+
+            # Offered ONLY for the type it can render. A checkbox that is
+            # ignored for five of six types is the failure this page exists
+            # to correct, so it is absent rather than disabled-looking.
+            if v2_supported(video_type):
+                use_v2 = st.checkbox(
+                    "Render with v2 engine",
+                    help="v2 renders its own background and supports "
+                         "educational only.")
+            else:
+                use_v2 = False
+                st.caption(f"v2 engine: not available for {type_label(video_type)}.")
+
+            dry_run = st.checkbox(
+                "Dry run (no TTS, no render)",
+                help="Writes the script and resolves the TTS plan, then "
+                     "stops. Skips the TTS call and the render — but the "
+                     "GPT script call still happens, so this is cheap, not "
+                     "free.")
+
         generate_btn = st.button("🚀 Generate Video", type="primary", use_container_width=True)
 
     with col2:
@@ -2216,7 +2452,10 @@ elif page == "Generate":
         if generate_btn:
             # Queued, not awaited: the outcome arrives in the job list above,
             # which this page already renders from the ledger.
-            job_id = start_generation(video_type, category, topic_name)
+            job_id = start_generation(video_type, category, topic_name,
+                                      profile_name=profile_name,
+                                      background=background,
+                                      use_v2=use_v2, dry_run=dry_run)
             st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
             st.rerun()
 
@@ -2240,10 +2479,12 @@ elif page == "Queue":
                 st.rerun()
         with bc2:
             if st.button("5 of Each Type", use_container_width=True):
-                for vtype in ["quiz", "educational", "true_false"]:
+                # "Each type" meant three of six, and the toast said 15
+                # regardless. Both came from the hand-written list.
+                for vtype in VIDEO_TYPES:
                     for _ in range(5):
                         st.session_state.queue_items.append({"type": vtype, "category": None, "topic": None})
-                st.success("Added 15 videos!")
+                st.success(f"Added {5 * len(VIDEO_TYPES)} videos!")
                 st.rerun()
 
         st.markdown("---")
@@ -2944,16 +3185,18 @@ elif page == "Scheduler":
         )
 
         st.write("**Video types:**")
-        type_quiz = st.checkbox("Quiz", value="quiz" in st.session_state.scheduler_config["types"])
-        type_edu = st.checkbox("Educational", value="educational" in st.session_state.scheduler_config["types"])
-        type_tf = st.checkbox("True/False", value="true_false" in st.session_state.scheduler_config["types"])
-        type_vocab = st.checkbox("Vocabulary", value="vocabulary" in st.session_state.scheduler_config["types"])
-
-        selected_types = []
-        if type_quiz: selected_types.append("quiz")
-        if type_edu: selected_types.append("educational")
-        if type_tf: selected_types.append("true_false")
-        if type_vocab: selected_types.append("vocabulary")
+        # One checkbox per type in VIDEO_TYPES. Four were written out here by
+        # hand, so fill_blank and pronunciation could not be produced from the
+        # unattended batch at all — not misconfigured, absent.
+        enabled_types = st.session_state.scheduler_config["types"]
+        selected_types = [
+            vtype for vtype in VIDEO_TYPES
+            # No key=: a keyed widget ignores value= after its first draw
+            # and would freeze at whatever was checked then, which is what
+            # tests/test_admin_platform_targets pins. Labels are distinct, so
+            # Streamlit's own keying is correct here.
+            if st.checkbox(type_label(vtype), value=vtype in enabled_types)
+        ]
 
         if st.button("💾 Save Config", use_container_width=True):
             st.session_state.scheduler_config = {
@@ -2987,6 +3230,58 @@ elif page == "Scheduler":
                 st.success(f"Queued {videos_per_batch} video(s). They run one at "
                            "a time — watch progress on the Generate page.")
                 st.rerun()
+
+
+# ============== TOPICS PAGE ==============
+#
+# topic_history.coverage() has always returned exactly what this page draws.
+# Its only caller was its own test: the memory was computed on every run and
+# never rendered, so "se me han repetido como 4 videos con el mismo tema" had
+# no screen that could have answered it.
+#
+# Every number here is COMPUTED at draw time. None is typed into a caption,
+# because a hardcoded 22% is wrong the day after it is written.
+elif page == "Topics":
+    st.markdown("## 🧠 Topic Memory")
+    st.caption("Which topics have been used, and which keep coming back. "
+               "Counted from the scripts on disk, not from a stored tally.")
+
+    report = topic_memory_report()
+
+    if not report["total"]:
+        st.info("No topics found. Add category files under content/topics/.")
+    else:
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Topics", f"{report['total']:,}")
+        c2.metric("Ever used", f"{report['used']:,}")
+        c3.metric("Never used", f"{report['unused']:,}")
+        c4.metric("Coverage", f"{report['percent_used']:.0f}%")
+
+        st.progress(min(1.0, report["percent_used"] / 100.0))
+
+        st.markdown('<div class="section-header">Repeats</div>',
+                    unsafe_allow_html=True)
+        repeats = report["repeats"]
+        if not repeats:
+            st.success("No topic has been used twice.")
+        else:
+            st.caption(f"{len(repeats)} topic(s) generated more than once, "
+                       "worst first. This is the list that explains a "
+                       "repeated video.")
+            st.dataframe(
+                [{"Category": r["category"], "Topic": r["topic_id"],
+                  "Times": r["times"]} for r in repeats],
+                use_container_width=True, hide_index=True)
+
+        st.markdown('<div class="section-header">By category</div>',
+                    unsafe_allow_html=True)
+        st.dataframe(
+            [{"Category": row["category"], "Total": row["total"],
+              "Used": row["used"], "Unused": row["unused"],
+              "Coverage": f"{(100.0 * row['used'] / row['total']):.0f}%"
+                          if row["total"] else "—"}
+             for row in report["by_category"]],
+            use_container_width=True, hide_index=True)
 
 
 # ============== SETTINGS PAGE ==============
