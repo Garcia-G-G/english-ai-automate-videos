@@ -53,6 +53,18 @@ class ClipLibraryBackground:
     a measurement of these actual clips (clip_contrast.treatment_for_dir),
     sampled across each clip's duration and sized for the worst moment any
     of them reaches, so a cut to a brighter clip cannot surprise it.
+
+    TWO TREATMENTS, BECAUSE THE BAND CANNOT REACH THE BRAND MARK.
+
+    The watermark is white text at rows 1555..1609. The band ends at 1450 on
+    quiz and at 1060 on educational, so on three of six types the mark is
+    outside the band AND its feather. Widening the band to cover it would
+    darken the bottom of every video — the flat dim's mistake again.
+
+    So there is a second, LOCAL scrim over the mark's own box, solved the
+    same way from the same samples but against white. It multiplies a
+    507x214 rectangle rather than the frame, and on footage dark enough to
+    carry the mark already it solves to zero and touches nothing.
     """
 
     def __init__(self, clips_dir: str, width: int, height: int,
@@ -109,31 +121,69 @@ class ClipLibraryBackground:
                     len(self._clips), len(self._playlist), t)
 
         # ── the readability band ──
-        # Measured from these clips unless the caller pinned a strength.
         # Measurement is one decode pass over each clip at 0.5s and happens
-        # once per video, not per frame.
-        from clip_contrast import scrim_profile, text_zone, treatment_for_dir
+        # once per video, not per frame. Both zones come off the same
+        # decoded frames, so measuring the mark as well is free.
+        from clip_contrast import (VIDEO_HEIGHT, VIDEO_WIDTH, mark_profile,
+                                   mark_rect, scrim_profile, text_zone,
+                                   treatment_for_dir)
 
         self.zone = text_zone(video_type)
-        if scrim is None:
-            plan = treatment_for_dir(self.clips_dir, video_type)
-            self.scrim = plan["strength"]
-            self.contrast_report = plan
-            logger.info(
-                "Clip background: band %.3f for %s (worst %.2f:1 untreated "
-                "on %s at t=%.1fs, %d clips sampled every %.1fs)",
-                self.scrim, video_type or "unknown",
-                plan["worst_contrast"] or 0.0,
-                Path(plan.get("worst_clip") or "-").name,
-                plan.get("worst_at") or 0.0, len(plan["clips"]), plan["interval"])
-        else:
-            self.scrim = float(scrim)
-            self.contrast_report = None
+        # Measured even when the caller pins the band, because `scrim=` pins
+        # the BAND — the mark is a different zone measured against a
+        # different colour, and letting a pinned band switch it off silently
+        # is how it shipped illegible in the first place.
+        plan = treatment_for_dir(self.clips_dir, video_type,
+                                 band_strength=scrim)
+        self.contrast_report = plan
+        self.scrim = plan["strength"]
+        self.mark_scrim = plan["mark_strength"]
+        logger.info(
+            "Clip background: band %.3f for %s (worst %.2f:1 untreated "
+            "on %s at t=%.1fs, %d clips sampled every %.1fs)",
+            self.scrim, video_type or "unknown",
+            plan["worst_contrast"] or 0.0,
+            Path(plan.get("worst_clip") or "-").name,
+            plan.get("worst_at") or 0.0, len(plan["clips"]), plan["interval"])
+        logger.info(
+            "Clip background: watermark scrim %.3f over %s (worst %.2f:1 "
+            "untreated, %.2f:1 treated, band already credited %.3f)",
+            self.mark_scrim, plan.get("mark_rect"),
+            plan.get("mark_worst_contrast") or 0.0,
+            plan.get("mark_treated_contrast") or 0.0,
+            plan.get("mark_band_credit") or 1.0)
+        if not plan.get("mark_meets_floor", True):
+            logger.warning(
+                "Clip background: the watermark still reads %.2f:1 after "
+                "treatment — below the %.1f floor",
+                plan.get("mark_treated_contrast") or 0.0, 3.0)
 
         # Precomputed once. Per-frame this is one broadcast multiply.
         self._scrim = (scrim_profile(self.height, self.zone,
                                      strength=self.scrim)
                        if self.scrim > 0 else None)
+
+        # The mark's patch is LOCAL, so it is stored as its own rectangle and
+        # multiplied into that slice only — 507x214 pixels rather than the
+        # 1080x1920 the band has to touch.
+        #
+        # Only on the canonical canvas. mark_rect() is in absolute 1920-row
+        # coordinates because the mark itself is — brand.py positions it off
+        # SAFE_AREA_BOTTOM, not off a fraction of the frame — so on any other
+        # size the rows to darken are not where the mark is drawn anyway. The
+        # band scales (scrim_profile takes a height) and this deliberately
+        # does not; skipping is honest, and slicing would be a shape mismatch
+        # in the middle of a render.
+        canonical = (self.width, self.height) == (VIDEO_WIDTH, VIDEO_HEIGHT)
+        if self.mark_scrim > 0 and not canonical:
+            logger.warning(
+                "Clip background: watermark scrim %.3f NOT applied — canvas "
+                "is %dx%d, and the mark's box is fixed to %dx%d",
+                self.mark_scrim, self.width, self.height,
+                VIDEO_WIDTH, VIDEO_HEIGHT)
+        apply_mark = self.mark_scrim > 0 and canonical
+        self._mark_rect = mark_rect() if apply_mark else None
+        self._mark = mark_profile(strength=self.mark_scrim) if apply_mark else None
 
         # Sequential-read state
         self._cap = None
@@ -207,7 +257,7 @@ class ClipLibraryBackground:
         frame = self._fit(frame)
 
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        if self.dim <= 0 and self._scrim is None:
+        if self.dim <= 0 and self._scrim is None and self._mark is None:
             return rgb
 
         out = rgb.astype(np.float32)
@@ -218,6 +268,13 @@ class ClipLibraryBackground:
             out *= (1.0 - self.dim)
         if self._scrim is not None:
             out *= self._scrim
+        if self._mark is not None:
+            # In place, on the mark's rectangle only. The band's contribution
+            # over these rows was already credited when mark_scrim was
+            # solved, so the two multiply to the solved total rather than
+            # stacking past it.
+            x0, y0, x1, y1 = self._mark_rect
+            out[y0:y1, x0:x1] *= self._mark
         return np.clip(out, 0, 255).astype(np.uint8)
 
     def close(self):

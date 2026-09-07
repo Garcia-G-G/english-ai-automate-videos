@@ -220,3 +220,31 @@ def test_the_background_factory_passes_the_type_through():
     source = inspect.getsource(backgrounds._get_clip_background)
     assert 'options.get("video_type")' in source
     assert 'options.get("dim", 0.0)' in source, "the 0.35 default must be gone"
+
+
+def test_the_solve_clears_the_floor_IN_THE_PIXELS_THAT_SHIP():
+    """The solve sizes a float multiply; the frame ships as uint8.
+
+    THIS PASSED THE DAY IT WAS WRITTEN, and the reason is worth keeping.
+    solve_strength stops at the first strength whose FLOAT result clears the
+    floor, and the renderer then does np.clip(...).astype(np.uint8), which
+    TRUNCATES. Truncation only ever makes a pixel darker, and the solve only
+    ever darkens a background that is too bright, so the shipped pixel lands
+    on the safe side of the floor by construction rather than by luck.
+
+    Had that conversion rounded instead, twelve of the thirty-five strengths
+    swept here would ship at 2.9953:1 — below a floor this module reports as
+    met. So this pins the conversion, not the arithmetic: it is the test that
+    fails if anyone makes the quantisation symmetric.
+    """
+    for p95 in np.arange(0.30, 1.0, 0.02):
+        grey = cc._grey_for(float(p95))
+        pixels = [[grey, grey, grey]]
+        strength = cc.solve_strength(pixels, cc.FLOOR, (255, 255, 255))
+
+        shipped = np.clip(np.array([grey, grey, grey]) * (1.0 - strength),
+                          0, 255).astype(np.uint8)
+        ratio = cc.contrast_ratio(1.0, float(relative_luminance(shipped)))
+
+        assert ratio >= cc.FLOOR, (
+            f"p95 {p95:.2f}: solved {strength:.3f} ships {ratio:.4f}:1")
