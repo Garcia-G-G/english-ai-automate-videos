@@ -51,9 +51,29 @@ WATERMARK_WEIGHT = "SemiBold"
 #: Measured against the REAL backdrop rather than a synthetic swatch — the
 #: watermark region of a rendered quiz has mean luminance 0.137 with
 #: highlights to 1.0, so the shadow has to survive bright patches inside an
-#: otherwise dark frame. Stock footage in 4b will be brighter on average,
-#: which is why the shadow is tuned for the bright case even though today's
-#: backdrop rarely needs it.
+#: otherwise dark frame.
+#:
+#: THESE TWO NUMBERS DO NOT SURVIVE BRIGHT FOOTAGE, AND NO OTHER TWO WOULD.
+#: This comment used to claim the shadow was "tuned for the bright case even
+#: though today's backdrop rarely needs it". It never was — it was chosen by
+#: eye against a dark backdrop, and when the background standard made the
+#: bottom third bright by design the mark went to 1.24:1 white-against-
+#: background on the median clip, against a floor of 3.0.
+#:
+#: Swept rather than assumed, glyph ink against its own halo at p95 0.797:
+#:
+#:     alpha 160 blur  4 -> 1.63     alpha 255 blur  4 -> 1.82  (best)
+#:     alpha 200 blur  4 -> 1.70     alpha 255 blur  8 -> 1.63
+#:                                   alpha 255 blur 12 -> 1.55
+#:
+#: The best pair reaches 1.82, and blurring MORE makes it worse because the
+#: halo spreads and lightens. So do not spend a pass here: the floor comes
+#: from clip_contrast's solved local scrim, which measures the pixels under
+#: the mark per clip and darkens only its own box.
+#:
+#: The shadow STAYS. Below roughly p95 0.25 it carries the mark on its own —
+#: 10.9:1 on night footage — and the scrim correctly solves to zero there, so
+#: the shadow is the only thing working and it costs nothing.
 SHADOW_ALPHA = 160
 SHADOW_BLUR = 4
 SHADOW_OFFSET = (0, 2)

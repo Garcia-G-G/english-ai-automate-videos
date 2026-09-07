@@ -48,6 +48,21 @@ The band's STRENGTH is then solved per clip from the measurement rather than
 picked: see strength_for(). A dark clip needs almost none and keeps its
 picture; a bright one gets as much as it needs and only across the rows that
 carry text.
+
+THE WATERMARK IS A SECOND ZONE, AND THE BAND CANNOT REACH IT.
+
+The brand mark is white text at rows 1555..1609 — below every text zone here,
+and on three of the six types below the band's feather as well. It had only a
+blurred black shadow whose constants were chosen by eye against a dark
+backdrop, and once the background standard made the bottom third bright it
+read 1.24:1 on the median clip. Sweeping the shadow's two constants tops out
+at 1.82:1 against a floor of 3.0, so there is nothing to tune there.
+
+So the mark gets the same treatment the band gets, over its own small box:
+measured per clip (mark_patch), solved against WHITE rather than the headline
+yellow (MARK_COLOR), and applied as a patch local in both axes
+(mark_profile). Where the band already darkens those rows its contribution is
+credited first (band_over_mark), so the two cannot stack into a dark slab.
 """
 
 from __future__ import annotations
@@ -64,8 +79,8 @@ if _SRC not in _sys.path:
     _sys.path.insert(0, _SRC)
 
 from text_contrast import (  # noqa: E402
-    HEADLINE_COLOR, VIDEO_HEIGHT, VIDEO_WIDTH, WCAG_LARGE_TEXT,
-    contrast_ratio, relative_luminance,
+    HEADLINE_COLOR, VIDEO_HEIGHT, VIDEO_WIDTH, WATERMARK_BOX, WATERMARK_COLOR,
+    WCAG_LARGE_TEXT, contrast_ratio, relative_luminance,
 )
 
 logger = logging.getLogger(__name__)
@@ -124,6 +139,55 @@ MAX_STRENGTH = 0.75
 #: the darkening instead of searching for it.
 GAMMA = 2.4
 
+# ── the watermark's own zone ────────────────────────────────────────────
+#
+# WHY THE MARK NEEDS ITS OWN TREATMENT AND NOT A TALLER BAND.
+#
+# The mark is white text at rows 1555..1609. The band above ends at 1450 on
+# quiz and at 1060 on educational, so measured against the mark's top row:
+#
+#     quiz            109 px below the band     (feather reaches it)
+#     true_false      159 px                    (feather reaches it)
+#     vocabulary      159 px                    (feather reaches it)
+#     pronunciation   399 px — 99 px OUTSIDE the feather
+#     fill_blank      439 px — 139 px OUTSIDE
+#     educational     499 px — 199 px OUTSIDE
+#
+# In three of six types the band cannot reach the mark at all. Stretching it
+# to row 1920 would fix that by darkening the bottom of every video, which
+# is the flat-dim mistake wearing a different hat: brightness where there is
+# no text is the footage we went and fetched.
+#
+# So the mark gets a scrim over ITS OWN box and nothing else — local in both
+# axes, which a row profile cannot express.
+MARK_BOX = WATERMARK_BOX
+
+#: White. The mark's admissible background is therefore 0.300 rather than the
+#: yellow headline's 0.129, and every solve below is more permissive as a
+#: result. Passed explicitly rather than defaulted, because taking
+#: HEADLINE_COLOR here would over-darken the mark by roughly a factor of two.
+MARK_COLOR = WATERMARK_COLOR
+
+#: Falloff around the mark's box, in 1920-row coordinates.
+#:
+#: A SEAM PARAMETER, NOT A CONTRAST ONE — the strength is solved (see
+#: strength_for); this only decides how the patch fades out, and it was
+#: chosen by looking at the brightest clip in the library rather than by
+#: arithmetic, which is the honest description of it.
+#:
+#: 60 px was tried first and rendered a floating grey slab: the box is 354 px
+#: wide, so a 60 px ramp around it still reads as a rectangle with rounded
+#: corners — the pasted-on-UI quality brand.py rejected the opaque pill for.
+#:
+#: 80 px is the value where the horizontal ramp runs out exactly at the left
+#: frame edge (the mark starts at column 73), so the patch reads as shading
+#: anchored in the corner rather than an object floating in the frame, and it
+#: gets there with 0.8% darkening at the edge itself — no clamp seam. It
+#: still stops 25 px above the lowest text zone's 1450, 231 px above the
+#: frame bottom, and spans 47% of the width. Past ~90 px it starts eating
+#: into quiz's band and the edge stops being clean.
+MARK_FEATHER = 80
+
 
 def text_zone(video_type: Optional[str]) -> Tuple[int, int]:
     """The rows this type draws text on. Unknown types get the union."""
@@ -147,16 +211,98 @@ def scrim_profile(height: int, zone: Tuple[int, int] = None,
     scale = height / VIDEO_HEIGHT
     top, bottom, feather = top * scale, bottom * scale, max(1.0, feather * scale)
 
-    y = np.arange(height, dtype=np.float32)
-    band = np.zeros(height, dtype=np.float32)
-    band[(y >= top) & (y <= bottom)] = 1.0
-
-    upper = (y < top) & (y > top - feather)
-    band[upper] = 0.5 * (1 + np.cos(np.pi * (top - y[upper]) / feather))
-    lower = (y > bottom) & (y < bottom + feather)
-    band[lower] = 0.5 * (1 + np.cos(np.pi * (y[lower] - bottom) / feather))
-
+    band = _ramp(np.arange(height, dtype=np.float32), top, bottom, feather)
     return (1.0 - float(strength) * band)[:, None, None]
+
+
+def _ramp(coords: np.ndarray, lo: float, hi: float,
+          feather: float) -> np.ndarray:
+    """1.0 between `lo` and `hi`, raised cosine to 0.0 over `feather`.
+
+    THE curve, in one place. scrim_profile applies it down the rows and
+    mark_profile applies it along both axes; a second copy for the mark
+    would have been a second thing to keep in step with topic_background,
+    which already imports this one for stills.
+
+    Raised cosine because its derivative is zero at both ends of the
+    falloff, so there is no edge for the eye to catch.
+    """
+    out = np.zeros_like(coords, dtype=np.float32)
+    out[(coords >= lo) & (coords <= hi)] = 1.0
+
+    upper = (coords < lo) & (coords > lo - feather)
+    out[upper] = 0.5 * (1 + np.cos(np.pi * (lo - coords[upper]) / feather))
+    lower = (coords > hi) & (coords < hi + feather)
+    out[lower] = 0.5 * (1 + np.cos(np.pi * (coords[lower] - hi) / feather))
+    return out
+
+
+def mark_rect(box: Tuple[int, int, int, int] = MARK_BOX,
+              feather: int = MARK_FEATHER) -> Tuple[int, int, int, int]:
+    """The rectangle the mark's treatment actually touches, feather included.
+
+    Returned so the renderer can multiply a 474x174 sub-array instead of the
+    whole 1080x1920 frame. That is not only cheaper — it is the claim that
+    the treatment is local, in a form the caller cannot accidentally widen.
+    """
+    x0, y0, x1, y1 = box
+    return (max(0, x0 - feather), max(0, y0 - feather),
+            min(VIDEO_WIDTH, x1 + feather), min(VIDEO_HEIGHT, y1 + feather))
+
+
+def mark_profile(box: Tuple[int, int, int, int] = MARK_BOX,
+                 feather: int = MARK_FEATHER,
+                 strength: float = 1.0) -> np.ndarray:
+    """The mark's darkening, as multipliers over mark_rect() only.
+
+    Shape (h, w, 1) covering the rectangle — NOT the frame. The band is a
+    column of multipliers because it spans the full width by design; the
+    mark must fall off horizontally too, or it is a strip.
+
+    Separable: the same raised cosine down the rows and along the columns,
+    multiplied. The product is 1.0 across the box, falls smoothly to 0 at
+    every edge, and rounds the corners for free.
+    """
+    rx0, ry0, rx1, ry1 = mark_rect(box, feather)
+    rows = _ramp(np.arange(ry0, ry1, dtype=np.float32), box[1], box[3], feather)
+    cols = _ramp(np.arange(rx0, rx1, dtype=np.float32), box[0], box[2], feather)
+    return (1.0 - float(strength) * (rows[:, None] * cols[None, :]))[:, :, None]
+
+
+def mark_patch(frame: np.ndarray,
+               box: Tuple[int, int, int, int] = MARK_BOX) -> np.ndarray:
+    """The pixels under the mark, from a fitted frame.
+
+    The box, not the feathered rectangle: the feather exists so the
+    treatment has no visible edge, not because anything is read there.
+    """
+    x0, y0, x1, y1 = box
+    patch = frame[y0:y1, x0:x1]
+    return patch if patch.size else frame
+
+
+def band_over_mark(strength: float, zone: Tuple[int, int],
+                   box: Tuple[int, int, int, int] = MARK_BOX,
+                   feather: int = FEATHER) -> float:
+    """How much the TEXT band has already darkened the mark's rows.
+
+    WITHOUT THIS THE TWO TREATMENTS STACK. quiz's band ends 109 px above the
+    mark and its 300 px feather reaches well past it, so rows 1555..1609 are
+    already darkened to between 0.73 and 0.45 of the band's strength before
+    the mark's own scrim is applied. Solving the mark against raw clip pixels
+    and then multiplying both together is exactly the visible dark patch this
+    step exists to avoid.
+
+    Returns the WEAKEST darkening anywhere over the box — the largest
+    multiplier, at the box's bottom row. Conservative on purpose: crediting
+    the band with its strongest reach would leave the mark's bottom rows
+    short of the floor, and undershooting the floor is the failure that
+    matters. Types whose band cannot reach the mark get exactly 1.0.
+    """
+    if strength <= 0:
+        return 1.0
+    profile = scrim_profile(VIDEO_HEIGHT, zone, feather, strength).ravel()
+    return float(profile[box[1]:box[3]].max())
 
 
 def fit_frame(frame: np.ndarray) -> np.ndarray:
@@ -387,20 +533,28 @@ def worst_over_clip(path: Path, video_type: str = None,
         if not ok:
             continue
         rgb = fit_frame(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-        samples.append((t, measure_zone(rgb, zone)))
+        # Both zones off the same decoded frame: the mark's box is 19k
+        # pixels against the text zone's 1.09M, so measuring it costs
+        # nothing next to the decode that already happened.
+        samples.append((t, measure_zone(rgb, zone),
+                        measure_zone_patch(mark_patch(rgb), MARK_COLOR)))
     capture.release()
 
     if not samples:
         return None
 
     # WORST, not average. The whole reason this module exists.
-    worst_t, worst = min(samples, key=lambda s: s[1]["contrast_worst"])
-    best_t, best = max(samples, key=lambda s: s[1]["contrast_worst"])
+    worst_t, worst, _ = min(samples, key=lambda s: s[1]["contrast_worst"])
+    best_t, best, _ = max(samples, key=lambda s: s[1]["contrast_worst"])
+    mark_worst = min(m["contrast_worst"] for _, _, m in samples)
     return {
         # Every sample's p95 pixel, for the treatment scan. Kept because
         # the post-treatment worst moment is not the pre-treatment one —
         # see solve_strength.
-        "p95_pixels": [m["p95_rgb"] for _, m in samples],
+        "p95_pixels": [m["p95_rgb"] for _, m, _ in samples],
+        "mark_p95_pixels": [m["p95_rgb"] for _, _, m in samples],
+        "mark_worst_contrast": round(mark_worst, 2),
+        "mark_passes_untreated": mark_worst >= FLOOR,
         "path": str(path),
         "duration": round(duration, 2),
         "samples": len(samples),
@@ -417,7 +571,8 @@ def worst_over_clip(path: Path, video_type: str = None,
 
 
 def treatment_for_dir(clips_dir: Path, video_type: str = None,
-                      interval: float = SAMPLE_INTERVAL) -> Dict:
+                      interval: float = SAMPLE_INTERVAL,
+                      band_strength: float = None) -> Dict:
     """Measure every clip in a directory and size the band for the worst.
 
     ONE strength for the whole playlist rather than one per clip, and that
@@ -434,6 +589,8 @@ def treatment_for_dir(clips_dir: Path, video_type: str = None,
 
     if not reports:
         return {"clips": [], "strength": 0.0, "worst_contrast": None,
+                "mark_strength": 0.0, "mark_worst_contrast": None,
+                "mark_treated_contrast": None, "mark_meets_floor": True,
                 "interval": interval, "video_type": video_type}
 
     zone = text_zone(video_type)
@@ -444,11 +601,27 @@ def treatment_for_dir(clips_dir: Path, video_type: str = None,
     # clip reaches AND every instant that darkening would drag through the
     # text's own luminance, which is a different frame.
     every = [px for r in reports for px in r["p95_pixels"]]
-    strength = solve_strength(every)
+    strength = float(band_strength) if band_strength is not None \
+        else solve_strength(every)
     achieved = _contrast_at(every, strength)
+
+    # ── the mark, solved over its own zone against white ──
+    #
+    # Against the pixels the band has ALREADY darkened, not the raw ones.
+    # For quiz the band's feather reaches the mark's rows, so part of the
+    # work is done; for educational it stops 199 px short and none of it is.
+    # Solving against raw pixels would stack the two treatments on the types
+    # where they overlap and put a visible dark patch under the mark.
+    leak = band_over_mark(strength, zone)
+    mark_pixels = [[c * leak for c in px]
+                   for r in reports for px in r["mark_p95_pixels"]]
+    mark_strength = solve_strength(mark_pixels, FLOOR, MARK_COLOR)
+    mark_achieved = _contrast_at(mark_pixels, mark_strength, MARK_COLOR)
+    mark_worst = min(r["mark_worst_contrast"] for r in reports)
 
     for report in reports:
         report.pop("p95_pixels", None)
+        report.pop("mark_p95_pixels", None)
 
     return {
         "clips": reports,
@@ -463,6 +636,15 @@ def treatment_for_dir(clips_dir: Path, video_type: str = None,
         "meets_floor": bool(achieved is not None and achieved >= FLOOR),
         "failing_untreated": [r["path"] for r in reports
                               if not r["passes_untreated"]],
+        "mark_box": MARK_BOX,
+        "mark_rect": mark_rect(),
+        "mark_band_credit": round(leak, 3),
+        "mark_strength": round(float(mark_strength), 3),
+        "mark_worst_contrast": round(mark_worst, 2),
+        "mark_treated_contrast": round(mark_achieved, 2),
+        "mark_meets_floor": bool(mark_achieved >= FLOOR),
+        "mark_failing_untreated": [r["path"] for r in reports
+                                   if not r["mark_passes_untreated"]],
     }
 
 
