@@ -19,6 +19,7 @@ from config.layout import (
     FB_SENTENCE_Y, FB_OPTIONS_START_Y, FB_COUNTDOWN_CENTER_Y, FB_TRANSLATION_Y,
 )
 from .utils import (
+    font_line_height,
     strip_display_quotes,
     font, draw_text_solid, draw_text_centered,
     draw_rounded_card, draw_circle_number, draw_progress_timer_bar,
@@ -327,13 +328,35 @@ def _draw_option_cards(t, draw, frame, options, correct, show_answer,
         draw_circle_number(draw, letters[i], cx + 45, cy + _OPT_H // 2,
                            radius=22, bg_color=lc, font_size=26)
 
-        # Option text
-        of, _, _, _ = fit_text_font(opt, 40, 28, _OPT_W - 120)
-        th = _text_h(draw, opt, of)
+        # Option text — THE LINES THE FIT RETURNED, not the source string.
+        #
+        # This was `of, _, _, _ = fit_text_font(opt, 40, 28, _OPT_W - 120)`
+        # followed by drawing `opt`: the same two failures removed from
+        # vocabulary._draw_cell. No max_height, so the fit returned 40px for
+        # every option of any length; and the wrapped lines were dropped on
+        # the floor while the raw string went to the canvas.
+        #
+        # LATENT, NOT LIVE, and fixed as a consistency matter rather than an
+        # emergency: measured across the 223 distinct options on disk, not
+        # one changes size or line count. The widest is "You can contact me
+        # at 555-123-4567" at 732px of a 740px column — 99% — so it is one
+        # long option from firing.
+        #
+        # The budget is the card, which is 75px: one line at 40px is 49px
+        # and fits, two lines at 40px is 98px and does not. A wrapped option
+        # therefore cannot fit this card at all, and the honest outcome for
+        # one is fit_text_font's log plus lines that at least stay inside
+        # the column horizontally — never a silently clipped string.
+        box = fit_text_font(opt, 40, 28, _OPT_W - 120, _OPT_H - 6)
+        of, lines = box.font, box.lines
         tc = ((30, 140, 60) if is_correct else
               (160, 155, 170) if is_wrong else _TEXT_DARK)
-        draw_text_solid(draw, opt, cx + 85, cy + (_OPT_H - th) // 2 - 1,
-                        of, tc, card_alpha, outline=0)
+        line_h = font_line_height(of)
+        block_h = (len(lines) - 1) * line_h + _text_h(draw, lines[0], of)
+        ty = cy + (_OPT_H - block_h) // 2 - 1
+        for index, line in enumerate(lines):
+            draw_text_solid(draw, line, cx + 85, ty + index * line_h,
+                            of, tc, card_alpha, outline=0)
 
         # Sparkles on correct answer
         if is_correct:
@@ -421,11 +444,15 @@ def create_frame_fill_blank(
     if show_answer and translation:
         ta = get_alpha(t, answer_time + 0.5, 0.3)
         if ta > 0:
+            # The pill is bounded by the card, not by the length of the
+            # translation: 9 of 69 translations on disk are wide enough to
+            # run off both edges of the frame without this.
             draw_pill_badge(frame, draw, translation,
                             VIDEO_WIDTH // 2, _TRANSLATION_CY,
                             font_size=30, bg_color=(60, 60, 90),
                             text_color=(220, 220, 240),
-                            padding_x=28, padding_y=12)
+                            padding_x=28, padding_y=12,
+                            max_width=CARD_WIDTH)
             draw = ImageDraw.Draw(frame, 'RGBA')
 
     # Trigger character excitement on answer reveal

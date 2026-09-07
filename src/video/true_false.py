@@ -591,14 +591,17 @@ def create_frame_true_false(
             slide_progress = min(1.0, max(0.0, slide_elapsed / 0.4))
             slide_offset = int(60 * (1.0 - ease_out_cubic(slide_progress)))
 
-            exp_y_base = EXPLANATION_ZONE_TOP
-            exp_y = exp_y_base + slide_offset
+            # SLIDE OFF THE BUDGET. The anchor here is already the
+            # explanation zone rather than the countdown, so this card does
+            # not have quiz's position defect — but it shared the slide
+            # one: max_exp_h fell from 159px to 99px during the 0.4s
+            # entrance. No true_false explanation on disk is long enough to
+            # have shown it (0 of 60 overflow at rest), which is why nobody
+            # had seen it fail.
             exp_padding = 28
+            exp_y_base = EXPLANATION_ZONE_TOP
             max_exp_w = CARD_WIDTH - exp_padding * 2
-            # Budget stops above the watermark, not at the safe-area floor.
-            # Both used to reach for SAFE_AREA_BOTTOM independently, so a
-            # card that filled its budget landed on the mark.
-            max_exp_h = watermark_top() - exp_y - exp_padding * 2
+            max_exp_h = watermark_top() - exp_y_base - exp_padding * 2
 
             clean_exp = strip_display_quotes(explanation).strip()
             ef, exp_font_size, exp_lines, exp_text_h = fit_text_font(
@@ -606,6 +609,8 @@ def create_frame_true_false(
             )
             exp_line_h = font_line_height(ef)
             exp_height = len(exp_lines) * exp_line_h + exp_padding * 2
+            exp_y = min(exp_y_base + slide_offset,
+                        watermark_top() - exp_height)
 
             # Light card
             card_a = int(220 * (exp_alpha / 255))

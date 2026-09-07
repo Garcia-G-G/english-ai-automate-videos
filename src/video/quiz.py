@@ -837,14 +837,32 @@ def create_frame_quiz(
         slide_progress = min(1.0, max(0.0, slide_elapsed / 0.4))
         slide_offset = int(60 * (1.0 - ease_out_cubic(slide_progress)))
 
-        exp_y_base = COUNTDOWN_ZONE_TOP + 10
-        exp_y = exp_y_base + slide_offset
+
+        # ── THE EXPLANATION CARD'S BUDGET ────────────────────────────
+        #
+        # TWO THINGS WERE WRONG, and the watermark fix only addressed one.
+        #
+        #  a. ANCHOR. exp_y derived from COUNTDOWN_ZONE_TOP — where the
+        #     countdown lives, not where an explanation has room. That put
+        #     the card 109px above the floor it budgets against, leaving
+        #     53px: one 28px line is 35px tall, so the card had room for one
+        #     line and was handed five. Every render logged
+        #     "122px too TALL for 53px" and drew it anyway, 122px past the
+        #     watermark. The countdown has finished by the time this card
+        #     appears; the options have not, so the options zone is where
+        #     the room actually starts.
+        #
+        #  b. SLIDE. slide_offset fed the budget, so during the 0.4s
+        #     entrance max_exp_h was 53 - 60 = -7px. The same defect
+        #     educational._card_floor() removed for its bounce and that
+        #     quiz's own explanation card had for its slide. The budget is
+        #     computed at the RESTING position; the slide displaces the
+        #     drawn card afterwards and is clamped so it cannot cross the
+        #     floor.
         exp_padding = 28
+        exp_y_base = OPTIONS_ZONE_BOTTOM + 10
         max_exp_w = CARD_WIDTH - exp_padding * 2
-        # Budget stops above the watermark, not at the safe-area floor.
-        # Both used to reach for SAFE_AREA_BOTTOM independently, so a
-        # card that filled its budget landed on the mark.
-        max_exp_h = watermark_top() - exp_y - exp_padding * 2
+        max_exp_h = watermark_top() - exp_y_base - exp_padding * 2
 
         clean_exp = strip_display_quotes(explanation).strip()
         ef, exp_font_size, exp_lines, exp_text_h = fit_text_font(
@@ -852,6 +870,8 @@ def create_frame_quiz(
         )
         exp_line_h = font_line_height(ef)
         exp_height = len(exp_lines) * exp_line_h + exp_padding * 2
+        # The slide displaces a settled card and never crosses the floor.
+        exp_y = min(exp_y_base + slide_offset, watermark_top() - exp_height)
 
         # Light card background
         card_alpha = int(240 * (exp_alpha / 255))

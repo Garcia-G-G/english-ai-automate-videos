@@ -23,6 +23,7 @@ from config.colors import CARD_COLORS
 from .utils import (
     font, draw_text_solid, draw_text_centered,
     draw_rounded_card, draw_difficulty_badge, fit_text_font,
+    font_line_height,
     create_base_frame, finalize_frame,
     seg_start as _seg_start,
     slide_in_x,
@@ -40,6 +41,44 @@ _BADGE_Y = 110
 _CARD_TOP_MIN = VOCAB_CARD_TOP_MIN   # card never above this
 _HEADER_H = 70           # coloured header strip inside the card
 _ROW_FONT = 42
+
+#: Vertical budget for ONE cell's text block, inside VOCAB_ROW_HEIGHT.
+#:
+#: 90 minus 12px of air, so two lines can share a row without the blocks of
+#: adjacent rows touching. The number is chosen against the font metrics, not
+#: picked: two lines at 32px measure exactly 78px of advance and fit; two at
+#: 42px measure 104px and do not. That is why a HEIGHT is passed to
+#: fit_text_font rather than a line count — the count that fits depends on
+#: the size the fit lands on, which is the thing being solved for.
+_ROW_TEXT_BUDGET = VOCAB_ROW_HEIGHT - 12
+
+#: The row-number badge, and the gutter the text keeps clear of it.
+#:
+#: THESE EXIST SO THE COLUMN ORIGIN IS DERIVED RATHER THAN WRITTEN DOWN.
+#: The left column used `card_x + CARD_PADDING // 2` — 80px — while the badge
+#: occupies 72..104, so the column began 24px INSIDE the circle and any line
+#: wider than 376px was drawn over the number. Seven of twelve rows were, by
+#: 8 to 19px, and the declared column width (400px) and the usable width
+#: (376px) disagreed with nobody to notice.
+#:
+#: That is the same shape as the quiz card sizing itself against
+#: SAFE_AREA_BOTTOM while the watermark sat above it: two things measuring to
+#: different boundaries and meeting in the middle. watermark_top() fixed that
+#: one by making the obstacle answer for its own extent, and _text_left_edge
+#: does the same here — change _NUM_RADIUS or _NUM_CENTRE_DX and the text
+#: moves with the badge instead of under it.
+_NUM_RADIUS = 16
+_NUM_CENTRE_DX = 28
+_NUM_GUTTER = 8
+
+
+def _text_left_edge(card_x: int) -> int:
+    """Leftmost x the left column may use: past the badge, plus a gutter.
+
+    The single place that decides where the Spanish column starts. The badge
+    is drawn from the same three constants, so the two cannot drift.
+    """
+    return card_x + _NUM_CENTRE_DX + _NUM_RADIUS + _NUM_GUTTER
 _HEADER_FONT = 34
 
 # Highlight colour for the currently-active row
@@ -241,6 +280,68 @@ def create_frame_vocabulary(
     return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
 
 
+def _draw_cell(draw, text, *, col_w, budget, row_y, color, alpha,
+               align_right_to=None, align_left_from=None, min_x=None):
+    """Lay out one table cell and draw THE LINES THE FIT RETURNED.
+
+    THE DEFECT THIS REPLACES. The two call sites here asked fit_text_font how
+    the text should be laid out, unpacked it as `lf, _, _, _`, and then drew
+    the original unwrapped string. Both failures compounded:
+
+      · No `max_height` was passed, and fit_text_font's guard is
+        `if max_height is None or box.advance_height <= max_height`. With
+        None the guard is true on the first iteration, so the function
+        returned _ROW_FONT — 42px — for every string of any length. The call
+        read like a fit and behaved like a constant.
+      · `box.lines`, already wrapped to the column by line_break, was thrown
+        away and `draw_text_solid` was handed the source string.
+
+    Measured on a real deck at 42px into columns of 400px and 480px: 14 of 24
+    cells overflowed, in 9 of 12 rows, the longest by 409px.
+
+    WIDTH ALONE WOULD NOT HAVE FIXED IT. Shrinking to the 28px floor on width
+    still leaves four cells over — "Has demostrado una habilidad notable" is
+    524px at 28px into a 400px column. The fit has to be two-dimensional, so
+    the row's own vertical budget goes in and wrapping is allowed to happen.
+    With _ROW_TEXT_BUDGET every cell on that deck resolves, seven of them on
+    two lines, none at the floor.
+
+    ALIGNMENT IS PER LINE, NOT PER BLOCK. A block right-aligned by its widest
+    line is not right-aligned: its short line would float off the divider. So
+    each line is placed on its own measured width.
+
+    VERTICAL CENTRING USES THE REAL BLOCK. (n-1) line advances plus the ink
+    of one line, centred in the row. For a single line that reduces to
+    exactly the previous arithmetic, so one-line rows do not shift; a
+    two-line cell centres its block, and the two columns of a row centre
+    independently so a one-line cell beside a two-line one still reads as one
+    row.
+    """
+    box = fit_text_font(text, _ROW_FONT, 28, col_w, budget)
+    f, lines = box.font, box.lines
+    line_h = font_line_height(f)
+
+    # fit_text_font logs its own overflow with the text and the excess when
+    # nothing in the range fits. Nothing is truncated and no row is dropped:
+    # a cell that cannot fit is drawn too large and reported, because a
+    # silently shortened word is a wrong lesson.
+    ink_h = draw.textbbox((0, 0), lines[0], font=f)[3] - \
+        draw.textbbox((0, 0), lines[0], font=f)[1]
+    block_h = (len(lines) - 1) * line_h + ink_h
+    top = row_y + (VOCAB_ROW_HEIGHT - block_h) // 2 - 1
+
+    for index, line in enumerate(lines):
+        y = top + index * line_h
+        if align_left_from is not None:
+            x = align_left_from
+        else:
+            width = draw.textbbox((0, 0), line, font=f)[2]
+            x = align_right_to - width
+            if min_x is not None:
+                x = max(min_x, x)
+        draw_text_solid(draw, line, x, y, f, color, alpha, outline=4)
+
+
 def _draw_vocab_rows(
     t: float,
     draw: ImageDraw.Draw,
@@ -261,7 +362,9 @@ def _draw_vocab_rows(
     num_pairs = len(pairs)
     div_x = VOCAB_DIVIDER_X
     gap = 20          # text-to-divider gap
-    left_min_x = card_x + CARD_PADDING // 2
+    # Derived from the badge, not from the card padding — see
+    # _text_left_edge. The padding-based origin ran under the number circle.
+    left_min_x = _text_left_edge(card_x)
     right_max_x = card_x + CARD_WIDTH - CARD_PADDING // 2
 
     # Maximum column widths for fit_text_font
@@ -355,29 +458,27 @@ def _draw_vocab_rows(
         # ── Spanish text (left column, right-aligned to divider) ─
         # No default: a blank half-row is a broken lesson, and
         # script_schema.VocabPair requires both sides.
-        es_text = pair[presentation.native_field]
-        lf, _, _, _ = fit_text_font(es_text, _ROW_FONT, 28, left_col_w)
-        lbbox = draw.textbbox((0, 0), es_text, font=lf)
-        lw = lbbox[2] - lbbox[0]
-        lh = lbbox[3] - lbbox[1]
-        lx = div_x - gap - lw + x_off
-        ly = row_y + (VOCAB_ROW_HEIGHT - lh) // 2 - 1
-        draw_text_solid(draw, es_text, max(left_min_x, lx), ly, lf,
-                        COLOR_WHITE, row_alpha, outline=4)
+        _draw_cell(
+            draw, pair[presentation.native_field],
+            col_w=left_col_w, budget=_ROW_TEXT_BUDGET,
+            row_y=row_y, align_right_to=div_x - gap + x_off,
+            # +x_off so the guard slides with the row: the badge moves
+            # with x_off and a floor that did not would let the text pass
+            # under it mid-animation.
+            min_x=left_min_x + x_off, color=COLOR_WHITE, alpha=row_alpha,
+        )
 
         # ── English text (right column, left-aligned from divider)
-        en_text = pair[presentation.learning_field]
-        rf, _, _, _ = fit_text_font(en_text, _ROW_FONT, 28, right_col_w)
-        rbbox = draw.textbbox((0, 0), en_text, font=rf)
-        rh = rbbox[3] - rbbox[1]
-        rx = div_x + gap + x_off
-        ry = row_y + (VOCAB_ROW_HEIGHT - rh) // 2 - 1
-        draw_text_solid(draw, en_text, rx, ry, rf,
-                        COLOR_YELLOW, row_alpha, outline=4)
+        _draw_cell(
+            draw, pair[presentation.learning_field],
+            col_w=right_col_w, budget=_ROW_TEXT_BUDGET,
+            row_y=row_y, align_left_from=div_x + gap + x_off,
+            color=COLOR_YELLOW, alpha=row_alpha,
+        )
 
         # ── Row number circle (left edge) ────────────────────────
-        num_r = 16
-        num_cx = card_x + 28 + x_off
+        num_r = _NUM_RADIUS
+        num_cx = card_x + _NUM_CENTRE_DX + x_off
         num_cy = row_y + VOCAB_ROW_HEIGHT // 2
         num_alpha = int(row_alpha * 0.6)
         if num_alpha > 10:

@@ -17,6 +17,7 @@ from .constants import (
     SIZE_MAIN_SPANISH, SIZE_ENGLISH_WORD, SIZE_TRANSLATION,
     SAFE_AREA_TOP, SAFE_AREA_BOTTOM, SAFE_AREA_HEIGHT,
 )
+from .brand import watermark_top
 from .utils import (
     font, line_break, draw_text_with_glow, draw_text_solid,
     draw_rounded_card, slide_in_x,
@@ -136,6 +137,20 @@ def create_frame_educational(
     return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
 
 
+def _card_floor() -> int:
+    """The lowest row any educational card may occupy.
+
+    watermark_top(), not SAFE_AREA_BOTTOM. The mark sits just inside that
+    floor, so a card budgeted to the floor and the mark budgeted to the
+    floor land on top of each other — which is what happened to the quiz
+    explanation card and was fixed there and not here.
+
+    One function so the budget, the centring and the clamp cannot drift
+    apart, the way _text_left_edge decides vocabulary's column origin.
+    """
+    return watermark_top()
+
+
 def _lookup_translation(en_clean: str, translations: Dict, words: List[Dict] = None) -> str:
     """Look up translation using normalized exact match only.
 
@@ -205,9 +220,20 @@ def _render_group_tiktok(
     is_fading_out = d_end is not None and fade_out > 0 and t > d_end - fade_out
     slide_out_x = int(-300 * (1.0 - alpha)) if is_fading_out else 0
 
-    # Dynamic font size — shrink for long text, max 2 lines
+    # ── THE FLOOR ────────────────────────────────────────────────────
+    # ONE value for the whole vertical calculation: the budget below, the
+    # centring and the clamp all measure to _card_floor(). They used to
+    # measure to three different things, and the disagreement was the bug.
+    floor = _card_floor()
+
+    # A BUDGET, not a line count. This was
+    # `int(font_line_height(font(SIZE_MAIN_SPANISH)) * 2.2)` — 242px, two
+    # lines — while the room between SAFE_AREA_TOP and the watermark is
+    # 1271px. fit_text_font was handed a fifth of the space it had, which is
+    # why its overflow path was reachable from here at all, and why a
+    # sentence longer than two lines could not be put on one card.
     max_w = CARD_WIDTH - CARD_PADDING * 2 - 40
-    max_h = int(font_line_height(font(SIZE_MAIN_SPANISH)) * 2.2)
+    max_h = floor - SAFE_AREA_TOP - CARD_PADDING * 2
     _, base_size, lines, _ = fit_text_font(text, SIZE_MAIN_SPANISH, 42, max_w, max_h)
     base_size = max(42, min(SIZE_MAIN_SPANISH, base_size))
 
@@ -275,12 +301,37 @@ def _render_group_tiktok(
         eased = ease_out_back(progress)
         bounce_offset_y = int(30 * (1 - eased))
 
-    # Vertical centering with clamping
-    safe_h = SAFE_AREA_HEIGHT
-    card_y = SAFE_AREA_TOP + (safe_h - total_h) // 2 + bounce_offset_y
+    # ── Vertical placement ───────────────────────────────────────────
+    #
+    # THREE THINGS WERE WRONG HERE, and fixing only the clamp leaves the
+    # worst of them alive.
+    #
+    #  a. The clamp aimed at SAFE_AREA_BOTTOM (1632) while the watermark
+    #     starts at 1559, so a clamped card was placed 73px INTO the mark.
+    #     quiz.py:847 and true_false.py:601 were fixed for exactly this;
+    #     this renderer never was.
+    #
+    #  b. THE CLAMP IS NOT THE FIRST THING THAT COLLIDES. Centring alone
+    #     put the card on the mark at total_h > 1199, and the clamp did not
+    #     run until 1345 — a 146px band in which the card sat on the
+    #     watermark and the clamp never executed. Centring inside the SAME
+    #     floor removes that band by construction rather than by a second
+    #     guard.
+    #
+    #  c. bounce_offset_y was added BEFORE the clamp, so an animation
+    #     displacement fed the layout budget and moved both thresholds down
+    #     60px. That is quiz.py's slide_offset defect in another skin. The
+    #     resting position is settled first and the bounce is applied to it
+    #     afterwards, bounded so it can never cross the floor.
+    card_y = SAFE_AREA_TOP + (floor - SAFE_AREA_TOP - total_h) // 2
     card_y = max(SAFE_AREA_TOP, card_y)
-    if card_y + total_h > SAFE_AREA_BOTTOM:
-        card_y = SAFE_AREA_BOTTOM - total_h
+    if card_y + total_h > floor:
+        card_y = floor - total_h
+
+    # The bounce is a displacement of a settled position, never an input to
+    # it. Downward only, so the floor is the only edge it can reach.
+    if bounce_offset_y:
+        card_y = min(card_y + bounce_offset_y, floor - total_h)
 
     if words:
         # ── Cream card for karaoke groups ──
