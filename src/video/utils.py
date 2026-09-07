@@ -539,13 +539,30 @@ def fit_text_font(text: str, max_font: int, min_font: int, max_width: int,
     for size in range(max_font, min_font - 1, -2):
         f = font(size)
         box = measure_block(line_break(text, f, max_width), f)
+
+        # WIDTH IS CHECKED HERE, not delegated to line_break.
+        #
+        # line_break guarantees the column for everything it can break, and
+        # a single token wider than the column is the case it cannot: it has
+        # to emit that token whole. Nothing then tested the result, so the
+        # size came back on the strength of its height alone.
+        #
+        # Not theoretical. 'advertisement' at 160px is one unbreakable
+        # 1240px line; it cleared a 900px height budget and drew clipped at
+        # both edges of the frame. That was found in a rendered pronunciation
+        # frame, not by reading this loop, and it is the function's trap
+        # rather than that caller's — there are nine call sites across six
+        # renderers, and each one re-deriving this guard is a habit, not a
+        # fix.
+        fits_width = box.width <= max_width
         # Tested against ADVANCE, not ink. max_height is a budget for the
         # space the block will occupy, and callers lay their lines out at
         # line_height intervals, so the block's footprint in flow is
         # advance-tall. Testing the ink lets a size through whose ink fits a
         # card that its line boxes then overflow — the same fit-versus-build
         # mismatch that put the quiz explanation card outside the safe band.
-        if max_height is None or box.advance_height <= max_height:
+        fits_height = max_height is None or box.advance_height <= max_height
+        if fits_width and fits_height:
             return box
 
     # NOTHING IN THE RANGE FITS. The min font is returned anyway, and the
@@ -558,11 +575,21 @@ def fit_text_font(text: str, max_font: int, min_font: int, max_width: int,
     # nothing fits is the budget, which lives with the Y constants in 6c.
     f = font(min_font)
     box = measure_block(line_break(text, f, max_width), f)
+    # Name the axis that failed. "nothing fits" was ambiguous between a
+    # block too tall and a token too wide, and the two have different
+    # answers: a height overflow is a budget question, a width overflow is
+    # usually one unbreakable word.
+    axes = []
+    if box.width > max_width:
+        axes.append(f"{box.width - max_width}px too WIDE for {max_width}px")
+    if max_height is not None and box.advance_height > max_height:
+        axes.append(f"{box.advance_height - max_height}px too TALL for {max_height}px")
     logger.warning(
-        "fit_text_font: nothing in %d..%d fits a %dpx budget — returning %dpx "
-        "and overflowing by %dpx (%d lines, %dpx wide max). Text: %r",
-        max_font, min_font, max_height, min_font,
-        box.advance_height - max_height, len(box.lines), max_width, text)
+        "fit_text_font: nothing in %d..%d fits — returning %dpx, %s "
+        "(%d lines). Text: %r",
+        max_font, min_font, min_font,
+        " and ".join(axes) or "no axis exceeded, which should be impossible",
+        len(box.lines), text)
     return box
 
 
@@ -1092,22 +1119,59 @@ def draw_pill_badge(
     text_color: Tuple = (255, 255, 255),
     padding_x: int = 24,
     padding_y: int = 10,
+    max_width: int = None,
+    min_font_size: int = None,
 ) -> Tuple[int, int]:
     """Draw a pill-shaped badge with centred text.
 
     Returns (pill_width, pill_height).
+
+    THE DEFECT `max_width` FIXES. There was no width here at all:
+
+        pill_w = tw + padding_x * 2
+        px = center_x - pill_w // 2      # negative when text > frame
+
+    so a pill wider than the frame started at a negative x and ran off BOTH
+    edges. fill_blank's translation pill does exactly that: measured on the
+    corpus, 9 of 69 distinct translations produce a pill wider than 1080px,
+    the worst 1399px starting at x = -160.
+
+    WHY THE fit_text_font SWEEP DID NOT FIND IT. That sweep enumerated the
+    nine call sites of fit_text_font and found the two that misused the
+    result. By construction it could not find a site that never calls the
+    fit at all — it searched for misuse of the tool, not absence of it. A
+    sweep of this shape has to ask both questions.
+
+    With `max_width` the size comes down first and the text wraps if it
+    must, so the pill grows in height rather than off the screen. The left
+    edge is clamped either way, so even a caller that passes no width
+    cannot produce a negative x.
     """
+    lines = [text]
     f = font(font_size)
-    bbox = draw.textbbox((0, 0), text, font=f)
-    tw = bbox[2] - bbox[0]
-    th = bbox[3] - bbox[1]
+    if max_width:
+        inner = max(1, max_width - padding_x * 2)
+        box = fit_text_font(text, font_size,
+                            min_font_size or max(12, int(font_size * 0.6)),
+                            inner)
+        f, lines = box.font, box.lines
+
+    line_h = font_line_height(f)
+    widths = [draw.textbbox((0, 0), line, font=f)[2] for line in lines]
+    tw = max(widths) if widths else 0
+    first = draw.textbbox((0, 0), lines[0], font=f) if lines else (0, 0, 0, 0)
+    th = (len(lines) - 1) * line_h + (first[3] - first[1])
 
     pill_w = tw + padding_x * 2
     pill_h = th + padding_y * 2
+    if max_width:
+        pill_w = min(pill_w, max_width)
     pill_radius = pill_h // 2  # fully rounded ends
 
     px = center_x - pill_w // 2
     py = center_y - pill_h // 2
+    # A pill never starts off the frame, whatever it was handed.
+    px = max(0, min(px, VIDEO_WIDTH - pill_w))
 
     # Background pill on a compositing layer
     pill_layer = Image.new('RGBA', img.size, (0, 0, 0, 0))
@@ -1119,10 +1183,13 @@ def draw_pill_badge(
     )
     img.paste(pill_layer, (0, 0), pill_layer)
 
-    # Text centred inside the pill
-    tx = center_x - tw // 2
+    # Text centred inside the pill, LINE BY LINE — a block centred on its
+    # widest line is not centred.
     ty = center_y - th // 2 - 1  # nudge up for optical centering
-    draw.text((tx, ty), text, font=f, fill=(*text_color[:3], 255))
+    for index, line in enumerate(lines):
+        line_w = draw.textbbox((0, 0), line, font=f)[2]
+        draw.text((px + (pill_w - line_w) // 2, ty + index * line_h),
+                  line, font=f, fill=(*text_color[:3], 255))
 
     return pill_w, pill_h
 

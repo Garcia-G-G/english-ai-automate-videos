@@ -226,6 +226,10 @@ def build_prompt_educational(category: str, topic: dict) -> str:
     """Build educational video prompt for any category."""
     from duration_spec import prompt_instruction
     duration_rule = prompt_instruction("educational")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("educational")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
 
     context = _topic_context(category, topic)
     hashtags = _category_hashtags(category)
@@ -281,6 +285,10 @@ def build_prompt_quiz(category: str, topic: dict) -> str:
     """Build quiz video prompt."""
     from duration_spec import prompt_instruction
     duration_rule = prompt_instruction("quiz")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("quiz")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
     from duration_spec import per_item_instruction
     duration_rule = duration_rule + "\n\n" + per_item_instruction("quiz")
 
@@ -369,6 +377,10 @@ def build_prompt_true_false(category: str, topic: dict) -> str:
     """Build true/false video prompt."""
     from duration_spec import prompt_instruction
     duration_rule = prompt_instruction("true_false")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("true_false")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
     from duration_spec import per_item_instruction
     duration_rule = duration_rule + "\n\n" + per_item_instruction("true_false")
 
@@ -448,6 +460,10 @@ def build_prompt_fill_blank(category: str, topic: dict) -> str:
     """Build fill-in-the-blank video prompt."""
     from duration_spec import prompt_instruction
     duration_rule = prompt_instruction("fill_blank")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("fill_blank")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
     from duration_spec import per_item_instruction
     duration_rule = duration_rule + "\n\n" + per_item_instruction("fill_blank")
 
@@ -532,6 +548,10 @@ def build_prompt_pronunciation(category: str, topic: dict) -> str:
     """Build pronunciation video prompt."""
     from duration_spec import prompt_instruction
     duration_rule = prompt_instruction("pronunciation")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("pronunciation")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
 
     word = get_topic_name(topic)
 
@@ -588,6 +608,10 @@ def build_prompt_vocabulary(category: str, topic: dict) -> str:
     """Build vocabulary list video prompt."""
     from duration_spec import prompt_instruction
     duration_rule = prompt_instruction("vocabulary")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("vocabulary")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
 
     context = _topic_context(category, topic)
     hashtags = ["#Vocabulario", "#AprendeIngles"] + _category_hashtags(category)[:1]
