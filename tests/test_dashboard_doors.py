@@ -62,6 +62,7 @@ class _Recorder:
     def __init__(self):
         self.profile_name = "UNSET"
         self.background_arg = "UNSET"
+        self.resolve_kwargs = {}
         self.render_kwargs = {}
 
     def resolve_profile(self, name=None):
@@ -83,6 +84,7 @@ class _Recorder:
 
     def resolve_background(self, profile, background, **kwargs):
         self.background_arg = background
+        self.resolve_kwargs = kwargs
         return background or "static_midnight"
 
     def render_video(self, audio_path, data_path, video_path, **kwargs):
@@ -310,32 +312,30 @@ def _job_row(job_id):
     return next(j for j in jobs["history"] + jobs["active"] if j["id"] == job_id)
 
 
-def test_an_explicitly_chosen_background_is_recorded(recorder, ledger):
-    """WHAT YOU PICKED MUST BE WHAT THE ROW SAYS YOU GOT.
+def test_the_dashboard_delegates_the_background_decision(recorder, ledger):
+    """WHAT YOU PICKED MUST BE WHAT THE ROW SAYS YOU GOT — but the guarantee
+    belongs to resolve_background, not here.
 
-    resolve_background's tier 1 returns an explicit instruction untouched and
-    never calls on_record — that callback exists to describe FETCHED clips
-    and GENERATED images. So the first video rendered with a pinned preset
-    recorded `background: None`, and the dashboard could not show which
-    background a hand-picked video had. A control whose effect is invisible
-    is only half a door.
+    This test used to assert that admin patched up the record when tier 1
+    returned without writing one, and that admin skipped the resolver
+    entirely for v2. Both fixes were in the CALLER, so studio/legacy_pipeline
+    still had both defects. They now live in the resolver
+    (tests/test_background_floor.py), and what admin owes is delegation:
+    hand the resolver the engine, and write down whatever it decides.
     """
     job_id = admin.create_job("vocabulary")
     admin.run_pipeline_with_tracking(job_id, "vocabulary",
                                      background="static_fire")
 
-    row = _job_row(job_id)
-    assert row["background"]["preset"] == "static_fire"
-    assert row["background"]["kind"] == "preset"
+    assert recorder.background_arg == "static_fire"
 
 
-def test_v2_does_not_pay_to_resolve_a_background_it_discards(recorder, ledger):
-    """video/__init__.py sets `background = None` whenever v2 is active — v2
-    renders its own. The first v2 video through this door fetched 25.4 MB of
-    Pexels footage into output/clips/ and then threw it away. Free in dollars,
-    but it is a download and a gate run for nothing, and it made the job row
-    claim a background the video does not have.
-    """
-    admin.run_pipeline_with_tracking("jobv2", "educational", use_v2=True)
+def test_the_engine_reaches_the_resolver_not_just_the_renderer(recorder, ledger):
+    """v2 renders its own background, so the resolver must be told before it
+    fetches — admin passing use_v2 only to render_video is what made the
+    first v2 video download 25.4 MB it discarded."""
+    job_id = admin.create_job("educational")
+    admin.run_pipeline_with_tracking(job_id, "educational", use_v2=True)
 
-    assert recorder.background_arg == "UNSET", "v2 resolved a background anyway"
+    assert recorder.resolve_kwargs.get("use_v2") is True
+    assert recorder.render_kwargs.get("use_v2") is True

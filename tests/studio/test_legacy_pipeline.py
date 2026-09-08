@@ -511,11 +511,15 @@ def test_gateway_delegates_stages_in_order_and_forwards_monotonic_progress(tmp_p
     # topic tier had nowhere to write, so the Studio path was given no topic
     # and could only ever get a palette. The clip tier takes a destination
     # inside the artifact, so the objection is gone and so is the omission.
+    # AND ITS ENGINE. use_v2 was passed to _render_video thirty lines below
+    # this call and not to the resolver, so `main.py --random --v2` fetched
+    # footage and threw every frame away — v2 renders its own background.
     assert background_call[3] == {
         "topic": "actually",
         "category": None,
         "dest_dir": artifact_dir / "clips",
         "duration": 2.5,
+        "use_v2": False,
     }
     assert background_call[3]["dest_dir"].parent == artifact_dir, (
         "footage belongs to THIS artifact, not a global directory")
