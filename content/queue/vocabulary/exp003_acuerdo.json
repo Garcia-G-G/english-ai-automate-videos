@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "title": "Vocabulario: estar de acuerdo",
+  "difficulty": "fácil",
+  "video_title": "Siete formas de decir SÍ en inglés (sin decir yes) 👍",
+  "video_description": "Deja de repetir 'yes' y suena natural desde hoy. ✨",
+  "pairs": [
+    {
+      "spanish": "me apunto",
+      "english": "I'm down"
+    },
+    {
+      "spanish": "claro que sí",
+      "english": "absolutely"
+    },
+    {
+      "spanish": "trato hecho",
+      "english": "deal"
+    },
+    {
+      "spanish": "me parece bien",
+      "english": "works for me"
+    },
+    {
+      "spanish": "totalmente",
+      "english": "totally"
+    },
+    {
+      "spanish": "buena idea",
+      "english": "sounds good"
+    },
+    {
+      "spanish": "cuenta conmigo",
+      "english": "count me in"
+    }
+  ],
+  "full_script": "Hoy vemos siete formas de decir que sí sin repetir yes todo el rato. Me apunto, I'm down. Claro que sí, absolutely. Trato hecho, deal. Me parece bien, works for me. Totalmente, totally. Buena idea, sounds good. Cuenta conmigo, count me in. Todas son informales y suenan mucho más naturales entre amigos. En el trabajo, absolutely y sounds good funcionan perfectamente. Elige dos y úsalas esta semana.",
+  "translations": {
+    "I'm down": "me apunto",
+    "absolutely": "claro que sí",
+    "deal": "trato hecho",
+    "works for me": "me parece bien",
+    "totally": "totalmente",
+    "sounds good": "buena idea",
+    "count me in": "cuenta conmigo"
+  },
+  "english_phrases": [
+    "I'm down",
+    "absolutely",
+    "deal",
+    "works for me",
+    "totally",
+    "sounds good",
+    "count me in"
+  ],
+  "hashtags": [
+    "#AprenderInglés",
+    "#Vocabulario",
+    "#InglésReal",
+    "#EnglishTips",
+    "#Conversación"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp003",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

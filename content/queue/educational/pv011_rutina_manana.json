@@ -1,0 +1,36 @@
+{
+  "type": "educational",
+  "video_title": "Tu rutina de la mañana en inglés, paso a paso ⏰",
+  "video_description": "Cinco phrasal verbs que usas todos los días sin darte cuenta. ☀️",
+  "hook": "Los phrasal verbs de la mañana son los que más vas a usar en tu vida.",
+  "full_script": "¡Hola! Hoy contamos tu mañana en inglés. Todo empieza con wake up, despertarse. Por ejemplo: I wake up at six every day. Despertarse y levantarse no son lo mismo. Levantarse de la cama es get up. Por ejemplo: I get up and take a shower. Después toca vestirse: get dressed. Puedes decir I get dressed in five minutes. Para encender algo usas turn on. Por ejemplo: I turn on the coffee machine. Y al salir de casa, apagas las luces: turn off. Di turn off the lights before you leave. Fíjate en el patrón: on es encender, off es apagar. Igual que en un interruptor. Cuenta tu mañana en voz alta usando los cinco.",
+  "english_phrases": [
+    "I wake up at six every day",
+    "I get up and take a shower",
+    "I get dressed in five minutes",
+    "I turn on the coffee machine",
+    "turn off the lights before you leave"
+  ],
+  "translations": {
+    "I wake up at six every day": "me despierto a las seis todos los días",
+    "I get up and take a shower": "me levanto y me ducho",
+    "I get dressed in five minutes": "me visto en cinco minutos",
+    "I turn on the coffee machine": "enciendo la cafetera",
+    "turn off the lights before you leave": "apaga las luces antes de salir"
+  },
+  "tip": "Wake up es abrir los ojos. Get up es salir de la cama. No son sinónimos.",
+  "cta": "¿A qué hora haces wake up tú? ¡Escríbelo abajo!",
+  "hashtags": [
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#Rutina",
+    "#EnglishTips",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "phrasal_verbs",
+    "topic_id": "pv011",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

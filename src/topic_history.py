@@ -42,6 +42,19 @@ logger = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS_DIR = ROOT / "output" / "scripts"
 
+#: THE SECOND PLACE A PRODUCED SCRIPT LANDS, and the reason this module was
+#: half blind. `run_pipeline_with_tracking` writes to output/scripts/; the
+#: Studio door (main.py --script, --batch, --workspace) writes the script
+#: inside the artifact and NOWHERE ELSE. So an owner-supplied script -- the
+#: whole queue route -- produced a video this module could not see, and the
+#: topic stayed "unused" forever. Counting one root was counting one door.
+ARTIFACTS_DIR = ROOT / "output" / "artifacts"
+
+#: Scripts waiting to be produced. NOT usage: a queued topic has not been made
+#: into anything yet. Named here so the queue guard and this module agree on
+#: where the queue lives instead of each holding its own copy.
+QUEUE_DIR = ROOT / "content" / "queue"
+
 #: (category, topic_id)
 TopicKey = Tuple[str, str]
 
@@ -53,26 +66,40 @@ def usage_counts(scripts_dir: Path = None) -> Counter:
     rather than taking down a generation run — the history is an optimisation,
     and a video must not fail because an old file on disk is broken.
     """
-    root = Path(scripts_dir) if scripts_dir else SCRIPTS_DIR
-    counts: Counter = Counter()
-    if not root.exists():
-        return counts
+    if scripts_dir is not None:
+        roots = [Path(scripts_dir)]
+    else:
+        roots = [SCRIPTS_DIR, ARTIFACTS_DIR]
 
-    for path in root.rglob("*.json"):
-        try:
-            with open(path, encoding="utf-8") as handle:
-                data = json.load(handle)
-        except Exception:                                       # noqa: BLE001
-            logger.debug("topic_history: could not read %s", path)
+    counts: Counter = Counter()
+    # A script that lands in BOTH roots must not count twice. The two doors do
+    # not overlap today, so this is a guard rather than a fix -- and a guard is
+    # cheap next to a repeat the owner sees on screen.
+    seen: set = set()
+
+    for root in roots:
+        if not root.exists():
             continue
-        if not isinstance(data, dict):
-            continue
-        meta = data.get("_meta") or {}
-        topic_id = meta.get("topic_id")
-        category = meta.get("category")
-        if not topic_id or not category or topic_id == "unknown":
-            continue
-        counts[(str(category), str(topic_id))] += 1
+        for path in root.rglob("*.json"):
+            try:
+                with open(path, encoding="utf-8") as handle:
+                    data = json.load(handle)
+            except Exception:                                   # noqa: BLE001
+                logger.debug("topic_history: could not read %s", path)
+                continue
+            if not isinstance(data, dict):
+                continue
+            meta = data.get("_meta") or {}
+            topic_id = meta.get("topic_id")
+            category = meta.get("category")
+            if not topic_id or not category or topic_id == "unknown":
+                continue
+            fingerprint = (str(category), str(topic_id),
+                           str(meta.get("generated_at") or path.name))
+            if fingerprint in seen:
+                continue
+            seen.add(fingerprint)
+            counts[(str(category), str(topic_id))] += 1
     return counts
 
 

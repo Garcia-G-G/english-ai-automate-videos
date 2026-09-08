@@ -1,0 +1,33 @@
+{
+  "type": "quiz",
+  "video_title": "First Conditional: el fallo que delata a los hispanohablantes ⚠️",
+  "video_description": "Un quiz de diez segundos sobre la condicional más usada. 🎯",
+  "question": "If I ___ time, I will call you tonight.",
+  "options": {
+    "A": "will have",
+    "B": "have",
+    "C": "had",
+    "D": "will had"
+  },
+  "correct": "B",
+  "explanation": "En la cláusula if va presente, nunca will. El will solo va en la parte principal.",
+  "full_script": "¡Vamos con un quiz de gramática! La frase es: if I, guion bajo, time, I will call you tonight. Si tengo tiempo, te llamo esta noche. ¿Qué va en el hueco? Opción A, will have. Opción B, have. Opción C, had. Opción D, will had. Piénsalo bien, porque en español sí decimos si tendré. La respuesta correcta es la B: have. En la primera condicional, la parte del if siempre va en presente. El will va solamente en la otra mitad de la frase. Nunca metas will después de if. Es el error que más delata.",
+  "translations": {
+    "if I have time, I will call you tonight": "si tengo tiempo, te llamo esta noche",
+    "have": "tener",
+    "will": "auxiliar de futuro"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#Gramática",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Conditionals"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr004",
+    "video_type": "quiz",
+    "model": "claude-opus-5"
+  }
+}

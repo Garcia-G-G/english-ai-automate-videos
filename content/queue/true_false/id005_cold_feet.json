@@ -1,0 +1,27 @@
+{
+  "type": "true_false",
+  "video_title": "¿'Get cold feet' significa tener frío? 🥶 VERDADERO o FALSO",
+  "video_description": "Un modismo que no tiene nada que ver con la temperatura. 😅",
+  "statement": "'To get cold feet' significa que tienes los pies fríos.",
+  "correct": false,
+  "explanation": "Significa echarse atrás por nervios, justo antes de algo importante.",
+  "full_script": "¡Verdadero o falso! Atención a la frase: to get cold feet significa que tienes los pies fríos. ¿Verdadero o falso? Piénsalo tres segundos. Es falso. To get cold feet significa echarse atrás por los nervios. Se usa justo antes de algo importante. Por ejemplo: he got cold feet before the wedding. Se echó atrás antes de la boda. Si de verdad tienes frío en los pies, di my feet are cold. Esa sí es literal. El modismo va siempre con el verbo get.",
+  "translations": {
+    "to get cold feet": "echarse atrás",
+    "he got cold feet before the wedding": "se echó atrás antes de la boda",
+    "my feet are cold": "tengo los pies fríos"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#Modismos",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Idioms"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id005",
+    "video_type": "true_false",
+    "model": "claude-opus-5"
+  }
+}

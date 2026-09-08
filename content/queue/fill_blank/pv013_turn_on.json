@@ -1,0 +1,29 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa la frase: ¿ON u OFF? 💡",
+  "video_description": "El phrasal verb más fácil de recordar... si sabes el truco. ⚡",
+  "sentence": "Can you turn ___ the lights? It's too dark in here.",
+  "options": [
+    "on",
+    "off",
+    "up",
+    "in"
+  ],
+  "correct": "on",
+  "translation": "¿Puedes encender la luz?",
+  "explanation": "Turn on es encender. Turn off es apagar, igual que un interruptor.",
+  "full_script": "¡Completa la frase! Can you turn, guion bajo, the lights? It's too dark in here. Está muy oscuro aquí. ¿Qué falta en el hueco? Las opciones son: on, off, up, in. Piénsalo tres segundos antes de seguir. La respuesta correcta es on. Turn on significa encender. Si está oscuro, lo que quieres es encender la luz. Turn off es justo lo contrario, apagar. Piensa en un interruptor de verdad: on es encendido, off es apagado. Turn up también existe, pero significa subir el volumen. Y turn in es entregar algo, como un trabajo.",
+  "hashtags": [
+    "#PhrasalVerbs",
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "phrasal_verbs",
+    "topic_id": "pv013",
+    "video_type": "fill_blank",
+    "model": "claude-opus-5"
+  }
+}

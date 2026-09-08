@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "VIBE: la palabra que los jóvenes usan para todo 😎",
+  "video_description": "Una sola palabra y cinco formas de usarla. Inglés real, no de libro. ✨",
+  "hook": "Si no sabes usar 'vibe', suenas a libro de texto de hace veinte años.",
+  "full_script": "¡Hola! Hoy vemos una palabra que se oye en todas partes: vibe. Significa ambiente, energía, onda. Se usa para lugares, personas y momentos. Por ejemplo: this place has good vibes. Ese sitio te transmite algo agradable. Si alguien no te da buena espina, di I get a weird vibe from him. También puedes usarla como verbo. We really vibe significa que conectáis muy bien. Y si algo no encaja contigo, di that's not my vibe. Es una forma suave de decir que no. Ojo: vibe es informal. En una entrevista de trabajo mejor di atmosphere o energy. Pero con amigos, vibe suena completamente natural. Escúchala una vez y la oirás siempre.",
+  "english_phrases": [
+    "this place has good vibes",
+    "I get a weird vibe from him",
+    "we really vibe",
+    "that's not my vibe"
+  ],
+  "translations": {
+    "this place has good vibes": "este sitio tiene buen ambiente",
+    "I get a weird vibe from him": "me da mala espina",
+    "we really vibe": "conectamos mucho",
+    "that's not my vibe": "no es lo mío"
+  },
+  "tip": "Vibe es informal. En contextos formales usa atmosphere o energy.",
+  "cta": "¿Qué lugar tiene las mejores vibes para ti? ¡Dímelo abajo!",
+  "hashtags": [
+    "#InglésReal",
+    "#Slang",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#GenZ"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl005",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

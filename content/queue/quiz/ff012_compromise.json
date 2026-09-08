@@ -1,0 +1,33 @@
+{
+  "type": "quiz",
+  "video_title": "COMPROMISE no es COMPROMISO 😳 ¿Sabes qué significa?",
+  "video_description": "Un falso amigo que puede arruinarte una reunión. Ponte a prueba. 💼",
+  "question": "'We reached a compromise' significa que...",
+  "options": {
+    "A": "asumimos un compromiso",
+    "B": "llegamos a un acuerdo cediendo",
+    "C": "nos comprometimos en matrimonio",
+    "D": "aceptamos una obligación"
+  },
+  "correct": "B",
+  "explanation": "Compromise es ceder para llegar a un acuerdo. Compromiso en español es commitment.",
+  "full_script": "¡Ojo con este! La frase es: we reached a compromise. ¿Qué significa? Opción A, asumimos un compromiso. Opción B, llegamos a un acuerdo cediendo. Opción C, nos comprometimos en matrimonio. Opción D, aceptamos una obligación. Parece obvio, pero casi todos fallan. La respuesta correcta es la B. Compromise en inglés significa ceder cada parte para llegar a un acuerdo. No es un compromiso adquirido. Compromiso en español se dice commitment. Así que si dices I have a compromise, estás diciendo que llegaste a un acuerdo. No que tienes una obligación.",
+  "translations": {
+    "we reached a compromise": "llegamos a un acuerdo",
+    "commitment": "compromiso",
+    "compromise": "ceder, acordar"
+  },
+  "hashtags": [
+    "#FalsosAmigos",
+    "#Quiz",
+    "#AprenderInglés",
+    "#BusinessEnglish",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff012",
+    "video_type": "quiz",
+    "model": "claude-opus-5"
+  }
+}

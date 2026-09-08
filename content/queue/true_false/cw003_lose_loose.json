@@ -1,0 +1,28 @@
+{
+  "type": "true_false",
+  "video_title": "LOSE y LOOSE: ¿son la misma palabra? VERDADERO o FALSO 🤯",
+  "video_description": "Una sola O de diferencia y significados totalmente distintos. ✍️",
+  "statement": "'Lose' y 'loose' se escriben distinto pero significan lo mismo.",
+  "correct": false,
+  "explanation": "Lose es perder, un verbo. Loose es suelto o flojo, un adjetivo.",
+  "full_script": "¡Verdadero o falso! La afirmación es: lose y loose se escriben distinto pero significan lo mismo. ¿Qué dices? Piénsalo bien. Es falso, y no se parecen en nada. Lose, con una sola o, es el verbo perder. Por ejemplo: don't lose your keys. No pierdas las llaves. Loose, con dos oes, es un adjetivo: suelto o flojo. Por ejemplo: these pants are too loose. Estos pantalones quedan flojos. Truco: loose tiene una o de más, porque está suelta.",
+  "translations": {
+    "lose": "perder",
+    "loose": "suelto, flojo",
+    "don't lose your keys": "no pierdas las llaves",
+    "these pants are too loose": "estos pantalones quedan flojos"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Ortografía",
+    "#ErroresComunes"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw003",
+    "video_type": "true_false",
+    "model": "claude-opus-5"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "true_false",
+  "video_title": "'No cap' ¿tiene que ver con una gorra? VERDADERO o FALSO 🧢",
+  "video_description": "Slang que oyes en TikTok todos los días. ¿Sabes qué significa? 🔥",
+  "statement": "'No cap' se usa para decir que algo es verdad, sin exagerar.",
+  "correct": true,
+  "explanation": "Cap significa mentira en slang, así que no cap es en serio, sin mentir.",
+  "full_script": "¡Verdadero o falso! La afirmación es: no cap se usa para decir que algo es verdad, sin exagerar. ¿Verdadero o falso? Piénsalo. Es verdadero. En slang, cap significa mentira. Así que no cap es literalmente sin mentira, en serio. Por ejemplo: no cap, that was the best pizza ever. En serio, fue la mejor pizza del mundo. Y si alguien exagera, puedes decirle that's cap. Eso es mentira. Nada que ver con una gorra.",
+  "translations": {
+    "no cap": "en serio, sin mentir",
+    "that's cap": "eso es mentira",
+    "no cap, that was the best pizza ever": "en serio, fue la mejor pizza"
+  },
+  "hashtags": [
+    "#Slang",
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#GenZ",
+    "#InglésReal"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl003",
+    "video_type": "true_false",
+    "model": "claude-opus-5"
+  }
+}

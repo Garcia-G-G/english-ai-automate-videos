@@ -1,0 +1,24 @@
+{
+  "type": "pronunciation",
+  "video_title": "WEDNESDAY: lo estás pronunciando mal 😅",
+  "video_description": "Una letra muda que casi nadie sabe que está ahí. 📅",
+  "word": "Wednesday",
+  "phonetic": "WENZ-day",
+  "common_mistake": "Pronunciar todas las letras: wed-nes-day",
+  "tip": "La D del medio es muda. Se dice WENZ-day, en dos sílabas, no en tres.",
+  "translation": "miércoles",
+  "full_script": "Hoy arreglamos una palabra que casi todo el mundo dice mal: Wednesday. Miércoles. El error típico es leerla tal como se escribe: wed-nes-day. Tres sílabas, marcando cada letra una por una. Pero en inglés real solo suena así: WENZ-day. Dos sílabas y nada más. La D del medio es completamente muda. Nadie la pronuncia, ni en Estados Unidos ni en Reino Unido. Escúchala otra vez con atención: WENZ-day. Repite conmigo, despacio: WENZ. Day. Ahora las dos juntas: WENZ-day. Y ahora dentro de una frase real: I have a meeting on Wednesday. Tengo una reunión el miércoles. Practícala tres veces hoy en voz alta y ya no se te olvida nunca.",
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#LetrasMudas",
+    "#InglésReal"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr008",
+    "video_type": "pronunciation",
+    "model": "claude-opus-5"
+  }
+}

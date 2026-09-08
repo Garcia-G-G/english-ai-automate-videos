@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "title": "Vocabulario: hotel",
+  "difficulty": "fácil",
+  "video_title": "Palabras de hotel en inglés que necesitas SÍ o SÍ 🏨",
+  "video_description": "Desde el check-in hasta la salida. ¡Guárdalo antes de tu viaje! ✈️",
+  "pairs": [
+    {
+      "spanish": "reserva",
+      "english": "reservation"
+    },
+    {
+      "spanish": "recepción",
+      "english": "front desk"
+    },
+    {
+      "spanish": "llave de la habitación",
+      "english": "room key"
+    },
+    {
+      "spanish": "salida",
+      "english": "check-out"
+    },
+    {
+      "spanish": "toalla",
+      "english": "towel"
+    },
+    {
+      "spanish": "almohada",
+      "english": "pillow"
+    },
+    {
+      "spanish": "aire acondicionado",
+      "english": "air conditioning"
+    }
+  ],
+  "full_script": "Hoy vemos vocabulario de hotel, el que necesitas en cuanto cruzas la puerta. Reserva, reservation. Recepción, front desk. Llave de la habitación, room key. Salida, check-out. Toalla, towel. Almohada, pillow. Aire acondicionado, air conditioning. Con estas siete palabras resuelves casi cualquier estancia sin bloquearte. Ojo con check-out: es la salida del hotel y también la hora límite para dejar la habitación. Repítelas conmigo una vez más antes de tu próximo viaje.",
+  "translations": {
+    "reservation": "reserva",
+    "front desk": "recepción",
+    "room key": "llave de la habitación",
+    "check-out": "salida",
+    "towel": "toalla",
+    "pillow": "almohada",
+    "air conditioning": "aire acondicionado"
+  },
+  "english_phrases": [
+    "reservation",
+    "front desk",
+    "room key",
+    "check-out",
+    "towel",
+    "pillow",
+    "air conditioning"
+  ],
+  "hashtags": [
+    "#InglésParaViajar",
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#Hotel",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr004",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

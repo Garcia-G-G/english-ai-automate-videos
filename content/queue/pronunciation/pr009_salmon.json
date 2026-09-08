@@ -1,0 +1,24 @@
+{
+  "type": "pronunciation",
+  "video_title": "SALMON: la L no se pronuncia 🐟",
+  "video_description": "Vas a pedirlo en un restaurante. Mejor decirlo bien. 🍽️",
+  "word": "salmon",
+  "phonetic": "SAM-un",
+  "common_mistake": "Pronunciar la L: sal-mon",
+  "tip": "La L es muda. Suena SAM-un, como 'same' sin la e, más 'un'.",
+  "translation": "salmón",
+  "full_script": "Hoy vemos una palabra que vas a necesitar en cualquier restaurante: salmon. Salmón. El error clásico es pronunciar la L, tal y como se escribe: sal-mon. Pero esa L es completamente muda en inglés. La palabra suena así: SAM-un. Como la palabra same, quitándole la e del final, y añadiendo un. Escúchala otra vez con calma: SAM-un. Repite conmigo, despacio: SAM. Un. Y ahora las dos juntas: SAM-un. Vamos a meterla en una frase de verdad: I'll have the grilled salmon, please. Voy a querer el salmón a la plancha. Dilo tres veces en voz alta y ya es tuyo para siempre.",
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#Restaurante",
+    "#EnglishTips",
+    "#LetrasMudas"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr009",
+    "video_type": "pronunciation",
+    "model": "claude-opus-5"
+  }
+}

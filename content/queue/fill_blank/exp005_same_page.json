@@ -1,0 +1,29 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa el modismo del trabajo 📄",
+  "video_description": "La frase que se dice en TODAS las reuniones en inglés. 💼",
+  "sentence": "Let's make sure we're on the same ___ before the meeting.",
+  "options": [
+    "page",
+    "book",
+    "line",
+    "level"
+  ],
+  "correct": "page",
+  "translation": "Que estemos de acuerdo.",
+  "explanation": "To be on the same page es estar de acuerdo o entender lo mismo.",
+  "full_script": "¡Completa la frase! Let's make sure we're on the same, guion bajo, before the meeting. Las opciones son: page, book, line, level. Es un modismo de oficina, así que no intentes traducirlo literalmente. Piénsalo tres segundos. La respuesta correcta es page. To be on the same page significa estar de acuerdo, entender todos lo mismo. Literalmente sería estar en la misma página. Se dice en casi todas las reuniones en inglés. Por ejemplo: are we on the same page? ¿Estamos de acuerdo? Nunca digas same book ni same line.",
+  "hashtags": [
+    "#InglésDeNegocios",
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Modismos"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp005",
+    "video_type": "fill_blank",
+    "model": "claude-opus-5"
+  }
+}

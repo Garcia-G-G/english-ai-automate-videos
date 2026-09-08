@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "'Sleep on it': cómo aplazar una decisión en inglés 💭",
+  "video_description": "La expresión perfecta para no responder ahora mismo. Muy útil en el trabajo. 💼",
+  "hook": "¿Te presionan para decidir ya? Hay una frase en inglés justo para eso.",
+  "full_script": "¡Hola! Hoy aprendemos una expresión utilísima: to sleep on it. Significa consultarlo con la almohada. Es decir, esperar al día siguiente antes de decidir. Por ejemplo: it's a big decision, let me sleep on it. Nadie se ofende, porque suena prudente y no negativo. También puedes proponérselo a otra persona. Di: why don't you sleep on it. Es una forma amable de quitar presión. Si ya lo pensaste y sigues dudando, di I slept on it and I'm still not sure. Y cuando por fin decides, di I slept on it and I'm in. Cuidado: no digas I will sleep in it. Esa preposición cambia todo el significado. Es on, siempre on.",
+  "english_phrases": [
+    "it's a big decision, let me sleep on it",
+    "why don't you sleep on it",
+    "I slept on it and I'm still not sure",
+    "I slept on it and I'm in"
+  ],
+  "translations": {
+    "it's a big decision, let me sleep on it": "es una decisión importante, déjame pensarlo",
+    "why don't you sleep on it": "¿por qué no lo consultas con la almohada?",
+    "I slept on it and I'm still not sure": "lo pensé y sigo sin estar seguro",
+    "I slept on it and I'm in": "lo pensé y me apunto"
+  },
+  "tip": "Funciona igual de bien con amigos que en el trabajo. Es neutral y educada.",
+  "cta": "¿Qué decisión estás consultando con la almohada? ¡Cuéntame!",
+  "hashtags": [
+    "#AprenderInglés",
+    "#InglésDeNegocios",
+    "#EnglishTips",
+    "#Expresiones",
+    "#InglésReal"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp008",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

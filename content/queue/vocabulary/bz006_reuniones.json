@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "title": "Vocabulario: reuniones",
+  "difficulty": "medio",
+  "video_title": "Vocabulario de reuniones en inglés para el trabajo 💼",
+  "video_description": "Las palabras que vas a oír en tu primera meeting en inglés. 📊",
+  "pairs": [
+    {
+      "spanish": "orden del día",
+      "english": "agenda"
+    },
+    {
+      "spanish": "acta",
+      "english": "minutes"
+    },
+    {
+      "spanish": "plazo",
+      "english": "deadline"
+    },
+    {
+      "spanish": "actualización",
+      "english": "update"
+    },
+    {
+      "spanish": "seguimiento",
+      "english": "follow-up"
+    },
+    {
+      "spanish": "presupuesto",
+      "english": "budget"
+    },
+    {
+      "spanish": "aplazar",
+      "english": "postpone"
+    }
+  ],
+  "full_script": "Hoy vemos el vocabulario que vas a oír en tu primera reunión en inglés. Orden del día, agenda. Acta, minutes. Plazo, deadline. Actualización, update. Seguimiento, follow-up. Presupuesto, budget. Aplazar, postpone. Ojo con minutes: aquí no son minutos, es el acta escrita de la reunión. Y deadline es la fecha límite, no una línea. Repite las siete en voz alta y llega preparado a tu próxima meeting.",
+  "translations": {
+    "agenda": "orden del día",
+    "minutes": "acta",
+    "deadline": "plazo",
+    "update": "actualización",
+    "follow-up": "seguimiento",
+    "budget": "presupuesto",
+    "postpone": "aplazar"
+  },
+  "english_phrases": [
+    "agenda",
+    "minutes",
+    "deadline",
+    "update",
+    "follow-up",
+    "budget",
+    "postpone"
+  ],
+  "hashtags": [
+    "#InglésDeNegocios",
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#BusinessEnglish",
+    "#Trabajo"
+  ],
+  "_meta": {
+    "category": "business",
+    "topic_id": "bz006",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

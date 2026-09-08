@@ -1,0 +1,32 @@
+{
+  "type": "educational",
+  "video_title": "DINNER no es DINERO ⚠️ El falso amigo que confunde a todos",
+  "video_description": "Dos palabras que suenan igual y significan cosas distintas. ¡No las mezcles! 💸🍽️",
+  "hook": "Si pides 'dinner' cuando necesitas dinero, te van a servir la cena.",
+  "full_script": "¡Hola! Hoy vemos un falso amigo clásico: dinner. Suena parecido a dinero, pero no lo es. Dinner significa cena, la comida de la noche. Por ejemplo: we had dinner at eight. Cenamos a las ocho. Dinero en inglés se dice money. Por ejemplo: I need money for the bus. Necesito dinero para el autobús. El error típico suena así: I gave him dinner to buy a coffee. Eso significa que le diste una cena. No unas monedas. Lo correcto es: I gave him money to buy a coffee. Un truco para recordarlo. Dinner tiene dos enes, como cena de noche. Money empieza por eme, como moneda. Nunca más los vas a confundir.",
+  "english_phrases": [
+    "we had dinner at eight",
+    "I need money for the bus",
+    "I gave him money to buy a coffee"
+  ],
+  "translations": {
+    "we had dinner at eight": "cenamos a las ocho",
+    "I need money for the bus": "necesito dinero para el autobús",
+    "I gave him money to buy a coffee": "le di dinero para comprar un café"
+  },
+  "tip": "Dinner es cena. Money es dinero. Se parecen al oído, nunca en el significado.",
+  "cta": "¿Qué otro falso amigo te ha traicionado? ¡Cuéntamelo!",
+  "hashtags": [
+    "#FalsosAmigos",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#ErroresComunes",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff015",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

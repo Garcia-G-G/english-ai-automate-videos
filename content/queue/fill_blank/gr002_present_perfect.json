@@ -1,0 +1,29 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa: ¿SAW o HAVE SEEN? 🤔",
+  "video_description": "La palabra 'yesterday' decide la respuesta. ¿Lo sabías? ⏳",
+  "sentence": "I ___ him yesterday at the supermarket.",
+  "options": [
+    "saw",
+    "have seen",
+    "seen",
+    "did saw"
+  ],
+  "correct": "saw",
+  "translation": "Lo vi ayer en el súper.",
+  "explanation": "Con un tiempo concreto como yesterday va Past Simple, nunca Present Perfect.",
+  "full_script": "¡Completa la frase! I, guion bajo, him yesterday at the supermarket. Lo vi ayer en el supermercado. Las opciones son: saw, have seen, seen, did saw. Fíjate bien en una palabra de la frase. La respuesta es saw. La clave está en yesterday. Cuando dices un momento concreto del pasado, va Past Simple. El Present Perfect, have seen, se usa sin tiempo específico. Por ejemplo: I have seen that movie. Nunca digas I have seen him yesterday. Es el error más común.",
+  "hashtags": [
+    "#Gramática",
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#PastSimple"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr002",
+    "video_type": "fill_blank",
+    "model": "claude-opus-5"
+  }
+}
