@@ -73,6 +73,20 @@ class TTSError(PipelineError):
     """TTS generation failed."""
 
 
+class BackgroundUnavailable(PipelineError):
+    """No footage could be found and no preset was asked for.
+
+    Raised instead of substituting one of the 76 flat presets in the enabled
+    rotation. `un default solo puede renderizar MENOS, nunca algo falso` — a
+    colour field where moving footage was promised is not less, it is
+    something else, and it reports itself complete.
+
+    The caller marks the job failed; admin.run_pipeline_with_tracking
+    already funnels every exception into complete_job(success=False), so a
+    refusal ends as a readable failed row rather than a stuck one.
+    """
+
+
 class RenderError(PipelineError):
     """Video render failed. Carries the renderer's last output lines.
 
@@ -125,7 +139,7 @@ def resolve_background(profile: Dict = None, background: str = None, *,
                        topic: str = None, category: str = None,
                        entry: Dict = None, fast_mode: bool = False,
                        dest_dir=None, duration: float = None,
-                       on_record=None) -> str:
+                       on_record=None, use_v2: bool = False) -> str:
     """THE place a background is decided. Both entry points call this.
 
     Returns a value generate_video accepts: a preset name, "clips:<dir>", or
@@ -173,14 +187,59 @@ def resolve_background(profile: Dict = None, background: str = None, *,
     written twice against the same config key — so applying the palette cull
     would have fixed one path and left the other, which is the dashboard's.
     """
+    attempts: List[Dict] = []
+
+    def decided(value, tier, tier_name, payload: Dict = None):
+        """THE ONLY EXIT. Records what was chosen, then hands it back.
+
+        Five of the seven return paths used to record nothing, because
+        `on_record` was threaded into the clip and image tiers only. That
+        made `background: null` ambiguous between "an instruction nobody
+        logged" and "the floor fired behind your back" — opposite
+        situations, indistinguishable on the job row. Routing every return
+        through here makes the ambiguity unrepresentable, and
+        test_background_floor asserts by AST that no `return` bypasses it.
+        """
+        record = dict(payload or {})
+        record.setdefault("kind", "preset")
+        if record["kind"] == "preset":
+            record.setdefault("preset", value)
+        record["tier"] = tier
+        record["tier_name"] = tier_name
+        if attempts:
+            # What was tried and declined on the way here, so a cache hit
+            # can be told from a first-choice fetch without reading a log.
+            record["attempts"] = list(attempts)
+        _emit_background_record(entry, on_record, record)
+        return value
+
+    def declined(tier_name: str, reason: str):
+        attempts.append({"tier": tier_name, "reason": reason})
+
     # ── 0. fast mode ──
+    # The one door left to a flat background nobody asked for. fast_mode
+    # exists to be cheap and quick, and a preset is honest there.
     if fast_mode:
         logger.info("background: fast mode -> dark_professional")
-        return "dark_professional"
+        return decided("dark_professional", 0, "fast_mode")
+
+    # ── the engine renders its own ──
+    # BEFORE any fetch. video/__init__.py sets `background = None` whenever
+    # v2 is active, so resolving one is pure waste — studio/legacy_pipeline
+    # resolved at line 298 and passed use_v2 at line 331, which is why
+    # `main.py --random --v2` downloaded footage and discarded every frame.
+    # It lives HERE rather than in a caller because putting the same fix in
+    # admin.py is exactly what left the studio door still doing it.
+    if use_v2:
+        return decided(TERMINAL_PRESET, "v2", "engine",
+                       {"kind": "engine", "engine": "v2",
+                        "note": "v2 renders its own background"})
 
     # ── 1. an explicit instruction ──
     if background:
-        return background
+        return decided(background, 1, "explicit",
+                       {"kind": "preset", "preset": background,
+                        "requested": background})
 
     video_cfg = (profile or {}).get("video", {}) or {}
 
@@ -188,33 +247,72 @@ def resolve_background(profile: Dict = None, background: str = None, *,
     if video_cfg.get("background_mode") == "clips":
         clips_dir = video_cfg.get("clips_dir", "assets/clips")
         logger.info("background: profile is clips mode -> %s", clips_dir)
-        return f"clips:{clips_dir}"
+        return decided(f"clips:{clips_dir}", 2, "profile_clips",
+                       {"kind": "clips", "dir": clips_dir,
+                        "source": "profile"})
 
     # ── 3. this video's own footage ──
     if topic and dest_dir:
-        resolved = _clip_background(topic, category, dest_dir, duration,
-                                    entry, on_record)
+        resolved, payload = _clip_background(topic, category, dest_dir,
+                                             duration)
         if resolved:
-            return resolved
-        # every failure inside there has already logged its reason
+            return decided(resolved, 3, "pexels", payload)
+        declined("pexels", "no usable clip for any query")
+    elif topic:
+        declined("pexels", "no dest_dir — footage belongs to one artifact")
 
     # ── 4. this video's own image ──
     if topic:
-        resolved = _generated_background(topic, category, entry, on_record)
+        resolved, payload = _generated_background(topic, category)
         if resolved:
-            return resolved
-        # every failure inside there has already logged its reason
+            return decided(resolved, 4, "generated_image", payload)
+        declined("generated_image",
+                 (payload or {}).get("reason", "generation or gate declined"))
 
-    # ── 5. config pins one ──
+    # ── 5. the local cache: still footage, and free ──
+    #
+    # 220 clips were on disk — 102 cache slots alone — and no tier had ever
+    # consulted one as a fallback. A degraded background that is STILL
+    # FOOTAGE keeps the rule the flat presets broke; a colour field does not.
+    if topic and dest_dir:
+        resolved, payload = _cache_background(topic, category, dest_dir,
+                                              duration)
+        if resolved:
+            logger.warning("background: Pexels declined for %r — reused %d "
+                           "cached clip(s) instead of a flat preset",
+                           topic, payload.get("clip_count", 0))
+            return decided(resolved, 5, "clip_cache", payload)
+        declined("clip_cache", "no clips on disk")
+
+    # ── 6. config pins one ──
+    # An instruction, the same class as tier 1: background_mode "fixed" is a
+    # deliberate configuration choice, not the floor substituting silently.
     cfg = _video_config()
     if cfg.get("background_mode") == "fixed":
         pinned = cfg.get("default_background")
         if pinned:
             logger.info("background: config is fixed -> %s", pinned)
-            return pinned
+            return decided(pinned, 6, "config_fixed",
+                           {"kind": "preset", "preset": pinned,
+                            "requested": pinned})
 
-    # ── 6. the floor ──
-    return _terminal_preset(cfg)
+    # ── 7. refuse, loudly ──
+    #
+    # THE FLOOR USED TO BE 76 FLAT PRESETS: the enabled rotation expands to
+    # 69 static gradients and 7 animated ones, and not one of them is
+    # footage. So whenever every query declined, the video silently became a
+    # colour field and reported itself complete.
+    #
+    # `un default solo puede renderizar MENOS, nunca algo falso`. A colour
+    # field where footage was promised is not less, it is something else, so
+    # the job fails and says which tiers were tried.
+    reason = ("no footage available: " +
+              "; ".join(f"{a['tier']} ({a['reason']})" for a in attempts)
+              if attempts else "no footage available and no topic to fetch for")
+    decided(None, "refused", "refused",
+            {"kind": "refused", "reason": reason})
+    logger.error("background: %s", reason)
+    raise BackgroundUnavailable(reason)
 
 
 def _video_config() -> Dict:
@@ -253,34 +351,171 @@ def _terminal_preset(cfg: Dict = None) -> str:
     return TERMINAL_PRESET
 
 
-def _clip_background(topic: str, category: str = None, dest_dir=None,
-                     duration: float = None, entry: Dict = None,
-                     on_record=None):
-    """Fetch this video's footage into `dest_dir`. None means "fall through".
+def _emit_background_record(entry: Dict, on_record, payload: Dict) -> None:
+    """Write one background decision to both sinks. THE only recorder.
 
-    Nothing in here raises. A background problem costs a background, never
-    the video — the same contract the image tier keeps, and the reason the
-    caller can treat None as "try the next tier" without a guard.
+    `entry` is the batch path's dict and `on_record` the dashboard's
+    callback; both are optional and neither may be allowed to cost the
+    video its render, so a raising callback is logged and swallowed.
+    """
+    if entry is not None:
+        entry["background"] = payload
+    if on_record is not None:
+        try:
+            on_record(payload)
+        except Exception:                                   # noqa: BLE001
+            logger.exception("background: could not record the decision")
+
+
+#: Words too common to carry meaning when matching a cached clip's query
+#: against this video's. Deliberately tiny: the motion vocabulary
+#: ("aerial", "drone", "slow", "handheld") is NOT here, because a motion
+#: match is a real match — it is how the cache offers something that at
+#: least moves the way the missing footage would have.
+_MATCH_STOPWORDS = frozenset((
+    "a", "an", "the", "of", "in", "on", "at", "to", "and", "or", "with",
+    "from", "into", "over", "under", "for", "by", "as", "is", "its",
+))
+
+
+def _match_words(text: str) -> set:
+    """Lowercase word set for relevance matching, minus the noise words."""
+    import re as _re
+    return {w for w in _re.findall(r"[a-z0-9]+", str(text or "").lower())
+            if len(w) > 2 and w not in _MATCH_STOPWORDS}
+
+
+def _cache_background(topic: str, category: str = None, dest_dir=None,
+                      duration: float = None):
+    """Footage from the LOCAL CACHE when the network gave us none.
+
+    220 clips were on disk — 102 cache slots, plus what previous artifacts
+    kept — and no tier had ever consulted one as a fallback. This tier costs
+    $0.00, needs no network, and still hands back video, which is the entire
+    point: a degraded background that is STILL FOOTAGE keeps the rule that a
+    flat colour field breaks.
+
+    HOW THE CLIP IS CHOSEN. The cache is keyed by the query that fetched it
+    and each slot keeps that query in query.json, so relevance is a set
+    intersection over words — no similarity engine, no model, no second API.
+    The topic and category are weighted double against the generated
+    queries, so "laptop keyboard / technology" prefers a keyboard clip over
+    a volcano one that merely shares the words "slow motion". Ties break on
+    the slot name so the same video picks the same clip twice running.
+
+    When nothing overlaps at all the highest-scoring-zero wins, which is a
+    deterministic arbitrary clip. That is the documented fallback and it is
+    still footage.
+
+    Returns (value, payload), or (None, None) to fall through to the refusal.
+    """
+    if not dest_dir:
+        return None, None
+    try:
+        import topic_clips as _clips
+    except Exception:                                       # noqa: BLE001
+        logger.exception("background: topic_clips is unavailable")
+        return None, None
+
+    cache_dir = Path(getattr(_clips, "CACHE_DIR", ""))
+    if not cache_dir.is_dir():
+        return None, None
+
+    try:
+        want = _clips.clips_needed(duration or 30.0)
+    except Exception:                                       # noqa: BLE001
+        want = 1
+    try:
+        queries = _clips.build_queries(topic, category, count=want)
+    except Exception:                                       # noqa: BLE001
+        # UnknownCategory and friends. The cache is the fallback tier; it
+        # must not need the thing that already failed.
+        queries = []
+
+    strong = _match_words(topic) | _match_words(category)
+    weak = set()
+    for query in queries:
+        weak |= _match_words(query)
+
+    candidates = []
+    for slot in sorted(cache_dir.iterdir()):
+        if not slot.is_dir():
+            continue
+        files = sorted(slot.glob("*.mp4"))
+        if not files:
+            continue
+        meta = {}
+        meta_path = slot / "query.json"
+        if meta_path.is_file():
+            try:
+                meta = json.loads(meta_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                meta = {}
+        cached_query = str(meta.get("query") or slot.name.replace("_", " "))
+        words = _match_words(cached_query)
+        score = 2 * len(strong & words) + len(weak & words)
+        candidates.append((-score, slot.name, files[0], meta, cached_query))
+
+    if not candidates:
+        return None, None
+
+    candidates.sort(key=lambda c: (c[0], c[1]))
+    out_dir = Path(dest_dir)
+    records, placed_bytes = [], 0
+    for negative, _name, source, meta, cached_query in candidates[:max(1, want)]:
+        try:
+            dest = _clips._place(source, out_dir)
+        except Exception:                                   # noqa: BLE001
+            logger.exception("background: could not place cached clip %s", source)
+            continue
+        size = dest.stat().st_size
+        placed_bytes += size
+        records.append({"query": cached_query, "path": str(dest),
+                        "bytes": size, "score": -negative, **meta})
+
+    if not records:
+        return None, None
+
+    return f"clips:{out_dir}", {
+        "kind": "clips",
+        "source": "cache",
+        "dir": str(out_dir),
+        "topic": topic,
+        "category": category,
+        "queries": queries,
+        "clips": records,
+        "clip_count": len(records),
+        "bytes": placed_bytes,
+        "megabytes": round(placed_bytes / 1e6, 2),
+        "cost_usd": 0.0,
+        "matched_by": "query token overlap (topic/category weighted double)",
+        "attribution": getattr(_clips, "ATTRIBUTION_LINE", ""),
+    }
+
+
+def _clip_background(topic: str, category: str = None, dest_dir=None,
+                     duration: float = None):
+    """Fetch this video's footage into `dest_dir`. Returns (value, payload).
+
+    (None, None) means "fall through". Nothing in here raises: a background
+    problem costs a background, never the video — the caller treats the
+    empty result as "try the next tier" without a guard.
+
+    IT NO LONGER RECORDS. Recording moved to resolve_background.decided(),
+    because a tier that records its own decision can only describe the tier
+    it is; the record has to name the tier that actually WON, and five of
+    the seven paths had no way to say so.
 
     There is no gate call here, unlike the image tier. Contrast for a clip
     cannot be settled at fetch time: the same file is a different picture at
     t=2 and t=18, so it is measured against the composited scrim at render
     time by clip_contrast.worst_over_clip. Fetching is fetching.
     """
-    def _record(payload):
-        if entry is not None:
-            entry["background"] = payload
-        if on_record is not None:
-            try:
-                on_record(payload)
-            except Exception:                               # noqa: BLE001
-                logger.exception("background: could not record the decision")
-
     try:
         from topic_clips import fetch_for_topic
     except Exception:                                       # noqa: BLE001
         logger.exception("background: topic_clips is unavailable")
-        return None
+        return None, None
 
     try:
         result = fetch_for_topic(topic, category, duration=duration or 30.0,
@@ -290,59 +525,54 @@ def _clip_background(topic: str, category: str = None, dest_dir=None,
         # logged as one, but it must not cost the video its render.
         logger.exception("background: could not fetch clips for %r (%s)",
                          topic, category)
-        return None
+        return None, None
 
     if not result:
-        logger.warning("background: no clips for %r (%s) — falling through "
-                       "to the image tier", topic, category)
-        return None
+        logger.warning("background: no clips for %r (%s) — falling through",
+                       topic, category)
+        return None, None
 
     logger.info("background: %d clips (%.1f MB) for %r -> %s",
                 result["clip_count"], result["megabytes"], topic, result["dir"])
-    _record({"kind": "clips", **result})
-    return f"clips:{result['dir']}"
+    return f"clips:{result['dir']}", {"kind": "clips", "source": "pexels",
+                                      **result}
 
 
-def _generated_background(topic: str, category: str = None,
-                          entry: Dict = None, on_record=None):
-    """Generate an image for `topic` and gate it. None means "use a fallback".
+def _generated_background(topic: str, category: str = None):
+    """Generate an image for `topic` and gate it. Returns (value, payload).
 
-    The gate is BLOCKING: a refused image is never used, it becomes a
-    palette. Nothing in here raises.
+    (None, payload) means "fall through", and the payload carries the reason
+    so resolve_background can list it among the attempts. The gate is
+    BLOCKING: a refused image is never used. Nothing in here raises.
+
+    IT NO LONGER RECORDS. It used to write `{"source": "palette", ...}` and
+    then return None — so the record said "palette" while tiers 5 and 6 went
+    on to choose the actual background, and nothing updated it. A tier can
+    only describe itself; the record has to name the tier that won.
     """
-    def _record(payload):
-        if entry is not None:
-            entry["background"] = payload
-        if on_record is not None:
-            try:
-                on_record(payload)
-            except Exception:                               # noqa: BLE001
-                logger.exception("background: could not record the decision")
-
     try:
         from topic_background import generate_for_topic
         from topic_background_gate import accept
     except Exception:                                       # noqa: BLE001
         logger.warning("background: generation unavailable for %r "
-                       "— falling back", topic)
-        _record({"source": "palette", "reason": "module unavailable"})
-        return None
+                       "— falling through", topic)
+        return None, {"reason": "module unavailable"}
 
     try:
         made = generate_for_topic(topic, category)
     except Exception as exc:                                # noqa: BLE001
         logger.exception("background: generation raised for %r", topic)
-        _record({"source": "palette", "reason": f"generation raised: {exc}"})
-        return None
+        return None, {"reason": f"generation raised: {exc}"}
 
     if not made:
-        logger.warning("background: generation failed for %r — falling back", topic)
-        _record({"source": "palette", "reason": "generation failed"})
-        return None
+        logger.warning("background: generation failed for %r — falling through",
+                       topic)
+        return None, {"reason": "generation failed"}
 
     verdict = accept(made["path"], topic=topic)
     payload = {
-        "source": "generated" if verdict["passes"] else "palette",
+        "kind": "photo",
+        "source": "generated",
         "image": made["path"],
         "worst_ratio": round(verdict["worst_ratio"], 3),
         "floor": verdict["floor"],
@@ -352,13 +582,11 @@ def _generated_background(topic: str, category: str = None,
     if not verdict["passes"]:
         payload["reason"] = (f"gate refused {verdict['worst_ratio']:.2f}:1 "
                              f"(floor {verdict['floor']})")
-        logger.warning("background: gate refused %.2f:1 for %r — falling back",
-                       verdict["worst_ratio"], topic)
-        _record(payload)
-        return None
+        logger.warning("background: gate refused %.2f:1 for %r — falling "
+                       "through", verdict["worst_ratio"], topic)
+        return None, payload
 
-    _record(payload)
-    return f"photo:{made['path']}"
+    return f"photo:{made['path']}", payload
 
 
 # ── TTS ───────────────────────────────────────────────────────────────

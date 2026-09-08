@@ -566,34 +566,23 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             logger.warning("background: could not read the duration from %s; "
                            "the clip tier will use its own default", json_path)
 
-        if use_v2:
-            # v2 RENDERS ITS OWN BACKGROUND — video/__init__.py sets
-            # `background = None` whenever it is active. Resolving one anyway
-            # fetched 25.4 MB of Pexels footage for the first v2 video through
-            # this door and then discarded every frame of it. Free in dollars,
-            # but it is a download, a gate run and a job row claiming a
-            # background the video does not have.
-            resolved_background = pipeline.TERMINAL_PRESET
-            background_record = {"kind": "engine", "engine": "v2",
-                                 "note": "v2 renders its own background"}
-        else:
-            resolved_background = pipeline.resolve_background(
-                profile, background,
-                topic=topic_name, category=category,
-                dest_dir=clips_dir,
-                duration=tts_duration,
-                on_record=_record_background,
-            )
-
-        # AN EXPLICIT CHOICE LEAVES NO RECORD OF ITS OWN. resolve_background's
-        # tier 1 returns an instruction untouched and never calls on_record —
-        # that callback describes FETCHED clips and GENERATED images, and a
-        # preset is neither. So a hand-picked background recorded None, and
-        # the dashboard could not show what the operator had chosen.
-        if not background_record:
-            background_record = {"kind": "preset", "preset": resolved_background,
-                                 "requested": background}
-        update_job(job_id, background=background_record)
+        # THE V2 SKIP AND THE MISSING RECORD BOTH MOVED INTO THE RESOLVER.
+        #
+        # This function used to hold both: it short-circuited v2 itself, and
+        # it patched up the record when tier 1 returned without writing one.
+        # Both fixes were in the CALLER, so studio/legacy_pipeline — which
+        # never passes on_record at all — still had both defects. The
+        # resolver now guarantees a record on every path, refuses rather
+        # than substituting a flat preset, and skips the fetch for v2, so
+        # every door gets it once.
+        resolved_background = pipeline.resolve_background(
+            profile, background,
+            topic=topic_name, category=category,
+            dest_dir=clips_dir,
+            duration=tts_duration,
+            on_record=_record_background,
+            use_v2=use_v2,
+        )
         update_job(job_id, current_step=f"Rendering video ({resolved_background})...")
 
         pipeline.render_video(
