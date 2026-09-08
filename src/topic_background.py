@@ -424,27 +424,3 @@ def generate_for_topic(topic: str, category: str = None,
     }
 
 
-def fallback_preset(enabled: list = None) -> Optional[str]:
-    """A palette from the culled rotation, for when the image is refused.
-
-    Reads the rotation from config rather than holding its own list, so the
-    cull lands in one place and this follows it.
-    """
-    try:
-        from backgrounds import BACKGROUND_PRESETS, resolve_enabled
-        from video.backgrounds import _load_video_config  # noqa: F401
-    except Exception:                                       # noqa: BLE001
-        from backgrounds import BACKGROUND_PRESETS, resolve_enabled
-
-    names = enabled
-    if names is None:
-        try:
-            import yaml
-            cfg = yaml.safe_load((ROOT / "config.yaml").read_text()) or {}
-            names = (cfg.get("video") or {}).get("enabled_backgrounds") or []
-        except Exception:                                   # noqa: BLE001
-            names = []
-    pool = [n for n in resolve_enabled(names) if n in BACKGROUND_PRESETS]
-    if not pool:
-        return None
-    return random.SystemRandom().choice(pool)

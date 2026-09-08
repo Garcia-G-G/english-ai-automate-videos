@@ -3,59 +3,19 @@
 
 # Video Generation Settings
 video:
-  # Background mode: "random" picks from enabled list, "fixed" uses default_background
-  background_mode: "random"
+  # NO BACKGROUND SETTINGS. background_mode, default_background and
+  # enabled_backgrounds lived here and every one of them named a flat colour
+  # field: the enabled rotation expanded to 76 presets, 69 static gradients
+  # and 7 animated ones, with no footage in it at all.
+  #
+  # Backgrounds are Pexels footage now — this video's own clips, or the
+  # local cache, or the render fails. There is nothing to configure, which
+  # is the point: each of the last three packages left one more way for a
+  # colour field to reach the screen.
+  #
+  # profiles.<name>.video.background_mode: "clips" is a DIFFERENT key and it
+  # survives — it names a directory of footage.
 
-  # Used when background_mode is "fixed"
-  default_background: "static_midnight"
-
-  # Backgrounds available for random selection.
-  #
-  # Gradients, not photographs. Every entry here clears 4.5:1 contrast
-  # against the yellow headline in the band the headline occupies, measured
-  # on the bare background before the 6px outline is drawn, and measured
-  # across the whole colour cycle for the animated ones rather than at a
-  # single instant. The floor of this set is 4.65:1 (static_purple).
-  #
-  # Re-measure after any edit here:
-  #   python3 tools/background_contact_sheet.py --enabled
-  #
-  # The 11 photo_* presets remain defined in src/backgrounds.py and are
-  # deliberately absent: six of them measured between 2.08:1 and 3.69:1,
-  # because a sunset or a cloudscape puts its brightest region exactly
-  # where the headline goes. The energetic and particle families are absent
-  # for the opposite reason — they render very nearly black.
-  #
-  # Dropped from this list for failing the gate, worst-case:
-  #   static_rosegold 3.14:1   static_candy 3.63:1   static_cotton 4.25:1
-  enabled_backgrounds:
-    # static_gradient — rendered once, identical every frame
-    - static_sunset
-    - static_ocean
-    - static_purple
-    - static_neon
-    - static_emerald
-    - static_midnight
-    - static_fire
-    - static_galaxy
-    - static_teal
-    # animated_gradient — slow colour cycle
-    - purple_vibes
-    - blue_calm
-    - warm_sunset
-    - deep_space
-    - ocean_depth
-    - midnight_blue
-    - sunset_glow
-    # Every palette in assets/palettes.json — sampled from a seed and put
-    # through three gates: 4.5:1 worst-case contrast, a CIELAB distance of 12
-    # from every other palette, and hue discipline (no complementary blends,
-    # nothing in the olive band, a chroma floor read off static_teal).
-    # Regenerate with `python3 -m palettes`; this line needs no edit when the
-    # count changes, which is the point of it not being a list of names.
-    - generated:*
-
-  # Video dimensions (TikTok vertical format)
   width: 1080
   height: 1920
   fps: 30

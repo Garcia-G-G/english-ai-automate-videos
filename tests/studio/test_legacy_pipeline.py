@@ -483,8 +483,13 @@ def test_youtube_forwards_requested_engine_and_records_effective_fallback(tmp_pa
     gateway, calls, _ = gateway_fakes(tmp_path)
     result = gateway.produce(item, {"type": "quiz", "full_script": "hola"},
                              bundle(), lambda *args: None)
+    # THE ENGINE IS NO LONGER FORWARDED. v2 renders an animated mesh
+    # gradient, which is flat by design, so it stopped being a choice — the
+    # renderer is never asked for it. What survives is the RECORD: a request
+    # that still carries "v2" is written down and answered with v1, which is
+    # now the only outcome rather than a fallback for one video type.
     render = next(call for call in calls if call[0] == "render")
-    assert render[-1]["use_v2"] is True
+    assert "use_v2" not in render[-1]
     assert result.production["render_engine"] == {
         "requested": "v2", "effective": "v1"
     }
@@ -511,15 +516,11 @@ def test_gateway_delegates_stages_in_order_and_forwards_monotonic_progress(tmp_p
     # topic tier had nowhere to write, so the Studio path was given no topic
     # and could only ever get a palette. The clip tier takes a destination
     # inside the artifact, so the objection is gone and so is the omission.
-    # AND ITS ENGINE. use_v2 was passed to _render_video thirty lines below
-    # this call and not to the resolver, so `main.py --random --v2` fetched
-    # footage and threw every frame away — v2 renders its own background.
     assert background_call[3] == {
         "topic": "actually",
         "category": None,
         "dest_dir": artifact_dir / "clips",
         "duration": 2.5,
-        "use_v2": False,
     }
     assert background_call[3]["dest_dir"].parent == artifact_dir, (
         "footage belongs to THIS artifact, not a global directory")

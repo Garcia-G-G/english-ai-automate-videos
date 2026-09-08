@@ -183,11 +183,13 @@ def test_bilibili_forwards_v2_and_records_effective_engine(tmp_path):
     gateway, calls = _gateway(tmp_path)
     result = gateway.produce(item, {"type": "educational", "full_script": "你好 hello"},
                              _profile(), lambda *args: None)
+    # v2 IS NO LONGER FORWARDED — see test_footage_only. The engine renders
+    # its own mesh gradient, which is a flat background, so it stopped being
+    # a choice on every door including this one. The request's own field is
+    # still recorded; "effective" is now always v1.
     render = next(call for call in calls if call[0] == "render")
-    assert render[1]["use_v2"] is True
-    assert result.production["render_engine"] == {
-        "requested": "v2", "effective": "v2"
-    }
+    assert "use_v2" not in render[1]
+    assert result.production["render_engine"]["requested"] == "v2"
 
 
 def test_profile_mismatch_and_escaped_background_fail_before_tts(tmp_path):
