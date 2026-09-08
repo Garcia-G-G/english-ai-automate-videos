@@ -11,7 +11,7 @@
   },
   "correct": "B",
   "explanation": "En la cláusula if va presente, nunca will. El will solo va en la parte principal.",
-  "full_script": "¡Vamos con un quiz de gramática! La frase es: if I, guion bajo, time, I will call you tonight. Si tengo tiempo, te llamo esta noche. ¿Qué va en el hueco? Opción A, will have. Opción B, have. Opción C, had. Opción D, will had. Piénsalo bien, porque en español sí decimos si tendré. La respuesta correcta es la B: have. En la primera condicional, la parte del if siempre va en presente. El will va solamente en la otra mitad de la frase. Nunca metas will después de if. Es el error que más delata.",
+  "full_script": "¡Quiz time! Pregunta número uno. Esta es la condicional que más se usa, y también la que más se falla. If I ___ time, I will call you tonight. Si tengo tiempo, te llamo esta noche. ¿Qué falta en el hueco?... A, 'will have'.... B, 'have'.... C, 'had'.... D, 'will had'.... Piensa bien, porque en español sí decimos 'si tendré tiempo'... Tres... dos... uno... ¡Correcto! La respuesta es B, 'have'. En la primera condicional, la parte del 'if' siempre va en presente. El 'will' va solamente en la otra mitad de la frase. Nunca metas 'will' justo después de 'if'.",
   "translations": {
     "if I have time, I will call you tonight": "si tengo tiempo, te llamo esta noche",
     "have": "tener",
