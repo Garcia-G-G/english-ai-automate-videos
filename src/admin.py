@@ -155,33 +155,6 @@ def unavailable_profiles() -> dict:
     return _profile_status()[1]
 
 
-def available_backgrounds() -> list:
-    """Backgrounds a person may pick, from config.yaml's enabled list.
-
-    'generated:*' is a WILDCARD the resolver expands per video, not something
-    anyone can select; offering it would be a control that does nothing.
-    """
-    import yaml
-
-    try:
-        config = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8"))
-    except (OSError, yaml.YAMLError):
-        logger.warning("could not read config.yaml for the background list")
-        return []
-    enabled = ((config or {}).get("video") or {}).get("enabled_backgrounds") or []
-    return [b for b in enabled if isinstance(b, str) and "*" not in b]
-
-
-def v2_supported(video_type: str) -> bool:
-    """Whether the v2 render engine can render this type.
-
-    video/__init__.py falls back to v1 with a warning for anything but
-    educational. Offering v2 for six types would be a control that silently
-    does nothing for five of them.
-    """
-    return video_type == "educational"
-
-
 def topic_memory_report(allowed_categories=None) -> dict:
     """What topic_history already computes, shaped for a screen.
 
@@ -380,8 +353,7 @@ def get_job_history(limit: int = 5) -> list:
 def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = None,
                                 topic_name: str = None, script_data: dict = None,
                                 background: str = None, dry_run: bool = False,
-                                profile_name: str = None,
-                                use_v2: bool = False) -> dict:
+                                profile_name: str = None) -> dict:
     """Generate one video through the shared pipeline (src/pipeline.py).
 
     Same TTS dispatch, same merge and same renderer as main.py — only the
@@ -395,7 +367,6 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                       GPT script call happens before this takes effect.
         profile_name: Audience profile ("adults", "children"), or None for the
                       config default.
-        use_v2:       Render with the v2 engine. Educational only; see below.
 
     THREE OF THESE FIVE WERE ALREADY HERE AND UNREACHABLE. `background` and
     `dry_run` were parameters no caller ever set, and resolve_profile has
@@ -409,18 +380,9 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         update_job(job_id, status="running", step_number=1,
                    current_step="Selecting topic...", progress=5)
 
-        # v2 renders only educational — video/__init__.py falls back to v1
-        # with a warning for anything else. Refused HERE as well so the job
-        # row records what actually ran, rather than claiming v2 for a video
-        # the renderer quietly downgraded.
-        if use_v2 and not v2_supported(video_type):
-            logger.warning("v2 does not render %r — using v1", video_type)
-            update_job(job_id, current_step=f"v2 unavailable for {video_type}; using v1")
-            use_v2 = False
-
         # Audience profile (voice, backgrounds, topics) — same resolution as the CLI
         profile = pipeline.resolve_profile(profile_name)
-        update_job(job_id, profile=profile.get("name"), engine="v2" if use_v2 else "v1")
+        update_job(job_id, profile=profile.get("name"))
 
         if script_data is not None:
             topic_name = topic_name or script_data.get("word") or script_data.get("topic") or "script"
@@ -581,7 +543,6 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             dest_dir=clips_dir,
             duration=tts_duration,
             on_record=_record_background,
-            use_v2=use_v2,
         )
         update_job(job_id, current_step=f"Rendering video ({resolved_background})...")
 
@@ -589,7 +550,6 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             audio_path, json_path, video_path,
             video_type=video_type,
             background=resolved_background,
-            use_v2=use_v2,
             timeout=pipeline.RENDER_TIMEOUT_S,
         )
 
@@ -2377,24 +2337,14 @@ elif page == "Generate":
             for name, reason in unavailable_profiles().items():
                 st.caption(f"Profile '{name}' unavailable — {reason}")
 
-            backgrounds = available_backgrounds()
-            background_choice = st.selectbox(
-                "Background", ["Auto (profile decides)"] + backgrounds,
-                help="Auto runs the tiered resolver — clips first, then a "
-                     "generated image. Pick a preset to pin one.")
-            background = None if background_choice.startswith("Auto") else background_choice
-
-            # Offered ONLY for the type it can render. A checkbox that is
-            # ignored for five of six types is the failure this page exists
-            # to correct, so it is absent rather than disabled-looking.
-            if v2_supported(video_type):
-                use_v2 = st.checkbox(
-                    "Render with v2 engine",
-                    help="v2 renders its own background and supports "
-                         "educational only.")
-            else:
-                use_v2 = False
-                st.caption(f"v2 engine: not available for {type_label(video_type)}.")
+            # NO BACKGROUND CONTROL AND NO ENGINE CONTROL.
+            #
+            # The selectbox listed 16 flat presets and pinning one is what
+            # produced three of the last five videos; the v2 checkbox chose
+            # an animated mesh gradient, which is flat by design and was the
+            # fourth. Every video now gets this video's own Pexels footage,
+            # or the local cache, or it fails.
+            background = None
 
             dry_run = st.checkbox(
                 "Dry run (no TTS, no render)",
@@ -2444,7 +2394,7 @@ elif page == "Generate":
             job_id = start_generation(video_type, category, topic_name,
                                       profile_name=profile_name,
                                       background=background,
-                                      use_v2=use_v2, dry_run=dry_run)
+                                      dry_run=dry_run)
             st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
             st.rerun()
 
@@ -3378,22 +3328,13 @@ elif page == "Settings":
         col1, col2 = st.columns(2)
 
         with col1:
-            try:
-                from backgrounds import BACKGROUND_PRESETS, get_recommended_preset
-                preset_options = list(BACKGROUND_PRESETS.keys())
-                current_bg = config.get("video", {}).get("default_background", get_recommended_preset())
-                default_background = st.selectbox(
-                    "Default Background", options=preset_options,
-                    index=preset_options.index(current_bg) if current_bg in preset_options else 0,
-                )
-            except ImportError:
-                default_background = st.text_input(
-                    "Default Background",
-                    value=config.get("video", {}).get("default_background", "static_purple")
-                )
-
-            bg_mode = st.selectbox("Background Mode", ["random", "fixed"],
-                                   index=0 if config.get("video", {}).get("background_mode") == "random" else 1)
+            # THE BACKGROUND CONTROLS ARE GONE. They wrote background_mode
+            # and default_background, the two keys the config-pin tier read,
+            # and the preset they chose was one of 76 flat colour fields.
+            # Backgrounds are footage now and there is nothing here to pick.
+            st.caption("Backgrounds are Pexels footage — there is nothing to "
+                       "configure. A video that cannot get footage fails "
+                       "rather than rendering a colour.")
 
             video_width = st.number_input("Width", value=config.get("video", {}).get("width", 1080),
                                           min_value=480, max_value=2160)
@@ -3411,9 +3352,6 @@ elif page == "Settings":
         if st.button("💾 Save Video Config", type="primary", use_container_width=True):
             new_config = {
                 "video": {
-                    "background_mode": bg_mode,
-                    "default_background": default_background,
-                    "enabled_backgrounds": config.get("video", {}).get("enabled_backgrounds", []),
                     "width": video_width,
                     "height": video_height,
                     "fps": video_fps,

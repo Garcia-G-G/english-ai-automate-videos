@@ -217,23 +217,6 @@ def test_the_chosen_background_reaches_the_resolver(recorder, ledger):
     assert recorder.background_arg == "static_fire"
 
 
-def test_the_chosen_engine_reaches_the_renderer(recorder, ledger):
-    admin.run_pipeline_with_tracking("job4", "educational", use_v2=True)
-
-    assert recorder.render_kwargs.get("use_v2") is True
-
-
-def test_v2_is_refused_for_the_types_it_cannot_render(recorder, ledger):
-    """v2 only supports educational. Offering it for six types would be a
-    control that silently does nothing — the failure this package corrects."""
-    assert admin.v2_supported("educational")
-    assert not admin.v2_supported("quiz")
-
-    admin.run_pipeline_with_tracking("job5", "quiz", use_v2=True)
-
-    assert recorder.render_kwargs.get("use_v2") is False
-
-
 def test_dry_run_reaches_the_plan_without_paying_for_it(recorder, ledger):
     """The parameter existed and there was no way to reach it from the UI."""
     result = admin.run_pipeline_with_tracking("job6", "educational", dry_run=True)
@@ -251,10 +234,10 @@ def test_the_controls_offer_only_values_the_engine_accepts():
     # test_only_profiles_that_actually_resolve_are_offered.
     assert "adults" in admin.available_profiles()
 
-    backgrounds = admin.available_backgrounds()
-    assert "static_midnight" in backgrounds
-    # 'generated:*' is a wildcard in config.yaml, not a preset anyone can pick.
-    assert not any("*" in b for b in backgrounds)
+    # The background list is gone with the presets it listed: every video
+    # gets its own Pexels footage or the local cache, and there is nothing
+    # left to choose between.
+    assert not hasattr(admin, "available_backgrounds")
 
 
 def test_start_generation_forwards_the_new_controls(ledger, monkeypatch):
@@ -330,12 +313,3 @@ def test_the_dashboard_delegates_the_background_decision(recorder, ledger):
     assert recorder.background_arg == "static_fire"
 
 
-def test_the_engine_reaches_the_resolver_not_just_the_renderer(recorder, ledger):
-    """v2 renders its own background, so the resolver must be told before it
-    fetches — admin passing use_v2 only to render_video is what made the
-    first v2 video download 25.4 MB it discarded."""
-    job_id = admin.create_job("educational")
-    admin.run_pipeline_with_tracking(job_id, "educational", use_v2=True)
-
-    assert recorder.resolve_kwargs.get("use_v2") is True
-    assert recorder.render_kwargs.get("use_v2") is True

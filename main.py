@@ -475,20 +475,20 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
 
 
 def run_pipeline(script_data: dict, output_name: str, video_type: str = None, background: str = None,
-                 upload: bool = False, use_v2: bool = False, dry_run: bool = False,
+                 upload: bool = False, dry_run: bool = False,
                  entry: dict = None) -> Path:
     """Compatibility wrapper for an owner-supplied script."""
     artifact, video = run_creation(
         workspace="youtube", audience="adults", idea=output_name,
         mode="directed", artifact_id=output_name, video_type=video_type,
         background=background, supplied_script=script_data, upload=upload,
-        use_v2=use_v2, dry_run=dry_run,
+        dry_run=dry_run,
     )
     return video
 
 
 def run_from_text(text: str, name: str = None, video_type: str = "educational", background: str = None,
-                  upload: bool = False, use_v2: bool = False, dry_run: bool = False) -> Path:
+                  upload: bool = False, dry_run: bool = False) -> Path:
     """Create a canonical artifact from owner-supplied narration text."""
     if not name:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -502,12 +502,12 @@ def run_from_text(text: str, name: str = None, video_type: str = "educational", 
     }
 
     return run_pipeline(script_data, name, video_type, background, upload=upload,
-                        use_v2=use_v2, dry_run=dry_run)
+                        dry_run=dry_run)
 
 
 
 def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational",
-                     background: str = None, upload: bool = False, use_v2: bool = False,
+                     background: str = None, upload: bool = False,
                      dry_run: bool = False, entry: dict = None) -> Path:
     """Compatibility wrapper for a directed canonical creation."""
     _, video = run_creation(
@@ -515,7 +515,7 @@ def generate_and_run(category: str, topic: dict, topic_name: str, video_type: st
         mode="directed", category=category, topic=topic_name,
         video_type=video_type, background=background,
         artifact_id=safe_artifact_name(topic_name), upload=upload,
-        use_v2=use_v2, dry_run=dry_run,
+        dry_run=dry_run,
     )
     return video
 
@@ -615,7 +615,7 @@ def refuse_unattended_upload(artifact_id: str = None) -> str:
 def run_creation(*, workspace, audience, idea, mode, root=None,
                  artifact_id=None, category=None, topic=None, video_type=None,
                  background=None, notes=None, supplied_script=None,
-                 upload=False, use_v2=False, dry_run=False):
+                 upload=False, dry_run=False):
     """Construct one typed request and delegate creation to Studio."""
     if dry_run:
         print(f"Dry run: planned {workspace}/{audience} creation; no artifact or paid call was made")
@@ -631,7 +631,6 @@ def run_creation(*, workspace, audience, idea, mode, root=None,
         market=market, native_language=native, learning_language=learning,
         audience=audience, mode=mode, idea=idea, category=category, topic=topic,
         video_type=video_type, background=background, notes=notes,
-        render_engine="v2" if use_v2 else "v1",
     )
     dependencies = {"root": Path(root or OUTPUT_DIR / "artifacts")}
     if supplied_script is not None:
@@ -702,7 +701,13 @@ Examples:
     parser.add_argument("--name", "-n", type=str,
                         help="Output name (without extension)")
     parser.add_argument("--background", "--bg", type=str, default=None,
-                        help="Background preset (e.g. aurora_borealis, energetic_orbs). Default: random")
+                        help="Clips directory, or 'clips:<dir>'. Backgrounds "
+                             "are footage: preset names are refused. Default: "
+                             "fetch this video's own footage from Pexels")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Resolve and log the TTS plan (provider, model, voice, "
+                             "per-segment language_code) without calling any API")
+
     parser.add_argument("--workspace", choices=["youtube", "bilibili"], default="youtube",
                         help="Editorial workspace (YouTube Spanish or Bilibili Chinese)")
     parser.add_argument("--profile", type=str, default="adults",
@@ -715,12 +720,6 @@ Examples:
                              "the owner approves and publishes from the dashboard")
     parser.add_argument("--verbose", "-v", action="store_true",
                         help="Enable verbose/debug logging")
-    parser.add_argument("--v2", action="store_true",
-                        help="Use the v2 render engine (educational only; "
-                             "other types fall back to v1)")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Resolve and log the TTS plan (provider, model, voice, "
-                             "per-segment language_code) without calling any API")
 
     args = parser.parse_args()
 
@@ -783,7 +782,7 @@ Examples:
                 artifact, video = run_creation(
                     workspace=args.workspace, audience=audience, idea=topic_name,
                     mode="auto", video_type=args.type, background=args.background,
-                    upload=args.upload, use_v2=args.v2,
+            upload=args.upload,
                 )
                 entry["artifact_id"] = artifact.artifact_id
                 entry["artifact_path"] = str(video) if video else None
@@ -828,7 +827,6 @@ Examples:
             idea=args.name or "supplied text", mode="directed",
             artifact_id=args.name, video_type=args.type, background=args.background,
             supplied_script=script, upload=args.upload,
-            use_v2=args.v2,
         )
         return
 
@@ -848,7 +846,6 @@ Examples:
             workspace=args.workspace, audience=audience, idea=name, mode="directed",
             artifact_id=name, video_type=video_type, background=args.background,
             supplied_script=script_data, upload=args.upload,
-            use_v2=args.v2,
         )
         return
 
@@ -858,7 +855,6 @@ Examples:
             workspace=args.workspace, audience=audience, idea=args.topic,
             mode="directed", category=args.category, topic=args.topic,
             video_type=args.type, background=args.background, upload=args.upload,
-            use_v2=args.v2,
         )
         return
 
@@ -867,7 +863,7 @@ Examples:
         run_creation(
             workspace=args.workspace, audience=audience, idea="automatic lesson",
             mode="auto", video_type=args.type, background=args.background,
-            upload=args.upload, use_v2=args.v2,
+            upload=args.upload,
         )
         return
 

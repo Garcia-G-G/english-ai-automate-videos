@@ -62,21 +62,6 @@ def test_run_creation_constructs_typed_workspace_request(monkeypatch, tmp_path,
     assert video == tmp_path / "safe_name/video/final.mp4"
 
 
-def test_run_creation_maps_v2_into_the_typed_request(monkeypatch, tmp_path):
-    import main
-    captured = {}
-
-    class Service:
-        def create(self, request, **kwargs):
-            captured["request"] = request
-            return _artifact("v2")
-
-    monkeypatch.setattr(main, "get_creation_service", lambda **kwargs: Service())
-    main.run_creation(workspace="youtube", audience="adults", idea="lesson",
-                      mode="auto", root=tmp_path, use_v2=True)
-    assert captured["request"].model_dump(mode="json")["render_engine"] == "v2"
-
-
 def test_supplied_script_is_validated_before_production(tmp_path):
     from script_schema import ScriptValidationError
     from studio import (
@@ -187,20 +172,3 @@ def test_list_only_cli_does_not_construct_service(monkeypatch):
     main.main()
 
 
-def test_cli_v2_and_legacy_wrapper_forward_selection(monkeypatch):
-    import main
-    calls = []
-    monkeypatch.setattr(
-        main, "run_creation",
-        lambda **kwargs: calls.append(kwargs) or (_artifact("engine"), Path("video.mp4")),
-    )
-    monkeypatch.setattr(sys, "argv", ["main.py", "--random", "--v2"])
-    main.main()
-    assert calls[-1]["use_v2"] is True
-
-    main.run_pipeline(
-        {"type": "educational", "full_script": "long enough text",
-         "hook": "hook", "english_phrases": ["hello"]},
-        "owner", use_v2=True,
-    )
-    assert calls[-1]["use_v2"] is True

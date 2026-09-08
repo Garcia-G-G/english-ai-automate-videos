@@ -121,71 +121,49 @@ def resolve_profile(name: str = None) -> Dict:
     return profile
 
 
-#: The floor under tier 5. A literal, so the resolver can always answer.
-#:
-#: Returning None is what produced the defect this function exists to remove:
-#: main.py and admin.py both handed None to the renderer, and the renderer
-#: subprocess then picked its own palette — which is why every dashboard video
-#: had a gen_NNN background and not one had the generated image it had paid
-#: for. A resolver that can answer "I don't know" moves the decision somewhere
-#: nobody is looking.
-#:
-#: static_midnight measures 7.13:1 behind the headline and renders once rather
-#: than per frame.
-TERMINAL_PRESET = "static_midnight"
 
 
 def resolve_background(profile: Dict = None, background: str = None, *,
                        topic: str = None, category: str = None,
-                       entry: Dict = None, fast_mode: bool = False,
+                       entry: Dict = None,
                        dest_dir=None, duration: float = None,
-                       on_record=None, use_v2: bool = False) -> str:
+                       on_record=None) -> str:
     """THE place a background is decided. Both entry points call this.
 
-    Returns a value generate_video accepts: a preset name, "clips:<dir>", or
-    "photo:<path>". NEVER None, and never raises — a background problem must
-    cost a plain background, never the video.
+    Returns "clips:<dir>" — the ONLY shape there is — or raises
+    BackgroundUnavailable. It no longer returns a preset name, a photo path,
+    or None, because footage is the only background now.
 
     Priority, and the order is the specification:
 
-      0. fast mode              -> a cheap static preset
-      1. explicit `background`  -> returned untouched, because --background is
-                                   an instruction and not a default
+      1. explicit `background`  -> a clips directory, or "clips:<dir>".
+                                   A PRESET NAME IS REFUSED, not obeyed.
       2. profile clips mode     -> clips:<dir>
       3. topic + a destination  -> fetch this video's OWN footage into that
                                    directory and return clips:<that dir>
-      4. topic + category       -> generate an image, GATE it, and use it only
-                                   on PASS
-      5. background_mode fixed  -> the configured preset
-      6. terminal fallback      -> one preset from the enabled rotation, and
-                                   TERMINAL_PRESET if even that is empty
+      4. topic + a destination  -> the local cache, when the network gave us
+                                   nothing. Free, and still footage.
+         refuse                 -> BackgroundUnavailable, naming every tier
+                                   that declined.
 
-    WHERE TIER 3 SITS, AND WHY THERE.
+    WHAT WAS REMOVED, AND WHY IT KEPT COMING BACK.
 
-    Below tier 2, because tier 2 is a CONFIGURED instruction and this is a
-    default — same reasoning that keeps tier 1 above everything.
+    There were EIGHT ways a flat background reached the screen, and three
+    successive packages each closed some and preserved one more escape
+    hatch nobody had asked for. Gone in one cut: fast_mode's static preset,
+    the $0.041 generated-image tier, the config pin, the 76-name terminal
+    rotation, the v2 branch, and this function's willingness to hand back
+    whatever string the caller passed.
 
-    Above the generated image, because the owner has asked for moving
-    backgrounds repeatedly and a still with a Ken Burns pan is not one. It
-    is also strictly cheaper: clips cost $0.00 and displace a $0.041
-    gpt-image-2 call, so the tier that runs first is also the one that
-    spends nothing.
+    `si es tan simple como quitar todo lo que no sean los videos y ya`. The
+    consequence was accepted explicitly: Pexels failing with an empty cache
+    means NO VIDEO, not an ugly one.
 
-    It requires `dest_dir` and fires only when given one. That is not a
-    limitation, it is the point: footage belongs to ONE artifact, the way
-    tier 4's image does. A caller with nowhere to put clips falls straight
-    through to tier 4 and behaves exactly as it did before.
-
-    Tier 5 keys on background_mode == "fixed" rather than on
-    default_background being set, because default_background IS set in
-    config.yaml today; keying on it would make tier 6 unreachable and retire
-    the rotation the palette cull exists to curate. default_background is
-    still honoured, as the step above the literal inside tier 6.
-
-    This replaces main._background_for_topic and the `random` branch of
-    video.backgrounds.get_default_background, which were the same algorithm
-    written twice against the same config key — so applying the palette cull
-    would have fixed one path and left the other, which is the dashboard's.
+    WHERE TIER 3 SITS, AND WHY THERE. Below tier 2, because tier 2 is a
+    CONFIGURED instruction and this is a default — the same reasoning that
+    keeps tier 1 above everything. It requires `dest_dir` and fires only
+    when given one: footage belongs to ONE artifact, so a caller with
+    nowhere to put clips falls through to the cache and then to the refusal.
     """
     attempts: List[Dict] = []
 
@@ -216,30 +194,30 @@ def resolve_background(profile: Dict = None, background: str = None, *,
     def declined(tier_name: str, reason: str):
         attempts.append({"tier": tier_name, "reason": reason})
 
-    # ── 0. fast mode ──
-    # The one door left to a flat background nobody asked for. fast_mode
-    # exists to be cheap and quick, and a preset is honest there.
-    if fast_mode:
-        logger.info("background: fast mode -> dark_professional")
-        return decided("dark_professional", 0, "fast_mode")
-
-    # ── the engine renders its own ──
-    # BEFORE any fetch. video/__init__.py sets `background = None` whenever
-    # v2 is active, so resolving one is pure waste — studio/legacy_pipeline
-    # resolved at line 298 and passed use_v2 at line 331, which is why
-    # `main.py --random --v2` downloaded footage and discarded every frame.
-    # It lives HERE rather than in a caller because putting the same fix in
-    # admin.py is exactly what left the studio door still doing it.
-    if use_v2:
-        return decided(TERMINAL_PRESET, "v2", "engine",
-                       {"kind": "engine", "engine": "v2",
-                        "note": "v2 renders its own background"})
-
-    # ── 1. an explicit instruction ──
+    # ── 1. an explicit clips directory ──
+    #
+    # IT NO LONGER ACCEPTS A PRESET NAME. `--background static_fire` used to
+    # render a colour field; a preset is not a background any more, so the
+    # instruction is refused and says why rather than quietly obeying.
+    # A bare path is accepted as well as a "clips:" value, because typing
+    # the directory is the natural thing to do and means the same thing.
     if background:
-        return decided(background, 1, "explicit",
-                       {"kind": "preset", "preset": background,
-                        "requested": background})
+        if background.startswith("clips:"):
+            return decided(background, 1, "explicit_clips",
+                           {"kind": "clips", "dir": background[len("clips:"):],
+                            "source": "explicit"})
+        if Path(background).is_dir():
+            return decided(f"clips:{background}", 1, "explicit_clips",
+                           {"kind": "clips", "dir": background,
+                            "source": "explicit"})
+        reason = (f"{background!r} is not a clips directory. Backgrounds are "
+                  "footage now: pass a directory of .mp4 files, or "
+                  "'clips:<dir>'. The preset rotation was removed.")
+        decided(None, "refused", "refused",
+                {"kind": "refused", "reason": reason,
+                 "requested": background})
+        logger.error("background: %s", reason)
+        raise BackgroundUnavailable(reason)
 
     video_cfg = (profile or {}).get("video", {}) or {}
 
@@ -261,14 +239,6 @@ def resolve_background(profile: Dict = None, background: str = None, *,
     elif topic:
         declined("pexels", "no dest_dir — footage belongs to one artifact")
 
-    # ── 4. this video's own image ──
-    if topic:
-        resolved, payload = _generated_background(topic, category)
-        if resolved:
-            return decided(resolved, 4, "generated_image", payload)
-        declined("generated_image",
-                 (payload or {}).get("reason", "generation or gate declined"))
-
     # ── 5. the local cache: still footage, and free ──
     #
     # 220 clips were on disk — 102 cache slots alone — and no tier had ever
@@ -281,31 +251,19 @@ def resolve_background(profile: Dict = None, background: str = None, *,
             logger.warning("background: Pexels declined for %r — reused %d "
                            "cached clip(s) instead of a flat preset",
                            topic, payload.get("clip_count", 0))
-            return decided(resolved, 5, "clip_cache", payload)
+            return decided(resolved, 4, "clip_cache", payload)
         declined("clip_cache", "no clips on disk")
 
-    # ── 6. config pins one ──
-    # An instruction, the same class as tier 1: background_mode "fixed" is a
-    # deliberate configuration choice, not the floor substituting silently.
-    cfg = _video_config()
-    if cfg.get("background_mode") == "fixed":
-        pinned = cfg.get("default_background")
-        if pinned:
-            logger.info("background: config is fixed -> %s", pinned)
-            return decided(pinned, 6, "config_fixed",
-                           {"kind": "preset", "preset": pinned,
-                            "requested": pinned})
-
-    # ── 7. refuse, loudly ──
+    # ── refuse ──
     #
-    # THE FLOOR USED TO BE 76 FLAT PRESETS: the enabled rotation expands to
-    # 69 static gradients and 7 animated ones, and not one of them is
-    # footage. So whenever every query declined, the video silently became a
-    # colour field and reported itself complete.
+    # THERE IS NO FLOOR ANY MORE, and that is the whole point. It used to be
+    # 76 flat presets — 69 static gradients and 7 animated ones, none of them
+    # footage — so a total Pexels decline silently produced a colour field.
     #
-    # `un default solo puede renderizar MENOS, nunca algo falso`. A colour
-    # field where footage was promised is not less, it is something else, so
-    # the job fails and says which tiers were tried.
+    # `el objetivo es poner los videos que tenemos de Pexels`. Pexels failing
+    # with an empty cache now means NO VIDEO, not an ugly one; that trade was
+    # asked for explicitly. Nothing degrades to a colour field because there
+    # is no colour field left to degrade to.
     reason = ("no footage available: " +
               "; ".join(f"{a['tier']} ({a['reason']})" for a in attempts)
               if attempts else "no footage available and no topic to fetch for")
@@ -323,32 +281,6 @@ def _video_config() -> Dict:
         return cfg.get("video") or {}
     except Exception:                                       # noqa: BLE001
         return {}
-
-
-def _terminal_preset(cfg: Dict = None) -> str:
-    """One preset from the enabled rotation. Always returns something.
-
-    The single place the enabled rotation is read, so the palette cull can be
-    applied once and take effect on every path.
-    """
-    cfg = _video_config() if cfg is None else cfg
-    try:
-        from backgrounds import BACKGROUND_PRESETS, resolve_enabled
-        pool = [n for n in resolve_enabled(cfg.get("enabled_backgrounds") or [])
-                if n in BACKGROUND_PRESETS]
-        if pool:
-            import random as _random
-            # SystemRandom so a seeded global RNG cannot pin every video to
-            # the same background.
-            return _random.SystemRandom().choice(pool)
-        pinned = cfg.get("default_background")
-        if pinned and pinned in BACKGROUND_PRESETS:
-            logger.warning("background: enabled rotation is empty -> %s", pinned)
-            return pinned
-    except Exception:                                       # noqa: BLE001
-        logger.exception("background: could not read the rotation")
-    logger.warning("background: nothing usable configured -> %s", TERMINAL_PRESET)
-    return TERMINAL_PRESET
 
 
 def _emit_background_record(entry: Dict, on_record, payload: Dict) -> None:
@@ -536,57 +468,6 @@ def _clip_background(topic: str, category: str = None, dest_dir=None,
                 result["clip_count"], result["megabytes"], topic, result["dir"])
     return f"clips:{result['dir']}", {"kind": "clips", "source": "pexels",
                                       **result}
-
-
-def _generated_background(topic: str, category: str = None):
-    """Generate an image for `topic` and gate it. Returns (value, payload).
-
-    (None, payload) means "fall through", and the payload carries the reason
-    so resolve_background can list it among the attempts. The gate is
-    BLOCKING: a refused image is never used. Nothing in here raises.
-
-    IT NO LONGER RECORDS. It used to write `{"source": "palette", ...}` and
-    then return None — so the record said "palette" while tiers 5 and 6 went
-    on to choose the actual background, and nothing updated it. A tier can
-    only describe itself; the record has to name the tier that won.
-    """
-    try:
-        from topic_background import generate_for_topic
-        from topic_background_gate import accept
-    except Exception:                                       # noqa: BLE001
-        logger.warning("background: generation unavailable for %r "
-                       "— falling through", topic)
-        return None, {"reason": "module unavailable"}
-
-    try:
-        made = generate_for_topic(topic, category)
-    except Exception as exc:                                # noqa: BLE001
-        logger.exception("background: generation raised for %r", topic)
-        return None, {"reason": f"generation raised: {exc}"}
-
-    if not made:
-        logger.warning("background: generation failed for %r — falling through",
-                       topic)
-        return None, {"reason": "generation failed"}
-
-    verdict = accept(made["path"], topic=topic)
-    payload = {
-        "kind": "photo",
-        "source": "generated",
-        "image": made["path"],
-        "worst_ratio": round(verdict["worst_ratio"], 3),
-        "floor": verdict["floor"],
-        "gate": "PASS" if verdict["passes"] else "REJECT",
-        "cost_usd": made.get("cost_usd"),
-    }
-    if not verdict["passes"]:
-        payload["reason"] = (f"gate refused {verdict['worst_ratio']:.2f}:1 "
-                             f"(floor {verdict['floor']})")
-        logger.warning("background: gate refused %.2f:1 for %r — falling "
-                       "through", verdict["worst_ratio"], topic)
-        return None, payload
-
-    return f"photo:{made['path']}", payload
 
 
 # ── TTS ───────────────────────────────────────────────────────────────
@@ -806,7 +687,6 @@ def render_video(audio_path,
                  video_path,
                  video_type: str = None,
                  background: str = None,
-                 use_v2: bool = False,
                  timeout: float = None,
                  font_path: str = None,
                  native_language: str = "es") -> Path:
@@ -828,11 +708,11 @@ def render_video(audio_path,
     ]
     if video_type:
         cmd.extend(["-t", video_type])
-    # ALWAYS passed. resolve_background never returns None, and the renderer
-    # requires -b, so there is no path where the subprocess picks its own.
-    cmd.extend(["-b", background or TERMINAL_PRESET])
-    if use_v2:
-        cmd.append("--v2")
+    # ALWAYS passed, and always a clips value. resolve_background raises
+    # rather than returning None, so `background or <a preset>` — which is
+    # what this line used to say — was dead code guarding an impossible case
+    # with the very thing the cascade exists to avoid.
+    cmd.extend(["-b", background])
     cmd.extend(["--native-language", native_language])
 
     logger.info("=" * 50)

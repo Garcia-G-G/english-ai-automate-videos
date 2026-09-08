@@ -316,13 +316,6 @@ class LegacyProductionGateway:
                       or canonical_script.get("category")),
             dest_dir=artifact_dir / "clips",
             duration=float(tts_metadata.get("duration") or 0) or None,
-            # THE ENGINE, AT RESOLVE TIME. It was only passed to
-            # _render_video thirty lines below, so `main.py --random --v2`
-            # fetched footage and discarded every frame — v2 renders its own
-            # background. The same defect was fixed in admin.py by putting
-            # the guard in the caller, which is exactly why this copy
-            # survived; the resolver owns it now and both doors get it.
-            use_v2=artifact.request.render_engine.value == "v2",
         )
         if not isinstance(selected_background, str) or not selected_background:
             raise ValueError("background resolver returned invalid output")
@@ -335,7 +328,6 @@ class LegacyProductionGateway:
             video_type=canonical_script.get("type"),
             background=selected_background,
             native_language=canonical_profile["workspace"]["native_language"],
-            use_v2=artifact.request.render_engine.value == "v2",
         )
         produced_video = self._required_output(
             produced_video, artifact_dir, "video output"
