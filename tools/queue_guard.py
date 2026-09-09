@@ -43,6 +43,24 @@ QUEUE_DIR = ROOT / "content" / "queue"
 DONE_DIR = QUEUE_DIR / "_done"
 
 
+_REAL_TOPICS = None
+
+
+def _real_topics():
+    """{category: {topic_id}} straight from content/topics/, read once."""
+    global _REAL_TOPICS
+    if _REAL_TOPICS is None:
+        from script_generator import list_categories, load_topics
+        _REAL_TOPICS = {}
+        for category in list_categories():
+            try:
+                _REAL_TOPICS[category] = {str(t.get("id"))
+                                          for t in load_topics(category)}
+            except Exception:                               # noqa: BLE001
+                _REAL_TOPICS[category] = set()
+    return _REAL_TOPICS
+
+
 def _load(path: Path):
     try:
         with open(path, encoding="utf-8") as handle:
@@ -96,6 +114,16 @@ def audit():
                                   "topic_history cannot record this, so the "
                                   "topic would stay 'unused' forever"))
         else:
+            # A TOPIC ID THAT DOES NOT EXIST is the quietest repeat of all: the
+            # history records a topic nobody can draw, and the REAL topic stays
+            # "unused" forever, free to be produced again later. Found by
+            # checking a hand-written batch against the topic files -- one of
+            # fifty ids was invented, and nothing else in the system would ever
+            # have noticed.
+            if category not in _real_topics() or str(topic_id) not in _real_topics()[category]:
+                problems.append((rel, f"NO SUCH TOPIC: {category}/{topic_id} is "
+                                      f"not in content/topics/ -- the history "
+                                      f"would record a topic that cannot be drawn"))
             key = (str(category), str(topic_id))
             if used.get(key):
                 problems.append((rel, f"ALREADY PRODUCED: {category}/{topic_id} "
