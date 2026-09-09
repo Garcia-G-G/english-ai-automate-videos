@@ -340,6 +340,83 @@ def complete_job(job_id: str, success: bool, video_path: str = None, error: str 
         save_jobs(jobs)
 
 
+# ============== THE SCRIPT QUEUE ==============
+#
+# OpenAI has no credits, so `generate_script` raises 429 on every dashboard
+# video. The queue is the answer: scripts written ahead of time, produced one
+# at a time, no GPT call anywhere.
+#
+# THIS LIVES IN run_pipeline_with_tracking AND NOWHERE ELSE. Every door into
+# the dashboard -- the Generate button, "5 of each type", the batch, the
+# scheduler -- calls that one function, so putting the preference there gives
+# it to all of them at once. Wiring it into each button is how this project
+# has repeatedly fixed one door and left the others broken, most recently two
+# packages ago, and the rule that earned is: the fix goes in the shared
+# function.
+
+
+def queue_pick(video_type: str = None):
+    """The next SAFE queued script for this type, or None.
+
+    Safe means the guard raised no problem against it: not a topic already
+    produced, not a duplicate of another queued script, and clean against the
+    schema, the duration band and length_spec. A script with any problem is
+    never handed out -- see tools/queue_guard.py.
+    """
+    try:
+        sys.path.insert(0, str(ROOT / "tools"))
+        import queue_guard
+    except Exception:                                       # noqa: BLE001
+        logger.debug("queue: guard unavailable", exc_info=True)
+        return None
+
+    try:
+        bad = {path for path, _ in queue_guard.audit()}
+        for path in queue_guard.queued_scripts():
+            if path.relative_to(ROOT) in bad:
+                continue
+            with open(path, encoding="utf-8") as handle:
+                data = json.load(handle)
+            if video_type and data.get("type") != video_type:
+                continue
+            return path, data
+    except Exception:                                       # noqa: BLE001
+        logger.warning("queue: could not read the queue", exc_info=True)
+    return None
+
+
+def queue_status() -> dict:
+    """What the Generate page shows: how many are ready, and per type."""
+    try:
+        sys.path.insert(0, str(ROOT / "tools"))
+        import queue_guard
+        bad = {path for path, _ in queue_guard.audit()}
+        ready, by_type = 0, {}
+        for path in queue_guard.queued_scripts():
+            if path.relative_to(ROOT) in bad:
+                continue
+            ready += 1
+            by_type[path.parent.name] = by_type.get(path.parent.name, 0) + 1
+        return {"ready": ready, "blocked": len(bad), "by_type": by_type}
+    except Exception:                                       # noqa: BLE001
+        return {"ready": 0, "blocked": 0, "by_type": {}}
+
+
+def queue_shelve(path) -> None:
+    """Move a produced script to _done/. ONLY on success.
+
+    Shelved, not deleted: the deletion would be the only evidence the script
+    ever ran. Called after the video exists, so a failed job leaves the script
+    in the queue and the next run picks it up again.
+    """
+    try:
+        sys.path.insert(0, str(ROOT / "tools"))
+        import queue_guard
+        queue_guard.main(["--done", str(path)])
+    except Exception:                                       # noqa: BLE001
+        logger.warning("queue: could not shelve %s", path, exc_info=True)
+
+
 def get_active_jobs() -> list:
     return load_jobs().get("active", [])
 
@@ -352,6 +429,7 @@ def get_job_history(limit: int = 5) -> list:
 
 def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = None,
                                 topic_name: str = None, script_data: dict = None,
+                                use_queue: bool = True,
                                 background: str = None, dry_run: bool = False,
                                 profile_name: str = None) -> dict:
     """Generate one video through the shared pipeline (src/pipeline.py).
@@ -428,9 +506,23 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         update_job(job_id, category=category, topic=topic_name,
                    current_step=f"Topic: '{topic_name}'", progress=10)
 
-        # Step 2: Generate script
+        # Step 2: the script -- from the queue if there is one, else GPT
+        queued_path = None
+        if script_data is None and use_queue:
+            picked = queue_pick(video_type)
+            if picked:
+                queued_path, script_data = picked
+                topic_meta = script_data.get("_meta") or {}
+                category = topic_meta.get("category") or category
+                topic_name = (script_data.get("word") or script_data.get("title")
+                              or topic_name or queued_path.stem)
+                update_job(job_id, step_number=2, category=category,
+                           topic=topic_name, script_source="queue",
+                           current_step=f"Queued script: {queued_path.name}",
+                           progress=15)
+
         if script_data is None:
-            update_job(job_id, step_number=2,
+            update_job(job_id, step_number=2, script_source="gpt",
                        current_step="Generating script with GPT...", progress=15)
             script_data = generate_script(category, topic, video_type)
 
@@ -611,6 +703,12 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         result["success"] = True
         result["video_path"] = str(video_path)
         complete_job(job_id, success=True, video_path=str(video_path))
+
+        # AFTER the video exists, never before. A job that fails leaves its
+        # script in the queue so the next run picks it up again; shelving at
+        # pick time would burn a script on every crash.
+        if queued_path is not None:
+            queue_shelve(queued_path)
 
     except pipeline.PipelineError as e:
         # Already carries the renderer's own output — a Python traceback of the
@@ -2346,6 +2444,30 @@ elif page == "Generate":
             # or the local cache, or it fails.
             background = None
 
+            # THE QUEUE, and why it is the default.
+            #
+            # Every dashboard video used to call GPT, which raises 429 while
+            # the OpenAI account has no credits. With scripts in the queue the
+            # page produces without a single API call, and the guard decides
+            # which one -- never a topic already produced.
+            _q = queue_status()
+            if _q["ready"]:
+                use_queue = st.checkbox(
+                    f"Use a queued script ({_q['ready']} ready)", value=True,
+                    help="Written ahead of time and checked by the guard: no "
+                         "OpenAI call, and never a topic already produced. "
+                         "Uncheck to write a fresh script with GPT, which "
+                         "needs credits.")
+                if use_queue:
+                    st.caption(" · ".join(f"{k} {v}" for k, v in
+                                          sorted(_q["by_type"].items())))
+            else:
+                use_queue = False
+                st.caption("Queue empty — this will write a new script with "
+                           "GPT, which needs OpenAI credits."
+                           + (f" {_q['blocked']} queued script(s) are blocked "
+                              f"by the guard." if _q["blocked"] else ""))
+
             dry_run = st.checkbox(
                 "Dry run (no TTS, no render)",
                 help="Writes the script and resolves the TTS plan, then "
@@ -2394,6 +2516,7 @@ elif page == "Generate":
             job_id = start_generation(video_type, category, topic_name,
                                       profile_name=profile_name,
                                       background=background,
+                                      use_queue=use_queue,
                                       dry_run=dry_run)
             st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
             st.rerun()
