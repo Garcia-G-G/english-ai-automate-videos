@@ -1,6 +1,6 @@
 {
   "type": "quiz",
-  "video_title": "COMPROMISE no es COMPROMISO 😳 ¿Sabes qué significa?",
+  "video_title": "Dijiste 'compromise' en una reunión y no significaba eso 😳",
   "video_description": "Un falso amigo que puede arruinarte una reunión. Ponte a prueba. 💼",
   "question": "'We reached a compromise' significa que...",
   "options": {
@@ -10,8 +10,8 @@
     "D": "aceptamos una obligación"
   },
   "correct": "B",
-  "explanation": "Compromise es ceder para llegar a un acuerdo. Compromiso en español es commitment.",
-  "full_script": "¡Quiz time! Pregunta número uno. Este falso amigo aparece en muchísimas reuniones de trabajo. ¿Qué significa la frase 'we reached a compromise'?... A, 'Asumimos un compromiso.'.... B, 'Llegamos a un acuerdo cediendo.'.... C, 'Nos comprometimos en matrimonio.'.... D, 'Aceptamos una obligación.'.... Piensa bien, porque casi todo el mundo falla esta... Tres... dos... uno... ¡Correcto! La respuesta es B. 'Compromise' en inglés significa que cada parte cede algo para llegar a un acuerdo. No es un compromiso adquirido. Compromiso en español se dice 'commitment'. Por ejemplo: 'I have a commitment on Friday'. Tengo un compromiso el viernes.",
+  "explanation": "Compromise es ceder para cerrar un acuerdo. Compromiso adquirido es commitment.",
+  "full_script": "¡Quiz time! Pregunta número uno. Sales de una reunión, cuentas cómo fue y sueltas esta frase. We reached a compromise. ¿Qué acabas de decir?... A, 'Asumimos un compromiso.'.... B, 'Llegamos a un acuerdo cediendo.'.... C, 'Nos comprometimos en matrimonio.'.... D, 'Aceptamos una obligación.'.... Suena tanto a compromiso que casi nadie duda... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B. Compromise es que cada parte suelta algo para cerrar el trato. No es un compromiso adquirido. Eso es commitment. I have a commitment on Friday. Tengo un compromiso el viernes.",
   "translations": {
     "we reached a compromise": "llegamos a un acuerdo",
     "commitment": "compromiso",

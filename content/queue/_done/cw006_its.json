@@ -1,0 +1,34 @@
+{
+  "type": "quiz",
+  "video_title": "ITS o IT'S: el apóstrofo que delata a todo el mundo 🤔",
+  "video_description": "Un apóstrofo cambia el significado entero. ¿Sabes cuál va? ✍️",
+  "question": "The dog wagged ___ tail happily.",
+  "options": {
+    "A": "its",
+    "B": "it's",
+    "C": "it",
+    "D": "their"
+  },
+  "correct": "A",
+  "explanation": "Its sin apóstrofo es posesivo. It's con apóstrofo es it is. Si puedes decir it is, lleva apóstrofo.",
+  "full_script": "¡Quiz time! Pregunta número uno. Escribes un mensaje sobre tu perro y te frenas justo aquí. The dog wagged ___ tail happily. El perro movía su cola feliz. ¿Cuál va?... A, 'its' sin apóstrofo.... B, 'it's' con apóstrofo.... C, 'it'.... D, 'their'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es A, 'its'. Sin apóstrofo es posesivo. La cola del perro. Con apóstrofo, 'it's', es 'it is'. El truco que no falla nunca: si puedes cambiarlo por 'it is', lleva apóstrofo. Si no, va desnudo.",
+  "translations": {
+    "its": "su (de ello)",
+    "it's": "es, está",
+    "the dog wagged its tail happily": "el perro movía su cola feliz"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#Gramática",
+    "#EnglishTips",
+    "#ErroresComunes"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw006",
+    "video_type": "quiz",
+    "model": "claude-opus-5"
+  },
+  "hook": "Un apóstrofo de más y cambias el significado entero de la frase."
+}

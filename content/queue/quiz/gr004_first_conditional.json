@@ -1,6 +1,6 @@
 {
   "type": "quiz",
-  "video_title": "First Conditional: el fallo que delata a los hispanohablantes ⚠️",
+  "video_title": "La condicional que te delata en la primera frase ⚠️",
   "video_description": "Un quiz de diez segundos sobre la condicional más usada. 🎯",
   "question": "If I ___ time, I will call you tonight.",
   "options": {
@@ -10,8 +10,8 @@
     "D": "will had"
   },
   "correct": "B",
-  "explanation": "En la cláusula if va presente, nunca will. El will solo va en la parte principal.",
-  "full_script": "¡Quiz time! Pregunta número uno. Esta es la condicional que más se usa, y también la que más se falla. If I ___ time, I will call you tonight. Si tengo tiempo, te llamo esta noche. ¿Qué falta en el hueco?... A, 'will have'.... B, 'have'.... C, 'had'.... D, 'will had'.... Piensa bien, porque en español sí decimos 'si tendré tiempo'... Tres... dos... uno... ¡Correcto! La respuesta es B, 'have'. En la primera condicional, la parte del 'if' siempre va en presente. El 'will' va solamente en la otra mitad de la frase. Nunca metas 'will' justo después de 'if'.",
+  "explanation": "Después de if va presente, nunca will. El will se queda en la otra mitad de la frase.",
+  "full_script": "¡Quiz time! Pregunta número uno. Le quieres decir a alguien que lo llamas si te da tiempo. Y aquí es donde el español te traiciona. If I ___ time, I will call you tonight.... A, 'will have'.... B, 'have'.... C, 'had'.... D, 'will had'.... En español decimos 'si tendré tiempo', así que la mano se va sola a la A... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B, 'have'. Después de 'if' va presente, siempre. El 'will' vive en la otra mitad de la frase y nunca cruza. Meter 'will' detrás de 'if' es la señal más rápida de que estás traduciendo.",
   "translations": {
     "if I have time, I will call you tonight": "si tengo tiempo, te llamo esta noche",
     "have": "tener",
