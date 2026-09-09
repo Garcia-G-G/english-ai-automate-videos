@@ -1,0 +1,29 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa: lo que habría pasado ⏳",
+  "video_description": "La condicional más difícil, en una sola frase. 🎓",
+  "sentence": "If I ___ studied, I would have passed the exam.",
+  "options": [
+    "had",
+    "have",
+    "would",
+    "did"
+  ],
+  "correct": "had",
+  "translation": "Si hubiera estudiado, habría aprobado.",
+  "explanation": "En la tercera condicional va had más participio. Nunca would en la parte del if.",
+  "full_script": "¡Completa la frase! Número uno. Hablas de algo que ya no tiene remedio y aquí falla casi todo el mundo. If I ___ studied, I would have passed the exam. Las opciones son: A, had. B, have. C, would. D, did.... Piensa bien... Tres... dos... uno... ¡La respuesta es A, had! Es la tercera condicional. Habla de un pasado que no se puede cambiar. La fórmula es fija. If más had más participio. Y en la otra mitad, would have más participio. El would nunca entra en la parte del if. Ese es el error que se repite.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr006",
+    "video_type": "fill_blank",
+    "model": "claude-opus-5"
+  }
+}

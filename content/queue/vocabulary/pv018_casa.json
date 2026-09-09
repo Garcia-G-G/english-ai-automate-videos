@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "video_title": "Phrasal verbs de casa que usas cada día 🧹",
+  "video_description": "Siete verbos para hablar de tu piso sin traducir. 🏠",
+  "title": "Vocabulario: en casa",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "limpiar",
+      "english": "clean up"
+    },
+    {
+      "spanish": "ordenar",
+      "english": "tidy up"
+    },
+    {
+      "spanish": "tirar",
+      "english": "throw away"
+    },
+    {
+      "spanish": "colgar",
+      "english": "hang up"
+    },
+    {
+      "spanish": "recoger",
+      "english": "pick up"
+    },
+    {
+      "spanish": "apagar",
+      "english": "turn off"
+    },
+    {
+      "spanish": "sacar la basura",
+      "english": "take out the trash"
+    }
+  ],
+  "full_script": "Compartes piso y toca repartir tareas. Todo esto va a salir en la conversación. Limpiar, clean up. Ordenar, tidy up. Tirar, throw away. Colgar, hang up. Recoger, pick up. Apagar, turn off. Sacar la basura, take out the trash. Un detalle útil. Clean up es dejarlo limpio. Tidy up es solo dejarlo ordenado. No son lo mismo y se nota.",
+  "translations": {
+    "clean up": "limpiar",
+    "tidy up": "ordenar",
+    "throw away": "tirar",
+    "hang up": "colgar",
+    "pick up": "recoger",
+    "turn off": "apagar",
+    "take out the trash": "sacar la basura"
+  },
+  "english_phrases": [
+    "clean up",
+    "tidy up",
+    "throw away",
+    "hang up",
+    "pick up",
+    "turn off",
+    "take out the trash"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "phrasal_verbs",
+    "topic_id": "pv018",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

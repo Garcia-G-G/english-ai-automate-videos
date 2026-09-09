@@ -1,0 +1,29 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa: frena un poco 🐴",
+  "video_description": "Un modismo con caballos para decir espera. ⏸️",
+  "sentence": "___ your horses! We haven't decided yet.",
+  "options": [
+    "Hold",
+    "Stop",
+    "Keep",
+    "Take"
+  ],
+  "correct": "Hold",
+  "translation": "¡Espera un momento!",
+  "explanation": "Hold your horses es espera, frena un poco. Se dice con humor.",
+  "full_script": "¡Completa la frase! Número uno. Alguien se está adelantando a los acontecimientos y le frenan así. ___ your horses! We haven't decided yet. Las opciones son: A, Hold. B, Stop. C, Keep. D, Take.... Piensa bien... Tres... dos... uno... ¡La respuesta es A, Hold! Hold your horses es espera, frena un poco. Viene de sujetar las riendas de un carruaje. Se dice con humor, nunca en serio. Y hay versiones más neutras. Hold on a second. Espera un momento. O simplemente not so fast. No tan rápido.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id015",
+    "video_type": "fill_blank",
+    "model": "claude-opus-5"
+  }
+}

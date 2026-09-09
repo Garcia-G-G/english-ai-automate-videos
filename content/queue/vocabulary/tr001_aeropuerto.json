@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "video_title": "Vocabulario de aeropuerto que sí vas a usar ✈️",
+  "video_description": "Siete palabras para no bloquearte en el mostrador. 🧳",
+  "title": "Vocabulario: aeropuerto",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "facturación",
+      "english": "check-in"
+    },
+    {
+      "spanish": "tarjeta de embarque",
+      "english": "boarding pass"
+    },
+    {
+      "spanish": "equipaje de mano",
+      "english": "carry-on"
+    },
+    {
+      "spanish": "puerta de embarque",
+      "english": "gate"
+    },
+    {
+      "spanish": "retraso",
+      "english": "delay"
+    },
+    {
+      "spanish": "escala",
+      "english": "layover"
+    },
+    {
+      "spanish": "recogida de maletas",
+      "english": "baggage claim"
+    }
+  ],
+  "full_script": "Vas con el tiempo justo, buscas tu vuelo en la pantalla y todo está en inglés. Estas siete te salvan el día. Facturación, check-in. Tarjeta de embarque, boarding pass. Equipaje de mano, carry-on. Puerta de embarque, gate. Retraso, delay. Escala, layover. Recogida de equipajes, baggage claim. Y una que confunde a todo el mundo. Layover es la escala, el rato que esperas entre dos vuelos. No es el vuelo, es la espera.",
+  "translations": {
+    "baggage claim": "recogida de maletas",
+    "check-in": "facturación",
+    "boarding pass": "tarjeta de embarque",
+    "carry-on": "equipaje de mano",
+    "gate": "puerta de embarque",
+    "delay": "retraso",
+    "layover": "escala"
+  },
+  "english_phrases": [
+    "check-in",
+    "boarding pass",
+    "carry-on",
+    "gate",
+    "delay",
+    "layover",
+    "baggage claim"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr001",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

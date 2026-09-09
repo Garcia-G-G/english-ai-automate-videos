@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "'Chin up' 💪 la frase para animar a alguien",
+  "video_description": "Dos palabras para levantar el ánimo de cualquiera. ✨",
+  "hook": "Alguien está de bajón y hay dos palabras que lo dicen todo.",
+  "full_script": "Un amigo tiene un mal día. No sabes qué decirle en inglés. Hay dos palabras que sirven siempre. Chin up. Barbilla arriba. La imagen es literal: levanta la cara. En español dirías ánimo, no te desanimes. Chin up, things will get better. Ánimo, todo va a mejorar. Es cariñosa y no suena a lección. Si quieres algo más fuerte, existe otra. Hang in there. Aguanta. Se usa cuando la cosa va para largo. Y si quieres ofrecer ayuda de verdad, la frase clave es esta. I'm here if you need me. Aquí estoy si me necesitas. Esa vale más que las otras dos juntas. A veces escuchar vale más que cualquier frase hecha.",
+  "english_phrases": [
+    "chin up",
+    "chin up, things will get better",
+    "hang in there",
+    "I'm here if you need me"
+  ],
+  "translations": {
+    "chin up": "ánimo",
+    "chin up, things will get better": "ánimo, todo va a mejorar",
+    "hang in there": "aguanta",
+    "I'm here if you need me": "aquí estoy si me necesitas"
+  },
+  "tip": "Chin up para un mal día. Hang in there cuando la cosa va para largo.",
+  "cta": "¿A quién le dirías chin up hoy?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id009",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

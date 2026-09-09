@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "Se te escapó el secreto 🐱 y en inglés sale un gato",
+  "video_description": "El modismo perfecto para cuando alguien habla de más. 🤐",
+  "hook": "Se te escapa un secreto y en inglés sale un gato de una bolsa.",
+  "full_script": "Estabais preparando una fiesta sorpresa. Y alguien lo suelta delante del homenajeado. En español dirías que se fue de la lengua. En inglés sale un gato. He let the cat out of the bag. Dejó salir al gato de la bolsa. Viene de los mercados antiguos. Vendían un cerdo dentro de un saco. A veces dentro había un gato. Si abrías el saco, se descubría el engaño. Se usa siempre para secretos, nunca para mentiras. Y tiene una hermana muy usada. To spill the beans. Derramar las alubias. Significa exactamente lo mismo. Si quieres pedir discreción, la frase es otra. Keep it under wraps. Que no salga de aquí.",
+  "english_phrases": [
+    "let the cat out of the bag",
+    "he let the cat out of the bag",
+    "to spill the beans",
+    "keep it under wraps"
+  ],
+  "translations": {
+    "let the cat out of the bag": "irse de la lengua",
+    "he let the cat out of the bag": "se fue de la lengua",
+    "to spill the beans": "soltar el secreto",
+    "keep it under wraps": "que no salga de aquí"
+  },
+  "tip": "Es para secretos, no para mentiras. Una mentira descubierta es otra cosa.",
+  "cta": "¿Quién es el que siempre se va de la lengua?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id011",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

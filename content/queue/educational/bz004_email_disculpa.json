@@ -1,0 +1,32 @@
+{
+  "type": "educational",
+  "video_title": "Disculparte por email en inglés, sin quedar mal 🙏",
+  "video_description": "'Sorry for being late' no vale en el trabajo. Hay algo mejor. 💼",
+  "hook": "Pedir perdón en un email tiene una fórmula, y 'sorry' no es suficiente.",
+  "full_script": "Has tardado tres días en contestar y toca disculparse. Escribes sorry for being late. Correcto, pero suena a mensaje de amigo. En un email de trabajo hay fórmulas mejores. I apologize for the delay. Disculpe la demora. Directa, profesional, sin dramatizar nada. Si el retraso causó un problema, sube un escalón. I'm sorry for any inconvenience. Lamento las molestias. Y si tienes que dar una mala noticia, hay fórmula fija. I regret to inform you. Lamento informarle. Esa es seria de verdad, así que resérvala. Un consejo que vale oro en inglés. Disculpa una vez y sigue adelante. Repetir perdón te resta autoridad delante de un cliente.",
+  "english_phrases": [
+    "I apologize for the delay",
+    "I'm sorry for any inconvenience",
+    "I regret to inform you"
+  ],
+  "translations": {
+    "I apologize for the delay": "disculpe la demora",
+    "I'm sorry for any inconvenience": "lamento las molestias",
+    "I regret to inform you": "lamento informarle"
+  },
+  "tip": "Una disculpa basta. Repetirla en el mismo email te resta autoridad.",
+  "cta": "¿Te cuesta disculparte en inglés? ¡Cuéntamelo!",
+  "hashtags": [
+    "#InglésDeNegocios",
+    "#BusinessEnglish",
+    "#AprenderInglés",
+    "#Trabajo",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "business",
+    "topic_id": "bz004",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

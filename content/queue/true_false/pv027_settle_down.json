@@ -1,0 +1,27 @@
+{
+  "type": "true_false",
+  "video_title": "SETTLE DOWN 🏡 ¿verdadero o falso?",
+  "video_description": "Un phrasal verb con dos vidas distintas. 🤫",
+  "statement": "'Settle down' solo significa sentar la cabeza.",
+  "correct": false,
+  "explanation": "Settle down también es calmarse, y en clase significa callarse.",
+  "full_script": "¡Verdadero o falso! Un profesor entra en el aula y dice settle down. Vamos con la afirmación. Settle down solo significa sentar la cabeza.... Piensa bien... Tres... dos... uno... ¡Falso! Tiene dos vidas. La primera es asentarse en la vida. They settled down in Valencia. Se establecieron en Valencia. La segunda es calmarse. Settle down, everyone. Tranquilos todos. En un aula significa callarse ya. El tono y el sitio deciden cuál de las dos es.",
+  "translations": {
+    "settle down": "asentarse / calmarse",
+    "they settled down in Valencia": "se establecieron en Valencia",
+    "settle down, everyone": "tranquilos todos"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Quiz"
+  ],
+  "_meta": {
+    "category": "phrasal_verbs",
+    "topic_id": "pv027",
+    "video_type": "true_false",
+    "model": "claude-opus-5"
+  }
+}

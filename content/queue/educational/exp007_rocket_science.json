@@ -1,0 +1,32 @@
+{
+  "type": "educational",
+  "video_title": "'It's not rocket science' 🚀",
+  "video_description": "La frase para decir que algo no es tan difícil. Con cuidado. 😅",
+  "hook": "Hay una frase para decir que algo es fácil, y puede sonar borde.",
+  "full_script": "Alguien se atasca con algo sencillo y tú quieres animarle. Come on, it's not rocket science. No es ciencia espacial. Sirve para decir que algo no es tan complicado. Pero cuidado con el tono, porque aquí importa mucho. Dicha con impaciencia, suena a que llamas torpe a alguien. Dicha con humor, anima. La versión totalmente segura es otra. It's easier than it looks. Es más fácil de lo que parece. Esa no ofende jamás. Y si quieres reconocer que sí cuesta, hay una frase perfecta. There's a learning curve. Tiene su curva de aprendizaje. Suena respetuoso y muy profesional. Úsala en el trabajo y quedas bien siempre.",
+  "english_phrases": [
+    "it's not rocket science",
+    "it's easier than it looks",
+    "there's a learning curve"
+  ],
+  "translations": {
+    "it's not rocket science": "no es tan difícil",
+    "it's easier than it looks": "es más fácil de lo que parece",
+    "there's a learning curve": "tiene su curva de aprendizaje"
+  },
+  "tip": "Con amigos vale. Con alguien que está aprendiendo, mejor la otra versión.",
+  "cta": "¿Te lo han dicho alguna vez? ¡Cuéntamelo!",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp007",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

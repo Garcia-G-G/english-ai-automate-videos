@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "video_title": "Saludos en inglés según la hora y el sitio 👋",
+  "video_description": "Siete formas de saludar sin repetir hello. ✨",
+  "title": "Vocabulario: saludos",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "¿qué tal?",
+      "english": "how's it going?"
+    },
+    {
+      "spanish": "¿cómo va todo?",
+      "english": "how are things?"
+    },
+    {
+      "spanish": "cuánto tiempo",
+      "english": "long time no see"
+    },
+    {
+      "spanish": "me alegro de verte",
+      "english": "good to see you"
+    },
+    {
+      "spanish": "¿qué te cuentas?",
+      "english": "what's new?"
+    },
+    {
+      "spanish": "hasta pronto",
+      "english": "see you soon"
+    },
+    {
+      "spanish": "cuídate",
+      "english": "take care"
+    }
+  ],
+  "full_script": "Si saludas siempre con hello, suenas a libro de texto. Estas siete las usa la gente de verdad. ¿Qué tal?, how's it going? ¿Cómo va todo?, how are things? Cuánto tiempo, long time no see. Me alegro de verte, good to see you. ¿Qué te cuentas?, what's new? Hasta pronto, see you soon. Cuídate, take care. Ojo con how's it going. Casi nunca espera una respuesta larga.",
+  "translations": {
+    "how's it going?": "¿qué tal?",
+    "how are things?": "¿cómo va todo?",
+    "long time no see": "cuánto tiempo",
+    "good to see you": "me alegro de verte",
+    "what's new?": "¿qué te cuentas?",
+    "see you soon": "hasta pronto",
+    "take care": "cuídate"
+  },
+  "english_phrases": [
+    "how's it going?",
+    "how are things?",
+    "long time no see",
+    "good to see you",
+    "what's new?",
+    "see you soon",
+    "take care"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "cultural",
+    "topic_id": "cu001",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

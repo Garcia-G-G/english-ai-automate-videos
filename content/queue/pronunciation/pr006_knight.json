@@ -1,0 +1,24 @@
+{
+  "type": "pronunciation",
+  "video_title": "KNIGHT: dos letras mudas en una palabra 🛡️",
+  "video_description": "La K y la GH no suenan. Ninguna de las dos. 🤯",
+  "word": "knight",
+  "phonetic": "NAIT",
+  "common_mistake": "Pronunciar la K inicial y la GH del medio",
+  "tip": "La K del principio es muda y la GH también. Solo suena NAIT.",
+  "translation": "caballero",
+  "full_script": "Lees knight y te sale k-nig-ht. Con la ka bien marcada al principio. Y ahí ya te delataste. Esa K es muda. Completamente. Y la GH del medio tampoco suena. De las seis letras, solo se pronuncian tres sonidos. La palabra suena así. NAIT. Igual que night, la noche. Son homófonos perfectos. Se escriben distinto y suenan idénticas. Escúchala otra vez con calma. NAIT. Vamos despacio, conmigo. NAIT. Y ahora dentro de una frase. He was a brave knight. Era un caballero valiente. La K muda no está sola en inglés. Knee, knife y know hacen exactamente lo mismo. Aprende una y tienes cuatro.",
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Fonética"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr006",
+    "video_type": "pronunciation",
+    "model": "claude-opus-5"
+  }
+}

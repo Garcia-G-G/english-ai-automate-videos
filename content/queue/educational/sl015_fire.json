@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "Cuando algo es FIRE 🔥 no se está quemando",
+  "video_description": "El elogio más corto del inglés actual. Una sola palabra. 💯",
+  "hook": "Alguien dice que tu canción es fuego y no habla de incendios.",
+  "full_script": "Le enseñas una canción a alguien y responde that's fire. Eso es fuego. No hay ningún incendio. Fire, en slang, significa buenísimo. Increíble, brillante, de lo mejor. This song is fire. Este tema es una pasada. Se usa para música, comida, ropa y planes. Y tiene una hermana casi idéntica. That's lit. Eso está genial. Lit se usa más para ambientes y fiestas. The party was lit. La fiesta estuvo increíble. Las dos son informales de verdad. En un contexto profesional di excellent o outstanding. Nadie va a describir un informe trimestral como fire. Ahí la palabra es outstanding. Suena mucho mejor y no chirría.",
+  "english_phrases": [
+    "that's fire",
+    "this song is fire",
+    "that's lit",
+    "the party was lit"
+  ],
+  "translations": {
+    "that's fire": "eso es buenísimo",
+    "this song is fire": "este tema es una pasada",
+    "that's lit": "eso está genial",
+    "the party was lit": "la fiesta estuvo increíble"
+  },
+  "tip": "Fire para cosas. Lit para ambientes y fiestas. En el trabajo, ninguna.",
+  "cta": "¿Qué canción es fire para ti ahora mismo?",
+  "hashtags": [
+    "#Slang",
+    "#InglésReal",
+    "#AprenderInglés",
+    "#GenZ",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl015",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

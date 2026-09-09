@@ -1,0 +1,29 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa: rellenar un formulario 📋",
+  "video_description": "El phrasal verb de cualquier trámite. 🖊️",
+  "sentence": "Please ___ out this form before you leave.",
+  "options": [
+    "fill",
+    "write",
+    "put",
+    "make"
+  ],
+  "correct": "fill",
+  "translation": "Rellene este formulario.",
+  "explanation": "Fill out es rellenar un formulario. Fill in vale igual en Reino Unido.",
+  "full_script": "¡Completa la frase! Número uno. Te dan un papel en una recepción y usan un phrasal verb muy concreto. Please ___ out this form before you leave. Las opciones son: A, fill. B, write. C, put. D, make.... Piensa bien... Tres... dos... uno... ¡La respuesta es A, fill! Fill out es rellenar un formulario. Se usa en trámites, en hoteles y en médicos. En Reino Unido oirás fill in, que significa lo mismo. Y ojo con su vecino. Fill up es llenar del todo. Fill up the tank. Llena el depósito.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "phrasal_verbs",
+    "topic_id": "pv032",
+    "video_type": "fill_blank",
+    "model": "claude-opus-5"
+  }
+}

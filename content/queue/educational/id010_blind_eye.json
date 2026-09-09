@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "Hacer la vista gorda, en inglés 🙈",
+  "video_description": "Un modismo que vas a oír en el trabajo más de lo que crees. 👀",
+  "hook": "Ves algo que está mal y decides no verlo. En inglés eso tiene nombre.",
+  "full_script": "Un compañero llega tarde todos los días y el jefe no dice nada. En español haces la vista gorda. En inglés giras un ojo ciego. The manager turned a blind eye to it. Es exactamente la misma idea: podrías verlo, eliges no hacerlo. Casi siempre lleva un tono de reproche. No es olvidar, es ignorar a propósito. Y hay un pariente cercano que se usa igual de a menudo. To look the other way. Mirar hacia otro lado. Las dos valen, las dos suenan a que alguien debería haber actuado. Si lo que quieres es perdonar de verdad, esa es otra frase distinta. To let it slide. Dejarlo pasar.",
+  "english_phrases": [
+    "turn a blind eye",
+    "the manager turned a blind eye to it",
+    "to look the other way",
+    "to let it slide"
+  ],
+  "translations": {
+    "turn a blind eye": "hacer la vista gorda",
+    "the manager turned a blind eye to it": "el jefe hizo la vista gorda",
+    "to look the other way": "mirar hacia otro lado",
+    "to let it slide": "dejarlo pasar"
+  },
+  "tip": "Turn a blind eye suena a crítica. Let it slide suena a favor.",
+  "cta": "¿Cuándo fue la última vez que hiciste la vista gorda?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id010",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

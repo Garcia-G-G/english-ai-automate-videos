@@ -1,0 +1,27 @@
+{
+  "type": "true_false",
+  "video_title": "¿Un diente dulce? 🦷 Verdadero o falso",
+  "video_description": "Un modismo raro para algo que todos tenemos. 🍫",
+  "statement": "'To have a sweet tooth' significa tener un problema dental.",
+  "correct": false,
+  "explanation": "Have a sweet tooth es ser goloso. Nada que ver con los dientes de verdad.",
+  "full_script": "¡Verdadero o falso! Alguien te ofrece postre y dice I have such a sweet tooth. Y tú piensas en el dentista. Vamos con la afirmación. To have a sweet tooth significa tener un problema dental.... Piensa bien... Tres... dos... uno... ¡Falso! Tener un sweet tooth es ser goloso. Que te encanta el dulce. She has a sweet tooth. Es muy golosa. Se dice del carácter, no de la boca. Y va siempre en singular. Nunca sweet teeth, aunque suene lógico. Si lo que quieres decir es que estás a dieta, la frase es otra. I'm cutting back on sugar.",
+  "translations": {
+    "to have a sweet tooth": "ser goloso",
+    "she has a sweet tooth": "es muy golosa",
+    "I'm cutting back on sugar": "estoy reduciendo el azúcar"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Quiz"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id008",
+    "video_type": "true_false",
+    "model": "claude-opus-5"
+  }
+}

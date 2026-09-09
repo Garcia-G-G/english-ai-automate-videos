@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "video_title": "Vocabulario de restaurante que sí se usa 🍽️",
+  "video_description": "Siete palabras para pedir sin señalar la carta. 🍕",
+  "title": "Vocabulario: restaurante",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "la carta",
+      "english": "the menu"
+    },
+    {
+      "spanish": "el camarero",
+      "english": "the waiter"
+    },
+    {
+      "spanish": "de primero",
+      "english": "starter"
+    },
+    {
+      "spanish": "plato principal",
+      "english": "main course"
+    },
+    {
+      "spanish": "la cuenta",
+      "english": "the bill"
+    },
+    {
+      "spanish": "propina",
+      "english": "tip"
+    },
+    {
+      "spanish": "para llevar",
+      "english": "to go"
+    }
+  ],
+  "full_script": "Te sientas, llega el camarero y se te va todo el inglés de golpe. Estas siete te sacan del apuro. La carta, the menu. El camarero, the waiter. De primero, starter. Plato principal, main course. La cuenta, the bill. Propina, tip. Para llevar, to go. Un aviso que vale dinero. En Estados Unidos dicen check en vez de bill. Y la propina no es opcional, aunque te lo parezca.",
+  "translations": {
+    "the menu": "la carta",
+    "the waiter": "el camarero",
+    "starter": "de primero",
+    "main course": "plato principal",
+    "the bill": "la cuenta",
+    "tip": "propina",
+    "to go": "para llevar"
+  },
+  "english_phrases": [
+    "the menu",
+    "the waiter",
+    "starter",
+    "main course",
+    "the bill",
+    "tip",
+    "to go"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "food_restaurant",
+    "topic_id": "food003",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

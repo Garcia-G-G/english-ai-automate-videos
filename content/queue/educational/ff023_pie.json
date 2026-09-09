@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "PIE no es pie 🥧",
+  "video_description": "Una palabra corta y dos significados sin ninguna relación. 👣",
+  "hook": "Dices 'my pie hurts' y estás hablando de un pastel dolorido.",
+  "full_script": "Te duele el pie y quieres decirlo en inglés. Te sale my pie hurts. Acabas de decir que te duele un pastel. Pie en inglés es una tarta. Normalmente salada o de fruta. Apple pie. Tarta de manzana. El pie del cuerpo se dice foot. My foot hurts. Me duele el pie. Y aquí viene el detalle que casi nadie sabe. El plural de foot no es foots. Es feet. My feet hurt. Me duelen los pies. Es un plural irregular, de los que hay que memorizar. Foot, feet. Como tooth, teeth. Misma familia de rarezas. Aprende una y te llevas la otra de regalo.",
+  "english_phrases": [
+    "pie",
+    "apple pie",
+    "foot",
+    "my feet hurt"
+  ],
+  "translations": {
+    "pie": "tarta",
+    "apple pie": "tarta de manzana",
+    "foot": "pie",
+    "my feet hurt": "me duelen los pies"
+  },
+  "tip": "El plural de foot es feet, nunca foots. Igual que tooth, teeth.",
+  "cta": "¿Qué falso amigo te ha hecho reír?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff023",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

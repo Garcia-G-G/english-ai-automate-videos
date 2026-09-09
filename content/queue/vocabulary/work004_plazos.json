@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "video_title": "Vocabulario de plazos y entregas ⏰",
+  "video_description": "Siete palabras para no perderte cuando aprieta el tiempo. 📅",
+  "title": "Vocabulario: plazos",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "plazo",
+      "english": "deadline"
+    },
+    {
+      "spanish": "entregar",
+      "english": "submit"
+    },
+    {
+      "spanish": "aplazar",
+      "english": "postpone"
+    },
+    {
+      "spanish": "prioridad",
+      "english": "priority"
+    },
+    {
+      "spanish": "urgente",
+      "english": "urgent"
+    },
+    {
+      "spanish": "pendiente",
+      "english": "pending"
+    },
+    {
+      "spanish": "adelantar",
+      "english": "bring forward"
+    }
+  ],
+  "full_script": "Te escriben del trabajo con prisa y todo el mensaje está en inglés. Estas siete aparecen siempre, en ese orden más o menos. Plazo, deadline. Entregar, submit. Aplazar, postpone. Prioridad, priority. Urgente, urgent. Pendiente, pending. Adelantar, bring forward. Y un detalle que confunde a mucha gente. Bring forward es adelantar la fecha, no retrasarla. Push back es justo lo contrario. Confundirlas te puede costar un fin de semana entero.",
+  "translations": {
+    "deadline": "plazo",
+    "submit": "entregar",
+    "postpone": "aplazar",
+    "priority": "prioridad",
+    "urgent": "urgente",
+    "pending": "pendiente",
+    "bring forward": "adelantar"
+  },
+  "english_phrases": [
+    "deadline",
+    "submit",
+    "postpone",
+    "priority",
+    "urgent",
+    "pending",
+    "bring forward"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "work_office",
+    "topic_id": "work004",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

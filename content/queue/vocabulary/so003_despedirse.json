@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "video_title": "Despedirte en inglés sin cortar la conversación 👋",
+  "video_description": "Siete formas de irte sin quedar mal. 🚪",
+  "title": "Vocabulario: despedidas",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "me tengo que ir",
+      "english": "I've got to go"
+    },
+    {
+      "spanish": "un placer",
+      "english": "it was nice meeting you"
+    },
+    {
+      "spanish": "hablamos",
+      "english": "let's catch up soon"
+    },
+    {
+      "spanish": "cuídate",
+      "english": "take care"
+    },
+    {
+      "spanish": "dale recuerdos",
+      "english": "say hi to them"
+    },
+    {
+      "spanish": "nos vemos",
+      "english": "see you"
+    },
+    {
+      "spanish": "que vaya bien",
+      "english": "have a good one"
+    }
+  ],
+  "full_script": "Quieres irte de una conversación y no sabes cómo cerrarla sin cortar en seco. Estas siete lo hacen por ti. Me tengo que ir, I've got to go. Un placer, it was nice meeting you. Hablamos, let's catch up soon. Cuídate, take care. Dale recuerdos, say hi to them. Nos vemos, see you. Que vaya bien, have a good one. El truco está en encadenar dos. Suena natural y nadie se ofende.",
+  "translations": {
+    "I've got to go": "me tengo que ir",
+    "it was nice meeting you": "un placer",
+    "let's catch up soon": "hablamos",
+    "take care": "cuídate",
+    "say hi to them": "dale recuerdos",
+    "see you": "nos vemos",
+    "have a good one": "que vaya bien"
+  },
+  "english_phrases": [
+    "I've got to go",
+    "it was nice meeting you",
+    "let's catch up soon",
+    "take care",
+    "say hi to them",
+    "see you",
+    "have a good one"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "social",
+    "topic_id": "so003",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

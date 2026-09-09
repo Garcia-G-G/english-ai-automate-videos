@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "'No-brainer': la decisión que no hay que pensar 🧠",
+  "video_description": "La expresión perfecta para cuando algo está clarísimo. ✅",
+  "hook": "Hay decisiones que no requieren pensar, y en inglés tienen nombre.",
+  "full_script": "Te ofrecen entradas gratis para tu grupo favorito. ¿Lo piensas? No. Eso en inglés es un no-brainer. Literalmente, un sin-cerebro. Algo tan obvio que no hace falta pensarlo. That's a no-brainer. Está clarísimo. Se usa muchísimo en reuniones de trabajo. Suena a que la decisión es evidente para todos. También sirve para empujar una idea. It's a no-brainer, really. Vamos, que no hay ni que pensarlo. Si quieres decir lo contrario, hay una frase natural. It's a tough call. Es una decisión difícil. Y si estás partido por la mitad, di I'm torn. Estoy dividido. Tres frases y ya sabes hablar de cualquier decisión, fácil o difícil.",
+  "english_phrases": [
+    "a no-brainer",
+    "that's a no-brainer",
+    "it's a tough call",
+    "I'm torn"
+  ],
+  "translations": {
+    "a no-brainer": "algo obvio",
+    "that's a no-brainer": "está clarísimo",
+    "it's a tough call": "es una decisión difícil",
+    "I'm torn": "estoy dividido"
+  },
+  "tip": "No-brainer suena confiado. Si dudas, usa tough call y quedas mejor.",
+  "cta": "¿Cuál ha sido tu último no-brainer?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp004",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

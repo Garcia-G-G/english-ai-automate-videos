@@ -1,0 +1,32 @@
+{
+  "type": "educational",
+  "video_title": "SOAP y SOUP: una letra y una comida muy distinta 🧼🍜",
+  "video_description": "Pediste sopa y te trajeron jabón. Casi. 😅",
+  "hook": "Una vocal separa el jabón de la sopa. Y suenan parecidísimo.",
+  "full_script": "Estás en un restaurante y pides soap. El camarero se queda quieto. Acabas de pedir jabón. Soap es jabón. Lo que usas en la ducha. Sopa se dice soup, y suena distinto. Soap suena SOUP con o larga cerrada. Soup suena SUP, como sopa pero con u. Escúchalas juntas. Soap. Soup. La diferencia está en la vocal. I'd like the soup, please. Quiero la sopa, por favor. Un truco visual que funciona. Soup tiene una u, como la u de sopa en tu cabeza. Soap tiene una a, como la a de jabón. Bobo pero eficaz. Y si dudas en el restaurante, señala la carta y di this one.",
+  "english_phrases": [
+    "soap",
+    "soup",
+    "I'd like the soup, please"
+  ],
+  "translations": {
+    "soap": "jabón",
+    "soup": "sopa",
+    "I'd like the soup, please": "quiero la sopa, por favor"
+  },
+  "tip": "Soup lleva u, como en tu cabeza suena sopa. Soap lleva a, de jabón.",
+  "cta": "¿Has pedido jabón sin querer alguna vez?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff030",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

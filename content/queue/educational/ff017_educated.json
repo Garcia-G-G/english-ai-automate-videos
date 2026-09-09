@@ -1,0 +1,36 @@
+{
+  "type": "educational",
+  "video_title": "EDUCATED no significa educado 🎓",
+  "video_description": "Uno habla de estudios. El otro de modales. No los mezcles. 🤝",
+  "hook": "Dices que alguien es 'very educated' y no estás elogiando lo que crees.",
+  "full_script": "Quieres decir que alguien tiene muy buenos modales. Y dices he is very educated. Acabas de decir que tiene muchos estudios. Educated en inglés habla del nivel académico. Universidad, lectura, formación. She's a highly educated woman. Es una mujer con mucha formación. Lo que tú querías decir es polite. He is very polite. Es muy educado. También existe well-mannered, que suena algo más formal. Se usa sobre todo hablando de niños. Y para lo contrario, la palabra es rude. He was really rude to the waiter. Fue muy maleducado con el camarero. Es un error tan repetido que suena casi a acento. Cámbialo una vez y notas la diferencia enseguida.",
+  "english_phrases": [
+    "educated",
+    "she's a highly educated woman",
+    "polite",
+    "well-mannered",
+    "rude"
+  ],
+  "translations": {
+    "educated": "con estudios, formado",
+    "she's a highly educated woman": "es una mujer con mucha formación",
+    "polite": "educado",
+    "well-mannered": "de buenos modales",
+    "rude": "maleducado"
+  },
+  "tip": "Educated son estudios. Polite son modales. Casi nunca son la misma persona.",
+  "cta": "¿Confundiste alguna vez estas dos?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#FalsosAmigos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff017",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

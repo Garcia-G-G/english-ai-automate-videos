@@ -1,0 +1,34 @@
+{
+  "type": "quiz",
+  "video_title": "En el control de seguridad 🛂",
+  "video_description": "Una frase que oyes cada vez que vuelas. ¿La entiendes? ✈️",
+  "question": "En seguridad te dicen 'please remove your belt'. Significa...",
+  "options": {
+    "A": "quítate el cinturón",
+    "B": "guarda el cinturón",
+    "C": "abróchate el cinturón",
+    "D": "enseña el cinturón"
+  },
+  "correct": "A",
+  "explanation": "Remove es quitar. En un aeropuerto lo vas a oír varias veces.",
+  "full_script": "¡Quiz time! Pregunta número uno. Estás en el control del aeropuerto y te dicen esto. Please remove your belt. Significa...... A, 'quítate el cinturón'.... B, 'guarda el cinturón'.... C, 'abróchate el cinturón'.... D, 'enseña el cinturón'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es A. Remove es quitar, y en un aeropuerto lo oirás varias veces. Remove your shoes. Quítate los zapatos. Y hay dos más que van juntas. Empty your pockets. Vacía los bolsillos. Y step forward. Adelante. Con esas cuatro pasas el control sin bloquearte.",
+  "translations": {
+    "please remove your belt": "quítese el cinturón",
+    "remove your shoes": "quítese los zapatos",
+    "empty your pockets": "vacíe los bolsillos",
+    "step forward": "adelante"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Test"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr002",
+    "video_type": "quiz",
+    "model": "claude-opus-5"
+  }
+}

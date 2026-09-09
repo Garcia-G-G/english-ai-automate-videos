@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "video_title": "Vocabulario de ordenador que necesitas hoy 💻",
+  "video_description": "Siete palabras para no perderte con un menú en inglés. 🖱️",
+  "title": "Vocabulario: ordenador",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "guardar",
+      "english": "save"
+    },
+    {
+      "spanish": "archivo",
+      "english": "file"
+    },
+    {
+      "spanish": "carpeta",
+      "english": "folder"
+    },
+    {
+      "spanish": "pantalla",
+      "english": "screen"
+    },
+    {
+      "spanish": "teclado",
+      "english": "keyboard"
+    },
+    {
+      "spanish": "contraseña",
+      "english": "password"
+    },
+    {
+      "spanish": "actualizar",
+      "english": "update"
+    }
+  ],
+  "full_script": "Te cambian el ordenador al inglés y de repente no encuentras nada. Estas siete están en todos los menús. Guardar, save. Archivo, file. Carpeta, folder. Pantalla, screen. Teclado, keyboard. Contraseña, password. Actualizar, update. Un aviso útil. Update es actualizar el programa. Upgrade es pasar a una versión mejor. No son lo mismo y te lo van a preguntar.",
+  "translations": {
+    "save": "guardar",
+    "file": "archivo",
+    "folder": "carpeta",
+    "screen": "pantalla",
+    "keyboard": "teclado",
+    "password": "contraseña",
+    "update": "actualizar"
+  },
+  "english_phrases": [
+    "save",
+    "file",
+    "folder",
+    "screen",
+    "keyboard",
+    "password",
+    "update"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "technology",
+    "topic_id": "tech001",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "video_title": "Preguntar direcciones sin perderte 🗺️",
+  "video_description": "Siete frases para llegar a donde quieres. 🧭",
+  "title": "Vocabulario: direcciones",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "¿cómo llego a...?",
+      "english": "how do I get to...?"
+    },
+    {
+      "spanish": "todo recto",
+      "english": "straight ahead"
+    },
+    {
+      "spanish": "gira a la izquierda",
+      "english": "turn left"
+    },
+    {
+      "spanish": "gira a la derecha",
+      "english": "turn right"
+    },
+    {
+      "spanish": "está lejos",
+      "english": "it's far"
+    },
+    {
+      "spanish": "está a la vuelta",
+      "english": "it's around the corner"
+    },
+    {
+      "spanish": "me he perdido",
+      "english": "I'm lost"
+    }
+  ],
+  "full_script": "Estás en una ciudad nueva, sin datos en el móvil, y tienes que preguntar. Estas siete te sacan de cualquier calle. ¿Cómo llego a...?, how do I get to...? Todo recto, straight ahead. Gira a la izquierda, turn left. Gira a la derecha, turn right. Está lejos, it's far. Está a la vuelta, it's around the corner. Me he perdido, I'm lost. Empieza siempre con excuse me y ya tienes su atención.",
+  "translations": {
+    "how do I get to...?": "¿cómo llego a...?",
+    "straight ahead": "todo recto",
+    "turn left": "gira a la izquierda",
+    "turn right": "gira a la derecha",
+    "it's far": "está lejos",
+    "it's around the corner": "está a la vuelta",
+    "I'm lost": "me he perdido"
+  },
+  "english_phrases": [
+    "how do I get to...?",
+    "straight ahead",
+    "turn left",
+    "turn right",
+    "it's far",
+    "it's around the corner",
+    "I'm lost"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr006",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

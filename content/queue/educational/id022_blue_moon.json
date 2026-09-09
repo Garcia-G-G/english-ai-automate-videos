@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "'Once in a blue moon' 🌙 casi nunca",
+  "video_description": "Un modismo precioso para hablar de lo que casi no pasa. ✨",
+  "hook": "Hay una luna azul en inglés para decir que algo pasa casi nunca.",
+  "full_script": "Te preguntan cuánto sales por la noche. Y la respuesta honesta es casi nunca. En inglés hay una imagen para eso. Once in a blue moon. Una vez cada luna azul. La luna azul es un fenómeno real y rarísimo. De ahí la expresión. We go out once in a blue moon. Salimos muy de vez en cuando. Suena poético pero se usa a diario. Y tiene vecinas útiles. Hardly ever. Casi nunca. Y from time to time. De vez en cuando, sin más. Fíjate en la escala completa. Once in a blue moon es lo más raro. From time to time ya es normal.",
+  "english_phrases": [
+    "once in a blue moon",
+    "we go out once in a blue moon",
+    "hardly ever",
+    "from time to time"
+  ],
+  "translations": {
+    "once in a blue moon": "muy de vez en cuando",
+    "we go out once in a blue moon": "salimos muy de vez en cuando",
+    "hardly ever": "casi nunca",
+    "from time to time": "de vez en cuando"
+  },
+  "tip": "Once in a blue moon es más raro que from time to time. La escala importa.",
+  "cta": "¿Qué haces tú once in a blue moon?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id022",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

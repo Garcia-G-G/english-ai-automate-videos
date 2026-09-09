@@ -1,0 +1,32 @@
+{
+  "type": "educational",
+  "video_title": "Cómo interrumpir en una reunión en inglés sin ser borde 🙋",
+  "video_description": "Tres frases para meter baza sin cortar a nadie. 🎤",
+  "hook": "Quieres hablar en la reunión y no sabes cómo entrar sin cortar.",
+  "full_script": "Estás en una videollamada. Tienes algo que decir. Y no encuentras el hueco. Cortar en seco suena mal en cualquier idioma. En inglés hay fórmulas para entrar bien. Sorry, can I jump in here? Perdón, ¿puedo intervenir? Es la más usada y nadie se ofende. Si quieres añadir a lo que dijo otro, engancha. Just to build on that. Solo para añadir a eso. Suena colaborativo y te gana puntos en la sala. Y si no estás de acuerdo, hay una manera suave. I see it a bit differently. Yo lo veo algo distinto. Nunca digas you're wrong en una reunión. Aunque tengas toda la razón, pierdes a la gente.",
+  "english_phrases": [
+    "sorry, can I jump in here?",
+    "just to build on that",
+    "I see it a bit differently"
+  ],
+  "translations": {
+    "sorry, can I jump in here?": "perdón, ¿puedo intervenir?",
+    "just to build on that": "solo para añadir a eso",
+    "I see it a bit differently": "yo lo veo algo distinto"
+  },
+  "tip": "Nunca digas you're wrong en una reunión. Aunque aciertes, pierdes la sala.",
+  "cta": "¿Te atreves a interrumpir en inglés?",
+  "hashtags": [
+    "#InglésDeNegocios",
+    "#BusinessEnglish",
+    "#AprenderInglés",
+    "#Trabajo",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "work_office",
+    "topic_id": "work006",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

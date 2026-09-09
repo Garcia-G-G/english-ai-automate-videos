@@ -1,0 +1,28 @@
+{
+  "type": "true_false",
+  "video_title": "YOUR o YOU'RE ✍️ ¿verdadero o falso?",
+  "video_description": "El error más visible del inglés escrito. 👀",
+  "statement": "'Your' y 'you're' significan lo mismo, solo cambia el apóstrofo.",
+  "correct": false,
+  "explanation": "Your es posesivo. You're es you are. El apóstrofo no es decorativo.",
+  "full_script": "¡Verdadero o falso! Escribes your amazing en un mensaje y te quedas tan tranquilo. Vamos con la afirmación. Your y you're significan lo mismo, solo cambia el apóstrofo.... Piensa bien... Tres... dos... uno... ¡Falso! Your es posesivo. Is this your book? ¿Es tu libro? You're es la contracción de you are. You're amazing. Eres increíble. El truco es idéntico al de its. Si puedes decir you are, lleva apóstrofo. Si no, va sin él. Falla y el mensaje cambia entero.",
+  "translations": {
+    "your": "tu, tuyo",
+    "is this your book?": "¿es tu libro?",
+    "you're": "eres, estás",
+    "you're amazing": "eres increíble"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Quiz"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw005",
+    "video_type": "true_false",
+    "model": "claude-opus-5"
+  }
+}

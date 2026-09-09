@@ -1,0 +1,32 @@
+{
+  "type": "educational",
+  "video_title": "Cuando algo cuesta un brazo y una pierna 💸",
+  "video_description": "En español pagas con un ojo. En inglés, con dos extremidades. 😅",
+  "hook": "En español cuesta un ojo de la cara. En inglés el precio es bastante peor.",
+  "full_script": "Ves el precio de algo y se te escapa el aire. En español dirías que cuesta un ojo de la cara. En inglés van bastante más lejos. That car cost an arm and a leg. Un brazo y una pierna. Dos extremidades por un coche. La imagen cambia. La idea es exactamente la misma. Te ha costado una barbaridad. Sirve para cualquier cosa cara de verdad. Un alquiler. Una boda. Un dentista en Estados Unidos. Y hay una hermana que oirás igual de a menudo. That's a rip-off. Eso es un robo. Esa la usas cuando además te sientes estafado. Una cosa es que algo valga mucho. Otra es que te estén clavando.",
+  "english_phrases": [
+    "cost an arm and a leg",
+    "that car cost an arm and a leg",
+    "that's a rip-off"
+  ],
+  "translations": {
+    "cost an arm and a leg": "costar un ojo de la cara",
+    "that car cost an arm and a leg": "ese coche costó un ojo de la cara",
+    "that's a rip-off": "eso es un robo"
+  },
+  "tip": "Cost an arm and a leg es caro. That's a rip-off es caro e injusto.",
+  "cta": "¿Qué es lo que más te ha costado un brazo y una pierna?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id002",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa: ¿people IS o ARE? 👥",
+  "video_description": "Un plural que no parece plural. 🤔",
+  "sentence": "People ___ always late for these meetings.",
+  "options": [
+    "are",
+    "is",
+    "was",
+    "has"
+  ],
+  "correct": "are",
+  "translation": "La gente siempre llega tarde.",
+  "explanation": "People es plural en inglés. Siempre va con are, nunca con is.",
+  "full_script": "¡Completa la frase! Número uno. Hablas de un grupo y el español te empuja al singular. People ___ always late for these meetings. Las opciones son: A, are. B, is. C, was. D, has.... En español decimos la gente ES, en singular... Piensa bien... Tres... dos... uno... ¡La respuesta es A, are! People es plural en inglés. Siempre. El singular es person. One person, two people. Y si quieres el singular colectivo, existe otra palabra. The public. Esa sí va con is.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm015",
+    "video_type": "fill_blank",
+    "model": "claude-opus-5"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "type": "vocabulary",
+  "video_title": "Presentarte en inglés sin quedarte en blanco 🤝",
+  "video_description": "Siete frases para los primeros treinta segundos. 👋",
+  "title": "Vocabulario: presentarse",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "encantado",
+      "english": "nice to meet you"
+    },
+    {
+      "spanish": "¿a qué te dedicas?",
+      "english": "what do you do?"
+    },
+    {
+      "spanish": "soy de",
+      "english": "I'm from"
+    },
+    {
+      "spanish": "llevo aquí un año",
+      "english": "I've been here a year"
+    },
+    {
+      "spanish": "¿de qué lo conoces?",
+      "english": "how do you know him?"
+    },
+    {
+      "spanish": "¿te apetece algo?",
+      "english": "can I get you something?"
+    },
+    {
+      "spanish": "hasta luego",
+      "english": "see you around"
+    }
+  ],
+  "full_script": "Conoces a alguien en una fiesta y se te va todo el inglés. Estas siete cubren los primeros treinta segundos. Encantado, nice to meet you. ¿A qué te dedicas?, what do you do? Soy de, I'm from. Llevo aquí un año, I've been here a year. ¿De qué lo conoces?, how do you know him? ¿Te apetece algo?, can I get you something? Hasta luego, see you around. Con esas siete sales del paso siempre.",
+  "translations": {
+    "how do you know him?": "¿de qué lo conoces?",
+    "nice to meet you": "encantado",
+    "what do you do?": "¿a qué te dedicas?",
+    "I'm from": "soy de",
+    "I've been here a year": "llevo aquí un año",
+    "can I get you something?": "¿te apetece algo?",
+    "see you around": "hasta luego"
+  },
+  "english_phrases": [
+    "nice to meet you",
+    "what do you do?",
+    "I'm from",
+    "I've been here a year",
+    "how do you know him?",
+    "can I get you something?",
+    "see you around"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "social",
+    "topic_id": "so001",
+    "video_type": "vocabulary",
+    "model": "claude-opus-5"
+  }
+}

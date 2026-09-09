@@ -1,0 +1,27 @@
+{
+  "type": "true_false",
+  "video_title": "'Salty' 🧂 ¿Verdadero o falso?",
+  "video_description": "Nada que ver con la comida. Todo que ver con el orgullo. 😤",
+  "statement": "'Salty' en slang significa que algo tiene mucha sal.",
+  "correct": false,
+  "explanation": "Salty en slang es estar picado o resentido, normalmente por haber perdido.",
+  "full_script": "¡Verdadero o falso! Pierdes una partida, pones mala cara, y alguien te suelta don't be salty. Vamos con la afirmación. Salty en slang significa que algo tiene mucha sal.... Piensa bien... Tres... dos... uno... ¡Falso! Salty es estar picado. Resentido, molesto, normalmente después de perder. He's still salty about the game. Sigue picado por el partido. Es burlón, así que se usa entre amigos. A un jefe no se lo dirías nunca. Y si quieres decirlo en serio y sin broma, la palabra es otra. He's upset about it. Está dolido. Esa sí es neutral.",
+  "translations": {
+    "salty": "picado, resentido",
+    "he's still salty about the game": "sigue picado por el partido",
+    "he's upset about it": "está dolido"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Quiz"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl009",
+    "video_type": "true_false",
+    "model": "claude-opus-5"
+  }
+}

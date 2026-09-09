@@ -1,0 +1,33 @@
+{
+  "type": "quiz",
+  "video_title": "FLEX: presumir en una sola palabra 💪",
+  "video_description": "Nada que ver con el gimnasio. Bueno, casi. 😎",
+  "question": "'Stop flexing' significa...",
+  "options": {
+    "A": "deja de estirarte",
+    "B": "deja de presumir",
+    "C": "deja de moverte",
+    "D": "deja de quejarte"
+  },
+  "correct": "B",
+  "explanation": "Flex es presumir, alardear. Viene de sacar músculo.",
+  "full_script": "¡Quiz time! Pregunta número uno. Alguien enseña su coche nuevo por tercera vez y le sueltan esto. Stop flexing. ¿Qué significa?... A, 'deja de estirarte'.... B, 'deja de presumir'.... C, 'deja de moverte'.... D, 'deja de quejarte'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B. Flex es presumir, alardear. Viene de sacar músculo delante del espejo. He's just flexing. Está presumiendo. Y hay una versión con humor muy usada. Weird flex, but okay. Vaya cosa para presumir, pero vale. Se dice con guasa, nunca en serio, y desarma a cualquiera.",
+  "translations": {
+    "stop flexing": "deja de presumir",
+    "he's just flexing": "está presumiendo",
+    "weird flex, but okay": "vaya cosa para presumir, pero vale"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Test"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl008",
+    "video_type": "quiz",
+    "model": "claude-opus-5"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "quiz",
+  "video_title": "Small talk: la conversación de ascensor 🛗",
+  "video_description": "Tres frases para llenar treinta segundos incómodos. 💬",
+  "question": "¿Cuál de estas NO es small talk apropiado?",
+  "options": {
+    "A": "how was your weekend?",
+    "B": "crazy weather today",
+    "C": "how much do you earn?",
+    "D": "did you catch the game?"
+  },
+  "correct": "C",
+  "explanation": "El small talk evita dinero, política y temas personales. Siempre.",
+  "full_script": "¡Quiz time! Pregunta número uno. Estás en un ascensor con un compañero y hay que decir algo. ¿Cuál de estas NO es small talk apropiado?... A, 'how was your weekend?'.... B, 'crazy weather today'.... C, 'how much do you earn?'.... D, 'did you catch the game?'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es C. El small talk evita dinero, política y temas personales. Siempre. Los temas seguros son tres. Tiempo, fin de semana y deporte. Con esos tres cubres cualquier ascensor del mundo.",
+  "translations": {
+    "how was your weekend?": "¿qué tal el finde?",
+    "crazy weather today": "vaya tiempo hace",
+    "did you catch the game?": "¿viste el partido?"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Test"
+  ],
+  "_meta": {
+    "category": "social",
+    "topic_id": "so002",
+    "video_type": "quiz",
+    "model": "claude-opus-5"
+  }
+}

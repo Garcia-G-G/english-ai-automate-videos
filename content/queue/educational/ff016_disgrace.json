@@ -1,0 +1,34 @@
+{
+  "type": "educational",
+  "video_title": "DISGRACE no es una desgracia 😬",
+  "video_description": "Dos palabras que suenan igual y significan cosas muy distintas. ⚠️",
+  "hook": "Le dices a alguien que tuvo una disgrace y le estás llamando otra cosa.",
+  "full_script": "A tu amigo se le rompe el coche. Quieres compadecerte y dices what a disgrace. Acabas de decir qué deshonra. Disgrace en inglés es vergüenza pública. Caída en desgracia moral, delante de todo el mundo. No tiene nada que ver con la mala suerte. His behaviour was a disgrace. Su comportamiento fue una vergüenza. Lo que tú querías decir era otra cosa. What a shame. Qué pena. O más natural todavía. That's terrible. Qué horror. Existe misfortune para la desgracia como mala suerte. Pero suena a novela del siglo diecinueve. Nadie lo usa hablando. Quédate con that's terrible y no fallas nunca. Es corto, es real y sirve para todo.",
+  "english_phrases": [
+    "disgrace",
+    "his behaviour was a disgrace",
+    "what a shame",
+    "that's terrible"
+  ],
+  "translations": {
+    "disgrace": "deshonra, vergüenza",
+    "his behaviour was a disgrace": "su comportamiento fue una vergüenza",
+    "what a shame": "qué pena",
+    "that's terrible": "qué horror"
+  },
+  "tip": "Disgrace es deshonra. Para la mala suerte, di that's terrible.",
+  "cta": "¿Cuál te ha traicionado a ti? ¡Cuéntamelo!",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#FalsosAmigos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff016",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

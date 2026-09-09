@@ -1,0 +1,24 @@
+{
+  "type": "pronunciation",
+  "video_title": "THOUGHT: siete letras, tres sonidos 🤯",
+  "video_description": "La palabra que más miedo da, resuelta en veinte segundos. 💭",
+  "word": "thought",
+  "phonetic": "ZOT (th suave) + o larga",
+  "common_mistake": "Pronunciar la GH o decir 'tot'",
+  "tip": "La GH es muda. Suena como ZOT alargando la o, con la lengua entre los dientes.",
+  "translation": "pensamiento / pensé",
+  "full_script": "Ves thought escrito y te bloqueas. Siete letras y no sabes por dónde empezar. Vamos por partes. La GH del medio es muda. No suena, no existe al hablar. Quedan tres sonidos y ya está. El primero es la th, con la lengua entre los dientes. Sopla suave. Luego una o larga. Y una te al final. Suena así. ZOT. Escúchala otra vez. ZOT. Repite conmigo, despacio. ZOT. Y ahora dentro de una frase real. I thought about it. Lo pensé. Y aquí va el regalo. Bought, brought y fought funcionan igual. Misma terminación, misma GH muda. Cuatro palabras por el precio de una.",
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Fonética"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr010",
+    "video_type": "pronunciation",
+    "model": "claude-opus-5"
+  }
+}

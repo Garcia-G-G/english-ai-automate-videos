@@ -1,0 +1,34 @@
+{
+  "type": "quiz",
+  "video_title": "Descargar y subir, sin confundirlos ⬇️⬆️",
+  "video_description": "Dos verbos opuestos que todo el mundo mezcla. 📶",
+  "question": "Para enviar una foto desde tu móvil a la nube, tú...",
+  "options": {
+    "A": "download it",
+    "B": "upload it",
+    "C": "unload it",
+    "D": "reload it"
+  },
+  "correct": "B",
+  "explanation": "Upload es subir. Download es bajar a tu dispositivo.",
+  "full_script": "¡Quiz time! Pregunta número uno. Quieres guardar una foto en la nube y tienes que elegir el verbo. Para enviar una foto desde tu móvil a la nube, tú...... A, 'download it'.... B, 'upload it'.... C, 'unload it'.... D, 'reload it'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B. Upload es subir, mandar hacia arriba. Download es traer hacia ti. Piensa en la dirección y no fallas. Y las otras dos existen. Unload es descargar un camión. Reload es recargar una página.",
+  "translations": {
+    "upload": "subir",
+    "download": "descargar",
+    "unload": "descargar (un camión)",
+    "reload": "recargar"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Test"
+  ],
+  "_meta": {
+    "category": "technology",
+    "topic_id": "tech003",
+    "video_type": "quiz",
+    "model": "claude-opus-5"
+  }
+}

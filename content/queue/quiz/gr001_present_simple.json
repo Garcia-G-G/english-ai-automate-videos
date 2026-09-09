@@ -1,0 +1,32 @@
+{
+  "type": "quiz",
+  "video_title": "El error que delata a un hispanohablante en tres palabras ⚠️",
+  "video_description": "Una frase de cuatro palabras y casi todo el mundo falla. 🎯",
+  "question": "I ___ to the gym every morning.",
+  "options": {
+    "A": "am going",
+    "B": "go",
+    "C": "am go",
+    "D": "goes"
+  },
+  "correct": "B",
+  "explanation": "Para rutinas va Present Simple. El Continuous es para lo que pasa ahora mismo.",
+  "full_script": "¡Quiz time! Pregunta número uno. Cuentas tu rutina y aquí es donde se cae medio mundo. I ___ to the gym every morning.... A, 'am going'.... B, 'go'.... C, 'am go'.... D, 'goes'.... Fíjate en las dos últimas palabras de la frase... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B, 'go'. La clave está en every morning. Cuando algo es una rutina, va Present Simple. Sin auxiliar y sin ing. El Present Continuous, am going, es para lo que ocurre ahora mismo. I'm going to the gym. Voy de camino en este momento. Rutina o ahora. Esa es toda la decisión.",
+  "translations": {
+    "I go to the gym every morning": "voy al gimnasio cada mañana",
+    "I'm going to the gym": "voy al gimnasio ahora"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Test"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr001",
+    "video_type": "quiz",
+    "model": "claude-opus-5"
+  }
+}

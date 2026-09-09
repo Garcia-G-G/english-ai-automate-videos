@@ -1,0 +1,30 @@
+{
+  "type": "educational",
+  "video_title": "Te desean romperte una pierna y es algo bueno 🎭",
+  "video_description": "El modismo más raro del inglés, y se usa constantemente. 🍀",
+  "hook": "Alguien te dice 'break a leg' antes de tu presentación. No te está amenazando.",
+  "full_script": "Estás a punto de salir a presentar. Te tiemblan las manos. Un compañero te mira y te suelta break a leg. Rómpete una pierna. Y encima sonríe. No te está deseando ningún mal. Así se desea suerte en inglés antes de actuar. Antes de un escenario, una presentación o una prueba. Viene del teatro. Allí decir good luck traía mala suerte. Así que los actores inventaron lo contrario. You have a big presentation? Break a leg. Se dice justo antes, nunca después. Y también vale para una entrevista de trabajo. O para un examen importante. Lo que no dirás jamás es good luck dentro de un teatro. Ahí es literalmente de mala educación, y todo el mundo lo nota.",
+  "english_phrases": [
+    "break a leg",
+    "you have a big presentation? Break a leg"
+  ],
+  "translations": {
+    "break a leg": "mucha suerte",
+    "you have a big presentation? Break a leg": "¿tienes una presentación? ¡Mucha suerte!"
+  },
+  "tip": "Break a leg es antes de actuar. Para el resto de la vida, good luck funciona igual.",
+  "cta": "¿A quién le vas a decir break a leg esta semana?",
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id001",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}
