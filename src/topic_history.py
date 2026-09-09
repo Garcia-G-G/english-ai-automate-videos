@@ -80,7 +80,14 @@ def usage_counts(scripts_dir: Path = None) -> Counter:
     for root in roots:
         if not root.exists():
             continue
-        for path in root.rglob("*.json"):
+        # AN ARTIFACT CARRIES THE SAME _meta IN TWO FILES: script/script.json
+        # and audio/narration.json, because the merge stamps the script onto
+        # the TTS sidecar. rglob("*.json") counted 29 of 31 artifacts TWICE
+        # and inflated every number on the Topics page. The canonical script
+        # is the one at script/script.json; the sidecar is a copy.
+        paths = (sorted(root.glob("*/script/script.json"))
+                 if root == ARTIFACTS_DIR else sorted(root.rglob("*.json")))
+        for path in paths:
             try:
                 with open(path, encoding="utf-8") as handle:
                     data = json.load(handle)
