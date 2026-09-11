@@ -11,7 +11,7 @@
   ],
   "correct": "except",
   "translation": "Vinieron todos menos María.",
-  "explanation": "Except es excepto. Accept es aceptar. Una letra y el sentido se invierte.",
+  "explanation": "[excited] Except es excepto. Accept es aceptar. Una letra y el sentido se invierte.",
   "full_script": "[curious] ¡Completa la frase! Número uno. Cuentas quién vino a una cena y una sola letra lo cambia todo. Everyone came ___ Maria, who was sick. Las opciones son: A, except. B, accept. C, expect. D, exept.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, except! Except es excepto, menos. Accept con a es aceptar. I accept your offer. Acepto tu oferta. Y hay una tercera parecida que también confunde. Expect es esperar algo. Tres palabras, tres significados sin relación.",
   "hashtags": [
     "#CompletaLaFrase",
@@ -25,5 +25,43 @@
     "topic_id": "cw008",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "Everyone came ___ Maria, who was sick.",
+      "options": [
+        "except",
+        "accept",
+        "expect",
+        "exept"
+      ],
+      "correct": "except",
+      "translation": "Vinieron todos menos María.",
+      "explanation": "[excited] Except es excepto. Accept es aceptar. Una letra y el sentido se invierte."
+    },
+    {
+      "sentence": "I ___ your offer, thank you.",
+      "options": [
+        "accept",
+        "except",
+        "expect",
+        "exept"
+      ],
+      "correct": "accept",
+      "translation": "Acepto tu oferta, gracias.",
+      "explanation": "[excited] Accept con a es aceptar. Except con e es excluir."
+    },
+    {
+      "sentence": "I didn't ___ him to arrive so early.",
+      "options": [
+        "expect",
+        "except",
+        "accept",
+        "exept"
+      ],
+      "correct": "expect",
+      "translation": "No esperaba que llegara tan pronto.",
+      "explanation": "[excited] Expect es esperar algo. La tercera del trío, y también confunde."
+    }
+  ]
 }

@@ -4,7 +4,7 @@
   "video_description": "Un phrasal verb con tres significados distintos. 🤯",
   "statement": "'To make up' solo significa maquillarse.",
   "correct": false,
-  "explanation": "Make up es reconciliarse, inventar algo, o maquillaje según el contexto.",
+  "explanation": "[excited] Make up es reconciliarse, inventar algo, o maquillaje según el contexto.",
   "full_script": "[curious] ¡Verdadero o falso! Dos amigos discuten, luego se abrazan, y alguien dice they made up. Vamos con la afirmación. To make up solo significa maquillarse.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Make up tiene varios sentidos. Reconciliarse es el más común. They had a fight but they made up. Discutieron pero se reconciliaron. También significa inventar algo. He made up an excuse. Se inventó una excusa. Y makeup, junto y como nombre, sí es el maquillaje. El contexto decide siempre cuál es cuál.",
   "translations": {
     "they made up": "se reconciliaron",
@@ -23,5 +23,22 @@
     "topic_id": "pv021",
     "video_type": "true_false",
     "model": "claude-opus-5"
-  }
+  },
+  "statements": [
+    {
+      "statement": "'To make up' solo significa maquillarse.",
+      "correct": false,
+      "explanation": "[excited] Make up es reconciliarse, inventar algo, o maquillaje según el contexto."
+    },
+    {
+      "statement": "'He made up an excuse' significa que se inventó una excusa.",
+      "correct": true,
+      "explanation": "[excited] Make up también es inventar. El contexto decide cuál de los tres."
+    },
+    {
+      "statement": "'Makeup', junto y como nombre, sí es el maquillaje.",
+      "correct": true,
+      "explanation": "[excited] Junto es el sustantivo. Separado es el verbo, con otros sentidos."
+    }
+  ]
 }

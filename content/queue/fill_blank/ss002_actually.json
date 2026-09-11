@@ -11,7 +11,7 @@
   ],
   "correct": "actually",
   "translation": "Pensaba que era francés, pero en realidad es belga.",
-  "explanation": "Actually es en realidad. Actualmente se dice currently o nowadays.",
+  "explanation": "[excited] Actually es en realidad. Actualmente se dice currently o nowadays.",
   "full_script": "[excited] ¡Completa la frase! Número uno. Corriges a alguien con educación y aquí cae el falso amigo. I thought he was French, but ___ he's Belgian. Las opciones son: A, actually. B, currently. C, nowadays. D, really.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, actually! Actually significa en realidad, no actualmente. Sirve para corregir sin sonar brusco. Actualmente se dice currently o nowadays. I currently live in Madrid. Actualmente vivo en Madrid. Dos palabras que se parecen y no comparten nada.",
   "hashtags": [
     "#CompletaLaFrase",
@@ -25,5 +25,43 @@
     "topic_id": "ss002",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "I thought he was French, but ___ he's Belgian.",
+      "options": [
+        "actually",
+        "currently",
+        "nowadays",
+        "really"
+      ],
+      "correct": "actually",
+      "translation": "Pensaba que era francés, pero en realidad es belga.",
+      "explanation": "[excited] Actually es en realidad. Actualmente se dice currently o nowadays."
+    },
+    {
+      "sentence": "I ___ live in Barcelona these days.",
+      "options": [
+        "currently",
+        "actually",
+        "lately",
+        "nowadays"
+      ],
+      "correct": "currently",
+      "translation": "Actualmente vivo en Barcelona.",
+      "explanation": "[excited] Actualmente es currently. Actually es en realidad."
+    },
+    {
+      "sentence": "___ , most people work from home.",
+      "options": [
+        "Nowadays",
+        "Actually",
+        "Currently",
+        "Lately"
+      ],
+      "correct": "Nowadays",
+      "translation": "Hoy en día, casi todos trabajan en casa.",
+      "explanation": "[excited] Nowadays abre la frase. Currently va junto al verbo."
+    }
+  ]
 }

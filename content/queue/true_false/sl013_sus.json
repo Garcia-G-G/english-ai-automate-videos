@@ -4,7 +4,7 @@
   "video_description": "Una palabra de tres letras que dice mucho. 👀",
   "statement": "'Sus' es la forma corta de 'suspicious'.",
   "correct": true,
-  "explanation": "Sus viene de suspicious y significa que algo da mala espina.",
+  "explanation": "[excited] Sus viene de suspicious y significa que algo da mala espina.",
   "full_script": "[excited] ¡Verdadero o falso! Alguien te cuenta una historia rara y otro comenta that's kinda sus. Vamos con la afirmación. Sus es la forma corta de suspicious.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Verdadero! Sus viene directamente de suspicious. Sospechoso, raro, que no cuadra. That story sounds sus. Esa historia no me cuadra. Se popularizó con los videojuegos y se quedó. Se usa para situaciones y también para personas. Y ojo con el registro. Esto es lenguaje de amigos. En el trabajo la palabra sigue siendo suspicious.",
   "translations": {
     "sus": "sospechoso",
@@ -23,5 +23,22 @@
     "topic_id": "sl013",
     "video_type": "true_false",
     "model": "claude-opus-5"
-  }
+  },
+  "statements": [
+    {
+      "statement": "'Sus' es la forma corta de 'suspicious'.",
+      "correct": true,
+      "explanation": "[excited] Sus viene de suspicious y significa que algo da mala espina."
+    },
+    {
+      "statement": "Sus se popularizó con los videojuegos.",
+      "correct": true,
+      "explanation": "[excited] De ahí saltó a todas partes y se quedó."
+    },
+    {
+      "statement": "En un informe de trabajo escribirías 'sus'.",
+      "correct": false,
+      "explanation": "[excited] Ahí la palabra sigue siendo suspicious. Sus es de amigos."
+    }
+  ]
 }

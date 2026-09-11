@@ -11,7 +11,7 @@
   ],
   "correct": "than",
   "translation": "Este café está mejor que el de ayer.",
-  "explanation": "Than compara. Then ordena en el tiempo. Solo cambia una letra.",
+  "explanation": "[excited] Than compara. Then ordena en el tiempo. Solo cambia una letra.",
   "full_script": "[excited] ¡Completa la frase! Número uno. Comparas dos cafés y una sola letra decide si te entienden. This coffee is better ___ the one from yesterday. Las opciones son: A, then. B, than. C, that. D, as.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es B, than! Than es la palabra de las comparaciones. Better than, bigger than, worse than. Then es otra cosa completamente. Significa entonces o después. First we eat, then we talk. Primero comemos, luego hablamos. Una letra, dos funciones que no se parecen en nada.",
   "hashtags": [
     "#CompletaLaFrase",
@@ -25,5 +25,43 @@
     "topic_id": "cw004",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "This coffee is better ___ the one from yesterday.",
+      "options": [
+        "then",
+        "than",
+        "that",
+        "as"
+      ],
+      "correct": "than",
+      "translation": "Este café está mejor que el de ayer.",
+      "explanation": "[excited] Than compara. Then ordena en el tiempo. Solo cambia una letra."
+    },
+    {
+      "sentence": "First we eat, ___ we talk.",
+      "options": [
+        "then",
+        "than",
+        "that",
+        "so"
+      ],
+      "correct": "then",
+      "translation": "Primero comemos, luego hablamos.",
+      "explanation": "[excited] Then ordena en el tiempo. Than compara. Una letra, dos trabajos."
+    },
+    {
+      "sentence": "She runs faster ___ her brother.",
+      "options": [
+        "than",
+        "then",
+        "that",
+        "as"
+      ],
+      "correct": "than",
+      "translation": "Corre más rápido que su hermano.",
+      "explanation": "[excited] En cuanto veas una comparación, than con a."
+    }
+  ]
 }

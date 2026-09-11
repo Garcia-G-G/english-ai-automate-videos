@@ -11,7 +11,7 @@
   ],
   "correct": "gonna",
   "translation": "Te llamo esta noche.",
-  "explanation": "Gonna es la forma hablada de going to. Se dice, no se escribe formal.",
+  "explanation": "[excited] Gonna es la forma hablada de going to. Se dice, no se escribe formal.",
   "full_script": "[excited] ¡Completa la frase! Número uno. Escuchas una serie y oyes algo que no está en tu libro. I'm ___ call you tonight, I promise. Las opciones son: A, gonna. B, going. C, will. D, wanna.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, gonna! Gonna es como suena going to cuando se habla rápido. I'm gonna call you. Te voy a llamar. Todo el mundo lo dice y casi nadie lo escribe. En un email formal pon going to. Y ojo con su hermana. Wanna es want to, que es querer, no ir a.",
   "hashtags": [
     "#CompletaLaFrase",
@@ -25,5 +25,43 @@
     "topic_id": "sl017",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "I'm ___ call you tonight, I promise.",
+      "options": [
+        "gonna",
+        "going",
+        "will",
+        "wanna"
+      ],
+      "correct": "gonna",
+      "translation": "Te llamo esta noche.",
+      "explanation": "[excited] Gonna es la forma hablada de going to. Se dice, no se escribe formal."
+    },
+    {
+      "sentence": "I ___ some water, do you want any?",
+      "options": [
+        "wanna",
+        "gonna",
+        "gotta",
+        "kinda"
+      ],
+      "correct": "wanna",
+      "translation": "Quiero agua, ¿tú quieres?",
+      "explanation": "[excited] Wanna es want to. Querer, no ir a. No las mezcles."
+    },
+    {
+      "sentence": "I ___ go now, it's late.",
+      "options": [
+        "gotta",
+        "gonna",
+        "wanna",
+        "kinda"
+      ],
+      "correct": "gotta",
+      "translation": "Me tengo que ir, es tarde.",
+      "explanation": "[excited] Gotta es have got to. Obligación, la tercera del trío."
+    }
+  ]
 }

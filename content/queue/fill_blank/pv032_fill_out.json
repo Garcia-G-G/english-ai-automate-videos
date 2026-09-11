@@ -11,7 +11,7 @@
   ],
   "correct": "fill",
   "translation": "Rellene este formulario.",
-  "explanation": "Fill out es rellenar un formulario. Fill in vale igual en Reino Unido.",
+  "explanation": "[excited] Fill out es rellenar un formulario. Fill in vale igual en Reino Unido.",
   "full_script": "[excited] ¡Completa la frase! Número uno. Te dan un papel en una recepción y usan un phrasal verb muy concreto. Please ___ out this form before you leave. Las opciones son: A, fill. B, write. C, put. D, make.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, fill! Fill out es rellenar un formulario. Se usa en trámites, en hoteles y en médicos. En Reino Unido oirás fill in, que significa lo mismo. Y ojo con su vecino. Fill up es llenar del todo. Fill up the tank. Llena el depósito.",
   "hashtags": [
     "#CompletaLaFrase",
@@ -25,5 +25,43 @@
     "topic_id": "pv032",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "Please ___ out this form before you leave.",
+      "options": [
+        "fill",
+        "write",
+        "put",
+        "make"
+      ],
+      "correct": "fill",
+      "translation": "Rellene este formulario.",
+      "explanation": "[excited] Fill out es rellenar un formulario. Fill in vale igual en Reino Unido."
+    },
+    {
+      "sentence": "Fill ___ the tank before we leave.",
+      "options": [
+        "up",
+        "out",
+        "in",
+        "over"
+      ],
+      "correct": "up",
+      "translation": "Llena el depósito antes de salir.",
+      "explanation": "[excited] Fill up es llenar del todo. Nada que ver con formularios."
+    },
+    {
+      "sentence": "In the UK you'd say fill ___ this form.",
+      "options": [
+        "in",
+        "out",
+        "up",
+        "over"
+      ],
+      "correct": "in",
+      "translation": "En Reino Unido dirían fill in.",
+      "explanation": "[excited] Fill in y fill out significan lo mismo. Cambia el país."
+    }
+  ]
 }

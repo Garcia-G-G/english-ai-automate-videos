@@ -11,7 +11,7 @@
   ],
   "correct": "had",
   "translation": "Si hubiera estudiado, habría aprobado.",
-  "explanation": "En la tercera condicional va had más participio. Nunca would en la parte del if.",
+  "explanation": "[excited] En la tercera condicional va had más participio. Nunca would en la parte del if.",
   "full_script": "[curious] ¡Completa la frase! Número uno. Hablas de algo que ya no tiene remedio y aquí falla casi todo el mundo. If I ___ studied, I would have passed the exam. Las opciones son: A, had. B, have. C, would. D, did.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, had! Es la tercera condicional. Habla de un pasado que no se puede cambiar. La fórmula es fija. If más had más participio. Y en la otra mitad, would have más participio. El would nunca entra en la parte del if. Ese es el error que se repite.",
   "hashtags": [
     "#CompletaLaFrase",
@@ -25,5 +25,43 @@
     "topic_id": "gr006",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "If I ___ studied, I would have passed the exam.",
+      "options": [
+        "had",
+        "have",
+        "would",
+        "did"
+      ],
+      "correct": "had",
+      "translation": "Si hubiera estudiado, habría aprobado.",
+      "explanation": "[excited] En la tercera condicional va had más participio. Nunca would en la parte del if."
+    },
+    {
+      "sentence": "If we had left earlier, we ___ the train.",
+      "options": [
+        "would have caught",
+        "would catch",
+        "had caught",
+        "will catch"
+      ],
+      "correct": "would have caught",
+      "translation": "Si hubiéramos salido antes, habríamos cogido el tren.",
+      "explanation": "[excited] La otra mitad: would have más participio. Siempre las dos juntas."
+    },
+    {
+      "sentence": "If I ___ known, I would have told you.",
+      "options": [
+        "had",
+        "have",
+        "would",
+        "did"
+      ],
+      "correct": "had",
+      "translation": "Si lo hubiera sabido, te lo habría dicho.",
+      "explanation": "[excited] Otra vez had más participio en la parte del if."
+    }
+  ]
 }

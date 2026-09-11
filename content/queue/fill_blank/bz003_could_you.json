@@ -11,7 +11,7 @@
   ],
   "correct": "Could",
   "translation": "¿Podrías enviarme el informe?",
-  "explanation": "Could suena más educado que can en un email de trabajo.",
+  "explanation": "[excited] Could suena más educado que can en un email de trabajo.",
   "full_script": "[curious] ¡Completa la frase! Número uno. Escribes a un cliente y una sola palabra decide si suenas educado. ___ you please send me the report? Las opciones son: A, Could. B, Can. C, Will. D, Do.... Las cuatro son gramaticalmente posibles... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, Could! Could es la forma educada de pedir en inglés de trabajo. Can no está mal, pero suena más directo. Will you send me the report suena casi a orden. Y si quieres subir todavía más el registro, existe una fórmula. I would appreciate it if you could.",
   "hashtags": [
     "#CompletaLaFrase",
@@ -25,5 +25,43 @@
     "topic_id": "bz003",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "___ you please send me the report?",
+      "options": [
+        "Could",
+        "Can",
+        "Will",
+        "Do"
+      ],
+      "correct": "Could",
+      "translation": "¿Podrías enviarme el informe?",
+      "explanation": "[excited] Could suena más educado que can en un email de trabajo."
+    },
+    {
+      "sentence": "___ it be possible to move the meeting?",
+      "options": [
+        "Would",
+        "Could",
+        "Will",
+        "Do"
+      ],
+      "correct": "Would",
+      "translation": "¿Sería posible mover la reunión?",
+      "explanation": "[excited] Would it be possible es la fórmula más educada de todas."
+    },
+    {
+      "sentence": "I would ___ it if you could reply today.",
+      "options": [
+        "appreciate",
+        "thank",
+        "like",
+        "want"
+      ],
+      "correct": "appreciate",
+      "translation": "Te agradecería que contestaras hoy.",
+      "explanation": "[excited] I would appreciate it if es el registro más alto sin sonar rígido."
+    }
+  ]
 }

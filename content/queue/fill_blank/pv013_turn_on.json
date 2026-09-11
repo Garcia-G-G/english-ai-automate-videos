@@ -11,7 +11,7 @@
   ],
   "correct": "on",
   "translation": "¿Puedes encender la luz?",
-  "explanation": "Turn on enciende, turn off apaga. Igual que el interruptor de la pared.",
+  "explanation": "[excited] Turn on enciende, turn off apaga. Igual que el interruptor de la pared.",
   "full_script": "[curious] ¡Completa la frase! Número uno. Entras en casa, no ves nada, y le pides a alguien que haga lo obvio. Can you turn ___ the lights? It's too dark in here. Las opciones son: A, on. B, off. C, up. D, in.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, on! Turn on es encender. Si está oscuro, quieres luz. Turn off es apagar, y ahí tienes el interruptor de tu pared entero: on arriba, off abajo. Las otras dos existen pero van a otra cosa. Turn up es subir el volumen y turn in es entregar algo.",
   "hashtags": [
     "#PhrasalVerbs",
@@ -25,5 +25,43 @@
     "topic_id": "pv013",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "Can you turn ___ the lights? It's too dark in here.",
+      "options": [
+        "on",
+        "off",
+        "up",
+        "in"
+      ],
+      "correct": "on",
+      "translation": "¿Puedes encender la luz?",
+      "explanation": "[excited] Turn on enciende, turn off apaga. Igual que el interruptor de la pared."
+    },
+    {
+      "sentence": "Can you turn ___ the music? I can't hear it.",
+      "options": [
+        "up",
+        "on",
+        "off",
+        "down"
+      ],
+      "correct": "up",
+      "translation": "¿Puedes subir la música?",
+      "explanation": "[excited] Turn up es subir el volumen. Turn down, bajarlo."
+    },
+    {
+      "sentence": "Don't forget to turn ___ the stove.",
+      "options": [
+        "off",
+        "on",
+        "up",
+        "in"
+      ],
+      "correct": "off",
+      "translation": "No olvides apagar el fuego.",
+      "explanation": "[excited] Off apaga, siempre. Es el interruptor de tu pared."
+    }
+  ]
 }

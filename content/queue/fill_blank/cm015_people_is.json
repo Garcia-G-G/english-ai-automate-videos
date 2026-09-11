@@ -11,7 +11,7 @@
   ],
   "correct": "are",
   "translation": "La gente siempre llega tarde.",
-  "explanation": "People es plural en inglés. Siempre va con are, nunca con is.",
+  "explanation": "[excited] People es plural en inglés. Siempre va con are, nunca con is.",
   "full_script": "[curious] ¡Completa la frase! Número uno. Hablas de un grupo y el español te empuja al singular. People ___ always late for these meetings. Las opciones son: A, are. B, is. C, was. D, has.... En español decimos la gente ES, en singular... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, are! People es plural en inglés. Siempre. El singular es person. One person, two people. Y si quieres el singular colectivo, existe otra palabra. The public. Esa sí va con is.",
   "hashtags": [
     "#CompletaLaFrase",
@@ -25,5 +25,43 @@
     "topic_id": "cm015",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "People ___ always late for these meetings.",
+      "options": [
+        "are",
+        "is",
+        "was",
+        "has"
+      ],
+      "correct": "are",
+      "translation": "La gente siempre llega tarde.",
+      "explanation": "[excited] People es plural en inglés. Siempre va con are, nunca con is."
+    },
+    {
+      "sentence": "One ___ is waiting outside.",
+      "options": [
+        "person",
+        "people",
+        "persons",
+        "peoples"
+      ],
+      "correct": "person",
+      "translation": "Hay una persona esperando fuera.",
+      "explanation": "[excited] El singular de people es person. Nunca peoples."
+    },
+    {
+      "sentence": "The public ___ very happy with the result.",
+      "options": [
+        "is",
+        "are",
+        "were",
+        "have"
+      ],
+      "correct": "is",
+      "translation": "El público está muy contento.",
+      "explanation": "[excited] The public sí es singular colectivo. People no."
+    }
+  ]
 }

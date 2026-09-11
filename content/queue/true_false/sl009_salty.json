@@ -4,7 +4,7 @@
   "video_description": "Nada que ver con la comida. Todo que ver con el orgullo. 😤",
   "statement": "'Salty' en slang significa que algo tiene mucha sal.",
   "correct": false,
-  "explanation": "Salty en slang es estar picado o resentido, normalmente por haber perdido.",
+  "explanation": "[excited] Salty en slang es estar picado o resentido, normalmente por haber perdido.",
   "full_script": "[excited] ¡Verdadero o falso! Pierdes una partida, pones mala cara, y alguien te suelta don't be salty. Vamos con la afirmación. Salty en slang significa que algo tiene mucha sal.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Salty es estar picado. Resentido, molesto, normalmente después de perder. He's still salty about the game. Sigue picado por el partido. Es burlón, así que se usa entre amigos. A un jefe no se lo dirías nunca. Y si quieres decirlo en serio y sin broma, la palabra es otra. He's upset about it. Está dolido. Esa sí es neutral.",
   "translations": {
     "salty": "picado, resentido",
@@ -23,5 +23,22 @@
     "topic_id": "sl009",
     "video_type": "true_false",
     "model": "claude-opus-5"
-  }
+  },
+  "statements": [
+    {
+      "statement": "'Salty' en slang significa que algo tiene mucha sal.",
+      "correct": false,
+      "explanation": "[excited] Salty en slang es estar picado o resentido, normalmente por haber perdido."
+    },
+    {
+      "statement": "A tu jefe le puedes decir 'don't be salty' sin problema.",
+      "correct": false,
+      "explanation": "[excited] Es burlón y muy informal. Entre amigos sí, en el trabajo no."
+    },
+    {
+      "statement": "'He's upset about it' es la versión neutra de salty.",
+      "correct": true,
+      "explanation": "[excited] Upset es dolido, y sirve en cualquier contexto."
+    }
+  ]
 }

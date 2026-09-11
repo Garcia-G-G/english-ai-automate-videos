@@ -4,7 +4,7 @@
   "video_description": "Un modismo que no tiene nada que ver con la temperatura. 😅",
   "statement": "'To get cold feet' significa que tienes los pies fríos.",
   "correct": false,
-  "explanation": "Get cold feet es echarse atrás por nervios, justo antes de algo importante.",
+  "explanation": "[excited] Get cold feet es echarse atrás por nervios, justo antes de algo importante.",
   "full_script": "[excited] ¡Verdadero o falso! Un amigo te dice que su hermano got cold feet el día antes de la boda. Y tú entiendes que tenía los pies fríos. To get cold feet significa tener frío en los pies. ¿Verdadero o falso?... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Get cold feet es echarse atrás por los nervios, justo antes de algo importante. He got cold feet before the wedding. Se echó atrás antes de la boda. Si de verdad tienes los pies helados, eso es my feet are cold. El modismo siempre va con get, y siempre habla de miedo.",
   "translations": {
     "to get cold feet": "echarse atrás",
@@ -23,5 +23,22 @@
     "topic_id": "id005",
     "video_type": "true_false",
     "model": "claude-opus-5"
-  }
+  },
+  "statements": [
+    {
+      "statement": "'To get cold feet' significa que tienes los pies fríos.",
+      "correct": false,
+      "explanation": "[excited] Get cold feet es echarse atrás por nervios, justo antes de algo importante."
+    },
+    {
+      "statement": "'My feet are cold' sí habla de temperatura.",
+      "correct": true,
+      "explanation": "[excited] Esa es la literal. El modismo va siempre con el verbo get."
+    },
+    {
+      "statement": "Get cold feet se usa después de que algo salga mal.",
+      "correct": false,
+      "explanation": "[excited] Se usa justo ANTES, cuando te entran los nervios y te echas atrás."
+    }
+  ]
 }

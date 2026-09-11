@@ -4,7 +4,7 @@
   "video_description": "Slang que oyes en TikTok todos los días. ¿Sabes qué significa? 🔥",
   "statement": "'No cap' se usa para decir que algo es verdad, sin exagerar.",
   "correct": true,
-  "explanation": "En slang cap es mentira, así que no cap significa en serio, sin exagerar.",
+  "explanation": "[excited] En slang cap es mentira, así que no cap significa en serio, sin exagerar.",
   "full_script": "[excited] ¡Verdadero o falso! Estás viendo un video, alguien suelta 'no cap' y tú piensas en una gorra. No cap se usa para decir que algo es verdad, sin exagerar. ¿Verdadero o falso?... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Verdadero! En slang, cap es mentira. Así que no cap es literalmente sin mentira. En serio. No cap, that was the best pizza ever. Te lo juro, fue la mejor pizza del mundo. Y funciona al revés. Si alguien exagera de más, le sueltas that's cap. Eso es mentira. Cero gorras en toda la expresión.",
   "translations": {
     "no cap": "en serio, sin mentir",
@@ -23,5 +23,22 @@
     "topic_id": "sl003",
     "video_type": "true_false",
     "model": "claude-opus-5"
-  }
+  },
+  "statements": [
+    {
+      "statement": "'No cap' se usa para decir que algo es verdad, sin exagerar.",
+      "correct": true,
+      "explanation": "[excited] En slang cap es mentira, así que no cap significa en serio, sin exagerar."
+    },
+    {
+      "statement": "'That's cap' significa que algo es verdad.",
+      "correct": false,
+      "explanation": "[excited] Justo lo contrario. Cap es mentira, así que that's cap es eso es mentira."
+    },
+    {
+      "statement": "No cap y 'I swear' significan prácticamente lo mismo.",
+      "correct": true,
+      "explanation": "[excited] Las dos sirven para jurar que no exageras. Una es slang, la otra neutra."
+    }
+  ]
 }

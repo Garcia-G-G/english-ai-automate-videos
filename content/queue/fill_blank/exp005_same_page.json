@@ -11,7 +11,7 @@
   ],
   "correct": "page",
   "translation": "Que estemos de acuerdo.",
-  "explanation": "To be on the same page es estar de acuerdo, entender todos lo mismo.",
+  "explanation": "[excited] To be on the same page es estar de acuerdo, entender todos lo mismo.",
   "full_script": "[curious] ¡Completa la frase! Número uno. Antes de entrar a una reunión, alguien suelta esto y todo el mundo asiente. Let's make sure we're on the same ___ before the meeting. Las opciones son: A, page. B, book. C, line. D, level.... Es un modismo, así que traducirlo palabra por palabra no te va a ayudar... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, page! To be on the same page es estar de acuerdo, entender todos lo mismo. Estar en la misma página del libro. Y en pregunta funciona igual de bien. Are we on the same page?",
   "hashtags": [
     "#InglésDeNegocios",
@@ -25,5 +25,43 @@
     "topic_id": "exp005",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "Let's make sure we're on the same ___ before the meeting.",
+      "options": [
+        "page",
+        "book",
+        "line",
+        "level"
+      ],
+      "correct": "page",
+      "translation": "Que estemos de acuerdo.",
+      "explanation": "[excited] To be on the same page es estar de acuerdo, entender todos lo mismo."
+    },
+    {
+      "sentence": "___ we on the same page about this?",
+      "options": [
+        "Are",
+        "Is",
+        "Do",
+        "Have"
+      ],
+      "correct": "Are",
+      "translation": "¿Estamos de acuerdo en esto?",
+      "explanation": "[excited] En pregunta funciona igual de bien, y se oye constantemente."
+    },
+    {
+      "sentence": "We need to get everyone on the same ___.",
+      "options": [
+        "page",
+        "book",
+        "line",
+        "level"
+      ],
+      "correct": "page",
+      "translation": "Hay que poner a todos de acuerdo.",
+      "explanation": "[excited] Get everyone on the same page: alinear al equipo."
+    }
+  ]
 }

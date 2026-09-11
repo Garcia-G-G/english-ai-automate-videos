@@ -11,7 +11,7 @@
   ],
   "correct": "hand",
   "translation": "Hay que entregar el informe el viernes.",
-  "explanation": "Hand in es entregar algo a quien lo va a revisar.",
+  "explanation": "[excited] Hand in es entregar algo a quien lo va a revisar.",
   "full_script": "[excited] ¡Completa la frase! Número uno. Te ponen una fecha límite y usan un phrasal verb muy concreto. You need to ___ in your report by Friday. Las opciones son: A, hand. B, give. C, put. D, take.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, hand! Hand in es entregar algo a quien lo va a revisar. Un trabajo, un informe, una solicitud. Give existe pero es dar sin más. Y ojo con su pariente. Hand out es repartir entre varios. In entrega, out reparte. Una letra distinta y el sentido cambia entero.",
   "hashtags": [
     "#CompletaLaFrase",
@@ -25,5 +25,43 @@
     "topic_id": "pv031",
     "video_type": "fill_blank",
     "model": "claude-opus-5"
-  }
+  },
+  "sentences": [
+    {
+      "sentence": "You need to ___ in your report by Friday.",
+      "options": [
+        "hand",
+        "give",
+        "put",
+        "take"
+      ],
+      "correct": "hand",
+      "translation": "Hay que entregar el informe el viernes.",
+      "explanation": "[excited] Hand in es entregar algo a quien lo va a revisar."
+    },
+    {
+      "sentence": "The teacher will hand ___ the exams now.",
+      "options": [
+        "out",
+        "in",
+        "over",
+        "up"
+      ],
+      "correct": "out",
+      "translation": "El profesor va a repartir los exámenes.",
+      "explanation": "[excited] Hand out es repartir entre varios. In entrega, out reparte."
+    },
+    {
+      "sentence": "I have to hand ___ my notice this week.",
+      "options": [
+        "in",
+        "out",
+        "over",
+        "up"
+      ],
+      "correct": "in",
+      "translation": "Tengo que presentar mi dimisión esta semana.",
+      "explanation": "[excited] Hand in your notice es presentar la dimisión. Se entrega a alguien."
+    }
+  ]
 }
