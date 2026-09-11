@@ -32,9 +32,29 @@
     {
       "spanish": "cuídate",
       "english": "take care"
+    },
+    {
+      "spanish": "¿qué hay?",
+      "english": "what's up?"
+    },
+    {
+      "spanish": "buenas",
+      "english": "hey there"
+    },
+    {
+      "spanish": "¿cómo te va?",
+      "english": "how's life?"
+    },
+    {
+      "spanish": "encantado",
+      "english": "pleased to meet you"
+    },
+    {
+      "spanish": "igualmente",
+      "english": "likewise"
     }
   ],
-  "full_script": "[cheerful] Si saludas siempre con hello, suenas a libro de texto. Estas siete las usa la gente de verdad. ¿Qué tal?, how's it going? ¿Cómo va todo?, how are things? Cuánto tiempo, long time no see. Me alegro de verte, good to see you. ¿Qué te cuentas?, what's new? Hasta pronto, see you soon. Cuídate, take care. Ojo con how's it going. Casi nunca espera una respuesta larga.",
+  "full_script": "[cheerful] Si saludas siempre con hello, suenas a libro de texto. Estas siete las usa la gente de verdad. ¿Qué tal?, how's it going? ¿Cómo va todo?, how are things? Cuánto tiempo, long time no see. Me alegro de verte, good to see you. ¿Qué te cuentas?, what's new? Hasta pronto, see you soon. Cuídate, take care. ¿qué hay?, what's up?. Buenas, hey there. ¿cómo te va?, how's life?. Encantado, pleased to meet you. Igualmente, likewise. Ojo con how's it going. Casi nunca espera una respuesta larga.",
   "translations": {
     "how's it going?": "¿qué tal?",
     "how are things?": "¿cómo va todo?",
@@ -42,7 +62,12 @@
     "good to see you": "me alegro de verte",
     "what's new?": "¿qué te cuentas?",
     "see you soon": "hasta pronto",
-    "take care": "cuídate"
+    "take care": "cuídate",
+    "what's up?": "¿qué hay?",
+    "hey there": "buenas",
+    "how's life?": "¿cómo te va?",
+    "pleased to meet you": "encantado",
+    "likewise": "igualmente"
   },
   "english_phrases": [
     "how's it going?",
@@ -51,7 +76,12 @@
     "good to see you",
     "what's new?",
     "see you soon",
-    "take care"
+    "take care",
+    "what's up?",
+    "hey there",
+    "how's life?",
+    "pleased to meet you",
+    "likewise"
   ],
   "hashtags": [
     "#Vocabulario",

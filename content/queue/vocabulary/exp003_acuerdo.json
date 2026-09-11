@@ -32,9 +32,29 @@
     {
       "spanish": "cuenta conmigo",
       "english": "count me in"
+    },
+    {
+      "spanish": "vale",
+      "english": "sure thing"
+    },
+    {
+      "spanish": "por supuesto",
+      "english": "of course"
+    },
+    {
+      "spanish": "hecho",
+      "english": "done"
+    },
+    {
+      "spanish": "perfecto",
+      "english": "perfect"
+    },
+    {
+      "spanish": "ya está",
+      "english": "that works"
     }
   ],
-  "full_script": "[cheerful] Te proponen un plan y respondes yes. Te proponen otro y respondes yes otra vez. Suenas a traductor automático. Mira lo que dice la gente de verdad. Me apunto, I'm down. Claro que sí, absolutely. Trato hecho, deal. Me parece bien, works for me. Totalmente, totally. Buena idea, sounds good. Cuenta conmigo, count me in. Entre amigos valen todas. En el trabajo tira de absolutely y sounds good, que son las que no desentonan.",
+  "full_script": "[cheerful] Te proponen un plan y respondes yes. Te proponen otro y respondes yes otra vez. Suenas a traductor automático. Mira lo que dice la gente de verdad. Me apunto, I'm down. Claro que sí, absolutely. Trato hecho, deal. Me parece bien, works for me. Totalmente, totally. Buena idea, sounds good. Cuenta conmigo, count me in. Vale, sure thing. Por supuesto, of course. Hecho, done. Perfecto, perfect. Ya está, that works. Entre amigos valen todas. En el trabajo tira de absolutely y sounds good, que son las que no desentonan.",
   "translations": {
     "I'm down": "me apunto",
     "absolutely": "claro que sí",
@@ -42,7 +62,12 @@
     "works for me": "me parece bien",
     "totally": "totalmente",
     "sounds good": "buena idea",
-    "count me in": "cuenta conmigo"
+    "count me in": "cuenta conmigo",
+    "sure thing": "vale",
+    "of course": "por supuesto",
+    "done": "hecho",
+    "perfect": "perfecto",
+    "that works": "ya está"
   },
   "english_phrases": [
     "I'm down",
@@ -51,7 +76,12 @@
     "works for me",
     "totally",
     "sounds good",
-    "count me in"
+    "count me in",
+    "sure thing",
+    "of course",
+    "done",
+    "perfect",
+    "that works"
   ],
   "hashtags": [
     "#AprenderInglés",

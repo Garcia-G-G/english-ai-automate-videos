@@ -6,52 +6,82 @@
   "difficulty": "fácil",
   "pairs": [
     {
-      "spanish": "facturación",
-      "english": "check-in"
+      "spanish": "la facturación",
+      "english": "the check-in desk"
     },
     {
       "spanish": "tarjeta de embarque",
-      "english": "boarding pass"
+      "english": "the boarding pass"
     },
     {
-      "spanish": "equipaje de mano",
-      "english": "carry-on"
+      "spanish": "el equipaje de mano",
+      "english": "the carry-on"
     },
     {
       "spanish": "puerta de embarque",
-      "english": "gate"
+      "english": "the gate"
     },
     {
-      "spanish": "retraso",
-      "english": "delay"
+      "spanish": "hay retraso",
+      "english": "there's a delay"
     },
     {
-      "spanish": "escala",
-      "english": "layover"
+      "spanish": "tengo escala",
+      "english": "I have a layover"
     },
     {
       "spanish": "recogida de maletas",
       "english": "baggage claim"
+    },
+    {
+      "spanish": "embarcar ya",
+      "english": "to board now"
+    },
+    {
+      "spanish": "el avión despega",
+      "english": "the plane takes off"
+    },
+    {
+      "spanish": "el avión aterriza",
+      "english": "the plane lands"
+    },
+    {
+      "spanish": "enseñar pasaporte",
+      "english": "to show your passport"
+    },
+    {
+      "spanish": "asiento de ventanilla",
+      "english": "window seat"
     }
   ],
-  "full_script": "[warm] Vas con el tiempo justo, buscas tu vuelo en la pantalla y todo está en inglés. Estas siete te salvan el día. Facturación, check-in. Tarjeta de embarque, boarding pass. Equipaje de mano, carry-on. Puerta de embarque, gate. Retraso, delay. Escala, layover. Recogida de equipajes, baggage claim. Y una que confunde a todo el mundo. Layover es la escala, el rato que esperas entre dos vuelos. No es el vuelo, es la espera.",
+  "full_script": "[warm] Vas con el tiempo justo, buscas tu vuelo en la pantalla y todo está en inglés. La facturación, the check-in desk. La tarjeta de embarque, the boarding pass. El equipaje de mano, the carry-on. La puerta de embarque, the gate. Hay retraso, there's a delay. Tengo escala, I have a layover. Recogida de maletas, baggage claim. Embarcar ya, to board now. El avión despega, the plane takes off. El avión aterriza, the plane lands. Enseñar el pasaporte, to show your passport. Asiento de ventanilla, window seat. Repítelas conmigo una vez más y ya son tuyas.",
   "translations": {
+    "the check-in desk": "la facturación",
+    "the boarding pass": "tarjeta de embarque",
+    "the carry-on": "el equipaje de mano",
+    "the gate": "puerta de embarque",
+    "there's a delay": "hay retraso",
+    "I have a layover": "tengo escala",
     "baggage claim": "recogida de maletas",
-    "check-in": "facturación",
-    "boarding pass": "tarjeta de embarque",
-    "carry-on": "equipaje de mano",
-    "gate": "puerta de embarque",
-    "delay": "retraso",
-    "layover": "escala"
+    "to board now": "embarcar ya",
+    "the plane takes off": "el avión despega",
+    "the plane lands": "el avión aterriza",
+    "to show your passport": "enseñar pasaporte",
+    "window seat": "asiento de ventanilla"
   },
   "english_phrases": [
-    "check-in",
-    "boarding pass",
-    "carry-on",
-    "gate",
-    "delay",
-    "layover",
-    "baggage claim"
+    "the check-in desk",
+    "the boarding pass",
+    "the carry-on",
+    "the gate",
+    "there's a delay",
+    "I have a layover",
+    "baggage claim",
+    "to board now",
+    "the plane takes off",
+    "the plane lands",
+    "to show your passport",
+    "window seat"
   ],
   "hashtags": [
     "#Vocabulario",

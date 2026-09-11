@@ -6,52 +6,82 @@
   "video_description": "Las palabras que vas a oír en tu primera meeting en inglés. 📊",
   "pairs": [
     {
-      "spanish": "orden del día",
-      "english": "agenda"
+      "spanish": "el orden del día",
+      "english": "the agenda"
     },
     {
-      "spanish": "acta",
-      "english": "minutes"
+      "spanish": "el acta",
+      "english": "the minutes"
     },
     {
-      "spanish": "plazo",
-      "english": "deadline"
+      "spanish": "la fecha límite",
+      "english": "the deadline"
     },
     {
-      "spanish": "actualización",
-      "english": "update"
+      "spanish": "una actualización",
+      "english": "an update"
     },
     {
-      "spanish": "seguimiento",
-      "english": "follow-up"
+      "spanish": "hacer seguimiento",
+      "english": "to follow up"
     },
     {
-      "spanish": "presupuesto",
-      "english": "budget"
+      "spanish": "el presupuesto",
+      "english": "the budget"
     },
     {
-      "spanish": "aplazar",
-      "english": "postpone"
+      "spanish": "aplazar la reunión",
+      "english": "postpone the meeting"
+    },
+    {
+      "spanish": "aprobar el plan",
+      "english": "approve the plan"
+    },
+    {
+      "spanish": "presentar los datos",
+      "english": "present the figures"
+    },
+    {
+      "spanish": "el siguiente punto",
+      "english": "the next item"
+    },
+    {
+      "spanish": "llegar a un acuerdo",
+      "english": "to agree on it"
+    },
+    {
+      "spanish": "tomar nota",
+      "english": "to take notes"
     }
   ],
-  "full_script": "[warm] Primera reunión en inglés. Hablan rápido y tú vas cazando palabras sueltas. Estas siete van a salir seguro. Orden del día, agenda. Acta, minutes. Plazo, deadline. Actualización, update. Seguimiento, follow-up. Presupuesto, budget. Aplazar, postpone. Cuidado con minutes: ahí no son minutos, es el acta escrita de la reunión. Y deadline no es una línea, es la fecha en la que se acaba el tiempo.",
+  "full_script": "[warm] Primera reunión en inglés. El orden del día, the agenda. El acta, the minutes. La fecha límite, the deadline. Una actualización, an update. Hacer seguimiento, to follow up. El presupuesto, the budget. Aplazar la reunión, postpone the meeting. Aprobar el plan, approve the plan. Presentar los datos, present the figures. El siguiente punto, the next item. Llegar a un acuerdo, to agree on it. Tomar nota, to take notes. Repítelas conmigo una vez más y ya son tuyas.",
   "translations": {
-    "agenda": "orden del día",
-    "minutes": "acta",
-    "deadline": "plazo",
-    "update": "actualización",
-    "follow-up": "seguimiento",
-    "budget": "presupuesto",
-    "postpone": "aplazar"
+    "the agenda": "el orden del día",
+    "the minutes": "el acta",
+    "the deadline": "la fecha límite",
+    "an update": "una actualización",
+    "to follow up": "hacer seguimiento",
+    "the budget": "el presupuesto",
+    "postpone the meeting": "aplazar la reunión",
+    "approve the plan": "aprobar el plan",
+    "present the figures": "presentar los datos",
+    "the next item": "el siguiente punto",
+    "to agree on it": "llegar a un acuerdo",
+    "to take notes": "tomar nota"
   },
   "english_phrases": [
-    "agenda",
-    "minutes",
-    "deadline",
-    "update",
-    "follow-up",
-    "budget",
-    "postpone"
+    "the agenda",
+    "the minutes",
+    "the deadline",
+    "an update",
+    "to follow up",
+    "the budget",
+    "postpone the meeting",
+    "approve the plan",
+    "present the figures",
+    "the next item",
+    "to agree on it",
+    "to take notes"
   ],
   "hashtags": [
     "#InglésDeNegocios",

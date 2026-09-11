@@ -32,17 +32,37 @@
     {
       "spanish": "hasta luego",
       "english": "see you around"
+    },
+    {
+      "spanish": "¿de dónde eres?",
+      "english": "where are you from?"
+    },
+    {
+      "spanish": "vivo en",
+      "english": "I live in"
+    },
+    {
+      "spanish": "trabajo en",
+      "english": "I work at"
+    },
+    {
+      "spanish": "estudio",
+      "english": "I study"
     }
   ],
-  "full_script": "[warm] Conoces a alguien en una fiesta y se te va todo el inglés. Estas siete cubren los primeros treinta segundos. Encantado, nice to meet you. ¿A qué te dedicas?, what do you do? Soy de, I'm from. Llevo aquí un año, I've been here a year. ¿De qué lo conoces?, how do you know him? ¿Te apetece algo?, can I get you something? Hasta luego, see you around. Con esas siete sales del paso siempre.",
+  "full_script": "[warm] Conoces a alguien en una fiesta y se te va todo el inglés. Estas siete cubren los primeros treinta segundos. Encantado, nice to meet you. ¿A qué te dedicas?, what do you do? Soy de, I'm from. Llevo aquí un año, I've been here a year. ¿de dónde eres?, where are you from?. Vivo en, I live in. Trabajo en, I work at. Estudio, I study. ¿De qué lo conoces?, how do you know him? ¿Te apetece algo?, can I get you something? Hasta luego, see you around. Con esas siete sales del paso siempre.",
   "translations": {
-    "how do you know him?": "¿de qué lo conoces?",
     "nice to meet you": "encantado",
     "what do you do?": "¿a qué te dedicas?",
     "I'm from": "soy de",
     "I've been here a year": "llevo aquí un año",
+    "how do you know him?": "¿de qué lo conoces?",
     "can I get you something?": "¿te apetece algo?",
-    "see you around": "hasta luego"
+    "see you around": "hasta luego",
+    "where are you from?": "¿de dónde eres?",
+    "I live in": "vivo en",
+    "I work at": "trabajo en",
+    "I study": "estudio"
   },
   "english_phrases": [
     "nice to meet you",
@@ -51,7 +71,11 @@
     "I've been here a year",
     "how do you know him?",
     "can I get you something?",
-    "see you around"
+    "see you around",
+    "where are you from?",
+    "I live in",
+    "I work at",
+    "I study"
   ],
   "hashtags": [
     "#Vocabulario",

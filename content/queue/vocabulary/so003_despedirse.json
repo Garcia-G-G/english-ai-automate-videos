@@ -32,9 +32,29 @@
     {
       "spanish": "que vaya bien",
       "english": "have a good one"
+    },
+    {
+      "spanish": "me voy ya",
+      "english": "I'm heading off"
+    },
+    {
+      "spanish": "buenas noches",
+      "english": "good night"
+    },
+    {
+      "spanish": "hasta mañana",
+      "english": "see you tomorrow"
+    },
+    {
+      "spanish": "que descanses",
+      "english": "get some rest"
+    },
+    {
+      "spanish": "ha sido un placer",
+      "english": "it's been a pleasure"
     }
   ],
-  "full_script": "[cheerful] Quieres irte de una conversación y no sabes cómo cerrarla sin cortar en seco. Estas siete lo hacen por ti. Me tengo que ir, I've got to go. Un placer, it was nice meeting you. Hablamos, let's catch up soon. Cuídate, take care. Dale recuerdos, say hi to them. Nos vemos, see you. Que vaya bien, have a good one. El truco está en encadenar dos. Suena natural y nadie se ofende.",
+  "full_script": "[cheerful] Quieres irte de una conversación y no sabes cómo cerrarla sin cortar en seco. Estas siete lo hacen por ti. Me tengo que ir, I've got to go. Un placer, it was nice meeting you. Hablamos, let's catch up soon. Cuídate, take care. Dale recuerdos, say hi to them. Nos vemos, see you. Que vaya bien, have a good one. Me voy ya, I'm heading off. Buenas noches, good night. Hasta mañana, see you tomorrow. Que descanses, get some rest. Ha sido un placer, it's been a pleasure. El truco está en encadenar dos. Suena natural y nadie se ofende.",
   "translations": {
     "I've got to go": "me tengo que ir",
     "it was nice meeting you": "un placer",
@@ -42,7 +62,12 @@
     "take care": "cuídate",
     "say hi to them": "dale recuerdos",
     "see you": "nos vemos",
-    "have a good one": "que vaya bien"
+    "have a good one": "que vaya bien",
+    "I'm heading off": "me voy ya",
+    "good night": "buenas noches",
+    "see you tomorrow": "hasta mañana",
+    "get some rest": "que descanses",
+    "it's been a pleasure": "ha sido un placer"
   },
   "english_phrases": [
     "I've got to go",
@@ -51,7 +76,12 @@
     "take care",
     "say hi to them",
     "see you",
-    "have a good one"
+    "have a good one",
+    "I'm heading off",
+    "good night",
+    "see you tomorrow",
+    "get some rest",
+    "it's been a pleasure"
   ],
   "hashtags": [
     "#Vocabulario",

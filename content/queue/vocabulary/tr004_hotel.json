@@ -6,52 +6,82 @@
   "video_description": "Desde el check-in hasta la salida. ¡Guárdalo antes de tu viaje! ✈️",
   "pairs": [
     {
-      "spanish": "reserva",
-      "english": "reservation"
+      "spanish": "tengo una reserva",
+      "english": "I have a reservation"
     },
     {
-      "spanish": "recepción",
-      "english": "front desk"
+      "spanish": "la recepción",
+      "english": "the front desk"
     },
     {
-      "spanish": "llave de la habitación",
-      "english": "room key"
+      "spanish": "llave de habitación",
+      "english": "the room key"
     },
     {
-      "spanish": "salida",
-      "english": "check-out"
+      "spanish": "¿a qué hora es salid",
+      "english": "when is check-out?"
     },
     {
-      "spanish": "toalla",
-      "english": "towel"
+      "spanish": "necesito una toalla",
+      "english": "I need a towel"
     },
     {
-      "spanish": "almohada",
-      "english": "pillow"
+      "spanish": "otra almohada",
+      "english": "another pillow"
     },
     {
       "spanish": "aire acondicionado",
-      "english": "air conditioning"
+      "english": "the air conditioning"
+    },
+    {
+      "spanish": "habitación doble",
+      "english": "a double room"
+    },
+    {
+      "spanish": "desayuno incluido",
+      "english": "breakfast included"
+    },
+    {
+      "spanish": "la caja fuerte",
+      "english": "the safe"
+    },
+    {
+      "spanish": "servicio de limpieza",
+      "english": "housekeeping"
+    },
+    {
+      "spanish": "la factura, por favor",
+      "english": "the invoice, please"
     }
   ],
-  "full_script": "[cheerful] Llegas de madrugada, arrastrando la maleta, y en recepción te quedas en blanco. Reserva, reservation. Recepción, front desk. Llave de la habitación, room key. Salida, check-out. Toalla, towel. Almohada, pillow. Aire acondicionado, air conditioning. Con esas siete resuelves una estancia entera sin señalar nada con el dedo. Y una que confunde a todo el mundo: check-out no es solo irse, es también la hora límite para dejar la habitación.",
+  "full_script": "[cheerful] Llegas de madrugada, arrastrando la maleta, y en recepción te quedas en blanco. Tengo una reserva, I have a reservation. La recepción, the front desk. La llave de la habitación, the room key. ¿a qué hora es la salida?, when is check-out?. Necesito una toalla, I need a towel. Otra almohada, another pillow. El aire acondicionado, the air conditioning. Habitación doble, a double room. Desayuno incluido, breakfast included. La caja fuerte, the safe. El servicio de limpieza, housekeeping. La factura, por favor, the invoice, please. Repítelas conmigo una vez más y ya son tuyas.",
   "translations": {
-    "reservation": "reserva",
-    "front desk": "recepción",
-    "room key": "llave de la habitación",
-    "check-out": "salida",
-    "towel": "toalla",
-    "pillow": "almohada",
-    "air conditioning": "aire acondicionado"
+    "I have a reservation": "tengo una reserva",
+    "the front desk": "la recepción",
+    "the room key": "llave de habitación",
+    "when is check-out?": "¿a qué hora es salid",
+    "I need a towel": "necesito una toalla",
+    "another pillow": "otra almohada",
+    "the air conditioning": "aire acondicionado",
+    "a double room": "habitación doble",
+    "breakfast included": "desayuno incluido",
+    "the safe": "la caja fuerte",
+    "housekeeping": "servicio de limpieza",
+    "the invoice, please": "la factura, por favor"
   },
   "english_phrases": [
-    "reservation",
-    "front desk",
-    "room key",
-    "check-out",
-    "towel",
-    "pillow",
-    "air conditioning"
+    "I have a reservation",
+    "the front desk",
+    "the room key",
+    "when is check-out?",
+    "I need a towel",
+    "another pillow",
+    "the air conditioning",
+    "a double room",
+    "breakfast included",
+    "the safe",
+    "housekeeping",
+    "the invoice, please"
   ],
   "hashtags": [
     "#InglésParaViajar",

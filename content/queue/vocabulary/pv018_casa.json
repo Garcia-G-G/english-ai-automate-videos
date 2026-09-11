@@ -6,52 +6,82 @@
   "difficulty": "fácil",
   "pairs": [
     {
-      "spanish": "limpiar",
+      "spanish": "limpiar todo",
       "english": "clean up"
     },
     {
-      "spanish": "ordenar",
-      "english": "tidy up"
+      "spanish": "ordenar el cuarto",
+      "english": "tidy up the room"
     },
     {
-      "spanish": "tirar",
-      "english": "throw away"
+      "spanish": "tirar a la basura",
+      "english": "throw it away"
     },
     {
-      "spanish": "colgar",
-      "english": "hang up"
+      "spanish": "colgar la ropa",
+      "english": "hang up the clothes"
     },
     {
-      "spanish": "recoger",
-      "english": "pick up"
+      "spanish": "recoger las cosas",
+      "english": "pick things up"
     },
     {
-      "spanish": "apagar",
-      "english": "turn off"
+      "spanish": "apagar la luz",
+      "english": "turn off the light"
     },
     {
       "spanish": "sacar la basura",
       "english": "take out the trash"
+    },
+    {
+      "spanish": "fregar los platos",
+      "english": "wash up the dishes"
+    },
+    {
+      "spanish": "barrer el suelo",
+      "english": "sweep the floor"
+    },
+    {
+      "spanish": "guardar la ropa",
+      "english": "put the clothes away"
+    },
+    {
+      "spanish": "ventilar la casa",
+      "english": "air out the house"
+    },
+    {
+      "spanish": "poner la mesa",
+      "english": "set the table"
     }
   ],
-  "full_script": "[excited] Compartes piso y toca repartir tareas. Todo esto va a salir en la conversación. Limpiar, clean up. Ordenar, tidy up. Tirar, throw away. Colgar, hang up. Recoger, pick up. Apagar, turn off. Sacar la basura, take out the trash. Un detalle útil. Clean up es dejarlo limpio. Tidy up es solo dejarlo ordenado. No son lo mismo y se nota.",
+  "full_script": "[excited] Compartes piso y toca repartir tareas. Limpiar todo, clean up. Ordenar el cuarto, tidy up the room. Tirar a la basura, throw it away. Colgar la ropa, hang up the clothes. Recoger las cosas, pick things up. Apagar la luz, turn off the light. Sacar la basura, take out the trash. Fregar los platos, wash up the dishes. Barrer el suelo, sweep the floor. Guardar la ropa, put the clothes away. Ventilar la casa, air out the house. Poner la mesa, set the table. Clean up es dejarlo limpio. Tidy up es solo dejarlo ordenado.",
   "translations": {
-    "clean up": "limpiar",
-    "tidy up": "ordenar",
-    "throw away": "tirar",
-    "hang up": "colgar",
-    "pick up": "recoger",
-    "turn off": "apagar",
-    "take out the trash": "sacar la basura"
+    "clean up": "limpiar todo",
+    "tidy up the room": "ordenar el cuarto",
+    "throw it away": "tirar a la basura",
+    "hang up the clothes": "colgar la ropa",
+    "pick things up": "recoger las cosas",
+    "turn off the light": "apagar la luz",
+    "take out the trash": "sacar la basura",
+    "wash up the dishes": "fregar los platos",
+    "sweep the floor": "barrer el suelo",
+    "put the clothes away": "guardar la ropa",
+    "air out the house": "ventilar la casa",
+    "set the table": "poner la mesa"
   },
   "english_phrases": [
     "clean up",
-    "tidy up",
-    "throw away",
-    "hang up",
-    "pick up",
-    "turn off",
-    "take out the trash"
+    "tidy up the room",
+    "throw it away",
+    "hang up the clothes",
+    "pick things up",
+    "turn off the light",
+    "take out the trash",
+    "wash up the dishes",
+    "sweep the floor",
+    "put the clothes away",
+    "air out the house",
+    "set the table"
   ],
   "hashtags": [
     "#Vocabulario",

@@ -32,9 +32,29 @@
     {
       "spanish": "me he perdido",
       "english": "I'm lost"
+    },
+    {
+      "spanish": "cruza la calle",
+      "english": "cross the street"
+    },
+    {
+      "spanish": "la esquina",
+      "english": "the corner"
+    },
+    {
+      "spanish": "dos manzanas",
+      "english": "two blocks"
+    },
+    {
+      "spanish": "enfrente de",
+      "english": "across from"
+    },
+    {
+      "spanish": "al lado de",
+      "english": "next to"
     }
   ],
-  "full_script": "[warm] Estás en una ciudad nueva, sin datos en el móvil, y tienes que preguntar. Estas siete te sacan de cualquier calle. ¿Cómo llego a...?, how do I get to...? Todo recto, straight ahead. Gira a la izquierda, turn left. Gira a la derecha, turn right. Está lejos, it's far. Está a la vuelta, it's around the corner. Me he perdido, I'm lost. Empieza siempre con excuse me y ya tienes su atención.",
+  "full_script": "[warm] Estás en una ciudad nueva, sin datos en el móvil, y tienes que preguntar. Estas siete te sacan de cualquier calle. ¿Cómo llego a...?, how do I get to...? Todo recto, straight ahead. Gira a la izquierda, turn left. Gira a la derecha, turn right. Está lejos, it's far. Está a la vuelta, it's around the corner. Cruza la calle, cross the street. La esquina, the corner. Dos manzanas, two blocks. Enfrente de, across from. Al lado de, next to. Me he perdido, I'm lost. Empieza siempre con excuse me y ya tienes su atención.",
   "translations": {
     "how do I get to...?": "¿cómo llego a...?",
     "straight ahead": "todo recto",
@@ -42,7 +62,12 @@
     "turn right": "gira a la derecha",
     "it's far": "está lejos",
     "it's around the corner": "está a la vuelta",
-    "I'm lost": "me he perdido"
+    "I'm lost": "me he perdido",
+    "cross the street": "cruza la calle",
+    "the corner": "la esquina",
+    "two blocks": "dos manzanas",
+    "across from": "enfrente de",
+    "next to": "al lado de"
   },
   "english_phrases": [
     "how do I get to...?",
@@ -51,7 +76,12 @@
     "turn right",
     "it's far",
     "it's around the corner",
-    "I'm lost"
+    "I'm lost",
+    "cross the street",
+    "the corner",
+    "two blocks",
+    "across from",
+    "next to"
   ],
   "hashtags": [
     "#Vocabulario",
