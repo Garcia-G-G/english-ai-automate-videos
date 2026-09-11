@@ -355,6 +355,45 @@ def complete_job(job_id: str, success: bool, video_path: str = None, error: str 
 # function.
 
 
+def _queue_guard():
+    """The guard module, imported once.
+
+    `sys.path.insert` used to run on every call of all three helpers below,
+    and Streamlit calls them on every rerun — the list grew without bound
+    for the lifetime of the process.
+    """
+    tools = str(ROOT / "tools")
+    if tools not in sys.path:
+        sys.path.insert(0, tools)
+    import queue_guard
+    return queue_guard
+
+
+#: The last audit, and when it was taken. AN AUDIT IS NOT CHEAP: it reads
+#: every queued script, validates it against the schema, measures every text
+#: field with the real font through length_spec, and walks every script and
+#: artifact on disk for topic_history. Streamlit reruns the whole page on
+#: every widget interaction, so an uncached queue_status() put all of that in
+#: front of every click on the Generate page.
+_AUDIT_CACHE = {"at": 0.0, "bad": None}
+_AUDIT_TTL = 20.0
+
+
+def _queue_bad(guard, fresh: bool = False) -> set:
+    """Paths the guard refuses, from a short-lived cache.
+
+    `fresh=True` for the decision that actually hands a script to a render —
+    a stale audit there could produce a topic that was made 20 seconds ago.
+    """
+    now = time.time()
+    if (not fresh and _AUDIT_CACHE["bad"] is not None
+            and now - _AUDIT_CACHE["at"] < _AUDIT_TTL):
+        return _AUDIT_CACHE["bad"]
+    bad = {path for path, _ in guard.audit()}
+    _AUDIT_CACHE.update(at=now, bad=bad)
+    return bad
+
+
 def queue_pick(video_type: str = None):
     """The next SAFE queued script for this type, or None.
 
@@ -364,14 +403,13 @@ def queue_pick(video_type: str = None):
     never handed out -- see tools/queue_guard.py.
     """
     try:
-        sys.path.insert(0, str(ROOT / "tools"))
-        import queue_guard
+        queue_guard = _queue_guard()
     except Exception:                                       # noqa: BLE001
         logger.debug("queue: guard unavailable", exc_info=True)
         return None
 
     try:
-        bad = {path for path, _ in queue_guard.audit()}
+        bad = _queue_bad(queue_guard, fresh=True)
         for path in queue_guard.queued_scripts():
             if path.relative_to(ROOT) in bad:
                 continue
@@ -388,9 +426,8 @@ def queue_pick(video_type: str = None):
 def queue_status() -> dict:
     """What the Generate page shows: how many are ready, and per type."""
     try:
-        sys.path.insert(0, str(ROOT / "tools"))
-        import queue_guard
-        bad = {path for path, _ in queue_guard.audit()}
+        queue_guard = _queue_guard()
+        bad = _queue_bad(queue_guard)
         ready, by_type = 0, {}
         for path in queue_guard.queued_scripts():
             if path.relative_to(ROOT) in bad:
@@ -410,11 +447,94 @@ def queue_shelve(path) -> None:
     in the queue and the next run picks it up again.
     """
     try:
-        sys.path.insert(0, str(ROOT / "tools"))
-        import queue_guard
-        queue_guard.main(["--done", str(path)])
+        _queue_guard().main(["--done", str(path)])
+        # The shelf moved a file the cached audit still describes.
+        _AUDIT_CACHE.update(at=0.0, bad=None)
     except Exception:                                       # noqa: BLE001
         logger.warning("queue: could not shelve %s", path, exc_info=True)
+
+
+# ============== THE BATCH QUEUE, ON DISK ==============
+#
+# It used to live in st.session_state and be drained in one loop:
+#
+#     while st.session_state.queue_items:
+#         start_generation(st.session_state.queue_items.pop(0))
+#
+# which spawned a daemon thread per item. They serialise on _RENDER_LOCK, so
+# one rendered and the rest waited -- and ANY restart of the Streamlit process
+# killed every waiting thread at once while clearing the session that held the
+# queue. The owner saw exactly that: the first one or two appear, the rest
+# vanish. Five jobs sat "active" with their heartbeats frozen for six hours.
+#
+# So the queue outlives the process, the way the job ledger already does, and
+# ONE item is in flight at a time. A restart loses the running render and
+# nothing else; the rest are still on disk and resume.
+
+BATCH_QUEUE_PATH = OUTPUT_DIR / "batch_queue.json"
+_BATCH_LOCK = threading.RLock()
+
+
+def batch_queue() -> list:
+    """The items still waiting, oldest first."""
+    with _BATCH_LOCK:
+        try:
+            with open(BATCH_QUEUE_PATH, encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (OSError, ValueError):
+            return []
+    return data.get("items", []) if isinstance(data, dict) else []
+
+
+def _write_batch_queue(items: list) -> None:
+    with _BATCH_LOCK:
+        BATCH_QUEUE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(BATCH_QUEUE_PATH, "w", encoding="utf-8") as handle:
+            json.dump({"items": items}, handle, ensure_ascii=False, indent=2)
+
+
+def batch_add(items: list) -> int:
+    with _BATCH_LOCK:
+        current = batch_queue() + list(items)
+        _write_batch_queue(current)
+        return len(current)
+
+
+def batch_clear() -> None:
+    _write_batch_queue([])
+
+
+def batch_take():
+    """Remove and return the next item, or None. Persisted immediately.
+
+    Popped under the lock and written back before the job starts, so a crash
+    between the two loses one item rather than replaying it forever.
+    """
+    with _BATCH_LOCK:
+        items = batch_queue()
+        if not items:
+            return None
+        nxt = items.pop(0)
+        _write_batch_queue(items)
+        return nxt
+
+
+def batch_advance() -> str:
+    """Start the next queued item if nothing is rendering. Returns its job id.
+
+    Called when a job finishes AND from the Queue page, so the chain survives a
+    restart: the page finds a non-empty queue with no active job and restarts
+    it. One driver would have been enough until the process died.
+    """
+    if get_active_jobs():
+        return ""
+    nxt = batch_take()
+    if not nxt:
+        return ""
+    logger.info("batch: starting %s (%d left)", nxt.get("type"),
+                len(batch_queue()))
+    return start_generation(nxt.get("type"), nxt.get("category"),
+                            nxt.get("topic"))
 
 
 def get_active_jobs() -> list:
@@ -453,6 +573,17 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
     it was narrower than the engine behind it.
     """
     result = {"success": False, "video_path": None, "error": None}
+
+    # Bound before the try so the failure paths can read them.
+    queued_path = None
+    script_path = None
+    video_path = None
+    # NOT video_path. video_path is the render TARGET and is bound before
+    # render_video runs, so a killed or timed-out ffmpeg that left a partial
+    # file behind made `video_path.exists()` true and the release below
+    # decided a video had been produced. This is bound only once the render
+    # returned, so "an mp4 survived the failure" means a finished mp4.
+    rendered_video = None
 
     try:
         update_job(job_id, status="running", step_number=1,
@@ -507,15 +638,22 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                    current_step=f"Topic: '{topic_name}'", progress=10)
 
         # Step 2: the script -- from the queue if there is one, else GPT
-        queued_path = None
         if script_data is None and use_queue:
             picked = queue_pick(video_type)
             if picked:
                 queued_path, script_data = picked
                 topic_meta = script_data.get("_meta") or {}
                 category = topic_meta.get("category") or category
+                # video_title BEFORE the drawn topic_name. Only the
+                # pronunciation queue carries `word` and only vocabulary
+                # carries `title`, so educational / quiz / true_false /
+                # fill_blank fell straight through to the topic the random
+                # draw had picked a moment earlier — an unrelated subject
+                # that then named the output file AND seeded the Pexels
+                # footage query for a script about something else.
                 topic_name = (script_data.get("word") or script_data.get("title")
-                              or topic_name or queued_path.stem)
+                              or script_data.get("video_title")
+                              or queued_path.stem)
                 update_job(job_id, step_number=2, category=category,
                            topic=topic_name, script_source="queue",
                            current_step=f"Queued script: {queued_path.name}",
@@ -562,6 +700,13 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             script_data, audio_path, script_path=script_path, dry_run=dry_run)
 
         if dry_run:
+            # A DRY RUN PRODUCED NO VIDEO, so it must not leave the history
+            # mark either. The output/scripts/ copy is written above, `_meta`
+            # and all, and topic_history counts that copy — so a dry run of a
+            # queued script made queue_guard refuse the original ALREADY
+            # PRODUCED forever, while the script itself was never shelved.
+            # Same release the failure paths do, for the same reason.
+            _release_queued_script(queued_path, script_path)
             update_job(job_id, current_step="Dry run complete", progress=100)
             complete_job(job_id, success=True)
             result["success"] = True
@@ -644,6 +789,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             background=resolved_background,
             timeout=pipeline.RENDER_TIMEOUT_S,
         )
+        rendered_video = video_path
 
         update_job(job_id, current_step="Video rendered", progress=90)
 
@@ -717,14 +863,57 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         result["error"] = error_msg
         complete_job(job_id, success=False, error=error_msg[:2000])
         logger.error("[Pipeline ERROR]: %s", error_msg)
+        _release_queued_script(queued_path, script_path, rendered_video)
     except Exception as e:
         import traceback
         error_msg = f"{str(e)}\n{traceback.format_exc()}"
         result["error"] = error_msg
         complete_job(job_id, success=False, error=error_msg[:2000])
         logger.error("[Pipeline ERROR]: %s", error_msg)
+        _release_queued_script(queued_path, script_path, rendered_video)
 
     return result
+
+
+def _release_queued_script(queued_path, script_path, video_path=None) -> None:
+    """Undo the history mark a FAILED queued job left behind.
+
+    The comment above the shelve promises that "a job that fails leaves its
+    script in the queue so the next run picks it up again". It did not: the
+    script is copied into output/scripts/ before TTS runs, `_meta` and all,
+    and topic_history counts that copy as a produced video. On the next pick
+    queue_guard flags the very same file ALREADY PRODUCED and refuses it
+    forever — so one transient TTS or render failure permanently burned a
+    hand-written script.
+
+    Removing the copy on failure is what makes the promise true. Only for a
+    queued script, and only on failure: a GPT-written script is the only
+    record of what was generated and is kept either way.
+
+    NOT WHEN AN MP4 SURVIVED THE FAILURE. render_video can succeed and the
+    step after it still raise — finalize_video runs the gate and appends the
+    outro through ffmpeg, and the metadata write follows it. topic_history
+    counts SCRIPT json, never mp4s, so removing the copy while the video sits
+    in output/pending/ un-marks a topic that HAS been produced, and the guard
+    then re-offers the script and makes the same video twice. When the render
+    got that far the mark is correct and stays; the script is burned, which a
+    person can undo, whereas a duplicate reaches the channel.
+    """
+    if queued_path is None or script_path is None:
+        return
+    if video_path is not None and Path(video_path).exists():
+        logger.info("queue: %s failed after its video was rendered — the "
+                    "history mark stays, because %s is on disk",
+                    queued_path.name, video_path)
+        return
+    try:
+        Path(script_path).unlink(missing_ok=True)
+        _AUDIT_CACHE.update(at=0.0, bad=None)
+        logger.info("queue: %s failed — its output/scripts copy was removed "
+                    "so the guard will offer it again", queued_path.name)
+    except Exception:                                       # noqa: BLE001
+        logger.warning("queue: could not un-mark %s after a failure",
+                       queued_path, exc_info=True)
 
 
 # ============== RUNNING GENERATION OFF THE SCRIPT THREAD ==============
@@ -785,6 +974,13 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
         finally:
             stop_beating.set()
             detach_run_log(log_path)
+            # THE CHAIN. One item in flight at a time: the next starts only
+            # when this one finishes, so nothing sits in a thread waiting for
+            # a lock where a restart can kill it.
+            try:
+                batch_advance()
+            except Exception:                               # noqa: BLE001
+                logger.exception("batch: could not start the next item")
 
     threading.Thread(target=_heartbeat, name=f"heartbeat-{job_id}",
                      daemon=True).start()
@@ -2009,8 +2205,6 @@ st.sidebar.caption("v2.0 - English AI Videos")
 page = st.session_state.current_page
 
 # Session state init
-if 'queue_items' not in st.session_state:
-    st.session_state.queue_items = []
 if 'scheduler_enabled' not in st.session_state:
     st.session_state.scheduler_enabled = False
 if 'scheduler_config' not in st.session_state:
@@ -2535,18 +2729,20 @@ elif page == "Queue":
         bc1, bc2 = st.columns(2)
         with bc1:
             if st.button("10 Random Quizzes", use_container_width=True):
-                for _ in range(10):
-                    st.session_state.queue_items.append({"type": "quiz", "category": None, "topic": None})
-                st.success("Added 10 quizzes!")
+                total = batch_add([{"type": "quiz", "category": None,
+                                    "topic": None} for _ in range(10)])
+                st.success(f"Added 10 quizzes — {total} waiting.")
                 st.rerun()
         with bc2:
             if st.button("5 of Each Type", use_container_width=True):
                 # "Each type" meant three of six, and the toast said 15
                 # regardless. Both came from the hand-written list.
-                for vtype in VIDEO_TYPES:
-                    for _ in range(5):
-                        st.session_state.queue_items.append({"type": vtype, "category": None, "topic": None})
-                st.success(f"Added {5 * len(VIDEO_TYPES)} videos!")
+                total = batch_add([{"type": vtype, "category": None,
+                                    "topic": None}
+                                   for vtype in VIDEO_TYPES
+                                   for _ in range(5)])
+                st.success(f"Added {5 * len(VIDEO_TYPES)} videos — "
+                           f"{total} waiting.")
                 st.rerun()
 
         st.markdown("---")
@@ -2554,42 +2750,57 @@ elif page == "Queue":
         q_type = st.selectbox("Type", VIDEO_TYPES, key="queue_type")
         q_count = st.number_input("Count", min_value=1, max_value=50, value=5)
         if st.button("Add to Queue", use_container_width=True):
-            for _ in range(q_count):
-                st.session_state.queue_items.append({"type": q_type, "category": None, "topic": None})
-            st.success(f"Added {q_count} {q_type} videos!")
+            total = batch_add([{"type": q_type, "category": None,
+                                "topic": None} for _ in range(q_count)])
+            st.success(f"Added {q_count} {q_type} videos — {total} waiting.")
             st.rerun()
 
     with col2:
-        st.markdown(f'<div class="section-header">Queue ({len(st.session_state.queue_items)} items)</div>', unsafe_allow_html=True)
+        _queued = batch_queue()
+        _running = get_active_jobs()
+        st.markdown(f'<div class="section-header">Queue ({len(_queued)} waiting)</div>',
+                    unsafe_allow_html=True)
 
-        if st.session_state.queue_items:
+        if _running:
+            st.info(f"Rendering now: {_running[0].get('video_type', '?')} — "
+                    f"{_running[0].get('current_step', '...')}")
+
+        if _queued:
             c1, c2 = st.columns(2)
             with c1:
-                start_btn = st.button("▶️ Start Processing", type="primary", use_container_width=True)
+                start_btn = st.button("▶️ Start Processing", type="primary",
+                                      use_container_width=True,
+                                      disabled=bool(_running))
             with c2:
                 if st.button("Clear Queue", use_container_width=True):
-                    st.session_state.queue_items = []
+                    batch_clear()
                     st.rerun()
 
             by_type = {}
-            for item in st.session_state.queue_items:
+            for item in _queued:
                 t = item["type"]
                 by_type[t] = by_type.get(t, 0) + 1
             for t, count in by_type.items():
                 st.write(f"**{t}**: {count} videos")
 
-            if start_btn:
-                # Queue them all at once. _RENDER_LOCK runs them one at a
-                # time, so this is the same serial order the old loop had —
-                # without holding the page open for the whole batch.
-                total = len(st.session_state.queue_items)
-                while st.session_state.queue_items:
-                    item = st.session_state.queue_items.pop(0)
-                    start_generation(item["type"])
+            st.caption("The queue lives on disk and one video renders at a "
+                       "time. Closing this page does not stop it, and a "
+                       "restart resumes from whatever is left.")
 
-                st.success(f"Queued {total} video(s). They run one at a time — "
-                           "watch progress on the Generate page.")
+            if start_btn:
+                # ONE item. The rest stay on disk and the worker chains to
+                # them as each finishes — see batch_advance(). Starting them
+                # all at once is what made them vanish on every restart.
+                job_id = batch_advance()
+                if job_id:
+                    st.success(f"Started. {len(batch_queue())} still waiting — "
+                               "watch progress on the Generate page.")
+                else:
+                    st.warning("Something is already rendering; the queue "
+                               "continues on its own when it finishes.")
                 st.rerun()
+        elif _running:
+            st.info("Queue empty — finishing the last video.")
         else:
             st.info("Queue is empty. Add videos above!")
 
