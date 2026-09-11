@@ -6,52 +6,82 @@
   "difficulty": "medio",
   "pairs": [
     {
-      "spanish": "plazo",
-      "english": "deadline"
+      "spanish": "la fecha límite",
+      "english": "the deadline"
     },
     {
-      "spanish": "entregar",
-      "english": "submit"
+      "spanish": "entregar el informe",
+      "english": "submit the report"
     },
     {
-      "spanish": "aplazar",
-      "english": "postpone"
+      "spanish": "aplazar la entrega",
+      "english": "postpone the delivery"
     },
     {
-      "spanish": "prioridad",
-      "english": "priority"
+      "spanish": "es prioritario",
+      "english": "it's a priority"
     },
     {
-      "spanish": "urgente",
-      "english": "urgent"
+      "spanish": "es urgente",
+      "english": "it's urgent"
     },
     {
-      "spanish": "pendiente",
-      "english": "pending"
+      "spanish": "está pendiente",
+      "english": "it's pending"
     },
     {
-      "spanish": "adelantar",
-      "english": "bring forward"
+      "spanish": "adelantar la fecha",
+      "english": "bring the date forward"
+    },
+    {
+      "spanish": "retrasar la fecha",
+      "english": "push the date back"
+    },
+    {
+      "spanish": "revisar el borrador",
+      "english": "review the draft"
+    },
+    {
+      "spanish": "dar el visto bueno",
+      "english": "sign off on it"
+    },
+    {
+      "spanish": "llegar a tiempo",
+      "english": "to be on time"
+    },
+    {
+      "spanish": "ir con retraso",
+      "english": "to be running late"
     }
   ],
-  "full_script": "[excited] Te escriben del trabajo con prisa y todo el mensaje está en inglés. Estas siete aparecen siempre, en ese orden más o menos. Plazo, deadline. Entregar, submit. Aplazar, postpone. Prioridad, priority. Urgente, urgent. Pendiente, pending. Adelantar, bring forward. Y un detalle que confunde a mucha gente. Bring forward es adelantar la fecha, no retrasarla. Push back es justo lo contrario. Confundirlas te puede costar un fin de semana entero.",
+  "full_script": "[excited] Te escriben del trabajo con prisa y todo el mensaje está en inglés. La fecha límite, the deadline. Entregar el informe, submit the report. Aplazar la entrega, postpone the delivery. Es prioritario, it's a priority. Es urgente, it's urgent. Está pendiente, it's pending. Adelantar la fecha, bring the date forward. Retrasar la fecha, push the date back. Revisar el borrador, review the draft. Dar el visto bueno, sign off on it. Llegar a tiempo, to be on time. Ir con retraso, to be running late. Repítelas conmigo una vez más y ya son tuyas.",
   "translations": {
-    "deadline": "plazo",
-    "submit": "entregar",
-    "postpone": "aplazar",
-    "priority": "prioridad",
-    "urgent": "urgente",
-    "pending": "pendiente",
-    "bring forward": "adelantar"
+    "the deadline": "la fecha límite",
+    "submit the report": "entregar el informe",
+    "postpone the delivery": "aplazar la entrega",
+    "it's a priority": "es prioritario",
+    "it's urgent": "es urgente",
+    "it's pending": "está pendiente",
+    "bring the date forward": "adelantar la fecha",
+    "push the date back": "retrasar la fecha",
+    "review the draft": "revisar el borrador",
+    "sign off on it": "dar el visto bueno",
+    "to be on time": "llegar a tiempo",
+    "to be running late": "ir con retraso"
   },
   "english_phrases": [
-    "deadline",
-    "submit",
-    "postpone",
-    "priority",
-    "urgent",
-    "pending",
-    "bring forward"
+    "the deadline",
+    "submit the report",
+    "postpone the delivery",
+    "it's a priority",
+    "it's urgent",
+    "it's pending",
+    "bring the date forward",
+    "push the date back",
+    "review the draft",
+    "sign off on it",
+    "to be on time",
+    "to be running late"
   ],
   "hashtags": [
     "#Vocabulario",

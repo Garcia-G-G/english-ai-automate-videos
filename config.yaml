@@ -91,12 +91,27 @@ duration:
   # per-item budget therefore sizes the item that ships, not the ones that
   # are paid for and discarded.
   types:
-    educational:   {rate: 2.59, silence: 5.5, n: 45}
-    pronunciation: {rate: 2.28, silence: 3.1, n: 12}
-    vocabulary:    {rate: 1.36, silence: 3.8, n: 6}
-    true_false:    {rate: 1.75, silence: 4.5, n: 16, fixed_words: 18, items_spoken: 1}
-    fill_blank:    {rate: 1.90, silence: 4.5, n: 23, fixed_words: 40, items_spoken: 1}
-    quiz:          {rate: 2.07, silence: 6.3, n: 56, fixed_words: 36, items_spoken: 1}
+    # MEASURED, not calculated. tools/duration_calibrate.py fits these over
+    # every (script, audio) pair on disk -- 224 of them -- against the text the
+    # generator ACTUALLY speaks. full_script is not the narration for quiz,
+    # true_false, fill_blank or vocabulary: their audio is built from the
+    # structured fields and full_script is copied to metadata untouched. The
+    # old numbers measured a string nobody says, which is how a script sat
+    # inside the band and produced a thirty-second video.
+    #
+    # `silence` is the fitted intercept: fixed pauses plus, for quiz, the
+    # seven-second countdown that is SILENT by design. No wording reaches it.
+    #
+    # CAVEAT ON pronunciation: 16 samples with a median of 38 spoken words,
+    # and the queue writes ~104. The intercept came out negative, which is a
+    # fitting artifact at that range, not physics. Treat its prediction as
+    # indicative until more pronunciation videos exist.
+    educational:   {rate: 2.26, silence: 0.8, n: 45}
+    pronunciation: {rate: 1.54, silence: 0.0, n: 12}
+    vocabulary:    {rate: 1.18, silence: 6.4, n: 6}
+    true_false:    {rate: 1.80, silence: 9.0, n: 16, fixed_words: 18, items_spoken: 1}
+    fill_blank:    {rate: 4.44, silence: 28.6, n: 23, fixed_words: 40, items_spoken: 1}
+    quiz:          {rate: 2.43, silence: 18.3, n: 56, fixed_words: 36, items_spoken: 1}
 
 
   # ── REPETITION ────────────────────────────────────────────────────

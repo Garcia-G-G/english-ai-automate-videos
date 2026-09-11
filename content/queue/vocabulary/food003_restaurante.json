@@ -32,9 +32,29 @@
     {
       "spanish": "para llevar",
       "english": "to go"
+    },
+    {
+      "spanish": "de postre",
+      "english": "for dessert"
+    },
+    {
+      "spanish": "la reserva",
+      "english": "the reservation"
+    },
+    {
+      "spanish": "sin gluten",
+      "english": "gluten free"
+    },
+    {
+      "spanish": "la propina",
+      "english": "the tip"
+    },
+    {
+      "spanish": "otra ronda",
+      "english": "another round"
     }
   ],
-  "full_script": "[warm] Te sientas, llega el camarero y se te va todo el inglés de golpe. Estas siete te sacan del apuro. La carta, the menu. El camarero, the waiter. De primero, starter. Plato principal, main course. La cuenta, the bill. Propina, tip. Para llevar, to go. Un aviso que vale dinero. En Estados Unidos dicen check en vez de bill. Y la propina no es opcional, aunque te lo parezca.",
+  "full_script": "[warm] Te sientas, llega el camarero y se te va todo el inglés de golpe. Estas siete te sacan del apuro. La carta, the menu. El camarero, the waiter. De primero, starter. Plato principal, main course. La cuenta, the bill. Propina, tip. Para llevar, to go. Un aviso que vale dinero. De postre, for dessert. La reserva, the reservation. Sin gluten, gluten free. La propina, the tip. Otra ronda, another round. En Estados Unidos dicen check en vez de bill. Y la propina no es opcional, aunque te lo parezca.",
   "translations": {
     "the menu": "la carta",
     "the waiter": "el camarero",
@@ -42,7 +62,12 @@
     "main course": "plato principal",
     "the bill": "la cuenta",
     "tip": "propina",
-    "to go": "para llevar"
+    "to go": "para llevar",
+    "for dessert": "de postre",
+    "the reservation": "la reserva",
+    "gluten free": "sin gluten",
+    "the tip": "la propina",
+    "another round": "otra ronda"
   },
   "english_phrases": [
     "the menu",
@@ -51,7 +76,12 @@
     "main course",
     "the bill",
     "tip",
-    "to go"
+    "to go",
+    "for dessert",
+    "the reservation",
+    "gluten free",
+    "the tip",
+    "another round"
   ],
   "hashtags": [
     "#Vocabulario",

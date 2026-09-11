@@ -6,52 +6,82 @@
   "difficulty": "fácil",
   "pairs": [
     {
-      "spanish": "guardar",
-      "english": "save"
+      "spanish": "guardar el archivo",
+      "english": "save the file"
     },
     {
-      "spanish": "archivo",
-      "english": "file"
+      "spanish": "abrir la carpeta",
+      "english": "open the folder"
     },
     {
-      "spanish": "carpeta",
-      "english": "folder"
+      "spanish": "la pantalla",
+      "english": "the screen"
     },
     {
-      "spanish": "pantalla",
-      "english": "screen"
+      "spanish": "el teclado",
+      "english": "the keyboard"
     },
     {
-      "spanish": "teclado",
-      "english": "keyboard"
+      "spanish": "cambiar contraseña",
+      "english": "change the password"
     },
     {
-      "spanish": "contraseña",
-      "english": "password"
+      "spanish": "actualizar el sistema",
+      "english": "update the system"
     },
     {
-      "spanish": "actualizar",
-      "english": "update"
+      "spanish": "descargar archivo",
+      "english": "download a file"
+    },
+    {
+      "spanish": "subir una foto",
+      "english": "upload a photo"
+    },
+    {
+      "spanish": "borrar el correo",
+      "english": "delete the email"
+    },
+    {
+      "spanish": "buscar en internet",
+      "english": "search online"
+    },
+    {
+      "spanish": "reiniciar el equipo",
+      "english": "restart the computer"
+    },
+    {
+      "spanish": "cerrar sesión",
+      "english": "log out"
     }
   ],
-  "full_script": "[warm] Te cambian el ordenador al inglés y de repente no encuentras nada. Estas siete están en todos los menús. Guardar, save. Archivo, file. Carpeta, folder. Pantalla, screen. Teclado, keyboard. Contraseña, password. Actualizar, update. Un aviso útil. Update es actualizar el programa. Upgrade es pasar a una versión mejor. No son lo mismo y te lo van a preguntar.",
+  "full_script": "[warm] Te cambian el ordenador al inglés y de repente no encuentras nada. Guardar el archivo, save the file. Abrir la carpeta, open the folder. La pantalla, the screen. El teclado, the keyboard. Cambiar contraseña, change the password. Actualizar el sistema, update the system. Descargar archivo, download a file. Subir una foto, upload a photo. Borrar el correo, delete the email. Buscar en internet, search online. Reiniciar el equipo, restart the computer. Cerrar sesión, log out. Repítelas conmigo una vez más y ya son tuyas.",
   "translations": {
-    "save": "guardar",
-    "file": "archivo",
-    "folder": "carpeta",
-    "screen": "pantalla",
-    "keyboard": "teclado",
-    "password": "contraseña",
-    "update": "actualizar"
+    "save the file": "guardar el archivo",
+    "open the folder": "abrir la carpeta",
+    "the screen": "la pantalla",
+    "the keyboard": "el teclado",
+    "change the password": "cambiar contraseña",
+    "update the system": "actualizar el sistema",
+    "download a file": "descargar archivo",
+    "upload a photo": "subir una foto",
+    "delete the email": "borrar el correo",
+    "search online": "buscar en internet",
+    "restart the computer": "reiniciar el equipo",
+    "log out": "cerrar sesión"
   },
   "english_phrases": [
-    "save",
-    "file",
-    "folder",
-    "screen",
-    "keyboard",
-    "password",
-    "update"
+    "save the file",
+    "open the folder",
+    "the screen",
+    "the keyboard",
+    "change the password",
+    "update the system",
+    "download a file",
+    "upload a photo",
+    "delete the email",
+    "search online",
+    "restart the computer",
+    "log out"
   ],
   "hashtags": [
     "#Vocabulario",
