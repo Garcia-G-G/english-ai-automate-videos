@@ -389,7 +389,13 @@ def _queue_bad(guard, fresh: bool = False) -> set:
     if (not fresh and _AUDIT_CACHE["bad"] is not None
             and now - _AUDIT_CACHE["at"] < _AUDIT_TTL):
         return _AUDIT_CACHE["bad"]
-    bad = {path for path, _ in guard.audit()}
+    # ONLY WHAT BLOCKS. Severity is a property of the failure: a repeated
+    # topic reaches the channel and cannot be taken back, while a short video
+    # is a real video the owner can watch and judge. Refusing on duration
+    # produced NOTHING, and pushed every quiz, true_false and fill_blank job
+    # onto the GPT fallback -- which is how a dead OpenAI key ended up in the
+    # owner's face on a route built to need no API at all.
+    bad = {path for path, reason in guard.audit() if guard.blocks(reason)}
     _AUDIT_CACHE.update(at=now, bad=bad)
     return bad
 
@@ -658,6 +664,22 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                            topic=topic_name, script_source="queue",
                            current_step=f"Queued script: {queued_path.name}",
                            progress=15)
+
+        if script_data is None and use_queue and queue_pick() is not None:
+            # NO SILENT FALLBACK WHILE THE QUEUE HAS ANYTHING. The control
+            # says "use a queued script"; quietly calling GPT instead
+            # contradicts it, and with no working key it turned an empty type
+            # into a 401 the owner had to decode on a route built to need no
+            # API at all.
+            #
+            # The `queue_pick() is not None` guard is the honest edge: a queue
+            # that is empty ALTOGETHER has no promise to keep, and the page
+            # already unticks the box in that case. This only fires when other
+            # types have scripts and THIS one has run out.
+            raise RuntimeError(
+                f"no queued script left for {video_type!r}, though the queue "
+                f"still has others. Add more of this type, or turn off 'Use a "
+                f"queued script' to write one with GPT.")
 
         if script_data is None:
             update_job(job_id, step_number=2, script_source="gpt",
