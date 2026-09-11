@@ -2166,7 +2166,31 @@ st.markdown("""
 
 # ============== SIDEBAR NAVIGATION ==============
 
+def _running_version() -> str:
+    """The commit this PROCESS is running, not the one on disk.
+
+    Read once at import, so it freezes at whatever was current when the
+    process started. That is the whole point: three separate times the owner
+    was told a bug was fixed while his dashboard was still executing the old
+    module, and nothing on screen could have told him. A background worker
+    holds the old functions even after Streamlit re-runs the page, so
+    refreshing the browser is not a restart.
+    """
+    import subprocess
+    try:
+        sha = subprocess.run(
+            ["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"],
+            capture_output=True, text=True, timeout=5).stdout.strip()
+    except Exception:                                       # noqa: BLE001
+        sha = "?"
+    return sha or "?"
+
+
+_RUNNING_VERSION = _running_version()
+_STARTED_AT = datetime.now().strftime("%H:%M")
+
 st.sidebar.markdown("### 🎬 English AI Videos")
+st.sidebar.caption(f"build `{_RUNNING_VERSION}` · started {_STARTED_AT}")
 st.sidebar.markdown("---")
 
 if 'current_page' not in st.session_state:
