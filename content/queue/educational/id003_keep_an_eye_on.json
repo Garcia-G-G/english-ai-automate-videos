@@ -3,12 +3,13 @@
   "video_title": "'Keep an eye on' 👁️ vigilar sin vigilar",
   "video_description": "La frase que se dice mil veces al día y casi nadie enseña. 👀",
   "hook": "Le pides a alguien que vigile tu mochila y hay una frase exacta.",
-  "full_script": "[excited] Te levantas al baño y dejas la mochila en la mesa. Le pides a alguien que la vigile. Can you keep an eye on my bag? ¿Me echas un ojo a la mochila? En español también usamos el ojo. La imagen es la misma. Se usa para cosas y para personas. Keep an eye on the kids. Vigila a los niños. Y también para situaciones que pueden cambiar. Keep an eye on the weather. Está atento al tiempo. Si la vigilancia es intensa, sube un escalón. Keep a close eye on it. Vigílalo de cerca. Y si solo quieres estar informado, hay otra. Keep me posted. Mantenme al tanto.",
+  "full_script": "[excited] Te levantas al baño y dejas la mochila en la mesa. Le pides a alguien que la vigile. Can you 'keep an eye on' my bag? ¿Me echas un ojo a la mochila? En español también usamos el ojo. La imagen es la misma. Se usa para cosas y para personas. Keep an eye on the kids. Vigila a los niños. Y también para situaciones que pueden cambiar. Keep an eye on the weather. Está atento al tiempo. Si la vigilancia es intensa, sube un escalón. Keep a close eye on it. Vigílalo de cerca. Y si solo quieres estar informado, hay otra. Keep me posted. Mantenme al tanto.",
   "english_phrases": [
     "keep an eye on",
     "can you keep an eye on my bag?",
     "keep a close eye on it",
-    "keep me posted"
+    "keep me posted",
+    "Keep an eye on the"
   ],
   "translations": {
     "keep an eye on": "echar un ojo a",
