@@ -77,7 +77,32 @@ def queued_scripts():
                   if DONE_DIR not in p.parents)
 
 
-def audit():
+#: (fingerprint -> problems). The audit reads every queued script, validates
+#: each against its schema and lays its text out with the real font, which
+#: measures ten seconds on a hundred scripts. Streamlit re-runs the whole page
+#: on every widget interaction and every job asks for the next safe script, so
+#: an uncached audit put ten seconds in front of each of those. The fingerprint
+#: is the queue's own (path, mtime, size) plus the produced-topic count, so any
+#: edit or any finished video invalidates it and nothing goes stale.
+_AUDIT_CACHE = {}
+
+
+def _fingerprint():
+    try:
+        files = tuple(sorted(
+            (str(p), int(p.stat().st_mtime_ns), p.stat().st_size)
+            for p in queued_scripts()))
+    except OSError:
+        return None
+    try:
+        from topic_history import usage_counts
+        produced = sum(usage_counts().values())
+    except Exception:                                       # noqa: BLE001
+        produced = -1
+    return (files, produced)
+
+
+def audit(fresh: bool = False):
     """Every problem in the queue, as (path, problem) pairs.
 
     All of them rather than the first: a queue filled in one sitting tends to
@@ -88,6 +113,14 @@ def audit():
     from script_schema import validate_script
     import duration_spec
     import length_spec
+
+    # NOT `key`. This function already binds `key` per script -- the
+    # (category, topic_id) pair -- so the name was silently rebound inside the
+    # loop and every store went in under the last script's topic. The cache
+    # filled and never hit once.
+    cache_key = None if fresh else _fingerprint()
+    if cache_key is not None and cache_key in _AUDIT_CACHE:
+        return list(_AUDIT_CACHE[cache_key])
 
     used = usage_counts()
     problems = []
@@ -195,6 +228,11 @@ def audit():
         except Exception:                                       # noqa: BLE001
             pass
 
+    if cache_key is not None:
+        # One entry. The fingerprint changes on any edit, so keeping history
+        # would only hold memory for a queue state that can never return.
+        _AUDIT_CACHE.clear()
+        _AUDIT_CACHE[cache_key] = list(problems)
     return problems
 
 
