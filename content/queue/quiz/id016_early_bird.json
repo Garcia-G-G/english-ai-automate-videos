@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "El pájaro madrugador 🐦 ¿qué significa?",
   "video_description": "Un refrán inglés que ya conoces en español. ⏰",
-  "question": "'The early bird catches the worm' significa...",
+  "question": "[curious] 'The early bird catches the worm' significa...",
   "options": {
     "A": "al que madruga Dios lo ayuda",
     "B": "más vale tarde que nunca",
@@ -10,7 +10,7 @@
     "D": "a caballo regalado no le mires el diente"
   },
   "correct": "A",
-  "explanation": "Llegar pronto da ventaja. Es el equivalente de al que madruga Dios lo ayuda.",
+  "explanation": "[excited] Llegar pronto da ventaja. Es el equivalente de al que madruga Dios lo ayuda.",
   "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Alguien consigue algo por llegar antes y sueltan este refrán. The early bird catches the worm significa...... A, 'al que madruga Dios lo ayuda'.... B, 'más vale tarde que nunca'.... C, 'quien mucho abarca poco aprieta'.... D, 'a caballo regalado no le mires el diente'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es A. El pájaro madrugador se lleva el gusano. Llegar pronto te da ventaja. Y existe una versión abreviada muy usada. Early bird. Los descuentos por reservar pronto se llaman early bird prices. La verás en entradas y vuelos.",
   "translations": {
     "the early bird catches the worm": "al que madruga, Dios lo ayuda",
@@ -28,5 +28,40 @@
     "topic_id": "id016",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  }
+  },
+  "questions": [
+    {
+      "question": "[curious] 'The early bird catches the worm' significa...",
+      "options": {
+        "A": "al que madruga Dios lo ayuda",
+        "B": "más vale tarde que nunca",
+        "C": "quien mucho abarca poco aprieta",
+        "D": "a caballo regalado no le mires el diente"
+      },
+      "correct": "A",
+      "explanation": "[excited] Llegar pronto da ventaja. Es el equivalente de al que madruga Dios lo ayuda."
+    },
+    {
+      "question": "[curious] 'Early bird prices' son...",
+      "options": {
+        "A": "precios de desayuno",
+        "B": "precios por reservar pronto",
+        "C": "precios de última hora",
+        "D": "precios de grupo"
+      },
+      "correct": "B",
+      "explanation": "[excited] El descuento por comprar con antelación. Lo verás en vuelos y entradas."
+    },
+    {
+      "question": "[curious] 'He's an early bird' describe a alguien que...",
+      "options": {
+        "A": "madruga",
+        "B": "trasnocha",
+        "C": "llega tarde",
+        "D": "come pronto"
+      },
+      "correct": "A",
+      "explanation": "[excited] Un madrugador. Su opuesto es a night owl, un búho nocturno."
+    }
+  ]
 }

@@ -70,3 +70,27 @@ def test_sentence_boundaries_ignore_tags():
 @pytest.mark.parametrize("tag", sorted(TAGS))
 def test_every_declared_tag_is_shaped_like_one(tag):
     assert is_tag(f"[{tag}]")
+
+
+def test_no_tag_survives_into_the_renderer_input():
+    """quiz.py:618 draws data['explanation'] DIRECTLY, never via the word list.
+
+    So the word-builder filter does not protect the structured fields. This is
+    the one that would have put "[excited]" on the answer card.
+    """
+    from video import _strip_audio_tags
+
+    data = _strip_audio_tags({
+        "type": "quiz",
+        "question": "[curious] ¿Cuál va aquí?",
+        "options": {"A": "[excited] its", "B": "it's"},
+        "explanation": "[excited] La respuesta es A.",
+        "questions": [{"explanation": "[serious] Cuidado con esta."}],
+        "full_script": "[warm] Hola.",
+    })
+
+    assert data["question"] == "¿Cuál va aquí?"
+    assert data["options"]["A"] == "its"
+    assert data["explanation"] == "La respuesta es A."
+    assert data["questions"][0]["explanation"] == "Cuidado con esta."
+    assert data["full_script"] == "Hola."

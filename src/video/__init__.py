@@ -20,6 +20,33 @@ from .backgrounds import (
     CURRENT_BACKGROUND,
 )
 from .utils import load_data
+
+
+def _strip_audio_tags(data):
+    """Every drawn string with its audio tags removed. See src/audio_tags.py.
+
+    The audio is already made by the time any renderer runs, so from that point
+    an ElevenLabs tag is pure text waiting to be drawn. quiz.py:618 and
+    true_false.py:317 read data['explanation'] and draw it DIRECTLY, never via
+    the word list the TTS layer already filters, so a tag in a structured field
+    would land on the answer card. One pass at the single entry point, because
+    this project has paid twice for fixing a door instead of the room.
+    """
+    try:
+        from audio_tags import strip_tags
+    except ImportError:                                     # noqa: BLE001
+        return data
+
+    def clean(value):
+        if isinstance(value, str):
+            return strip_tags(value)
+        if isinstance(value, dict):
+            return {k: clean(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [clean(v) for v in value]
+        return value
+
+    return clean(data)
 from .educational import create_frame_educational, add_sentence_boundaries
 from .karaoke import create_frame_karaoke
 from .quiz import create_frame_quiz, resolve_quiz_timestamps
@@ -115,6 +142,7 @@ def generate_video(
 
     logger.info(f"Loading data: {data_path}")
     data = load_data(data_path)
+    data = _strip_audio_tags(data)
     from studio.renderer_presentation import resolve_presentation
     presentation = resolve_presentation(native_language)
 

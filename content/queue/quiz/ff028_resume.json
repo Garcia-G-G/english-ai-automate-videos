@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "RESUME no es resumir 📄",
   "video_description": "Un falso amigo que puede costarte una entrevista. 💼",
-  "question": "En inglés, 'resume' (con acento) significa...",
+  "question": "[curious] En inglés, 'resume' (con acento) significa...",
   "options": {
     "A": "resumir un texto",
     "B": "currículum vitae",
@@ -10,7 +10,7 @@
     "D": "recordar algo"
   },
   "correct": "B",
-  "explanation": "Résumé es el currículum. Resumir se dice summarize.",
+  "explanation": "[excited] Résumé es el currículum. Resumir se dice summarize.",
   "full_script": "[excited] ¡Quiz time! Pregunta número uno. Te piden algo por email antes de una entrevista y usan esta palabra. En inglés, resume, con acento, significa...... A, 'resumir un texto'.... B, 'currículum vitae'.... C, 'reanudar una reunión'.... D, 'recordar algo'.... Cuidado, porque hay dos respuestas casi buenas... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B. Résumé con acentos es el currículum. Please send your résumé. Envíe su currículum. Resumir un texto es summarize. Y ojo, porque resume sin acentos sí existe y significa reanudar. Let's resume the meeting. Retomemos la reunión. Dos acentos cambian la palabra entera.",
   "translations": {
     "résumé": "currículum",
@@ -30,5 +30,40 @@
     "topic_id": "ff028",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  }
+  },
+  "questions": [
+    {
+      "question": "[curious] En inglés, 'resume' (con acento) significa...",
+      "options": {
+        "A": "resumir un texto",
+        "B": "currículum vitae",
+        "C": "reanudar una reunión",
+        "D": "recordar algo"
+      },
+      "correct": "B",
+      "explanation": "[excited] Résumé es el currículum. Resumir se dice summarize."
+    },
+    {
+      "question": "[curious] 'Let's resume the meeting' significa...",
+      "options": {
+        "A": "resumamos la reunión",
+        "B": "retomemos la reunión",
+        "C": "terminemos la reunión",
+        "D": "grabemos la reunión"
+      },
+      "correct": "B",
+      "explanation": "[excited] Resume sin acentos es reanudar. Nada que ver con resumir."
+    },
+    {
+      "question": "[curious] Para pedir un resumen de un informe, dices...",
+      "options": {
+        "A": "can you resume it?",
+        "B": "can you summarize it?",
+        "C": "can you résumé it?",
+        "D": "can you sum it?"
+      },
+      "correct": "B",
+      "explanation": "[excited] Resumir es summarize. Es el error más repetido del inglés de oficina."
+    }
+  ]
 }

@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "ADVICE o ADVISE: la letra que lo cambia todo ✍️",
   "video_description": "Una C y una S deciden si es nombre o verbo. 🤔",
-  "question": "Can you give me some ___ about this?",
+  "question": "[curious] Can you give me some ___ about this?",
   "options": {
     "A": "advise",
     "B": "advice",
@@ -10,7 +10,7 @@
     "D": "advising"
   },
   "correct": "B",
-  "explanation": "Advice es el consejo, un nombre. Advise es aconsejar, un verbo.",
+  "explanation": "[excited] Advice es el consejo, un nombre. Advise es aconsejar, un verbo.",
   "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Le pides ayuda a alguien y aquí se decide todo por una letra. Can you give me some ___ about this?... A, 'advise'.... B, 'advice'.... C, 'advices'.... D, 'advising'.... Piensa qué necesitas: una cosa o una acción... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B, 'advice'. Con ce es el consejo. Un nombre, una cosa que te dan. Con ese, advise, es el verbo aconsejar. She advised me to wait. Me aconsejó esperar. Y hay una trampa extra. Advice no tiene plural. Nunca digas advices. Se dice some advice, o a piece of advice.",
   "translations": {
     "advice": "consejo",
@@ -30,5 +30,40 @@
     "topic_id": "cw002",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  }
+  },
+  "questions": [
+    {
+      "question": "[curious] Can you give me some ___ about this?",
+      "options": {
+        "A": "advise",
+        "B": "advice",
+        "C": "advices",
+        "D": "advising"
+      },
+      "correct": "B",
+      "explanation": "[excited] Advice es el consejo, un nombre. Advise es aconsejar, un verbo."
+    },
+    {
+      "question": "[curious] My teacher ___ me to take the exam early.",
+      "options": {
+        "A": "adviced",
+        "B": "advised",
+        "C": "adviced to",
+        "D": "advice"
+      },
+      "correct": "B",
+      "explanation": "[excited] El verbo es advise, y su pasado advised. Con ese, no con ce."
+    },
+    {
+      "question": "[curious] ¿Cuál de estas frases es correcta?",
+      "options": {
+        "A": "I need some advices",
+        "B": "I need an advice",
+        "C": "I need some advice",
+        "D": "I need advices"
+      },
+      "correct": "C",
+      "explanation": "[excited] Advice es incontable. Some advice, o a piece of advice."
+    }
+  ]
 }

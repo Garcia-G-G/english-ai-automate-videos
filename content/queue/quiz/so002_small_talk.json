@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "Small talk: la conversación de ascensor 🛗",
   "video_description": "Tres frases para llenar treinta segundos incómodos. 💬",
-  "question": "¿Cuál de estas NO es small talk apropiado?",
+  "question": "[curious] ¿Cuál de estas NO es small talk apropiado?",
   "options": {
     "A": "how was your weekend?",
     "B": "crazy weather today",
@@ -10,7 +10,7 @@
     "D": "did you catch the game?"
   },
   "correct": "C",
-  "explanation": "El small talk evita dinero, política y temas personales. Siempre.",
+  "explanation": "[excited] El small talk evita dinero, política y temas personales. Siempre.",
   "full_script": "[excited] ¡Quiz time! Pregunta número uno. Estás en un ascensor con un compañero y hay que decir algo. ¿Cuál de estas NO es small talk apropiado?... A, 'how was your weekend?'.... B, 'crazy weather today'.... C, 'how much do you earn?'.... D, 'did you catch the game?'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es C. El small talk evita dinero, política y temas personales. Siempre. Los temas seguros son tres. Tiempo, fin de semana y deporte. Con esos tres cubres cualquier ascensor del mundo.",
   "translations": {
     "how was your weekend?": "¿qué tal el finde?",
@@ -29,5 +29,40 @@
     "topic_id": "so002",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  }
+  },
+  "questions": [
+    {
+      "question": "[curious] ¿Cuál de estas NO es small talk apropiado?",
+      "options": {
+        "A": "how was your weekend?",
+        "B": "crazy weather today",
+        "C": "how much do you earn?",
+        "D": "did you catch the game?"
+      },
+      "correct": "C",
+      "explanation": "[excited] El small talk evita dinero, política y temas personales. Siempre."
+    },
+    {
+      "question": "[curious] ¿Cuál es la respuesta normal a 'how's it going?'",
+      "options": {
+        "A": "un relato largo de tu día",
+        "B": "good, you?",
+        "C": "silencio",
+        "D": "it's going to my house"
+      },
+      "correct": "B",
+      "explanation": "[excited] Casi nunca espera una respuesta larga. Dos palabras y devuelves la pregunta."
+    },
+    {
+      "question": "[curious] ¿Cuál de estos NO es un tema seguro en small talk?",
+      "options": {
+        "A": "el tiempo",
+        "B": "el fin de semana",
+        "C": "la política",
+        "D": "el deporte"
+      },
+      "correct": "C",
+      "explanation": "[excited] Tiempo, finde y deporte son seguros. Política, dinero y religión no."
+    }
+  ]
 }

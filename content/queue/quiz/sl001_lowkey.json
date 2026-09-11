@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "LOWKEY: la palabra para confesar algo a medias 🤫",
   "video_description": "Se usa cien veces al día y no está en ningún libro. 📱",
-  "question": "'I lowkey love that song' significa...",
+  "question": "[curious] 'I lowkey love that song' significa...",
   "options": {
     "A": "odio esa canción",
     "B": "me gusta un poco, sin admitirlo del todo",
@@ -10,7 +10,7 @@
     "D": "no conozco esa canción"
   },
   "correct": "B",
-  "explanation": "Lowkey suaviza lo que dices. Es un poco, discretamente, sin admitirlo del todo.",
+  "explanation": "[excited] Lowkey suaviza lo que dices. Es un poco, discretamente, sin admitirlo del todo.",
   "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Alguien confiesa algo a medias y usa una palabra rarísima. I lowkey love that song. ¿Qué significa?... A, 'odio esa canción'.... B, 'me gusta un poco, sin admitirlo del todo'.... C, 'escucho esa canción bajito'.... D, 'no conozco esa canción'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B. Lowkey suaviza lo que viene detrás. Es una confesión a medias, con vergüenza fingida. Y tiene su opuesto exacto. Highkey. Abiertamente, sin esconderlo. I'm highkey obsessed with that show. Estoy obsesionado y no lo escondo.",
   "translations": {
     "lowkey": "discretamente, un poco",
@@ -29,5 +29,40 @@
     "topic_id": "sl001",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  }
+  },
+  "questions": [
+    {
+      "question": "[curious] 'I lowkey love that song' significa...",
+      "options": {
+        "A": "odio esa canción",
+        "B": "me gusta un poco, sin admitirlo del todo",
+        "C": "escucho esa canción bajito",
+        "D": "no conozco esa canción"
+      },
+      "correct": "B",
+      "explanation": "[excited] Lowkey suaviza lo que dices. Es un poco, discretamente, sin admitirlo del todo."
+    },
+    {
+      "question": "[curious] 'I'm highkey obsessed with that show' significa...",
+      "options": {
+        "A": "lo escondo",
+        "B": "lo digo abiertamente",
+        "C": "no me gusta",
+        "D": "lo veo a escondidas"
+      },
+      "correct": "B",
+      "explanation": "[excited] Highkey es el opuesto de lowkey. Abiertamente, sin disimular."
+    },
+    {
+      "question": "[curious] ¿Cuál suena más natural entre amigos?",
+      "options": {
+        "A": "I lowkey want pizza",
+        "B": "I lowly want pizza",
+        "C": "I low want pizza",
+        "D": "I keylow want pizza"
+      },
+      "correct": "A",
+      "explanation": "[excited] Lowkey va delante del verbo y suaviza lo que viene detrás."
+    }
+  ]
 }

@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "Dijiste 'compromise' en una reunión y no significaba eso 😳",
   "video_description": "Un falso amigo que puede arruinarte una reunión. Ponte a prueba. 💼",
-  "question": "'We reached a compromise' significa que...",
+  "question": "[curious] 'We reached a compromise' significa que...",
   "options": {
     "A": "asumimos un compromiso",
     "B": "llegamos a un acuerdo cediendo",
@@ -10,7 +10,7 @@
     "D": "aceptamos una obligación"
   },
   "correct": "B",
-  "explanation": "Compromise es ceder para cerrar un acuerdo. Compromiso adquirido es commitment.",
+  "explanation": "[excited] Compromise es ceder para cerrar un acuerdo. Compromiso adquirido es commitment.",
   "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Sales de una reunión, cuentas cómo fue y sueltas esta frase. We reached a compromise. ¿Qué acabas de decir?... A, 'Asumimos un compromiso.'.... B, 'Llegamos a un acuerdo cediendo.'.... C, 'Nos comprometimos en matrimonio.'.... D, 'Aceptamos una obligación.'.... Suena tanto a compromiso que casi nadie duda... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B. Compromise es que cada parte suelta algo para cerrar el trato. No es un compromiso adquirido. Eso es commitment. I have a commitment on Friday. Tengo un compromiso el viernes.",
   "translations": {
     "we reached a compromise": "llegamos a un acuerdo",
@@ -29,5 +29,40 @@
     "topic_id": "ff012",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  }
+  },
+  "questions": [
+    {
+      "question": "[curious] 'We reached a compromise' significa que...",
+      "options": {
+        "A": "asumimos un compromiso",
+        "B": "llegamos a un acuerdo cediendo",
+        "C": "nos comprometimos en matrimonio",
+        "D": "aceptamos una obligación"
+      },
+      "correct": "B",
+      "explanation": "[excited] Compromise es ceder para cerrar un acuerdo. Compromiso adquirido es commitment."
+    },
+    {
+      "question": "[curious] 'I have a commitment on Friday' significa...",
+      "options": {
+        "A": "tengo un compromiso el viernes",
+        "B": "cedo el viernes",
+        "C": "me caso el viernes",
+        "D": "trabajo el viernes"
+      },
+      "correct": "A",
+      "explanation": "[excited] Commitment es el compromiso adquirido. Esa es la palabra que buscabas."
+    },
+    {
+      "question": "[curious] Para ceder en una negociación, dices...",
+      "options": {
+        "A": "I commit",
+        "B": "let's compromise",
+        "C": "I promise",
+        "D": "let's resume"
+      },
+      "correct": "B",
+      "explanation": "[excited] Let's compromise es lleguemos a un acuerdo cediendo cada uno."
+    }
+  ]
 }

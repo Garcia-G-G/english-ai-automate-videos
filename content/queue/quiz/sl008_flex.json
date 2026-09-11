@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "FLEX: presumir en una sola palabra 💪",
   "video_description": "Nada que ver con el gimnasio. Bueno, casi. 😎",
-  "question": "'Stop flexing' significa...",
+  "question": "[curious] 'Stop flexing' significa...",
   "options": {
     "A": "deja de estirarte",
     "B": "deja de presumir",
@@ -10,7 +10,7 @@
     "D": "deja de quejarte"
   },
   "correct": "B",
-  "explanation": "Flex es presumir, alardear. Viene de sacar músculo.",
+  "explanation": "[excited] Flex es presumir, alardear. Viene de sacar músculo.",
   "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Alguien enseña su coche nuevo por tercera vez y le sueltan esto. Stop flexing. ¿Qué significa?... A, 'deja de estirarte'.... B, 'deja de presumir'.... C, 'deja de moverte'.... D, 'deja de quejarte'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B. Flex es presumir, alardear. Viene de sacar músculo delante del espejo. He's just flexing. Está presumiendo. Y hay una versión con humor muy usada. Weird flex, but okay. Vaya cosa para presumir, pero vale. Se dice con guasa, nunca en serio, y desarma a cualquiera.",
   "translations": {
     "stop flexing": "deja de presumir",
@@ -29,5 +29,40 @@
     "topic_id": "sl008",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  }
+  },
+  "questions": [
+    {
+      "question": "[curious] 'Stop flexing' significa...",
+      "options": {
+        "A": "deja de estirarte",
+        "B": "deja de presumir",
+        "C": "deja de moverte",
+        "D": "deja de quejarte"
+      },
+      "correct": "B",
+      "explanation": "[excited] Flex es presumir, alardear. Viene de sacar músculo."
+    },
+    {
+      "question": "[curious] 'Weird flex, but okay' se usa para...",
+      "options": {
+        "A": "felicitar a alguien",
+        "B": "burlarse de algo raro que presume",
+        "C": "pedir ayuda",
+        "D": "cambiar de tema"
+      },
+      "correct": "B",
+      "explanation": "[excited] Es burla amable cuando alguien presume de algo que no impresiona."
+    },
+    {
+      "question": "[curious] Para presumir en inglés formal, dirías...",
+      "options": {
+        "A": "to flex",
+        "B": "to show off",
+        "C": "to boast about",
+        "D": "to brag"
+      },
+      "correct": "C",
+      "explanation": "[excited] Boast about es la versión neutra. Flex y brag son informales."
+    }
+  ]
 }

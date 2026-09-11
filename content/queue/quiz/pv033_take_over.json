@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "TAKE OVER: el phrasal verb del ascenso 📈",
   "video_description": "Lo vas a oír el día que alguien cambie de puesto. 💼",
-  "question": "Sarah will ___ the project next month.",
+  "question": "[curious] Sarah will ___ the project next month.",
   "options": {
     "A": "take over",
     "B": "take off",
@@ -10,7 +10,7 @@
     "D": "take up"
   },
   "correct": "A",
-  "explanation": "Take over es asumir el control de algo que ya existía.",
+  "explanation": "[excited] Take over es asumir el control de algo que ya existía.",
   "full_script": "[excited] ¡Quiz time! Pregunta número uno. Anuncian un cambio en el equipo y usan un phrasal verb que confunde a todos. Sarah will ___ the project next month.... A, 'take over'.... B, 'take off'.... C, 'take out'.... D, 'take up'.... Los cuatro existen, y ahí está la trampa... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es A, 'take over'. Take over es asumir el control de algo que ya estaba en marcha. Un proyecto, un equipo, una empresa. Los otros tres son reales pero van a otra cosa. Take off es despegar. Take out es sacar. Y take up es empezar una afición nueva.",
   "translations": {
     "take over": "asumir el control",
@@ -30,5 +30,40 @@
     "topic_id": "pv033",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  }
+  },
+  "questions": [
+    {
+      "question": "[curious] Sarah will ___ the project next month.",
+      "options": {
+        "A": "take over",
+        "B": "take off",
+        "C": "take out",
+        "D": "take up"
+      },
+      "correct": "A",
+      "explanation": "[excited] Take over es asumir el control de algo que ya existía."
+    },
+    {
+      "question": "[curious] The plane will ___ in ten minutes.",
+      "options": {
+        "A": "take over",
+        "B": "take off",
+        "C": "take out",
+        "D": "take up"
+      },
+      "correct": "B",
+      "explanation": "[excited] Take off es despegar. También es quitarse una prenda."
+    },
+    {
+      "question": "[curious] I want to ___ up painting this year.",
+      "options": {
+        "A": "take",
+        "B": "get",
+        "C": "put",
+        "D": "make"
+      },
+      "correct": "A",
+      "explanation": "[excited] Take up es empezar una afición nueva."
+    }
+  ]
 }

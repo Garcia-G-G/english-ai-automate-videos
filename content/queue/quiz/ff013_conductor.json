@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "CONDUCTOR no conduce nada 🎼",
   "video_description": "Un falso amigo que te pone en la orquesta equivocada. 🎻",
-  "question": "En inglés, 'conductor' normalmente significa...",
+  "question": "[curious] En inglés, 'conductor' normalmente significa...",
   "options": {
     "A": "conductor de autobús",
     "B": "director de orquesta",
@@ -10,7 +10,7 @@
     "D": "mecánico"
   },
   "correct": "B",
-  "explanation": "Conductor es director de orquesta. El que conduce es driver.",
+  "explanation": "[excited] Conductor es director de orquesta. El que conduce es driver.",
   "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Hablas del hombre que llevaba el autobús y usas esta palabra. En inglés, conductor normalmente significa...... A, 'conductor de autobús'.... B, 'director de orquesta'.... C, 'pasajero'.... D, 'mecánico'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B. Conductor es quien dirige una orquesta. El que conduce un coche o un autobús es driver. The bus driver was very kind. Y en un tren británico, conductor sí existe, pero es el revisor. Tres oficios distintos escondidos en una sola palabra que suena igual que en español.",
   "translations": {
     "conductor": "director de orquesta",
@@ -29,5 +29,40 @@
     "topic_id": "ff013",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  }
+  },
+  "questions": [
+    {
+      "question": "[curious] En inglés, 'conductor' normalmente significa...",
+      "options": {
+        "A": "conductor de autobús",
+        "B": "director de orquesta",
+        "C": "pasajero",
+        "D": "mecánico"
+      },
+      "correct": "B",
+      "explanation": "[excited] Conductor es director de orquesta. El que conduce es driver."
+    },
+    {
+      "question": "[curious] 'The bus driver was very kind' habla de...",
+      "options": {
+        "A": "el director de orquesta",
+        "B": "el conductor del autobús",
+        "C": "el revisor",
+        "D": "el pasajero"
+      },
+      "correct": "B",
+      "explanation": "[excited] Driver es quien conduce. Conductor dirige una orquesta."
+    },
+    {
+      "question": "[curious] En un tren británico, el 'conductor' es...",
+      "options": {
+        "A": "el maquinista",
+        "B": "el revisor",
+        "C": "el jefe de estación",
+        "D": "el músico"
+      },
+      "correct": "B",
+      "explanation": "[excited] Ahí sí existe conductor, pero es quien revisa los billetes."
+    }
+  ]
 }
