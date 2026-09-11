@@ -29,6 +29,5 @@
     "topic_id": "cw006",
     "video_type": "quiz",
     "model": "claude-opus-5"
-  },
-  "hook": "Un apóstrofo de más y cambias el significado entero de la frase."
+  }
 }
