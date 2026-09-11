@@ -84,6 +84,26 @@ def queued_scripts():
 #: an uncached audit put ten seconds in front of each of those. The fingerprint
 #: is the queue's own (path, mtime, size) plus the produced-topic count, so any
 #: edit or any finished video invalidates it and nothing goes stale.
+#: WHAT ACTUALLY STOPS A SCRIPT FROM BEING PRODUCED.
+#
+# Severity is a property of the failure, not of the file. A repeated topic is
+# unrecoverable -- the video reaches the channel and the audience sees the same
+# lesson twice. A short video is a real video the owner can watch and judge.
+# Refusing the second kind produced NOTHING, which is worse than producing
+# something imperfect, and it pushed every quiz, true_false and fill_blank job
+# onto the GPT fallback and a dead API key.
+#
+# So: correctness blocks, quality warns.
+BLOCKING = ("ALREADY PRODUCED", "DUPLICATE", "NO SUCH TOPIC", "schema:",
+            "UNKNOWN AUDIO TAG", "unreadable", "not a JSON object",
+            "_meta.category", "no `type`")
+
+
+def blocks(problem: str) -> bool:
+    """Whether this problem means the script must not be handed out."""
+    return any(problem.startswith(p) or p in problem[:40] for p in BLOCKING)
+
+
 _AUDIT_CACHE = {}
 
 
@@ -258,7 +278,8 @@ def main(argv):
         return 0
 
     problems = audit()
-    bad = {p for p, _ in problems}
+    bad = {p for p, reason in problems if blocks(reason)}
+    warned = {p for p, reason in problems if not blocks(reason)}
 
     if "--next" in argv:
         # THE POINT OF THE WHOLE FILE. A script with any problem is never
@@ -279,12 +300,18 @@ def main(argv):
     if not total:
         print("queue is empty")
         return 2
+    if warned and not bad:
+        print(f"{total} queued script(s), {len(warned)} with warnings, "
+              f"none blocked. Next: {queued_scripts()[0].relative_to(ROOT)}\n")
+        for path, problem in problems:
+            print(f"  {path}\n      {problem}")
+        return 0
     if not problems:
         print(f"{total} queued script(s), no problems. "
               f"Next: {queued_scripts()[0].relative_to(ROOT)}")
         return 0
-    print(f"{total} queued script(s), {len(problems)} problem(s) "
-          f"in {len(bad)} file(s):\n")
+    print(f"{total} queued script(s), {len(bad)} BLOCKED, "
+          f"{len(warned)} with warnings:\n")
     for path, problem in problems:
         print(f"  {path}\n      {problem}")
     return 1

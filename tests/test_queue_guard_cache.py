@@ -50,3 +50,20 @@ def test_touching_a_script_invalidates_it():
     os.utime(scripts[0], None)
     assert queue_guard._fingerprint() != before, \
         "an edited script left the fingerprint unchanged"
+
+
+def test_a_short_video_warns_and_a_repeat_blocks():
+    """Severity is a property of the failure, not of the file.
+
+    Refusing on duration produced nothing at all, and pushed every quiz,
+    true_false and fill_blank job onto the GPT fallback and a dead API key.
+    A short video is a real video; a repeated topic reaches the channel.
+    """
+    assert queue_guard.blocks("ALREADY PRODUCED: social/so008 has 11 video(s)")
+    assert queue_guard.blocks("DUPLICATE of x.json: both claim a/b")
+    assert queue_guard.blocks("NO SUCH TOPIC: work_office/wo001 is not in ...")
+    assert queue_guard.blocks("schema: Invalid quiz script")
+    assert queue_guard.blocks("UNKNOWN AUDIO TAG [emocionado]")
+
+    assert not queue_guard.blocks("duration: 28 spoken words, band is 67-140")
+    assert not queue_guard.blocks("length: explanation at x needs 5 lines")
