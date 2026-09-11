@@ -62,12 +62,51 @@ def _count(value) -> int:
     return 0
 
 
+#: Where each type keeps its extra items, and what one item contributes.
+ITEM_ARRAY = {
+    "quiz":       ("questions",  ("question", "options", "explanation")),
+    "true_false": ("statements", ("statement", "explanation")),
+    "fill_blank": ("sentences",  ("sentence", "options", "explanation")),
+}
+
+
+def _items_spoken(vtype: str) -> int:
+    """How many items the pipeline actually synthesises, from config."""
+    try:
+        import yaml
+        cfg = yaml.safe_load(open(ROOT / "config.yaml", encoding="utf-8"))
+        return int(((cfg["duration"]["types"].get(vtype) or {})
+                    .get("items_spoken")) or 1)
+    except Exception:                                       # noqa: BLE001
+        return 1
+
+
 def spoken_words(script: dict) -> int:
-    """Words this script's generator will actually send to the TTS."""
-    fields = SPOKEN_FIELDS.get(script.get("type"))
+    """Words this script's generator will actually send to the TTS.
+
+    ITEMS-AWARE ON PURPOSE. The root-level question/statement/sentence is item
+    one; items two and three live in the array the schema calls DEAD PAYLOAD
+    and are spoken only once `items_spoken` says so. Reading the count from
+    config means this measurement follows the pipeline instead of drifting
+    behind it -- the day items_spoken becomes 3, the band it is judged against
+    becomes true on its own, with nothing here to remember to change.
+    """
+    vtype = script.get("type")
+    fields = SPOKEN_FIELDS.get(vtype)
     if not fields:
         return _count(script.get("full_script"))
-    return sum(_count(script.get(f)) for f in fields)
+    total = sum(_count(script.get(f)) for f in fields)
+
+    spec = ITEM_ARRAY.get(vtype)
+    if not spec:
+        return total
+    key, item_fields = spec
+    wanted = _items_spoken(vtype)
+    items = script.get(key) or []
+    # item one is the root, already counted, so only the extras are added
+    for item in items[1:wanted]:
+        total += sum(_count(item.get(f)) for f in item_fields)
+    return total
 
 
 def samples():
