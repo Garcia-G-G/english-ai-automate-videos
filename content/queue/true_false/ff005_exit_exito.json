@@ -5,7 +5,7 @@
   "statement": "'Exit' en inglés significa éxito.",
   "correct": false,
   "explanation": "Exit es salida. Éxito se dice success. Se parecen al oído y en nada más.",
-  "full_script": "¡Verdadero o falso! Estás en un aeropuerto, ves un cartel que pone EXIT y piensas que por ahí se va al éxito. Vamos con la afirmación. Exit en inglés significa éxito.... Piensa bien... Tres... dos... uno... ¡Falso! Exit es salida. Lo que lees en las puertas de emergencia de medio mundo. Where's the exit? ¿Dónde está la salida? Éxito se dice success, y no se parece en nada. The project was a huge success. El proyecto fue un exitazo. Y hay un tercer falso amigo escondido en la misma familia. Success en español suena a suceso, pero suceso es event.",
+  "full_script": "[excited] ¡Verdadero o falso! Estás en un aeropuerto, ves un cartel que pone EXIT y piensas que por ahí se va al éxito. Vamos con la afirmación. Exit en inglés significa éxito.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Exit es salida. Lo que lees en las puertas de emergencia de medio mundo. Where's the exit? ¿Dónde está la salida? Éxito se dice success, y no se parece en nada. The project was a huge success. El proyecto fue un exitazo. Y hay un tercer falso amigo escondido en la misma familia. Success en español suena a suceso, pero suceso es event.",
   "translations": {
     "exit": "salida",
     "where's the exit?": "¿dónde está la salida?",

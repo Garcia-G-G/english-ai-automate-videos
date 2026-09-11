@@ -5,7 +5,7 @@
   "statement": "'Your' y 'you're' significan lo mismo, solo cambia el apóstrofo.",
   "correct": false,
   "explanation": "Your es posesivo. You're es you are. El apóstrofo no es decorativo.",
-  "full_script": "¡Verdadero o falso! Escribes your amazing en un mensaje y te quedas tan tranquilo. Vamos con la afirmación. Your y you're significan lo mismo, solo cambia el apóstrofo.... Piensa bien... Tres... dos... uno... ¡Falso! Your es posesivo. Is this your book? ¿Es tu libro? You're es la contracción de you are. You're amazing. Eres increíble. El truco es idéntico al de its. Si puedes decir you are, lleva apóstrofo. Si no, va sin él. Falla y el mensaje cambia entero.",
+  "full_script": "[excited] ¡Verdadero o falso! Escribes your amazing en un mensaje y te quedas tan tranquilo. Vamos con la afirmación. Your y you're significan lo mismo, solo cambia el apóstrofo.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Your es posesivo. Is this your book? ¿Es tu libro? You're es la contracción de you are. You're amazing. Eres increíble. El truco es idéntico al de its. Si puedes decir you are, lleva apóstrofo. Si no, va sin él. Falla y el mensaje cambia entero.",
   "translations": {
     "your": "tu, tuyo",
     "is this your book?": "¿es tu libro?",

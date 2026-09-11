@@ -11,7 +11,7 @@
   },
   "correct": "C",
   "explanation": "El small talk evita dinero, política y temas personales. Siempre.",
-  "full_script": "¡Quiz time! Pregunta número uno. Estás en un ascensor con un compañero y hay que decir algo. ¿Cuál de estas NO es small talk apropiado?... A, 'how was your weekend?'.... B, 'crazy weather today'.... C, 'how much do you earn?'.... D, 'did you catch the game?'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es C. El small talk evita dinero, política y temas personales. Siempre. Los temas seguros son tres. Tiempo, fin de semana y deporte. Con esos tres cubres cualquier ascensor del mundo.",
+  "full_script": "[excited] ¡Quiz time! Pregunta número uno. Estás en un ascensor con un compañero y hay que decir algo. ¿Cuál de estas NO es small talk apropiado?... A, 'how was your weekend?'.... B, 'crazy weather today'.... C, 'how much do you earn?'.... D, 'did you catch the game?'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es C. El small talk evita dinero, política y temas personales. Siempre. Los temas seguros son tres. Tiempo, fin de semana y deporte. Con esos tres cubres cualquier ascensor del mundo.",
   "translations": {
     "how was your weekend?": "¿qué tal el finde?",
     "crazy weather today": "vaya tiempo hace",

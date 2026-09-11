@@ -5,7 +5,7 @@
   "statement": "'Large' en inglés significa largo.",
   "correct": false,
   "explanation": "Large es grande. Largo se dice long. No comparten significado.",
-  "full_script": "¡Verdadero o falso! Pides una camiseta y dices I need a large one pensando en el largo. Vamos con la afirmación. Large en inglés significa largo.... Piensa bien... Tres... dos... uno... ¡Falso! Large es grande, de tamaño. Es la ele de las tallas de ropa. Largo se dice long. A long river. Un río largo. Y ojo con la trampa doble. Una película larga es a long film, nunca a large film. Large habla de volumen. Long habla de distancia o de tiempo.",
+  "full_script": "[curious] ¡Verdadero o falso! Pides una camiseta y dices I need a large one pensando en el largo. Vamos con la afirmación. Large en inglés significa largo.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Large es grande, de tamaño. Es la ele de las tallas de ropa. Largo se dice long. A long river. Un río largo. Y ojo con la trampa doble. Una película larga es a long film, nunca a large film. Large habla de volumen. Long habla de distancia o de tiempo.",
   "translations": {
     "large": "grande",
     "long": "largo",

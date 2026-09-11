@@ -34,7 +34,7 @@
       "english": "take out the trash"
     }
   ],
-  "full_script": "Compartes piso y toca repartir tareas. Todo esto va a salir en la conversación. Limpiar, clean up. Ordenar, tidy up. Tirar, throw away. Colgar, hang up. Recoger, pick up. Apagar, turn off. Sacar la basura, take out the trash. Un detalle útil. Clean up es dejarlo limpio. Tidy up es solo dejarlo ordenado. No son lo mismo y se nota.",
+  "full_script": "[excited] Compartes piso y toca repartir tareas. Todo esto va a salir en la conversación. Limpiar, clean up. Ordenar, tidy up. Tirar, throw away. Colgar, hang up. Recoger, pick up. Apagar, turn off. Sacar la basura, take out the trash. Un detalle útil. Clean up es dejarlo limpio. Tidy up es solo dejarlo ordenado. No son lo mismo y se nota.",
   "translations": {
     "clean up": "limpiar",
     "tidy up": "ordenar",

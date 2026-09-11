@@ -5,7 +5,7 @@
   "statement": "'Will' y 'going to' son intercambiables siempre.",
   "correct": false,
   "explanation": "Going to es un plan que ya tenías. Will es una decisión del momento.",
-  "full_script": "¡Verdadero o falso! Te preguntan por tus planes y usas will para todo. Vamos con la afirmación. Will y going to son intercambiables siempre.... Piensa bien... Tres... dos... uno... ¡Falso! Going to es un plan que ya tenías decidido. I'm going to visit my parents. Ya lo tenía pensado. Will es una decisión que tomas en ese instante. Suena el teléfono y dices I'll get it. Ya voy yo. Nadie lo tenía planeado. La prueba está en el momento de decidir. Antes o ahora mismo.",
+  "full_script": "[curious] ¡Verdadero o falso! Te preguntan por tus planes y usas will para todo. Vamos con la afirmación. Will y going to son intercambiables siempre.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Going to es un plan que ya tenías decidido. I'm going to visit my parents. Ya lo tenía pensado. Will es una decisión que tomas en ese instante. Suena el teléfono y dices I'll get it. Ya voy yo. Nadie lo tenía planeado. La prueba está en el momento de decidir. Antes o ahora mismo.",
   "translations": {
     "I'm going to visit my parents": "voy a visitar a mis padres",
     "I'll get it": "ya voy yo"

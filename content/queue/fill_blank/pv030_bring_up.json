@@ -12,7 +12,7 @@
   "correct": "bring",
   "translation": "No quiero sacar ese tema otra vez.",
   "explanation": "Bring up es sacar un tema, y también criar a un hijo. El contexto decide.",
-  "full_script": "¡Completa la frase! Número uno. Hay un tema incómodo y alguien no quiere tocarlo. I don't want to ___ up that topic again. Las opciones son: A, bring. B, take. C, put. D, get.... Piensa bien... Tres... dos... uno... ¡La respuesta es A, bring! Bring up es sacar un tema a la conversación. Y tiene un segundo sentido muy distinto. Criar a un hijo. She was brought up in Madrid. Se crió en Madrid. El contexto decide siempre cuál de los dos es.",
+  "full_script": "[excited] ¡Completa la frase! Número uno. Hay un tema incómodo y alguien no quiere tocarlo. I don't want to ___ up that topic again. Las opciones son: A, bring. B, take. C, put. D, get.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, bring! Bring up es sacar un tema a la conversación. Y tiene un segundo sentido muy distinto. Criar a un hijo. She was brought up in Madrid. Se crió en Madrid. El contexto decide siempre cuál de los dos es.",
   "hashtags": [
     "#CompletaLaFrase",
     "#AprenderInglés",

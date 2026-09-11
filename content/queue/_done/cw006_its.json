@@ -11,7 +11,7 @@
   },
   "correct": "A",
   "explanation": "Its sin apóstrofo es posesivo. It's con apóstrofo es it is. Si puedes decir it is, lleva apóstrofo.",
-  "full_script": "¡Quiz time! Pregunta número uno. Escribes un mensaje sobre tu perro y te frenas justo aquí. The dog wagged ___ tail happily. El perro movía su cola feliz. ¿Cuál va?... A, 'its' sin apóstrofo.... B, 'it's' con apóstrofo.... C, 'it'.... D, 'their'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es A, 'its'. Sin apóstrofo es posesivo. La cola del perro. Con apóstrofo, 'it's', es 'it is'. El truco que no falla nunca: si puedes cambiarlo por 'it is', lleva apóstrofo. Si no, va desnudo.",
+  "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Escribes un mensaje sobre tu perro y te frenas justo aquí. The dog wagged ___ tail happily. El perro movía su cola feliz. ¿Cuál va?... A, 'its' sin apóstrofo.... B, 'it's' con apóstrofo.... C, 'it'.... D, 'their'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es A, 'its'. Sin apóstrofo es posesivo. La cola del perro. Con apóstrofo, 'it's', es 'it is'. El truco que no falla nunca: si puedes cambiarlo por 'it is', lleva apóstrofo. Si no, va desnudo.",
   "translations": {
     "its": "su (de ello)",
     "it's": "es, está",

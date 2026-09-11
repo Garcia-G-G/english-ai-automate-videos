@@ -34,7 +34,7 @@
       "english": "baggage claim"
     }
   ],
-  "full_script": "Vas con el tiempo justo, buscas tu vuelo en la pantalla y todo está en inglés. Estas siete te salvan el día. Facturación, check-in. Tarjeta de embarque, boarding pass. Equipaje de mano, carry-on. Puerta de embarque, gate. Retraso, delay. Escala, layover. Recogida de equipajes, baggage claim. Y una que confunde a todo el mundo. Layover es la escala, el rato que esperas entre dos vuelos. No es el vuelo, es la espera.",
+  "full_script": "[warm] Vas con el tiempo justo, buscas tu vuelo en la pantalla y todo está en inglés. Estas siete te salvan el día. Facturación, check-in. Tarjeta de embarque, boarding pass. Equipaje de mano, carry-on. Puerta de embarque, gate. Retraso, delay. Escala, layover. Recogida de equipajes, baggage claim. Y una que confunde a todo el mundo. Layover es la escala, el rato que esperas entre dos vuelos. No es el vuelo, es la espera.",
   "translations": {
     "baggage claim": "recogida de maletas",
     "check-in": "facturación",

@@ -12,7 +12,7 @@
   "correct": "on",
   "translation": "¿Puedes encender la luz?",
   "explanation": "Turn on enciende, turn off apaga. Igual que el interruptor de la pared.",
-  "full_script": "¡Completa la frase! Número uno. Entras en casa, no ves nada, y le pides a alguien que haga lo obvio. Can you turn ___ the lights? It's too dark in here. Las opciones son: A, on. B, off. C, up. D, in.... Piensa bien... Tres... dos... uno... ¡La respuesta es A, on! Turn on es encender. Si está oscuro, quieres luz. Turn off es apagar, y ahí tienes el interruptor de tu pared entero: on arriba, off abajo. Las otras dos existen pero van a otra cosa. Turn up es subir el volumen y turn in es entregar algo.",
+  "full_script": "[curious] ¡Completa la frase! Número uno. Entras en casa, no ves nada, y le pides a alguien que haga lo obvio. Can you turn ___ the lights? It's too dark in here. Las opciones son: A, on. B, off. C, up. D, in.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, on! Turn on es encender. Si está oscuro, quieres luz. Turn off es apagar, y ahí tienes el interruptor de tu pared entero: on arriba, off abajo. Las otras dos existen pero van a otra cosa. Turn up es subir el volumen y turn in es entregar algo.",
   "hashtags": [
     "#PhrasalVerbs",
     "#CompletaLaFrase",
