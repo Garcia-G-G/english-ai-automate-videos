@@ -153,8 +153,7 @@ def audit():
 
         # MEASURED WITHOUT THE TAGS. An audio tag is a direction, not a
         # spoken word: counting "[excited]" toward the duration band would
-        # make every number here fiction, and a script could pass the band on
-        # words nobody says.
+        # make every number here fiction.
         script_text = data.get("full_script") or ""
         try:
             from audio_tags import strip_tags, unknown_tags
@@ -164,7 +163,20 @@ def audit():
             script_text = strip_tags(script_text)
         except ImportError:                                 # noqa: BLE001
             pass
-        spoken = len(script_text.split())
+
+        # AND MEASURED AGAINST THE TEXT THE GENERATOR ACTUALLY SPEAKS.
+        # full_script is NOT the narration for quiz, true_false, fill_blank or
+        # vocabulary: generate_<type>_audio_segmented builds the audio from the
+        # structured fields and copies full_script into the metadata untouched.
+        # Counting full_script for those four measured a string nobody says, so
+        # a script sat inside the band and produced a 30-second video. Measured
+        # on the corpus, not assumed -- see tools/duration_calibrate.py.
+        try:
+            sys.path.insert(0, str(ROOT / "tools"))
+            from duration_calibrate import spoken_words
+            spoken = spoken_words(data)
+        except Exception:                                   # noqa: BLE001
+            spoken = len(script_text.split())
         try:
             band = duration_spec.word_range(vtype)
             if spoken and not (band["min"] <= spoken <= band["max"]):
