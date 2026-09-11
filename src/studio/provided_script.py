@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import copy
+import logging
 
 from .creation import AuthorResult
+
+logger = logging.getLogger(__name__)
 
 
 class ProvidedScriptAuthor:
@@ -21,4 +24,30 @@ class ProvidedScriptAuthor:
             video_type=request.video_type,
             source="owner-supplied script",
         )
-        return AuthorResult(script=copy.deepcopy(self._script))
+
+        # THE CLEANER RUNS ON OWNER-SUPPLIED SCRIPTS TOO.
+        #
+        # validate_and_clean_script finds the English spans quoted in
+        # full_script and adds the ones missing from english_phrases. Every
+        # GPT script has always gone through it; a queued script went through
+        # validate_script alone, which only checks the shape.
+        #
+        # The cost of the gap is visible on screen: video/__init__.py builds
+        # english_set by splitting the DECLARED phrases into words, and
+        # colours each word by membership. So an English sentence whose words
+        # are only partly declared gets painted in pieces -- the owner sent a
+        # frame reading "Escribes sorry for being late" where "sorry for" is
+        # yellow, "being" is Spanish grey and "late." is blue, because
+        # "sorry" and "for" appear in another declared phrase and "being" and
+        # "late" appear in none.
+        script = copy.deepcopy(self._script)
+        try:
+            from script_generator import validate_and_clean_script
+            cleaned = validate_and_clean_script(script, request.video_type)
+            if isinstance(cleaned, dict) and cleaned.get("full_script"):
+                script = cleaned
+        except Exception:                                   # noqa: BLE001
+            # A cleaner that raises must not cost the owner a written script.
+            logger.warning("could not clean the supplied script", exc_info=True)
+
+        return AuthorResult(script=script)
