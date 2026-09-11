@@ -40,12 +40,19 @@ class ProvidedScriptAuthor:
         # yellow, "being" is Spanish grey and "late." is blue, because
         # "sorry" and "for" appear in another declared phrase and "being" and
         # "late" appear in none.
+        # ONLY english_phrases IS TAKEN BACK. The cleaner also normalises
+        # full_script and stamps warnings, and a supplied script must come out
+        # the way the owner wrote it -- test_provided_script_..._preserves_input
+        # says exactly that, and it is right. The narrow thing needed here is
+        # the phrase list, because that is what the colouring reads.
         script = copy.deepcopy(self._script)
         try:
             from script_generator import validate_and_clean_script
-            cleaned = validate_and_clean_script(script, request.video_type)
-            if isinstance(cleaned, dict) and cleaned.get("full_script"):
-                script = cleaned
+            cleaned = validate_and_clean_script(copy.deepcopy(script),
+                                                request.video_type)
+            phrases = (cleaned or {}).get("english_phrases")
+            if phrases and list(phrases) != list(script.get("english_phrases") or []):
+                script["english_phrases"] = list(phrases)
         except Exception:                                   # noqa: BLE001
             # A cleaner that raises must not cost the owner a written script.
             logger.warning("could not clean the supplied script", exc_info=True)
