@@ -11,7 +11,7 @@
   },
   "correct": "B",
   "explanation": "Lowkey suaviza lo que dices. Es un poco, discretamente, sin admitirlo del todo.",
-  "full_script": "¡Quiz time! Pregunta número uno. Alguien confiesa algo a medias y usa una palabra rarísima. I lowkey love that song. ¿Qué significa?... A, 'odio esa canción'.... B, 'me gusta un poco, sin admitirlo del todo'.... C, 'escucho esa canción bajito'.... D, 'no conozco esa canción'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B. Lowkey suaviza lo que viene detrás. Es una confesión a medias, con vergüenza fingida. Y tiene su opuesto exacto. Highkey. Abiertamente, sin esconderlo. I'm highkey obsessed with that show. Estoy obsesionado y no lo escondo.",
+  "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Alguien confiesa algo a medias y usa una palabra rarísima. I lowkey love that song. ¿Qué significa?... A, 'odio esa canción'.... B, 'me gusta un poco, sin admitirlo del todo'.... C, 'escucho esa canción bajito'.... D, 'no conozco esa canción'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B. Lowkey suaviza lo que viene detrás. Es una confesión a medias, con vergüenza fingida. Y tiene su opuesto exacto. Highkey. Abiertamente, sin esconderlo. I'm highkey obsessed with that show. Estoy obsesionado y no lo escondo.",
   "translations": {
     "lowkey": "discretamente, un poco",
     "I lowkey love that song": "esa canción me gusta más de lo que admito",

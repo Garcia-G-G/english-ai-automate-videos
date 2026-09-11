@@ -11,7 +11,7 @@
   },
   "correct": "A",
   "explanation": "Remove es quitar. En un aeropuerto lo vas a oír varias veces.",
-  "full_script": "¡Quiz time! Pregunta número uno. Estás en el control del aeropuerto y te dicen esto. Please remove your belt. Significa...... A, 'quítate el cinturón'.... B, 'guarda el cinturón'.... C, 'abróchate el cinturón'.... D, 'enseña el cinturón'.... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es A. Remove es quitar, y en un aeropuerto lo oirás varias veces. Remove your shoes. Quítate los zapatos. Y hay dos más que van juntas. Empty your pockets. Vacía los bolsillos. Y step forward. Adelante. Con esas cuatro pasas el control sin bloquearte.",
+  "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Estás en el control del aeropuerto y te dicen esto. Please remove your belt. Significa...... A, 'quítate el cinturón'.... B, 'guarda el cinturón'.... C, 'abróchate el cinturón'.... D, 'enseña el cinturón'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es A. Remove es quitar, y en un aeropuerto lo oirás varias veces. Remove your shoes. Quítate los zapatos. Y hay dos más que van juntas. Empty your pockets. Vacía los bolsillos. Y step forward. Adelante. Con esas cuatro pasas el control sin bloquearte.",
   "translations": {
     "please remove your belt": "quítese el cinturón",
     "remove your shoes": "quítese los zapatos",

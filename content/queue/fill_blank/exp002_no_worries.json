@@ -12,7 +12,7 @@
   "correct": "worries",
   "translation": "¿Olvidaste la leche? Tranquilo.",
   "explanation": "No worries es tranquilo, no pasa nada. Suena relajado y cercano.",
-  "full_script": "¡Completa la frase! Número uno. Alguien se disculpa por una tontería y tú quieres quitarle hierro. You forgot the milk? No ___, I'll grab some later. Las opciones son: A, worries. B, problems. C, stress. D, matter.... Piensa bien... Tres... dos... uno... ¡La respuesta es A, worries! No worries es tranquilo, no pasa nada. Va siempre en plural. Nunca no worry. Es la respuesta más natural a una disculpa pequeña. En Estados Unidos también dicen no problem. Y en un contexto formal, di don't worry about it.",
+  "full_script": "[curious] ¡Completa la frase! Número uno. Alguien se disculpa por una tontería y tú quieres quitarle hierro. You forgot the milk? No ___, I'll grab some later. Las opciones son: A, worries. B, problems. C, stress. D, matter.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, worries! No worries es tranquilo, no pasa nada. Va siempre en plural. Nunca no worry. Es la respuesta más natural a una disculpa pequeña. En Estados Unidos también dicen no problem. Y en un contexto formal, di don't worry about it.",
   "hashtags": [
     "#CompletaLaFrase",
     "#AprenderInglés",

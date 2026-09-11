@@ -151,7 +151,20 @@ def audit():
         except Exception as exc:                                # noqa: BLE001
             problems.append((rel, f"schema: {exc}"))
 
-        spoken = len((data.get("full_script") or "").split())
+        # MEASURED WITHOUT THE TAGS. An audio tag is a direction, not a
+        # spoken word: counting "[excited]" toward the duration band would
+        # make every number here fiction, and a script could pass the band on
+        # words nobody says.
+        script_text = data.get("full_script") or ""
+        try:
+            from audio_tags import strip_tags, unknown_tags
+            for tag in unknown_tags(script_text):
+                problems.append((rel, f"UNKNOWN AUDIO TAG {tag}: eleven_v3 does "
+                                      f"not recognise it, so it gets READ ALOUD"))
+            script_text = strip_tags(script_text)
+        except ImportError:                                 # noqa: BLE001
+            pass
+        spoken = len(script_text.split())
         try:
             band = duration_spec.word_range(vtype)
             if spoken and not (band["min"] <= spoken <= band["max"]):
@@ -162,7 +175,9 @@ def audit():
             pass
 
         try:
-            for v in length_spec.check_script(data) or []:
+            measured = dict(data)
+            measured["full_script"] = script_text
+            for v in length_spec.check_script(measured) or []:
                 problems.append((rel, f"length: {v['field']} at {v['where']} "
                                       f"needs {v['lines']} lines"))
         except Exception:                                       # noqa: BLE001
@@ -181,7 +196,15 @@ def main(argv):
             dest = DONE_DIR / f"{src.stem}.{n}{src.suffix}"
             n += 1
         shutil.move(str(src), str(dest))
-        print(f"shelved: {dest.relative_to(ROOT)}")
+        # relative_to raises for a DONE_DIR outside the repo (a test that
+        # redirects the queue does exactly that), and raising AFTER the move
+        # made admin.queue_shelve log "could not shelve" for a script it had
+        # just shelved. The report must not be able to undo the result.
+        try:
+            shown = dest.relative_to(ROOT)
+        except ValueError:
+            shown = dest
+        print(f"shelved: {shown}")
         return 0
 
     problems = audit()

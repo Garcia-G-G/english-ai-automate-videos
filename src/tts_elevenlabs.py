@@ -224,6 +224,15 @@ def get_client() -> ElevenLabs:
     )
 
 
+def _is_audio_tag(token: str) -> bool:
+    """Whether this token is an ElevenLabs audio tag. See src/audio_tags.py."""
+    try:
+        from audio_tags import is_tag
+    except ImportError:                                     # noqa: BLE001
+        return False
+    return is_tag(token)
+
+
 def estimate_word_timestamps(text: str, duration: float, english_phrases: list = None) -> tuple:
     """
     Estimate word-level timestamps from text and audio duration.
@@ -302,6 +311,17 @@ def estimate_word_timestamps(text: str, duration: float, english_phrases: list =
             # Filter out "..." pause markers that might have leaked in
             stripped = raw_word.strip('.,!?¿¡:;\'"')
             if stripped in ('...', '..', '') or set(stripped) == {'.'}:
+                continue
+
+            # AN AUDIO TAG IS A DIRECTION, NOT A WORD. eleven_v3 reads
+            # "[excited]" as delivery and does not speak it -- but this list is
+            # built by SPLITTING THE INPUT TEXT, not from the alignment the API
+            # returns, so without this the tag becomes a word and the renderer
+            # draws "[excited]" on the video. The "..." filter three lines up is
+            # the same problem, solved once and never extended.
+            # The tag keeps its share of sent_chars, so the words around it
+            # absorb its time -- right for [laughs], harmless for [excited].
+            if _is_audio_tag(raw_word):
                 continue
 
             word_dur = ((len(raw_word) + 1) / sent_chars) * sent_duration

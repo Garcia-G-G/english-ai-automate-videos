@@ -34,7 +34,7 @@
       "english": "update"
     }
   ],
-  "full_script": "Te cambian el ordenador al inglés y de repente no encuentras nada. Estas siete están en todos los menús. Guardar, save. Archivo, file. Carpeta, folder. Pantalla, screen. Teclado, keyboard. Contraseña, password. Actualizar, update. Un aviso útil. Update es actualizar el programa. Upgrade es pasar a una versión mejor. No son lo mismo y te lo van a preguntar.",
+  "full_script": "[warm] Te cambian el ordenador al inglés y de repente no encuentras nada. Estas siete están en todos los menús. Guardar, save. Archivo, file. Carpeta, folder. Pantalla, screen. Teclado, keyboard. Contraseña, password. Actualizar, update. Un aviso útil. Update es actualizar el programa. Upgrade es pasar a una versión mejor. No son lo mismo y te lo van a preguntar.",
   "translations": {
     "save": "guardar",
     "file": "archivo",

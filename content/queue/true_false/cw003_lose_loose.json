@@ -5,7 +5,7 @@
   "statement": "'Lose' y 'loose' se escriben distinto pero significan lo mismo.",
   "correct": false,
   "explanation": "Lose es perder, un verbo. Loose es suelto o flojo, un adjetivo.",
-  "full_script": "¡Verdadero o falso! Escribes 'don't loose your keys' y te quedas tan tranquilo. Lose y loose se escriben distinto pero significan lo mismo. ¿Verdadero o falso?... Piensa bien... Tres... dos... uno... ¡Falso! Y no se parecen en nada. Lose, con una sola o, es el verbo perder. Don't lose your keys. No pierdas las llaves. Loose, con dos oes, es un adjetivo. Suelto, flojo. These pants are too loose. Estos pantalones quedan flojos. El truco para no fallar nunca: loose tiene una o de más porque está suelta.",
+  "full_script": "[excited] ¡Verdadero o falso! Escribes 'don't loose your keys' y te quedas tan tranquilo. Lose y loose se escriben distinto pero significan lo mismo. ¿Verdadero o falso?... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Y no se parecen en nada. Lose, con una sola o, es el verbo perder. Don't lose your keys. No pierdas las llaves. Loose, con dos oes, es un adjetivo. Suelto, flojo. These pants are too loose. Estos pantalones quedan flojos. El truco para no fallar nunca: loose tiene una o de más porque está suelta.",
   "translations": {
     "lose": "perder",
     "loose": "suelto, flojo",

@@ -55,6 +55,15 @@ def add_sentence_boundaries(words: List[Dict], full_script: str = None) -> List[
     if full_script:
         # Split on sentence-ending punctuation followed by whitespace,
         # OR on whitespace before sentence-starting punctuation ¿¡
+        # TAGS OUT BEFORE SPLITTING. An audio tag is not punctuation, so it
+        # rides inside a sentence and lands in the text this function matches
+        # against -- the same string the word builder has already dropped it
+        # from. That is exactly how two halves of one pipeline drift apart.
+        try:
+            from audio_tags import strip_tags
+            full_script = strip_tags(full_script)
+        except ImportError:                                 # noqa: BLE001
+            pass
         sentences = re.split(r'(?<=[.!?])\s+|\s+(?=[¿¡])', full_script.strip())
         # Clean up: remove empty strings and strip whitespace
         sentences = [s.strip() for s in sentences if s.strip()]
@@ -233,15 +242,17 @@ def _render_group_tiktok(
     # why its overflow path was reachable from here at all, and why a
     # sentence longer than two lines could not be put on one card.
     max_w = CARD_WIDTH - CARD_PADDING * 2 - 40
-    max_h = floor - SAFE_AREA_TOP - CARD_PADDING * 2
-    _, base_size, lines, _ = fit_text_font(text, SIZE_MAIN_SPANISH, 42, max_w, max_h)
-    base_size = max(42, min(SIZE_MAIN_SPANISH, base_size))
-
-    f = font(base_size)
-    line_h = font_line_height(f)
-    text_h = len(lines) * line_h
 
     # ── Detect English content + translation for second card ──
+    #
+    # MEASURED BEFORE THE MAIN FIT, because it eats the same room. The main
+    # card used to be fitted to the WHOLE space between SAFE_AREA_TOP and
+    # the floor and the English card was then stacked underneath it, so
+    # `total_h` could exceed the room the fit had been told it had. With the
+    # word ceiling at 40 a group can genuinely fill that budget on a sidecar
+    # with no declared sentences, and the clamp below then pushes the pair
+    # up past SAFE_AREA_TOP into the platform's own UI rail. Reserving the
+    # second card's height here is what makes the budget the real one.
     has_en_words = any(w.get('is_english', False) for w in words) if words else is_en
     en_display_text = ""
     trans_text = ""
@@ -264,9 +275,6 @@ def _render_group_tiktok(
     # (prevents showing Spanish words on the English highlight card)
     show_en_card = bool(en_display_text and trans_text)
 
-    # ── Main card height (text only — no translation) ──
-    main_card_h = text_h + CARD_PADDING * 2
-
     # ── English card dimensions ──
     _EN_CARD_W = CARD_WIDTH - 120
     _EN_CARD_PAD = 30
@@ -286,6 +294,20 @@ def _render_group_tiktok(
             trans_h = len(t_lines) * int(_TRANS_SIZE * 1.3) + 12  # 12px gap
 
         en_card_h = en_text_h + trans_h + _EN_CARD_PAD * 2
+
+    # ── Main card: fitted to what is left after the English card ──
+    reserved = (_EN_CARD_GAP + en_card_h) if en_card_h > 0 else 0
+    max_h = max(font_line_height(font(42)),
+                floor - SAFE_AREA_TOP - CARD_PADDING * 2 - reserved)
+    _, base_size, lines, _ = fit_text_font(text, SIZE_MAIN_SPANISH, 42, max_w, max_h)
+    base_size = max(42, min(SIZE_MAIN_SPANISH, base_size))
+
+    f = font(base_size)
+    line_h = font_line_height(f)
+    text_h = len(lines) * line_h
+
+    # ── Main card height (text only — no translation) ──
+    main_card_h = text_h + CARD_PADDING * 2
 
     # ── Total height for centering both cards ──
     total_h = main_card_h

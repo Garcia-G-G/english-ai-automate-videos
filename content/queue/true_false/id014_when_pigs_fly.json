@@ -5,7 +5,7 @@
   "statement": "'When pigs fly' significa que algo va a pasar muy pronto.",
   "correct": false,
   "explanation": "When pigs fly significa que algo no va a pasar nunca. Es un no rotundo con humor.",
-  "full_script": "¡Verdadero o falso! Le pides un favor a alguien y te responde sure, when pigs fly. Y tú entiendes que sí, que pronto. Vamos con la afirmación. When pigs fly significa que algo va a pasar muy pronto.... Piensa bien... Tres... dos... uno... ¡Falso! Y es justo lo contrario. Cuando los cerdos vuelen, o sea, nunca. Es un no rotundo dicho con humor. He'll apologize when pigs fly. Pedirá perdón cuando las ranas críen pelo. En español tenemos el mismo recurso con otro animal. Y hay una versión más corta que oirás igual. Yeah, right. Sí, claro. Puro sarcasmo.",
+  "full_script": "[curious] ¡Verdadero o falso! Le pides un favor a alguien y te responde sure, when pigs fly. Y tú entiendes que sí, que pronto. Vamos con la afirmación. When pigs fly significa que algo va a pasar muy pronto.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Y es justo lo contrario. Cuando los cerdos vuelen, o sea, nunca. Es un no rotundo dicho con humor. He'll apologize when pigs fly. Pedirá perdón cuando las ranas críen pelo. En español tenemos el mismo recurso con otro animal. Y hay una versión más corta que oirás igual. Yeah, right. Sí, claro. Puro sarcasmo.",
   "translations": {
     "when pigs fly": "cuando las ranas críen pelo",
     "he'll apologize when pigs fly": "pedirá perdón cuando las ranas críen pelo",

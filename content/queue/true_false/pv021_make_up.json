@@ -5,7 +5,7 @@
   "statement": "'To make up' solo significa maquillarse.",
   "correct": false,
   "explanation": "Make up es reconciliarse, inventar algo, o maquillaje según el contexto.",
-  "full_script": "¡Verdadero o falso! Dos amigos discuten, luego se abrazan, y alguien dice they made up. Vamos con la afirmación. To make up solo significa maquillarse.... Piensa bien... Tres... dos... uno... ¡Falso! Make up tiene varios sentidos. Reconciliarse es el más común. They had a fight but they made up. Discutieron pero se reconciliaron. También significa inventar algo. He made up an excuse. Se inventó una excusa. Y makeup, junto y como nombre, sí es el maquillaje. El contexto decide siempre cuál es cuál.",
+  "full_script": "[curious] ¡Verdadero o falso! Dos amigos discuten, luego se abrazan, y alguien dice they made up. Vamos con la afirmación. To make up solo significa maquillarse.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Make up tiene varios sentidos. Reconciliarse es el más común. They had a fight but they made up. Discutieron pero se reconciliaron. También significa inventar algo. He made up an excuse. Se inventó una excusa. Y makeup, junto y como nombre, sí es el maquillaje. El contexto decide siempre cuál es cuál.",
   "translations": {
     "they made up": "se reconciliaron",
     "he made up an excuse": "se inventó una excusa",

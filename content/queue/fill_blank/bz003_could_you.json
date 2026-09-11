@@ -12,7 +12,7 @@
   "correct": "Could",
   "translation": "¿Podrías enviarme el informe?",
   "explanation": "Could suena más educado que can en un email de trabajo.",
-  "full_script": "¡Completa la frase! Número uno. Escribes a un cliente y una sola palabra decide si suenas educado. ___ you please send me the report? Las opciones son: A, Could. B, Can. C, Will. D, Do.... Las cuatro son gramaticalmente posibles... Piensa bien... Tres... dos... uno... ¡La respuesta es A, Could! Could es la forma educada de pedir en inglés de trabajo. Can no está mal, pero suena más directo. Will you send me the report suena casi a orden. Y si quieres subir todavía más el registro, existe una fórmula. I would appreciate it if you could.",
+  "full_script": "[curious] ¡Completa la frase! Número uno. Escribes a un cliente y una sola palabra decide si suenas educado. ___ you please send me the report? Las opciones son: A, Could. B, Can. C, Will. D, Do.... Las cuatro son gramaticalmente posibles... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, Could! Could es la forma educada de pedir en inglés de trabajo. Can no está mal, pero suena más directo. Will you send me the report suena casi a orden. Y si quieres subir todavía más el registro, existe una fórmula. I would appreciate it if you could.",
   "hashtags": [
     "#CompletaLaFrase",
     "#AprenderInglés",

@@ -5,7 +5,7 @@
   "statement": "'Informations' es el plural correcto de information.",
   "correct": false,
   "explanation": "Information es incontable. Nunca lleva ese. Se dice some information.",
-  "full_script": "¡Verdadero o falso! Escribes un email pidiendo datos y pones I need more informations. Vamos con la afirmación. Informations es el plural correcto de information.... Piensa bien... Tres... dos... uno... ¡Falso! Information es incontable en inglés. No tiene plural, nunca. Se dice some information o a piece of information. Y no está sola. Advice, furniture, luggage y news hacen lo mismo. News acaba en ese pero es singular. The news is good. Las noticias son buenas.",
+  "full_script": "[excited] ¡Verdadero o falso! Escribes un email pidiendo datos y pones I need more informations. Vamos con la afirmación. Informations es el plural correcto de information.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Falso! Information es incontable en inglés. No tiene plural, nunca. Se dice some information o a piece of information. Y no está sola. Advice, furniture, luggage y news hacen lo mismo. News acaba en ese pero es singular. The news is good. Las noticias son buenas.",
   "translations": {
     "some information": "algo de información",
     "a piece of information": "un dato",

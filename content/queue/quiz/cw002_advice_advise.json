@@ -11,7 +11,7 @@
   },
   "correct": "B",
   "explanation": "Advice es el consejo, un nombre. Advise es aconsejar, un verbo.",
-  "full_script": "¡Quiz time! Pregunta número uno. Le pides ayuda a alguien y aquí se decide todo por una letra. Can you give me some ___ about this?... A, 'advise'.... B, 'advice'.... C, 'advices'.... D, 'advising'.... Piensa qué necesitas: una cosa o una acción... Piensa bien... Tres... dos... uno... ¡Correcto! La respuesta es B, 'advice'. Con ce es el consejo. Un nombre, una cosa que te dan. Con ese, advise, es el verbo aconsejar. She advised me to wait. Me aconsejó esperar. Y hay una trampa extra. Advice no tiene plural. Nunca digas advices. Se dice some advice, o a piece of advice.",
+  "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Le pides ayuda a alguien y aquí se decide todo por una letra. Can you give me some ___ about this?... A, 'advise'.... B, 'advice'.... C, 'advices'.... D, 'advising'.... Piensa qué necesitas: una cosa o una acción... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B, 'advice'. Con ce es el consejo. Un nombre, una cosa que te dan. Con ese, advise, es el verbo aconsejar. She advised me to wait. Me aconsejó esperar. Y hay una trampa extra. Advice no tiene plural. Nunca digas advices. Se dice some advice, o a piece of advice.",
   "translations": {
     "advice": "consejo",
     "advise": "aconsejar",
