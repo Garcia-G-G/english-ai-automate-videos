@@ -187,5 +187,28 @@ def main():
         print(f"  {vtype:14} {max(0, need):>5.0f}   (band {max(0, lo):>4.0f}-{max(0, hi):>4.0f})")
 
 
+#: Silence the generator splices around ONE item, from its own constants --
+#: not from the fit, which cannot see it. Every sample on disk is a one-item
+#: video, so the fitted intercept folds this together with the per-video
+#: overhead and a linear extrapolation to three items is wrong by two of these.
+PER_ITEM_SILENCE = 8.0   # 0.5 question + 0.6 option + 1.5 think
+                         # + 4.5 countdown (3 x 1.5, silent) + 0.4 answer
+                         # + 0.5 explanation
+
+
+def predict(vtype: str, words: int, rate: float, overhead: float,
+            items: int = 1) -> float:
+    """Seconds for `items` items, splitting the fitted overhead honestly.
+
+    The fitted `overhead` is what a ONE-item video carries, so it already
+    contains one PER_ITEM_SILENCE. Everything else in it is per video: the
+    "Escucha las opciones" transition, the option letter clips, the leading
+    and trailing buffer. Adding items adds silence, and that is the term the
+    regression could never learn.
+    """
+    fixed = max(0.0, overhead - PER_ITEM_SILENCE)
+    return words / rate + fixed + items * PER_ITEM_SILENCE
+
+
 if __name__ == "__main__":
     main()
