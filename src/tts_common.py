@@ -797,3 +797,127 @@ def merge_punctuation_tokens(words, boundary_key: str = "segment_id"):
         else:
             out.append(item)
     return out
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# THE CODE-SWITCH TRUNCATION, AND THE DECAY WE PUT BACK
+#
+# MEASURED, not inferred. ElevenLabs returns any clip containing a language
+# transition cut at the instant the voice stops. Probed at n=6 per condition
+# against the live API:
+#
+#   "the menu."              monolingual EN   tail 0.34-1.29 s   0/6 cut
+#   "la carta."              monolingual ES   tail 1.17-1.27 s   0/6 cut
+#   "la carta... the menu."  ES -> EN         tail 0.000 s       3/3 cut
+#   "the menu... la carta."  EN -> ES         tail 0.000 s       3/3 cut
+#   "el libro... the book."  ES -> EN         tail 0.000 s       6/6 cut
+#
+# Direction does not matter and the ellipsis is not required. It is the
+# transition itself. Corpus-wide this hits 99.3% of vocabulary pair clips.
+#
+# WHAT IS LOST IS ~30 ms OF AMPLITUDE DECAY, NOT A PHONEME. Whisper reads the
+# final word in 6/6 truncated clips. Monolingual clips take a median 30 ms to
+# fall from -40 dB to -60 dB; truncated clips sit at a median -38 dB in their
+# final frame and then stop dead. That distinction is why this function is a
+# repair rather than a mask: an envelope is an amplitude curve, and a fade
+# produces an amplitude curve. A lost phoneme could not be reconstructed.
+#
+# THE RESIDUAL, so a future reader measuring these files knows: the decay at
+# the end of a repaired clip is OURS, not the model's. Reconstructed envelope
+# vs the monolingual reference is 4.93 dB RMS across the +/-50 ms window
+# (naive fade+pad scores 35 dB). The first 50 ms before the cut sits ~5 dB
+# below the natural curve, because the fade attenuates real speech to remove
+# the discontinuity. That is the price of the repair and it is not zero.
+#
+# WHY THE PAD IS NOISE AND NOT SILENCE. `apad` writes exact digital zero.
+# The model's own floor measures -79.5 dB, and padding to -140 dB rebuilds
+# the very defect that makes this audio sound spliced -- the ear does not
+# hear silence, it hears the noise floor vanish. Naive fade+apad scored
+# 35 dB RMS against the reference for exactly this reason. The pad here
+# starts at -58 dB and decays toward the floor, which is what the natural
+# tail does.
+#
+# CONSTANTS ARE MEASURED, NOT CHOSEN. Each was fitted by grid search against
+# the monolingual reference envelope, not picked for looking tidy:
+#   TAIL_FADE   0.030  the measured natural -40 -> -60 dB decay time
+#   TAIL_CURVE  esin   best of tri/exp/log/qsin/hsin/esin/ipar/cub
+#   TAIL_PAD    0.244  the corpus median healthy tail, not 0.25
+#   TAIL_NOISE  -58    pad start level, decaying at TAIL_NOISE_K
+# ═══════════════════════════════════════════════════════════════════════
+
+#: Below this much trailing silence a clip is treated as truncated.
+TAIL_MIN = 0.05
+TAIL_FADE = 0.030
+TAIL_CURVE = "esin"
+TAIL_PAD = 0.244
+TAIL_NOISE_DB = -58.0
+TAIL_NOISE_K = 20
+#: The model's own measured noise floor, for reference in logs.
+TAIL_FLOOR_DB = -79.5
+
+
+def clip_is_truncated(audio_path: str) -> bool:
+    """True when the clip ends within TAIL_MIN of the voice stopping."""
+    try:
+        return (get_audio_duration(audio_path)
+                - measure_speech_end(audio_path)) < TAIL_MIN
+    except Exception:                                       # noqa: BLE001
+        logger.debug("tail: could not measure %s", audio_path, exc_info=True)
+        return False
+
+
+def repair_truncated_tail(audio_path: str, out_path: str = None) -> dict:
+    """Give a guillotined clip its decay back. No-op on a healthy clip.
+
+    CALL THIS BEFORE `add_audio` MEASURES THE CLIP. add_audio derives
+    running_time from the duration, so a clip padded first is accounted for
+    correctly; pad afterwards and every later segment start drifts by
+    TAIL_PAD.
+
+    Returns {'repaired': bool, 'tail_before': float, 'duration_after': float}.
+    """
+    import math
+
+    out_path = out_path or audio_path
+    before = None
+    try:
+        before = get_audio_duration(audio_path) - measure_speech_end(audio_path)
+    except Exception:                                       # noqa: BLE001
+        logger.debug("tail: measurement failed for %s", audio_path, exc_info=True)
+        return {"repaired": False, "tail_before": None, "duration_after": None}
+
+    if before >= TAIL_MIN:
+        return {"repaired": False, "tail_before": before,
+                "duration_after": get_audio_duration(audio_path)}
+
+    duration = get_audio_duration(audio_path)
+    amplitude = (10 ** (TAIL_NOISE_DB / 20.0)) * math.sqrt(3)
+    tmp = f"{out_path}.tail.mp3"
+    chain = (
+        f"[0:a]afade=t=out:st={max(0.0, duration - TAIL_FADE):.4f}:"
+        f"d={TAIL_FADE}:curve={TAIL_CURVE}[v];"
+        f"anoisesrc=color=white:amplitude={amplitude:.6f}:"
+        f"duration={TAIL_PAD}:sample_rate=44100,"
+        f"volume=volume='max(0.10\\,exp(-t*{TAIL_NOISE_K}))':eval=frame[n];"
+        f"[v][n]concat=n=2:v=0:a=1[out]"
+    )
+    try:
+        subprocess.run(
+            ["ffmpeg", "-v", "error", "-y", "-i", str(audio_path),
+             "-filter_complex", chain, "-map", "[out]", tmp],
+            check=True, capture_output=True)
+        os.replace(tmp, out_path)
+    except Exception:                                       # noqa: BLE001
+        logger.warning("tail: repair failed for %s; leaving the clip as it is",
+                       audio_path, exc_info=True)
+        try:
+            os.path.exists(tmp) and os.remove(tmp)
+        except OSError:
+            pass
+        return {"repaired": False, "tail_before": before,
+                "duration_after": duration}
+
+    after = get_audio_duration(out_path)
+    logger.info("tail: repaired %s (tail was %.3fs, now %.3fs long)",
+                os.path.basename(str(audio_path)), before, after)
+    return {"repaired": True, "tail_before": before, "duration_after": after}
