@@ -33,6 +33,7 @@ from tts_common import (
     PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
     PAUSE_AFTER_ANSWER, PAUSE_AFTER_EXPLANATION,
     PAUSE_LETTER_TO_WORD, PAUSE_BETWEEN_OPTIONS, trim_clip_silence,
+    repair_truncated_tail,
 )
 from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
@@ -453,6 +454,20 @@ def generate_segment_audio(
         ),
         output_format="mp3_44100_128",
     )
+
+    # THE CODE-SWITCH TRUNCATION, REPAIRED BEFORE ANYONE MEASURES THE CLIP.
+    #
+    # Any clip containing a language transition comes back from ElevenLabs cut
+    # at the instant the voice stops — measured 6/6 on "el libro... the book."
+    # against 0/6 on either language alone. repair_truncated_tail gives it its
+    # decay back and is a no-op on a healthy clip.
+    #
+    # HERE, and not at the call sites, because every caller measures what this
+    # function returns: add_audio derives running_time from the duration, so
+    # the pad has to exist before that read or every later segment start
+    # drifts by TAIL_PAD. Returning the post-repair duration is the whole
+    # point — see tts_common for the measured constants and the residual.
+    repair_truncated_tail(output_path)
 
     duration = get_audio_duration(output_path)
     if duration <= 0:
