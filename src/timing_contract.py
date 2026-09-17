@@ -47,12 +47,16 @@ one global rule is wrong for both, which is exactly what the second
 implementation was.
 """
 
+# Both families are DERIVED from the registry, so a type cannot be v3 here
+# and turbo there, or belong to neither and be silently skipped.
+import video_types as _vt
+
 #: Types rendered from a per-segment assembly: the TTS emits one clip per
 #: segment and `segment_times` carries the measured boundaries.
-V3_TYPES = frozenset({"quiz", "true_false", "fill_blank", "vocabulary"})
+V3_TYPES = _vt.V3_TYPES
 
 #: Types rendered word by word, driven by a Whisper word timeline.
-TURBO_TYPES = frozenset({"educational", "pronunciation"})
+TURBO_TYPES = _vt.TURBO_TYPES
 
 #: The two halves of the contract, named for what they require.
 REQUIRES_SEGMENT_TIMES = V3_TYPES

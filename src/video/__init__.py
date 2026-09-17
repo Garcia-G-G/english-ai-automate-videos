@@ -49,6 +49,7 @@ def _strip_audio_tags(data):
     return clean(data)
 from .educational import create_frame_educational, add_sentence_boundaries
 from .karaoke import create_frame_karaoke
+from video_types import VIDEO_TYPES
 from .quiz import create_frame_quiz, resolve_quiz_timestamps
 from .true_false import create_frame_true_false, resolve_true_false_timestamps
 from .fill_blank import create_frame_fill_blank
@@ -565,7 +566,7 @@ def main():
     parser.add_argument("-a", "--audio", help="MP3 audio file")
     parser.add_argument("-d", "--data", help="JSON data file (defaults to audio path with .json)")
     parser.add_argument("-o", "--output", default="output/video/output.mp4", help="Output MP4")
-    parser.add_argument("-t", "--type", choices=['educational', 'quiz', 'true_false', 'fill_blank', 'pronunciation', 'vocabulary'],
+    parser.add_argument("-t", "--type", choices=list(VIDEO_TYPES),
                         help="Video type (auto-detected from data if not specified)")
     parser.add_argument("--fps", type=int, default=FPS, help="FPS")
     parser.add_argument("-b", "--background", required=True,

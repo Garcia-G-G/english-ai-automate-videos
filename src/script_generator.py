@@ -34,8 +34,9 @@ OUTPUT_DIR = ROOT / "output" / "scripts"
 MODEL = "gpt-4o-mini"
 MAX_TOKENS = 3000
 
-# Supported video types
-VIDEO_TYPES = ["educational", "quiz", "true_false", "fill_blank", "pronunciation", "vocabulary"]
+# Supported video types -- derived, not restated. A type legal here and
+# unknown to the schema (or the reverse) was possible until this was one list.
+from video_types import VIDEO_TYPES  # noqa: F401  (re-exported)
 
 
 def load_topics(category: str) -> list:

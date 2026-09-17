@@ -58,11 +58,14 @@ from pydantic import (
     model_validator,
 )
 
-VIDEO_TYPES = ("educational", "quiz", "true_false", "fill_blank",
-               "pronunciation", "vocabulary")
+# THE list lives in video_types, which is a leaf module: it names its
+# renderers as strings and imports none of them, so this stays as cheap to
+# import as the tuple it replaces. Both names below are derived, so the
+# schema and the Literal can no longer disagree with each other -- they were
+# two hand-maintained copies of the same six names.
+from video_types import VIDEO_TYPES  # noqa: F401  (re-exported)
 
-VideoType = Literal["educational", "quiz", "true_false", "fill_blank",
-                    "pronunciation", "vocabulary"]
+VideoType = Literal[VIDEO_TYPES]
 
 OptionLetter = Literal["A", "B", "C", "D"]
 
