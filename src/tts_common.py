@@ -367,8 +367,94 @@ def trim_clip_silence(audio_path: str, out_path: str = None) -> dict:
             return result
 
         os.replace(tmp, out_path)
+        # THE ENTRY, the mirror of repair_truncated_tail's exit.
+        result["lead_shaped"] = shape_clip_lead_in(out_path)
         result.update(trimmed=True, after=get_audio_duration(out_path))
         return result
+    finally:
+        if os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# THE ENTRY — WHAT STEP 4 MADE AUDIBLE
+#
+# A trimmed clip keeps TRIM_LEAD_PAD of its OWN leading silence, and that
+# silence measures ~-98 dB — about 23 dB quieter than the room tone the gaps
+# now carry. While gaps were digital zero this was invisible: -98 dB was an
+# improvement on its surroundings. Once the gaps had a floor, the retained
+# lead-in punched a hole straight through it, measured at every option start:
+#
+#     gap ... -75  -75  -75 | -98  -62  -20  -12  -11    <- a tick, then a slam
+#
+# Then full speaking level in 20-30 ms. No human onset does that; the
+# untrimmed segments in the same files take 40-50 ms to reach -25 dB.
+#
+# TWO THINGS, AND RAISING TRIM_LEAD_PAD FIXES NEITHER. More pad keeps more of
+# the same too-quiet pre-roll, so the hole gets longer rather than going away.
+#   1. a room-tone bed at GAP_FLOOR_DB under the clip, so the floor is
+#      CONTINUOUS across the join and nothing sits below the gap it follows
+#   2. a fade-in over the length the model's own onsets actually take
+#
+# DURATION-NEUTRAL, which the shape of the fix did not have to be. Bedding
+# the whole clip rather than prepending a lead means no delay is needed:
+# `amix=duration=first` returns exactly the clip's length. segment_times
+# drives the renderer, so keeping it neutral costs nothing and risks nothing.
+#
+# The fade attenuates the first 45 ms of real speech, exactly as the tail
+# fade attenuates the last 30 ms. That is the same trade and the same
+# reasoning: an onset is an amplitude curve, and this rebuilds it.
+# ═══════════════════════════════════════════════════════════════════════
+
+#: Fade-in length. Measured: untrimmed segments reach -25 dB in 40-50 ms,
+#: trimmed ones in 20-30 ms. Matched to the natural figure, not chosen.
+LEAD_FADE_S = 0.045
+#: Same family as the tail repair's curve, picked the same way.
+LEAD_CURVE = "esin"
+
+
+def shape_clip_lead_in(audio_path: str) -> bool:
+    """Bed the clip on room tone and fade its onset in. True if applied.
+
+    Called from trim_clip_silence, because only a trimmed clip starts on its
+    own truncated pre-roll. An untrimmed clip keeps the model's own onset,
+    which is what this is imitating.
+    """
+    import math
+
+    try:
+        duration = get_audio_duration(audio_path)
+    except Exception:                                       # noqa: BLE001
+        return False
+    if duration <= 0:
+        return False
+
+    amplitude = (10 ** ((GAP_FLOOR_DB + GAP_AMP_CALIBRATION_DB) / 20.0)) * math.sqrt(3)
+    tmp = f"{audio_path}.lead.mp3"
+    chain = (
+        f"[0:a]afade=t=in:st=0:d={LEAD_FADE_S}:curve={LEAD_CURVE}[v];"
+        f"anoisesrc=color=white:amplitude={amplitude:.8f}"
+        f":duration={duration + 0.5:.3f}:sample_rate=44100[n];"
+        f"[v][n]amix=inputs=2:duration=first:normalize=0[out]"
+    )
+    try:
+        proc = subprocess.run(
+            ["ffmpeg", "-y", "-loglevel", "error", "-i", str(audio_path),
+             "-filter_complex", chain, "-map", "[out]",
+             "-acodec", "libmp3lame", "-q:a", "2", "-ar", "44100", "-ac", "1",
+             tmp], capture_output=True, text=True, timeout=60)
+        if proc.returncode != 0 or not os.path.exists(tmp):
+            logger.warning("lead-in: shaping failed for %s; clip left as it is",
+                           audio_path)
+            return False
+        os.replace(tmp, audio_path)
+        return True
+    except Exception:                                       # noqa: BLE001
+        logger.warning("lead-in: shaping raised for %s", audio_path, exc_info=True)
+        return False
     finally:
         if os.path.exists(tmp):
             try:
