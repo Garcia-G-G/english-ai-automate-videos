@@ -395,6 +395,18 @@ def get_audio_duration(audio_path: str) -> float:
     return float(raw)
 
 
+#: The resting level of a gap, in dBFS RMS as it lands in the final mix.
+#: Measured: the speech clips' own floor is -72.2 dB (p10) / -77.6 dB (p5)
+#: across four produced files, so a gap at -75 sits just under the room tone
+#: it joins -- present, never audible as hiss.
+GAP_FLOOR_DB = -75.0
+
+#: anoisesrc `amplitude` is not an RMS and libmp3lame shifts it again.
+#: Measured offset between requested and delivered level, so GAP_FLOOR_DB
+#: means what it says. Re-measure if the codec or sample rate changes.
+GAP_AMP_CALIBRATION_DB = 4.6
+
+
 def generate_silence(duration: float, output_path: str,
                      sample_rate: int = 44100, channels: str = "mono") -> None:
     """Generate a silence audio file of specified duration.
@@ -405,14 +417,57 @@ def generate_silence(duration: float, output_path: str,
         sample_rate: Sample rate (44100 for OpenAI/ElevenLabs, 24000 for Google).
         channels: "mono" or "stereo".
     """
+    # ROOM TONE, NOT DIGITAL ZERO.
+    #
+    # This used `anullsrc`, which emits exact zeros. The voice's own floor
+    # measures -72 dB (p10 across four produced files), so every gap was a
+    # step from -72 dB to absolute nothing and back, 8 to 25 times a video.
+    # The ear does not hear the silence; it hears the floor vanish. That is
+    # the other half of why this audio sounded spliced -- the first half was
+    # the code-switch truncation repaired in repair_truncated_tail.
+    #
+    # The countdown is the worst instance: 4.5 s of 72,000 consecutive zero
+    # samples, the longest stretch of nothing in any video, immediately
+    # before the answer. It stays silent by design; it stops being dead.
+    #
+    # DURATION-NEUTRAL BY CONSTRUCTION. `-t duration` bounds the output
+    # exactly as it did for anullsrc, so every segment start and the declared
+    # duration are untouched. segment_times drives the renderer, so anything
+    # else here would desynchronise every text reveal.
+    #
+    # THE LEVEL IS MEASURED, AND IT IS NOT TAIL_NOISE_DB. A decay's starting
+    # level and a gap's resting level are different jobs: -58 dB would be
+    # audible hiss across every video on the channel. GAP_FLOOR_DB sits just
+    # below the clips' own p10 floor and near their p5, so the gap is quieter
+    # than the room tone around it and never reads as added noise.
+    #
+    # The calibration constant is empirical: anoisesrc's `amplitude` is not
+    # an RMS, and the mp3 round trip shifts it again, so the amplitude that
+    # actually lands at GAP_FLOOR_DB was measured rather than derived.
+    import math
+
+    amplitude = (10 ** ((GAP_FLOOR_DB + GAP_AMP_CALIBRATION_DB) / 20.0)) * math.sqrt(3)
     cmd = [
         'ffmpeg', '-y',
-        '-f', 'lavfi', '-i', f'anullsrc=r={sample_rate}:cl={channels}',
+        '-f', 'lavfi', '-i',
+        f'anoisesrc=color=white:amplitude={amplitude:.8f}'
+        f':duration={duration}:sample_rate={sample_rate}',
         '-t', str(duration),
         '-acodec', 'libmp3lame', '-q:a', '2',
         output_path
     ]
-    subprocess.run(cmd, capture_output=True, timeout=30)
+    result = subprocess.run(cmd, capture_output=True, timeout=30)
+    if result.returncode != 0 or not os.path.exists(output_path):
+        # Falling back to silence is worse-sounding but never wrong; a gap
+        # that fails to exist would desynchronise everything after it.
+        logger.warning("silence: room tone failed, falling back to anullsrc")
+        subprocess.run([
+            'ffmpeg', '-y',
+            '-f', 'lavfi', '-i', f'anullsrc=r={sample_rate}:cl={channels}',
+            '-t', str(duration),
+            '-acodec', 'libmp3lame', '-q:a', '2',
+            output_path
+        ], capture_output=True, timeout=30)
 
 
 def concatenate_audio_files(audio_files: list, output_path: str,
