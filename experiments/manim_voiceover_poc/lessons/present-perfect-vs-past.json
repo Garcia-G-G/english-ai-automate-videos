@@ -1,0 +1,355 @@
+{
+  "id": "present-perfect-vs-past",
+  "title": "Present perfect o pasado simple",
+  "kicker": "Inglés · Tiempos verbales · B1",
+  "level": "B1",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy el que más dudas genera de todo el inglés: cuándo se dice [[I have done]] y cuándo [[I did]]. No es cuestión de sonar mejor. Cambian el significado."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · Por qué nos cuesta tanto",
+      "narration": "Antes del error, la razón del error. Porque si entiendes de dónde viene, dejas de dudar en mitad de la frase."
+    },
+    {
+      "id": "b03",
+      "type": "list",
+      "heading": "El problema de raíz",
+      "items": [
+        "En español he comido y comí casi se intercambian",
+        "En inglés no: marcan cosas distintas",
+        "Uno mira al pasado, el otro mira al ahora"
+      ],
+      "narration": "En español, he comido y comí se intercambian casi sin pensar. En inglés no: marcan cosas distintas. Uno mira al pasado, el otro mira al ahora."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "text": "I have been to Paris last year.",
+      "gloss": "He estado en París el año pasado.",
+      "narration": "Aquí está el error típico: [[I have been to Paris last year]]. Traducción directa del español, y en inglés chirría muchísimo."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "last": "red"
+      },
+      "tags": {
+        "have": "ahora"
+      },
+      "narration": "El choque está entre [[have]] y [[last]] year. [[Have]] dice que esto conecta con el ahora. [[Last]] year dice que terminó y está cerrado. No pueden ir juntos."
+    },
+    {
+      "id": "b06",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "have",
+        "to": "went"
+      },
+      "narration": "Si dices cuándo, el tiempo es pasado simple: [[went]]. [[I went to Paris last year]]. Y si quieres el otro, quitas el cuándo: [[I have been to Paris]]."
+    },
+    {
+      "id": "b07",
+      "type": "tip",
+      "text": "Si la frase dice CUÁNDO pasó, es pasado simple. Siempre.",
+      "narration": "Y esa es la regla más rentable de esta lección: si la frase dice cuándo pasó, es pasado simple. Siempre. Sin excepciones que te vayan a importar."
+    },
+    {
+      "id": "b08",
+      "type": "heading",
+      "text": "Parte 2 · Qué dice cada uno",
+      "narration": "Vamos al fondo. Los dos hablan de algo que ya ocurrió, pero cada uno lo usa para una cosa distinta."
+    },
+    {
+      "id": "b09",
+      "type": "table",
+      "headers": [
+        "Pasado simple",
+        "Present perfect"
+      ],
+      "rows": [
+        [
+          "terminado y cerrado",
+          "conecta con el ahora"
+        ],
+        [
+          "dice cuándo",
+          "no dice cuándo"
+        ],
+        [
+          "yesterday, in 2019",
+          "ever, never, yet"
+        ]
+      ],
+      "narration": "Mira la tabla. El pasado simple es [[terminado]] y cerrado, [[dice]] cuándo, y va con [[yesterday, in 2019]]. El present perfect [[conecta]] con el ahora, [[no]] dice cuándo, y va con [[ever, never, yet]]."
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "text": "I lost my keys.",
+      "gloss": "Perdí las llaves.",
+      "highlight": {
+        "lost": "blue"
+      },
+      "narration": "Escucha la diferencia de verdad. [[I lost my keys]]. Perdí las llaves. Es un hecho del pasado. Igual ya aparecieron; la frase no dice nada de eso."
+    },
+    {
+      "id": "b11",
+      "type": "sentence",
+      "text": "I have lost my keys.",
+      "gloss": "He perdido las llaves.",
+      "highlight": {
+        "have": "green"
+      },
+      "narration": "[[I have lost my keys]]. He perdido las llaves... y siguen perdidas. Ese [[have]] trae el problema hasta este momento. Por eso una es un dato y la otra es un aviso."
+    },
+    {
+      "id": "b12",
+      "type": "tip",
+      "text": "I lost my keys = un hecho. I have lost my keys = todavía no aparecen.",
+      "narration": "Repítelo hasta que te salga solo: [[I lost my keys]] es un hecho. [[I have lost my keys]] es que todavía no aparecen. La misma acción, dos mensajes."
+    },
+    {
+      "id": "b13",
+      "type": "heading",
+      "text": "Parte 3 · Las palabras que te avisan",
+      "narration": "Hay palabras que casi siempre arrastran uno de los dos. Reconocerlas te quita la duda antes de empezar la frase."
+    },
+    {
+      "id": "b14",
+      "type": "list",
+      "heading": "Van con present perfect",
+      "items": [
+        "Ever y never: have you ever tried it?",
+        "Yet y already: I haven't finished yet",
+        "Since y for: I have lived here for two years",
+        "Just: she has just left"
+      ],
+      "narration": "Con present perfect: [[Ever]] y never, [[Yet]] y already, [[Since]] y for, y [[Just]]. Por ejemplo [[I have lived here for two years]], que sigue siendo verdad ahora."
+    },
+    {
+      "id": "b15",
+      "type": "list",
+      "heading": "Van con pasado simple",
+      "items": [
+        "Yesterday, last week, in 2019",
+        "Ago: I moved here three years ago",
+        "When I was a child",
+        "Cualquier momento ya cerrado"
+      ],
+      "narration": "Con pasado simple: [[Yesterday]], last week, in 2019. [[Ago]]: [[I moved here three years ago]]. [[When]] I was a child. [[Cualquier]] momento ya cerrado."
+    },
+    {
+      "id": "b16",
+      "type": "sentence",
+      "text": "I have lived here for two years.",
+      "gloss": "Llevo dos años viviendo aquí.",
+      "highlight": {
+        "for": "green"
+      },
+      "narration": "Fíjate en esta, que en español ni se parece: [[I have lived here for two years]]. Llevo dos años viviendo aquí. Ese [[for]] dice que empezó antes y sigue hoy."
+    },
+    {
+      "id": "b17",
+      "type": "heading",
+      "text": "Parte 4 · Since o for",
+      "narration": "Y ya que estamos, la pareja que confunde a todo el mundo dentro del present perfect: [[since]] y [[for]]."
+    },
+    {
+      "id": "b18",
+      "type": "table",
+      "headers": [
+        "For",
+        "Since"
+      ],
+      "rows": [
+        [
+          "cuánto tiempo",
+          "desde cuándo"
+        ],
+        [
+          "for three days",
+          "since Monday"
+        ],
+        [
+          "for ten years",
+          "since 2015"
+        ]
+      ],
+      "narration": "[[For]] dice cuánto tiempo: [[for three days]], [[for ten years]]. [[Since]] dice desde cuándo empezó: [[since Monday]], [[since 2015]]. Uno es duración, el otro es punto de partida."
+    },
+    {
+      "id": "b19",
+      "type": "sentence",
+      "text": "She has worked here since March.",
+      "gloss": "Trabaja aquí desde marzo.",
+      "highlight": {
+        "since": "blue"
+      },
+      "tags": {
+        "March": "punto"
+      },
+      "narration": "[[She has worked here since March]]. Trabaja aquí desde marzo. [[Since]] porque [[March]] es un punto en el calendario, no una cantidad de tiempo."
+    },
+    {
+      "id": "b20",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oírlos alternando, que es como aparecen de verdad. Una entrevista de trabajo, donde salen los dos sin parar."
+    },
+    {
+      "id": "b21",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Have you worked in sales before?",
+          "es": "¿Has trabajado en ventas antes?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, I worked at a shop in 2021.",
+          "es": "Sí, trabajé en una tienda en 2021."
+        },
+        {
+          "speaker": "A",
+          "en": "And how long have you been here?",
+          "es": "¿Y cuánto llevas aquí?"
+        },
+        {
+          "speaker": "B",
+          "en": "I've been here for six months.",
+          "es": "Llevo aquí seis meses."
+        }
+      ],
+      "narration": "[[Have you worked in sales before?]] [[Yes, I worked at a shop in 2021]]. [[And how long have you been here?]] [[I've been here for six months]]."
+    },
+    {
+      "id": "b22",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Have you worked: experiencia, sin fecha",
+        "Worked at a shop in 2021: hay fecha, cerrado",
+        "How long have you been: sigue hoy",
+        "For six months: duración que continúa"
+      ],
+      "narration": "[[Have]] you worked: experiencia, sin fecha. [[Worked]] at a shop in 2021: hay fecha, cerrado. [[How]] long have you been: sigue hoy. [[For]] six months: duración que continúa."
+    },
+    {
+      "id": "b23",
+      "type": "tip",
+      "text": "La pregunta abre con present perfect. La respuesta con fecha cambia a pasado simple.",
+      "narration": "Fíjate en el patrón, porque se repite en cualquier conversación: la pregunta abre con present perfect, y en cuanto la respuesta da una fecha, cambia a pasado simple."
+    },
+    {
+      "id": "b24",
+      "type": "heading",
+      "text": "Parte 6 · El error de nivel alto",
+      "narration": "Un último caso, y este ya es de nivel alto: cuando el periodo de tiempo todavía no ha terminado."
+    },
+    {
+      "id": "b25",
+      "type": "sentence",
+      "text": "I drank three coffees today.",
+      "gloss": "Me he tomado tres cafés hoy.",
+      "highlight": {
+        "today": "yellow"
+      },
+      "narration": "[[I drank three coffees today]]. Suena bien, pero si [[today]] sigue, un hablante nativo diría [[I have drunk three coffees today]], porque el día no ha acabado."
+    },
+    {
+      "id": "b26",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "drank",
+        "to": "have"
+      },
+      "narration": "Con [[have]]: [[I have drunk three coffees today]]. Y mañana, cuando el día esté cerrado, ya dirás [[I drank three coffees yesterday]]. El mismo café, otro tiempo."
+    },
+    {
+      "id": "b27",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
+      "narration": "Tu turno. Tres preguntas, y en todas la pista está en las palabras de tiempo. Tres segundos cada una."
+    },
+    {
+      "id": "b28",
+      "type": "quiz",
+      "question": "I ___ my phone yesterday.",
+      "options": [
+        "have broken",
+        "broke",
+        "have break"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[I, blank, my phone yesterday]]. ¿[[have broken]], [[broke]] o [[have break]]? Piénsalo. {{pause:3}} Es [[broke]]: hay un [[yesterday]], está cerrado."
+    },
+    {
+      "id": "b29",
+      "type": "quiz",
+      "question": "___ you ever eaten sushi?",
+      "options": [
+        "Did",
+        "Have",
+        "Do"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[blank, you ever eaten sushi?]] ¿[[Did]], [[Have]] o [[Do]]? Piénsalo. {{pause:3}} Es [[Have]]: [[ever]] pregunta por experiencia, sin fecha."
+    },
+    {
+      "id": "b30",
+      "type": "quiz",
+      "question": "We ___ here since 2019.",
+      "options": [
+        "live",
+        "lived",
+        "have lived"
+      ],
+      "answer": 2,
+      "narration": "Tercera: [[We, blank, here since 2019]]. ¿[[live]], [[lived]] o [[have lived]]? Piénsalo. {{pause:3}} Es [[have lived]]: [[since]] dice que empezó antes y sigue."
+    },
+    {
+      "id": "b31",
+      "type": "heading",
+      "text": "Parte 8 · Resumen",
+      "narration": "Cerramos con cuatro ideas. Si dudas en mitad de una frase, vuelve a la primera y casi siempre se resuelve sola."
+    },
+    {
+      "id": "b32",
+      "type": "recap",
+      "items": [
+        "Si dices cuándo pasó, es pasado simple",
+        "Present perfect conecta el pasado con el ahora",
+        "Ever, never, yet y just piden present perfect",
+        "For es cuánto tiempo, since es desde cuándo"
+      ],
+      "narration": "Si dices cuándo pasó, es pasado simple. [[Present]] perfect conecta el pasado con el ahora. [[Ever]], never, yet y just lo piden. Y [[for]] es cuánto tiempo, [[since]] es desde cuándo."
+    },
+    {
+      "id": "b33",
+      "type": "sentence",
+      "text": "I have finished, and you learned something.",
+      "gloss": "He terminado, y tú aprendiste algo.",
+      "narration": "Y la despedida usa los dos: [[I have finished, and you learned something]]. He terminado — conecta con ahora — y tú aprendiste algo, que ya está hecho. Nos vemos."
+    }
+  ]
+}

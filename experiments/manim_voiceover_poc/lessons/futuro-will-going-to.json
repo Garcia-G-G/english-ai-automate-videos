@@ -1,0 +1,306 @@
+{
+  "id": "futuro-will-going-to",
+  "title": "Will y going to: dos futuros distintos",
+  "kicker": "Inglés · Futuro · A2–B1",
+  "level": "A2-B1",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy el futuro en inglés. Y la pregunta que todo el mundo se hace: ¿[[will]] o [[going to]]? No son intercambiables. Dicen cosas distintas sobre cuándo lo decidiste."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · La diferencia de verdad",
+      "narration": "Vamos directos al fondo, porque una vez que ves esto, ya no vuelves a dudar. La diferencia no está en el futuro: está en el pasado."
+    },
+    {
+      "id": "b03",
+      "type": "list",
+      "heading": "Cuándo lo decidiste",
+      "items": [
+        "Going to: ya estaba decidido antes de hablar",
+        "Will: lo decides en este mismo momento",
+        "Going to: hay pruebas de que va a pasar",
+        "Will: es una predicción u opinión"
+      ],
+      "narration": "[[Going to]]: ya estaba decidido antes de hablar. [[Will]]: lo decides en este mismo momento. [[Going to]] también cuando hay pruebas. Y [[will]] cuando es una predicción u opinión."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "text": "I'm going to study tonight.",
+      "gloss": "Voy a estudiar esta noche.",
+      "highlight": {
+        "going": "blue"
+      },
+      "narration": "[[I'm going to study tonight]]. Voy a estudiar esta noche. Con [[going]] to dices que ya lo tenías planeado. Lo decidiste ayer, no ahora."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "text": "OK, I'll study tonight.",
+      "gloss": "Vale, estudiaré esta noche.",
+      "highlight": {
+        "I'll": "green"
+      },
+      "narration": "[[OK, I'll study tonight]]. Vale, estudiaré esta noche. Ese [[I'll]] con un vale delante dice que lo acabas de decidir, ahora mismo, respondiendo a algo."
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Going to = ya lo tenía pensado. Will = lo decido mientras hablo.",
+      "narration": "Esa es la frontera: [[going to]] es ya lo tenía pensado, [[will]] es lo decido mientras hablo. Por eso [[will]] aparece tanto después de vale, de acuerdo o no te preocupes."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · Cuando hay pruebas delante",
+      "narration": "El segundo uso de [[going to]] es igual de práctico: cuando lo que ves delante te dice lo que va a pasar."
+    },
+    {
+      "id": "b08",
+      "type": "sentence",
+      "text": "Look at those clouds. It's going to rain.",
+      "gloss": "Mira esas nubes. Va a llover.",
+      "highlight": {
+        "going": "blue"
+      },
+      "narration": "[[Look at those clouds. It's going to rain]]. Mira esas nubes, va a llover. Uso [[going]] to porque las nubes están ahí: hay prueba visible."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "I think it will rain tomorrow.",
+      "gloss": "Creo que lloverá mañana.",
+      "highlight": {
+        "will": "green"
+      },
+      "narration": "[[I think it will rain tomorrow]]. Creo que lloverá mañana. Aquí no hay nubes delante, sólo mi opinión. Por eso [[will]], y por eso empieza con [[I think]]."
+    },
+    {
+      "id": "b10",
+      "type": "table",
+      "headers": [
+        "Going to",
+        "Will"
+      ],
+      "rows": [
+        [
+          "plan ya hecho",
+          "decisión del momento"
+        ],
+        [
+          "hay pruebas",
+          "es una opinión"
+        ],
+        [
+          "I'm going to call her",
+          "I'll call her, don't worry"
+        ]
+      ],
+      "narration": "En la tabla: [[plan ya hecho]] contra [[decisión del momento]]. [[Hay pruebas]] contra [[es una opinión]]. [[I'm going to call her]] contra [[I'll call her, don't worry]]."
+    },
+    {
+      "id": "b11",
+      "type": "heading",
+      "text": "Parte 3 · El error de estructura",
+      "narration": "Vamos con la forma, porque hay un error que sale muchísimo y viene de traducir el futuro español tal cual."
+    },
+    {
+      "id": "b12",
+      "type": "sentence",
+      "text": "I will to call you tomorrow.",
+      "gloss": "Te llamaré mañana.",
+      "narration": "Mira: [[I will to call you tomorrow]]. Otra vez ese [[to]] que se cuela. Y otra vez sobra, por el mismo motivo que con [[can]]."
+    },
+    {
+      "id": "b13",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "to": "red"
+      },
+      "tags": {
+        "will": "modal"
+      },
+      "narration": "[[Will]] también es un modal, así que va pegado al verbo. Ni [[to]] delante, ni ese al final. Se dice [[he will]], nunca [[he wills]]."
+    },
+    {
+      "id": "b14",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "to",
+        "to": "call"
+      },
+      "narration": "Queda [[call]], directo: [[I will call you tomorrow]]. Y en la vida real casi siempre lo oirás contraído: [[I'll call you tomorrow]]."
+    },
+    {
+      "id": "b15",
+      "type": "tip",
+      "text": "En going to, el que cambia es el verbo be: I am, he is, they are going to.",
+      "narration": "Y en [[going to]] fíjate en otra cosa: el que cambia es el verbo [[be]]. [[I am going to]], [[he is going to]], [[they are going to]]. Nunca se dice [[I going to]]."
+    },
+    {
+      "id": "b16",
+      "type": "heading",
+      "text": "Parte 4 · El tercer futuro",
+      "narration": "Y ahora algo que casi ningún libro te cuenta pronto: hay un tercer futuro, y es el que más usan los nativos para planes con fecha."
+    },
+    {
+      "id": "b17",
+      "type": "sentence",
+      "text": "I'm meeting Ana at six.",
+      "gloss": "He quedado con Ana a las seis.",
+      "highlight": {
+        "meeting": "yellow"
+      },
+      "narration": "[[I'm meeting Ana at six]]. He quedado con Ana a las seis. Es presente continuo, pero habla del futuro. Y suena más natural que [[I'm going to meet Ana]]."
+    },
+    {
+      "id": "b18",
+      "type": "tip",
+      "text": "Si hay cita, hora o entrada comprada, usa el presente continuo: I'm flying on Monday.",
+      "narration": "La regla: si hay una cita concreta, una hora o una entrada comprada, usa el presente continuo. [[I'm flying on Monday]]. [[We're having dinner at eight]]."
+    },
+    {
+      "id": "b19",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oír los tres seguidos, en una conversación normal de viernes por la tarde."
+    },
+    {
+      "id": "b20",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "What are you doing this weekend?",
+          "es": "¿Qué haces este finde?"
+        },
+        {
+          "speaker": "B",
+          "en": "I'm going to paint the kitchen.",
+          "es": "Voy a pintar la cocina."
+        },
+        {
+          "speaker": "A",
+          "en": "Sounds hard. I'll help you if you want.",
+          "es": "Suena duro. Te ayudo si quieres."
+        },
+        {
+          "speaker": "B",
+          "en": "Really? I'm starting at ten on Saturday.",
+          "es": "¿En serio? Empiezo a las diez el sábado."
+        }
+      ],
+      "narration": "[[What are you doing this weekend?]] [[I'm going to paint the kitchen]]. [[Sounds hard. I'll help you if you want]]. [[Really? I'm starting at ten on Saturday]]."
+    },
+    {
+      "id": "b21",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Going to paint: plan que ya tenía",
+        "I'll help you: se ofrece en ese momento",
+        "I'm starting at ten: hay hora, presente continuo",
+        "Los tres futuros en cuatro frases"
+      ],
+      "narration": "[[Going]] to paint: plan que ya tenía. [[I'll]] help you: se ofrece en ese momento. [[I'm]] starting at ten: hay hora concreta. Y [[Los]] tres futuros aparecen en cuatro frases."
+    },
+    {
+      "id": "b22",
+      "type": "heading",
+      "text": "Parte 6 · Will para prometer",
+      "narration": "Un último uso de [[will]] que conviene tener a mano, porque es el que más te va a servir para quedar bien con alguien."
+    },
+    {
+      "id": "b23",
+      "type": "sentence",
+      "text": "Don't worry, I'll fix it.",
+      "gloss": "No te preocupes, lo arreglo yo.",
+      "highlight": {
+        "I'll": "green"
+      },
+      "narration": "[[Don't worry, I'll fix it]]. No te preocupes, lo arreglo yo. [[Will]] sirve para prometer, ofrecerse y tranquilizar. Es el futuro de la buena voluntad."
+    },
+    {
+      "id": "b24",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
+      "narration": "Tu turno. Tres preguntas, y la pista siempre está en si el plan ya existía o se acaba de crear."
+    },
+    {
+      "id": "b25",
+      "type": "quiz",
+      "question": "The phone's ringing. — I ___ get it!",
+      "options": [
+        "am going to",
+        "will",
+        "get"
+      ],
+      "answer": 1,
+      "narration": "Primera: suena el teléfono y dices [[I, blank, get it]]. ¿[[am going to]], [[will]] o [[get]]? Piénsalo. {{pause:3}} Es [[will]]: lo decides en ese segundo."
+    },
+    {
+      "id": "b26",
+      "type": "quiz",
+      "question": "We ___ move house in June. It's decided.",
+      "options": [
+        "will",
+        "are going to",
+        "move"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[We, blank, move house in June. It's decided]]. ¿[[will]], [[are going to]] o [[move]]? Piénsalo. {{pause:3}} Es [[are going to]]: ya estaba decidido."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "I ___ to call you later.",
+      "options": [
+        "will",
+        "am going",
+        "will going"
+      ],
+      "answer": 1,
+      "narration": "Tercera, de forma: [[I, blank, to call you later]]. ¿[[will]], [[am going]] o [[will going]]? Piénsalo. {{pause:3}} Es [[am going]] to. [[Will]] nunca lleva [[to]] detrás."
+    },
+    {
+      "id": "b28",
+      "type": "heading",
+      "text": "Parte 8 · Resumen",
+      "narration": "Cerramos con cuatro ideas. Y si sólo te llevas una, que sea la primera: la diferencia está en cuándo lo decidiste."
+    },
+    {
+      "id": "b29",
+      "type": "recap",
+      "items": [
+        "Going to es plan previo o prueba delante",
+        "Will es decisión del momento, opinión o promesa",
+        "Will nunca lleva to ni ese",
+        "Con cita y hora, presente continuo"
+      ],
+      "narration": "[[Going]] to es plan previo o prueba delante. [[Will]] es decisión del momento, opinión o promesa. [[Will]] nunca lleva to ni ese. Y [[con]] cita y hora, presente continuo."
+    },
+    {
+      "id": "b30",
+      "type": "sentence",
+      "text": "You're going to use this tomorrow.",
+      "gloss": "Vas a usar esto mañana.",
+      "narration": "Y me despido con una predicción con pruebas, porque acabas de aprenderlo: [[You're going to use this tomorrow]]. Vas a usar esto mañana. Nos vemos."
+    }
+  ]
+}

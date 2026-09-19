@@ -1,0 +1,386 @@
+{
+  "id": "falsos-amigos",
+  "title": "Falsos amigos que te delatan",
+  "kicker": "Inglés · Vocabulario · B1",
+  "level": "B1",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy palabras que parecen españolas, suenan españolas y significan otra cosa. Son las que más vergüenza dan cuando te enteras, así que vamos a quitarlas de en medio hoy."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El que más daño hace",
+      "narration": "Empezamos por el peor de todos, porque no es un error de vocabulario cualquiera: puede cambiar el sentido de una frase entera."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "Actually I live in Madrid.",
+      "gloss": "En realidad vivo en Madrid.",
+      "narration": "Mira: [[Actually I live in Madrid]]. Casi todo el mundo cree que ha dicho actualmente vivo en Madrid. Ha dicho otra cosa."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "Actually": "red"
+      },
+      "tags": {
+        "Actually": "en realidad"
+      },
+      "narration": "[[Actually]] significa en realidad, de hecho. Sirve para corregir a alguien. Así que suena a que estás llevando la contraria, no a que hablas del presente."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "Actually",
+        "to": "Currently"
+      },
+      "narration": "Actualmente se dice [[Currently]], o [[right now]]. [[Currently I live in Madrid]]. Y guarda [[actually]] para cuando de verdad quieras corregir algo."
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Actually = en realidad. Actualmente = currently, right now, at the moment.",
+      "narration": "Apúntalo así: [[actually]] es en realidad. Y actualmente es [[currently]], [[right now]] o [[at the moment]]. Se parecen en la forma y en nada más."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · Los cuatro clásicos",
+      "narration": "Vamos con los cuatro que aparecen en cualquier lista, porque salen constantemente y porque los cuatro tienen trampa doble."
+    },
+    {
+      "id": "b08",
+      "type": "table",
+      "headers": [
+        "Parece",
+        "Significa"
+      ],
+      "rows": [
+        [
+          "embarrassed",
+          "avergonzado"
+        ],
+        [
+          "constipated",
+          "estreñido"
+        ],
+        [
+          "sensible",
+          "sensato"
+        ],
+        [
+          "realize",
+          "darse cuenta"
+        ]
+      ],
+      "emphasis": [
+        "constipated"
+      ],
+      "narration": "Mira la tabla. [[Embarrassed]] es avergonzado, no embarazada. [[Constipated]] es estreñido, no constipado. [[Sensible]] es sensato, no sensible. Y [[realize]] es darse cuenta, no realizar."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "I am embarrassed about it.",
+      "gloss": "Me da vergüenza.",
+      "highlight": {
+        "embarrassed": "yellow"
+      },
+      "narration": "[[I am embarrassed about it]]. Me da vergüenza. Embarazada se dice [[pregnant]]. Y sí, este malentendido ha pasado en reuniones de verdad."
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "text": "I have a cold, not constipated.",
+      "gloss": "Estoy resfriado, no estreñido.",
+      "highlight": {
+        "cold": "green"
+      },
+      "narration": "Y esta te ahorra un mal rato en la farmacia: estar constipado es [[I have a cold]]. [[Constipated]] es otra cosa completamente distinta."
+    },
+    {
+      "id": "b11",
+      "type": "list",
+      "heading": "Cómo se dicen de verdad",
+      "items": [
+        "Embarazada: pregnant",
+        "Constipado: I have a cold",
+        "Sensible de emociones: sensitive",
+        "Realizar una tarea: carry out, do"
+      ],
+      "narration": "[[Embarazada]] es pregnant. [[Constipado]] es I have a cold. [[Sensible]] de emociones es sensitive. Y [[Realizar]] una tarea es carry out o do."
+    },
+    {
+      "id": "b12",
+      "type": "heading",
+      "text": "Parte 3 · Los del trabajo",
+      "narration": "Estos son más peligrosos porque no dan risa: dan confusión en un correo de trabajo y nadie te corrige."
+    },
+    {
+      "id": "b13",
+      "type": "table",
+      "headers": [
+        "Parece",
+        "Significa"
+      ],
+      "rows": [
+        [
+          "assist",
+          "asistir a un sitio"
+        ],
+        [
+          "attend",
+          "asistir a un evento"
+        ],
+        [
+          "support",
+          "aguantar, apoyar"
+        ],
+        [
+          "advertisement",
+          "anuncio publicitario"
+        ]
+      ],
+      "narration": "En la tabla: [[assist]] es ayudar. [[Attend]] es asistir a un evento. [[Support]] es apoyar o aguantar. Y [[advertisement]] es un anuncio publicitario, no una advertencia."
+    },
+    {
+      "id": "b14",
+      "type": "sentence",
+      "text": "I will attend the meeting.",
+      "gloss": "Asistiré a la reunión.",
+      "highlight": {
+        "attend": "blue"
+      },
+      "narration": "[[I will attend the meeting]]. Asistiré a la reunión. Si dices [[I will assist the meeting]] estás diciendo que vas a ayudarla, que no significa nada."
+    },
+    {
+      "id": "b15",
+      "type": "sentence",
+      "text": "This is a warning, not an ad.",
+      "gloss": "Esto es una advertencia, no un anuncio.",
+      "highlight": {
+        "warning": "green"
+      },
+      "narration": "Y una advertencia es [[a warning]]. [[This is a warning, not an ad]]. [[Advertisement]], o [[ad]], es publicidad. Son ideas opuestas y se confunden todo el rato."
+    },
+    {
+      "id": "b16",
+      "type": "heading",
+      "text": "Parte 4 · Los que cambian de tamaño",
+      "narration": "Ahora un grupo distinto y más sutil: palabras que existen en los dos idiomas, pero que en inglés son mucho más fuertes o mucho más suaves."
+    },
+    {
+      "id": "b17",
+      "type": "list",
+      "heading": "Cuidado con la intensidad",
+      "items": [
+        "Molest no es molestar: es abusar. Usa bother",
+        "Exit no es éxito: es salida. Éxito es success",
+        "Career no es carrera de estudios: es trayectoria",
+        "Carpet no es carpeta: es alfombra"
+      ],
+      "narration": "[[Molest]] no es molestar: es abusar. Usa [[bother]]. [[Exit]] es salida; éxito es success. [[Career]] es trayectoria profesional. Y [[Carpet]] es alfombra, no carpeta."
+    },
+    {
+      "id": "b18",
+      "type": "sentence",
+      "text": "Sorry to bother you.",
+      "gloss": "Perdona que te moleste.",
+      "highlight": {
+        "bother": "yellow"
+      },
+      "narration": "Esta apréndetela entera y no la olvides nunca: [[Sorry to bother you]]. Perdona que te moleste. Jamás uses [[molest]] aquí. Jamás."
+    },
+    {
+      "id": "b19",
+      "type": "tip",
+      "text": "Molest en inglés es un delito. Molestar es bother o disturb. Nunca te equivoques con esta.",
+      "narration": "Lo repito porque es el único de la lista que puede meterte en un problema serio: [[molest]] en inglés describe un delito. Molestar es [[bother]] o [[disturb]]."
+    },
+    {
+      "id": "b20",
+      "type": "heading",
+      "text": "Parte 5 · Los que casi aciertas",
+      "narration": "Y ahora los más finos: los que casi significan lo mismo, pero se usan en sitios distintos. Estos separan un B1 de un B2."
+    },
+    {
+      "id": "b21",
+      "type": "table",
+      "headers": [
+        "Palabra",
+        "Ojo con"
+      ],
+      "rows": [
+        [
+          "library",
+          "biblioteca, no librería"
+        ],
+        [
+          "conductor",
+          "director de orquesta"
+        ],
+        [
+          "fabric",
+          "tela, no fábrica"
+        ],
+        [
+          "large",
+          "grande, no largo"
+        ]
+      ],
+      "narration": "[[Library]] es biblioteca; librería es bookshop. [[Conductor]] es director de orquesta o cobrador. [[Fabric]] es tela; fábrica es factory. Y [[large]] es grande; largo es long."
+    },
+    {
+      "id": "b22",
+      "type": "sentence",
+      "text": "I bought it at the bookshop.",
+      "gloss": "Lo compré en la librería.",
+      "highlight": {
+        "bookshop": "blue"
+      },
+      "narration": "[[I bought it at the bookshop]]. Lo compré en la librería. Si dices [[library]], estás diciendo que lo compraste en la biblioteca, donde no se vende nada."
+    },
+    {
+      "id": "b23",
+      "type": "heading",
+      "text": "Parte 6 · En una conversación real",
+      "narration": "Vamos a oír varios en una conversación de oficina. Fíjate en cómo uno de ellos casi provoca un malentendido."
+    },
+    {
+      "id": "b24",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Sorry to bother you. Are you attending the call?",
+          "es": "Perdona que te moleste. ¿Vas a la llamada?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes. Actually, I moved it to four.",
+          "es": "Sí. De hecho, la he movido a las cuatro."
+        },
+        {
+          "speaker": "A",
+          "en": "Good. I'm embarrassed, I forgot.",
+          "es": "Bien. Qué vergüenza, se me olvidó."
+        },
+        {
+          "speaker": "B",
+          "en": "Don't worry. Currently we're all tired.",
+          "es": "No te preocupes. Ahora mismo estamos todos cansados."
+        }
+      ],
+      "narration": "[[Sorry to bother you. Are you attending the call?]] [[Yes. Actually, I moved it to four]]. [[Good. I'm embarrassed, I forgot]]. [[Don't worry. Currently we're all tired]]."
+    },
+    {
+      "id": "b25",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Bother: molestar, el correcto",
+        "Attending: asistir a la llamada",
+        "Actually: de hecho, corrigiendo",
+        "Currently: ahora mismo, no actually"
+      ],
+      "narration": "[[Bother]]: molestar, el correcto. [[Attending]]: asistir a la llamada. [[Actually]]: de hecho, corrigiendo. Y [[Currently]]: ahora mismo, no actually."
+    },
+    {
+      "id": "b26",
+      "type": "heading",
+      "text": "Parte 7 · Por qué existen",
+      "narration": "Un apunte que ayuda a recordarlos: estas palabras no se parecen por casualidad. Casi todas vienen del latín, y cada idioma se quedó con un trozo distinto del significado."
+    },
+    {
+      "id": "b27",
+      "type": "tip",
+      "text": "No son errores de traducción: son primos que se separaron hace siglos.",
+      "narration": "No son errores de traducción: son primos que se separaron hace siglos. Saber eso te quita la sensación de que el inglés te está engañando a propósito."
+    },
+    {
+      "id": "b28",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
+      "narration": "Tu turno. Tres preguntas, y en todas la opción que más se parece al español es la trampa. Tres segundos cada una."
+    },
+    {
+      "id": "b29",
+      "type": "quiz",
+      "question": "___ , I'm working from home this week.",
+      "options": [
+        "Actually",
+        "Currently",
+        "Eventually"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[blank, I'm working from home this week]]. ¿[[Actually]], [[Currently]] o [[Eventually]]? Piénsalo. {{pause:3}} Es [[Currently]]: hablas del momento presente."
+    },
+    {
+      "id": "b30",
+      "type": "quiz",
+      "question": "She's very ___ about other people's feelings.",
+      "options": [
+        "sensible",
+        "sensitive",
+        "sensate"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[She's very, blank, about other people's feelings]]. ¿[[sensible]], [[sensitive]] o [[sensate]]? Piénsalo. {{pause:3}} Es [[sensitive]]: sensible de emociones."
+    },
+    {
+      "id": "b31",
+      "type": "quiz",
+      "question": "I need to ___ this report by Friday.",
+      "options": [
+        "realize",
+        "carry out",
+        "assist"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[I need to, blank, this report by Friday]]. ¿[[realize]], [[carry out]] o [[assist]]? Piénsalo. {{pause:3}} Es [[carry out]]: realizar una tarea."
+    },
+    {
+      "id": "b32",
+      "type": "heading",
+      "text": "Parte 9 · Resumen",
+      "narration": "Cerramos. Cinco que si te llevas hoy ya no vuelves a decirlas mal, y una de ellas te evita un mal rato de verdad."
+    },
+    {
+      "id": "b33",
+      "type": "recap",
+      "items": [
+        "Actually es en realidad; actualmente es currently",
+        "Embarrassed es avergonzado; embarazada es pregnant",
+        "Molestar es bother, nunca molest",
+        "Realizar una tarea es carry out",
+        "Library es biblioteca; librería es bookshop"
+      ],
+      "narration": "[[Actually]] es en realidad. [[Embarrassed]] es avergonzado. [[Molestar]] es bother, nunca molest. [[Realizar]] una tarea es carry out. Y [[Library]] es biblioteca."
+    },
+    {
+      "id": "b34",
+      "type": "sentence",
+      "text": "Actually, you learned a lot today.",
+      "gloss": "En realidad, has aprendido mucho hoy.",
+      "narration": "Y me despido usándolo bien, corrigiendo lo que quizá pensabas: [[Actually, you learned a lot today]]. En realidad, has aprendido mucho hoy. Nos vemos."
+    }
+  ]
+}

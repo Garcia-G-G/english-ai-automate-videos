@@ -1,0 +1,363 @@
+{
+  "id": "past-simple-irregulares",
+  "title": "Pasado simple: los irregulares del día a día",
+  "kicker": "Inglés · Pasado simple · A2",
+  "level": "A2",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy vamos con los verbos irregulares en pasado. No con la lista de doscientos que te dieron en el colegio: con los veinte que de verdad usas para contar lo que hiciste ayer."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El problema",
+      "narration": "Empecemos por el error clásico. Es el que sale cuando alguien aprende la regla general y la aplica a todo, que es exactamente lo que hay que hacer... casi siempre."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "I goed to the office.",
+      "gloss": "Fui a la oficina.",
+      "narration": "Mira: [[I goed to the office]]. Tiene toda la lógica del mundo: si [[work]] hace [[worked]], entonces [[go]] debería hacer [[goed]]. Pues no."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "goed": "red"
+      },
+      "tags": {
+        "goed": "no existe"
+      },
+      "narration": "[[Goed]] no existe. Ni existe ni existió nunca. [[Go]] es uno de esos verbos que cambian entero en pasado, en vez de añadir la terminación."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "goed",
+        "to": "went"
+      },
+      "narration": "Su pasado es [[went]]. Ni se parece. [[I went to the office]]. Fui a la oficina. Y esto es lo que significa que un verbo sea irregular: hay que sabérselo."
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Irregular no significa difícil: significa que no hay regla. Se aprende usándolo, no estudiándolo.",
+      "narration": "Y aquí va la buena noticia: irregular no significa difícil. Significa que no hay regla. Y como no hay regla, no se estudia: se aprende usándolo."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · Los que más vas a usar",
+      "narration": "Vamos con los que salen en cualquier conversación sobre ayer. Si te sabes estos, ya puedes contar tu día entero."
+    },
+    {
+      "id": "b08",
+      "type": "table",
+      "headers": [
+        "Presente",
+        "Pasado",
+        "Ejemplo"
+      ],
+      "rows": [
+        [
+          "go",
+          "went",
+          "I went home"
+        ],
+        [
+          "have",
+          "had",
+          "I had lunch"
+        ],
+        [
+          "get",
+          "got",
+          "I got up"
+        ],
+        [
+          "make",
+          "made",
+          "I made coffee"
+        ],
+        [
+          "take",
+          "took",
+          "I took the bus"
+        ],
+        [
+          "see",
+          "saw",
+          "I saw her"
+        ]
+      ],
+      "narration": "Mira la tabla: [[go]] hace [[went]], [[have]] hace [[had]], [[get]] hace [[got]], [[make]] hace [[made]], [[take]] hace [[took]], y [[see]] hace [[saw]]."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "I got up and made coffee.",
+      "gloss": "Me levanté y me hice un café.",
+      "highlight": {
+        "got": "blue",
+        "made": "blue"
+      },
+      "narration": "Así suena todo junto: [[I got up and made coffee]]. Me levanté y me hice un café. [[Got]] y [[made]], dos irregulares en una frase de cinco palabras."
+    },
+    {
+      "id": "b10",
+      "type": "heading",
+      "text": "Parte 3 · Van por familias",
+      "narration": "Ahora un truco que ahorra muchísimo tiempo: los irregulares no son un caos. Van en familias que cambian igual."
+    },
+    {
+      "id": "b11",
+      "type": "list",
+      "heading": "Familias que se repiten",
+      "items": [
+        "Cambian a o: speak, spoke. Break, broke",
+        "Cambian a a: sing, sang. Drink, drank",
+        "Cambian a ought: buy, bought. Think, thought",
+        "No cambian: put, put. Cut, cut"
+      ],
+      "narration": "Cambian a o: [[speak, spoke. Break, broke]]. Cambian a a: [[sing, sang. Drink, drank]]. Cambian a ought: [[buy, bought. Think, thought]]. Y no cambian nada: [[put, put. Cut, cut]]."
+    },
+    {
+      "id": "b12",
+      "type": "tip",
+      "text": "Apréndelos en familia, no en lista alfabética. El cerebro guarda patrones, no filas.",
+      "narration": "Aprende en familia, no en lista alfabética. El cerebro guarda patrones mucho mejor que filas sueltas. Tres verbos que cambian igual cuestan menos que tres sin relación."
+    },
+    {
+      "id": "b13",
+      "type": "sentence",
+      "text": "She bought it and I thought about it.",
+      "gloss": "Ella lo compró y yo lo pensé.",
+      "highlight": {
+        "bought": "green",
+        "thought": "green"
+      },
+      "narration": "Escucha la familia sonando junta: [[She bought it and I thought about it]]. [[Bought]] y [[thought]] riman, y por eso se te van a quedar los dos a la vez."
+    },
+    {
+      "id": "b14",
+      "type": "heading",
+      "text": "Parte 4 · El giro que casi nadie ve",
+      "narration": "Y ahora el detalle que cambia todo, y que casi nadie te cuenta hasta mucho después. Tiene que ver con las preguntas."
+    },
+    {
+      "id": "b15",
+      "type": "sentence",
+      "text": "Did you went to the party?",
+      "gloss": "¿Fuiste a la fiesta?",
+      "narration": "Mira esta pregunta: [[Did you went to the party?]] Está mal, y el error es de los que más se repiten una vez que ya te sabes los irregulares."
+    },
+    {
+      "id": "b16",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "went": "red"
+      },
+      "tags": {
+        "Did": "ya es pasado"
+      },
+      "narration": "El problema es que [[Did]] ya es pasado. Si [[Did]] lleva el pasado, [[went]] no puede llevarlo también. El pasado se dice una vez, no dos."
+    },
+    {
+      "id": "b17",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "went",
+        "to": "go"
+      },
+      "narration": "El verbo vuelve a su forma base: [[go]]. [[Did you go to the party?]] Y lo mismo negando: [[I didn't go]], nunca [[I didn't went]]."
+    },
+    {
+      "id": "b18",
+      "type": "tip",
+      "text": "Con did, el verbo vuelve a la forma base. El pasado ya está en did.",
+      "narration": "Grábate esta: con [[did]], el verbo vuelve a la forma base. El pasado ya está puesto. Esto vale para todos los verbos, regulares e irregulares."
+    },
+    {
+      "id": "b19",
+      "type": "list",
+      "heading": "Las tres formas",
+      "items": [
+        "I went yesterday",
+        "I didn't go yesterday",
+        "Did you go yesterday?"
+      ],
+      "narration": "Las tres formas, para que las oigas seguidas: [[I went yesterday]]. [[I didn't go yesterday]]. [[Did you go yesterday?]] Sólo la primera lleva el irregular."
+    },
+    {
+      "id": "b20",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oírlos donde de verdad aparecen: un lunes por la mañana, alguien contando el fin de semana."
+    },
+    {
+      "id": "b21",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "What did you do on Saturday?",
+          "es": "¿Qué hiciste el sábado?"
+        },
+        {
+          "speaker": "B",
+          "en": "I went to my sister's and had dinner there.",
+          "es": "Fui a casa de mi hermana y cené allí."
+        },
+        {
+          "speaker": "A",
+          "en": "Nice. Did you see the kids?",
+          "es": "Qué bien. ¿Viste a los niños?"
+        },
+        {
+          "speaker": "B",
+          "en": "I saw them, but they left early.",
+          "es": "Los vi, pero se fueron pronto."
+        }
+      ],
+      "narration": "[[What did you do on Saturday?]] [[I went to my sister's and had dinner there]]. [[Nice. Did you see the kids?]] [[I saw them, but they left early]]."
+    },
+    {
+      "id": "b22",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Did you do: did manda, do en base",
+        "Went y had: irregulares en afirmativo",
+        "Did you see: otra vez base",
+        "Saw y left: dos irregulares más"
+      ],
+      "narration": "[[Did you do]]: [[did]] manda, el verbo en base. [[Went]] y [[had]]: irregulares en afirmativo. [[Did you see]]: otra vez base. Y [[saw]] y [[left]]: dos más."
+    },
+    {
+      "id": "b23",
+      "type": "heading",
+      "text": "Parte 6 · Los que engañan",
+      "narration": "Antes de practicar, tres irregulares que engañan porque en pasado se escriben igual que en presente, o casi."
+    },
+    {
+      "id": "b24",
+      "type": "table",
+      "headers": [
+        "Presente",
+        "Pasado"
+      ],
+      "rows": [
+        [
+          "read",
+          "read (se dice red)"
+        ],
+        [
+          "put",
+          "put"
+        ],
+        [
+          "cost",
+          "cost"
+        ]
+      ],
+      "emphasis": [
+        "read"
+      ],
+      "narration": "Fíjate: [[read]] en pasado se escribe igual pero se dice red. [[Put]] no cambia nada. Y [[cost]] tampoco. Se escriben igual y sólo el contexto te dice el tiempo."
+    },
+    {
+      "id": "b25",
+      "type": "sentence",
+      "text": "I read that book last year.",
+      "gloss": "Leí ese libro el año pasado.",
+      "highlight": {
+        "read": "yellow"
+      },
+      "narration": "[[I read that book last year]]. Se escribe [[read]], pero aquí se pronuncia red, porque [[last year]] te dice que es pasado. Es el único aviso que tienes."
+    },
+    {
+      "id": "b26",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
+      "narration": "Tu turno. Tres preguntas, tres segundos para pensar cada una. Dilas en voz alta antes de oír la respuesta."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "Yesterday I ___ a great film.",
+      "options": [
+        "seed",
+        "saw",
+        "seen"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[Yesterday I, blank, a great film]]. ¿[[seed]], [[saw]] o [[seen]]? Piénsalo. {{pause:3}} Es [[saw]]. [[Seen]] existe, pero va con [[have]], no sola."
+    },
+    {
+      "id": "b28",
+      "type": "quiz",
+      "question": "She didn't ___ the message.",
+      "options": [
+        "got",
+        "get",
+        "gotten"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[She didn't, blank, the message]]. ¿[[got]], [[get]] o [[gotten]]? Piénsalo. {{pause:3}} Es [[get]]: hay un [[didn't]], así que el verbo vuelve a la base."
+    },
+    {
+      "id": "b29",
+      "type": "quiz",
+      "question": "Did you ___ the bus this morning?",
+      "options": [
+        "took",
+        "take",
+        "taked"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[Did you, blank, the bus this morning?]] ¿[[took]], [[take]] o [[taked]]? Piénsalo. {{pause:3}} Es [[take]]. Otra vez: [[did]] lleva el pasado."
+    },
+    {
+      "id": "b30",
+      "type": "heading",
+      "text": "Parte 8 · Resumen",
+      "narration": "Recogemos. Cuatro ideas que valen más que memorizar la lista entera de irregulares del libro."
+    },
+    {
+      "id": "b31",
+      "type": "recap",
+      "items": [
+        "Irregular significa sin regla, no difícil",
+        "Apréndelos en familias que suenan igual",
+        "Con did o didn't, el verbo vuelve a la base",
+        "Read, put y cost no cambian al escribirse"
+      ],
+      "narration": "Irregular significa sin regla, no difícil. Apréndelos en familias que suenan igual. Con [[did]] o [[didn't]], el verbo vuelve a la base. Y [[read]], [[put]] y [[cost]] no cambian al escribirse."
+    },
+    {
+      "id": "b32",
+      "type": "sentence",
+      "text": "I went, I saw, I learned.",
+      "gloss": "Fui, vi, aprendí.",
+      "narration": "Nos despedimos con tres pasados seguidos: [[I went, I saw, I learned]]. Fui, vi, aprendí. Dos irregulares y uno regular. Practícalos hoy mismo. Nos vemos."
+    }
+  ]
+}

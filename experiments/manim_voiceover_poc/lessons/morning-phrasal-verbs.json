@@ -1,0 +1,337 @@
+{
+  "id": "morning-phrasal-verbs",
+  "title": "Cinco phrasal verbs para contar tu mañana",
+  "kicker": "Inglés · Vocabulario · A2",
+  "level": "A2",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy vamos a aprender cinco verbos que un nativo usa todas las mañanas y que casi ningún libro enseña juntos: los phrasal verbs de la rutina. Al final vas a poder contar tu mañana completa en inglés, como la contaría alguien de Londres o de Nueva York."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · ¿Qué es un phrasal verb?",
+      "narration": "Primera parte, muy breve. Un phrasal verb es un verbo más una partícula pequeña, [[up, off, out]], y juntos significan algo nuevo. La partícula cambia el significado, y por eso hay que aprenderlos como una sola palabra."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "I wake up at seven.",
+      "gloss": "Me despierto a las siete.",
+      "highlight": {
+        "wake": "yellow",
+        "up": "yellow"
+      },
+      "narration": "Mira: [[I wake up at seven]]. Me despierto a las siete. [[Wake]] solo significa despertar, y [[up]] solo significa arriba, pero [[wake up]], juntos, es despertarse. Una sola idea."
+    },
+    {
+      "id": "b04",
+      "type": "tip",
+      "text": "Aprende el phrasal verb como una palabra: wake up, no wake + up.",
+      "narration": "El consejo más importante de toda la lección: aprende cada phrasal verb como una palabra completa. No traduzcas la partícula. [[Wake up]] es despertarse, punto."
+    },
+    {
+      "id": "b05",
+      "type": "heading",
+      "text": "Parte 2 · Los cinco de la mañana",
+      "narration": "Segunda parte. Los cinco, en el orden en que pasan cada mañana. Escucha cada uno dos veces y repítelo."
+    },
+    {
+      "id": "b06",
+      "type": "table",
+      "headers": [
+        "Phrasal verb",
+        "Significado"
+      ],
+      "emphasis": [
+        "wake up",
+        "get up",
+        "turn off",
+        "get dressed",
+        "run out of"
+      ],
+      "rows": [
+        [
+          "wake up",
+          "despertarse"
+        ],
+        [
+          "get up",
+          "levantarse"
+        ],
+        [
+          "turn off",
+          "apagar"
+        ],
+        [
+          "get dressed",
+          "vestirse"
+        ],
+        [
+          "run out of",
+          "quedarse sin"
+        ]
+      ],
+      "narration": "Primero, [[wake up]], despertarse. Segundo, [[get up]], levantarse de la cama. Tercero, [[turn off]], apagar: la alarma, la luz. Cuarto, [[get dressed]], vestirse. Y quinto, [[run out of]], quedarse sin algo: sin café, sin leche, sin tiempo."
+    },
+    {
+      "id": "b07",
+      "type": "sentence",
+      "text": "I wake up, but I don't get up.",
+      "gloss": "Me despierto, pero no me levanto.",
+      "highlight": {
+        "wake": "yellow",
+        "get": "blue"
+      },
+      "narration": "La diferencia entre los dos primeros es muy real: [[I wake up, but I don't get up]]. Me despierto, pero no me levanto. [[Wake up]] es abrir los ojos; [[get up]] es salir de la cama. Todos conocemos ese momento entre los dos."
+    },
+    {
+      "id": "b08",
+      "type": "sentence",
+      "text": "I turn off the alarm.",
+      "gloss": "Apago la alarma.",
+      "highlight": {
+        "turn": "yellow",
+        "off": "yellow"
+      },
+      "narration": "El tercero: [[I turn off the alarm]]. Apago la alarma. [[Turn off]] sirve para todo lo que se apaga: la alarma, la luz, el teléfono, la tele."
+    },
+    {
+      "id": "b09",
+      "type": "tip",
+      "text": "turn off the alarm = turn the alarm off. Las dos son correctas.",
+      "narration": "Un detalle que te va a servir: con [[turn off]] puedes poner el objeto en medio. [[Turn off the alarm]] o [[turn the alarm off]]. Las dos son correctas y las dos se oyen a diario."
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "text": "I get dressed in five minutes.",
+      "gloss": "Me visto en cinco minutos.",
+      "highlight": {
+        "get": "yellow",
+        "dressed": "yellow"
+      },
+      "narration": "El cuarto: [[I get dressed in five minutes]]. Me visto en cinco minutos. [[Get dressed]] es el proceso completo de vestirse, no una prenda: para una prenda dirías [[put on: I put on my jacket]]."
+    },
+    {
+      "id": "b11",
+      "type": "sentence",
+      "text": "We ran out of coffee.",
+      "gloss": "Nos quedamos sin café.",
+      "highlight": {
+        "ran": "red",
+        "out": "red",
+        "of": "red"
+      },
+      "narration": "Y el quinto, el drama de la mañana: [[We ran out of coffee]]. Nos quedamos sin café. Fíjate que aquí está en pasado, [[ran]], porque ya pasó: ya no hay café. Tres palabras, una sola idea: [[run out of]]."
+    },
+    {
+      "id": "b12",
+      "type": "heading",
+      "text": "Parte 3 · La gramática que esconden",
+      "narration": "Tercera parte. Los phrasal verbs son verbos normales: se conjugan igual que cualquier otro. Eso significa que la ese de la tercera persona y el pasado también les tocan."
+    },
+    {
+      "id": "b13",
+      "type": "table",
+      "headers": [
+        "Yo",
+        "Ella",
+        "Ayer"
+      ],
+      "emphasis": [
+        "wakes up",
+        "gets up",
+        "turns off",
+        "woke up",
+        "got up",
+        "turned off"
+      ],
+      "rows": [
+        [
+          "I wake up",
+          "She wakes up",
+          "I woke up"
+        ],
+        [
+          "I get up",
+          "She gets up",
+          "I got up"
+        ],
+        [
+          "I turn off",
+          "She turns off",
+          "I turned off"
+        ]
+      ],
+      "narration": "Mira la tabla. [[I wake up]], pero [[she wakes up]], con ese, y ayer: [[I woke up. I get up, she gets up, I got up. I turn off, she turns off, I turned off]]. La partícula nunca cambia; el verbo sí."
+    },
+    {
+      "id": "b14",
+      "type": "tip",
+      "text": "La ese y el pasado van en el verbo, nunca en la partícula: she gets up, no she get ups.",
+      "narration": "Regla de oro: la ese y el pasado van en el verbo, nunca en la partícula. [[She gets up]], correcto. [[She get ups]], no existe. [[Up]] es una piedra: no se mueve."
+    },
+    {
+      "id": "b15",
+      "type": "heading",
+      "text": "Parte 4 · Una mañana real",
+      "narration": "Cuarta parte. Vamos a escuchar los cinco dentro de una conversación real, un lunes por la mañana, entre dos compañeros de piso."
+    },
+    {
+      "id": "b16",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "Dani",
+          "en": "What time do you usually wake up?",
+          "es": "¿A qué hora te despiertas normalmente?"
+        },
+        {
+          "speaker": "Eva",
+          "en": "At six. But I don't get up until seven.",
+          "es": "A las seis. Pero no me levanto hasta las siete."
+        },
+        {
+          "speaker": "Dani",
+          "en": "Can you turn off your alarm? It's so loud.",
+          "es": "¿Puedes apagar tu alarma? Suena muy fuerte."
+        },
+        {
+          "speaker": "Eva",
+          "en": "Sorry! By the way, we ran out of milk.",
+          "es": "¡Perdón! Por cierto, nos quedamos sin leche."
+        }
+      ],
+      "narration": "Dani: [[What time do you usually wake up?]] ¿A qué hora te despiertas normalmente? Eva: [[At six. But I don't get up until seven.]] Dani: [[Can you turn off your alarm? It's so loud.]] Y Eva: [[Sorry! By the way, we ran out of milk.]]"
+    },
+    {
+      "id": "b17",
+      "type": "list",
+      "heading": "Los que escuchaste",
+      "items": [
+        "wake up → despertarse",
+        "get up → levantarse",
+        "turn off → apagar",
+        "ran out of → nos quedamos sin"
+      ],
+      "narration": "Cuatro de los cinco en veinte segundos de conversación. [[Wake up]], despertarse. [[Get up]], levantarse. [[Turn off]], apagar. Y [[ran out of]], nos quedamos sin. Así de frecuentes son."
+    },
+    {
+      "id": "b18",
+      "type": "heading",
+      "text": "Parte 5 · El error más común",
+      "narration": "Quinta parte: el error que cometen casi todos los hispanohablantes con estos verbos, y cómo evitarlo para siempre."
+    },
+    {
+      "id": "b19",
+      "type": "sentence",
+      "text": "I wake up me at seven.",
+      "gloss": "✗ El «me» sobra",
+      "highlight": {
+        "me": "red"
+      },
+      "narration": "Este: [[I wake up me at seven]]. Viene directo del español, me despierto, y por eso metemos un [[me]]. Pero en inglés [[wake up]] ya es reflexivo por dentro. Ese [[me]] sobra."
+    },
+    {
+      "id": "b20",
+      "type": "sentence",
+      "text": "I wake up at seven.",
+      "gloss": "Me despierto a las siete.",
+      "highlight": {
+        "wake": "green",
+        "up": "green"
+      },
+      "narration": "Correcto: [[I wake up at seven]]. Sin [[me]], sin [[myself]]. Lo mismo con [[get up]] y [[get dressed: I get dressed]], nunca [[I get dressed myself]]."
+    },
+    {
+      "id": "b21",
+      "type": "tip",
+      "text": "Los verbos reflexivos del español (me despierto, me visto) NO llevan me/myself en inglés.",
+      "narration": "Guárdate esta regla: los verbos reflexivos del español, me despierto, me levanto, me visto, no llevan [[me]] ni [[myself]] en inglés. El phrasal verb ya lo dice todo."
+    },
+    {
+      "id": "b22",
+      "type": "heading",
+      "text": "Parte 6 · Practica",
+      "narration": "Sexta parte. Tres preguntas. Piensa la respuesta y dila en voz alta antes de que yo la diga."
+    },
+    {
+      "id": "b23",
+      "type": "quiz",
+      "question": "I ___ at seven, but I stay in bed until eight.",
+      "options": [
+        "get up",
+        "wake up",
+        "get dressed"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[I]], espacio, [[at seven, but I stay in bed until eight]]. {{pause:3}} Me quedo en la cama, así que abro los ojos pero no me levanto. La respuesta es [[wake up. I wake up at seven, but I stay in bed until eight]]."
+    },
+    {
+      "id": "b24",
+      "type": "quiz",
+      "question": "She ___ the lights before leaving.",
+      "options": [
+        "turns off",
+        "turn off",
+        "turns of"
+      ],
+      "answer": 0,
+      "narration": "Segunda: [[She]], espacio, [[the lights before leaving]]. {{pause:3}} Tercera persona, así que el verbo lleva ese, y [[off]] se escribe con dos efes. La respuesta es [[turns off. She turns off the lights before leaving]]."
+    },
+    {
+      "id": "b25",
+      "type": "quiz",
+      "question": "There's no sugar. We ___ sugar.",
+      "options": [
+        "run out",
+        "ran out of",
+        "ran out"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[There's no sugar. We]], espacio, [[sugar]]. {{pause:3}} Ya no hay, así que es pasado, y como decimos de qué nos quedamos sin, necesitamos [[of]]. La respuesta es [[ran out of. We ran out of sugar]]."
+    },
+    {
+      "id": "b26",
+      "type": "heading",
+      "text": "Resumen",
+      "narration": "Cerramos. Cinco verbos y tres reglas, y ya puedes contar tu mañana como un nativo."
+    },
+    {
+      "id": "b27",
+      "type": "recap",
+      "items": [
+        "wake up · get up · turn off · get dressed · run out of",
+        "Apréndelos como una sola palabra",
+        "La ese y el pasado van en el verbo: she gets up, I woke up",
+        "Sin me ni myself: I get dressed"
+      ],
+      "narration": "Los cinco: [[wake up, get up, turn off, get dressed, run out of]]. Apréndelos como una sola palabra. La ese y el pasado van en el verbo: [[she gets up, I woke up]]. Y sin [[me]] ni [[myself: I get dressed]]."
+    },
+    {
+      "id": "b28",
+      "type": "sentence",
+      "text": "I wake up, get up, turn off the alarm and get dressed.",
+      "gloss": "Me despierto, me levanto, apago la alarma y me visto.",
+      "highlight": {
+        "wake": "yellow",
+        "get": "yellow",
+        "turn": "yellow"
+      },
+      "narration": "Tu mañana entera, en una frase: [[I wake up, get up, turn off the alarm and get dressed]]. Me despierto, me levanto, apago la alarma y me visto. Dila mañana en voz alta mientras lo haces. Hasta la próxima."
+    }
+  ],
+  "english_speed": 0.92
+}

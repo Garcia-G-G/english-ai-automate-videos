@@ -1,0 +1,300 @@
+{
+  "id": "articulos-a-an-the",
+  "title": "A, an, the: los artículos que se te olvidan",
+  "kicker": "Inglés · Artículos · A1–A2",
+  "level": "A1-A2",
+  "language": "es",
+  "target_minutes": 6,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy vamos con tres palabras diminutas que los hispanohablantes olvidamos constantemente: [[a]], [[an]] y [[the]]. Son pequeñas, pero cuando faltan, la frase suena rara enseguida."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El problema",
+      "narration": "Empecemos por el error más común de todos. Es tan frecuente que seguramente lo has dicho esta misma semana sin darte cuenta."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "I have car.",
+      "gloss": "Tengo coche.",
+      "narration": "Mira esta frase: [[I have car]]. En español decimos tengo coche, sin nada delante. Y por eso la traducimos así de directa. Pero en inglés está mal."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "car": "red"
+      },
+      "tags": {
+        "car": "singular"
+      },
+      "narration": "El problema está en [[car]]. Es un sustantivo contable y está en singular. En inglés, un contable en singular nunca puede ir desnudo. Siempre lleva algo delante."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "car",
+        "to": "a"
+      },
+      "narration": "Y ese algo, aquí, es [[a]]. La frase correcta es [[I have a car]]. Un coche. Aunque en español ese un desaparezca, en inglés es obligatorio."
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Contable + singular = nunca va solo. Siempre a, an, the, my, this…",
+      "narration": "Guárdate esta regla, porque resuelve la mitad de los errores: un sustantivo contable en singular nunca va solo. Siempre lleva [[a]], [[an]], [[the]] o un posesivo."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · A o an",
+      "narration": "Vale, ya sabemos que hay que poner algo. Ahora la segunda pregunta: ¿cuándo se dice [[a]] y cuándo se dice [[an]]?"
+    },
+    {
+      "id": "b08",
+      "type": "table",
+      "headers": [
+        "Suena a consonante",
+        "Suena a vocal"
+      ],
+      "rows": [
+        [
+          "a doctor",
+          "an engineer"
+        ],
+        [
+          "a book",
+          "an apple"
+        ],
+        [
+          "a university",
+          "an hour"
+        ]
+      ],
+      "emphasis": [
+        "a university",
+        "an hour"
+      ],
+      "narration": "Mira la tabla. A la izquierda, [[a doctor]], [[a book]], [[a university]]. A la derecha, [[an engineer]], [[an apple]], [[an hour]]. ¿Ves el patrón?"
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "She is an engineer.",
+      "gloss": "Ella es ingeniera.",
+      "highlight": {
+        "an": "blue"
+      },
+      "narration": "Aquí lo tienes claro: [[She is an engineer]]. Ella es ingeniera. Ponemos [[an]] porque la palabra siguiente empieza por sonido de vocal."
+    },
+    {
+      "id": "b10",
+      "type": "tip",
+      "text": "No es la letra: es el SONIDO. An hour (la hache no suena), a university (suena «iu»).",
+      "narration": "Y ahora el detalle que casi nadie te cuenta: no depende de la letra, depende del sonido. Fíjate en las dos verdes de la tabla."
+    },
+    {
+      "id": "b11",
+      "type": "sentence",
+      "text": "It takes an hour.",
+      "gloss": "Tarda una hora.",
+      "highlight": {
+        "hour": "green"
+      },
+      "narration": "[[It takes an hour]]. Tarda una hora. [[Hour]] se escribe con hache, pero la hache no suena: se oye aua. Por eso lleva [[an]]."
+    },
+    {
+      "id": "b12",
+      "type": "sentence",
+      "text": "This is a university.",
+      "gloss": "Esto es una universidad.",
+      "highlight": {
+        "university": "green"
+      },
+      "narration": "Y al revés: [[This is a university]]. [[University]] empieza por u, pero se pronuncia iunivérsiti, con sonido de i griega. Por eso lleva [[a]]."
+    },
+    {
+      "id": "b13",
+      "type": "heading",
+      "text": "Parte 3 · The",
+      "narration": "Pasemos a [[the]]. Aquí la regla es distinta, y en realidad es más fácil de lo que parece si te haces una sola pregunta."
+    },
+    {
+      "id": "b14",
+      "type": "list",
+      "heading": "Usa the cuando…",
+      "items": [
+        "Ya sabemos de cuál hablamos: the car outside",
+        "Sólo hay uno: the sun, the internet",
+        "Ya lo mencionaste antes en la conversación",
+        "Va con superlativo: the best, the biggest"
+      ],
+      "narration": "Usa [[the]] cuando: ya sabemos de cuál hablamos; sólo hay uno en el mundo; ya lo mencionaste antes; o va con un superlativo."
+    },
+    {
+      "id": "b15",
+      "type": "sentence",
+      "text": "The car outside is mine.",
+      "gloss": "El coche de fuera es mío.",
+      "highlight": {
+        "The": "blue"
+      },
+      "narration": "Escucha la diferencia: [[The car outside is mine]]. El coche de fuera es mío. Uso [[the]] porque los dos sabemos exactamente de qué coche hablo."
+    },
+    {
+      "id": "b16",
+      "type": "heading",
+      "text": "Parte 4 · Cuando no va nada",
+      "narration": "Y ahora lo contrario, que también cuesta: los casos en los que no se pone absolutamente nada delante."
+    },
+    {
+      "id": "b17",
+      "type": "list",
+      "heading": "Sin artículo",
+      "items": [
+        "Plurales en general: cars are expensive",
+        "Incontables: water, money, time",
+        "Comidas: breakfast, lunch, dinner",
+        "Idiomas y países: Spanish, Mexico"
+      ],
+      "narration": "No lleva nada: los plurales en general, como [[cars are expensive]]; los incontables, como [[water, money, time]]; las comidas, [[breakfast, lunch, dinner]]; y los idiomas y países, [[Spanish, Mexico]]."
+    },
+    {
+      "id": "b18",
+      "type": "sentence",
+      "text": "I like coffee.",
+      "gloss": "Me gusta el café.",
+      "highlight": {
+        "coffee": "yellow"
+      },
+      "narration": "Mira esta trampa: en español decimos me gusta el café, con el. En inglés, [[coffee]] en general no lleva nada: [[I like coffee]]."
+    },
+    {
+      "id": "b19",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oírlo todo junto, en una conversación normal. Fíjate en cómo aparecen y desaparecen los artículos."
+    },
+    {
+      "id": "b20",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Do you have a car?",
+          "es": "¿Tienes coche?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, but the car is at the garage.",
+          "es": "Sí, pero el coche está en el taller."
+        },
+        {
+          "speaker": "A",
+          "en": "Again? That's an expensive month.",
+          "es": "¿Otra vez? Vaya mes más caro."
+        },
+        {
+          "speaker": "B",
+          "en": "Tell me about it. I take the bus now.",
+          "es": "Ni me lo digas. Ahora cojo el bus."
+        }
+      ],
+      "narration": "[[Do you have a car?]] [[Yes, but the car is at the garage]]. [[Again? That's an expensive month]]. [[Tell me about it. I take the bus now]]."
+    },
+    {
+      "id": "b21",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "A car: la primera vez, uno cualquiera",
+        "The car: ya sabemos cuál, el suyo",
+        "An expensive month: suena a vocal",
+        "The bus: el de siempre, el de su ruta"
+      ],
+      "narration": "Repasa lo que pasó. [[A car]]: la primera vez, uno cualquiera. [[The car]]: ya sabemos cuál. [[An expensive month]]: suena a vocal. Y [[the bus]]: el de siempre."
+    },
+    {
+      "id": "b22",
+      "type": "heading",
+      "text": "Parte 6 · Practica",
+      "narration": "Tu turno. Tres preguntas. Te doy tres segundos para pensar cada una antes de decirte la respuesta."
+    },
+    {
+      "id": "b23",
+      "type": "quiz",
+      "question": "She wants to be ___ architect.",
+      "options": [
+        "a architect",
+        "an architect",
+        "architect"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[She wants to be, blank, architect]]. ¿[[a architect]], [[an architect]] o [[architect]]? Piénsalo. {{pause:3}} Es [[an architect]]: suena a vocal."
+    },
+    {
+      "id": "b24",
+      "type": "quiz",
+      "question": "I don't drink ___ milk.",
+      "options": [
+        "the milk",
+        "a milk",
+        "milk"
+      ],
+      "answer": 2,
+      "narration": "Segunda: [[I don't drink, blank, milk]]. ¿[[the milk]], [[a milk]] o [[milk]]? Piénsalo. {{pause:3}} Es [[milk]], sin nada: es incontable y hablo en general."
+    },
+    {
+      "id": "b25",
+      "type": "quiz",
+      "question": "Close ___ door, please.",
+      "options": [
+        "the door",
+        "a door",
+        "door"
+      ],
+      "answer": 0,
+      "narration": "Tercera: [[Close, blank, door, please]]. ¿[[the door]], [[a door]] o [[door]]? Piénsalo. {{pause:3}} Es [[the door]]: los dos sabemos qué puerta."
+    },
+    {
+      "id": "b26",
+      "type": "heading",
+      "text": "Parte 7 · Resumen",
+      "narration": "Recojamos lo importante. Si te llevas sólo estas cuatro cosas, ya vas a sonar bastante mejor."
+    },
+    {
+      "id": "b27",
+      "type": "recap",
+      "items": [
+        "Contable singular nunca va solo",
+        "A o an según el sonido, no la letra",
+        "The cuando ya sabemos de cuál hablamos",
+        "Plurales, incontables y comidas van sin nada"
+      ],
+      "narration": "Contable singular nunca va solo. [[A]] o [[an]] según el sonido, no la letra. [[The]] cuando ya sabemos de cuál hablamos. Plurales, incontables y comidas van sin nada."
+    },
+    {
+      "id": "b28",
+      "type": "sentence",
+      "text": "I have a car and the car is old.",
+      "gloss": "Tengo un coche y el coche es viejo.",
+      "narration": "Y nos despedimos con la frase que lo resume todo: [[I have a car and the car is old]]. Tengo un coche, y el coche es viejo. Practícala en voz alta. Nos vemos."
+    }
+  ]
+}
