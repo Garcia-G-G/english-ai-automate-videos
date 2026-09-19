@@ -1,0 +1,309 @@
+{
+  "id": "there-is-there-are",
+  "title": "There is, there are: decir qué hay",
+  "kicker": "Inglés · Estructuras básicas · A1–A2",
+  "level": "A1-A2",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy vamos a resolver una de esas cosas que parecen fáciles hasta que las dices en voz alta: cómo se dice hay en inglés. Y por qué no se dice con el verbo tener."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El error que hacemos todos",
+      "narration": "Empezamos por el error, porque este lo he oído mil veces y probablemente tú también lo hayas dicho. Viene directo del español."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "In my street have a pharmacy.",
+      "gloss": "En mi calle hay una farmacia.",
+      "narration": "Mira: [[In my street have a pharmacy]]. Suena lógico si piensas en español, porque nuestro hay viene del verbo haber. Pero en inglés esto no existe."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "have": "red"
+      },
+      "tags": {
+        "have": "aquí no"
+      },
+      "narration": "El culpable es [[have]]. En inglés, [[have]] significa poseer: yo tengo, tú tienes. No sirve para decir que algo existe en un sitio."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "have",
+        "to": "there"
+      },
+      "narration": "Lo que necesitas es otra cosa: [[there]]. La frase correcta es [[In my street there is a pharmacy]]. En mi calle hay una farmacia."
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Hay = there is / there are. Nunca have. Have es poseer.",
+      "narration": "Apúntate esto: hay se dice [[there is]] o [[there are]]. Nunca [[have]]. [[Have]] es poseer, y son dos ideas completamente distintas."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · Is o are",
+      "narration": "Ahora la siguiente decisión, que es sencilla: ¿cuándo se dice [[there is]] y cuándo [[there are]]? Depende de una sola cosa."
+    },
+    {
+      "id": "b08",
+      "type": "table",
+      "headers": [
+        "Singular",
+        "Plural"
+      ],
+      "rows": [
+        [
+          "there is a car",
+          "there are two cars"
+        ],
+        [
+          "there is milk",
+          "there are people"
+        ],
+        [
+          "there's a problem",
+          "there are problems"
+        ]
+      ],
+      "narration": "Mira la tabla. A la izquierda, singular: [[there is a car]], [[there is milk]], [[there's a problem]]. A la derecha, plural: [[there are two cars]], [[there are people]], [[there are problems]]."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "There are three rooms.",
+      "gloss": "Hay tres habitaciones.",
+      "highlight": {
+        "are": "blue"
+      },
+      "tags": {
+        "three": "plural"
+      },
+      "narration": "Fíjate: [[There are three rooms]]. Hay tres habitaciones. Uso [[are]] porque [[three]] rooms es plural. Lo que manda es lo que viene detrás, no lo que viene delante."
+    },
+    {
+      "id": "b10",
+      "type": "tip",
+      "text": "Lo que decide es lo que viene DESPUÉS: there is + singular, there are + plural.",
+      "narration": "Y ese es el truco: no mires el principio de la frase, mira lo que viene después. Eso es lo único que decide entre [[is]] y [[are]]."
+    },
+    {
+      "id": "b11",
+      "type": "heading",
+      "text": "Parte 3 · Negativo y pregunta",
+      "narration": "Vamos con el negativo y la pregunta, que en inglés se construyen con la misma pieza y por eso son fáciles de recordar."
+    },
+    {
+      "id": "b12",
+      "type": "sentence",
+      "text": "There isn't any sugar.",
+      "gloss": "No hay azúcar.",
+      "highlight": {
+        "isn't": "blue"
+      },
+      "narration": "Para negar: [[There isn't any sugar]]. No hay azúcar. Sólo añades la negación al verbo. Y en plural sería [[there aren't any chairs]]."
+    },
+    {
+      "id": "b13",
+      "type": "sentence",
+      "text": "Is there a bank near here?",
+      "gloss": "¿Hay un banco por aquí?",
+      "highlight": {
+        "Is": "green"
+      },
+      "narration": "Y para preguntar, le das la vuelta: [[Is there a bank near here?]] ¿Hay un banco por aquí? El verbo [[Is]] se va al principio, y ya está."
+    },
+    {
+      "id": "b14",
+      "type": "list",
+      "heading": "Las cuatro formas",
+      "items": [
+        "There is a problem",
+        "There isn't a problem",
+        "Is there a problem?",
+        "There are problems"
+      ],
+      "narration": "Las cuatro formas, todas juntas: [[There is a problem]]. [[There isn't a problem]]. [[Is there a problem?]] Y en plural, [[There are problems]]."
+    },
+    {
+      "id": "b15",
+      "type": "heading",
+      "text": "Parte 4 · There is o it is",
+      "narration": "Ahora una confusión más fina, y la que separa a quien va bien de quien va muy bien: la diferencia entre [[there is]] e [[it is]]."
+    },
+    {
+      "id": "b16",
+      "type": "sentence",
+      "text": "There is a problem.",
+      "gloss": "Hay un problema.",
+      "highlight": {
+        "There": "yellow"
+      },
+      "narration": "[[There is a problem]] presenta algo nuevo. Es la primera vez que lo menciono. Por eso empieza con [[There]]: existe un problema, no sabías cuál."
+    },
+    {
+      "id": "b17",
+      "type": "sentence",
+      "text": "It is a big problem.",
+      "gloss": "Es un problema grande.",
+      "highlight": {
+        "It": "yellow"
+      },
+      "narration": "[[It is a big problem]] habla de algo que ya conocemos. [[It]] señala al problema del que ya hablábamos. Primero presentas con [[there]], después describes con [[it]]."
+    },
+    {
+      "id": "b18",
+      "type": "tip",
+      "text": "There is presenta algo nuevo. It is describe algo que ya está en la conversación.",
+      "narration": "Resumido: [[there is]] presenta, [[it is]] describe. Primero abres la puerta, después cuentas lo que hay dentro. En ese orden."
+    },
+    {
+      "id": "b19",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oírlo funcionando. Dos personas buscando piso, que es justo donde esta estructura sale sin parar."
+    },
+    {
+      "id": "b20",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Is there a supermarket nearby?",
+          "es": "¿Hay un supermercado cerca?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, there are two on this street.",
+          "es": "Sí, hay dos en esta calle."
+        },
+        {
+          "speaker": "A",
+          "en": "Perfect. And parking?",
+          "es": "Perfecto. ¿Y aparcamiento?"
+        },
+        {
+          "speaker": "B",
+          "en": "There isn't any, sorry. It's the only problem.",
+          "es": "No hay, lo siento. Es el único problema."
+        }
+      ],
+      "narration": "[[Is there a supermarket nearby?]] [[Yes, there are two on this street]]. [[Perfect. And parking?]] [[There isn't any, sorry. It's the only problem]]."
+    },
+    {
+      "id": "b21",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Is there: pregunta en singular",
+        "There are two: plural, dos supermercados",
+        "There isn't any: negativo",
+        "It's the only problem: ya sabemos cuál"
+      ],
+      "narration": "[[Is there]]: pregunta en singular. [[There are two]]: plural. [[There isn't any]]: negativo. Y [[It's the only problem]]: ya sabemos cuál, por eso [[it]]."
+    },
+    {
+      "id": "b22",
+      "type": "heading",
+      "text": "Parte 6 · El error de la lista",
+      "narration": "Antes de practicar, un caso que descoloca a mucha gente: cuando enumeras cosas y la primera es singular pero después viene un plural."
+    },
+    {
+      "id": "b23",
+      "type": "sentence",
+      "text": "There is a table and four chairs.",
+      "gloss": "Hay una mesa y cuatro sillas.",
+      "highlight": {
+        "is": "green"
+      },
+      "narration": "[[There is a table and four chairs]]. Aunque luego haya cuatro sillas, se dice [[is]], porque lo que viene justo después es [[a table]], singular. Manda lo primero."
+    },
+    {
+      "id": "b24",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
+      "narration": "Tres preguntas para ti. Piensa la respuesta antes de que yo la diga; te dejo tres segundos en cada una."
+    },
+    {
+      "id": "b25",
+      "type": "quiz",
+      "question": "___ many people in the office.",
+      "options": [
+        "There is",
+        "There are",
+        "It is"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[blank, many people in the office]]. ¿[[There is]], [[There are]] o [[It is]]? Piénsalo. {{pause:3}} Es [[There are]]: [[people]] es plural."
+    },
+    {
+      "id": "b26",
+      "type": "quiz",
+      "question": "___ a message for you.",
+      "options": [
+        "Have",
+        "There is",
+        "It has"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[blank, a message for you]]. ¿[[Have]], [[There is]] o [[It has]]? Piénsalo. {{pause:3}} Es [[There is]]: estoy presentando algo nuevo."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "___ raining outside.",
+      "options": [
+        "There is",
+        "It is",
+        "There are"
+      ],
+      "answer": 1,
+      "narration": "Tercera, y es traicionera: [[blank, raining outside]]. ¿[[There is]], [[It is]] o [[There are]]? Piénsalo. {{pause:3}} Es [[It is]]: el tiempo siempre va con [[it]]."
+    },
+    {
+      "id": "b28",
+      "type": "heading",
+      "text": "Parte 8 · Resumen",
+      "narration": "Cerramos. Cuatro ideas, y con estas cuatro ya no vuelves a decir [[in my street have]] nunca más."
+    },
+    {
+      "id": "b29",
+      "type": "recap",
+      "items": [
+        "Hay se dice there is o there are, nunca have",
+        "Decide lo que viene después, no lo de delante",
+        "Is there para preguntar, isn't para negar",
+        "There presenta, it describe"
+      ],
+      "narration": "Hay se dice [[there is]] o [[there are]], nunca [[have]]. Decide lo que viene después. [[Is there]] para preguntar, [[isn't]] para negar. Y [[there]] presenta, [[it]] describe."
+    },
+    {
+      "id": "b30",
+      "type": "sentence",
+      "text": "There is a lesson and it is finished.",
+      "gloss": "Hay una lección y está terminada.",
+      "narration": "Y la frase de despedida, que usa las dos: [[There is a lesson and it is finished]]. Hay una lección, y está terminada. Nos vemos en la siguiente."
+    }
+  ]
+}

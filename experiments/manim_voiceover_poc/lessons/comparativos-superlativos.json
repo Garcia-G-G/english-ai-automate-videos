@@ -1,0 +1,377 @@
+{
+  "id": "comparativos-superlativos",
+  "title": "Más, menos, el más: comparar en inglés",
+  "kicker": "Inglés · Comparativos · A2",
+  "level": "A2",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy comparar: más grande, menos caro, el mejor. En español siempre añades una palabra delante. En inglés, a veces la añades y a veces cambias el final. Vamos a ver cuándo."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El error de poner more a todo",
+      "narration": "Empezamos por el error, que es siempre el mismo y viene de traducir nuestro más tal cual, palabra por palabra."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "My brother is more tall than me.",
+      "gloss": "Mi hermano es más alto que yo.",
+      "narration": "Mira: [[My brother is more tall than me]]. Más alto, [[more tall]]. Suena perfectamente lógico desde el español. Y está mal."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "more": "red"
+      },
+      "tags": {
+        "tall": "una sílaba"
+      },
+      "narration": "El problema es [[more]] con [[tall]]. Y la razón es rara pero sencilla: [[tall]] es una palabra corta, de una sílaba. Las cortas no llevan [[more]]: cambian el final."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "more",
+        "to": "taller"
+      },
+      "narration": "Se dice [[taller]]. [[My brother is taller than me]]. Le pegas la terminación al final de la palabra, y ya está."
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Palabras cortas: se alargan (taller). Palabras largas: llevan more delante.",
+      "narration": "Esa es la regla entera: las palabras cortas se alargan, como [[taller]]. Las largas llevan [[more]] delante. El único trabajo es saber cuál es corta."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · Cómo saber cuál es corta",
+      "narration": "Cuenta sílabas. Es literalmente así de mecánico, y con tres casos ya lo tienes resuelto para siempre."
+    },
+    {
+      "id": "b08",
+      "type": "table",
+      "headers": [
+        "Sílabas",
+        "Comparativo"
+      ],
+      "rows": [
+        [
+          "una",
+          "big, bigger"
+        ],
+        [
+          "dos con i griega",
+          "happy, happier"
+        ],
+        [
+          "dos o más",
+          "modern, more modern"
+        ],
+        [
+          "tres o más",
+          "expensive, more expensive"
+        ]
+      ],
+      "narration": "Mira la tabla. [[Una]] sílaba: [[big, bigger]]. [[Dos con i griega]] al final: [[happy, happier]]. [[Dos]] o más: [[modern, more modern]]. Y [[tres]] o más: [[expensive, more expensive]]."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "This flat is bigger and cheaper.",
+      "gloss": "Este piso es más grande y más barato.",
+      "highlight": {
+        "bigger": "blue",
+        "cheaper": "blue"
+      },
+      "narration": "[[This flat is bigger and cheaper]]. Más grande y más barato. [[Bigger]] y [[cheaper]], las dos cortas, las dos con el final cambiado. Ningún [[more]] a la vista."
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "text": "This one is more expensive.",
+      "gloss": "Este es más caro.",
+      "highlight": {
+        "more": "green"
+      },
+      "narration": "Y aquí sí: [[This one is more expensive]]. [[Expensive]] tiene tres sílabas, así que lleva [[more]] delante. Nunca digas [[expensiver]]: no existe."
+    },
+    {
+      "id": "b11",
+      "type": "tip",
+      "text": "Con big, hot y thin se dobla la consonante: bigger, hotter, thinner.",
+      "narration": "Un detalle de escritura: en [[big]], [[hot]] y [[thin]] se dobla la última letra. [[Bigger]], [[hotter]], [[thinner]]. Pasa cuando la palabra acaba en vocal más consonante."
+    },
+    {
+      "id": "b12",
+      "type": "heading",
+      "text": "Parte 3 · El than obligatorio",
+      "narration": "Ahora la palabra que une los dos lados de la comparación, y que en español desaparece con muchísima facilidad."
+    },
+    {
+      "id": "b13",
+      "type": "sentence",
+      "text": "She is older that me.",
+      "gloss": "Ella es mayor que yo.",
+      "narration": "Mira este error, que es de los más silenciosos: [[She is older that me]]. Se parece tanto a nuestro que, que ponemos [[that]] sin pensarlo."
+    },
+    {
+      "id": "b14",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "that",
+        "to": "than"
+      },
+      "narration": "El que de las comparaciones es [[than]], con ene. [[She is older than me]]. [[That]] es otra palabra distinta, y aquí no pinta nada."
+    },
+    {
+      "id": "b15",
+      "type": "heading",
+      "text": "Parte 4 · El superlativo",
+      "narration": "Vamos con el superlativo: cuando algo no es sólo más, sino el más de todos. La lógica es exactamente la misma."
+    },
+    {
+      "id": "b16",
+      "type": "table",
+      "headers": [
+        "Comparativo",
+        "Superlativo"
+      ],
+      "rows": [
+        [
+          "taller",
+          "the tallest"
+        ],
+        [
+          "cheaper",
+          "the cheapest"
+        ],
+        [
+          "more modern",
+          "the most modern"
+        ],
+        [
+          "better",
+          "the best"
+        ]
+      ],
+      "narration": "En la tabla: [[taller]] pasa a [[the tallest]]. [[Cheaper]] a [[the cheapest]]. [[More modern]] a [[the most modern]]. Y [[better]] a [[the best]]."
+    },
+    {
+      "id": "b17",
+      "type": "sentence",
+      "text": "It's the cheapest option.",
+      "gloss": "Es la opción más barata.",
+      "highlight": {
+        "the": "blue"
+      },
+      "narration": "[[It's the cheapest option]]. Es la opción más barata. Y fíjate en una cosa que se olvida siempre: el superlativo lleva [[the]] delante. Obligatorio."
+    },
+    {
+      "id": "b18",
+      "type": "tip",
+      "text": "El superlativo siempre lleva the: the best, the most expensive. Nunca va suelto.",
+      "narration": "Repito porque este fallo es constante: el superlativo siempre lleva [[the]]. [[The best]], [[the most expensive]]. Nunca va suelto, aunque en español digamos sólo el mejor."
+    },
+    {
+      "id": "b19",
+      "type": "heading",
+      "text": "Parte 5 · Los irregulares",
+      "narration": "Hay cuatro que no siguen ninguna regla. Son cuatro, salen todo el rato, y se aprenden de memoria en un minuto."
+    },
+    {
+      "id": "b20",
+      "type": "table",
+      "headers": [
+        "Base",
+        "Comparativo"
+      ],
+      "rows": [
+        [
+          "good",
+          "better, the best"
+        ],
+        [
+          "bad",
+          "worse, the worst"
+        ],
+        [
+          "far",
+          "further, the furthest"
+        ],
+        [
+          "little",
+          "less, the least"
+        ]
+      ],
+      "narration": "[[Good]] hace [[better]] y [[the best]]. [[Bad]] hace [[worse]] y [[the worst]]. [[Far]] hace [[further]]. Y [[little]] hace [[less]] y [[the least]]."
+    },
+    {
+      "id": "b21",
+      "type": "sentence",
+      "text": "This is better than yesterday.",
+      "gloss": "Esto está mejor que ayer.",
+      "highlight": {
+        "better": "yellow"
+      },
+      "narration": "[[This is better than yesterday]]. Esto está mejor que ayer. Nunca [[more good]] ni [[gooder]]. Es [[better]], y ya está."
+    },
+    {
+      "id": "b22",
+      "type": "heading",
+      "text": "Parte 6 · Cuando son iguales",
+      "narration": "Y falta un caso que casi nunca se enseña con los comparativos, aunque lo necesitas igual de a menudo: cuando las dos cosas son iguales."
+    },
+    {
+      "id": "b23",
+      "type": "sentence",
+      "text": "This is as good as that one.",
+      "gloss": "Este es tan bueno como ese.",
+      "highlight": {
+        "as": "green"
+      },
+      "narration": "[[This is as good as that one]]. Es tan bueno como ese. La estructura es [[as]], adjetivo, [[as]]. Y el adjetivo va normal, sin cambiar nada."
+    },
+    {
+      "id": "b24",
+      "type": "sentence",
+      "text": "It isn't as expensive as I thought.",
+      "gloss": "No es tan caro como pensaba.",
+      "highlight": {
+        "expensive": "green"
+      },
+      "narration": "Y en negativo: [[It isn't as expensive as I thought]]. No es tan caro como pensaba. Fíjate que [[expensive]] se queda entero: aquí no lleva [[more]] ni nada."
+    },
+    {
+      "id": "b25",
+      "type": "heading",
+      "text": "Parte 7 · En una conversación real",
+      "narration": "Vamos a oírlos todos juntos. Dos personas comparando dos pisos, que es donde esto sale a ráfagas."
+    },
+    {
+      "id": "b26",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "This flat is bigger than the other one.",
+          "es": "Este piso es más grande que el otro."
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, but it's more expensive too.",
+          "es": "Sí, pero también es más caro."
+        },
+        {
+          "speaker": "A",
+          "en": "It's the best one we've seen.",
+          "es": "Es el mejor que hemos visto."
+        },
+        {
+          "speaker": "B",
+          "en": "Not as cheap as I wanted, though.",
+          "es": "No tan barato como yo quería, eso sí."
+        }
+      ],
+      "narration": "[[This flat is bigger than the other one]]. [[Yes, but it's more expensive too]]. [[It's the best one we've seen]]. [[Not as cheap as I wanted, though]]."
+    },
+    {
+      "id": "b27",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Bigger than: corta, cambia el final",
+        "More expensive: larga, lleva more",
+        "The best: superlativo irregular con the",
+        "As cheap as: las dos iguales"
+      ],
+      "narration": "[[Bigger]] than: corta, cambia el final. [[More]] expensive: larga, lleva more. [[The]] best: superlativo irregular con the. Y [[As]] cheap as: las dos iguales."
+    },
+    {
+      "id": "b28",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
+      "narration": "Tu turno. Tres preguntas. Cuenta las sílabas antes de responder; casi siempre te da la respuesta sola."
+    },
+    {
+      "id": "b29",
+      "type": "quiz",
+      "question": "Today is ___ than yesterday.",
+      "options": [
+        "more hot",
+        "hotter",
+        "hoter"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[Today is, blank, than yesterday]]. ¿[[more hot]], [[hotter]] o [[hoter]]? Piénsalo. {{pause:3}} Es [[hotter]]: una sílaba, y se dobla la te."
+    },
+    {
+      "id": "b30",
+      "type": "quiz",
+      "question": "It's ___ film I've ever seen.",
+      "options": [
+        "the worst",
+        "worst",
+        "the worse"
+      ],
+      "answer": 0,
+      "narration": "Segunda: [[It's, blank, film I've ever seen]]. ¿[[the worst]], [[worst]] o [[the worse]]? Piénsalo. {{pause:3}} Es [[the worst]]: superlativo irregular, y con [[the]]."
+    },
+    {
+      "id": "b31",
+      "type": "quiz",
+      "question": "This one is ___ interesting than that.",
+      "options": [
+        "interestinger",
+        "more",
+        "most"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[This one is, blank, interesting than that]]. ¿[[interestinger]], [[more]] o [[most]]? Piénsalo. {{pause:3}} Es [[more]]: cuatro sílabas, y hay un [[than]]."
+    },
+    {
+      "id": "b32",
+      "type": "heading",
+      "text": "Parte 9 · Resumen",
+      "narration": "Cerramos. Cinco ideas, y la primera resuelve sola la mayoría de las comparaciones que vas a hacer."
+    },
+    {
+      "id": "b33",
+      "type": "recap",
+      "items": [
+        "Cortas se alargan, largas llevan more",
+        "El que de comparar es than, no that",
+        "El superlativo siempre lleva the",
+        "Good, bad, far y little son irregulares",
+        "As bueno as para decir que son iguales"
+      ],
+      "narration": "[[Cortas]] se alargan, largas llevan more. [[El]] que de comparar es than. [[El]] superlativo siempre lleva the. [[Good]], bad, far y little son irregulares. Y [[as]] bueno as para decir que son iguales."
+    },
+    {
+      "id": "b34",
+      "type": "sentence",
+      "text": "Your English is better than yesterday.",
+      "gloss": "Tu inglés está mejor que ayer.",
+      "narration": "Y me despido con un irregular y un [[than]]: [[Your English is better than yesterday]]. Tu inglés está mejor que ayer. Y es verdad. Nos vemos."
+    }
+  ]
+}

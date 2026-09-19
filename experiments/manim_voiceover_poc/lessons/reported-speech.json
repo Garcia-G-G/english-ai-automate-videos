@@ -1,0 +1,385 @@
+{
+  "id": "reported-speech",
+  "title": "Contar lo que otro dijo",
+  "kicker": "Inglés · Estilo indirecto · B1–B2",
+  "level": "B1-B2",
+  "language": "es",
+  "target_minutes": 8,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy contar lo que otra persona dijo. Suena avanzado, pero lo haces cada día en español sin pensar. En inglés hay que mover una pieza, y vamos a ver exactamente cuál."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · La idea en una frase",
+      "narration": "Antes de reglas, la idea. Porque si la entiendes, no necesitas memorizar tablas: te sale sola."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "She said: I am tired.",
+      "gloss": "Ella dijo: estoy cansada.",
+      "highlight": {
+        "am": "blue"
+      },
+      "narration": "Ella habló en su momento y dijo [[I am tired]]. Ese [[am]] era verdad cuando lo dijo. Pero tú lo estás contando después."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "text": "She said she was tired.",
+      "gloss": "Dijo que estaba cansada.",
+      "highlight": {
+        "was": "green"
+      },
+      "narration": "Y como lo cuentas después, el verbo da un paso atrás: [[She said she was tired]]. [[Was]], no [[am]]. Lo que era presente para ella es pasado para ti."
+    },
+    {
+      "id": "b05",
+      "type": "tip",
+      "text": "Contar lo que alguien dijo mueve el verbo un paso hacia atrás en el tiempo.",
+      "narration": "Esa es toda la lección en una línea: contar lo que alguien dijo mueve el verbo un paso hacia atrás. Presente pasa a pasado, pasado pasa a más atrás todavía."
+    },
+    {
+      "id": "b06",
+      "type": "heading",
+      "text": "Parte 2 · El paso atrás, tiempo a tiempo",
+      "narration": "Vamos a verlo con los tiempos que más vas a necesitar. Fíjate en que siempre es el mismo movimiento."
+    },
+    {
+      "id": "b07",
+      "type": "table",
+      "headers": [
+        "Dijo",
+        "Cuentas"
+      ],
+      "rows": [
+        [
+          "I work here",
+          "she worked there"
+        ],
+        [
+          "I am working",
+          "she was working"
+        ],
+        [
+          "I worked",
+          "she had worked"
+        ],
+        [
+          "I will call",
+          "she would call"
+        ]
+      ],
+      "narration": "En la tabla: [[I work here]] pasa a [[she worked there]]. [[I am working]] a [[she was working]]. [[I worked]] a [[she had worked]]. Y [[I will call]] a [[she would call]]."
+    },
+    {
+      "id": "b08",
+      "type": "sentence",
+      "text": "He said he would call me.",
+      "gloss": "Dijo que me llamaría.",
+      "highlight": {
+        "would": "blue"
+      },
+      "narration": "[[He said he would call me]]. Dijo que me llamaría. Su [[will]] se convierte en [[would]]. Es el mismo paso atrás, aplicado al futuro."
+    },
+    {
+      "id": "b09",
+      "type": "list",
+      "heading": "Los modales también retroceden",
+      "items": [
+        "Can pasa a could",
+        "May pasa a might",
+        "Must pasa a had to",
+        "Would, could y should no se mueven"
+      ],
+      "narration": "[[Can]] pasa a could. [[May]] pasa a might. [[Must]] pasa a had to. Y [[Would]], could y should ya están atrás, así que no se mueven."
+    },
+    {
+      "id": "b10",
+      "type": "heading",
+      "text": "Parte 3 · Lo que cambia además del verbo",
+      "narration": "Y hay una segunda cosa que se mueve, y que se olvida siempre: las palabras que señalan tiempo y lugar."
+    },
+    {
+      "id": "b11",
+      "type": "table",
+      "headers": [
+        "Dijo",
+        "Cuentas"
+      ],
+      "rows": [
+        [
+          "here",
+          "there"
+        ],
+        [
+          "today",
+          "that day"
+        ],
+        [
+          "tomorrow",
+          "the next day"
+        ],
+        [
+          "this",
+          "that"
+        ]
+      ],
+      "narration": "[[Here]] pasa a [[there]]. [[Today]] pasa a [[that day]]. [[Tomorrow]] pasa a [[the next day]]. Y [[this]] pasa a [[that]]."
+    },
+    {
+      "id": "b12",
+      "type": "sentence",
+      "text": "She said she would come the next day.",
+      "gloss": "Dijo que vendría al día siguiente.",
+      "highlight": {
+        "next": "green"
+      },
+      "narration": "[[She said she would come the next day]]. Ella dijo mañana, pero al contarlo tú, ese mañana ya pasó. Por eso [[next]] day y no [[tomorrow]]."
+    },
+    {
+      "id": "b13",
+      "type": "tip",
+      "text": "Tiene lógica: tú lo cuentas en otro momento y en otro sitio. Todo se mueve contigo.",
+      "narration": "Y fíjate en que no es capricho: tú lo cuentas en otro momento y desde otro sitio. Todo se mueve contigo. Si lo piensas así, no hay nada que memorizar."
+    },
+    {
+      "id": "b14",
+      "type": "heading",
+      "text": "Parte 4 · Cuando NO hay que moverlo",
+      "narration": "Y ahora el detalle que casi nadie te cuenta, y que distingue a quien se sabe la regla de quien entiende por qué existe."
+    },
+    {
+      "id": "b15",
+      "type": "sentence",
+      "text": "He said the earth is round.",
+      "gloss": "Dijo que la tierra es redonda.",
+      "highlight": {
+        "is": "yellow"
+      },
+      "narration": "[[He said the earth is round]]. Fíjate: [[is]], en presente. No lo movemos, porque la tierra sigue siendo redonda. Sigue siendo verdad ahora."
+    },
+    {
+      "id": "b16",
+      "type": "list",
+      "heading": "No retrocede si…",
+      "items": [
+        "Sigue siendo verdad: he said water boils at 100",
+        "Lo cuentas justo después: she says she is busy",
+        "Es una costumbre que no ha cambiado",
+        "El verbo de reportar está en presente"
+      ],
+      "narration": "[[Sigue]] siendo verdad: [[he said water boils at 100]]. [[Lo]] cuentas justo después: [[she says she is busy]]. [[Es]] una costumbre que no ha cambiado. Y [[El]] verbo de reportar está en presente."
+    },
+    {
+      "id": "b17",
+      "type": "heading",
+      "text": "Parte 5 · Contar preguntas",
+      "narration": "Vamos con las preguntas, porque aquí hay un error que es el más frecuente de todo el estilo indirecto."
+    },
+    {
+      "id": "b18",
+      "type": "sentence",
+      "text": "She asked me where do I live.",
+      "gloss": "Me preguntó dónde vivo.",
+      "narration": "Mira: [[She asked me where do I live]]. Arrastramos el [[do]] de la pregunta original, porque en nuestra cabeza sigue siendo una pregunta. Pero ya no lo es."
+    },
+    {
+      "id": "b19",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "do": "red"
+      },
+      "tags": {
+        "asked": "ya no pregunta"
+      },
+      "narration": "Cuando cuentas una pregunta, deja de ser pregunta: es una frase normal. El verbo [[asked]] ya lleva la idea de preguntar. Así que el [[do]] sobra."
+    },
+    {
+      "id": "b20",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "do",
+        "to": "lived"
+      },
+      "narration": "Se dice [[She asked me where I lived]]. Orden normal: sujeto, verbo. Sin [[do]], sin inversión, y sin signo de interrogación al final."
+    },
+    {
+      "id": "b21",
+      "type": "tip",
+      "text": "Al contar una pregunta, el orden vuelve a ser normal: sujeto + verbo. Sin do.",
+      "narration": "Grábate esta, que vale oro: al contar una pregunta, el orden vuelve a ser normal, sujeto y verbo. Sin [[do]] y sin darle la vuelta."
+    },
+    {
+      "id": "b22",
+      "type": "sentence",
+      "text": "He asked if I was ready.",
+      "gloss": "Preguntó si estaba listo.",
+      "highlight": {
+        "if": "green"
+      },
+      "narration": "Y si la pregunta era de sí o no, necesitas un [[if]]: [[He asked if I was ready]]. Preguntó si estaba listo. También vale [[whether]]."
+    },
+    {
+      "id": "b23",
+      "type": "heading",
+      "text": "Parte 6 · Say o tell",
+      "narration": "Dos verbos que en español son el mismo y que aquí no se pueden intercambiar. Es un error de los que se oyen mucho."
+    },
+    {
+      "id": "b24",
+      "type": "table",
+      "headers": [
+        "Say",
+        "Tell"
+      ],
+      "rows": [
+        [
+          "he said it",
+          "he told me"
+        ],
+        [
+          "sin persona detrás",
+          "con persona detrás"
+        ],
+        [
+          "he said to me",
+          "he told me that"
+        ]
+      ],
+      "narration": "[[He said it]] contra [[he told me]]. [[Sin persona detrás]] contra [[con persona detrás]]. Y si quieres la persona con say, hace falta un to: [[he said to me]]."
+    },
+    {
+      "id": "b25",
+      "type": "tip",
+      "text": "Tell siempre lleva a quién. Say no. He told me, he said that.",
+      "narration": "La regla corta: [[tell]] siempre lleva a quién se lo cuentas. [[Say]] no. Se dice [[he told me]] y [[he said that]]. Nunca [[he told that]] ni [[he said me]]."
+    },
+    {
+      "id": "b26",
+      "type": "heading",
+      "text": "Parte 7 · En una conversación real",
+      "narration": "Vamos a oírlo funcionando. Alguien contándole a un compañero lo que dijo el jefe en una reunión."
+    },
+    {
+      "id": "b27",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "What did the boss say?",
+          "es": "¿Qué dijo el jefe?"
+        },
+        {
+          "speaker": "B",
+          "en": "He told us the deadline was Friday.",
+          "es": "Nos dijo que la fecha límite era el viernes."
+        },
+        {
+          "speaker": "A",
+          "en": "Did he say anything about the budget?",
+          "es": "¿Dijo algo del presupuesto?"
+        },
+        {
+          "speaker": "B",
+          "en": "He asked if we could finish on time.",
+          "es": "Preguntó si podíamos acabar a tiempo."
+        }
+      ],
+      "narration": "[[What did the boss say?]] [[He told us the deadline was Friday]]. [[Did he say anything about the budget?]] [[He asked if we could finish on time]]."
+    },
+    {
+      "id": "b28",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "He told us: tell con persona detrás",
+        "The deadline was: is pasa a was",
+        "He asked if: pregunta de sí o no",
+        "We could finish: can pasa a could"
+      ],
+      "narration": "[[He]] told us: tell con persona detrás. [[The]] deadline was: is pasa a was. [[He]] asked if: pregunta de sí o no. Y [[We]] could finish: can pasa a could."
+    },
+    {
+      "id": "b29",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
+      "narration": "Tu turno. Tres preguntas, y en cada una pregúntate qué dijo exactamente la persona antes de moverlo."
+    },
+    {
+      "id": "b30",
+      "type": "quiz",
+      "question": "«I am busy» → She said she ___ busy.",
+      "options": [
+        "is",
+        "was",
+        "were"
+      ],
+      "answer": 1,
+      "narration": "Primera: ella dijo [[I am busy]]. [[She said she, blank, busy]]. ¿[[is]], [[was]] o [[were]]? Piénsalo. {{pause:3}} Es [[was]]: un paso atrás."
+    },
+    {
+      "id": "b31",
+      "type": "quiz",
+      "question": "He asked me where ___ .",
+      "options": [
+        "do I work",
+        "I worked",
+        "did I work"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[He asked me where, blank]]. ¿[[do I work]], [[I worked]] o [[did I work]]? Piénsalo. {{pause:3}} Es [[I worked]]: orden normal, sin [[do]]."
+    },
+    {
+      "id": "b32",
+      "type": "quiz",
+      "question": "She ___ me she was leaving.",
+      "options": [
+        "said",
+        "told",
+        "say"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[She, blank, me she was leaving]]. ¿[[said]], [[told]] o [[say]]? Piénsalo. {{pause:3}} Es [[told]]: hay un [[me]] detrás, y eso pide [[tell]]."
+    },
+    {
+      "id": "b33",
+      "type": "heading",
+      "text": "Parte 9 · Resumen",
+      "narration": "Cerramos. Cinco ideas. Y si te llevas la primera, el resto se deduce solo cada vez que lo necesites."
+    },
+    {
+      "id": "b34",
+      "type": "recap",
+      "items": [
+        "Contar lo dicho mueve el verbo un paso atrás",
+        "Here, today y tomorrow también se mueven",
+        "Si sigue siendo verdad, no hace falta moverlo",
+        "Al contar preguntas, el orden vuelve a normal",
+        "Tell lleva persona; say no"
+      ],
+      "narration": "[[Contar]] lo dicho mueve el verbo un paso atrás. [[Here]], today y tomorrow también se mueven. [[Si]] sigue siendo verdad, no hace falta moverlo. [[Al]] contar preguntas, el orden vuelve a normal. Y [[Tell]] lleva persona; say no."
+    },
+    {
+      "id": "b35",
+      "type": "sentence",
+      "text": "I told you this would be easy.",
+      "gloss": "Te dije que esto sería fácil.",
+      "narration": "Y me despido contándotelo a ti: [[I told you this would be easy]]. Te dije que sería fácil. [[Told]] con persona, y [[would]] porque lo dije antes. Nos vemos."
+    }
+  ]
+}

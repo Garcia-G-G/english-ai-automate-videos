@@ -1,0 +1,347 @@
+{
+  "id": "third-person-s",
+  "title": "La ese de la tercera persona",
+  "kicker": "Inglés · Presente simple · A1–A2",
+  "level": "A1-A2",
+  "language": "es",
+  "target_minutes": 6,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy vamos a ver un detalle pequeñísimo que cambia mucho en inglés: la ese de la tercera persona. Es una sola letra, pero es la que delata si alguien está empezando o si ya domina el presente."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El problema",
+      "narration": "Empecemos por el problema. Vamos a mirar una frase que suena bien en español, pero que en inglés tiene un error que se oye a kilómetros."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "He have coffee.",
+      "gloss": "Él toma café.",
+      "narration": "Mira esta frase: [[He have coffee]]. En español diríamos: él toma café. Parece correcta, ¿verdad? Pues no lo es."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "He": "yellow"
+      },
+      "tags": {
+        "He": "sujeto"
+      },
+      "narration": "Fíjate en el sujeto. El sujeto es [[He]]: él. Una sola persona, y no soy yo ni eres tú. Eso es la tercera persona del singular."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "have": "red"
+      },
+      "tags": {
+        "have": "verbo"
+      },
+      "narration": "Y aquí está el problema: el verbo. Con [[he, she]] o [[it]], el verbo [[have]] no puede quedarse así. Le falta algo."
+    },
+    {
+      "id": "b06",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "have",
+        "to": "has"
+      },
+      "narration": "Le falta cambiar a [[has]]. Escucha bien la frase correcta: [[He has coffee]]. Él toma café."
+    },
+    {
+      "id": "b07",
+      "type": "tip",
+      "text": "Yo y tú: have. Él, ella, eso: has.",
+      "narration": "La regla, dicha en una línea: yo y tú usan [[have]]; él, ella y eso usan [[has]]. Repítela conmigo: [[I have, you have, he has]]."
+    },
+    {
+      "id": "b08",
+      "type": "heading",
+      "text": "Parte 2 · No es solo have",
+      "narration": "Ahora, esto no le pasa solo al verbo tener. Le pasa a casi todos los verbos del presente. Vamos a verlo con verbos de todos los días."
+    },
+    {
+      "id": "b09",
+      "type": "table",
+      "headers": [
+        "Yo / Tú",
+        "Él / Ella"
+      ],
+      "emphasis": [
+        "works",
+        "eats",
+        "lives",
+        "plays"
+      ],
+      "rows": [
+        [
+          "I work",
+          "She works"
+        ],
+        [
+          "You eat",
+          "He eats"
+        ],
+        [
+          "I live",
+          "She lives"
+        ],
+        [
+          "You play",
+          "He plays"
+        ]
+      ],
+      "narration": "Mira la tabla. [[I work]], pero [[she works. You eat]], pero [[he eats. I live]], pero [[she lives. You play]], pero [[he plays]]. ¿Escuchas esa ese al final? Es la misma ese en todos."
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "text": "My sister works in a hospital.",
+      "gloss": "Mi hermana trabaja en un hospital.",
+      "highlight": {
+        "sister": "yellow",
+        "works": "green"
+      },
+      "narration": "Un ejemplo real: [[My sister works in a hospital]]. Mi hermana trabaja en un hospital. El sujeto es mi hermana, una sola persona, tercera persona. Por eso [[works]] lleva ese."
+    },
+    {
+      "id": "b11",
+      "type": "sentence",
+      "text": "The dog sleeps all day.",
+      "gloss": "El perro duerme todo el día.",
+      "highlight": {
+        "dog": "yellow",
+        "sleeps": "green"
+      },
+      "narration": "Otro: [[The dog sleeps all day]]. El perro duerme todo el día. El perro también es tercera persona: no soy yo, no eres tú. [[Sleeps]], con ese."
+    },
+    {
+      "id": "b12",
+      "type": "tip",
+      "text": "Si puedes decir «él», «ella» o «eso» en lugar del sujeto, el verbo lleva ese.",
+      "narration": "Un truco que no falla: si puedes reemplazar el sujeto por él, ella o eso, el verbo lleva ese. Mi hermana: ella. El perro: eso. Mi jefe: él. Ese, ese, ese."
+    },
+    {
+      "id": "b13",
+      "type": "heading",
+      "text": "Parte 3 · Las tres formas de la ese",
+      "narration": "Ahora viene la parte que confunde a todo el mundo, y que hoy vas a dejar clara: la ese no siempre es una ese sola. Tiene tres formas."
+    },
+    {
+      "id": "b14",
+      "type": "list",
+      "heading": "1 · La ese normal",
+      "items": [
+        "work → works",
+        "play → plays",
+        "read → reads",
+        "sleep → sleeps"
+      ],
+      "narration": "La primera forma es la ese normal. La mayoría de los verbos solo agregan ese: [[work, works. Play, plays. Read, reads. Sleep, sleeps]]."
+    },
+    {
+      "id": "b15",
+      "type": "list",
+      "heading": "2 · La -es",
+      "items": [
+        "watch → watches",
+        "wash → washes",
+        "fix → fixes",
+        "go → goes"
+      ],
+      "narration": "La segunda forma es e-ese. Si el verbo termina en ch, sh, equis, o en o, agregamos e-ese, y se oye una sílaba extra: [[watch, watches. Wash, washes. Fix, fixes. Go, goes]]."
+    },
+    {
+      "id": "b16",
+      "type": "list",
+      "heading": "3 · La -ies",
+      "items": [
+        "study → studies",
+        "try → tries",
+        "cry → cries",
+        "pero: play → plays"
+      ],
+      "narration": "Y la tercera forma es i-e-ese. Si el verbo termina en consonante más i griega, la i griega se va y entra i-e-ese: [[study, studies. Try, tries. Cry, cries]]. Pero cuidado: [[play]] termina en vocal más i griega, así que solo agrega ese: [[plays]]."
+    },
+    {
+      "id": "b17",
+      "type": "sentence",
+      "text": "She watches series every night.",
+      "gloss": "Ella ve series todas las noches.",
+      "highlight": {
+        "watches": "green"
+      },
+      "narration": "Escucha la sílaba extra: [[She watches series every night]]. Ella ve series todas las noches. [[Watches]]: dos sílabas, gracias a esa e-ese."
+    },
+    {
+      "id": "b18",
+      "type": "sentence",
+      "text": "My brother studies medicine.",
+      "gloss": "Mi hermano estudia medicina.",
+      "highlight": {
+        "studies": "green"
+      },
+      "narration": "Y la i-e-ese: [[My brother studies medicine]]. Mi hermano estudia medicina. [[Studies]], con i-e-ese, porque [[study]] termina en consonante más i griega."
+    },
+    {
+      "id": "b19",
+      "type": "heading",
+      "text": "Parte 4 · Un diálogo real",
+      "narration": "Vamos a escuchar todo esto en un diálogo real, como lo oirías en una cafetería. Fíjate en cada verbo de tercera persona."
+    },
+    {
+      "id": "b20",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "Ana",
+          "en": "What does your brother do?",
+          "es": "¿A qué se dedica tu hermano?"
+        },
+        {
+          "speaker": "Luis",
+          "en": "He works at a bank. He starts at eight.",
+          "es": "Trabaja en un banco. Empieza a las ocho."
+        },
+        {
+          "speaker": "Ana",
+          "en": "Does he like it?",
+          "es": "¿Le gusta?"
+        },
+        {
+          "speaker": "Luis",
+          "en": "He loves it. He never complains.",
+          "es": "Le encanta. Nunca se queja."
+        }
+      ],
+      "narration": "Ana pregunta: [[What does your brother do?]] ¿A qué se dedica tu hermano? Luis responde: [[He works at a bank. He starts at eight.]] Ana: [[Does he like it?]] Y Luis: [[He loves it. He never complains.]]"
+    },
+    {
+      "id": "b21",
+      "type": "list",
+      "heading": "Los verbos del diálogo",
+      "items": [
+        "works",
+        "starts",
+        "loves",
+        "complains"
+      ],
+      "narration": "¿Los oíste? [[Works, starts, loves, complains]]. Cuatro verbos, cuatro eses. Luis habla de su hermano: tercera persona, siempre con ese."
+    },
+    {
+      "id": "b22",
+      "type": "tip",
+      "text": "En preguntas y negaciones, la ese se la lleva DOES: Does he like it? · He doesn't complain.",
+      "narration": "Un detalle importante del diálogo: en la pregunta, [[Does he like it?]], el verbo [[like]] no lleva ese. ¿Por qué? Porque la ese ya se la llevó [[does]]. Lo mismo en negativo: [[He doesn't complain]]. Una sola ese por frase."
+    },
+    {
+      "id": "b23",
+      "type": "sentence",
+      "text": "Does she works here?",
+      "gloss": "✗ Error típico",
+      "highlight": {
+        "Does": "yellow",
+        "works": "red"
+      },
+      "narration": "Este es el error típico del nivel intermedio: [[Does she works here?]] Suena bien, pero tiene dos eses: una en [[does]] y otra en [[works]]. Sobra una."
+    },
+    {
+      "id": "b24",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "works",
+        "to": "work"
+      },
+      "narration": "La forma correcta es [[Does she work here?]] La ese vive en [[does]], y el verbo se queda en su forma base: [[work]]."
+    },
+    {
+      "id": "b25",
+      "type": "heading",
+      "text": "Parte 5 · Practica",
+      "narration": "Ahora te toca a ti. Tres preguntas rápidas. Piensa la respuesta antes de que yo la diga."
+    },
+    {
+      "id": "b26",
+      "type": "quiz",
+      "question": "My mother ___ in Madrid.",
+      "options": [
+        "live",
+        "lives",
+        "living"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[My mother]], espacio, [[in Madrid]]. ¿[[Live, lives]] o [[living]]? Piénsalo. {{pause:3}} Mi madre es ella, tercera persona. La respuesta es [[lives. My mother lives in Madrid]]."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "Does he ___ English?",
+      "options": [
+        "speak",
+        "speaks",
+        "speaking"
+      ],
+      "answer": 0,
+      "narration": "Segunda: [[Does he]], espacio, [[English]]. Cuidado, esta es la trampa. {{pause:3}} Ya tenemos [[does]] con su ese, así que el verbo va en forma base. La respuesta es [[speak. Does he speak English?]]"
+    },
+    {
+      "id": "b28",
+      "type": "quiz",
+      "question": "She ___ TV after dinner.",
+      "options": [
+        "watchs",
+        "watches",
+        "watch"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[She]], espacio, [[TV after dinner]]. El verbo es [[watch]], que termina en ch. {{pause:3}} Así que no es ese sola: es e-ese. La respuesta es [[watches. She watches TV after dinner]]."
+    },
+    {
+      "id": "b29",
+      "type": "heading",
+      "text": "Resumen",
+      "narration": "Vamos a cerrar con lo esencial, lo que quiero que te lleves hoy."
+    },
+    {
+      "id": "b30",
+      "type": "recap",
+      "items": [
+        "Él, ella, eso → el verbo lleva ese",
+        "work → works · watch → watches · study → studies",
+        "Con does, el verbo vuelve a la base",
+        "Truco: si puedes decir «él» o «ella», hay ese"
+      ],
+      "narration": "Uno: si el sujeto es él, ella o eso, el verbo lleva ese. Dos: la ese tiene tres formas: [[works, watches, studies]]. Tres: con [[does]], el verbo vuelve a su forma base. Y cuatro, el truco: si puedes decir él o ella en lugar del sujeto, hay ese."
+    },
+    {
+      "id": "b31",
+      "type": "sentence",
+      "text": "He has coffee.",
+      "gloss": "Él toma café.",
+      "highlight": {
+        "He": "yellow",
+        "has": "green"
+      },
+      "narration": "Y volvemos a la frase del principio, ahora correcta: [[He has coffee]]. Una sola letra, y ya suena a alguien que sabe inglés. Nos vemos en la próxima lección."
+    }
+  ],
+  "english_speed": 0.92
+}

@@ -1,0 +1,307 @@
+{
+  "id": "can-could-pedir",
+  "title": "Can y could: poder, saber y pedir",
+  "kicker": "Inglés · Verbos modales · A2",
+  "level": "A2",
+  "language": "es",
+  "target_minutes": 6,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy [[can]] y [[could]]. Parecen poder y podría, y a veces lo son. Pero hacen tres trabajos distintos, y el tercero es el que más te va a servir en la vida real."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El error de estructura",
+      "narration": "Antes del significado, la forma. Porque aquí hay un error de estructura que se repite muchísimo y que se arregla en diez segundos."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "I can to swim.",
+      "gloss": "Sé nadar.",
+      "narration": "Mira: [[I can to swim]]. Le hemos puesto un [[to]] porque en español decimos puedo nadar y nos suena que falta algo. Pero sobra."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "to": "red"
+      },
+      "tags": {
+        "can": "modal"
+      },
+      "narration": "El problema es ese [[to]]. [[Can]] es un verbo modal, y los modales van pegados al verbo, sin nada en medio. Nunca llevan [[to]] detrás."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "to",
+        "to": "swim"
+      },
+      "narration": "Se queda en [[swim]], directo. [[I can swim]]. Sé nadar. Y lo mismo con todos: [[I can go]], [[I can help]], [[I can see]]."
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Can y could nunca llevan to detrás. Y nunca cambian: no existe he cans.",
+      "narration": "Dos reglas de forma y ya está: [[can]] y [[could]] nunca llevan [[to]] detrás, y nunca cambian de forma. No existe [[he cans]]. Se dice [[he can]]."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · Los tres trabajos de can",
+      "narration": "Ahora el significado. [[Can]] hace tres cosas distintas, y conviene separarlas porque en español usamos verbos diferentes para cada una."
+    },
+    {
+      "id": "b08",
+      "type": "table",
+      "headers": [
+        "Uso",
+        "Ejemplo"
+      ],
+      "rows": [
+        [
+          "habilidad",
+          "I can drive"
+        ],
+        [
+          "posibilidad",
+          "It can rain here"
+        ],
+        [
+          "permiso",
+          "You can go now"
+        ]
+      ],
+      "narration": "Mira la tabla. [[Habilidad]]: [[I can drive]], sé conducir. [[Posibilidad]]: [[It can rain here]], aquí puede llover. Y [[permiso]]: [[You can go now]], ya puedes irte."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "I can drive but I can't park.",
+      "gloss": "Sé conducir pero no sé aparcar.",
+      "highlight": {
+        "can": "blue",
+        "can't": "red"
+      },
+      "narration": "Fíjate en la habilidad: [[I can drive but I can't park]]. Sé conducir pero no sé aparcar. En español eso es saber, no poder. [[Can]] cubre las dos ideas."
+    },
+    {
+      "id": "b10",
+      "type": "tip",
+      "text": "Para habilidades, can se traduce mejor por «saber» que por «poder».",
+      "narration": "Guárdate el truco de traducción: cuando hablas de habilidades, [[can]] se parece más a saber que a poder. [[Can you cook?]] no es ¿puedes cocinar?, es ¿sabes cocinar?"
+    },
+    {
+      "id": "b11",
+      "type": "heading",
+      "text": "Parte 3 · Could no siempre es pasado",
+      "narration": "Vamos con [[could]], que es donde está la confusión buena. Porque [[could]] es el pasado de [[can]]... pero la mitad de las veces no habla del pasado."
+    },
+    {
+      "id": "b12",
+      "type": "sentence",
+      "text": "When I was ten I could run fast.",
+      "gloss": "Cuando tenía diez años corría rápido.",
+      "highlight": {
+        "could": "blue"
+      },
+      "narration": "Este sí es pasado: [[When I was ten I could run fast]]. Cuando tenía diez años, sabía correr rápido. Aquí [[could]] es simplemente el ayer de [[can]]."
+    },
+    {
+      "id": "b13",
+      "type": "sentence",
+      "text": "Could you help me, please?",
+      "gloss": "¿Me podrías ayudar, por favor?",
+      "highlight": {
+        "Could": "green"
+      },
+      "narration": "Y este no tiene nada de pasado: [[Could you help me, please?]] ¿Me podrías ayudar? Aquí [[Could]] sólo sirve para sonar más educado."
+    },
+    {
+      "id": "b14",
+      "type": "list",
+      "heading": "Could hace tres cosas",
+      "items": [
+        "Pasado de can: I could swim at five",
+        "Petición educada: could you open the window?",
+        "Posibilidad suave: it could rain later"
+      ],
+      "narration": "[[Pasado]] de can: [[I could swim at five]]. [[Petición]] educada: [[could you open the window?]] Y [[posibilidad]] suave: [[it could rain later]], podría llover."
+    },
+    {
+      "id": "b15",
+      "type": "heading",
+      "text": "Parte 4 · La escalera de la cortesía",
+      "narration": "Y ahora lo más útil de toda la lección: pedir cosas. En inglés hay una escalera de cortesía, y saber en qué escalón estás lo cambia todo."
+    },
+    {
+      "id": "b16",
+      "type": "table",
+      "headers": [
+        "Frase",
+        "Cuándo"
+      ],
+      "rows": [
+        [
+          "Give me the salt",
+          "suena a orden"
+        ],
+        [
+          "Can you pass the salt?",
+          "normal, con amigos"
+        ],
+        [
+          "Could you pass the salt?",
+          "educado, con cualquiera"
+        ],
+        [
+          "Would you mind passing it?",
+          "muy formal"
+        ]
+      ],
+      "narration": "Mira la escalera. [[Give me the salt]] suena a orden. [[Can you pass the salt?]] es normal, con amigos. [[Could you pass the salt?]] vale con cualquiera. Y [[Would you mind passing it?]] es muy formal."
+    },
+    {
+      "id": "b17",
+      "type": "tip",
+      "text": "Con desconocidos, could. Nunca pierdes nada por subir un escalón.",
+      "narration": "La regla práctica: con desconocidos, [[could]]. Nunca pierdes nada por subir un escalón de cortesía, y sí pierdes si te quedas corto."
+    },
+    {
+      "id": "b18",
+      "type": "sentence",
+      "text": "Could I ask you something?",
+      "gloss": "¿Te puedo preguntar una cosa?",
+      "highlight": {
+        "Could": "yellow"
+      },
+      "narration": "Y para pedir permiso igual: [[Could I ask you something?]] ¿Te puedo preguntar una cosa? Con [[Could]] al principio suena suave en cualquier situación."
+    },
+    {
+      "id": "b19",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oírlos donde salen cada día: alguien llegando a un hotel. Fíjate en cómo sube y baja la cortesía."
+    },
+    {
+      "id": "b20",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Could I check in early, please?",
+          "es": "¿Podría hacer el check-in antes?"
+        },
+        {
+          "speaker": "B",
+          "en": "I can check, one moment.",
+          "es": "Puedo mirarlo, un momento."
+        },
+        {
+          "speaker": "A",
+          "en": "Thanks. Can I leave my bag here?",
+          "es": "Gracias. ¿Puedo dejar la maleta aquí?"
+        },
+        {
+          "speaker": "B",
+          "en": "Of course. You can pick it up later.",
+          "es": "Claro. Puede recogerla luego."
+        }
+      ],
+      "narration": "[[Could I check in early, please?]] [[I can check, one moment]]. [[Thanks. Can I leave my bag here?]] [[Of course. You can pick it up later]]."
+    },
+    {
+      "id": "b21",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Could I check in: pide un favor, educado",
+        "I can check: habilidad, puedo hacerlo",
+        "Can I leave: pide permiso, ya hay confianza",
+        "You can pick it up: da permiso"
+      ],
+      "narration": "[[Could]] I check in: pide un favor, educado. [[I]] can check: puedo hacerlo. [[Can]] I leave: pide permiso, ya hay confianza. Y [[You]] can pick it up: da permiso."
+    },
+    {
+      "id": "b22",
+      "type": "heading",
+      "text": "Parte 6 · Practica",
+      "narration": "Tu turno. Tres preguntas. Piensa cuál encaja mejor; te dejo tres segundos antes de decir la respuesta."
+    },
+    {
+      "id": "b23",
+      "type": "quiz",
+      "question": "___ you speak Italian?",
+      "options": [
+        "Can",
+        "Can to",
+        "Cans"
+      ],
+      "answer": 0,
+      "narration": "Primera: [[blank, you speak Italian?]] ¿[[Can]], [[Can to]] o [[Cans]]? Piénsalo. {{pause:3}} Es [[Can]]: sin [[to]] y sin ese. ¿Sabes hablar italiano?"
+    },
+    {
+      "id": "b24",
+      "type": "quiz",
+      "question": "___ you send me the file? (a tu jefe)",
+      "options": [
+        "Can",
+        "Could",
+        "Do"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[blank, you send me the file?]], y se lo dices a tu jefe. ¿[[Can]], [[Could]] o [[Do]]? Piénsalo. {{pause:3}} Es [[Could]]: un escalón más de cortesía."
+    },
+    {
+      "id": "b25",
+      "type": "quiz",
+      "question": "When I was young I ___ run for hours.",
+      "options": [
+        "can",
+        "could",
+        "could to"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[When I was young I, blank, run for hours]]. ¿[[can]], [[could]] o [[could to]]? Piénsalo. {{pause:3}} Es [[could]]: es pasado de verdad, y sin [[to]]."
+    },
+    {
+      "id": "b26",
+      "type": "heading",
+      "text": "Parte 7 · Resumen",
+      "narration": "Cerramos. Cuatro ideas, y la última es la que más veces vas a usar fuera de clase."
+    },
+    {
+      "id": "b27",
+      "type": "recap",
+      "items": [
+        "Can y could nunca llevan to detrás",
+        "Can es habilidad, posibilidad y permiso",
+        "Could es pasado, pero también cortesía",
+        "Con desconocidos, siempre could"
+      ],
+      "narration": "[[Can]] y could nunca llevan to detrás. [[Can]] es habilidad, posibilidad y permiso. [[Could]] es pasado, pero también cortesía. Y [[con]] desconocidos, siempre could."
+    },
+    {
+      "id": "b28",
+      "type": "sentence",
+      "text": "Could you practise this today?",
+      "gloss": "¿Podrías practicar esto hoy?",
+      "narration": "Y me despido pidiéndotelo bien: [[Could you practise this today?]] ¿Podrías practicar esto hoy? Fíjate que te lo he pedido con [[Could]]. Nos vemos."
+    }
+  ]
+}

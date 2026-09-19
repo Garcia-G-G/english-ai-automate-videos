@@ -1,0 +1,334 @@
+{
+  "id": "make-vs-do",
+  "title": "Make y do: dos verbos, una confusión",
+  "kicker": "Inglés · Verbos · A2–B1",
+  "level": "A2-B1",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy dos verbos que en español son uno solo: hacer. En inglés se parten en [[make]] y [[do]], y elegir mal es de los errores que más delatan. Vamos a arreglarlo."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El problema",
+      "narration": "Empecemos por donde duele. Un error que suena completamente normal en tu cabeza y completamente raro en la del otro."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "I need to make my homework.",
+      "gloss": "Tengo que hacer los deberes.",
+      "narration": "Mira: [[I need to make my homework]]. Hacer los deberes. Elegimos [[make]] porque hacer y [[make]] se parecen. Pero aquí toca el otro."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "make": "red"
+      },
+      "tags": {
+        "homework": "tarea"
+      },
+      "narration": "[[Make]] está mal porque [[homework]] es una tarea, algo que cumples. No estás creando nada nuevo: estás realizando un trabajo que ya existía."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "make",
+        "to": "do"
+      },
+      "narration": "Va con [[do]]. [[I need to do my homework]]. Y esa es la frontera entera de esta lección, en una sola frase."
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Make = crear algo nuevo. Do = realizar una tarea o una actividad.",
+      "narration": "Quédate con esto: [[make]] es crear algo que antes no existía. [[Do]] es realizar una tarea o una actividad. Crear contra realizar."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · Make crea",
+      "narration": "Vamos con [[make]] primero, porque es el más fácil de ver. Si al terminar hay algo nuevo en el mundo, es [[make]]."
+    },
+    {
+      "id": "b08",
+      "type": "list",
+      "heading": "Make: sale algo nuevo",
+      "items": [
+        "Make coffee, make dinner, make a cake",
+        "Make a decision, make a plan",
+        "Make a mistake, make noise",
+        "Make money, make friends"
+      ],
+      "narration": "[[Make]] coffee, make dinner, make a cake. [[Make]] a decision, make a plan. [[Make]] a mistake, make noise. [[Make]] money, make friends."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "She made a decision this morning.",
+      "gloss": "Tomó una decisión esta mañana.",
+      "highlight": {
+        "made": "blue"
+      },
+      "narration": "Fíjate: [[She made a decision this morning]]. En español tomamos decisiones; en inglés se fabrican. Antes no había decisión, y ahora sí. Por eso [[made]]."
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "text": "Sorry, I made a mistake.",
+      "gloss": "Perdona, me he equivocado.",
+      "highlight": {
+        "made": "blue"
+      },
+      "narration": "Y esta te la vas a oír a ti mismo mucho: [[Sorry, I made a mistake]]. Perdona, me he equivocado. Nunca [[do a mistake]]. El error también se fabrica."
+    },
+    {
+      "id": "b11",
+      "type": "heading",
+      "text": "Parte 3 · Do realiza",
+      "narration": "Ahora [[do]]. Aquí no aparece nada nuevo: hay una tarea, una obligación o una actividad, y tú la llevas a cabo."
+    },
+    {
+      "id": "b12",
+      "type": "list",
+      "heading": "Do: cumples una tarea",
+      "items": [
+        "Do homework, do the dishes, do the laundry",
+        "Do exercise, do yoga, do sport",
+        "Do business, do a job",
+        "Do your best, do someone a favour"
+      ],
+      "narration": "[[Do]] homework, do the dishes, do the laundry. [[Do]] exercise, do yoga, do sport. [[Do]] business, do a job. [[Do]] your best, do someone a favour."
+    },
+    {
+      "id": "b13",
+      "type": "sentence",
+      "text": "He does the dishes every night.",
+      "gloss": "Friega los platos cada noche.",
+      "highlight": {
+        "does": "green"
+      },
+      "narration": "[[He does the dishes every night]]. Friega los platos cada noche. Los platos ya existían. No los crea: los limpia. Tarea, por lo tanto [[does]]."
+    },
+    {
+      "id": "b14",
+      "type": "tip",
+      "text": "Si la palabra es una tarea de casa, un deporte o un trabajo, casi siempre es do.",
+      "narration": "Un atajo que acierta muchísimo: si lo que sigue es una tarea de casa, un deporte o un trabajo, casi siempre es [[do]]. Y si es comida o una idea, casi siempre [[make]]."
+    },
+    {
+      "id": "b15",
+      "type": "heading",
+      "text": "Parte 4 · Las parejas traicioneras",
+      "narration": "Y ahora lo divertido: hay palabras que admiten los dos, pero significan cosas distintas. Estas son las que separan niveles."
+    },
+    {
+      "id": "b16",
+      "type": "table",
+      "headers": [
+        "Expresión",
+        "Qué significa"
+      ],
+      "rows": [
+        [
+          "make the bed",
+          "prepararla"
+        ],
+        [
+          "do the beds",
+          "tarea del hotel"
+        ],
+        [
+          "make a test",
+          "crearlo"
+        ],
+        [
+          "do a test",
+          "hacerlo tú"
+        ],
+        [
+          "make time",
+          "buscar hueco"
+        ],
+        [
+          "do time",
+          "estar en la cárcel"
+        ]
+      ],
+      "narration": "Mira la tabla. [[Make the bed]] es prepararla; [[do the beds]] es la tarea del hotel. [[Make a test]] es crearlo; [[do a test]] es hacerlo tú. [[Make time]] es buscar hueco; y [[do time]] es estar en la cárcel.",
+      "emphasis": [
+        "do time"
+      ]
+    },
+    {
+      "id": "b17",
+      "type": "sentence",
+      "text": "The teacher made the test.",
+      "gloss": "El profesor creó el examen.",
+      "highlight": {
+        "made": "yellow"
+      },
+      "narration": "[[The teacher made the test]]. El profesor lo creó, lo escribió. Si dices que el profesor [[did the test]], estás diciendo que lo hizo como alumno."
+    },
+    {
+      "id": "b18",
+      "type": "sentence",
+      "text": "The students did the test.",
+      "gloss": "Los alumnos hicieron el examen.",
+      "highlight": {
+        "did": "yellow"
+      },
+      "narration": "[[The students did the test]]. Ellos lo realizaron. La misma palabra, [[test]], y dos verbos que cuentan dos historias completamente distintas."
+    },
+    {
+      "id": "b19",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oírlos alternando en una mañana cualquiera en casa. Cuenta cuántos [[make]] y cuántos [[do]] salen."
+    },
+    {
+      "id": "b20",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Can you make some coffee?",
+          "es": "¿Puedes hacer café?"
+        },
+        {
+          "speaker": "B",
+          "en": "Sure, if you do the dishes.",
+          "es": "Claro, si tú friegas."
+        },
+        {
+          "speaker": "A",
+          "en": "Deal. I'll make breakfast too.",
+          "es": "Trato hecho. También hago el desayuno."
+        },
+        {
+          "speaker": "B",
+          "en": "You're doing me a huge favour.",
+          "es": "Me estás haciendo un favor enorme."
+        }
+      ],
+      "narration": "[[Can you make some coffee?]] [[Sure, if you do the dishes]]. [[Deal. I'll make breakfast too]]. [[You're doing me a huge favour]]."
+    },
+    {
+      "id": "b21",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Make coffee: aparece café que no había",
+        "Do the dishes: tarea de casa",
+        "Make breakfast: se crea la comida",
+        "Doing a favour: es algo que realizas"
+      ],
+      "narration": "[[Make]] coffee: aparece café que no había. [[Do]] the dishes: tarea de casa. [[Make]] breakfast: se crea la comida. Y [[Doing]] a favour: es algo que realizas."
+    },
+    {
+      "id": "b22",
+      "type": "heading",
+      "text": "Parte 6 · El do que además ayuda",
+      "narration": "Un último apunte, porque genera confusión: [[do]] tiene otro trabajo totalmente distinto, y no tiene nada que ver con hacer."
+    },
+    {
+      "id": "b23",
+      "type": "sentence",
+      "text": "Do you do exercise?",
+      "gloss": "¿Haces ejercicio?",
+      "highlight": {
+        "Do": "blue",
+        "do": "green"
+      },
+      "narration": "Mira esta joya: [[Do you do exercise?]] El primero, [[Do]], sólo sirve para formar la pregunta. El segundo, [[do]], es el verbo de verdad."
+    },
+    {
+      "id": "b24",
+      "type": "tip",
+      "text": "El primer do de una pregunta no significa hacer: sólo abre la pregunta.",
+      "narration": "Por eso no te asustes al verlo dos veces seguidas. El primero abre la pregunta, el segundo significa hacer. Son dos trabajos del mismo verbo."
+    },
+    {
+      "id": "b25",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
+      "narration": "Tu turno. Tres preguntas. Piensa cuál de los dos pide cada frase; tres segundos antes de la respuesta."
+    },
+    {
+      "id": "b26",
+      "type": "quiz",
+      "question": "I have to ___ a phone call.",
+      "options": [
+        "do",
+        "make",
+        "take"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[I have to, blank, a phone call]]. ¿[[do]], [[make]] o [[take]]? Piénsalo. {{pause:3}} Es [[make]] a phone call: antes no había llamada y ahora sí."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "Did you ___ the laundry?",
+      "options": [
+        "make",
+        "do",
+        "did"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[Did you, blank, the laundry?]] ¿[[make]], [[do]] o [[did]]? Piénsalo. {{pause:3}} Es [[do]]: es una tarea de casa. Y en base, porque ya hay un [[did]]."
+    },
+    {
+      "id": "b28",
+      "type": "quiz",
+      "question": "They want to ___ business with us.",
+      "options": [
+        "make",
+        "do",
+        "have"
+      ],
+      "answer": 1,
+      "narration": "Tercera, que engaña: [[They want to, blank, business with us]]. ¿[[make]], [[do]] o [[have]]? Piénsalo. {{pause:3}} Es [[do]] business. Aunque se gane dinero, se dice [[do]]."
+    },
+    {
+      "id": "b29",
+      "type": "heading",
+      "text": "Parte 8 · Resumen",
+      "narration": "Cerramos con cuatro ideas. Y sobre todo con la primera, que resuelve casi todos los casos que te vas a encontrar."
+    },
+    {
+      "id": "b30",
+      "type": "recap",
+      "items": [
+        "Make crea algo que no existía",
+        "Do realiza una tarea que ya estaba ahí",
+        "Comida e ideas van con make",
+        "Casa, deporte y trabajo van con do"
+      ],
+      "narration": "[[Make]] crea algo que no existía. [[Do]] realiza una tarea que ya estaba ahí. [[Comida]] e ideas van con make. Y [[casa]], deporte y trabajo van con do."
+    },
+    {
+      "id": "b31",
+      "type": "sentence",
+      "text": "You did the lesson and made progress.",
+      "gloss": "Hiciste la lección e hiciste progresos.",
+      "narration": "Y la despedida los usa los dos: [[You did the lesson and made progress]]. Hiciste la lección — tarea — e hiciste progresos — algo nuevo. Nos vemos."
+    }
+  ]
+}

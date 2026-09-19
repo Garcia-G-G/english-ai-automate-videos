@@ -1,0 +1,328 @@
+{
+  "id": "preposiciones-in-on-at",
+  "title": "In, on, at: tiempo y lugar sin dudar",
+  "kicker": "Inglés · Preposiciones · A2",
+  "level": "A2",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy tres palabras de dos letras que nos tienen a todos dudando: [[in]], [[on]] y [[at]]. No se traducen una a una desde el español, y por eso cuesta. Pero tienen lógica."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · La imagen que lo ordena todo",
+      "narration": "Antes de ninguna lista, quédate con una imagen. Con esta imagen aciertas la mayoría de los casos sin memorizar nada."
+    },
+    {
+      "id": "b03",
+      "type": "list",
+      "heading": "Piensa en tamaño",
+      "items": [
+        "In: dentro de algo grande, un espacio cerrado",
+        "On: encima de una superficie o una línea",
+        "At: un punto exacto, sin volumen"
+      ],
+      "narration": "Piensa en tamaño. [[In]]: dentro de algo grande, un espacio cerrado. [[On]]: encima de una superficie o una línea. [[At]]: un punto exacto, sin volumen."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "text": "The keys are in the drawer.",
+      "gloss": "Las llaves están en el cajón.",
+      "highlight": {
+        "in": "blue"
+      },
+      "narration": "Mira: [[The keys are in the drawer]]. Las llaves están en el cajón. [[In]], porque el cajón es un espacio cerrado y las llaves están dentro."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "text": "The keys are on the table.",
+      "gloss": "Las llaves están en la mesa.",
+      "highlight": {
+        "on": "blue"
+      },
+      "narration": "Y ahora: [[The keys are on the table]]. En español las dos son en. En inglés cambia a [[on]] porque la mesa es una superficie: están encima."
+    },
+    {
+      "id": "b06",
+      "type": "sentence",
+      "text": "I'll meet you at the door.",
+      "gloss": "Te veo en la puerta.",
+      "highlight": {
+        "at": "blue"
+      },
+      "narration": "Y la tercera: [[I'll meet you at the door]]. Te veo en la puerta. [[At]], porque la puerta aquí es sólo un punto de encuentro, no un sitio con dentro y fuera."
+    },
+    {
+      "id": "b07",
+      "type": "tip",
+      "text": "Mismo «en» español, tres ingleses: in (dentro), on (encima), at (un punto).",
+      "narration": "Ese es el problema de raíz: un solo en en español contra tres en inglés. [[In]] es dentro, [[on]] es encima, [[at]] es un punto."
+    },
+    {
+      "id": "b08",
+      "type": "heading",
+      "text": "Parte 2 · El tiempo funciona igual",
+      "narration": "Y ahora lo bonito: con el tiempo la lógica es exactamente la misma. De grande a pequeño, igual que con el espacio."
+    },
+    {
+      "id": "b09",
+      "type": "table",
+      "headers": [
+        "In",
+        "On",
+        "At"
+      ],
+      "rows": [
+        [
+          "in 2026",
+          "on Monday",
+          "at 5 o'clock"
+        ],
+        [
+          "in July",
+          "on my birthday",
+          "at night"
+        ],
+        [
+          "in the morning",
+          "on May 3rd",
+          "at the weekend"
+        ]
+      ],
+      "narration": "Mira la tabla. [[In]]: [[in 2026]], [[in July]], [[in the morning]]. [[On]]: [[on Monday]], [[on my birthday]], [[on May 3rd]]. [[At]]: [[at 5 o'clock]], [[at night]], [[at the weekend]]."
+    },
+    {
+      "id": "b10",
+      "type": "list",
+      "heading": "De grande a pequeño",
+      "items": [
+        "In: años, meses, estaciones, partes del día",
+        "On: días concretos y fechas",
+        "At: horas exactas y momentos puntuales"
+      ],
+      "narration": "[[In]] para lo grande: años, meses, estaciones y partes del día. [[On]] para días concretos y fechas. [[At]] para horas exactas y momentos puntuales."
+    },
+    {
+      "id": "b11",
+      "type": "sentence",
+      "text": "I start at nine on Monday.",
+      "gloss": "Empiezo a las nueve el lunes.",
+      "highlight": {
+        "at": "green",
+        "on": "green"
+      },
+      "narration": "Escucha las dos juntas: [[I start at nine on Monday]]. [[At]] nine, la hora exacta. [[On]] Monday, el día. De lo pequeño a lo grande, igual que en español al revés."
+    },
+    {
+      "id": "b12",
+      "type": "tip",
+      "text": "In the morning, pero on Monday morning. En cuanto hay un día concreto, gana on.",
+      "narration": "Y aquí una trampa preciosa: se dice [[in the morning]], pero [[on Monday morning]]. En cuanto aparece un día concreto, gana [[on]]. Siempre."
+    },
+    {
+      "id": "b13",
+      "type": "heading",
+      "text": "Parte 3 · Los que hay que saberse",
+      "narration": "Hay un grupo que no sigue la lógica y sencillamente se aprende de memoria. Son pocos, pero salen todos los días."
+    },
+    {
+      "id": "b14",
+      "type": "list",
+      "heading": "Excepciones que salen a diario",
+      "items": [
+        "At home, at work, at school: sin the",
+        "On the bus, on the train, but in the car",
+        "In the photo, on the phone",
+        "At night, but in the night no se usa"
+      ],
+      "narration": "[[At]] home, at work, at school, sin the. [[On]] the bus y on the train, pero [[in]] the car. In the photo, [[on]] the phone. Y [[at]] night, nunca in the night."
+    },
+    {
+      "id": "b15",
+      "type": "sentence",
+      "text": "She is at work until six.",
+      "gloss": "Está en el trabajo hasta las seis.",
+      "highlight": {
+        "at": "yellow"
+      },
+      "narration": "[[She is at work until six]]. Está en el trabajo hasta las seis. [[At]] work, sin artículo. Si dices [[at the work]] suena inmediatamente a extranjero."
+    },
+    {
+      "id": "b16",
+      "type": "sentence",
+      "text": "We talked on the phone in the car.",
+      "gloss": "Hablamos por teléfono en el coche.",
+      "highlight": {
+        "on": "yellow",
+        "in": "yellow"
+      },
+      "narration": "Y esta las junta: [[We talked on the phone in the car]]. [[On]] the phone, porque el teléfono es una línea. [[In]] the car, porque el coche sí es un espacio cerrado."
+    },
+    {
+      "id": "b17",
+      "type": "heading",
+      "text": "Parte 4 · El error más repetido",
+      "narration": "Vamos con el error que más veces he corregido, y que viene de una traducción demasiado literal del español."
+    },
+    {
+      "id": "b18",
+      "type": "sentence",
+      "text": "I arrived to the airport in time.",
+      "gloss": "Llegué al aeropuerto a tiempo.",
+      "narration": "Mira: [[I arrived to the airport in time]]. Dos errores en siete palabras, y los dos suenan perfectamente lógicos desde el español."
+    },
+    {
+      "id": "b19",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "to": "red"
+      },
+      "tags": {
+        "arrived": "ya lleva la idea"
+      },
+      "narration": "El primero es [[to]]. El verbo [[arrived]] ya lleva dentro la idea de llegar a un sitio. Se dice [[arrive at]] o [[arrive in]], nunca [[arrive to]]."
+    },
+    {
+      "id": "b20",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "to",
+        "to": "at"
+      },
+      "narration": "Así que va [[at]] the airport. Y el segundo error es [[in time]], que significa justo a tiempo, por los pelos. Llegar puntual es [[on time]]."
+    },
+    {
+      "id": "b21",
+      "type": "tip",
+      "text": "On time = puntual. In time = justo a tiempo, por poco. No son lo mismo.",
+      "narration": "Guárdate la diferencia: [[on time]] es puntual, a la hora. [[In time]] es justo a tiempo, por los pelos. El tren sale [[on time]]; tú llegas [[in time]] para cogerlo."
+    },
+    {
+      "id": "b22",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oírlas todas en una conversación normal: alguien quedando con otra persona. Cuenta cuántas salen."
+    },
+    {
+      "id": "b23",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Are you at home?",
+          "es": "¿Estás en casa?"
+        },
+        {
+          "speaker": "B",
+          "en": "No, I'm on the train. I arrive at seven.",
+          "es": "No, estoy en el tren. Llego a las siete."
+        },
+        {
+          "speaker": "A",
+          "en": "Perfect, see you in the café on Main Street.",
+          "es": "Perfecto, nos vemos en el café de Main Street."
+        },
+        {
+          "speaker": "B",
+          "en": "Great. I'll be there on time.",
+          "es": "Genial. Llegaré puntual."
+        }
+      ],
+      "narration": "[[Are you at home?]] [[No, I'm on the train. I arrive at seven]]. [[Perfect, see you in the café on Main Street]]. [[Great. I'll be there on time]]."
+    },
+    {
+      "id": "b24",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "At home: punto, sin the",
+        "On the train: encima de, transporte público",
+        "At seven: hora exacta",
+        "In the café on Main Street: dentro, y la calle es línea"
+      ],
+      "narration": "[[At]] home: punto, sin the. [[On]] the train: transporte público. [[At]] seven: hora exacta. Y [[In]] the café on Main Street: dentro del café, y la calle es una línea."
+    },
+    {
+      "id": "b25",
+      "type": "heading",
+      "text": "Parte 6 · Practica",
+      "narration": "Tu turno. Tres preguntas. Piensa la respuesta en voz alta; te dejo tres segundos antes de decirla."
+    },
+    {
+      "id": "b26",
+      "type": "quiz",
+      "question": "The meeting is ___ Friday.",
+      "options": [
+        "in",
+        "on",
+        "at"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[The meeting is, blank, Friday]]. ¿[[in]], [[on]] o [[at]]? Piénsalo. {{pause:3}} Es [[on]]: [[Friday]] es un día concreto."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "I'll call you ___ the evening.",
+      "options": [
+        "at",
+        "in",
+        "on"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[I'll call you, blank, the evening]]. ¿[[at]], [[in]] o [[on]]? Piénsalo. {{pause:3}} Es [[in]]: las partes del día van con [[in]], salvo [[at night]]."
+    },
+    {
+      "id": "b28",
+      "type": "quiz",
+      "question": "She's ___ work right now.",
+      "options": [
+        "at",
+        "in",
+        "on"
+      ],
+      "answer": 0,
+      "narration": "Tercera: [[She's, blank, work right now]]. ¿[[at]], [[in]] o [[on]]? Piénsalo. {{pause:3}} Es [[at]] work, y recuerda: sin artículo detrás."
+    },
+    {
+      "id": "b29",
+      "type": "heading",
+      "text": "Parte 7 · Resumen",
+      "narration": "Cerramos. Si te llevas la imagen del principio, el resto se coloca casi solo con la práctica."
+    },
+    {
+      "id": "b30",
+      "type": "recap",
+      "items": [
+        "In es dentro, on es encima, at es un punto",
+        "Con el tiempo, de grande a pequeño: in, on, at",
+        "At home, at work y at school van sin the",
+        "On time es puntual, in time es por los pelos"
+      ],
+      "narration": "[[In]] es dentro, [[on]] es encima, [[at]] es un punto. [[Con]] el tiempo, de grande a pequeño. [[At]] home, at work y at school van sin the. Y [[on]] time es puntual, in time es por los pelos."
+    },
+    {
+      "id": "b31",
+      "type": "sentence",
+      "text": "See you at six on Friday in the café.",
+      "gloss": "Nos vemos a las seis el viernes en el café.",
+      "narration": "Y la despedida lleva las tres: [[See you at six on Friday in the café]]. Hora, día y lugar, en ese orden. Practícala tal cual. Nos vemos."
+    }
+  ]
+}

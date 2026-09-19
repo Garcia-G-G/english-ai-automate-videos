@@ -1,0 +1,355 @@
+{
+  "id": "condicionales-0-1-2",
+  "title": "Si pasa esto: condicionales 0, 1 y 2",
+  "kicker": "Inglés · Condicionales · B1",
+  "level": "B1",
+  "language": "es",
+  "target_minutes": 8,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy las frases con si. En inglés hay tres que usarás todos los días, y cada una dice algo distinto sobre lo probable que es. Vamos a separarlas bien."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El error que lo arruina todo",
+      "narration": "Empezamos por el error, porque es uno solo, es siempre el mismo, y en cuanto lo quitas ya suenas bastante mejor."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "If it will rain, I will stay home.",
+      "gloss": "Si llueve, me quedo en casa.",
+      "narration": "Mira: [[If it will rain, I will stay home]]. Parece lógico: las dos cosas pasan en el futuro, así que las dos con futuro. Pues no."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "will": "red"
+      },
+      "tags": {
+        "If": "aquí no"
+      },
+      "narration": "El problema es el primer [[will]], el que va detrás de [[If]]. En inglés, la parte del si nunca lleva futuro. Aunque hable del futuro."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "will",
+        "to": "rains"
+      },
+      "narration": "Se pone en presente: [[rains]]. [[If it rains, I will stay home]]. Y fíjate que en español hacemos exactamente lo mismo: si llueve, no si lloverá."
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Después de if nunca va will. El futuro va sólo en la otra mitad de la frase.",
+      "narration": "Grábate esto porque vale para todas: después de [[if]] nunca va [[will]]. El futuro va sólo en la otra mitad. Una mitad plantea, la otra predice."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · Condicional cero: lo que siempre pasa",
+      "narration": "La primera es la más sencilla, y es la que usas para hablar de leyes, hábitos y cosas que pasan siempre sin fallo."
+    },
+    {
+      "id": "b08",
+      "type": "sentence",
+      "text": "If you heat water, it boils.",
+      "gloss": "Si calientas agua, hierve.",
+      "highlight": {
+        "heat": "blue",
+        "boils": "blue"
+      },
+      "narration": "[[If you heat water, it boils]]. Si calientas agua, hierve. [[Heat]] en presente, [[boils]] en presente. Las dos mitades iguales, porque esto pasa siempre."
+    },
+    {
+      "id": "b09",
+      "type": "list",
+      "heading": "Condicional cero",
+      "items": [
+        "Presente en las dos mitades",
+        "Para leyes y verdades",
+        "También para rutinas: if I'm tired, I go to bed",
+        "Puedes cambiar if por when sin cambiar nada"
+      ],
+      "narration": "[[Presente]] en las dos mitades. [[Para]] leyes y verdades. [[También]] para rutinas: [[if I'm tired, I go to bed]]. Y [[Puedes]] cambiar if por when sin cambiar nada."
+    },
+    {
+      "id": "b10",
+      "type": "heading",
+      "text": "Parte 3 · Condicional uno: lo que puede pasar",
+      "narration": "La segunda es la que más vas a usar en tu vida. Habla de algo que es perfectamente posible, y que probablemente pase."
+    },
+    {
+      "id": "b11",
+      "type": "sentence",
+      "text": "If I finish early, I will call you.",
+      "gloss": "Si acabo pronto, te llamo.",
+      "highlight": {
+        "finish": "green",
+        "will": "green"
+      },
+      "narration": "[[If I finish early, I will call you]]. Si acabo pronto, te llamo. [[Finish]] en presente, y [[will]] call en futuro. Es real y puede pasar hoy mismo."
+    },
+    {
+      "id": "b12",
+      "type": "table",
+      "headers": [
+        "Mitad con if",
+        "Mitad del resultado"
+      ],
+      "rows": [
+        [
+          "presente",
+          "will + verbo"
+        ],
+        [
+          "If it rains",
+          "I will take a taxi"
+        ],
+        [
+          "If you study",
+          "you will pass"
+        ]
+      ],
+      "narration": "En la tabla: [[presente]] contra [[will]] más verbo. [[If it rains]], [[I will take a taxi]]. [[If you study]], [[you will pass]]."
+    },
+    {
+      "id": "b13",
+      "type": "tip",
+      "text": "El condicional uno no es sólo para el futuro: sirve para amenazar, prometer y avisar.",
+      "narration": "Y algo que no te suelen decir: el condicional uno no es sólo tiempo. Sirve para prometer, avisar y hasta amenazar. [[If you do that again, I will leave]]."
+    },
+    {
+      "id": "b14",
+      "type": "heading",
+      "text": "Parte 4 · Condicional dos: lo que no es verdad",
+      "narration": "Y ahora el que de verdad separa niveles. Este habla de cosas imaginarias, imposibles o simplemente muy poco probables."
+    },
+    {
+      "id": "b15",
+      "type": "sentence",
+      "text": "If I won the lottery, I would travel.",
+      "gloss": "Si ganara la lotería, viajaría.",
+      "highlight": {
+        "won": "yellow",
+        "would": "yellow"
+      },
+      "narration": "[[If I won the lottery, I would travel]]. Si ganara la lotería, viajaría. [[Won]] en pasado, [[would]] en la otra mitad. Y ojo: no ha ganado nada."
+    },
+    {
+      "id": "b16",
+      "type": "sentence",
+      "same": true,
+      "tags": {
+        "won": "no es pasado"
+      },
+      "narration": "Ese [[won]] engaña muchísimo. Está en pasado, pero no habla del pasado: habla de algo imaginario. El pasado aquí marca distancia con la realidad, no tiempo."
+    },
+    {
+      "id": "b17",
+      "type": "list",
+      "heading": "Condicional dos",
+      "items": [
+        "Pasado en la mitad del if",
+        "Would en la mitad del resultado",
+        "Para lo imaginario o improbable",
+        "El pasado marca distancia, no tiempo"
+      ],
+      "narration": "[[Pasado]] en la mitad del if. [[Would]] en la mitad del resultado. [[Para]] lo imaginario o improbable. Y [[El]] pasado marca distancia, no tiempo."
+    },
+    {
+      "id": "b18",
+      "type": "sentence",
+      "text": "If I were you, I would say yes.",
+      "gloss": "Yo que tú, diría que sí.",
+      "highlight": {
+        "were": "green"
+      },
+      "narration": "Y aquí la joya del condicional dos: [[If I were you, I would say yes]]. Yo que tú, diría que sí. Fíjate en [[were]], no [[was]], aunque el sujeto sea [[I]]."
+    },
+    {
+      "id": "b19",
+      "type": "tip",
+      "text": "If I were you es la forma de dar consejo en inglés. Úsala tal cual.",
+      "narration": "[[If I were you]] es la manera natural de dar un consejo en inglés. No lo traduzcas, apréndetelo entero como un bloque. Te va a servir constantemente."
+    },
+    {
+      "id": "b20",
+      "type": "heading",
+      "text": "Parte 5 · Uno contra dos",
+      "narration": "Y ahora la comparación que lo deja todo claro: la misma idea dicha con el uno y con el dos, y qué cambia."
+    },
+    {
+      "id": "b21",
+      "type": "sentence",
+      "text": "If I have time, I will help you.",
+      "gloss": "Si tengo tiempo, te ayudo.",
+      "highlight": {
+        "have": "blue"
+      },
+      "narration": "[[If I have time, I will help you]]. Si tengo tiempo, te ayudo. Con [[have]] en presente estás diciendo que es posible, que igual sí tienes tiempo."
+    },
+    {
+      "id": "b22",
+      "type": "sentence",
+      "text": "If I had time, I would help you.",
+      "gloss": "Si tuviera tiempo, te ayudaría.",
+      "highlight": {
+        "had": "yellow"
+      },
+      "narration": "[[If I had time, I would help you]]. Si tuviera tiempo, te ayudaría. Con [[had]] estás diciendo justo lo contrario: no tengo tiempo. Es una forma educada de decir que no."
+    },
+    {
+      "id": "b23",
+      "type": "tip",
+      "text": "El condicional dos suele ser un «no» amable. Ojo con usarlo sin querer.",
+      "narration": "Cuidado con esto, porque es un malentendido caro: el condicional dos suele ser un no amable. Si querías decir que sí, no lo uses."
+    },
+    {
+      "id": "b24",
+      "type": "heading",
+      "text": "Parte 6 · En una conversación real",
+      "narration": "Vamos a oír los tres en una conversación entre dos amigos hablando de mudarse. Fíjate en cómo cambia la probabilidad."
+    },
+    {
+      "id": "b25",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "If I get the job, I'll move to Madrid.",
+          "es": "Si consigo el trabajo, me mudo a Madrid."
+        },
+        {
+          "speaker": "B",
+          "en": "Nice. If I had your courage, I'd do the same.",
+          "es": "Qué bien. Si yo tuviera tu valor, haría lo mismo."
+        },
+        {
+          "speaker": "A",
+          "en": "You can. If you apply, they call you.",
+          "es": "Puedes. Si echas la solicitud, te llaman."
+        },
+        {
+          "speaker": "B",
+          "en": "If I were younger, maybe.",
+          "es": "Si fuera más joven, quizá."
+        }
+      ],
+      "narration": "[[If I get the job, I'll move to Madrid]]. [[Nice. If I had your courage, I'd do the same]]. [[You can. If you apply, they call you]]. [[If I were younger, maybe]]."
+    },
+    {
+      "id": "b26",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "If I get, I'll move: condicional uno, posible",
+        "If I had, I'd do: condicional dos, no lo ve posible",
+        "If you apply, they call: condicional cero, siempre pasa",
+        "If I were younger: imaginario puro"
+      ],
+      "narration": "[[If]] I get, I'll move: condicional uno, posible. [[If]] I had, I'd do: condicional dos. [[If]] you apply, they call: condicional cero. Y [[If]] I were younger: imaginario puro."
+    },
+    {
+      "id": "b27",
+      "type": "heading",
+      "text": "Parte 7 · Dos detalles de forma",
+      "narration": "Antes de practicar, dos detalles pequeños que conviene tener claros porque aparecen en todas las frases con si."
+    },
+    {
+      "id": "b28",
+      "type": "list",
+      "heading": "Detalles",
+      "items": [
+        "Puedes darle la vuelta: I will call you if I finish",
+        "Con el if delante va coma; detrás no",
+        "Would se contrae en I'd, you'd, she'd",
+        "Unless significa if not: unless you hurry"
+      ],
+      "narration": "[[Puedes]] darle la vuelta: [[I will call you if I finish]]. [[Con]] el if delante va coma, detrás no. [[Would]] se contrae en [[I'd, you'd, she'd]]. Y [[Unless]] significa si no."
+    },
+    {
+      "id": "b29",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
+      "narration": "Tu turno. Tres preguntas. En cada una pregúntate primero: ¿esto es posible, o me lo estoy imaginando?"
+    },
+    {
+      "id": "b30",
+      "type": "quiz",
+      "question": "If you ___ water to 100 degrees, it boils.",
+      "options": [
+        "will heat",
+        "heat",
+        "heated"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[If you, blank, water to 100 degrees, it boils]]. ¿[[will heat]], [[heat]] o [[heated]]? Piénsalo. {{pause:3}} Es [[heat]]: pasa siempre, condicional cero."
+    },
+    {
+      "id": "b31",
+      "type": "quiz",
+      "question": "If I ___ rich, I would buy a boat.",
+      "options": [
+        "am",
+        "were",
+        "will be"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[If I, blank, rich, I would buy a boat]]. ¿[[am]], [[were]] o [[will be]]? Piénsalo. {{pause:3}} Es [[were]]: hay un [[would]], así que es imaginario."
+    },
+    {
+      "id": "b32",
+      "type": "quiz",
+      "question": "If it ___ tomorrow, we'll cancel.",
+      "options": [
+        "will rain",
+        "rains",
+        "rained"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[If it, blank, tomorrow, we'll cancel]]. ¿[[will rain]], [[rains]] o [[rained]]? Piénsalo. {{pause:3}} Es [[rains]]: después de [[if]] nunca va [[will]]."
+    },
+    {
+      "id": "b33",
+      "type": "heading",
+      "text": "Parte 9 · Resumen",
+      "narration": "Cerramos. Cinco ideas, y la primera te arregla sola la mitad de los errores que hace la gente con las frases con si."
+    },
+    {
+      "id": "b34",
+      "type": "recap",
+      "items": [
+        "Después de if nunca va will",
+        "Cero: presente y presente, pasa siempre",
+        "Uno: presente y will, es posible",
+        "Dos: pasado y would, es imaginario",
+        "If I were you es para dar consejo"
+      ],
+      "narration": "[[Después]] de if nunca va will. [[Cero]]: presente y presente. [[Uno]]: presente y will, posible. [[Dos]]: pasado y would, imaginario. Y [[If]] I were you es para dar consejo."
+    },
+    {
+      "id": "b35",
+      "type": "sentence",
+      "text": "If you practise this, you will use it.",
+      "gloss": "Si practicas esto, lo usarás.",
+      "narration": "Y me despido con un condicional uno, porque es perfectamente posible: [[If you practise this, you will use it]]. Si practicas esto, lo usarás. Nos vemos."
+    }
+  ]
+}

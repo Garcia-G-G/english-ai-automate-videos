@@ -1,0 +1,342 @@
+{
+  "id": "phrasal-verbs-oficina",
+  "title": "Phrasal verbs de la oficina",
+  "kicker": "Inglés · Phrasal verbs · B1",
+  "level": "B1",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy los phrasal verbs que se oyen en cualquier oficina del mundo. No los raros de los libros: los doce que salen en reuniones, correos y llamadas todos los días."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · Por qué no se traducen",
+      "narration": "Antes de la lista, entendamos por qué cuestan tanto. Porque el problema no es la memoria: es que estás intentando hacer algo imposible."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "The meeting was called off.",
+      "gloss": "Se canceló la reunión.",
+      "highlight": {
+        "off": "blue"
+      },
+      "narration": "Mira: [[The meeting was called off]]. Se canceló la reunión. Si traduces palabra a palabra, llamar más [[off]] no da cancelar por ningún lado."
+    },
+    {
+      "id": "b04",
+      "type": "tip",
+      "text": "Un phrasal verb es una palabra nueva, no dos palabras juntas. Apréndelo entero.",
+      "narration": "Y ese es el truco: un phrasal verb es una palabra nueva, no dos palabras juntas. [[Call off]] es cancelar, y punto. No lo descompongas, apréndetelo entero."
+    },
+    {
+      "id": "b05",
+      "type": "heading",
+      "text": "Parte 2 · Los de las reuniones",
+      "narration": "Empezamos por los que oirás en cuanto entres a una reunión. Estos cuatro salen prácticamente en todas."
+    },
+    {
+      "id": "b06",
+      "type": "table",
+      "headers": [
+        "Phrasal",
+        "Significado"
+      ],
+      "rows": [
+        [
+          "call off",
+          "cancelar"
+        ],
+        [
+          "put off",
+          "aplazar"
+        ],
+        [
+          "bring up",
+          "sacar un tema"
+        ],
+        [
+          "go over",
+          "repasar"
+        ]
+      ],
+      "narration": "Mira la tabla. [[Call off]] es cancelar. [[Put off]] es aplazar. [[Bring up]] es sacar un tema. Y [[go over]] es repasar algo punto por punto."
+    },
+    {
+      "id": "b07",
+      "type": "sentence",
+      "text": "Let's go over the numbers again.",
+      "gloss": "Vamos a repasar los números otra vez.",
+      "highlight": {
+        "over": "blue"
+      },
+      "narration": "[[Let's go over the numbers again]]. Vamos a repasar los números. Ese [[over]] da la idea de pasar por encima de todo, uno por uno."
+    },
+    {
+      "id": "b08",
+      "type": "sentence",
+      "text": "Can I bring up one thing?",
+      "gloss": "¿Puedo sacar un tema?",
+      "highlight": {
+        "up": "green"
+      },
+      "narration": "[[Can I bring up one thing?]] ¿Puedo sacar una cosa? Literalmente traer hacia arriba: sacas el tema a la superficie para que todos lo vean."
+    },
+    {
+      "id": "b09",
+      "type": "heading",
+      "text": "Parte 3 · Los del correo",
+      "narration": "Seguimos con los que vas a escribir y leer en correos. Estos cuatro aparecen en cualquier hilo de trabajo."
+    },
+    {
+      "id": "b10",
+      "type": "table",
+      "headers": [
+        "Phrasal",
+        "Significado"
+      ],
+      "rows": [
+        [
+          "follow up",
+          "dar seguimiento"
+        ],
+        [
+          "fill in",
+          "rellenar o poner al día"
+        ],
+        [
+          "send out",
+          "enviar a varios"
+        ],
+        [
+          "sort out",
+          "resolver"
+        ]
+      ],
+      "narration": "En la tabla: [[follow up]] es dar seguimiento. [[Fill in]] es rellenar, y también poner al día a alguien. [[Send out]] es enviar a varias personas. Y [[sort out]] es resolver."
+    },
+    {
+      "id": "b11",
+      "type": "sentence",
+      "text": "I'll follow up on Monday.",
+      "gloss": "Le doy seguimiento el lunes.",
+      "highlight": {
+        "follow": "green"
+      },
+      "narration": "[[I'll follow up on Monday]]. Le doy seguimiento el lunes. Esta frase sola te vale para cerrar la mitad de tus correos de trabajo."
+    },
+    {
+      "id": "b12",
+      "type": "sentence",
+      "text": "Can you fill me in later?",
+      "gloss": "¿Me pones al día luego?",
+      "highlight": {
+        "fill": "yellow"
+      },
+      "narration": "Y fíjate en esta: [[Can you fill me in later?]] ¿Me pones al día luego? [[Fill]] in aquí no es rellenar un papel: es rellenarme a mí de información."
+    },
+    {
+      "id": "b13",
+      "type": "heading",
+      "text": "Parte 4 · Dónde va el complemento",
+      "narration": "Y ahora el detalle de gramática que te delata. Porque algunos phrasal verbs se pueden partir por la mitad, y otros no."
+    },
+    {
+      "id": "b14",
+      "type": "sentence",
+      "text": "I called off the meeting.",
+      "gloss": "Cancelé la reunión.",
+      "highlight": {
+        "off": "blue"
+      },
+      "narration": "Puedes decir [[I called off the meeting]], todo seguido. O puedes partirlo: [[I called the meeting off]]. Las dos están perfectas."
+    },
+    {
+      "id": "b15",
+      "type": "sentence",
+      "text": "I called it off.",
+      "gloss": "La cancelé.",
+      "highlight": {
+        "it": "red"
+      },
+      "narration": "Pero en cuanto usas un pronombre, se acabó la libertad. Sólo vale [[I called it off]]. Ese [[it]] tiene que ir en medio, siempre."
+    },
+    {
+      "id": "b16",
+      "type": "tip",
+      "text": "Con it, them o him, el pronombre va SIEMPRE en medio: call it off, nunca call off it.",
+      "narration": "Grábate esto: con [[it]], [[them]] o [[him]], el pronombre va siempre en medio. Se dice [[call it off]], nunca [[call off it]]. Este error se oye a kilómetros."
+    },
+    {
+      "id": "b17",
+      "type": "sentence",
+      "text": "Please look into it today.",
+      "gloss": "Míralo hoy, por favor.",
+      "highlight": {
+        "into": "green"
+      },
+      "narration": "Y hay otros que no se parten nunca: [[Please look into it today]]. Investígalo hoy. [[Look into]] va siempre pegado, aunque haya un pronombre."
+    },
+    {
+      "id": "b18",
+      "type": "heading",
+      "text": "Parte 5 · Los de la gente",
+      "narration": "Vamos con los últimos cuatro, los que hablan de personas: quién entra, quién sale y quién se encarga de qué."
+    },
+    {
+      "id": "b19",
+      "type": "list",
+      "heading": "Personas y equipos",
+      "items": [
+        "Take over: hacerse cargo de algo",
+        "Take on: aceptar trabajo o contratar",
+        "Step in: entrar a ayudar o a arreglar",
+        "Back up: respaldar a alguien"
+      ],
+      "narration": "[[Take over]] es hacerse cargo. [[Take on]] es aceptar más trabajo, o contratar. [[Step in]] es entrar a ayudar. Y [[Back up]] es respaldar a alguien."
+    },
+    {
+      "id": "b20",
+      "type": "sentence",
+      "text": "She took over the project in May.",
+      "gloss": "Se hizo cargo del proyecto en mayo.",
+      "highlight": {
+        "took": "blue"
+      },
+      "narration": "[[She took over the project in May]]. Se hizo cargo del proyecto en mayo. Fíjate que el irregular se marca en el verbo: [[took]], no [[taked]]."
+    },
+    {
+      "id": "b21",
+      "type": "sentence",
+      "text": "Thanks for backing me up.",
+      "gloss": "Gracias por respaldarme.",
+      "highlight": {
+        "backing": "yellow"
+      },
+      "narration": "Y esta te va a hacer quedar muy bien: [[Thanks for backing me up]]. Gracias por respaldarme. Otra vez el pronombre en medio, porque [[me]] es pronombre."
+    },
+    {
+      "id": "b22",
+      "type": "heading",
+      "text": "Parte 6 · En una conversación real",
+      "narration": "Vamos a oírlos donde viven. Una conversación de lunes por la mañana entre dos compañeros. Cuenta cuántos salen."
+    },
+    {
+      "id": "b23",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "They called off the Friday meeting.",
+          "es": "Cancelaron la reunión del viernes."
+        },
+        {
+          "speaker": "B",
+          "en": "Again? Can you fill me in?",
+          "es": "¿Otra vez? ¿Me pones al día?"
+        },
+        {
+          "speaker": "A",
+          "en": "Sure. Ana is taking over the account.",
+          "es": "Claro. Ana se hace cargo de la cuenta."
+        },
+        {
+          "speaker": "B",
+          "en": "Good. I'll follow up with her today.",
+          "es": "Bien. Hablo con ella hoy."
+        }
+      ],
+      "narration": "[[They called off the Friday meeting]]. [[Again? Can you fill me in?]] [[Sure. Ana is taking over the account]]. [[Good. I'll follow up with her today]]."
+    },
+    {
+      "id": "b24",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Called off: cancelaron, con el objeto detrás",
+        "Fill me in: pronombre en medio, obligatorio",
+        "Taking over: se hace cargo",
+        "Follow up with her: dar seguimiento"
+      ],
+      "narration": "[[Called]] off: cancelaron, con el objeto detrás. [[Fill]] me in: pronombre en medio, obligatorio. [[Taking]] over: se hace cargo. Y [[Follow]] up with her: seguimiento."
+    },
+    {
+      "id": "b25",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
+      "narration": "Tu turno. Tres preguntas, y en la segunda fíjate bien en dónde cae el pronombre. Tres segundos cada una."
+    },
+    {
+      "id": "b26",
+      "type": "quiz",
+      "question": "We have to ___ the launch until June.",
+      "options": [
+        "put off",
+        "put on",
+        "put in"
+      ],
+      "answer": 0,
+      "narration": "Primera: [[We have to, blank, the launch until June]]. ¿[[put off]], [[put on]] o [[put in]]? Piénsalo. {{pause:3}} Es [[put off]]: aplazar hasta junio."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "The meeting? They ___ yesterday.",
+      "options": [
+        "called off it",
+        "called it off",
+        "called off"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[The meeting? They, blank, yesterday]]. ¿[[called off it]], [[called it off]] o [[called off]]? Piénsalo. {{pause:3}} Es [[called it off]]: el pronombre en medio."
+    },
+    {
+      "id": "b28",
+      "type": "quiz",
+      "question": "Can you ___ this complaint?",
+      "options": [
+        "look it into",
+        "look into",
+        "look on"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[Can you, blank, this complaint?]] ¿[[look it into]], [[look into]] o [[look on]]? Piénsalo. {{pause:3}} Es [[look into]]: este nunca se parte."
+    },
+    {
+      "id": "b29",
+      "type": "heading",
+      "text": "Parte 8 · Resumen",
+      "narration": "Cerramos. Cuatro ideas, y si te llevas los doce phrasal verbs de hoy ya entiendes casi cualquier reunión."
+    },
+    {
+      "id": "b30",
+      "type": "recap",
+      "items": [
+        "Un phrasal verb es una palabra nueva, no dos",
+        "Call off cancelar, put off aplazar, go over repasar",
+        "Follow up seguimiento, fill in poner al día",
+        "Con it o me, el pronombre va siempre en medio"
+      ],
+      "narration": "[[Un]] phrasal verb es una palabra nueva. [[Call]] off cancelar, put off aplazar, go over repasar. [[Follow]] up seguimiento, fill in poner al día. Y [[con]] it o me, el pronombre va en medio."
+    },
+    {
+      "id": "b31",
+      "type": "sentence",
+      "text": "Let's go over this again tomorrow.",
+      "gloss": "Repasemos esto otra vez mañana.",
+      "narration": "Y me despido con uno de ellos: [[Let's go over this again tomorrow]]. Repasemos esto mañana. Porque estos se aprenden repitiéndolos. Nos vemos."
+    }
+  ]
+}

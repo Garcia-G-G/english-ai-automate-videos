@@ -1,0 +1,340 @@
+{
+  "id": "pronunciacion-ed",
+  "title": "La terminación -ed: tres sonidos, una letra",
+  "kicker": "Inglés · Pronunciación · A2–B1",
+  "level": "A2-B1",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy la terminación del pasado. Se escribe siempre igual, pero se pronuncia de tres maneras distintas. Y elegir mal es lo que hace que un pasado perfecto suene a principiante."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El error que se oye",
+      "narration": "Este error no se ve al escribir: sólo se oye. Por eso mucha gente lo arrastra años sin que nadie se lo corrija."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "I worked all day.",
+      "gloss": "Trabajé todo el día.",
+      "narration": "Mira esta frase: [[I worked all day]]. Casi todos leemos el final como si fuera una sílaba nueva y decimos uorked. Y no es así."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "highlight": {
+        "worked": "red"
+      },
+      "tags": {
+        "worked": "una sílaba"
+      },
+      "narration": "[[Worked]] es una sola sílaba. No dos. El final suena como una te seca, pegada: uorkt. Si añades una sílaba, la palabra deja de sonar a inglés."
+    },
+    {
+      "id": "b05",
+      "type": "tip",
+      "text": "La terminación del pasado casi nunca añade una sílaba. Sólo la añade después de t o d.",
+      "narration": "Y esa es la idea central: la terminación del pasado casi nunca añade una sílaba. Sólo la añade en un caso muy concreto, y ahora lo vemos."
+    },
+    {
+      "id": "b06",
+      "type": "heading",
+      "text": "Parte 2 · Los tres sonidos",
+      "narration": "Hay exactamente tres posibilidades. Ni una más. Y cuál te toca no lo decides tú: lo decide el sonido que hay justo antes."
+    },
+    {
+      "id": "b07",
+      "type": "table",
+      "headers": [
+        "Suena",
+        "Ejemplo"
+      ],
+      "rows": [
+        [
+          "como t",
+          "worked, stopped"
+        ],
+        [
+          "como d",
+          "played, lived"
+        ],
+        [
+          "como id",
+          "wanted, needed"
+        ]
+      ],
+      "emphasis": [
+        "como id"
+      ],
+      "narration": "Mira la tabla. [[Como t]]: [[worked, stopped]]. [[Como d]]: [[played, lived]]. Y [[como id]], que es el único que añade sílaba: [[wanted, needed]]."
+    },
+    {
+      "id": "b08",
+      "type": "heading",
+      "text": "Parte 3 · Cuándo suena como t",
+      "narration": "Empecemos por el primero. Suena como una te cuando el sonido de antes es sordo, es decir, cuando no vibra la garganta."
+    },
+    {
+      "id": "b09",
+      "type": "list",
+      "heading": "Antes de estos sonidos suena t",
+      "items": [
+        "Después de p: stopped, helped",
+        "Después de k: worked, looked",
+        "Después de f: laughed",
+        "Después de s o sh: missed, washed"
+      ],
+      "narration": "[[Después]] de p: [[stopped, helped]]. [[Después]] de k: [[worked, looked]]. [[Después]] de f: [[laughed]]. Y [[Después]] de s o sh: [[missed, washed]]."
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "text": "She stopped and looked.",
+      "gloss": "Paró y miró.",
+      "highlight": {
+        "stopped": "blue",
+        "looked": "blue"
+      },
+      "narration": "[[She stopped and looked]]. Paró y miró. Escucha que las dos acaban en te seca: stopt, lukt. Y las dos son de una sola sílaba."
+    },
+    {
+      "id": "b11",
+      "type": "tip",
+      "text": "Truco: pon la mano en la garganta. Si no vibra antes del final, suena t.",
+      "narration": "Un truco físico que funciona: ponte la mano en la garganta y di el sonido de antes. Si no vibra, la terminación suena como te."
+    },
+    {
+      "id": "b12",
+      "type": "heading",
+      "text": "Parte 4 · Cuándo suena como d",
+      "narration": "El segundo caso es el contrario: cuando el sonido de antes sí vibra. Y este es el grupo más grande con diferencia."
+    },
+    {
+      "id": "b13",
+      "type": "list",
+      "heading": "Antes de estos sonidos suena d",
+      "items": [
+        "Después de vocal: played, tried",
+        "Después de l o r: called, answered",
+        "Después de n o m: opened, seemed",
+        "Después de b, g o v: robbed, lived"
+      ],
+      "narration": "[[Después]] de vocal: [[played, tried]]. [[Después]] de l o r: [[called, answered]]. [[Después]] de n o m: [[opened, seemed]]. Y [[Después]] de b, g o v: [[robbed, lived]]."
+    },
+    {
+      "id": "b14",
+      "type": "sentence",
+      "text": "I called and she answered.",
+      "gloss": "Llamé y ella contestó.",
+      "highlight": {
+        "called": "green",
+        "answered": "green"
+      },
+      "narration": "[[I called and she answered]]. Llamé y contestó. Suenan cold y ánserd. Otra vez sin sílaba extra: la de se pega al final y ya está."
+    },
+    {
+      "id": "b15",
+      "type": "heading",
+      "text": "Parte 5 · El único que añade sílaba",
+      "narration": "Y ahora el tercero, que es el fácil de recordar porque sólo pasa con dos letras. Sólo dos."
+    },
+    {
+      "id": "b16",
+      "type": "sentence",
+      "text": "I wanted to visit.",
+      "gloss": "Quería visitar.",
+      "highlight": {
+        "wanted": "yellow"
+      },
+      "narration": "[[I wanted to visit]]. Quería visitar. Aquí sí: [[wanted]] tiene dos sílaba, uán-tid. Porque el verbo [[want]] ya acaba en te."
+    },
+    {
+      "id": "b17",
+      "type": "list",
+      "heading": "Sólo aquí se añade sílaba",
+      "items": [
+        "Verbos que acaban en t: wanted, started, visited",
+        "Verbos que acaban en d: needed, decided, ended",
+        "Ningún otro caso añade sílaba"
+      ],
+      "narration": "[[Verbos]] que acaban en t: [[wanted, started, visited]]. [[Verbos]] que acaban en d: [[needed, decided, ended]]. Y [[Ningún]] otro caso añade sílaba."
+    },
+    {
+      "id": "b18",
+      "type": "tip",
+      "text": "La lógica es física: después de t o d no puedes pegar otra t o d. Hace falta una vocal.",
+      "narration": "Y tiene una lógica física preciosa: después de una te no puedes pegar otra te. La boca no puede. Así que se cuela una vocal en medio para separarlas."
+    },
+    {
+      "id": "b19",
+      "type": "sentence",
+      "text": "We needed it and we decided.",
+      "gloss": "Lo necesitábamos y decidimos.",
+      "highlight": {
+        "needed": "yellow",
+        "decided": "yellow"
+      },
+      "narration": "[[We needed it and we decided]]. Nídid y disáidid. Las dos con sílaba de más, porque [[need]] acaba en de y [[decide]] también."
+    },
+    {
+      "id": "b20",
+      "type": "heading",
+      "text": "Parte 6 · Las palabras trampa",
+      "narration": "Antes de practicar, tres palabras que rompen la intuición porque lo que manda es el sonido, no la letra escrita."
+    },
+    {
+      "id": "b21",
+      "type": "table",
+      "headers": [
+        "Palabra",
+        "Suena"
+      ],
+      "rows": [
+        [
+          "laughed",
+          "laft, como t"
+        ],
+        [
+          "played",
+          "pleid, como d"
+        ],
+        [
+          "watched",
+          "uocht, como t"
+        ]
+      ],
+      "narration": "Fíjate. [[Laughed]] suena laft, como te, aunque acabe en ge hache. [[Played]] suena pleid, como de. Y [[watched]] suena uocht, como te, aunque tenga una te dentro."
+    },
+    {
+      "id": "b22",
+      "type": "tip",
+      "text": "Watched lleva t escrita pero no añade sílaba: lo que cuenta es el sonido ch, no la letra.",
+      "narration": "Esa última engaña a todo el mundo: [[watched]] tiene una te escrita, pero el sonido de antes es ch. Y ch es sordo, así que suena como te y no añade sílaba."
+    },
+    {
+      "id": "b23",
+      "type": "heading",
+      "text": "Parte 7 · En una conversación real",
+      "narration": "Vamos a oír los tres sonidos mezclados, que es como aparecen de verdad. Alguien contando lo que hizo ayer."
+    },
+    {
+      "id": "b24",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "What happened yesterday?",
+          "es": "¿Qué pasó ayer?"
+        },
+        {
+          "speaker": "B",
+          "en": "I worked late and I needed a break.",
+          "es": "Trabajé hasta tarde y necesitaba un descanso."
+        },
+        {
+          "speaker": "A",
+          "en": "So you stopped and called someone?",
+          "es": "¿Entonces paraste y llamaste a alguien?"
+        },
+        {
+          "speaker": "B",
+          "en": "I decided to walk and I watched the sunset.",
+          "es": "Decidí caminar y vi el atardecer."
+        }
+      ],
+      "narration": "[[What happened yesterday?]] [[I worked late and I needed a break]]. [[So you stopped and called someone?]] [[I decided to walk and I watched the sunset]]."
+    },
+    {
+      "id": "b25",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Happened y called: suenan como d",
+        "Worked, stopped y watched: suenan como t",
+        "Needed y decided: sílaba extra",
+        "Tres sonidos en cuatro frases"
+      ],
+      "narration": "[[Happened]] y called: suenan como de. [[Worked]], stopped y watched: suenan como te. [[Needed]] y decided: sílaba extra. Y [[Tres]] sonidos distintos en cuatro frases."
+    },
+    {
+      "id": "b26",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
+      "narration": "Tu turno. Tres preguntas. Di cada palabra en voz alta antes de responder; el oído acierta más que la cabeza."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "¿Cómo suena el final de «finished»?",
+      "options": [
+        "como t",
+        "como d",
+        "como id"
+      ],
+      "answer": 0,
+      "narration": "Primera: ¿cómo suena el final de [[finished]]? ¿[[como t]], [[como d]] o [[como id]]? Piénsalo. {{pause:3}} Es [[como t]]: sh es sordo, así que fínisht."
+    },
+    {
+      "id": "b28",
+      "type": "quiz",
+      "question": "¿Cómo suena el final de «started»?",
+      "options": [
+        "como t",
+        "como d",
+        "como id"
+      ],
+      "answer": 2,
+      "narration": "Segunda: ¿y el final de [[started]]? ¿[[como t]], [[como d]] o [[como id]]? Piénsalo. {{pause:3}} Es [[como id]]: [[start]] acaba en te, así que stártid."
+    },
+    {
+      "id": "b29",
+      "type": "quiz",
+      "question": "¿Cómo suena el final de «listened»?",
+      "options": [
+        "como id",
+        "como d",
+        "como t"
+      ],
+      "answer": 1,
+      "narration": "Tercera: ¿y [[listened]]? ¿[[como id]], [[como d]] o [[como t]]? Piénsalo. {{pause:3}} Es [[como d]]: acaba en ene, que vibra. Lísend, sin sílaba extra."
+    },
+    {
+      "id": "b30",
+      "type": "heading",
+      "text": "Parte 9 · Resumen",
+      "narration": "Cerramos. Cuatro ideas, y con la última sola ya aciertas el noventa por ciento de las veces."
+    },
+    {
+      "id": "b31",
+      "type": "recap",
+      "items": [
+        "Casi nunca se añade una sílaba",
+        "Si antes no vibra, suena como t",
+        "Si antes vibra, suena como d",
+        "Sólo después de t o d se añade sílaba"
+      ],
+      "narration": "[[Casi]] nunca se añade una sílaba. [[Si]] antes no vibra, suena como te. [[Si]] antes vibra, suena como de. Y [[Sólo]] después de te o de se añade sílaba."
+    },
+    {
+      "id": "b32",
+      "type": "sentence",
+      "text": "You finished, you learned, you needed it.",
+      "gloss": "Terminaste, aprendiste, lo necesitabas.",
+      "narration": "Y me despido con los tres seguidos: [[You finished, you learned, you needed it]]. Te, de e id, en ese orden. Dilos en voz alta. Nos vemos."
+    }
+  ]
+}
