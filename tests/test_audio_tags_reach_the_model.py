@@ -153,14 +153,21 @@ def test_a_real_quiz_hands_its_tags_to_the_api(tmp_path, monkeypatch, beep):
     tagged = [s for s in sent if "[" in (s or "")]
     assert tagged, "not one tag reached the API — this is the original defect"
 
-    # one per item's question and one per item's explanation
-    questions = [s for s in tagged if "[curious]" in s]
-    assert len(questions) == 3, f"expected all three questions tagged: {questions}"
+    # THE SCRIPT'S OWN QUESTIONS, identified by their words rather than by
+    # their tag. Counting "[curious]" was a proxy that broke the moment the
+    # narrator's own pooled lines (narration_phrases) started carrying tags
+    # of their own -- the proxy counted those too.
+    items = [script] + list((script.get("questions") or [])[1:])
+    assert len(items) == 3, "fixture changed: expected a three-item script"
 
-    # and the blanks in them are pauses, not holes
-    for spoken in questions:
-        assert "..." in spoken
-        assert "___" not in spoken
+    for item in items:
+        stem = item["question"].split("___")[0].split("]", 1)[-1].strip()
+        spoken = [s for s in sent if stem and stem in s]
+        assert spoken, f"this question never reached the API: {item['question']!r}"
+        for line in spoken:
+            assert line.startswith("["), f"question lost its tag: {line!r}"
+            # and the blank in it is a pause, not a hole
+            assert "..." in line and "___" not in line
 
     # every tag handed over is one the model knows
     for spoken in tagged:
