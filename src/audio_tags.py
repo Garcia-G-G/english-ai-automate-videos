@@ -80,3 +80,59 @@ def unknown_tags(text: str) -> list:
         if name not in TAGS:
             found.append(match)
     return found
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# WHICH MODEL HONOURS A TAG
+#
+# A tag is a direction only to a model trained to read it as one. To every
+# other model it is text, and text gets SPOKEN: "corchete excited corchete"
+# in the middle of a lesson. So the question is never "is this a tag" but
+# "is this going to a model that understands tags", and the answer belongs
+# here rather than at fourteen call sites.
+#
+# eleven_v3            interprets them. quiz, true_false, fill_blank and
+#                      vocabulary go through tts_elevenlabs with MODEL_ID.
+# eleven_turbo_v2_5    does NOT. educational and pronunciation need
+# eleven_flash_v2_5    language_code, which v3 does not accept, so
+#                      tts_bilingual uses turbo. Emotion for those two needs
+#                      a different lever -- voice_settings.style, or wording.
+# openai / google /    not ElevenLabs at all.
+# edge
+# ─────────────────────────────────────────────────────────────────────────
+
+#: Models that read a bracketed tag as a direction rather than as words.
+TAG_AWARE_MODELS = frozenset({"eleven_v3"})
+
+
+def honours_tags(model_id: str) -> bool:
+    """Whether `model_id` reads a tag as a direction instead of speaking it.
+
+    Gated on the MODEL, not on the video type. MODEL_ID is env-overridable
+    (VIDEO_PROFILE_TTS_MODEL / ELEVENLABS_MODEL), so a type-based gate would
+    keep sending tags to whatever the override points at — and the failure
+    is audible in every video, not a crash.
+    """
+    return (model_id or "").strip().lower() in TAG_AWARE_MODELS
+
+
+def keep_known_tags(text: str) -> str:
+    """Remove every bracketed run EXCEPT a tag the model actually knows.
+
+    Not the same as leaving brackets alone. The corpus carries 9 tag-SHAPED
+    strings that are not tags — "[name]", "[company]", "[department name]" —
+    placeholders a writer left in the sentence. v3 does not know them, so it
+    falls back to speaking them, which is the one outcome worse than
+    dropping them. unknown_tags() reports them as the write-time defect they
+    are; this keeps them out of the audio meanwhile.
+    """
+    if not text or "[" not in text:
+        return text
+
+    def _decide(match):
+        name = match.group(0)[1:-1].strip().lower()
+        return match.group(0) if name in TAGS else ""
+
+    # The broad pattern, so a bracketed run that is not even tag-shaped
+    # ("[1]", "[ver nota]") is removed exactly as it was before.
+    return re.sub(r"\s{2,}", " ", re.sub(r"\[.*?\]", _decide, text)).strip()
