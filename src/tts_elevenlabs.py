@@ -478,6 +478,7 @@ def generate_segment_audio(
 def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
                        stability, similarity_boost, english_words,
                        add_audio, add_silence, add_segment, seg_ids,
+                       transition_id='transition',
                        label_text=lambda lab: f"Opción {lab},"):
     """Speak an options block as one TTS call PER PART, measuring every clip.
 
@@ -529,7 +530,10 @@ def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
     )
     _trim(trans_path)
     t_start, _t_end, _d, t_end_speech = add_audio(trans_path)
-    add_segment('transition', transition_text, t_start, t_end_speech)
+    # NOT the literal 'transition'. A multi-item quiz calls this once per
+    # item, and a hardcoded id meant items 2 and 3 silently overwrote item
+    # 1's entry in the flat segment_times dict -- one key, three writers.
+    add_segment(transition_id, transition_text, t_start, t_end_speech)
     add_silence(PAUSE_BETWEEN_OPTIONS)
 
     for i, (lab, word) in enumerate(zip(labels, words)):
@@ -664,154 +668,203 @@ def generate_quiz_audio_segmented(
         logger.info("Global speed: %.2f", GLOBAL_SPEED)
         logger.info("English words: %s", english_words)
 
-        # ============================================================
-        # 1. QUESTION
-        # ============================================================
-        logger.info("[1] QUESTION")
-        q_path = os.path.join(temp_dir, "question.mp3")
-        generate_segment_audio(
-            text=question,
-            output_path=q_path,
-            voice_id=voice_id,
-            stability=stability,
-            similarity_boost=similarity_boost,
-            segment_type='question',
-            english_words=english_words,
-        )
-        q_start, q_end, _, q_end_speech = add_audio(q_path)
-        add_segment('question', question, q_start, q_end_speech)
-        add_silence(PAUSE_AFTER_QUESTION)
+        def emit_item(item: dict, prefix: str):
+            """Every segment for ONE quiz item, ids carrying `prefix`.
 
-        # ============================================================
-        # 2-3. TRANSITION + OPTIONS — one TTS call per part, every
-        #      boundary MEASURED
-        # ============================================================
-        #
-        # This used to be a single TTS call carrying the transition line and
-        # all four options, whose boundaries were then invented:
-        #
-        #     transition_duration = 1.5              # a guess at "Escucha
-        #                                            #  las opciones."
-        #     per_option = options_duration / 4      # assumes four equal
-        #                                            #  options
-        #
-        # Both are wrong, and the QA gate measured how wrong. On
-        # quiz/cool_20260416_084217 every NON-option boundary in the same file
-        # landed within 0.12 s of the waveform, while the four option starts
-        # drifted +0.51, -0.70, -0.56, -0.50 s — so option cards B, C and D
-        # appeared roughly half a second after the voice had already spoken
-        # them. Options are not equal length; "fábrica" and "textura" do not
-        # take the same time to say.
-        #
-        # The fix is not better arithmetic, it is measurement. Every other
-        # segment in this function already does it correctly — `think` calls
-        # add_audio() and records what it returns. Options now do the same.
-        #
-        # Splitting also resolves the 'afabric' defect. Letter and word are
-        # separate clips with spliced silence between them, so the model can
-        # no longer elide "Opción A, fábrica" into "Opción afábrica" — there
-        # is no single utterance for it to elide within.
-        logger.info("[2-3] OPTIONS (split: letter | silence | word)")
+            The body that used to sit inline when a quiz was one question,
+            unchanged apart from the prefix and per-item temp paths. Item 1
+            passes prefix="" and produces exactly the ids it always did.
 
-        emit_split_options(
-            labels=['A', 'B', 'C', 'D'],
-            words=[options.get(L, '').strip("'\"") for L in ['A', 'B', 'C', 'D']],
-            transition_text="Escucha las opciones.",
-            temp_dir=temp_dir, voice_id=voice_id,
-            stability=stability, similarity_boost=similarity_boost,
-            english_words=english_words,
-            add_audio=add_audio, add_silence=add_silence, add_segment=add_segment,
-            seg_ids=['option_a', 'option_b', 'option_c', 'option_d'],
-        )
+            `english_words` stays SCRIPT-level on purpose:
+            extract_english_words_from_script reads `english_phrases`, which
+            is a root-level field describing the whole script, and a
+            QuizItem does not carry one. Recomputing it per item would hand
+            items 2..n an empty list and lose every pronunciation hint.
+            """
+            question = clean_for_tts(item.get('question', ''))
+            options = item.get('options', {}) or {}
+            correct = item.get('correct', 'A')
+            explanation = clean_for_tts(item.get('explanation', '') or '')
+            correct_text = clean_for_tts(options.get(correct, '').strip("'\""))
 
-        add_silence(PAUSE_AFTER_OPTION)
+            item_temp_dir = os.path.join(temp_dir, prefix or "i1_")
+            os.makedirs(item_temp_dir, exist_ok=True)
 
-        # ============================================================
-        # 4. THINK (always generated dynamically for voice consistency)
-        # ============================================================
-        logger.info("[4] THINK")
-        think_gen_path = os.path.join(temp_dir, "think.mp3")
-        generate_segment_audio(
-            "¡Piensa bien!", think_gen_path, voice_id,
-            segment_type='think',
-        )
-        think_start, think_end, _, think_end_speech = add_audio(think_gen_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
-        add_silence(PAUSE_AFTER_THINK)
-
-        # ============================================================
-        # 5. COUNTDOWN (VISUAL ONLY - audio is silent)
-        # The countdown numbers appear on screen during this silence.
-        # Total silence: ~7s (1.5s pre + 3 x 1.5s intervals + 1.0s before answer)
-        # ============================================================
-        logger.info("[5] COUNTDOWN (visual only, audio silence)")
-        countdown_interval = 1.5  # 1.5 seconds per number for full visual display
-        for num in ['3', '2', '1']:
-            cd_start = running_time
-            add_silence(countdown_interval)
-            cd_end = running_time
-            add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
-            logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
-
-        # Dramatic pause before answer reveal - ensures "1" fully displays
-        add_silence(1.0)
-
-        # ============================================================
-        # 6. ANSWER (with emphasis and natural delivery)
-        # ============================================================
-        logger.info("[6] ANSWER")
-        answer_start = running_time
-        full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
-        logger.debug("Answer: '%s'", full_answer_text)
-
-        ans_path = os.path.join(temp_dir, "answer.mp3")
-        generate_segment_audio(
-            full_answer_text, ans_path, voice_id,
-            segment_type='answer',
-            english_words=english_words,
-        )
-        _, _, _, answer_end_speech = add_audio(ans_path)
-
-        add_segment('answer', full_answer_text, answer_start, answer_end_speech)
-
-        # REPEAT THE CORRECT ENGLISH, with a real pause first.
-        #
-        # The reveal is the one moment the learner knows which phrase is
-        # worth remembering, so it is the one moment repeating it teaches
-        # something. Declared as its own speech segment with spliced
-        # silence before it — not a longer countdown, not dead air.
-        for take in range(2, _takes('quiz') + 1):
-            add_silence(_repeat_pause())
-            rep_text = f"{correct_text}."
-            rep_path = os.path.join(temp_dir, f"answer_take{take}.mp3")
+            # ============================================================
+            # 1. QUESTION
+            # ============================================================
+            logger.info("[1] QUESTION")
+            q_path = os.path.join(temp_dir, prefix + "question.mp3")
             generate_segment_audio(
-                rep_text, rep_path, voice_id,
-                segment_type='answer',
-                english_words=english_words,
-            )
-            rep_start, _, _, rep_end_speech = add_audio(rep_path)
-            add_segment(f'repeat_answer_take{take}', rep_text,
-                        rep_start, rep_end_speech)
-        add_silence(PAUSE_AFTER_ANSWER)
-
-        # ============================================================
-        # 7. EXPLANATION (conversational, warm delivery)
-        # ============================================================
-        if explanation.strip():
-            logger.info("[7] EXPLANATION")
-            exp_path = os.path.join(temp_dir, "explanation.mp3")
-            generate_segment_audio(
-                text=explanation,
-                output_path=exp_path,
+                text=question,
+                output_path=q_path,
                 voice_id=voice_id,
                 stability=stability,
                 similarity_boost=similarity_boost,
-                segment_type='explanation',
+                segment_type='question',
                 english_words=english_words,
             )
-            exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
-            add_segment('explanation', explanation, exp_start, exp_end_speech)
-            add_silence(PAUSE_AFTER_EXPLANATION)
+            q_start, q_end, _, q_end_speech = add_audio(q_path)
+            add_segment(prefix + 'question', question, q_start, q_end_speech)
+            add_silence(PAUSE_AFTER_QUESTION)
+
+            # ============================================================
+            # 2-3. TRANSITION + OPTIONS — one TTS call per part, every
+            #      boundary MEASURED
+            # ============================================================
+            #
+            # This used to be a single TTS call carrying the transition line and
+            # all four options, whose boundaries were then invented:
+            #
+            #     transition_duration = 1.5              # a guess at "Escucha
+            #                                            #  las opciones."
+            #     per_option = options_duration / 4      # assumes four equal
+            #                                            #  options
+            #
+            # Both are wrong, and the QA gate measured how wrong. On
+            # quiz/cool_20260416_084217 every NON-option boundary in the same file
+            # landed within 0.12 s of the waveform, while the four option starts
+            # drifted +0.51, -0.70, -0.56, -0.50 s — so option cards B, C and D
+            # appeared roughly half a second after the voice had already spoken
+            # them. Options are not equal length; "fábrica" and "textura" do not
+            # take the same time to say.
+            #
+            # The fix is not better arithmetic, it is measurement. Every other
+            # segment in this function already does it correctly — `think` calls
+            # add_audio() and records what it returns. Options now do the same.
+            #
+            # Splitting also resolves the 'afabric' defect. Letter and word are
+            # separate clips with spliced silence between them, so the model can
+            # no longer elide "Opción A, fábrica" into "Opción afábrica" — there
+            # is no single utterance for it to elide within.
+            logger.info("[2-3] OPTIONS (split: letter | silence | word)")
+
+            emit_split_options(
+                labels=['A', 'B', 'C', 'D'],
+                words=[options.get(L, '').strip("'\"") for L in ['A', 'B', 'C', 'D']],
+                transition_text="Escucha las opciones.",
+                temp_dir=item_temp_dir, voice_id=voice_id,
+                stability=stability, similarity_boost=similarity_boost,
+                english_words=english_words,
+                add_audio=add_audio, add_silence=add_silence, add_segment=add_segment,
+                seg_ids=[prefix + s for s in ('option_a', 'option_b',
+                                              'option_c', 'option_d')],
+                transition_id=prefix + 'transition',
+            )
+
+            add_silence(PAUSE_AFTER_OPTION)
+
+            # ============================================================
+            # 4. THINK (always generated dynamically for voice consistency)
+            # ============================================================
+            logger.info("[4] THINK")
+            think_gen_path = os.path.join(temp_dir, prefix + "think.mp3")
+            generate_segment_audio(
+                "¡Piensa bien!", think_gen_path, voice_id,
+                segment_type='think',
+            )
+            think_start, think_end, _, think_end_speech = add_audio(think_gen_path)
+            add_segment(prefix + 'think', '¡Piensa bien!', think_start, think_end_speech)
+            add_silence(PAUSE_AFTER_THINK)
+
+            # ============================================================
+            # 5. COUNTDOWN (VISUAL ONLY - audio is silent)
+            # The countdown numbers appear on screen during this silence.
+            # Total silence: ~7s (1.5s pre + 3 x 1.5s intervals + 1.0s before answer)
+            # ============================================================
+            logger.info("[5] COUNTDOWN (visual only, audio silence)")
+            countdown_interval = 1.5  # 1.5 seconds per number for full visual display
+            for num in ['3', '2', '1']:
+                cd_start = running_time
+                add_silence(countdown_interval)
+                cd_end = running_time
+                add_segment(f'{prefix}countdown_{num}', f'[{num}]', cd_start, cd_end)
+                logger.info("  [%scountdown_%s] %.2fs - %.2fs (silent)", prefix, num, cd_start, cd_end)
+
+            # Dramatic pause before answer reveal - ensures "1" fully displays
+            add_silence(1.0)
+
+            # ============================================================
+            # 6. ANSWER (with emphasis and natural delivery)
+            # ============================================================
+            logger.info("[6] ANSWER")
+            answer_start = running_time
+            full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
+            logger.debug("Answer: '%s'", full_answer_text)
+
+            ans_path = os.path.join(temp_dir, prefix + "answer.mp3")
+            generate_segment_audio(
+                full_answer_text, ans_path, voice_id,
+                segment_type='answer',
+                english_words=english_words,
+            )
+            _, _, _, answer_end_speech = add_audio(ans_path)
+
+            add_segment(prefix + 'answer', full_answer_text, answer_start, answer_end_speech)
+
+            # REPEAT THE CORRECT ENGLISH, with a real pause first.
+            #
+            # The reveal is the one moment the learner knows which phrase is
+            # worth remembering, so it is the one moment repeating it teaches
+            # something. Declared as its own speech segment with spliced
+            # silence before it — not a longer countdown, not dead air.
+            for take in range(2, _takes('quiz') + 1):
+                add_silence(_repeat_pause())
+                rep_text = f"{correct_text}."
+                rep_path = os.path.join(temp_dir, f"{prefix}answer_take{take}.mp3")
+                generate_segment_audio(
+                    rep_text, rep_path, voice_id,
+                    segment_type='answer',
+                    english_words=english_words,
+                )
+                rep_start, _, _, rep_end_speech = add_audio(rep_path)
+                add_segment(f'{prefix}repeat_answer_take{take}', rep_text,
+                            rep_start, rep_end_speech)
+            add_silence(PAUSE_AFTER_ANSWER)
+
+            # ============================================================
+            # 7. EXPLANATION (conversational, warm delivery)
+            # ============================================================
+            if explanation.strip():
+                logger.info("[7] EXPLANATION")
+                exp_path = os.path.join(temp_dir, prefix + "explanation.mp3")
+                generate_segment_audio(
+                    text=explanation,
+                    output_path=exp_path,
+                    voice_id=voice_id,
+                    stability=stability,
+                    similarity_boost=similarity_boost,
+                    segment_type='explanation',
+                    english_words=english_words,
+                )
+                exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
+                add_segment(prefix + 'explanation', explanation, exp_start, exp_end_speech)
+                add_silence(PAUSE_AFTER_EXPLANATION)
+
+        # ============================================================
+        # THE ITEMS. `questions` has been DEAD PAYLOAD since the schema was
+        # written: the prompt demands three, GPT writes three, they are paid
+        # for, and only the root-level one was ever spoken or drawn.
+        #
+        # questions[0] MIRRORS the root fields — QuizScript.lint() rejects a
+        # script where it does not — so the root is item 1 and questions[1:]
+        # supplies the rest.
+        #
+        # PREFIXED IDS, NOT A LIST: add_segment takes a flat string id and
+        # segment_times is a flat dict everywhere it is written, stored and
+        # read. Item 1 keeps its BARE names, so every audio json already on
+        # disk stays valid and the `{'option_a','answer'}` probe in
+        # resolve_quiz_timestamps still passes.
+        # ============================================================
+        authored = script.get('questions') or []
+        items = [script] + list(authored[1:])
+        logger.info("QUIZ: %d item(s)", len(items))
+
+        for _index, _item in enumerate(items, 1):
+            if _index > 1:
+                add_silence(PAUSE_AFTER_EXPLANATION)
+            emit_item(_item, "" if _index == 1 else f"i{_index}_")
+
 
         total_duration = running_time
         logger.info("=" * 60)
@@ -867,6 +920,10 @@ def generate_quiz_audio_segmented(
             'options': options,
             'correct': correct,
             'explanation': explanation,
+            # WITHOUT THIS the prefixed segments above are unreachable:
+            # quiz_item_views reads `questions` for items 2..n, and this
+            # dict — not the source script — is the json the renderer loads.
+            'questions': script.get('questions') or [],
             'full_script': script.get('full_script', ''),
             'translations': script.get('translations', {}),
             'hashtags': script.get('hashtags', []),

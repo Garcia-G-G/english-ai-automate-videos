@@ -755,147 +755,194 @@ def generate_quiz_audio_segmented(
             logger.debug("    %.2fs - %.2fs (%.2fs)", start, end, end-start)
             return segment
 
-        # ============================================================
-        # 1. QUESTION (fresh TTS - variable content)
-        # ============================================================
-        logger.info("[1] QUESTION")
-        q_path = os.path.join(temp_dir, "question.mp3")
-        client = _get_openai_client()
-        _tts_with_retry(
-            client, q_path,
-            model="tts-1-hd", voice=voice, input=clean_question,
-            speed=SEGMENT_SPEEDS['question'], response_format="mp3",
-        )
-        q_start, q_end, _, q_end_speech = add_audio(q_path)
-        add_segment('question', clean_question, q_start, q_end_speech)
-        add_silence(PAUSE_AFTER_QUESTION)
+        def emit_item(item: dict, prefix: str):
+            """Every segment for ONE quiz item, ids carrying `prefix`.
+
+            This is the body that used to sit inline when a quiz was one
+            question, unchanged apart from the prefix and per-item temp file
+            names. Item 1 passes prefix="" and therefore produces exactly the
+            segment ids it always did, byte for byte.
+            """
+            question = str(item.get('question', '¿Pregunta?'))
+            options = item.get('options', {}) or {}
+            correct = item.get('correct', 'A')
+            clean_question = clean_for_tts(question.strip())
+            correct_text = clean_for_tts(options.get(correct, '').strip("'\""))
+            explanation = clean_for_tts(item.get('explanation', '') or '')
+
+            # ============================================================
+            # 1. QUESTION (fresh TTS - variable content)
+            # ============================================================
+            logger.info("[1] QUESTION")
+            q_path = os.path.join(temp_dir, prefix + "question.mp3")
+            client = _get_openai_client()
+            _tts_with_retry(
+                client, q_path,
+                model="tts-1-hd", voice=voice, input=clean_question,
+                speed=SEGMENT_SPEEDS['question'], response_format="mp3",
+            )
+            q_start, q_end, _, q_end_speech = add_audio(q_path)
+            add_segment(prefix + 'question', clean_question, q_start, q_end_speech)
+            add_silence(PAUSE_AFTER_QUESTION)
+
+            # ============================================================
+            # 2-3. TRANSITION + OPTIONS — one TTS call per part, every
+            #      boundary MEASURED
+            # ============================================================
+            # Was one combined call with invented boundaries — transition_duration
+            # = 1.5 and per_option = options_duration / 4. See the equivalent
+            # block in tts_elevenlabs.py for the measurements that condemned it:
+            # non-option boundaries within 0.12 s, option starts off by up to
+            # 0.70 s, and the letter elided into its word on 38 of 42 artifacts.
+            #
+            # The old comment here claimed short isolated words are unreliable.
+            # That is why each part keeps its own retry via _tts_with_retry rather
+            # than being merged back together.
+            logger.info("[3] OPTIONS (split: letter | silence | word)")
+
+            option_words = {}
+            for letter in ['A', 'B', 'C', 'D']:
+                option_words[letter] = options.get(letter, '').strip("'\"")
+
+            trans_path = os.path.join(temp_dir, prefix + "transition.mp3")
+            _tts_with_retry(
+                client, trans_path,
+                model="tts-1-hd", voice=voice, input="Escucha las opciones.",
+                speed=SEGMENT_SPEEDS['options'], response_format="mp3",
+            )
+            trans_start, trans_end, _, trans_end_speech = add_audio(trans_path)
+            add_segment(prefix + 'transition', 'Escucha las opciones.', trans_start, trans_end_speech)
+            add_silence(PAUSE_BETWEEN_OPTIONS)
+
+            for i, letter in enumerate(['A', 'B', 'C', 'D']):
+                word = option_words[letter]
+
+                letter_path = os.path.join(temp_dir, f"{prefix}option_{letter}_letter.mp3")
+                _tts_with_retry(
+                    client, letter_path,
+                    model="tts-1-hd", voice=voice, input=f"Opción {letter},",
+                    speed=SEGMENT_SPEEDS['options'], response_format="mp3",
+                )
+                letter_start, _le, _, le_speech = add_audio(letter_path)
+
+                add_silence(PAUSE_LETTER_TO_WORD)
+
+                word_path = os.path.join(temp_dir, f"{prefix}option_{letter}_word.mp3")
+                _tts_with_retry(
+                    client, word_path,
+                    model="tts-1-hd", voice=voice, input=f"{word}.",
+                    speed=SEGMENT_SPEEDS['options'], response_format="mp3",
+                )
+                _ws, word_end, _, word_end_speech = add_audio(word_path)
+
+                add_segment(f'{prefix}option_{letter.lower()}',
+                            f"Opción {letter}, {word}.", letter_start, word_end_speech)
+                logger.debug("  Option %s: %.2fs - %.2fs (measured)",
+                             letter, letter_start, word_end)
+
+                if i < 3:
+                    add_silence(PAUSE_BETWEEN_OPTIONS)
+
+            # Pause after all options
+            add_silence(PAUSE_AFTER_OPTION)
+
+            # ============================================================
+            # 4. THINK (pre-recorded)
+            # ============================================================
+            logger.info("[4] THINK")
+            think_path = str(SPANISH_DIR / "piensa_bien.mp3")
+            think_start, think_end, _, think_end_speech = add_audio(think_path)
+            add_segment(prefix + 'think', '¡Piensa bien!', think_start, think_end_speech)
+            add_silence(PAUSE_AFTER_THINK)
+
+            # ============================================================
+            # 5. COUNTDOWN (VISUAL ONLY - audio is silent)
+            # The countdown numbers appear on screen during this silence.
+            # Total silence: ~7s (1.5s pre + 3 x 1.5s intervals + 1.0s before answer)
+            # ============================================================
+            logger.info("[5] COUNTDOWN (visual only, audio silence)")
+            countdown_interval = 1.5  # 1.5 seconds per number for full visual display
+            for num in ['3', '2', '1']:
+                cd_start = running_time
+                add_silence(countdown_interval)
+                cd_end = running_time
+                add_segment(f'{prefix}countdown_{num}', f'[{num}]', cd_start, cd_end)
+                logger.info("  [%scountdown_%s] %.2fs - %.2fs (silent)", prefix, num, cd_start, cd_end)
+
+            # Dramatic pause before answer reveal - ensures "1" fully displays
+            add_silence(1.0)
+
+            # ============================================================
+            # 6. ANSWER
+            # Generate FULL answer text as one sentence (like explanation and options)
+            # NOT single word! Single word = TTS doesn't know it's Spanish
+            # ============================================================
+            logger.info("[6] ANSWER")
+            answer_start = running_time
+
+            # Generate COMPLETE answer as one full Spanish sentence
+            # This gives TTS full context to pronounce correctly
+            full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
+            logger.debug("  Answer: '%s'", full_answer_text)
+
+            ans_path = os.path.join(temp_dir, prefix + "answer.mp3")
+            _tts_with_retry(
+                client, ans_path,
+                model="tts-1-hd", voice=voice, input=full_answer_text,
+                speed=SEGMENT_SPEEDS['answer'], response_format="mp3",
+            )
+            _, _, _, answer_end_speech = add_audio(ans_path)
+
+            add_segment(prefix + 'answer', full_answer_text, answer_start, answer_end_speech)
+            add_silence(PAUSE_AFTER_ANSWER)
+
+            # ============================================================
+            # 7. EXPLANATION (fresh TTS - MUST COMPLETE FULLY)
+            # ============================================================
+            if explanation.strip():
+                logger.info("[7] EXPLANATION")
+                exp_path = os.path.join(temp_dir, prefix + "explanation.mp3")
+                _tts_with_retry(
+                    client, exp_path,
+                    model="tts-1-hd", voice=voice, input=explanation,
+                    speed=SEGMENT_SPEEDS['explanation'], response_format="mp3",
+                )
+                exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
+                add_segment(prefix + 'explanation', explanation, exp_start, exp_end_speech)
+                # Add breathing room after explanation
+                add_silence(PAUSE_AFTER_EXPLANATION)
+
 
         # ============================================================
-        # 2-3. TRANSITION + OPTIONS — one TTS call per part, every
-        #      boundary MEASURED
-        # ============================================================
-        # Was one combined call with invented boundaries — transition_duration
-        # = 1.5 and per_option = options_duration / 4. See the equivalent
-        # block in tts_elevenlabs.py for the measurements that condemned it:
-        # non-option boundaries within 0.12 s, option starts off by up to
-        # 0.70 s, and the letter elided into its word on 38 of 42 artifacts.
+        # THE ITEMS. `questions` has been DEAD PAYLOAD since the schema was
+        # written: the prompt demands three, GPT writes three, they are paid
+        # for, and only the root-level one was ever spoken or drawn.
         #
-        # The old comment here claimed short isolated words are unreliable.
-        # That is why each part keeps its own retry via _tts_with_retry rather
-        # than being merged back together.
-        logger.info("[3] OPTIONS (split: letter | silence | word)")
-
-        option_words = {}
-        for letter in ['A', 'B', 'C', 'D']:
-            option_words[letter] = options.get(letter, '').strip("'\"")
-
-        trans_path = os.path.join(temp_dir, "transition.mp3")
-        _tts_with_retry(
-            client, trans_path,
-            model="tts-1-hd", voice=voice, input="Escucha las opciones.",
-            speed=SEGMENT_SPEEDS['options'], response_format="mp3",
-        )
-        trans_start, trans_end, _, trans_end_speech = add_audio(trans_path)
-        add_segment('transition', 'Escucha las opciones.', trans_start, trans_end_speech)
-        add_silence(PAUSE_BETWEEN_OPTIONS)
-
-        for i, letter in enumerate(['A', 'B', 'C', 'D']):
-            word = option_words[letter]
-
-            letter_path = os.path.join(temp_dir, f"option_{letter}_letter.mp3")
-            _tts_with_retry(
-                client, letter_path,
-                model="tts-1-hd", voice=voice, input=f"Opción {letter},",
-                speed=SEGMENT_SPEEDS['options'], response_format="mp3",
-            )
-            letter_start, _le, _, le_speech = add_audio(letter_path)
-
-            add_silence(PAUSE_LETTER_TO_WORD)
-
-            word_path = os.path.join(temp_dir, f"option_{letter}_word.mp3")
-            _tts_with_retry(
-                client, word_path,
-                model="tts-1-hd", voice=voice, input=f"{word}.",
-                speed=SEGMENT_SPEEDS['options'], response_format="mp3",
-            )
-            _ws, word_end, _, word_end_speech = add_audio(word_path)
-
-            add_segment(f'option_{letter.lower()}',
-                        f"Opción {letter}, {word}.", letter_start, word_end_speech)
-            logger.debug("  Option %s: %.2fs - %.2fs (measured)",
-                         letter, letter_start, word_end)
-
-            if i < 3:
-                add_silence(PAUSE_BETWEEN_OPTIONS)
-
-        # Pause after all options
-        add_silence(PAUSE_AFTER_OPTION)
-
+        # questions[0] MIRRORS the root fields -- QuizScript.lint() rejects a
+        # script where it does not -- so the root is item 1 and questions[1:]
+        # supplies the rest. Reading questions[0] as well would say the first
+        # item twice.
+        #
+        # PREFIXED IDS, NOT A LIST. add_segment takes a flat string id and
+        # segment_times is a flat dict everywhere it is written, stored and
+        # read, so a prefix needs no change to the assembly, the ffmpeg
+        # concat, or the shape on disk. Item 1 keeps its BARE names, which is
+        # the point: every audio json already rendered stays valid, and the
+        # `required = {'option_a','answer'}` probe in resolve_quiz_timestamps
+        # still passes. A list would have invalidated every stored artifact
+        # to express what a prefix expresses for free.
         # ============================================================
-        # 4. THINK (pre-recorded)
-        # ============================================================
-        logger.info("[4] THINK")
-        think_path = str(SPANISH_DIR / "piensa_bien.mp3")
-        think_start, think_end, _, think_end_speech = add_audio(think_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
-        add_silence(PAUSE_AFTER_THINK)
+        authored = script.get('questions') or []
+        items = [script] + [q for q in authored[1:]]
+        logger.info("QUIZ: %d item(s)", len(items))
 
-        # ============================================================
-        # 5. COUNTDOWN (VISUAL ONLY - audio is silent)
-        # The countdown numbers appear on screen during this silence.
-        # Total silence: ~7s (1.5s pre + 3 x 1.5s intervals + 1.0s before answer)
-        # ============================================================
-        logger.info("[5] COUNTDOWN (visual only, audio silence)")
-        countdown_interval = 1.5  # 1.5 seconds per number for full visual display
-        for num in ['3', '2', '1']:
-            cd_start = running_time
-            add_silence(countdown_interval)
-            cd_end = running_time
-            add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
-            logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
+        for index, item in enumerate(items, 1):
+            if index > 1:
+                # A beat between items, so the next question does not tread
+                # on the previous explanation.
+                add_silence(PAUSE_AFTER_EXPLANATION)
+            emit_item(item, "" if index == 1 else f"i{index}_")
 
-        # Dramatic pause before answer reveal - ensures "1" fully displays
-        add_silence(1.0)
-
-        # ============================================================
-        # 6. ANSWER
-        # Generate FULL answer text as one sentence (like explanation and options)
-        # NOT single word! Single word = TTS doesn't know it's Spanish
-        # ============================================================
-        logger.info("[6] ANSWER")
-        answer_start = running_time
-
-        # Generate COMPLETE answer as one full Spanish sentence
-        # This gives TTS full context to pronounce correctly
-        full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
-        logger.debug("  Answer: '%s'", full_answer_text)
-
-        ans_path = os.path.join(temp_dir, "answer.mp3")
-        _tts_with_retry(
-            client, ans_path,
-            model="tts-1-hd", voice=voice, input=full_answer_text,
-            speed=SEGMENT_SPEEDS['answer'], response_format="mp3",
-        )
-        _, _, _, answer_end_speech = add_audio(ans_path)
-
-        add_segment('answer', full_answer_text, answer_start, answer_end_speech)
-        add_silence(PAUSE_AFTER_ANSWER)
-
-        # ============================================================
-        # 7. EXPLANATION (fresh TTS - MUST COMPLETE FULLY)
-        # ============================================================
-        if explanation.strip():
-            logger.info("[7] EXPLANATION")
-            exp_path = os.path.join(temp_dir, "explanation.mp3")
-            _tts_with_retry(
-                client, exp_path,
-                model="tts-1-hd", voice=voice, input=explanation,
-                speed=SEGMENT_SPEEDS['explanation'], response_format="mp3",
-            )
-            exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
-            add_segment('explanation', explanation, exp_start, exp_end_speech)
-            # Add breathing room after explanation
-            add_silence(PAUSE_AFTER_EXPLANATION)
 
         total_duration = running_time
         logger.info("=" * 60)
@@ -942,6 +989,10 @@ def generate_quiz_audio_segmented(
             'options': options,
             'correct': correct,
             'explanation': explanation,
+            # WITHOUT THIS the prefixed segments above are unreachable:
+            # quiz_item_views reads `questions` for items 2..n, and this dict
+            # -- not the source script -- is the json the renderer loads.
+            'questions': script.get('questions') or [],
             'full_script': script.get('full_script', ''),
             'translations': script.get('translations', {}),
             'hashtags': script.get('hashtags', []),

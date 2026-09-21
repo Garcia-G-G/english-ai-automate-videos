@@ -1,6 +1,7 @@
 """Quiz video frame generator — question, options, countdown, answer reveal."""
 
 import math
+import re
 import logging
 from typing import List, Dict, Tuple, Optional
 
@@ -588,13 +589,18 @@ def resolve_quiz_timestamps(data: Dict, duration: float) -> Dict:
     return data
 
 
-def create_frame_quiz(
+def _create_frame_quiz_item(
     t: float,
     data: Dict,
     duration: float,
     presentation=None,
 ) -> np.ndarray:
-    """Create frame for quiz video using EXACT segment timestamps."""
+    """One item's frame, from a view whose segment keys are BARE.
+
+    Unchanged from when this was `create_frame_quiz` itself and a quiz was
+    one question. Everything about multi-item lives in the dispatcher below,
+    so none of the drawing here had to learn about items.
+    """
     if presentation is None:
         from studio.renderer_presentation import resolve_presentation
         presentation = resolve_presentation("es")
@@ -925,3 +931,124 @@ def create_frame_quiz(
             pass
 
     return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# MULTI-ITEM: THE PAYLOAD THAT WAS ALWAYS THERE
+#
+# `QuizScript.questions` is a List[QuizItem] the schema itself labels DEAD
+# PAYLOAD: the prompt demands three, GPT writes three, and nothing has ever
+# read index 1 or 2. This is what reads them.
+#
+# WHY THIS IS A DISPATCHER AND NOT A LOOP INSIDE THE RENDERER. A quiz frame
+# at time t shows exactly ONE item — items are sequential in time, not
+# stacked in space. So the frame function never needed to know about items;
+# it needed to be handed the right one. `_create_frame_quiz_item` is the old
+# `create_frame_quiz`, byte for byte, and every coordinate, zone and easing
+# curve it was tuned with still applies.
+#
+# WHY PREFIXED KEYS AND NOT A LIST, which the brief left to this call:
+#
+#   · `add_segment(seg_id: str, ...)` in the TTS takes a flat string id, and
+#     segment_times is a flat dict everywhere it is written, stored and read.
+#     A prefix needs no change to the assembly, the ffmpeg concat, or the
+#     shape stored in the audio json.
+#   · ITEM 1 KEEPS ITS BARE NAMES. That is the whole reason to prefer this:
+#     every audio json already on disk stays valid, the
+#     `required = {'option_a','answer'}` probe in resolve_quiz_timestamps
+#     still passes, and the keyword fallback still builds a legal one-item
+#     quiz. A list would have invalidated every stored artifact and the probe
+#     with it — a migration, to express something a prefix expresses for free.
+#   · The renderer never sees a prefix anyway: `quiz_item_views` projects
+#     `i2_option_a` back to `option_a` before drawing. The prefix is a wire
+#     format, not a rendering concept.
+#
+# Times inside a projected view stay ABSOLUTE. The TTS emits absolute
+# timestamps for every segment and the frame function already compares them
+# against the absolute `t`; re-basing them per item would be work that buys
+# nothing and a new class of off-by-one.
+# ═══════════════════════════════════════════════════════════════════════
+
+#: `i2_option_a` -> (2, 'option_a'). Item 1 is unprefixed by construction.
+_ITEM_KEY = re.compile(r'^i(\d+)_(.+)$')
+
+
+def quiz_item_views(data: Dict) -> List[Dict]:
+    """One self-contained view per item, in time order.
+
+    Each view looks exactly like a single-item quiz: root-level question /
+    options / correct / explanation, and a `segment_times` keyed with BARE
+    names. `_create_frame_quiz_item` cannot tell it is one of three.
+    """
+    st = data.get('segment_times', {}) or {}
+
+    grouped: Dict[int, Dict] = {}
+    for key, value in st.items():
+        match = _ITEM_KEY.match(key)
+        index, name = (int(match.group(1)), match.group(2)) if match else (1, key)
+        grouped.setdefault(index, {})[name] = value
+
+    # The authored items. questions[0] is required by the schema's own
+    # validator to match the root-level fields, so the root is item 1 and
+    # `questions` supplies 2..n — reading questions[0] as well would render
+    # the first item twice.
+    authored = data.get('questions') or []
+
+    views = []
+    for index in sorted(grouped):
+        item = data if index == 1 else (
+            authored[index - 1] if index - 1 < len(authored) else None)
+        if item is None:
+            # Audio exists for an item the script does not carry. Skipping is
+            # right: drawing a blank card for several seconds is worse than
+            # the item not being there, and the guard flags the mismatch.
+            logger.warning("quiz: segment_times has item %d but the script "
+                           "carries %d question(s) — item skipped",
+                           index, len(authored))
+            continue
+        views.append({
+            **data,
+            'question': item.get('question', data.get('question')),
+            'options': item.get('options', data.get('options')),
+            'correct': item.get('correct', data.get('correct')),
+            'explanation': item.get('explanation', data.get('explanation')),
+            'segment_times': grouped[index],
+        })
+    return views
+
+
+def quiz_item_at(views: List[Dict], t: float) -> Optional[Dict]:
+    """The view whose window contains `t`.
+
+    An item owns the span from its own `question` to the NEXT item's
+    `question`, so the trailing explanation of item 2 stays on screen until
+    item 3 actually starts speaking. The last item owns everything after it.
+    """
+    if not views:
+        return None
+    starts = [_seg_start(v['segment_times'], 'question', 0.0) for v in views]
+    current = views[0]
+    for view, start in zip(views, starts):
+        if t >= start:
+            current = view
+    return current
+
+
+def create_frame_quiz(
+    t: float,
+    data: Dict,
+    duration: float,
+    presentation=None,
+) -> np.ndarray:
+    """Create frame for quiz video, for however many items it carries.
+
+    A one-item script takes the same path it always did: `quiz_item_views`
+    returns a single view whose segment_times is the original dict, and this
+    is `_create_frame_quiz_item` with one extra function call in front.
+    """
+    views = quiz_item_views(data)
+    if len(views) <= 1:
+        return _create_frame_quiz_item(t, data, duration,
+                                       presentation=presentation)
+    return _create_frame_quiz_item(t, quiz_item_at(views, t), duration,
+                                   presentation=presentation)
