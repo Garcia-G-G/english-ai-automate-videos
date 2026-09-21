@@ -74,3 +74,20 @@ _audit/**/*.jpeg
 _audit/**/*.mp4
 _audit/**/*.mov
 _to_delete/
+
+# Manim studio (experiments/manim_voiceover_poc/) — the GENERATED half.
+#
+# NOT `experiments/**/renders/` as a whole: the .youtube.md publishing notes
+# live in renders/<lesson>/ beside the video they describe and ARE tracked
+# (73d23d0). Ignoring the directory would silently stop `git add` from ever
+# seeing a new one, so the generated things are named individually instead.
+#
+# media/ is Manim's own cache — SVG glyph dumps and a voiceover cache.json,
+# 112 files it rebuilds on demand.
+experiments/**/media/
+experiments/**/renders/jobs/
+experiments/**/renders/**/*.mp4
+experiments/**/renders/**/*.jpg
+
+# Scratch tree for things handed back in chat. Never an input to the build.
+Claude outputs/
