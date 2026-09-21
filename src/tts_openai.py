@@ -932,9 +932,10 @@ def generate_quiz_audio_segmented(
         # still passes. A list would have invalidated every stored artifact
         # to express what a prefix expresses for free.
         # ============================================================
-        authored = script.get('questions') or []
-        items = [script] + [q for q in authored[1:]]
-        logger.info("QUIZ: %d item(s)", len(items))
+        from tts_common import items_to_speak
+        items = items_to_speak(script, 'quiz')
+        logger.info("QUIZ: %d item(s) (config items_spoken caps this)",
+                    len(items))
 
         for index, item in enumerate(items, 1):
             if index > 1:

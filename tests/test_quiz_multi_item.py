@@ -139,6 +139,22 @@ def test_audio_for_an_item_the_script_does_not_carry_is_skipped():
 # them, and the segment boundaries come out measured, as in production.
 # ═══════════════════════════════════════════════════════════════════════
 
+#: Multi-item is governed by config.yaml's `items_spoken`, which ships at 1.
+#: A test that wants three items OPENS THAT SWITCH explicitly rather than
+#: assuming it — the capability and its door are separate things, and
+#: saying so here is what keeps this file honest about which it is testing.
+def _speak_up_to(monkeypatch, allowed):
+    import duration_spec
+    real = duration_spec.type_spec
+
+    def spec(video_type):
+        entry = dict(real(video_type) or {})
+        entry["items_spoken"] = allowed
+        return entry
+
+    monkeypatch.setattr(duration_spec, "type_spec", spec)
+
+
 def _stub_tts(monkeypatch, source_mp3: Path, provider: str):
     """Every TTS call writes a real (short) mp3 to its path.
 
@@ -199,6 +215,7 @@ def test_script_to_audio_to_three_rendered_items(tmp_path, monkeypatch,
     this file would stay green with nothing in the pipeline producing a
     multi-item anything.
     """
+    _speak_up_to(monkeypatch, 3)
     mod, _calls = _stub_tts(monkeypatch, silent_mp3, provider)
 
     script = {"type": "quiz", **_item(1),

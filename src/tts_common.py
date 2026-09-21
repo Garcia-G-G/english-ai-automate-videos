@@ -1115,3 +1115,31 @@ def repair_truncated_tail(audio_path: str, out_path: str = None) -> dict:
     logger.info("tail: repaired %s (tail was %.3fs, now %.3fs long)",
                 os.path.basename(str(audio_path)), before, after)
     return {"repaired": True, "tail_before": before, "duration_after": after}
+
+
+def items_to_speak(script: dict, video_type: str) -> list:
+    """The items this script's audio should actually carry.
+
+    THE SWITCH IS config.yaml's `items_spoken`, and it already existed:
+    "how many of the authored items are actually synthesised". duration_spec
+    divides the word budget by it, tools/duration_calibrate measures against
+    it, and its own comment anticipates "the day items_spoken becomes 3, the
+    band it is judged against becomes true on its own".
+
+    1af342d taught the generator to speak every authored item and walked
+    straight past that switch. The result was measurable rather than
+    theoretical: config declared 1, the audio carried 3, and a 123.9s quiz
+    was judged against a band sized for one item.
+
+    Reading it here puts the capability behind the door that governs it. A
+    script with fewer items than the config allows is not padded; the cap is
+    a ceiling, not a quota.
+    """
+    authored = script.get("questions") or []
+    items = [script] + list(authored[1:])
+    try:
+        from duration_spec import type_spec
+        allowed = int((type_spec(video_type) or {}).get("items_spoken") or 1)
+    except Exception:                       # config unreadable: behave as before
+        allowed = 1
+    return items[:max(1, allowed)]

@@ -42,7 +42,17 @@ def beep(tmp_path):
 
 
 def _silence_for(el, monkeypatch, beep, tmp_path, n_items):
-    """Total spliced silence for an n-item quiz."""
+    """Total spliced silence for an n-item quiz.
+
+    config.yaml's `items_spoken` ships at 1, so the cap is lifted here: this
+    measures what an item COSTS, which the duration model needs whatever the
+    switch is currently set to.
+    """
+    import duration_spec
+    _real_spec = duration_spec.type_spec
+    monkeypatch.setattr(duration_spec, "type_spec",
+                        lambda vt: {**(_real_spec(vt) or {}),
+                                    "items_spoken": n_items})
     monkeypatch.setattr(
         el, "generate_segment_audio",
         lambda text=None, output_path=None, voice_id=None, **k: (

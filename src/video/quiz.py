@@ -981,8 +981,10 @@ def _create_frame_quiz_item(
 # nothing and a new class of off-by-one.
 # ═══════════════════════════════════════════════════════════════════════
 
-#: `i2_option_a` -> (2, 'option_a'). Item 1 is unprefixed by construction.
-_ITEM_KEY = re.compile(r'^i(\d+)_(.+)$')
+#: `i2_option_a` -> (2, 'option_a'), from the one module that parses these.
+#: It was a private copy here; the QA gate then wrote its own name-based
+#: rule that could not see a prefix, and rejected a correct artifact.
+from segment_ids import split_item as _split_item
 
 
 def quiz_item_views(data: Dict) -> List[Dict]:
@@ -996,8 +998,7 @@ def quiz_item_views(data: Dict) -> List[Dict]:
 
     grouped: Dict[int, Dict] = {}
     for key, value in st.items():
-        match = _ITEM_KEY.match(key)
-        index, name = (int(match.group(1)), match.group(2)) if match else (1, key)
+        index, name = _split_item(key)
         grouped.setdefault(index, {})[name] = value
 
     # The authored items. questions[0] is required by the schema's own

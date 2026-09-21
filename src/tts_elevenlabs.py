@@ -883,9 +883,10 @@ def generate_quiz_audio_segmented(
         # resolve_quiz_timestamps still passes.
         # ============================================================
         _topic_id = topic_id_of(script)
-        authored = script.get('questions') or []
-        items = [script] + list(authored[1:])
-        logger.info("QUIZ: %d item(s)", len(items))
+        from tts_common import items_to_speak
+        items = items_to_speak(script, 'quiz')
+        logger.info("QUIZ: %d item(s) (config items_spoken caps this)",
+                    len(items))
 
         for _index, _item in enumerate(items, 1):
             if _index > 1:
