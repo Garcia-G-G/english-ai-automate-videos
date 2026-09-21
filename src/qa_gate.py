@@ -293,6 +293,12 @@ def _nearest_edge(edges: List[float], x: float) -> Optional[float]:
     return min(edges, key=lambda e: abs(e - x)) if edges else None
 
 
+def _bare_id(seg_id: str) -> str:
+    """Segment id without its item prefix; see segment_ids."""
+    from segment_ids import bare
+    return bare(seg_id)
+
+
 def _silent_segment_ids(data: Dict) -> set:
     """Segment ids the artifact itself declares as silence.
 
@@ -304,7 +310,11 @@ def _silent_segment_ids(data: Dict) -> set:
     by_id = {s.get("id"): s.get("text") for s in segs if isinstance(s, dict)}
     out = set()
     for name in (data.get("segment_times") or {}):
-        if not name.startswith(SILENT_SEGMENT_PREFIXES):
+        # THE BARE NAME. A multi-item quiz writes `i2_countdown_3`, which
+        # does not start with "countdown_" -- so items 2 and 3 had their
+        # deliberately silent countdowns counted as unexplained dead air and
+        # the gate rejected a correct artifact for 14.525s of it.
+        if not _bare_id(name).startswith(SILENT_SEGMENT_PREFIXES):
             continue
         text = by_id.get(name)
         if text is None:

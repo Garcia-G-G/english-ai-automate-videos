@@ -135,6 +135,13 @@ def test_a_real_quiz_hands_its_tags_to_the_api(tmp_path, monkeypatch, beep):
     if "v3" not in (el.MODEL_ID or "").lower():
         pytest.skip(f"MODEL_ID={el.MODEL_ID} does not honour tags")
 
+    # three items only because the switch is opened here; see
+    # tests/test_items_spoken_switch.py for the switch itself
+    import duration_spec
+    _real_spec = duration_spec.type_spec
+    monkeypatch.setattr(duration_spec, "type_spec",
+                        lambda vt: {**(_real_spec(vt) or {}), "items_spoken": 3})
+
     sent = []
 
     def fake_segment(text=None, output_path=None, voice_id=None, **kwargs):
