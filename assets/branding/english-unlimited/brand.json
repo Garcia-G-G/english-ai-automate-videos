@@ -1,0 +1,28 @@
+{
+  "name": "English Unlimited",
+  "tagline": "El inglés que usas cada día, explicado en español.",
+  "color": {
+    "english_blue": "#1B6FA8",
+    "ink": "#1C1812",
+    "paper": "#FEFDFB",
+    "highlight_yellow": "#F2D66B",
+    "highlight_sky": "#9AD1F0",
+    "correct": "#2F8F5B",
+    "error": "#C0453A",
+    "secondary_text": "#6D665B",
+    "muted": "#887F72",
+    "card": "#F5F1EB",
+    "line": "#E4DED4"
+  },
+  "font": {
+    "display": "Manrope ExtraBold",
+    "body": "Manrope Medium",
+    "file": "assets/fonts/Manrope[wght].ttf"
+  },
+  "rules": {
+    "english_is_blue": true,
+    "yellow_one_word_per_sentence": true,
+    "min_symbol_px": 32
+  },
+  "source": "Colores tomados de experiments/manim_voiceover_poc/lesson_scene.py:27-33 (PAPER, INK, HI, HI2, CAP_EN_ON)"
+}
