@@ -191,9 +191,36 @@ def main():
 #: not from the fit, which cannot see it. Every sample on disk is a one-item
 #: video, so the fitted intercept folds this together with the per-video
 #: overhead and a linear extrapolation to three items is wrong by two of these.
-PER_ITEM_SILENCE = 8.0   # 0.5 question + 0.6 option + 1.5 think
-                         # + 4.5 countdown (3 x 1.5, silent) + 0.4 answer
-                         # + 0.5 explanation
+#:
+#: MEASURED, NOT ADDED UP. This was 8.0, derived by listing the pauses that
+#: looked per-item and calling the option block "per video". After 1af342d
+#: the option block repeats per ITEM -- transition gap, four letter-to-word
+#: gaps, three between-option gaps -- and so do the dramatic pre-answer
+#: beat, the repeat-the-answer pause, and the gap between one item and the
+#: next. Instrumenting generate_silence and generating 1, 2 and 3 item
+#: quizzes gives 12.70 / 25.90 / 39.10 s of spliced silence: 13.20 s per
+#: extra item, both times. At 8.0 a three-item quiz was predicted 10.4 s
+#: short.
+#:
+#:      0.50  gap before this item (PAUSE_AFTER_EXPLANATION), items 2..n
+#:      0.50  after the question
+#:      0.40  after the transition line
+#:      1.20  letter -> word, 4 x 0.30
+#:      1.20  between options, 3 x 0.40
+#:      0.60  after the option block
+#:      1.50  after "piensa"
+#:      4.50  countdown, 3 x 1.50, silent
+#:      1.00  dramatic pause before the reveal
+#:      ~0.90 before the repeated answer (_repeat_pause)
+#:      0.40  after the answer
+#:      0.50  after the explanation
+#:
+#: A re-FIT of `rate` and `overhead` is deliberately NOT done here: that
+#: needs a batch of new videos on disk, and there is none yet. Two inputs
+#: are waiting for it -- this constant, and pronunciation's rate 1.54 (n=12,
+#: marked indicative), which predicted 77.5 s for pr002 against a real
+#: 57.5 s.
+PER_ITEM_SILENCE = 13.2
 
 
 def predict(vtype: str, words: int, rate: float, overhead: float,
