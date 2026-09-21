@@ -679,6 +679,14 @@ def extract_english_words_from_script(script: dict) -> set:
 
 # ============== TEXT PREPROCESSING FOR TTS ==============
 
+#: What a written blank SOUNDS like. Three dots, which eleven_v3 reads as a
+#: hesitation and every other provider reads as an ellipsis pause.
+BLANK_SPOKEN = '...'
+
+#: Two or more underscores: the written blank, in any length an author types.
+_BLANK_RE = re.compile(r'_{2,}')
+
+
 def clean_for_tts(text: str) -> str:
     """
     Clean text for TTS - remove visual-only elements.
@@ -687,15 +695,37 @@ def clean_for_tts(text: str) -> str:
     elements that should be displayed but not spoken.
 
     Examples:
-        "In my opinion, we should ___ the meeting" -> "In my opinion, we should the meeting"
+        "In my opinion, we should ___ the meeting" -> "In my opinion, we should ... the meeting"
         "What does **important** mean?" -> "What does important mean?"
+
+    THE BLANK IS A PAUSE, NOT A DELETION. This used to be
+    `text.replace('___', '')`, which removed the blank and left the sentence
+    around it ungrammatical:
+
+        screen: The dog wagged ___ tail happily.
+        voice : The dog wagged tail happily.
+
+    That is the its/it's quiz the owner rejected. It is not one script: 7 of
+    the 25 questions in the quiz queue carry a blank, and 14 fill_blank
+    scripts go through this same function -- an English-teaching channel
+    speaking ungrammatical English. Multi-item quizzes made it worse rather
+    than better, because items 2 and 3 are now spoken too: gr004 alone says
+    "If I time, I will call you tonight. / If it tomorrow, we'll stay home.
+    / She you if she finds the keys."
+
+    fc702a9 fixed the opposite half of this -- scripts that said "guion
+    bajo" out loud. A blank is neither its own name nor nothing; it is the
+    silence where the missing word goes, which is exactly what the learner
+    is being asked to fill.
+
+    THE SCREEN IS UNAFFECTED. The drawn text comes from the script's own
+    fields, which keep their `___`; this function feeds the API only.
     """
     if not text:
         return text
 
-    # Remove blanks (visual only in fill-in-the-blank)
-    text = text.replace('___', '')
-    text = text.replace('__', '')
+    # Blanks become an audible pause, not a hole in the sentence.
+    text = _BLANK_RE.sub(BLANK_SPOKEN, text)
     # Single underscore between words should become space
     text = re.sub(r'(?<=\w)_(?=\w)', ' ', text)
 
@@ -711,6 +741,11 @@ def clean_for_tts(text: str) -> str:
 
     # Clean up multiple spaces
     text = ' '.join(text.split())
+
+    # "I need to ___." became "I need to ...." -- one run of dots, not a
+    # pause followed by a stop. preprocess_text_for_tts normalises 3+ dots
+    # anyway, but this function's own output should already be sayable.
+    text = re.sub(r'\.{3,}', BLANK_SPOKEN, text)
 
     return text.strip()
 
