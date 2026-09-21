@@ -687,7 +687,7 @@ BLANK_SPOKEN = '...'
 _BLANK_RE = re.compile(r'_{2,}')
 
 
-def clean_for_tts(text: str) -> str:
+def clean_for_tts(text: str, *, keep_tags: bool = False) -> str:
     """
     Clean text for TTS - remove visual-only elements.
 
@@ -736,8 +736,26 @@ def clean_for_tts(text: str) -> str:
     text = text.replace('#', '')
     text = text.replace('`', '')
 
-    # Remove brackets used for display hints
-    text = re.sub(r'\[.*?\]', '', text)
+    # EMOTION TAGS, AND WHO IS LISTENING.
+    #
+    # This line deleted every bracketed run, which meant it also deleted
+    # every eleven_v3 audio tag on its way to the API. Dry run on a real
+    # pronunciation script: four tags written, ZERO sent. Across September's
+    # sidecars, 0 of 344 spoken segments carried one. The ~550 tags written
+    # into the queue this month have never reached ElevenLabs -- the owner
+    # asked repeatedly for narration with personality and was given a
+    # cleaning function that removed it.
+    #
+    # keep_tags DEFAULTS TO FALSE, and that direction is deliberate. A tag
+    # sent to a model that does not know it is SPOKEN ALOUD, so a call site
+    # nobody updated must fall back to silence rather than to a narrator
+    # reading stage directions. Callers that reach eleven_v3 opt in, gated
+    # on audio_tags.honours_tags(MODEL_ID) rather than on the video type.
+    if keep_tags:
+        from audio_tags import keep_known_tags
+        text = keep_known_tags(text)
+    else:
+        text = re.sub(r'\[.*?\]', '', text)
 
     # Clean up multiple spaces
     text = ' '.join(text.split())

@@ -519,7 +519,17 @@ def segment_script(script_data: Dict, narration_lang: str = "es", *,
         from tts_common import clean_for_tts
     except ImportError:          # standalone use
         clean_for_tts = lambda t: t  # noqa: E731
-    text = clean_for_tts(script_data.get('full_script', '') or '')
+    # TAGS ARE STRIPPED HERE, AND THAT IS THE DECISION, not a leftover.
+    # This is the educational / pronunciation path: tts_bilingual sends
+    # eleven_turbo_v2_5, because v3 does not accept the `language_code` that
+    # makes English read as English and Spanish as Spanish. Turbo does not
+    # interpret audio tags -- it would SPEAK them. So these two types keep
+    # losing their tags until emotion arrives by another lever
+    # (voice_settings.style, or the wording itself), and that is a known gap
+    # rather than an oversight. keep_tags defaults to False; naming it makes
+    # the choice visible at the one place that makes it.
+    text = clean_for_tts(script_data.get('full_script', '') or '',
+                         keep_tags=False)
     terms = collect_english_terms(script_data)
     return segment_text(
         text,

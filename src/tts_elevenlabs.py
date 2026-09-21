@@ -69,6 +69,16 @@ DEFAULT_VOICE_ID = (os.getenv("VIDEO_PROFILE_VOICE_ID")
 MODEL_ID = (os.getenv("VIDEO_PROFILE_TTS_MODEL")
             or os.getenv("ELEVENLABS_MODEL", "eleven_v3"))
 
+# WHETHER THE TAGS SURVIVE, decided once, from the model that will actually
+# receive the text. The four types in this module (quiz, true_false,
+# fill_blank, vocabulary) run on MODEL_ID; educational and pronunciation go
+# through tts_bilingual on turbo v2.5, which does not interpret tags and
+# therefore keeps stripping them. Asking the model rather than the type
+# means an ELEVENLABS_MODEL override cannot silently start sending stage
+# directions to something that will read them out loud.
+from audio_tags import honours_tags  # noqa: E402
+_KEEP_TAGS = honours_tags(MODEL_ID)
+
 # ============== VOICE SETTINGS ==============
 # Stability 0.50: expressive enough to sound human, stable enough to avoid
 #   hallucinated mini-words / random vocalizations
@@ -602,13 +612,13 @@ def generate_quiz_audio_segmented(
     # identical duration and a 1.3 dB mean-level difference, which
     # is inside run-to-run variance. This is 'do not discard input',
     # not 'this demonstrably sounds better'.
-    question = clean_for_tts(script.get('question', ''))
+    question = clean_for_tts(script.get('question', ''), keep_tags=_KEEP_TAGS)
     options = script.get('options', {})
     correct = script.get('correct', 'A')
-    explanation = clean_for_tts(script.get('explanation', ''))
+    explanation = clean_for_tts(script.get('explanation', ''), keep_tags=_KEEP_TAGS)
 
     # Get correct answer text
-    correct_text = clean_for_tts(options.get(correct, '').strip("'\""))
+    correct_text = clean_for_tts(options.get(correct, '').strip("'\""), keep_tags=_KEEP_TAGS)
 
     # Extract English words
     english_words = extract_english_words_from_script(script)
@@ -681,11 +691,11 @@ def generate_quiz_audio_segmented(
             QuizItem does not carry one. Recomputing it per item would hand
             items 2..n an empty list and lose every pronunciation hint.
             """
-            question = clean_for_tts(item.get('question', ''))
+            question = clean_for_tts(item.get('question', ''), keep_tags=_KEEP_TAGS)
             options = item.get('options', {}) or {}
             correct = item.get('correct', 'A')
-            explanation = clean_for_tts(item.get('explanation', '') or '')
-            correct_text = clean_for_tts(options.get(correct, '').strip("'\""))
+            explanation = clean_for_tts(item.get('explanation', '') or '', keep_tags=_KEEP_TAGS)
+            correct_text = clean_for_tts(options.get(correct, '').strip("'\""), keep_tags=_KEEP_TAGS)
 
             item_temp_dir = os.path.join(temp_dir, prefix or "i1_")
             os.makedirs(item_temp_dir, exist_ok=True)
@@ -973,7 +983,7 @@ def generate_fill_blank_audio_segmented(
     explanation = script.get('explanation', '')
     translation = script.get('translation', '')
 
-    clean_sentence = clean_for_tts(sentence)
+    clean_sentence = clean_for_tts(sentence, keep_tags=_KEEP_TAGS)
     english_words = extract_english_words_from_script(script)
 
     temp_dir = tempfile.mkdtemp(prefix="el_fb_segments_")
@@ -1120,7 +1130,7 @@ def generate_fill_blank_audio_segmented(
         # 6. EXPLANATION
         if explanation.strip():
             logger.info("[6] EXPLANATION")
-            clean_explanation = clean_for_tts(explanation)
+            clean_explanation = clean_for_tts(explanation, keep_tags=_KEEP_TAGS)
             exp_path = os.path.join(temp_dir, "explanation.mp3")
             generate_segment_audio(
                 text=clean_explanation, output_path=exp_path, voice_id=voice_id,
@@ -1235,7 +1245,7 @@ def generate_true_false_audio_segmented(
 
     # Strip "¿Verdadero o falso?" from statement to avoid reading it twice
     stripped = re.sub(r'\s*¿?\s*[Vv]erdadero\s+o\s+[Ff]also\s*\??\s*$', '', statement)
-    clean_statement = clean_for_tts(stripped.strip())
+    clean_statement = clean_for_tts(stripped.strip(), keep_tags=_KEEP_TAGS)
     # ¿ kept — see the note on the quiz question above.
     clean_statement = clean_statement.strip()
     answer_word = "Verdadero" if correct else "Falso"
@@ -1348,7 +1358,7 @@ def generate_true_false_audio_segmented(
         # 6. EXPLANATION
         if explanation.strip():
             logger.info("[6] EXPLANATION")
-            clean_explanation = clean_for_tts(explanation)
+            clean_explanation = clean_for_tts(explanation, keep_tags=_KEEP_TAGS)
             exp_path = os.path.join(temp_dir, "explanation.mp3")
             generate_segment_audio(
                 text=clean_explanation, output_path=exp_path, voice_id=voice_id,
@@ -1519,7 +1529,7 @@ def generate_vocabulary_audio_segmented(
 
         # 1. TITLE
         logger.info("[1] TITLE")
-        clean_title = clean_for_tts(title)
+        clean_title = clean_for_tts(title, keep_tags=_KEEP_TAGS)
         t_path = os.path.join(temp_dir, "title.mp3")
         generate_segment_audio(
             text=clean_title, output_path=t_path, voice_id=voice_id,
@@ -1544,7 +1554,7 @@ def generate_vocabulary_audio_segmented(
             # content alone reach roughly 38s against a 50s floor. Content
             # could not get there on its own, so the extra take is doing
             # pedagogical work AND duration work rather than padding.
-            pair_text = clean_for_tts(f"{spanish}... {english}.")
+            pair_text = clean_for_tts(f"{spanish}... {english}.", keep_tags=_KEEP_TAGS)
             p_path = os.path.join(temp_dir, f"pair_{i}.mp3")
             generate_segment_audio(
                 text=pair_text, output_path=p_path, voice_id=voice_id,
@@ -1560,7 +1570,7 @@ def generate_vocabulary_audio_segmented(
                 # the gate matches each take to a speech boundary and never
                 # sees speech inside a declared-silent span.
                 add_silence(_repeat_pause())
-                r_text = clean_for_tts(f"{english}.")
+                r_text = clean_for_tts(f"{english}.", keep_tags=_KEEP_TAGS)
                 r_path = os.path.join(temp_dir, f"pair_{i}_take{take}.mp3")
                 generate_segment_audio(
                     text=r_text, output_path=r_path, voice_id=voice_id,
