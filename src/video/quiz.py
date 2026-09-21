@@ -6,6 +6,13 @@ import logging
 from typing import List, Dict, Tuple, Optional
 
 import numpy as np
+
+# The words the fallback below listens for, defined beside the lines that
+# contain them rather than typed out here a second time.
+from narration_phrases import KEYWORDS as _NARRATION_KEYWORDS
+
+_THINK_WORDS = _NARRATION_KEYWORDS["think"]
+_ANSWER_WORDS = _NARRATION_KEYWORDS["answer"]
 from PIL import Image, ImageDraw
 
 from animations.easing import (
@@ -98,7 +105,7 @@ def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
     answer_boundary = 999.0
     for i, w in enumerate(words):
         if w['word'].lower() == 'la' and i + 1 < len(words):
-            if words[i + 1]['word'].lower() in ['respuesta', 'answer']:
+            if words[i + 1]['word'].lower() in _ANSWER_WORDS:
                 answer_boundary = w['start']
                 break
         if w['word'].lower() in ['correcta', 'correct']:
@@ -125,7 +132,7 @@ def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
 
     piensa_time = answer_boundary
     for i, w in enumerate(words):
-        if w['word'].lower() in ['piensa', 'piensalo', 'think']:
+        if w['word'].lower() in _THINK_WORDS:
             piensa_time = w['start']
             break
 
@@ -198,7 +205,12 @@ def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
 
     for i, w in enumerate(words):
         word_lower = w['word'].lower()
-        if word_lower in ['piensalo', 'piensa', 'think', 'bien']:
+        # FROM narration_phrases, not typed here. The think line is chosen
+        # from a pool now, and this list had only the UNACCENTED
+        # "piensalo" -- so "Piénsalo un segundo." would have been invisible
+        # to this scan, leaving think_start at 0 and the countdown starting
+        # from a guess. One list, so a new pool entry cannot desync it.
+        if word_lower in _THINK_WORDS:
             if w['start'] > timestamps['option_d']:
                 timestamps['think_start'] = w['start']
                 break
@@ -222,7 +234,7 @@ def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
 
         if word_lower == 'la' and i + 1 < len(words):
             next_word = words[i + 1]['word'].lower()
-            if next_word in ['respuesta', 'answer']:
+            if next_word in _ANSWER_WORDS:
                 timestamps['answer_start'] = w['start']
                 for j in range(i + 3, min(i + 12, len(words))):
                     if words[j]['word'].lower() in ['significa', 'means', 'es', 'como']:

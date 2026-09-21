@@ -79,6 +79,13 @@ MODEL_ID = (os.getenv("VIDEO_PROFILE_TTS_MODEL")
 from audio_tags import honours_tags  # noqa: E402
 _KEEP_TAGS = honours_tags(MODEL_ID)
 
+# THE LINES NO SCRIPT WROTE. "Escucha las opciones." / "¡Piensa bien!" /
+# "Correcto. La respuesta es A, its." were string literals here: identical
+# in every video ever made, and a multi-item quiz says the answer line three
+# times in sixty seconds. narration_phrases picks from a pool per script and
+# per item, deterministically -- see that module for why it is not random.
+from narration_phrases import pick, topic_id_of  # noqa: E402
+
 # ============== VOICE SETTINGS ==============
 # Stability 0.50: expressive enough to sound human, stable enough to avoid
 #   hallucinated mini-words / random vocalizations
@@ -128,11 +135,18 @@ def add_natural_pauses(text: str, segment_type: str = 'default') -> str:
         return text
 
     # --- 1. Pause before answer reveal ---
+    #
+    # MATCHED ON narration_phrases.REVEAL_CUE, not on a literal typed here.
+    # The answer line is no longer one fixed string -- it comes from a pool
+    # -- and a pool entry whose wording drifted past this replace() would
+    # have lost its pre-reveal beat silently, with nothing to notice it but
+    # the ear. "La respuesta" is the part every entry shares; for the legacy
+    # "Correcto. La respuesta es B" the output is byte-identical to what
+    # this produced before.
     if segment_type == 'answer':
-        text = text.replace(
-            'La respuesta es',
-            '... La respuesta es'
-        )
+        from narration_phrases import REVEAL_CUE
+        if '...' not in text:
+            text = text.replace(REVEAL_CUE, '... ' + REVEAL_CUE, 1)
         text = text.replace('Correcto.', 'Correcto...')
 
     # --- 2. Pause between sentences in explanations ---
@@ -678,7 +692,7 @@ def generate_quiz_audio_segmented(
         logger.info("Global speed: %.2f", GLOBAL_SPEED)
         logger.info("English words: %s", english_words)
 
-        def emit_item(item: dict, prefix: str):
+        def emit_item(item: dict, prefix: str, index: int):
             """Every segment for ONE quiz item, ids carrying `prefix`.
 
             The body that used to sit inline when a quiz was one question,
@@ -752,7 +766,7 @@ def generate_quiz_audio_segmented(
             emit_split_options(
                 labels=['A', 'B', 'C', 'D'],
                 words=[options.get(L, '').strip("'\"") for L in ['A', 'B', 'C', 'D']],
-                transition_text="Escucha las opciones.",
+                transition_text=pick("quiz.transition", _topic_id, index),
                 temp_dir=item_temp_dir, voice_id=voice_id,
                 stability=stability, similarity_boost=similarity_boost,
                 english_words=english_words,
@@ -769,12 +783,13 @@ def generate_quiz_audio_segmented(
             # ============================================================
             logger.info("[4] THINK")
             think_gen_path = os.path.join(temp_dir, prefix + "think.mp3")
+            think_text = pick("quiz.think", _topic_id, index)
             generate_segment_audio(
-                "¡Piensa bien!", think_gen_path, voice_id,
+                think_text, think_gen_path, voice_id,
                 segment_type='think',
             )
             think_start, think_end, _, think_end_speech = add_audio(think_gen_path)
-            add_segment(prefix + 'think', '¡Piensa bien!', think_start, think_end_speech)
+            add_segment(prefix + 'think', think_text, think_start, think_end_speech)
             add_silence(PAUSE_AFTER_THINK)
 
             # ============================================================
@@ -799,7 +814,8 @@ def generate_quiz_audio_segmented(
             # ============================================================
             logger.info("[6] ANSWER")
             answer_start = running_time
-            full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
+            full_answer_text = pick("quiz.answer", _topic_id, index,
+                                    L=correct, text=correct_text)
             logger.debug("Answer: '%s'", full_answer_text)
 
             ans_path = os.path.join(temp_dir, prefix + "answer.mp3")
@@ -866,6 +882,7 @@ def generate_quiz_audio_segmented(
         # disk stays valid and the `{'option_a','answer'}` probe in
         # resolve_quiz_timestamps still passes.
         # ============================================================
+        _topic_id = topic_id_of(script)
         authored = script.get('questions') or []
         items = [script] + list(authored[1:])
         logger.info("QUIZ: %d item(s)", len(items))
@@ -873,7 +890,7 @@ def generate_quiz_audio_segmented(
         for _index, _item in enumerate(items, 1):
             if _index > 1:
                 add_silence(PAUSE_AFTER_EXPLANATION)
-            emit_item(_item, "" if _index == 1 else f"i{_index}_")
+            emit_item(_item, "" if _index == 1 else f"i{_index}_", _index)
 
 
         total_duration = running_time
@@ -1057,10 +1074,13 @@ def generate_fill_blank_audio_segmented(
         opt_labels = [str(i + 1) for i in range(len(opt_words))]
         opt_seg_ids = [f"option_{i + 1}" for i in range(len(opt_words))]
 
+        _topic_id = topic_id_of(script)
+        _fb_transition = pick("fill_blank.transition", _topic_id)
+
         block_start = running_time
         option_spans = emit_split_options(
             labels=opt_labels, words=opt_words,
-            transition_text="Aquí van las opciones.",
+            transition_text=_fb_transition,
             temp_dir=temp_dir, voice_id=voice_id,
             stability=stability, similarity_boost=similarity_boost,
             english_words=english_words,
@@ -1071,7 +1091,7 @@ def generate_fill_blank_audio_segmented(
         # Keep the whole-block `options` segment as well. The renderer and the
         # QA gate both read it, and dropping it would break them for the sake
         # of a rename; the per-option spans are additive.
-        add_segment('options', "Aquí van las opciones. " +
+        add_segment('options', _fb_transition + " " +
                     " ".join(f"Opción {l}, {w}." for l, w in zip(opt_labels, opt_words)),
                     block_start, option_spans[-1]['end'] if option_spans else block_start)
         add_silence(PAUSE_AFTER_OPTION)
@@ -1079,11 +1099,12 @@ def generate_fill_blank_audio_segmented(
         # 3. THINK
         logger.info("[3] THINK")
         think_path = os.path.join(temp_dir, "think.mp3")
+        _fb_think = pick("fill_blank.think", _topic_id)
         generate_segment_audio(
-            "¡Piensa bien!", think_path, voice_id, segment_type='think',
+            _fb_think, think_path, voice_id, segment_type='think',
         )
         think_start, think_end, _, think_end_speech = add_audio(think_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
+        add_segment('think', _fb_think, think_start, think_end_speech)
         add_silence(PAUSE_AFTER_THINK)
 
         # 4. COUNTDOWN (VISUAL ONLY - silent)
@@ -1101,7 +1122,7 @@ def generate_fill_blank_audio_segmented(
 
         # 5. ANSWER
         logger.info("[5] ANSWER")
-        answer_text = f"La respuesta correcta es '{correct}'."
+        answer_text = pick("fill_blank.answer", _topic_id, text=correct)
         ans_path = os.path.join(temp_dir, "answer.mp3")
         generate_segment_audio(
             text=answer_text, output_path=ans_path, voice_id=voice_id,
@@ -1322,11 +1343,12 @@ def generate_true_false_audio_segmented(
         # 3. THINK
         logger.info("[3] THINK")
         think_path = os.path.join(temp_dir, "think.mp3")
+        _tf_think = pick("true_false.think", topic_id_of(script))
         generate_segment_audio(
-            "¡Piensa bien!", think_path, voice_id, segment_type='think',
+            _tf_think, think_path, voice_id, segment_type='think',
         )
         think_start, think_end, _, think_end_speech = add_audio(think_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
+        add_segment('think', _tf_think, think_start, think_end_speech)
         add_silence(PAUSE_AFTER_THINK)
 
         # 4. COUNTDOWN (VISUAL ONLY - silent)
@@ -1344,7 +1366,8 @@ def generate_true_false_audio_segmented(
 
         # 5. ANSWER
         logger.info("[5] ANSWER")
-        answer_text = f"¡Correcto! La respuesta es {answer_word}."
+        answer_text = pick("true_false.answer", topic_id_of(script),
+                           text=answer_word)
         ans_path = os.path.join(temp_dir, "answer.mp3")
         generate_segment_audio(
             text=answer_text, output_path=ans_path, voice_id=voice_id,
