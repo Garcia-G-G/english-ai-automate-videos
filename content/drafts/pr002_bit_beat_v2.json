@@ -1,0 +1,26 @@
+{
+  "type": "pronunciation",
+  "video_title": "BIT y BEAT: la vocal que te puede meter en un lío 👂",
+  "video_description": "En español hay una i. En inglés hay dos, y cambian palabras enteras. 🎯",
+  "word": "bit vs beat",
+  "phonetic": "BIT (i corta) vs BEAT (i larga)",
+  "common_mistake": "Pronunciar las dos con la misma i española",
+  "tip": "Corta y relajada: bit, ship, live. Larga y estirada: beat, sheep, leave. Si dudas, alarga.",
+  "translation": "un poco / latido",
+  "full_script": "[cheerful] Dices I need a bit of time en una reunión, y te miran raro. No es tu gramática. Es una sola vocal. En español tenemos una i. En inglés hay dos, y cambian palabras enteras. La corta es relajada, casi perezosa. BIT. Un poco. La larga se estira el doble, con una sonrisa. BEAT. Latido, o ritmo. [warm] Escúchalas juntas. BIT. BEAT. BIT. BEAT. Y no es sólo esta pareja. Barco y oveja: SHIP. SHEEP. Vivir y marcharse: LIVE. LEAVE. [serious] Y ahora el aviso que nadie te da. Hay pares donde la i corta convierte una palabra inocente en una palabrota. Sábana y playa: SHEET. BEACH. Esas dos, estíralas siempre. [warm] Repite conmigo. I live here, but I leave at eight. Vivo aquí, pero me voy a las ocho. [cheerful] Y la regla para no fallar nunca: si dudas, alarga. Largo de más se entiende. Corto de menos, a veces no.",
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Fonética"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr002",
+    "video_type": "pronunciation",
+    "model": "claude-opus-5",
+    "revision": "v2",
+    "replaces_rejected": "output/rejected/pronunciation/bit_vs_beat_20260915_233707.mp4"
+  }
+}

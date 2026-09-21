@@ -1,0 +1,70 @@
+{
+  "type": "quiz",
+  "video_title": "ITS o IT'S: el apóstrofo que delata a todo el mundo 🤔",
+  "video_description": "Un apóstrofo cambia el significado entero. ¿Sabes cuál va? ✍️",
+  "question": "[curious] The dog wagged ___ tail happily.",
+  "options": {
+    "A": "its",
+    "B": "it's",
+    "C": "it",
+    "D": "their"
+  },
+  "correct": "A",
+  "explanation": "[excited] Its, sin apóstrofo: la cola ES del perro, es posesivo. Pruébalo: ¿the dog wagged it is tail? Suena fatal, así que nada de apóstrofo.",
+  "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. Escribes un mensaje sobre tu perro y te frenas justo aquí. The dog wagged ___ tail happily. El perro movía su cola feliz. ¿Cuál va?... A, 'its' sin apóstrofo.... B, 'it's' con apóstrofo.... C, 'it'.... D, 'their'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es A, 'its'. Sin apóstrofo es posesivo. La cola del perro. Con apóstrofo, 'it's', es 'it is'. El truco que no falla nunca: si puedes cambiarlo por 'it is', lleva apóstrofo. Si no, va desnudo.",
+  "translations": {
+    "its": "su (de ello)",
+    "it's": "es, está",
+    "the dog wagged its tail happily": "el perro movía su cola feliz"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#Gramática",
+    "#EnglishTips",
+    "#ErroresComunes"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw006",
+    "video_type": "quiz",
+    "model": "claude-opus-5",
+    "revision": "v2",
+    "replaces_rejected": "output/rejected/quiz/i_went_to_there_20260908_231253.mp4"
+  },
+  "questions": [
+    {
+      "question": "[curious] The dog wagged ___ tail happily.",
+      "options": {
+        "A": "its",
+        "B": "it's",
+        "C": "it",
+        "D": "their"
+      },
+      "correct": "A",
+      "explanation": "[excited] Its, sin apóstrofo: la cola ES del perro, es posesivo. Pruébalo: ¿the dog wagged it is tail? Suena fatal, así que nada de apóstrofo."
+    },
+    {
+      "question": "[curious] ___ raining again. Take an umbrella!",
+      "options": {
+        "A": "Its",
+        "B": "It's",
+        "C": "It",
+        "D": "Is"
+      },
+      "correct": "B",
+      "explanation": "[excited] It's, con apóstrofo, porque aquí es it is: it is raining. Si cabe it is, lleva apóstrofo. Ese es todo el truco."
+    },
+    {
+      "question": "[curious] The company changed ___ logo last year.",
+      "options": {
+        "A": "it's",
+        "B": "their",
+        "C": "its",
+        "D": "it"
+      },
+      "correct": "C",
+      "explanation": "[excited] Its. El logo es de la empresa, posesivo. Y ojo: una empresa es it, no they. Por eso its y no their."
+    }
+  ]
+}
