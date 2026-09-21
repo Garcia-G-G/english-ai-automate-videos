@@ -1,28 +1,53 @@
 {
   "name": "English Unlimited",
+  "version": "v2 pegatina",
   "tagline": "El inglés que usas cada día, explicado en español.",
   "color": {
+    "brand_yellow": "#F2D66B",
     "english_blue": "#1B6FA8",
     "ink": "#1C1812",
     "paper": "#FEFDFB",
-    "highlight_yellow": "#F2D66B",
-    "highlight_sky": "#9AD1F0",
+    "sky": "#9AD1F0",
     "correct": "#2F8F5B",
     "error": "#C0453A",
-    "secondary_text": "#6D665B",
-    "muted": "#887F72",
-    "card": "#F5F1EB",
-    "line": "#E4DED4"
+    "secondary_text": "#6D665B"
   },
   "font": {
-    "display": "Manrope ExtraBold",
-    "body": "Manrope Medium",
-    "file": "assets/fonts/Manrope[wght].ttf"
+    "display": {
+      "family": "Fredoka",
+      "weight": 700,
+      "file": "assets/fonts/Fredoka-Bold.ttf"
+    },
+    "display_medium": {
+      "family": "Fredoka",
+      "weight": 500,
+      "file": "assets/fonts/Fredoka-Medium.ttf"
+    },
+    "body": {
+      "family": "Manrope",
+      "weight": 500,
+      "file": "assets/fonts/Manrope[wght].ttf"
+    }
+  },
+  "sticker": {
+    "outline_px": [
+      7,
+      10
+    ],
+    "outline_color": "#1C1812",
+    "shadow_offset_px": [
+      8,
+      8
+    ],
+    "shadow_blur": 0,
+    "rotation_deg": [
+      -8,
+      8
+    ]
   },
   "rules": {
     "english_is_blue": true,
-    "yellow_one_word_per_sentence": true,
-    "min_symbol_px": 32
-  },
-  "source": "Colores tomados de experiments/manim_voiceover_poc/lesson_scene.py:27-33 (PAPER, INK, HI, HI2, CAP_EN_ON)"
+    "max_yellow_stickers_per_sentence": 1,
+    "min_symbol_px": 40
+  }
 }
