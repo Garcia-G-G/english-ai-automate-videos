@@ -1,4 +1,6 @@
-# Step: make the emotion reach the voice
+# Step: close the audit, then make the voice sound the way the scripts were written
+
+Supersedes the earlier version of this file (`7516563`). One brief, in order.
 
 ## 0. The ONE-LINE version of what the owner asked for
 
@@ -6,14 +8,68 @@
 > repeatedly: "los diálogos se sienten muy directos, sin personalidad… recuerda que a
 > ElevenLabs le puedes poner emociones".
 
-**The voice has to sound like the scripts were written to sound.** Today it cannot,
-and rewriting the scripts again would change nothing. Here is why.
+**More content per video, and a voice with emotion.** Finding 3 delivers the first half.
+This brief delivers the second, and fixes one thing finding 3 makes worse.
 
 ---
 
-## 1. Every emotion tag is deleted before the API call. All six types.
+## 1. Audit status — verified, good work
 
-`clean_for_tts` (`src/tts_common.py:682`) strips square-bracket tags:
+`da82ac6` `30d2f13` `45e305a` `3a65ad8` are in. 1630 passed, 1 skipped. Finding 2 closed
+as not a defect.
+
+On finding 3, three catches that would each have shipped a silent one-item video: the
+door on the wrong provider (`resolve_provider_name()` defaults to elevenlabs), the
+`transition` key with three writers in `emit_split_options`, and `questions` missing from
+the audio json the renderer actually loads. And pins verified red against HEAD, not just
+green against yours. 64.3 s for a 3-item quiz clears the 50 s floor.
+
+Checked on my side: `_strip_audio_tags` (`src/video/__init__.py:25`) recurses into dicts
+and lists, so items 2 and 3 of `questions` are cleaned for screen like the root. With tags
+about to reach the audio (§3), that door had to be closed, and it is.
+
+Commit finding 3 when the suite reports. **Then §2 is the very next commit, and no quiz is
+rendered in between.**
+
+## 2. First: the blank is deleted, and finding 3 multiplies it
+
+`clean_for_tts` (`src/tts_common.py:682`) removes `___` without replacing it:
+
+```
+screen: The dog wagged ___ tail happily.
+voice : The dog wagged tail happily.
+```
+
+That is the its/it's quiz the owner rejected. Now that items 2 and 3 are spoken, it gets
+worse. Measured on the queue:
+
+```
+quiz in queue: 9 scripts, 25 questions, 7 with a blank
+broken sentences spoken  before finding 3: 3
+                         after  finding 3: 7
+```
+
+`gr004_first_conditional.json`, as it would render today:
+
+```
+If I time, I will call you tonight.
+If it tomorrow, we'll stay home.
+She you if she finds the keys.
+```
+
+Three ungrammatical English sentences in a row, on an English-teaching channel. fill_blank
+goes through the same function (`tts_elevenlabs.py:919`), 17 queue scripts in total.
+
+**Fix:** in the spoken text only, the blank becomes an audible pause (`...`, which v3 reads
+as a hesitation). The screen keeps `___`. `fc702a9` fixed the opposite problem (scripts
+that said "guion bajo" out loud) — this is the other half.
+
+**Proof:** `clean_for_tts("I need to ___ a phone call.")` must not return
+`"I need to a phone call."`, pinned by a test that is red against HEAD.
+
+## 3. Every emotion tag is deleted before the API call — all six types
+
+The same function strips square-bracket tags:
 
 ```
 '[excited] ¡Correcto!'          -> '¡Correcto!'
@@ -31,58 +87,37 @@ educational   tts_segmenter.py:522  (via tts_bilingual.plan_calls)
 pronunciation tts_segmenter.py:522
 ```
 
-Proven end to end on a real script, dry run: `plan_calls()` on a pronunciation script
-with four tags sends **zero** tags. And across September's sidecars, **0 of 344 spoken
-segments** carry one.
+Dry run on a real pronunciation script: four tags written, **zero sent**. Across
+September's sidecars, **0 of 344** spoken segments carry one. The ~550 tags written into
+the queue this month have never reached ElevenLabs. That is my miss as much as anyone's:
+I wrote them and never checked they arrived.
 
-So the ~550 tags written into the queue this month have never reached ElevenLabs. That
-is my miss as much as anyone's: I wrote them, and I never checked they arrived. This is
-the repo's signature failure one more time — correct content that never receives the
-door it needs.
-
-**Second layer, same result:** in quiz, true_false, fill_blank and vocabulary, 240 of
-340 tags (71 %) sit in `full_script`, which those four generators never read. They
-build audio from structured fields only.
+Second layer, same result: in quiz, true_false, fill_blank and vocabulary, **240 of 340
+tags (71 %)** sit in `full_script`, which those generators never read.
 
 ### The fix
 
-Tags survive `clean_for_tts` **when the target model honours them**, and are removed
-everywhere else:
+Tags survive **only when the target model honours them**:
 
-- **`eleven_v3`** (quiz, true_false, fill_blank, vocabulary — `V3_TYPES`): keep them.
-  They are already kept off the screen (`_strip_audio_tags` at render load) and out of
-  the word list (`tts_elevenlabs.py:325`). `src/audio_tags.py` is the one definition —
-  use it, do not write a second regex.
-- **`eleven_turbo_v2_5`** (educational, pronunciation — `TURBO_TYPES`): turbo does not
-  interpret tags. Strip them, as today, but deliberately and in one place — not as a
-  side effect of a cleaning function. Emotion for these two types needs a different
-  lever (voice_settings `style`, wording). Flag it; do not switch models in this step.
+- **`eleven_v3`** (`V3_TYPES`: quiz, true_false, fill_blank, vocabulary): keep them. They
+  are already kept off the screen (§1) and out of the word list (`tts_elevenlabs.py:325`).
+  Use `src/audio_tags.py` — the one definition. No second regex.
+- **`eleven_turbo_v2_5`** (`TURBO_TYPES`: educational, pronunciation): turbo does not
+  interpret tags. Strip them, as today, but deliberately and in one place, not as a side
+  effect of a cleaning function. Emotion for these two needs a different lever
+  (`voice_settings.style`, wording). Flag it; do not switch models in this step.
 
-## 2. The blank is deleted, so the voice speaks broken English
+**Proof:** a dry-run log of the exact text sent to the API for one quiz, with the tags in
+it, including items 2 and 3.
 
-The same function removes `___` without replacing it:
+## 4. The fixed quiz phrases are identical in every video
 
-```
-screen: The dog wagged ___ tail happily.
-voice : The dog wagged tail happily.
-```
+`tts_elevenlabs.py:719, 735, 764`: every quiz says *"Escucha las opciones." / "¡Piensa
+bien!" / "Correcto. La respuesta es A, its."* — flat, identical, and no script can change
+them. With three items per video, the listener now hears the answer line three times.
 
-That is what the owner heard in the its/it's quiz he rejected. **17 scripts in the queue
-today** have a blank in a spoken field. On an English-teaching channel the voice is
-modelling ungrammatical English.
-
-Fix: in the spoken text only, the blank becomes an audible pause (`...`, which v3 reads
-as a hesitation). The screen keeps `___`. `fc702a9` fixed the opposite problem (scripts
-that said "guion bajo" out loud) — this is the other half.
-
-## 3. The fixed phrases are identical in every quiz
-
-`tts_elevenlabs.py:719, 735, 764`: every quiz says exactly *"Escucha las opciones." /
-"¡Piensa bien!" / "Correcto. La respuesta es A, its."* — flat, and the same every time.
-Nothing in the script can change them.
-
-Replace each with a small pool, chosen **deterministically per `topic_id`** (so a
-re-render of the same script says the same thing):
+Replace each with a small pool, chosen **deterministically per `topic_id` and item index**
+(same script re-rendered says the same thing; the three items of one video do not repeat):
 
 ```
 transition  "[curious] Mira bien las opciones."
@@ -96,40 +131,34 @@ answer      "[excited] ¡Eso es! La respuesta es {L}, {text}."
             "[excited] ¡Bien! La buena es la {L}, {text}."
 ```
 
-Keep the `La respuesta es` / `Correcto` substrings working with `add_natural_pauses`
-(`tts_elevenlabs.py:123-126`), or update it in the same commit. Same treatment for the
-equivalent fixed phrases in fill_blank and true_false.
+Keep `add_natural_pauses` (`tts_elevenlabs.py:123-126`) working — it matches on
+`La respuesta es` / `Correcto` — or update it in the same commit. Same treatment for the
+fixed phrases in fill_blank and true_false.
 
-## 4. More content in quiz = the multi-item emission (your finding 3)
+## 5. Then: the owner listens
 
-A quiz speaks one question: ~40 s, under the 50 s floor. The only way it gets more
-content is speaking all three authored items. `content/drafts/cw006_its_v2.json` is
-written for exactly that — three questions, each explanation inside the 183-char layout
-limit. It stays out of the queue until the `iN_` ids are emitted, or it will render as a
-one-question video again.
+**One rendered 3-item quiz with §2–§4 in it, sent to the owner.** Whether it sounds
+charismatic is his call, not a number. Use `content/drafts/cw006_its_v2.json` — it was
+written for exactly this: three questions, each explanation inside the 183-char layout
+limit. It stays in `content/drafts/`, outside the queue, by the owner's decision; render it
+by path, do not move it into the queue.
 
-## 5. Two small ones
+## 6. Two small ones
 
 - **Wrong file name.** The rejected its/it's quiz is saved as
-  `output/rejected/quiz/i_went_to_there_20260908_231253.mp4`; its script says
-  "ITS o IT'S". The file name comes from a stale slug. Anyone looking for the its/it's
-  video by name will not find it.
-- **Duration predictor is off for pronunciation.** `rate 1.54` (n=12, marked indicative)
-  predicted 77.5 s for `pr002`; the real video is 57.5 s. Add it to the recalibration.
+  `output/rejected/quiz/i_went_to_there_20260908_231253.mp4`; its script says "ITS o IT'S".
+  Stale slug. Anyone looking for it by name will not find it.
+- **Duration predictor off for pronunciation.** `rate 1.54` (n=12, marked indicative)
+  predicted 77.5 s for `pr002`; the real video is 57.5 s. And quiz now speaks three items.
+  Both go into the recalibration of `tools/duration_calibrate.py`, which should run once
+  there is a batch of new videos, not before.
 
-## Order and proof
+## Order
 
-1 → 2 → 3 → 4, one commit each.
-
-Proof for 1: a dry-run log of the exact text sent to the API for one quiz, with tags in
-it. Then **one rendered quiz for the owner to listen to**, because whether it sounds
-charismatic is his call, not a number.
-
-Proof for 2: `clean_for_tts`-level test — `"I need to ___ a phone call."` must not
-become `"I need to a phone call."`.
+finding 3 commit → §2 → §3 → §4 → §5 (render for the owner) → §6.
+One commit each. Nothing rendered for publishing until §2 is in.
 
 ## Out of scope
 
-Rewriting more scripts. There is no point until 1 lands. The drafts in `content/drafts/`
-(`pr002_bit_beat_v2`, `cw006_its_v2`) wait there, outside the queue, by the owner's
-decision.
+Rewriting more scripts. There is no point until §3 lands. The drafts in `content/drafts/`
+(`pr002_bit_beat_v2`, `cw006_its_v2`) wait there.
