@@ -50,7 +50,7 @@ TYPES: Dict[str, dict] = {
     "educational": {
         "renderer":  "video.educational:create_frame_educational",
         "timing":    "turbo",
-        "text_band": (700, 1060),
+        "text_band": (700, 1060),   # the headline band, widened for shadow
         "dashboard": "Educational",
     },
     "quiz": {
@@ -58,34 +58,34 @@ TYPES: Dict[str, dict] = {
         "resolver":  "video.quiz:resolve_quiz_timestamps",
         "audio":     "generate_quiz_audio_segmented",
         "timing":    "v3",
-        "text_band": (270, 1450),
+        "text_band": (270, 1450),   # question zone top .. countdown zone
         "dashboard": "Quiz",
     },
     "true_false": {
         "renderer":  "video.true_false:create_frame_true_false",
         "audio":     "generate_true_false_audio_segmented",
         "timing":    "v3",
-        "text_band": (180, 1400),
+        "text_band": (180, 1400),   # question .. explanation
         "dashboard": "True/False",
     },
     "fill_blank": {
         "renderer":  "video.fill_blank:create_frame_fill_blank",
         "audio":     "generate_fill_blank_audio_segmented",
         "timing":    "v3",
-        "text_band": (230, 1120),
+        "text_band": (230, 1120),   # sentence card .. translation pill
         "dashboard": "Fill Blank",
     },
     "pronunciation": {
         "renderer":  "video.pronunciation:create_frame_pronunciation",
         "timing":    "turbo",
-        "text_band": (230, 1160),
+        "text_band": (230, 1160),   # title .. correct text
         "dashboard": "Pronunciation",
     },
     "vocabulary": {
         "renderer":  "video.vocabulary:create_frame_vocabulary",
         "audio":     "generate_vocabulary_audio_segmented",
         "timing":    "v3",
-        "text_band": (240, 1400),
+        "text_band": (240, 1400),   # card top .. timer bar
         "dashboard": "Vocabulary",
     },
 }

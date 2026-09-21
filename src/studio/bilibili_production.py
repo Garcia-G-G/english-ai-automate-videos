@@ -49,9 +49,51 @@ def _render(audio, metadata, video, **kwargs):
     return pipeline.render_video(audio, metadata, video, **kwargs)
 
 
-def _background(profile, requested):
+def _background(profile, requested, **kwargs):
     import pipeline
-    return pipeline.resolve_background(profile, requested)
+    return pipeline.resolve_background(profile, requested, **kwargs)
+
+
+#: The one shape resolve_background returns. Nothing else is a background.
+CLIPS_PREFIX = "clips:"
+
+
+def safe_clips_dir(selected, artifact_dir: Path) -> str:
+    """The directory inside a "clips:<dir>" value, or ValueError.
+
+    THE OLD GUARD COULD NOT FIRE. It was
+    `".." in selected or selected.startswith("/")`, written when a background
+    was a preset name or a "photo:<path>". Every value resolve_background can
+    return now begins with "clips:", so `startswith("/")` is False for an
+    absolute path as well as a relative one -- "clips:/etc" passed. The test
+    that exercised the branch used "photo:../../outside.png", a shape the
+    resolver stopped being able to produce when the preset floor was removed,
+    so the pin was green against a value that could not occur.
+
+    Checking the PAYLOAD instead, and the two legal origins are different:
+
+      relative   the profile's clips_dir ("assets/clips"), which is repo
+                 -relative by construction and must stay inside the repo.
+      absolute   only ever `artifact_dir / "clips"` -- the destination this
+                 gateway itself handed the resolver one line earlier. Any
+                 other absolute path means the resolver answered with
+                 somewhere we did not ask about, which is the thing this
+                 guard exists to refuse.
+    """
+    if not isinstance(selected, str) or not selected.startswith(CLIPS_PREFIX):
+        raise ValueError("background resolver returned unsafe background: "
+                         f"not a clips value: {selected!r}")
+    clips_dir = selected[len(CLIPS_PREFIX):]
+    if not clips_dir or ".." in Path(clips_dir).parts:
+        raise ValueError("background resolver returned unsafe background: "
+                         f"{clips_dir!r}")
+    if Path(clips_dir).is_absolute():
+        root = artifact_dir.resolve()
+        resolved = Path(clips_dir).resolve()
+        if resolved != root and root not in resolved.parents:
+            raise ValueError("background resolver returned unsafe background: "
+                             f"{clips_dir!r} is outside {root}")
+    return clips_dir
 
 
 def resolve_cjk_font() -> str:
@@ -141,11 +183,23 @@ class BilibiliProductionGateway:
                         canonical_script.get("type"))
         progress("audio_validated", 45)
 
+        # TOPIC, CATEGORY AND A DESTINATION — the same four arguments the
+        # YouTube gateway passes. Without them resolve_background reaches
+        # neither the Pexels tier nor the cache tier, and since the flat
+        # preset floor was removed it has nothing left to answer with: every
+        # bilibili render would raise BackgroundUnavailable.
         selected = self._background_resolver(
-            copy.deepcopy(canonical_profile["audience"]), artifact.request.background
+            copy.deepcopy(canonical_profile["audience"]), artifact.request.background,
+            topic=(artifact.request.topic
+                   or canonical_script.get("video_title")
+                   or artifact.request.idea),
+            category=(artifact.request.category
+                      or (canonical_script.get("_meta") or {}).get("category")
+                      or canonical_script.get("category")),
+            dest_dir=artifact_dir / "clips",
+            duration=float(metadata.get("duration") or 0) or None,
         )
-        if not isinstance(selected, str) or not selected or ".." in selected or selected.startswith("/"):
-            raise ValueError("background resolver returned unsafe background")
+        safe_clips_dir(selected, artifact_dir)
         background_path.write_text(json.dumps({"selected": selected}, ensure_ascii=False), encoding="utf-8")
         font_path = self._font_resolver()
         progress("background_resolved", 60)
