@@ -81,7 +81,7 @@ def _gateway(tmp_path, *, duration=1.25, frames=None):
         tmp_path,
         synthesizer=synthesize,
         renderer=render,
-        background_resolver=lambda profile, requested: "static_midnight",
+        background_resolver=lambda profile, requested, **kwargs: "clips:assets/clips",
         tracker_getter=lambda video_id=None: tracker,
         media_probe=probe,
         frame_probe=lambda path: frames or {"nonblank": True, "changing": True},
@@ -201,7 +201,42 @@ def test_profile_mismatch_and_escaped_background_fail_before_tts(tmp_path):
         gateway.produce(_artifact(), {}, bad, lambda *args: None)
     assert calls == []
 
-    gateway._background_resolver = lambda *args: "photo:../../outside.png"
+    # A SHAPE THE RESOLVER CAN ACTUALLY RETURN. This used to be
+    # "photo:../../outside.png", which resolve_background stopped being able
+    # to produce when the preset and photo tiers were removed -- so the pin
+    # was green against a value that could not occur. Every value now starts
+    # with "clips:", and that prefix is exactly what made the old
+    # `startswith("/")` check unable to fire.
+    gateway._background_resolver = lambda *args, **kwargs: "clips:../../outside"
     with pytest.raises(ValueError, match="background"):
         gateway.produce(_artifact(), {"type": "educational", "full_script": "你好"},
                         _profile(), lambda *args: None)
+
+
+def test_an_absolute_clips_dir_outside_the_artifact_is_refused(tmp_path):
+    """THE ONE THE OLD GUARD LET THROUGH.
+
+    "clips:/etc" does not start with "/" -- the prefix does -- so the check
+    passed it. Absolute is legal for exactly one directory, the dest_dir the
+    gateway itself passed the resolver; anywhere else is the resolver
+    answering about somewhere nobody asked about.
+    """
+    (tmp_path / "art_bili").mkdir()
+    gateway, calls = _gateway(tmp_path)
+    gateway._background_resolver = lambda *args, **kwargs: "clips:/etc"
+    with pytest.raises(ValueError, match="background"):
+        gateway.produce(_artifact(), {"type": "educational", "full_script": "你好"},
+                        _profile(), lambda *args: None)
+
+
+def test_the_artifacts_own_clips_directory_is_accepted(tmp_path):
+    """And the normal case still passes: tier 3 fetches footage into
+    `artifact_dir / "clips"` and hands back that absolute path."""
+    from studio.bilibili_production import safe_clips_dir
+
+    artifact_dir = (tmp_path / "art_bili")
+    artifact_dir.mkdir()
+    own = artifact_dir / "clips"
+
+    assert safe_clips_dir(f"clips:{own}", artifact_dir) == str(own)
+    assert safe_clips_dir("clips:assets/clips", artifact_dir) == "assets/clips"
