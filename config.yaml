@@ -123,7 +123,76 @@ duration:
     # batch of 2-item renders, and quiz's own duration band comes from that
     # measurement. Setting either from a round number first is how a
     # guessed value ends up inside a guard.
-    quiz:          {rate: 2.43, silence: 18.3, n: 56, fixed_words: 36, items_spoken: 2}
+    # RE-FITTED OVER 2-ITEM RENDERS, which is the only population this
+    # number now describes. Pooling them with the 89 one-item quizzes on
+    # disk gave rate 1.43 / overhead 11.2s -- a single line drawn through
+    # two different formats, fitting neither. Separated:
+    #
+    #     1-item  n=89   rate 2.88   overhead 22.1s
+    #     2-item  n= 4   rate 1.34   overhead 35.1s
+    #
+    # 35.1 - 22.1 = 13.0s per extra item, which lands within 0.2s of the
+    # 13.2s measured independently by instrumenting generate_silence
+    # (e6b205a). Two unrelated methods, the same number.
+    #
+    # `silence` is overhead minus the 4s outro, per this file's own
+    # definition. n is 4, not 93, and that is the honest count: four
+    # renders is thin for a guard, and saying 93 would borrow confidence
+    # from samples of a different format.
+    quiz:
+      rate: 1.34
+      # 35.1 IS THE FITTED OVERHEAD ITSELF, not the overhead minus the
+      # outro. The fit is over NARRATION seconds, word_target subtracts
+      # `silence + outro` from a VIDEO duration, and video = narration +
+      # outro -- so the outro cancels and `silence` must carry the whole
+      # audio overhead. Subtracting it twice put word_target 5 words high.
+      # The check: at the measured median this returns 62.0 words, and the
+      # four renders' median is 62.
+      silence: 35.1
+      n: 4
+      # RE-MEASURED FOR TWO ITEMS, under the same definition the rate was
+      # fitted with: spoken script words minus the explanation. The 36 here
+      # before was measured on 1-item videos AND counted the generated
+      # boilerplate ("Opción A,", "Escucha las opciones", the answer
+      # reveal) that `rate` does not see. Two different definitions that
+      # happened to land on almost the same number, which is exactly why
+      # nothing noticed. Measured the consistent way: 1-item median 14,
+      # 2-item median 35.
+      fixed_words: 35
+      items_spoken: 2
+      # ITS OWN BAND, because one window cannot describe six formats. A
+      # 2-item quiz runs past the global 80s ceiling by design now, and
+      # raising THAT would stop the guard catching a runaway educational
+      # or vocabulary video.
+      #
+      # DERIVED, and the ratio is applied to the part that can actually
+      # move. The global band's ratios (50/65 and 80/65 of target) exist so
+      # "a model that misses by +/-20% still lands inside" -- but what a
+      # model can miss on is the WORDS IT WRITES. It cannot miss on the
+      # countdown, the think pause, the gaps or the outro: those are the
+      # same length whatever the script says, and on quiz they are 39.1 of
+      # 85.3 seconds, 46% of the runtime.
+      #
+      # Spreading +/-23% across the whole 85.3s would hand the model an
+      # 18.8s allowance on a part that is only 46.2s long -- a +/-41%
+      # tolerance on words, dressed up as +/-23%. Applied to the variable
+      # part alone it is +/-10.7s, which is the +/-23% the ratio means.
+      #
+      # THE GENERAL RULE, and quiz is just the first type to make it
+      # visible: a tolerance ratio belongs to the part of a measurement
+      # that can move. Vocabulary, with its repeat pauses, is next.
+      #
+      # Anchored on the measured median VIDEO duration of the four 2-item
+      # renders. The band judges video (project() = narration + outro, and
+      # the pipeline rejected id016 at 93.4s = 89.4 narration + 4.0), so
+      # these are video seconds; an audio-anchored band would sit 4s low.
+      #
+      #   the four renders   76.9  79.0  91.7  93.4   all inside
+      #   the 1-item cut     47.5                      rejected
+      #   the 3-item cut    127.9                      rejected
+      min_seconds: 74.7
+      max_seconds: 96.0
+      target_seconds: 85.3
 
 
   # ── REPETITION ────────────────────────────────────────────────────

@@ -129,15 +129,61 @@ def test_the_prompt_instruction_quotes_the_types_own_numbers(cfg):
 
 # ── the live config ──────────────────────────────────────────────────
 
-def test_no_type_overrides_the_band_yet():
-    """Deliberate. quiz's ceiling comes from the re-fit over 2-item
-    renders; this test is what turns that from an intention into a
-    tripwire, and it is EXPECTED to be updated in the same commit that
-    adds the measured number."""
+def test_quiz_is_the_only_type_with_its_own_band():
+    """Quiz's band was MEASURED, over four 2-item renders (72.9 / 75.0 /
+    87.7 / 89.4 s). The tripwire this replaces said it was to be updated by
+    the commit carrying a measured number and not by one carrying a chosen
+    one; this is that update, and it keeps the same job for the next type."""
     ds.reload()
-    overriding = [t for t in ("quiz", "educational", "fill_blank",
-                              "true_false", "pronunciation", "vocabulary")
-                  if ds.band(t) != ds.band()]
-    assert not overriding, (
+    overriding = sorted(t for t in ("quiz", "educational", "fill_blank",
+                                    "true_false", "pronunciation", "vocabulary")
+                        if ds.band(t) != ds.band())
+    assert overriding == ["quiz"], (
         f"{overriding} declare a band — if that number was measured, update "
         "this test in the same commit; if it was chosen to fit, do not")
+
+
+def test_quizs_band_holds_every_two_item_render_it_was_fitted_on():
+    """The four the number came from. If a later change moves quiz's
+    duration, this names which render fell out."""
+    ds.reload()
+    for name, seconds in (("pv033_take_over", 72.9),
+                          ("gr004_first_conditional", 75.0),
+                          ("sl001_lowkey", 87.7),
+                          ("id016_early_bird", 89.4)):
+        record = ds.check("quiz", narration_seconds=seconds - 4.0,
+                          measured_video_seconds=seconds)
+        assert record["status"] == ds.PASS, f"{name}: {record['reason']}"
+
+
+def test_quizs_band_still_catches_one_and_three_item_cuts():
+    """A band wide enough for two items must not be so wide that the
+    formats the owner rejected sail through it."""
+    ds.reload()
+    for label, seconds in (("a 1-item cut", 43.5), ("a 3-item cut", 123.9)):
+        record = ds.check("quiz", narration_seconds=seconds - 4.0,
+                          measured_video_seconds=seconds)
+        assert record["status"] == ds.OUT_OF_BAND, f"{label} passed"
+
+
+def test_the_predictor_agrees_with_the_renders_it_was_fitted_on():
+    """Within a few seconds of the real length — the acceptance for the
+    re-fit. Loose enough for four samples, tight enough that a rate or
+    silence typo fails it."""
+    ds.reload()
+    for name, words, seconds in (("pv033_take_over", 50, 72.9),
+                                 ("gr004_first_conditional", 57, 75.0),
+                                 ("sl001_lowkey", 66, 87.7),
+                                 ("id016_early_bird", 75, 89.4)):
+        spec = ds.type_spec("quiz")
+        predicted = words / spec["rate"] + spec["silence"] + ds.outro_seconds()
+        assert abs(predicted - seconds) <= 5.0, (
+            f"{name}: predicted {predicted:.1f}s against a real {seconds}s")
+
+
+def test_the_other_types_still_answer_with_the_global_band():
+    ds.reload()
+    for vtype in ("educational", "vocabulary", "true_false", "fill_blank",
+                  "pronunciation"):
+        assert ds.band(vtype)["max_seconds"] == 80.0, (
+            f"{vtype} drifted off the global ceiling")

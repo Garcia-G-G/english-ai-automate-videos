@@ -122,25 +122,73 @@ def test_check_script_finds_a_real_violation():
 
 # ─────────── the two specifications must not contradict each other ───────────
 
-def test_the_conflict_between_duration_and_length_is_detected():
-    """THE TRAP, and it fired between two of our own specs. duration_spec
-    asks quiz for a 77-word explanation because only ONE of three authored
-    items is spoken; 77 words is ~454 characters into a box that holds 240.
+def test_the_quiz_conflict_is_resolved_by_speaking_two_items():
+    """THE TRAP, RESOLVED THE WAY ITS OWN DOCSTRING PRESCRIBED.
+
+    duration_spec used to ask quiz for a 77-word explanation because only
+    ONE of three authored items was spoken, so the entire speech budget
+    landed on a single explanation -- ~454 characters into a box that holds
+    181. conflicts_with_duration says in its own body: "The resolution is
+    upstream -- speak more items, so each explanation can be short".
+
+    Quiz speaks two items now (20391bb), the budget is split, and each
+    explanation is asked for 14 words -- about 82 characters. The conflict
+    is gone because the cause was removed, not because the detector was
+    loosened; the next test proves the detector still fires.
     """
-    conflicts = ls.conflicts_with_duration("quiz")
-    assert conflicts, "the known quiz conflict must be detected"
+    import duration_spec as ds
+    ds.reload()
+
+    assert ls.conflicts_with_duration("quiz") == []
+    assert ds.per_item_budget("quiz") * ls.CHARS_PER_WORD <= \
+        ls.budget_for("quiz", "explanation").max_chars
+
+
+def test_the_detector_still_fires_when_a_budget_really_is_too_big():
+    """The coverage the test above would otherwise have taken with it. A
+    resolved conflict must not be confused with a detector that stopped
+    looking."""
+    import duration_spec as ds
+
+    real = ds.per_item_budget
+    ds.per_item_budget = lambda vt, target_seconds=None: 77
+    try:
+        conflicts = ls.conflicts_with_duration("quiz")
+    finally:
+        ds.per_item_budget = real
+
+    assert conflicts, "a 77-word explanation must still be reported"
     conflict = conflicts[0]
     assert conflict["field"] == "explanation"
     assert conflict["duration_chars"] > conflict["box_max_chars"]
 
 
 def test_a_conflicting_field_is_withheld_from_the_prompt():
-    """A prompt carrying both numbers teaches the generator that neither is
-    real. That is exactly how four brevity instructions beat the word budget
-    when the duration work landed."""
+    """A prompt carrying two contradictory numbers teaches the generator
+    that neither is real -- how four brevity instructions beat the word
+    budget when the duration work landed.
+
+    Quiz no longer conflicts, so its explanation limit is now SAFE to state
+    and the prompt carries it. The withholding is asserted against a
+    conflict that actually exists."""
+    import duration_spec as ds
+    ds.reload()
+
     instruction = ls.prompt_instruction("quiz")
     assert "question" in instruction
-    assert "explanation" not in instruction
+    assert "explanation" in instruction, (
+        "the conflict is resolved, so the limit should now be stated")
+
+    real = ds.per_item_budget
+    ds.per_item_budget = lambda vt, target_seconds=None: 77
+    try:
+        withheld = ls.prompt_instruction("quiz")
+    finally:
+        ds.per_item_budget = real
+
+    assert "question" in withheld
+    assert "explanation" not in withheld, (
+        "a field whose two specs contradict must not state either number")
 
 
 def test_a_type_with_no_conflict_gets_every_field():

@@ -101,8 +101,11 @@ def test_word_target_inverts_the_projection():
         words = ds.word_target(t)
         speech = words / ds.type_spec(t)["rate"]
         narration = speech + ds.type_spec(t)["silence"]
+        # THE TYPE'S OWN TARGET. A type may declare its own band, and the
+        # round-trip property is per type: a script built to quiz's word
+        # target must land on quiz's target duration, not on the global one.
         assert ds.project(t, narration) == pytest.approx(
-            ds.band()["target_seconds"], abs=0.5), t
+            ds.band(t)["target_seconds"], abs=0.5), t
 
 
 def test_the_word_range_brackets_the_band():
@@ -123,13 +126,27 @@ def test_the_target_is_centred_so_a_miss_still_lands_in_band():
 # ─────────────────────────── the recorded verdict ───────────────────────────
 
 def test_a_video_inside_the_band_passes():
-    v = ds.check("quiz", narration_seconds=60.0)
+    # educational: 64s sits inside the global band. Quiz's floor is 74.7s
+    # now, so a 64s quiz is correctly out of band and cannot illustrate a
+    # pass any more.
+    v = ds.check("educational", narration_seconds=60.0)
     assert v["status"] == ds.PASS and v["projected_seconds"] == 64.0
+
+
+def test_a_type_with_its_own_band_passes_inside_it():
+    """The same property for a type that overrides — quiz's own 74.7-96s."""
+    v = ds.check("quiz", narration_seconds=81.3)
+    assert v["status"] == ds.PASS, v["reason"]
+    assert v["band"] == [74.7, 96.0]
 
 
 @pytest.mark.parametrize("narration,edge", [(20.0, "floor"), (90.0, "ceiling")])
 def test_out_of_band_is_recorded_with_the_edge_it_missed(narration, edge):
-    v = ds.check("quiz", narration_seconds=narration)
+    # educational, NOT quiz. These numbers were chosen against the global
+    # 50-80s band, and quiz now declares its own 74.7-96s one, so 90s is
+    # inside it. The test is about the RECORD, not about any type's
+    # tuning -- so it asks a type that still answers with the global band.
+    v = ds.check("educational", narration_seconds=narration)
     assert v["status"] == ds.OUT_OF_BAND
     assert edge in v["reason"]
 
@@ -145,7 +162,10 @@ def test_the_verdict_is_shaped_like_a_gate_record():
 def test_a_measured_video_beats_the_projection():
     """Before the render only a projection exists; after it, the real thing
     does, and the record must not keep asserting the estimate."""
-    v = ds.check("quiz", narration_seconds=60.0, measured_video_seconds=95.0)
+    # educational for the same reason as above: 95s sits inside quiz's own
+    # ceiling now, and this test is about measured-beats-projected.
+    v = ds.check("educational", narration_seconds=60.0,
+                 measured_video_seconds=95.0)
     assert v["status"] == ds.OUT_OF_BAND
     assert v["measured_seconds"] == 95.0
     assert v["projected_seconds"] == 64.0, "the projection is kept, not overwritten"
