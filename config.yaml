@@ -111,7 +111,19 @@ duration:
     vocabulary:    {rate: 1.18, silence: 6.4, n: 6}
     true_false:    {rate: 1.80, silence: 9.0, n: 16, fixed_words: 18, items_spoken: 1}
     fill_blank:    {rate: 4.44, silence: 28.6, n: 23, fixed_words: 40, items_spoken: 1}
-    quiz:          {rate: 2.43, silence: 18.3, n: 56, fixed_words: 36, items_spoken: 1}
+    # TWO, by the owner's ear, not by arithmetic. He listened to a 1-item
+    # cut (43.5s) and a 3-item cut (123.9s) and picked two. The reason is
+    # not length in the abstract: it is hearing "piensa bien, tres, dos,
+    # uno" three times in two minutes, which is where a viewer leaves. The
+    # third authored item is not wasted -- it seeds another video.
+    #
+    # `rate` and `silence` below are still the 1-item fit (n=56, all of it
+    # from the pre-artifact tree) and are therefore WRONG for a 2-item
+    # quiz. They are left alone deliberately: they get re-fitted over a
+    # batch of 2-item renders, and quiz's own duration band comes from that
+    # measurement. Setting either from a round number first is how a
+    # guessed value ends up inside a guard.
+    quiz:          {rate: 2.43, silence: 18.3, n: 56, fixed_words: 36, items_spoken: 2}
 
 
   # ── REPETITION ────────────────────────────────────────────────────
