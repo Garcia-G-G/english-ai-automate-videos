@@ -109,10 +109,35 @@ def spoken_words(script: dict) -> int:
     return total
 
 
+def _pairs():
+    """(audio metadata path, script path) for every produced pair on disk.
+
+    TWO LAYOUTS, AND MISSING THE SECOND MADE THIS TOOL MEASURE THE PAST.
+    The original walked output/audio/<type>/*.json against
+    output/scripts/<type>/<same name>.json. That is the LEGACY tree, and
+    nothing has been written into it since 2026-08-21: every render since
+    produces output/artifacts/<id>/ with audio/narration.json and
+    script/script.json beside it.
+
+    So 30 finished artifacts were invisible here -- 11 of them quiz -- and
+    quiz's fit of n=56 was drawn entirely from videos made before the
+    current layout existed. A calibration tool that cannot see the last
+    month of production is measuring the wrong month.
+    """
+    for audio in glob.glob(str(ROOT / "output/audio/*/*.json")):
+        vtype = os.path.basename(os.path.dirname(audio))
+        yield audio, str(ROOT / "output/scripts" / vtype / os.path.basename(audio))
+
+    for audio in glob.glob(str(ROOT / "output/artifacts/*/audio/narration.json")):
+        yield audio, os.path.join(os.path.dirname(os.path.dirname(audio)),
+                                  "script", "script.json")
+
+
 def samples():
     """(type, spoken_words, seconds) for every produced pair on disk."""
     out = collections.defaultdict(list)
-    for audio in glob.glob(str(ROOT / "output/audio/*/*.json")):
+    seen = set()
+    for audio, script_path in _pairs():
         try:
             meta = json.load(open(audio, encoding="utf-8"))
         except Exception:                                   # noqa: BLE001
@@ -120,13 +145,18 @@ def samples():
         duration, vtype = meta.get("duration"), meta.get("type")
         if not duration or not vtype:
             continue
-        script_path = ROOT / "output/scripts" / vtype / os.path.basename(audio)
-        if not script_path.exists():
+        if not os.path.exists(script_path):
             continue
         try:
             script = json.load(open(script_path, encoding="utf-8"))
         except Exception:                                   # noqa: BLE001
             continue
+        # The same artifact can appear in both trees when an older render
+        # was copied forward; counting it twice would weight it twice.
+        key = (vtype, round(float(duration), 3), spoken_words(script))
+        if key in seen:
+            continue
+        seen.add(key)
         n = spoken_words(script)
         if n >= 3:
             out[vtype].append((n, float(duration)))
