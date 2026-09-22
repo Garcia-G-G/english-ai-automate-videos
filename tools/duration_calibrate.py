@@ -81,15 +81,39 @@ def _items_spoken(vtype: str) -> int:
         return 1
 
 
-def spoken_words(script: dict) -> int:
-    """Words this script's generator will actually send to the TTS.
+def items_in_audio(meta: dict) -> int:
+    """How many items THIS artifact's audio actually carries.
 
-    ITEMS-AWARE ON PURPOSE. The root-level question/statement/sentence is item
-    one; items two and three live in the array the schema calls DEAD PAYLOAD
-    and are spoken only once `items_spoken` says so. Reading the count from
-    config means this measurement follows the pipeline instead of drifting
-    behind it -- the day items_spoken becomes 3, the band it is judged against
-    becomes true on its own, with nothing here to remember to change.
+    WHY NOT config. `items_spoken` says what the pipeline synthesises
+    TODAY; a sample on disk was produced under whatever the config said the
+    day it ran. The moment quiz moved from 1 to 2, reading config here
+    started counting item two's words for eighty-nine historical one-item
+    videos that never spoke them -- and the fit answered with a straight
+    face: quiz's rate leapt 2.43 -> 3.95 words per second, which is not a
+    measurement of anything, just the same seconds divided by words nobody
+    said.
+
+    The audio knows. 1af342d writes item N>1 as `i<N>_<name>`, so the
+    highest prefix present IS the item count, per sample, whatever the
+    config has since become.
+    """
+    st = (meta or {}).get("segment_times") or {}
+    highest = 1
+    for name in st:
+        if name[:1] == "i" and "_" in name:
+            head = name.split("_", 1)[0][1:]
+            if head.isdigit():
+                highest = max(highest, int(head))
+    return highest
+
+
+def spoken_words(script: dict, items: int = None) -> int:
+    """Words this script's generator sends to the TTS for `items` items.
+
+    `items` is measured from the artifact's own audio (items_in_audio) when
+    there is one. It falls back to config's `items_spoken` for a script with
+    no audio beside it -- a prediction rather than a measurement, which is
+    the only case where today's config is the right answer.
     """
     vtype = script.get("type")
     fields = SPOKEN_FIELDS.get(vtype)
@@ -101,7 +125,7 @@ def spoken_words(script: dict) -> int:
     if not spec:
         return total
     key, item_fields = spec
-    wanted = _items_spoken(vtype)
+    wanted = _items_spoken(vtype) if items is None else max(1, items)
     items = script.get(key) or []
     # item one is the root, already counted, so only the extras are added
     for item in items[1:wanted]:
@@ -153,11 +177,11 @@ def samples():
             continue
         # The same artifact can appear in both trees when an older render
         # was copied forward; counting it twice would weight it twice.
-        key = (vtype, round(float(duration), 3), spoken_words(script))
+        n = spoken_words(script, items=items_in_audio(meta))
+        key = (vtype, round(float(duration), 3), n)
         if key in seen:
             continue
         seen.add(key)
-        n = spoken_words(script)
         if n >= 3:
             out[vtype].append((n, float(duration)))
     return out

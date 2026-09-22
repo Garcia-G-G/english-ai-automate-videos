@@ -101,3 +101,71 @@ def test_the_live_tree_carries_artifact_samples():
     if not found:
         pytest.skip("no artifacts on disk in this checkout")
     assert len(found) >= 1
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# HOW MANY ITEMS A SAMPLE CARRIED, which is not what config says today.
+#
+# spoken_words() read `items_spoken` from config. The moment quiz moved
+# from 1 to 2, that started counting item two's words for eighty-nine
+# historical ONE-item videos that never spoke them, and the fit answered
+# with a straight face: quiz's rate leapt 2.43 -> 3.95 words per second.
+# Not a measurement of anything -- the same seconds divided by words nobody
+# said. A re-fit run on top of that would have written it into the guard.
+# ═══════════════════════════════════════════════════════════════════════
+
+def test_a_one_item_artifact_is_counted_as_one_item():
+    """No `iN_` prefixes in segment_times means item 1 only, whatever
+    config has since become."""
+    assert dc.items_in_audio({"segment_times": {
+        "question": {}, "option_a": {}, "countdown_3": {}, "answer": {}}}) == 1
+
+
+def test_the_highest_prefix_is_the_item_count():
+    assert dc.items_in_audio({"segment_times": {
+        "question": {}, "i2_question": {}, "i2_answer": {}}}) == 2
+    assert dc.items_in_audio({"segment_times": {
+        "question": {}, "i2_question": {}, "i3_question": {}}}) == 3
+
+
+def test_something_merely_starting_with_i_is_not_an_item_prefix():
+    assert dc.items_in_audio({"segment_times": {"intro_line": {}}}) == 1
+    assert dc.items_in_audio({"segment_times": {"i_am_not_a_prefix": {}}}) == 1
+
+
+def test_an_artifact_with_no_segment_times_is_one_item():
+    assert dc.items_in_audio({}) == 1
+    assert dc.items_in_audio({"segment_times": {}}) == 1
+
+
+def test_a_historical_one_item_sample_is_not_charged_for_item_two(tree,
+                                                                  monkeypatch):
+    """THE PIN. With items_spoken=2 in config, the old behaviour counted
+    words the video never spoke — inflating the rate for every sample
+    produced before the switch moved."""
+    monkeypatch.setattr(dc, "_items_spoken", lambda vtype: 2)
+
+    script = _script(40)
+    script["questions"] = [dict(script), {"question": "extra " * 30,
+                                          "explanation": "extra " * 30,
+                                          "options": {"A": "x", "B": "y",
+                                                      "C": "z", "D": "w"}}]
+
+    one_item_audio = {"segment_times": {"question": {}, "answer": {}}}
+    measured = dc.spoken_words(script, items=dc.items_in_audio(one_item_audio))
+    assumed = dc.spoken_words(script)
+
+    assert measured < assumed, (
+        "the historical sample is still charged for an item it never spoke")
+
+
+def test_a_script_with_no_audio_falls_back_to_config(monkeypatch):
+    """Predicting the length of a script not yet produced is the one case
+    where today's config IS the right answer."""
+    monkeypatch.setattr(dc, "_items_spoken", lambda vtype: 2)
+
+    script = _script(10)
+    script["questions"] = [dict(script), {"question": "uno dos tres cuatro",
+                                          "explanation": "cinco seis",
+                                          "options": {}}]
+    assert dc.spoken_words(script) > dc.spoken_words(script, items=1)
