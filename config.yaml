@@ -102,12 +102,26 @@ duration:
     # `silence` is the fitted intercept: fixed pauses plus, for quiz, the
     # seven-second countdown that is SILENT by design. No wording reaches it.
     #
-    # CAVEAT ON pronunciation: 16 samples with a median of 38 spoken words,
-    # and the queue writes ~104. The intercept came out negative, which is a
-    # fitting artifact at that range, not physics. Treat its prediction as
-    # indicative until more pronunciation videos exist.
+    # pronunciation WAS the indicative one: 12 samples, a median of 38
+    # spoken words against a queue that writes ~104, and an intercept that
+    # came out negative -- a fitting artifact at that range, not physics.
+    # It is measurable now. 36e2fe2 made the artifact tree visible to the
+    # calibrator and doubled the sample to 24, and the intercept came back
+    # positive:
+    #
+    #     was   rate 1.54  silence 0.0   median |error| 5.2s, max 27.8s
+    #     now   rate 2.02  silence 1.8   median |error| 2.2s, max 12.0s
+    #
+    # The case that exposed it: pr002 (bit_vs_beat), 107 spoken words, real
+    # video 57.5s. The old numbers predicted 73.5s -- a 31% error in the
+    # figure the guard uses to aim the generator, which is how a correct
+    # video gets called too short. The new ones predict 58.8s.
+    #
+    # STILL A SPREAD. cat_vs_cut is +12.0s out, so pronunciation is the
+    # loosest fit of the six and 24 samples is not many. Better than a
+    # known 31% error, not yet good.
     educational:   {rate: 2.26, silence: 0.8, n: 45}
-    pronunciation: {rate: 1.54, silence: 0.0, n: 12}
+    pronunciation: {rate: 2.02, silence: 1.8, n: 24}
     vocabulary:    {rate: 1.18, silence: 6.4, n: 6}
     true_false:    {rate: 1.80, silence: 9.0, n: 16, fixed_words: 18, items_spoken: 1}
     fill_blank:    {rate: 4.44, silence: 28.6, n: 23, fixed_words: 40, items_spoken: 1}

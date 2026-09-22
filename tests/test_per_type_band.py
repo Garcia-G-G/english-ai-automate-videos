@@ -143,16 +143,34 @@ def test_quiz_is_the_only_type_with_its_own_band():
         "this test in the same commit; if it was chosen to fit, do not")
 
 
+#: The four renders the band was fitted on, as (narration, video). VIDEO is
+#: what the band judges -- project() is narration + outro, and the pipeline
+#: rejected id016 at 93.4s = 89.4 + 4.0. Writing narration seconds where
+#: video seconds belong is a 4s error, and it is the one this file made
+#: before the band was corrected.
+FITTED_RENDERS = (
+    ("pv033_take_over", 50, 72.9, 76.9),
+    ("gr004_first_conditional", 57, 75.0, 79.0),
+    ("sl001_lowkey", 66, 87.7, 91.7),
+    ("id016_early_bird", 75, 89.4, 93.4),
+)
+
+
+def test_the_fitted_renders_video_duration_is_narration_plus_outro():
+    """The unit confusion, pinned. If project() ever stops adding exactly
+    the outro, the table above is wrong and everything built on it too."""
+    ds.reload()
+    for name, _words, narration, video in FITTED_RENDERS:
+        assert ds.project("quiz", narration) == pytest.approx(video, abs=0.05), name
+
+
 def test_quizs_band_holds_every_two_item_render_it_was_fitted_on():
     """The four the number came from. If a later change moves quiz's
     duration, this names which render fell out."""
     ds.reload()
-    for name, seconds in (("pv033_take_over", 72.9),
-                          ("gr004_first_conditional", 75.0),
-                          ("sl001_lowkey", 87.7),
-                          ("id016_early_bird", 89.4)):
-        record = ds.check("quiz", narration_seconds=seconds - 4.0,
-                          measured_video_seconds=seconds)
+    for name, _words, narration, video in FITTED_RENDERS:
+        record = ds.check("quiz", narration_seconds=narration,
+                          measured_video_seconds=video)
         assert record["status"] == ds.PASS, f"{name}: {record['reason']}"
 
 
@@ -160,9 +178,9 @@ def test_quizs_band_still_catches_one_and_three_item_cuts():
     """A band wide enough for two items must not be so wide that the
     formats the owner rejected sail through it."""
     ds.reload()
-    for label, seconds in (("a 1-item cut", 43.5), ("a 3-item cut", 123.9)):
-        record = ds.check("quiz", narration_seconds=seconds - 4.0,
-                          measured_video_seconds=seconds)
+    for label, narration in (("a 1-item cut", 43.5), ("a 3-item cut", 123.9)):
+        record = ds.check("quiz", narration_seconds=narration,
+                          measured_video_seconds=narration + 4.0)
         assert record["status"] == ds.OUT_OF_BAND, f"{label} passed"
 
 
@@ -171,14 +189,11 @@ def test_the_predictor_agrees_with_the_renders_it_was_fitted_on():
     re-fit. Loose enough for four samples, tight enough that a rate or
     silence typo fails it."""
     ds.reload()
-    for name, words, seconds in (("pv033_take_over", 50, 72.9),
-                                 ("gr004_first_conditional", 57, 75.0),
-                                 ("sl001_lowkey", 66, 87.7),
-                                 ("id016_early_bird", 75, 89.4)):
+    for name, words, _narration, video in FITTED_RENDERS:
         spec = ds.type_spec("quiz")
         predicted = words / spec["rate"] + spec["silence"] + ds.outro_seconds()
-        assert abs(predicted - seconds) <= 5.0, (
-            f"{name}: predicted {predicted:.1f}s against a real {seconds}s")
+        assert abs(predicted - video) <= 5.0, (
+            f"{name}: predicted {predicted:.1f}s against a real {video}s video")
 
 
 def test_the_other_types_still_answer_with_the_global_band():
