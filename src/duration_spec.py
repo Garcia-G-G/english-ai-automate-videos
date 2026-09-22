@@ -89,8 +89,36 @@ def reload() -> None:
     _CACHE = None
 
 
-def band() -> Dict[str, float]:
-    b = _config().get("band") or {}
+#: The three numbers a band is made of. A type overrides any subset.
+BAND_KEYS = ("min_seconds", "max_seconds", "target_seconds")
+
+
+def band(video_type: str = None) -> Dict[str, float]:
+    """The duration band, for a type or globally.
+
+    ONE BAND CANNOT DESCRIBE SIX FORMATS. `duration.band` was a single
+    50-80s window applied to everything, while `duration.types` carried
+    rate, silence, n, fixed_words and items_spoken per type and no band at
+    all. So the only way to let a 2-item quiz through was to raise the
+    global ceiling -- which also stops the guard catching a runaway
+    educational or vocabulary video. The formats differ by design; the
+    window that judges them has to.
+
+    A type declares only what it needs. `max_seconds` alone on quiz leaves
+    its floor and target on the global values, because those are still
+    right and restating them is how two numbers drift apart.
+
+    NO TYPE OVERRIDES ANYTHING YET. The mechanism lands before the numbers
+    on purpose: quiz's ceiling comes from re-fitting over a batch of 2-item
+    renders, and a round number chosen to fit today's video would be
+    exactly the guessed-value-inside-a-guard this repo keeps paying for.
+    """
+    b = dict(_config().get("band") or {})
+    if video_type:
+        entry = (_config().get("types") or {}).get((video_type or "").lower()) or {}
+        for key in BAND_KEYS:
+            if entry.get(key) is not None:
+                b[key] = entry[key]
     return {
         "min_seconds": float(b.get("min_seconds", 50.0)),
         "max_seconds": float(b.get("max_seconds", 80.0)),
@@ -134,7 +162,7 @@ def word_target(video_type: str, target_seconds: float = None) -> Optional[int]:
     if spec is None:
         return None
     seconds = float(target_seconds if target_seconds is not None
-                    else band()["target_seconds"])
+                    else band(video_type)["target_seconds"])
     speech_seconds = seconds - (spec["silence"] + outro_seconds())
     return max(1, round(speech_seconds * spec["rate"]))
 
@@ -146,7 +174,7 @@ def word_range(video_type: str) -> Optional[Dict[str, int]]:
     treats it as approximate anyway; given a range it has something to
     aim inside.
     """
-    b = band()
+    b = band(video_type)
     lo = word_target(video_type, b["min_seconds"])
     hi = word_target(video_type, b["max_seconds"])
     mid = word_target(video_type, b["target_seconds"])
@@ -176,7 +204,7 @@ def check(video_type: str, narration_seconds: float,
     `measured_video_seconds` is used in preference to the projection when
     the video already exists — a projection is only needed before the render.
     """
-    b = band()
+    b = band(video_type)
     projected = project(video_type, narration_seconds)
     actual = float(measured_video_seconds) if measured_video_seconds else None
     judged = actual if actual is not None else projected
@@ -228,7 +256,7 @@ def prompt_instruction(video_type: str) -> str:
     words = word_range(video_type)
     if not words:
         return ""
-    b = band()
+    b = band(video_type)
     return (
         f"DURACIÓN OBJETIVO: el video terminado debe durar entre "
         f"{b['min_seconds']:.0f} y {b['max_seconds']:.0f} segundos, "
