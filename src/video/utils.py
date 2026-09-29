@@ -993,8 +993,19 @@ def create_base_frame(t: float) -> Tuple[Image.Image, ImageDraw.Draw]:
 
 def finalize_frame(frame: Image.Image, draw: ImageDraw.Draw,
                    t: float, duration: float,
-                   words: list = None) -> np.ndarray:
-    """Add character, progress bar, and convert to numpy RGB array."""
+                   words: list = None,
+                   scene_cuts: list = None) -> np.ndarray:
+    """Add character, progress bar, and convert to numpy RGB array.
+
+    `scene_cuts` (seconds, from video.motion.scene_cuts) punches the CONTENT
+    at each section change. Applied here, before anything below is drawn,
+    so the character, progress bar and watermark hold still through it.
+    """
+    if scene_cuts:
+        from .motion import apply_transition
+        apply_transition(frame, t, scene_cuts)
+        draw = ImageDraw.Draw(frame, 'RGBA')
+
     # Render animated character with lip-sync
     try:
         from .character import get_character_renderer

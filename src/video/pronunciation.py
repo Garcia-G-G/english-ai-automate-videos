@@ -15,6 +15,7 @@ from .constants import (
 )
 from config.layout import PRON_TITLE_Y
 from .brand import watermark_top
+from .motion import apply_transition, entrance, idle_dy
 from .utils import (font, font_line_height, line_break, fit_text_font,
                     draw_text_centered, create_base_frame, finalize_frame)
 
@@ -153,7 +154,12 @@ def create_frame_pronunciation(
     word_size = _word_size(word, followers, max_w)
 
     # ── The stack ────────────────────────────────────────────────────
-    cursor = _STACK_TOP
+    # The stack rises in at the start and then floats as one block. Floats
+    # UP only, and the entrance's rise is spent in the first 0.4s while
+    # only the short phase-A stack is on screen, so the word size's
+    # fit against the tallest phase still holds.
+    word_pop, stack_rise = entrance(t, 0.0)
+    cursor = _STACK_TOP + int(round(stack_rise + idle_dy(t, 0.42)))
 
     def place(text, size, color, alpha, outline=6):
         """Draw one block at the cursor and advance past it.
@@ -170,7 +176,10 @@ def create_frame_pronunciation(
         cursor += _block_height(text, size, max_w) + _GAP
 
     w_alpha = get_alpha(t, 0, 0.3)
-    place(word, word_size, COLOR_YELLOW, w_alpha)
+    # The word pops from 90%. Never larger than its fitted size, beyond a
+    # rounding pixel: the spring's overshoot is a fraction of a percent.
+    place(word, max(1, int(round(word_size * min(1.0, word_pop)))),
+          COLOR_YELLOW, w_alpha)
     place(translation_text, _SIZE_TRANSLATION, (200, 200, 220),
           int(w_alpha * 0.8), outline=4)
 
@@ -199,4 +208,10 @@ def create_frame_pronunciation(
         place(tip, _SIZE_TIP, COLOR_WHITE, get_alpha(t, phonetic_phase, 0.3),
               outline=4)
 
+    # Sections here are phases of the duration, not segments, so the
+    # transitions fire on the same three times the draw logic above uses.
+    # Applied here rather than through finalize_frame's scene_cuts: same
+    # effect, and it keeps finalize_frame's call identical for the tests
+    # that stand in for it.
+    apply_transition(frame, t, [word_phase, mistake_phase, phonetic_phase])
     return finalize_frame(frame, draw, t, duration, words=data.get('words', []))

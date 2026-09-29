@@ -18,6 +18,7 @@ from .constants import (
     SAFE_AREA_TOP, SAFE_AREA_BOTTOM, SAFE_AREA_HEIGHT,
 )
 from .brand import watermark_top
+from .motion import idle_dy, spaced_cuts
 from .utils import (
     font, line_break, draw_text_with_glow, draw_text_solid,
     draw_rounded_card, slide_in_x,
@@ -143,7 +144,27 @@ def create_frame_educational(
         elif g['start'] <= t <= g['end']:
             _render_group_tiktok(t, g, draw, frame, translations, alpha=1.0)
 
-    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []),
+                          scene_cuts=english_cuts(groups))
+
+
+def english_cuts(groups: List[Dict]) -> List[float]:
+    """Transition times for an educational video: where English takes over.
+
+    Educational has no sections to cut between -- its segments are
+    sentences, and a punch every two seconds would read as a glitch. The
+    moment that matters is the English line arriving, which is what the
+    video exists to teach, so that is where the transition fires: once per
+    run of English groups, at its first group's display start.
+    """
+    starts = []
+    previous_english = False
+    for g in groups or ():
+        english = bool(g.get('english'))
+        if english and not previous_english:
+            starts.append(float(g.get('display_start', g.get('start', 0.0))))
+        previous_english = english
+    return spaced_cuts(starts)
 
 
 def _card_floor() -> int:
@@ -354,6 +375,13 @@ def _render_group_tiktok(
     # it. Downward only, so the floor is the only edge it can reach.
     if bounce_offset_y:
         card_y = min(card_y + bounce_offset_y, floor - total_h)
+
+    # Then it floats while it is read. idle_dy only lifts, so the floor is
+    # safe; the lift is capped at SAFE_AREA_TOP so a tall card already
+    # pinned to the top of the safe area is never pushed into the UI rail.
+    if not is_fading_out:
+        lift = idle_dy(t, start + _BOUNCE_DURATION)
+        card_y += int(round(max(lift, min(0, SAFE_AREA_TOP - card_y))))
 
     if words:
         # ── Cream card for karaoke groups ──
