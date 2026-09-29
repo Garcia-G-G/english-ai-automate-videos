@@ -591,6 +591,12 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
     # returned, so "an mp4 survived the failure" means a finished mp4.
     rendered_video = None
 
+    # OPENED HERE, NOT WHEN THE VIDEO GETS ITS NAME. The script is paid for
+    # before unique_name exists; a tracker reset after generate_script left
+    # that cost on the previous video's already-saved tracker, and it was
+    # never written. Named by job until the artifact name is known.
+    tracker = reset_tracker(video_id=f"job_{job_id}")
+
     try:
         update_job(job_id, status="running", step_number=1,
                    current_step="Selecting topic...", progress=5)
@@ -693,8 +699,10 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         unique_name = f"{output_name}_{timestamp}"
 
         # Cost tracking for this video (TTS now runs in-process, so the
-        # tracker survives long enough to be saved).
-        tracker = reset_tracker(video_id=unique_name)
+        # tracker survives long enough to be saved). Renamed, not reset: the
+        # script's GPT call is already on it.
+        if tracker is not None:
+            tracker.rename(unique_name)
 
         script_dir = SCRIPTS_DIR / video_type
         script_dir.mkdir(parents=True, exist_ok=True)
@@ -864,6 +872,9 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                 # the reason it should not be published.
                 **verdict_record,
                 "background": background_record or None,
+                # What this video cost, OpenAI vs ElevenLabs, as of the render.
+                # The ledger in output/costs/ stays the authoritative record.
+                "cost": tracker.summary() if tracker is not None else None,
                 "script_data": script_data,
                 "created_at": datetime.now().isoformat()
             }, f, ensure_ascii=False, indent=2)
@@ -893,6 +904,16 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         complete_job(job_id, success=False, error=error_msg[:2000])
         logger.error("[Pipeline ERROR]: %s", error_msg)
         _release_queued_script(queued_path, script_path, rendered_video)
+    finally:
+        # A failed run spent money too, and a ledger fed only by successes
+        # under-counts exactly while iterating on a broken pipeline. save()
+        # writes only what is not on disk yet, so the success path's own
+        # save above cannot be doubled here.
+        try:
+            if tracker is not None:
+                tracker.save()
+        except Exception:                                   # noqa: BLE001
+            logger.exception("could not persist the cost ledger")
 
     return result
 
@@ -2404,6 +2425,32 @@ if page == "Dashboard":
         f'<div class="cost-line">💸 Hoy <strong>${cost["today_usd"]:.4f}</strong>'
         f' · {cost["month"]} acumulado <strong>${cost["month_usd"]:.2f}</strong>'
         f' {ceiling_txt}</div>', unsafe_allow_html=True)
+
+    # ── Money, per video ─────────────────────────────────────────────────
+    # Collapsed: the line above is the question that changes what the
+    # operator does next; this is where they go when it looks wrong.
+    from cost_tracker import per_video_costs, video_cost_stats
+    _video_costs = per_video_costs(OUTPUT_DIR / "costs")
+    if _video_costs:
+        _stats = video_cost_stats(_video_costs)
+        _outliers = set(_stats["outliers"])
+        with st.expander(
+                f"💸 Costo por video — media ${_stats['mean_usd']:.4f} "
+                f"(OpenAI ${_stats['openai_mean_usd']:.4f} · ElevenLabs "
+                f"${_stats['elevenlabs_mean_usd']:.4f}) · mediana "
+                f"${_stats['median_usd']:.4f} · {_stats['videos']} videos"):
+            st.dataframe(
+                [{"video": r["video_id"],
+                  "fecha": (r["last_at"] or "")[:16].replace("T", " "),
+                  "OpenAI $": round(r["openai_usd"], 4),
+                  "ElevenLabs $": round(r["elevenlabs_usd"], 4),
+                  "total $": round(r["total_usd"], 4),
+                  "llamadas": r["calls"],
+                  "⚠": "> 2× mediana" if r["video_id"] in _outliers else ""}
+                 for r in _video_costs[:50]],
+                use_container_width=True, hide_index=True)
+            st.caption("Últimos 50. Detalle completo: "
+                       "`python3 src/cost_tracker.py --videos 100`")
     st.markdown("")
 
     # ── In flight ────────────────────────────────────────────────────────
