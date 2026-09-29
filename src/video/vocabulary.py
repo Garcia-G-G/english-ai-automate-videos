@@ -20,6 +20,7 @@ from config.layout import (
     BAR_Y,
 )
 from config.colors import CARD_COLORS
+from .motion import idle_dy, scene_cuts
 from .utils import (
     font, draw_text_solid, draw_text_centered,
     draw_rounded_card, draw_difficulty_badge, fit_text_font,
@@ -207,6 +208,14 @@ def create_frame_vocabulary(
 
     # ── Phase 1: Card fade-in ────────────────────────────────────
     card_appear = title_start + 0.50
+
+    # The card, its header and its rows float together once the card is
+    # in. UP only, so the clamp against the progress bar above still holds;
+    # 3px of the 30px left between the title and the card is spent at most.
+    card_float = int(round(idle_dy(t, card_appear + 0.30)))
+    card_top += card_float
+    header_y += card_float
+    first_row_y += card_float
     card_alpha_f = min(1.0, max(0.0, (t - card_appear) / 0.30))
     card_alpha = int(255 * ease_out_cubic(card_alpha_f))   # fully opaque to hide ghost text
 
@@ -277,7 +286,8 @@ def create_frame_vocabulary(
         card_top=card_top, presentation=presentation,
     )
 
-    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []),
+                          scene_cuts=scene_cuts(st))
 
 
 def _draw_cell(draw, text, *, col_w, budget, row_y, color, alpha,

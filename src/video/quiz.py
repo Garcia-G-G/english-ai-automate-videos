@@ -36,6 +36,7 @@ from config.layout import (
 )
 from config.colors import COUNTDOWN_COLORS, DIFFICULTY_COLORS
 from .brand import watermark_top
+from .motion import entrance, idle_dy, scene_cuts
 from .utils import (
     strip_display_quotes,
     font, line_break, draw_text_solid, draw_text_centered,
@@ -650,6 +651,13 @@ def _create_frame_quiz_item(
 
     question_visible = t >= 0
 
+    # When this item's question arrives, for its entrance. Item 1 starts at
+    # the top of the video; item 2+ at its own question, which is also when
+    # quiz_item_at switches to this view.
+    q_start = _seg_start(st, 'question', 0.0)
+    if q_start < 1.0:
+        q_start = 0.0
+
     # Bug A2 fix: Visual appears VISUAL_ANTICIPATION seconds BEFORE audio
     show_option_a = t >= _seg_start(st, 'option_a', 999) - VISUAL_ANTICIPATION
     show_option_b = t >= _seg_start(st, 'option_b', 999) - VISUAL_ANTICIPATION
@@ -707,7 +715,13 @@ def _create_frame_quiz_item(
         max_question_height = QUESTION_ZONE_BOTTOM - question_y - 20
 
         accent = DIFFICULTY_COLORS.get(difficulty) if difficulty else None
-        draw_quiz_question_box(frame, draw, clean_question, question_y, q_alpha, max_question_height, accent)
+        # Rises into place, then floats. max_question_height stays computed
+        # at the RESTING y above, so the motion can never change the font
+        # size the box was fitted with.
+        _, q_rise = entrance(t, q_start)
+        q_dy = int(round(q_rise + idle_dy(t, q_start + 0.42)))
+        draw_quiz_question_box(frame, draw, clean_question, question_y + q_dy,
+                               q_alpha, max_question_height, accent)
         draw = ImageDraw.Draw(frame, 'RGBA')
 
     # ── 4. Options (individual rounded cards with stagger) ──────
@@ -739,6 +753,19 @@ def _create_frame_quiz_item(
         # utils.strip_display_quotes.
         opt_text = strip_display_quotes(options[letter])
         y_pos = opt_start_y + i * (opt_card_h + opt_gap)
+
+        # Rises in on its own audio (with the existing slide), then floats
+        # out of step with its neighbours (phase per card), so the stack
+        # never moves as one block. Motion only when the option has real
+        # timing -- 999 is "no segment".
+        #
+        # NO SCALE here, unlike the other entrances: draw_quiz_option_card
+        # truncates the text to the SCALED card width, so a card arriving
+        # at 90% would flash "..." on a long option.
+        if start_time < 999:
+            _, rise = entrance(t, start_time, rise=24)
+            y_pos += int(round(rise + idle_dy(t, start_time + 0.42,
+                                              phase=0.23 * i)))
 
         # Stagger: each option appears STAGGER seconds after the previous
         stagger_time = start_time
@@ -837,7 +864,12 @@ def _create_frame_quiz_item(
         reveal_alpha = get_alpha(t, answer_time, 0.3)
         reveal_y = COUNTDOWN_ZONE_TOP + 20
 
-        rf = font(48)
+        # Pops, like the countdown numbers before it: the reveal is the
+        # moment the whole video builds to, and it used to just fade in.
+        # Before answer_time (the VISUAL_ANTICIPATION lead) it holds the pop's
+        # starting size rather than vanishing.
+        reveal_pop = tiktok_pop_scale(t, answer_time) or 0.85
+        rf = font(max(1, int(round(48 * reveal_pop))))
         reveal_text = presentation.answer.format(answer=correct)
         bbox = draw.textbbox((0, 0), reveal_text, font=rf)
         tw = bbox[2] - bbox[0]
@@ -890,6 +922,9 @@ def _create_frame_quiz_item(
         exp_height = len(exp_lines) * exp_line_h + exp_padding * 2
         # The slide displaces a settled card and never crosses the floor.
         exp_y = min(exp_y_base + slide_offset, watermark_top() - exp_height)
+        # Idle float AFTER the clamp: idle_dy is never positive, so it can
+        # only lift the card off the floor, never push it through.
+        exp_y += int(round(idle_dy(t, explanation_time + 0.4, phase=0.5)))
 
         # Light card background
         card_alpha = int(240 * (exp_alpha / 255))
@@ -942,7 +977,8 @@ def _create_frame_quiz_item(
         except Exception:
             pass
 
-    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []),
+                          scene_cuts=scene_cuts(st))
 
 
 # ═══════════════════════════════════════════════════════════════════════

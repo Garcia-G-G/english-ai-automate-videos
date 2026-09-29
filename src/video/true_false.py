@@ -42,6 +42,7 @@ from config.timing import (
     TF_QUESTION_FADE_DURATION as QUESTION_FADE_DURATION,
 )
 from .brand import watermark_top
+from .motion import idle_dy, scene_cuts
 from .utils import (
     strip_display_quotes,
     font, line_break, draw_text_solid, draw_text_centered,
@@ -357,7 +358,9 @@ def create_frame_true_false(
 
         # Slight vertical offset during spring (bounce in from above)
         spring_offset = int(30 * (1.0 - min(1.0, card_spring)))
-        card_draw_y = card_y - spring_offset
+        # Then floats while the viewer reads it. Starts once the spring has
+        # settled, so the two motions never fight.
+        card_draw_y = card_y - spring_offset + int(round(idle_dy(t, 0.45)))
 
         draw_rounded_card(
             frame, CARD_MARGIN_X, card_draw_y, CARD_WIDTH, card_inner_h,
@@ -532,10 +535,15 @@ def create_frame_true_false(
                 draw_sparkles(draw, sparkle_cx, sparkle_cy, t, answer_time + 0.2, radius=120)
 
         else:
-            # Before answer: neutral colored buttons with emoji labels
+            # Before answer: neutral colored buttons with emoji labels.
+            # They float out of step with each other through the think and
+            # the countdown -- the part that used to be a still image.
+            settled = opt_start + SLIDE_DURATION
+            true_dy = int(round(idle_dy(t, settled, phase=0.0)))
+            false_dy = int(round(idle_dy(t, settled + 0.08, phase=0.5)))
             _draw_button(
                 frame, draw, true_label,
-                true_x, btn_y, BTN_WIDTH, BTN_HEIGHT,
+                true_x, btn_y + true_dy, BTN_WIDTH, BTN_HEIGHT,
                 NEUTRAL_GRAD_TOP, NEUTRAL_GRAD_BOT,
                 alpha=true_alpha,
                 border_color=(255, 255, 255), border_width=3,
@@ -544,7 +552,7 @@ def create_frame_true_false(
 
             _draw_button(
                 frame, draw, false_label,
-                false_x, btn_y, BTN_WIDTH, BTN_HEIGHT,
+                false_x, btn_y + false_dy, BTN_WIDTH, BTN_HEIGHT,
                 NEUTRAL_GRAD_TOP, NEUTRAL_GRAD_BOT,
                 alpha=false_alpha,
                 border_color=(255, 255, 255), border_width=3,
@@ -611,6 +619,8 @@ def create_frame_true_false(
             exp_height = len(exp_lines) * exp_line_h + exp_padding * 2
             exp_y = min(exp_y_base + slide_offset,
                         watermark_top() - exp_height)
+            # Idle float after the clamp; idle_dy <= 0 only ever lifts it.
+            exp_y += int(round(idle_dy(t, exp_appear + 0.4, phase=0.5)))
 
             # Light card
             card_a = int(220 * (exp_alpha / 255))
@@ -659,4 +669,5 @@ def create_frame_true_false(
         except Exception:
             pass
 
-    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []),
+                          scene_cuts=scene_cuts(st))

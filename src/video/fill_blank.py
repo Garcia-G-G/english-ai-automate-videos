@@ -12,6 +12,7 @@ from animations.easing import (
     tiktok_pop_scale, spring_animation,
 )
 from .constants import VIDEO_WIDTH, VIDEO_HEIGHT
+from .motion import entrance, idle_dy, scene_cuts
 from config.colors import COUNTDOWN_COLORS, QUIZ_COLORS
 from config.layout import (
     CARD_MARGIN_X, CARD_WIDTH, CARD_RADIUS, CARD_PADDING,
@@ -134,7 +135,9 @@ def _draw_sentence_card(t, draw, frame, sentence, correct, show_answer, answer_t
     # glyphs, not the line box, or the padding reads as larger at the top
     # and bottom than at the sides.
     card_h = max(140, box.height + CARD_PADDING * 2 + 12)
-    card_y = _CARD_Y + bounce
+    # Floats once the spring has settled. Up only, so the card never
+    # crowds the options below it.
+    card_y = _CARD_Y + bounce + int(round(idle_dy(t, 0.45)))
 
     # White card
     draw_rounded_card(frame, CARD_MARGIN_X, card_y, CARD_WIDTH, card_h,
@@ -287,7 +290,11 @@ def _draw_option_cards(t, draw, frame, options, correct, show_answer,
         is_wrong = show_answer and not is_correct
 
         cx = opt_x + x_off
-        cy = y
+        # Rises in on its own audio alongside the slide, then floats out of
+        # step with the other cards. Only the card's y moves: the fit above
+        # is sized to the card, not to where it is.
+        _, rise = entrance(t, delay, rise=20)
+        cy = y + int(round(rise + idle_dy(t, delay + 0.42, phase=0.23 * i)))
 
         # Wrong options: fade to 25% and slide 10px outward
         if is_wrong:
@@ -465,4 +472,5 @@ def create_frame_fill_blank(
         except Exception:
             pass
 
-    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []),
+                          scene_cuts=scene_cuts(st))
