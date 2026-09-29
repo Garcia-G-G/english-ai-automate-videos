@@ -1,3 +1,14 @@
+> **SUPERSEDED — kept for the reasoning, not for the numbers.**
+>
+> This was a conversational review note, written before the band was committed.
+> Its figures are AUDIO-based (68.6 / 81.3 / 94.0, structure 32 %). The committed
+> band judges VIDEO and is **74.7 / 85.3 / 96.0, structure 46 %** — see the quiz
+> block in `config.yaml`, which is the only place to read these numbers from.
+>
+> What survives is the argument in §1: a tolerance ratio belongs to the part of a
+> measurement that can move. That rule now lives next to the constants, where it
+> belongs.
+
 # Reply: commit it, with one change to the band — and yes to pronunciation
 
 ## 1. The derivation is right in method, and the ratio is applied to the wrong number
