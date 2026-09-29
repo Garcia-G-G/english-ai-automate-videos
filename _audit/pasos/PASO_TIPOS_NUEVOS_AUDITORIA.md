@@ -71,7 +71,7 @@ if any output moves, the refactor is wrong.
 
 ```
 src/tts_elevenlabs.py:64   DEFAULT_VOICE_ID = VIDEO_PROFILE_VOICE_ID or ELEVENLABS_VOICE_ID
-.env                        ELEVENLABS_VOICE_ID   (one, "ZOgeDYxfyev5qgOXq2lN")
+.env                        ELEVENLABS_VOICE_ID   (one, "<voice id en .env>")
 ```
 
 Every call site resolves to that one. **Micro-diálogo a 2 voces cannot exist until a

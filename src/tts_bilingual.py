@@ -79,8 +79,7 @@ def resolve_settings() -> Dict:
 
     cfg = _load_audio_config()
     voice_id = (os.getenv("VIDEO_PROFILE_VOICE_ID")
-                or os.getenv("ELEVENLABS_VOICE_ID")
-                or "ZOgeDYxfyev5qgOXq2lN")
+                or os.getenv("ELEVENLABS_VOICE_ID"))
     model = (os.getenv("ELEVENLABS_SEGMENT_MODEL")
              or cfg.get("segment_model")
              or "eleven_turbo_v2_5")
@@ -180,6 +179,8 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict) -> Dict:
         use_speaker_boost=True,
         speed=call["speed"],
     )
+    if not call.get("voice_id"):
+        raise RuntimeError("ELEVENLABS_VOICE_ID no está configurado. Ponlo en .env (el ID de la voz del canal); ya no hay voz por defecto en el código.")
     kwargs = dict(
         voice_id=call["voice_id"],
         text=call["text"],

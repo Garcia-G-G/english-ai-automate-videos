@@ -529,7 +529,7 @@ def resolve_tts_plan(script_data: Dict, provider_name: str = None) -> Dict:
             # read directly so a dry-run never imports the ElevenLabs SDK.
             plan["voice_id"] = (os.getenv("VIDEO_PROFILE_VOICE_ID")
                                 or os.getenv("ELEVENLABS_VOICE_ID")
-                                or "ZOgeDYxfyev5qgOXq2lN")
+                                or "(sin configurar: falta ELEVENLABS_VOICE_ID en .env)")
             plan["model_id"] = (os.getenv("VIDEO_PROFILE_TTS_MODEL")
                                 or os.getenv("ELEVENLABS_MODEL")
                                 or "eleven_v3")

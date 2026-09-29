@@ -55,14 +55,15 @@ VOICES = {
     "sam": "yoZ06aMxZJJ28mfd3POQ",          # Male, raspy
     "nicole": "piTKgcLEGmPE4e6mEKli",       # Female, whisper
     "matilda": "XrExE9yKIg1WjnnlVkGX",      # Female, warm
-    "english-teacher": "ZOgeDYxfyev5qgOXq2lN",  # Custom, bilingual teacher
 }
 
-# Default voice (english-teacher - custom bilingual educational voice)
-# VIDEO_PROFILE_VOICE_ID (set by src/profiles.py) takes precedence — load_dotenv
-# above uses override=True, so .env would clobber a plain ELEVENLABS_VOICE_ID.
+# The channel's voice. It lives in .env and ONLY there: the repository is not
+# the place for an account's voice id, and a hardcoded fallback would silently
+# keep working if .env lost it. VIDEO_PROFILE_VOICE_ID (set by src/profiles.py)
+# takes precedence. May be None here; _elevenlabs_with_retry refuses to call the
+# API without one, with a message that says where to set it.
 DEFAULT_VOICE_ID = (os.getenv("VIDEO_PROFILE_VOICE_ID")
-                    or os.getenv("ELEVENLABS_VOICE_ID", "ZOgeDYxfyev5qgOXq2lN"))
+                    or os.getenv("ELEVENLABS_VOICE_ID"))
 
 # Model — eleven_v3: best quality, 74 languages, emotional control via text cues
 # NOTE: v3 does NOT support SSML <break> tags — use "..." or narrative text for pauses
@@ -381,6 +382,11 @@ def estimate_word_timestamps(text: str, duration: float, english_phrases: list =
 def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, **kwargs) -> None:
     """Call ElevenLabs TTS API with exponential backoff retry."""
     import time as _time
+
+    # Every ElevenLabs call in this module passes through here, so this is the
+    # one place a missing voice id is caught -- not six call sites.
+    if not kwargs.get("voice_id"):
+        raise RuntimeError("ELEVENLABS_VOICE_ID no está configurado. Ponlo en .env (el ID de la voz del canal); ya no hay voz por defecto en el código.")
 
     # Track cost
     try:

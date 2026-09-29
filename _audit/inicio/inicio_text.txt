@@ -200,12 +200,12 @@ Interrupted — the dashboard stopped while this job was at 'Rendering video...'
 📜 sin log_path en el registro del job
 
 ❌ Phone calls: Leaving voicemail · fill_blank · 2026-08-11 16:42 · job 1091a70e
-TTS failed (elevenlabs): cannot import name 'trim_clip_silence' from 'tts_common' (/Users/go/Downloads/english-ai-videos/src/tts_common.py)
+TTS failed (elevenlabs): cannot import name 'trim_clip_silence' from 'tts_common' (<repo>/src/tts_common.py)
 
 📜 sin log_path en el registro del job
 
 ❌ deep fake · fill_blank · 2026-08-11 16:42 · job 08d25cc6
-TTS failed (elevenlabs): cannot import name 'trim_clip_silence' from 'tts_common' (/Users/go/Downloads/english-ai-videos/src/tts_common.py)
+TTS failed (elevenlabs): cannot import name 'trim_clip_silence' from 'tts_common' (<repo>/src/tts_common.py)
 
 📜 sin log_path en el registro del job
 

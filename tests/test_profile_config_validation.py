@@ -34,7 +34,7 @@ import profiles  # noqa: E402
 from config.secrets import is_valid_voice_id, voice_id_pattern  # noqa: E402
 from studio.audiences import InvalidAudienceProfile  # noqa: E402
 
-VALID_VOICE = "ZOgeDYxfyev5qgOXq2lN"          # the real default voice id
+VALID_VOICE = "AbCdEfGhIjKlMnOpQrSt"          # right shape, not a real voice
 PLACEHOLDER = "KIDS_VOICE_ID_PENDIENTE"        # what config.yaml shipped
 
 

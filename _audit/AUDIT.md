@@ -585,7 +585,7 @@ The 11 real script JSONs in `output/scripts/*/` are the only corpus that exists,
 
 **Hardcoded values that should be config:**
 
-*Voice IDs & models* — 10 ElevenLabs UUIDs in a **never-read** `VOICES` dict (`tts_elevenlabs.py:45-56`); active default `"ZOgeDYxfyev5qgOXq2lN"` hardcoded at `:63-64`, again at `tts_bilingual.py:76`, again at `.env.example:22`; `DEFAULT_SIMILARITY = 0.80` (`:75`) with **no env or config override at all**; `MODEL_ID` default `eleven_v3` (`:66`); `eleven_turbo_v2_5` (`tts_bilingual.py:79`); `MODEL = "gpt-4o-mini"` (`script_generator.py:31`); `model="tts-1-hd"` at **14 sites** in `tts_openai.py` (bypassing its own `DEFAULT_MODEL = "tts-1"` at `:91`); `model="whisper-1"` (`:356`); `model="dall-e-3"` (`generate_character.py:241`, `generate_backgrounds.py:309`); `"KIDS_VOICE_ID_PENDIENTE"` (`config.yaml:106`) — a placeholder that would be sent to the API verbatim.
+*Voice IDs & models* — 10 ElevenLabs UUIDs in a **never-read** `VOICES` dict (`tts_elevenlabs.py:45-56`); active default `"<voice id en .env>"` hardcoded at `:63-64`, again at `tts_bilingual.py:76`, again at `.env.example:22`; `DEFAULT_SIMILARITY = 0.80` (`:75`) with **no env or config override at all**; `MODEL_ID` default `eleven_v3` (`:66`); `eleven_turbo_v2_5` (`tts_bilingual.py:79`); `MODEL = "gpt-4o-mini"` (`script_generator.py:31`); `model="tts-1-hd"` at **14 sites** in `tts_openai.py` (bypassing its own `DEFAULT_MODEL = "tts-1"` at `:91`); `model="whisper-1"` (`:356`); `model="dall-e-3"` (`generate_character.py:241`, `generate_backgrounds.py:309`); `"KIDS_VOICE_ID_PENDIENTE"` (`config.yaml:106`) — a placeholder that would be sent to the API verbatim.
 
 *Timings* — `countdown_interval = 1.5` at **5 duplicated sites** (`tts_openai.py:820, 1039, 1236`; `tts_elevenlabs.py:624, 852, 1067`); `transition_duration = 1.5` + `/4` at 2 sites; `add_silence(1.0)` dramatic pause ×2; all 7 TTS pauses (`tts_common.py:31-37`) **and a duplicate unused copy** (`config/timing.py:36-42`); TTS timeout 300 s and render timeout 600 s (`admin.py:208, 251`); ffmpeg concat timeout 120 s; scheduler intervals `[15,30,60,120,240]` (`admin.py:1541`).
 
@@ -597,7 +597,7 @@ The 11 real script JSONs in `output/scripts/*/` are the only corpus that exists,
 
 *Resolution/FPS* — `1080/1920/30` appears **six times**: `config/layout.py:8-10` (canonical), `v2/design.py:30-31`, `backgrounds.py:31-33`, `backgrounds.py:517`, `compositor.py:27-29`, `quality_reviewer.py:40-41`.
 
-*Paths* — **`run_admin.sh:17-18` hardcodes `/Users/go/Library/Python/3.9/bin/streamlit`**, a specific machine's Python 3.9 path, committed as a fallback branch. Also `REFERENCES_DIR` (never created), `HISTORY_DIR` with an **import-time `mkdir` side effect** (`quality_reviewer.py:34-35`).
+*Paths* — **`run_admin.sh:17-18` hardcodes `<user-site>/bin/streamlit`**, a specific machine's Python 3.9 path, committed as a fallback branch. Also `REFERENCES_DIR` (never created), `HISTORY_DIR` with an **import-time `mkdir` side effect** (`quality_reviewer.py:34-35`).
 
 *Word lists* — 4 overlapping, unsynchronised Spanish stoplists (§2 #10) plus `ENGLISH_WORDS`/`SPANISH_ENGLISH_OVERLAP` (`tts_openai.py:55-79`) and `EMPHASIS` (`config/timing.py:45-51`).
 
