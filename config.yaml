@@ -149,8 +149,7 @@ duration:
     # 13.2s measured independently by instrumenting generate_silence
     # (e6b205a). Two unrelated methods, the same number.
     #
-    # `silence` is overhead minus the 4s outro, per this file's own
-    # definition. n is 4, not 93, and that is the honest count: four
+    # n is 4, not 93, and that is the honest count: four
     # renders is thin for a guard, and saying 93 would borrow confidence
     # from samples of a different format.
     quiz:
@@ -207,6 +206,29 @@ duration:
       min_seconds: 74.7
       max_seconds: 96.0
       target_seconds: 85.3
+      # THE BAND ABOVE AIMS; THESE REJECT. The band is derived
+      # symmetrically from a median, which is right for telling the
+      # generator how long to write and wrong for refusing a video: it sits
+      # 2.2s under the shortest good render and 2.6s over the longest, from
+      # four samples with a +/-10% spread of their own. The fifth good
+      # render would fall out on ordinary luck, and a false reject stops
+      # production.
+      #
+      # A rejection threshold is derived from what it has to CATCH. Here
+      # that is one thing: a quiz that spoke the wrong number of items. Each
+      # edge is the midpoint between the nearest wrong format and the
+      # nearest good render:
+      #
+      #   floor     (47.5 1-item  +  76.9 shortest 2-item) / 2 =  62.2
+      #   ceiling   (93.4 longest 2-item  +  127.9 3-item) / 2 = 110.7
+      #
+      # 14.7s of room under the shortest render, 17.2s over the longest, and
+      # each wrong format out by the same margin -- that is what a midpoint
+      # means. NOT the length we
+      # want -- that is target_seconds. Re-derive both when a render
+      # outside 76.9-93.4 lands, or when the 1- or 3-item figures move.
+      reject_min_seconds: 62.2
+      reject_max_seconds: 110.7
 
 
   # ── REPETITION ────────────────────────────────────────────────────

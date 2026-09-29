@@ -10,10 +10,14 @@ runs past 80s, and the only lever was the global ceiling -- raising it
 would also stop the guard catching a runaway educational or vocabulary
 video. Six formats that differ by design cannot share one window.
 
-THE MECHANISM LANDS BEFORE THE NUMBERS. No type overrides anything yet:
-quiz's ceiling has to come from re-fitting over a batch of 2-item renders.
-A round number chosen to fit today's video is a guessed value inside a
-guard, which is the shape of defect this repo keeps paying for.
+THE MECHANISM LANDED BEFORE THE NUMBERS. Quiz's band came later, from
+re-fitting over a batch of 2-item renders (7f12275), because a round number
+chosen to fit today's video is a guessed value inside a guard, which is the
+shape of defect this repo keeps paying for.
+
+AND ONE LAYER ALONG, THE REJECT WINDOW. The band aims the generator;
+check() rejects on reject_window(), which a type may set wider because a
+false reject stops production. It falls back to the band per edge.
 """
 
 import sys
@@ -202,3 +206,103 @@ def test_the_other_types_still_answer_with_the_global_band():
                   "pronunciation"):
         assert ds.band(vtype)["max_seconds"] == 80.0, (
             f"{vtype} drifted off the global ceiling")
+
+
+# ── the reject window: aiming and rejecting are different jobs ────────
+
+def test_the_reject_window_falls_back_to_the_types_band(cfg):
+    """A type that declares no reject edges rejects exactly where it did."""
+    cfg({"quiz": dict(BASE, max_seconds=100.0)})
+    assert ds.reject_window("quiz") == {"min_seconds": 50.0,
+                                        "max_seconds": 100.0}
+    assert ds.reject_window() == {"min_seconds": 50.0, "max_seconds": 80.0}
+
+
+def test_a_type_declares_one_reject_edge_and_keeps_the_other(cfg):
+    cfg({"quiz": dict(BASE, reject_min_seconds=40.0)})
+    assert ds.reject_window("quiz") == {"min_seconds": 40.0,
+                                        "max_seconds": 80.0}
+
+
+def test_reject_edges_do_not_move_the_aim(cfg):
+    """THE WHOLE POINT. Widening what is rejected must not widen what the
+    generator is told to write."""
+    cfg({"quiz": dict(BASE)})
+    aimed = ds.word_range("quiz")
+    band = ds.band("quiz")
+
+    cfg({"quiz": dict(BASE, reject_min_seconds=30.0, reject_max_seconds=120.0)})
+    assert ds.word_range("quiz") == aimed
+    assert ds.band("quiz") == band
+
+
+def test_a_miss_inside_the_reject_window_passes_and_says_it_missed(cfg):
+    """Between the aim and the reject edge: PASS, so production continues,
+    but the record still shows the miss."""
+    cfg({"quiz": dict(BASE, reject_min_seconds=40.0)})
+    record = ds.check("quiz", narration_seconds=41.0,
+                      measured_video_seconds=45.0)
+    assert record["status"] == ds.PASS, record["reason"]
+    assert "outside the 50-80s aim" in record["reason"]
+    assert record["band"] == [50.0, 80.0]
+    assert record["reject_window"] == [40.0, 80.0]
+
+
+def test_a_hit_inside_the_aim_does_not_mention_it(cfg):
+    cfg({"quiz": dict(BASE, reject_min_seconds=40.0)})
+    record = ds.check("quiz", narration_seconds=61.0)
+    assert record["status"] == ds.PASS
+    assert "aim" not in record["reason"]
+
+
+def test_the_reason_quotes_a_fractional_edge_unrounded(cfg):
+    """74.7 printed as "75s" put a line in front of the operator 0.3s away
+    from the one the verdict used."""
+    cfg({"quiz": dict(BASE, reject_min_seconds=62.2)})
+    record = ds.check("quiz", narration_seconds=50.0)
+    assert record["status"] == ds.OUT_OF_BAND
+    assert "under the 62.2s floor" in record["reason"]
+
+
+def test_the_prompt_states_the_rule_the_pipeline_enforces(cfg):
+    """"se rechaza" has to quote the reject window, or it states a rule
+    check() does not apply."""
+    cfg({"quiz": dict(BASE, reject_min_seconds=40.0, reject_max_seconds=120.0)})
+    text = ds.prompt_instruction("quiz")
+    assert "entre 50 y 80 segundos" in text, "the aim is still the band"
+    assert "más corto que 40s o más largo que 120s se rechaza" in text
+
+
+# ── the live config's reject window ──────────────────────────────────
+
+def test_quiz_is_the_only_type_with_its_own_reject_window():
+    """Same tripwire as the band's: a reject edge is derived from what it
+    has to catch, so a new one needs its derivation beside it."""
+    ds.reload()
+    wider = sorted(t for t in ("quiz", "educational", "fill_blank",
+                               "true_false", "pronunciation", "vocabulary")
+                   if ds.reject_window(t) != {
+                       "min_seconds": ds.band(t)["min_seconds"],
+                       "max_seconds": ds.band(t)["max_seconds"]})
+    assert wider == ["quiz"], (
+        f"{wider} reject on something other than their band — if the edge "
+        "was derived from what it must catch, update this test with it")
+
+
+def test_quizs_reject_edges_are_the_midpoints_between_formats():
+    """The derivation, pinned: halfway between each wrong format and the
+    nearest good render. If a render or a cut moves, this says which edge
+    is now stale."""
+    ds.reload()
+    videos = [video for *_, video in FITTED_RENDERS]
+    one_item, three_items = 47.5, 127.9
+    w = ds.reject_window("quiz")
+    assert w["min_seconds"] == pytest.approx((one_item + min(videos)) / 2, abs=0.05)
+    assert w["max_seconds"] == pytest.approx((max(videos) + three_items) / 2, abs=0.05)
+
+
+def test_quizs_reject_window_is_wider_than_its_aim_on_both_sides():
+    ds.reload()
+    b, w = ds.band("quiz"), ds.reject_window("quiz")
+    assert w["min_seconds"] < b["min_seconds"]
+    assert w["max_seconds"] > b["max_seconds"]

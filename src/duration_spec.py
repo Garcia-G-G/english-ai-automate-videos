@@ -104,18 +104,17 @@ def band(video_type: str = None) -> Dict[str, float]:
     educational or vocabulary video. The formats differ by design; the
     window that judges them has to.
 
-    A type declares only what it needs. `max_seconds` alone on quiz leaves
-    its floor and target on the global values, because those are still
-    right and restating them is how two numbers drift apart.
+    A type declares only what it needs; whatever it leaves out stays on the
+    global value, because restating a number is how two copies drift apart.
+    Quiz declares all three, measured over its 2-item renders (7f12275).
 
-    NO TYPE OVERRIDES ANYTHING YET. The mechanism lands before the numbers
-    on purpose: quiz's ceiling comes from re-fitting over a batch of 2-item
-    renders, and a round number chosen to fit today's video would be
-    exactly the guessed-value-inside-a-guard this repo keeps paying for.
+    THIS IS THE AIMING WINDOW. word_target, word_range and the prompt read
+    it to tell the generator how long to write, and aiming wants it narrow.
+    What check() rejects on is reject_window(), which a type may set wider.
     """
     b = dict(_config().get("band") or {})
     if video_type:
-        entry = (_config().get("types") or {}).get((video_type or "").lower()) or {}
+        entry = (_config().get("types") or {}).get(video_type.lower()) or {}
         for key in BAND_KEYS:
             if entry.get(key) is not None:
                 b[key] = entry[key]
@@ -124,6 +123,48 @@ def band(video_type: str = None) -> Dict[str, float]:
         "max_seconds": float(b.get("max_seconds", 80.0)),
         "target_seconds": float(b.get("target_seconds", 65.0)),
     }
+
+
+#: What a type may declare to reject on something other than its band.
+REJECT_KEYS = {"reject_min_seconds": "min_seconds",
+               "reject_max_seconds": "max_seconds"}
+
+
+def reject_window(video_type: str = None) -> Dict[str, float]:
+    """The window check() rejects outside of. The band, unless a type widens it.
+
+    ONE NUMBER WAS DOING TWO JOBS. band() aims the generator AND judged the
+    artifact, and those want opposite things. Aiming wants a narrow window:
+    "write for 85s +/-11s" is what makes scripts land the right length.
+    Rejecting wants a wide one, because the two errors are not symmetric --
+    a video a few seconds short is a mild quality problem, and a false
+    reject STOPS PRODUCTION ("se generan y no aparecen" was a guard refusing
+    work for reasons that were not correctness).
+
+    So a rejection threshold is derived from WHAT IT HAS TO CATCH, not
+    symmetrically from a median. For quiz that is a wrong item count, and
+    the edges sit halfway between the formats (see config.yaml).
+
+    Falls back per edge: a type that declares neither key rejects on its
+    band, exactly as before.
+    """
+    w = band(video_type)
+    w = {"min_seconds": w["min_seconds"], "max_seconds": w["max_seconds"]}
+    if video_type:
+        entry = (_config().get("types") or {}).get(video_type.lower()) or {}
+        for key, edge in REJECT_KEYS.items():
+            if entry.get(key) is not None:
+                w[edge] = float(entry[key])
+    return w
+
+
+def _s(seconds: float) -> str:
+    """A threshold as written in config: 74.7 stays 74.7, 50.0 reads 50.
+
+    Rounding to whole seconds made a 74.7s floor read "75s", so an operator
+    saw a line 0.3s away from the one the verdict was reached against.
+    """
+    return f"{seconds:g}"
 
 
 def outro_seconds() -> float:
@@ -203,8 +244,13 @@ def check(video_type: str, narration_seconds: float,
 
     `measured_video_seconds` is used in preference to the projection when
     the video already exists — a projection is only needed before the render.
+
+    Judged against reject_window(), not band(). A video between the two is
+    a PASS whose reason says it missed the aim, so the miss stays visible
+    without stopping production.
     """
     b = band(video_type)
+    r = reject_window(video_type)
     projected = project(video_type, narration_seconds)
     actual = float(measured_video_seconds) if measured_video_seconds else None
     judged = actual if actual is not None else projected
@@ -219,6 +265,9 @@ def check(video_type: str, narration_seconds: float,
         "projected_seconds": round(projected, 2),
         "measured_seconds": round(actual, 2) if actual is not None else None,
         "band": [b["min_seconds"], b["max_seconds"]],
+        # The window the verdict below was actually reached against. Equal
+        # to `band` for every type that does not declare its own.
+        "reject_window": [r["min_seconds"], r["max_seconds"]],
         "target_seconds": b["target_seconds"],
         "word_target": word_target(video_type),
     }
@@ -232,17 +281,21 @@ def check(video_type: str, narration_seconds: float,
             f"config.yaml duration.types after measuring it")
         return record
 
-    if judged < b["min_seconds"]:
+    if judged < r["min_seconds"]:
         record["status"] = OUT_OF_BAND
-        record["reason"] = (f"{judged:.1f}s is {b['min_seconds'] - judged:.1f}s "
-                            f"under the {b['min_seconds']:.0f}s floor")
-    elif judged > b["max_seconds"]:
+        record["reason"] = (f"{judged:.1f}s is {r['min_seconds'] - judged:.1f}s "
+                            f"under the {_s(r['min_seconds'])}s floor")
+    elif judged > r["max_seconds"]:
         record["status"] = OUT_OF_BAND
-        record["reason"] = (f"{judged:.1f}s is {judged - b['max_seconds']:.1f}s "
-                            f"over the {b['max_seconds']:.0f}s ceiling")
+        record["reason"] = (f"{judged:.1f}s is {judged - r['max_seconds']:.1f}s "
+                            f"over the {_s(r['max_seconds'])}s ceiling")
     else:
         record["status"] = PASS
-        record["reason"] = f"{judged:.1f}s is inside {b['min_seconds']:.0f}-{b['max_seconds']:.0f}s"
+        record["reason"] = (f"{judged:.1f}s is inside "
+                            f"{_s(r['min_seconds'])}-{_s(r['max_seconds'])}s")
+        if not b["min_seconds"] <= judged <= b["max_seconds"]:
+            record["reason"] += (f", outside the {_s(b['min_seconds'])}-"
+                                 f"{_s(b['max_seconds'])}s aim")
     return record
 
 
@@ -257,6 +310,9 @@ def prompt_instruction(video_type: str) -> str:
     if not words:
         return ""
     b = band(video_type)
+    # The rejection sentence quotes what check() rejects on. Quoting the aim
+    # there would state a rule the pipeline does not enforce.
+    r = reject_window(video_type)
     return (
         f"DURACIÓN OBJETIVO: el video terminado debe durar entre "
         f"{b['min_seconds']:.0f} y {b['max_seconds']:.0f} segundos, "
@@ -265,7 +321,7 @@ def prompt_instruction(video_type: str) -> str:
         f"tener entre {words['min']} y {words['max']} palabras, "
         f"idealmente {words['target']}.\n"
         f"Esto es un requisito, no una sugerencia: un video más corto que "
-        f"{b['min_seconds']:.0f}s o más largo que {b['max_seconds']:.0f}s se rechaza."
+        f"{r['min_seconds']:.0f}s o más largo que {r['max_seconds']:.0f}s se rechaza."
     )
 
 

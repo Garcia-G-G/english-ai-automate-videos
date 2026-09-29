@@ -582,11 +582,9 @@ def test_gateway_paths_costs_and_available_metadata_are_exact(tmp_path):
     # rather than passing quietly. That is the whole point of the record.
     assert duration["status"] == "OUT_OF_BAND"
     # QUIZ'S OWN BAND, not the global 50-80. 7f12275 gave quiz a measured
-    # 74.7-96s window because a 2-item quiz runs past the global ceiling by
-    # design, and the record must carry the band the verdict was actually
-    # reached against -- an operator reading [50, 80] here while the guard
-    # used [74.7, 96] would be reading a different judgement than the one
-    # that was made.
+    # 74.7-96s aiming window because a 2-item quiz runs past the global
+    # ceiling by design; the record carries the type's numbers, not the
+    # global ones an operator might otherwise assume.
     assert duration["band"] == [74.7, 96.0]
 
     import duration_spec as _ds
@@ -594,10 +592,12 @@ def test_gateway_paths_costs_and_available_metadata_are_exact(tmp_path):
                                 _ds.band()["max_seconds"]], (
         "quiz is supposed to override the global band; if it no longer does, "
         "this test is passing for the wrong reason")
-    # The floor it names is quiz's own, for the same reason as the band
-    # above: the reason line is what an operator reads, and it has to quote
-    # the number the verdict was reached against.
-    assert "under the 75s floor" in duration["reason"]
+    # The verdict is reached against quiz's REJECT window, which is wider
+    # than its aiming band (a false reject stops production), and the record
+    # carries both. The reason line is what an operator reads, so it quotes
+    # the reject floor exactly as configured -- 62.2, not a rounded 62.
+    assert duration["reject_window"] == [62.2, 110.7]
+    assert "under the 62.2s floor" in duration["reason"]
 
 
 def test_gateway_inputs_and_collaborator_owned_values_are_not_mutated(tmp_path):
