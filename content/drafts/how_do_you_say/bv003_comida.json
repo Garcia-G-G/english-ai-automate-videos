@@ -1,0 +1,102 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice COMIDA en inglés? 🍎",
+  "video_description": "Diez alimentos básicos para pedir sin mirar el traductor. 🛒",
+  "title": "¿Cómo se dice…?",
+  "theme": "la comida",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes decir estas 10 palabras en inglés? Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🍎",
+      "spanish": "Manzana",
+      "english": "apple"
+    },
+    {
+      "emoji": "🍞",
+      "spanish": "Pan",
+      "english": "bread"
+    },
+    {
+      "emoji": "🥛",
+      "spanish": "Leche",
+      "english": "milk"
+    },
+    {
+      "emoji": "🥚",
+      "spanish": "Huevo",
+      "english": "egg"
+    },
+    {
+      "emoji": "🧀",
+      "spanish": "Queso",
+      "english": "cheese"
+    },
+    {
+      "emoji": "💧",
+      "spanish": "Agua",
+      "english": "water"
+    },
+    {
+      "emoji": "🍚",
+      "spanish": "Arroz",
+      "english": "rice"
+    },
+    {
+      "emoji": "🍗",
+      "spanish": "Pollo",
+      "english": "chicken"
+    },
+    {
+      "emoji": "🐟",
+      "spanish": "Pescado",
+      "english": "fish"
+    },
+    {
+      "emoji": "☕",
+      "spanish": "Café",
+      "english": "coffee"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: apple, bread, milk, egg, cheese, water, rice, chicken, fish, coffee.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "apple": "Manzana",
+    "bread": "Pan",
+    "milk": "Leche",
+    "egg": "Huevo",
+    "cheese": "Queso",
+    "water": "Agua",
+    "rice": "Arroz",
+    "chicken": "Pollo",
+    "fish": "Pescado",
+    "coffee": "Café"
+  },
+  "english_phrases": [
+    "apple",
+    "bread",
+    "milk",
+    "egg",
+    "cheese",
+    "water",
+    "rice",
+    "chicken",
+    "fish",
+    "coffee"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv003",
+    "video_type": "how_do_you_say",
+    "model": "manual",
+    "draft": true
+  },
+  "full_script": "[cheerful] ¿Sabes decir estas 10 palabras en inglés? Piensa antes de que yo lo diga. Manzana... apple. apple. Pan... bread. bread. Leche... milk. milk. Huevo... egg. egg. Queso... cheese. cheese. Agua... water. water. Arroz... rice. rice. Pollo... chicken. chicken. Pescado... fish. fish. Café... coffee. coffee. Ahora todas en inglés, conmigo: apple, bread, milk, egg, cheese, water, rice, chicken, fish, coffee. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

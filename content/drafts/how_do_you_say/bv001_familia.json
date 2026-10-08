@@ -1,0 +1,102 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice FAMILIA en inglés? 👪",
+  "video_description": "Diez palabras de la familia que vas a usar toda la vida. 🏡",
+  "title": "¿Cómo se dice…?",
+  "theme": "la familia",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes decir estas 10 palabras en inglés? Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "👪",
+      "spanish": "Familia",
+      "english": "family"
+    },
+    {
+      "emoji": "👩",
+      "spanish": "Madre",
+      "english": "mother"
+    },
+    {
+      "emoji": "👨",
+      "spanish": "Padre",
+      "english": "father"
+    },
+    {
+      "emoji": "👦",
+      "spanish": "Hermano",
+      "english": "brother"
+    },
+    {
+      "emoji": "👧",
+      "spanish": "Hermana",
+      "english": "sister"
+    },
+    {
+      "emoji": "👴",
+      "spanish": "Abuelo",
+      "english": "grandfather"
+    },
+    {
+      "emoji": "👵",
+      "spanish": "Abuela",
+      "english": "grandmother"
+    },
+    {
+      "emoji": "👶",
+      "spanish": "Bebé",
+      "english": "baby"
+    },
+    {
+      "emoji": "🧔",
+      "spanish": "Tío",
+      "english": "uncle"
+    },
+    {
+      "emoji": "🧑",
+      "spanish": "Primo",
+      "english": "cousin"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: family, mother, father, brother, sister, grandfather, grandmother, baby, uncle, cousin.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "family": "Familia",
+    "mother": "Madre",
+    "father": "Padre",
+    "brother": "Hermano",
+    "sister": "Hermana",
+    "grandfather": "Abuelo",
+    "grandmother": "Abuela",
+    "baby": "Bebé",
+    "uncle": "Tío",
+    "cousin": "Primo"
+  },
+  "english_phrases": [
+    "family",
+    "mother",
+    "father",
+    "brother",
+    "sister",
+    "grandfather",
+    "grandmother",
+    "baby",
+    "uncle",
+    "cousin"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv001",
+    "video_type": "how_do_you_say",
+    "model": "manual",
+    "draft": true
+  },
+  "full_script": "[cheerful] ¿Sabes decir estas 10 palabras en inglés? Piensa antes de que yo lo diga. Familia... family. family. Madre... mother. mother. Padre... father. father. Hermano... brother. brother. Hermana... sister. sister. Abuelo... grandfather. grandfather. Abuela... grandmother. grandmother. Bebé... baby. baby. Tío... uncle. uncle. Primo... cousin. cousin. Ahora todas en inglés, conmigo: family, mother, father, brother, sister, grandfather, grandmother, baby, uncle, cousin. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}
