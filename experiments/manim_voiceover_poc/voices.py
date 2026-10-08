@@ -6,8 +6,8 @@ sandbox). The scene never talks to a TTS API: it looks each beat up by id, check
 the text still matches what was recorded, and turns the word timings into
 manim-voiceover word boundaries so `<bookmark/>` lands on the spoken word.
 """
+import hashlib
 import json
-import shutil
 from pathlib import Path
 
 from manim_voiceover.helper import remove_bookmarks
@@ -36,15 +36,29 @@ class PrerecordedService(SpeechService):
             raise StaleAudioError(f"No audio for beat {beat_id!r} in {self.folder}. Run gen_audio.py.")
         if " ".join(beat["text"].split()) != plain:
             raise StaleAudioError(f"Beat {beat_id!r}: narration changed since the audio was made. Run gen_audio.py.")
+        # THE CACHE KEY IS THE MARKED TEXT AND THE AUDIO ITSELF, not the plain text.
+        # Keyed on `plain`, two things went wrong silently:
+        #   1. bookmarks live only in `text`. Adding {{pause:3}} to a quiz changes the
+        #      marks (a new <bookmark mark='p0'/>) but not one spoken word, so the old
+        #      entry came back with an input_text that had no p0, and the scene died on
+        #      "There is no <bookmark mark='p0' />" (third-person-s b26-b28, 2026-10-08).
+        #   2. gen_audio.py regenerates a beat's mp3 when its pauses change, but the
+        #      same stale entry also handed back the OLD audio, without the silence.
+        # And the copied file was named "<voice>-<beat>.mp3" for every lesson, so b26 of
+        # one lesson overwrote b26 of another inside the shared media/voiceovers folder.
+        mp3_bytes = (self.folder / beat["mp3"]).read_bytes()
+        words_bytes = (self.folder / beat["words"]).read_bytes()
+        digest = hashlib.sha1(mp3_bytes + b"\0" + words_bytes).hexdigest()[:12]
         input_data = {"service": "prerecorded", "voice": self.voice, "folder": str(self.folder),
-                      "id": beat_id, "input_text": plain}
+                      "id": beat_id, "input_text": " ".join(text.split()), "audio": digest}
         cached = self.get_cached_result(input_data, cache_dir)
-        if cached is not None:
+        if cached is not None and (cache_dir / cached["original_audio"]).exists():
             return cached
 
-        audio_name = f"{self.voice}-{beat_id}.mp3"
-        shutil.copyfile(self.folder / beat["mp3"], cache_dir / audio_name)
-        words = json.loads((self.folder / beat["words"]).read_text(encoding="utf-8"))
+        lesson_id = self.folder.parent.name
+        audio_name = f"{lesson_id}-{self.voice}-{beat_id}-{digest}.mp3"
+        (cache_dir / audio_name).write_bytes(mp3_bytes)
+        words = json.loads(words_bytes.decode("utf-8"))
         return {"input_text": text, "input_data": input_data, "original_audio": audio_name,
                 "word_boundaries": word_boundaries(plain, words)}
 
