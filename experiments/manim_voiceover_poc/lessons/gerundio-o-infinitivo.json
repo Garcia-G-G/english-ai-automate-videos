@@ -1,0 +1,338 @@
+{
+  "id": "gerundio-o-infinitivo",
+  "title": "¿To swim o swimming? Gerundio o infinitivo",
+  "kicker": "Inglés · Verbos · B1",
+  "level": "B1",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy resolvemos la duda que persigue a todo el que pasa del nivel básico: después de un verbo, ¿va [[to swim]] o va [[swimming]]? Hay reglas, y hay trucos para recordarlas."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El problema",
+      "narration": "Empezamos con una frase que suena bien en español y en inglés chirría. El fallo está justo después del verbo."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "I enjoy to swim in the sea.",
+      "gloss": "Disfruto nadando en el mar.",
+      "narration": "[[I enjoy to swim in the sea]]. Disfruto nadando en el mar. Ponemos [[to]] porque en español pensamos en un infinitivo: disfrutar de nadar."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "narration": "El culpable es el verbo [[enjoy]]. No acepta [[to]] detrás. Hay verbos que exigen la forma acabada en i-ene-ge, y este es el más famoso de todos.",
+      "highlight": {
+        "enjoy": "yellow",
+        "to": "red"
+      }
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "text": "I enjoy swimming in the sea.",
+      "gloss": "Disfruto nadando en el mar.",
+      "narration": "Correcto: [[I enjoy swimming in the sea]]. Después de [[enjoy]], el verbo va con i-ene-ge. Sin [[to]], y sin excepciones.",
+      "highlight": {
+        "swimming": "green"
+      }
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "Unos verbos piden -ing detrás; otros, to + verbo. No siempre hay lógica: hay que aprender las listas.",
+      "narration": "La verdad, sin rodeos: unos verbos piden i-ene-ge detrás y otros piden [[to]] más el verbo. No siempre hay lógica. Pero las listas son cortas, y hay pistas."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · Los verbos del -ing",
+      "narration": "Primero, los verbos que piden la forma en i-ene-ge. Muchos hablan de gustos, de terminar algo o de evitarlo."
+    },
+    {
+      "id": "b08",
+      "type": "list",
+      "heading": "Detrás va -ing",
+      "items": [
+        "enjoy, like, love, hate: gustos",
+        "finish, stop: terminar",
+        "avoid, mind: evitar o importar",
+        "suggest, consider: proponer"
+      ],
+      "narration": "[[Enjoy, like, love, hate]]: gustos. [[Finish, stop]]: terminar algo. [[Avoid, mind]]: evitar algo, o que te importe. Y [[suggest, consider]]: proponer o pensar en algo."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "Would you mind closing the window?",
+      "gloss": "¿Te importaría cerrar la ventana?",
+      "narration": "Una muy útil: [[Would you mind closing the window?]] ¿Te importaría cerrar la ventana? Después de [[mind]], siempre i-ene-ge: [[closing]].",
+      "highlight": {
+        "mind": "blue",
+        "closing": "green"
+      }
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "text": "She suggested going by train.",
+      "gloss": "Propuso ir en tren.",
+      "narration": "[[She suggested going by train]]. Propuso ir en tren. Aquí casi todos dicen [[suggested to go]], y suena fatal. Después de este verbo, va [[going]].",
+      "highlight": {
+        "suggested": "blue",
+        "going": "green"
+      }
+    },
+    {
+      "id": "b11",
+      "type": "heading",
+      "text": "Parte 3 · Los verbos del to",
+      "narration": "Ahora el otro grupo. Estos verbos miran hacia delante: algo que quieres, que decides o que planeas hacer."
+    },
+    {
+      "id": "b12",
+      "type": "list",
+      "heading": "Detrás va to + verbo",
+      "items": [
+        "want, would like, hope: deseos",
+        "decide, plan, agree: decisiones",
+        "need, try: necesidad o intento",
+        "promise, refuse: compromisos"
+      ],
+      "narration": "[[Want, would like, hope]]: deseos. [[Decide, plan, agree]]: decisiones. [[Need, try]]: necesidad o intento. Y [[promise, refuse]]: comprometerse o negarse."
+    },
+    {
+      "id": "b13",
+      "type": "sentence",
+      "text": "We decided to stay at home.",
+      "gloss": "Decidimos quedarnos en casa.",
+      "narration": "[[We decided to stay at home]]. Decidimos quedarnos en casa. La decisión apunta a algo que todavía no ha pasado. Por eso [[to]], que mira hacia delante.",
+      "highlight": {
+        "decided": "blue",
+        "to": "green"
+      }
+    },
+    {
+      "id": "b14",
+      "type": "tip",
+      "text": "Truco: to mira al futuro (want, plan, decide). -ing habla de la actividad en sí (enjoy, avoid, finish).",
+      "narration": "Un truco que ayuda mucho: [[to]] apunta a algo futuro, como querer, planear o decidir. Y la forma en i-ene-ge habla de la actividad en sí: disfrutarla, evitarla o terminarla."
+    },
+    {
+      "id": "b15",
+      "type": "heading",
+      "text": "Parte 4 · Los que cambian de significado",
+      "narration": "Y ahora, lo de nivel alto. Unos pocos verbos aceptan las dos formas, pero el significado cambia. Aquí se nota quién domina el idioma."
+    },
+    {
+      "id": "b16",
+      "type": "table",
+      "headers": [
+        "Frase",
+        "Significa"
+      ],
+      "rows": [
+        [
+          "stop smoking",
+          "dejar de fumar"
+        ],
+        [
+          "stop to smoke",
+          "pararse a fumar"
+        ],
+        [
+          "remember locking",
+          "recordar haberlo hecho"
+        ],
+        [
+          "remember to lock",
+          "acordarse de hacerlo"
+        ]
+      ],
+      "narration": "[[Stop smoking]] es dejar de fumar; [[stop to smoke]], pararte para fumar. [[Remember locking]] es recordar que ya cerraste; [[remember to lock]], acordarte de cerrar.",
+      "emphasis": [
+        "stop to smoke"
+      ]
+    },
+    {
+      "id": "b17",
+      "type": "sentence",
+      "text": "I stopped to buy some water.",
+      "gloss": "Paré para comprar agua.",
+      "narration": "[[I stopped to buy some water]]. Paré para comprar agua. Ibas andando, te paras, y el motivo es comprar agua. Con [[to]], la parada tiene un objetivo.",
+      "highlight": {
+        "stopped": "blue",
+        "to": "green"
+      }
+    },
+    {
+      "id": "b18",
+      "type": "sentence",
+      "text": "Remember to lock the door.",
+      "gloss": "Acuérdate de cerrar la puerta.",
+      "narration": "[[Remember to lock the door]]. Acuérdate de cerrar la puerta. Todavía no lo has hecho: es una tarea pendiente. Por eso [[to]], hacia delante.",
+      "highlight": {
+        "Remember": "blue",
+        "lock": "green"
+      }
+    },
+    {
+      "id": "b19",
+      "type": "tip",
+      "text": "Remember to = no olvides hacerlo. Remember -ing = tienes el recuerdo de haberlo hecho.",
+      "narration": "Para no liarte: [[remember to]] es no olvidarse de algo que falta por hacer. Con i-ene-ge, es el recuerdo de algo que ya hiciste. [[I remember meeting her]]: recuerdo haberla conocido."
+    },
+    {
+      "id": "b20",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oír los dos grupos mezclados, como salen en la vida real. Dos amigos planean el fin de semana."
+    },
+    {
+      "id": "b21",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Do you fancy going to the beach?",
+          "es": "¿Te apetece ir a la playa?"
+        },
+        {
+          "speaker": "B",
+          "en": "I'd love to, but I need to work.",
+          "es": "Me encantaría, pero tengo que trabajar."
+        },
+        {
+          "speaker": "A",
+          "en": "Can't you finish working early?",
+          "es": "¿No puedes terminar antes?"
+        },
+        {
+          "speaker": "B",
+          "en": "I'll try to. I want to avoid staying late.",
+          "es": "Lo intentaré. Quiero evitar quedarme hasta tarde."
+        }
+      ],
+      "narration": "[[Do you fancy going to the beach? I'd love to, but I need to work. Can't you finish working early? I'll try to. I want to avoid staying late.]]"
+    },
+    {
+      "id": "b22",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "fancy going: apetecer + -ing",
+        "need to work: necesidad + to",
+        "finish working: terminar + -ing",
+        "avoid staying: evitar + -ing"
+      ],
+      "narration": "[[Fancy going]]: apetecer, con i-ene-ge. [[Need to work]]: necesidad, con [[to]]. Y [[finish working, avoid staying]]: terminar y evitar, las dos con i-ene-ge."
+    },
+    {
+      "id": "b23",
+      "type": "heading",
+      "text": "Parte 6 · El error más común",
+      "narration": "Y el error que más se oye en hispanohablantes, incluso en niveles altos. Viene directamente de aplicar la regla demasiado bien."
+    },
+    {
+      "id": "b24",
+      "type": "sentence",
+      "text": "I'm looking forward to see you.",
+      "gloss": "Tengo ganas de verte.",
+      "narration": "[[I'm looking forward to see you]]. Tengo ganas de verte. Parece lógico: hay un [[to]], así que va el verbo base. Pues no. Aquí ese [[to]] es una preposición.",
+      "highlight": {
+        "see": "red"
+      }
+    },
+    {
+      "id": "b25",
+      "type": "sentence",
+      "same": true,
+      "narration": "Lo correcto es [[I'm looking forward to seeing you]]. Detrás de esta expresión va la forma en i-ene-ge. Igual que en [[I'm used to working]].",
+      "fix": {
+        "from": "see",
+        "to": "seeing"
+      }
+    },
+    {
+      "id": "b26",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
+      "narration": "Tu turno. Tres frases. Elige la forma correcta; tienes tres segundos antes de la respuesta."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "I want ___ a new job.",
+      "options": [
+        "finding",
+        "to find",
+        "find"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[I want, blank, a new job]]. ¿[[finding, to find or find]]? Piénsalo. {{pause:3}} Es [[to find]]. Querer mira hacia el futuro, y [[want]] siempre va con esa forma."
+    },
+    {
+      "id": "b28",
+      "type": "quiz",
+      "question": "Have you finished ___ the report?",
+      "options": [
+        "to write",
+        "writing",
+        "write"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[Have you finished, blank, the report?]] ¿[[to write, writing or write]]? Piénsalo. {{pause:3}} Es [[writing]]. Terminar algo va con i-ene-ge, sin excepción."
+    },
+    {
+      "id": "b29",
+      "type": "quiz",
+      "question": "Don't forget ___ the lights off.",
+      "options": [
+        "turning",
+        "to turn",
+        "turn"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[Don't forget, blank, the lights off]]. ¿[[turning, to turn or turn]]? Piénsalo. {{pause:3}} Es [[to turn]]. Es una tarea pendiente, igual que con [[remember to]]."
+    },
+    {
+      "id": "b30",
+      "type": "heading",
+      "text": "Parte 8 · Resumen",
+      "narration": "Cerramos con cuatro ideas. Con ellas resuelves la gran mayoría de los casos que te vas a encontrar."
+    },
+    {
+      "id": "b31",
+      "type": "recap",
+      "items": [
+        "Enjoy, avoid, finish y mind van con -ing",
+        "Want, decide, plan y need van con to",
+        "Stop y remember cambian de significado",
+        "Looking forward to va con -ing"
+      ],
+      "narration": "[[Enjoy, avoid, finish and mind]] van con i-ene-ge. [[Want, decide, plan and need]] van con [[to]]. [[Stop and remember]] cambian de significado. Y [[looking forward to]], con i-ene-ge."
+    },
+    {
+      "id": "b32",
+      "type": "sentence",
+      "text": "I enjoyed teaching you. See you soon!",
+      "gloss": "Me ha gustado enseñarte. ¡Hasta pronto!",
+      "narration": "Y para despedirme, una frase que ya sabes construir: [[I enjoyed teaching you]]. Con i-ene-ge, claro. [[See you soon!]]"
+    }
+  ]
+}

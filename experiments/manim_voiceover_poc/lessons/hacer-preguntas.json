@@ -1,0 +1,361 @@
+{
+  "id": "hacer-preguntas",
+  "title": "Hacer preguntas en inglés: el do que falta",
+  "kicker": "Inglés · Preguntas · A2",
+  "level": "A2",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy vamos a por uno de los errores más típicos de quien habla español: preguntar en inglés como si fuera una frase normal con interrogación. Al final de la lección, tus preguntas van a sonar nativas."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · El problema",
+      "narration": "Empezamos con una pregunta que seguro has hecho alguna vez. En tu cabeza suena perfecta. Para un nativo, le falta una pieza."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "Where you live?",
+      "gloss": "¿Dónde vives?",
+      "narration": "Mira: [[Where you live?]] ¿Dónde vives? En español basta con la entonación y los signos. Así que traducimos palabra por palabra, y parece que funciona."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "same": true,
+      "narration": "Tenemos la palabra de pregunta, el sujeto [[you]] y el verbo [[live]]. Todo está ahí, menos el ayudante que el inglés exige para preguntar.",
+      "tags": {
+        "you": "sujeto",
+        "live": "verbo"
+      }
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "narration": "Falta [[do]]. La pregunta correcta es [[Where do you live?]] Ese [[do]] no se traduce. Solo avisa: atención, esto es una pregunta.",
+      "fix": {
+        "from": "you",
+        "to": "do you"
+      }
+    },
+    {
+      "id": "b06",
+      "type": "tip",
+      "text": "En presente, para preguntar necesitas do o does delante del sujeto.",
+      "narration": "Quédate con la regla: en presente, para preguntar, pon [[do or does]] delante del sujeto. Sin ese ayudante, la pregunta está coja, aunque se entienda."
+    },
+    {
+      "id": "b07",
+      "type": "heading",
+      "text": "Parte 2 · La fórmula",
+      "narration": "Vamos a convertir esto en una fórmula. Una vez la ves, la puedes aplicar a cualquier verbo y en cualquier situación."
+    },
+    {
+      "id": "b08",
+      "type": "table",
+      "headers": [
+        "Pregunta",
+        "Ayudante",
+        "Sujeto + verbo"
+      ],
+      "rows": [
+        [
+          "Where",
+          "do",
+          "you live?"
+        ],
+        [
+          "What",
+          "does",
+          "she do?"
+        ],
+        [
+          "When",
+          "do",
+          "they start?"
+        ],
+        [
+          "Why",
+          "does",
+          "he work late?"
+        ]
+      ],
+      "narration": "La fórmula tiene tres piezas. [[Where do you live? What does she do? When do they start? Why does he work late?]] Siempre en ese orden: palabra de pregunta, ayudante, sujeto y verbo."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "What does she do?",
+      "gloss": "¿A qué se dedica?",
+      "narration": "[[What does she do?]] ¿A qué se dedica? Con ella, él o eso, el ayudante cambia a [[does]]. Igual que en las frases normales, donde el verbo lleva una ese.",
+      "highlight": {
+        "does": "blue"
+      }
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "same": true,
+      "narration": "Y fíjate en el verbo del final: [[do]], sin ese. La ese ya se la ha llevado el ayudante. Nunca digas [[What does she does?]] Una ese por pregunta, no dos.",
+      "highlight": {
+        "do": "green"
+      }
+    },
+    {
+      "id": "b11",
+      "type": "tip",
+      "text": "Si la pregunta lleva does, el verbo vuelve a su forma base: does she work, no does she works.",
+      "narration": "Truco para no fallar: si la pregunta lleva [[does]], el verbo vuelve a su forma base. [[Does she work]], nunca [[does she works]]. La ese solo aparece una vez."
+    },
+    {
+      "id": "b12",
+      "type": "heading",
+      "text": "Parte 3 · Preguntas de sí o no",
+      "narration": "Ahora las preguntas sin palabra interrogativa, las de sí o no. Aquí el error es todavía más común, porque en español ni siquiera cambiamos el orden."
+    },
+    {
+      "id": "b13",
+      "type": "sentence",
+      "text": "You like coffee?",
+      "gloss": "¿Te gusta el café?",
+      "narration": "[[You like coffee?]] Así lo diría casi cualquiera que habla español. Con buena entonación se entiende, pero suena a sorpresa, no a pregunta.",
+      "highlight": {
+        "You": "red"
+      }
+    },
+    {
+      "id": "b14",
+      "type": "sentence",
+      "same": true,
+      "narration": "La versión normal empieza con el ayudante: [[Do you like coffee?]] ¿Te gusta el café? Ese ayudante al principio ya anuncia que viene una pregunta.",
+      "fix": {
+        "from": "You",
+        "to": "Do you"
+      }
+    },
+    {
+      "id": "b15",
+      "type": "list",
+      "heading": "Sí o no: empieza con do o does",
+      "items": [
+        "Do you work here?",
+        "Does it hurt?",
+        "Do they speak Spanish?",
+        "Does he have a car?"
+      ],
+      "narration": "[[Do you work here?]] ¿Trabajas aquí? [[Does it hurt?]] ¿Duele? [[Do they speak Spanish?]] ¿Hablan español? [[Does he have a car?]] ¿Tiene coche?"
+    },
+    {
+      "id": "b16",
+      "type": "tip",
+      "text": "Respuesta corta: Yes, I do. No, she doesn't. No repitas la frase entera.",
+      "narration": "Y para contestar, no repitas todo. Respuesta corta, con el mismo ayudante: [[Yes, I do. No, she doesn't]]. Más rápido y mucho más natural."
+    },
+    {
+      "id": "b17",
+      "type": "heading",
+      "text": "Parte 4 · Cuando no hace falta do",
+      "narration": "Ahora las excepciones, que las hay. Hay verbos que no necesitan ayudante, porque ya saben formar la pregunta solos."
+    },
+    {
+      "id": "b18",
+      "type": "table",
+      "headers": [
+        "Verbo",
+        "Pregunta"
+      ],
+      "rows": [
+        [
+          "be",
+          "Are you tired?"
+        ],
+        [
+          "can",
+          "Can you help me?"
+        ],
+        [
+          "have got",
+          "Have you got a pen?"
+        ],
+        [
+          "will",
+          "Will you come?"
+        ]
+      ],
+      "narration": "Con [[be, can, have got or will]], el verbo sale delante y no hace falta nada más. [[Are you tired? Can you help me? Have you got a pen? Will you come?]] Ninguno lleva [[do]]."
+    },
+    {
+      "id": "b19",
+      "type": "sentence",
+      "text": "Are you from Spain?",
+      "gloss": "¿Eres de España?",
+      "narration": "[[Are you from Spain?]] Aquí el error es el contrario: decir [[Do you are from Spain?]] Si el verbo es ser o estar, sube él solo delante. Los dos no se juntan.",
+      "highlight": {
+        "Are": "blue"
+      }
+    },
+    {
+      "id": "b20",
+      "type": "tip",
+      "text": "Con be y los modales (can, will, should) no hay do: el verbo salta delante del sujeto.",
+      "narration": "Resumen de la excepción: con [[be]] y con los modales, como [[can, will or should]], no hay ayudante. El verbo salta delante del sujeto y ya está."
+    },
+    {
+      "id": "b21",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oírlas en una situación real: primer día en una oficina nueva. Fíjate en cuántas preguntas llevan ayudante y cuántas no."
+    },
+    {
+      "id": "b22",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Hi! Are you the new designer?",
+          "es": "¡Hola! ¿Eres la nueva diseñadora?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, I am. Do you work on this team?",
+          "es": "Sí. ¿Trabajas en este equipo?"
+        },
+        {
+          "speaker": "A",
+          "en": "I do. Where do you live?",
+          "es": "Sí. ¿Dónde vives?"
+        },
+        {
+          "speaker": "B",
+          "en": "Near the station. Does the office close late?",
+          "es": "Cerca de la estación. ¿La oficina cierra tarde?"
+        },
+        {
+          "speaker": "A",
+          "en": "No, it closes at six.",
+          "es": "No, cierra a las seis."
+        }
+      ],
+      "narration": "[[Hi! Are you the new designer? Yes, I am. Do you work on this team? I do. Where do you live? Near the station. Does the office close late? No, it closes at six.]]"
+    },
+    {
+      "id": "b23",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Are you...: el verbo be sale delante",
+        "Do you work...: verbo normal, pide do",
+        "Where do you live: la fórmula completa",
+        "Does the office...: tercera persona, does"
+      ],
+      "narration": "[[Are you]] lleva el verbo ser delante, sin ayudante. [[Do you work]] es un verbo normal y pide ayudante. [[Where do you live]] sigue la fórmula completa. Y [[Does the office]]: la oficina es eso, tercera persona."
+    },
+    {
+      "id": "b24",
+      "type": "heading",
+      "text": "Parte 6 · El error más común",
+      "narration": "Y ahora, el error que más se oye en entrevistas, en reuniones y en viajes. Si lo corriges, subes de nivel de golpe."
+    },
+    {
+      "id": "b25",
+      "type": "sentence",
+      "text": "What means this word?",
+      "gloss": "¿Qué significa esta palabra?",
+      "narration": "[[What means this word?]] ¿Qué significa esta palabra? Es la traducción exacta del español. Y probablemente es la pregunta incorrecta que más oyen los profesores.",
+      "highlight": {
+        "means": "red"
+      }
+    },
+    {
+      "id": "b26",
+      "type": "sentence",
+      "text": "What does this word mean?",
+      "gloss": "¿Qué significa esta palabra?",
+      "narration": "La correcta: [[What does this word mean?]] Ayudante [[does]], sujeto, y el verbo [[mean]] al final, sin ese. Igual que [[How do you say this in English?]]",
+      "highlight": {
+        "does": "green",
+        "mean": "green"
+      }
+    },
+    {
+      "id": "b27",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
+      "narration": "Tu turno. Tres preguntas. Tienes tres segundos para elegir antes de la respuesta. Dilo en voz alta si puedes."
+    },
+    {
+      "id": "b28",
+      "type": "quiz",
+      "question": "___ you speak English?",
+      "options": [
+        "Do",
+        "Are",
+        "Does"
+      ],
+      "answer": 0,
+      "narration": "Primera: [[blank, you speak English?]] ¿[[Do, Are or Does]]? Piénsalo. {{pause:3}} Es [[Do]]. Hablar es un verbo normal, y el sujeto es tú: ayudante en su forma básica."
+    },
+    {
+      "id": "b29",
+      "type": "quiz",
+      "question": "Where ___ your brother work?",
+      "options": [
+        "do",
+        "does",
+        "is"
+      ],
+      "answer": 1,
+      "narration": "Segunda: [[Where, blank, your brother work?]] ¿[[do, does or is]]? Piénsalo. {{pause:3}} Es [[does]]. Tu hermano es él, tercera persona, y el verbo [[work]] se queda sin ese."
+    },
+    {
+      "id": "b30",
+      "type": "quiz",
+      "question": "___ you tired?",
+      "options": [
+        "Do",
+        "Are",
+        "Have"
+      ],
+      "answer": 1,
+      "narration": "Tercera, con trampa: [[blank, you tired?]] ¿[[Do, Are or Have]]? Piénsalo. {{pause:3}} Es [[Are]]. Estar cansado va con el verbo ser o estar, y ese verbo no necesita ayudante."
+    },
+    {
+      "id": "b31",
+      "type": "heading",
+      "text": "Parte 8 · Resumen",
+      "narration": "Cerramos con cuatro ideas. Si te quedas solo con la primera, ya vas a hacer mejores preguntas que la mayoría."
+    },
+    {
+      "id": "b32",
+      "type": "recap",
+      "items": [
+        "Do o does delante del sujeto para preguntar",
+        "Con does, el verbo va sin ese",
+        "Be y los modales no llevan do",
+        "Respuesta corta: Yes, I do"
+      ],
+      "narration": "[[Do or does]] delante del sujeto para preguntar. Con [[does]], el verbo va sin ese. [[Be]] y los modales no llevan ayudante. Respuesta corta: [[Yes, I do]]."
+    },
+    {
+      "id": "b33",
+      "type": "sentence",
+      "text": "Do you want more lessons like this?",
+      "gloss": "¿Quieres más lecciones como esta?",
+      "narration": "Y la última pregunta, bien hecha: [[Do you want more lessons like this?]] Si tu respuesta es [[yes, I do]], nos vemos en la siguiente."
+    }
+  ]
+}

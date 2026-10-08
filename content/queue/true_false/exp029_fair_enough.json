@@ -1,0 +1,43 @@
+{
+  "type": "true_false",
+  "video_title": "'FAIR ENOUGH' ⚖️ ¿Verdadero o falso?",
+  "video_description": "Dos palabras que los nativos dicen veinte veces al día. 💬",
+  "statement": "'Fair enough' sirve para aceptar el argumento de otro.",
+  "correct": true,
+  "explanation": "[excited] Verdadero. Es vale, tiene sentido. No es un sí entusiasta: es reconocer que el otro tiene su parte de razón.",
+  "full_script": "[excited] ¡Verdadero o falso! Afirmación número uno. 'Fair enough' sirve para aceptar el argumento de otro..... [thoughtful] Piensa bien... Tres... dos... uno... [excited] Verdadero. Es vale, tiene sentido. No es un sí entusiasta: es reconocer que el otro tiene su parte de razón. Afirmación número dos. 'Fair enough' significa que algo es justo y suficiente..... [thoughtful] Piensa bien... Tres... dos... uno... [excited] Falso. Por separado son justo y suficiente, pero juntas significan vale, es razonable.",
+  "translations": {
+    "fair enough": "vale, es razonable",
+    "let's try it your way": "probemos a tu manera"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Quiz"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp029",
+    "video_type": "true_false",
+    "model": "manual"
+  },
+  "statements": [
+    {
+      "statement": "'Fair enough' sirve para aceptar el argumento de otro.",
+      "correct": true,
+      "explanation": "[excited] Verdadero. Es vale, tiene sentido. No es un sí entusiasta: es reconocer que el otro tiene su parte de razón."
+    },
+    {
+      "statement": "'Fair enough' significa que algo es justo y suficiente.",
+      "correct": false,
+      "explanation": "[excited] Falso. Por separado son justo y suficiente, pero juntas significan vale, es razonable."
+    },
+    {
+      "statement": "Puedes decir 'fair enough' en una reunión de trabajo.",
+      "correct": true,
+      "explanation": "[excited] Verdadero. Es neutro y educado. Fair enough, let's try it your way."
+    }
+  ]
+}
