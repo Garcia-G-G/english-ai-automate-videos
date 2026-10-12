@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los TRANSPORTES en inglés? 🚌",
+  "video_description": "Diez formas de moverte, en inglés. 🚆",
+  "title": "¿Cómo se dice…?",
+  "theme": "el transporte",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🚗",
+      "spanish": "Coche",
+      "english": "car"
+    },
+    {
+      "emoji": "🚌",
+      "spanish": "Autobús",
+      "english": "bus"
+    },
+    {
+      "emoji": "🚆",
+      "spanish": "Tren",
+      "english": "train"
+    },
+    {
+      "emoji": "✈️",
+      "spanish": "Avión",
+      "english": "plane"
+    },
+    {
+      "emoji": "⛵",
+      "spanish": "Barco",
+      "english": "boat"
+    },
+    {
+      "emoji": "🚲",
+      "spanish": "Bicicleta",
+      "english": "bike"
+    },
+    {
+      "emoji": "🏍️",
+      "spanish": "Moto",
+      "english": "motorbike"
+    },
+    {
+      "emoji": "🚇",
+      "spanish": "Metro",
+      "english": "subway"
+    },
+    {
+      "emoji": "🚚",
+      "spanish": "Camión",
+      "english": "truck"
+    },
+    {
+      "emoji": "🚕",
+      "spanish": "Taxi",
+      "english": "taxi"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: car, bus, train, plane, boat, bike, motorbike, subway, truck, taxi.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "car": "Coche",
+    "bus": "Autobús",
+    "train": "Tren",
+    "plane": "Avión",
+    "boat": "Barco",
+    "bike": "Bicicleta",
+    "motorbike": "Moto",
+    "subway": "Metro",
+    "truck": "Camión",
+    "taxi": "Taxi"
+  },
+  "english_phrases": [
+    "car",
+    "bus",
+    "train",
+    "plane",
+    "boat",
+    "bike",
+    "motorbike",
+    "subway",
+    "truck",
+    "taxi"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv017",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Coche... car. car. Autobús... bus. bus. Tren... train. train. Avión... plane. plane. Barco... boat. boat. Bicicleta... bike. bike. Moto... motorbike. motorbike. Metro... subway. subway. Camión... truck. truck. Taxi... taxi. taxi. Ahora, todas conmigo: car, bus, train, plane, boat, bike, motorbike, subway, truck, taxi. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

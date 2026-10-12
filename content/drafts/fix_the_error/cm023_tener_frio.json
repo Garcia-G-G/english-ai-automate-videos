@@ -1,0 +1,53 @@
+{
+  "type": "fix_the_error",
+  "video_title": "Corrige el error: I have cold 🥶",
+  "video_description": "El tener que en inglés no se tiene. ❌",
+  "level": "A1",
+  "intro": "[curious] Esta frase tiene un error. ¿Lo encuentras antes que yo?",
+  "items": [
+    {
+      "wrong": "I have cold.",
+      "error": "have",
+      "right": "I am cold.",
+      "fix": "am",
+      "translation": "Tengo frío.",
+      "explanation": "[excited] En inglés el frío no se tiene, se es. I am cold."
+    },
+    {
+      "wrong": "I have 25 years.",
+      "error": "have",
+      "right": "I am 25 years old.",
+      "fix": "am",
+      "translation": "Tengo 25 años.",
+      "explanation": "[excited] La edad también va con be. I am 25, o I am 25 years old."
+    },
+    {
+      "wrong": "She has hungry.",
+      "error": "has",
+      "right": "She is hungry.",
+      "fix": "is",
+      "translation": "Tiene hambre.",
+      "explanation": "[excited] Hambre, sed, frío y calor van con be: hungry, thirsty, cold, hot."
+    }
+  ],
+  "outro": "[excited] ¿Lo pillaste a la primera? Dímelo en los comentarios.",
+  "translations": {
+    "I am cold.": "Tengo frío.",
+    "I am 25 years old.": "Tengo 25 años.",
+    "She is hungry.": "Tiene hambre."
+  },
+  "hashtags": [
+    "#CorrigeElError",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#ErroresComunes",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm023",
+    "video_type": "fix_the_error",
+    "model": "manual",
+    "draft": true
+  }
+}

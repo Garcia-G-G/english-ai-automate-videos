@@ -1,0 +1,61 @@
+{
+  "type": "ladder",
+  "video_title": "Escalera: pide un café como un nativo ☕",
+  "video_description": "De una palabra a una frase educada en cinco pasos. 🪜",
+  "level": "A2",
+  "theme": "en la cafetería",
+  "intro": "[cheerful] Empezamos con una palabra. Subimos escalón a escalón. Repite cada frase en voz alta.",
+  "steps": [
+    {
+      "en": "Coffee.",
+      "es": "Café.",
+      "added": "coffee"
+    },
+    {
+      "en": "A coffee, please.",
+      "es": "Un café, por favor.",
+      "added": "a … please"
+    },
+    {
+      "en": "Can I have a coffee, please?",
+      "es": "¿Me pone un café, por favor?",
+      "added": "Can I have"
+    },
+    {
+      "en": "Can I have a large coffee, please?",
+      "es": "¿Me pone un café grande, por favor?",
+      "added": "large"
+    },
+    {
+      "en": "Can I have a large coffee with milk, please?",
+      "es": "¿Me pone un café grande con leche, por favor?",
+      "added": "with milk"
+    }
+  ],
+  "challenge": {
+    "es": "¿Me pone un té pequeño sin azúcar, por favor?",
+    "en": "Can I have a small tea without sugar, please?"
+  },
+  "outro": "[excited] ¿Te salió el reto? Escríbelo en los comentarios.",
+  "translations": {
+    "Coffee.": "Café.",
+    "A coffee, please.": "Un café, por favor.",
+    "Can I have a coffee, please?": "¿Me pone un café, por favor?",
+    "Can I have a large coffee, please?": "¿Me pone un café grande, por favor?",
+    "Can I have a large coffee with milk, please?": "¿Me pone un café grande con leche, por favor?"
+  },
+  "hashtags": [
+    "#Escalera",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "ladders",
+    "topic_id": "la002",
+    "video_type": "ladder",
+    "model": "manual",
+    "draft": true
+  }
+}
