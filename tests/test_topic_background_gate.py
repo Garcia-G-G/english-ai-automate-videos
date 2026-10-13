@@ -141,7 +141,10 @@ def test_every_real_category_has_scenes():
 def test_the_prompt_space_is_large_enough_to_not_repeat():
     from topic_background import prompt_space
     space = prompt_space()
-    assert space["categories"] == 20
+    # every topic file, counted rather than written down (basic_vocab made 21)
+    on_disk = len(list((Path(__file__).resolve().parent.parent
+                        / "content" / "topics").glob("*.json")))
+    assert space["categories"] == on_disk
     assert space["per_category_min"] >= 16, space
     assert space["total"] >= 300, space
 

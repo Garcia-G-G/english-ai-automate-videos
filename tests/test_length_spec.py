@@ -29,8 +29,8 @@ sys.path.insert(0, str(ROOT / "src"))
 import duration_spec as ds  # noqa: E402
 import length_spec as ls  # noqa: E402
 
-TYPES = ("educational", "pronunciation", "vocabulary",
-         "true_false", "fill_blank", "quiz")
+# From the registry, so a new type must bring a measured field with it.
+from video_types import VIDEO_TYPES as TYPES  # noqa: E402
 
 
 # ─────────────── the limit is derived, never restated ───────────────
