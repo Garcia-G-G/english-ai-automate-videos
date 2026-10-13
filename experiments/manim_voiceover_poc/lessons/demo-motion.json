@@ -104,6 +104,20 @@
    "narration": "Y ahora a clasificar. Mira dónde cae cada una: [[Make coffee. Do homework. Make a mistake. Do the dishes. Make a decision. Do exercise.]]"
   },
   {
+   "id": "b09",
+   "type": "syllables",
+   "word": "comfortable",
+   "parts": [
+    "COMF",
+    "ta",
+    "ble"
+   ],
+   "stress": 0,
+   "respelling": true,
+   "gloss": "cómodo",
+   "narration": "Y la pronunciación también se mueve. Se escribe con cuatro sílabas, pero suena en tres golpes: [[comfortable]]. El golpe fuerte va al principio, y la o del medio casi desaparece."
+  },
+  {
    "id": "b07",
    "type": "quiz",
    "question": "___ you like coffee?",

@@ -84,6 +84,13 @@ Grammar in motion — prefer these whenever the idea can MOVE instead of being r
   item pops up when it is said and flies into its bin. The narration says every item, in
   order, inside [[ ]]: `[[Make coffee. Do homework.]]`. For make/do, countable/uncountable,
   -ing/to, in/on/at.
+- `syllables` — `word`, `parts` (2–6 chips), `stress` (index of the stressed part), optional
+  `gloss`. The parts must spell the word (spaces and hyphens ignored); for a respelling that
+  shows the sound (`["COMF","ta","ble"]`) set `"respelling": true`. A dot hops across the
+  chips while the narration says the word inside [[ ]], then they close into the word. For
+  pronunciation: "suena en tres golpes, no en cuatro".
+- A `transform` whose `from` repeats the previous `sentence` beat's text continues from it on
+  screen instead of redrawing — use that to show a sentence and then fix it.
 
 ## Timing rule — the picture reacts to the voice
 
@@ -91,7 +98,7 @@ The renderer highlights or reveals things at the moment the narration SAYS them.
 narration must literally contain: every `highlight`/`tags`/`fix.to` word of a sentence
 beat; the first word of every dialogue line; the first cell of every table row; the first
 word of every list/recap item; the correct quiz option; for a `transform`, the `from`
-sentence and then the `to` sentence; every timeline label; every sort item. Write the
+sentence and then the `to` sentence; every timeline label; every sort item; a syllables beat's word. Write the
 narration so those words are spoken in the same order they appear on screen. The motion
 types look for their words in the English ([[ ]]) only.
 

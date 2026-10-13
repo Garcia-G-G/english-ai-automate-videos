@@ -32,6 +32,12 @@ Beat types and the fields the scene reads (limits enforced by validate()):
                                             kind point · span · repeat; ≤ 3 events
   sort      bins[], items[[text, bin]]      2–3 bins, ≤ 8 items that pop in and fly
                                             into their bin
+  syllables word, parts[], stress, gloss?,  the word in syllable chips (the stressed one
+            respelling?                     bigger, yellow); a dot hops across them while
+                                            the word is said, then they close into the word
+
+A lesson may name its look with "theme" (a key of brand.json → manim.themes); the
+THEME environment variable overrides it, and manim.default_theme is the fallback.
 
 `title` may come second or third, so a lesson can open on a hook (a `transform` that
 shows the mistake in the first seconds).
@@ -39,19 +45,20 @@ shows the mistake in the first seconds).
 The three motion types cue in order: each cue is looked for after the previous one,
 inside the English ([[ ]]) of the narration only. A `transform` cues on the first word
 of `to` that is new or has moved, looked for after the narration has said `from`; a
-`timeline` event on the first word of its label; a `sort` item on the item itself.
+`timeline` event on the first word of its label; a `sort` item on the item itself; a
+`syllables` beat on its word.
 """
 import json
 import re
 from pathlib import Path
 
 TYPES = {"title", "heading", "sentence", "dialogue", "table", "list", "tip", "quiz", "recap",
-         "transform", "timeline", "sort"}
-ORDERED = {"transform", "timeline", "sort"}       # cues searched in order, inside the English only
+         "transform", "timeline", "sort", "syllables"}
+ORDERED = {"transform", "timeline", "sort", "syllables"}       # cues searched in order, inside the English only
 COLORS = {"yellow", "blue", "green", "red"}
 LIMITS = {"line": 90, "tip": 170, "cell": 28, "item": 110, "items": 6, "lines": 6, "rows": 6, "cols": 3,
           "options": 4, "narration": 420, "chips": 12, "label": 40, "events": 3, "bins": 3,
-          "bin": 14, "sort_items": 8, "sort_item": 24, "title_by": 3}
+          "bin": 14, "sort_items": 8, "sort_item": 24, "title_by": 3, "word": 30, "part": 12}
 KINDS = {"point", "span", "repeat"}
 AXIS = (-10, 10)
 PUNCT = ".,;:!?¿¡\"'()→·-…"
@@ -177,6 +184,8 @@ def cue_words(beat: dict) -> list:
                      if isinstance(e, dict) and str(e.get("label", "")).split()]
         elif kind == "sort":
             words = [str(item[0]) for item in beat.get("items", []) if isinstance(item, list) and item]
+        elif kind == "syllables":
+            words = [str(beat.get("word", ""))]
         return [w.strip(PUNCT) for w in words if w.strip(PUNCT)]
     if kind == "sentence":
         words += list((beat.get("highlight") or {}).keys())
@@ -273,6 +282,21 @@ def cued(beat: dict) -> list:
 
 
 # ── Loading and validation ─────────────────────────────────────────────────────
+
+BRAND = Path(__file__).resolve().parent.parent.parent / "assets" / "branding" / "english-unlimited" / "brand.json"
+
+
+def themes() -> dict:
+    """brand.json → manim: {"default_theme", "themes": {name: tokens}}."""
+    return json.loads(BRAND.read_text(encoding="utf-8"))["manim"]
+
+
+def theme_name(lesson: dict, env: dict = None) -> str:
+    """THEME in the environment, else the lesson's "theme", else the brand default."""
+    import os
+    env = os.environ if env is None else env
+    return env.get("THEME") or lesson.get("theme") or themes()["default_theme"]
+
 
 def load(path) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
@@ -384,6 +408,8 @@ def validate(lesson: dict) -> list:
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", lesson["id"]):
         problems.append("lesson: id must be a slug (a-z, 0-9, -)")
     ids = set()
+    if lesson.get("theme") and lesson["theme"] not in themes()["themes"]:
+        problems.append(f"lesson: theme {lesson['theme']!r} is not one of {sorted(themes()['themes'])}")
     titles = [i for i, b in enumerate(lesson["beats"]) if b.get("type") == "title"]
     if titles and titles[0] >= LIMITS["title_by"]:
         problems.append(f"lesson: the title card must be beat 1, 2 or 3 (it is beat {titles[0] + 1})")
@@ -532,4 +558,24 @@ def _validate_fields(where: str, kind: str, beat: dict) -> list:
                     p.append(f"{where}: every item is [text, bin index]")
                 else:
                     short(item[0], "sort_item", "item")
+    elif kind == "syllables":
+        if need("word", str) and need("parts", list):
+            short(beat["word"], "word", "word")
+            parts = beat["parts"]
+            if not 2 <= len(parts) <= 6:
+                p.append(f"{where}: 2–6 parts")
+            if not all(isinstance(x, str) and x.strip() for x in parts):
+                p.append(f"{where}: every part is a non-empty string")
+            else:
+                for x in parts:
+                    short(x, "part", "part")
+                spelled = "".join(parts).lower()
+                word = re.sub(r"[\s-]", "", beat["word"]).lower()
+                if spelled != word and not beat.get("respelling"):
+                    p.append(f"{where}: parts spell {spelled!r}, not {word!r} — or set \"respelling\": true")
+            stress = beat.get("stress")
+            if not isinstance(stress, int) or isinstance(stress, bool) or not 0 <= stress < len(parts):
+                p.append(f"{where}: stress must index a part")
+        if beat.get("gloss"):
+            short(beat["gloss"], "line", "gloss")
     return p
