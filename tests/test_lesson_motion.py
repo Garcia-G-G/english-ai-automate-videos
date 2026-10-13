@@ -18,6 +18,8 @@ STUDIO = REPO / "experiments" / "manim_voiceover_poc"
 sys.path.insert(0, str(STUDIO))
 import lesson as L  # noqa: E402
 import renders as R  # noqa: E402
+import sfx as SFX  # noqa: E402
+import theme as TH  # noqa: E402
 
 LESSONS = sorted((STUDIO / "lessons").glob("*.json"))
 
@@ -124,7 +126,7 @@ def test_every_lesson_validates_and_has_no_warnings(path):
 def test_the_demo_exercises_every_motion_type_and_opens_on_a_hook():
     demo = L.load(STUDIO / "lessons" / "demo-motion.json")
     kinds = [b["type"] for b in demo["beats"]]
-    assert {"transform", "timeline", "sort"} <= set(kinds) and kinds[0] == "transform" and kinds[1] == "title"
+    assert {"transform", "timeline", "sort", "syllables"} <= set(kinds) and kinds[0] == "transform" and kinds[1] == "title"
     assert {e["kind"] for b in demo["beats"] if b["type"] == "timeline" for e in b["events"]} >= {"span", "repeat"}
 
 
@@ -139,18 +141,98 @@ def test_the_poster_comes_from_the_title_wherever_it_is():
 
 # ── brand: one source for the Shorts and the lessons ───────────────────────────
 
-def test_the_dark_tokens_live_in_brand_json():
+def test_the_themes_live_in_brand_json_and_sand_is_the_default():
     brand = json.loads((REPO / "assets" / "branding" / "english-unlimited" / "brand.json").read_text())
-    assert {k: v for k, v in brand["dark"].items() if not k.startswith("_")} == {
-        "bg": "#1C1812", "text": "#FBF6EA", "yellow": "#F2D66B", "blue": "#6CB4EE",
-        "green": "#7FD49B", "red": "#F28B82", "muted": "#A39B8C"}
+    block = brand["manim"]
+    assert block["default_theme"] == "sand" and set(block["themes"]) == {"sand", "stone", "dark"}
+    assert TH.tokens("sand") == {"bg": "#F3EEE4", "card": "#FFFFFF", "card2": "#EAE3D6", "text": "#1C1812",
+                                 "muted": "#7A7164", "yellow": "#F2D66B", "blue": "#1B6FA8", "green": "#2E8B57",
+                                 "red": "#C8453B"}
+    assert TH.tokens("stone") == {**TH.tokens("sand"), "bg": "#E9E6E1"}
+    dark = TH.tokens("dark")                                    # the Phase B stage, unchanged
+    assert (dark["bg"], dark["text"], dark["blue"], dark["green"], dark["red"], dark["muted"]) == (
+        "#1C1812", "#FBF6EA", "#6CB4EE", "#7FD49B", "#F28B82", "#A39B8C")
     assert brand["color"]["english_blue"] == "#1B6FA8"          # the Shorts' tokens are untouched
 
 
-def test_the_scene_reads_brand_json_and_registers_its_fonts():
+@pytest.mark.parametrize("row", TH.contrast_table(), ids=lambda r: f"{r['theme']}-{r['fg']}-on-{r['bg']}")
+def test_contrast(row):
+    """Text on the ground and on a card ≥ 4.5:1; blue / green / red on the ground ≥ 3:1."""
+    assert row["ratio"] >= row["minimum"]
+
+
+@pytest.mark.parametrize("name", ["sand", "stone"])
+def test_yellow_is_never_text_on_paper(name):
+    p = TH.palette(name)
+    assert p["accent_text"] != p["yellow"] and TH.ink_on(p["yellow"], p) == p["text"]
     source = (STUDIO / "lesson_scene.py").read_text()
-    assert 'BRAND["dark"]' in source and "manimpango.register_font" in source
-    assert "DejaVu" not in source and "#FEFDFB\", INK" not in source
+    assert "text(" not in "".join(line for line in source.splitlines() if "YELLOW)" in line and "text(" in line
+                                  and "ink(YELLOW)" not in line)
+
+
+def test_the_theme_comes_from_the_env_then_the_lesson_then_the_brand():
+    assert L.theme_name({}, env={}) == "sand"
+    assert L.theme_name({"theme": "dark"}, env={}) == "dark"
+    assert L.theme_name({"theme": "dark"}, env={"THEME": "stone"}) == "stone"
+    assert any("theme" in p for p in L.validate({"id": "x", "title": "x", "theme": "neon",
+                                                  "beats": [{"id": "b1", "type": "tip", "text": "t", "narration": "Hola."}]}))
+
+
+def test_the_paper_is_a_soft_vignette_with_grain_and_is_cached(tmp_path):
+    import numpy as np
+    from PIL import Image
+    path = TH.background_png("sand", 320, 180, tmp_path)
+    img = np.asarray(Image.open(path)).astype(int)
+    bg = np.array(TH.rgb(TH.tokens("sand")["bg"]))
+    centre, corner = img[80:100, 150:170].mean((0, 1)), img[:10, :10].mean((0, 1))
+    assert np.all(centre > bg) and np.all(corner < bg)                           # lighter centre, darker edges
+    assert np.abs(centre - bg).max() <= 0.03 * 255 + 1 and np.abs(corner - bg).max() <= 0.045 * 255
+    assert 0 < img[80:100, 150:170, 0].std() <= 0.02 * 255                       # a faint grain, not flat
+    assert TH.background_png("sand", 320, 180, tmp_path).read_bytes() == path.read_bytes()
+
+
+def test_the_scene_reads_the_brand_and_registers_its_fonts():
+    source = (STUDIO / "lesson_scene.py").read_text()
+    assert "TH.palette(THEME)" in source and "manimpango.register_font" in source
+    assert "config.background_image" in source and "MovingCameraScene" in source
+    assert "DejaVu" not in source
+
+
+def test_a_render_carries_the_theme_and_can_drop_the_effects():
+    _, env = R.render_command("manim", "f", "demo-motion", "v", "dark", sfx=False)
+    assert env["THEME"] == "dark" and env["SFX"] == "0"
+    _, env = R.render_command("manim", "f", "demo-motion", "v")
+    assert "THEME" not in env and "SFX" not in env
+    assert R.theme_names()[1] == "sand"
+
+
+# ── sound effects ──────────────────────────────────────────────────────────────
+
+@pytest.mark.parametrize("name", SFX.NAMES)
+def test_effects_sit_22_db_under_the_voice(name):
+    x = SFX.render(name)
+    assert SFX.rms_db(x) == pytest.approx(SFX.VOICE_RMS_DB - SFX.UNDER_DB - (4 if name == "tick" else 0), abs=0.01)
+    assert len(x) == {"pop": 0.030, "whoosh": 0.250, "tick": 0.008}[name] * SFX.RATE // 1
+
+
+# ── syllables ──────────────────────────────────────────────────────────────────
+
+@pytest.mark.parametrize("beat,needle", [
+    ({"word": "comfortable", "parts": ["comfortable"], "stress": 0}, "2–6 parts"),
+    ({"word": "table", "parts": ["ta", "ble"], "stress": 2}, "stress"),
+    ({"word": "comfortable", "parts": ["COMF", "ta", "ble"], "stress": 0}, "respelling"),
+])
+def test_syllables_validation(beat, needle):
+    problems = L.validate(_one({"type": "syllables", **beat}))
+    assert any(needle in p for p in problems), problems
+
+
+def test_syllables_spell_the_word_or_say_they_respell_it():
+    ok = {"type": "syllables", "word": "to-day", "parts": ["to", "DAY"], "stress": 1, "narration": "[[today]]."}
+    assert L.validate(_one(ok)) == []
+    respelled = {"type": "syllables", "word": "comfortable", "parts": ["COMF", "ta", "ble"], "stress": 0,
+                 "respelling": True, "narration": "Así: [[comfortable]]."}
+    assert L.validate(_one(respelled)) == [] and L.marked_narration(respelled)[1] == {"#0": "c0"}
 
 
 # ── duration: fitted on real renders ───────────────────────────────────────────

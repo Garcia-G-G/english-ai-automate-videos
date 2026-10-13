@@ -38,11 +38,16 @@ ring on screen (every quiz has one, right after the options are read). English s
 at `english_speed` (0.92 by default; ElevenLabs `voice_settings.speed`, with a silent fallback to 1.0
 if a model refuses it). There is a short breath between beats, longer after a section card.
 
-## The look — English Unlimited on a dark stage
+## The look — English Unlimited on paper (or on the dark stage)
 
-`lesson_scene.py` reads the colours from `assets/branding/english-unlimited/brand.json` (`dark`:
-ink background, cream text, brand yellow, a lifted blue, green, red, muted) — the Shorts read the
-same file — and registers Fredoka Bold (chips, headings, English) and Manrope (Spanish, captions)
+`lesson_scene.py` reads the colours from `assets/branding/english-unlimited/brand.json` →
+`manim.themes` (see `theme.py`): **sand** (warm paper, the default), **stone** (cooler grey paper)
+and **dark** (the ink stage). `THEME=dark` picks one for a render, else the lesson's `"theme"`, else
+`manim.default_theme`; the dashboard's Manim page has a «Tema» dropdown. Every theme passes a
+contrast test (text ≥ 4.5:1 on the ground and on cards, blue/green/red ≥ 3:1), yellow is only ever
+a fill or a highlighter on paper, and the ground is never flat: a soft vignette and a faint grain,
+generated once with numpy and used as the camera's background image. The Shorts read the same
+brand file. The scene registers Fredoka Bold (chips, headings, English) and Manrope (Spanish, captions)
 from `assets/fonts/`, never a system font. One grammar colour code in every lesson: subject blue,
 auxiliary yellow, main verb green, error red; a `tags` label takes the colour of the role it
 names. Sizes are cap heights at 1080p, for a phone: English chips 68 px, glosses 46, captions 42
@@ -52,10 +57,20 @@ logo, «Sigue aprendiendo» and two empty frames for YouTube's end-screen elemen
 
 ## Grammar in motion — `transform`, `timeline`, `sort`
 
+The camera eases ≈ 1.06× in on a transform morph, a sentence fix and a sort, and back on the next
+beat; captions and the top bar (lesson title + one progress segment per `heading`, filling as the
+part plays) are pinned to the frame. A transform that adds a word first marks the gap with a red
+caret that pulses and then becomes the word; a transform whose `from` is the sentence already on
+screen morphs from it. Sound effects (`sfx.py`, synthesised with numpy): a soft pop on chip drops
+and sort landings, a whoosh on moves and camera pushes, a tick each second of a quiz pause — 22 dB
+under the voice, 6 dB lower on a spoken word; `SFX=0` (or `batch_run.py --no-sfx`) turns them off.
+The render's timeline JSON lists every effect played.
+
 `transform` morphs one sentence into another (shared words glide, a moved word arcs over, a word
 only in `from` turns red, shakes and falls, a word only in `to` drops in green); `timeline` draws
 tenses as shapes on an axis with «ahora» at 0; `sort` pops each item up as it is said and flies it
-into its bin. A quiz `{{pause}}` shows «Pausa y piénsalo» beside the thinking ring. The title may
+into its bin; `syllables` shows a word in syllable chips, the stressed one big and yellow, with a dot
+hopping across them as it is said. A quiz `{{pause}}` shows «Pausa y piénsalo» beside the thinking ring. The title may
 be beat 2 or 3, so a lesson can open on the mistake. `lessons/demo-motion.json` shows all of it
 in two minutes.
 
@@ -78,7 +93,7 @@ characters each → about $0.45–0.50 of ElevenLabs per lesson per voice.
 
 `lesson.estimate_minutes` is fitted on real renders, not guessed: every render writes its words,
 beats, pause seconds and end card into `renders/ledger.jsonl`, and `batch_run.py` prints the refit
-when it finishes. On 2026-10-13 that is n = 4 renders, ≈ 138 wpm everything included plus a fixed
+when it finishes. On 2026-10-13 that is n = 5 lessons as rendered (re-renders of the same content count once), ≈ 138 wpm everything included plus a fixed
 0.75 s per beat (the scene's own fade and breath); residuals within ±32 s. With fewer than six
 renders only the speaking rate is fitted — three points gave a negative cost per beat.
 
@@ -120,7 +135,7 @@ python3 publish.py publish --step <STEP_ID> --lesson third-person-s
 
 ## Adding a visual
 
-`lesson.TYPES` (+ `lesson.ORDERED` if its cues repeat) + a `cue_words` branch + a `_validate_fields` branch + a `beat_<type>` method in `lesson_scene.py` + a line
+`lesson.TYPES` (+ `lesson.ORDERED` if its cues are English-only or repeat) + a `cue_words` branch + a `_validate_fields` branch + a `beat_<type>` method in `lesson_scene.py` + a line
 in `prompts/lesson_script.md` so the writer knows it exists. Keep the measured-legibility rule:
 text is wrapped and scaled to fit the stage, never clipped.
 

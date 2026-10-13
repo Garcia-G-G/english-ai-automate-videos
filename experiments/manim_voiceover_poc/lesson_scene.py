@@ -2,16 +2,22 @@
 
     LESSON=lessons/third-person-s.json VOICE_DIR=audio/third-person-s/matilda \
         manim -qm lesson_scene.py Lesson
+    THEME=dark SFX=0 …                      # another look; no sound effects
 
 Each beat is one `with self.voiceover(...)` block: the pre-generated narration
 (see gen_audio.py) sets the pace, and the beat's drawing waits for the words it
 animates on (`lesson.marked_narration`). Nothing has a fixed duration.
 
-Look: the dark stage of English Unlimited — the colours are brand.json's `dark` tokens,
-Fredoka Bold for chips, headings and English, Manrope for Spanish and captions, both
-registered from assets/fonts (never a system font). Grammar has one colour code in every
-lesson: subject blue, auxiliary yellow, main verb green, error red. Sizes are set as cap
-heights in pixels at 1080p, for a phone: English chips ≥ 64 px, glosses ≥ 44, captions ≥ 40.
+Look: brand.json → manim.themes (sand by default, stone, dark; see theme.py), on a paper
+with a soft vignette and grain that is the camera's background image. Fredoka Bold for
+chips, headings and English, Manrope for Spanish and captions, both registered from
+assets/fonts (never a system font). One grammar colour code in every lesson: subject
+blue, auxiliary yellow, main verb green, error red. Sizes are cap heights in pixels at
+1080p, for a phone: English chips ≥ 64 px, glosses ≥ 44, captions ≥ 40.
+
+The camera eases in (≈ 1.06×) on a transform morph, a sentence fix and a sort, and back
+on the next beat; the captions and the chapter bar are pinned to the frame, so a push
+never crops them. Sound effects (sfx.py) sit 22 dB under the voice; SFX=0 turns them off.
 """
 import json
 import math
@@ -22,35 +28,43 @@ import manimpango
 from manim import (
     BOLD, DOWN, LEFT, NORMAL, ORIGIN, PI, RIGHT, UP, AnimationGroup, Arc, Circle, Create, Dot,
     DashedLine, DashedVMobject, FadeIn, FadeOut, GrowFromCenter, ImageMobject, LaggedStart, Line,
-    Polygon, RoundedRectangle, Text, Transform, ValueTracker, VGroup, Wiggle, Write, config,
-    rush_into, smooth,
+    MovingCameraScene, Polygon, Rectangle, ReplacementTransform, RoundedRectangle, Text, Transform,
+    Succession, ValueTracker, VGroup, VMobject, Wait, Wiggle, Write, config, rush_into, smooth, there_and_back,
 )
 from manim_voiceover import VoiceoverScene
 
 import lesson as L
+import sfx as S
+import theme as TH
 from voices import PrerecordedService
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 BRAND_DIR = REPO / "assets" / "branding" / "english-unlimited"
 BRAND = json.loads((BRAND_DIR / "brand.json").read_text(encoding="utf-8"))
-_D = BRAND["dark"]
-BG, TEXT, YELLOW, BLUE, GREEN, RED, MUTED = (_D[k] for k in ("bg", "text", "yellow", "blue", "green", "red", "muted"))
+LESSON_PATH = HERE / os.environ.get("LESSON", "lessons/third-person-s.json")
+try:
+    _LESSON = L.load(LESSON_PATH)
+except (OSError, ValueError):
+    _LESSON = {}
+THEME = L.theme_name(_LESSON)
+P = TH.palette(THEME)
+BG, CARD, TEXT, MUTED = P["bg"], P["card"], P["text"], P["muted"]
+YELLOW, BLUE, GREEN, RED = P["yellow"], P["blue"], P["green"], P["red"]
+SURFACE, LINE_C, SOFT, DIM, EN_DIM = P["surface"], P["line"], P["soft"], P["dim"], P["en_dim"]
+ACCENT_TEXT, ACCENT_LINE = P["accent_text"], P["accent_line"]
 PAPER = BRAND["color"]["paper"]
-
-
-def mix(a: str, b: str, k: float) -> str:
-    """`b` laid over `a` at strength k, as an opaque hex colour."""
-    ca, cb = (tuple(int(c[i:i + 2], 16) for i in (1, 3, 5)) for c in (a, b))
-    return "#" + "".join(f"{round(x * (1 - k) + y * k):02X}" for x, y in zip(ca, cb))
-
-
-SURFACE, LINE_C, SOFT, DIM = mix(BG, TEXT, 0.07), mix(BG, TEXT, 0.20), mix(BG, TEXT, 0.70), mix(BG, TEXT, 0.40)
-EN_DIM = mix(BG, BLUE, 0.50)
+mix = TH.mix
 ROLE = {"blue": BLUE, "yellow": YELLOW, "green": GREEN, "red": RED}          # highlight colours = the code
 ROLE_WORDS = {"sujeto": BLUE, "subject": BLUE, "auxiliar": YELLOW, "aux": YELLOW, "modal": YELLOW,
               "verbo": GREEN, "verb": GREEN, "verbo principal": GREEN, "error": RED, "incorrecto": RED}
-LANE_COLORS = (YELLOW, BLUE, GREEN)
+LANE_COLORS = (ACCENT_LINE, BLUE, GREEN)
+SFX_ON = os.environ.get("SFX", "1") != "0"
+
+
+def ink(fill):
+    return TH.ink_on(fill, P)
+
 
 # Fonts: brand.json names the files; registered here so Pango never substitutes.
 DISPLAY, BODY = BRAND["font"]["display"]["family"], BRAND["font"]["body"]["family"]
@@ -65,7 +79,7 @@ TITLE_PX, HEADING_PX, QUESTION_PX, BODY_PX = 100, 84, 60, 48
 DIALOG_EN_PX, DIALOG_ES_PX, TABLE_PX, LABEL_PX, BIN_PX = 54, 44, 56, 46, 56
 BAR_PX, TAG_PX, SMALL_PX = 26, 32, 36
 
-FRAME_W = config.frame_width
+FRAME_W, FRAME_H = config.frame_width, config.frame_height
 STAGE_W = 0.8 * FRAME_W                            # layouts use ~80 % of the width, centred
 BAR_Y = 3.62
 CAPTION_Y, CAPTION_H = -3.19, 1.34                 # the karaoke band at the bottom
@@ -74,8 +88,11 @@ STAGE_MID = (STAGE_TOP + STAGE_BOTTOM) / 2
 CAP_LINE_W, CAP_LINES = 12.6, 2
 CHIP_H = 2.0 * CHIP_PX * PX
 END_SCREEN_S = L.END_SCREEN_S
+PUSH = 1.06                                        # camera focus: how far in, and how fast
+PUSH_S = 0.6
 
 config.background_color = BG
+config.background_image = str(TH.background_png(THEME, config.pixel_width, config.pixel_height))
 
 _cap_units, _widths = {}, {}
 
@@ -138,6 +155,13 @@ def card(inner, fill=SURFACE, pad=0.4, stroke=LINE_C, radius=0.25, stroke_width=
     return VGroup(box, inner)
 
 
+def centre_on(*mobjs, y=STAGE_MID):
+    """Move a block (several mobjects) so its middle sits at `y`: the space above the captions."""
+    block = VGroup(*mobjs)
+    block.shift(UP * (y - block.get_center()[1]))
+    return block
+
+
 # ── chips: one per word, punctuation attached, all on one baseline ─────────────
 
 def chips_for(words, px=CHIP_PX, max_w=STAGE_W, center=ORIGIN, pitch=None):
@@ -189,9 +213,9 @@ def chips_for(words, px=CHIP_PX, max_w=STAGE_W, center=ORIGIN, pitch=None):
 
 
 def paint(c, color):
-    """A chip in a role colour: the fill takes the colour, the word turns ink."""
+    """A chip in a role colour: the fill takes the colour, the word takes the ink that reads on it."""
     c[0].set_fill(color).set_stroke(color)
-    c[1].set_color(BG)
+    c[1].set_color(ink(color))
     return c
 
 
@@ -208,21 +232,39 @@ def pause_icon(h=0.36, color=TEXT):
     return VGroup(bar(), bar()).arrange(RIGHT, buff=h * 0.22)
 
 
-class Lesson(VoiceoverScene):
+def caret(x, top, bottom):
+    """The proofreader's ‸ in red, drawn (no font has to carry the glyph): a thin bar where
+    the missing word goes and the caret under the line."""
+    bar = Line([x, top, 0], [x, bottom, 0], color=RED, stroke_width=6)
+    hat = VMobject(color=RED, stroke_width=7).set_points_as_corners(
+        [[x - 0.17, bottom - 0.3, 0], [x, bottom - 0.04, 0], [x + 0.17, bottom - 0.3, 0]])
+    return VGroup(bar, hat)
+
+
+class Lesson(VoiceoverScene, MovingCameraScene):
     def construct(self):
-        self.lesson = L.load(HERE / os.environ.get("LESSON", "lessons/third-person-s.json"))
+        self.lesson = L.load(LESSON_PATH)
         problems = L.validate(self.lesson)
         if problems:
             raise SystemExit("lesson.json is not renderable:\n  " + "\n  ".join(problems))
-        self.set_speech_service(PrerecordedService(HERE / os.environ["VOICE_DIR"]))
+        voice_dir = HERE / os.environ["VOICE_DIR"]
+        self.set_speech_service(PrerecordedService(voice_dir))
+        manifest = json.loads((voice_dir / "manifest.json").read_text(encoding="utf-8"))
+        self.word_files = {b["id"]: voice_dir / b["words"] for b in manifest["beats"]}
 
-        self.bar = None            # the small title at the top, once the title card has played
-        self.bar_ready = not any(b["type"] == "title" for b in self.lesson["beats"])
+        self.hud = None            # the top bar (lesson title + chapter progress), once the title card has played
+        self.hud_ready = not any(b["type"] == "title" for b in self.lesson["beats"])
         self.stage = VGroup()      # everything a beat may leave behind
-        self.sentence = None       # the chips of the current sentence, for `same`
+        self.sentence = None       # the chips of the current sentence, for `same` and for continuity
+        self.pushed = False        # the camera is eased in
+        self.speech = []           # [(start, end)] of the current beat's words, absolute — sfx duck under them
+        self.effects = []          # every sound effect played: the render's timeline records them
         self.captions_on = os.environ.get("CAPTIONS", "1") != "0"
         self.timeline = []         # [{id, type, text?, start}] — chapters and the WP-38 poster read it
-        for beat in self.lesson["beats"]:
+        self.parts = self.chapter_plan()
+        self.clock = None          # (start, duration) of the beat playing, for the progress bar
+        for n, beat in enumerate(self.lesson["beats"]):
+            self.beat_index = n
             self.play_beat(beat)
         self.wait(L.FINAL_HOLD_S)
         self.end_screen()
@@ -231,19 +273,31 @@ class Lesson(VoiceoverScene):
     def write_timeline(self):
         out = Path(os.environ.get("TIMELINE_OUT", HERE / "media" / "timeline" / f"{self.lesson['id']}.json"))
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps({"lesson": self.lesson["id"], "duration": round(float(self.renderer.time), 2),
-                                   "beats": self.timeline}, ensure_ascii=False, indent=1))
+        out.write_text(json.dumps({"lesson": self.lesson["id"], "theme": THEME, "sfx": SFX_ON,
+                                   "duration": round(float(self.renderer.time), 2), "beats": self.timeline,
+                                   "effects": self.effects},
+                                  ensure_ascii=False, indent=1))
 
     # ── plumbing ──────────────────────────────────────────────────────────────
 
+    def continues(self, beat):
+        """A transform whose `from` is the sentence already on screen morphs from it."""
+        return (beat["type"] == "transform" and self.sentence is not None
+                and [L.norm(w) for w in beat["from"].split()] == [L.norm(w) for w in self.sentence["words"]])
+
     def play_beat(self, beat):
         kind = beat["type"]
-        if not (kind == "sentence" and beat.get("same") and self.sentence is not None):
+        keep_sentence = (kind == "sentence" and beat.get("same") and self.sentence is not None) or self.continues(beat)
+        if not keep_sentence:
             self.clear_stage()
+        elif self.pushed:
+            self.play(self.release())
         narration, marks = L.marked_narration(beat)
         self.timeline.append({"id": beat["id"], "type": kind, "text": beat.get("text") or beat.get("heading"),
                               "start": round(float(self.renderer.time), 2)})
         with self.voiceover(text=narration, beat_id=beat["id"]) as tracker:
+            self.clock = (tracker.start_t, tracker.duration)
+            self.speech = self._speech(beat["id"], tracker.start_t)
             caption = self.mount_captions(beat, tracker) if self.captions_on and kind != "title" else None
             getattr(self, f"beat_{kind}")(beat, tracker, marks)
             self.safe_wait(tracker.get_remaining_duration())
@@ -252,6 +306,56 @@ class Lesson(VoiceoverScene):
             self.remove(caption)
         # A breath between beats: longer after a section card, so the ear resets with the eye.
         self.wait(0.6 if kind == "heading" else 0.35)
+
+    def _speech(self, beat_id, start):
+        path = self.word_files.get(beat_id)
+        if not path or not path.exists():
+            return []
+        return [(start + w["start"], start + w["end"]) for w in json.loads(path.read_text(encoding="utf-8"))]
+
+    # ── sound effects ─────────────────────────────────────────────────────────
+
+    def sfx(self, name, offset=0.0):
+        """Play an effect `offset` seconds from now, 22 dB under the voice — 6 dB lower still
+        if it lands on a spoken word."""
+        if not SFX_ON:
+            return
+        at = float(self.renderer.time) + max(0.0, offset)
+        on_word = any(a - 0.03 <= at <= b + 0.03 for a, b in self.speech)
+        self.add_sound(str(S.path(name)), time_offset=max(0.0, offset), gain=-S.DUCK_DB if on_word else None)
+        self.effects.append({"name": name, "t": round(at, 2), "on_word": on_word})
+
+    # ── camera focus ──────────────────────────────────────────────────────────
+
+    def push(self, point, delay=0.0):
+        """Ease the frame ≈ 1.06× in, towards `point`, never past the original frame
+        (`delay`: when, from now, the push will start — for its whoosh)."""
+        frame = self.camera.frame
+        w, h = FRAME_W / PUSH, FRAME_H / PUSH
+        dx, dy = (FRAME_W - w) / 2, (FRAME_H - h) / 2
+        target = [max(-dx, min(dx, point[0])), max(-dy, min(dy, point[1])), 0]
+        self.pushed = True
+        self.sfx("whoosh", delay)
+        return frame.animate(run_time=PUSH_S, rate_func=smooth).set(width=w).move_to(target)
+
+    def release(self):
+        self.pushed = False
+        return self.camera.frame.animate(run_time=PUSH_S, rate_func=smooth).set(width=FRAME_W).move_to(ORIGIN)
+
+    def pin(self, mobj):
+        """Keep `mobj` fixed on screen whatever the camera does (captions, the top bar)."""
+        state = {"s": 1.0, "c": ORIGIN.copy()}
+
+        def follow(m, dt=0):
+            frame = self.camera.frame
+            s, c = frame.width / FRAME_W, frame.get_center()
+            if abs(s - state["s"]) > 1e-9 or abs(c - state["c"]).max() > 1e-9:
+                m.shift(-state["c"]).scale(s / state["s"], about_point=ORIGIN).shift(c)
+                state["s"], state["c"] = s, c
+
+        follow(mobj)
+        mobj.add_updater(follow)
+        return mobj
 
     # ── karaoke captions ──────────────────────────────────────────────────────
 
@@ -309,6 +413,7 @@ class Lesson(VoiceoverScene):
                     state["lit"].add(w["index"])
 
         group.add_updater(tick)
+        self.pin(group)
         self.add(group)
         return group
 
@@ -364,9 +469,80 @@ class Lesson(VoiceoverScene):
                 pages.append(lines[k:k + CAP_LINES])
         return pages
 
+    # ── the top bar: lesson title and chapter progress ────────────────────────
+
+    def chapter_plan(self):
+        """[(name, first beat, last beat)] — one segment per `heading`. A lesson without
+        headings is one segment from its first beat after the title."""
+        beats = self.lesson["beats"]
+        heads = [i for i, b in enumerate(beats) if b["type"] == "heading"]
+        if not heads:
+            first = next((i + 1 for i, b in enumerate(beats) if b["type"] == "title"), 0)
+            return [("", first, len(beats) - 1)]
+        return [(beats[h]["text"], h, (heads[k + 1] - 1) if k + 1 < len(heads) else len(beats) - 1)
+                for k, h in enumerate(heads)]
+
+    def show_bar(self):
+        if self.hud is not None or not self.hud_ready:
+            return
+        title = text(self.lesson["title"], BAR_PX, MUTED, BODY, BOLD)
+        fit(title, 5.6)
+        title.move_to([-STAGE_W / 2 + title.width / 2, BAR_Y, 0])
+        x0, x1, gap, h = 0.4, STAGE_W / 2, 0.1, 0.075
+        n = len(self.parts)
+        seg_w = (x1 - x0 - gap * (n - 1)) / n
+        tracks, fills = VGroup(), VGroup()
+        for k in range(n):
+            left = x0 + k * (seg_w + gap)
+            tracks.add(RoundedRectangle(corner_radius=h / 2, width=seg_w, height=h, stroke_width=0,
+                                        fill_color=LINE_C, fill_opacity=1).move_to([left + seg_w / 2, BAR_Y + 0.08, 0]))
+            fills.add(Rectangle(width=seg_w, height=h, stroke_width=0, fill_color=ACCENT_LINE, fill_opacity=1)
+                      .move_to(tracks[k]))
+        label = VGroup()
+        state = {"part": None, "frac": [None] * n}
+
+        def update(group, dt=0):
+            k, frac = self.progress()
+            for i, f in enumerate(fills):
+                want = 1.0 if (k is not None and i < k) else (frac if i == k else 0.0)
+                if state["frac"][i] != round(want, 4):
+                    state["frac"][i] = round(want, 4)
+                    f.set_opacity(1 if want > 0 else 0)
+                    f.stretch_to_fit_width(max(1e-3, tracks[i].width * max(want, 1e-3)))
+                    f.align_to(tracks[i], LEFT)
+            name = self.parts[k][0] if k is not None else ""
+            if name != state["part"]:                  # the part's name, small, under the bar
+                state["part"] = name
+                label.remove(*label.submobjects)
+                if name:
+                    scale = self.camera.frame.width / FRAME_W          # the bar is pinned: match its scale
+                    new = fit(text(name, BAR_PX - 2, MUTED, BODY, NORMAL), x1 - x0).scale(scale)
+                    new.next_to(tracks, DOWN, buff=0.1 * scale).align_to(tracks[-1], RIGHT)
+                    label.add(new)
+
+        hud = VGroup(title, tracks, fills, label)
+        hud.add_updater(update)
+        self.pin(hud)
+        self.hud = hud
+        self.add(hud)
+
+    def progress(self):
+        """(segment, fraction of it done) from the beat index and how far into the beat we are."""
+        n, (start, dur) = self.beat_index, self.clock or (0, 1)
+        inside = max(0.0, min(1.0, (float(self.renderer.time) - start) / max(dur, 1e-3)))
+        for k, (_, a, b) in enumerate(self.parts):
+            if a <= n <= b:
+                return k, (n - a + inside) / (b - a + 1)
+        return (None, 0.0) if n < self.parts[0][1] else (len(self.parts) - 1, 1.0)
+
     def clear_stage(self):
+        anims = []
         if len(self.stage) > 0:
-            self.play(FadeOut(self.stage), run_time=0.35)
+            anims.append(FadeOut(self.stage, run_time=0.35))
+        if self.pushed:
+            anims.append(self.release())
+        if anims:
+            self.play(*anims)
             self.remove(*self.stage)
         self.stage = VGroup()
         self.sentence = None
@@ -386,12 +562,6 @@ class Lesson(VoiceoverScene):
     def at(self, tracker, marks, key, fraction):
         self.safe_wait(self.until(tracker, marks, key, fraction))
 
-    def show_bar(self):
-        if self.bar is None and self.bar_ready:
-            self.bar = text(self.lesson["title"], BAR_PX, MUTED, BODY, BOLD).move_to([0, BAR_Y, 0])
-            fit(self.bar, STAGE_W)
-            self.add(self.bar)
-
     # ── beats ─────────────────────────────────────────────────────────────────
 
     def beat_title(self, beat, tracker, marks):
@@ -402,26 +572,27 @@ class Lesson(VoiceoverScene):
         group = VGroup(title, rule)
         anims = [Write(title), Create(rule)]
         if kicker_text:
-            kicker = text(kicker_text.upper(), SMALL_PX, YELLOW, BODY, BOLD).next_to(title, UP, buff=0.5)
+            kicker = text(kicker_text.upper(), SMALL_PX, ACCENT_TEXT, BODY, BOLD).next_to(title, UP, buff=0.5)
             group.add(kicker)
             anims.append(FadeIn(kicker, shift=DOWN * 0.15))
-        group.move_to([0, 0.3, 0])
-        if self.bar is not None:
-            self.bar.set_opacity(0)
+        centre_on(group)
+        if self.hud is not None:
+            self.hud.set_opacity(0)
         self.play(*anims, run_time=min(1.6, tracker.duration * 0.5))
         self.safe_wait(tracker.get_remaining_duration() - 0.9)
         self.play(FadeOut(group), run_time=0.5)
         self.remove(group)
-        self.bar_ready = True
-        if self.bar is None:
+        self.hud_ready = True
+        if self.hud is None:
             self.show_bar()
         else:
-            self.bar.set_opacity(1)
+            self.hud.set_opacity(1)
 
     def beat_heading(self, beat, tracker, marks):
         self.show_bar()
-        heading = fit(para(beat["text"], HEADING_PX, STAGE_W), STAGE_W, 3.0).move_to([0, STAGE_MID + 0.2, 0])
+        heading = fit(para(beat["text"], HEADING_PX, STAGE_W), STAGE_W, 3.0)
         rule = Line(LEFT * 1.4, RIGHT * 1.4, color=YELLOW, stroke_width=10).next_to(heading, DOWN, buff=0.45)
+        centre_on(heading, rule)
         self.keep(heading, rule)
         self.play(FadeIn(heading, shift=UP * 0.2), Create(rule), run_time=min(1.0, tracker.duration * 0.5))
 
@@ -429,14 +600,16 @@ class Lesson(VoiceoverScene):
         self.show_bar()
         if not (beat.get("same") and self.sentence is not None):
             words = beat["text"].split()                  # punctuation stays on its word: «seven.»
-            chips = chips_for(words, center=[0, STAGE_MID + 0.75, 0], pitch=CHIP_H + 0.6)
+            chips = chips_for(words, center=[0, STAGE_MID, 0], pitch=CHIP_H + 0.6)
+            gloss = None
+            if beat.get("gloss"):
+                gloss = para(beat["gloss"], GLOSS_PX, STAGE_W, SOFT, BODY).next_to(chips, DOWN, buff=0.75)
+            centre_on(chips, *([gloss] if gloss else []))
             self.sentence = {"chips": chips, "words": words, "tags": {}, "colors": {}}
             self.keep(chips)
             self.play(LaggedStart(*[FadeIn(c, scale=0.75) for c in chips], lag_ratio=0.25,
                                   run_time=min(1.0, 0.18 * len(chips) + 0.3)))
-            if beat.get("gloss"):
-                gloss = para(beat["gloss"], GLOSS_PX, STAGE_W, SOFT, BODY)
-                gloss.next_to(chips, DOWN, buff=0.75)
+            if gloss:
                 self.keep(gloss)
                 self.play(FadeIn(gloss), run_time=0.4)
         chips, words = self.sentence["chips"], self.sentence["words"]
@@ -457,7 +630,7 @@ class Lesson(VoiceoverScene):
             self.at(tracker, marks, word, 0.15 + 0.6 * step / n_cues)
             self.sentence["colors"][i] = ROLE[color]
             self.play(chips[i][0].animate.set_fill(ROLE[color]).set_stroke(ROLE[color]),
-                      chips[i][1].animate.set_color(BG), run_time=0.35)
+                      chips[i][1].animate.set_color(ink(ROLE[color])), run_time=0.35)
         for word, label in (beat.get("tags") or {}).items():
             i = find(word)
             if i is None:
@@ -465,6 +638,8 @@ class Lesson(VoiceoverScene):
             step += 1
             self.at(tracker, marks, word, 0.15 + 0.6 * step / n_cues)
             role = ROLE_WORDS.get(label.lower().strip()) or self.sentence["colors"].get(i, MUTED)
+            if role == YELLOW and not P["dark"]:
+                role = ACCENT_LINE                         # yellow is never text on paper
             tag = text(label.upper(), TAG_PX, role, BODY, BOLD).next_to(chips[i], DOWN, buff=0.16)
             self.sentence["tags"][word] = tag
             self.keep(tag)
@@ -483,7 +658,8 @@ class Lesson(VoiceoverScene):
                         anims.append(Transform(c, paint(layout[k], GREEN)))
                     else:
                         anims.append(c.animate.shift(layout[k][0].get_center() - c[0].get_center()))
-                self.play(*anims, run_time=0.6)
+                self.sfx("pop", 0.55)
+                self.play(AnimationGroup(*anims, run_time=0.6), self.push(layout[i].get_center()))
                 words[:] = fixed
                 self.sentence["colors"][i] = GREEN
 
@@ -570,7 +746,7 @@ class Lesson(VoiceoverScene):
         group = VGroup()
         for item in items:
             label = para(item, BODY_PX, STAGE_W - 1.0, TEXT, BODY, align="left")
-            bullet = check_mark(ORIGIN, 0.24) if checks else Dot(radius=0.11, color=YELLOW)
+            bullet = check_mark(ORIGIN, 0.24) if checks else Dot(radius=0.11, color=ACCENT_LINE)
             bullet.next_to(label[0], LEFT, buff=0.4)
             group.add(VGroup(bullet, label))
         group.arrange(DOWN, aligned_edge=LEFT, buff=0.42)
@@ -594,9 +770,9 @@ class Lesson(VoiceoverScene):
     def beat_tip(self, beat, tracker, marks):
         self.show_bar()
         body = para(beat["text"], BODY_PX + 2, STAGE_W - 1.4, TEXT, BODY, align="left")
-        label = card(text("TIP", TAG_PX, BG, BODY, BOLD), YELLOW, pad=0.14, stroke=YELLOW, radius=0.12)
+        label = card(text("TIP", TAG_PX, ink(YELLOW), BODY, BOLD), YELLOW, pad=0.14, stroke=YELLOW, radius=0.12)
         inner = VGroup(label, body).arrange(DOWN, buff=0.4, aligned_edge=LEFT)
-        box = card(inner, mix(BG, YELLOW, 0.10), pad=0.55, stroke=YELLOW, stroke_width=3)
+        box = card(inner, mix(BG, YELLOW, 0.10 if P["dark"] else 0.22), pad=0.55, stroke=ACCENT_LINE, stroke_width=3)
         fit(box, STAGE_W, STAGE_TOP - STAGE_BOTTOM).move_to([0, STAGE_MID, 0])
         self.keep(box)
         self.play(FadeIn(box, scale=0.95), run_time=min(0.6, tracker.duration * 0.3))
@@ -606,7 +782,7 @@ class Lesson(VoiceoverScene):
         question = para(beat["question"], QUESTION_PX, STAGE_W)
         options = VGroup()
         for n, option in enumerate(beat["options"]):
-            letter = text("ABCD"[n], BODY_PX, YELLOW)
+            letter = text("ABCD"[n], BODY_PX, ACCENT_TEXT)
             label = para(option, BODY_PX, 7.4, TEXT, BODY, align="left")
             row = VGroup(letter, label).arrange(RIGHT, buff=0.45)
             options.add(card(row, SURFACE, pad=0.26))
@@ -615,23 +791,26 @@ class Lesson(VoiceoverScene):
         for o in options:                                    # one width: the cards read as a set
             o[0].stretch_to_fit_width(width).align_to(o[1], LEFT).shift(LEFT * 0.26)
         whole = VGroup(question, options).arrange(DOWN, buff=0.55)
-        fit(whole, STAGE_W, STAGE_TOP - STAGE_BOTTOM - 0.8, grow=1.15).move_to([0, STAGE_MID - 0.1, 0])
+        fit(whole, STAGE_W, STAGE_TOP - STAGE_BOTTOM - 0.8, grow=1.15).move_to([0, STAGE_MID, 0])
         self.keep(question, options)
         self.play(FadeIn(question, shift=DOWN * 0.15), run_time=0.4)
         self.play(LaggedStart(*[FadeIn(o, shift=RIGHT * 0.15) for o in options], lag_ratio=0.4, run_time=0.6))
 
         # {{pause:N}} in the narration = time to think: a ring fills over those seconds,
-        # beside it «Pausa y piénsalo» — the viewer may pause the video.
+        # beside it «Pausa y piénsalo» — the viewer may pause the video. A quiet tick a second.
         pause_marks = [k for k in marks if k.startswith("pause:")]
         if pause_marks:
             secs = (L.pauses(beat["narration"]) or [3.0])[0]
             until_resume = tracker.time_until_bookmark(marks[pause_marks[0]])
             self.safe_wait(until_resume - secs)
+            for k in range(int(secs)):
+                self.sfx("tick", 0.3 + k)
             ring_r = 0.42
             track = Circle(radius=ring_r, color=LINE_C, stroke_width=7)
-            arc = Arc(radius=ring_r, start_angle=PI / 2, angle=-2 * PI, color=YELLOW, stroke_width=8)
+            arc = Arc(radius=ring_r, start_angle=PI / 2, angle=-2 * PI, color=ACCENT_LINE, stroke_width=8)
             words = VGroup(pause_icon(0.34, TEXT), text("Pausa y piénsalo", GLOSS_PX, TEXT, BODY, BOLD)).arrange(RIGHT, buff=0.25)
-            pill = card(words, mix(BG, YELLOW, 0.12), pad=0.24, stroke=YELLOW, radius=0.35, stroke_width=3)
+            pill = card(words, mix(BG, YELLOW, 0.12 if P["dark"] else 0.35), pad=0.24, stroke=ACCENT_LINE, radius=0.35,
+                        stroke_width=3)
             ponder = VGroup(VGroup(track, arc), pill).arrange(DOWN, buff=0.3)
             # beside the options: slide them left when the card needs the room
             need = options.get_right()[0] + 0.5 + ponder.width - STAGE_W / 2
@@ -662,40 +841,86 @@ class Lesson(VoiceoverScene):
     def beat_transform(self, beat, tracker, marks):
         """`from` morphs into `to`: shared words glide (a word that changed places arcs
         over), words only in `from` turn red, shake and fall away, words only in `to`
-        drop in green. Starts when the narration says the first new or moved word."""
+        drop in green. When a word is missing, a red caret marks the gap at once and
+        becomes that word. Starts when the narration says the first new or moved word;
+        if `from` is the sentence already on screen, the morph starts from it."""
         self.show_bar()
         plan = L.transform_plan(beat["from"], beat["to"])
-        center = [0, STAGE_MID + 0.45, 0]
-        src = chips_for(plan["from"], center=center)
-        dst = chips_for(plan["to"], center=center)
-        self.keep(src)
-        self.play(LaggedStart(*[FadeIn(c, scale=0.75) for c in src], lag_ratio=0.25,
-                              run_time=min(1.0, 0.18 * len(src) + 0.3)))
+        if self.continues(beat):
+            src = self.sentence["chips"]
+            rest = [m for m in self.stage if m is not src]
+            if rest:
+                self.play(*[FadeOut(m) for m in rest], run_time=0.3)
+                for m in rest:
+                    self.stage.remove(m)
+                    self.remove(m)
+            dst = chips_for(plan["to"], center=src.get_center())
+            gloss = (para(beat["gloss"], GLOSS_PX, STAGE_W, SOFT, BODY).next_to(dst, DOWN, buff=0.75)
+                     if beat.get("gloss") else None)
+        else:
+            dst = chips_for(plan["to"], center=[0, STAGE_MID, 0])
+            gloss = (para(beat["gloss"], GLOSS_PX, STAGE_W, SOFT, BODY).next_to(dst, DOWN, buff=0.75)
+                     if beat.get("gloss") else None)
+            centre_on(dst, *([gloss] if gloss else []))
+            src = chips_for(plan["from"], center=dst.get_center())
+            self.keep(src)
+            self.play(LaggedStart(*[FadeIn(c, scale=0.75) for c in src], lag_ratio=0.25,
+                                  run_time=min(1.0, 0.18 * len(src) + 0.3)))
+        self.sentence = None
+
+        mark = None
+        if plan["added"]:                                 # the error at once: a caret where the word is missing
+            j = plan["added"][0]
+            by_to = {jj: i for i, jj in plan["pairs"]}
+            left, right = by_to.get(j - 1), by_to.get(j + 1)
+            box = src[left if left is not None else right][0]
+            if left is not None and right is not None and src[left][0].get_y() == src[right][0].get_y():
+                x = (src[left][0].get_right()[0] + src[right][0].get_left()[0]) / 2
+            elif left is not None:
+                x = src[left][0].get_right()[0] + 0.13
+            else:
+                x = src[right][0].get_left()[0] - 0.13
+            mark = caret(x, box.get_top()[1] - 0.12, box.get_bottom()[1] + 0.12)
+            self.keep(mark)
+            self.play(Create(mark), run_time=0.25)
+            for _ in range(2):
+                self.play(mark.animate(rate_func=there_and_back).scale(1.35).set_stroke(width=9), run_time=0.4)
+
         self.at(tracker, marks, "#0", 0.55)
         gone = [src[i] for i in plan["removed"]]
         if gone:
             self.play(*[c[0].animate.set_fill(RED).set_stroke(RED) for c in gone],
-                      *[c[1].animate.set_color(BG) for c in gone], run_time=0.25)
+                      *[c[1].animate.set_color(ink(RED)) for c in gone], run_time=0.25)
             self.play(*[Wiggle(c, scale_value=1.08, rotation_angle=0.05 * PI, n_wiggles=3) for c in gone], run_time=0.5)
         moved = set(plan["moved"])
         glide = [c.animate(rate_func=rush_into).shift(DOWN * 1.6).set_opacity(0) for c in gone]
         glide += [Transform(src[i], dst[j], path_arc=-PI / 2 if j in moved else 0) for i, j in plan["pairs"]]
         landing = [paint(dst[j], GREEN) for j in plan["added"]]
-        drop = [FadeIn(c, shift=DOWN * 1.0) for c in landing]
+        drop = []
+        for k, (j, c) in enumerate(zip(plan["added"], landing)):
+            if k == 0 and mark is not None:
+                drop.append(ReplacementTransform(mark, c))     # the caret becomes the word
+            else:
+                drop.append(FadeIn(c, shift=DOWN * 1.0))
+        focus = dst[plan["cue"]].get_center()
+        if landing:
+            self.sfx("pop", 0.95)
         if glide and drop:
-            self.play(LaggedStart(AnimationGroup(*glide), AnimationGroup(*drop), lag_ratio=0.35), run_time=1.1)
+            self.play(LaggedStart(AnimationGroup(*glide), AnimationGroup(*drop), lag_ratio=0.35, run_time=1.1),
+                      self.push(focus))
         else:
-            self.play(*(glide + drop), run_time=0.9)
+            self.play(AnimationGroup(*(glide + drop), run_time=0.9), self.push(focus))
+        if mark is not None:
+            self.stage.remove(mark)
         for c in gone:
             self.remove(c)
             self.stage.remove(c)
         for c in landing:
             self.keep(c)
         if moved:                                       # a short flash on what moved: word order is the lesson
-            self.play(*[src[i][0].animate.set_stroke(YELLOW, width=5) for i, j in plan["pairs"] if j in moved],
+            self.play(*[src[i][0].animate.set_stroke(ACCENT_LINE, width=5) for i, j in plan["pairs"] if j in moved],
                       run_time=0.25)
-        if beat.get("gloss"):
-            gloss = para(beat["gloss"], GLOSS_PX, STAGE_W, SOFT, BODY).next_to(dst, DOWN, buff=0.75)
+        if gloss:
             self.keep(gloss)
             self.play(FadeIn(gloss, shift=UP * 0.1), run_time=0.4)
 
@@ -717,8 +942,9 @@ class Lesson(VoiceoverScene):
         lanes = [lane_top - 0.75 - n * pitch for n in range(len(events))]
         glow_top = lane_top
         now = VGroup(*[Line([0, axis_y - 0.3, 0], [0, glow_top, 0], color=YELLOW, stroke_width=w, stroke_opacity=o)
-                       for w, o in ((26, 0.08), (16, 0.14), (9, 0.28), (4, 1.0))])
-        ahora = text("ahora", SMALL_PX, YELLOW, BODY, BOLD).next_to([0, axis_y - 0.3, 0], DOWN, buff=0.12)
+                       for w, o in ((26, 0.10), (16, 0.18), (9, 0.35))],
+                     Line([0, axis_y - 0.3, 0], [0, glow_top, 0], color=ACCENT_LINE, stroke_width=4))
+        ahora = text("ahora", SMALL_PX, ACCENT_TEXT, BODY, BOLD).next_to([0, axis_y - 0.3, 0], DOWN, buff=0.12)
         past = text("pasado", SMALL_PX, MUTED, BODY).move_to([x(-7.5), ahora.get_y(), 0])
         future = text("futuro", SMALL_PX, MUTED, BODY).move_to([x(7.5), ahora.get_y(), 0])
         frame = VGroup(axis, ticks, now, ahora, past, future)
@@ -777,7 +1003,8 @@ class Lesson(VoiceoverScene):
 
     def beat_sort(self, beat, tracker, marks):
         """Bins along the bottom; each item pops in at the centre when it is said, holds,
-        then arcs into its bin. Driven by one clock so items may overlap in flight."""
+        then arcs into its bin with a soft pop. Driven by one clock so items may overlap in
+        flight; the camera eases towards the bins as the first item flies."""
         self.show_bar()
         n_bins = len(beat["bins"])
         gap = 0.5
@@ -816,6 +1043,7 @@ class Lesson(VoiceoverScene):
         for n, p in enumerate(plan):
             nxt = plan[n + 1]["t"] if n + 1 < len(plan) else p["t"] + 2
             p["hold"] = max(0.1, min(0.3, nxt - p["t"] - POP - 0.15))
+            self.sfx("pop", max(0.0, p["t"]) + POP + p["hold"] + FLY)       # the landing
         clock = ValueTracker(0.0)
         for chip, p in zip(items, plan):
             chip.save_state()
@@ -843,32 +1071,94 @@ class Lesson(VoiceoverScene):
             chip.add_updater(place)
             self.add(chip)
         end = max(max(0.0, p["t"]) + POP + p["hold"] + FLY for p in plan) + 0.05
-        self.play(clock.animate.set_value(end), run_time=end, rate_func=lambda t: t)
+        first_fly = max(0.0, plan[0]["t"]) + POP + plan[0]["hold"]
+        push = self.push(bins.get_center(), delay=first_fly)
+        camera = Succession(Wait(run_time=first_fly), push) if first_fly > 0.01 else push
+        self.play(clock.animate(run_time=end, rate_func=lambda t: t).set_value(end), camera)
         for chip in items:
             chip.clear_updaters()
         self.keep(*items)
+
+    def beat_syllables(self, beat, tracker, marks):
+        """The word in syllable chips with a gap between them, the stressed one 1.3× and
+        yellow. While the narration says the word a dot hops chip to chip across it; then
+        the chips close the gaps into the whole word."""
+        self.show_bar()
+        parts, stress = beat["parts"], beat["stress"]
+        chips = VGroup()
+        for k, part in enumerate(parts):
+            px = CHIP_PX * 1.3 if k == stress else CHIP_PX
+            c = chips_for([part], px=px)[0]
+            c.shift(UP * 0.5 * px * PX)                       # every baseline on y = 0
+            if k == stress:
+                paint(c, YELLOW)
+            chips.add(c)
+        gap = 0.4
+        x = -(sum(c[0].width for c in chips) + gap * (len(chips) - 1)) / 2
+        for c in chips:
+            c.shift(RIGHT * (x + c[0].width / 2 - c[0].get_center()[0]))
+            x += c[0].width + gap
+        gloss = para(beat["gloss"], GLOSS_PX, STAGE_W, SOFT, BODY).next_to(chips, DOWN, buff=0.8) if beat.get("gloss") else None
+        centre_on(chips, *([gloss] if gloss else []))
+        self.keep(chips)
+        self.play(LaggedStart(*[FadeIn(c, shift=DOWN * 0.4) for c in chips], lag_ratio=0.3, run_time=0.8))
+        if gloss:
+            self.keep(gloss)
+            self.play(FadeIn(gloss), run_time=0.3)
+
+        # the dot hops across the word as it is spoken
+        self.at(tracker, marks, "#0", 0.4)
+        now = float(self.renderer.time)
+        spoken = [(a, b) for a, b in self.speech if b >= now]          # the word being said from here
+        span = max(0.45, min(1.6, spoken[0][1] - max(spoken[0][0], now) if spoken else 0.8))
+        hop = span / len(chips)
+        tops = [c[0].get_top() + UP * 0.32 for c in chips]
+        dot = Dot(tops[0], radius=0.13, color=BLUE)
+        self.keep(dot)
+        self.play(FadeIn(dot, scale=0.4), chips[0].animate(rate_func=there_and_back).scale(1.08), run_time=min(0.12, hop))
+        for k in range(1, len(chips)):
+            self.play(dot.animate(path_arc=-PI * 0.8).move_to(tops[k]),
+                      chips[k].animate(rate_func=there_and_back).scale(1.08), run_time=hop)
+        self.wait(0.3)
+        # close the gaps: the syllables become the word
+        total = sum(c[0].width for c in chips)
+        x = chips.get_center()[0] - total / 2
+        anims = [FadeOut(dot)]
+        for c in chips:
+            anims.append(c.animate.shift(RIGHT * (x + c[0].width / 2 - c[0].get_center()[0])))
+            x += c[0].width
+        self.play(*anims, run_time=0.6)
+        self.stage.remove(dot)
 
     # ── the end card ──────────────────────────────────────────────────────────
 
     def end_screen(self):
         """20 s, silent: the logo, «Sigue aprendiendo», and two empty frames where YouTube
-        places its end-screen elements. (No local music track exists in the repo.)"""
+        places its end-screen elements. On the dark stage the logo sits on a light plate."""
         self.clear_stage()
-        if self.bar is not None:
-            self.play(FadeOut(self.bar), run_time=0.3)
-            self.remove(self.bar)
+        if self.hud is not None:
+            self.play(FadeOut(self.hud), run_time=0.3)
+            self.hud.clear_updaters()
+            self.remove(self.hud)
         start = float(self.renderer.time)
         self.timeline.append({"id": "end", "type": "end_screen", "start": round(start, 2), "seconds": END_SCREEN_S})
-        logo = ImageMobject(str(BRAND_DIR / "logo_horizontal.png")).scale_to_fit_width(4.4)
-        plate = RoundedRectangle(corner_radius=0.3, width=logo.width + 0.7, height=logo.height + 0.5,
-                                 fill_color=PAPER, fill_opacity=1, stroke_width=0)
-        head = VGroup(plate)
-        plate.move_to([0, 2.75, 0])
-        logo.move_to(plate)
-        title = text("Sigue aprendiendo", TITLE_PX * 0.9, YELLOW).move_to([0, 1.35, 0])
+        logo = ImageMobject(str(BRAND_DIR / "logo_horizontal.png")).scale_to_fit_width(4.4).move_to([0, 2.75, 0])
+        head = [FadeIn(logo)]
+        if P["dark"]:
+            plate = RoundedRectangle(corner_radius=0.3, width=logo.width + 0.7, height=logo.height + 0.5,
+                                     fill_color=PAPER, fill_opacity=1, stroke_width=0).move_to(logo)
+            head = [FadeIn(plate)] + head
+        title = text("Sigue aprendiendo", TITLE_PX * 0.9, ACCENT_TEXT).move_to([0, 1.35, 0])
         frame_w = 5.4
         frames = VGroup(*[DashedVMobject(RoundedRectangle(corner_radius=0.18, width=frame_w, height=frame_w * 9 / 16,
                                                           stroke_color=DIM, stroke_width=3), num_dashes=60)
                           for _ in range(2)]).arrange(RIGHT, buff=0.8).move_to([0, -1.75, 0])
-        self.play(FadeIn(head), FadeIn(logo), FadeIn(title, shift=UP * 0.2), Create(frames), run_time=0.9)
+        extra = []
+        if not P["dark"]:                                  # yellow as a highlighter under the words
+            mark = Rectangle(width=title.width + 0.5, height=title.height * 0.45, stroke_width=0, fill_color=YELLOW,
+                             fill_opacity=1).move_to(title.get_bottom() + UP * title.height * 0.2)
+            mark.z_index = -1
+            extra.append(FadeIn(mark))
+        self.play(*head, *extra, FadeIn(title, shift=UP * 0.2), Create(frames), run_time=0.9)
         self.wait(END_SCREEN_S - (float(self.renderer.time) - start))
+
