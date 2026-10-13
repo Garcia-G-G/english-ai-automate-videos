@@ -3,6 +3,7 @@
  "title": "Gramática en movimiento",
  "kicker": "Inglés · Demo · A2",
  "level": "A2",
+ "demo": true,
  "language": "es",
  "target_minutes": 2,
  "model": "eleven_turbo_v2_5",

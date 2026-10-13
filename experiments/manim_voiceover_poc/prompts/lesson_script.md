@@ -45,7 +45,9 @@ English accent, but every switch is a small seam, so keep switches to what teach
 
 ## Beat types and fields
 
-- `title` — the opening card. Fields: none (uses the lesson title). One per lesson, first.
+- `title` — the title card. Fields: none (uses the lesson title). One per lesson, as beat 1,
+  2 or 3: a lesson may open on a hook (a `transform` showing the typical mistake) so the
+  first seconds show the problem, not a card.
 - `heading` — a section card that clears the screen. `text` ≤ 90 chars, e.g. "Parte 2 · La regla".
 - `sentence` — a sentence shown as one chip per word. `text` (≤ 12 words, ≤ 90 chars),
   `gloss` (Spanish translation), optional `highlight` {word: "yellow"|"blue"|"green"|"red"},
@@ -66,13 +68,32 @@ English accent, but every switch is a small seam, so keep switches to what teach
   `{{pause:N}}` (N ≤ 6) may also be used once after a hard rule, never elsewhere.
 - `recap` — `items` (≤ 6): the takeaways, as full short sentences.
 
+Grammar in motion — prefer these whenever the idea can MOVE instead of being read:
+- `transform` — `from`, `to` (each ≤ 12 words), optional `gloss`. The chips of `from` morph
+  into `to`: shared words glide to their new place, words only in `from` turn red and fall,
+  words only in `to` drop in green. The narration says `from`, then `to`, inside [[ ]]:
+  `… [[You are tired. Are you tired?]] …`. Use it for word order (questions, inversion,
+  adverb position), a missing auxiliary, or a wrong word fixed — instead of a chain of
+  `sentence` beats showing the error and then the fix.
+- `timeline` — `events` (1–3) of `{label ≤ 40 chars, start, end, kind}` on an axis from −10
+  (past) to +10 (future), now = 0. `kind`: `point` (a dot; a future point gets a dashed line
+  from now — going to), `span` (a bar from start to end; ending before 0 it is closed — used
+  to; ending at 0 it is an arrow reaching now — present perfect), `repeat` (a row of dots —
+  a habit). The narration says each label, in order, inside [[ ]].
+- `sort` — `bins` (2–3 short labels), `items` (≤ 8) of `[text ≤ 24 chars, bin index]`. Each
+  item pops up when it is said and flies into its bin. The narration says every item, in
+  order, inside [[ ]]: `[[Make coffee. Do homework.]]`. For make/do, countable/uncountable,
+  -ing/to, in/on/at.
+
 ## Timing rule — the picture reacts to the voice
 
 The renderer highlights or reveals things at the moment the narration SAYS them. So the
 narration must literally contain: every `highlight`/`tags`/`fix.to` word of a sentence
 beat; the first word of every dialogue line; the first cell of every table row; the first
-word of every list/recap item; the correct quiz option. Write the narration so those words
-are spoken in the same order they appear on screen.
+word of every list/recap item; the correct quiz option; for a `transform`, the `from`
+sentence and then the `to` sentence; every timeline label; every sort item. Write the
+narration so those words are spoken in the same order they appear on screen. The motion
+types look for their words in the English ([[ ]]) only.
 
 ## Arc for a 5–8 minute lesson (adapt, do not copy)
 

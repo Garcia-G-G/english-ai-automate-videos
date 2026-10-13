@@ -181,6 +181,8 @@ def test_shipped_lessons_are_renderable_and_long(path):
     lesson = L.load(path)
     assert L.validate(lesson) == []
     assert lesson["id"] == path.stem
+    if lesson.get("demo"):          # a format demo (demo-motion): renderable, not a full lesson
+        return
     assert len(lesson["beats"]) >= 25 and L.estimate_minutes(lesson) >= 5, "a lesson is a long video, not a clip"
     assert any(b["type"] == "dialogue" for b in lesson["beats"]) and sum(b["type"] == "quiz" for b in lesson["beats"]) >= 3
     english = [s for b in lesson["beats"] for s in L.segments(b["narration"]) if s.get("lang") == "en"]

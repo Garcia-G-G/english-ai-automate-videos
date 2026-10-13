@@ -25,15 +25,36 @@ Beat types and the fields the scene reads (limits enforced by validate()):
   tip       text                            one callout
   quiz      question, options[], answer     ≤ 4 options; reveal on the answer
   recap     items[]                         ≤ 6 checked items
+  transform from, to, gloss?                one sentence morphs into another: shared
+                                            words glide, words only in `from` fall away
+                                            in red, words only in `to` drop in green
+  timeline  events[{label, start, end?, kind}]  an axis from -10 to +10 with «ahora» at 0;
+                                            kind point · span · repeat; ≤ 3 events
+  sort      bins[], items[[text, bin]]      2–3 bins, ≤ 8 items that pop in and fly
+                                            into their bin
+
+`title` may come second or third, so a lesson can open on a hook (a `transform` that
+shows the mistake in the first seconds).
+
+The three motion types cue in order: each cue is looked for after the previous one,
+inside the English ([[ ]]) of the narration only. A `transform` cues on the first word
+of `to` that is new or has moved, looked for after the narration has said `from`; a
+`timeline` event on the first word of its label; a `sort` item on the item itself.
 """
 import json
 import re
 from pathlib import Path
 
-TYPES = {"title", "heading", "sentence", "dialogue", "table", "list", "tip", "quiz", "recap"}
+TYPES = {"title", "heading", "sentence", "dialogue", "table", "list", "tip", "quiz", "recap",
+         "transform", "timeline", "sort"}
+ORDERED = {"transform", "timeline", "sort"}       # cues searched in order, inside the English only
 COLORS = {"yellow", "blue", "green", "red"}
 LIMITS = {"line": 90, "tip": 170, "cell": 28, "item": 110, "items": 6, "lines": 6, "rows": 6, "cols": 3,
-          "options": 4, "narration": 420, "chips": 12}
+          "options": 4, "narration": 420, "chips": 12, "label": 40, "events": 3, "bins": 3,
+          "bin": 14, "sort_items": 8, "sort_item": 24, "title_by": 3}
+KINDS = {"point", "span", "repeat"}
+AXIS = (-10, 10)
+PUNCT = ".,;:!?¿¡\"'()→·-…"
 EN_SPAN = re.compile(r"\[\[(.+?)\]\]", re.S)
 PAUSE = re.compile(r"\{\{\s*pause\s*:\s*(\d+(?:\.\d+)?)\s*\}\}")   # {{pause:3}} — silence, in seconds
 MAX_PAUSE = 6.0
@@ -92,9 +113,71 @@ def tokens(narration: str) -> list:
     return out
 
 
+def norm(word: str) -> str:
+    """How two words are compared: case and punctuation do not count."""
+    return word.strip(PUNCT).lower()
+
+
+def transform_plan(source: str, target: str) -> dict:
+    """How `source` becomes `target`, word by word (case and punctuation ignored).
+
+    Words of both sentences are paired in order; the longest common subsequence of the
+    pairs stays put relatively, the other shared words have *moved*. On a tie the LCS
+    keeps the earlier `source` word, so in «You are tired» → «Are you tired» it is
+    «Are» that jumps in front. Returns {from, to, pairs: [(i, j)], removed: [i],
+    added: [j], moved: [j], cue: j} — `cue` is the first word of `to` that is new or has
+    moved (the first word if nothing is)."""
+    a, b = source.split(), target.split()
+    na, nb = [norm(w) for w in a], [norm(w) for w in b]
+    dp = [[0] * (len(nb) + 1) for _ in range(len(na) + 1)]
+    for i in range(len(na) - 1, -1, -1):
+        for j in range(len(nb) - 1, -1, -1):
+            dp[i][j] = dp[i + 1][j + 1] + 1 if na[i] == nb[j] else max(dp[i + 1][j], dp[i][j + 1])
+    stable, i, j = set(), 0, 0
+    while i < len(na) and j < len(nb):
+        if na[i] == nb[j]:
+            stable.add((i, j))
+            i, j = i + 1, j + 1
+        elif dp[i][j + 1] >= dp[i + 1][j]:
+            j += 1                           # tie: skip the `to` word, keep the `from` word in the LCS
+        else:
+            i += 1
+    pairs = sorted(stable)
+    used_a, used_b = {p[0] for p in pairs}, {p[1] for p in pairs}
+    moved = []
+    for j, w in enumerate(nb):               # shared words outside the LCS, paired in order
+        if j in used_b:
+            continue
+        for i, v in enumerate(na):
+            if i not in used_a and v == w:
+                pairs.append((i, j))
+                used_a.add(i)
+                used_b.add(j)
+                moved.append(j)
+                break
+    pairs.sort(key=lambda p: p[1])
+    added = [j for j in range(len(nb)) if j not in used_b]
+    removed = [i for i in range(len(na)) if i not in used_a]
+    changed = sorted(set(added) | set(moved))
+    return {"from": a, "to": b, "pairs": pairs, "removed": removed, "added": added,
+            "moved": sorted(moved), "cue": changed[0] if changed else 0}
+
+
 def cue_words(beat: dict) -> list:
-    """The words a beat animates on, in the order the scene will use them."""
+    """The words a beat animates on, in the order the scene will use them. For the
+    ORDERED types a word may repeat (two timeline labels that start with «I»): each
+    occurrence is its own cue."""
     kind, words = beat.get("type"), []
+    if kind in ORDERED:
+        if kind == "transform" and beat.get("from") and beat.get("to"):
+            plan = transform_plan(beat["from"], beat["to"])
+            words = [plan["to"][plan["cue"]]] if plan["to"] else []
+        elif kind == "timeline":
+            words = [str(e.get("label", "")).split()[0] for e in beat.get("events", [])
+                     if isinstance(e, dict) and str(e.get("label", "")).split()]
+        elif kind == "sort":
+            words = [str(item[0]) for item in beat.get("items", []) if isinstance(item, list) and item]
+        return [w.strip(PUNCT) for w in words if w.strip(PUNCT)]
     if kind == "sentence":
         words += list((beat.get("highlight") or {}).keys())
         words += list((beat.get("tags") or {}).keys())
@@ -123,12 +206,23 @@ def _word_regex(word: str) -> re.Pattern:
     return re.compile(rf"(?<![\w])({re.escape(word)})(?![\w])", re.IGNORECASE)
 
 
+def cue_keys(beat: dict) -> list:
+    """The key each cue word gets in marked_narration's marks, aligned with cue_words():
+    the word itself, or "#n" for the ORDERED types (where a word may repeat)."""
+    words = cue_words(beat)
+    return [f"#{n}" for n in range(len(words))] if beat.get("type") in ORDERED else words
+
+
 def marked_narration(beat: dict) -> tuple:
     """Insert <bookmark mark='cN'/> before the first mention of each cue word, and
     <bookmark mark='pN'/> where each {{pause}} ends. Returns (text_with_bookmarks,
     {word_or_"pause:N": mark}) — words the narration never says get no mark and the
-    scene falls back to proportional timing for them."""
+    scene falls back to proportional timing for them. ORDERED types key their marks
+    "#n" (see cue_keys) and look for each cue after the previous one, in English only."""
     narration = beat.get("narration", "")
+    ordered = beat.get("type") in ORDERED
+    if ordered:                              # \x01…\x02 fence the English; stripped at the end
+        narration = EN_SPAN.sub(lambda m: f"[[\x01{m.group(1)}\x02]]", narration)
     # Pauses first: a sentinel survives the whitespace folding, then becomes a bookmark.
     text = " ".join(EN_SPAN.sub(r"\1", PAUSE.sub(f" {_SENTINEL} ", narration)).split())
     marks, n_pause = {}, 0
@@ -138,6 +232,8 @@ def marked_narration(beat: dict) -> tuple:
             else text.replace(_SENTINEL, f"<bookmark mark='{mark}'/>", 1)
         marks[f"pause:{n_pause}"] = mark
         n_pause += 1
+    if ordered:
+        return _mark_in_order(beat, text, marks)
     for n, word in enumerate(cue_words(beat)):
         pattern = _word_regex(word)
         if pattern.search(text):
@@ -147,9 +243,33 @@ def marked_narration(beat: dict) -> tuple:
     return text, marks
 
 
+def _english_spans(text: str) -> list:
+    return [(m.start(), m.end()) for m in re.finditer(r"\x01[^\x02]*\x02", text)]
+
+
+def _mark_in_order(beat: dict, text: str, marks: dict) -> tuple:
+    pos = 0
+    if beat.get("type") == "transform" and beat.get("from"):
+        said = [re.escape(norm(w)) for w in beat["from"].split() if norm(w)]
+        if said:                             # the cue comes after `from` has been said
+            found = re.search(r"(?<![\w])" + r"[^\w]+".join(said) + r"(?![\w])", text, re.IGNORECASE)
+            if found:
+                pos = found.end()
+    for n, word in enumerate(cue_words(beat)):
+        for match in _word_regex(word).finditer(text, pos):
+            if any(a < match.start() and match.end() < b for a, b in _english_spans(text)):
+                mark = f"c{n}"
+                text = text[:match.start()] + f"<bookmark mark='{mark}'/>" + text[match.start():]
+                marks[f"#{n}"] = mark
+                pos = match.end() + len(f"<bookmark mark='{mark}'/>")
+                break
+    return text.replace("\x01", "").replace("\x02", ""), marks
+
+
 def cued(beat: dict) -> list:
     """Cue words the narration actually says (what a test can assert on)."""
-    return [k for k in marked_narration(beat)[1] if not k.startswith("pause:")]
+    marks = marked_narration(beat)[1]
+    return [w for k, w in zip(cue_keys(beat), cue_words(beat)) if k in marks]
 
 
 # ── Loading and validation ─────────────────────────────────────────────────────
@@ -264,6 +384,9 @@ def validate(lesson: dict) -> list:
     if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", lesson["id"]):
         problems.append("lesson: id must be a slug (a-z, 0-9, -)")
     ids = set()
+    titles = [i for i, b in enumerate(lesson["beats"]) if b.get("type") == "title"]
+    if titles and titles[0] >= LIMITS["title_by"]:
+        problems.append(f"lesson: the title card must be beat 1, 2 or 3 (it is beat {titles[0] + 1})")
     for i, beat in enumerate(lesson["beats"]):
         where = f"beat {i + 1} ({beat.get('id', '?')})"
         if not beat.get("id") or beat["id"] in ids:
@@ -292,9 +415,9 @@ def warnings(lesson: dict) -> list:
     """Soft notes: the scene still renders, but a cue falls back to a guessed time."""
     notes = []
     for i, beat in enumerate(lesson.get("beats", [])):
-        said = set(cued(beat))
-        for word in cue_words(beat):
-            if word not in said:
+        marks = marked_narration(beat)[1]
+        for key, word in zip(cue_keys(beat), cue_words(beat)):
+            if key not in marks:
                 notes.append(f"beat {i + 1} ({beat.get('id', '?')}): «{word}» is animated but never said — its timing is a guess")
     return notes
 
@@ -366,4 +489,47 @@ def _validate_fields(where: str, kind: str, beat: dict) -> list:
                 p.append(f"{where}: answer must index an option")
             for option in beat["options"]:
                 short(option, "item", "option")
+    elif kind == "transform":
+        if need("from", str) and need("to", str):
+            for field in ("from", "to"):
+                short(beat[field], "line", field)
+                if len(beat[field].split()) > LIMITS["chips"]:
+                    p.append(f"{where}: {field} has more than {LIMITS['chips']} words")
+            if [norm(w) for w in beat["from"].split()] == [norm(w) for w in beat["to"].split()]:
+                p.append(f"{where}: from and to are the same words — nothing would move")
+        if beat.get("gloss"):
+            short(beat["gloss"], "line", "gloss")
+    elif kind == "timeline":
+        if need("events", list):
+            if len(beat["events"]) > LIMITS["events"]:
+                p.append(f"{where}: more than {LIMITS['events']} events")
+            for e in beat["events"]:
+                if not isinstance(e, dict) or not str(e.get("label", "")).strip():
+                    p.append(f"{where}: every event needs a label")
+                    continue
+                short(e["label"], "label", "event label")
+                if e.get("kind") not in KINDS:
+                    p.append(f"{where}: event kind must be one of {sorted(KINDS)}")
+                start, end = e.get("start"), e.get("end", e.get("start"))
+                if not all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in (start, end)):
+                    p.append(f"{where}: event start/end must be numbers")
+                    continue
+                if not (AXIS[0] <= start <= AXIS[1] and AXIS[0] <= end <= AXIS[1]):
+                    p.append(f"{where}: event outside the axis {AXIS[0]}…{AXIS[1]}")
+                if e.get("kind") in ("span", "repeat") and not end > start:
+                    p.append(f"{where}: a {e.get('kind')} needs end > start")
+    elif kind == "sort":
+        if need("bins", list) and need("items", list):
+            if not 2 <= len(beat["bins"]) <= LIMITS["bins"]:
+                p.append(f"{where}: 2–{LIMITS['bins']} bins")
+            for b in beat["bins"]:
+                short(b, "bin", "bin")
+            if len(beat["items"]) > LIMITS["sort_items"]:
+                p.append(f"{where}: more than {LIMITS['sort_items']} items")
+            for item in beat["items"]:
+                if (not isinstance(item, list) or len(item) != 2 or not str(item[0]).strip()
+                        or not isinstance(item[1], int) or not 0 <= item[1] < len(beat["bins"])):
+                    p.append(f"{where}: every item is [text, bin index]")
+                else:
+                    short(item[0], "sort_item", "item")
     return p

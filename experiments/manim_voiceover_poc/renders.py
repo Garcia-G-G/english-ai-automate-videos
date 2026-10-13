@@ -57,10 +57,11 @@ def chapters_text(timeline: dict) -> str:
 
 
 def poster_time(timeline: dict, duration: Optional[float]) -> float:
-    """A frame from the title card once it has fully drawn: 2.5 s in, or 5 % of the video."""
-    first = (timeline.get("beats") or [{}])[0]
-    if first.get("type") == "title":
-        return min(first.get("start", 0) + 2.5, max(0.5, (duration or 60) * 0.05))
+    """A frame from the title card once it has fully drawn: 2.5 s into it. The title may
+    be beat 2 or 3 (a lesson can open on a hook), so it is looked for, not assumed."""
+    title = next((b for b in timeline.get("beats") or [] if b.get("type") == "title"), None)
+    if title is not None:
+        return title.get("start", 0) + 2.5
     return max(0.5, (duration or 60) * 0.05)
 
 
