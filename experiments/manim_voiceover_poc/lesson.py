@@ -243,11 +243,14 @@ def marked_narration(beat: dict) -> tuple:
         n_pause += 1
     if ordered:
         return _mark_in_order(beat, text, marks)
+    # A quiz reveals its answer after the think pause, so its cue is the answer said AFTER
+    # the pause («Es [[Do]]»), not its first reading among the options.
+    after = text.index("<bookmark mark='p0'/>") if beat.get("type") == "quiz" and "pause:0" in marks else 0
     for n, word in enumerate(cue_words(beat)):
-        pattern = _word_regex(word)
-        if pattern.search(text):
+        found = _word_regex(word).search(text, after)
+        if found:
             mark = f"c{n}"
-            text = pattern.sub(rf"<bookmark mark='{mark}'/>\1", text, count=1)
+            text = text[:found.start()] + f"<bookmark mark='{mark}'/>" + text[found.start():]
             marks[word] = mark
     return text, marks
 
@@ -273,6 +276,37 @@ def _mark_in_order(beat: dict, text: str, marks: dict) -> tuple:
                 pos = match.end() + len(f"<bookmark mark='{mark}'/>")
                 break
     return text.replace("\x01", "").replace("\x02", ""), marks
+
+
+# ── Sync: every cued animation must start on its word ─────────────────────────
+# The scene records, for every cue, the bookmark time and the time its animation really
+# started; a start more than MAX_CUE_LAG late fails the batch. Queued animations (sort items,
+# timeline events, syllable hops) are squeezed so each one is done before the next cue.
+MAX_CUE_LAG = 0.25
+CUE_MARGIN = 0.05
+
+
+def squeeze(cues: list, phases: tuple, floor: float = 0.3, tail: float = None) -> list:
+    """For animations queued on cue times `cues` (seconds, ascending), each made of `phases`
+    (nominal seconds, e.g. pop, hold, fly): the phases scaled down so that animation i ends
+    CUE_MARGIN before cue i+1 — never below `floor` seconds in total. The last one has
+    `tail` seconds (default: its nominal length)."""
+    nominal = sum(phases)
+    out = []
+    for i, t in enumerate(cues):
+        room = (cues[i + 1] - t - CUE_MARGIN) if i + 1 < len(cues) else (tail if tail is not None else nominal)
+        k = max(floor / nominal, min(1.0, room / nominal))
+        out.append(tuple(p * k for p in phases))
+    return out
+
+
+def sync_report(cues: list, limit: float = MAX_CUE_LAG) -> dict:
+    """{max_lag, late: [cue…]} over cues with a real bookmark (a fallback guess is not a cue)."""
+    real = [c for c in cues if not c.get("fallback")]
+    lags = [c["start"] - c["cue"] for c in real]
+    late = [c for c in real if c["start"] - c["cue"] > limit]
+    return {"cues": len(real), "fallback": len(cues) - len(real), "max_lag": round(max(lags), 3) if lags else 0.0,
+            "late": late}
 
 
 def cued(beat: dict) -> list:

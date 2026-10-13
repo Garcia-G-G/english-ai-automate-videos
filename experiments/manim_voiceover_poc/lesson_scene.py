@@ -259,6 +259,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.pushed = False        # the camera is eased in
         self.speech = []           # [(start, end)] of the current beat's words, absolute — sfx duck under them
         self.effects = []          # every sound effect played: the render's timeline records them
+        self.cues = []             # every cue: its bookmark time and when its animation really started
         self.captions_on = os.environ.get("CAPTIONS", "1") != "0"
         self.timeline = []         # [{id, type, text?, start}] — chapters and the WP-38 poster read it
         self.parts = self.chapter_plan()
@@ -269,13 +270,24 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.wait(L.FINAL_HOLD_S)
         self.end_screen()
         self.write_timeline()
+        self.report_sync()
+
+    def report_sync(self):
+        report = L.sync_report(self.cues)
+        if report["late"]:
+            lines = [f"  {c['beat']} {c['key']} «{c['word']}»: started {c['start'] - c['cue']:+.2f} s after its word"
+                     for c in report["late"]]
+            bar = "!" * 78
+            print(f"\n{bar}\nOUT OF SYNC: {len(report['late'])} cue(s) start more than {L.MAX_CUE_LAG} s after the "
+                  f"word they animate on\n" + "\n".join(lines) + f"\n{bar}\n", flush=True)
 
     def write_timeline(self):
         out = Path(os.environ.get("TIMELINE_OUT", HERE / "media" / "timeline" / f"{self.lesson['id']}.json"))
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps({"lesson": self.lesson["id"], "theme": THEME, "sfx": SFX_ON,
                                    "duration": round(float(self.renderer.time), 2), "beats": self.timeline,
-                                   "effects": self.effects},
+                                   "effects": self.effects, "cues": self.cues,
+                                   "sync": {k: v for k, v in L.sync_report(self.cues).items() if k != "late"}},
                                   ensure_ascii=False, indent=1))
 
     # ── plumbing ──────────────────────────────────────────────────────────────
@@ -296,6 +308,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.timeline.append({"id": beat["id"], "type": kind, "text": beat.get("text") or beat.get("heading"),
                               "start": round(float(self.renderer.time), 2)})
         with self.voiceover(text=narration, beat_id=beat["id"]) as tracker:
+            self.beat_id = beat["id"]
             self.clock = (tracker.start_t, tracker.duration)
             self.speech = self._speech(beat["id"], tracker.start_t)
             caption = self.mount_captions(beat, tracker) if self.captions_on and kind != "title" else None
@@ -552,15 +565,34 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             self.stage.add(m)
         return mobjs[0] if len(mobjs) == 1 else mobjs
 
-    def until(self, tracker, marks, key, fraction):
-        """Seconds from now until `key` is spoken (bookmark) or, if the narration never says
-        it, until `fraction` of the narration has elapsed."""
+    def cue_time(self, tracker, marks, key, fraction):
+        """When `key` is spoken (absolute scene time, from its bookmark) or, if the narration
+        never says it, when `fraction` of the narration has elapsed."""
         if key in marks:
-            return tracker.time_until_bookmark(marks[key])
-        return tracker.start_t + fraction * tracker.duration - float(self.renderer.time)
+            return tracker.bookmark_times[marks[key]]
+        return tracker.start_t + fraction * tracker.duration
 
-    def at(self, tracker, marks, key, fraction):
-        self.safe_wait(self.until(tracker, marks, key, fraction))
+    def until(self, tracker, marks, key, fraction):
+        """Seconds from now until the cue (negative: it has passed)."""
+        return self.cue_time(tracker, marks, key, fraction) - float(self.renderer.time)
+
+    def record(self, key, word, cue, fallback, start=None):
+        rec = {"beat": self.beat_id, "key": key, "word": word, "cue": round(cue, 3), "fallback": fallback,
+               "start": round(float(self.renderer.time) if start is None else start, 3)}
+        self.cues.append(rec)
+        return rec
+
+    def at(self, tracker, marks, key, fraction, word=None):
+        """Wait for the cue, and record it: the animation the caller plays next starts now."""
+        cue = self.cue_time(tracker, marks, key, fraction)
+        self.safe_wait(cue - float(self.renderer.time))
+        return self.record(key, word or key, cue, key not in marks)
+
+    def run_until(self, nominal, next_cue, floor=0.12):
+        """An animation's run time, shortened so it is done CUE_MARGIN before the next cue."""
+        if next_cue is None:
+            return nominal
+        return max(floor, min(nominal, next_cue - float(self.renderer.time) - L.CUE_MARGIN))
 
     # ── beats ─────────────────────────────────────────────────────────────────
 
@@ -620,31 +652,38 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                     return i
             return None
 
-        n_cues = max(1, len(beat.get("highlight") or {}) + len(beat.get("tags") or {}) + (1 if beat.get("fix") else 0))
-        step = 0
-        for word, color in (beat.get("highlight") or {}).items():
-            i = find(word)
-            if i is None:
+        # the cues in the order they play: highlights, tags, the fix — each animation is done
+        # before the next cue
+        steps = [("hl", w, c) for w, c in (beat.get("highlight") or {}).items() if find(w) is not None]
+        steps += [("tag", w, t) for w, t in (beat.get("tags") or {}).items() if find(w) is not None]
+        if beat.get("fix") and find(beat["fix"]["from"]) is not None:
+            steps.append(("fix", beat["fix"]["to"], beat["fix"]["from"]))
+        n_cues = max(1, len(steps))
+        times = [self.cue_time(tracker, marks, w, (0.55 if kind == "fix" else 0.15 + 0.6 * (k + 1) / n_cues))
+                 for k, (kind, w, _) in enumerate(steps)]
+        nxt = lambda k: times[k + 1] if k + 1 < len(times) else None
+        for k, (kind, word, value) in enumerate(steps):
+            if kind != "hl":
                 continue
-            step += 1
-            self.at(tracker, marks, word, 0.15 + 0.6 * step / n_cues)
+            i = find(word)
+            color = value
+            self.at(tracker, marks, word, 0.15 + 0.6 * (k + 1) / n_cues)
             self.sentence["colors"][i] = ROLE[color]
             self.play(chips[i][0].animate.set_fill(ROLE[color]).set_stroke(ROLE[color]),
-                      chips[i][1].animate.set_color(ink(ROLE[color])), run_time=0.35)
-        for word, label in (beat.get("tags") or {}).items():
-            i = find(word)
-            if i is None:
+                      chips[i][1].animate.set_color(ink(ROLE[color])), run_time=self.run_until(0.35, nxt(k)))
+        for k, (kind, word, label) in enumerate(steps):
+            if kind != "tag":
                 continue
-            step += 1
-            self.at(tracker, marks, word, 0.15 + 0.6 * step / n_cues)
+            i = find(word)
+            self.at(tracker, marks, word, 0.15 + 0.6 * (k + 1) / n_cues)
             role = ROLE_WORDS.get(label.lower().strip()) or self.sentence["colors"].get(i, MUTED)
             if role == YELLOW and not P["dark"]:
                 role = ACCENT_LINE                         # yellow is never text on paper
             tag = text(label.upper(), TAG_PX, role, BODY, BOLD).next_to(chips[i], DOWN, buff=0.16)
             self.sentence["tags"][word] = tag
             self.keep(tag)
-            self.play(FadeIn(tag, shift=UP * 0.1), run_time=0.3)
-        if beat.get("fix"):
+            self.play(FadeIn(tag, shift=UP * 0.1), run_time=self.run_until(0.3, nxt(k)))
+        if steps and steps[-1][0] == "fix":
             src, dst = beat["fix"]["from"], beat["fix"]["to"]
             i = find(src)
             if i is not None:
@@ -690,6 +729,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             unit.shift(UP * (top - unit.get_top()[1]))
             overflow = STAGE_BOTTOM + 0.1 - unit.get_bottom()[1]
             self.at(tracker, marks, line["en"].split()[0], 0.05 + 0.85 * n / len(lines))
+            later = (self.cue_time(tracker, marks, lines[n + 1]["en"].split()[0], 0.05 + 0.85 * (n + 1) / len(lines))
+                     if n + 1 < len(lines) else None)
             anims, leaving = [FadeIn(unit, shift=(RIGHT if left else LEFT) * 0.25)], []
             if overflow > 0:
                 unit.shift(UP * overflow)
@@ -699,7 +740,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                         anims.append(u.animate.shift(UP * overflow).set_opacity(0))
                     else:
                         anims.append(u.animate.shift(UP * overflow))
-            self.play(*anims, run_time=0.45)
+            self.play(*anims, run_time=self.run_until(0.45, later))
             for u in leaving:
                 column.remove(u)
                 self.stage.remove(u)
@@ -738,7 +779,9 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.play(Create(rules), run_time=0.4)
         for n, row in enumerate(table[start:]):
             self.at(tracker, marks, str(rows[n][0]), 0.1 + 0.8 * n / len(rows))
-            self.play(FadeIn(row, shift=RIGHT * 0.2), run_time=0.3)
+            later = (self.cue_time(tracker, marks, str(rows[n + 1][0]), 0.1 + 0.8 * (n + 1) / len(rows))
+                     if n + 1 < len(rows) else None)
+            self.play(FadeIn(row, shift=RIGHT * 0.2), run_time=self.run_until(0.3, later))
 
     def beat_list(self, beat, tracker, marks, checks=False):
         self.show_bar()
@@ -762,7 +805,9 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             self.play(FadeIn(head), run_time=0.35)
         for n, (row, item) in enumerate(zip(group, items)):
             self.at(tracker, marks, item.split()[0], 0.1 + 0.8 * n / len(items))
-            self.play(FadeIn(row, shift=RIGHT * 0.2), run_time=0.3)
+            later = (self.cue_time(tracker, marks, items[n + 1].split()[0], 0.1 + 0.8 * (n + 1) / len(items))
+                     if n + 1 < len(items) else None)
+            self.play(FadeIn(row, shift=RIGHT * 0.2), run_time=self.run_until(0.3, later))
 
     def beat_recap(self, beat, tracker, marks):
         self.beat_list(beat, tracker, marks, checks=True)
@@ -825,7 +870,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             self.remove(track, arc, pill)
 
         answer = beat["answer"]
-        self.at(tracker, marks, beat["options"][answer].split()[0], 0.6)
+        self.at(tracker, marks, beat["options"][answer].split()[0].strip(L.PUNCT), 0.6)
         anims = []
         for n, opt in enumerate(options):
             if n == answer:
@@ -846,11 +891,12 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         if `from` is the sentence already on screen, the morph starts from it."""
         self.show_bar()
         plan = L.transform_plan(beat["from"], beat["to"])
+        morph_at = self.cue_time(tracker, marks, "#0", 0.55)
         if self.continues(beat):
             src = self.sentence["chips"]
             rest = [m for m in self.stage if m is not src]
             if rest:
-                self.play(*[FadeOut(m) for m in rest], run_time=0.3)
+                self.play(*[FadeOut(m) for m in rest], run_time=self.run_until(0.3, morph_at))
                 for m in rest:
                     self.stage.remove(m)
                     self.remove(m)
@@ -865,7 +911,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             src = chips_for(plan["from"], center=dst.get_center())
             self.keep(src)
             self.play(LaggedStart(*[FadeIn(c, scale=0.75) for c in src], lag_ratio=0.25,
-                                  run_time=min(1.0, 0.18 * len(src) + 0.3)))
+                                  run_time=self.run_until(min(1.0, 0.18 * len(src) + 0.3), morph_at)))
         self.sentence = None
 
         mark = None
@@ -882,11 +928,13 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                 x = src[right][0].get_left()[0] - 0.13
             mark = caret(x, box.get_top()[1] - 0.12, box.get_bottom()[1] + 0.12)
             self.keep(mark)
-            self.play(Create(mark), run_time=0.25)
-            for _ in range(2):
-                self.play(mark.animate(rate_func=there_and_back).scale(1.35).set_stroke(width=9), run_time=0.4)
+            self.play(Create(mark), run_time=self.run_until(0.25, morph_at, floor=0.1))
+            room = morph_at - float(self.renderer.time) - L.CUE_MARGIN
+            for _ in range(2 if room >= 0.8 else 1 if room >= 0.3 else 0):     # two pulses if there is time
+                self.play(mark.animate(rate_func=there_and_back).scale(1.35).set_stroke(width=9),
+                          run_time=min(0.4, room / 2 if room >= 0.8 else room))
 
-        self.at(tracker, marks, "#0", 0.55)
+        self.at(tracker, marks, "#0", 0.55, word=plan["to"][plan["cue"]])
         gone = [src[i] for i in plan["removed"]]
         if gone:
             self.play(*[c[0].animate.set_fill(RED).set_stroke(RED) for c in gone],
@@ -997,8 +1045,10 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             label = VGroup(RoundedRectangle(corner_radius=0.12, width=label.width + 0.3, height=label.height + 0.2,
                                             fill_color=BG, fill_opacity=0.9, stroke_width=0).move_to(label), label)
             self.keep(guides, extra, shape, label)
-            self.at(tracker, marks, f"#{n}", 0.1 + 0.8 * n / len(events))
-            run = min(1.6, 0.12 * len(shape) + 0.4) if kind == "repeat" else 0.8
+            self.at(tracker, marks, f"#{n}", 0.1 + 0.8 * n / len(events), word=event["label"].split()[0])
+            later = (self.cue_time(tracker, marks, f"#{n + 1}", 0.1 + 0.8 * (n + 1) / len(events))
+                     if n + 1 < len(events) else None)
+            run = self.run_until(min(1.6, 0.12 * len(shape) + 0.4) if kind == "repeat" else 0.8, later, floor=0.25)
             self.play(*draw, FadeIn(label, shift=DOWN * 0.12), FadeIn(guides), run_time=run)
 
     def beat_sort(self, beat, tracker, marks):
@@ -1020,7 +1070,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             box.move_to([cx, STAGE_BOTTOM + bin_h / 2 + 0.05, 0])
             label = text(name, BIN_PX, color).move_to([cx, box.get_top()[1] - 0.42, 0])
             bins.add(VGroup(box, label))
-            cols, rows = 2, 4
+            cols = 2
+            rows = max(1, math.ceil(sum(1 for _, bb in beat["items"] if bb == b) / cols))     # rows the bin needs
             top = box.get_top()[1] - 0.85
             cell_w, cell_h = (bin_w - 0.3) / cols, (bin_h - 1.0) / rows
             slots.append([[cx - (bin_w - 0.3) / 2 + cell_w * (c + 0.5), top - cell_h * (r + 0.5), 0]
@@ -1029,40 +1080,48 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.play(LaggedStart(*[FadeIn(b, shift=UP * 0.3) for b in bins], lag_ratio=0.3, run_time=0.6))
 
         pop_at = [0, STAGE_TOP - 1.4, 0]
+        n_items = len(beat["items"])
+        keys = [f"#{n}" for n in range(n_items)]
+        cues = [self.cue_time(tracker, marks, k, 0.15 + 0.75 * n / n_items) for n, k in enumerate(keys)]
+        # pop + hold + fly, squeezed so each item has landed before the next item's cue
+        phases = L.squeeze(cues, (0.25, 0.3, 0.6), floor=0.35)
+        now = float(self.renderer.time)
         items, plan, used = [], [], [0] * n_bins
         for n, (word, b) in enumerate(beat["items"]):
             chip = chips_for([str(word)], center=pop_at)[0]
             dest = slots[b][min(used[b], len(slots[b]) - 1)]
             used[b] += 1
             cell_w = (bin_w - 0.3) / 2
-            shrink = min(0.72, (cell_w - 0.1) / chip.width)
+            cell_h = (bin_h - 1.0) / max(1, math.ceil(sum(1 for _, bb in beat["items"] if bb == b) / 2))
+            shrink = min(0.72, (cell_w - 0.1) / chip.width, (cell_h - 0.08) / chip.height)
+            pop, hold, fly = phases[n]
+            rec = self.record(keys[n], str(word), cues[n], keys[n] not in marks, start=cues[n])
+            rec["start"] = None                       # filled in by the first frame the item is visible
             items.append(chip)
-            plan.append({"t": self.until(tracker, marks, f"#{n}", 0.15 + 0.75 * n / len(beat["items"])),
-                         "dest": dest, "shrink": shrink, "bend": 1 if dest[0] >= 0 else -1})
-        POP, FLY = 0.25, 0.6
-        for n, p in enumerate(plan):
-            nxt = plan[n + 1]["t"] if n + 1 < len(plan) else p["t"] + 2
-            p["hold"] = max(0.1, min(0.3, nxt - p["t"] - POP - 0.15))
-            self.sfx("pop", max(0.0, p["t"]) + POP + p["hold"] + FLY)       # the landing
+            plan.append({"t": max(0.0, cues[n] - now), "dest": dest, "shrink": shrink, "pop": pop, "hold": hold,
+                         "fly": fly, "rec": rec, "bend": 1 if dest[0] >= 0 else -1})
+            self.sfx("pop", max(0.0, cues[n] - now) + pop + hold + fly)       # the landing
         clock = ValueTracker(0.0)
         for chip, p in zip(items, plan):
             chip.save_state()
             chip.set_opacity(0)
 
-            def place(m, p=p):
-                tau = clock.get_value() - max(0.0, p["t"])
+            def place(m, dt=0, p=p):
+                tau = clock.get_value() - p["t"]
                 m.restore()
                 if tau <= 0:
                     m.set_opacity(0)
                     return
-                if tau < POP:
-                    k = smooth(tau / POP)
+                if p["rec"]["start"] is None:                 # sync proof: when it really appeared
+                    p["rec"]["start"] = round(float(self.renderer.time), 3)
+                if tau < p["pop"]:
+                    k = smooth(tau / p["pop"])
                     m.scale(0.6 + 0.4 * k).set_opacity(k)
                     return
-                tau -= POP + p["hold"]
+                tau -= p["pop"] + p["hold"]
                 if tau <= 0:
                     return
-                k = smooth(min(1.0, tau / FLY))
+                k = smooth(min(1.0, tau / p["fly"]))
                 a, b = m[0].get_center(), p["dest"]
                 ctrl = [(a[0] + b[0]) / 2 + p["bend"] * 0.6, max(a[1], b[1]) + 1.0, 0]
                 pos = [(1 - k) ** 2 * a[i] + 2 * (1 - k) * k * ctrl[i] + k ** 2 * b[i] for i in range(3)]
@@ -1070,8 +1129,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
 
             chip.add_updater(place)
             self.add(chip)
-        end = max(max(0.0, p["t"]) + POP + p["hold"] + FLY for p in plan) + 0.05
-        first_fly = max(0.0, plan[0]["t"]) + POP + plan[0]["hold"]
+        end = max(p["t"] + p["pop"] + p["hold"] + p["fly"] for p in plan) + 0.05
+        first_fly = plan[0]["t"] + plan[0]["pop"] + plan[0]["hold"]
         push = self.push(bins.get_center(), delay=first_fly)
         camera = Succession(Wait(run_time=first_fly), push) if first_fly > 0.01 else push
         self.play(clock.animate(run_time=end, rate_func=lambda t: t).set_value(end), camera)
@@ -1100,25 +1159,30 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             x += c[0].width + gap
         gloss = para(beat["gloss"], GLOSS_PX, STAGE_W, SOFT, BODY).next_to(chips, DOWN, buff=0.8) if beat.get("gloss") else None
         centre_on(chips, *([gloss] if gloss else []))
-        self.keep(chips)
-        self.play(LaggedStart(*[FadeIn(c, shift=DOWN * 0.4) for c in chips], lag_ratio=0.3, run_time=0.8))
+        said_at = self.cue_time(tracker, marks, "#0", 0.4)
+        self.keep(chips)                                   # the entrance is done before the word is said
+        self.play(LaggedStart(*[FadeIn(c, shift=DOWN * 0.4) for c in chips], lag_ratio=0.3,
+                              run_time=self.run_until(0.8, said_at - (0.3 if gloss else 0), floor=0.2)))
         if gloss:
             self.keep(gloss)
-            self.play(FadeIn(gloss), run_time=0.3)
+            self.play(FadeIn(gloss), run_time=self.run_until(0.3, said_at, floor=0.1))
 
-        # the dot hops across the word as it is spoken
-        self.at(tracker, marks, "#0", 0.4)
-        now = float(self.renderer.time)
-        spoken = [(a, b) for a, b in self.speech if b >= now]          # the word being said from here
-        span = max(0.45, min(1.6, spoken[0][1] - max(spoken[0][0], now) if spoken else 0.8))
+        # the dot hops across the word as it is spoken: on chip k at word start + k·span/n
+        t0 = self.at(tracker, marks, "#0", 0.4, word=beat["word"])["cue"]
+        spoken = [(a, b) for a, b in self.speech if b >= t0 - 0.05]    # the word being said from its cue
+        span = max(0.45, min(1.6, spoken[0][1] - max(spoken[0][0], t0) if spoken else 0.8))
         hop = span / len(chips)
         tops = [c[0].get_top() + UP * 0.32 for c in chips]
         dot = Dot(tops[0], radius=0.13, color=BLUE)
         self.keep(dot)
         self.play(FadeIn(dot, scale=0.4), chips[0].animate(rate_func=there_and_back).scale(1.08), run_time=min(0.12, hop))
         for k in range(1, len(chips)):
+            planned = t0 + (k - 1) * hop + min(0.12, hop)
+            self.safe_wait(planned - float(self.renderer.time))
+            self.record(f"hop{k}", parts[k], planned, False)
             self.play(dot.animate(path_arc=-PI * 0.8).move_to(tops[k]),
-                      chips[k].animate(rate_func=there_and_back).scale(1.08), run_time=hop)
+                      chips[k].animate(rate_func=there_and_back).scale(1.08),
+                      run_time=max(0.1, t0 + k * hop + min(0.12, hop) - float(self.renderer.time)))
         self.wait(0.3)
         # close the gaps: the syllables become the word
         total = sum(c[0].width for c in chips)

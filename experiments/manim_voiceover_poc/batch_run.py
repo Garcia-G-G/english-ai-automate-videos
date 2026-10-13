@@ -10,6 +10,7 @@ Stops at the first failure and says which step of which lesson. gen_audio.py and
 Manim render are subprocesses, so their logs are this program's log.
 """
 import argparse
+import json
 import subprocess
 import sys
 import time
@@ -39,6 +40,7 @@ def main() -> int:
     parser.add_argument("--force", action="store_true", help="regenerate every beat's audio even if the text did not change")
     parser.add_argument("--theme", default=None, help="sand · stone · dark (default: the lesson's, else brand.json's)")
     parser.add_argument("--no-sfx", action="store_true", help="render without the sound effects")
+    parser.add_argument("--allow-lag", action="store_true", help="go on even if a cue starts > 0.25 s after its word")
     args = parser.parse_args()
 
     ids = sorted(p.stem for p in (HERE / "lessons").glob("*.json")) if args.all else args.lessons
@@ -76,7 +78,12 @@ def main() -> int:
             if run(argv, env) != 0:
                 sys.exit(f"{lesson_id}/{voice}: render failed")
             row = R.register(R.rendered_output(args.quality, HERE), lesson_id, voice, args.quality, time.time() - t0, HERE)
-            print(f"✓ {row['file']} — {row['duration_s']} s of video in {row['render_seconds']} s", flush=True)
+            print(f"✓ {row['file']} — {row['duration_s']} s of video in {row['render_seconds']} s, "
+                  f"max cue lag {row.get('max_cue_lag')} s", flush=True)
+            late = R.sync_problems(json.loads(R.timeline_path(lesson_id, HERE).read_text(encoding="utf-8")))
+            if late and not args.allow_lag:            # the picture must follow the voice: prove it or stop
+                sys.exit(f"{lesson_id}/{voice}: OUT OF SYNC (> {L.MAX_CUE_LAG} s) — the batch stops here:\n  "
+                         + "\n  ".join(late) + "\n(the render is kept in renders/; --allow-lag to go on anyway)")
     print(f"done: {len(ids)} lesson(s) in {time.time() - started:.0f} s")
     print(R.describe_fit(R.duration_fit(HERE)))
     return 0

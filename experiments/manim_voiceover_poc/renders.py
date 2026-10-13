@@ -116,10 +116,22 @@ def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds
            "poster": f"{lesson_id}/{poster.name}" if has_poster else None,
            "chapters": f"{lesson_id}/{target.with_suffix('.chapters.txt').name}" if timeline else None,
            "theme": timeline.get("theme"), "sfx": timeline.get("sfx"),
+           "max_cue_lag": (timeline.get("sync") or {}).get("max_lag"),
            **render_features(lesson_id, timeline, studio_dir)}
     with (studio_dir / "renders" / "ledger.jsonl").open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False) + "\n")
     return row
+
+
+def sync_problems(timeline: dict, limit: float = None) -> list:
+    """One line per cue whose animation started more than `limit` (lesson.MAX_CUE_LAG) after
+    its word — [] when the render is in sync. A render without cue records is a problem too."""
+    L = _lesson_module()
+    limit = L.MAX_CUE_LAG if limit is None else limit
+    if "cues" not in timeline:
+        return ["the render recorded no cues (an old scene?) — sync cannot be proved"]
+    report = L.sync_report(timeline["cues"], limit)
+    return [f"{c['beat']} {c['key']} «{c['word']}»: +{c['start'] - c['cue']:.2f} s after its word" for c in report["late"]]
 
 
 def render_features(lesson_id: str, timeline: dict, studio_dir: Path = HERE) -> dict:

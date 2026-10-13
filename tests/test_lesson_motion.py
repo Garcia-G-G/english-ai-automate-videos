@@ -273,3 +273,50 @@ def test_a_render_records_what_the_fit_needs(tmp_path):
     L.save(lesson, tmp_path / "lessons" / "d.json")
     timeline = {"beats": [{"id": "end", "type": "end_screen", "start": 9.0, "seconds": 20.0}]}
     assert R.render_features("d", timeline, tmp_path) == {"words": 3, "beats": 1, "pause_s": 2.0, "end_s": 20.0}
+
+
+# ── sync: provable, not visual ─────────────────────────────────────────────────
+
+def test_a_fast_enumeration_squeezes_each_item_to_land_before_the_next_cue():
+    """The sort bug: pop 0.25 + hold 0.3 + fly 0.6 = 1.15 s against items said ~1 s apart left
+    each item one behind the voice. Squeezed, item i is done before cue i+1."""
+    cues = [60.44, 61.50, 62.45, 63.51, 64.62, 65.82]                 # demo-motion b06, as rendered
+    phases = L.squeeze(cues, (0.25, 0.3, 0.6), floor=0.35)
+    for i in range(len(cues) - 1):
+        assert cues[i] + sum(phases[i]) <= cues[i + 1] - L.CUE_MARGIN + 1e-9
+    assert phases[-1] == (0.25, 0.3, 0.6)                              # nothing follows: full length
+    assert L.squeeze([0.0, 2.0], (0.25, 0.3, 0.6))[0] == (0.25, 0.3, 0.6)   # room enough: untouched
+    assert sum(L.squeeze([0.0, 0.1], (0.25, 0.3, 0.6), floor=0.35)[0]) == pytest.approx(0.35)   # never below the floor
+
+
+def _cue(start, cue=10.0, fallback=False, key="#0"):
+    return {"beat": "b01", "key": key, "word": "do", "cue": cue, "start": start, "fallback": fallback}
+
+
+def test_the_sync_report_flags_a_start_more_than_a_quarter_second_late():
+    report = L.sync_report([_cue(10.1), _cue(10.3, key="#1"), _cue(14.0, fallback=True, key="#2")])
+    assert report["cues"] == 2 and report["fallback"] == 1
+    assert report["max_lag"] == pytest.approx(0.3) and [c["key"] for c in report["late"]] == ["#1"]
+
+
+def test_a_late_cue_stops_the_batch_and_an_unproved_render_too():
+    assert R.sync_problems({"cues": [_cue(10.2)]}) == []
+    late = R.sync_problems({"cues": [_cue(10.26)]})
+    assert len(late) == 1 and "+0.26 s" in late[0]
+    assert R.sync_problems({}) != []                                   # no records: sync is not proved
+    source = (STUDIO / "batch_run.py").read_text()
+    assert "R.sync_problems(" in source and "sys.exit(" in source.split("R.sync_problems(")[1][:400]
+
+
+def test_the_scene_records_every_cue_and_the_real_start():
+    source = (STUDIO / "lesson_scene.py").read_text()
+    assert source.count("self.at(") >= 9 and "def record(" in source
+    assert 'p["rec"]["start"] = round(float(self.renderer.time), 3)' in source     # sort: the first visible frame
+    assert '"cues": self.cues' in source and "OUT OF SYNC" in source
+
+
+def test_a_quiz_reveals_on_the_answer_said_after_the_pause():
+    beat = {"type": "quiz", "question": "___ you like coffee?", "options": ["Are", "Do", "Does"], "answer": 1,
+            "narration": "¿[[Are, Do or Does]]? Piénsalo. {{pause:3}} Es [[Do]]."}
+    text, marks = L.marked_narration(beat)
+    assert "<bookmark mark='p0'/>Es <bookmark mark='c0'/>Do." in text and marks["Do"] == "c0"
