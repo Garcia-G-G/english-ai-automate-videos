@@ -917,11 +917,11 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                                   run_time=self.run_until(min(1.0, 0.18 * len(src) + 0.3), morph_at)))
         self.sentence = None
 
-        mark = None
-        if plan["added"]:                                 # the error at once: a caret where the word is missing
-            j = plan["added"][0]
-            by_to = {jj: i for i, jj in plan["pairs"]}
-            left, right = by_to.get(j - 1), by_to.get(j + 1)
+        # The error at once. A missing word: a red caret in the gap, which becomes the word.
+        # A wrong word (a substitution — no gap to mark): its outline pulses red.
+        mark, gap = None, L.insertion_gap(plan)
+        if gap is not None:
+            left, right = gap
             box = src[left if left is not None else right][0]
             if left is not None and right is not None and src[left][0].get_y() == src[right][0].get_y():
                 x = (src[left][0].get_right()[0] + src[right][0].get_left()[0]) / 2
@@ -932,10 +932,17 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             mark = caret(x, box.get_top()[1] - 0.12, box.get_bottom()[1] + 0.12)
             self.keep(mark)
             self.play(Create(mark), run_time=self.run_until(0.25, morph_at, floor=0.1))
+            pulse = lambda: mark.animate(rate_func=there_and_back).scale(1.35).set_stroke(width=9)
+        elif plan["removed"]:
+            wrong = src[plan["removed"][0]][0]
+            self.play(wrong.animate.set_stroke(RED, width=5), run_time=self.run_until(0.2, morph_at, floor=0.1))
+            pulse = lambda: wrong.animate(rate_func=there_and_back).scale(1.12).set_stroke(width=9)
+        else:
+            pulse = None
+        if pulse is not None:
             room = morph_at - float(self.renderer.time) - L.CUE_MARGIN
             for _ in range(2 if room >= 0.8 else 1 if room >= 0.3 else 0):     # two pulses if there is time
-                self.play(mark.animate(rate_func=there_and_back).scale(1.35).set_stroke(width=9),
-                          run_time=min(0.4, room / 2 if room >= 0.8 else room))
+                self.play(pulse(), run_time=min(0.4, room / 2 if room >= 0.8 else room))
 
         self.at(tracker, marks, "#0", 0.55, word=plan["to"][plan["cue"]])
         gone = [src[i] for i in plan["removed"]]

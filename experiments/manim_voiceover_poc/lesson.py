@@ -181,6 +181,24 @@ def transform_plan(source: str, target: str) -> dict:
             "moved": sorted(moved), "cue": changed[0] if changed else 0}
 
 
+def insertion_gap(plan: dict):
+    """Where `to`'s first new word goes into `from`, as (left, right) indices of `from`
+    (None at an edge) — or None when it is not an insertion but a substitution (the
+    word's neighbours are not next to each other in `from`: something in between goes)."""
+    if not plan["added"]:
+        return None
+    j = plan["added"][0]
+    by_to = {jj: i for i, jj in plan["pairs"]}
+    left, right = by_to.get(j - 1), by_to.get(j + 1)
+    if left is not None and right is not None:
+        return (left, right) if right == left + 1 else None
+    if left is not None:
+        return (left, None) if left == len(plan["from"]) - 1 else None
+    if right is not None:
+        return (None, right) if right == 0 else None
+    return None
+
+
 def cue_words(beat: dict) -> list:
     """The words a beat animates on, in the order the scene will use them. For the
     ORDERED types a word may repeat (two timeline labels that start with «I»): each

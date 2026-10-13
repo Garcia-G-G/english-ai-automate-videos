@@ -340,3 +340,15 @@ def test_a_row_cue_may_be_spanish_and_punctuation_never_hides_a_cue():
     assert L.marked_narration(recap)[1] == {"#0": "c0"}
     source = (STUDIO / "lesson_scene.py").read_text()
     assert "L.cue_key(beat[\"options\"][answer]" in source and "L.cue_key(word)" in source
+
+
+def test_a_caret_marks_only_a_real_gap_never_a_word():
+    """«What means this word?» → «What does this word mean?»: «does» replaces «means», whose
+    neighbours «What» and «this» are not adjacent — a caret between them sat on «means»."""
+    assert L.insertion_gap(L.transform_plan("Where you live?", "Where do you live?")) == (0, 1)
+    assert L.insertion_gap(L.transform_plan("You like coffee?", "Do you like coffee?")) == (None, 0)
+    assert L.insertion_gap(L.transform_plan("I like it", "I like it a lot")) == (2, None)
+    for src, dst in [("What means this word?", "What does this word mean?"), ("She did a mistake.", "She made a mistake."),
+                     ("I use to wake up at seven.", "I usually wake up at seven.")]:
+        assert L.insertion_gap(L.transform_plan(src, dst)) is None
+    assert L.insertion_gap(L.transform_plan("You are tired.", "Are you tired?")) is None      # nothing added
