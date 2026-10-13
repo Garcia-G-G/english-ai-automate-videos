@@ -242,3 +242,17 @@ def test_render_outputs_chapters_poster_time_and_1080p30_flags(tmp_path):
                           {"id": "b03", "type": "heading", "text": "Muy pronto", "start": 4.0}, {"id": "b04", "type": "heading", "text": "Resumen", "start": 347.67}]}
     assert R.chapters_text(timeline) == "0:00 Introducción\n0:12 Parte 1 · El problema\n5:47 Resumen\n"
     assert R.poster_time(timeline, 380.0) == 2.5 and R.poster_time({}, 100.0) == 5.0
+
+
+def test_stitching_sends_only_the_text_that_follows_at_a_switch_and_at_a_beat_start():
+    """audio/_probe/stitching (2026-10-13): previous text + request ids gave clean onsets 1/10
+    («i-ira la tabla», «d-do the beds»), next_text only 7/10."""
+    segs = L.segments("Mira la tabla. [[Make the bed]] es prepararla. {{pause:2}} Y luego más.")
+    texts = [n for n, s in enumerate(segs) if "text" in s]
+    first, english, spanish, after_pause = texts
+    assert GA.stitch_context(segs, first, "la frase de antes", ["r0"]) == ("", "Make the bed es prepararla. Y luego más.", [])
+    assert GA.stitch_context(segs, english, "", ["r1"])[0] == "" and GA.stitch_context(segs, english, "", ["r1"])[2] == []
+    assert GA.stitch_context(segs, spanish, "", ["r2"])[2] == []                       # en → es: a switch
+    before, _, ids = GA.stitch_context(segs, after_pause, "", ["r3"])                 # es, pause, es: same voice goes on
+    assert before.endswith("es prepararla.") and ids == ["r3"]
+    assert GA.stitch_context(segs, english, "", ["r1"], full=True)[2] == ["r1"]        # --full-stitching: the old way

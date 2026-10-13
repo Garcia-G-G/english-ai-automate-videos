@@ -84,7 +84,8 @@ def alignment_to_words(alignment: dict) -> list:
 
 
 def eleven_segment(api_key: str, voice_id: str, text: str, lang: str, model: str, settings: dict,
-                   previous_text: str = "", next_text: str = "", previous_request_ids: list = ()) -> tuple:
+                   previous_text: str = "", next_text: str = "", previous_request_ids: list = (),
+                   on_body=None) -> tuple:
     """(mp3 bytes, words, request_id) for one segment.
 
     Request stitching: `previous_text` / `next_text` tell the model what surrounds this
@@ -102,6 +103,8 @@ def eleven_segment(api_key: str, voice_id: str, text: str, lang: str, model: str
         body["next_text"] = next_text[:300]
     if previous_request_ids:
         body["previous_request_ids"] = list(previous_request_ids)[-3:]
+    if on_body is not None:
+        on_body(body)                                          # --keep-raw: what was asked (the key is a header)
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/with-timestamps?output_format=mp3_44100_128"
     for attempt in range(2):
         request = urllib.request.Request(url, data=json.dumps(body).encode(), method="POST",
@@ -121,6 +124,23 @@ def eleven_segment(api_key: str, voice_id: str, text: str, lang: str, model: str
             raise urllib.error.HTTPError(error.url, error.code, detail, error.headers, None) from None
     alignment = result.get("normalized_alignment") or result["alignment"]
     return base64.b64decode(result["audio_base64"]), alignment_to_words(alignment), request_id
+
+
+def stitch_context(segs: list, n: int, previous_spoken: str, request_ids: list, full: bool = False) -> tuple:
+    """(previous_text, next_text, previous_request_ids) for segment n of a beat.
+
+    Measured 2026-10-13 (audio/_probe/stitching): with the previous text and request ids
+    the turbo model often starts a segment mid-sound or with a ~50 ms fragment of the
+    previous context — the owner's «i-ira la tabla», «d-do the beds» — clean onsets 1/10;
+    with next_text only 7/10. So at a language switch and at the start of a beat only the
+    text that follows is sent; full stitching is kept where the voice continues in the
+    same language (across a {{pause}}). `full` restores the old behaviour everywhere."""
+    after = " ".join(x["text"] for x in segs[n + 1:] if "text" in x).strip()
+    before = " ".join(x["text"] for x in segs[:n] if "text" in x).strip()
+    last = next((x["lang"] for x in reversed(segs[:n]) if "lang" in x), None)
+    if full or (last is not None and last == segs[n]["lang"]):
+        return before or previous_spoken, after, list(request_ids)
+    return "", after, []
 
 
 # ── Offline (sandbox) voices ──────────────────────────────────────────────────
@@ -228,7 +248,7 @@ def level_match(wavs: list) -> None:
             out.replace(wav)
 
 
-def stitch(segment_files: list, texts: list, target: Path) -> tuple:
+def stitch(segment_files: list, texts: list, target: Path, keep_dir: Path = None, names: list = None) -> tuple:
     """Trim, level and join the segments with punctuation-sized gaps and 12/20 ms fades.
     Returns (offsets, lead_cuts): where each trimmed segment starts in the beat, and how much
     leading silence each one lost (word times shift by -lead_cut + offset)."""
@@ -241,6 +261,9 @@ def stitch(segment_files: list, texts: list, target: Path) -> tuple:
             wavs.append(wav)
             lead_cuts.append(lead_cut)
         level_match(wavs)
+        if keep_dir is not None:                               # --keep-raw: each segment as it goes into the beat
+            for wav, name in zip(wavs, names):
+                shutil.copyfile(wav, Path(keep_dir) / f"{name}.processed.wav")
         parts = []
         for n, (wav, text) in enumerate(zip(wavs, texts)):
             offsets.append(cursor)
@@ -272,6 +295,12 @@ def main() -> int:
     parser.add_argument("--models-dir", type=Path, default=HERE.parent / "tts-models")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--force", action="store_true", help="regenerate every beat even if its text did not change")
+    parser.add_argument("--full-stitching", action="store_true",
+                        help="send previous text and request ids at language switches too (the old behaviour; dirtier onsets)")
+    parser.add_argument("--only", default=None, help="b05,b08: regenerate just these beats (others are left as they are)")
+    parser.add_argument("--keep-raw", action="store_true",
+                        help="save every segment as ElevenLabs returned it, its request (no key) and its processed form, "
+                             "under audio/<lesson>/<voice>/_raw/")
     args = parser.parse_args()
 
     lesson = L.load(args.lesson)
@@ -320,16 +349,27 @@ def main() -> int:
                     "lesson": lesson["id"], "beats": []}
         made = 0
         request_ids, previous_spoken = [], ""     # stitching context carried across segments and beats
+        only = set(args.only.split(",")) if args.only else None
+        raw_dir = out / "_raw"
+        if args.keep_raw:
+            raw_dir.mkdir(exist_ok=True)
         for beat in beats:
             spoken, pause_list = L.spoken_text(beat["narration"]), L.pauses(beat["narration"])
             mp3, words_path = out / f"{beat['id']}.mp3", out / f"{beat['id']}.words.json"
             old = previous.get(beat["id"])
-            if (not args.force and old and old.get("text") == spoken and old.get("pauses", []) == pause_list
+            if only is not None and beat["id"] not in only:      # --only: every other beat stays as it is
+                if old:
+                    manifest["beats"].append(old)
+                previous_spoken = spoken
+                continue
+            if (not args.force and only is None and old and old.get("text") == spoken and old.get("pauses", []) == pause_list
                     and mp3.exists() and words_path.exists()):
                 manifest["beats"].append({**old, "text": spoken})
                 previous_spoken = spoken
                 continue
             segs = L.segments(beat["narration"], lesson.get("language", "es"))
+            names = [f"{beat['id']}_{n:02d}_{seg.get('lang', 'pause')}" for n, seg in enumerate(segs)]
+            requests = []
             with tempfile.TemporaryDirectory() as tmp:
                 files, pieces = [], []
                 for n, seg in enumerate(segs):
@@ -340,16 +380,26 @@ def main() -> int:
                         files.append(path)
                         pieces.append({"words": []})
                         continue
-                    before = " ".join(x.get("text", "") for x in segs[:n]).strip() or previous_spoken
-                    after = " ".join(x.get("text", "") for x in segs[n + 1:]).strip()
+                    before, after, context_ids = stitch_context(segs, n, previous_spoken, request_ids, args.full_stitching)
                     lang_settings = {**settings, "speed": speeds.get(seg["lang"], 1.0)}
                     try:
                         if piper:
                             audio, words, rid = piper.segment(seg["text"], seg["lang"])
                         else:
+                            last_lang = next((x["lang"] for x in reversed(segs[:n]) if "lang" in x), None)
+
+                            def keep(body, n=n, seg=seg, last_lang=last_lang):
+                                requests.append({"segment": names[n], "lang": seg["lang"], "text": body["text"],
+                                                 "after_language_switch": last_lang is not None and last_lang != seg["lang"],
+                                                 "previous_text": bool(body.get("previous_text")),
+                                                 "next_text": bool(body.get("next_text")),
+                                                 "previous_request_ids": len(body.get("previous_request_ids", [])),
+                                                 "language_code": body.get("language_code"), "model": body["model_id"],
+                                                 "speed": body["voice_settings"].get("speed", 1.0)})
                             audio, words, rid = eleven_segment(api_key, voice_id, seg["text"], seg["lang"], model, lang_settings,
                                                                previous_text=before, next_text=after,
-                                                               previous_request_ids=request_ids)
+                                                               previous_request_ids=context_ids,
+                                                               on_body=keep if args.keep_raw else None)
                     except urllib.error.HTTPError as error:
                         detail = error.msg if isinstance(error.msg, str) else error.read()[:300].decode("utf-8", "replace")
                         sys.exit(f"ElevenLabs answered {error.code} on {beat['id']} segment {n} ({name}): {detail}")
@@ -357,9 +407,17 @@ def main() -> int:
                         request_ids = (request_ids + [rid])[-3:]
                     path = Path(tmp) / f"seg{n}.mp3"
                     path.write_bytes(audio)
+                    if args.keep_raw:
+                        (raw_dir / f"{names[n]}.mp3").write_bytes(audio)      # exactly as ElevenLabs returned it
                     files.append(path)
                     pieces.append({"words": words})
-                offsets, lead_cuts = stitch(files, [s.get("text", ".") for s in segs], mp3)
+                offsets, lead_cuts = stitch(files, [s.get("text", ".") for s in segs], mp3,
+                                            keep_dir=raw_dir if args.keep_raw else None, names=names)
+                if args.keep_raw:
+                    (raw_dir / f"{beat['id']}.requests.json").write_text(
+                        json.dumps({"beat": beat["id"], "requests": requests,
+                                    "offsets": [round(o, 3) for o in offsets], "lead_cuts": [round(c, 3) for c in lead_cuts]},
+                                   ensure_ascii=False, indent=1))
                 for piece, offset, cut in zip(pieces, offsets, lead_cuts):
                     piece["offset"], piece["lead_cut"] = offset, cut
             previous_spoken = spoken
