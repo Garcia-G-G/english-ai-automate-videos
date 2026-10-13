@@ -54,7 +54,10 @@ from pathlib import Path
 
 TYPES = {"title", "heading", "sentence", "dialogue", "table", "list", "tip", "quiz", "recap",
          "transform", "timeline", "sort", "syllables"}
-ORDERED = {"transform", "timeline", "sort", "syllables"}       # cues searched in order, inside the English only
+ORDERED = {"transform", "timeline", "sort", "syllables"}
+# Rows that appear one by one are cued in order too — a list whose items start «Do…, Does…,
+# Do…» needs the second «Do», not the first one again — but in either language.
+SEQUENTIAL = {"dialogue", "table", "list", "recap"}       # cues searched in order, inside the English only
 COLORS = {"yellow", "blue", "green", "red"}
 LIMITS = {"line": 90, "tip": 170, "cell": 28, "item": 110, "items": 6, "lines": 6, "rows": 6, "cols": 3,
           "options": 4, "narration": 420, "chips": 12, "label": 40, "events": 3, "bins": 3,
@@ -118,6 +121,14 @@ def tokens(narration: str) -> list:
         if ends_en:
             in_en = False
     return out
+
+
+CUE_STRIP = ".,;:!?¿¡\"'()→·-"
+
+
+def cue_key(word: str) -> str:
+    """The key a cue word has in marked_narration's marks (legacy types): punctuation off."""
+    return word.strip().strip(CUE_STRIP)
 
 
 def norm(word: str) -> str:
@@ -202,9 +213,11 @@ def cue_words(beat: dict) -> list:
         options = beat.get("options", [])
         if options and 0 <= beat.get("answer", -1) < len(options):
             words.append(options[beat["answer"]].split()[0])
+    if kind in SEQUENTIAL:                     # positional: a repeated first word is its own cue
+        return [cue_key(w) for w in words if cue_key(w)]
     seen, unique = set(), []
     for w in words:
-        w = w.strip().strip(".,;:!?¿¡\"'()→·-")
+        w = cue_key(w)
         if w and w not in seen:
             seen.add(w)
             unique.append(w)
@@ -219,7 +232,7 @@ def cue_keys(beat: dict) -> list:
     """The key each cue word gets in marked_narration's marks, aligned with cue_words():
     the word itself, or "#n" for the ORDERED types (where a word may repeat)."""
     words = cue_words(beat)
-    return [f"#{n}" for n in range(len(words))] if beat.get("type") in ORDERED else words
+    return [f"#{n}" for n in range(len(words))] if beat.get("type") in ORDERED | SEQUENTIAL else words
 
 
 def marked_narration(beat: dict) -> tuple:
@@ -241,8 +254,8 @@ def marked_narration(beat: dict) -> tuple:
             else text.replace(_SENTINEL, f"<bookmark mark='{mark}'/>", 1)
         marks[f"pause:{n_pause}"] = mark
         n_pause += 1
-    if ordered:
-        return _mark_in_order(beat, text, marks)
+    if ordered or beat.get("type") in SEQUENTIAL:
+        return _mark_in_order(beat, text, marks, english_only=ordered)
     # A quiz reveals its answer after the think pause, so its cue is the answer said AFTER
     # the pause («Es [[Do]]»), not its first reading among the options.
     after = text.index("<bookmark mark='p0'/>") if beat.get("type") == "quiz" and "pause:0" in marks else 0
@@ -259,7 +272,7 @@ def _english_spans(text: str) -> list:
     return [(m.start(), m.end()) for m in re.finditer(r"\x01[^\x02]*\x02", text)]
 
 
-def _mark_in_order(beat: dict, text: str, marks: dict) -> tuple:
+def _mark_in_order(beat: dict, text: str, marks: dict, english_only: bool = True) -> tuple:
     pos = 0
     if beat.get("type") == "transform" and beat.get("from"):
         said = [re.escape(norm(w)) for w in beat["from"].split() if norm(w)]
@@ -269,7 +282,7 @@ def _mark_in_order(beat: dict, text: str, marks: dict) -> tuple:
                 pos = found.end()
     for n, word in enumerate(cue_words(beat)):
         for match in _word_regex(word).finditer(text, pos):
-            if any(a < match.start() and match.end() < b for a, b in _english_spans(text)):
+            if not english_only or any(a < match.start() and match.end() < b for a, b in _english_spans(text)):
                 mark = f"c{n}"
                 text = text[:match.start()] + f"<bookmark mark='{mark}'/>" + text[match.start():]
                 marks[f"#{n}"] = mark

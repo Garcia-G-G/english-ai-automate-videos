@@ -320,3 +320,23 @@ def test_a_quiz_reveals_on_the_answer_said_after_the_pause():
             "narration": "¿[[Are, Do or Does]]? Piénsalo. {{pause:3}} Es [[Do]]."}
     text, marks = L.marked_narration(beat)
     assert "<bookmark mark='p0'/>Es <bookmark mark='c0'/>Do." in text and marks["Do"] == "c0"
+
+
+def test_rows_cue_in_order_so_a_repeated_first_word_gets_its_own_cue():
+    """hacer-preguntas b15 lists «Do…, Does…, Do…, Does…»: deduplicated, items 3 and 4 reused the
+    bookmarks of 1 and 2 and drew 3.3 s late. In order, each item has its own word."""
+    beat = {"type": "list", "items": ["Do you work here?", "Does it hurt?", "Do they speak Spanish?", "Does he?"],
+            "narration": "[[Do you work here?]] ¿Trabajas? [[Does it hurt?]] ¿Duele? [[Do they speak Spanish?]] [[Does he?]]"}
+    text, marks = L.marked_narration(beat)
+    assert L.cue_keys(beat) == ["#0", "#1", "#2", "#3"] and set(marks.values()) == {"c0", "c1", "c2", "c3"}
+    assert text.index("c2'/>Do they") > text.index("c1'/>Does it")
+
+
+def test_a_row_cue_may_be_spanish_and_punctuation_never_hides_a_cue():
+    beat = {"type": "dialogue", "lines": [{"en": "Hi! How are you?"}, {"en": "Yes, fine."}],
+            "narration": "Ella dice [[Hi! How are you?]] y él [[Yes, fine.]]"}
+    assert L.marked_narration(beat)[1] == {"#0": "c0", "#1": "c1"}         # «Hi!» once fell back to a guess
+    recap = {"type": "recap", "items": ["El verbo va delante"], "narration": "El verbo va delante."}
+    assert L.marked_narration(recap)[1] == {"#0": "c0"}
+    source = (STUDIO / "lesson_scene.py").read_text()
+    assert "L.cue_key(beat[\"options\"][answer]" in source and "L.cue_key(word)" in source

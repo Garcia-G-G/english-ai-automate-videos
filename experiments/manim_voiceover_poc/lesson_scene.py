@@ -639,11 +639,15 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             centre_on(chips, *([gloss] if gloss else []))
             self.sentence = {"chips": chips, "words": words, "tags": {}, "colors": {}}
             self.keep(chips)
-            self.play(LaggedStart(*[FadeIn(c, scale=0.75) for c in chips], lag_ratio=0.25,
-                                  run_time=min(1.0, 0.18 * len(chips) + 0.3)))
+            first = [w for w in list((beat.get("highlight") or {})) + list((beat.get("tags") or {}))
+                     + ([beat["fix"]["to"]] if beat.get("fix") else [])]
+            first_at = self.cue_time(tracker, marks, L.cue_key(first[0]), 0.15) if first else None
+            entrance = [LaggedStart(*[FadeIn(c, scale=0.75) for c in chips], lag_ratio=0.25)]
             if gloss:
                 self.keep(gloss)
-                self.play(FadeIn(gloss), run_time=0.4)
+                entrance.append(FadeIn(gloss))
+            self.play(AnimationGroup(*entrance, lag_ratio=0.5),             # done before the first cue is said
+                      run_time=self.run_until(min(1.2, 0.18 * len(chips) + 0.6), first_at, floor=0.15))
         chips, words = self.sentence["chips"], self.sentence["words"]
 
         def find(word):
@@ -659,7 +663,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         if beat.get("fix") and find(beat["fix"]["from"]) is not None:
             steps.append(("fix", beat["fix"]["to"], beat["fix"]["from"]))
         n_cues = max(1, len(steps))
-        times = [self.cue_time(tracker, marks, w, (0.55 if kind == "fix" else 0.15 + 0.6 * (k + 1) / n_cues))
+        times = [self.cue_time(tracker, marks, L.cue_key(w), (0.55 if kind == "fix" else 0.15 + 0.6 * (k + 1) / n_cues))
                  for k, (kind, w, _) in enumerate(steps)]
         nxt = lambda k: times[k + 1] if k + 1 < len(times) else None
         for k, (kind, word, value) in enumerate(steps):
@@ -667,7 +671,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                 continue
             i = find(word)
             color = value
-            self.at(tracker, marks, word, 0.15 + 0.6 * (k + 1) / n_cues)
+            self.at(tracker, marks, L.cue_key(word), 0.15 + 0.6 * (k + 1) / n_cues, word=word)
             self.sentence["colors"][i] = ROLE[color]
             self.play(chips[i][0].animate.set_fill(ROLE[color]).set_stroke(ROLE[color]),
                       chips[i][1].animate.set_color(ink(ROLE[color])), run_time=self.run_until(0.35, nxt(k)))
@@ -675,7 +679,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             if kind != "tag":
                 continue
             i = find(word)
-            self.at(tracker, marks, word, 0.15 + 0.6 * (k + 1) / n_cues)
+            self.at(tracker, marks, L.cue_key(word), 0.15 + 0.6 * (k + 1) / n_cues, word=word)
             role = ROLE_WORDS.get(label.lower().strip()) or self.sentence["colors"].get(i, MUTED)
             if role == YELLOW and not P["dark"]:
                 role = ACCENT_LINE                         # yellow is never text on paper
@@ -687,7 +691,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             src, dst = beat["fix"]["from"], beat["fix"]["to"]
             i = find(src)
             if i is not None:
-                self.at(tracker, marks, dst, 0.55)
+                self.at(tracker, marks, L.cue_key(dst), 0.55, word=dst)
                 fixed = words[:i] + [dst + words[i][len(words[i].rstrip(L.PUNCT)):]
                                      if L.norm(dst) != L.norm(words[i]) else words[i]] + words[i + 1:]
                 layout = chips_for(fixed, center=chips.get_center(), pitch=CHIP_H + 0.6)
@@ -728,8 +732,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             top = y if not len(column) else column[-1].get_bottom()[1] - 0.3
             unit.shift(UP * (top - unit.get_top()[1]))
             overflow = STAGE_BOTTOM + 0.1 - unit.get_bottom()[1]
-            self.at(tracker, marks, line["en"].split()[0], 0.05 + 0.85 * n / len(lines))
-            later = (self.cue_time(tracker, marks, lines[n + 1]["en"].split()[0], 0.05 + 0.85 * (n + 1) / len(lines))
+            self.at(tracker, marks, f"#{n}", 0.05 + 0.85 * n / len(lines), word=line["en"].split()[0])
+            later = (self.cue_time(tracker, marks, f"#{n + 1}", 0.05 + 0.85 * (n + 1) / len(lines))
                      if n + 1 < len(lines) else None)
             anims, leaving = [FadeIn(unit, shift=(RIGHT if left else LEFT) * 0.25)], []
             if overflow > 0:
@@ -772,14 +776,13 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         whole = VGroup(table, rules)
         fit(whole, STAGE_W, STAGE_TOP - STAGE_BOTTOM - 0.5, grow=1.5).move_to([0, STAGE_MID, 0])
         self.keep(whole)
-        start = 0
-        if beat.get("headers"):
-            self.play(FadeIn(table[0]), run_time=0.3)
-            start = 1
-        self.play(Create(rules), run_time=0.4)
+        start = 1 if beat.get("headers") else 0
+        first = self.cue_time(tracker, marks, "#0", 0.1)
+        self.play(*([FadeIn(table[0])] if start else []), Create(rules),        # the frame is up before row 1 is said
+                  run_time=self.run_until(0.5, first, floor=0.1))
         for n, row in enumerate(table[start:]):
-            self.at(tracker, marks, str(rows[n][0]), 0.1 + 0.8 * n / len(rows))
-            later = (self.cue_time(tracker, marks, str(rows[n + 1][0]), 0.1 + 0.8 * (n + 1) / len(rows))
+            self.at(tracker, marks, f"#{n}", 0.1 + 0.8 * n / len(rows), word=str(rows[n][0]))
+            later = (self.cue_time(tracker, marks, f"#{n + 1}", 0.1 + 0.8 * (n + 1) / len(rows))
                      if n + 1 < len(rows) else None)
             self.play(FadeIn(row, shift=RIGHT * 0.2), run_time=self.run_until(0.3, later))
 
@@ -802,10 +805,10 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             head.set_x(0)
         self.keep(whole)
         if head:
-            self.play(FadeIn(head), run_time=0.35)
+            self.play(FadeIn(head), run_time=self.run_until(0.35, self.cue_time(tracker, marks, "#0", 0.1), floor=0.1))
         for n, (row, item) in enumerate(zip(group, items)):
-            self.at(tracker, marks, item.split()[0], 0.1 + 0.8 * n / len(items))
-            later = (self.cue_time(tracker, marks, items[n + 1].split()[0], 0.1 + 0.8 * (n + 1) / len(items))
+            self.at(tracker, marks, f"#{n}", 0.1 + 0.8 * n / len(items), word=item.split()[0])
+            later = (self.cue_time(tracker, marks, f"#{n + 1}", 0.1 + 0.8 * (n + 1) / len(items))
                      if n + 1 < len(items) else None)
             self.play(FadeIn(row, shift=RIGHT * 0.2), run_time=self.run_until(0.3, later))
 
@@ -870,7 +873,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             self.remove(track, arc, pill)
 
         answer = beat["answer"]
-        self.at(tracker, marks, beat["options"][answer].split()[0].strip(L.PUNCT), 0.6)
+        self.at(tracker, marks, L.cue_key(beat["options"][answer].split()[0]), 0.6)
         anims = []
         for n, opt in enumerate(options):
             if n == answer:
@@ -997,8 +1000,10 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         future = text("futuro", SMALL_PX, MUTED, BODY).move_to([x(7.5), ahora.get_y(), 0])
         frame = VGroup(axis, ticks, now, ahora, past, future)
         self.keep(frame)
-        self.play(Create(axis), FadeIn(ticks), run_time=0.6)
-        self.play(FadeIn(now), FadeIn(ahora, shift=UP * 0.1), FadeIn(past), FadeIn(future), run_time=0.4)
+        first = self.cue_time(tracker, marks, "#0", 0.1)
+        self.play(Create(axis), FadeIn(ticks), run_time=self.run_until(0.6, first - 0.3, floor=0.15))
+        self.play(FadeIn(now), FadeIn(ahora, shift=UP * 0.1), FadeIn(past), FadeIn(future),
+                  run_time=self.run_until(0.4, first, floor=0.1))
         for n, event in enumerate(events):
             color = LANE_COLORS[n % len(LANE_COLORS)]
             y = lanes[n]
@@ -1077,7 +1082,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             slots.append([[cx - (bin_w - 0.3) / 2 + cell_w * (c + 0.5), top - cell_h * (r + 0.5), 0]
                           for r in range(rows) for c in range(cols)])
         self.keep(bins)
-        self.play(LaggedStart(*[FadeIn(b, shift=UP * 0.3) for b in bins], lag_ratio=0.3, run_time=0.6))
+        self.play(LaggedStart(*[FadeIn(b, shift=UP * 0.3) for b in bins], lag_ratio=0.3,
+                              run_time=self.run_until(0.6, self.cue_time(tracker, marks, "#0", 0.15), floor=0.15)))
 
         pop_at = [0, STAGE_TOP - 1.4, 0]
         n_items = len(beat["items"])
