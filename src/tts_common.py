@@ -271,6 +271,127 @@ TRIM_TAIL_PAD = 0.08
 TRIM_LEAD_PAD = 0.02
 
 
+def measure_first_take_end(audio_path: str, threshold_db: float = None,
+                           min_gap: float = 0.08) -> "float | None":
+    """Where the FIRST of two takes ends inside one clip, or None.
+
+    how_do_you_say speaks "Family. Family." in ONE call -- the second take
+    costs one word of characters rather than a second request -- and the
+    renderer writes the word in over the first take only. This finds the
+    pause between the two: the first internal silence that has speech after
+    it. None when there is none to find, so the caller decides rather than
+    this guessing a midpoint and presenting it as a measurement.
+    """
+    import re
+    import subprocess
+
+    threshold_db = SPEECH_EDGE_THRESHOLD_DB if threshold_db is None else threshold_db
+    try:
+        duration = get_audio_duration(audio_path)
+        proc = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
+             f"silencedetect=noise={threshold_db}dB:d={min_gap}",
+             "-f", "null", "-"],
+            capture_output=True, text=True, timeout=60,
+        )
+    except (OSError, subprocess.SubprocessError, RuntimeError):
+        return None
+
+    start = None
+    for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
+        value = float(value)
+        if kind == "start":
+            start = value
+        elif start is not None:
+            # internal: speech before it AND speech after it
+            if start > 0.15 and value < duration - 0.10:
+                return start
+            start = None
+    return None
+
+
+#: The pause left between two takes of one word ("Family. Family.").
+#: eleven_v3 reads ". " as a sentence break and left 1.06-1.63 s there on
+#: the first how_do_you_say render (bv001, 2026-10-09): ten of them added
+#: ~9 s, and the longest tripped qa_gate's 1.5 s dead-air check. A spoken
+#: repetition sits nearer half a second.
+TAKE_GAP_S = 0.45
+
+
+def clamp_take_gap(audio_path: str, max_gap: float = TAKE_GAP_S) -> dict:
+    """Shorten the pause between two takes to `max_gap`, cutting SILENCE only.
+
+    The cut is made inside the measured gap -- half of max_gap kept after the
+    first take's end, half before the second take's start -- so no speech is
+    touched and both edges keep their natural decay and onset. Measured
+    again afterwards; a clip whose gap could not be found is left alone.
+
+    Returns {'clamped', 'gap_before', 'gap_after', 'first_end'}.
+    """
+    import re
+    import subprocess
+
+    out = {"clamped": False, "gap_before": None, "gap_after": None,
+           "first_end": None}
+    try:
+        duration = get_audio_duration(audio_path)
+        proc = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
+             f"silencedetect=noise={SPEECH_EDGE_THRESHOLD_DB}dB:d=0.08",
+             "-f", "null", "-"],
+            capture_output=True, text=True, timeout=60)
+    except (OSError, subprocess.SubprocessError, RuntimeError):
+        return out
+
+    gap, start = None, None
+    for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
+        value = float(value)
+        if kind == "start":
+            start = value
+        elif start is not None:
+            if start > 0.15 and value < duration - 0.10:
+                gap = (start, value)
+                break
+            start = None
+    if gap is None:
+        return out
+
+    first_end, second_start = gap
+    out.update(gap_before=round(second_start - first_end, 3),
+               first_end=round(first_end, 3))
+    # 0.1 s of slack: silencedetect re-measures a cut gap a little long, and
+    # without it a second pass would keep cutting the same pause.
+    if second_start - first_end <= max_gap + 0.10:
+        out["gap_after"] = out["gap_before"]
+        return out
+
+    cut_from = first_end + max_gap / 2
+    cut_to = second_start - max_gap / 2
+    tmp = f"{audio_path}.gap.mp3"
+    chain = (f"[0:a]atrim=0:{cut_from:.3f},asetpts=PTS-STARTPTS[a];"
+             f"[0:a]atrim={cut_to:.3f},asetpts=PTS-STARTPTS[b];"
+             f"[a][b]concat=n=2:v=0:a=1[out]")
+    try:
+        proc = subprocess.run(
+            ["ffmpeg", "-y", "-loglevel", "error", "-i", audio_path,
+             "-filter_complex", chain, "-map", "[out]",
+             "-acodec", "libmp3lame", "-q:a", "2", "-ar", "44100", "-ac", "1", tmp],
+            capture_output=True, text=True, timeout=60)
+        if proc.returncode != 0 or not os.path.exists(tmp):
+            logger.warning("take gap: cut failed for %s; clip left as it is", audio_path)
+            return out
+        os.replace(tmp, audio_path)
+    finally:
+        if os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+    out["clamped"] = True
+    out["gap_after"] = round(max_gap, 3)
+    return out
+
+
 def measure_speech_start(audio_path: str, threshold_db: float = None,
                          min_dur: float = 0.03) -> float:
     """Offset where speech STARTS, i.e. the length of the leading silence.
