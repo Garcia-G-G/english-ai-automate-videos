@@ -68,3 +68,14 @@ intro, outro
 ```
 New topic category `ladders` (la001 rutina · la002 cafetería · la003 trabajo ·
 la004 fin de semana).
+
+## Approved next (2026-10-13), after the six above — shapes to be written per type
+
+- **natural_vs_textbook** — "Tú dices / un nativo dice": the textbook phrase
+  (I'm fine, thank you) next to 2–3 natural ones (I'm good / not bad / can't
+  complain), each with its register. Topics: everyday_expressions, social, slang.
+- **what_did_they_say** — "¿Qué ha dicho?": a phrase at native speed with
+  connected speech (gonna, wanna, whaddaya), a pause to guess, then slow and
+  written. Topics: pronunciation pr026–pr030 (connected_speech), slang sl018–sl027.
+- **shadowing** — "Repite conmigo": one useful sentence said three times,
+  each a bit faster, with a timed gap for the viewer to repeat it aloud.
