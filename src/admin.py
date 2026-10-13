@@ -1712,6 +1712,50 @@ def get_failed_jobs(limit: int = None) -> list:
     return failed[:limit] if limit else failed
 
 
+
+def lazy_video(path, key: str, open_now: bool = False) -> None:
+    """A video player that costs nothing until someone asks for it.
+
+    WHY. st.video(path) reads the WHOLE file into Streamlit's media store and
+    ships it to the browser on EVERY rerun -- and Streamlit reruns the page on
+    every click. An expander does not help: its body runs while closed. The
+    Upload page drew 27 players (758 MB) and the Library 28, so every click
+    there re-read ~0.8 GB before the page could answer, and the browser held
+    dozens of <video> elements. Measured 2026-10-13: that is the "se tilda".
+
+    Now a button stands in for the player; one click loads that one video and
+    keeps it open for the session. `open_now` is for the single video a page
+    exists to show (the newest render, the first one waiting for review).
+    """
+    state_key = f"_lazy_video_{key}"
+    if open_now or st.session_state.get(state_key):
+        st.video(str(path))
+        return
+    if st.button("▶️ Ver vídeo", key=f"_lazy_btn_{key}"):
+        st.session_state[state_key] = True
+        st.video(str(path))
+
+
+def lazy_download(path, key: str) -> None:
+    """A download button that reads the file only when asked.
+
+    st.download_button(data=<file>) reads the whole video into memory on
+    every rerun, whether or not anyone downloads it: 27 of them on the Upload
+    page was 0.36 s and ~0.8 GB per click. The first press prepares this one
+    file; the second press downloads it.
+    """
+    state_key = f"_lazy_dl_{key}"
+    if not st.session_state.get(state_key):
+        if st.button("⬇️ Download", key=f"_lazy_dl_btn_{key}",
+                     use_container_width=True):
+            st.session_state[state_key] = True
+            st.rerun()
+        return
+    with open(path, "rb") as handle:
+        st.download_button("⬇️ Guardar archivo", data=handle,
+                           file_name=Path(path).name, mime="video/mp4",
+                           key=f"_lazy_dl_real_{key}", use_container_width=True)
+
 def focus_first(videos: list, artifact: Optional[str]) -> list:
     """Put the artifact the operator pressed on at the top of the list.
 
@@ -2215,9 +2259,6 @@ st.sidebar.markdown("### 🎬 English AI Videos")
 st.sidebar.caption(f"build `{_RUNNING_VERSION}` · started {_STARTED_AT}")
 st.sidebar.markdown("---")
 
-if 'current_page' not in st.session_state:
-    st.session_state.current_page = "Dashboard"
-
 main_pages = {
     "Dashboard": "🏠",
     "Generate": "🎥",
@@ -2229,10 +2270,16 @@ main_pages = {
 
 tool_pages = {
     "Topics": "🧠",
+    "Manim": "🎞️",
     "Scheduler": "⏰",
     "Settings": "⚙️",
     "Logs": "📜",
 }
+
+if 'current_page' not in st.session_state:
+    # Direct links open a page: http://localhost:8501/?page=Manim
+    wanted = getattr(st, "query_params", {}).get("page", "Dashboard")
+    st.session_state.current_page = wanted if wanted in {**main_pages, **tool_pages} else "Dashboard"
 
 st.sidebar.markdown("##### MAIN")
 for name, icon in main_pages.items():
@@ -2797,7 +2844,8 @@ elif page == "Generate":
                     if job.get("error"):
                         st.error(job['error'][:300])
                     if video_file:
-                        st.video(str(video_file))
+                        lazy_video(video_file, f"gen_{i}_{video_file.name}",
+                                   open_now=auto_expand)
         else:
             st.info("No videos generated yet.")
 
@@ -2957,7 +3005,8 @@ elif page == "Review":
                     except ImportError:
                         pass
                 if video["path"].exists():
-                    st.video(str(video["path"]))
+                    lazy_video(video["path"], f"review_{video['path'].name}",
+                               open_now=(idx == 0))
 
             with col2:
                 st.write("")
@@ -3120,8 +3169,7 @@ elif page == "Upload":
                             + ". Uploading again would create a duplicate."
                         )
                     if video["path"].exists():
-                        with st.expander("Preview Video"):
-                            st.video(str(video["path"]))
+                        lazy_video(video["path"], f"upload_{video['path'].name}")
 
                 with col2:
                     # Generate metadata from script
@@ -3317,15 +3365,7 @@ elif page == "Upload":
                 btn_cols = st.columns(2)
                 with btn_cols[0]:
                     if video["path"].exists():
-                        with open(video["path"], "rb") as vf:
-                            st.download_button(
-                                "⬇️ Download",
-                                data=vf,
-                                file_name=video["path"].name,
-                                mime="video/mp4",
-                                key=f"dl_{video['name']}",
-                                use_container_width=True,
-                            )
+                        lazy_download(video["path"], f"dl_{video['name']}")
                 with btn_cols[1]:
                     if st.button("↩️", key=f"unapprove_{video['name']}", use_container_width=True,
                                  help="Move back to pending"):
@@ -3426,23 +3466,14 @@ elif page == "Upload":
                     st.caption(f"{video['type']} | Uploaded to: {platforms_str} | {uploaded_at}")
 
                     if video["path"].exists():
-                        with st.expander("Preview Video"):
-                            st.video(str(video["path"]))
+                        lazy_video(video["path"], f"upload_{video['path'].name}")
 
                 with col2:
                     upload_title = upload_info.get("title", "")
                     if upload_title:
                         st.caption(f"Title: {upload_title[:60]}...")
                     if video["path"].exists():
-                        with open(video["path"], "rb") as vf:
-                            st.download_button(
-                                "⬇️ Download",
-                                data=vf,
-                                file_name=video["path"].name,
-                                mime="video/mp4",
-                                key=f"dl_uploaded_{video['name']}",
-                                use_container_width=True,
-                            )
+                        lazy_download(video["path"], f"dl_uploaded_{video['name']}")
 
                 st.markdown("---")
 
@@ -3498,10 +3529,19 @@ elif page == "Library":
         if search:
             filtered = [v for v in filtered if search.lower() in v["name"].lower()]
 
-        st.write(f"Showing {len(filtered)} videos")
+        # Nine per page. The grid used to draw every video on disk at once.
+        per_page = 9
+        pages = max(1, -(-len(filtered) // per_page))
+        page_no = 1
+        if pages > 1:
+            page_no = st.number_input("Página", 1, pages, 1, key="lib_page")
+        start = (page_no - 1) * per_page
+        st.write(f"Showing {start + 1 if filtered else 0}–"
+                 f"{min(start + per_page, len(filtered))} of {len(filtered)} videos")
         st.markdown("---")
 
-        rows = [filtered[i:i+3] for i in range(0, len(filtered), 3)]
+        shown = filtered[start:start + per_page]
+        rows = [shown[i:i+3] for i in range(0, len(shown), 3)]
         for row in rows:
             cols = st.columns(3)
             for idx, video in enumerate(row):
@@ -3510,7 +3550,7 @@ elif page == "Library":
                     st.write(name)
                     st.caption(f"{video['type']} | {video['created'].strftime('%m/%d %H:%M')}")
                     if video["path"].exists():
-                        st.video(str(video["path"]))
+                        lazy_video(video["path"], f"lib_{video['path'].name}")
                     # output/video/ artifacts had no road out of the library.
                     # Promotion moves them into pending/, where they take the
                     # same Review -> Approve -> guarded Upload route as
@@ -3847,6 +3887,13 @@ elif page == "Settings":
             with open(ROOT / "config.yaml", 'w') as f:
                 yaml.dump(config, f, default_flow_style=False)
             st.success("Audio config saved!")
+
+
+# ============== MANIM STUDIO ==============
+# Everything lives in src/manim_studio.py; this file only routes to it.
+elif page == "Manim":
+    import manim_studio
+    manim_studio.render()
 
 
 # ============== LOGS PAGE ==============

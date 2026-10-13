@@ -195,58 +195,7 @@ def audit(fresh: bool = False):
                 seen_in_queue[key] = rel
 
         # -- and the three gates the pipeline applies anyway --
-        if not vtype:
-            problems.append((rel, "no `type`"))
-            continue
-        try:
-            validate_script(json.loads(json.dumps(data)),
-                            video_type=vtype, source=str(rel))
-        except Exception as exc:                                # noqa: BLE001
-            problems.append((rel, f"schema: {exc}"))
-
-        # MEASURED WITHOUT THE TAGS. An audio tag is a direction, not a
-        # spoken word: counting "[excited]" toward the duration band would
-        # make every number here fiction.
-        script_text = data.get("full_script") or ""
-        try:
-            from audio_tags import strip_tags, unknown_tags
-            for tag in unknown_tags(script_text):
-                problems.append((rel, f"UNKNOWN AUDIO TAG {tag}: eleven_v3 does "
-                                      f"not recognise it, so it gets READ ALOUD"))
-            script_text = strip_tags(script_text)
-        except ImportError:                                 # noqa: BLE001
-            pass
-
-        # AND MEASURED AGAINST THE TEXT THE GENERATOR ACTUALLY SPEAKS.
-        # full_script is NOT the narration for quiz, true_false, fill_blank or
-        # vocabulary: generate_<type>_audio_segmented builds the audio from the
-        # structured fields and copies full_script into the metadata untouched.
-        # Counting full_script for those four measured a string nobody says, so
-        # a script sat inside the band and produced a 30-second video. Measured
-        # on the corpus, not assumed -- see tools/duration_calibrate.py.
-        try:
-            sys.path.insert(0, str(ROOT / "tools"))
-            from duration_calibrate import spoken_words
-            spoken = spoken_words(data)
-        except Exception:                                   # noqa: BLE001
-            spoken = len(script_text.split())
-        try:
-            band = duration_spec.word_range(vtype)
-            if spoken and not (band["min"] <= spoken <= band["max"]):
-                problems.append((rel, f"duration: {spoken} spoken words, band "
-                                      f"is {band['min']}-{band['max']} "
-                                      f"(target {band['target']})"))
-        except Exception:                                       # noqa: BLE001
-            pass
-
-        try:
-            measured = dict(data)
-            measured["full_script"] = script_text
-            for v in length_spec.check_script(measured) or []:
-                problems.append((rel, f"length: {v['field']} at {v['where']} "
-                                      f"needs {v['lines']} lines"))
-        except Exception:                                       # noqa: BLE001
-            pass
+        problems.extend((rel, problem) for problem in _content_problems_cached(path, data))
 
     if cache_key is not None:
         # One entry. The fingerprint changes on any edit, so keeping history
@@ -254,6 +203,158 @@ def audit(fresh: bool = False):
         _AUDIT_CACHE.clear()
         _AUDIT_CACHE[cache_key] = list(problems)
     return problems
+
+
+
+# ── Per-script content checks, cached on disk ──────────────────────────────
+#
+# WHY. The schema / tag / duration / length checks read nothing but the script
+# itself (and the code and config that judge it), yet they were re-run for
+# every queued script whenever ANYTHING in the queue changed -- one new file or
+# one finished video meant ~11 s of text layout before the dashboard's Generate
+# page could draw, on every first load and after every render. Measured
+# 2026-10-13: queue_status 10.9 s of a 15.0 s first load.
+#
+# The topic checks (NO SUCH TOPIC, ALREADY PRODUCED, DUPLICATE) depend on the
+# rest of the queue and on what has been produced, so they are NOT cached;
+# they run every time, as before, and they are cheap.
+#
+# The cache key is the script's own (mtime, size) plus a signature of every
+# file whose change could change a verdict: the schema, length_spec and
+# duration modules, the renderers they measure against (src/video,
+# src/config, src/animations), config.yaml and the fonts. Edit any of them and
+# every entry is re-judged once.
+
+CONTENT_CACHE = ROOT / "output" / ".cache" / "queue_content_checks.json"
+_CONTENT_MEMO = {"sig": None, "entries": None}
+
+
+def _code_signature() -> str:
+    import hashlib
+    h = hashlib.sha1()
+    src = ROOT / "src"
+    watched = [ROOT / "config.yaml", ROOT / "tools" / "duration_calibrate.py",
+               ROOT / "tools" / "queue_guard.py"]
+    watched += [src / n for n in ("script_schema.py", "length_spec.py",
+                                  "duration_spec.py", "audio_tags.py",
+                                  "emoji_font.py", "video_types.py")]
+    # The renderers own the box sizes length_spec measures against.
+    for folder in ("video", "config", "animations"):
+        watched += sorted((src / folder).rglob("*.py"))
+    watched += sorted((ROOT / "assets" / "fonts").glob("*"))
+    for f in watched:
+        try:
+            st = f.stat()
+        except OSError:
+            continue
+        h.update(f"{f.relative_to(ROOT)}|{st.st_mtime_ns}|{st.st_size}\n".encode())
+    return h.hexdigest()
+
+
+def _content_entries(sig: str) -> dict:
+    if _CONTENT_MEMO["sig"] == sig and _CONTENT_MEMO["entries"] is not None:
+        return _CONTENT_MEMO["entries"]
+    entries = {}
+    try:
+        stored = json.loads(CONTENT_CACHE.read_text(encoding="utf-8"))
+        if stored.get("sig") == sig:
+            entries = stored.get("entries") or {}
+    except (OSError, ValueError):
+        pass
+    _CONTENT_MEMO.update(sig=sig, entries=entries)
+    return entries
+
+
+def _save_content_entries(sig: str, entries: dict) -> None:
+    try:
+        CONTENT_CACHE.parent.mkdir(parents=True, exist_ok=True)
+        tmp = CONTENT_CACHE.with_suffix(".tmp")
+        tmp.write_text(json.dumps({"sig": sig, "entries": entries}), encoding="utf-8")
+        tmp.replace(CONTENT_CACHE)
+    except OSError:
+        pass                      # a cache that cannot be written is only slower
+
+
+def _content_problems_cached(path: Path, data: dict) -> list:
+    try:
+        st = path.stat()
+    except OSError:
+        return _content_problems(data, path)
+    sig = _code_signature()
+    entries = _content_entries(sig)
+    key = str(path.relative_to(ROOT)) if ROOT in path.parents else str(path)
+    stamp = f"{st.st_mtime_ns}|{st.st_size}"
+    hit = entries.get(key)
+    if hit and hit.get("stamp") == stamp:
+        return list(hit["problems"])
+    problems = _content_problems(data, key)
+    entries[key] = {"stamp": stamp, "problems": problems}
+    _save_content_entries(sig, entries)
+    return problems
+
+
+def _content_problems(data: dict, rel="<script>") -> list:
+    """Schema, audio tags, duration band and layout for ONE script."""
+    from script_schema import validate_script
+    import duration_spec
+    import length_spec
+    out = []
+    vtype = data.get("type")
+    if not vtype:
+        out.append(("no `type`"))
+        return out
+    try:
+        validate_script(json.loads(json.dumps(data)),
+                        video_type=vtype, source=str(rel))
+    except Exception as exc:                                # noqa: BLE001
+        out.append((f"schema: {exc}"))
+
+    # MEASURED WITHOUT THE TAGS. An audio tag is a direction, not a
+    # spoken word: counting "[excited]" toward the duration band would
+    # make every number here fiction.
+    script_text = data.get("full_script") or ""
+    try:
+        from audio_tags import strip_tags, unknown_tags
+        for tag in unknown_tags(script_text):
+            out.append((f"UNKNOWN AUDIO TAG {tag}: eleven_v3 does "
+                                  f"not recognise it, so it gets READ ALOUD"))
+        script_text = strip_tags(script_text)
+    except ImportError:                                 # noqa: BLE001
+        pass
+
+    # AND MEASURED AGAINST THE TEXT THE GENERATOR ACTUALLY SPEAKS.
+    # full_script is NOT the narration for quiz, true_false, fill_blank or
+    # vocabulary: generate_<type>_audio_segmented builds the audio from the
+    # structured fields and copies full_script into the metadata untouched.
+    # Counting full_script for those four measured a string nobody says, so
+    # a script sat inside the band and produced a 30-second video. Measured
+    # on the corpus, not assumed -- see tools/duration_calibrate.py.
+    try:
+        if str(ROOT / "tools") not in sys.path:
+            sys.path.insert(0, str(ROOT / "tools"))
+        from duration_calibrate import spoken_words
+        spoken = spoken_words(data)
+    except Exception:                                   # noqa: BLE001
+        spoken = len(script_text.split())
+    try:
+        band = duration_spec.word_range(vtype)
+        if spoken and not (band["min"] <= spoken <= band["max"]):
+            out.append((f"duration: {spoken} spoken words, band "
+                                  f"is {band['min']}-{band['max']} "
+                                  f"(target {band['target']})"))
+    except Exception:                                       # noqa: BLE001
+        pass
+
+    try:
+        measured = dict(data)
+        measured["full_script"] = script_text
+        for v in length_spec.check_script(measured) or []:
+            out.append((f"length: {v['field']} at {v['where']} "
+                                  f"needs {v['lines']} lines"))
+    except Exception:                                       # noqa: BLE001
+        pass
+
+    return out
 
 
 def main(argv):
