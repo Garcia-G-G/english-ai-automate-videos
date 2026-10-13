@@ -37,6 +37,8 @@ def main() -> int:
     parser.add_argument("--model", default=None)
     parser.add_argument("--skip-render", action="store_true", help="audio only")
     parser.add_argument("--force", action="store_true", help="regenerate every beat's audio even if the text did not change")
+    parser.add_argument("--theme", default=None, help="sand · stone · dark (default: the lesson's, else brand.json's)")
+    parser.add_argument("--no-sfx", action="store_true", help="render without the sound effects")
     args = parser.parse_args()
 
     ids = sorted(p.stem for p in (HERE / "lessons").glob("*.json")) if args.all else args.lessons
@@ -69,7 +71,7 @@ def main() -> int:
         if args.skip_render:
             continue
         for voice in voice_names:
-            argv, env = R.render_command(manim_bin, args.quality, lesson_id, voice)
+            argv, env = R.render_command(manim_bin, args.quality, lesson_id, voice, args.theme, not args.no_sfx)
             t0 = time.time()
             if run(argv, env) != 0:
                 sys.exit(f"{lesson_id}/{voice}: render failed")

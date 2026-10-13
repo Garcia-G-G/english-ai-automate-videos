@@ -330,15 +330,15 @@ def features(lesson: dict) -> dict:
 
 def fit_duration(rows: list) -> dict:
     """Least squares on ledger rows that carry features: (duration − pauses − end card −
-    hold) against words (and beats, once there are MIN_FULL_FIT renders). Duplicate rows
-    of one render (same lesson, same bytes) count once."""
+    hold) against words (and beats, once there are MIN_FULL_FIT renders). Renders of the
+    same lesson content (another theme, a re-render) are one point — the latest."""
     seen, points = set(), []
     for r in rows:
         if not all(k in r for k in ("words", "beats", "pause_s")) or not r.get("duration_s"):
             continue
-        key = (r.get("lesson"), r.get("bytes"), r.get("duration_s"))
+        key = (r.get("lesson"), r["words"], r["beats"], r["pause_s"])
         if key in seen:
-            continue
+            points = [pt for pt in points if (pt[3].get("lesson"), pt[0], pt[1], pt[3]["pause_s"]) != key]
         seen.add(key)
         rest = r["duration_s"] - r["pause_s"] - r.get("end_s", 0.0) - FINAL_HOLD_S
         points.append((r["words"], r["beats"], rest, r))

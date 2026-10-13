@@ -19,14 +19,27 @@ def manim_binary(studio_dir: Path = HERE) -> Optional[str]:
     return str(local) if local.exists() else shutil.which("manim")
 
 
-def render_command(manim_bin: str, quality: str, lesson_id: str, voice: str) -> tuple:
-    """(argv, env additions) — the scene reads LESSON and VOICE_DIR, nothing else."""
+def render_command(manim_bin: str, quality: str, lesson_id: str, voice: str, theme: Optional[str] = None,
+                   sfx: bool = True) -> tuple:
+    """(argv, env additions) — the scene reads LESSON and VOICE_DIR, and THEME / SFX when given
+    (no THEME: the lesson's "theme", else brand.json's default)."""
     if quality not in QUALITIES:
         raise ValueError(f"quality must be one of {list(QUALITIES)}")
     flags = QUALITY_FLAGS.get(quality, [f"-q{quality}"])
     argv = [manim_bin, *flags, "--disable_caching", SCENE_FILE, SCENE_CLASS]
     env = {"LESSON": f"lessons/{lesson_id}.json", "VOICE_DIR": f"audio/{lesson_id}/{voice}"}
+    if theme:
+        env["THEME"] = theme
+    if not sfx:
+        env["SFX"] = "0"
     return argv, env
+
+
+def theme_names(studio_dir: Path = HERE) -> tuple:
+    """(names, default) from brand.json → manim — the dashboard's dropdown."""
+    brand = studio_dir.parent.parent / "assets" / "branding" / "english-unlimited" / "brand.json"
+    block = json.loads(brand.read_text(encoding="utf-8"))["manim"]
+    return list(block["themes"]), block["default_theme"]
 
 
 def rendered_output(quality: str, studio_dir: Path = HERE) -> Path:
@@ -81,14 +94,16 @@ def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds
     folder = studio_dir / "renders" / lesson_id
     folder.mkdir(parents=True, exist_ok=True)
     now = now or datetime.now()
-    target = folder / f"{now.strftime('%Y%m%d-%H%M%S')}_{voice}_{QUALITIES[quality][0]}.mp4"
+    tl_src = timeline_path(lesson_id, studio_dir)
+    look = json.loads(tl_src.read_text(encoding="utf-8")).get("theme") if tl_src.exists() else None
+    suffix = f"_{look}" if look else ""
+    target = folder / f"{now.strftime('%Y%m%d-%H%M%S')}_{voice}_{QUALITIES[quality][0]}{suffix}.mp4"
     shutil.copyfile(source_mp4, target)
     srt = source_mp4.with_suffix(".srt")
     if srt.exists():
         shutil.copyfile(srt, target.with_suffix(".srt"))
     duration = probe_duration(target)
     timeline = {}
-    tl_src = timeline_path(lesson_id, studio_dir)
     if tl_src.exists():
         timeline = json.loads(tl_src.read_text(encoding="utf-8"))
         shutil.copyfile(tl_src, target.with_suffix(".timeline.json"))
@@ -100,6 +115,7 @@ def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds
            "duration_s": duration, "render_seconds": round(seconds, 1),
            "poster": f"{lesson_id}/{poster.name}" if has_poster else None,
            "chapters": f"{lesson_id}/{target.with_suffix('.chapters.txt').name}" if timeline else None,
+           "theme": timeline.get("theme"), "sfx": timeline.get("sfx"),
            **render_features(lesson_id, timeline, studio_dir)}
     with (studio_dir / "renders" / "ledger.jsonl").open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False) + "\n")

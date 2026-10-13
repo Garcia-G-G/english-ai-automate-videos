@@ -420,15 +420,19 @@ def render() -> None:                                  # pragma: no cover — UI
     elif not ready:
         st.info("Primero genera el audio de una voz.")
     else:
-        r1, r2 = st.columns(2)
+        r1, r2, r3 = st.columns(3)
         render_voice = r1.selectbox("Voz para el vídeo", ready)
         quality = r2.selectbox("Calidad", list(R.QUALITIES), format_func=lambda q: R.QUALITIES[q][1],
                                index=list(R.QUALITIES).index(R.DEFAULT_QUALITY))
+        themes, default_theme = R.theme_names(STUDIO_DIR)
+        preferred_theme = lesson.get("theme") or default_theme
+        theme = r3.selectbox("Tema", themes, index=themes.index(preferred_theme) if preferred_theme in themes else 0,
+                             help="sand: papel cálido (por defecto) · stone: papel gris · dark: escenario oscuro")
         stale_now = stale_beats(lesson, render_voice)
         if stale_now:
             st.warning(f"{len(stale_now)} golpe(s) de `{render_voice}` no coinciden con la narración actual; regenera el audio antes.")
         if st.button("Renderizar vídeo", type="primary", disabled=bool(stale_now) or changed):
-            argv, env_add = R.render_command(manim_bin, quality, lesson_id, render_voice)
+            argv, env_add = R.render_command(manim_bin, quality, lesson_id, render_voice, theme)
 
             def after_render(seconds, _q=quality, _v=render_voice, _l=lesson_id):
                 return R.register(R.rendered_output(_q, STUDIO_DIR), _l, _v, _q, seconds, STUDIO_DIR)
