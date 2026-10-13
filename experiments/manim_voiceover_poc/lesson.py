@@ -162,9 +162,91 @@ def save(lesson: dict, path) -> None:
     Path(path).write_text(json.dumps(lesson, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def estimate_minutes(lesson: dict, words_per_minute: int = 140) -> float:
-    words = sum(len(spoken_text(b.get("narration", "")).split()) for b in lesson.get("beats", []))
-    return round(words / words_per_minute + 0.04 * len(lesson.get("beats", [])), 1)
+# ── Duration: fitted on real renders ───────────────────────────────────────────
+# A render lasts  words · s/word + beats · s/beat + the {{pause}} seconds + the end card
+# + a 1 s hold. The defaults are the fit of the renders in renders/ledger.jsonl on
+# 2026-10-13: n = 3 (third-person-s 425 s, morning-phrasal-verbs 424 s, used-to-soler
+# 357 s), residuals within ±31 s. Three points cannot pin two rates — fitting both gave
+# a negative cost per beat — so until MIN_FULL_FIT renders exist only the speaking rate
+# is fitted and s/beat is the scene's own overhead (a 0.35 s fade out + a 0.35–0.6 s
+# breath). The old "140 wpm + 0.04 min/beat" said 7.1 min for used-to-soler (5.95 real).
+SECONDS_PER_WORD = 0.434          # ≈ 138 wpm, everything included
+SECONDS_PER_BEAT = 0.75
+END_SCREEN_S = 20.0
+FINAL_HOLD_S = 1.0
+MIN_FULL_FIT = 6
+
+
+def features(lesson: dict) -> dict:
+    """What the duration depends on — recorded in the ledger with every render."""
+    beats = lesson.get("beats", [])
+    return {"words": sum(len(spoken_text(b.get("narration", "")).split()) for b in beats),
+            "beats": len(beats), "pause_s": round(sum(sum(pauses(b.get("narration", ""))) for b in beats), 2)}
+
+
+def fit_duration(rows: list) -> dict:
+    """Least squares on ledger rows that carry features: (duration − pauses − end card −
+    hold) against words (and beats, once there are MIN_FULL_FIT renders). Duplicate rows
+    of one render (same lesson, same bytes) count once."""
+    seen, points = set(), []
+    for r in rows:
+        if not all(k in r for k in ("words", "beats", "pause_s")) or not r.get("duration_s"):
+            continue
+        key = (r.get("lesson"), r.get("bytes"), r.get("duration_s"))
+        if key in seen:
+            continue
+        seen.add(key)
+        rest = r["duration_s"] - r["pause_s"] - r.get("end_s", 0.0) - FINAL_HOLD_S
+        points.append((r["words"], r["beats"], rest, r))
+    fit = {"n": len(points), "seconds_per_word": SECONDS_PER_WORD, "seconds_per_beat": SECONDS_PER_BEAT,
+           "fitted": "default"}
+    if not points:
+        return fit
+    if len(points) >= MIN_FULL_FIT:
+        sww = sum(w * w for w, *_ in points); swb = sum(w * b for w, b, *_ in points)
+        sbb = sum(b * b for _, b, *_ in points)
+        swy = sum(w * y for w, _, y, _ in points); sby = sum(b * y for _, b, y, _ in points)
+        det = sww * sbb - swb * swb
+        if det:
+            a, k = (swy * sbb - sby * swb) / det, (sww * sby - swb * swy) / det
+            if a > 0 and k >= 0:
+                fit.update(seconds_per_word=a, seconds_per_beat=k, fitted="words+beats")
+    if fit["fitted"] == "default":
+        k = SECONDS_PER_BEAT
+        a = sum((y - k * b) * w for w, b, y, _ in points) / sum(w * w for w, *_ in points)
+        fit.update(seconds_per_word=a, fitted="words (s/beat fixed)")
+    fit["residuals_s"] = [round(r["duration_s"] - (fit["seconds_per_word"] * w + fit["seconds_per_beat"] * b
+                                                  + r["pause_s"] + r.get("end_s", 0.0) + FINAL_HOLD_S), 1)
+                          for w, b, _, r in points]
+    fit["wpm"] = round(60 / fit["seconds_per_word"], 1)
+    return fit
+
+
+def ledger_fit(path=None) -> dict:
+    """fit_duration over renders/ledger.jsonl beside this file ({} when there is none)."""
+    path = Path(path) if path else Path(__file__).resolve().parent / "renders" / "ledger.jsonl"
+    if not path.exists():
+        return {}
+    rows = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        try:
+            rows.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+    return fit_duration(rows)
+
+
+def estimate_seconds(lesson: dict, fit: dict = None, end_screen: bool = True) -> float:
+    """fit=None reads the ledger, so the estimate improves with every render."""
+    f = features(lesson)
+    fit = ledger_fit() if fit is None else fit
+    a = (fit or {}).get("seconds_per_word", SECONDS_PER_WORD)
+    k = (fit or {}).get("seconds_per_beat", SECONDS_PER_BEAT)
+    return a * f["words"] + k * f["beats"] + f["pause_s"] + FINAL_HOLD_S + (END_SCREEN_S if end_screen else 0.0)
+
+
+def estimate_minutes(lesson: dict, fit: dict = None) -> float:
+    return round(estimate_seconds(lesson, fit) / 60, 1)
 
 
 def character_count(lesson: dict) -> int:

@@ -76,6 +76,7 @@ def main() -> int:
             row = R.register(R.rendered_output(args.quality, HERE), lesson_id, voice, args.quality, time.time() - t0, HERE)
             print(f"✓ {row['file']} — {row['duration_s']} s of video in {row['render_seconds']} s", flush=True)
     print(f"done: {len(ids)} lesson(s) in {time.time() - started:.0f} s")
+    print(R.describe_fit(R.duration_fit(HERE)))
     return 0
 
 

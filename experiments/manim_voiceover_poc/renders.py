@@ -98,10 +98,42 @@ def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds
            "voice": voice, "quality": QUALITIES[quality][0], "bytes": target.stat().st_size,
            "duration_s": duration, "render_seconds": round(seconds, 1),
            "poster": f"{lesson_id}/{poster.name}" if has_poster else None,
-           "chapters": f"{lesson_id}/{target.with_suffix('.chapters.txt').name}" if timeline else None}
+           "chapters": f"{lesson_id}/{target.with_suffix('.chapters.txt').name}" if timeline else None,
+           **render_features(lesson_id, timeline, studio_dir)}
     with (studio_dir / "renders" / "ledger.jsonl").open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False) + "\n")
     return row
+
+
+def render_features(lesson_id: str, timeline: dict, studio_dir: Path = HERE) -> dict:
+    """words / beats / pause seconds of the lesson as rendered, and the end card's length,
+    so lesson.fit_duration can refit the estimate on every render."""
+    path = studio_dir / "lessons" / f"{lesson_id}.json"
+    if not path.exists():
+        return {}
+    L = _lesson_module()
+    end = next((b for b in timeline.get("beats", []) if b.get("type") == "end_screen"), None)
+    return {**L.features(L.load(path)), "end_s": float(end.get("seconds", 0.0)) if end else 0.0}
+
+
+def _lesson_module():
+    import sys
+    if str(HERE) not in sys.path:
+        sys.path.insert(0, str(HERE))
+    import lesson
+    return lesson
+
+
+def duration_fit(studio_dir: Path = HERE) -> dict:
+    return _lesson_module().fit_duration(ledger(studio_dir))
+
+
+def describe_fit(fit: dict) -> str:
+    if not fit.get("n"):
+        return "duration estimate: no render with features in the ledger yet — using the defaults"
+    return (f"duration estimate refit on n = {fit['n']} render(s): {fit['wpm']} wpm "
+            f"({fit['seconds_per_word']:.3f} s/word) + {fit['seconds_per_beat']:.2f} s/beat "
+            f"[{fit['fitted']}], residuals {fit['residuals_s']} s")
 
 
 def ledger(studio_dir: Path = HERE) -> list:
