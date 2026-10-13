@@ -21,6 +21,7 @@ from datetime import datetime
 from typing import Optional
 import uuid
 
+import video_types
 from run_log import attach_run_log, detach_run_log
 
 # Streamlit installs no handler of its own, so without this every
@@ -2661,10 +2662,13 @@ if page == "Dashboard":
 
     # ── How new artifacts enter the queues above ─────────────────────────
     _queue_head(None, "Generar", "", "crear un artefacto nuevo")
-    action_cols = st.columns(4)
-    for col, (label, vtype) in zip(action_cols, [
-            ("Quiz", "quiz"), ("Educational", "educational"),
-            ("True/False", "true_false"), ("Vocabulary", "vocabulary")]):
+    # DERIVED, and that is a bug fix, not tidying. This row was written by
+    # hand with four of the six types, so fill_blank and pronunciation had no
+    # Generate button -- the exact defect admin.py:2264 documents having fixed
+    # in the scheduler, regrown in a different list in the same file.
+    _buttons = video_types.DASHBOARD_BUTTONS
+    action_cols = st.columns(len(_buttons))
+    for col, (label, vtype) in zip(action_cols, _buttons):
         with col:
             if st.button(f"🎬 {label}", use_container_width=True, key=f"quick_{vtype}"):
                 job_id = start_generation(vtype)

@@ -101,14 +101,12 @@ SAMPLE_INTERVAL = 0.5
 #:
 #: Each is (top, bottom) in 1920-row coordinates, taken as the union of that
 #: type's declared zones plus a little slack for card shadow.
-TEXT_ZONES = {
-    "quiz":          (270, 1450),   # question zone top .. countdown zone
-    "true_false":    (180, 1400),   # question .. explanation
-    "fill_blank":    (230, 1120),   # sentence card .. translation pill
-    "pronunciation": (230, 1160),   # title .. correct text
-    "vocabulary":    (240, 1400),   # card top .. timer bar
-    "educational":   (700, 1060),   # the headline band, widened for shadow
-}
+# DERIVED. A new type used to need its band added here by hand, and a type
+# with no entry silently got no contrast check at all -- the background was
+# free to fight text nobody had declared. The per-type rationale for each
+# band moved to video_types.py with the numbers it explains.
+from video_types import TEXT_ZONES  # noqa: F401  (re-exported)
+
 
 #: When the type is unknown, cover the union of every zone above. Wider than
 #: any single type and deliberately so — guessing narrow would leave text
