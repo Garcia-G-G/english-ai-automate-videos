@@ -74,8 +74,10 @@ def _hf_share(x, i):
 
 def doubled_onset(x):
     """None, or why the start sounds doubled («d-do», «m-make»):
-    - 'fragment': a voiced lead from the onset, then within 140 ms a dip ≥ 12 dB under that
-      lead and below −28 dB re peak, then the word — a quiet fragment the old check missed;
+    - 'fragment': a murmur lead from the onset (median share above 1 kHz < −30 dB), then
+      within 140 ms a dip ≥ 12 dB under that lead and below −28 dB re peak, then the word — a
+      quiet fragment the old check missed; a real first syllable («es | la») has a vowel's
+      energy above 1 kHz;
     - 'held nasal': a nasal murmur (no energy above 1 kHz) of 80–160 ms held as loud as the
       vowel after it — a normal /m/ is quieter than its vowel.
     shortcut: tuned on the owner's 6 spots in one beat; re-check against his ear on more beats."""
@@ -88,7 +90,10 @@ def doubled_onset(x):
     for k in range(8, len(lead)):                                  # a dip after ≥ 16 ms of lead
         before = np.median(lead[:k])
         if lead[k] < -28 and lead[k] < before - 12 and (r[start + k:start + k + 60] > -12).any():
-            return "fragment"
+            # …and the lead is a murmur (nothing above 1 kHz), not a real first syllable («es | la»)
+            if np.median([_hf_share(x, start + i) for i in range(0, k, 4)]) < -30:
+                return "fragment"
+            break
     hf = [_hf_share(x, i) for i in range(start, min(len(e), start + 150))]
     run = next((k for k, v in enumerate(hf) if v > -18), len(hf))    # 2 ms frames of nasal murmur
     # 80–160 ms: longer is /m/ + a closed vowel («Mira»: /i/ has little energy above 1 kHz too)
