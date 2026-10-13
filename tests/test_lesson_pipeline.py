@@ -62,8 +62,7 @@ def test_segments_split_english_spans_with_their_language():
         {"text": "Mira esta frase:", "lang": "es"},
         {"text": "He have coffee", "lang": "en"},
         {"text": ". En español: él toma café. Cambia a", "lang": "es"},
-        {"text": "has", "lang": "en"},
-        {"text": ".", "lang": "es"},
+        {"text": "has.", "lang": "en"},                 # a lone «.» is never its own request
     ]
     assert L.spoken_text("Mira: [[He  has\ncoffee]].") == "Mira: He has coffee."
 
@@ -256,3 +255,50 @@ def test_stitching_sends_only_the_text_that_follows_at_a_switch_and_at_a_beat_st
     before, _, ids = GA.stitch_context(segs, after_pause, "", ["r3"])                 # es, pause, es: same voice goes on
     assert before.endswith("es prepararla.") and ids == ["r3"]
     assert GA.stitch_context(segs, english, "", ["r1"], full=True)[2] == ["r1"]        # --full-stitching: the old way
+
+
+def test_punctuation_is_never_its_own_request_and_one_language_is_one_request():
+    """can-could-pedir b05/b08 sent «:», «,» and «.» to ElevenLabs as Spanish requests."""
+    assert L.segments("Habilidad: [[I can drive]]: sé conducir.") == [        # a «:» with words after it is no orphan
+        {"text": "Habilidad:", "lang": "es"}, {"text": "I can drive", "lang": "en"}, {"text": ": sé conducir.", "lang": "es"}]
+    assert L.segments("Igual: [[I can go]], [[I can help]], [[I can see]].") == [
+        {"text": "Igual:", "lang": "es"}, {"text": "I can go, I can help, I can see.", "lang": "en"}]
+    assert L.segments("Uno. {{pause:2}} . Dos") == [{"text": "Uno.", "lang": "es"}, {"pause": 2.0}, {"text": ". Dos", "lang": "es"}]
+    for path in (STUDIO / "lessons").glob("*.json"):
+        for beat in L.load(path)["beats"]:
+            for seg in L.segments(beat["narration"]):
+                assert "pause" in seg or any(ch.isalnum() for ch in seg["text"]), (path.stem, beat["id"], seg)
+
+
+def _wav(path, lead_silence_s, burst=False):
+    import wave
+    import numpy as np
+    rate = 44100
+    t = np.arange(int(0.4 * rate)) / rate
+    voice = 0.5 * np.sin(2 * np.pi * 220 * t)
+    head = np.zeros(int(lead_silence_s * rate))
+    if burst:                                   # ~50 ms of sound, a 40 ms hole, then the word: «i-ira»
+        head = np.concatenate([0.4 * np.sin(2 * np.pi * 300 * np.arange(int(0.05 * rate)) / rate),
+                               np.zeros(int(0.04 * rate))])
+    x = np.concatenate([head, voice])
+    with wave.open(str(path), "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(rate)
+        w.writeframes((x * 32767).astype("<i2").tobytes())
+    return path
+
+
+def test_the_onset_gate_tells_a_clean_start_from_a_cut_or_a_fragment(tmp_path):
+    assert GA.onset_report(_wav(tmp_path / "clean.wav", 0.08))["clean"]
+    cut = GA.onset_report(_wav(tmp_path / "cut.wav", 0.0))                        # starts mid-sound
+    assert not cut["clean"] and cut["first_db"] > -30
+    frag = GA.onset_report(_wav(tmp_path / "frag.wav", 0.0, burst=True))
+    assert not frag["clean"] and frag["fragment"] is not None
+
+
+def test_the_gate_keeps_the_first_clean_take_else_the_cleanest():
+    take = lambda clean, first, frag=None: {"onset": {"clean": clean, "first_db": first, "fragment": frag}}
+    takes = [take(False, -5), take(True, -60), take(True, -80)]
+    assert GA.cleanest(takes) is takes[1]
+    dirty = [take(False, -20, (50, 20)), take(False, -12), take(False, -25)]
+    assert GA.cleanest(dirty) is dirty[2]                                           # no fragment, quietest start
+    assert GA.ONSET_RETRIES == 2

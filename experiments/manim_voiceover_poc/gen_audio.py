@@ -143,6 +143,32 @@ def stitch_context(segs: list, n: int, previous_spoken: str, request_ids: list, 
     return "", after, []
 
 
+# ── Onset gate ────────────────────────────────────────────────────────────────
+# Even with the stitching fix the model starts ~3 segments in 10 mid-sound or with a ~50 ms
+# fragment. Every segment is checked as it arrives and re-asked up to ONSET_RETRIES times.
+ONSET_RETRIES = 2
+
+
+def onset_report(path: Path) -> dict:
+    """{clean, first_db, fragment} for one segment as ElevenLabs returned it: clean when its
+    first 5 ms is ≥ 30 dB under its peak and it has no burst → dip → speech fragment."""
+    from probes import onset as O
+    x = O.load(path)
+    e = O.env_db(x)
+    start, _ = O.onset(x)
+    if start is None:
+        return {"clean": False, "first_db": 0.0, "fragment": None}
+    first = float(e[0] - e.max())
+    fragment = O.fragment(e, start, e.max())
+    return {"clean": first < -30 and fragment is None, "first_db": round(first, 1), "fragment": fragment}
+
+
+def cleanest(takes: list) -> dict:
+    """The first clean take, else the one with no fragment and the quietest start."""
+    return next((t for t in takes if t["onset"]["clean"]), None) or min(
+        takes, key=lambda t: (t["onset"]["fragment"] is not None, t["onset"]["first_db"]))
+
+
 # ── Offline (sandbox) voices ──────────────────────────────────────────────────
 
 class OfflinePiper:
@@ -295,6 +321,8 @@ def main() -> int:
     parser.add_argument("--models-dir", type=Path, default=HERE.parent / "tts-models")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--force", action="store_true", help="regenerate every beat even if its text did not change")
+    parser.add_argument("--no-onset-gate", action="store_true",
+                        help=f"keep the first take of every segment (default: re-ask a dirty onset up to {ONSET_RETRIES} times)")
     parser.add_argument("--full-stitching", action="store_true",
                         help="send previous text and request ids at language switches too (the old behaviour; dirtier onsets)")
     parser.add_argument("--only", default=None, help="b05,b08: regenerate just these beats (others are left as they are)")
@@ -347,7 +375,7 @@ def main() -> int:
             previous = {b["id"]: b for b in json.loads(manifest_path.read_text()).get("beats", [])}
         manifest = {"voice": name, "voice_id": voice_id, "model": model, "voice_settings": settings,
                     "lesson": lesson["id"], "beats": []}
-        made = 0
+        made, extra_chars = 0, 0
         request_ids, previous_spoken = [], ""     # stitching context carried across segments and beats
         only = set(args.only.split(",")) if args.only else None
         raw_dir = out / "_raw"
@@ -368,6 +396,7 @@ def main() -> int:
                 previous_spoken = spoken
                 continue
             segs = L.segments(beat["narration"], lesson.get("language", "es"))
+            take_log = []
             names = [f"{beat['id']}_{n:02d}_{seg.get('lang', 'pause')}" for n, seg in enumerate(segs)]
             requests = []
             with tempfile.TemporaryDirectory() as tmp:
@@ -396,10 +425,29 @@ def main() -> int:
                                                  "previous_request_ids": len(body.get("previous_request_ids", [])),
                                                  "language_code": body.get("language_code"), "model": body["model_id"],
                                                  "speed": body["voice_settings"].get("speed", 1.0)})
-                            audio, words, rid = eleven_segment(api_key, voice_id, seg["text"], seg["lang"], model, lang_settings,
-                                                               previous_text=before, next_text=after,
-                                                               previous_request_ids=context_ids,
-                                                               on_body=keep if args.keep_raw else None)
+                            takes = []
+                            for attempt in range(1 + (0 if args.no_onset_gate else ONSET_RETRIES)):
+                                audio, words, rid = eleven_segment(api_key, voice_id, seg["text"], seg["lang"], model,
+                                                                   lang_settings, previous_text=before, next_text=after,
+                                                                   previous_request_ids=context_ids,
+                                                                   on_body=keep if args.keep_raw and not takes else None)
+                                probe = (raw_dir / f"{names[n]}_take{attempt + 1}.mp3" if args.keep_raw
+                                         else Path(tmp) / f"take{n}_{attempt}.mp3")        # --keep-raw keeps every take
+                                probe.write_bytes(audio)
+                                takes.append({"audio": audio, "words": words, "rid": rid, "onset": onset_report(probe)})
+                                if args.no_onset_gate or takes[-1]["onset"]["clean"]:
+                                    break
+                            best = cleanest(takes)
+                            audio, words, rid = best["audio"], best["words"], best["rid"]
+                            extra_chars += len(seg["text"]) * (len(takes) - 1)
+                            log = {"segment": names[n], "takes": len(takes), "kept": takes.index(best) + 1,
+                                   "clean": best["onset"]["clean"], "first_db": best["onset"]["first_db"]}
+                            take_log.append(log)
+                            if not best["onset"]["clean"]:
+                                print(f"  ! {names[n]}: no clean onset in {len(takes)} takes — kept the cleanest "
+                                      f"(first 5 ms {best['onset']['first_db']} dB, fragment {best['onset']['fragment']})")
+                            if args.keep_raw and requests:
+                                requests[-1].update(log)
                     except urllib.error.HTTPError as error:
                         detail = error.msg if isinstance(error.msg, str) else error.read()[:300].decode("utf-8", "replace")
                         sys.exit(f"ElevenLabs answered {error.code} on {beat['id']} segment {n} ({name}): {detail}")
@@ -422,12 +470,16 @@ def main() -> int:
                     piece["offset"], piece["lead_cut"] = offset, cut
             previous_spoken = spoken
             words_path.write_text(json.dumps(shift_words(pieces), ensure_ascii=False, indent=1))
+            retried = [t for t in take_log if t["takes"] > 1]
             manifest["beats"].append({"id": beat["id"], "text": spoken, "pauses": pause_list, "mp3": mp3.name,
-                                      "words": words_path.name, "segments": len(segs)})
+                                      "words": words_path.name, "segments": len(segs), "takes": take_log})
             made += 1
-            print(f"  [{name}] {beat['id']}: {len(segs)} segment(s), {mp3.stat().st_size // 1024} KB")
+            print(f"  [{name}] {beat['id']}: {len(segs)} segment(s), {mp3.stat().st_size // 1024} KB, "
+                  f"{len(retried)} re-asked for a clean onset, {sum(not t['clean'] for t in take_log)} still dirty")
         manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=1))
         print(f"  [{name}] {made} beat(s) generated, {len(beats) - made} reused → {manifest_path.relative_to(HERE)}")
+        if extra_chars:
+            print(f"  [{name}] onset gate: +{extra_chars} characters re-asked (~${extra_chars / 1000 * PRICE_PER_1K_CHARS:.3f})")
     return 0
 
 

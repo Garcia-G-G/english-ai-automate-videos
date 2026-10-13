@@ -101,7 +101,25 @@ def segments(narration: str, base_lang: str = "es") -> list:
     tail = narration[pos:].strip()
     if tail:
         out.append({"text": tail, "lang": base_lang})
-    return out
+    # A piece with no word in it («:», «,», «.») is never its own request — alone, the model
+    # voices it as a stray sound. It joins the text before it, or else the text after it; and
+    # two pieces in one language with nothing between them are one request.
+    merged, carry = [], ""
+    for seg in out:
+        if "text" in seg and not re.search(r"\w", seg["text"]):
+            if merged and "text" in merged[-1]:
+                merged[-1]["text"] += seg["text"]
+            else:
+                carry += seg["text"] + " "
+            continue
+        if carry and "text" in seg:
+            seg = {**seg, "text": carry + seg["text"]}
+            carry = ""
+        if "text" in seg and merged and merged[-1].get("lang") == seg["lang"]:   # same language: one request
+            merged[-1]["text"] += " " + seg["text"]
+            continue
+        merged.append(seg)
+    return merged
 
 
 def tokens(narration: str) -> list:
