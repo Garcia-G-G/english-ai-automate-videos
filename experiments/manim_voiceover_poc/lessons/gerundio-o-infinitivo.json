@@ -269,13 +269,74 @@
       }
     },
     {
-      "id": "b26",
       "type": "heading",
-      "text": "Parte 7 · Practica",
+      "text": "Parte 7 · En una entrevista de trabajo",
+      "narration": "Otra situación real: una entrevista de trabajo. Aquí los dos grupos salen en cada respuesta.",
+      "id": "b26"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "What do you enjoy doing in your free time?",
+          "es": "¿Qué te gusta hacer en tu tiempo libre?"
+        },
+        {
+          "speaker": "B",
+          "en": "I love cooking, and I'm learning to play the guitar.",
+          "es": "Me encanta cocinar y estoy aprendiendo a tocar la guitarra."
+        },
+        {
+          "speaker": "A",
+          "en": "Why do you want to work here?",
+          "es": "¿Por qué quieres trabajar aquí?"
+        },
+        {
+          "speaker": "B",
+          "en": "I'm hoping to grow, and I enjoy working in teams.",
+          "es": "Espero crecer, y disfruto trabajando en equipo."
+        }
+      ],
+      "narration": "[[What do you enjoy doing in your free time? I love cooking, and I'm learning to play the guitar. Why do you want to work here? I'm hoping to grow, and I enjoy working in teams.]]",
+      "id": "b27"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "enjoy doing: disfrutar + -ing",
+        "learning to play: aprender + to",
+        "want to work: querer + to",
+        "hoping to grow: esperar + to"
+      ],
+      "narration": "[[Enjoy doing]]: disfrutar, con i-ene-ge. Y [[learning to play, want to work, hoping to grow]]: aprender, querer y esperar, los tres con [[to]].",
+      "id": "b28"
+    },
+    {
+      "type": "sentence",
+      "text": "I'm looking forward to working with you.",
+      "gloss": "Tengo ganas de trabajar con vosotros.",
+      "narration": "La frase para cerrar la entrevista: [[I'm looking forward to working with you]]. Tengo ganas de trabajar con vosotros. Después de esta expresión, i-ene-ge.",
+      "highlight": {
+        "working": "green"
+      },
+      "id": "b29"
+    },
+    {
+      "type": "tip",
+      "text": "Love, like y hate admiten las dos formas: I love cooking = I love to cook.",
+      "narration": "Un alivio para terminar: [[love, like and hate]] aceptan las dos formas. [[I love cooking]] y [[I love to cook]] están bien.",
+      "id": "b30"
+    },
+    {
+      "id": "b31",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
       "narration": "Tu turno. Tres frases. Elige la forma correcta; tienes tres segundos antes de la respuesta."
     },
     {
-      "id": "b27",
+      "id": "b32",
       "type": "quiz",
       "question": "I want ___ a new job.",
       "options": [
@@ -287,7 +348,7 @@
       "narration": "Primera: [[I want, blank, a new job]]. ¿[[finding, to find or find]]? Piénsalo. {{pause:3}} Es [[to find]]. Querer mira hacia el futuro, y [[want]] siempre va con esa forma."
     },
     {
-      "id": "b28",
+      "id": "b33",
       "type": "quiz",
       "question": "Have you finished ___ the report?",
       "options": [
@@ -299,7 +360,7 @@
       "narration": "Segunda: [[Have you finished, blank, the report?]] ¿[[to write, writing or write]]? Piénsalo. {{pause:3}} Es [[writing]]. Terminar algo va con i-ene-ge, sin excepción."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "quiz",
       "question": "Don't forget ___ the lights off.",
       "options": [
@@ -311,13 +372,13 @@
       "narration": "Tercera: [[Don't forget, blank, the lights off]]. ¿[[turning, to turn or turn]]? Piénsalo. {{pause:3}} Es [[to turn]]. Es una tarea pendiente, igual que con [[remember to]]."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "heading",
-      "text": "Parte 8 · Resumen",
+      "text": "Parte 9 · Resumen",
       "narration": "Cerramos con cuatro ideas. Con ellas resuelves la gran mayoría de los casos que te vas a encontrar."
     },
     {
-      "id": "b31",
+      "id": "b36",
       "type": "recap",
       "items": [
         "Enjoy, avoid, finish y mind van con -ing",
@@ -328,7 +389,7 @@
       "narration": "[[Enjoy, avoid, finish and mind]] van con i-ene-ge. [[Want, decide, plan and need]] van con [[to]]. [[Stop and remember]] cambian de significado. Y [[looking forward to]], con i-ene-ge."
     },
     {
-      "id": "b32",
+      "id": "b37",
       "type": "sentence",
       "text": "I enjoyed teaching you. See you soon!",
       "gloss": "Me ha gustado enseñarte. ¡Hasta pronto!",

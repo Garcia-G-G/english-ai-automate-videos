@@ -265,13 +265,74 @@
       "narration": "Por eso no te asustes al verlo dos veces seguidas. El primero abre la pregunta, el segundo significa hacer. Son dos trabajos del mismo verbo."
     },
     {
-      "id": "b25",
       "type": "heading",
-      "text": "Parte 7 · Practica",
+      "text": "Parte 7 · En el trabajo",
+      "narration": "Ahora los dos verbos en la oficina, donde también salen sin parar.",
+      "id": "b25"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Did you make the call to the client?",
+          "es": "¿Hiciste la llamada al cliente?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, and I made a few notes.",
+          "es": "Sí, y tomé algunas notas."
+        },
+        {
+          "speaker": "A",
+          "en": "Great. Can you do the report today?",
+          "es": "Genial. ¿Puedes hacer el informe hoy?"
+        },
+        {
+          "speaker": "B",
+          "en": "I'll do my best.",
+          "es": "Haré lo que pueda."
+        }
+      ],
+      "narration": "[[Did you make the call to the client? Yes, and I made a few notes. Great. Can you do the report today? I'll do my best.]]",
+      "id": "b26"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Make a call: antes no había llamada",
+        "Make notes: se crean",
+        "Do the report: es una tarea",
+        "Do my best: hacer lo que puedas"
+      ],
+      "narration": "[[Make a call]]: antes no había llamada. [[Make notes]]: las notas se crean. [[Do the report]]: es una tarea del trabajo. Y [[do my best]]: hacer lo que puedas.",
+      "id": "b27"
+    },
+    {
+      "type": "sentence",
+      "text": "We need to make a decision today.",
+      "gloss": "Tenemos que tomar una decisión hoy.",
+      "narration": "[[We need to make a decision today]]. Tenemos que tomar una decisión. En español la tomamos; en inglés se fabrica. Por eso [[make]].",
+      "highlight": {
+        "make": "blue"
+      },
+      "id": "b28"
+    },
+    {
+      "type": "tip",
+      "text": "Make money (ganar dinero), pero do business (hacer negocios).",
+      "narration": "Una pareja que confunde mucho: [[make money]], ganar dinero, con [[make]]. Pero [[do business]], hacer negocios, con [[do]].",
+      "id": "b29"
+    },
+    {
+      "id": "b30",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
       "narration": "Tu turno. Tres preguntas. Piensa cuál de los dos pide cada frase; tres segundos antes de la respuesta."
     },
     {
-      "id": "b26",
+      "id": "b31",
       "type": "quiz",
       "question": "I have to ___ a phone call.",
       "options": [
@@ -283,7 +344,7 @@
       "narration": "Primera: [[I have to, blank, a phone call]]. ¿[[do]], [[make]] o [[take]]? Piénsalo. {{pause:3}} Es [[make]] a phone call: antes no había llamada y ahora sí."
     },
     {
-      "id": "b27",
+      "id": "b32",
       "type": "quiz",
       "question": "Did you ___ the laundry?",
       "options": [
@@ -295,7 +356,7 @@
       "narration": "Segunda: [[Did you, blank, the laundry?]] ¿[[make]], [[do]] o [[did]]? Piénsalo. {{pause:3}} Es [[do]]: es una tarea de casa. Y en base, porque ya hay un [[did]]."
     },
     {
-      "id": "b28",
+      "id": "b33",
       "type": "quiz",
       "question": "They want to ___ business with us.",
       "options": [
@@ -307,13 +368,13 @@
       "narration": "Tercera, que engaña: [[They want to, blank, business with us]]. ¿[[make]], [[do]] o [[have]]? Piénsalo. {{pause:3}} Es [[do]] business. Aunque se gane dinero, se dice [[do]]."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "heading",
-      "text": "Parte 8 · Resumen",
+      "text": "Parte 9 · Resumen",
       "narration": "Cerramos con cuatro ideas. Y sobre todo con la primera, que resuelve casi todos los casos que te vas a encontrar."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "recap",
       "items": [
         "Make crea algo que no existía",
@@ -324,7 +385,7 @@
       "narration": "[[Make]] crea algo que no existía. [[Do]] realiza una tarea que ya estaba ahí. [[Comida]] e ideas van con make. Y [[casa]], deporte y trabajo van con do."
     },
     {
-      "id": "b31",
+      "id": "b36",
       "type": "sentence",
       "text": "You did the lesson and made progress.",
       "gloss": "Hiciste la lección e hiciste progresos.",

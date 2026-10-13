@@ -276,13 +276,84 @@
       "narration": "[[How]] many emails: contable, en pregunta. [[A]] lot of emails: afirmativo, por eso no many. [[Not]] much time: negativo, ahí sí much. Y [[A]] little help: incontable."
     },
     {
-      "id": "b25",
       "type": "heading",
-      "text": "Parte 6 · Practica",
+      "text": "Parte 6 · En el supermercado",
+      "narration": "Otra situación real: haciendo la compra con alguien. Escucha cuándo sale cada una.",
+      "id": "b25"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "How much milk do we need?",
+          "es": "¿Cuánta leche necesitamos?"
+        },
+        {
+          "speaker": "B",
+          "en": "Not much. Just one bottle.",
+          "es": "No mucha. Solo una botella."
+        },
+        {
+          "speaker": "A",
+          "en": "And how many eggs?",
+          "es": "¿Y cuántos huevos?"
+        },
+        {
+          "speaker": "B",
+          "en": "A lot. I'm making a cake.",
+          "es": "Muchos. Voy a hacer un pastel."
+        }
+      ],
+      "narration": "[[How much milk do we need? Not much. Just one bottle. And how many eggs? A lot. I'm making a cake.]]",
+      "id": "b26"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "How much milk: la leche no se cuenta",
+        "How many eggs: los huevos sí",
+        "Not much: en negativo",
+        "A lot: en positivo, lo más natural"
+      ],
+      "narration": "[[How much milk]]: la leche no se cuenta. [[How many eggs]]: los huevos sí. [[Not much]]: en negativo, va perfecto. Y [[a lot]]: en frases positivas, lo más natural.",
+      "id": "b27"
+    },
+    {
+      "type": "sentence",
+      "text": "We don't have much time.",
+      "gloss": "No tenemos mucho tiempo.",
+      "narration": "[[We don't have much time]]. No tenemos mucho tiempo. El tiempo no se cuenta, y la frase es negativa: el sitio perfecto para [[much]].",
+      "highlight": {
+        "much": "blue"
+      },
+      "id": "b28"
+    },
+    {
+      "type": "sentence",
+      "text": "There are a lot of people here.",
+      "gloss": "Aquí hay mucha gente.",
+      "narration": "[[There are a lot of people here]]. Aquí hay mucha gente. En una frase positiva, [[a lot of]] suena mucho más natural que [[many]].",
+      "highlight": {
+        "lot": "green"
+      },
+      "id": "b29"
+    },
+    {
+      "type": "tip",
+      "text": "Pregunta: how much / how many. Positiva: a lot of. Negativa: much / many.",
+      "narration": "Resumen práctico: para preguntar, [[how much or how many]]. En frases positivas, [[a lot of]]. Y en negativas, [[much or many]] sin miedo.",
+      "id": "b30"
+    },
+    {
+      "id": "b31",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
       "narration": "Tu turno. Tres preguntas, y fíjate siempre en dos cosas: si se cuenta, y si la frase es afirmativa o no."
     },
     {
-      "id": "b26",
+      "id": "b32",
       "type": "quiz",
       "question": "How ___ sugar do you want?",
       "options": [
@@ -294,7 +365,7 @@
       "narration": "Primera: [[How, blank, sugar do you want?]] ¿[[many]], [[much]] o [[a lot of]]? Piénsalo. {{pause:3}} Es [[much]]: [[sugar]] no se cuenta, y además es pregunta."
     },
     {
-      "id": "b27",
+      "id": "b33",
       "type": "quiz",
       "question": "She gave me ___ advice.",
       "options": [
@@ -306,7 +377,7 @@
       "narration": "Segunda: [[She gave me, blank, advice]]. ¿[[many]], [[a lot of]] o [[many advices]]? Piénsalo. {{pause:3}} Es [[a lot of]]: afirmativo, e [[advice]] no tiene plural."
     },
     {
-      "id": "b28",
+      "id": "b34",
       "type": "quiz",
       "question": "There weren't ___ people at the party.",
       "options": [
@@ -318,13 +389,13 @@
       "narration": "Tercera: [[There weren't, blank, people at the party]]. ¿[[much]], [[many]] o [[a lot]]? Piénsalo. {{pause:3}} Es [[many]]: es negativo y [[people]] se cuenta."
     },
     {
-      "id": "b29",
+      "id": "b35",
       "type": "heading",
-      "text": "Parte 7 · Resumen",
+      "text": "Parte 8 · Resumen",
       "narration": "Cerramos con cuatro ideas. La tercera es la que casi nunca te enseñan y la que más te va a cambiar el sonido."
     },
     {
-      "id": "b30",
+      "id": "b36",
       "type": "recap",
       "items": [
         "Many con contables, much con incontables",
@@ -335,7 +406,7 @@
       "narration": "[[Many]] con contables, much con incontables. [[Information]], advice y money no tienen plural. [[En]] afirmativo se dice a lot of, no much. Y [[a]] few es positivo, few a secas es negativo."
     },
     {
-      "id": "b31",
+      "id": "b37",
       "type": "sentence",
       "text": "You learned a lot of things today.",
       "gloss": "Has aprendido muchas cosas hoy.",

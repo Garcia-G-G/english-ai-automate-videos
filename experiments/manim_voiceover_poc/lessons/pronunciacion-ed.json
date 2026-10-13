@@ -271,13 +271,74 @@
       "narration": "[[Happened]] y called: suenan como de. [[Worked]], stopped y watched: suenan como te. [[Needed]] y decided: sílaba extra. Y [[Tres]] sonidos distintos en cuatro frases."
     },
     {
-      "id": "b26",
       "type": "heading",
-      "text": "Parte 8 · Practica",
+      "text": "Parte 8 · Contar lo que pasó",
+      "narration": "Otra situación real: alguien cuenta una mañana desastrosa. Escucha cómo suena cada terminación.",
+      "id": "b26"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "I missed the bus and walked to work.",
+          "es": "Perdí el autobús y fui andando al trabajo."
+        },
+        {
+          "speaker": "B",
+          "en": "Oh no. Were you late?",
+          "es": "Vaya. ¿Llegaste tarde?"
+        },
+        {
+          "speaker": "A",
+          "en": "Yes. I waited, then I started running.",
+          "es": "Sí. Esperé y luego empecé a correr."
+        },
+        {
+          "speaker": "B",
+          "en": "And then you arrived tired!",
+          "es": "¡Y luego llegaste cansado!"
+        }
+      ],
+      "narration": "[[I missed the bus and walked to work. Oh no. Were you late? Yes. I waited, then I started running. And then you arrived tired!]]",
+      "id": "b27"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "missed, walked: suenan con t",
+        "arrived: suena con d",
+        "waited, started: añaden una sílaba",
+        "tired: con d, sin sílaba extra"
+      ],
+      "narration": "[[Missed, walked]]: suenan con te al final. [[Arrived]]: suena con de. [[Waited, started]]: estas sí añaden una sílaba. Y [[tired]]: con de, y sin sílaba extra.",
+      "id": "b28"
+    },
+    {
+      "type": "sentence",
+      "text": "She wanted to visit her family.",
+      "gloss": "Quería visitar a su familia.",
+      "narration": "[[She wanted to visit her family]]. Quería visitar a su familia. [[Wanted]] tiene dos sílabas, porque el verbo termina en te. Así: [[want, wanted]].",
+      "highlight": {
+        "wanted": "blue"
+      },
+      "id": "b29"
+    },
+    {
+      "type": "tip",
+      "text": "Solo se añade sílaba cuando el verbo acaba en sonido t o d: wanted, needed.",
+      "narration": "Si dudas, mira el final del verbo: solo se añade una sílaba cuando acaba en sonido te o de. [[Wanted, needed]]. En todos los demás, no.",
+      "id": "b30"
+    },
+    {
+      "id": "b31",
+      "type": "heading",
+      "text": "Parte 9 · Practica",
       "narration": "Tu turno. Tres preguntas. Di cada palabra en voz alta antes de responder; el oído acierta más que la cabeza."
     },
     {
-      "id": "b27",
+      "id": "b32",
       "type": "quiz",
       "question": "¿Cómo suena el final de «finished»?",
       "options": [
@@ -289,7 +350,7 @@
       "narration": "Primera: ¿cómo suena el final de [[finished]]? ¿[[como t]], [[como d]] o [[como id]]? Piénsalo. {{pause:3}} Es [[como t]]: sh es sordo, así que fínisht."
     },
     {
-      "id": "b28",
+      "id": "b33",
       "type": "quiz",
       "question": "¿Cómo suena el final de «started»?",
       "options": [
@@ -301,7 +362,7 @@
       "narration": "Segunda: ¿y el final de [[started]]? ¿[[como t]], [[como d]] o [[como id]]? Piénsalo. {{pause:3}} Es [[como id]]: [[start]] acaba en te, así que stártid."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "quiz",
       "question": "¿Cómo suena el final de «listened»?",
       "options": [
@@ -313,13 +374,13 @@
       "narration": "Tercera: ¿y [[listened]]? ¿[[como id]], [[como d]] o [[como t]]? Piénsalo. {{pause:3}} Es [[como d]]: acaba en ene, que vibra. Lísend, sin sílaba extra."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "heading",
-      "text": "Parte 9 · Resumen",
+      "text": "Parte 10 · Resumen",
       "narration": "Cerramos. Cuatro ideas, y con la última sola ya aciertas el noventa por ciento de las veces."
     },
     {
-      "id": "b31",
+      "id": "b36",
       "type": "recap",
       "items": [
         "Casi nunca se añade una sílaba",
@@ -330,7 +391,7 @@
       "narration": "[[Casi]] nunca se añade una sílaba. [[Si]] antes no vibra, suena como te. [[Si]] antes vibra, suena como de. Y [[Sólo]] después de te o de se añade sílaba."
     },
     {
-      "id": "b32",
+      "id": "b37",
       "type": "sentence",
       "text": "You finished, you learned, you needed it.",
       "gloss": "Terminaste, aprendiste, lo necesitabas.",

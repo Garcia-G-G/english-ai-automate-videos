@@ -259,13 +259,75 @@
       "narration": "[[At]] home: punto, sin the. [[On]] the train: transporte público. [[At]] seven: hora exacta. Y [[In]] the café on Main Street: dentro del café, y la calle es una línea."
     },
     {
-      "id": "b25",
       "type": "heading",
-      "text": "Parte 6 · Practica",
+      "text": "Parte 6 · Quedar con alguien",
+      "narration": "Otra situación real: quedar con un compañero. Fíjate en cómo se reparten las tres.",
+      "id": "b25"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Can we meet on Monday?",
+          "es": "¿Podemos quedar el lunes?"
+        },
+        {
+          "speaker": "B",
+          "en": "Sure. At ten, in my office?",
+          "es": "Claro. ¿A las diez, en mi oficina?"
+        },
+        {
+          "speaker": "A",
+          "en": "Perfect. It's on the second floor, right?",
+          "es": "Perfecto. Está en la segunda planta, ¿no?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes. See you in the morning!",
+          "es": "Sí. ¡Nos vemos por la mañana!"
+        }
+      ],
+      "narration": "[[Can we meet on Monday? Sure. At ten, in my office? Perfect. It's on the second floor, right? Yes. See you in the morning!]]",
+      "id": "b26"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "On Monday: los días",
+        "At ten: la hora exacta",
+        "In my office: dentro de un espacio",
+        "On the second floor: las plantas"
+      ],
+      "narration": "[[On Monday]]: los días. [[At ten]]: la hora exacta. [[In my office]]: dentro de un espacio. Y [[on the second floor]]: las plantas de un edificio.",
+      "id": "b27"
+    },
+    {
+      "type": "sentence",
+      "text": "My birthday is in July, on the fifth.",
+      "gloss": "Mi cumpleaños es en julio, el día cinco.",
+      "narration": "[[My birthday is in July, on the fifth]]. En julio, el día cinco. El mes, con [[in]]. El día concreto, con [[on]].",
+      "highlight": {
+        "in": "blue",
+        "on": "green"
+      },
+      "id": "b28"
+    },
+    {
+      "type": "tip",
+      "text": "De lo grande a lo pequeño: in (mes, año), on (día), at (hora).",
+      "narration": "Piénsalo como un embudo: [[in]] para lo grande, meses y años. [[On]] para los días. Y [[at]] para la hora exacta.",
+      "id": "b29"
+    },
+    {
+      "id": "b30",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
       "narration": "Tu turno. Tres preguntas. Piensa la respuesta en voz alta; te dejo tres segundos antes de decirla."
     },
     {
-      "id": "b26",
+      "id": "b31",
       "type": "quiz",
       "question": "The meeting is ___ Friday.",
       "options": [
@@ -277,7 +339,7 @@
       "narration": "Primera: [[The meeting is, blank, Friday]]. ¿[[in]], [[on]] o [[at]]? Piénsalo. {{pause:3}} Es [[on]]: [[Friday]] es un día concreto."
     },
     {
-      "id": "b27",
+      "id": "b32",
       "type": "quiz",
       "question": "I'll call you ___ the evening.",
       "options": [
@@ -289,7 +351,7 @@
       "narration": "Segunda: [[I'll call you, blank, the evening]]. ¿[[at]], [[in]] o [[on]]? Piénsalo. {{pause:3}} Es [[in]]: las partes del día van con [[in]], salvo [[at night]]."
     },
     {
-      "id": "b28",
+      "id": "b33",
       "type": "quiz",
       "question": "She's ___ work right now.",
       "options": [
@@ -301,13 +363,13 @@
       "narration": "Tercera: [[She's, blank, work right now]]. ¿[[at]], [[in]] o [[on]]? Piénsalo. {{pause:3}} Es [[at]] work, y recuerda: sin artículo detrás."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "heading",
-      "text": "Parte 7 · Resumen",
+      "text": "Parte 8 · Resumen",
       "narration": "Cerramos. Si te llevas la imagen del principio, el resto se coloca casi solo con la práctica."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "recap",
       "items": [
         "In es dentro, on es encima, at es un punto",
@@ -318,7 +380,7 @@
       "narration": "[[In]] es dentro, [[on]] es encima, [[at]] es un punto. [[Con]] el tiempo, de grande a pequeño. [[At]] home, at work y at school van sin the. Y [[on]] time es puntual, in time es por los pelos."
     },
     {
-      "id": "b31",
+      "id": "b36",
       "type": "sentence",
       "text": "See you at six on Friday in the café.",
       "gloss": "Nos vemos a las seis el viernes en el café.",

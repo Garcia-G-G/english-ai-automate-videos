@@ -286,13 +286,68 @@
       "narration": "Con [[have]]: [[I have drunk three coffees today]]. Y mañana, cuando el día esté cerrado, ya dirás [[I drank three coffees yesterday]]. El mismo café, otro tiempo."
     },
     {
-      "id": "b27",
       "type": "heading",
-      "text": "Parte 7 · Practica",
+      "text": "Parte 7 · Ponerse al día",
+      "narration": "Otra situación real: dos amigos que no se ven desde hace tiempo. Fíjate en cuándo cambia el tiempo verbal.",
+      "id": "b27"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Have you been to the new restaurant?",
+          "es": "¿Has ido al restaurante nuevo?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, I went last week. Have you tried it?",
+          "es": "Sí, fui la semana pasada. ¿Lo has probado?"
+        },
+        {
+          "speaker": "A",
+          "en": "Not yet. I've been really busy.",
+          "es": "Todavía no. He estado muy liado."
+        },
+        {
+          "speaker": "B",
+          "en": "We should go together on Saturday.",
+          "es": "Deberíamos ir juntos el sábado."
+        }
+      ],
+      "narration": "[[Have you been to the new restaurant? Yes, I went last week. Have you tried it? Not yet. I've been really busy. We should go together on Saturday.]]",
+      "id": "b28"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Have you been: experiencia, sin fecha",
+        "I went last week: con fecha, pasado simple",
+        "Not yet: todavía no",
+        "I've been busy: algo que llega hasta ahora"
+      ],
+      "narration": "[[Have you been]]: experiencia, sin fecha. [[I went last week]]: con fecha, pasado simple. [[Not yet]]: todavía no. Y [[I've been busy]]: algo que llega hasta ahora.",
+      "id": "b29"
+    },
+    {
+      "type": "sentence",
+      "text": "I've never tried sushi.",
+      "gloss": "Nunca he probado el sushi.",
+      "narration": "[[I've never tried sushi]]. Nunca he probado el sushi. Con [[never]] y [[ever]] hablamos de toda tu vida, así que va el [[present perfect]].",
+      "highlight": {
+        "never": "blue"
+      },
+      "id": "b30"
+    },
+    {
+      "id": "b31",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
       "narration": "Tu turno. Tres preguntas, y en todas la pista está en las palabras de tiempo. Tres segundos cada una."
     },
     {
-      "id": "b28",
+      "id": "b32",
       "type": "quiz",
       "question": "I ___ my phone yesterday.",
       "options": [
@@ -304,7 +359,7 @@
       "narration": "Primera: [[I, blank, my phone yesterday]]. ¿[[have broken]], [[broke]] o [[have break]]? Piénsalo. {{pause:3}} Es [[broke]]: hay un [[yesterday]], está cerrado."
     },
     {
-      "id": "b29",
+      "id": "b33",
       "type": "quiz",
       "question": "___ you ever eaten sushi?",
       "options": [
@@ -316,7 +371,7 @@
       "narration": "Segunda: [[blank, you ever eaten sushi?]] ¿[[Did]], [[Have]] o [[Do]]? Piénsalo. {{pause:3}} Es [[Have]]: [[ever]] pregunta por experiencia, sin fecha."
     },
     {
-      "id": "b30",
+      "id": "b34",
       "type": "quiz",
       "question": "We ___ here since 2019.",
       "options": [
@@ -328,13 +383,13 @@
       "narration": "Tercera: [[We, blank, here since 2019]]. ¿[[live]], [[lived]] o [[have lived]]? Piénsalo. {{pause:3}} Es [[have lived]]: [[since]] dice que empezó antes y sigue."
     },
     {
-      "id": "b31",
+      "id": "b35",
       "type": "heading",
-      "text": "Parte 8 · Resumen",
+      "text": "Parte 9 · Resumen",
       "narration": "Cerramos con cuatro ideas. Si dudas en mitad de una frase, vuelve a la primera y casi siempre se resuelve sola."
     },
     {
-      "id": "b32",
+      "id": "b36",
       "type": "recap",
       "items": [
         "Si dices cuándo pasó, es pasado simple",
@@ -345,7 +400,7 @@
       "narration": "Si dices cuándo pasó, es pasado simple. [[Present]] perfect conecta el pasado con el ahora. [[Ever]], never, yet y just lo piden. Y [[for]] es cuánto tiempo, [[since]] es desde cuándo."
     },
     {
-      "id": "b33",
+      "id": "b37",
       "type": "sentence",
       "text": "I have finished, and you learned something.",
       "gloss": "He terminado, y tú aprendiste algo.",

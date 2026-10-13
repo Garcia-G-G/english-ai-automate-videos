@@ -307,13 +307,75 @@
       "narration": "[[Bigger]] than: corta, cambia el final. [[More]] expensive: larga, lleva more. [[The]] best: superlativo irregular con the. Y [[As]] cheap as: las dos iguales."
     },
     {
-      "id": "b28",
       "type": "heading",
-      "text": "Parte 8 · Practica",
+      "text": "Parte 8 · De compras",
+      "narration": "Otra situación real: comparar dos móviles en una tienda. Aquí sale todo lo que hemos visto.",
+      "id": "b28"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Which phone is better?",
+          "es": "¿Qué móvil es mejor?"
+        },
+        {
+          "speaker": "B",
+          "en": "This one is cheaper, but that one is faster.",
+          "es": "Este es más barato, pero ese es más rápido."
+        },
+        {
+          "speaker": "A",
+          "en": "Is it the most popular?",
+          "es": "¿Es el más popular?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, and the camera is as good as the expensive one.",
+          "es": "Sí, y la cámara es tan buena como la del caro."
+        }
+      ],
+      "narration": "[[Which phone is better? This one is cheaper, but that one is faster. Is it the most popular? Yes, and the camera is as good as the expensive one.]]",
+      "id": "b29"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "better: irregular, más bueno",
+        "cheaper, faster: cortas, con -er",
+        "the most popular: larga, con most",
+        "as good as: igual de bueno"
+      ],
+      "narration": "[[Better]]: irregular, más bueno. [[Cheaper, faster]]: palabras cortas, con la terminación. [[The most popular]]: palabra larga, así que va delante. Y [[as good as]]: igual de bueno.",
+      "id": "b30"
+    },
+    {
+      "type": "sentence",
+      "text": "This phone is more expensive than mine.",
+      "gloss": "Este móvil es más caro que el mío.",
+      "narration": "[[This phone is more expensive than mine]]. Más caro que el mío. Palabra larga, así que [[more]] delante. Y para comparar, siempre [[than]].",
+      "highlight": {
+        "more": "blue",
+        "than": "blue"
+      },
+      "id": "b31"
+    },
+    {
+      "type": "tip",
+      "text": "Cortas: -er / -est. Largas: more / most. Nunca las dos juntas.",
+      "narration": "La regla de oro: palabras cortas, terminación. Palabras largas, [[more or most]] delante. Y nunca las dos a la vez.",
+      "id": "b32"
+    },
+    {
+      "id": "b33",
+      "type": "heading",
+      "text": "Parte 9 · Practica",
       "narration": "Tu turno. Tres preguntas. Cuenta las sílabas antes de responder; casi siempre te da la respuesta sola."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "quiz",
       "question": "Today is ___ than yesterday.",
       "options": [
@@ -325,7 +387,7 @@
       "narration": "Primera: [[Today is, blank, than yesterday]]. ¿[[more hot]], [[hotter]] o [[hoter]]? Piénsalo. {{pause:3}} Es [[hotter]]: una sílaba, y se dobla la te."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "quiz",
       "question": "It's ___ film I've ever seen.",
       "options": [
@@ -337,7 +399,7 @@
       "narration": "Segunda: [[It's, blank, film I've ever seen]]. ¿[[the worst]], [[worst]] o [[the worse]]? Piénsalo. {{pause:3}} Es [[the worst]]: superlativo irregular, y con [[the]]."
     },
     {
-      "id": "b31",
+      "id": "b36",
       "type": "quiz",
       "question": "This one is ___ interesting than that.",
       "options": [
@@ -349,13 +411,13 @@
       "narration": "Tercera: [[This one is, blank, interesting than that]]. ¿[[interestinger]], [[more]] o [[most]]? Piénsalo. {{pause:3}} Es [[more]]: cuatro sílabas, y hay un [[than]]."
     },
     {
-      "id": "b32",
+      "id": "b37",
       "type": "heading",
-      "text": "Parte 9 · Resumen",
+      "text": "Parte 10 · Resumen",
       "narration": "Cerramos. Cinco ideas, y la primera resuelve sola la mayoría de las comparaciones que vas a hacer."
     },
     {
-      "id": "b33",
+      "id": "b38",
       "type": "recap",
       "items": [
         "Cortas se alargan, largas llevan more",
@@ -367,7 +429,7 @@
       "narration": "[[Cortas]] se alargan, largas llevan more. [[El]] que de comparar es than. [[El]] superlativo siempre lleva the. [[Good]], bad, far y little son irregulares. Y [[as]] bueno as para decir que son iguales."
     },
     {
-      "id": "b34",
+      "id": "b39",
       "type": "sentence",
       "text": "Your English is better than yesterday.",
       "gloss": "Tu inglés está mejor que ayer.",

@@ -294,13 +294,74 @@
       "narration": "[[I read that book last year]]. Se escribe [[read]], pero aquí se pronuncia red, porque [[last year]] te dice que es pasado. Es el único aviso que tienes."
     },
     {
-      "id": "b26",
       "type": "heading",
-      "text": "Parte 7 · Practica",
+      "text": "Parte 7 · Contar unas vacaciones",
+      "narration": "Otra situación real: alguien vuelve de vacaciones y lo cuenta todo. Escucha cuántos irregulares salen.",
+      "id": "b26"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "How was your trip?",
+          "es": "¿Qué tal el viaje?"
+        },
+        {
+          "speaker": "B",
+          "en": "Amazing. We flew to Rome and ate pizza every day.",
+          "es": "Increíble. Volamos a Roma y comimos pizza cada día."
+        },
+        {
+          "speaker": "A",
+          "en": "Did you buy anything?",
+          "es": "¿Compraste algo?"
+        },
+        {
+          "speaker": "B",
+          "en": "I bought a jacket and took a lot of photos.",
+          "es": "Me compré una chaqueta e hice muchas fotos."
+        }
+      ],
+      "narration": "[[How was your trip? Amazing. We flew to Rome and ate pizza every day. Did you buy anything? I bought a jacket and took a lot of photos.]]",
+      "id": "b27"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "flew: de fly, volar",
+        "ate: de eat, comer",
+        "bought: de buy, comprar",
+        "took: de take, tomar"
+      ],
+      "narration": "[[Flew, ate, bought, took]]. Volar, comer, comprar y tomar, en pasado. Cuatro irregulares en una sola conversación de vacaciones.",
+      "id": "b28"
+    },
+    {
+      "type": "sentence",
+      "text": "We took a lot of photos.",
+      "gloss": "Hicimos muchas fotos.",
+      "narration": "[[We took a lot of photos]]. Hicimos muchas fotos. En inglés las fotos no se hacen, se toman: [[take a photo]]. Y en pasado, [[took]].",
+      "highlight": {
+        "took": "blue"
+      },
+      "id": "b29"
+    },
+    {
+      "type": "tip",
+      "text": "Did you buy…? En la pregunta, el verbo vuelve a la forma base: buy, no bought.",
+      "narration": "Y recuerda la trampa: en la pregunta, [[did]] se queda el pasado. [[Did you buy anything?]] Nunca [[did you bought]].",
+      "id": "b30"
+    },
+    {
+      "id": "b31",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
       "narration": "Tu turno. Tres preguntas, tres segundos para pensar cada una. Dilas en voz alta antes de oír la respuesta."
     },
     {
-      "id": "b27",
+      "id": "b32",
       "type": "quiz",
       "question": "Yesterday I ___ a great film.",
       "options": [
@@ -312,7 +373,7 @@
       "narration": "Primera: [[Yesterday I, blank, a great film]]. ¿[[seed]], [[saw]] o [[seen]]? Piénsalo. {{pause:3}} Es [[saw]]. [[Seen]] existe, pero va con [[have]], no sola."
     },
     {
-      "id": "b28",
+      "id": "b33",
       "type": "quiz",
       "question": "She didn't ___ the message.",
       "options": [
@@ -324,7 +385,7 @@
       "narration": "Segunda: [[She didn't, blank, the message]]. ¿[[got]], [[get]] o [[gotten]]? Piénsalo. {{pause:3}} Es [[get]]: hay un [[didn't]], así que el verbo vuelve a la base."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "quiz",
       "question": "Did you ___ the bus this morning?",
       "options": [
@@ -336,13 +397,13 @@
       "narration": "Tercera: [[Did you, blank, the bus this morning?]] ¿[[took]], [[take]] o [[taked]]? Piénsalo. {{pause:3}} Es [[take]]. Otra vez: [[did]] lleva el pasado."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "heading",
-      "text": "Parte 8 · Resumen",
+      "text": "Parte 9 · Resumen",
       "narration": "Recogemos. Cuatro ideas que valen más que memorizar la lista entera de irregulares del libro."
     },
     {
-      "id": "b31",
+      "id": "b36",
       "type": "recap",
       "items": [
         "Irregular significa sin regla, no difícil",
@@ -353,7 +414,7 @@
       "narration": "Irregular significa sin regla, no difícil. Apréndelos en familias que suenan igual. Con [[did]] o [[didn't]], el verbo vuelve a la base. Y [[read]], [[put]] y [[cost]] no cambian al escribirse."
     },
     {
-      "id": "b32",
+      "id": "b37",
       "type": "sentence",
       "text": "I went, I saw, I learned.",
       "gloss": "Fui, vi, aprendí.",

@@ -273,13 +273,74 @@
       }
     },
     {
-      "id": "b26",
       "type": "heading",
-      "text": "Parte 7 · Practica",
+      "text": "Parte 7 · Hablar de tu infancia",
+      "narration": "Otra situación real: dos amigos hablan de cuando eran pequeños. Es el terreno natural de esta forma.",
+      "id": "b26"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "What did you use to do after school?",
+          "es": "¿Qué hacías después del colegio?"
+        },
+        {
+          "speaker": "B",
+          "en": "I used to play football with my cousins.",
+          "es": "Jugaba al fútbol con mis primos."
+        },
+        {
+          "speaker": "A",
+          "en": "Did you use to watch cartoons?",
+          "es": "¿Veías dibujos animados?"
+        },
+        {
+          "speaker": "B",
+          "en": "Every day! Now I'm not used to watching TV.",
+          "es": "¡Cada día! Ahora no estoy acostumbrado a ver la tele."
+        }
+      ],
+      "narration": "[[What did you use to do after school? I used to play football with my cousins. Did you use to watch cartoons? Every day! Now I'm not used to watching TV.]]",
+      "id": "b27"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "What did you use to do: pregunta, sin d",
+        "I used to play: hábito del pasado",
+        "Did you use to watch: pregunta, sin d",
+        "I'm not used to watching: no estoy acostumbrado"
+      ],
+      "narration": "[[What did you use to do]]: pregunta, sin de final. [[I used to play]]: un hábito del pasado. [[Did you use to watch]]: otra pregunta, otra vez sin de. Y [[I'm not used to watching]]: no estoy acostumbrado.",
+      "id": "b28"
+    },
+    {
+      "type": "sentence",
+      "text": "We used to live near the beach.",
+      "gloss": "Antes vivíamos cerca de la playa.",
+      "narration": "[[We used to live near the beach]]. Antes vivíamos cerca de la playa. Y ahora ya no. Esa segunda parte nunca se dice, pero [[used to]] la lleva dentro.",
+      "highlight": {
+        "used": "blue"
+      },
+      "id": "b29"
+    },
+    {
+      "type": "tip",
+      "text": "Would también vale para acciones repetidas del pasado, pero no para estados: ahí solo used to.",
+      "narration": "Para nivel alto: para acciones repetidas del pasado también vale [[would]]. [[When I was a kid, I would play outside]]. Para estados, como vivir o tener, solo [[used to]].",
+      "id": "b30"
+    },
+    {
+      "id": "b31",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
       "narration": "Tu turno. Tres frases. Tienes tres segundos para pensar antes de cada respuesta."
     },
     {
-      "id": "b27",
+      "id": "b32",
       "type": "quiz",
       "question": "When I was a kid, I ___ climb trees.",
       "options": [
@@ -291,7 +352,7 @@
       "narration": "Primera: [[When I was a kid, I, blank, climb trees]]. ¿[[used to, use to or am used to]]? Piénsalo. {{pause:3}} Es [[used to]]. Un hábito de la infancia que ya no tienes."
     },
     {
-      "id": "b28",
+      "id": "b33",
       "type": "quiz",
       "question": "I ___ drink coffee in the morning.",
       "options": [
@@ -303,7 +364,7 @@
       "narration": "Segunda: [[I, blank, drink coffee in the morning]]. ¿[[usually, use to or used]]? Piénsalo. {{pause:3}} Es [[usually]]. Es lo que haces hoy, y para eso la otra forma no sirve."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "quiz",
       "question": "She isn't used to ___ so early.",
       "options": [
@@ -315,13 +376,13 @@
       "narration": "Tercera: [[She isn't used to, blank, so early]]. ¿[[getting up, get up or got up]]? Piénsalo. {{pause:3}} Es [[getting up]]. Detrás de estar acostumbrado siempre va la forma en i-ene-ge."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "heading",
-      "text": "Parte 8 · Resumen",
+      "text": "Parte 9 · Resumen",
       "narration": "Cerramos con cuatro ideas. Tenlas a mano y ya no vas a confundir estas tres expresiones."
     },
     {
-      "id": "b31",
+      "id": "b36",
       "type": "recap",
       "items": [
         "Usually para lo que sueles hacer hoy",
@@ -332,7 +393,7 @@
       "narration": "[[Usually]], para lo que sueles hacer hoy. [[Used to]], para lo que hacías antes. Con [[did or didn't]], se escribe sin de. Y [[be used to]], con i-ene-ge, es estar acostumbrado."
     },
     {
-      "id": "b32",
+      "id": "b37",
       "type": "sentence",
       "text": "You used to struggle with this. Not anymore.",
       "gloss": "Antes te costaba esto. Ya no.",

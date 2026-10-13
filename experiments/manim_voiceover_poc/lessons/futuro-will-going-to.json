@@ -237,13 +237,74 @@
       "narration": "[[Don't worry, I'll fix it]]. No te preocupes, lo arreglo yo. [[Will]] sirve para prometer, ofrecerse y tranquilizar. Es el futuro de la buena voluntad."
     },
     {
-      "id": "b24",
       "type": "heading",
-      "text": "Parte 7 · Practica",
+      "text": "Parte 7 · Planes por teléfono",
+      "narration": "Otra situación real: dos amigos organizan el viernes por teléfono. Fíjate en qué futuro usa cada uno y por qué.",
+      "id": "b24"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Are you coming to the party on Friday?",
+          "es": "¿Vienes a la fiesta del viernes?"
+        },
+        {
+          "speaker": "B",
+          "en": "I'm going to work late, sorry.",
+          "es": "Voy a trabajar hasta tarde, lo siento."
+        },
+        {
+          "speaker": "A",
+          "en": "That's a shame. I'll save you some cake.",
+          "es": "Qué pena. Te guardaré tarta."
+        },
+        {
+          "speaker": "B",
+          "en": "Thanks! I think it'll be a great party.",
+          "es": "¡Gracias! Creo que será una gran fiesta."
+        }
+      ],
+      "narration": "[[Are you coming to the party on Friday? I'm going to work late, sorry. That's a shame. I'll save you some cake. Thanks! I think it'll be a great party.]]",
+      "id": "b25"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Are you coming: plan ya organizado",
+        "I'm going to work late: decidido de antes",
+        "I'll save you some: decisión del momento",
+        "I think it'll be: una predicción"
+      ],
+      "narration": "[[Are you coming]]: un plan ya organizado. [[I'm going to work late]]: algo decidido de antes. [[I'll save you some]]: decisión tomada en ese segundo. Y [[I think it'll be]]: una predicción, una opinión.",
+      "id": "b26"
+    },
+    {
+      "type": "sentence",
+      "text": "I think it will rain later.",
+      "gloss": "Creo que lloverá más tarde.",
+      "narration": "[[I think it will rain later]]. Creo que lloverá más tarde. Con [[I think]] delante, casi siempre va [[will]]: es una opinión sobre el futuro.",
+      "highlight": {
+        "will": "blue"
+      },
+      "id": "b27"
+    },
+    {
+      "type": "tip",
+      "text": "Decidido antes de hablar: going to. Decidido mientras hablas: will.",
+      "narration": "La prueba más rápida: si lo decidiste antes de hablar, [[going to]]. Si lo decides mientras hablas, [[will]].",
+      "id": "b28"
+    },
+    {
+      "id": "b29",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
       "narration": "Tu turno. Tres preguntas, y la pista siempre está en si el plan ya existía o se acaba de crear."
     },
     {
-      "id": "b25",
+      "id": "b30",
       "type": "quiz",
       "question": "The phone's ringing. — I ___ get it!",
       "options": [
@@ -255,7 +316,7 @@
       "narration": "Primera: suena el teléfono y dices [[I, blank, get it]]. ¿[[am going to]], [[will]] o [[get]]? Piénsalo. {{pause:3}} Es [[will]]: lo decides en ese segundo."
     },
     {
-      "id": "b26",
+      "id": "b31",
       "type": "quiz",
       "question": "We ___ move house in June. It's decided.",
       "options": [
@@ -267,7 +328,7 @@
       "narration": "Segunda: [[We, blank, move house in June. It's decided]]. ¿[[will]], [[are going to]] o [[move]]? Piénsalo. {{pause:3}} Es [[are going to]]: ya estaba decidido."
     },
     {
-      "id": "b27",
+      "id": "b32",
       "type": "quiz",
       "question": "I ___ to call you later.",
       "options": [
@@ -279,13 +340,13 @@
       "narration": "Tercera, de forma: [[I, blank, to call you later]]. ¿[[will]], [[am going]] o [[will going]]? Piénsalo. {{pause:3}} Es [[am going]] to. [[Will]] nunca lleva [[to]] detrás."
     },
     {
-      "id": "b28",
+      "id": "b33",
       "type": "heading",
-      "text": "Parte 8 · Resumen",
+      "text": "Parte 9 · Resumen",
       "narration": "Cerramos con cuatro ideas. Y si sólo te llevas una, que sea la primera: la diferencia está en cuándo lo decidiste."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "recap",
       "items": [
         "Going to es plan previo o prueba delante",
@@ -296,7 +357,7 @@
       "narration": "[[Going]] to es plan previo o prueba delante. [[Will]] es decisión del momento, opinión o promesa. [[Will]] nunca lleva to ni ese. Y [[con]] cita y hora, presente continuo."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "sentence",
       "text": "You're going to use this tomorrow.",
       "gloss": "Vas a usar esto mañana.",

@@ -238,13 +238,84 @@
       "narration": "[[Could]] I check in: pide un favor, educado. [[I]] can check: puedo hacerlo. [[Can]] I leave: pide permiso, ya hay confianza. Y [[You]] can pick it up: da permiso."
     },
     {
-      "id": "b22",
       "type": "heading",
-      "text": "Parte 6 · Practica",
+      "text": "Parte 6 · Pedir favores en el trabajo",
+      "narration": "Otra situación real: pedir ayuda a un compañero. Escucha cómo sube la cortesía según lo que pides.",
+      "id": "b22"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Can you send me the file?",
+          "es": "¿Me mandas el archivo?"
+        },
+        {
+          "speaker": "B",
+          "en": "Sure. Can you give me five minutes?",
+          "es": "Claro. ¿Me das cinco minutos?"
+        },
+        {
+          "speaker": "A",
+          "en": "Of course. Could you also check the numbers?",
+          "es": "Claro. ¿Podrías revisar también los números?"
+        },
+        {
+          "speaker": "B",
+          "en": "I can't today, but I could do it tomorrow.",
+          "es": "Hoy no puedo, pero podría mañana."
+        }
+      ],
+      "narration": "[[Can you send me the file? Sure. Can you give me five minutes? Of course. Could you also check the numbers? I can't today, but I could do it tomorrow.]]",
+      "id": "b23"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Can you send...: petición normal",
+        "Could you also check...: favor grande, más suave",
+        "I can't today: hoy no puedo",
+        "I could do it tomorrow: posibilidad, no promesa"
+      ],
+      "narration": "[[Can you send]]: petición normal entre compañeros. [[Could you also check]]: el favor es más grande, así que suaviza. [[I can't today]]: hoy no puedo. Y [[I could do it tomorrow]]: una posibilidad, no una promesa.",
+      "id": "b24"
+    },
+    {
+      "type": "sentence",
+      "text": "Could you help me with this?",
+      "gloss": "¿Me podrías ayudar con esto?",
+      "narration": "[[Could you help me with this?]] ¿Me podrías ayudar con esto? Es la frase más útil de tu primera semana en un trabajo en inglés. Educada, corta y sin riesgo.",
+      "highlight": {
+        "Could": "blue"
+      },
+      "id": "b25"
+    },
+    {
+      "type": "sentence",
+      "text": "I can't make it today, sorry.",
+      "gloss": "Hoy no llego, lo siento.",
+      "narration": "Y para decir que no sin sonar seco: [[I can't make it today, sorry]]. Hoy no llego, lo siento. Con [[sorry]] al final, el no suena mucho más amable.",
+      "highlight": {
+        "can't": "red"
+      },
+      "id": "b26"
+    },
+    {
+      "type": "tip",
+      "text": "Can you…? para cosas pequeñas y gente de confianza. Could you…? para favores grandes o desconocidos.",
+      "narration": "Regla práctica: [[can you]] con gente de confianza y para cosas pequeñas. [[Could you]] cuando pides algo grande, o a alguien que no conoces bien.",
+      "id": "b27"
+    },
+    {
+      "id": "b28",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
       "narration": "Tu turno. Tres preguntas. Piensa cuál encaja mejor; te dejo tres segundos antes de decir la respuesta."
     },
     {
-      "id": "b23",
+      "id": "b29",
       "type": "quiz",
       "question": "___ you speak Italian?",
       "options": [
@@ -256,7 +327,7 @@
       "narration": "Primera: [[blank, you speak Italian?]] ¿[[Can]], [[Can to]] o [[Cans]]? Piénsalo. {{pause:3}} Es [[Can]]: sin [[to]] y sin ese. ¿Sabes hablar italiano?"
     },
     {
-      "id": "b24",
+      "id": "b30",
       "type": "quiz",
       "question": "___ you send me the file? (a tu jefe)",
       "options": [
@@ -268,7 +339,7 @@
       "narration": "Segunda: [[blank, you send me the file?]], y se lo dices a tu jefe. ¿[[Can]], [[Could]] o [[Do]]? Piénsalo. {{pause:3}} Es [[Could]]: un escalón más de cortesía."
     },
     {
-      "id": "b25",
+      "id": "b31",
       "type": "quiz",
       "question": "When I was young I ___ run for hours.",
       "options": [
@@ -280,13 +351,13 @@
       "narration": "Tercera: [[When I was young I, blank, run for hours]]. ¿[[can]], [[could]] o [[could to]]? Piénsalo. {{pause:3}} Es [[could]]: es pasado de verdad, y sin [[to]]."
     },
     {
-      "id": "b26",
+      "id": "b32",
       "type": "heading",
-      "text": "Parte 7 · Resumen",
+      "text": "Parte 8 · Resumen",
       "narration": "Cerramos. Cuatro ideas, y la última es la que más veces vas a usar fuera de clase."
     },
     {
-      "id": "b27",
+      "id": "b33",
       "type": "recap",
       "items": [
         "Can y could nunca llevan to detrás",
@@ -297,7 +368,7 @@
       "narration": "[[Can]] y could nunca llevan to detrás. [[Can]] es habilidad, posibilidad y permiso. [[Could]] es pasado, pero también cortesía. Y [[con]] desconocidos, siempre could."
     },
     {
-      "id": "b28",
+      "id": "b34",
       "type": "sentence",
       "text": "Could you practise this today?",
       "gloss": "¿Podrías practicar esto hoy?",

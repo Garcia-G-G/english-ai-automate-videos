@@ -231,13 +231,95 @@
       "narration": "Repasa lo que pasó. [[A car]]: la primera vez, uno cualquiera. [[The car]]: ya sabemos cuál. [[An expensive month]]: suena a vocal. Y [[the bus]]: el de siempre."
     },
     {
-      "id": "b22",
       "type": "heading",
-      "text": "Parte 6 · Practica",
+      "text": "Parte 6 · En el restaurante",
+      "narration": "Vamos a otra situación muy común: pedir en un restaurante. Fíjate en cada artículo, porque aquí salen los tres en un minuto.",
+      "id": "b22"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Can I have a table for two?",
+          "es": "¿Tiene una mesa para dos?"
+        },
+        {
+          "speaker": "B",
+          "en": "Sure. Here's the menu.",
+          "es": "Claro. Aquí tiene la carta."
+        },
+        {
+          "speaker": "A",
+          "en": "I'd like an orange juice and a salad.",
+          "es": "Quiero un zumo de naranja y una ensalada."
+        },
+        {
+          "speaker": "B",
+          "en": "The salad of the day is great.",
+          "es": "La ensalada del día está muy buena."
+        }
+      ],
+      "narration": "[[Can I have a table for two? Sure. Here's the menu. I'd like an orange juice and a salad. The salad of the day is great.]]",
+      "id": "b23"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "A table: una mesa cualquiera",
+        "An orange juice: con ene, suena a vocal",
+        "The menu: la carta de este sitio",
+        "The salad of the day: ya sabemos cuál"
+      ],
+      "narration": "[[A table]]: una mesa cualquiera. [[An orange juice]]: con ene, porque empieza por sonido de vocal. [[The menu]]: la carta de este restaurante. Y [[the salad of the day]]: ya sabemos cuál es.",
+      "id": "b24"
+    },
+    {
+      "type": "sentence",
+      "text": "I'd like an apple and a coffee.",
+      "gloss": "Quiero una manzana y un café.",
+      "narration": "[[I'd like an apple and a coffee]]. Quiero una manzana y un café. [[An apple]], porque suena a vocal. [[A coffee]], porque empieza por consonante.",
+      "highlight": {
+        "an": "blue",
+        "a": "yellow"
+      },
+      "id": "b25"
+    },
+    {
+      "type": "sentence",
+      "text": "The coffee here is very good.",
+      "gloss": "El café de aquí está muy bueno.",
+      "narration": "Y si ya hablamos de ese café en concreto: [[The coffee here is very good]]. Ya no es uno cualquiera, es este. Por eso [[the]].",
+      "highlight": {
+        "The": "green"
+      },
+      "id": "b26"
+    },
+    {
+      "type": "sentence",
+      "text": "I'm an English teacher.",
+      "gloss": "Soy profesor de inglés.",
+      "narration": "Y una diferencia con el español: las profesiones llevan artículo. [[I'm an English teacher]]. En español diríamos soy profesor, sin nada. En inglés, siempre [[a or an]].",
+      "highlight": {
+        "an": "blue"
+      },
+      "id": "b27"
+    },
+    {
+      "type": "tip",
+      "text": "Primera vez que lo mencionas: a o an. Cuando ya sabemos cuál: the.",
+      "narration": "Una regla que funciona casi siempre: la primera vez que mencionas algo, [[a or an]]. Cuando el otro ya sabe de cuál hablas, [[the]].",
+      "id": "b28"
+    },
+    {
+      "id": "b29",
+      "type": "heading",
+      "text": "Parte 7 · Practica",
       "narration": "Tu turno. Tres preguntas. Te doy tres segundos para pensar cada una antes de decirte la respuesta."
     },
     {
-      "id": "b23",
+      "id": "b30",
       "type": "quiz",
       "question": "She wants to be ___ architect.",
       "options": [
@@ -249,7 +331,7 @@
       "narration": "Primera: [[She wants to be, blank, architect]]. ¿[[a architect]], [[an architect]] o [[architect]]? Piénsalo. {{pause:3}} Es [[an architect]]: suena a vocal."
     },
     {
-      "id": "b24",
+      "id": "b31",
       "type": "quiz",
       "question": "I don't drink ___ milk.",
       "options": [
@@ -261,7 +343,7 @@
       "narration": "Segunda: [[I don't drink, blank, milk]]. ¿[[the milk]], [[a milk]] o [[milk]]? Piénsalo. {{pause:3}} Es [[milk]], sin nada: es incontable y hablo en general."
     },
     {
-      "id": "b25",
+      "id": "b32",
       "type": "quiz",
       "question": "Close ___ door, please.",
       "options": [
@@ -273,13 +355,13 @@
       "narration": "Tercera: [[Close, blank, door, please]]. ¿[[the door]], [[a door]] o [[door]]? Piénsalo. {{pause:3}} Es [[the door]]: los dos sabemos qué puerta."
     },
     {
-      "id": "b26",
+      "id": "b33",
       "type": "heading",
-      "text": "Parte 7 · Resumen",
+      "text": "Parte 8 · Resumen",
       "narration": "Recojamos lo importante. Si te llevas sólo estas cuatro cosas, ya vas a sonar bastante mejor."
     },
     {
-      "id": "b27",
+      "id": "b34",
       "type": "recap",
       "items": [
         "Contable singular nunca va solo",
@@ -290,7 +372,7 @@
       "narration": "Contable singular nunca va solo. [[A]] o [[an]] según el sonido, no la letra. [[The]] cuando ya sabemos de cuál hablamos. Plurales, incontables y comidas van sin nada."
     },
     {
-      "id": "b28",
+      "id": "b35",
       "type": "sentence",
       "text": "I have a car and the car is old.",
       "gloss": "Tengo un coche y el coche es viejo.",

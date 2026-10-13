@@ -240,13 +240,84 @@
       "narration": "[[There is a table and four chairs]]. Aunque luego haya cuatro sillas, se dice [[is]], porque lo que viene justo después es [[a table]], singular. Manda lo primero."
     },
     {
-      "id": "b24",
       "type": "heading",
-      "text": "Parte 7 · Practica",
+      "text": "Parte 7 · Ver un piso",
+      "narration": "Otra situación real: alguien te enseña un piso para alquilar. Aquí no paras de oír las dos formas.",
+      "id": "b24"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "There are two bedrooms and a big kitchen.",
+          "es": "Hay dos dormitorios y una cocina grande."
+        },
+        {
+          "speaker": "B",
+          "en": "Is there a washing machine?",
+          "es": "¿Hay lavadora?"
+        },
+        {
+          "speaker": "A",
+          "en": "Yes, there is. But there's no lift.",
+          "es": "Sí. Pero no hay ascensor."
+        },
+        {
+          "speaker": "B",
+          "en": "No problem. Are there any shops nearby?",
+          "es": "No pasa nada. ¿Hay tiendas cerca?"
+        }
+      ],
+      "narration": "[[There are two bedrooms and a big kitchen. Is there a washing machine? Yes, there is. But there's no lift. No problem. Are there any shops nearby?]]",
+      "id": "b25"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "There are two bedrooms: plural",
+        "Is there...?: en la pregunta se da la vuelta",
+        "There's no lift: no hay",
+        "Are there any shops?: pregunta en plural"
+      ],
+      "narration": "[[There are two bedrooms]]: plural. [[Is there]]: en la pregunta se da la vuelta. [[There's no lift]]: no hay ascensor. Y [[are there any shops?]]: pregunta en plural.",
+      "id": "b26"
+    },
+    {
+      "type": "sentence",
+      "text": "There's a park in front of the building.",
+      "gloss": "Hay un parque delante del edificio.",
+      "narration": "[[There's a park in front of the building]]. Hay un parque delante del edificio. [[There's]] es la forma corta, y es la que vas a oír en la calle.",
+      "highlight": {
+        "There's": "blue"
+      },
+      "id": "b27"
+    },
+    {
+      "type": "sentence",
+      "text": "There aren't any parking spaces.",
+      "gloss": "No hay plazas de aparcamiento.",
+      "narration": "Y en negativo, plural: [[There aren't any parking spaces]]. No hay ninguna plaza. Con [[aren't]], casi siempre va [[any]] detrás.",
+      "highlight": {
+        "aren't": "red"
+      },
+      "id": "b28"
+    },
+    {
+      "type": "tip",
+      "text": "There's = there is. Es la forma que más vas a oír al hablar.",
+      "narration": "Truco para sonar natural: al hablar, casi nadie dice [[there is]] completo. Dicen [[there's]], todo junto. Úsalo tú también.",
+      "id": "b29"
+    },
+    {
+      "id": "b30",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
       "narration": "Tres preguntas para ti. Piensa la respuesta antes de que yo la diga; te dejo tres segundos en cada una."
     },
     {
-      "id": "b25",
+      "id": "b31",
       "type": "quiz",
       "question": "___ many people in the office.",
       "options": [
@@ -258,7 +329,7 @@
       "narration": "Primera: [[blank, many people in the office]]. ¿[[There is]], [[There are]] o [[It is]]? Piénsalo. {{pause:3}} Es [[There are]]: [[people]] es plural."
     },
     {
-      "id": "b26",
+      "id": "b32",
       "type": "quiz",
       "question": "___ a message for you.",
       "options": [
@@ -270,7 +341,7 @@
       "narration": "Segunda: [[blank, a message for you]]. ¿[[Have]], [[There is]] o [[It has]]? Piénsalo. {{pause:3}} Es [[There is]]: estoy presentando algo nuevo."
     },
     {
-      "id": "b27",
+      "id": "b33",
       "type": "quiz",
       "question": "___ raining outside.",
       "options": [
@@ -282,13 +353,13 @@
       "narration": "Tercera, y es traicionera: [[blank, raining outside]]. ¿[[There is]], [[It is]] o [[There are]]? Piénsalo. {{pause:3}} Es [[It is]]: el tiempo siempre va con [[it]]."
     },
     {
-      "id": "b28",
+      "id": "b34",
       "type": "heading",
-      "text": "Parte 8 · Resumen",
+      "text": "Parte 9 · Resumen",
       "narration": "Cerramos. Cuatro ideas, y con estas cuatro ya no vuelves a decir [[in my street have]] nunca más."
     },
     {
-      "id": "b29",
+      "id": "b35",
       "type": "recap",
       "items": [
         "Hay se dice there is o there are, nunca have",
@@ -299,7 +370,7 @@
       "narration": "Hay se dice [[there is]] o [[there are]], nunca [[have]]. Decide lo que viene después. [[Is there]] para preguntar, [[isn't]] para negar. Y [[there]] presenta, [[it]] describe."
     },
     {
-      "id": "b30",
+      "id": "b36",
       "type": "sentence",
       "text": "There is a lesson and it is finished.",
       "gloss": "Hay una lección y está terminada.",

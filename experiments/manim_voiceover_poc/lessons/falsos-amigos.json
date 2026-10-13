@@ -316,13 +316,77 @@
       "narration": "No son errores de traducción: son primos que se separaron hace siglos. Saber eso te quita la sensación de que el inglés te está engañando a propósito."
     },
     {
-      "id": "b28",
       "type": "heading",
-      "text": "Parte 8 · Practica",
+      "text": "Parte 8 · En un hotel",
+      "narration": "Otra situación real: en la recepción de un hotel. Tres falsos amigos más que te pueden jugar una mala pasada.",
+      "id": "b28"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Excuse me, where's the exit?",
+          "es": "Perdone, ¿dónde está la salida?"
+        },
+        {
+          "speaker": "B",
+          "en": "Just there. Do you need a receipt?",
+          "es": "Justo ahí. ¿Necesita un recibo?"
+        },
+        {
+          "speaker": "A",
+          "en": "Yes, please. The carpet in my room was dirty.",
+          "es": "Sí, por favor. La moqueta de mi habitación estaba sucia."
+        },
+        {
+          "speaker": "B",
+          "en": "I'm sorry. We'll fix it today.",
+          "es": "Lo siento. Lo arreglamos hoy."
+        }
+      ],
+      "narration": "[[Excuse me, where's the exit? Just there. Do you need a receipt? Yes, please. The carpet in my room was dirty. I'm sorry. We'll fix it today.]]",
+      "id": "b29"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "exit: salida, no éxito",
+        "receipt: recibo, no receta",
+        "carpet: moqueta, no carpeta"
+      ],
+      "narration": "[[Exit]]: salida, no éxito. [[Receipt]]: recibo, no receta. Y [[carpet]]: moqueta o alfombra, no carpeta.",
+      "id": "b30"
+    },
+    {
+      "type": "sentence",
+      "text": "The exam was a success.",
+      "gloss": "El examen fue un éxito.",
+      "narration": "[[The exam was a success]]. El examen fue un éxito. Éxito se dice [[success]]. [[Exit]] es solo la puerta de salida.",
+      "highlight": {
+        "success": "green"
+      },
+      "id": "b31"
+    },
+    {
+      "type": "sentence",
+      "text": "Can you give me the recipe?",
+      "gloss": "¿Me das la receta?",
+      "narration": "[[Can you give me the recipe?]] ¿Me das la receta? La receta de cocina es [[recipe]]. Y la del médico, [[prescription]].",
+      "highlight": {
+        "recipe": "green"
+      },
+      "id": "b32"
+    },
+    {
+      "id": "b33",
+      "type": "heading",
+      "text": "Parte 9 · Practica",
       "narration": "Tu turno. Tres preguntas, y en todas la opción que más se parece al español es la trampa. Tres segundos cada una."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "quiz",
       "question": "___ , I'm working from home this week.",
       "options": [
@@ -334,7 +398,7 @@
       "narration": "Primera: [[blank, I'm working from home this week]]. ¿[[Actually]], [[Currently]] o [[Eventually]]? Piénsalo. {{pause:3}} Es [[Currently]]: hablas del momento presente."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "quiz",
       "question": "She's very ___ about other people's feelings.",
       "options": [
@@ -346,7 +410,7 @@
       "narration": "Segunda: [[She's very, blank, about other people's feelings]]. ¿[[sensible]], [[sensitive]] o [[sensate]]? Piénsalo. {{pause:3}} Es [[sensitive]]: sensible de emociones."
     },
     {
-      "id": "b31",
+      "id": "b36",
       "type": "quiz",
       "question": "I need to ___ this report by Friday.",
       "options": [
@@ -358,13 +422,13 @@
       "narration": "Tercera: [[I need to, blank, this report by Friday]]. ¿[[realize]], [[carry out]] o [[assist]]? Piénsalo. {{pause:3}} Es [[carry out]]: realizar una tarea."
     },
     {
-      "id": "b32",
+      "id": "b37",
       "type": "heading",
-      "text": "Parte 9 · Resumen",
+      "text": "Parte 10 · Resumen",
       "narration": "Cerramos. Cinco que si te llevas hoy ya no vuelves a decirlas mal, y una de ellas te evita un mal rato de verdad."
     },
     {
-      "id": "b33",
+      "id": "b38",
       "type": "recap",
       "items": [
         "Actually es en realidad; actualmente es currently",
@@ -376,7 +440,7 @@
       "narration": "[[Actually]] es en realidad. [[Embarrassed]] es avergonzado. [[Molestar]] es bother, nunca molest. [[Realizar]] una tarea es carry out. Y [[Library]] es biblioteca."
     },
     {
-      "id": "b34",
+      "id": "b39",
       "type": "sentence",
       "text": "Actually, you learned a lot today.",
       "gloss": "En realidad, has aprendido mucho hoy.",

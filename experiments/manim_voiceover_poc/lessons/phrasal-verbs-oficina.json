@@ -273,13 +273,75 @@
       "narration": "[[Called]] off: cancelaron, con el objeto detrás. [[Fill]] me in: pronombre en medio, obligatorio. [[Taking]] over: se hace cargo. Y [[Follow]] up with her: seguimiento."
     },
     {
-      "id": "b25",
       "type": "heading",
-      "text": "Parte 7 · Practica",
+      "text": "Parte 7 · En una videollamada",
+      "narration": "Otra escena de oficina, esta vez en una videollamada. Cuenta cuántos [[phrasal verbs]] reconoces.",
+      "id": "b25"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "Sorry, you broke up for a second.",
+          "es": "Perdona, se te ha cortado un segundo."
+        },
+        {
+          "speaker": "B",
+          "en": "Can you hear me now? Let me turn on my camera.",
+          "es": "¿Me oyes ahora? Deja que encienda la cámara."
+        },
+        {
+          "speaker": "A",
+          "en": "Yes. Let's go over the plan.",
+          "es": "Sí. Repasemos el plan."
+        },
+        {
+          "speaker": "B",
+          "en": "OK. I'll send it out after the call.",
+          "es": "Vale. Lo mando después de la llamada."
+        }
+      ],
+      "narration": "[[Sorry, you broke up for a second. Can you hear me now? Let me turn on my camera. Yes. Let's go over the plan. OK. I'll send it out after the call.]]",
+      "id": "b26"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "broke up: se cortó la conexión",
+        "turn on: encender",
+        "go over: repasar",
+        "send out: enviar a todo el grupo"
+      ],
+      "narration": "[[Broke up]]: se cortó la conexión. [[Turn on]]: encender. [[Go over]]: repasar algo con calma. Y [[send out]]: enviar a todo el grupo.",
+      "id": "b27"
+    },
+    {
+      "type": "sentence",
+      "text": "Let's go over the numbers again.",
+      "gloss": "Repasemos los números otra vez.",
+      "narration": "[[Let's go over the numbers again]]. Repasemos los números. Es la forma natural de proponer una revisión sin sonar a que alguien se ha equivocado.",
+      "highlight": {
+        "go": "blue",
+        "over": "blue"
+      },
+      "id": "b28"
+    },
+    {
+      "type": "tip",
+      "text": "Broke up en una llamada no es romper: es que se corta la conexión.",
+      "narration": "Ojo con este: [[you broke up]] en una llamada no significa que hayáis roto. Significa que se te ha cortado la conexión. Contexto, siempre.",
+      "id": "b29"
+    },
+    {
+      "id": "b30",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
       "narration": "Tu turno. Tres preguntas, y en la segunda fíjate bien en dónde cae el pronombre. Tres segundos cada una."
     },
     {
-      "id": "b26",
+      "id": "b31",
       "type": "quiz",
       "question": "We have to ___ the launch until June.",
       "options": [
@@ -291,7 +353,7 @@
       "narration": "Primera: [[We have to, blank, the launch until June]]. ¿[[put off]], [[put on]] o [[put in]]? Piénsalo. {{pause:3}} Es [[put off]]: aplazar hasta junio."
     },
     {
-      "id": "b27",
+      "id": "b32",
       "type": "quiz",
       "question": "The meeting? They ___ yesterday.",
       "options": [
@@ -303,7 +365,7 @@
       "narration": "Segunda: [[The meeting? They, blank, yesterday]]. ¿[[called off it]], [[called it off]] o [[called off]]? Piénsalo. {{pause:3}} Es [[called it off]]: el pronombre en medio."
     },
     {
-      "id": "b28",
+      "id": "b33",
       "type": "quiz",
       "question": "Can you ___ this complaint?",
       "options": [
@@ -315,13 +377,13 @@
       "narration": "Tercera: [[Can you, blank, this complaint?]] ¿[[look it into]], [[look into]] o [[look on]]? Piénsalo. {{pause:3}} Es [[look into]]: este nunca se parte."
     },
     {
-      "id": "b29",
+      "id": "b34",
       "type": "heading",
-      "text": "Parte 8 · Resumen",
+      "text": "Parte 9 · Resumen",
       "narration": "Cerramos. Cuatro ideas, y si te llevas los doce phrasal verbs de hoy ya entiendes casi cualquier reunión."
     },
     {
-      "id": "b30",
+      "id": "b35",
       "type": "recap",
       "items": [
         "Un phrasal verb es una palabra nueva, no dos",
@@ -332,7 +394,7 @@
       "narration": "[[Un]] phrasal verb es una palabra nueva. [[Call]] off cancelar, put off aplazar, go over repasar. [[Follow]] up seguimiento, fill in poner al día. Y [[con]] it o me, el pronombre va en medio."
     },
     {
-      "id": "b31",
+      "id": "b36",
       "type": "sentence",
       "text": "Let's go over this again tomorrow.",
       "gloss": "Repasemos esto otra vez mañana.",
