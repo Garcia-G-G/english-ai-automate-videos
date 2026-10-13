@@ -38,6 +38,27 @@ ring on screen (every quiz has one, right after the options are read). English s
 at `english_speed` (0.92 by default; ElevenLabs `voice_settings.speed`, with a silent fallback to 1.0
 if a model refuses it). There is a short breath between beats, longer after a section card.
 
+## The look — English Unlimited on a dark stage
+
+`lesson_scene.py` reads the colours from `assets/branding/english-unlimited/brand.json` (`dark`:
+ink background, cream text, brand yellow, a lifted blue, green, red, muted) — the Shorts read the
+same file — and registers Fredoka Bold (chips, headings, English) and Manrope (Spanish, captions)
+from `assets/fonts/`, never a system font. One grammar colour code in every lesson: subject blue,
+auxiliary yellow, main verb green, error red; a `tags` label takes the colour of the role it
+names. Sizes are cap heights at 1080p, for a phone: English chips 68 px, glosses 46, captions 42
+(minimums 64 / 44 / 40); a long sentence breaks into rows instead of shrinking, a long dialogue
+scrolls. Punctuation stays on its word (`seven.`). Every render ends on a silent 20 s card — the
+logo, «Sigue aprendiendo» and two empty frames for YouTube's end-screen elements.
+
+## Grammar in motion — `transform`, `timeline`, `sort`
+
+`transform` morphs one sentence into another (shared words glide, a moved word arcs over, a word
+only in `from` turns red, shakes and falls, a word only in `to` drops in green); `timeline` draws
+tenses as shapes on an axis with «ahora» at 0; `sort` pops each item up as it is said and flies it
+into its bin. A quiz `{{pause}}` shows «Pausa y piénsalo» beside the thinking ring. The title may
+be beat 2 or 3, so a lesson can open on the mistake. `lessons/demo-motion.json` shows all of it
+in two minutes.
+
 ## Why the picture follows the voice
 
 A beat says which words it animates on (a highlighted chip, the first word of a dialogue line,
@@ -45,11 +66,21 @@ the first cell of a table row, the correct quiz option). `lesson.marked_narratio
 `<bookmark/>` before the first time the narration says each one; the scene waits for that bookmark
 (`wait_until_bookmark`) using the ElevenLabs timings — no Whisper. If the narration never says a
 cue word, `lesson.warnings()` tells the writer and the scene falls back to a proportional guess.
+The motion types cue in order (two timeline labels that both start with «I» get two cues) and only
+inside the English, and a `transform` waits until the narration has said `from`.
 
 ## The three lessons that ship (≈ 7½ min each, 28–31 beats, dialogue, 3 quizzes, recap)
 
 `third-person-s` · `simple-vs-continuous` · `morning-phrasal-verbs`. Narration ≈ 4.5–5.0 k
 characters each → about $0.45–0.50 of ElevenLabs per lesson per voice.
+
+## How long a lesson runs
+
+`lesson.estimate_minutes` is fitted on real renders, not guessed: every render writes its words,
+beats, pause seconds and end card into `renders/ledger.jsonl`, and `batch_run.py` prints the refit
+when it finishes. On 2026-10-13 that is n = 4 renders, ≈ 138 wpm everything included plus a fixed
+0.75 s per beat (the scene's own fade and breath); residuals within ±32 s. With fewer than six
+renders only the speaking rate is fitted — three points gave a negative cost per beat.
 
 ## Commands
 
@@ -89,7 +120,7 @@ python3 publish.py publish --step <STEP_ID> --lesson third-person-s
 
 ## Adding a visual
 
-`lesson.TYPES` + a `_validate_fields` branch + a `beat_<type>` method in `lesson_scene.py` + a line
+`lesson.TYPES` (+ `lesson.ORDERED` if its cues repeat) + a `cue_words` branch + a `_validate_fields` branch + a `beat_<type>` method in `lesson_scene.py` + a line
 in `prompts/lesson_script.md` so the writer knows it exists. Keep the measured-legibility rule:
 text is wrapped and scaled to fit the stage, never clipped.
 
