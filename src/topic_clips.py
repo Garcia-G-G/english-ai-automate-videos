@@ -283,6 +283,16 @@ CATEGORY_FOOTAGE = {
         "waves arriving on a long empty beach",
         "stars turning over an open horizon",
     ],
+    # how_do_you_say: the notebook covers the middle of the frame, so these
+    # are calm, open, everyday scenes that read as a margin, not a subject.
+    "basic_vocab": [
+        "a quiet suburban street in morning sun",
+        "a sunlit kitchen window with plants",
+        "a city park with trees in soft light",
+        "a market street from above at midday",
+        "clouds drifting over green hills",
+        "a calm lake shore in early light",
+    ],
 }
 
 #: The second axis. Stock video responds strongly to camera language, so

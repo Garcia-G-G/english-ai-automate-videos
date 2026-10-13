@@ -246,6 +246,12 @@ CATEGORY_SCENES = {
         "chalk numbers on a sunlit pavement",
         "a colourful counting chart on a nursery wall",
     ],
+    "basic_vocab": [
+        "an open notebook and pencils on a sunny desk",
+        "a bright kitchen table with fruit in daylight",
+        "a tidy living room with plants in morning light",
+        "a school desk by a window on a clear day",
+    ],
 }
 
 #: Light and time of day. No night, no low light — the readability band is
