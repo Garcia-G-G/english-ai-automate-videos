@@ -65,23 +65,32 @@ class Budget:
     source: str          # the constant this came from, named
     max_chars: int
     comfortable_chars: int
+    #: The face the renderer draws this field in. None is video.utils.font
+    #: (Inter); "fredoka" is the brand display face, measured through the
+    #: renderer's own fit_word so the check and the frame cannot disagree.
+    face: Optional[str] = None
 
     @property
     def label(self) -> str:
         return f"{self.video_type}.{self.field}"
 
 
-def _mean_char_width(size: int) -> float:
+def _mean_char_width(size: int, face: Optional[str] = None) -> float:
     """Average advance of one character at `size`, from real text."""
     from PIL import Image, ImageDraw
 
-    from video.utils import font
+    if face == "fredoka":
+        from video.how_do_you_say import fredoka
+        f = fredoka(size)
+    else:
+        from video.utils import font
+        f = font(size)
 
     probe = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
-    return probe.textbbox((0, 0), _SAMPLE, font=font(size))[2] / len(_SAMPLE)
+    return probe.textbbox((0, 0), _SAMPLE, font=f)[2] / len(_SAMPLE)
 
 
-def _chars_for(width: int, lines: int, size: int) -> int:
+def _chars_for(width: int, lines: int, size: int, face: Optional[str] = None) -> int:
     """Characters that fit `lines` of `width` at `size`.
 
     Discounted by 8%: line breaking wastes the tail of every line except the
@@ -89,7 +98,7 @@ def _chars_for(width: int, lines: int, size: int) -> int:
     Measured against the corpus rather than guessed — without it the budget
     over-promises on multi-line fields and every long sentence "fits".
     """
-    per_line = width / _mean_char_width(size)
+    per_line = width / _mean_char_width(size, face)
     usable = per_line * lines
     return int(usable * (1.0 - 0.08 * (lines - 1) / max(1, lines)))
 
@@ -107,6 +116,7 @@ def _boxes() -> List[Dict]:
     import video.fill_blank as fb
     import video.pronunciation as pron
     import video.vocabulary as vocab
+    import video.how_do_you_say as hdys
 
     gap = 20
     card_x = __import__("config.layout", fromlist=["CARD_MARGIN_X"]).CARD_MARGIN_X
@@ -174,6 +184,20 @@ def _boxes() -> List[Dict]:
              height=watermark_top() - (QUIZ_OPTIONS_ZONE_BOTTOM + 10) - 56,
              source="watermark_top() - QUIZ_OPTIONS_ZONE_BOTTOM (quiz.py)"),
 
+        # ── how_do_you_say ───────────────────────────────────────────
+        # ONE line per word, in the row's own column. Widths are the
+        # renderer's constants, not the brief's "14 characters".
+        dict(video_type="how_do_you_say", field="spanish",
+             width=hdys.SPANISH_W, lines=1,
+             font_max=hdys.WORD_FONT_MAX, font_min=hdys.WORD_FONT_MIN,
+             height=None, face="fredoka",
+             source="how_do_you_say.SPANISH_W, WORD_FONT_MAX/MIN"),
+        dict(video_type="how_do_you_say", field="english",
+             width=hdys.ENGLISH_W, lines=1,
+             font_max=hdys.WORD_FONT_MAX, font_min=hdys.WORD_FONT_MIN,
+             height=None, face="fredoka",
+             source="how_do_you_say.ENGLISH_W, WORD_FONT_MAX/MIN"),
+
         # ── true_false ───────────────────────────────────────────────
         dict(video_type="true_false", field="statement",
              width=CARD_WIDTH - 36 * 2, lines=3, font_max=56, font_min=36,
@@ -208,9 +232,11 @@ def budgets() -> Dict[str, Budget]:
                 width=box["width"], lines=box["lines"],
                 font_max=box["font_max"], font_min=box["font_min"],
                 height=box["height"], source=box["source"],
-                max_chars=_chars_for(box["width"], box["lines"], box["font_min"]),
+                max_chars=_chars_for(box["width"], box["lines"], box["font_min"],
+                                     box.get("face")),
                 comfortable_chars=_chars_for(box["width"], box["lines"],
-                                             box["font_max"]),
+                                             box["font_max"], box.get("face")),
+                face=box.get("face"),
             )
         _CACHE = built
     return _CACHE
@@ -243,6 +269,19 @@ def measure(text: str, budget: Budget) -> Dict:
     if not text:
         return {"fits": True, "empty": True}
 
+    if budget.face == "fredoka":
+        # The renderer's fit, verbatim: one line, WORD_FONT_MAX down to MIN.
+        from video.how_do_you_say import fit_word
+        _f, size, width = fit_word(text, budget.width)
+        over_width = max(0, width - budget.width)
+        return {
+            "fits": not over_width, "empty": False, "chars": len(text),
+            "size": size, "lines": 1, "width": width,
+            "over_width": over_width, "over_lines": 0, "over_height": 0,
+            "shrunk": size < budget.font_max,
+            "at_floor": size <= budget.font_min,
+        }
+
     box = fit_text_font(text, budget.font_max, budget.font_min,
                         budget.width, budget.height)
     widest = measure_block(line_break(text, box.font, budget.width), box.font).width
@@ -274,6 +313,7 @@ _SCRIPT_FIELDS = {
     "pronunciation": {"word": "word", "phonetic": "phonetic", "tip": "tip"},
     "quiz": {"question": "question", "explanation": "explanation"},
     "true_false": {"statement": "statement", "explanation": "explanation"},
+    "how_do_you_say": {"spanish": None, "english": None},   # per item
 }
 
 
@@ -310,6 +350,11 @@ def check_script(script: Dict) -> List[Dict]:
         for index, pair in enumerate(script.get("pairs") or []):
             look("spanish", pair.get("spanish"), f"pairs[{index}]")
             look("english", pair.get("english"), f"pairs[{index}]")
+
+    if video_type == "how_do_you_say":
+        for index, item in enumerate(script.get("items") or []):
+            look("spanish", item.get("spanish"), f"items[{index}]")
+            look("english", item.get("english"), f"items[{index}]")
 
     if video_type == "fill_blank":
         options = script.get("options")

@@ -272,7 +272,13 @@ def check(video_type: str, narration_seconds: float,
         "word_target": word_target(video_type),
     }
 
-    if spec is None:
+    import video_types as _vt
+    uncalibrated = spec is None and (video_type or "").lower() in _vt.TYPES
+    if uncalibrated:
+        record["calibrated"] = False          # only on these, so every
+                                              # existing record is unchanged
+
+    if spec is None and not uncalibrated:
         # An unmeasured type is not a type that passes. Same rule as the
         # timing contract: unknown is a refusal to judge, not a pass.
         record["status"] = UNKNOWN
@@ -296,6 +302,12 @@ def check(video_type: str, narration_seconds: float,
         if not b["min_seconds"] <= judged <= b["max_seconds"]:
             record["reason"] += (f", outside the {_s(b['min_seconds'])}-"
                                  f"{_s(b['max_seconds'])}s aim")
+    if uncalibrated:
+        # A REGISTERED type with no fitted rate yet (how_do_you_say until
+        # duration_calibrate has >= 4 renders). project() needs no rate --
+        # narration + outro -- so the band can judge it honestly; only the
+        # word target cannot exist, and the record says so.
+        record["reason"] += " (no calibrated rate yet: judged on the global band)"
     return record
 
 

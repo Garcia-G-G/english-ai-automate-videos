@@ -452,11 +452,81 @@ class VocabularyScript(ScriptBase, _TranslationsMixin):
 
 
 # ─────────────────────────────────────────────────────────────────────────
+# how_do_you_say  ("¿Cómo se dice…?")
+# ─────────────────────────────────────────────────────────────────────────
+
+#: Rows on the notebook page. The floor is the brief's (8 minimum): fewer
+#: rows leave a page that reads half-empty and a video under the band.
+HDYS_MIN_ITEMS = 8
+HDYS_MAX_ITEMS = 10
+
+#: The fields a voice direction may live in. The per-item words are spoken
+#: one or two at a time between silences; a tag there would be the only
+#: thing the clip says besides the word.
+HDYS_TAGGED_FIELDS = ("intro", "recap", "outro")
+
+
+class HowDoYouSayItem(BaseModel):
+    """One row: an emoji, the Spanish word shown from frame one, and the
+    English word that is written in after the viewer's turn."""
+    model_config = ConfigDict(extra="forbid")
+
+    emoji: str = Field(min_length=1)
+    # The 14-character figure in the brief is a prompt aim. What decides
+    # whether a word fits is the row it is drawn in, and length_spec measures
+    # that with the real face at the real size.
+    spanish: str = Field(min_length=1)
+    english: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def _check_emoji(self):
+        from emoji_font import emoji_problem
+        problem = emoji_problem(self.emoji)
+        if problem:
+            raise ValueError(f"emoji: {problem}")
+        return self
+
+
+class HowDoYouSayScript(ScriptBase, _TranslationsMixin):
+    type: Literal["how_do_you_say"]
+
+    title: str = Field(min_length=1)
+    theme: str = Field(min_length=1)
+    level: Optional[str] = None
+
+    intro: str = Field(min_length=1)
+    items: List[HowDoYouSayItem] = Field(min_length=HDYS_MIN_ITEMS,
+                                         max_length=HDYS_MAX_ITEMS)
+    recap: str = Field(min_length=1)
+    outro: str = Field(min_length=1)
+
+    english_phrases: List[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _check_tags(self):
+        from audio_tags import TAG_RE, unknown_tags
+        problems = []
+        for name in HDYS_TAGGED_FIELDS:
+            for tag in unknown_tags(getattr(self, name)):
+                problems.append(f"{name}: unknown audio tag {tag}")
+        for i, item in enumerate(self.items):
+            for name in ("spanish", "english"):
+                if TAG_RE.search(getattr(item, name)):
+                    problems.append(
+                        f"items[{i}].{name}: audio tags are only allowed in "
+                        f"{', '.join(HDYS_TAGGED_FIELDS)}")
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
+
+
+# ─────────────────────────────────────────────────────────────────────────
 # Dispatch
 # ─────────────────────────────────────────────────────────────────────────
 
 AnyScript = Union[EducationalScript, QuizScript, TrueFalseScript,
-                  FillBlankScript, PronunciationScript, VocabularyScript]
+                  FillBlankScript, PronunciationScript, VocabularyScript,
+                  HowDoYouSayScript]
 
 SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalScript,
@@ -465,6 +535,7 @@ SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "fill_blank": FillBlankScript,
     "pronunciation": PronunciationScript,
     "vocabulary": VocabularyScript,
+    "how_do_you_say": HowDoYouSayScript,
 }
 
 
@@ -527,6 +598,12 @@ class VocabularyRenderData(_RenderExtras, VocabularyScript):
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 
 
+class HowDoYouSayRenderData(_RenderExtras, HowDoYouSayScript):
+    # Explicit, not inherited: pydantic merges model_config across bases
+    # and the Script side's extra="forbid" wins the merge otherwise.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
 RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalRenderData,
     "quiz": QuizRenderData,
@@ -534,6 +611,7 @@ RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "fill_blank": FillBlankRenderData,
     "pronunciation": PronunciationRenderData,
     "vocabulary": VocabularyRenderData,
+    "how_do_you_say": HowDoYouSayRenderData,
 }
 
 

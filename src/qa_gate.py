@@ -189,7 +189,9 @@ SPAN_MAX_COVERAGE = 1.02
 #: segments, so any "detected regions == declared segments" count can never
 #: reconcile. These are checked against the declared SILENCE MAP — they must
 #: contain no speech — and excluded from boundary drift.
-SILENT_SEGMENT_PREFIXES = ("countdown_",)
+#: how_do_you_say's think_<i> is the same kind of span: the viewer's turn,
+#: declared with the text '[silence]'.
+SILENT_SEGMENT_PREFIXES = ("countdown_", "think_")
 
 #: A countdown is only SILENT when its segment text is the bracketed
 #: placeholder the silent path writes: '[3]', '[2]', '[1]'.
@@ -205,7 +207,7 @@ SILENT_SEGMENT_PREFIXES = ("countdown_",)
 #: generator produced it. A segment whose text is 'Tres.' is supposed to
 #: contain the word "tres", and flagging it for containing speech is the gate
 #: being wrong, not the audio.
-_SILENT_TEXT = re.compile(r"^\s*\[\s*\d+\s*\]\s*$")
+_SILENT_TEXT = re.compile(r"^\s*\[\s*(\d+|silence)\s*\]\s*$")
 
 _VOL_RE = re.compile(r"\[Parsed_volumedetect.*?\]\s*(\w+):\s*(-?[\d.]+|-inf)")
 _SIL_RE = re.compile(r"silence_(start|end):\s*(-?[\d.]+)")

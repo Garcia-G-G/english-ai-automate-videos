@@ -88,6 +88,13 @@ TYPES: Dict[str, dict] = {
         "text_band": (240, 1400),   # card top .. timer bar
         "dashboard": "Vocabulary",
     },
+    "how_do_you_say": {
+        "renderer":  "video.how_do_you_say:create_frame_how_do_you_say",
+        "audio":     "generate_how_do_you_say_audio_segmented",
+        "timing":    "v3",
+        "text_band": (97, 1459),    # tilted notebook page, measured (test_how_do_you_say)
+        "dashboard": "Cómo se dice",
+    },
 }
 
 #: THE list. Order is the registry's order, which is the order every menu,

@@ -317,6 +317,11 @@ type_categories:
      business, work_office, travel, food_restaurant, technology, social,
      everyday_expressions, cultural, kids_animals, kids_colors, kids_numbers]
 
+  # A1 basic vocabulary, a notebook of ten words. basic_vocab is mapped to
+  # THIS type only, so no existing type starts drawing A1 topics.
+  how_do_you_say:
+    - basic_vocab
+
   # A general explainer handles any content. Excludes pronunciation only
   # because text karaoke cannot convey sound.
   educational:
@@ -382,6 +387,7 @@ upload:
     fill_blank: "#FillInTheBlank #EnglishPractice #LearnEnglish"
     pronunciation: "#Pronunciation #EnglishTips #SpeakEnglish"
     vocabulary: "#Vocabulary #EnglishWords #LearnEnglish"
+    how_do_you_say: "#InglésParaPrincipiantes #VocabularioEnInglés #AprenderInglés #InglésFácil #HowDoYouSay"
 
 # Content Generation
 content:

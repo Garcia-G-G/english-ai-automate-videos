@@ -1689,6 +1689,231 @@ def generate_vocabulary_audio_segmented(
             pass
 
 
+#: The viewer's turn: seconds of silence between the Spanish word and the
+#: English one. The brief's number, and the whole point of the format.
+HDYS_THINK_S = 1.8
+#: Air after the English takes, before the next row lights up.
+HDYS_ITEM_GAP_S = 0.4
+HDYS_AFTER_INTRO_S = 0.6
+HDYS_BEFORE_RECAP_S = 0.5
+HDYS_AFTER_RECAP_S = 0.6
+
+
+def generate_how_do_you_say_audio_segmented(
+    script: dict,
+    output_path: str,
+    voice_id: str = None,
+    stability: float = DEFAULT_STABILITY,
+    similarity_boost: float = DEFAULT_SIMILARITY,
+) -> dict:
+    """
+    Generate "¿Cómo se dice…?" audio using ElevenLabs TTS.
+
+    Segments, each with measured boundaries in segment_times:
+        intro
+        es_i     "Familia."              spoken
+        think_i  HDYS_THINK_S            generated silence, NO API call
+        en_i     "Family. Family."       spoken, ONE call; `reveal_end` is
+                                         where the first take ends, measured
+        recap
+        outro
+
+    ONE VOICE for both languages, exactly as vocabulary does: eleven_v3
+    code-switches on its own, so no second voice is needed.
+
+    THE SHORT CLIPS ARE REPAIRED AT BOTH EDGES. es_i and en_i are a word or
+    two each, sitting between silences -- the exact shape that produced the
+    chopped-audio bug. generate_segment_audio already rebuilds a truncated
+    tail; trim_clip_silence then trims to speech and shapes the onset onto
+    room tone. tools/audio_seams checks the result on the first render.
+    """
+    import shutil
+    from tts_common import clamp_take_gap, clean_for_tts, measure_first_take_end
+
+    voice_id = voice_id or DEFAULT_VOICE_ID
+    items = script['items']
+    english_words = extract_english_words_from_script(script)
+
+    temp_dir = tempfile.mkdtemp(prefix="el_hdys_segments_")
+
+    try:
+        logger.info("=" * 60)
+        logger.info("ELEVENLABS TTS - HOW DO YOU SAY AUDIO")
+        logger.info("=" * 60)
+
+        segments = []
+        audio_files = []
+        running_time = 0.0
+
+        def add_audio(path: str):
+            nonlocal running_time
+            duration = get_audio_duration(path)
+            audio_files.append(path)
+            start = running_time
+            speech_end = start + measure_speech_end(path)
+            running_time += duration
+            # The shared 4-tuple (tests/test_generator_add_audio_arity.py).
+            return start, running_time, duration, speech_end
+
+        def add_silence(dur: float):
+            nonlocal running_time
+            start = running_time
+            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
+            generate_silence(dur, silence_path)
+            audio_files.append(silence_path)
+            # Advanced by what was ASKED for, as every generator here does;
+            # generate_silence bounds its output with -t, so the two agree.
+            running_time += dur
+            return start, running_time
+
+        def add_segment(seg_id: str, text: str, start: float, end: float, **extra):
+            segment = {
+                'id': seg_id,
+                'text': text,
+                'start': round(start, 3),
+                'end': round(end, 3),
+                'duration': round(end - start, 3),
+            }
+            segment.update({k: round(v, 3) for k, v in extra.items()})
+            segments.append(segment)
+            logger.info("  [%s] %.2f-%.2f %s", seg_id, start, end, text[:60])
+            return segment
+
+        def speak(seg_id: str, text: str, segment_type: str, trim: bool):
+            path = os.path.join(temp_dir, f"{seg_id}.mp3")
+            generate_segment_audio(
+                text=text, output_path=path, voice_id=voice_id,
+                stability=stability, similarity_boost=similarity_boost,
+                segment_type=segment_type, english_words=english_words,
+            )
+            if trim:
+                r = trim_clip_silence(path)
+                if not r["trimmed"] and r["reason"]:
+                    logger.debug("no trim on %s: %s", seg_id, r["reason"])
+            return path
+
+        # 1. INTRO
+        intro_text = clean_for_tts(script['intro'], keep_tags=_KEEP_TAGS)
+        path = speak('intro', intro_text, 'question', trim=False)
+        start, _file_end, _dur, end = add_audio(path)
+        add_segment('intro', intro_text, start, end)
+        add_silence(HDYS_AFTER_INTRO_S)
+
+        # 2. ITEMS. 1-based ids, so "item 5" in a review is es_5.
+        for i, item in enumerate(items, start=1):
+            spanish, english = item['spanish'], item['english']
+            logger.info("[item %d] %s -> %s", i, spanish, english)
+
+            es_text = clean_for_tts(f"{spanish}.", keep_tags=_KEEP_TAGS)
+            path = speak(f'es_{i}', es_text, 'options', trim=True)
+            start, _file_end, _dur, end = add_audio(path)
+            add_segment(f'es_{i}', es_text, start, end)
+
+            # The pause is DECLARED, as a silent segment, so the QA gate
+            # checks it holds no speech instead of calling it dead air.
+            start, end = add_silence(HDYS_THINK_S)
+            add_segment(f'think_{i}', '[silence]', start, end)
+
+            en_text = clean_for_tts(f"{english}. {english}.", keep_tags=_KEEP_TAGS)
+            path = speak(f'en_{i}', en_text, 'english_word', trim=True)
+            gap = clamp_take_gap(path)
+            if gap["clamped"]:
+                logger.info("en_%d: pause between takes %.2fs -> %.2fs",
+                            i, gap["gap_before"], gap["gap_after"])
+            first = measure_first_take_end(path)
+            start, _file_end, _dur, end = add_audio(path)
+            if first is None:
+                # No pause found between the takes. Half the spoken span is
+                # the honest stand-in, and it is said out loud.
+                logger.warning("en_%d: no pause between the two takes of %r; "
+                               "reveal runs over the first half", i, english)
+                first = (end - start) / 2
+            add_segment(f'en_{i}', en_text, start, end,
+                        reveal_end=min(end, start + first))
+
+            add_silence(HDYS_ITEM_GAP_S)
+
+        # 3. RECAP
+        add_silence(HDYS_BEFORE_RECAP_S)
+        recap_text = clean_for_tts(script['recap'], keep_tags=_KEEP_TAGS)
+        path = speak('recap', recap_text, 'explanation', trim=False)
+        start, _file_end, _dur, end = add_audio(path)
+        add_segment('recap', recap_text, start, end)
+        add_silence(HDYS_AFTER_RECAP_S)
+
+        # 4. OUTRO
+        outro_text = clean_for_tts(script['outro'], keep_tags=_KEEP_TAGS)
+        path = speak('outro', outro_text, 'question', trim=False)
+        start, _file_end, _dur, end = add_audio(path)
+        add_segment('outro', outro_text, start, end)
+
+        total_duration = running_time
+        logger.info("Total duration: %.2fs", total_duration)
+
+        concat_list_path = os.path.join(temp_dir, "concat.txt")
+        with open(concat_list_path, 'w') as f:
+            for audio_file in audio_files:
+                f.write(f"file '{audio_file}'\n")
+
+        output_dir = os.path.dirname(output_path)
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
+
+        cmd = [
+            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
+            '-i', concat_list_path,
+            '-acodec', 'libmp3lame', '-q:a', '2',
+            '-ar', '44100', '-ac', '1',
+            output_path
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        if result.returncode != 0:
+            raise RuntimeError(f"FFmpeg concat failed: {result.stderr[:500]}")
+        logger.info("Audio saved: %s", output_path)
+
+        segment_times = {}
+        for seg in segments:
+            entry = {k: seg[k] for k in ('start', 'end', 'duration')}
+            if 'reveal_end' in seg:
+                entry['reveal_end'] = seg['reveal_end']
+            segment_times[seg['id']] = entry
+
+        result_data = {
+            'duration': round(total_duration, 3),
+            'segments': segments,
+            'segment_times': segment_times,
+            'tts_model_id': MODEL_ID,
+            'type': 'how_do_you_say',
+            'title': script.get('title', ''),
+            'theme': script.get('theme', ''),
+            'level': script.get('level'),
+            'intro': script.get('intro', ''),
+            'items': items,
+            'recap': script.get('recap', ''),
+            'outro': script.get('outro', ''),
+            'full_script': script.get('full_script', ''),
+            'translations': script.get('translations', {}),
+            'english_phrases': script.get('english_phrases', []),
+            'hashtags': script.get('hashtags', []),
+            'words': [],
+            '_meta': script.get('_meta', {}),
+        }
+
+        import json
+        json_path = output_path.replace('.mp3', '.json')
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(result_data, f, ensure_ascii=False, indent=2)
+        logger.info("Timestamps saved: %s", json_path)
+
+        return result_data
+
+    finally:
+        try:
+            shutil.rmtree(temp_dir)
+        except Exception:                                   # noqa: BLE001
+            pass
+
+
 def list_voices() -> None:
     """List available ElevenLabs voices."""
     client = get_client()

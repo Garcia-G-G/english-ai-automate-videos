@@ -708,6 +708,61 @@ FORMATO JSON REQUERIDO:
 Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 
+def build_prompt_how_do_you_say(category: str, topic: dict) -> str:
+    """Build the "¿Cómo se dice…?" prompt: ten A1 words on one theme.
+
+    No duration line yet: the type has no calibrated rate, so
+    duration_spec.prompt_instruction returns "" and the structure itself
+    (8-10 items, the fixed think pause) is what sets the length.
+    """
+    from duration_spec import prompt_instruction
+    from length_spec import prompt_instruction as _length_rule
+    rules = "\n\n".join(r for r in (prompt_instruction("how_do_you_say"),
+                                     _length_rule("how_do_you_say")) if r)
+    theme = topic.get("theme") or topic.get("spanish") or topic.get("topic", "")
+    tags = ", ".join(f"[{t}]" for t in ("cheerful", "excited", "warm"))
+
+    return f"""Genera un video "¿Cómo se dice…?" para TikTok/Reels: vocabulario de nivel A1 para hispanohablantes.
+
+{rules}
+
+TEMA: {theme}  (topic_id {topic.get("id", "")})
+
+CÓMO ES EL VIDEO: una página de cuaderno con 10 palabras en español, cada una con un emoji.
+La voz dice la palabra en español, deja 1.8 s para que el espectador responda, y luego dice
+la palabra en inglés dos veces mientras se escribe. Al final repite todas en inglés.
+
+REGLAS:
+1. Entre 8 y 10 items; 10 es lo ideal. Palabras de nivel A1, muy frecuentes, del tema.
+2. "spanish" con mayúscula inicial y SIN artículo ("Madre", no "la madre"). "english" en minúscula, sin artículo.
+3. "emoji": UN SOLO emoji simple por item (un carácter). PROHIBIDO usar emojis compuestos
+   con varias personas, banderas o tonos de piel.
+4. "intro" pregunta si saben decir las palabras; "outro" pregunta cuántas sabían.
+   Puedes usar UNA etiqueta de voz al inicio de intro y outro, solo de esta lista: {tags}.
+5. "recap" = "Ahora todas en inglés, conmigo: " + las palabras en inglés separadas por comas.
+6. Las palabras de los items NO llevan etiquetas de voz.
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice TEMA en inglés? + emoji",
+  "video_description": "1-2 líneas con emoji",
+  "title": "¿Cómo se dice…?",
+  "theme": "{theme}",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes decir estas 10 palabras en inglés? Piensa antes de que yo lo diga.",
+  "items": [{{"emoji": "👩", "spanish": "Madre", "english": "mother"}}],
+  "recap": "Ahora todas en inglés, conmigo: mother, ...",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "intro + cada 'Español... english. english.' + recap + outro",
+  "translations": {{"mother": "Madre"}},
+  "english_phrases": ["mother"],
+  "hashtags": ["#InglésParaPrincipiantes", "#VocabularioEnInglés", "#AprenderInglés", "#InglésFácil", "#HowDoYouSay"]
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
 def build_prompt(category: str, topic: dict, video_type: str = "educational") -> str:
     """Build prompt based on video type."""
     if video_type == "educational":
@@ -722,6 +777,8 @@ def build_prompt(category: str, topic: dict, video_type: str = "educational") ->
         return build_prompt_pronunciation(category, topic)
     elif video_type == "vocabulary":
         return build_prompt_vocabulary(category, topic)
+    elif video_type == "how_do_you_say":
+        return build_prompt_how_do_you_say(category, topic)
     else:
         raise ValueError(f"Unknown video type: {video_type}. Choose from: {VIDEO_TYPES}")
 
@@ -770,6 +827,7 @@ def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None
         "fill_blank": ["full_script", "sentence", "options", "correct"],
         "pronunciation": ["full_script", "word", "phonetic"],
         "vocabulary": ["full_script", "title", "pairs"],
+        "how_do_you_say": ["full_script", "theme", "intro", "items", "recap", "outro"],
     }
 
     # Check required fields.

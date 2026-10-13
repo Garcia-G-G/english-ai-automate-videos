@@ -52,6 +52,11 @@ TITLE_TEMPLATES = {
         "Palabras en inglés que NECESITAS saber 🔥",
         "{title} — aprende en 30 segundos ⚡",
     ],
+    # ONE template, the brief's. {theme} is the theme without its article,
+    # upper-cased ("la familia" -> FAMILIA); {emoji} is the first row's.
+    "how_do_you_say": [
+        "¿Cómo se dice {theme} en inglés? {emoji}",
+    ],
 }
 
 # ── Hashtag strategy ────────────────────────────────────────────────
@@ -95,6 +100,8 @@ TYPE_HASHTAGS = {
     "fill_blank": ["#FillInTheBlank", "#CompletaLaFrase", "#PracticaIngles"],
     "pronunciation": ["#Pronunciation", "#SpeakEnglish", "#PronunciacionIngles"],
     "vocabulary": ["#Vocabulary", "#EnglishWords", "#VocabularioIngles"],
+    "how_do_you_say": ["#InglésParaPrincipiantes", "#VocabularioEnInglés",
+                       "#AprenderInglés", "#InglésFácil", "#HowDoYouSay"],
 }
 
 #: Audience/intent tags. Spanish-first, because the audience searches in
@@ -318,6 +325,9 @@ def _build_fallback_title(script_data: dict, video_type: str) -> str:
     templates = TITLE_TEMPLATES.get(video_type, TITLE_TEMPLATES["educational"])
     template = random.choice(templates)
 
+    if video_type == "how_do_you_say":
+        return how_do_you_say_title(script_data)
+
     word = (script_data.get("word") or
             (script_data.get("english_phrases", [""])[0] if script_data.get("english_phrases") else "") or "")
     title_field = script_data.get("title", "")
@@ -331,6 +341,24 @@ def _build_fallback_title(script_data: dict, video_type: str) -> str:
                     script_data.get("title") or
                     "Aprende inglés hoy 🦊")
         return fallback[:80]
+
+
+_ARTICLES = ("el ", "la ", "los ", "las ")
+
+
+def how_do_you_say_title(script_data: dict) -> str:
+    """`¿Cómo se dice FAMILIA en inglés? 👪`, from the script's own theme."""
+    theme = (script_data.get("theme") or "").strip()
+    bare = theme
+    for article in _ARTICLES:
+        if bare.lower().startswith(article):
+            bare = bare[len(article):]
+            break
+    bare = bare.split(" (")[0]
+    items = script_data.get("items") or []
+    emoji = items[0].get("emoji", "") if items else ""
+    return TITLE_TEMPLATES["how_do_you_say"][0].format(
+        theme=bare.upper(), emoji=emoji).strip()
 
 
 def _build_fallback_description(script_data: dict, video_type: str, title: str) -> str:

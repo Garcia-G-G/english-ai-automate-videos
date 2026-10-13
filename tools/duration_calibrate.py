@@ -47,6 +47,9 @@ SPOKEN_FIELDS = {
     "quiz":          ("question", "options", "explanation"),
     "true_false":    ("statement", "explanation"),
     "fill_blank":    ("sentence", "options", "explanation"),
+    # items are counted separately: spanish once, english TWICE, and never
+    # the emoji -- see spoken_words.
+    "how_do_you_say": ("intro", "recap", "outro"),
 }
 
 
@@ -120,6 +123,13 @@ def spoken_words(script: dict, items: int = None) -> int:
     if not fields:
         return _count(script.get("full_script"))
     total = sum(_count(script.get(f)) for f in fields)
+
+    if vtype == "how_do_you_say":
+        # generate_how_do_you_say_audio_segmented says "Familia." then
+        # "Family. Family." -- the English twice, in one call.
+        for item in script.get("items") or []:
+            total += _count(item.get("spanish")) + 2 * _count(item.get("english"))
+        return total
 
     spec = ITEM_ARRAY.get(vtype)
     if not spec:
