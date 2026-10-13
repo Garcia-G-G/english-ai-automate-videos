@@ -44,20 +44,41 @@ DONE_DIR = QUEUE_DIR / "_done"
 
 
 _REAL_TOPICS = None
+_REAL_TOPICS_STAMP = None
+TOPICS_DIR = ROOT / "content" / "topics"
+
+
+def _topics_stamp():
+    """(name, mtime, size) of every topic file: what the cache is valid for."""
+    try:
+        return tuple(sorted((f.name, f.stat().st_mtime_ns, f.stat().st_size)
+                            for f in TOPICS_DIR.glob("*.json")))
+    except OSError:
+        return None
 
 
 def _real_topics():
-    """{category: {topic_id}} straight from content/topics/, read once."""
-    global _REAL_TOPICS
-    if _REAL_TOPICS is None:
+    """{category: {topic_id}} straight from content/topics/.
+
+    RE-READ WHEN THE TOPIC FILES CHANGE. It used to be read once per process.
+    The dashboard is a process that lives for days: one started on 2026-10-08
+    kept a topic list without basic_vocab, so after how_do_you_say arrived on
+    10-12 every one of its scripts was "NO SUCH TOPIC" in that process only --
+    and the Generate page said "no queued script left for 'how_do_you_say'"
+    while the CLI, a fresh process, listed seventeen.
+    """
+    global _REAL_TOPICS, _REAL_TOPICS_STAMP
+    stamp = _topics_stamp()
+    if _REAL_TOPICS is None or stamp != _REAL_TOPICS_STAMP:
         from script_generator import list_categories, load_topics
-        _REAL_TOPICS = {}
+        topics = {}
         for category in list_categories():
             try:
-                _REAL_TOPICS[category] = {str(t.get("id"))
-                                          for t in load_topics(category)}
+                topics[category] = {str(t.get("id"))
+                                    for t in load_topics(category)}
             except Exception:                               # noqa: BLE001
-                _REAL_TOPICS[category] = set()
+                topics[category] = set()
+        _REAL_TOPICS, _REAL_TOPICS_STAMP = topics, stamp
     return _REAL_TOPICS
 
 

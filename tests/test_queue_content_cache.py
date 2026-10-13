@@ -70,3 +70,19 @@ def test_a_code_change_rejudges_everything(guard, tmp_path, monkeypatch):
     monkeypatch.setattr(g, "_code_signature", lambda: "sig-2")
     g._content_problems_cached(script, {"n": 1})
     assert len(calls) == 2
+
+
+def test_a_new_topic_file_reaches_a_long_running_process(tmp_path, monkeypatch):
+    """A dashboard started before a category existed must still see it."""
+    import script_generator
+    topics = tmp_path / "topics"; topics.mkdir()
+    (topics / "old.json").write_text(json.dumps([{"id": "o1"}]))
+    monkeypatch.setattr(queue_guard, "TOPICS_DIR", topics)
+    monkeypatch.setattr(script_generator, "list_categories",
+                        lambda: sorted(f.stem for f in topics.glob("*.json")))
+    monkeypatch.setattr(script_generator, "load_topics",
+                        lambda c: json.loads((topics / f"{c}.json").read_text()))
+    monkeypatch.setattr(queue_guard, "_REAL_TOPICS", None)
+    assert "basic_vocab" not in queue_guard._real_topics()
+    (topics / "basic_vocab.json").write_text(json.dumps([{"id": "bv002"}]))
+    assert queue_guard._real_topics()["basic_vocab"] == {"bv002"}

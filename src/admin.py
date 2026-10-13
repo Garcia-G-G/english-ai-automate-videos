@@ -357,16 +357,30 @@ def complete_job(job_id: str, success: bool, video_path: str = None, error: str 
 
 
 def _queue_guard():
-    """The guard module, imported once.
+    """The guard module -- reloaded when its file changes.
 
     `sys.path.insert` used to run on every call of all three helpers below,
     and Streamlit calls them on every rerun — the list grew without bound
     for the lifetime of the process.
+
+    RELOADED ON EDIT. tools/ is outside the folder Streamlit watches, so a
+    dashboard left running kept whatever queue_guard it imported first, for
+    days. A fix to the guard did not reach it until someone restarted it.
     """
     tools = str(ROOT / "tools")
     if tools not in sys.path:
         sys.path.insert(0, tools)
+    import importlib
     import queue_guard
+    try:
+        mtime = (ROOT / "tools" / "queue_guard.py").stat().st_mtime_ns
+    except OSError:
+        return queue_guard
+    seen = getattr(queue_guard, "_LOADED_MTIME", None)
+    if seen is not None and seen != mtime:
+        queue_guard = importlib.reload(queue_guard)
+        _AUDIT_CACHE.update(at=0.0, bad=None)
+    queue_guard._LOADED_MTIME = mtime
     return queue_guard
 
 
