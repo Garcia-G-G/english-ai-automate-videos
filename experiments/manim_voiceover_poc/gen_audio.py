@@ -151,7 +151,8 @@ ONSET_RETRIES = 2
 
 def onset_report(path: Path) -> dict:
     """{clean, first_db, fragment} for one segment as ElevenLabs returned it: clean when its
-    first 5 ms is ≥ 30 dB under its peak and it has no burst → dip → speech fragment."""
+    first 5 ms is ≥ 30 dB under its peak, it has no loud burst → dip → speech fragment, and
+    no doubled start (probes.onset.doubled_onset: a quiet fragment + dip, a held nasal)."""
     from probes import onset as O
     x = O.load(path)
     e = O.env_db(x)
@@ -160,7 +161,9 @@ def onset_report(path: Path) -> dict:
         return {"clean": False, "first_db": 0.0, "fragment": None}
     first = float(e[0] - e.max())
     fragment = O.fragment(e, start, e.max())
-    return {"clean": first < -30 and fragment is None, "first_db": round(first, 1), "fragment": fragment}
+    doubled = O.doubled_onset(x)                     # the quiet «d-do» / «m-make» the owner hears
+    return {"clean": first < -30 and fragment is None and doubled is None, "first_db": round(first, 1),
+            "fragment": fragment or doubled}
 
 
 def cleanest(takes: list) -> dict:

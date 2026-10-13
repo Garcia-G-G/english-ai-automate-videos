@@ -302,3 +302,16 @@ def test_the_gate_keeps_the_first_clean_take_else_the_cleanest():
     dirty = [take(False, -20, (50, 20)), take(False, -12), take(False, -25)]
     assert GA.cleanest(dirty) is dirty[2]                                           # no fragment, quietest start
     assert GA.ONSET_RETRIES == 2
+
+
+def test_the_onset_check_hears_what_the_owner_hears_on_make_vs_do_b18():
+    """Ground truth by ear (owner, 2026-10-13, b18 md5 31bab61a…): a doubled start at «m-make the
+    bed», «d-do the beds», «d-do a test», «m-make time», «d-do time» — and NOT at «Make a test»
+    or any Spanish piece. The first gate missed all five: it only looked for loud fragments."""
+    sys.path.insert(0, str(STUDIO))
+    from probes import onset as O
+    fixtures = sorted((STUDIO.parent.parent / "tests" / "fixtures" / "manim_onsets").glob("b18_*.mp3"))
+    assert len(fixtures) == 13
+    flagged = {f.stem[4:6] for f in fixtures if O.doubled_onset(O.load(f))}
+    assert flagged == {"01", "03", "07", "09", "11"}
+    assert not GA.onset_report(fixtures[3])["clean"] and GA.onset_report(fixtures[5])["clean"]   # do the beds / Make a test

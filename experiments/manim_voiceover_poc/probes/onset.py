@@ -52,3 +52,48 @@ if __name__ == "__main__":
         x = load(path)
         s, e = onset(x)
         print(path, s * 5 if s is not None else None, fragment(e, s, e.max()) if s is not None else None)
+
+
+# ── v2, from the owner's ear on make-vs-do b18 (2026-10-13): relative to the segment's peak ──
+FINE = 88                            # 2 ms
+
+
+def _fine(x):
+    n = len(x) // FINE
+    f = x[: n * FINE].reshape(n, FINE)
+    return 20 * np.log10(np.sqrt((f ** 2).mean(1)) + 1e-9)
+
+
+def _hf_share(x, i):
+    """Share of energy above 1 kHz (dB) in a 22 ms window around 2 ms frame i."""
+    seg = x[max(0, (i - 5) * FINE):(i + 6) * FINE]
+    spec = np.abs(np.fft.rfft(seg * np.hanning(len(seg)))) ** 2
+    fr = np.fft.rfftfreq(len(seg), 1 / RATE)
+    return 10 * np.log10(spec[fr > 1000].sum() / (spec.sum() + 1e-18) + 1e-12)
+
+
+def doubled_onset(x):
+    """None, or why the start sounds doubled («d-do», «m-make»):
+    - 'fragment': a voiced lead from the onset, then within 140 ms a dip ≥ 12 dB under that
+      lead and below −28 dB re peak, then the word — a quiet fragment the old check missed;
+    - 'held nasal': a nasal murmur (no energy above 1 kHz) of 80–160 ms held as loud as the
+      vowel after it — a normal /m/ is quieter than its vowel.
+    shortcut: tuned on the owner's 6 spots in one beat; re-check against his ear on more beats."""
+    e = _fine(x)
+    if not len(e):
+        return None
+    r = e - e.max()
+    start = int(np.argmax(r > -30))
+    lead = r[start:start + 70]                                     # 140 ms
+    for k in range(8, len(lead)):                                  # a dip after ≥ 16 ms of lead
+        before = np.median(lead[:k])
+        if lead[k] < -28 and lead[k] < before - 12 and (r[start + k:start + k + 60] > -12).any():
+            return "fragment"
+    hf = [_hf_share(x, i) for i in range(start, min(len(e), start + 150))]
+    run = next((k for k, v in enumerate(hf) if v > -18), len(hf))    # 2 ms frames of nasal murmur
+    # 80–160 ms: longer is /m/ + a closed vowel («Mira»: /i/ has little energy above 1 kHz too)
+    if 40 <= run <= 80:
+        nasal, vowel = np.mean(r[start:start + run]), np.mean(r[start + run:start + run + 50])
+        if nasal >= vowel:
+            return "held nasal"
+    return None
