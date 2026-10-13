@@ -290,6 +290,29 @@ def _english_spans(text: str) -> list:
     return [(m.start(), m.end()) for m in re.finditer(r"\x01[^\x02]*\x02", text)]
 
 
+def _row_texts(beat: dict) -> list:
+    """The full text each SEQUENTIAL cue starts, aligned with cue_words()."""
+    kind = beat.get("type")
+    if kind == "dialogue":
+        rows = [line["en"] for line in beat.get("lines", []) if line.get("en")]
+    elif kind == "table":
+        rows = [str(row[0]) for row in beat.get("rows", []) if row]
+    else:
+        rows = [item for item in beat.get("items", []) if item.strip()]
+    return [r for r in rows if cue_key(r.split()[0] if r.split() else "")]
+
+
+def _row_pattern(row: str, word: str) -> list:
+    """Regexes for a row, longest first: its first 3, 2, 1 words as a phrase (punctuation
+    between them free), so «Worked at a shop» is not cued on the «worked» of the row before."""
+    words = [cue_key(w) for w in row.split()[:3] if cue_key(w)]
+    out = []
+    for k in range(len(words), 1, -1):
+        out.append(re.compile(r"(?<![\w])(" + r"[^\w]+".join(re.escape(w) for w in words[:k]) + r")(?![\w])",
+                              re.IGNORECASE))
+    return out + [_word_regex(word)]
+
+
 def _mark_in_order(beat: dict, text: str, marks: dict, english_only: bool = True) -> tuple:
     pos = 0
     if beat.get("type") == "transform" and beat.get("from"):
@@ -298,14 +321,22 @@ def _mark_in_order(beat: dict, text: str, marks: dict, english_only: bool = True
             found = re.search(r"(?<![\w])" + r"[^\w]+".join(said) + r"(?![\w])", text, re.IGNORECASE)
             if found:
                 pos = found.end()
+    rows = _row_texts(beat) if beat.get("type") in SEQUENTIAL else []
     for n, word in enumerate(cue_words(beat)):
-        for match in _word_regex(word).finditer(text, pos):
-            if not english_only or any(a < match.start() and match.end() < b for a, b in _english_spans(text)):
-                mark = f"c{n}"
-                text = text[:match.start()] + f"<bookmark mark='{mark}'/>" + text[match.start():]
-                marks[f"#{n}"] = mark
-                pos = match.end() + len(f"<bookmark mark='{mark}'/>")
+        patterns = _row_pattern(rows[n], word) if n < len(rows) else [_word_regex(word)]
+        found = None
+        for pattern in patterns:                  # the longest phrase of the row that is said, after the last cue
+            for match in pattern.finditer(text, pos):
+                if not english_only or any(a < match.start() and match.end() < b for a, b in _english_spans(text)):
+                    found = match
+                    break
+            if found:
                 break
+        if found:
+            mark = f"c{n}"
+            text = text[:found.start()] + f"<bookmark mark='{mark}'/>" + text[found.start():]
+            marks[f"#{n}"] = mark
+            pos = found.start() + len(f"<bookmark mark='{mark}'/>") + len(word)
     return text.replace("\x01", "").replace("\x02", ""), marks
 
 

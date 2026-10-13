@@ -665,46 +665,45 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         n_cues = max(1, len(steps))
         times = [self.cue_time(tracker, marks, L.cue_key(w), (0.55 if kind == "fix" else 0.15 + 0.6 * (k + 1) / n_cues))
                  for k, (kind, w, _) in enumerate(steps)]
+        # in the order the narration says them («have» before «last»), not highlights-then-tags
+        order = sorted(range(len(steps)), key=lambda k: (times[k], k))
+        steps, times = [steps[k] for k in order], [times[k] for k in order]
         nxt = lambda k: times[k + 1] if k + 1 < len(times) else None
-        for k, (kind, word, value) in enumerate(steps):
-            if kind != "hl":
-                continue
-            i = find(word)
-            color = value
-            self.at(tracker, marks, L.cue_key(word), 0.15 + 0.6 * (k + 1) / n_cues, word=word)
-            self.sentence["colors"][i] = ROLE[color]
-            self.play(chips[i][0].animate.set_fill(ROLE[color]).set_stroke(ROLE[color]),
-                      chips[i][1].animate.set_color(ink(ROLE[color])), run_time=self.run_until(0.35, nxt(k)))
-        for k, (kind, word, label) in enumerate(steps):
-            if kind != "tag":
-                continue
-            i = find(word)
-            self.at(tracker, marks, L.cue_key(word), 0.15 + 0.6 * (k + 1) / n_cues, word=word)
-            role = ROLE_WORDS.get(label.lower().strip()) or self.sentence["colors"].get(i, MUTED)
-            if role == YELLOW and not P["dark"]:
-                role = ACCENT_LINE                         # yellow is never text on paper
-            tag = text(label.upper(), TAG_PX, role, BODY, BOLD).next_to(chips[i], DOWN, buff=0.16)
-            self.sentence["tags"][word] = tag
-            self.keep(tag)
-            self.play(FadeIn(tag, shift=UP * 0.1), run_time=self.run_until(0.3, nxt(k)))
-        if steps and steps[-1][0] == "fix":
-            src, dst = beat["fix"]["from"], beat["fix"]["to"]
-            i = find(src)
-            if i is not None:
-                self.at(tracker, marks, L.cue_key(dst), 0.55, word=dst)
-                fixed = words[:i] + [dst + words[i][len(words[i].rstrip(L.PUNCT)):]
-                                     if L.norm(dst) != L.norm(words[i]) else words[i]] + words[i + 1:]
-                layout = chips_for(fixed, center=chips.get_center(), pitch=CHIP_H + 0.6)
-                anims = []
-                for k, c in enumerate(chips):
-                    if k == i:
-                        anims.append(Transform(c, paint(layout[k], GREEN)))
-                    else:
-                        anims.append(c.animate.shift(layout[k][0].get_center() - c[0].get_center()))
-                self.sfx("pop", 0.55)
-                self.play(AnimationGroup(*anims, run_time=0.6), self.push(layout[i].get_center()))
-                words[:] = fixed
-                self.sentence["colors"][i] = GREEN
+        for k, (kind, word, value) in enumerate(steps):          # one loop, in spoken order
+            i = find(word if kind != "fix" else value)
+            self.at(tracker, marks, L.cue_key(word), 0.55 if kind == "fix" else 0.15 + 0.6 * (k + 1) / n_cues, word=word)
+            if kind == "hl":
+                self.sentence["colors"][i] = ROLE[value]
+                self.play(chips[i][0].animate.set_fill(ROLE[value]).set_stroke(ROLE[value]),
+                          chips[i][1].animate.set_color(ink(ROLE[value])), run_time=self.run_until(0.35, nxt(k)))
+            elif kind == "tag":
+                role = ROLE_WORDS.get(value.lower().strip()) or self.sentence["colors"].get(i, MUTED)
+                if role == YELLOW and not P["dark"]:
+                    role = ACCENT_LINE                         # yellow is never text on paper
+                tag = text(value.upper(), TAG_PX, role, BODY, BOLD).next_to(chips[i], DOWN, buff=0.16)
+                self.sentence["tags"][word] = tag
+                self.keep(tag)
+                self.play(FadeIn(tag, shift=UP * 0.1), run_time=self.run_until(0.3, nxt(k)))
+            else:
+                self.fix_chip(i, word, nxt(k))
+
+    def fix_chip(self, i, dst, next_cue):
+        """A sentence `fix`: the chip becomes `dst` in green, the row re-lays out around it."""
+        chips, words = self.sentence["chips"], self.sentence["words"]
+        fixed = words[:i] + [dst + words[i][len(words[i].rstrip(L.PUNCT)):]
+                             if L.norm(dst) != L.norm(words[i]) else words[i]] + words[i + 1:]
+        layout = chips_for(fixed, center=chips.get_center(), pitch=CHIP_H + 0.6)
+        anims = []
+        for k, c in enumerate(chips):
+            if k == i:
+                anims.append(Transform(c, paint(layout[k], GREEN)))
+            else:
+                anims.append(c.animate.shift(layout[k][0].get_center() - c[0].get_center()))
+        run = self.run_until(0.6, next_cue, floor=0.3)
+        self.sfx("pop", run - 0.05)
+        self.play(AnimationGroup(*anims, run_time=run), self.push(layout[i].get_center()))
+        words[:] = fixed
+        self.sentence["colors"][i] = GREEN
 
     def beat_dialogue(self, beat, tracker, marks):
         """Bubbles at reading size; when the next one would not fit, the conversation

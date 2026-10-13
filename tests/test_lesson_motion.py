@@ -310,7 +310,7 @@ def test_a_late_cue_stops_the_batch_and_an_unproved_render_too():
 
 def test_the_scene_records_every_cue_and_the_real_start():
     source = (STUDIO / "lesson_scene.py").read_text()
-    assert source.count("self.at(") >= 9 and "def record(" in source
+    assert source.count("self.at(") >= 8 and "def record(" in source
     assert 'p["rec"]["start"] = round(float(self.renderer.time), 3)' in source     # sort: the first visible frame
     assert '"cues": self.cues' in source and "OUT OF SYNC" in source
 
@@ -352,3 +352,19 @@ def test_a_caret_marks_only_a_real_gap_never_a_word():
                      ("I use to wake up at seven.", "I usually wake up at seven.")]:
         assert L.insertion_gap(L.transform_plan(src, dst)) is None
     assert L.insertion_gap(L.transform_plan("You are tired.", "Are you tired?")) is None      # nothing added
+
+
+def test_a_row_cues_on_its_own_phrase_not_on_a_word_of_the_row_before():
+    """present-perfect-vs-past b25: item 2 «Worked at a shop…» cued on the «worked» of item 1's
+    «Have you worked» — half a second early, which the lag gate cannot see."""
+    beat = {"type": "list", "items": ["Have you worked: experiencia", "Worked at a shop in 2021: cerrado"],
+            "narration": "[[Have]] you worked: experiencia. [[Worked]] at a shop in 2021: cerrado."}
+    text, marks = L.marked_narration(beat)
+    assert set(marks) == {"#0", "#1"} and "<bookmark mark='c1'/>Worked at a shop" in text
+
+
+def test_a_sentence_plays_its_cues_in_spoken_order():
+    """present-perfect-vs-past b06 highlights «last» and tags «have», and says «have» first: the
+    highlights-then-tags order made the tag start 0.86 s after its word."""
+    source = (STUDIO / "lesson_scene.py").read_text()
+    assert "order = sorted(range(len(steps)), key=lambda k: (times[k], k))" in source
