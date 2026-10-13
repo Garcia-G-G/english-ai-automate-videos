@@ -87,7 +87,7 @@
           "You can go now"
         ]
       ],
-      "narration": "Mira la tabla. [[Habilidad]]: [[I can drive]], sé conducir. [[Posibilidad]]: [[It can rain here]], aquí puede llover. Y [[permiso]]: [[You can go now]], ya puedes irte."
+      "narration": "Mira la tabla. Habilidad: [[I can drive]], sé conducir. Posibilidad: [[It can rain here]], aquí puede llover. Y permiso: [[You can go now]], ya puedes irte."
     },
     {
       "id": "b09",
@@ -141,7 +141,7 @@
         "Petición educada: could you open the window?",
         "Posibilidad suave: it could rain later"
       ],
-      "narration": "[[Pasado]] de can: [[I could swim at five]]. [[Petición]] educada: [[could you open the window?]] Y [[posibilidad]] suave: [[it could rain later]], podría llover."
+      "narration": "Pasado de can: [[I could swim at five]]. Petición educada: [[could you open the window?]] Y posibilidad suave: [[it could rain later]], podría llover."
     },
     {
       "id": "b15",
@@ -365,7 +365,7 @@
         "Could es pasado, pero también cortesía",
         "Con desconocidos, siempre could"
       ],
-      "narration": "[[Can]] y could nunca llevan to detrás. [[Can]] es habilidad, posibilidad y permiso. [[Could]] es pasado, pero también cortesía. Y [[con]] desconocidos, siempre could."
+      "narration": "[[Can]] y could nunca llevan to detrás. [[Can]] es habilidad, posibilidad y permiso. [[Could]] es pasado, pero también cortesía. Y con desconocidos, siempre could."
     },
     {
       "id": "b34",

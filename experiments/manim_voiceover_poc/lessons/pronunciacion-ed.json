@@ -80,7 +80,7 @@
       "emphasis": [
         "como id"
       ],
-      "narration": "Mira la tabla. [[Como t]]: [[worked, stopped]]. [[Como d]]: [[played, lived]]. Y [[como id]], que es el único que añade sílaba: [[wanted, needed]]."
+      "narration": "Mira la tabla. Como t: [[worked, stopped]]. Como d: [[played, lived]]. Y como id, que es el único que añade sílaba: [[wanted, needed]]."
     },
     {
       "id": "b08",
@@ -98,7 +98,7 @@
         "Después de f: laughed",
         "Después de s o sh: missed, washed"
       ],
-      "narration": "[[Después]] de p: [[stopped, helped]]. [[Después]] de k: [[worked, looked]]. [[Después]] de f: [[laughed]]. Y [[Después]] de s o sh: [[missed, washed]]."
+      "narration": "Después de p: [[stopped, helped]]. Después de k: [[worked, looked]]. Después de f: [[laughed]]. Y Después de s o sh: [[missed, washed]]."
     },
     {
       "id": "b10",
@@ -133,7 +133,7 @@
         "Después de n o m: opened, seemed",
         "Después de b, g o v: robbed, lived"
       ],
-      "narration": "[[Después]] de vocal: [[played, tried]]. [[Después]] de l o r: [[called, answered]]. [[Después]] de n o m: [[opened, seemed]]. Y [[Después]] de b, g o v: [[robbed, lived]]."
+      "narration": "Después de vocal: [[played, tried]]. Después de l o r: [[called, answered]]. Después de n o m: [[opened, seemed]]. Y Después de b, g o v: [[robbed, lived]]."
     },
     {
       "id": "b14",
@@ -171,7 +171,7 @@
         "Verbos que acaban en d: needed, decided, ended",
         "Ningún otro caso añade sílaba"
       ],
-      "narration": "[[Verbos]] que acaban en t: [[wanted, started, visited]]. [[Verbos]] que acaban en d: [[needed, decided, ended]]. Y [[Ningún]] otro caso añade sílaba."
+      "narration": "Verbos que acaban en t: [[wanted, started, visited]]. Verbos que acaban en d: [[needed, decided, ended]]. Y Ningún otro caso añade sílaba."
     },
     {
       "id": "b18",
@@ -268,7 +268,7 @@
         "Needed y decided: sílaba extra",
         "Tres sonidos en cuatro frases"
       ],
-      "narration": "[[Happened]] y called: suenan como de. [[Worked]], stopped y watched: suenan como te. [[Needed]] y decided: sílaba extra. Y [[Tres]] sonidos distintos en cuatro frases."
+      "narration": "[[Happened]] y called: suenan como de. [[Worked]], stopped y watched: suenan como te. [[Needed]] y decided: sílaba extra. Y Tres sonidos distintos en cuatro frases."
     },
     {
       "type": "heading",
@@ -347,7 +347,7 @@
         "como id"
       ],
       "answer": 0,
-      "narration": "Primera: ¿cómo suena el final de [[finished]]? ¿[[como t]], [[como d]] o [[como id]]? Piénsalo. {{pause:3}} Es [[como t]]: sh es sordo, así que fínisht."
+      "narration": "Primera: ¿cómo suena el final de [[finished]]? ¿como t, como d o como id? Piénsalo. {{pause:3}} Es como t: sh es sordo, así que fínisht."
     },
     {
       "id": "b33",
@@ -359,7 +359,7 @@
         "como id"
       ],
       "answer": 2,
-      "narration": "Segunda: ¿y el final de [[started]]? ¿[[como t]], [[como d]] o [[como id]]? Piénsalo. {{pause:3}} Es [[como id]]: [[start]] acaba en te, así que stártid."
+      "narration": "Segunda: ¿y el final de [[started]]? ¿como t, como d o como id? Piénsalo. {{pause:3}} Es como id: [[start]] acaba en te, así que stártid."
     },
     {
       "id": "b34",
@@ -371,7 +371,7 @@
         "como t"
       ],
       "answer": 1,
-      "narration": "Tercera: ¿y [[listened]]? ¿[[como id]], [[como d]] o [[como t]]? Piénsalo. {{pause:3}} Es [[como d]]: acaba en ene, que vibra. Lísend, sin sílaba extra."
+      "narration": "Tercera: ¿y [[listened]]? ¿como id, como d o como t? Piénsalo. {{pause:3}} Es como d: acaba en ene, que vibra. Lísend, sin sílaba extra."
     },
     {
       "id": "b35",
@@ -388,7 +388,7 @@
         "Si antes vibra, suena como d",
         "Sólo después de t o d se añade sílaba"
       ],
-      "narration": "[[Casi]] nunca se añade una sílaba. [[Si]] antes no vibra, suena como te. [[Si]] antes vibra, suena como de. Y [[Sólo]] después de te o de se añade sílaba."
+      "narration": "Casi nunca se añade una sílaba. Si antes no vibra, suena como te. Si antes vibra, suena como de. Y Sólo después de te o de se añade sílaba."
     },
     {
       "id": "b37",
