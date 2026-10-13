@@ -647,7 +647,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                 self.keep(gloss)
                 entrance.append(FadeIn(gloss))
             self.play(AnimationGroup(*entrance, lag_ratio=0.5),             # done before the first cue is said
-                      run_time=self.run_until(min(1.2, 0.18 * len(chips) + 0.6), first_at, floor=0.15))
+                      run_time=self.run_until(min(1.2, 0.18 * len(chips) + 0.6), first_at, floor=0.1))
         chips, words = self.sentence["chips"], self.sentence["words"]
 
         def find(word):
@@ -1000,10 +1000,11 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         future = text("futuro", SMALL_PX, MUTED, BODY).move_to([x(7.5), ahora.get_y(), 0])
         frame = VGroup(axis, ticks, now, ahora, past, future)
         self.keep(frame)
-        first = self.cue_time(tracker, marks, "#0", 0.1)
-        self.play(Create(axis), FadeIn(ticks), run_time=self.run_until(0.6, first - 0.3, floor=0.15))
-        self.play(FadeIn(now), FadeIn(ahora, shift=UP * 0.1), FadeIn(past), FadeIn(future),
-                  run_time=self.run_until(0.4, first, floor=0.1))
+        first = self.cue_time(tracker, marks, "#0", 0.1)       # one entrance, done before the first event is said
+        self.play(AnimationGroup(AnimationGroup(Create(axis), FadeIn(ticks)),
+                                 AnimationGroup(FadeIn(now), FadeIn(ahora, shift=UP * 0.1), FadeIn(past), FadeIn(future)),
+                                 lag_ratio=0.6),
+                  run_time=self.run_until(1.0, first, floor=0.12))
         for n, event in enumerate(events):
             color = LANE_COLORS[n % len(LANE_COLORS)]
             y = lanes[n]
