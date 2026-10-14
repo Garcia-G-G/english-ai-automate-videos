@@ -78,3 +78,4 @@ with the same number.
 | [STEP 54](STEP_54.md) | The lessons explain a little more slowly |
 | [STEP 55](STEP_55.md) | English words said with Spanish sounds inside the lessons |
 | [STEP 56](STEP_56.md) | Upload the long lessons to YouTube from the dashboard |
+| [STEP 57](STEP_57.md) | The panel, second layer: Spanish, human, and fast to scan |
