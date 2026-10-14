@@ -451,7 +451,7 @@ And internally: within `tts_openai.py`, fill_blank vs true_false = **0.81**; sam
 
 | Gen | What | Where it lives | Who runs it |
 |---|---|---|---|
-| 1 | Manual prompt → paste into assistant | `README.md`, `script_generator.py` CLI flags | vestigial |
+| 1 | Manual prompt → paste into an AI chat | `README.md`, `script_generator.py` CLI flags | vestigial |
 | 2 | Monolithic TTS + v1 renderers + sprite character | `tts_{openai,elevenlabs,google}.py`, `video/*.py`, `character.py` | **`admin.py` — your daily driver** |
 | 3 | Abstraction pass (~2026-01) | `tts_base.py` + `tts_providers/`, `tts_segmenter.py` + `tts_bilingual.py`, `config/`, `animations/`, `compositor.py`, segment-based timing | `main.py` only |
 | 4 | v2 (newest) | `video/v2/` (1,802 lines), `clip_background.py`, `profiles.py`, kids profile, `docs/` | `--v2` flag only, educational only, **unreachable from the dashboard** |

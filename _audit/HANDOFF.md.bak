@@ -139,14 +139,14 @@ Nothing below is committed. It all passes tests.
 
 | File | Change | Owner |
 |---|---|---|
-| `src/admin.py` | +682/−104 — the "Inicio" dashboard rewrite | manual |
-| `src/thumbnails.py` | new, 111 lines — ffmpeg still extraction, cached | manual |
-| `tests/test_inicio_worklist.py` | new, 25 tests | manual |
-| `config.yaml` | +13 — `costs.monthly_ceiling_usd` | manual |
-| `src/video/utils.py` | +197 — CJK font + line breaking | manual |
-| `main.py` | +36/−2 — the upload policy | manual |
-| `tests/test_cjk_text.py` | new, 99 tests | manual |
-| `tests/test_upload_policy.py` | new, 6 tests | manual |
+| `src/admin.py` | +682/−104 — the "Inicio" dashboard rewrite | dev |
+| `src/thumbnails.py` | new, 111 lines — ffmpeg still extraction, cached | dev |
+| `tests/test_inicio_worklist.py` | new, 25 tests | dev |
+| `config.yaml` | +13 — `costs.monthly_ceiling_usd` | dev |
+| `src/video/utils.py` | +197 — CJK font + line breaking | dev |
+| `main.py` | +36/−2 — the upload policy | dev |
+| `tests/test_cjk_text.py` | new, 99 tests | dev |
+| `tests/test_upload_policy.py` | new, 6 tests | dev |
 
 **The Inicio rewrite** replaced a dashboard home page that opened with Total
 Videos / Storage MB / "By Type 40%" — all aggregates nobody can act on. The rule

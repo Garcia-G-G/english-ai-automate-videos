@@ -29,8 +29,6 @@ output/
 *.mp4
 *.wav
 
-# Code cache
-.tool/
 
 # Reference images (local only)
 references/
@@ -90,4 +88,3 @@ experiments/**/renders/**/*.mp4
 experiments/**/renders/**/*.jpg
 
 # Scratch tree for things handed back in chat. Never an input to the build.
-scratch outputs/

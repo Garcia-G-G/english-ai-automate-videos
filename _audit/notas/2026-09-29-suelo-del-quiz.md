@@ -81,4 +81,4 @@ anything yet" docstrings), 4 (the rounded floor in the reason message) and 6 (th
 redundant `.lower()`). All four are text against code, and the code is right.
 
 And item 5 is mine: the note is moved to `_audit/notas/` with a superseded header,
-and the other eleven briefs went with it to `_audit/pasos/`.
+and the other eleven briefs went with it to `_audit/steps/`.

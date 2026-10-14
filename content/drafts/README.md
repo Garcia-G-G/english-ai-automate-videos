@@ -102,4 +102,4 @@ outro, hashtags[5], video_title, video_description, _meta{draft: true}`.
 move to the queue, the way how_do_you_say's were. The tier announcements
 («Ahora, nivel intermedio» / «Y ahora, nivel experto») are fixed by the format
 and recorded once, never written per script. Build brief:
-`_audit/pasos/STEP_49.md`.
+`_audit/steps/STEP_49.md`.
