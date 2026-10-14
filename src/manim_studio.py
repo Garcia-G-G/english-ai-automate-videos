@@ -264,7 +264,7 @@ def job_log(job_id: str, tail: int = 40, studio_dir: Path = STUDIO_DIR) -> str:
 def render() -> None:                                  # pragma: no cover — UI
     import streamlit as st
 
-    st.markdown("## 🎞️ Manim Studio")
+    st.markdown("## Lecciones")
     st.caption("Guion (IA o a mano) → voz de ElevenLabs por segmentos, inglés en inglés y español en español → "
                "render de Manim en segundo plano → vídeos largos, uno por lección.")
 

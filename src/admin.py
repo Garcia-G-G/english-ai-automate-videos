@@ -1947,315 +1947,114 @@ _STARTUP = _startup()
 # ============== CUSTOM THEME CSS ==============
 st.markdown("""
 <style>
-    /* ── Global ── */
-    .stApp {
-        background: linear-gradient(180deg, #0a0a1a 0%, #111128 100%);
+    /* ── English Unlimited · panel ──────────────────────────────────────────
+       Brand v2 «pegatina» on paper: sand background, white cards, ink text,
+       English blue for actions, yellow only as a highlighter (never text).
+       The palette itself lives in .streamlit/config.toml (theme), so Streamlit's
+       own widgets, the sidebar and both OS themes agree with these rules; this
+       block only styles the markup the panel writes by hand. Before 2026-10-14
+       a hard-coded navy gradient sat on top of Streamlit's light theme, and on
+       a Mac in light mode every label was dark grey on navy (contrast ~1.3:1). */
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap');
+    :root {
+        --eu-sand: #F3EEE4; --eu-card: #FFFFFF; --eu-card2: #EAE3D6;
+        --eu-ink: #1C1812; --eu-muted: #6D665B; --eu-line: #D9D0C0;
+        --eu-blue: #1B6FA8; --eu-blue-soft: #DCEAF4; --eu-yellow: #F2D66B;
+        --eu-green: #2F8F5B; --eu-green-soft: #DDEFE3;
+        --eu-red: #C0453A; --eu-red-soft: #F6DEDB; --eu-amber-soft: #F8EBC0;
     }
+    html, body, .stApp, [data-testid="stSidebar"], .stMarkdown, button, input, textarea, select {
+        font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    h1, h2, h3, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+        font-family: "Fredoka", "Manrope", system-ui, sans-serif !important;
+        font-weight: 600 !important; letter-spacing: 0; color: var(--eu-ink);
+    }
+    [data-testid="stHeader"] { background: transparent; }
+    .block-container { padding-top: 2.2rem; max-width: 1200px; }
 
-    /* ── Sidebar ── */
-    section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0d0d24 0%, #0a0a1a 100%);
-        border-right: 1px solid rgba(99, 102, 241, 0.15);
-    }
+    /* ── Sidebar: brand, then one quiet list of pages ── */
+    section[data-testid="stSidebar"] { border-right: 1px solid var(--eu-line); }
     section[data-testid="stSidebar"] .stButton button {
-        border: 1px solid rgba(99, 102, 241, 0.2);
-        border-radius: 10px;
-        transition: all 0.2s;
-        font-size: 0.9rem;
+        justify-content: flex-start; border-radius: 10px; font-weight: 600;
+        border: 1px solid transparent; box-shadow: none; padding: 0.35rem 0.8rem;
+        min-height: 2.3rem;
     }
-    section[data-testid="stSidebar"] .stButton button:hover {
-        border-color: rgba(99, 102, 241, 0.6);
-        box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
-    }
+    section[data-testid="stSidebar"] .stButton button[kind="secondary"] { background: transparent; color: var(--eu-ink); }
+    section[data-testid="stSidebar"] .stButton button[kind="secondary"]:hover { background: var(--eu-card); border-color: var(--eu-line); }
+    section[data-testid="stSidebar"] .stButton button > div { justify-content: flex-start; width: 100%; }
+    .eu-brand { font-family: "Fredoka", system-ui, sans-serif; font-weight: 600; font-size: 1.35rem; line-height: 1.15; color: var(--eu-ink); }
+    .eu-brand mark { background: linear-gradient(transparent 58%, var(--eu-yellow) 58%, var(--eu-yellow) 92%, transparent 92%); color: inherit; padding: 0 2px; }
+    .eu-navlabel { font-size: 0.7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--eu-muted); padding-top: 0.9rem; }
+    .eu-ver { font-size: 0.75rem; color: var(--eu-muted); margin-top: 0.3rem; }
 
     /* ── Cards ── */
-    .metric-card {
-        background: linear-gradient(135deg, rgba(17, 17, 40, 0.9) 0%, rgba(26, 26, 58, 0.9) 100%);
-        border: 1px solid rgba(99, 102, 241, 0.2);
-        border-radius: 16px;
-        padding: 24px;
-        text-align: center;
-        transition: all 0.3s;
+    .metric-card, .platform-card, .video-card, .upload-item {
+        background: var(--eu-card); border: 1px solid var(--eu-line); border-radius: 14px;
+        padding: 20px; color: var(--eu-ink);
     }
-    .metric-card:hover {
-        border-color: rgba(99, 102, 241, 0.5);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(99, 102, 241, 0.1);
-    }
-    .metric-card .metric-value {
-        font-size: 2.5rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #818cf8, #6366f1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin: 8px 0;
-    }
-    .metric-card .metric-label {
-        font-size: 0.85rem;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
+    .metric-card { text-align: center; }
+    .metric-card .metric-value { font-family: "Fredoka", sans-serif; font-size: 2.3rem; font-weight: 600; color: var(--eu-blue); margin: 6px 0; font-variant-numeric: tabular-nums; }
+    .metric-card .metric-label { font-size: 0.78rem; color: var(--eu-muted); text-transform: uppercase; letter-spacing: .08em; }
+    .platform-card { text-align: center; min-height: 190px; }
+    .platform-card .platform-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .platform-card .platform-name { font-family: "Fredoka", sans-serif; font-size: 1.15rem; font-weight: 600; margin-bottom: 6px; color: var(--eu-ink); }
+    .upload-item { display: flex; align-items: center; gap: 16px; padding: 14px; margin: 8px 0; }
+    .video-card { padding: 14px; margin: 8px 0; }
 
-    /* ── Status indicators ── */
-    .status-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
+    /* ── Status ── */
+    .status-badge, .gate-badge {
+        display: inline-block; padding: 3px 10px; border-radius: 999px;
+        font-size: 0.72rem; font-weight: 700; letter-spacing: .04em;
     }
-    .status-connected {
-        background: rgba(34, 197, 94, 0.15);
-        color: #4ade80;
-        border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-    .status-disconnected {
-        background: rgba(100, 116, 139, 0.15);
-        color: #94a3b8;
-        border: 1px solid rgba(100, 116, 139, 0.3);
-    }
-    .status-required {
-        background: rgba(239, 68, 68, 0.15);
-        color: #f87171;
-        border: 1px solid rgba(239, 68, 68, 0.3);
-    }
+    .status-connected, .gate-pass, .key-ok { background: var(--eu-green-soft); color: var(--eu-green); border: 1px solid transparent; }
+    .status-disconnected, .key-missing { background: var(--eu-card2); color: var(--eu-muted); border: 1px solid transparent; }
+    .status-required, .gate-reject, .key-error { background: var(--eu-red-soft); color: var(--eu-red); border: 1px solid transparent; }
+    /* "sin registro" stays outlined and amber: a video nobody gated is a
+       decision the operator still owes, not a neutral fact. */
+    .gate-unknown { background: var(--eu-amber-soft); color: #7A5A00; border: 1px dashed #C9A227; }
+    .key-status { padding: 8px 14px; border-radius: 10px; margin: 4px 0; font-size: 0.85rem; }
 
-    /* ── Platform cards ── */
-    .platform-card {
-        background: linear-gradient(135deg, rgba(17, 17, 40, 0.95) 0%, rgba(30, 30, 60, 0.95) 100%);
-        border: 1px solid rgba(99, 102, 241, 0.15);
-        border-radius: 16px;
-        padding: 28px;
-        text-align: center;
-        min-height: 200px;
-    }
-    .platform-card .platform-icon {
-        font-size: 2.5rem;
-        margin-bottom: 12px;
-    }
-    .platform-card .platform-name {
-        font-size: 1.2rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
+    .stProgress > div > div > div > div { background: var(--eu-blue); border-radius: 10px; }
 
-    /* ── Progress bar ── */
-    .stProgress > div > div > div > div {
-        background: linear-gradient(90deg, #6366f1, #818cf8, #a78bfa);
-        border-radius: 10px;
-    }
-
-    /* ── Video cards ── */
-    .video-card {
-        background: rgba(17, 17, 40, 0.7);
-        border: 1px solid rgba(99, 102, 241, 0.1);
-        border-radius: 12px;
-        padding: 16px;
-        margin: 8px 0;
-    }
-
-    /* ── Section headers ── */
     .section-header {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #e2e8f0;
-        padding: 12px 0 8px 0;
-        border-bottom: 2px solid rgba(99, 102, 241, 0.2);
-        margin-bottom: 16px;
+        font-family: "Fredoka", sans-serif; font-size: 1.15rem; font-weight: 600; color: var(--eu-ink);
+        padding: 10px 0 8px; border-bottom: 2px solid var(--eu-line); margin-bottom: 14px;
     }
+    .activity-item, .ledger-row {
+        padding: 8px 14px; border-left: 3px solid var(--eu-blue); margin: 6px 0;
+        background: var(--eu-card); border-radius: 0 10px 10px 0; font-size: 0.85rem; color: var(--eu-ink);
+    }
+    .ledger-row a { color: var(--eu-blue); text-decoration: none; }
+    .ledger-row a:hover { text-decoration: underline; }
 
-    /* ── Upload queue item ── */
-    .upload-item {
-        background: rgba(17, 17, 40, 0.8);
-        border: 1px solid rgba(99, 102, 241, 0.15);
-        border-radius: 12px;
-        padding: 16px;
-        margin: 8px 0;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    /* ── Quick action buttons ── */
-    div[data-testid="stHorizontalBlock"] .stButton button[kind="primary"] {
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
-        border: none;
-        border-radius: 12px;
-        font-weight: 600;
-    }
-
-    /* ── Activity feed ── */
-    .activity-item {
-        padding: 10px 16px;
-        border-left: 3px solid rgba(99, 102, 241, 0.3);
-        margin: 6px 0;
-        background: rgba(17, 17, 40, 0.5);
-        border-radius: 0 8px 8px 0;
-    }
-
-    /* ── Key input ── */
-    .key-status {
-        padding: 8px 16px;
-        border-radius: 10px;
-        margin: 4px 0;
-        font-family: monospace;
-        font-size: 0.85rem;
-    }
-    .key-ok {
-        background: rgba(34, 197, 94, 0.1);
-        border: 1px solid rgba(34, 197, 94, 0.2);
-        color: #4ade80;
-    }
-    .key-missing {
-        background: rgba(100, 116, 139, 0.1);
-        border: 1px solid rgba(100, 116, 139, 0.2);
-        color: #64748b;
-    }
-    .key-error {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.2);
-        color: #f87171;
-    }
-
-    /* ── Gate verdict, on the artifact ──
-       Three states and they must not be confusable at a glance. "sin
-       registro" is amber and outlined, not grey and quiet: a video nobody
-       gated is a decision the operator still owes, not a neutral fact. */
-    .gate-badge {
-        display: inline-block;
-        padding: 2px 10px;
-        border-radius: 6px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.4px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
-    .gate-pass {
-        background: rgba(34, 197, 94, 0.15);
-        color: #4ade80;
-        border: 1px solid rgba(34, 197, 94, 0.35);
-    }
-    .gate-reject {
-        background: rgba(239, 68, 68, 0.15);
-        color: #f87171;
-        border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-    .gate-unknown {
-        background: rgba(245, 158, 11, 0.12);
-        color: #fbbf24;
-        border: 1px dashed rgba(245, 158, 11, 0.55);
-    }
-
-    /* ── Work queue ── */
-    .queue-head {
-        display: flex;
-        align-items: baseline;
-        gap: 12px;
-        padding: 14px 0 4px 0;
-        border-bottom: 2px solid rgba(99, 102, 241, 0.2);
-        margin-bottom: 10px;
-    }
-    .queue-head .queue-count {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: #a5b4fc;
-        font-variant-numeric: tabular-nums;
-    }
-    .queue-head .queue-title {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: #e2e8f0;
-    }
-    .queue-head .queue-action {
-        margin-left: auto;
-        font-size: 0.75rem;
-        color: #64748b;
-        letter-spacing: 0.5px;
-    }
-    .artifact-name {
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 0.9rem;
-        color: #e2e8f0;
-        word-break: break-all;
-    }
-    .artifact-meta {
-        font-size: 0.75rem;
-        color: #64748b;
-    }
-    /* The independent count, printed next to the count the list produced. */
-    .census-ok {
-        font-size: 0.72rem;
-        color: #64748b;
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
-    .census-mismatch {
-        font-size: 0.75rem;
-        color: #f87171;
-        font-weight: 700;
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    }
+    /* ── Work queue (Inicio) ── */
+    .queue-head { display: flex; align-items: baseline; gap: 12px; padding: 14px 0 6px; border-bottom: 2px solid var(--eu-line); margin-bottom: 10px; }
+    .queue-head .queue-count { font-family: "Fredoka", sans-serif; font-size: 1.6rem; font-weight: 600; color: var(--eu-blue); font-variant-numeric: tabular-nums; }
+    .queue-head .queue-title { font-size: 1.05rem; font-weight: 700; color: var(--eu-ink); }
+    .queue-head .queue-action { margin-left: auto; font-size: 0.78rem; color: var(--eu-muted); }
+    .artifact-name { font-size: 0.92rem; font-weight: 600; color: var(--eu-ink); word-break: break-word; }
+    .artifact-meta { font-size: 0.78rem; color: var(--eu-muted); }
+    .census-ok { font-size: 0.75rem; color: var(--eu-muted); }
+    .census-mismatch { font-size: 0.78rem; color: var(--eu-red); font-weight: 700; }
     .cost-line {
-        padding: 10px 16px;
-        border-radius: 10px;
-        background: rgba(17, 17, 40, 0.6);
-        border: 1px solid rgba(99, 102, 241, 0.15);
-        font-size: 0.85rem;
-        color: #cbd5e1;
-        font-variant-numeric: tabular-nums;
+        padding: 10px 16px; border-radius: 12px; background: var(--eu-card); border: 1px solid var(--eu-line);
+        font-size: 0.88rem; color: var(--eu-ink); font-variant-numeric: tabular-nums;
     }
-    .ledger-row {
-        padding: 6px 12px;
-        border-left: 3px solid rgba(99, 102, 241, 0.35);
-        margin: 4px 0;
-        background: rgba(17, 17, 40, 0.5);
-        border-radius: 0 8px 8px 0;
-        font-size: 0.82rem;
-    }
-    /* ── One artifact, one line ──
-       A stacked st.image + st.markdown row came out ~250px tall, which put
-       four artifacts on a screen and turned a 21-item work queue into five
-       screens of scrolling. The thumbnail and the text are one flex row so
-       the row is as tall as the picture and no taller. */
-    .art-row {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 6px 12px;
-        background: rgba(17, 17, 40, 0.45);
-        border: 1px solid rgba(99, 102, 241, 0.12);
-        border-radius: 10px;
-    }
-    .art-thumb {
-        height: 80px;
-        width: 45px;
-        object-fit: cover;
-        border-radius: 4px;
-        flex: 0 0 auto;
-        background: #0b0b20;
-    }
-    .art-thumb-empty {
-        height: 80px;
-        width: 45px;
-        flex: 0 0 auto;
-        border-radius: 4px;
-        border: 1px dashed rgba(100, 116, 139, 0.45);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        font-size: 0.55rem;
-        line-height: 1.1;
-        color: #475569;
-    }
+    /* One artifact, one line: thumbnail and text in one flex row, so a
+       21-item queue is not five screens of scrolling. */
+    .art-row { display: flex; align-items: center; gap: 14px; padding: 8px 12px; background: var(--eu-card); border: 1px solid var(--eu-line); border-radius: 12px; }
+    .art-thumb { height: 80px; width: 45px; object-fit: cover; border-radius: 6px; flex: 0 0 auto; background: var(--eu-card2); }
+    .art-thumb-empty { height: 80px; width: 45px; flex: 0 0 auto; border-radius: 6px; border: 1px dashed var(--eu-line); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.55rem; line-height: 1.1; color: var(--eu-muted); }
     .art-body { min-width: 0; }
     .art-body .artifact-name { margin-bottom: 2px; }
-    .art-note { font-size: 0.72rem; color: #fbbf24; margin-top: 3px; }
-    /* The button column should not add a second row's worth of padding. */
+    .art-note { font-size: 0.75rem; color: #7A5A00; margin-top: 3px; }
     .inicio-row div[data-testid="stVerticalBlock"] { gap: 0; }
-    .ledger-row a { color: #a5b4fc; text-decoration: none; }
-    .ledger-row a:hover { text-decoration: underline; }
+
+    /* Inline code in captions read as random green pills on the cost line. */
+    [data-testid="stMarkdownContainer"] code, .stMarkdown code, [data-testid="stCaptionContainer"] code {
+        background: var(--eu-card2) !important; color: var(--eu-ink) !important; border-radius: 6px; padding: 1px 6px; font-size: 0.85em;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -2285,9 +2084,36 @@ def _running_version() -> str:
 _RUNNING_VERSION = _ds.once("running_version", _running_version)
 _STARTED_AT = _ds.once("started_at", lambda: datetime.now().strftime("%H:%M"))
 
-st.sidebar.markdown("### 🎬 English AI Videos")
-st.sidebar.caption(f"build `{_RUNNING_VERSION}` · started {_STARTED_AT}")
-st.sidebar.markdown("---")
+st.sidebar.markdown('<div class="eu-brand">English <mark>Unlimited</mark></div>'
+                    f'<div class="eu-ver">versión {_RUNNING_VERSION} · abierto a las {_STARTED_AT}</div>',
+                    unsafe_allow_html=True)
+
+#: Page key -> (label on screen, Material icon). Keys are what ?page= and the
+#: code use; only the label is translated.
+NAV_LABELS = {
+    "Dashboard": ("Inicio", ":material/home:"),
+    "Generate": ("Crear", ":material/movie:"),
+    "Queue": ("Cola", ":material/queue:"),
+    "Review": ("Revisar", ":material/task_alt:"),
+    "Upload": ("Subir", ":material/upload:"),
+    "Library": ("Biblioteca", ":material/video_library:"),
+    "Topics": ("Temas", ":material/psychology:"),
+    "Manim": ("Lecciones", ":material/school:"),
+    "Scheduler": ("Programar", ":material/schedule:"),
+    "Settings": ("Ajustes", ":material/settings:"),
+    "Logs": ("Registros", ":material/receipt_long:"),
+}
+
+
+def _nav_button(name: str, is_active: bool) -> bool:
+    label, icon = NAV_LABELS.get(name, (name, None))
+    kwargs = dict(key=f"nav_{name}", use_container_width=True,
+                  type="primary" if is_active else "secondary")
+    try:
+        return st.sidebar.button(label, icon=icon, **kwargs)
+    except TypeError:                       # a Streamlit without `icon=`
+        return st.sidebar.button(label, **kwargs)
+
 
 main_pages = {
     "Dashboard": "🏠",
@@ -2311,27 +2137,17 @@ if 'current_page' not in st.session_state:
     wanted = getattr(st, "query_params", {}).get("page", "Dashboard")
     st.session_state.current_page = wanted if wanted in {**main_pages, **tool_pages} else "Dashboard"
 
-st.sidebar.markdown("##### MAIN")
+st.sidebar.markdown('<div class="eu-navlabel">Producción</div>', unsafe_allow_html=True)
 for name, icon in main_pages.items():
-    label = f"{icon} {name}"
     is_active = st.session_state.current_page == name
-    if st.sidebar.button(
-        label, key=f"nav_{name}",
-        use_container_width=True,
-        type="primary" if is_active else "secondary"
-    ):
+    if _nav_button(name, is_active):
         st.session_state.current_page = name
         st.rerun()
 
-st.sidebar.markdown("##### TOOLS")
+st.sidebar.markdown('<div class="eu-navlabel">Herramientas</div>', unsafe_allow_html=True)
 for name, icon in tool_pages.items():
-    label = f"{icon} {name}"
     is_active = st.session_state.current_page == name
-    if st.sidebar.button(
-        label, key=f"nav_{name}",
-        use_container_width=True,
-        type="primary" if is_active else "secondary"
-    ):
+    if _nav_button(name, is_active):
         st.session_state.current_page = name
         st.rerun()
 
@@ -2339,13 +2155,12 @@ for name, icon in tool_pages.items():
 st.sidebar.markdown("---")
 api_status = get_api_status()
 configured_count = sum(1 for s in api_status.values() if s["configured"])
-st.sidebar.markdown(f"**API Keys:** {configured_count}/{len(api_status)} configured")
+st.sidebar.caption(f"Claves API: {configured_count} de {len(api_status)} configuradas")
 
 pending_count = len(get_pending_videos())
 approved_count = len(get_approved_videos())
-st.sidebar.markdown(f"**Videos:** {pending_count} pending / {approved_count} approved")
+st.sidebar.caption(f"Videos: {pending_count} por revisar · {approved_count} aprobados")
 st.sidebar.markdown("---")
-st.sidebar.caption("v2.0 - English AI Videos")
 
 page = st.session_state.current_page
 
@@ -2386,7 +2201,7 @@ if 'upload_history' not in st.session_state:
 # What stayed or arrived: the four real queues, anything in flight, anything
 # that failed (with its reason and its log), and one line of money.
 if page == "Dashboard":
-    st.markdown("## 🏠 Inicio")
+    st.markdown("## Inicio")
     st.caption(
         "Cada bloque nombra artefactos concretos y la acción que los mueve. "
         "Si algo no se puede accionar, no está aquí."
@@ -2720,7 +2535,7 @@ if page == "Dashboard":
                 f'<div class="activity-item">❌ <strong>{_esc(topic)}</strong> '
                 f'<span class="artifact-meta">· {_esc(job.get("video_type",""))} '
                 f'· {_esc(when)} · job {_esc(job.get("id",""))}</span><br>'
-                f'<span style="color:#f87171;font-size:0.8rem">{_esc(reason)}</span></div>',
+                f'<span style="color:var(--eu-red);font-size:0.8rem">{_esc(reason)}</span></div>',
                 unsafe_allow_html=True)
             if log_path:
                 exists = Path(log_path).exists()
@@ -2755,7 +2570,7 @@ if page == "Dashboard":
 
 # ============== GENERATE PAGE ==============
 elif page == "Generate":
-    st.markdown("## 🎥 Generate Video")
+    st.markdown("## Crear video")
 
     col1, col2 = st.columns([1, 1])
 
@@ -2843,7 +2658,7 @@ elif page == "Generate":
                      "GPT script call still happens, so this is cheap, not "
                      "free.")
 
-        generate_btn = st.button("🚀 Generate Video", type="primary", use_container_width=True)
+        generate_btn = st.button("Crear video", type="primary", use_container_width=True)
 
     with col2:
         st.markdown('<div class="section-header">Generation Status</div>', unsafe_allow_html=True)
@@ -2893,7 +2708,7 @@ elif page == "Generate":
 
 # ============== QUEUE PAGE ==============
 elif page == "Queue":
-    st.markdown("## 📋 Batch Queue")
+    st.markdown("## Cola")
 
     col1, col2 = st.columns([1, 1])
 
@@ -2982,7 +2797,7 @@ elif page == "Queue":
 
 # ============== REVIEW PAGE ==============
 elif page == "Review":
-    st.markdown("## ✅ Review Videos")
+    st.markdown("## Revisar")
 
     pending = get_pending_videos()
 
@@ -3068,7 +2883,7 @@ elif page == "Review":
 
 # ============== UPLOAD PAGE ==============
 elif page == "Upload":
-    st.markdown("## 📤 Upload Center")
+    st.markdown("## Subir")
 
     approved = get_approved_videos()
 
@@ -3125,9 +2940,9 @@ elif page == "Upload":
             <div class="platform-card">
                 <div class="platform-icon">{platform['icon']}</div>
                 <div class="platform-name">{platform['name']}</div>
-                <div style="color:#94a3b8;font-size:0.85rem;margin-bottom:12px">{platform['desc']}</div>
+                <div style="color:var(--eu-muted);font-size:0.85rem;margin-bottom:12px">{platform['desc']}</div>
                 <span class="status-badge {badge_class}">{badge_text}</span>
-                <div style="color:#cbd5e1;font-size:0.85rem;margin-top:10px">
+                <div style="color:var(--eu-ink);font-size:0.85rem;margin-top:10px">
                     publishes as <strong>{privacy}</strong>
                 </div>
             </div>
@@ -3517,7 +3332,7 @@ elif page == "Upload":
 
 # ============== LIBRARY PAGE ==============
 elif page == "Library":
-    st.markdown("## 📚 Video Library")
+    st.markdown("## Biblioteca")
 
     library = get_library_videos()
     pending = get_pending_videos()
@@ -3605,7 +3420,7 @@ elif page == "Library":
 
 # ============== SCHEDULER PAGE ==============
 elif page == "Scheduler":
-    st.markdown("## ⏰ Auto-Generation Scheduler")
+    st.markdown("## Programar")
 
     col1, col2 = st.columns([1, 1])
 
@@ -3682,7 +3497,7 @@ elif page == "Scheduler":
 # Every number here is COMPUTED at draw time. None is typed into a caption,
 # because a hardcoded 22% is wrong the day after it is written.
 elif page == "Topics":
-    st.markdown("## 🧠 Topic Memory")
+    st.markdown("## Temas")
     st.caption("Which topics have been used, and which keep coming back. "
                "Counted from the scripts on disk, not from a stored tally.")
 
@@ -3726,7 +3541,7 @@ elif page == "Topics":
 
 # ============== SETTINGS PAGE ==============
 elif page == "Settings":
-    st.markdown("## ⚙️ Settings")
+    st.markdown("## Ajustes")
 
     tab1, tab2, tab3 = st.tabs(["🔑 API Keys & Security", "🎬 Video Config", "🔊 Audio Config"])
 
@@ -3928,7 +3743,7 @@ elif page == "Manim":
 
 # ============== LOGS PAGE ==============
 elif page == "Logs":
-    st.markdown("## 📜 Generation Logs")
+    st.markdown("## Registros")
 
     jobs = load_jobs()
     all_jobs = jobs.get("active", []) + jobs.get("history", [])
