@@ -433,29 +433,33 @@ SECONDS_PER_BEAT = 0.75
 END_SCREEN_S = 20.0
 FINAL_HOLD_S = 1.0
 MIN_FULL_FIT = 6
+DEFAULT_SPEED = 0.92              # the owner's pick (STEP 54); a lesson's "speed" overrides it
 
 
 def features(lesson: dict) -> dict:
     """What the duration depends on — recorded in the ledger with every render."""
     beats = lesson.get("beats", [])
     return {"words": sum(len(spoken_text(b.get("narration", "")).split()) for b in beats),
-            "beats": len(beats), "pause_s": round(sum(sum(pauses(b.get("narration", ""))) for b in beats), 2)}
+            "beats": len(beats), "pause_s": round(sum(sum(pauses(b.get("narration", ""))) for b in beats), 2),
+            "speed": float(lesson.get("speed", DEFAULT_SPEED))}
 
 
 def fit_duration(rows: list) -> dict:
     """Least squares on ledger rows that carry features: (duration − pauses − end card −
-    hold) against words (and beats, once there are MIN_FULL_FIT renders). Renders of the
-    same lesson content (another theme, a re-render) are one point — the latest."""
+    hold) against words / speed (and beats, once there are MIN_FULL_FIT renders): s/word is
+    at speed 1.0, so renders at another speed — and rows from before speed was recorded,
+    which were 1.0 — share one fit. Renders of the same lesson content (another theme, a
+    re-render) are one point — the latest."""
     seen, points = set(), []
     for r in rows:
         if not all(k in r for k in ("words", "beats", "pause_s")) or not r.get("duration_s"):
             continue
-        key = (r.get("lesson"), r["words"], r["beats"], r["pause_s"])
+        key = (r.get("lesson"), r["words"] / r.get("speed", 1.0), r["beats"], r["pause_s"])
         if key in seen:
             points = [pt for pt in points if (pt[3].get("lesson"), pt[0], pt[1], pt[3]["pause_s"]) != key]
         seen.add(key)
         rest = r["duration_s"] - r["pause_s"] - r.get("end_s", 0.0) - FINAL_HOLD_S
-        points.append((r["words"], r["beats"], rest, r))
+        points.append((r["words"] / r.get("speed", 1.0), r["beats"], rest, r))
     fit = {"n": len(points), "seconds_per_word": SECONDS_PER_WORD, "seconds_per_beat": SECONDS_PER_BEAT,
            "fitted": "default"}
     if not points:
@@ -500,7 +504,7 @@ def estimate_seconds(lesson: dict, fit: dict = None, end_screen: bool = True) ->
     fit = ledger_fit() if fit is None else fit
     a = (fit or {}).get("seconds_per_word", SECONDS_PER_WORD)
     k = (fit or {}).get("seconds_per_beat", SECONDS_PER_BEAT)
-    return a * f["words"] + k * f["beats"] + f["pause_s"] + FINAL_HOLD_S + (END_SCREEN_S if end_screen else 0.0)
+    return a * f["words"] / f["speed"] + k * f["beats"] + f["pause_s"] + FINAL_HOLD_S + (END_SCREEN_S if end_screen else 0.0)
 
 
 def estimate_minutes(lesson: dict, fit: dict = None) -> float:

@@ -369,6 +369,7 @@ def main() -> int:
     shape = "stitched" if stitched else "one-request"
     model = args.model or (lesson.get("model") or DEFAULT_MODEL if stitched else ONE_REQUEST_MODEL)
     speeds = {"en": float(lesson.get("english_speed", 0.92)), lesson.get("language", "es"): float(lesson.get("speed", 1.0))}
+    speed = float(lesson.get("speed", L.DEFAULT_SPEED))   # one request: the whole beat at one pace
 
     if args.offline:
         voices = {"offline": "piper"}
@@ -418,6 +419,7 @@ def main() -> int:
                 continue
             if (not args.force and only is None and old and old.get("text") == spoken and old.get("pauses", []) == pause_list
                     and old.get("model") == model and old.get("shape") == shape     # never reuse another model's audio
+                    and (stitched or old.get("speed", 1.0) == speed)                # ...or another pace's
                     and mp3.exists() and words_path.exists()):
                 manifest["beats"].append({**old, "text": spoken})
                 previous_spoken = spoken
@@ -446,7 +448,7 @@ def main() -> int:
                                 requests.append({"segment": names[n], "text": body["text"], "model": body["model_id"]})
                             audio, words, rid = eleven_segment(
                                 api_key, voice_id, seg["text"], seg["lang"], model,
-                                {**settings, "speed": float(lesson.get("speed", 1.0))}, on_body=keep if args.keep_raw else None)
+                                {**settings, "speed": speed}, on_body=keep if args.keep_raw else None)
                         else:
                             last_lang = next((x["lang"] for x in reversed(segs[:n]) if "lang" in x), None)
 
@@ -505,7 +507,7 @@ def main() -> int:
             words_path.write_text(json.dumps(shift_words(pieces), ensure_ascii=False, indent=1))
             retried = [t for t in take_log if t["takes"] > 1]
             manifest["beats"].append({"id": beat["id"], "text": spoken, "pauses": pause_list, "model": model, "shape": shape,
-                                      "mp3": mp3.name,
+                                      **({} if stitched else {"speed": speed}), "mp3": mp3.name,
                                       "words": words_path.name, "segments": len(segs), "takes": take_log})
             made += 1
             print(f"  [{name}] {beat['id']}: {len(segs)} segment(s), {mp3.stat().st_size // 1024} KB, "

@@ -261,9 +261,21 @@ def test_with_enough_renders_both_rates_are_fitted():
 
 
 def test_the_estimate_includes_pauses_and_the_end_card():
-    lesson = {"beats": [{"narration": "uno dos tres {{pause:3}}"}]}
+    lesson = {"speed": 1.0, "beats": [{"narration": "uno dos tres {{pause:3}}"}]}
     fit = {"seconds_per_word": 0.5, "seconds_per_beat": 1.0}
     assert L.estimate_seconds(lesson, fit) == pytest.approx(1.5 + 1.0 + 3.0 + L.FINAL_HOLD_S + L.END_SCREEN_S)
+
+
+def test_a_slower_lesson_is_estimated_longer_from_renders_at_speed_one():
+    rows = [_row("a", 900, 30, 0.0, 0.4 * 900 + L.SECONDS_PER_BEAT * 30 + L.FINAL_HOLD_S)]   # no "speed": 1.0
+    fit = L.fit_duration(rows)
+    assert fit["seconds_per_word"] == pytest.approx(0.4)
+    lesson = {"beats": [{"narration": "uno dos tres"}]}
+    base = L.SECONDS_PER_BEAT + L.FINAL_HOLD_S + L.END_SCREEN_S
+    assert L.estimate_seconds(lesson, fit) == pytest.approx(0.4 * 3 / 0.92 + base)
+    assert L.estimate_seconds({**lesson, "speed": 1.0}, fit) == pytest.approx(0.4 * 3 + base)
+    slow = _row("b", 900, 30, 0.0, 0.4 * 900 / 0.92 + L.SECONDS_PER_BEAT * 30 + L.FINAL_HOLD_S)
+    assert L.fit_duration(rows + [{**slow, "speed": 0.92}])["seconds_per_word"] == pytest.approx(0.4)
 
 
 def test_a_render_records_what_the_fit_needs(tmp_path):
@@ -272,7 +284,8 @@ def test_a_render_records_what_the_fit_needs(tmp_path):
                                                   "narration": "uno dos {{pause:2}} tres"}]}
     L.save(lesson, tmp_path / "lessons" / "d.json")
     timeline = {"beats": [{"id": "end", "type": "end_screen", "start": 9.0, "seconds": 20.0}]}
-    assert R.render_features("d", timeline, tmp_path) == {"words": 3, "beats": 1, "pause_s": 2.0, "end_s": 20.0}
+    assert R.render_features("d", timeline, tmp_path) == {"words": 3, "beats": 1, "pause_s": 2.0, "speed": L.DEFAULT_SPEED,
+                                                              "end_s": 20.0}
 
 
 # ── sync: provable, not visual ─────────────────────────────────────────────────
