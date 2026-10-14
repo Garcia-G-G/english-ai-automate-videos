@@ -12,7 +12,7 @@ the code wins:
 | brand colours and type | `assets/branding/english-unlimited/brand.json` |
 | audio repair (tails, gaps, onsets) | `src/tts_common.py` |
 
-New steps take the next number (`STEP_52.md`, …). A `b` file is an addendum to the step
+New steps take the next number (`STEP_53.md`, …). A `b` file is an addendum to the step
 with the same number.
 
 | step | what it was |
@@ -72,3 +72,4 @@ with the same number.
 | [STEP 49](STEP_49.md) | The "level" family: three new Short types on one engine |
 | [STEP 50](STEP_50.md) | A voice that sounds less "AI made": one probe, then a decision |
 | [STEP 51](STEP_51.md) | Owner's verdict on the Manim onset A/B (2026-10-14) — make variant 4 the default |
+| [STEP 52](STEP_52.md) | Clean the public history: no tool attribution, steps instead of prompts |
