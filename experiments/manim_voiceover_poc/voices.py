@@ -50,7 +50,8 @@ class PrerecordedService(SpeechService):
         words_bytes = (self.folder / beat["words"]).read_bytes()
         digest = hashlib.sha1(mp3_bytes + b"\0" + words_bytes).hexdigest()[:12]
         input_data = {"service": "prerecorded", "voice": self.voice, "folder": str(self.folder),
-                      "id": beat_id, "input_text": " ".join(text.split()), "audio": digest}
+                      "id": beat_id, "input_text": " ".join(text.split()), "audio": digest,
+                      "model": beat.get("model"), "shape": beat.get("shape")}   # one-request vs stitched, never mixed
         cached = self.get_cached_result(input_data, cache_dir)
         if cached is not None and (cache_dir / cached["original_audio"]).exists():
             return cached

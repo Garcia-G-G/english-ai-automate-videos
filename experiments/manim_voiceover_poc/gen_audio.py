@@ -5,11 +5,16 @@
     python3 gen_audio.py --lesson lessons/x.json --voices laura=VOICE_ID     # another voice
     python3 gen_audio.py --lesson lessons/x.json --offline                   # sandbox: Piper voices
 
-Bilingual by construction: `[[English]]` spans in the narration are synthesized as
-their own segments with language_code=en, the rest with language_code=es — one
-voice, two accents, exactly like the channel's tts_bilingual.py — then stitched
-with ffmpeg and the word timings shifted by each segment's offset. That is what
-makes the English read as English and the Spanish as Spanish.
+Default (owner's ear, 2026-10-14): ONE request per beat with eleven_multilingual_v2, both
+languages in the same text, word timings from the with-timestamps alignment. A {{pause:N}}
+splits the beat into one request per side, joined with the silence. Of six ways tried on
+make-vs-do b18 and can-could-pedir b05/b08 it was the only one with no cuts and no strange
+sounds in all three (audio/_probe/variants, STEP_51.md). No onset gate
+on this path: the detector flags this audio wrongly and a retry would pay for a whole beat.
+
+--stitch keeps the old path for comparison: `[[English]]` spans synthesized as their own
+segments with language_code=en (turbo v2.5), the rest es, stitched with ffmpeg and the word
+timings shifted by each segment's offset, with the onset gate. --offline always stitches.
 
 The ElevenLabs key is read from english-ai-videos/.env, overridden by ./.env (the
 admin's Manim page writes that one). It is never printed or stored elsewhere.
@@ -40,7 +45,8 @@ MATILDA = "XrExE9yKIg1WjnnlVkGX"
 PRICE_PER_1K_CHARS = 0.10
 # Models that accept language_code (per-segment accent) and return timestamps.
 SEGMENT_MODELS = ("eleven_turbo_v2_5", "eleven_flash_v2_5")
-DEFAULT_MODEL = "eleven_turbo_v2_5"
+DEFAULT_MODEL = "eleven_turbo_v2_5"           # --stitch only (the lesson's "model" applies there)
+ONE_REQUEST_MODEL = "eleven_multilingual_v2"
 GAP_AFTER = {".": 0.30, "?": 0.30, "!": 0.30, ":": 0.20, ",": 0.14, ";": 0.18}
 DEFAULT_GAP = 0.05          # a language switch mid-sentence: pad + gap + pad ≈ 130 ms
 EDGE_PAD = 0.04             # silence kept at each end of a segment after trimming
@@ -141,6 +147,19 @@ def stitch_context(segs: list, n: int, previous_spoken: str, request_ids: list, 
     if full or (last is not None and last == segs[n]["lang"]):
         return before or previous_spoken, after, list(request_ids)
     return "", after, []
+
+
+def beat_chunks(narration: str, lang: str) -> list:
+    """[{text, lang}] / [{pause}]: the beat cut only at {{pause:N}} — each text side, both
+    languages in it, is one request."""
+    parts = L.PAUSE.split(narration)                # text, seconds, text, …
+    out = []
+    for n, part in enumerate(parts):
+        if n % 2:
+            out.append({"pause": min(L.MAX_PAUSE, float(part))})
+        elif L.spoken_text(part):
+            out.append({"text": L.spoken_text(part), "lang": lang})
+    return out
 
 
 # ── Onset gate ────────────────────────────────────────────────────────────────
@@ -318,12 +337,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--lesson", required=True, type=Path)
     parser.add_argument("--voices", default=None, help="name=VOICE_ID[,name=VOICE_ID]; default matilda")
-    parser.add_argument("--model", default=None, help=f"default {DEFAULT_MODEL}")
+    parser.add_argument("--model", default=None, help=f"default {ONE_REQUEST_MODEL}; with --stitch the lesson's, else {DEFAULT_MODEL}")
     parser.add_argument("--env", type=Path, default=DEFAULT_ENV)
     parser.add_argument("--offline", action="store_true", help="Piper voices via sherpa-onnx (sandbox only)")
     parser.add_argument("--models-dir", type=Path, default=HERE.parent / "tts-models")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--force", action="store_true", help="regenerate every beat even if its text did not change")
+    parser.add_argument("--stitch", action="store_true",
+                        help="the old path: one turbo request per language segment, stitched, with the onset gate")
     parser.add_argument("--no-onset-gate", action="store_true",
                         help=f"keep the first take of every segment (default: re-ask a dirty onset up to {ONSET_RETRIES} times)")
     parser.add_argument("--full-stitching", action="store_true",
@@ -344,7 +365,9 @@ def main() -> int:
     chars = L.character_count(lesson)
     settings = lesson.get("voice_settings") or {"stability": 0.45, "similarity_boost": 0.8, "style": 0.3,
                                                 "use_speaker_boost": True}
-    model = args.model or lesson.get("model") or DEFAULT_MODEL
+    stitched = args.stitch or args.offline           # Piper speaks one language per call
+    shape = "stitched" if stitched else "one-request"
+    model = args.model or (lesson.get("model") or DEFAULT_MODEL if stitched else ONE_REQUEST_MODEL)
     speeds = {"en": float(lesson.get("english_speed", 0.92)), lesson.get("language", "es"): float(lesson.get("speed", 1.0))}
 
     if args.offline:
@@ -356,9 +379,9 @@ def main() -> int:
             sys.exit("ELEVENLABS_API_KEY missing (english-ai-videos/.env or ./.env).")
         voices = dict(pair.split("=", 1) for pair in args.voices.split(",")) if args.voices else {"matilda": MATILDA}
 
-    n_segments = sum(1 for b in beats for x in L.segments(b["narration"]) if "text" in x)
+    n_segments = sum(1 for b in beats for x in (L.segments if stitched else beat_chunks)(b["narration"], "es") if "text" in x)
     print(f"lesson {lesson['id']}: {len(beats)} beats, {n_segments} segments, {chars} characters, "
-          f"≈{L.estimate_minutes(lesson)} min, model {model}")
+          f"≈{L.estimate_minutes(lesson)} min, model {model}, {shape}")
     print(f"voices: {', '.join(f'{n} ({v[:4]}…{v[-4:]})' if len(v) > 8 else f'{n} ({v})' for n, v in voices.items())}")
     if not args.offline:
         print(f"estimated cost: ~${chars * len(voices) / 1000 * PRICE_PER_1K_CHARS:.2f} (cached beats cost nothing)")
@@ -376,7 +399,7 @@ def main() -> int:
         previous = {}
         if manifest_path.exists():
             previous = {b["id"]: b for b in json.loads(manifest_path.read_text()).get("beats", [])}
-        manifest = {"voice": name, "voice_id": voice_id, "model": model, "voice_settings": settings,
+        manifest = {"voice": name, "voice_id": voice_id, "model": model, "shape": shape, "voice_settings": settings,
                     "lesson": lesson["id"], "beats": []}
         made, extra_chars = 0, 0
         request_ids, previous_spoken = [], ""     # stitching context carried across segments and beats
@@ -394,11 +417,12 @@ def main() -> int:
                 previous_spoken = spoken
                 continue
             if (not args.force and only is None and old and old.get("text") == spoken and old.get("pauses", []) == pause_list
+                    and old.get("model") == model and old.get("shape") == shape     # never reuse another model's audio
                     and mp3.exists() and words_path.exists()):
                 manifest["beats"].append({**old, "text": spoken})
                 previous_spoken = spoken
                 continue
-            segs = L.segments(beat["narration"], lesson.get("language", "es"))
+            segs = (L.segments if stitched else beat_chunks)(beat["narration"], lesson.get("language", "es"))
             take_log = []
             names = [f"{beat['id']}_{n:02d}_{seg.get('lang', 'pause')}" for n, seg in enumerate(segs)]
             requests = []
@@ -417,6 +441,12 @@ def main() -> int:
                     try:
                         if piper:
                             audio, words, rid = piper.segment(seg["text"], seg["lang"])
+                        elif not stitched:
+                            def keep(body, n=n):
+                                requests.append({"segment": names[n], "text": body["text"], "model": body["model_id"]})
+                            audio, words, rid = eleven_segment(
+                                api_key, voice_id, seg["text"], seg["lang"], model,
+                                {**settings, "speed": float(lesson.get("speed", 1.0))}, on_body=keep if args.keep_raw else None)
                         else:
                             last_lang = next((x["lang"] for x in reversed(segs[:n]) if "lang" in x), None)
 
@@ -474,7 +504,8 @@ def main() -> int:
             previous_spoken = spoken
             words_path.write_text(json.dumps(shift_words(pieces), ensure_ascii=False, indent=1))
             retried = [t for t in take_log if t["takes"] > 1]
-            manifest["beats"].append({"id": beat["id"], "text": spoken, "pauses": pause_list, "mp3": mp3.name,
+            manifest["beats"].append({"id": beat["id"], "text": spoken, "pauses": pause_list, "model": model, "shape": shape,
+                                      "mp3": mp3.name,
                                       "words": words_path.name, "segments": len(segs), "takes": take_log})
             made += 1
             print(f"  [{name}] {beat['id']}: {len(segs)} segment(s), {mp3.stat().st_size // 1024} KB, "

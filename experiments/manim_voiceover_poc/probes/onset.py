@@ -77,10 +77,12 @@ def doubled_onset(x):
     - 'fragment': a murmur lead from the onset (median share above 1 kHz < −30 dB), then
       within 140 ms a dip ≥ 12 dB under that lead and below −28 dB re peak, then the word — a
       quiet fragment the old check missed; a real first syllable («es | la») has a vowel's
-      energy above 1 kHz;
+      energy above 1 kHz, and the voice bar of a /d/ in running speech (one-request audio,
+      owner: clean) sits more than 20 dB under the peak — his «d-do»s lead at −18…−8 dB;
     - 'held nasal': a nasal murmur (no energy above 1 kHz) of 80–160 ms held as loud as the
       vowel after it — a normal /m/ is quieter than its vowel.
-    shortcut: tuned on the owner's 6 spots in one beat; re-check against his ear on more beats."""
+    shortcut: tuned on the owner's 5 dirty + 3 clean spots (b18, b05); the −20 dB lead line has
+    ~2 dB of margin each side — re-check against his ear on more beats."""
     e = _fine(x)
     if not len(e):
         return None
@@ -89,7 +91,7 @@ def doubled_onset(x):
     lead = r[start:start + 70]                                     # 140 ms
     for k in range(8, len(lead)):                                  # a dip after ≥ 16 ms of lead
         before = np.median(lead[:k])
-        if lead[k] < -28 and lead[k] < before - 12 and (r[start + k:start + k + 60] > -12).any():
+        if before >= -20 and lead[k] < -28 and lead[k] < before - 12 and (r[start + k:start + k + 60] > -12).any():
             # …and the lead is a murmur (nothing above 1 kHz), not a real first syllable («es | la»)
             if np.median([_hf_share(x, start + i) for i in range(0, k, 4)]) < -30:
                 return "fragment"

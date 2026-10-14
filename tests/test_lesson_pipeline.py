@@ -310,8 +310,34 @@ def test_the_onset_check_hears_what_the_owner_hears_on_make_vs_do_b18():
     or any Spanish piece. The first gate missed all five: it only looked for loud fragments."""
     sys.path.insert(0, str(STUDIO))
     from probes import onset as O
-    fixtures = sorted((STUDIO.parent.parent / "tests" / "fixtures" / "manim_onsets").glob("b18_*.mp3"))
+    fixtures = sorted((STUDIO.parent.parent / "tests" / "fixtures" / "manim_onsets").glob("b18_[0-9]*.mp3"))
     assert len(fixtures) == 13
     flagged = {f.stem[4:6] for f in fixtures if O.doubled_onset(O.load(f))}
     assert flagged == {"01", "03", "07", "09", "11"}
     assert not GA.onset_report(fixtures[3])["clean"] and GA.onset_report(fixtures[5])["clean"]   # do the beds / Make a test
+
+
+def test_the_beat_check_hears_the_owners_five_and_calls_one_request_beats_clean():
+    """Owner, 2026-10-14: variant 4 (one request per beat, eleven_multilingual_v2) has no cuts and
+    no strange sounds on make-vs-do b18 and can-could-pedir b05/b08. The fragment rule had called
+    three of its /d/ starts dirty; the stitched b18 he marked must still give exactly his five."""
+    sys.path.insert(0, str(STUDIO))
+    import lesson as L
+    from probes import beat_onsets as B
+    folder = STUDIO.parent.parent / "tests" / "fixtures" / "manim_onsets"
+
+    def dirty(name, lesson, beat):
+        narration = next(b for b in L.load(STUDIO / "lessons" / f"{lesson}.json")["beats"] if b["id"] == beat)["narration"]
+        rows = B.score(folder / f"{name}.mp3", json.loads((folder / f"{name}.words.json").read_text()), narration)
+        return [r["at"] for r in rows if r["dirty"]]
+
+    assert dirty("b18_owner_beat", "make-vs-do", "b18") == [1.98, 4.72, 9.93, 12.4, 14.93]
+    for lesson, beat in (("make-vs-do", "b18"), ("can-could-pedir", "b05"), ("can-could-pedir", "b08")):
+        assert dirty(f"v4_{lesson}_{beat}", lesson, beat) == [], (lesson, beat)
+
+
+def test_a_beat_is_one_request_per_side_of_a_pause():
+    assert GA.beat_chunks("Mira: [[I can swim]], directo.", "es") == [{"text": "Mira: I can swim, directo.", "lang": "es"}]
+    assert GA.beat_chunks("¿Lista? {{pause:3}} [[Make the bed]].", "es") == [
+        {"text": "¿Lista?", "lang": "es"}, {"pause": 3.0}, {"text": "Make the bed.", "lang": "es"}]
+    assert GA.beat_chunks("{{pause:9}}Hola", "es")[0] == {"pause": GA.L.MAX_PAUSE}
