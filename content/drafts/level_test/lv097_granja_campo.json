@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "LA GRANJA Y EL CAMPO en inglés: ¿hasta cuál llegas? 🐄",
+  "video_description": "Vacas, graneros y ganado: ¿cuántas palabras de la granja y el campo sabes en inglés? 🚜",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la granja y el campo",
+  "intro": "[warm] Nos vamos al campo. Diez palabras de la granja, de fácil a experto: ¿qué significan?",
+  "items": [
+    {
+      "english": "farm",
+      "spanish": "Granja",
+      "cefr": "A1"
+    },
+    {
+      "english": "cow",
+      "spanish": "Vaca",
+      "cefr": "A1"
+    },
+    {
+      "english": "sheep",
+      "spanish": "Oveja",
+      "cefr": "A2"
+    },
+    {
+      "english": "farmer",
+      "spanish": "Granjero",
+      "cefr": "A2"
+    },
+    {
+      "english": "countryside",
+      "spanish": "Campo",
+      "cefr": "B1"
+    },
+    {
+      "english": "barn",
+      "spanish": "Granero",
+      "cefr": "B1"
+    },
+    {
+      "english": "harvest",
+      "spanish": "Cosecha",
+      "cefr": "B1"
+    },
+    {
+      "english": "crops",
+      "spanish": "Cultivos",
+      "cefr": "B2"
+    },
+    {
+      "english": "livestock",
+      "spanish": "Ganado",
+      "cefr": "C1"
+    },
+    {
+      "english": "plow",
+      "spanish": "Arar",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si cosechaste las diez, eres experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Siembra tu respuesta en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv097",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

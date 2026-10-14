@@ -1,0 +1,83 @@
+{
+  "type": "say_it_level",
+  "video_title": "Enviar un paquete en CORREOS: dilo en inglés 📦",
+  "video_description": "Sellos, envíos y recogidas: ¿cuántas de estas frases sabes decir en inglés? 📦",
+  "title": "Dilo en inglés",
+  "theme": "en correos (enviar un paquete)",
+  "intro": "[cheerful] Estás en correos con un paquete. Lee la frase y dila en inglés antes de que salga.",
+  "items": [
+    {
+      "spanish": "Necesito un sello.",
+      "english": "I need a stamp.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Quiero enviar este paquete.",
+      "english": "I'd like to send this package.",
+      "cefr": "A1",
+      "alt": "I'd like to send this parcel."
+    },
+    {
+      "spanish": "¿Cuánto cuesta enviarlo a México?",
+      "english": "How much is it to send it to Mexico?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Cuándo llegará?",
+      "english": "When will it arrive?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Es frágil, tenga cuidado.",
+      "english": "It's fragile, please be careful.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Puedo hacer el seguimiento del paquete?",
+      "english": "Can I track the package?",
+      "cefr": "B1",
+      "alt": "Can I track the parcel?"
+    },
+    {
+      "spanish": "Quiero mandarlo urgente.",
+      "english": "I'd like to send it express.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Vengo a recoger un paquete.",
+      "english": "I'm here to pick up a package.",
+      "cefr": "B2",
+      "tip": "«Vengo a…» es I'm here to…, no «I come to»"
+    },
+    {
+      "spanish": "¿Hay que rellenar algún formulario?",
+      "english": "Do I need to fill out a form?",
+      "cefr": "B2",
+      "alt": "Do I have to fill in a form?",
+      "tip": "«Rellenar» un formulario es fill out o fill in"
+    },
+    {
+      "spanish": "¿A nombre de quién está?",
+      "english": "What name is it under?",
+      "cefr": "C1",
+      "alt": "Whose name is it under?",
+      "tip": "«A nombre de» se dice con under: What name is it under?"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, entrega certificada: experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Te leo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy060",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

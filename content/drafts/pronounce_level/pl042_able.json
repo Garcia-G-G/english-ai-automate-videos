@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras en -ABLE: ¿hasta cuál llegas? ✅",
+  "video_description": "Palabras en -ABLE: ¿cuántas sílabas tienen de verdad? 💯",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras en -ABLE",
+  "intro": "[curious] Palabras en -ABLE: el final engaña. Pronuncia cada una antes que yo.",
+  "items": [
+    {
+      "english": "able",
+      "respelling": "EI-bel",
+      "ipa": "ˈeɪbəl",
+      "trap": "A suena «ei»: EI-bel"
+    },
+    {
+      "english": "capable",
+      "respelling": "KEI-pe-bel",
+      "ipa": "ˈkeɪpəbəl",
+      "trap": "Acento en KEI"
+    },
+    {
+      "english": "available",
+      "respelling": "e-VEI-le-bel",
+      "ipa": "əˈveɪləbəl",
+      "trap": "Acento en VEI"
+    },
+    {
+      "english": "reliable",
+      "respelling": "ri-LAI-e-bel",
+      "ipa": "rɪˈlaɪəbəl",
+      "trap": "La I suena «ai»: ri-LAI-e-bel"
+    },
+    {
+      "english": "suitable",
+      "respelling": "SUU-te-bel",
+      "ipa": "ˈsuːtəbəl",
+      "trap": "UI suena «uu»: SUU-te-bel"
+    },
+    {
+      "english": "valuable",
+      "respelling": "VAL-ie-bel",
+      "ipa": "ˈvæljəbəl",
+      "trap": "Tres sílabas: VAL-ie-bel"
+    },
+    {
+      "english": "remarkable",
+      "respelling": "ri-MAR-ke-bel",
+      "ipa": "rɪˈmɑrkəbəl",
+      "trap": "Acento en MAR"
+    },
+    {
+      "english": "comfortable",
+      "respelling": "KAMF-ter-bel",
+      "ipa": "ˈkʌmftɚbəl",
+      "trap": "Tres sílabas, no cuatro"
+    },
+    {
+      "english": "inevitable",
+      "respelling": "i-NE-vi-te-bel",
+      "ipa": "ɪˈnɛvɪtəbəl",
+      "trap": "Acento en NE: i-NE-vi-te-bel"
+    },
+    {
+      "english": "comparable",
+      "respelling": "KAM-per-e-bel",
+      "ipa": "ˈkɑmpɚəbəl",
+      "trap": "Acento en KAM, no en PA"
+    }
+  ],
+  "verdict": "¿Hasta la tres? Nivel básico. ¿Hasta la siete? Intermedio. ¿Las diez perfectas? Pronuncias como un experto.",
+  "outro": "[cheerful] Escribe en los comentarios tu número del uno al diez.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#SufijosEnInglés",
+    "#AprenderInglés",
+    "#InglésParaHispanos",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl042",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

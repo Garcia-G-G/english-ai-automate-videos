@@ -1,0 +1,83 @@
+{
+  "type": "say_it_level",
+  "video_title": "ALQUILAR UN PISO en inglés: ¿lo conseguirías? 🔑",
+  "video_description": "Alquiler, fianza y gastos incluidos: diez frases para alquilar un piso en inglés. 🔑",
+  "title": "Dilo en inglés",
+  "theme": "alquilar un piso",
+  "intro": "[curious] Buscas piso en un país de habla inglesa. Escucha cada frase y dila en inglés.",
+  "items": [
+    {
+      "spanish": "¿Cuánto es el alquiler?",
+      "english": "How much is the rent?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Busco un piso.",
+      "english": "I'm looking for an apartment.",
+      "cefr": "A2",
+      "alt": "I'm looking for a flat."
+    },
+    {
+      "spanish": "¿Tiene dos dormitorios?",
+      "english": "Does it have two bedrooms?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Están incluidos los gastos?",
+      "english": "Are utilities included?",
+      "cefr": "B1",
+      "alt": "Are bills included?"
+    },
+    {
+      "spanish": "¿Se admiten mascotas?",
+      "english": "Are pets allowed?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Cuándo podría verlo?",
+      "english": "When could I come and see it?",
+      "cefr": "B1",
+      "alt": "When can I see it?"
+    },
+    {
+      "spanish": "¿Cuánto hay que dejar de fianza?",
+      "english": "How much is the deposit?",
+      "cefr": "B1",
+      "alt": "How much is the security deposit?"
+    },
+    {
+      "spanish": "¿Está amueblado?",
+      "english": "Is it furnished?",
+      "cefr": "B1",
+      "tip": "«Amueblado» es furnished, no «furnitured»"
+    },
+    {
+      "spanish": "El casero no me devuelve la fianza.",
+      "english": "My landlord won't give me my deposit back.",
+      "cefr": "B2",
+      "tip": "«No me devuelve» = se niega: won't + give back"
+    },
+    {
+      "spanish": "El piso da a la calle.",
+      "english": "The apartment faces the street.",
+      "cefr": "B2",
+      "tip": "«Dar a» la calle o al mar es face, no give"
+    }
+  ],
+  "verdict": "Tres frases: básico. Siete: intermedio. Diez: experto, y con las llaves en la mano.",
+  "outro": "[cheerful] ¿Firmarías el contrato? Cuéntame en comentarios hasta dónde llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#VivirEnElExtranjero",
+    "#FrasesEnInglés",
+    "#InglésÚtil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy034",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

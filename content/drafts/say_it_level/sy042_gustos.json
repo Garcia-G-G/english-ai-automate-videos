@@ -1,0 +1,82 @@
+{
+  "type": "say_it_level",
+  "video_title": "Tus GUSTOS en inglés: ¿llegas a nivel experto? 😍",
+  "video_description": "Lo que te encanta, lo que odias y lo que no soportas: diez frases sobre gustos en inglés. 😍",
+  "title": "Dilo en inglés",
+  "theme": "tus gustos",
+  "intro": "[happy] Hablemos de lo que te gusta y lo que no. Di cada frase en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Me gusta mucho el verano.",
+      "english": "I really like summer.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "No me gusta el fútbol.",
+      "english": "I don't like soccer.",
+      "cefr": "A1",
+      "alt": "I don't like football."
+    },
+    {
+      "spanish": "Me encanta viajar.",
+      "english": "I love traveling.",
+      "cefr": "A2",
+      "alt": "I love to travel."
+    },
+    {
+      "spanish": "¿Qué tipo de música te gusta?",
+      "english": "What kind of music do you like?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Prefiero la playa a la montaña.",
+      "english": "I prefer the beach to the mountains.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Odio madrugar.",
+      "english": "I hate getting up early.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me gustaría probar el surf.",
+      "english": "I'd like to try surfing.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me gustan los perros.",
+      "english": "I like dogs.",
+      "cefr": "B1",
+      "tip": "En general, sin the: I like dogs, no «the dogs»"
+    },
+    {
+      "spanish": "Me da igual.",
+      "english": "I don't mind.",
+      "cefr": "B2",
+      "alt": "I don't care.",
+      "tip": "«Me da igual» es I don't mind, no «it gives me equal»"
+    },
+    {
+      "spanish": "No soporto el ruido.",
+      "english": "I can't stand noise.",
+      "cefr": "B2",
+      "tip": "«No soportar» es can't stand, no support"
+    }
+  ],
+  "verdict": "¿Hasta la tres? Básico. ¿Hasta la siete? Intermedio. ¿Las diez? Experto, y eso nos encanta.",
+  "outro": "[cheerful] ¿Qué es lo que no soportas tú? Dímelo con tu número en comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy042",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

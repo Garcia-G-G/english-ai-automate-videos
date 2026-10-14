@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La B MUDA: 10 palabras que te van a sorprender 💣",
+  "video_description": "La B que no se pronuncia: diez palabras para comprobarlo. 👍",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la B muda",
+  "intro": "[curious] Hay una B escondida que no se pronuncia. Lee cada palabra y compruébalo.",
+  "items": [
+    {
+      "english": "bomb",
+      "respelling": "BAM",
+      "ipa": "ˈbɑm",
+      "trap": "La B final no suena: BAM"
+    },
+    {
+      "english": "limb",
+      "respelling": "LIM",
+      "ipa": "ˈlɪm",
+      "trap": "La B final no suena: LIM"
+    },
+    {
+      "english": "numb",
+      "respelling": "NAM",
+      "ipa": "ˈnʌm",
+      "trap": "B muda y la U suena «a»"
+    },
+    {
+      "english": "debt",
+      "respelling": "DET",
+      "ipa": "ˈdɛt",
+      "trap": "La B no suena: DET"
+    },
+    {
+      "english": "doubt",
+      "respelling": "DAUT",
+      "ipa": "ˈdaʊt",
+      "trap": "La B no suena: DAUT"
+    },
+    {
+      "english": "thumbnail",
+      "respelling": "THAM-neil",
+      "ipa": "ˈθʌmneɪl",
+      "trap": "La B no suena: THAM-neil"
+    },
+    {
+      "english": "plumbing",
+      "respelling": "PLA-ming",
+      "ipa": "ˈplʌmɪŋ",
+      "trap": "B muda: PLA-ming"
+    },
+    {
+      "english": "debtor",
+      "respelling": "DE-der",
+      "ipa": "ˈdɛɾɚ",
+      "trap": "B muda y la T como D suave"
+    },
+    {
+      "english": "subtle",
+      "respelling": "SA-del",
+      "ipa": "ˈsʌɾəl",
+      "trap": "B muda y la T como D suave"
+    },
+    {
+      "english": "subtlety",
+      "respelling": "SA-del-ti",
+      "ipa": "ˈsʌɾəlti",
+      "trap": "B muda y tres sílabas: SA-del-ti"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio. Pronunciar bien las diez es de experto.",
+  "outro": "[happy] Escribe tu nivel en los comentarios: ¿básico, intermedio o experto?",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl019",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

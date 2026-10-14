@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La L MUDA en inglés: ¿la pronuncias sin querer? 🐟",
+  "video_description": "«Walk», «talk», «salmon»: la L que no se oye en inglés. 🚶",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la L muda",
+  "intro": "[surprised] La L a veces desaparece. Pronuncia estas diez palabras y descubre cuándo.",
+  "items": [
+    {
+      "english": "walk",
+      "respelling": "UOK",
+      "ipa": "ˈwɔk",
+      "trap": "La L no suena: UOK"
+    },
+    {
+      "english": "talk",
+      "respelling": "TOK",
+      "ipa": "ˈtɔk",
+      "trap": "La L no suena: TOK"
+    },
+    {
+      "english": "half",
+      "respelling": "JAF",
+      "ipa": "ˈhæf",
+      "trap": "La L no suena: JAF"
+    },
+    {
+      "english": "could",
+      "respelling": "KUD",
+      "ipa": "ˈkʊd",
+      "trap": "OUL suena «u» corta: KUD"
+    },
+    {
+      "english": "calm",
+      "respelling": "KAM",
+      "ipa": "ˈkɑm",
+      "trap": "La L no suena: KAM"
+    },
+    {
+      "english": "palm",
+      "respelling": "PAM",
+      "ipa": "ˈpɑm",
+      "trap": "Palma de la mano: PAM, sin L"
+    },
+    {
+      "english": "chalk",
+      "respelling": "CHOK",
+      "ipa": "ˈtʃɔk",
+      "trap": "L muda y AL suena «o»"
+    },
+    {
+      "english": "folk",
+      "respelling": "FOUK",
+      "ipa": "ˈfoʊk",
+      "trap": "La L no suena: FOUK"
+    },
+    {
+      "english": "almond",
+      "respelling": "A-mend",
+      "ipa": "ˈɑmənd",
+      "trap": "La L casi nunca suena: A-mend"
+    },
+    {
+      "english": "salmon",
+      "respelling": "SA-men",
+      "ipa": "ˈsæmən",
+      "trap": "L muda: SA-men"
+    }
+  ],
+  "verdict": "¿Te quedaste en la tres? Básico. ¿En la siete? Intermedio. Si pronunciaste las diez, nivel experto.",
+  "outro": "[curious] ¿Cuál dijiste mal al principio? Confiésalo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#AprenderInglés",
+    "#InglésAmericano",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl020",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

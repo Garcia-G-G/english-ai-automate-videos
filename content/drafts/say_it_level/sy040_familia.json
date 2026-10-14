@@ -1,0 +1,84 @@
+{
+  "type": "say_it_level",
+  "video_title": "Hablar de tu FAMILIA en inglés: de fácil a experto 👪",
+  "video_description": "Padres, hermanos y sobrinos: diez frases para hablar de tu familia en inglés sin errores típicos. 👪",
+  "title": "Dilo en inglés",
+  "theme": "hablar de tu familia",
+  "intro": "[warm] Hoy hablamos de la familia. Diez frases en español: dilas en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "Mi madre es profesora.",
+      "english": "My mom is a teacher.",
+      "cefr": "A1",
+      "alt": "My mother is a teacher."
+    },
+    {
+      "spanish": "Tengo una hermana.",
+      "english": "I have a sister.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Mi padre se llama Juan.",
+      "english": "My dad's name is Juan.",
+      "cefr": "A2",
+      "alt": "My father's name is Juan."
+    },
+    {
+      "spanish": "Mis abuelos viven en el campo.",
+      "english": "My grandparents live in the country.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Me parezco a mi madre.",
+      "english": "I look like my mom.",
+      "cefr": "B1",
+      "tip": "«Parecerse» físicamente es look like"
+    },
+    {
+      "spanish": "Mi hermano mayor está casado.",
+      "english": "My older brother is married.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Nos vemos todos los domingos.",
+      "english": "We see each other every Sunday.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Tengo tres hermanos.",
+      "english": "I have three siblings.",
+      "cefr": "B1",
+      "alt": "I have three brothers and sisters.",
+      "tip": "Si hay chicos y chicas: siblings, no «brothers»"
+    },
+    {
+      "spanish": "Mis padres se separaron hace años.",
+      "english": "My parents split up years ago.",
+      "cefr": "B2",
+      "alt": "My parents separated years ago.",
+      "tip": "«Hace + tiempo» en pasado: ...ago, al final"
+    },
+    {
+      "spanish": "Mi sobrino es hijo único.",
+      "english": "My nephew is an only child.",
+      "cefr": "B2",
+      "tip": "«Hijo único» es only child, no «unique son»"
+    }
+  ],
+  "verdict": "¿Llegaste a la tres? Básico. ¿A la siete? Intermedio. ¿A la diez? Experto, y toda la familia orgullosa.",
+  "outro": "[happy] ¿Cuántos sois en tu familia? Dímelo junto a tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésBásico",
+    "#VocabularioEnInglés",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy040",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

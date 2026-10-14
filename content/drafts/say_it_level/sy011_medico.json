@@ -1,0 +1,85 @@
+{
+  "type": "say_it_level",
+  "video_title": "En el MÉDICO: 10 frases en inglés de fácil a experto 🩺",
+  "video_description": "Explica qué te pasa en inglés: dolores, alergias y las trampas que fallan casi todos. 🩺",
+  "title": "Dilo en inglés",
+  "theme": "en el médico",
+  "intro": "[calm] Estás en la consulta. Te digo cómo te encuentras en español y tú lo dices en inglés.",
+  "items": [
+    {
+      "spanish": "Me duele aquí.",
+      "english": "It hurts here.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Tengo fiebre.",
+      "english": "I have a fever.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Me duele la garganta.",
+      "english": "I have a sore throat.",
+      "cefr": "A2",
+      "alt": "My throat hurts."
+    },
+    {
+      "spanish": "No me encuentro bien.",
+      "english": "I don't feel well.",
+      "cefr": "A2",
+      "alt": "I'm not feeling well."
+    },
+    {
+      "spanish": "Me he tomado un ibuprofeno.",
+      "english": "I've taken some ibuprofen.",
+      "cefr": "B1",
+      "alt": "I took some ibuprofen."
+    },
+    {
+      "spanish": "¿Tengo que volver la semana que viene?",
+      "english": "Do I need to come back next week?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Soy alérgico a la penicilina.",
+      "english": "I'm allergic to penicillin.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Llevo tres días así.",
+      "english": "I've been like this for three days.",
+      "cefr": "B2",
+      "alt": "I've felt like this for three days.",
+      "tip": "«Llevo + tiempo» se dice I've been... for"
+    },
+    {
+      "spanish": "Me he torcido el tobillo.",
+      "english": "I've sprained my ankle.",
+      "cefr": "B2",
+      "alt": "I twisted my ankle.",
+      "tip": "Con partes del cuerpo va my, no the: my ankle"
+    },
+    {
+      "spanish": "Me cuesta respirar.",
+      "english": "I'm having trouble breathing.",
+      "cefr": "B2",
+      "alt": "It's hard for me to breathe.",
+      "tip": "«Me cuesta» + verbo: I have trouble + -ing"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, experto.",
+  "outro": "[warm] ¿Qué número te ha salido en la consulta? Cuéntamelo abajo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésMédico",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy011",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

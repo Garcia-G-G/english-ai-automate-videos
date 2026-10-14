@@ -1,0 +1,83 @@
+{
+  "type": "say_it_level",
+  "video_title": "Tu PRIMERA CITA en inglés: ¿hasta qué número llegas? 💘",
+  "video_description": "Romper el hielo, preguntar y pagar la cuenta: diez frases para una primera cita en inglés. 💘",
+  "title": "Dilo en inglés",
+  "theme": "en una primera cita",
+  "intro": "[excited] Tienes una primera cita... ¡en inglés! Di cada frase antes que yo. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "spanish": "Me encanta este sitio.",
+      "english": "I love this place.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Estás muy guapa.",
+      "english": "You look beautiful.",
+      "cefr": "A2",
+      "alt": "You look great."
+    },
+    {
+      "spanish": "¿Qué quieres tomar?",
+      "english": "What would you like to drink?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Tienes hermanos?",
+      "english": "Do you have any brothers or sisters?",
+      "cefr": "A2",
+      "alt": "Do you have any siblings?"
+    },
+    {
+      "spanish": "¿Qué haces en tu tiempo libre?",
+      "english": "What do you do in your free time?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me lo estoy pasando muy bien.",
+      "english": "I'm having a great time.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Te gustaría volver a quedar?",
+      "english": "Would you like to go out again?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿A qué te dedicas?",
+      "english": "What do you do?",
+      "cefr": "B1",
+      "alt": "What do you do for a living?",
+      "tip": "«¿A qué te dedicas?» es simplemente What do you do?"
+    },
+    {
+      "spanish": "Me caes muy bien.",
+      "english": "I really like you.",
+      "cefr": "B2",
+      "tip": "«Caer bien» es like: I like you, no «you fall me»"
+    },
+    {
+      "spanish": "Te invito yo.",
+      "english": "It's on me.",
+      "cefr": "B2",
+      "alt": "My treat.",
+      "tip": "Al pagar, «te invito» es It's on me, no «I invite you»"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. ¿Llegaste a la diez? Experto, y segunda cita asegurada.",
+  "outro": "[happy] ¿Habrá segunda cita? Dime en los comentarios hasta qué número llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés",
+    "#HablaInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy028",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "type": "say_it_level",
+  "video_title": "Cómo PEDIR UN AUMENTO en inglés: 10 frases de nivel 💰",
+  "video_description": "Prepárate para la conversación más difícil con tu jefe, en inglés y de fácil a experto. 💰",
+  "title": "Dilo en inglés",
+  "theme": "pedir un aumento",
+  "intro": "[serious] Vas a pedir un aumento en inglés. Di cada frase antes de que yo la diga.",
+  "items": [
+    {
+      "spanish": "¿Tienes cinco minutos?",
+      "english": "Do you have five minutes?",
+      "cefr": "A1",
+      "alt": "Have you got five minutes?"
+    },
+    {
+      "spanish": "Quiero hablar de mi sueldo.",
+      "english": "I want to talk about my salary.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Me gusta mucho mi trabajo.",
+      "english": "I really like my job.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "He asumido más responsabilidades.",
+      "english": "I've taken on more responsibilities.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Creo que merezco un aumento.",
+      "english": "I think I deserve a raise.",
+      "cefr": "B1",
+      "alt": "I think I deserve a pay rise."
+    },
+    {
+      "spanish": "¿Podríamos revisar mi salario?",
+      "english": "Could we review my salary?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me han ofrecido otro trabajo.",
+      "english": "I've been offered another job.",
+      "cefr": "B2",
+      "alt": "I got another job offer."
+    },
+    {
+      "spanish": "Trabajo aquí desde 2020.",
+      "english": "I've worked here since 2020.",
+      "cefr": "B2",
+      "alt": "I've been working here since 2020.",
+      "tip": "«Desde» + presente va en present perfect: I've worked"
+    },
+    {
+      "spanish": "Cobro menos que mis compañeros.",
+      "english": "I earn less than my coworkers.",
+      "cefr": "B2",
+      "alt": "I get paid less than my colleagues.",
+      "tip": "«Cobrar» un sueldo es earn o get paid, no «charge»"
+    },
+    {
+      "spanish": "Llevo tres años sin subida de sueldo.",
+      "english": "I haven't had a raise in three years.",
+      "cefr": "C1",
+      "alt": "I haven't had a pay rise in three years.",
+      "tip": "«Llevo… sin» se dice I haven't… in + tiempo"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si dijiste las diez, ese aumento es tuyo.",
+  "outro": "[excited] ¿Hasta qué frase llegaste? Y ojo, cuéntame si conseguiste el aumento.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaElTrabajo",
+    "#AprenderInglés",
+    "#InglésDeNegocios",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy057",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

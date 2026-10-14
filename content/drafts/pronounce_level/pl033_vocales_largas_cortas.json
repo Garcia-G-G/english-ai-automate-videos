@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "VOCALES LARGAS Y CORTAS: ¿notas la diferencia? 🐑",
+  "video_description": "Vocales largas y cortas: la diferencia que cambia el significado. 🏊",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "vocales largas y cortas",
+  "intro": "[curious] Vocal larga o corta: cambia todo. Di cada palabra antes que yo.",
+  "items": [
+    {
+      "english": "sleep",
+      "respelling": "SLIIP",
+      "ipa": "ˈsliːp",
+      "trap": "EE larga: SLIIP"
+    },
+    {
+      "english": "it",
+      "respelling": "IT",
+      "ipa": "ˈɪt",
+      "trap": "I corta y relajada: IT"
+    },
+    {
+      "english": "leave",
+      "respelling": "LIIV",
+      "ipa": "ˈliːv",
+      "trap": "EA larga: LIIV (irse)"
+    },
+    {
+      "english": "live",
+      "respelling": "LIV",
+      "ipa": "ˈlɪv",
+      "trap": "I corta: LIV (vivir)"
+    },
+    {
+      "english": "pool",
+      "respelling": "PUUL",
+      "ipa": "ˈpuːl",
+      "trap": "OO larga: PUUL"
+    },
+    {
+      "english": "pull",
+      "respelling": "PUL",
+      "ipa": "ˈpʊl",
+      "trap": "U corta: PUL (tirar)"
+    },
+    {
+      "english": "feel",
+      "respelling": "FIIL",
+      "ipa": "ˈfiːl",
+      "trap": "EE larga: FIIL"
+    },
+    {
+      "english": "fill",
+      "respelling": "FIL",
+      "ipa": "ˈfɪl",
+      "trap": "I corta: FIL (llenar)"
+    },
+    {
+      "english": "woman",
+      "respelling": "UU-men",
+      "ipa": "ˈwʊmən",
+      "trap": "Singular: la O suena «u»"
+    },
+    {
+      "english": "women",
+      "respelling": "UI-min",
+      "ipa": "ˈwɪmɪn",
+      "trap": "Plural: la O suena «i»"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Si dijiste bien las diez, tu pronunciación es de experto.",
+  "outro": "[cheerful] Deja tu número en los comentarios y reta a un amigo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#VocalesEnInglés",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl033",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

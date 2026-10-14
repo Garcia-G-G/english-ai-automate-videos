@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras CORTAS engañosas: parecen fáciles y no lo son 👀",
+  "video_description": "Buy, does, gauge: palabras de pocas letras que esconden grandes trampas. 🔎",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras cortas engañosas",
+  "intro": "[surprised] Son cortas, pero engañan. Lee cada palabra en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "buy",
+      "respelling": "BAI",
+      "ipa": "ˈbaɪ",
+      "trap": "UY suena «ai»: BAI"
+    },
+    {
+      "english": "move",
+      "respelling": "MUUV",
+      "ipa": "ˈmuːv",
+      "trap": "La O suena «uu»: MUUV"
+    },
+    {
+      "english": "says",
+      "respelling": "SEZ",
+      "ipa": "ˈsɛz",
+      "trap": "AY suena «e»: SEZ"
+    },
+    {
+      "english": "does",
+      "respelling": "DAZ",
+      "ipa": "ˈdʌz",
+      "trap": "OE suena «a» y la S, «z»"
+    },
+    {
+      "english": "were",
+      "respelling": "UER",
+      "ipa": "ˈwɝ",
+      "trap": "Una sola sílaba: UER"
+    },
+    {
+      "english": "aunt",
+      "respelling": "ANT",
+      "ipa": "ˈænt",
+      "trap": "En EE. UU. suena como «ant»"
+    },
+    {
+      "english": "bury",
+      "respelling": "BE-ri",
+      "ipa": "ˈbɛri",
+      "trap": "La U suena «e»: BE-ri"
+    },
+    {
+      "english": "pint",
+      "respelling": "PAINT",
+      "ipa": "ˈpaɪnt",
+      "trap": "La I suena «ai», no como en «mint»"
+    },
+    {
+      "english": "plaid",
+      "respelling": "PLAD",
+      "ipa": "ˈplæd",
+      "trap": "AI suena «a»: PLAD"
+    },
+    {
+      "english": "gauge",
+      "respelling": "GEIDCH",
+      "ipa": "ˈɡeɪdʒ",
+      "trap": "AU suena «ei»: GEIDCH"
+    }
+  ],
+  "verdict": "Con tres eres básico, con siete intermedio y, si las dijiste todas hasta la diez, experto.",
+  "outro": "[surprised] ¿Cuál te engañó más? Cuéntamelo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésParaHispanohablantes",
+    "#TrampasDelInglés",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl080",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

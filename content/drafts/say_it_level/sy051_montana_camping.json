@@ -1,0 +1,84 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Sabes decir esto en inglés? De CAMPING en la montaña ⛺",
+  "video_description": "Diez frases para sobrevivir a una acampada en inglés, de fácil a experto. ⛺",
+  "title": "Dilo en inglés",
+  "theme": "en la montaña y de camping",
+  "intro": "[cheerful] Nos vamos de acampada. Te digo la frase en español y tú la dices en inglés.",
+  "items": [
+    {
+      "spanish": "Hace frío esta noche.",
+      "english": "It's cold tonight.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Tienes una linterna?",
+      "english": "Do you have a flashlight?",
+      "cefr": "A1",
+      "alt": "Do you have a torch?"
+    },
+    {
+      "spanish": "Me encanta dormir al aire libre.",
+      "english": "I love sleeping outdoors.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Has traído el saco de dormir?",
+      "english": "Did you bring the sleeping bag?",
+      "cefr": "A2",
+      "alt": "Have you brought the sleeping bag?"
+    },
+    {
+      "spanish": "Vamos a montar la tienda aquí.",
+      "english": "Let's set up the tent here.",
+      "cefr": "B1",
+      "alt": "Let's pitch the tent here."
+    },
+    {
+      "spanish": "Si llueve, nos quedaremos en la cabaña.",
+      "english": "If it rains, we'll stay in the cabin.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Deberíamos volver antes de que oscurezca.",
+      "english": "We should head back before it gets dark.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Creo que nos hemos perdido.",
+      "english": "I think we're lost.",
+      "cefr": "B2",
+      "alt": "I think we got lost.",
+      "tip": "«Nos hemos perdido» es we're lost, no «we have lost us»"
+    },
+    {
+      "spanish": "Me duelen los pies.",
+      "english": "My feet hurt.",
+      "cefr": "B2",
+      "tip": "Con «doler» el sujeto es la parte del cuerpo: My feet hurt"
+    },
+    {
+      "spanish": "Aquí no hay cobertura.",
+      "english": "There's no signal here.",
+      "cefr": "C1",
+      "alt": "I don't have any service here.",
+      "tip": "«Cobertura» del móvil es signal o service, no «coverage»"
+    }
+  ],
+  "verdict": "¿Llegaste a la tres? Nivel básico. ¿A la siete? Intermedio. Y si sacaste las diez, experto de montaña.",
+  "outro": "[happy] ¿Hasta qué frase llegaste sin perderte? Dímelo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Camping"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy051",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Sobrevives en una OFICINA en inglés? 10 palabras 📎",
+  "video_description": "Un test rápido de inglés con diez palabras de oficina, de básico a experto. 📎",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la oficina",
+  "intro": "[curious] Te enseño una palabra de oficina y tú dices qué significa. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "english": "desk",
+      "spanish": "Escritorio",
+      "cefr": "A1"
+    },
+    {
+      "english": "printer",
+      "spanish": "Impresora",
+      "cefr": "A2"
+    },
+    {
+      "english": "folder",
+      "spanish": "Carpeta",
+      "cefr": "A2"
+    },
+    {
+      "english": "stapler",
+      "spanish": "Grapadora / engrapadora",
+      "cefr": "B1"
+    },
+    {
+      "english": "paper clip",
+      "spanish": "Clip",
+      "cefr": "B1"
+    },
+    {
+      "english": "coworker",
+      "spanish": "Compañero de trabajo",
+      "cefr": "B1"
+    },
+    {
+      "english": "sticky note",
+      "spanish": "Pósit / nota adhesiva",
+      "cefr": "B2"
+    },
+    {
+      "english": "break room",
+      "spanish": "Sala de descanso",
+      "cefr": "B2"
+    },
+    {
+      "english": "hole punch",
+      "spanish": "Perforadora",
+      "cefr": "C1"
+    },
+    {
+      "english": "swamped",
+      "spanish": "Hasta arriba de trabajo",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si sabías hasta la tres, nivel básico. Si llegaste a la siete, intermedio. Y si acertaste las diez, ¡experto!",
+  "outro": "[cheerful] ¿Hasta dónde llegaste? Escríbelo abajo y comparte el reto.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés",
+    "#InglésFácil",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv026",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

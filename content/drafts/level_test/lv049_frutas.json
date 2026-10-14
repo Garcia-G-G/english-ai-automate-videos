@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Cuántas FRUTAS sabes en inglés? Del 1 al 10 🍓",
+  "video_description": "De fácil a experto: ¿cuántas palabras de frutas conoces en inglés? 🍓",
+  "title": "¿Qué nivel tienes?",
+  "theme": "las frutas",
+  "intro": "[cheerful] Diez palabras de frutas, de fácil a experto. Di qué significan antes que yo.",
+  "items": [
+    {
+      "english": "apple",
+      "spanish": "Manzana",
+      "cefr": "A1"
+    },
+    {
+      "english": "banana",
+      "spanish": "Plátano / banana",
+      "cefr": "A1"
+    },
+    {
+      "english": "strawberry",
+      "spanish": "Fresa / frutilla",
+      "cefr": "A2"
+    },
+    {
+      "english": "pear",
+      "spanish": "Pera",
+      "cefr": "A2"
+    },
+    {
+      "english": "peach",
+      "spanish": "Melocotón / durazno",
+      "cefr": "B1"
+    },
+    {
+      "english": "watermelon",
+      "spanish": "Sandía",
+      "cefr": "B1"
+    },
+    {
+      "english": "plum",
+      "spanish": "Ciruela",
+      "cefr": "B2"
+    },
+    {
+      "english": "raspberry",
+      "spanish": "Frambuesa",
+      "cefr": "B2"
+    },
+    {
+      "english": "apricot",
+      "spanish": "Albaricoque / damasco",
+      "cefr": "C1"
+    },
+    {
+      "english": "pomegranate",
+      "spanish": "Granada",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "¿Te quedaste en la tres? Básico. ¿Llegaste a la siete? Intermedio. ¿Las diez? Experto, sin duda.",
+  "outro": "[cheerful] Dime en los comentarios cuántas sabías. ¡Sin trampas!",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv049",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

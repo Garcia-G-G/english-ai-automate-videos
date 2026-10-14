@@ -1,0 +1,84 @@
+{
+  "type": "say_it_level",
+  "video_title": "En el SUPERMERCADO: ¿sabes decir esto en inglés? 🛒",
+  "video_description": "Pasillos, caja y productos caducados: diez frases para hacer la compra en inglés. 🛒",
+  "title": "Dilo en inglés",
+  "theme": "en el supermercado",
+  "intro": "[cheerful] Nos vamos al súper. Cada frase en español tiene su versión en inglés: dila tú primero.",
+  "items": [
+    {
+      "spanish": "¿Dónde está la leche?",
+      "english": "Where's the milk?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Necesito una bolsa.",
+      "english": "I need a bag.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿En qué pasillo está el arroz?",
+      "english": "Which aisle is the rice in?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Me pone medio kilo de queso?",
+      "english": "Can I get half a kilo of cheese?",
+      "cefr": "A2",
+      "alt": "Could I have half a kilo of cheese?"
+    },
+    {
+      "spanish": "¿Dónde puedo pesar la fruta?",
+      "english": "Where can I weigh the fruit?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Esta caja está cerrada.",
+      "english": "This register is closed.",
+      "cefr": "B1",
+      "alt": "This checkout is closed.",
+      "tip": "La «caja» del súper es register o checkout"
+    },
+    {
+      "spanish": "¿Quiere el recibo?",
+      "english": "Do you want your receipt?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Pago en efectivo.",
+      "english": "I'll pay in cash.",
+      "cefr": "B1",
+      "tip": "«En efectivo» es in cash; effective es «eficaz»"
+    },
+    {
+      "spanish": "Se han acabado los huevos.",
+      "english": "They're out of eggs.",
+      "cefr": "B2",
+      "alt": "There are no eggs left.",
+      "tip": "«Se ha acabado» algo: be out of"
+    },
+    {
+      "spanish": "Este yogur está caducado.",
+      "english": "This yogurt has expired.",
+      "cefr": "B2",
+      "alt": "This yogurt is past its date.",
+      "tip": "«Caducado» es expired, no «caducated»"
+    }
+  ],
+  "verdict": "Hasta la tres, básico. Hasta la siete, intermedio. Y si llenaste el carro con las diez, experto.",
+  "outro": "[happy] ¿Cuántas frases metiste en el carro? Escribe tu número abajo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy031",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

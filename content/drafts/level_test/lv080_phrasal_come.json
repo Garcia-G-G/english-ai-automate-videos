@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Básico, intermedio o experto? Phrasal verbs con COME 🌟",
+  "video_description": "Come in, come across, come to terms with: mide tu inglés con 10 phrasal verbs con COME 🎓",
+  "title": "¿Qué nivel tienes?",
+  "theme": "phrasal verbs con COME",
+  "intro": "[excited] Diez phrasal verbs con come, de fácil a experto. ¿Los sabes antes que yo?",
+  "items": [
+    {
+      "english": "come in",
+      "spanish": "Entrar, pasar",
+      "cefr": "A1"
+    },
+    {
+      "english": "come on",
+      "spanish": "¡Vamos!",
+      "cefr": "A2"
+    },
+    {
+      "english": "come back",
+      "spanish": "Regresar",
+      "cefr": "A2"
+    },
+    {
+      "english": "come from",
+      "spanish": "Ser de, venir de",
+      "cefr": "A2"
+    },
+    {
+      "english": "come across",
+      "spanish": "Toparse con",
+      "cefr": "B1"
+    },
+    {
+      "english": "come up",
+      "spanish": "Surgir",
+      "cefr": "B2"
+    },
+    {
+      "english": "come up with",
+      "spanish": "Ocurrírsele (una idea)",
+      "cefr": "B2"
+    },
+    {
+      "english": "come down with",
+      "spanish": "Caer enfermo de",
+      "cefr": "C1"
+    },
+    {
+      "english": "come around",
+      "spanish": "Cambiar de opinión",
+      "cefr": "C1"
+    },
+    {
+      "english": "come to terms with",
+      "spanish": "Aceptar, asumir",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres básico. A la siete, intermedio. Y las diez, nivel experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Ven a contármelo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#PhrasalVerbs",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésAvanzado"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv080",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

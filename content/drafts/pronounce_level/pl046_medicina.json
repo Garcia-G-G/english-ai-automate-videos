@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "MEDICINA en inglés: ¿llegas a la número diez? 💊",
+  "video_description": "Diez palabras de medicina en inglés para poner a prueba tu nivel. 🩹",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la medicina",
+  "intro": "[calm] Diez palabras de medicina. Dilas en voz alta y compara con mi versión.",
+  "items": [
+    {
+      "english": "pill",
+      "respelling": "PIL",
+      "ipa": "ˈpɪl",
+      "trap": "I corta y L final clara"
+    },
+    {
+      "english": "pain",
+      "respelling": "PEIN",
+      "ipa": "ˈpeɪn",
+      "trap": "AI suena «ei»: PEIN"
+    },
+    {
+      "english": "dose",
+      "respelling": "DOUS",
+      "ipa": "ˈdoʊs",
+      "trap": "O = «ou» y la E final no suena"
+    },
+    {
+      "english": "injury",
+      "respelling": "IN-ye-ri",
+      "ipa": "ˈɪndʒɚi",
+      "trap": "J fuerte y acento en IN"
+    },
+    {
+      "english": "vaccine",
+      "respelling": "vak-SIIN",
+      "ipa": "vækˈsiːn",
+      "trap": "CC suena «ks» y acento al final"
+    },
+    {
+      "english": "medicine",
+      "respelling": "ME-de-sen",
+      "ipa": "ˈmɛdəsən",
+      "trap": "Tres sílabas, acento en ME"
+    },
+    {
+      "english": "surgery",
+      "respelling": "SER-yer-i",
+      "ipa": "ˈsɝdʒɚi",
+      "trap": "UR = «er» y G = «y»: SER-yer-i"
+    },
+    {
+      "english": "prescription",
+      "respelling": "pri-SKRIP-shen",
+      "ipa": "prɪˈskrɪpʃən",
+      "trap": "Acento en SKRIP y -TION = «shen»"
+    },
+    {
+      "english": "ibuprofen",
+      "respelling": "ai-biu-PROU-fen",
+      "ipa": "aɪbjuˈproʊfən",
+      "trap": "Empieza «ai» y acento en PROU"
+    },
+    {
+      "english": "anesthesia",
+      "respelling": "a-nes-THII-zha",
+      "ipa": "ænəsˈθiːʒə",
+      "trap": "TH inglesa y -SIA = «zha»"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, experto total.",
+  "outro": "[surprised] ¿Las sacaste todas? Demuéstralo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésMédico",
+    "#AprenderInglés",
+    "#TestDeInglés",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl046",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

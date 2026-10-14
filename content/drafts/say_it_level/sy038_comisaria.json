@@ -1,0 +1,85 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿PERDISTE ALGO? Explícalo en inglés en la comisaría 👮",
+  "video_description": "Carteras perdidas, móviles robados y denuncias: diez frases para la comisaría en inglés. 👮",
+  "title": "Dilo en inglés",
+  "theme": "perdiste algo (en la comisaría)",
+  "intro": "[serious] Has perdido algo y vas a la comisaría. Explícalo en inglés antes de que lo diga yo.",
+  "items": [
+    {
+      "spanish": "¿Dónde está la comisaría?",
+      "english": "Where's the police station?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "He perdido la cartera.",
+      "english": "I've lost my wallet.",
+      "cefr": "A2",
+      "alt": "I lost my wallet."
+    },
+    {
+      "spanish": "Era negra y de cuero.",
+      "english": "It was black leather.",
+      "cefr": "A2",
+      "alt": "It was black and made of leather."
+    },
+    {
+      "spanish": "Me la dejé en un taxi.",
+      "english": "I left it in a taxi.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Llevaba el pasaporte dentro.",
+      "english": "My passport was in it.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Me avisarán si aparece?",
+      "english": "Will you let me know if it turns up?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Vengo a poner una denuncia.",
+      "english": "I'd like to report a theft.",
+      "cefr": "B1",
+      "alt": "I want to file a report."
+    },
+    {
+      "spanish": "Me han robado el móvil.",
+      "english": "My phone was stolen.",
+      "cefr": "B1",
+      "alt": "Someone stole my phone.",
+      "tip": "Se roba a una persona (rob); el objeto es stolen"
+    },
+    {
+      "spanish": "No me di cuenta hasta llegar al hotel.",
+      "english": "I didn't notice until I got to the hotel.",
+      "cefr": "B2",
+      "alt": "I didn't realize until I got to the hotel.",
+      "tip": "«Darse cuenta» es notice o realize"
+    },
+    {
+      "spanish": "Me han atracado.",
+      "english": "I've been mugged.",
+      "cefr": "B2",
+      "alt": "I got mugged.",
+      "tip": "Robar a alguien en la calle con amenazas es mug"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, experto: caso cerrado.",
+  "outro": "[thoughtful] ¿Te ha pasado algo así de viaje? Cuéntamelo con tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésÚtil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy038",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

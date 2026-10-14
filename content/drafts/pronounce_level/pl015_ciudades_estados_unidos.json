@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "CIUDADES DE ESTADOS UNIDOS: test de pronunciación 🗽",
+  "video_description": "Ciudades de Estados Unidos: algunas tienen letras que no suenan. 🌆",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "ciudades de Estados Unidos",
+  "intro": "[cheerful] Diez ciudades de Estados Unidos. Léelas en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "Miami",
+      "respelling": "mai-A-mi",
+      "ipa": "maɪˈæmi",
+      "trap": "Acento en A y la I suena «ai»"
+    },
+    {
+      "english": "Dallas",
+      "respelling": "DA-les",
+      "ipa": "ˈdæləs",
+      "trap": "Acento en DA: DA-les"
+    },
+    {
+      "english": "Boston",
+      "respelling": "BOS-ten",
+      "ipa": "ˈbɔstən",
+      "trap": "Acento en BOS y la O final es «e»"
+    },
+    {
+      "english": "Chicago",
+      "respelling": "shi-KA-gou",
+      "ipa": "ʃɪˈkɑgoʊ",
+      "trap": "CH suena SH: shi-KA-gou"
+    },
+    {
+      "english": "Detroit",
+      "respelling": "di-TROIT",
+      "ipa": "dɪˈtrɔɪt",
+      "trap": "Acento al final: di-TROIT"
+    },
+    {
+      "english": "Houston",
+      "respelling": "JIUUS-ten",
+      "ipa": "ˈhjuːstən",
+      "trap": "Se dice JIUUS-ten"
+    },
+    {
+      "english": "Seattle",
+      "respelling": "si-A-del",
+      "ipa": "siˈæɾəl",
+      "trap": "Tres sílabas y TT como D suave"
+    },
+    {
+      "english": "Phoenix",
+      "respelling": "FII-niks",
+      "ipa": "ˈfiːnɪks",
+      "trap": "PH suena F y OE suena «ii»"
+    },
+    {
+      "english": "Tucson",
+      "respelling": "TUU-san",
+      "ipa": "ˈtuːsɑn",
+      "trap": "La C no suena: TUU-san"
+    },
+    {
+      "english": "Albuquerque",
+      "respelling": "AL-be-ker-ki",
+      "ipa": "ˈælbəkɚki",
+      "trap": "QUE suena «ke»: AL-be-ker-ki"
+    }
+  ],
+  "verdict": "Hasta la palabra tres, básico. Hasta la siete, intermedio. Si clavaste las diez, nivel experto.",
+  "outro": "[happy] ¿En qué número te quedaste? Te leo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#EstadosUnidos",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl015",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

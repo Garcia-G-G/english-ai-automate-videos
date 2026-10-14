@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "MODISMOS DEL TRABAJO en inglés: ¿qué nivel tienes? 💼",
+  "video_description": "«Call it a day», «learn the ropes»… ¿entiendes estos modismos del trabajo en inglés? 📊",
+  "title": "¿Qué nivel tienes?",
+  "theme": "modismos del trabajo",
+  "intro": "[serious] Diez expresiones del mundo laboral, de fácil a experto. ¿Sabes qué significan?",
+  "items": [
+    {
+      "english": "day off",
+      "spanish": "Día libre",
+      "cefr": "A2"
+    },
+    {
+      "english": "work from home",
+      "spanish": "Trabajar desde casa",
+      "cefr": "A2"
+    },
+    {
+      "english": "part-time",
+      "spanish": "Media jornada",
+      "cefr": "A2"
+    },
+    {
+      "english": "team player",
+      "spanish": "Buen compañero de equipo",
+      "cefr": "B1"
+    },
+    {
+      "english": "on the same page",
+      "spanish": "En sintonía",
+      "cefr": "B2"
+    },
+    {
+      "english": "call it a day",
+      "spanish": "Terminar por hoy",
+      "cefr": "B2"
+    },
+    {
+      "english": "think outside the box",
+      "spanish": "Pensar diferente",
+      "cefr": "B2"
+    },
+    {
+      "english": "learn the ropes",
+      "spanish": "Aprender el oficio",
+      "cefr": "B2"
+    },
+    {
+      "english": "cut corners",
+      "spanish": "Hacer las cosas a medias",
+      "cefr": "C1"
+    },
+    {
+      "english": "back to square one",
+      "spanish": "Volver a empezar de cero",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Balance: hasta la tres, nivel básico. Hasta la siete, intermedio. Y las diez, experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Coméntalo antes de dar por terminado el día.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#ModismosEnInglés",
+    "#InglésDeNegocios",
+    "#VocabularioEnInglés",
+    "#AprenderInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv082",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

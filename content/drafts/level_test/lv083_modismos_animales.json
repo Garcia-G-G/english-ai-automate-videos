@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "Modismos con ANIMALES en inglés: de fácil a experto 🐴",
+  "video_description": "Copycat, night owl, red herring: ¿cuántos modismos con animales entiendes en inglés? 🦉",
+  "title": "¿Qué nivel tienes?",
+  "theme": "modismos con animales",
+  "intro": "[excited] Diez expresiones con animales en inglés, cada vez más difíciles. ¿Qué significan?",
+  "items": [
+    {
+      "english": "copycat",
+      "spanish": "Copión",
+      "cefr": "A2"
+    },
+    {
+      "english": "bookworm",
+      "spanish": "Ratón de biblioteca",
+      "cefr": "A2"
+    },
+    {
+      "english": "early bird",
+      "spanish": "Madrugador",
+      "cefr": "A2"
+    },
+    {
+      "english": "night owl",
+      "spanish": "Ave nocturna",
+      "cefr": "B1"
+    },
+    {
+      "english": "teacher's pet",
+      "spanish": "El favorito del profe",
+      "cefr": "B1"
+    },
+    {
+      "english": "raining cats and dogs",
+      "spanish": "Llover a cántaros",
+      "cefr": "B2"
+    },
+    {
+      "english": "the elephant in the room",
+      "spanish": "El tema que todos evitan",
+      "cefr": "B2"
+    },
+    {
+      "english": "when pigs fly",
+      "spanish": "Cuando las ranas críen pelo",
+      "cefr": "B2"
+    },
+    {
+      "english": "red herring",
+      "spanish": "Una pista falsa",
+      "cefr": "C1"
+    },
+    {
+      "english": "dark horse",
+      "spanish": "Un tapado, una sorpresa",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si sabías las diez, eres un experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? ¿Eres early bird o night owl? Comenta.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#ModismosEnInglés",
+    "#ExpresionesEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv083",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

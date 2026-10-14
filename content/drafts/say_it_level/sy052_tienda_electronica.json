@@ -1,0 +1,81 @@
+{
+  "type": "say_it_level",
+  "video_title": "Dilo en inglés: en una TIENDA DE ELECTRÓNICA 🔌",
+  "video_description": "¿Sabrías comprar un portátil o unos auriculares en inglés? Pruébalo aquí. 🎧",
+  "title": "Dilo en inglés",
+  "theme": "en una tienda de electrónica",
+  "intro": "[curious] Estás en una tienda de electrónica. Lee la frase y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Cuánto cuesta este portátil?",
+      "english": "How much is this laptop?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Busco unos auriculares.",
+      "english": "I'm looking for headphones.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Lo tienen en negro?",
+      "english": "Do you have it in black?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Viene con cargador?",
+      "english": "Does it come with a charger?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Cuánto dura la batería?",
+      "english": "How long does the battery last?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Puedo probarlo antes de comprarlo?",
+      "english": "Can I try it before I buy it?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Tiene garantía de dos años?",
+      "english": "Does it have a two-year warranty?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Está en oferta.",
+      "english": "It's on sale.",
+      "cefr": "B2",
+      "tip": "«En oferta» es on sale, no «in offer»"
+    },
+    {
+      "spanish": "¿Me lo envuelve para regalo?",
+      "english": "Could you gift-wrap it?",
+      "cefr": "B2",
+      "alt": "Can you wrap it as a gift?",
+      "tip": "«Envolver para regalo» es un solo verbo: gift-wrap"
+    },
+    {
+      "spanish": "Mi teléfono se queda sin batería rápido.",
+      "english": "My phone dies really fast.",
+      "cefr": "C1",
+      "alt": "My battery runs out really fast.",
+      "tip": "«Quedarse sin batería» es die o run out, no «stay without»"
+    }
+  ],
+  "verdict": "Hasta la tres, básico. Hasta la siete, intermedio. Las diez sin fallar: experto en tecnología.",
+  "outro": "[cheerful] ¿Cuántas te salieron? Escribe tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Tecnología"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy052",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Te mudas? 10 frases DE MUDANZA en inglés 📦",
+  "video_description": "Cajas, sofás y casa nueva: diez frases de mudanza en inglés, de fácil a experto. 🚚",
+  "title": "Dilo en inglés",
+  "theme": "de mudanza",
+  "intro": "[excited] ¡Nos mudamos! Te digo la frase en español y tú la dices en inglés.",
+  "items": [
+    {
+      "spanish": "Necesito cajas.",
+      "english": "I need some boxes.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Esta es mi nueva dirección.",
+      "english": "This is my new address.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Me ayudas con el sofá?",
+      "english": "Can you help me with the couch?",
+      "cefr": "A2",
+      "alt": "Can you help me with the sofa?"
+    },
+    {
+      "spanish": "Ya he empaquetado la cocina.",
+      "english": "I've already packed up the kitchen.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Dónde pongo esta caja?",
+      "english": "Where should I put this box?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Hemos contratado una empresa de mudanzas.",
+      "english": "We've hired a moving company.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Cuidado, esa caja pesa mucho.",
+      "english": "Careful, that box is really heavy.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Nos cambiamos de casa.",
+      "english": "We're moving.",
+      "cefr": "B2",
+      "alt": "We're moving house.",
+      "tip": "«Cambiarse de casa» es move, no «change house»"
+    },
+    {
+      "spanish": "Acabamos de mudarnos.",
+      "english": "We just moved in.",
+      "cefr": "B2",
+      "alt": "We've just moved in.",
+      "tip": "A la casa nueva move in; de la vieja, move out"
+    },
+    {
+      "spanish": "Ya estamos instalados.",
+      "english": "We're all settled in.",
+      "cefr": "C1",
+      "tip": "«Estar instalado» en una casa es be settled in"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, mudanza completa: experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? ¿Y cuántas mudanzas llevas tú?",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Mudanza"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy100",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

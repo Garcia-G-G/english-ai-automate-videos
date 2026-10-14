@@ -1,0 +1,86 @@
+{
+  "type": "say_it_level",
+  "video_title": "Inglés para el BANCO: ¿hasta qué frase llegas? 🏦",
+  "video_description": "Cajeros, cuentas y comisiones: diez frases bancarias en inglés de fácil a experto. 🏦",
+  "title": "Dilo en inglés",
+  "theme": "en el banco",
+  "intro": "[serious] Vamos al banco. Te digo la frase en español y tú tienes unos segundos para decirla en inglés.",
+  "items": [
+    {
+      "spanish": "¿Hay un cajero por aquí?",
+      "english": "Is there an ATM near here?",
+      "cefr": "A1",
+      "alt": "Where's the nearest ATM?"
+    },
+    {
+      "spanish": "Quiero abrir una cuenta.",
+      "english": "I'd like to open an account.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Puedo cambiar dólares aquí?",
+      "english": "Can I exchange dollars here?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "He perdido mi tarjeta.",
+      "english": "I've lost my card.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Cuánto es la comisión?",
+      "english": "What's the fee?",
+      "cefr": "B1",
+      "alt": "How much is the fee?"
+    },
+    {
+      "spanish": "Quiero hacer una transferencia.",
+      "english": "I'd like to make a transfer.",
+      "cefr": "B1",
+      "alt": "I'd like to transfer some money."
+    },
+    {
+      "spanish": "El cajero se ha tragado mi tarjeta.",
+      "english": "The ATM ate my card.",
+      "cefr": "B1",
+      "alt": "The ATM swallowed my card."
+    },
+    {
+      "spanish": "Quiero sacar dinero.",
+      "english": "I'd like to withdraw some money.",
+      "cefr": "B1",
+      "alt": "I want to take out some money.",
+      "tip": "«Sacar dinero» es withdraw o take out"
+    },
+    {
+      "spanish": "Estoy en números rojos.",
+      "english": "I'm overdrawn.",
+      "cefr": "B2",
+      "alt": "I'm in the red.",
+      "tip": "«Números rojos» es be overdrawn o be in the red"
+    },
+    {
+      "spanish": "¿Me lo puede dar en billetes pequeños?",
+      "english": "Can I get this in smaller bills?",
+      "cefr": "B2",
+      "alt": "Can I have it in smaller notes?",
+      "tip": "«Billetes» son bills (EE. UU.) o notes, no tickets"
+    }
+  ],
+  "verdict": "¿Te quedaste en la tres? Básico. ¿En la siete? Intermedio. ¿Sacaste las diez? Experto.",
+  "outro": "[happy] ¿Cuántas frases tienes en la cuenta? Déjame tu número en comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésÚtil",
+    "#FrasesEnInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy013",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

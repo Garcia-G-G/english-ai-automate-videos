@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "CONECTORES en inglés: ¿llegas al nivel experto? 🔗",
+  "video_description": "But, however, whereas, hence: 10 conectores en inglés para hablar y escribir mejor ✍️",
+  "title": "¿Qué nivel tienes?",
+  "theme": "los conectores (however, therefore…)",
+  "intro": "[thoughtful] Diez conectores en inglés, de fácil a experto. Di qué significan antes que yo.",
+  "items": [
+    {
+      "english": "but",
+      "spanish": "Pero",
+      "cefr": "A1"
+    },
+    {
+      "english": "because",
+      "spanish": "Porque",
+      "cefr": "A1"
+    },
+    {
+      "english": "so",
+      "spanish": "Así que",
+      "cefr": "A2"
+    },
+    {
+      "english": "although",
+      "spanish": "Aunque",
+      "cefr": "B1"
+    },
+    {
+      "english": "however",
+      "spanish": "Sin embargo",
+      "cefr": "B1"
+    },
+    {
+      "english": "meanwhile",
+      "spanish": "Mientras tanto",
+      "cefr": "B1"
+    },
+    {
+      "english": "therefore",
+      "spanish": "Por lo tanto",
+      "cefr": "B2"
+    },
+    {
+      "english": "whereas",
+      "spanish": "Mientras que",
+      "cefr": "B2"
+    },
+    {
+      "english": "nevertheless",
+      "spanish": "No obstante",
+      "cefr": "C1"
+    },
+    {
+      "english": "hence",
+      "spanish": "De ahí que",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Por lo tanto: con tres, básico. Con siete, intermedio. Y con las diez, experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Sin embargo, no hagas trampa. Comenta.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#GramáticaInglesa",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésAvanzado"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv087",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

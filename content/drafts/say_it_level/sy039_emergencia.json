@@ -1,0 +1,82 @@
+{
+  "type": "say_it_level",
+  "video_title": "UNA EMERGENCIA en inglés: ¿sabrías pedir ayuda? 🚑",
+  "video_description": "Diez frases que ojalá nunca necesites, pero que debes saber decir en inglés en una emergencia. 🚑",
+  "title": "Dilo en inglés",
+  "theme": "una emergencia",
+  "intro": "[serious] En una emergencia no hay tiempo para pensar. Di cada frase en inglés lo más rápido que puedas.",
+  "items": [
+    {
+      "spanish": "¡Socorro!",
+      "english": "Help!",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¡Llame a una ambulancia!",
+      "english": "Call an ambulance!",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¡Hay un incendio!",
+      "english": "There's a fire!",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Ha habido un accidente.",
+      "english": "There's been an accident.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "No respira.",
+      "english": "He's not breathing.",
+      "cefr": "B1",
+      "alt": "She isn't breathing."
+    },
+    {
+      "spanish": "Se ha desmayado.",
+      "english": "She's fainted.",
+      "cefr": "B1",
+      "alt": "She passed out."
+    },
+    {
+      "spanish": "¿Alguien sabe primeros auxilios?",
+      "english": "Does anyone know first aid?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Se ha cortado con un cuchillo.",
+      "english": "He cut himself with a knife.",
+      "cefr": "B1",
+      "tip": "Hacerse algo a uno mismo: himself, herself..."
+    },
+    {
+      "spanish": "Espera a que llegue la ambulancia.",
+      "english": "Wait until the ambulance gets here.",
+      "cefr": "B2",
+      "tip": "Tras until va presente: until it gets here"
+    },
+    {
+      "spanish": "Me he quedado atrapado en el ascensor.",
+      "english": "I'm stuck in the elevator.",
+      "cefr": "B2",
+      "alt": "I'm trapped in the elevator.",
+      "tip": "«Quedarse atrapado» se dice be stuck o get stuck"
+    }
+  ],
+  "verdict": "Tres frases y eres básico. Siete y eres intermedio. Diez y eres experto, preparado para lo que venga.",
+  "outro": "[calm] Ojalá no las necesites nunca. ¿Hasta qué número llegaste?",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésÚtil",
+    "#FrasesEnInglés",
+    "#InglésParaViajar"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy039",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

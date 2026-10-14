@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Sabes hablar de ECONOMÍA en inglés? Test de nivel 📈",
+  "video_description": "Impuestos, crecimiento, rescate: 10 palabras de economía en inglés, de fácil a experto 💰",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la economía",
+  "intro": "[thoughtful] Diez palabras de economía en inglés, de fácil a experto. ¿Las traduces antes que yo?",
+  "items": [
+    {
+      "english": "money",
+      "spanish": "Dinero",
+      "cefr": "A1"
+    },
+    {
+      "english": "rich",
+      "spanish": "Rico",
+      "cefr": "A1"
+    },
+    {
+      "english": "tax",
+      "spanish": "Impuesto",
+      "cefr": "A2"
+    },
+    {
+      "english": "unemployment",
+      "spanish": "Desempleo",
+      "cefr": "B1"
+    },
+    {
+      "english": "growth",
+      "spanish": "Crecimiento",
+      "cefr": "B1"
+    },
+    {
+      "english": "interest rate",
+      "spanish": "Tipo / tasa de interés",
+      "cefr": "B2"
+    },
+    {
+      "english": "supply and demand",
+      "spanish": "Oferta y demanda",
+      "cefr": "B2"
+    },
+    {
+      "english": "shortage",
+      "spanish": "Escasez",
+      "cefr": "B2"
+    },
+    {
+      "english": "downturn",
+      "spanish": "Bajón económico",
+      "cefr": "C1"
+    },
+    {
+      "english": "bailout",
+      "spanish": "Rescate financiero",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Balance final: tres, nivel básico. Siete, intermedio. Diez, experto en economía.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Invierte un segundo y coméntalo.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésAvanzado"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv096",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

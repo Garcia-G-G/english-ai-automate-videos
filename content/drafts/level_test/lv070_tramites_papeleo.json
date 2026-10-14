@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "TRÁMITES Y PAPELEO en inglés: ¿llegas al nivel experto? 📝",
+  "video_description": "Formularios, firmas y burocracia: 10 palabras de trámites en inglés, de fácil a difícil 🗂️",
+  "title": "¿Qué nivel tienes?",
+  "theme": "los trámites y el papeleo",
+  "intro": "[calm] Trámites y papeleo en inglés. Diez palabras, y tú dices qué significan antes que yo.",
+  "items": [
+    {
+      "english": "date of birth",
+      "spanish": "Fecha de nacimiento",
+      "cefr": "A1"
+    },
+    {
+      "english": "form",
+      "spanish": "Formulario",
+      "cefr": "A2"
+    },
+    {
+      "english": "sign",
+      "spanish": "Firmar",
+      "cefr": "A2"
+    },
+    {
+      "english": "fill out",
+      "spanish": "Rellenar",
+      "cefr": "B1"
+    },
+    {
+      "english": "deadline",
+      "spanish": "Fecha límite",
+      "cefr": "B1"
+    },
+    {
+      "english": "ID card",
+      "spanish": "Documento de identidad",
+      "cefr": "B1"
+    },
+    {
+      "english": "paperwork",
+      "spanish": "Papeleo",
+      "cefr": "B2"
+    },
+    {
+      "english": "red tape",
+      "spanish": "Burocracia",
+      "cefr": "C1"
+    },
+    {
+      "english": "proof of address",
+      "spanish": "Comprobante de domicilio",
+      "cefr": "C1"
+    },
+    {
+      "english": "notarize",
+      "spanish": "Certificar ante notario",
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Sello final: tres, nivel básico. Siete, intermedio. Diez, eres experto en papeleo.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Rellena los comentarios con tu respuesta.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#InglésAvanzado",
+    "#AprenderInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv070",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

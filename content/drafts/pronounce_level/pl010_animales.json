@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "¿Sabes pronunciar estos 10 ANIMALES en inglés? 🐶",
+  "video_description": "Diez animales en inglés: el último es de los más difíciles del idioma. 🐿️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los animales",
+  "intro": "[excited] Diez animales en inglés. Dilos en voz alta antes que yo. ¡Vamos!",
+  "items": [
+    {
+      "english": "cat",
+      "respelling": "KAT",
+      "ipa": "ˈkæt",
+      "trap": "A abierta, entre «a» y «e»"
+    },
+    {
+      "english": "dog",
+      "respelling": "DOG",
+      "ipa": "ˈdɔg",
+      "trap": "La G final se tiene que oír"
+    },
+    {
+      "english": "lion",
+      "respelling": "LAI-en",
+      "ipa": "ˈlaɪən",
+      "trap": "La I suena «ai»: LAI-en"
+    },
+    {
+      "english": "horse",
+      "respelling": "JORS",
+      "ipa": "ˈhɔrs",
+      "trap": "H aspirada y una sola sílaba"
+    },
+    {
+      "english": "rabbit",
+      "respelling": "RA-bit",
+      "ipa": "ˈræbɪt",
+      "trap": "Acento en RA y la I corta"
+    },
+    {
+      "english": "tiger",
+      "respelling": "TAI-ger",
+      "ipa": "ˈtaɪgɚ",
+      "trap": "La I suena «ai»: TAI-ger"
+    },
+    {
+      "english": "giraffe",
+      "respelling": "ye-RAF",
+      "ipa": "dʒəˈræf",
+      "trap": "G fuerte «y» y acento en RAF"
+    },
+    {
+      "english": "dolphin",
+      "respelling": "DAL-fin",
+      "ipa": "ˈdɑlfɪn",
+      "trap": "PH suena F y la O suena «a»"
+    },
+    {
+      "english": "rhinoceros",
+      "respelling": "rai-NA-ser-es",
+      "ipa": "raɪˈnɑsɚəs",
+      "trap": "Acento en NA y la H no suena"
+    },
+    {
+      "english": "squirrel",
+      "respelling": "SKUER-el",
+      "ipa": "ˈskwɝəl",
+      "trap": "Dos sílabas: SKUER-el"
+    }
+  ],
+  "verdict": "Las tres primeras bien: nivel básico. Hasta la siete: intermedio. Las diez correctas: experto de verdad.",
+  "outro": "[thoughtful] ¿Qué palabra vas a repasar? Dímelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AnimalesEnInglés",
+    "#AprenderInglés",
+    "#InglésOnline",
+    "#InglésAmericano"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl010",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

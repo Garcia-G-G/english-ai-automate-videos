@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "Vocabulario del CRIMEN en inglés: ¿llegas al nivel experto? 🕵️",
+  "video_description": "Ladrón, sospechoso, atraco: ¿cuántas palabras del crimen conoces en inglés? 🚨",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el crimen",
+  "intro": "[serious] Diez palabras del mundo del crimen, de fácil a experto. Investiga: ¿qué significan?",
+  "items": [
+    {
+      "english": "thief",
+      "spanish": "Ladrón",
+      "cefr": "A2"
+    },
+    {
+      "english": "steal",
+      "spanish": "Robar",
+      "cefr": "A2"
+    },
+    {
+      "english": "crime",
+      "spanish": "Delito",
+      "cefr": "A2"
+    },
+    {
+      "english": "robbery",
+      "spanish": "Robo",
+      "cefr": "B1"
+    },
+    {
+      "english": "arrest",
+      "spanish": "Detener",
+      "cefr": "B1"
+    },
+    {
+      "english": "suspect",
+      "spanish": "Sospechoso",
+      "cefr": "B1"
+    },
+    {
+      "english": "burglar",
+      "spanish": "Ladrón de casas",
+      "cefr": "B2"
+    },
+    {
+      "english": "shoplifting",
+      "spanish": "Hurto en tiendas",
+      "cefr": "B2"
+    },
+    {
+      "english": "mugging",
+      "spanish": "Atraco callejero",
+      "cefr": "C1"
+    },
+    {
+      "english": "money laundering",
+      "spanish": "Lavado de dinero",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Caso cerrado: tres, nivel básico. Siete, intermedio. Diez, eres un experto detective.",
+  "outro": "[curious] ¿Hasta qué número llegaste? Confiesa en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#InglésConSeries",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv094",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

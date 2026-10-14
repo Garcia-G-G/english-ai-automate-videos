@@ -1,0 +1,86 @@
+{
+  "type": "say_it_level",
+  "video_title": "SMALL TALK en el ascensor: ¿qué nivel de inglés tienes? 💬",
+  "video_description": "Treinta segundos de ascensor con un vecino: diez frases de small talk en inglés. 💬",
+  "title": "Dilo en inglés",
+  "theme": "conversación de ascensor (small talk)",
+  "intro": "[cheerful] Entras en el ascensor y hay alguien. Rompe el hielo: di cada frase en inglés.",
+  "items": [
+    {
+      "spanish": "¿Qué tal?",
+      "english": "How's it going?",
+      "cefr": "A1",
+      "alt": "How are you?"
+    },
+    {
+      "spanish": "¿A qué piso vas?",
+      "english": "Which floor?",
+      "cefr": "A1",
+      "alt": "What floor are you going to?"
+    },
+    {
+      "spanish": "¡Qué lento va el ascensor!",
+      "english": "This elevator is so slow!",
+      "cefr": "A2",
+      "alt": "This lift is so slow!"
+    },
+    {
+      "spanish": "¿Qué tal el fin de semana?",
+      "english": "How was your weekend?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Te he visto en el gimnasio.",
+      "english": "I've seen you at the gym.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¡Por fin es viernes!",
+      "english": "It's finally Friday!",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Tienes planes para el fin de semana?",
+      "english": "Do you have any plans for the weekend?",
+      "cefr": "B1",
+      "alt": "Any plans for the weekend?"
+    },
+    {
+      "spanish": "¡Que tengas un buen día!",
+      "english": "Have a good day!",
+      "cefr": "B1",
+      "alt": "Have a nice day!",
+      "tip": "«Que tengas...» se dice directamente Have a...!"
+    },
+    {
+      "spanish": "¿Llevas mucho tiempo trabajando aquí?",
+      "english": "Have you been working here long?",
+      "cefr": "B2",
+      "alt": "Have you worked here long?",
+      "tip": "«Llevar tiempo haciendo algo»: Have you been + -ing?"
+    },
+    {
+      "spanish": "Ya nos veremos por aquí.",
+      "english": "I'll see you around.",
+      "cefr": "B2",
+      "alt": "See you around.",
+      "tip": "«Ya nos veremos» se dice See you around"
+    }
+  ],
+  "verdict": "Tres frases y eres básico. Siete y eres intermedio. Si llegaste a la diez, eres experto en small talk.",
+  "outro": "[excited] ¿En qué piso te bajaste? Cuéntame tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#SmallTalk",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy019",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

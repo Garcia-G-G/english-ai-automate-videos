@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras del TRABAJO en inglés: ¿las dices bien? 💼",
+  "video_description": "Work, career, résumé: palabras de trabajo que conviene decir bien. 📈",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el trabajo",
+  "intro": "[serious] Vocabulario de trabajo, de fácil a experto. Pronuncia cada palabra antes de escucharme.",
+  "items": [
+    {
+      "english": "shift",
+      "respelling": "SHIFT",
+      "ipa": "ˈʃɪft",
+      "trap": "SH suave y la I corta: SHIFT"
+    },
+    {
+      "english": "team",
+      "respelling": "TIIM",
+      "ipa": "ˈtiːm",
+      "trap": "EA suena «ii» larga"
+    },
+    {
+      "english": "work",
+      "respelling": "UERK",
+      "ipa": "ˈwɝk",
+      "trap": "OR suena «er»: UERK, no UORK"
+    },
+    {
+      "english": "salary",
+      "respelling": "SA-la-ri",
+      "ipa": "ˈsæləri",
+      "trap": "Acento en SA-: SA-la-ri"
+    },
+    {
+      "english": "interview",
+      "respelling": "IN-ter-viuu",
+      "ipa": "ˈɪntɚvjuː",
+      "trap": "Acento en IN y final «viuu»"
+    },
+    {
+      "english": "career",
+      "respelling": "ka-RIR",
+      "ipa": "kəˈrɪr",
+      "trap": "Acento al final: ka-RIR"
+    },
+    {
+      "english": "employee",
+      "respelling": "im-PLOI-ii",
+      "ipa": "ɪmˈplɔɪiː",
+      "trap": "Acento en PLOI: im-PLOI-ii"
+    },
+    {
+      "english": "recruiter",
+      "respelling": "ri-KRUU-ter",
+      "ipa": "rɪˈkruːtɚ",
+      "trap": "UI suena «uu»: ri-KRUU-ter"
+    },
+    {
+      "english": "negotiate",
+      "respelling": "ni-GOU-shi-eit",
+      "ipa": "nɪˈɡoʊʃieɪt",
+      "trap": "TI suena «sh»: ni-GOU-shi-eit"
+    },
+    {
+      "english": "résumé",
+      "respelling": "RE-za-mei",
+      "ipa": "ˈrɛzəmeɪ",
+      "trap": "La S suena «z» y acento en RE-"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, nivel experto.",
+  "outro": "[curious] Comenta tu número: ¿llegaste a la diez?",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésOnline",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl094",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

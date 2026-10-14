@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "En el AEROPUERTO: 10 palabras para pronunciar ✈️",
+  "video_description": "Diez palabras del aeropuerto para pronunciar antes de viajar. 🧳",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el aeropuerto",
+  "intro": "[curious] Diez palabras del aeropuerto. Dilas en voz alta antes de embarcar.",
+  "items": [
+    {
+      "english": "ticket",
+      "respelling": "TI-kit",
+      "ipa": "ˈtɪkɪt",
+      "trap": "Acento en TI y E = «i»"
+    },
+    {
+      "english": "plane",
+      "respelling": "PLEIN",
+      "ipa": "ˈpleɪn",
+      "trap": "A suena «ei»: PLEIN"
+    },
+    {
+      "english": "gate",
+      "respelling": "GEIT",
+      "ipa": "ˈgeɪt",
+      "trap": "A suena «ei»: GEIT"
+    },
+    {
+      "english": "airport",
+      "respelling": "ER-port",
+      "ipa": "ˈɛrpɔrt",
+      "trap": "AIR suena «er»: ER-port"
+    },
+    {
+      "english": "customs",
+      "respelling": "KAS-temz",
+      "ipa": "ˈkʌstəmz",
+      "trap": "U suena «a»: KAS-temz"
+    },
+    {
+      "english": "luggage",
+      "respelling": "LA-gidch",
+      "ipa": "ˈlʌgɪdʒ",
+      "trap": "U = «a» y -AGE = «idch»"
+    },
+    {
+      "english": "departure",
+      "respelling": "di-PAR-cher",
+      "ipa": "dɪˈpɑrtʃɚ",
+      "trap": "-TURE suena «cher»"
+    },
+    {
+      "english": "turbulence",
+      "respelling": "TER-bie-lens",
+      "ipa": "ˈtɝbjələns",
+      "trap": "Acento en TER: TER-bie-lens"
+    },
+    {
+      "english": "aisle",
+      "respelling": "AIL",
+      "ipa": "ˈaɪl",
+      "trap": "La S no suena: AIL"
+    },
+    {
+      "english": "itinerary",
+      "respelling": "ai-TI-ne-re-ri",
+      "ipa": "aɪˈtɪnərɛri",
+      "trap": "Empieza «ai» y acento en TI"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Si dijiste bien las diez, tu pronunciación es de experto.",
+  "outro": "[cheerful] Deja tu número en los comentarios y reta a un amigo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl050",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

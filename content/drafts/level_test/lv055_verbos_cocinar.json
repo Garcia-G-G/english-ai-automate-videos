@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "10 VERBOS DE COCINA en inglés, ¿hasta cuál llegas? 🍳",
+  "video_description": "Cortar, hervir, escurrir… ¿cuántos verbos de cocinar sabes en inglés? 🔪",
+  "title": "¿Qué nivel tienes?",
+  "theme": "verbos de cocinar",
+  "intro": "[curious] Diez verbos para cocinar en inglés, de fácil a experto. Tradúcelos antes de que yo lo haga.",
+  "items": [
+    {
+      "english": "cook",
+      "spanish": "Cocinar",
+      "cefr": "A1"
+    },
+    {
+      "english": "cut",
+      "spanish": "Cortar",
+      "cefr": "A1"
+    },
+    {
+      "english": "boil",
+      "spanish": "Hervir",
+      "cefr": "A2"
+    },
+    {
+      "english": "fry",
+      "spanish": "Freír",
+      "cefr": "A2"
+    },
+    {
+      "english": "bake",
+      "spanish": "Hornear",
+      "cefr": "B1"
+    },
+    {
+      "english": "stir",
+      "spanish": "Remover",
+      "cefr": "B1"
+    },
+    {
+      "english": "grate",
+      "spanish": "Rallar",
+      "cefr": "B2"
+    },
+    {
+      "english": "drain",
+      "spanish": "Escurrir",
+      "cefr": "B2"
+    },
+    {
+      "english": "simmer",
+      "spanish": "Cocer a fuego lento",
+      "cefr": "C1"
+    },
+    {
+      "english": "whisk",
+      "spanish": "Batir con varillas",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres verbos: nivel básico. Siete: intermedio. Los diez: experto en la cocina y en inglés.",
+  "outro": "[happy] ¿Cuántos sacaste? Escribe tu número en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VerbosEnInglés",
+    "#VocabularioEnInglés",
+    "#CocinaEnInglés",
+    "#AprenderInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv055",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

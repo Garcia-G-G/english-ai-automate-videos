@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "MUEBLES en inglés: ¿qué nivel tienes de verdad? 🪑",
+  "video_description": "Pon a prueba tu vocabulario de muebles y descubre tu nivel real de inglés. 🪑",
+  "title": "¿Qué nivel tienes?",
+  "theme": "los muebles",
+  "intro": "[cheerful] Reto de vocabulario de muebles: di en español qué significa cada palabra. ¡Vamos!",
+  "items": [
+    {
+      "english": "table",
+      "spanish": "Mesa",
+      "cefr": "A1"
+    },
+    {
+      "english": "chair",
+      "spanish": "Silla",
+      "cefr": "A1"
+    },
+    {
+      "english": "shelf",
+      "spanish": "Estante / balda",
+      "cefr": "A2"
+    },
+    {
+      "english": "armchair",
+      "spanish": "Sillón",
+      "cefr": "B1"
+    },
+    {
+      "english": "drawer",
+      "spanish": "Cajón",
+      "cefr": "B1"
+    },
+    {
+      "english": "wardrobe",
+      "spanish": "Armario / ropero",
+      "cefr": "B1"
+    },
+    {
+      "english": "nightstand",
+      "spanish": "Mesita de noche",
+      "cefr": "B2"
+    },
+    {
+      "english": "stool",
+      "spanish": "Taburete",
+      "cefr": "B2"
+    },
+    {
+      "english": "dresser",
+      "spanish": "Cómoda",
+      "cefr": "C1"
+    },
+    {
+      "english": "recliner",
+      "spanish": "Sillón reclinable",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] Comenta tu número y reta a un amigo a superarlo.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#ClasesDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv047",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

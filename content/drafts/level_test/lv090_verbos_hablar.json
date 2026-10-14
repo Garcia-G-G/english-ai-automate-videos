@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "VERBOS DE HABLAR en inglés: ¿básico, intermedio o experto? 💬",
+  "video_description": "Susurrar, quejarse, despotricar: test de inglés con 10 verbos para hablar 🗣️",
+  "title": "¿Qué nivel tienes?",
+  "theme": "verbos de hablar",
+  "intro": "[warm] Diez verbos para hablar en inglés, cada vez más difíciles. Dime qué significan antes que yo.",
+  "items": [
+    {
+      "english": "say",
+      "spanish": "Decir",
+      "cefr": "A1"
+    },
+    {
+      "english": "talk",
+      "spanish": "Hablar",
+      "cefr": "A1"
+    },
+    {
+      "english": "shout",
+      "spanish": "Gritar",
+      "cefr": "A2"
+    },
+    {
+      "english": "chat",
+      "spanish": "Charlar",
+      "cefr": "A2"
+    },
+    {
+      "english": "whisper",
+      "spanish": "Susurrar",
+      "cefr": "B1"
+    },
+    {
+      "english": "complain",
+      "spanish": "Quejarse",
+      "cefr": "B1"
+    },
+    {
+      "english": "mumble",
+      "spanish": "Murmurar",
+      "cefr": "B2"
+    },
+    {
+      "english": "brag",
+      "spanish": "Presumir",
+      "cefr": "B2"
+    },
+    {
+      "english": "rant",
+      "spanish": "Despotricar",
+      "cefr": "C1"
+    },
+    {
+      "english": "blurt out",
+      "spanish": "Soltar sin pensar",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Te lo digo claro: tres, nivel básico. Siete, intermedio. Diez, experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Dímelo, aunque sea en un susurro.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VerbosEnInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv090",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

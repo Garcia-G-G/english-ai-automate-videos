@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La K MUDA en inglés: ¿hasta qué número llegas? 🔪",
+  "video_description": "Diez palabras con K muda, de fácil a experto. 🗝️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la K muda",
+  "intro": "[thoughtful] Diez palabras con una K que no suena. Dilas en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "knife",
+      "respelling": "NAIF",
+      "ipa": "ˈnaɪf",
+      "trap": "La K no suena y la I es «ai»"
+    },
+    {
+      "english": "knee",
+      "respelling": "NII",
+      "ipa": "ˈniː",
+      "trap": "K muda y doble E larga"
+    },
+    {
+      "english": "knew",
+      "respelling": "NUU",
+      "ipa": "ˈnuː",
+      "trap": "K muda y EW suena «uu»"
+    },
+    {
+      "english": "knit",
+      "respelling": "NIT",
+      "ipa": "ˈnɪt",
+      "trap": "K muda: suena NIT"
+    },
+    {
+      "english": "knot",
+      "respelling": "NAT",
+      "ipa": "ˈnɑt",
+      "trap": "K muda y la O suena «a»"
+    },
+    {
+      "english": "knight",
+      "respelling": "NAIT",
+      "ipa": "ˈnaɪt",
+      "trap": "K y GH mudas: NAIT"
+    },
+    {
+      "english": "kneel",
+      "respelling": "NIIL",
+      "ipa": "ˈniːl",
+      "trap": "K muda y EE larga: NIIL"
+    },
+    {
+      "english": "doorknob",
+      "respelling": "DOR-nab",
+      "ipa": "ˈdɔrnɑb",
+      "trap": "La K del medio tampoco suena"
+    },
+    {
+      "english": "unknown",
+      "respelling": "an-NOUN",
+      "ipa": "ʌnˈnoʊn",
+      "trap": "K muda y acento en NOUN"
+    },
+    {
+      "english": "knowledgeable",
+      "respelling": "NA-lidch-e-bel",
+      "ipa": "ˈnɑlɪdʒəbəl",
+      "trap": "K muda, OW = «a» y 4 sílabas"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si dijiste bien las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#AprenderInglés",
+    "#TestDeInglés",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl018",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

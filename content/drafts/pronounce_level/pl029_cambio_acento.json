@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "CAMBIO DE ACENTO: ¿dónde va el golpe de voz? 📸",
+  "video_description": "El acento se mueve dentro de la misma familia de palabras. 🎯",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "cambio de acento (PHOtograph / phoTOGraphy)",
+  "intro": "[thoughtful] La misma familia de palabras, el acento en otro sitio. Pronuncia cada una.",
+  "items": [
+    {
+      "english": "Canada",
+      "respelling": "KA-ne-da",
+      "ipa": "ˈkænədə",
+      "trap": "Acento en KA: KA-ne-da"
+    },
+    {
+      "english": "Canadian",
+      "respelling": "ke-NEI-di-en",
+      "ipa": "kəˈneɪdiən",
+      "trap": "Acento en NEI y la A suena «ei»"
+    },
+    {
+      "english": "photograph",
+      "respelling": "FOU-te-graf",
+      "ipa": "ˈfoʊtəgræf",
+      "trap": "Acento en la primera: FOU-"
+    },
+    {
+      "english": "photographer",
+      "respelling": "fe-TA-gre-fer",
+      "ipa": "fəˈtɑgrəfɚ",
+      "trap": "Ahora el acento salta a TA"
+    },
+    {
+      "english": "economy",
+      "respelling": "i-KA-ne-mi",
+      "ipa": "ɪˈkɑnəmi",
+      "trap": "Acento en KA: i-KA-ne-mi"
+    },
+    {
+      "english": "economic",
+      "respelling": "e-ke-NA-mik",
+      "ipa": "ɛkəˈnɑmɪk",
+      "trap": "El acento salta a NA"
+    },
+    {
+      "english": "democrat",
+      "respelling": "DE-me-krat",
+      "ipa": "ˈdɛməkræt",
+      "trap": "Acento en la primera: DE-"
+    },
+    {
+      "english": "democracy",
+      "respelling": "di-MA-kre-si",
+      "ipa": "dɪˈmɑkrəsi",
+      "trap": "Acento en MA: di-MA-kre-si"
+    },
+    {
+      "english": "democratic",
+      "respelling": "de-me-KRA-tik",
+      "ipa": "dɛməˈkrætɪk",
+      "trap": "El acento salta a KRA"
+    },
+    {
+      "english": "photographic",
+      "respelling": "fou-te-GRA-fik",
+      "ipa": "foʊtəˈgræfɪk",
+      "trap": "Tercera versión: acento en GRA"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, experto total.",
+  "outro": "[surprised] ¿Las sacaste todas? Demuéstralo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AcentoEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl029",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

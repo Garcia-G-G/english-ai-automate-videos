@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Sabes estas 10 palabras de ROPA en inglés? 👕",
+  "video_description": "Diez palabras de ropa en inglés, cada una más difícil que la anterior. 👕",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la ropa",
+  "intro": "[happy] ¿Cuántas palabras de ropa conoces? Di el significado en voz alta antes de la respuesta.",
+  "items": [
+    {
+      "english": "shirt",
+      "spanish": "Camisa",
+      "cefr": "A1"
+    },
+    {
+      "english": "shoes",
+      "spanish": "Zapatos",
+      "cefr": "A1"
+    },
+    {
+      "english": "jacket",
+      "spanish": "Chaqueta",
+      "cefr": "A2"
+    },
+    {
+      "english": "sweater",
+      "spanish": "Suéter / jersey",
+      "cefr": "A2"
+    },
+    {
+      "english": "scarf",
+      "spanish": "Bufanda",
+      "cefr": "B1"
+    },
+    {
+      "english": "sleeve",
+      "spanish": "Manga",
+      "cefr": "B1"
+    },
+    {
+      "english": "hoodie",
+      "spanish": "Sudadera con capucha",
+      "cefr": "B2"
+    },
+    {
+      "english": "zipper",
+      "spanish": "Cremallera / cierre",
+      "cefr": "B2"
+    },
+    {
+      "english": "seam",
+      "spanish": "Costura",
+      "cefr": "C1"
+    },
+    {
+      "english": "hem",
+      "spanish": "Dobladillo",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Básico si llegaste a la tres, intermedio si llegaste a la siete y experto si acertaste las diez.",
+  "outro": "[curious] ¿Qué palabra te costó más? Dímelo en los comentarios, junto a tu número.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv004",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Qué nivel de inglés tienes? EL MEDIO AMBIENTE en 10 palabras 🌱",
+  "video_description": "Reciclar, residuos, huella de carbono: test de inglés sobre el medio ambiente ♻️",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el medio ambiente",
+  "intro": "[warm] Diez palabras sobre el medio ambiente, de fácil a experto. ¿Las sabes antes que yo?",
+  "items": [
+    {
+      "english": "air",
+      "spanish": "Aire",
+      "cefr": "A1"
+    },
+    {
+      "english": "recycle",
+      "spanish": "Reciclar",
+      "cefr": "A2"
+    },
+    {
+      "english": "save energy",
+      "spanish": "Ahorrar energía",
+      "cefr": "A2"
+    },
+    {
+      "english": "pollution",
+      "spanish": "Contaminación",
+      "cefr": "B1"
+    },
+    {
+      "english": "climate change",
+      "spanish": "Cambio climático",
+      "cefr": "B1"
+    },
+    {
+      "english": "waste",
+      "spanish": "Residuos",
+      "cefr": "B1"
+    },
+    {
+      "english": "endangered species",
+      "spanish": "Especies en peligro",
+      "cefr": "B2"
+    },
+    {
+      "english": "single-use",
+      "spanish": "De un solo uso",
+      "cefr": "B2"
+    },
+    {
+      "english": "carbon footprint",
+      "spanish": "Huella de carbono",
+      "cefr": "C1"
+    },
+    {
+      "english": "landfill",
+      "spanish": "Vertedero",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si reciclaste las diez, eres experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Comparte tu resultado en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#MedioAmbiente",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv100",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

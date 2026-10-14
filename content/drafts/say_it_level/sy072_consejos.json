@@ -1,0 +1,82 @@
+{
+  "type": "say_it_level",
+  "video_title": "DAR CONSEJOS en inglés: ¿llegas a las frases expertas? 💡",
+  "video_description": "Should, had better, if I were you… diez consejos en inglés de fácil a difícil. 💡",
+  "title": "Dilo en inglés",
+  "theme": "dar consejos",
+  "intro": "[thoughtful] Hoy das consejos. Lee la frase en español y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Bebe más agua.",
+      "english": "Drink more water.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Ve al médico.",
+      "english": "Go see a doctor.",
+      "cefr": "A1",
+      "alt": "Go to the doctor."
+    },
+    {
+      "spanish": "No trabajes tanto.",
+      "english": "Don't work so hard.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Deberías descansar un poco.",
+      "english": "You should get some rest.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Por qué no se lo dices?",
+      "english": "Why don't you tell him?",
+      "cefr": "B1",
+      "alt": "Why don't you tell her?"
+    },
+    {
+      "spanish": "Tendrías que haberlo pensado antes.",
+      "english": "You should've thought of that before.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Más vale que no digas nada.",
+      "english": "You'd better not say anything.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Yo que tú, lo llamaría.",
+      "english": "If I were you, I'd call him.",
+      "cefr": "B2",
+      "tip": "«Yo que tú» es If I were you, no «I that you»"
+    },
+    {
+      "spanish": "Te aconsejo que no vayas.",
+      "english": "I'd advise you not to go.",
+      "cefr": "B2",
+      "alt": "I wouldn't go if I were you.",
+      "tip": "Sin «that»: advise you not to + verbo"
+    },
+    {
+      "spanish": "No le des tantas vueltas.",
+      "english": "Don't overthink it.",
+      "cefr": "C1",
+      "tip": "«Darle vueltas» a algo es overthink, no «give turns»"
+    }
+  ],
+  "verdict": "Hasta la tres, básico. Hasta la siete, intermedio. Y si llegaste a la diez, yo que tú daría clases.",
+  "outro": "[cheerful] ¿Cuál es el mejor consejo que te han dado? Escríbelo con tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#GramáticaInglesa",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy072",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

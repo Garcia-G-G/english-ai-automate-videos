@@ -1,0 +1,84 @@
+{
+  "type": "say_it_level",
+  "video_title": "DAR LAS GRACIAS en inglés más allá del «thank you» 💐",
+  "video_description": "Diez maneras de dar las gracias en inglés, de la más básica a la que usan los nativos. 💐",
+  "title": "Dilo en inglés",
+  "theme": "dar las gracias",
+  "intro": "[cheerful] Diez formas de dar las gracias. Yo lo digo en español y tú en inglés. ¡Adelante!",
+  "items": [
+    {
+      "spanish": "Muchas gracias.",
+      "english": "Thank you so much.",
+      "cefr": "A1",
+      "alt": "Thanks a lot."
+    },
+    {
+      "spanish": "Gracias por todo.",
+      "english": "Thanks for everything.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Gracias por esperarme.",
+      "english": "Thanks for waiting for me.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Eres muy amable.",
+      "english": "That's very kind of you.",
+      "cefr": "A2",
+      "alt": "You're very kind."
+    },
+    {
+      "spanish": "Gracias por invitarme.",
+      "english": "Thanks for having me.",
+      "cefr": "B1",
+      "alt": "Thanks for inviting me."
+    },
+    {
+      "spanish": "Te debo una.",
+      "english": "I owe you one.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "No sé cómo agradecértelo.",
+      "english": "I don't know how to thank you.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "No hay de qué.",
+      "english": "Don't mention it.",
+      "cefr": "B1",
+      "alt": "No problem.",
+      "tip": "«No hay de qué» es Don't mention it o No problem"
+    },
+    {
+      "spanish": "Te lo agradezco mucho.",
+      "english": "I really appreciate it.",
+      "cefr": "B2",
+      "tip": "«Agradecer algo» es appreciate it, no «thank it»"
+    },
+    {
+      "spanish": "No tenías por qué.",
+      "english": "You shouldn't have.",
+      "cefr": "B2",
+      "alt": "You didn't have to.",
+      "tip": "Al recibir un regalo se dice You shouldn't have!"
+    }
+  ],
+  "verdict": "¿Hasta la tres? Nivel básico. ¿Hasta la siete? Intermedio. ¿Las diez? Experto. ¡Gracias por jugar!",
+  "outro": "[warm] Gracias por llegar hasta aquí. ¿Cuál fue tu número? Te leo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésBásico",
+    "#FrasesEnInglés",
+    "#InglésCotidiano"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy024",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Cuántos PHRASAL VERBS con PUT conoces? Test de nivel 🧩",
+  "video_description": "Put on, put off, put up with: 10 phrasal verbs con PUT, de fácil a experto ✨",
+  "title": "¿Qué nivel tienes?",
+  "theme": "phrasal verbs con PUT",
+  "intro": "[cheerful] Diez phrasal verbs con put. Tú dices qué significan y después te lo digo yo.",
+  "items": [
+    {
+      "english": "put on",
+      "spanish": "Ponerse (ropa)",
+      "cefr": "A2"
+    },
+    {
+      "english": "put down",
+      "spanish": "Dejar, soltar",
+      "cefr": "A2"
+    },
+    {
+      "english": "put away",
+      "spanish": "Guardar",
+      "cefr": "A2"
+    },
+    {
+      "english": "put back",
+      "spanish": "Devolver a su sitio",
+      "cefr": "B1"
+    },
+    {
+      "english": "put off",
+      "spanish": "Posponer",
+      "cefr": "B1"
+    },
+    {
+      "english": "put out",
+      "spanish": "Apagar (un fuego)",
+      "cefr": "B1"
+    },
+    {
+      "english": "put up with",
+      "spanish": "Aguantar, soportar",
+      "cefr": "B2"
+    },
+    {
+      "english": "put forward",
+      "spanish": "Proponer",
+      "cefr": "B2"
+    },
+    {
+      "english": "put aside",
+      "spanish": "Ahorrar, apartar",
+      "cefr": "C1"
+    },
+    {
+      "english": "put down to",
+      "spanish": "Atribuir a",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Y si sacaste las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? No lo dejes para luego: coméntalo.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#PhrasalVerbs",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv077",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

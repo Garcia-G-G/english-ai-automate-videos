@@ -1,0 +1,81 @@
+{
+  "type": "say_it_level",
+  "video_title": "COCINAR EN CASA en inglés: 10 frases con trampa 🍳",
+  "video_description": "Cortar, remover y no quemar el arroz: diez frases para cocinar en casa en inglés. 🍳",
+  "title": "Dilo en inglés",
+  "theme": "cocinar en casa",
+  "intro": "[happy] Hoy cocinamos en inglés. Oye la frase, dila en inglés en voz alta y compárala con la mía.",
+  "items": [
+    {
+      "spanish": "La cena está lista.",
+      "english": "Dinner's ready.",
+      "cefr": "A1",
+      "alt": "Dinner is ready."
+    },
+    {
+      "spanish": "¿Tienes hambre?",
+      "english": "Are you hungry?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Corta las cebollas.",
+      "english": "Chop the onions.",
+      "cefr": "A2",
+      "alt": "Cut the onions."
+    },
+    {
+      "spanish": "Precalienta el horno a 180 grados.",
+      "english": "Preheat the oven to 180 degrees.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Hay que remover la salsa.",
+      "english": "You need to stir the sauce.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Déjalo hervir diez minutos.",
+      "english": "Let it boil for ten minutes.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Se está quemando el arroz.",
+      "english": "The rice is burning.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Pon la mesa, por favor.",
+      "english": "Set the table, please.",
+      "cefr": "B1",
+      "tip": "«Poner la mesa» es set the table, no put"
+    },
+    {
+      "spanish": "Se me ha pasado la pasta.",
+      "english": "I overcooked the pasta.",
+      "cefr": "B2",
+      "tip": "Cocinar algo de más es overcook"
+    },
+    {
+      "spanish": "Échale una pizca de sal.",
+      "english": "Add a pinch of salt.",
+      "cefr": "B2",
+      "tip": "«Echar» un ingrediente es add, no throw"
+    }
+  ],
+  "verdict": "¿Te quedaste en la tres? Básico. ¿En la siete? Intermedio. ¿Las diez? Experto y chef.",
+  "outro": "[curious] ¿Qué plato cocinarías en inglés? Dime también tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésEnLaCocina",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy032",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

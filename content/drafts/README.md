@@ -79,3 +79,27 @@ la004 fin de semana).
   written. Topics: pronunciation pr026–pr030 (connected_speech), slang sl018–sl027.
 - **shadowing** — "Repite conmigo": one useful sentence said three times,
   each a bit faster, with a timed gap for the viewer to repeat it aloud.
+
+## The level family (2026-10-13) — 300 drafts, 100 per type
+
+Owner's idea: ten items in rising difficulty, and the viewer finds out their
+level — get to 3 and you are **básico**, to 7 **intermedio**, all 10 **experto**.
+Three types share the format and one renderer; they differ in what the viewer
+does. Full shapes and rules: `LEVEL_TYPES_SPEC.md`; theme per id:
+`LEVEL_TYPES_THEMES.md`; topic files ready to move into `content/topics/`:
+`topics/{level_vocab,say_it,pron_level}.json`. Check: `python3
+tools/level_drafts_check.py` (0 errors, 0 cross-video repeats on 2026-10-13).
+
+| type | the viewer… | items | category / ids |
+|---|---|---|---|
+| `level_test` — «¿Qué nivel tienes?» | sees/hears an English word or expression and says what it means | `english, spanish, cefr` | `level_vocab` lv001–lv100 |
+| `say_it_level` — «Dilo en inglés» | reads a Spanish sentence and says it in English; 8–10 are traps | `spanish, english, cefr, alt?, tip?` | `say_it` sy001–sy100 |
+| `pronounce_level` — «¿Cómo se pronuncia?» | reads an English word aloud before the voice says it | `english, respelling, ipa, trap` | `pron_level` pl001–pl100 |
+
+Script-level fields in all three: `title, theme, intro, items[10], verdict,
+outro, hashtags[5], video_title, video_description, _meta{draft: true}`.
+`translations`, `english_phrases` and `full_script` are derived when the drafts
+move to the queue, the way how_do_you_say's were. The tier announcements
+(«Ahora, nivel intermedio» / «Y ahora, nivel experto») are fixed by the format
+and recorded once, never written per script. Build brief:
+`_audit/pasos/STEP_49.md`.

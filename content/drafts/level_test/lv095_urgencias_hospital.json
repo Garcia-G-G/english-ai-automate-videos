@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "URGENCIAS Y HOSPITAL en inglés: test de nivel en 10 palabras 🚑",
+  "video_description": "De «ambulance» a «stretcher»: palabras de urgencias que conviene saber en inglés 🏥",
+  "title": "¿Qué nivel tienes?",
+  "theme": "urgencias y hospital",
+  "intro": "[calm] Diez palabras de urgencias y hospital, de fácil a experto. Dime qué significan antes que yo.",
+  "items": [
+    {
+      "english": "doctor",
+      "spanish": "Médico",
+      "cefr": "A1"
+    },
+    {
+      "english": "hospital",
+      "spanish": "Hospital",
+      "cefr": "A1"
+    },
+    {
+      "english": "ambulance",
+      "spanish": "Ambulancia",
+      "cefr": "A2"
+    },
+    {
+      "english": "injury",
+      "spanish": "Lesión, herida",
+      "cefr": "B1"
+    },
+    {
+      "english": "surgery",
+      "spanish": "Cirugía",
+      "cefr": "B1"
+    },
+    {
+      "english": "emergency room",
+      "spanish": "Urgencias",
+      "cefr": "B1"
+    },
+    {
+      "english": "stitches",
+      "spanish": "Puntos de sutura",
+      "cefr": "B2"
+    },
+    {
+      "english": "crutches",
+      "spanish": "Muletas",
+      "cefr": "B2"
+    },
+    {
+      "english": "stretcher",
+      "spanish": "Camilla",
+      "cefr": "C1"
+    },
+    {
+      "english": "be discharged",
+      "spanish": "Recibir el alta",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, nivel básico. A la siete, intermedio. Y si sabías las diez, experto.",
+  "outro": "[warm] ¿Hasta qué número llegaste? Te leo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv095",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Básico, intermedio o experto? La POLÍTICA en inglés 🏛️",
+  "video_description": "Elecciones, campaña, «landslide»: 10 palabras de política en inglés, de fácil a difícil 🗳️",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la política",
+  "intro": "[curious] Hoy toca política en inglés. Diez palabras, y tú dices qué significan antes que yo.",
+  "items": [
+    {
+      "english": "president",
+      "spanish": "Presidente",
+      "cefr": "A2"
+    },
+    {
+      "english": "vote",
+      "spanish": "Votar",
+      "cefr": "A2"
+    },
+    {
+      "english": "government",
+      "spanish": "Gobierno",
+      "cefr": "A2"
+    },
+    {
+      "english": "election",
+      "spanish": "Elecciones",
+      "cefr": "B1"
+    },
+    {
+      "english": "party",
+      "spanish": "Partido político",
+      "cefr": "B1"
+    },
+    {
+      "english": "campaign",
+      "spanish": "Campaña",
+      "cefr": "B1"
+    },
+    {
+      "english": "polls",
+      "spanish": "Encuestas",
+      "cefr": "B2"
+    },
+    {
+      "english": "run for office",
+      "spanish": "Presentarse a un cargo",
+      "cefr": "B2"
+    },
+    {
+      "english": "landslide",
+      "spanish": "Victoria aplastante",
+      "cefr": "C1"
+    },
+    {
+      "english": "turnout",
+      "spanish": "Participación electoral",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Resultados: tres, nivel básico. Siete, intermedio. Y si votaste bien las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Vota en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#InglésAvanzado",
+    "#AprenderInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv057",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

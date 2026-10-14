@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "10 palabras de VIAJES en inglés: ¿hasta dónde llegas? 🧳",
+  "video_description": "Descubre si tu vocabulario de viajes en inglés es básico, intermedio o experto. 🧳",
+  "title": "¿Qué nivel tienes?",
+  "theme": "los viajes",
+  "intro": "[cheerful] Pon a prueba tu inglés con diez palabras de viajes. Di qué significa cada una.",
+  "items": [
+    {
+      "english": "trip",
+      "spanish": "Viaje",
+      "cefr": "A1"
+    },
+    {
+      "english": "map",
+      "spanish": "Mapa",
+      "cefr": "A1"
+    },
+    {
+      "english": "suitcase",
+      "spanish": "Maleta",
+      "cefr": "A2"
+    },
+    {
+      "english": "abroad",
+      "spanish": "En el extranjero",
+      "cefr": "B1"
+    },
+    {
+      "english": "sightseeing",
+      "spanish": "Hacer turismo",
+      "cefr": "B1"
+    },
+    {
+      "english": "itinerary",
+      "spanish": "Itinerario",
+      "cefr": "B2"
+    },
+    {
+      "english": "jet lag",
+      "spanish": "Desfase horario",
+      "cefr": "B2"
+    },
+    {
+      "english": "wanderlust",
+      "spanish": "Ganas de viajar",
+      "cefr": "C1"
+    },
+    {
+      "english": "off the beaten path",
+      "spanish": "Lejos de lo turístico",
+      "cefr": "C1"
+    },
+    {
+      "english": "travel light",
+      "spanish": "Viajar con poco equipaje",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: nivel básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[warm] ¿Llegaste a la diez? Cuéntame tu resultado aquí abajo.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésParaHispanos",
+    "#ClasesDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv006",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

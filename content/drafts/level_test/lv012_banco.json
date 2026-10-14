@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "Test rápido: 10 palabras del BANCO en inglés 🏦",
+  "video_description": "Diez palabras del banco en inglés, cada una más difícil que la anterior. 🏦",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el banco",
+  "intro": "[curious] ¿Hasta qué número llegas? Diez palabras del banco; tú dices qué significan.",
+  "items": [
+    {
+      "english": "credit card",
+      "spanish": "Tarjeta de crédito",
+      "cefr": "A1"
+    },
+    {
+      "english": "ATM",
+      "spanish": "Cajero automático",
+      "cefr": "A2"
+    },
+    {
+      "english": "account",
+      "spanish": "Cuenta",
+      "cefr": "A2"
+    },
+    {
+      "english": "withdraw",
+      "spanish": "Sacar / retirar dinero",
+      "cefr": "B1"
+    },
+    {
+      "english": "deposit",
+      "spanish": "Ingresar / depositar",
+      "cefr": "B1"
+    },
+    {
+      "english": "loan",
+      "spanish": "Préstamo",
+      "cefr": "B1"
+    },
+    {
+      "english": "branch",
+      "spanish": "Sucursal",
+      "cefr": "B2"
+    },
+    {
+      "english": "mortgage",
+      "spanish": "Hipoteca",
+      "cefr": "B2"
+    },
+    {
+      "english": "overdraft",
+      "spanish": "Descubierto / sobregiro",
+      "cefr": "C1"
+    },
+    {
+      "english": "bank statement",
+      "spanish": "Extracto bancario",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Con tres tienes nivel básico, con siete nivel intermedio, y si sabías las diez, eres experto.",
+  "outro": "[warm] ¿Cuántas acertaste? Te leo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv012",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

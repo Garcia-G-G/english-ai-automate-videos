@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras con S inicial: ¿dices «es-» sin querer? 🐍",
+  "video_description": "Spanish, student, statistics: el reto es no añadir una «e» al principio. 🚫",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con S inicial (sin «es-»)",
+  "intro": "[curious] Reto: decir estas palabras sin «e» al principio. Tú primero.",
+  "items": [
+    {
+      "english": "stop",
+      "respelling": "STAP",
+      "ipa": "ˈstɑp",
+      "trap": "Sin «e» delante: STAP, no «estop»"
+    },
+    {
+      "english": "small",
+      "respelling": "SMAL",
+      "ipa": "ˈsmɑl",
+      "trap": "SM al inicio, sin «e»"
+    },
+    {
+      "english": "Spanish",
+      "respelling": "SPA-nish",
+      "ipa": "ˈspænɪʃ",
+      "trap": "Sin «e»: SPA-nish, no «es-PA-nish»"
+    },
+    {
+      "english": "student",
+      "respelling": "STUU-dent",
+      "ipa": "ˈstuːdənt",
+      "trap": "Sin «e» y la U larga: STUU-dent"
+    },
+    {
+      "english": "special",
+      "respelling": "SPE-shal",
+      "ipa": "ˈspɛʃəl",
+      "trap": "CI suena «sh» y sin «e» delante"
+    },
+    {
+      "english": "stadium",
+      "respelling": "STEI-di-am",
+      "ipa": "ˈsteɪdiəm",
+      "trap": "Sin «e» y la A suena «ei»"
+    },
+    {
+      "english": "strategy",
+      "respelling": "STRA-ta-yi",
+      "ipa": "ˈstrætədʒi",
+      "trap": "STR sin «e» y la G suena «y»"
+    },
+    {
+      "english": "specific",
+      "respelling": "spe-SI-fik",
+      "ipa": "spəˈsɪfɪk",
+      "trap": "Sin «e» delante y acento en SI"
+    },
+    {
+      "english": "statistics",
+      "respelling": "sta-TIS-tiks",
+      "ipa": "stəˈtɪstɪks",
+      "trap": "ST dos veces: sta-TIS-tiks"
+    },
+    {
+      "english": "spontaneous",
+      "respelling": "span-TEI-ni-as",
+      "ipa": "spɑnˈteɪniəs",
+      "trap": "Sin «e» y acento en TEI"
+    }
+  ],
+  "verdict": "¿Te quedaste en la tres? Nivel básico. ¿En la siete? Intermedio. ¿Las diez? Experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste sin la «e»? Escríbelo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésParaHispanohablantes",
+    "#ErroresComunes",
+    "#AprenderInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl083",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

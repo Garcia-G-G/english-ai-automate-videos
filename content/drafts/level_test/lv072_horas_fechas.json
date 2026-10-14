@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Qué nivel de inglés tienes? LAS HORAS Y LAS FECHAS ⏰",
+  "video_description": "Del «o'clock» al año bisiesto: test de inglés con 10 palabras de horas y fechas 📅",
+  "title": "¿Qué nivel tienes?",
+  "theme": "las horas y las fechas",
+  "intro": "[curious] Horas y fechas en inglés: diez palabras, de fácil a experto. Dime qué significan.",
+  "items": [
+    {
+      "english": "today",
+      "spanish": "Hoy",
+      "cefr": "A1"
+    },
+    {
+      "english": "week",
+      "spanish": "Semana",
+      "cefr": "A1"
+    },
+    {
+      "english": "o'clock",
+      "spanish": "En punto",
+      "cefr": "A1"
+    },
+    {
+      "english": "half past",
+      "spanish": "Y media",
+      "cefr": "A2"
+    },
+    {
+      "english": "the day after tomorrow",
+      "spanish": "Pasado mañana",
+      "cefr": "B1"
+    },
+    {
+      "english": "weekday",
+      "spanish": "Día laborable",
+      "cefr": "B1"
+    },
+    {
+      "english": "leap year",
+      "spanish": "Año bisiesto",
+      "cefr": "B2"
+    },
+    {
+      "english": "time zone",
+      "spanish": "Zona horaria",
+      "cefr": "B2"
+    },
+    {
+      "english": "daylight saving time",
+      "spanish": "Horario de verano",
+      "cefr": "C1"
+    },
+    {
+      "english": "at the crack of dawn",
+      "spanish": "Al amanecer, muy temprano",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres, nivel básico. Siete, intermedio. Y si llegaste a las diez, eres experto, justo a tiempo.",
+  "outro": "[cheerful] ¿A qué número llegaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv072",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

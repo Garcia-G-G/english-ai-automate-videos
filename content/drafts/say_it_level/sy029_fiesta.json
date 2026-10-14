@@ -1,0 +1,85 @@
+{
+  "type": "say_it_level",
+  "video_title": "En una FIESTA en inglés: 10 frases para no quedarte callado 🎉",
+  "video_description": "Saludar, bailar y conocer gente: diez frases de fiesta en inglés con trampas al final. 🎉",
+  "title": "Dilo en inglés",
+  "theme": "en una fiesta",
+  "intro": "[excited] ¡Estás en una fiesta! Antes de que yo hable, suelta la frase en inglés. ¡Vamos!",
+  "items": [
+    {
+      "spanish": "¡Qué buena fiesta!",
+      "english": "Great party!",
+      "cefr": "A1",
+      "alt": "What a great party!"
+    },
+    {
+      "spanish": "¿Quieres bailar?",
+      "english": "Do you want to dance?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Dónde dejo el abrigo?",
+      "english": "Where can I put my coat?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Quieres algo de beber?",
+      "english": "Can I get you a drink?",
+      "cefr": "A2",
+      "alt": "Would you like something to drink?"
+    },
+    {
+      "spanish": "Creo que ya nos conocemos.",
+      "english": "I think we've met before.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "La música está demasiado alta.",
+      "english": "The music is too loud.",
+      "cefr": "B1",
+      "tip": "Alto de volumen es loud, no high"
+    },
+    {
+      "spanish": "Me tengo que ir ya.",
+      "english": "I have to get going.",
+      "cefr": "B1",
+      "alt": "I have to go now."
+    },
+    {
+      "spanish": "¿De qué conoces a Ana?",
+      "english": "How do you know Ana?",
+      "cefr": "B1",
+      "tip": "«¿De qué conoces a...?» es How do you know...?"
+    },
+    {
+      "spanish": "No conozco a nadie aquí.",
+      "english": "I don't know anybody here.",
+      "cefr": "B1",
+      "alt": "I don't know anyone here.",
+      "tip": "Con don't va anybody: nunca doble negación"
+    },
+    {
+      "spanish": "Vamos a hacer una fiesta el sábado.",
+      "english": "We're throwing a party on Saturday.",
+      "cefr": "B2",
+      "alt": "We're having a party on Saturday.",
+      "tip": "«Hacer una fiesta» es throw o have a party, no make"
+    }
+  ],
+  "verdict": "¿Llegaste a la tres? Básico. ¿A la siete? Intermedio. ¿A la diez? Experto y el alma de la fiesta.",
+  "outro": "[excited] ¿Cuántas te salieron? Comenta tu número y sigue la fiesta.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés",
+    "#InglésConAmigos"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy029",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

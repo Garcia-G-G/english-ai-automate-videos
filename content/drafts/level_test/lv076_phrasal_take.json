@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "Test de PHRASAL VERBS con TAKE: de básico a experto 🎯",
+  "video_description": "Take off, take after, take for granted: mide tu nivel con 10 phrasal verbs con TAKE 🧠",
+  "title": "¿Qué nivel tienes?",
+  "theme": "phrasal verbs con TAKE",
+  "intro": "[curious] Hoy, phrasal verbs con take. Diez, cada vez más difíciles: ¿qué significan?",
+  "items": [
+    {
+      "english": "take off",
+      "spanish": "Quitarse (ropa)",
+      "cefr": "A2"
+    },
+    {
+      "english": "take out",
+      "spanish": "Sacar",
+      "cefr": "A2"
+    },
+    {
+      "english": "take back",
+      "spanish": "Devolver",
+      "cefr": "A2"
+    },
+    {
+      "english": "take care of",
+      "spanish": "Cuidar de",
+      "cefr": "B1"
+    },
+    {
+      "english": "take after",
+      "spanish": "Parecerse a (familiar)",
+      "cefr": "B2"
+    },
+    {
+      "english": "take up",
+      "spanish": "Empezar (un hobby)",
+      "cefr": "B2"
+    },
+    {
+      "english": "take over",
+      "spanish": "Tomar el control",
+      "cefr": "B2"
+    },
+    {
+      "english": "take on",
+      "spanish": "Asumir (un trabajo)",
+      "cefr": "B2"
+    },
+    {
+      "english": "taken aback",
+      "spanish": "Desconcertado",
+      "cefr": "C1"
+    },
+    {
+      "english": "take for granted",
+      "spanish": "Dar por sentado",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. ¿Las diez? Nivel experto, sin duda.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Te espero en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#PhrasalVerbs",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv076",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

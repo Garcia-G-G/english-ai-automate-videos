@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "HERRAMIENTAS en inglés: test de nivel en 10 palabras 🔨",
+  "video_description": "Vocabulario de herramientas en inglés de menos a más: ¿hasta dónde llegas? 🔨",
+  "title": "¿Qué nivel tienes?",
+  "theme": "las herramientas",
+  "intro": "[excited] Empezamos fácil y terminamos difícil: diez palabras de herramientas. Tradúcelas en voz alta.",
+  "items": [
+    {
+      "english": "hammer",
+      "spanish": "Martillo",
+      "cefr": "A2"
+    },
+    {
+      "english": "nail",
+      "spanish": "Clavo",
+      "cefr": "A2"
+    },
+    {
+      "english": "ladder",
+      "spanish": "Escalera de mano",
+      "cefr": "A2"
+    },
+    {
+      "english": "screw",
+      "spanish": "Tornillo",
+      "cefr": "B1"
+    },
+    {
+      "english": "screwdriver",
+      "spanish": "Destornillador",
+      "cefr": "B1"
+    },
+    {
+      "english": "drill",
+      "spanish": "Taladro",
+      "cefr": "B1"
+    },
+    {
+      "english": "pliers",
+      "spanish": "Alicates / pinzas",
+      "cefr": "B2"
+    },
+    {
+      "english": "wrench",
+      "spanish": "Llave inglesa",
+      "cefr": "B2"
+    },
+    {
+      "english": "tape measure",
+      "spanish": "Cinta métrica",
+      "cefr": "C1"
+    },
+    {
+      "english": "sandpaper",
+      "spanish": "Papel de lija",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Resultado: hasta la tres, básico; hasta la siete, intermedio; las diez, experto. ¿Cuál es el tuyo?",
+  "outro": "[excited] Pon tu número en los comentarios. ¿Quién llega a la diez?",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#TestDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv043",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

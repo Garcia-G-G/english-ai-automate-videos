@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "Tus HOBBIES en inglés: ¿básico, intermedio o experto? 🧶",
+  "video_description": "De fácil a experto: ¿cuántas palabras de hobbies conoces en inglés? 🧶",
+  "title": "¿Qué nivel tienes?",
+  "theme": "los hobbies",
+  "intro": "[warm] Diez palabras de hobbies, cada una más difícil. Tradúcela antes de que te la diga yo.",
+  "items": [
+    {
+      "english": "dance",
+      "spanish": "Bailar",
+      "cefr": "A1"
+    },
+    {
+      "english": "chess",
+      "spanish": "Ajedrez",
+      "cefr": "A2"
+    },
+    {
+      "english": "fishing",
+      "spanish": "Pesca",
+      "cefr": "A2"
+    },
+    {
+      "english": "hiking",
+      "spanish": "Senderismo",
+      "cefr": "B1"
+    },
+    {
+      "english": "board game",
+      "spanish": "Juego de mesa",
+      "cefr": "B1"
+    },
+    {
+      "english": "sewing",
+      "spanish": "Coser",
+      "cefr": "B1"
+    },
+    {
+      "english": "crossword",
+      "spanish": "Crucigrama",
+      "cefr": "B2"
+    },
+    {
+      "english": "knitting",
+      "spanish": "Tejer / hacer punto",
+      "cefr": "B2"
+    },
+    {
+      "english": "pottery",
+      "spanish": "Cerámica",
+      "cefr": "C1"
+    },
+    {
+      "english": "birdwatching",
+      "spanish": "Observar aves",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico. A la siete, intermedio. Y acertar las diez es de experto.",
+  "outro": "[curious] Cuéntame en los comentarios en qué número te paraste.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv041",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

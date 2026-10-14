@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "La PERSONALIDAD en inglés: 10 palabras de fácil a difícil 🧠",
+  "video_description": "¿Llegas a la décima palabra de personalidad? Haz el test y compruébalo. 🧠",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la personalidad",
+  "intro": "[happy] ¿Cuántas palabras de personalidad conoces? Di el significado en voz alta antes de la respuesta.",
+  "items": [
+    {
+      "english": "funny",
+      "spanish": "Gracioso / divertido",
+      "cefr": "A1"
+    },
+    {
+      "english": "shy",
+      "spanish": "Tímido",
+      "cefr": "A2"
+    },
+    {
+      "english": "friendly",
+      "spanish": "Simpático",
+      "cefr": "A2"
+    },
+    {
+      "english": "kind",
+      "spanish": "Amable",
+      "cefr": "A2"
+    },
+    {
+      "english": "hard-working",
+      "spanish": "Trabajador",
+      "cefr": "B1"
+    },
+    {
+      "english": "outgoing",
+      "spanish": "Extrovertido",
+      "cefr": "B1"
+    },
+    {
+      "english": "reliable",
+      "spanish": "Fiable / de confianza",
+      "cefr": "B2"
+    },
+    {
+      "english": "open-minded",
+      "spanish": "De mente abierta",
+      "cefr": "B2"
+    },
+    {
+      "english": "down-to-earth",
+      "spanish": "Con los pies en la tierra",
+      "cefr": "C1"
+    },
+    {
+      "english": "level-headed",
+      "spanish": "Sensato / equilibrado",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Básico si llegaste a la tres, intermedio si llegaste a la siete y experto si acertaste las diez.",
+  "outro": "[curious] ¿Qué palabra te costó más? Dímelo en los comentarios, junto a tu número.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv016",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

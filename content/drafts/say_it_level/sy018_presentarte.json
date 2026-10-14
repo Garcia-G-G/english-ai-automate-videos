@@ -1,0 +1,84 @@
+{
+  "type": "say_it_level",
+  "video_title": "PRESENTARTE en inglés sin errores: ¿hasta cuál llegas? 🙋",
+  "video_description": "Nombre, edad y a qué te dedicas: diez frases para presentarte en inglés sin errores típicos. 🙋",
+  "title": "Dilo en inglés",
+  "theme": "presentarte",
+  "intro": "[happy] Vamos a presentarnos en inglés. Te digo la frase en español y tú la dices antes que yo.",
+  "items": [
+    {
+      "spanish": "Me llamo Carlos.",
+      "english": "My name is Carlos.",
+      "cefr": "A1",
+      "alt": "I'm Carlos."
+    },
+    {
+      "spanish": "Soy de Colombia.",
+      "english": "I'm from Colombia.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Vivo en Madrid.",
+      "english": "I live in Madrid.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Trabajo de enfermero.",
+      "english": "I work as a nurse.",
+      "cefr": "A2",
+      "alt": "I'm a nurse."
+    },
+    {
+      "spanish": "Me mudé aquí el año pasado.",
+      "english": "I moved here last year.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me encanta conocer gente nueva.",
+      "english": "I love meeting new people.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Estoy casado y tengo dos hijos.",
+      "english": "I'm married with two kids.",
+      "cefr": "B1",
+      "alt": "I'm married and I have two kids."
+    },
+    {
+      "spanish": "Tengo treinta y dos años.",
+      "english": "I'm thirty-two.",
+      "cefr": "B1",
+      "alt": "I'm thirty-two years old.",
+      "tip": "La edad va con be: I'm 32, nunca «I have 32»"
+    },
+    {
+      "spanish": "Vivo aquí desde hace dos años.",
+      "english": "I've lived here for two years.",
+      "cefr": "B2",
+      "alt": "I've been living here for two years.",
+      "tip": "«Desde hace» + tiempo: present perfect + for"
+    },
+    {
+      "spanish": "Me dedico al marketing.",
+      "english": "I work in marketing.",
+      "cefr": "B2",
+      "tip": "«Dedicarse a» un sector se dice work in"
+    }
+  ],
+  "verdict": "¿Hasta la tres? Básico. ¿Hasta la siete? Intermedio. ¿Las diez? Experto, y encantado de conocerte.",
+  "outro": "[warm] Ahora preséntate tú: dime en los comentarios hasta qué número llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésBásico",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy018",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

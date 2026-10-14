@@ -1,0 +1,84 @@
+{
+  "type": "say_it_level",
+  "video_title": "LLEVAR en inglés: wear, carry, take… ¿o ninguno? 🎒",
+  "video_description": "Llevar gafas, llevar a alguien, llevar dos horas: diez trampas con llevar. 🎒",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «llevar»",
+  "intro": "[curious] Diez frases con «llevar», y cada una se dice distinto. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Llevo gafas.",
+      "english": "I wear glasses.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Te llevo la bolsa?",
+      "english": "Can I carry your bag?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Llevo a los niños al colegio.",
+      "english": "I take the kids to school.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Qué llevas en la mochila?",
+      "english": "What do you have in your backpack?",
+      "cefr": "B1",
+      "alt": "What's in your backpack?"
+    },
+    {
+      "spanish": "¿Te llevo a casa?",
+      "english": "Do you want a ride home?",
+      "cefr": "B1",
+      "alt": "Can I give you a lift home?"
+    },
+    {
+      "spanish": "No te olvides de llevar el pasaporte.",
+      "english": "Don't forget to bring your passport.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me llevo bien con mi jefe.",
+      "english": "I get along well with my boss.",
+      "cefr": "B2",
+      "alt": "I get on well with my boss."
+    },
+    {
+      "spanish": "Llevo media hora esperando.",
+      "english": "I've been waiting for half an hour.",
+      "cefr": "B2",
+      "tip": "«Llevo media hora…» pide I've been + -ing + for"
+    },
+    {
+      "spanish": "Este trabajo lleva mucho tiempo.",
+      "english": "This job takes a lot of time.",
+      "cefr": "B2",
+      "alt": "This job takes ages.",
+      "tip": "«Llevar tiempo» una tarea es take, no «carry»"
+    },
+    {
+      "spanish": "Nos llevamos un susto tremendo.",
+      "english": "We got a real scare.",
+      "cefr": "C1",
+      "alt": "We had a real fright.",
+      "tip": "«Llevarse un susto» es get a scare o have a fright"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Y si te llevaste las diez, experto.",
+  "outro": "[cheerful] ¿Cuántas te llevaste? Escríbelo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#TrucosDeInglés",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy081",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "El MAR Y LA PLAYA en inglés: test de 10 palabras 🌊",
+  "video_description": "Diez palabras del mar y la playa en inglés, cada una más difícil que la anterior. 🌊",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el mar y la playa",
+  "intro": "[curious] Mira cada palabra del mar y la playa y di qué significa. La número diez es solo para expertos.",
+  "items": [
+    {
+      "english": "sea",
+      "spanish": "Mar",
+      "cefr": "A1"
+    },
+    {
+      "english": "sand",
+      "spanish": "Arena",
+      "cefr": "A1"
+    },
+    {
+      "english": "wave",
+      "spanish": "Ola",
+      "cefr": "A2"
+    },
+    {
+      "english": "sunscreen",
+      "spanish": "Protector solar",
+      "cefr": "A2"
+    },
+    {
+      "english": "seashell",
+      "spanish": "Concha",
+      "cefr": "B1"
+    },
+    {
+      "english": "lifeguard",
+      "spanish": "Socorrista / salvavidas",
+      "cefr": "B1"
+    },
+    {
+      "english": "tide",
+      "spanish": "Marea",
+      "cefr": "B2"
+    },
+    {
+      "english": "jellyfish",
+      "spanish": "Medusa",
+      "cefr": "B2"
+    },
+    {
+      "english": "seaweed",
+      "spanish": "Algas",
+      "cefr": "C1"
+    },
+    {
+      "english": "rip current",
+      "spanish": "Corriente de resaca",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos son nivel básico, siete son intermedio y diez de diez, nivel experto.",
+  "outro": "[curious] ¿Cuál fue tu número? Déjalo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv020",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

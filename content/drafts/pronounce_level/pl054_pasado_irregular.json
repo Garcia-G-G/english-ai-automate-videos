@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Verbos irregulares en PASADO: ¿cómo suenan de verdad? ⏳",
+  "video_description": "Diez pasados irregulares que se escriben de una forma y suenan de otra. 🔁",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "verbos irregulares en pasado",
+  "intro": "[thoughtful] Diez verbos en pasado. Pronuncia cada uno antes de escucharme.",
+  "items": [
+    {
+      "english": "ate",
+      "respelling": "EIT",
+      "ipa": "ˈeɪt",
+      "trap": "Suena igual que «eight»"
+    },
+    {
+      "english": "saw",
+      "respelling": "SA",
+      "ipa": "ˈsɑ",
+      "trap": "La W no suena: SA"
+    },
+    {
+      "english": "went",
+      "respelling": "UENT",
+      "ipa": "ˈwɛnt",
+      "trap": "Empieza con «u»: UENT"
+    },
+    {
+      "english": "said",
+      "respelling": "SED",
+      "ipa": "ˈsɛd",
+      "trap": "AI suena «e»: SED, no SEID"
+    },
+    {
+      "english": "meant",
+      "respelling": "MENT",
+      "ipa": "ˈmɛnt",
+      "trap": "EA suena «e» corta: MENT"
+    },
+    {
+      "english": "chose",
+      "respelling": "CHOUZ",
+      "ipa": "ˈtʃoʊz",
+      "trap": "La S suena «z»: CHOUZ"
+    },
+    {
+      "english": "built",
+      "respelling": "BILT",
+      "ipa": "ˈbɪlt",
+      "trap": "La U no suena: BILT"
+    },
+    {
+      "english": "shone",
+      "respelling": "SHOUN",
+      "ipa": "ˈʃoʊn",
+      "trap": "Rima con «bone»: SHOUN"
+    },
+    {
+      "english": "sought",
+      "respelling": "SAT",
+      "ipa": "ˈsɑt",
+      "trap": "OUGH suena «a»: SAT"
+    },
+    {
+      "english": "wound",
+      "respelling": "UAUND",
+      "ipa": "ˈwaʊnd",
+      "trap": "Pasado de «wind»: UAUND, no UUND"
+    }
+  ],
+  "verdict": "Tres bien es nivel básico; siete, intermedio. Y las diez perfectas, nivel experto.",
+  "outro": "[curious] ¿Hasta dónde llegaste sin fallar? Te leo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#VerbosIrregulares",
+    "#GramáticaInglesa",
+    "#AprenderInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl054",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

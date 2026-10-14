@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "TECNOLOGÍA en inglés: ¿eres básico o experto? 💻",
+  "video_description": "¿Llegas a la décima palabra de tecnología? Haz el test y compruébalo. 💻",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la tecnología",
+  "intro": "[curious] ¿Hasta qué número llegas? Diez palabras de tecnología; tú dices qué significan.",
+  "items": [
+    {
+      "english": "computer",
+      "spanish": "Ordenador / computadora",
+      "cefr": "A1"
+    },
+    {
+      "english": "screen",
+      "spanish": "Pantalla",
+      "cefr": "A2"
+    },
+    {
+      "english": "keyboard",
+      "spanish": "Teclado",
+      "cefr": "A2"
+    },
+    {
+      "english": "download",
+      "spanish": "Descargar",
+      "cefr": "A2"
+    },
+    {
+      "english": "update",
+      "spanish": "Actualizar",
+      "cefr": "B1"
+    },
+    {
+      "english": "wireless",
+      "spanish": "Inalámbrico",
+      "cefr": "B1"
+    },
+    {
+      "english": "storage",
+      "spanish": "Almacenamiento",
+      "cefr": "B2"
+    },
+    {
+      "english": "user-friendly",
+      "spanish": "Fácil de usar",
+      "cefr": "B2"
+    },
+    {
+      "english": "glitch",
+      "spanish": "Fallo técnico",
+      "cefr": "C1"
+    },
+    {
+      "english": "cutting-edge",
+      "spanish": "De vanguardia",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Con tres tienes nivel básico, con siete nivel intermedio, y si sabías las diez, eres experto.",
+  "outro": "[warm] ¿Cuántas acertaste? Te leo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv024",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

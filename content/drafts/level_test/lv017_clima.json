@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "El CLIMA en inglés: ¿hasta qué palabra llegas? ⛅",
+  "video_description": "De fácil a experto: ¿cuántas palabras del clima conoces en inglés? ⛅",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el clima",
+  "intro": "[warm] Diez palabras del clima, cada una más difícil. Tradúcela antes de que te la diga yo.",
+  "items": [
+    {
+      "english": "rain",
+      "spanish": "Lluvia",
+      "cefr": "A1"
+    },
+    {
+      "english": "snow",
+      "spanish": "Nieve",
+      "cefr": "A1"
+    },
+    {
+      "english": "sunny",
+      "spanish": "Soleado",
+      "cefr": "A2"
+    },
+    {
+      "english": "cloudy",
+      "spanish": "Nublado",
+      "cefr": "A2"
+    },
+    {
+      "english": "forecast",
+      "spanish": "Pronóstico del tiempo",
+      "cefr": "B1"
+    },
+    {
+      "english": "humid",
+      "spanish": "Húmedo",
+      "cefr": "B1"
+    },
+    {
+      "english": "heatwave",
+      "spanish": "Ola de calor",
+      "cefr": "B2"
+    },
+    {
+      "english": "it's pouring",
+      "spanish": "Llueve a cántaros",
+      "cefr": "B2"
+    },
+    {
+      "english": "drizzle",
+      "spanish": "Llovizna",
+      "cefr": "C1"
+    },
+    {
+      "english": "overcast",
+      "spanish": "Encapotado / cubierto",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico. A la siete, intermedio. Y acertar las diez es de experto.",
+  "outro": "[curious] Cuéntame en los comentarios en qué número te paraste.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv017",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

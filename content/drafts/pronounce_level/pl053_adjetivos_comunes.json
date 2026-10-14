@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "10 ADJETIVOS comunes que casi todos pronuncian mal 🤔",
+  "video_description": "Adjetivos que usas cada día y que esconden más de una trampa de pronunciación. 🗣️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "adjetivos comunes",
+  "intro": "[curious] Adjetivos de todos los días. Dilos en voz alta antes que yo, de fácil a experto.",
+  "items": [
+    {
+      "english": "big",
+      "respelling": "BIG",
+      "ipa": "ˈbɪɡ",
+      "trap": "La I es corta y la G final se oye"
+    },
+    {
+      "english": "good",
+      "respelling": "GUD",
+      "ipa": "ˈɡʊd",
+      "trap": "OO suena «u» corta: GUD"
+    },
+    {
+      "english": "nice",
+      "respelling": "NAIS",
+      "ipa": "ˈnaɪs",
+      "trap": "La I suena «ai» y la E no suena"
+    },
+    {
+      "english": "beautiful",
+      "respelling": "BIUU-ta-fal",
+      "ipa": "ˈbjuːtəfəl",
+      "trap": "Tres sílabas: BIUU-ta-fal"
+    },
+    {
+      "english": "busy",
+      "respelling": "BI-zi",
+      "ipa": "ˈbɪzi",
+      "trap": "La U suena «i» y la S, «z»"
+    },
+    {
+      "english": "quiet",
+      "respelling": "KUAI-at",
+      "ipa": "ˈkwaɪət",
+      "trap": "Dos sílabas: no es «quite»"
+    },
+    {
+      "english": "different",
+      "respelling": "DIF-rant",
+      "ipa": "ˈdɪfrənt",
+      "trap": "Dos sílabas, no tres: DIF-rant"
+    },
+    {
+      "english": "awkward",
+      "respelling": "AK-uerd",
+      "ipa": "ˈɑkwɚd",
+      "trap": "AW suena «a»: AK-uerd"
+    },
+    {
+      "english": "genuine",
+      "respelling": "YE-niu-in",
+      "ipa": "ˈdʒɛnjuɪn",
+      "trap": "Termina en «in», no en «ain»"
+    },
+    {
+      "english": "vulnerable",
+      "respelling": "VAL-ner-a-bal",
+      "ipa": "ˈvʌlnɚəbəl",
+      "trap": "La U suena «a» y el acento va en VAL"
+    }
+  ],
+  "verdict": "¿Te quedaste en la tres? Básico. ¿Llegaste a la siete? Intermedio. Si dijiste bien las diez, experto.",
+  "outro": "[cheerful] ¿Cuál te costó más? Déjamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésFácil",
+    "#AdjetivosEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl053",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

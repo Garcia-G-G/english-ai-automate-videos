@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "¿Cuántas palabras del ESPACIO sabes en inglés? 🚀",
+  "video_description": "Del sol a los agujeros negros: test de inglés con 10 palabras del espacio 🌌",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el espacio",
+  "intro": "[excited] Despegamos. Diez palabras del espacio en inglés: tradúcelas antes de que yo lo haga.",
+  "items": [
+    {
+      "english": "sun",
+      "spanish": "Sol",
+      "cefr": "A1"
+    },
+    {
+      "english": "moon",
+      "spanish": "Luna",
+      "cefr": "A1"
+    },
+    {
+      "english": "sky",
+      "spanish": "Cielo",
+      "cefr": "A1"
+    },
+    {
+      "english": "spaceship",
+      "spanish": "Nave espacial",
+      "cefr": "A2"
+    },
+    {
+      "english": "orbit",
+      "spanish": "Órbita",
+      "cefr": "B1"
+    },
+    {
+      "english": "launch",
+      "spanish": "Lanzamiento",
+      "cefr": "B1"
+    },
+    {
+      "english": "shooting star",
+      "spanish": "Estrella fugaz",
+      "cefr": "B2"
+    },
+    {
+      "english": "black hole",
+      "spanish": "Agujero negro",
+      "cefr": "B2"
+    },
+    {
+      "english": "space junk",
+      "spanish": "Basura espacial",
+      "cefr": "C1"
+    },
+    {
+      "english": "zero gravity",
+      "spanish": "Ingravidez",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y con las diez, nivel experto, astronauta.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Te leo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#EspacioEnInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv060",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

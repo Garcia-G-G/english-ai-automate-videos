@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "VERDURAS en inglés: ¿básico, intermedio o experto? 🥕",
+  "video_description": "Un test rápido de inglés con diez palabras de verduras, de básico a experto. 🥕",
+  "title": "¿Qué nivel tienes?",
+  "theme": "las verduras",
+  "intro": "[curious] Te enseño una palabra de verduras y tú dices qué significa. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "english": "potato",
+      "spanish": "Papa / patata",
+      "cefr": "A1"
+    },
+    {
+      "english": "tomato",
+      "spanish": "Tomate",
+      "cefr": "A1"
+    },
+    {
+      "english": "carrot",
+      "spanish": "Zanahoria",
+      "cefr": "A2"
+    },
+    {
+      "english": "onion",
+      "spanish": "Cebolla",
+      "cefr": "A2"
+    },
+    {
+      "english": "garlic",
+      "spanish": "Ajo",
+      "cefr": "B1"
+    },
+    {
+      "english": "lettuce",
+      "spanish": "Lechuga",
+      "cefr": "B1"
+    },
+    {
+      "english": "cucumber",
+      "spanish": "Pepino",
+      "cefr": "B1"
+    },
+    {
+      "english": "spinach",
+      "spanish": "Espinacas",
+      "cefr": "B2"
+    },
+    {
+      "english": "eggplant",
+      "spanish": "Berenjena",
+      "cefr": "C1"
+    },
+    {
+      "english": "zucchini",
+      "spanish": "Calabacín / calabacita",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si sabías hasta la tres, nivel básico. Si llegaste a la siete, intermedio. Y si acertaste las diez, ¡experto!",
+  "outro": "[cheerful] ¿Hasta dónde llegaste? Escríbelo abajo y comparte el reto.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés",
+    "#InglésFácil",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv050",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}

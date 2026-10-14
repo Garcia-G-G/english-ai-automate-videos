@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "PALABRAS LARGAS en inglés: ¿llegas a la última? 📏",
+  "video_description": "Palabras largas en inglés para medir tu pronunciación. 🧠",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras largas",
+  "intro": "[excited] Palabras largas, cada vez más difíciles. Dilas en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "important",
+      "respelling": "im-POR-tent",
+      "ipa": "ɪmˈpɔrtənt",
+      "trap": "Acento en POR: im-POR-tent"
+    },
+    {
+      "english": "difficult",
+      "respelling": "DI-fi-kelt",
+      "ipa": "ˈdɪfɪkəlt",
+      "trap": "Acento en DI, no en CUL"
+    },
+    {
+      "english": "information",
+      "respelling": "in-fer-MEI-shen",
+      "ipa": "ɪnfɚˈmeɪʃən",
+      "trap": "Acento en MEI, no al final"
+    },
+    {
+      "english": "university",
+      "respelling": "iuu-ne-VER-se-ti",
+      "ipa": "juːnəˈvɝsəti",
+      "trap": "Empieza por «iuu», acento en VER"
+    },
+    {
+      "english": "opportunity",
+      "respelling": "a-per-TUU-ne-ti",
+      "ipa": "ɑpɚˈtuːnəti",
+      "trap": "Acento en TUU: a-per-TUU-ne-ti"
+    },
+    {
+      "english": "communication",
+      "respelling": "ke-miuu-ne-KEI-shen",
+      "ipa": "kəmjuːnəˈkeɪʃən",
+      "trap": "Acento en KEI y «miuu» en medio"
+    },
+    {
+      "english": "responsibility",
+      "respelling": "ri-span-se-BI-le-ti",
+      "ipa": "rɪspɑnsəˈbɪləti",
+      "trap": "Seis sílabas, acento en BI"
+    },
+    {
+      "english": "unfortunately",
+      "respelling": "an-FOR-che-net-li",
+      "ipa": "ʌnˈfɔrtʃənətli",
+      "trap": "Acento en FOR y la T suena «ch»"
+    },
+    {
+      "english": "Mediterranean",
+      "respelling": "me-di-te-REI-ni-en",
+      "ipa": "mɛdɪtəˈreɪniən",
+      "trap": "Acento en REI: me-di-te-REI-ni-en"
+    },
+    {
+      "english": "particularly",
+      "respelling": "per-TI-kie-ler-li",
+      "ipa": "pɚˈtɪkjəlɚli",
+      "trap": "Cinco sílabas, acento en TI"
+    }
+  ],
+  "verdict": "Las tres primeras bien: nivel básico. Hasta la siete: intermedio. Las diez correctas: experto de verdad.",
+  "outro": "[thoughtful] ¿Qué palabra vas a repasar? Dímelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#PalabrasLargas",
+    "#AprenderInglés",
+    "#InglésAmericano",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl027",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

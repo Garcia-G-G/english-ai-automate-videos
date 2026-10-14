@@ -1,0 +1,84 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Sabes CANCELAR PLANES en inglés sin quedar mal? 📅",
+  "video_description": "Diez frases para cancelar planes en inglés con educación, y las trampas que te delatan. 📅",
+  "title": "Dilo en inglés",
+  "theme": "cancelar planes",
+  "intro": "[thoughtful] Te ha surgido algo y tienes que cancelar. Di cada frase en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Lo siento, no puedo ir.",
+      "english": "Sorry, I can't go.",
+      "cefr": "A1",
+      "alt": "Sorry, I can't make it."
+    },
+    {
+      "spanish": "Estoy enfermo.",
+      "english": "I'm sick.",
+      "cefr": "A1",
+      "alt": "I'm not well."
+    },
+    {
+      "spanish": "¿Lo hacemos otro día?",
+      "english": "Can we do it another day?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Tengo que trabajar hasta tarde.",
+      "english": "I have to work late.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "No voy a poder venir esta noche.",
+      "english": "I won't be able to come tonight.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Te importa si lo pasamos al viernes?",
+      "english": "Do you mind if we move it to Friday?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Siento avisarte tan tarde.",
+      "english": "Sorry for the short notice.",
+      "cefr": "B1",
+      "alt": "Sorry for letting you know so late."
+    },
+    {
+      "spanish": "Me ha surgido algo.",
+      "english": "Something's come up.",
+      "cefr": "B1",
+      "alt": "Something came up.",
+      "tip": "«Me ha surgido algo» se dice Something's come up"
+    },
+    {
+      "spanish": "Te lo compensaré.",
+      "english": "I'll make it up to you.",
+      "cefr": "B2",
+      "tip": "«Compensar» a alguien es make it up to someone"
+    },
+    {
+      "spanish": "Al final no voy a poder ir.",
+      "english": "I can't make it after all.",
+      "cefr": "B2",
+      "alt": "I won't be able to make it after all.",
+      "tip": "«Al final» (cambio de plan) es after all, no at the end"
+    }
+  ],
+  "verdict": "Tres frases: básico. Siete: intermedio. Las diez: experto en cancelar con elegancia.",
+  "outro": "[curious] ¿Hasta qué número llegaste? Y sé sincero: ¿cancelas mucho?",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésCotidiano",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy022",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

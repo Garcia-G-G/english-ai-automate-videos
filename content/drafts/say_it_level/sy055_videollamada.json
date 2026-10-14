@@ -1,0 +1,81 @@
+{
+  "type": "say_it_level",
+  "video_title": "Tu próxima VIDEOLLAMADA en inglés: ¿llegas a la 10? 💻",
+  "video_description": "De «¿me oyes?» a «se te corta»: diez frases de videollamada en inglés. 💻",
+  "title": "Dilo en inglés",
+  "theme": "en una videollamada",
+  "intro": "[cheerful] Estás en una videollamada. Te digo la frase y tú la dices en inglés, rápido.",
+  "items": [
+    {
+      "spanish": "¿Me oyes bien?",
+      "english": "Can you hear me okay?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Tu cámara está apagada.",
+      "english": "Your camera is off.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Hola a todos, ¿empezamos?",
+      "english": "Hi everyone, shall we start?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Puedes repetir la última parte?",
+      "english": "Can you repeat the last part?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Te oigo, pero no te veo.",
+      "english": "I can hear you, but I can't see you.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Voy a silenciar el micrófono.",
+      "english": "I'm going to mute my mic.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Podrías compartir tu pantalla?",
+      "english": "Could you share your screen?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Tienes el micro silenciado.",
+      "english": "You're on mute.",
+      "cefr": "B2",
+      "tip": "Se dice You're on mute, no «your mic is silenced»"
+    },
+    {
+      "spanish": "Se te ha congelado la imagen.",
+      "english": "Your video froze.",
+      "cefr": "B2",
+      "alt": "You froze.",
+      "tip": "Basta con froze: Your video froze o You froze"
+    },
+    {
+      "spanish": "Se te corta la voz.",
+      "english": "You're breaking up.",
+      "cefr": "C1",
+      "alt": "You're cutting out.",
+      "tip": "«Se te corta» es You're breaking up, no «your voice cuts»"
+    }
+  ],
+  "verdict": "Hasta la tres, nivel básico. Hasta la siete, intermedio. Diez de diez: ya puedes dirigir la reunión.",
+  "outro": "[happy] ¿Hasta dónde llegaste sin congelarte? Escríbelo abajo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaElTrabajo",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Teletrabajo"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy055",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

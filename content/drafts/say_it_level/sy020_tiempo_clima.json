@@ -1,0 +1,84 @@
+{
+  "type": "say_it_level",
+  "video_title": "HABLAR DEL TIEMPO en inglés: ¿básico o experto? ⛅",
+  "video_description": "Sol, lluvia y frío: diez frases para hablar del tiempo en inglés y la trampa del «hace». ⛅",
+  "title": "Dilo en inglés",
+  "theme": "hablar del tiempo",
+  "intro": "[curious] El tema estrella de cualquier conversación: el tiempo. Dilo en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Hace sol.",
+      "english": "It's sunny.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Está lloviendo.",
+      "english": "It's raining.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Hace mucho viento.",
+      "english": "It's really windy.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Mañana va a nevar.",
+      "english": "It's going to snow tomorrow.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Ayer hizo un calor horrible.",
+      "english": "It was really hot yesterday.",
+      "cefr": "B1",
+      "alt": "It was boiling yesterday."
+    },
+    {
+      "spanish": "Han dicho que va a llover.",
+      "english": "They said it's going to rain.",
+      "cefr": "B1",
+      "alt": "The forecast says it's going to rain."
+    },
+    {
+      "spanish": "Si hace bueno, iremos a la playa.",
+      "english": "If it's nice out, we'll go to the beach.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Hace un frío que pela.",
+      "english": "It's freezing.",
+      "cefr": "B1",
+      "alt": "It's freezing cold.",
+      "tip": "El tiempo va con it's, nunca «it makes cold»"
+    },
+    {
+      "spanish": "Está lloviendo a cántaros.",
+      "english": "It's pouring.",
+      "cefr": "B2",
+      "alt": "It's pouring rain.",
+      "tip": "Para «a cántaros», lo natural hoy es It's pouring"
+    },
+    {
+      "spanish": "Hace un tiempo horrible.",
+      "english": "The weather is terrible.",
+      "cefr": "B2",
+      "alt": "It's terrible weather.",
+      "tip": "Weather es incontable: nunca «a horrible weather»"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, nivel básico. Hasta la siete, intermedio. Las diez, experto llueva o haga sol.",
+  "outro": "[happy] ¿Qué tiempo hace donde estás? Dímelo en comentarios con tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésBásico",
+    "#VocabularioEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy020",
+    "video_type": "say_it_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La W MUDA en inglés: test de pronunciación ✍️",
+  "video_description": "Palabras con una W que no se pronuncia: ¿caes en la trampa? 🗡️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la W muda",
+  "intro": "[curious] La W muda engaña a todo el mundo. Lee cada palabra en voz alta.",
+  "items": [
+    {
+      "english": "who",
+      "respelling": "JUU",
+      "ipa": "ˈhuː",
+      "trap": "La W no suena: JUU"
+    },
+    {
+      "english": "whole",
+      "respelling": "JOUL",
+      "ipa": "ˈhoʊl",
+      "trap": "Suena igual que «hole»: JOUL"
+    },
+    {
+      "english": "wrap",
+      "respelling": "RAP",
+      "ipa": "ˈræp",
+      "trap": "La W no suena: RAP"
+    },
+    {
+      "english": "answer",
+      "respelling": "AN-ser",
+      "ipa": "ˈænsɚ",
+      "trap": "La W no suena: AN-ser"
+    },
+    {
+      "english": "whose",
+      "respelling": "JUUZ",
+      "ipa": "ˈhuːz",
+      "trap": "W muda y la S suena Z"
+    },
+    {
+      "english": "wreck",
+      "respelling": "REK",
+      "ipa": "ˈrɛk",
+      "trap": "La W no suena: REK"
+    },
+    {
+      "english": "wrinkle",
+      "respelling": "RIN-kel",
+      "ipa": "ˈrɪŋkəl",
+      "trap": "W muda: RIN-kel"
+    },
+    {
+      "english": "sword",
+      "respelling": "SORD",
+      "ipa": "ˈsɔrd",
+      "trap": "La W no suena: SORD"
+    },
+    {
+      "english": "playwright",
+      "respelling": "PLEI-rait",
+      "ipa": "ˈpleɪraɪt",
+      "trap": "W y GH mudas: PLEI-rait"
+    },
+    {
+      "english": "Greenwich",
+      "respelling": "GRE-nich",
+      "ipa": "ˈgrɛnɪtʃ",
+      "trap": "W muda y EE suena «e»: GRE-nich"
+    }
+  ],
+  "verdict": "Hasta la tres, básico; hasta la siete, intermedio. Si ninguna de las diez te frenó, eres experto.",
+  "outro": "[warm] ¿Llegaste a la diez? Cuéntame tu resultado aquí abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#AprenderInglés",
+    "#InglésParaHispanos",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl021",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

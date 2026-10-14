@@ -1,0 +1,76 @@
+{
+  "type": "level_test",
+  "video_title": "En el RESTAURANTE en inglés: 10 palabras de menos a más 🍝",
+  "video_description": "De fácil a experto: ¿cuántas palabras del restaurante conoces en inglés? 🍝",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el restaurante",
+  "intro": "[happy] Aquí tienes diez palabras del restaurante. Tu misión: decir qué significan antes que yo.",
+  "items": [
+    {
+      "english": "menu",
+      "spanish": "Carta / menú",
+      "cefr": "A1"
+    },
+    {
+      "english": "waiter",
+      "spanish": "Camarero / mesero",
+      "cefr": "A1"
+    },
+    {
+      "english": "check",
+      "spanish": "La cuenta",
+      "cefr": "A2"
+    },
+    {
+      "english": "tip",
+      "spanish": "Propina",
+      "cefr": "A2"
+    },
+    {
+      "english": "appetizer",
+      "spanish": "Entrante / entrada",
+      "cefr": "B1"
+    },
+    {
+      "english": "main course",
+      "spanish": "Plato principal",
+      "cefr": "B1"
+    },
+    {
+      "english": "side dish",
+      "spanish": "Guarnición",
+      "cefr": "B2"
+    },
+    {
+      "english": "split the check",
+      "spanish": "Pagar a medias",
+      "cefr": "B2"
+    },
+    {
+      "english": "on the house",
+      "spanish": "Invita la casa",
+      "cefr": "C1"
+    },
+    {
+      "english": "doggy bag",
+      "spanish": "Bolsa para las sobras",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste?",
+  "outro": "[happy] Deja tu puntuación en los comentarios y nos vemos en el próximo test.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv009",
+    "video_type": "level_test",
+    "model": "manual",
+    "draft": true
+  }
+}
