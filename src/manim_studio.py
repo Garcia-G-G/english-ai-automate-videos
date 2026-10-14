@@ -261,6 +261,112 @@ def job_log(job_id: str, tail: int = 40, studio_dir: Path = STUDIO_DIR) -> str:
 
 # ── The page ───────────────────────────────────────────────────────────────────
 
+# ── YouTube (STEP 56): the long lessons, through the Shorts' uploader and guard ──
+YT_HASHTAGS = ("#AprenderInglés", "#InglésFácil", "#GramáticaInglesa")
+YT_TAGS = ("aprender inglés", "inglés fácil", "gramática inglesa", "clases de inglés", "inglés para hispanohablantes",
+           "curso de inglés", "learn english", "english grammar", "english lesson", "english for spanish speakers")
+YT_CTA = "Suscríbete: una lección nueva cada semana."
+YT_GENERIC_HEADINGS = {"introducción", "practica", "práctica", "resumen", "repaso"}
+YT_VIDEO_TYPE = "manim_lesson"
+
+
+def _sentences(text: str) -> list:
+    return [s for s in re.split(r"(?<=[.!?])\s+", text.strip()) if s]
+
+
+def youtube_metadata(lesson: dict, render_row: dict, studio_dir: Path = STUDIO_DIR) -> dict:
+    """{title, description, tags, hashtags} for one render, from the lesson itself — no API.
+    Description: 2-sentence summary · «En esta lección:» bullets from the headings · the
+    render's chapter list as written (0:00 first) · CTA · the hashtags, once."""
+    level = (lesson.get("kicker") or "").split("·")[-1].strip() or lesson.get("level", "")
+    title = lesson["title"] + (f" | Inglés {level}" if level else "")
+    if len(title) > 100:
+        title = lesson["title"][:100]
+    beats = lesson.get("beats", [])
+    opening = next((b for b in beats if b.get("type") == "title"), beats[0] if beats else {"narration": ""})
+    sentences = [s for s in _sentences(L.spoken_text(opening.get("narration", ""))) if s.rstrip(".!") != "Hola"]
+    summary = " ".join(sentences[:2])
+    headings = [re.sub(r"^Parte\s+\d+\s*·\s*", "", b.get("text", "")).strip() for b in beats if b.get("type") == "heading"]
+    bullets = [h for h in headings if h and h.lower() not in YT_GENERIC_HEADINGS][:5]
+    chapters_path = studio_dir / "renders" / render_row["chapters"] if render_row.get("chapters") else None
+    chapters = chapters_path.read_text(encoding="utf-8").strip() if chapters_path and chapters_path.exists() else ""
+    if chapters and not chapters.startswith("0:00"):
+        chapters = ""                                  # YouTube ignores a list that does not start at 0:00
+    specific = lesson.get("hashtags") or ["#" + "".join(w.capitalize() for w in lesson["id"].split("-"))]
+    hashtags = list(dict.fromkeys(list(YT_HASHTAGS) + [h if h.startswith("#") else "#" + h for h in specific]))[:5]
+    parts = [summary, "En esta lección:\n" + "\n".join(f"• {b}" for b in bullets) if bullets else "",
+             chapters, YT_CTA, " ".join(hashtags)]
+    words = [w for w in re.split(r"\W+", re.sub(r"\|.*", "", lesson["title"]).lower()) if len(w) > 1]
+    tags = list(dict.fromkeys(list(YT_TAGS) + [" ".join(lesson["id"].split("-")), lesson["title"].split(":")[0].lower()]
+                              + ([f"inglés {level}"] if level else []) + words))[:15]
+    return {"title": title, "description": "\n\n".join(p for p in parts if p), "tags": tags, "hashtags": hashtags}
+
+
+def youtube_json_path(render_row: dict, studio_dir: Path = STUDIO_DIR) -> Path:
+    return (studio_dir / "renders" / render_row["file"]).with_suffix(".youtube.json")
+
+
+def youtube_publication(render_row: dict) -> Optional[dict]:
+    """The ledger row of this render's YouTube upload, or None — what «Subido · fecha · enlace» reads."""
+    from publication_log import find_by_artifact
+    rows = [r for r in find_by_artifact(Path(render_row["file"]).stem) if r.get("platform") == "youtube"]
+    return rows[0] if rows else None
+
+
+def upload_to_youtube(render_row: dict, meta: dict, privacy: Optional[str] = None, on_progress=None,
+                      studio_dir: Path = STUDIO_DIR, manager=None) -> dict:
+    """One click → one upload, through the Shorts' guard and ledger: decide (no second publication),
+    attempt before a byte, upload_video(shorts=False), record; then the poster as thumbnail and the
+    .srt as Spanish captions — each a note on failure, never a failed upload.
+    Returns {ok, url, upload_id, notes, refused}."""
+    from publication_log import (ATTEMPT_FAILED, ATTEMPT_PUBLISHED, ATTEMPT_SESSION, ATTEMPT_STARTED,
+                                 PublicationRecordError, record_attempt, record_upload_result)
+    from upload_guard import decide
+    from uploader import UploadManager
+
+    video = studio_dir / "renders" / render_row["file"]
+    artifact = video.stem
+    manager = manager or UploadManager()
+    verdict = decide(artifact, "youtube", manager=manager)
+    if not verdict.should_upload:
+        return {"ok": False, "refused": verdict.reason, "upload_id": verdict.upload_id, "url": None, "notes": []}
+    youtube = manager.uploaders["youtube"]
+    if not youtube.authenticate():
+        return {"ok": False, "refused": None, "url": None, "upload_id": None,
+                "notes": [f"YouTube: authorization failed ({youtube.last_auth_error or 'not configured'})"]}
+    youtube_json_path(render_row, studio_dir).write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
+    size = video.stat().st_size
+    record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_STARTED, video_path=str(video),
+                   file_size=size, detail=meta["title"][:120])
+    result = youtube.upload_video(
+        str(video), meta["title"], meta["description"], [t.lstrip("#") for t in meta["tags"]], shorts=False,
+        privacy=privacy, on_progress=on_progress,
+        on_session=lambda uri, sz: record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_SESSION,
+                                                  video_path=str(video), session_uri=uri, file_size=sz,
+                                                  detail=meta["title"][:120]))
+    if not result.success:
+        record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_FAILED, video_path=str(video),
+                       session_uri=result.session_uri, file_size=size, detail=str(result.error)[:200])
+        return {"ok": False, "refused": None, "url": None, "upload_id": None, "notes": [f"upload failed: {result.error}"]}
+    notes = []
+    try:
+        record_upload_result(artifact=artifact, video_path=str(video), video_type=YT_VIDEO_TYPE, platform="youtube",
+                             result=result, sent_title=meta["title"], sent_description=meta["description"],
+                             sent_hashtags=meta["tags"])
+        record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_PUBLISHED, video_path=str(video),
+                       session_uri=result.session_uri, upload_id=result.upload_id, detail="recorded")
+    except PublicationRecordError as exc:              # live but unnamed: leave the attempt open, say it loudly
+        record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_SESSION, video_path=str(video),
+                       session_uri=result.session_uri, upload_id=result.upload_id,
+                       detail=f"published but record failed: {exc}")
+        notes.append(f"UPLOADED BUT NOT RECORDED — note the id {result.upload_id}: {exc}")
+    poster = studio_dir / "renders" / render_row["poster"] if render_row.get("poster") else None
+    notes.append(youtube.set_thumbnail(result.upload_id, str(poster))[1] if poster and poster.exists() else "no poster beside the render")
+    srt = video.with_suffix(".srt")
+    notes.append(youtube.upload_captions(result.upload_id, str(srt))[1] if srt.exists() else "no .srt beside the render")
+    return {"ok": True, "refused": None, "url": result.url, "upload_id": result.upload_id, "notes": notes}
+
+
 def render() -> None:                                  # pragma: no cover — UI
     import streamlit as st
 
@@ -525,6 +631,7 @@ def render() -> None:                                  # pragma: no cover — UI
                 st.caption(f"Se publicará `{latest['file']}` ({latest.get('voice')}, {latest.get('quality')}, "
                            f"{int((latest.get('duration_s') or 0) // 60)}:{int((latest.get('duration_s') or 0) % 60):02d}).")
 
+    _youtube_panel(st, lesson)
     _job_monitor(st)
 
     # ── Renders ───────────────────────────────────────────────────────────────
@@ -537,6 +644,9 @@ def render() -> None:                                  # pragma: no cover — UI
         mins = f"{int(row['duration_s'] // 60)}:{int(row['duration_s'] % 60):02d}" if row.get("duration_s") else "?"
         with st.expander(f"{row['at']} · {row.get('lesson', '')} · {row['voice']} · {row['quality']} · {mins} · "
                          f"{row['bytes'] // 1024 // 1024} MB", expanded=row is rows[0]):
+            published = youtube_publication(row)
+            if published:
+                st.success(f"Subido · {published['published_at'][:10]} · {published.get('url') or published.get('upload_id')}")
             if video.exists():
                 # ONE player open, the newest; the rest load on demand. st.video
                 # reads the whole file into Streamlit's media store on EVERY
@@ -556,6 +666,60 @@ def render() -> None:                                  # pragma: no cover — UI
                     st.code(chapters.read_text(encoding="utf-8"), language="text")
             else:
                 st.caption("El archivo ya no está.")
+
+
+YT_PRIVACY_WORDS = {"public": "Pública", "unlisted": "Oculta", "private": "Privada"}   # YouTube Studio's words
+
+
+def _youtube_panel(st, lesson: dict) -> None:          # pragma: no cover — UI
+    """«Subir a YouTube»: the newest render of this lesson (or an older one), its metadata
+    editable, one button. What the owner edits is what is sent and saved as <name>.youtube.json."""
+    from uploader import resolve_privacy
+    st.markdown("### Subir a YouTube")
+    renders = [r for r in R.ledger(STUDIO_DIR) if r.get("lesson") == lesson["id"]
+               and (STUDIO_DIR / "renders" / r["file"]).exists()]
+    if not renders:
+        st.caption("Esta lección aún no tiene un vídeo renderizado.")
+        return
+    row = renders[0] if len(renders) == 1 else {r["file"]: r for r in renders}[
+        st.selectbox("Render", [r["file"] for r in renders], key=f"yt_pick_{lesson['id']}",
+                     help="El más reciente primero.")]
+    published = youtube_publication(row)
+    if published:
+        st.success(f"Subido · {published['published_at'][:10]} · {published.get('url') or published.get('upload_id')}")
+        return
+    saved = youtube_json_path(row)
+    meta = json.loads(saved.read_text(encoding="utf-8")) if saved.exists() else youtube_metadata(lesson, row)
+    key = f"yt_{row['file']}"
+    c1, c2 = st.columns([3, 1])
+    title = c1.text_input("Título", meta["title"], max_chars=100, key=key + "_title")
+    poster = STUDIO_DIR / "renders" / row["poster"] if row.get("poster") else None
+    if poster and poster.exists():
+        c2.image(str(poster), caption="Miniatura")
+    description = st.text_area("Descripción", meta["description"], height=320, key=key + "_desc",
+                               help="Los capítulos deben empezar en 0:00 o YouTube los ignora.")
+    tags = st.text_input("Etiquetas (separadas por comas)", ", ".join(meta["tags"]), key=key + "_tags")
+    default = resolve_privacy("youtube")
+    privacy = st.selectbox("Visibilidad", list(YT_PRIVACY_WORDS), index=list(YT_PRIVACY_WORDS).index(default),
+                           format_func=YT_PRIVACY_WORDS.get, key=key + "_privacy")
+    edited = {"title": title.strip(), "description": description.strip(), "hashtags": meta.get("hashtags", []),
+              "tags": [t.strip() for t in tags.split(",") if t.strip()][:15]}
+
+    @st.fragment
+    def _upload():
+        if not st.button("Subir a YouTube", type="primary", key=key + "_go"):
+            return
+        bar = st.progress(0.0, text="Subiendo…")
+        outcome = upload_to_youtube(row, edited, privacy=None if privacy == default else privacy,
+                                    on_progress=lambda sent, total: bar.progress(sent / total, text=f"Subiendo… {sent * 100 // total} %"))
+        if outcome["refused"]:
+            st.warning(f"No se sube otra vez: {outcome['refused']}.")
+        elif outcome["ok"]:
+            bar.progress(1.0, text="Subido")
+            st.success(f"Subido: {outcome['url']}")
+        for note in outcome["notes"]:
+            (st.info if outcome["ok"] else st.error)(note)
+    _upload()
 
 
 def _lazy_video(st, path, key: str, open_now: bool = False) -> None:   # pragma: no cover — UI

@@ -32,6 +32,7 @@ import uploader as U  # noqa: E402
 UPLOAD = "https://www.googleapis.com/auth/youtube.upload"
 READONLY = "https://www.googleapis.com/auth/youtube.readonly"
 ANALYTICS = "https://www.googleapis.com/auth/yt-analytics.readonly"
+FORCE_SSL = "https://www.googleapis.com/auth/youtube.force-ssl"   # captions, STEP 56
 
 
 def _uploader(scope: str, monkeypatch, expires_in=3600, refresh="r"):
@@ -56,13 +57,13 @@ def test_a_narrow_token_reports_the_missing_scopes(monkeypatch):
 
 
 def test_a_complete_token_reports_nothing_missing(monkeypatch):
-    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS}", monkeypatch)
+    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS} {FORCE_SSL}", monkeypatch)
 
     assert yt._missing_scopes() == []
 
 
 def test_scope_order_does_not_matter(monkeypatch):
-    yt = _uploader(f"{ANALYTICS} {UPLOAD} {READONLY}", monkeypatch)
+    yt = _uploader(f"{ANALYTICS} {FORCE_SSL} {UPLOAD} {READONLY}", monkeypatch)
 
     assert yt._missing_scopes() == []
 
@@ -108,7 +109,7 @@ def test_refresh_is_skipped_when_a_scope_is_missing(monkeypatch):
 
 def test_a_complete_token_is_still_reused(monkeypatch):
     """The check must not force re-consent on every run."""
-    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS}", monkeypatch)
+    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS} {FORCE_SSL}", monkeypatch)
     monkeypatch.setattr(U, "run_loopback_auth",
                         lambda build, timeout=None: pytest.fail(
                             "re-consented despite a complete, valid token"))
@@ -119,7 +120,7 @@ def test_a_complete_token_is_still_reused(monkeypatch):
 def test_a_complete_but_expired_token_still_refreshes(monkeypatch):
     """Expiry and scope are independent: an expired token with the right
     scopes should refresh, not re-consent."""
-    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS}", monkeypatch, expires_in=-10)
+    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS} {FORCE_SSL}", monkeypatch, expires_in=-10)
     monkeypatch.setattr(yt, "_refresh_token", lambda: True)
     monkeypatch.setattr(U, "run_loopback_auth",
                         lambda build, timeout=None: pytest.fail(
@@ -151,6 +152,7 @@ def test_the_scope_list_the_code_requires_is_the_one_it_asks_for():
     assert UPLOAD in U.YOUTUBE_SCOPES
     assert READONLY in U.YOUTUBE_SCOPES
     assert ANALYTICS in U.YOUTUBE_SCOPES
+    assert FORCE_SSL in U.YOUTUBE_SCOPES
 
 
 if __name__ == "__main__":

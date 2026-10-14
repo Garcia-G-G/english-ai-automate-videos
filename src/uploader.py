@@ -51,13 +51,25 @@ YOUTUBE_SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube.readonly",
     "https://www.googleapis.com/auth/yt-analytics.readonly",
+    # captions.insert (the long lessons' Spanish subtitles). Missing from an older token, it
+    # forces one re-consent through _missing_scopes; until then captions are skipped, not failed.
+    "https://www.googleapis.com/auth/youtube.force-ssl",
 ]
+YOUTUBE_FORCE_SSL = YOUTUBE_SCOPES[-1]
+YOUTUBE_THUMBNAIL_URL = "https://www.googleapis.com/upload/youtube/v3/thumbnails/set"
+YOUTUBE_CAPTIONS_URL = "https://www.googleapis.com/upload/youtube/v3/captions"
 INSTAGRAM_GRAPH_URL = "https://graph.facebook.com/v19.0"
 
 # Retry / polling settings
 MAX_POLL_ATTEMPTS = 30
 POLL_INTERVAL_SECONDS = 10
 UPLOAD_TIMEOUT_SECONDS = 300
+MIN_UPLOAD_BYTES_PER_SECOND = 50_000     # a 25 MB lesson gets 500 s; a Short keeps the 300 s
+
+
+def upload_timeout(file_size: int) -> float:
+    """Per-request timeout for the chunk PUTs, scaled to the file (never below the Shorts' 300 s)."""
+    return max(UPLOAD_TIMEOUT_SECONDS, file_size / MIN_UPLOAD_BYTES_PER_SECOND)
 
 
 # ---------------------------------------------------------------------------
@@ -738,8 +750,15 @@ class YouTubeUploader(BaseUploader):
         description: str,
         hashtags: Optional[list[str]] = None,
         on_session=None,
+        shorts: bool = True,
+        privacy: Optional[str] = None,
+        on_progress=None,
     ) -> UploadResult:
         """Upload one video.
+
+        `shorts=False` (the long Manim lessons) keeps the title as given — no `#Shorts` —
+        and returns a watch URL. `privacy` overrides PLATFORM_PRIVACY for one call (the
+        first lesson upload is a test, unlisted). `on_progress(sent, total)` after each chunk.
 
         `on_session(uri, file_size)` is invoked as soon as the resumable
         session exists and BEFORE any video bytes are sent, so the caller can
@@ -753,9 +772,12 @@ class YouTubeUploader(BaseUploader):
 
         # Ensure #Shorts appears so YouTube surfaces it as a Short
         shorts_tag = "#Shorts"
-        yt_title = meta.title if shorts_tag in meta.title else f"{meta.title} {shorts_tag}"
+        if shorts:
+            yt_title = meta.title if shorts_tag in meta.title else f"{meta.title} {shorts_tag}"
+        else:
+            yt_title = meta.title
 
-        privacy_status = resolve_privacy(self.PLATFORM)
+        privacy_status = privacy or resolve_privacy(self.PLATFORM)
 
         body = {
             "snippet": {
@@ -820,12 +842,15 @@ class YouTubeUploader(BaseUploader):
                         "Content-Range": f"bytes {offset}-{end}/{file_size}",
                     }
                     resp = requests.put(upload_url, data=chunk, headers=headers,
-                                        timeout=UPLOAD_TIMEOUT_SECONDS)
+                                        timeout=upload_timeout(file_size))
+                    if on_progress is not None:
+                        on_progress(min(file_size, end + 1), file_size)
                     if resp.status_code in (200, 201):
                         # Upload complete
                         result_data = resp.json()
                         video_id = result_data.get("id", "")
-                        url = f"https://youtube.com/shorts/{video_id}" if video_id else None
+                        url = ((f"https://youtube.com/shorts/{video_id}" if shorts
+                                else f"https://www.youtube.com/watch?v={video_id}") if video_id else None)
                         logger.info("YouTube upload complete – id=%s", video_id)
                         return UploadResult(self.PLATFORM, True,
                                             upload_id=video_id, url=url,
@@ -847,6 +872,44 @@ class YouTubeUploader(BaseUploader):
 
         return UploadResult(self.PLATFORM, False, error="Upload ended unexpectedly.",
                             session_uri=upload_url)
+
+    def set_thumbnail(self, video_id: str, image_path: str) -> tuple:
+        """(ok, note). Never raises: a channel without custom thumbnails (unverified) still
+        keeps its upload — the caller logs the note and goes on."""
+        try:
+            with open(image_path, "rb") as fh:
+                resp = requests.post(YOUTUBE_THUMBNAIL_URL, params={"videoId": video_id},
+                                     headers={"Authorization": f"Bearer {self._token_data['access_token']}",
+                                              "Content-Type": "image/jpeg"}, data=fh.read(), timeout=120)
+        except (OSError, requests.RequestException) as exc:
+            return False, f"thumbnail not set: {exc}"
+        if resp.ok:
+            return True, "thumbnail set"
+        return False, f"thumbnail not set (HTTP {resp.status_code}): {resp.text[:200]}"
+
+    def upload_captions(self, video_id: str, srt_path: str, language: str = "es",
+                        name: str = "Español") -> tuple:
+        """(ok, note). Needs youtube.force-ssl; a token granted before it skips with a note."""
+        if YOUTUBE_FORCE_SSL in self._missing_scopes():
+            return False, ("captions skipped: the YouTube token lacks youtube.force-ssl — "
+                           "authorize again once (the next upload asks) to send subtitles")
+        boundary = "lesson-captions-boundary"
+        snippet = json.dumps({"snippet": {"videoId": video_id, "language": language, "name": name,
+                                          "isDraft": False}})
+        try:
+            srt = Path(srt_path).read_bytes()
+            body = (f"--{boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n{snippet}\r\n"
+                    f"--{boundary}\r\nContent-Type: application/octet-stream\r\n\r\n").encode() + srt + \
+                f"\r\n--{boundary}--\r\n".encode()
+            resp = requests.post(YOUTUBE_CAPTIONS_URL, params={"part": "snippet", "uploadType": "multipart"},
+                                 headers={"Authorization": f"Bearer {self._token_data['access_token']}",
+                                          "Content-Type": f"multipart/related; boundary={boundary}"},
+                                 data=body, timeout=120)
+        except (OSError, requests.RequestException) as exc:
+            return False, f"captions not sent: {exc}"
+        if resp.ok:
+            return True, "captions uploaded (es)"
+        return False, f"captions not sent (HTTP {resp.status_code}): {resp.text[:200]}"
 
     def query_session(self, session_uri: str, file_size: int) -> dict:
         """Ask YouTube what happened to an interrupted resumable session.
