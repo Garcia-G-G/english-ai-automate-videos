@@ -52,7 +52,7 @@ except ImportError as exc:                     # pragma: no cover — clone with
 MATILDA = "XrExE9yKIg1WjnnlVkGX"
 PRICE_PER_1K_CHARS = 0.10
 ENV_KEYS = ("ELEVENLABS_API_KEY", "ELEVENLABS_VOICE_ID", "OPENAI_API_KEY", "LR_BASE_URL", "LR_STUDIO_TOKEN")
-TTS_MODELS = ("eleven_multilingual_v2", "eleven_turbo_v2_5", "eleven_flash_v2_5")   # first: one request per beat, the owner's pick
+TTS_MODELS = ("eleven_v4", "eleven_multilingual_v2", "eleven_turbo_v2_5", "eleven_flash_v2_5")   # first: the owner's pick by ear
 WRITER_MODELS = ("gpt-4o-mini", "gpt-4o", "gpt-4.1-mini")
 LEVELS = ("A1", "A2", "B1", "B2")
 
@@ -422,7 +422,7 @@ def render() -> None:                                  # pragma: no cover — UI
         voice_id = manual.strip() or MATILDA
         voice_slug = slugify(chosen["name"] if chosen and chosen["voice_id"] == voice_id else voice_id[:8])
         tts_model = v3.selectbox("Modelo TTS", TTS_MODELS,
-                                 help="multilingual_v2: una petición por beat, sin cortes (elegido de oído). turbo/flash: más baratos.")
+                                 help="eleven_v4: una petición por beat, en español, inglés bien pronunciado (elegido de oído). multilingual_v2: el anterior. turbo/flash: más baratos.")
         stale = stale_beats(lesson, voice_slug)
         force = st.checkbox("Regenerar todos los golpes (forzar)", value=False,
                             help="Para oír un cambio del generador de audio, no del texto: rehace la voz completa de esta lección.")

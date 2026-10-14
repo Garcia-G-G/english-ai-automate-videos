@@ -69,6 +69,8 @@ def test_segments_split_english_spans_with_their_language():
 
 def test_language_code_only_for_models_that_accept_it():
     assert "eleven_turbo_v2_5" in GA.SEGMENT_MODELS and "eleven_multilingual_v2" not in GA.SEGMENT_MODELS
+    assert GA.ONE_REQUEST_MODEL == "eleven_v4" and "eleven_v4" in GA.LANGUAGE_CODE_MODELS      # owner's ear, STEP 55
+    assert "eleven_multilingual_v2" not in GA.LANGUAGE_CODE_MODELS                            # it refuses language_code
 
 
 def test_shift_words_adds_each_segment_offset():
@@ -334,6 +336,37 @@ def test_the_beat_check_hears_the_owners_five_and_calls_one_request_beats_clean(
     assert dirty("b18_owner_beat", "make-vs-do", "b18") == [1.98, 4.72, 9.93, 12.4, 14.93]
     for lesson, beat in (("make-vs-do", "b18"), ("can-could-pedir", "b05"), ("can-could-pedir", "b08")):
         assert dirty(f"v4_{lesson}_{beat}", lesson, beat) == [], (lesson, beat)
+
+
+@pytest.mark.xfail(strict=True, reason="detector false positives: /d/ voice bars at -19.2..-19.7 dB (limit -20) and "
+                   "«Mira» at a beat start read as dirty; the owner heard these eleven_v4 beats clean (STEP 55), "
+                   "so the v4 path has no onset gate. Strict: passing means the detector learned them — drop the mark.")
+def test_the_beat_check_calls_the_owners_clean_eleven_v4_beats_clean():
+    sys.path.insert(0, str(STUDIO))
+    import lesson as L
+    from probes import beat_onsets as B
+    folder = STUDIO.parent.parent / "tests" / "fixtures" / "manim_onsets"
+    for lesson, beat in (("make-vs-do", "b18"), ("can-could-pedir", "b05"), ("can-could-pedir", "b08")):
+        narration = next(b for b in L.load(STUDIO / "lessons" / f"{lesson}.json")["beats"] if b["id"] == beat)["narration"]
+        name = f"eleven_v4_{lesson}_{beat}"
+        rows = B.score(folder / f"{name}.mp3", json.loads((folder / f"{name}.words.json").read_text()), narration)
+        assert [r["at"] for r in rows if r["dirty"]] == [], (lesson, beat)
+
+
+def test_the_english_report_audits_new_beats_and_keeps_the_rest(tmp_path, monkeypatch):
+    sys.path.insert(0, str(STUDIO))
+    from probes import english_words_audit as E
+    beats = [{"id": i, "text": t, "mp3": f"{i}.mp3", "words": f"{i}.words.json"} for i, t in (("b01", "Di make."), ("b02", "Y do."))]
+    (tmp_path / "manifest.json").write_text(json.dumps({"beats": beats}))
+    for b in beats:
+        (tmp_path / b["words"]).write_text("[]")
+    heard = []
+    monkeypatch.setattr(E, "audit_beat", lambda mp3, words, narration, tmp: heard.append(mp3.name) or [
+        {"time": 0.5, "expected": "do", "heard_en": "Dó", "verdict": "FAIL" if "do" in narration else "ok", "es_too": True}])
+    lesson = {"beats": [{"id": "b01", "narration": "Di [[make]]."}, {"id": "b02", "narration": "Y [[do]]."}]}
+    assert [b for b, _ in E.lesson_report(tmp_path, lesson, set())] == ["b02"] and heard == ["b01.mp3", "b02.mp3"]
+    heard.clear()
+    assert [b for b, _ in E.lesson_report(tmp_path, lesson, {"b01"})] == ["b02"] and heard == ["b01.mp3"]
 
 
 def test_a_beat_is_one_request_per_side_of_a_pause():

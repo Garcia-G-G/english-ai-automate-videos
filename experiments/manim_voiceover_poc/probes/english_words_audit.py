@@ -67,7 +67,7 @@ def cut(src: Path, start: float, end: float, target: Path, pad: float = 0.0):
 def hear(wav: Path, language: str) -> str:
     model = A._local_model()                      # local only: never the paid API
     if model is None:
-        sys.exit("local whisper is not available")
+        raise RuntimeError("local whisper is not available")
     result = model.transcribe(str(wav), language=language, fp16=False, temperature=0.0,
                               condition_on_previous_text=False, verbose=None)
     return result["text"].strip()
@@ -100,6 +100,26 @@ def audit_beat(mp3: Path, words: list, narration: str, tmp: Path) -> list:
         rows.append({"time": round(start, 2), "end": round(end, 2), "expected": expected, "heard_en": en, "heard_es": es,
                      "verdict": "ok" if ok else "FAIL", "es_too": not ok and not heard(expected, es)})
     return rows
+
+
+def lesson_report(folder: Path, lesson: dict, beat_ids) -> list:
+    """After a lesson's audio: audit `beat_ids` (and any beat not audited for its current text),
+    keep the rest from folder/english_audit.json, rewrite it, return [(beat, row)] for every FAIL.
+    A report for the owner's ear — not a retry — until he has calibrated it (STEP 55 step 3)."""
+    path = folder / "english_audit.json"
+    saved = json.loads(path.read_text()) if path.exists() else {}
+    narrations = {b["id"]: b["narration"] for b in lesson["beats"]}
+    audit = {}
+    with tempfile.TemporaryDirectory() as tmp:
+        for b in json.loads((folder / "manifest.json").read_text())["beats"]:
+            old = saved.get(b["id"])
+            if b["id"] not in beat_ids and old and old["text"] == b["text"]:
+                audit[b["id"]] = old
+                continue
+            words = json.loads((folder / b["words"]).read_text())
+            audit[b["id"]] = {"text": b["text"], "rows": audit_beat(folder / b["mp3"], words, narrations[b["id"]], Path(tmp))}
+    path.write_text(json.dumps(audit, ensure_ascii=False, indent=1))
+    return [(beat, r) for beat, a in audit.items() for r in a["rows"] if r["verdict"] == "FAIL"]
 
 
 def beep_file(clips: list, target: Path):

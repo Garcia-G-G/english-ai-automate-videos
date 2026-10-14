@@ -9,8 +9,13 @@ Default (owner's ear, 2026-10-14): ONE request per beat with eleven_multilingual
 languages in the same text, word timings from the with-timestamps alignment. A {{pause:N}}
 splits the beat into one request per side, joined with the silence. Of six ways tried on
 make-vs-do b18 and can-could-pedir b05/b08 it was the only one with no cuts and no strange
-sounds in all three (audio/_probe/variants, STEP_51.md). No onset gate
-on this path: the detector flags this audio wrongly and a retry would pay for a whole beat.
+sounds in all three (audio/_probe/variants, STEP_51.md). Since STEP 55 the model is
+eleven_v4 with language_code=es at speed 0.92: multilingual_v2 (still `--model
+eleven_multilingual_v2`) read short English words with Spanish sounds; v4 was the only
+variant the owner heard say every one right. No onset gate on this path: the detector
+flags this audio wrongly and a retry would pay for a whole beat. After the audio, the
+English-words audit (probes/english_words_audit.py, local Whisper) lists the beats it
+flags — a report for the owner's ear, not a retry (--no-english-audit skips it).
 
 --stitch keeps the old path for comparison: `[[English]]` spans synthesized as their own
 segments with language_code=en (turbo v2.5), the rest es, stitched with ffmpeg and the word
@@ -46,7 +51,8 @@ PRICE_PER_1K_CHARS = 0.10
 # Models that accept language_code (per-segment accent) and return timestamps.
 SEGMENT_MODELS = ("eleven_turbo_v2_5", "eleven_flash_v2_5")
 DEFAULT_MODEL = "eleven_turbo_v2_5"           # --stitch only (the lesson's "model" applies there)
-ONE_REQUEST_MODEL = "eleven_multilingual_v2"
+LANGUAGE_CODE_MODELS = SEGMENT_MODELS + ("eleven_v4",)   # multilingual_v2 refuses language_code
+ONE_REQUEST_MODEL = "eleven_v4"     # owner's ear, STEP 55: every English word English, no cuts; --model eleven_multilingual_v2 for the old one
 GAP_AFTER = {".": 0.30, "?": 0.30, "!": 0.30, ":": 0.20, ",": 0.14, ";": 0.18}
 DEFAULT_GAP = 0.05          # a language switch mid-sentence: pad + gap + pad ≈ 130 ms
 EDGE_PAD = 0.04             # silence kept at each end of a segment after trimming
@@ -101,7 +107,7 @@ def eleven_segment(api_key: str, voice_id: str, text: str, lang: str, model: str
     speed = float(body["voice_settings"].pop("speed", 1.0) or 1.0)
     if abs(speed - 1.0) >= 0.01:
         body["voice_settings"]["speed"] = round(speed, 2)     # 0.7–1.2; slower English for learners
-    if model in SEGMENT_MODELS:
+    if model in LANGUAGE_CODE_MODELS:
         body["language_code"] = lang
     if previous_text:
         body["previous_text"] = previous_text[-300:]
@@ -331,6 +337,19 @@ def stitch(segment_files: list, texts: list, target: Path, keep_dir: Path = None
     return offsets, lead_cuts
 
 
+def english_report(out: Path, lesson: dict, made_ids: set, name: str):
+    """List the beats whose English the local Whisper does not hear as English — a report, no retry."""
+    try:
+        from probes import english_words_audit as E
+        flagged = E.lesson_report(out, lesson, made_ids)
+    except Exception as error:                                # the audio is made; a missing Whisper must not undo it
+        print(f"  [{name}] English-words audit skipped: {error}")
+        return
+    print(f"  [{name}] English-words audit: {len(flagged)} span(s) flagged → {(out / 'english_audit.json').relative_to(HERE)}")
+    for beat, r in flagged:
+        print(f"    {beat} {r['time']:>6}s  {r['expected']!r} heard {r['heard_en']!r}{'  (es too)' if r['es_too'] else ''}")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -349,6 +368,8 @@ def main() -> int:
                         help=f"keep the first take of every segment (default: re-ask a dirty onset up to {ONSET_RETRIES} times)")
     parser.add_argument("--full-stitching", action="store_true",
                         help="send previous text and request ids at language switches too (the old behaviour; dirtier onsets)")
+    parser.add_argument("--no-english-audit", action="store_true",
+                        help="skip the local Whisper report of English words heard with Spanish sounds")
     parser.add_argument("--only", default=None, help="b05,b08: regenerate just these beats (others are left as they are)")
     parser.add_argument("--keep-raw", action="store_true",
                         help="save every segment as ElevenLabs returned it, its request (no key) and its processed form, "
@@ -370,6 +391,7 @@ def main() -> int:
     model = args.model or (lesson.get("model") or DEFAULT_MODEL if stitched else ONE_REQUEST_MODEL)
     speeds = {"en": float(lesson.get("english_speed", 0.92)), lesson.get("language", "es"): float(lesson.get("speed", 1.0))}
     speed = float(lesson.get("speed", L.DEFAULT_SPEED))   # one request: the whole beat at one pace
+    language = lesson.get("language", "es") if model in LANGUAGE_CODE_MODELS else None   # what language_code said
 
     if args.offline:
         voices = {"offline": "piper"}
@@ -402,7 +424,7 @@ def main() -> int:
             previous = {b["id"]: b for b in json.loads(manifest_path.read_text()).get("beats", [])}
         manifest = {"voice": name, "voice_id": voice_id, "model": model, "shape": shape, "voice_settings": settings,
                     "lesson": lesson["id"], "beats": []}
-        made, extra_chars = 0, 0
+        made, extra_chars, made_ids = 0, 0, set()
         request_ids, previous_spoken = [], ""     # stitching context carried across segments and beats
         only = set(args.only.split(",")) if args.only else None
         raw_dir = out / "_raw"
@@ -419,7 +441,8 @@ def main() -> int:
                 continue
             if (not args.force and only is None and old and old.get("text") == spoken and old.get("pauses", []) == pause_list
                     and old.get("model") == model and old.get("shape") == shape     # never reuse another model's audio
-                    and (stitched or old.get("speed", 1.0) == speed)                # ...or another pace's
+                    and (stitched or (old.get("speed", 1.0) == speed               # ...or another pace's,
+                                      and old.get("language") == language))         # ...or another language_code's
                     and mp3.exists() and words_path.exists()):
                 manifest["beats"].append({**old, "text": spoken})
                 previous_spoken = spoken
@@ -507,13 +530,16 @@ def main() -> int:
             words_path.write_text(json.dumps(shift_words(pieces), ensure_ascii=False, indent=1))
             retried = [t for t in take_log if t["takes"] > 1]
             manifest["beats"].append({"id": beat["id"], "text": spoken, "pauses": pause_list, "model": model, "shape": shape,
-                                      **({} if stitched else {"speed": speed}), "mp3": mp3.name,
+                                      **({} if stitched else {"speed": speed, "language": language}), "mp3": mp3.name,
                                       "words": words_path.name, "segments": len(segs), "takes": take_log})
             made += 1
+            made_ids.add(beat["id"])
             print(f"  [{name}] {beat['id']}: {len(segs)} segment(s), {mp3.stat().st_size // 1024} KB, "
                   f"{len(retried)} re-asked for a clean onset, {sum(not t['clean'] for t in take_log)} still dirty")
         manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=1))
         print(f"  [{name}] {made} beat(s) generated, {len(beats) - made} reused → {manifest_path.relative_to(HERE)}")
+        if not (piper or args.no_english_audit):
+            english_report(out, lesson, made_ids, name)
         if extra_chars:
             print(f"  [{name}] onset gate: +{extra_chars} characters re-asked (~${extra_chars / 1000 * PRICE_PER_1K_CHARS:.3f})")
     return 0
