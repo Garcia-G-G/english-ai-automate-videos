@@ -67,8 +67,9 @@ def normalize_audience(value: Union[str, Audience]) -> Audience:
 
 def _load_config(config_path: Path) -> dict:
     try:
-        with Path(config_path).open("r", encoding="utf-8") as stream:
-            config = yaml.safe_load(stream)
+        # Memoised on the file's stat (yaml_cache); a fresh copy each call.
+        from yaml_cache import load_yaml
+        config = load_yaml(config_path)
     except (OSError, yaml.YAMLError) as exc:
         raise InvalidAudienceProfile(f"invalid config at {config_path}") from exc
     if config is None:

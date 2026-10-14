@@ -32,8 +32,10 @@ _BILINGUAL_DEFAULT_MODEL = "eleven_turbo_v2_5"
 def _load_config() -> dict:
     """Load config.yaml as a dict."""
     if CONFIG_PATH.exists():
-        with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
-            return yaml.safe_load(f) or {}
+        # Memoised on the file's stat (yaml_cache): the dashboard asked for
+        # this six times per click.
+        from yaml_cache import load_yaml
+        return load_yaml(CONFIG_PATH) or {}
     return {}
 
 

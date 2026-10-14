@@ -59,6 +59,42 @@ QUEUE_DIR = ROOT / "content" / "queue"
 TopicKey = Tuple[str, str]
 
 
+#: {path: ((mtime_ns, size), fingerprint-or-None)}. usage_counts runs on every
+#: dashboard click (the queue guard's fingerprint and audit both call it) and
+#: used to json-parse every script ever generated each time -- 0.1-0.5 s per
+#: click on 2026-10-13. A script is only re-read when its stat changes.
+_FINGERPRINTS: dict = {}
+
+
+def _script_fingerprint(path: Path):
+    """(category, topic_id, generated_at-or-name) for one script, or None."""
+    try:
+        st = path.stat()
+        stamp = (st.st_mtime_ns, st.st_size)
+    except OSError:
+        return None
+    key = str(path)
+    hit = _FINGERPRINTS.get(key)
+    if hit is not None and hit[0] == stamp:
+        return hit[1]
+    result = None
+    try:
+        with open(path, encoding="utf-8") as handle:
+            data = json.load(handle)
+    except Exception:                                           # noqa: BLE001
+        logger.debug("topic_history: could not read %s", path)
+        data = None
+    if isinstance(data, dict):
+        meta = data.get("_meta") or {}
+        topic_id = meta.get("topic_id")
+        category = meta.get("category")
+        if topic_id and category and topic_id != "unknown":
+            result = (str(category), str(topic_id),
+                      str(meta.get("generated_at") or path.name))
+    _FINGERPRINTS[key] = (stamp, result)
+    return result
+
+
 def usage_counts(scripts_dir: Path = None) -> Counter:
     """How many times each topic has been generated.
 
@@ -88,25 +124,13 @@ def usage_counts(scripts_dir: Path = None) -> Counter:
         paths = (sorted(root.glob("*/script/script.json"))
                  if root == ARTIFACTS_DIR else sorted(root.rglob("*.json")))
         for path in paths:
-            try:
-                with open(path, encoding="utf-8") as handle:
-                    data = json.load(handle)
-            except Exception:                                   # noqa: BLE001
-                logger.debug("topic_history: could not read %s", path)
+            fingerprint = _script_fingerprint(path)
+            if fingerprint is None:
                 continue
-            if not isinstance(data, dict):
-                continue
-            meta = data.get("_meta") or {}
-            topic_id = meta.get("topic_id")
-            category = meta.get("category")
-            if not topic_id or not category or topic_id == "unknown":
-                continue
-            fingerprint = (str(category), str(topic_id),
-                           str(meta.get("generated_at") or path.name))
             if fingerprint in seen:
                 continue
             seen.add(fingerprint)
-            counts[(str(category), str(topic_id))] += 1
+            counts[(fingerprint[0], fingerprint[1])] += 1
     return counts
 
 

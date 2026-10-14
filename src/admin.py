@@ -194,7 +194,10 @@ JOBS_FILE = OUTPUT_DIR / "generation_jobs.json"
 # Guards the whole read-modify-write of JOBS_FILE. Generation runs in worker
 # threads now, so create/update/complete interleave; without this a worker
 # reading before another's write and saving after it silently drops that job.
-_JOBS_LOCK = threading.RLock()
+# In dashboard_state, not here: this file is re-executed on every click, so a
+# lock defined here was a new lock per click (see dashboard_state's docstring).
+import dashboard_state as _ds
+_JOBS_LOCK = _ds.JOBS_LOCK
 
 
 def load_jobs() -> dict:
@@ -210,7 +213,10 @@ def load_jobs() -> dict:
 def save_jobs(jobs: dict):
     # Write-then-rename: a crash mid-write leaves the previous ledger intact
     # rather than a truncated file that load_jobs() silently reads as empty.
-    tmp = JOBS_FILE.with_suffix(JOBS_FILE.suffix + ".tmp")
+    # A tmp name per writer: with one shared name, two writers that ever got
+    # past the lock (2026-10-13, job ebe7bb3e) renamed each other's file away.
+    tmp = JOBS_FILE.with_name(
+        f"{JOBS_FILE.name}.{os.getpid()}.{threading.get_ident()}.tmp")
     with open(tmp, 'w') as f:
         json.dump(jobs, f, indent=2, default=str)
     os.replace(tmp, JOBS_FILE)
@@ -237,7 +243,7 @@ def _proc_start(pid: int) -> Optional[str]:
 #: start time when its source is reloaded, so both survive the reload that
 #: wipes every in-memory registry.
 _OWNER_PID = os.getpid()
-_OWNER_STARTED = _proc_start(_OWNER_PID)
+_OWNER_STARTED = _ds.once("owner_started", lambda: _proc_start(_OWNER_PID))
 
 
 def _owner_alive(job: dict) -> bool:
@@ -390,7 +396,7 @@ def _queue_guard():
 #: artifact on disk for topic_history. Streamlit reruns the whole page on
 #: every widget interaction, so an uncached queue_status() put all of that in
 #: front of every click on the Generate page.
-_AUDIT_CACHE = {"at": 0.0, "bad": None}
+_AUDIT_CACHE = _ds.AUDIT_CACHE
 _AUDIT_TTL = 20.0
 
 
@@ -493,7 +499,7 @@ def queue_shelve(path) -> None:
 # nothing else; the rest are still on disk and resume.
 
 BATCH_QUEUE_PATH = OUTPUT_DIR / "batch_queue.json"
-_BATCH_LOCK = threading.RLock()
+_BATCH_LOCK = _ds.BATCH_LOCK
 
 
 def batch_queue() -> list:
@@ -985,9 +991,9 @@ def _release_queued_script(queued_path, script_path, video_path=None) -> None:
 # frame generation), so two concurrent jobs do not finish sooner — measured
 # 2026-08-14, two jobs 12s apart took ~4.5 min each against a 109s median.
 # A second tab therefore queues instead of contending.
-_RENDER_LOCK = threading.Lock()
+_RENDER_LOCK = _ds.RENDER_LOCK
 
-_WORKERS: list = []
+_WORKERS: list = _ds.WORKERS
 
 #: How often a running job stamps its row. Small enough that a dead worker is
 #: obvious, large enough that it is not a write loop.
@@ -1665,14 +1671,18 @@ def independent_disk_census(output_dir: Path = None) -> dict:
     # anything get_pending_videos attached.
     pending_dir = base / "pending"
     gate_pass = gate_none = gate_other = 0
+    def _gate_of(sidecar_path):
+        return json.loads(Path(sidecar_path).read_text(encoding="utf-8")).get("gate")
+
     if pending_dir.is_dir():
         for mp4 in pending_dir.rglob("*.mp4"):
             sidecar = mp4.with_suffix(".json")
             verdict = None
             if sidecar.is_file():
                 try:
-                    verdict = json.loads(sidecar.read_text(encoding="utf-8")).get("gate")
-                except (json.JSONDecodeError, OSError):
+                    # Re-read only when the sidecar changes, not every click.
+                    verdict = _ds.per_file(sidecar, _gate_of)
+                except (json.JSONDecodeError, OSError, AttributeError):
                     verdict = None
             if verdict == "PASS":
                 gate_pass += 1
@@ -1805,20 +1815,26 @@ def cost_snapshot(config_path: Path = None, costs_dir: Path = None,
     day = today or datetime.now().strftime("%Y-%m-%d")
     month = day[:7]
 
+    def file_total(path) -> float:
+        acc = 0.0
+        with open(path, "r", encoding="utf-8") as fh:
+            for line in fh:
+                if not line.strip():
+                    continue
+                try:
+                    acc += float(json.loads(line).get("cost_usd") or 0)
+                except (json.JSONDecodeError, TypeError, ValueError, AttributeError):
+                    continue
+        return acc
+
     def total(pattern: str) -> float:
         acc = 0.0
         if not cdir.is_dir():
             return acc
         for f in sorted(cdir.glob(pattern)):
             try:
-                with open(f, "r", encoding="utf-8") as fh:
-                    for line in fh:
-                        if not line.strip():
-                            continue
-                        try:
-                            acc += float(json.loads(line).get("cost_usd") or 0)
-                        except (json.JSONDecodeError, TypeError, ValueError):
-                            continue
+                # Each day's file is summed once per change, not per click.
+                acc += _ds.per_file(f, file_total)
             except OSError:
                 continue
         return acc
@@ -1826,8 +1842,8 @@ def cost_snapshot(config_path: Path = None, costs_dir: Path = None,
     ceiling = None
     cfg_file = Path(config_path) if config_path else (ROOT / "config.yaml")
     try:
-        with open(cfg_file, "r", encoding="utf-8") as f:
-            cfg = yaml.safe_load(f) or {}
+        from yaml_cache import load_yaml
+        cfg = load_yaml(cfg_file) or {}
         raw = (cfg.get("costs") or {}).get("monthly_ceiling_usd")
         ceiling = float(raw) if raw is not None else None
     except (OSError, yaml.YAMLError, TypeError, ValueError):
@@ -2266,8 +2282,8 @@ def _running_version() -> str:
     return sha or "?"
 
 
-_RUNNING_VERSION = _running_version()
-_STARTED_AT = datetime.now().strftime("%H:%M")
+_RUNNING_VERSION = _ds.once("running_version", _running_version)
+_STARTED_AT = _ds.once("started_at", lambda: datetime.now().strftime("%H:%M"))
 
 st.sidebar.markdown("### 🎬 English AI Videos")
 st.sidebar.caption(f"build `{_RUNNING_VERSION}` · started {_STARTED_AT}")

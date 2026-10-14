@@ -119,7 +119,32 @@ def lesson_files(studio_dir: Path = STUDIO_DIR) -> list:
     return sorted((studio_dir / "lessons").glob("*.json")) if (studio_dir / "lessons").exists() else []
 
 
+_SUMMARY_MEMO: dict = {}
+
+
+def _stamp(path: Path):
+    try:
+        st = Path(path).stat()
+        return (st.st_mtime_ns, st.st_size)
+    except OSError:
+        return None
+
+
 def lesson_summary(path: Path) -> dict:
+    """Memoised on the lesson file and the render ledger (whose fit drives the
+    minutes estimate). The Manim page summarised all ~22 lessons on every
+    click -- 63 file reads per rerun, measured 2026-10-13."""
+    ledger = Path(L.__file__).resolve().parent / "renders" / "ledger.jsonl"
+    key = (str(path), _stamp(path), _stamp(ledger))
+    hit = _SUMMARY_MEMO.get(str(path))
+    if hit is not None and hit[0] == key:
+        return dict(hit[1])
+    summary = _lesson_summary_uncached(path)
+    _SUMMARY_MEMO[str(path)] = (key, dict(summary))
+    return summary
+
+
+def _lesson_summary_uncached(path: Path) -> dict:
     lesson = L.load(path)
     return {"id": lesson.get("id", path.stem), "title": lesson.get("title", path.stem), "level": lesson.get("level", ""),
             "beats": len(lesson.get("beats", [])), "minutes": L.estimate_minutes(lesson), "chars": L.character_count(lesson),
@@ -513,7 +538,11 @@ def render() -> None:                                  # pragma: no cover — UI
         with st.expander(f"{row['at']} · {row.get('lesson', '')} · {row['voice']} · {row['quality']} · {mins} · "
                          f"{row['bytes'] // 1024 // 1024} MB", expanded=row is rows[0]):
             if video.exists():
-                st.video(str(video))
+                # ONE player open, the newest; the rest load on demand. st.video
+                # reads the whole file into Streamlit's media store on EVERY
+                # rerun, closed expander or not: twelve lessons were ~200 MB
+                # re-read per click, and every 3 s while a render was running.
+                _lazy_video(st, video, key=f"ms_render_{row['file']}", open_now=row is rows[0])
                 st.caption(f"`{video}`")
                 extras = []
                 if row.get("poster") and (STUDIO_DIR / "renders" / row["poster"]).exists():
@@ -529,6 +558,17 @@ def render() -> None:                                  # pragma: no cover — UI
                 st.caption("El archivo ya no está.")
 
 
+def _lazy_video(st, path, key: str, open_now: bool = False) -> None:   # pragma: no cover — UI
+    """A player that costs nothing until asked for (same rule as admin.lazy_video)."""
+    state_key = f"_lazy_video_{key}"
+    if open_now or st.session_state.get(state_key):
+        st.video(str(path))
+        return
+    if st.button("▶️ Ver vídeo", key=f"_lazy_btn_{key}"):
+        st.session_state[state_key] = True
+        st.video(str(path))
+
+
 def _job_monitor(st) -> None:                          # pragma: no cover — UI
     job_id = st.session_state.get("ms_job")
     if not job_id:
@@ -536,11 +576,30 @@ def _job_monitor(st) -> None:                          # pragma: no cover — UI
     status = job_status(job_id)
     state = status.get("state", "starting")
     if state in ("starting", "running"):
-        st.info(f"⏳ `{job_id}` en marcha… (esta página se refresca sola)")
-        with st.expander("Log", expanded=True):
-            st.code(job_log(job_id) or "…", language="text")
-        time.sleep(3)
-        st.rerun()
+        fragment = getattr(st, "fragment", None)
+        if fragment is None:                           # very old Streamlit
+            st.info(f"⏳ `{job_id}` en marcha… (esta página se refresca sola)")
+            with st.expander("Log", expanded=True):
+                st.code(job_log(job_id) or "…", language="text")
+            time.sleep(3)
+            st.rerun()
+            return
+
+        # A FRAGMENT, not sleep(3) + st.rerun(). The old loop re-ran the WHOLE
+        # page every three seconds for the length of a render -- every lesson
+        # summary, every player -- and the page sat greyed out ("running…")
+        # most of the time. Now only this box repaints; when the job leaves
+        # the running state one full rerun shows the result.
+        @fragment(run_every=3)
+        def _live():
+            now = job_status(job_id)
+            if now.get("state", "starting") not in ("starting", "running"):
+                st.rerun()
+            st.info(f"⏳ `{job_id}` en marcha… (este recuadro se refresca solo)")
+            with st.expander("Log", expanded=True):
+                st.code(job_log(job_id) or "…", language="text")
+
+        _live()
     elif state == "done":
         result = status.get("result", {})
         st.success(f"✅ `{job_id}` terminó en {status.get('seconds')} s.")

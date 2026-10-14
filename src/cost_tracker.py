@@ -355,10 +355,33 @@ def per_video_costs(costs_dir: Path = None) -> list:
     total still reconciles with the daily one.
     """
     cdir = Path(costs_dir) if costs_dir else COSTS_DIR
-    videos = {}
     if not cdir.is_dir():
         return []
-    for log_file in sorted(cdir.glob("costs_*.jsonl")):
+    # Memoised on every log's (name, mtime, size): the dashboard's Inicio page
+    # calls this on every click and it re-read all ~30 daily logs each time
+    # (0.2 s, 2026-10-13). Any new cost line changes a stamp and recomputes.
+    files = sorted(cdir.glob("costs_*.jsonl"))
+    try:
+        stamp = (str(cdir), tuple((f.name, f.stat().st_mtime_ns, f.stat().st_size)
+                                  for f in files))
+    except OSError:
+        stamp = None
+    if stamp is not None and _PER_VIDEO_MEMO.get("stamp") == stamp:
+        import copy
+        return copy.deepcopy(_PER_VIDEO_MEMO["rows"])
+    rows = _per_video_costs_uncached(files)
+    if stamp is not None:
+        import copy
+        _PER_VIDEO_MEMO.update(stamp=stamp, rows=copy.deepcopy(rows))
+    return rows
+
+
+_PER_VIDEO_MEMO: dict = {}
+
+
+def _per_video_costs_uncached(files: list) -> list:
+    videos = {}
+    for log_file in files:
         with open(log_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():

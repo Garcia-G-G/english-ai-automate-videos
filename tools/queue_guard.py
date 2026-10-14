@@ -166,6 +166,13 @@ def audit(fresh: bool = False):
     used = usage_counts()
     problems = []
     seen_in_queue = {}
+    # ONCE PER AUDIT, not once per script. Both were called inside the loop:
+    # the topic stamp stats every topic file and the code signature stats
+    # ~50 source files and fonts, so a 104-script queue paid 208 topic scans
+    # and 104 signatures -- 2.1 s of a 2.9 s audit (measured 2026-10-13).
+    real_topics = _real_topics()
+    sig = _code_signature()
+    dirty = []
 
     for path in queued_scripts():
         rel = path.relative_to(ROOT)
@@ -194,7 +201,7 @@ def audit(fresh: bool = False):
             # checking a hand-written batch against the topic files -- one of
             # fifty ids was invented, and nothing else in the system would ever
             # have noticed.
-            if category not in _real_topics() or str(topic_id) not in _real_topics()[category]:
+            if category not in real_topics or str(topic_id) not in real_topics[category]:
                 problems.append((rel, f"NO SUCH TOPIC: {category}/{topic_id} is "
                                       f"not in content/topics/ -- the history "
                                       f"would record a topic that cannot be drawn"))
@@ -216,7 +223,12 @@ def audit(fresh: bool = False):
                 seen_in_queue[key] = rel
 
         # -- and the three gates the pipeline applies anyway --
-        problems.extend((rel, problem) for problem in _content_problems_cached(path, data))
+        problems.extend((rel, problem) for problem in
+                        _content_problems_cached(path, data, sig=sig, dirty=dirty))
+
+    if dirty:
+        # One write for the whole audit instead of one per new script.
+        _save_content_entries(sig, _content_entries(sig))
 
     if cache_key is not None:
         # One entry. The fingerprint changes on any edit, so keeping history
@@ -296,12 +308,16 @@ def _save_content_entries(sig: str, entries: dict) -> None:
         pass                      # a cache that cannot be written is only slower
 
 
-def _content_problems_cached(path: Path, data: dict) -> list:
+def _content_problems_cached(path: Path, data: dict, sig: str = None,
+                             dirty: list = None) -> list:
+    """`sig` and `dirty` let audit() compute the signature once and write the
+    cache once; called alone (no `dirty`), it saves on every miss as before."""
     try:
         st = path.stat()
     except OSError:
         return _content_problems(data, path)
-    sig = _code_signature()
+    if sig is None:
+        sig = _code_signature()
     entries = _content_entries(sig)
     key = str(path.relative_to(ROOT)) if ROOT in path.parents else str(path)
     stamp = f"{st.st_mtime_ns}|{st.st_size}"
@@ -310,7 +326,10 @@ def _content_problems_cached(path: Path, data: dict) -> list:
         return list(hit["problems"])
     problems = _content_problems(data, key)
     entries[key] = {"stamp": stamp, "problems": problems}
-    _save_content_entries(sig, entries)
+    if dirty is None:
+        _save_content_entries(sig, entries)
+    else:
+        dirty.append(key)
     return problems
 
 
