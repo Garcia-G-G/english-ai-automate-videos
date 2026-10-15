@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿CÓMO TE FUE?» en inglés? 10 preguntas 💬",
+  "video_description": "Diez preguntas que haces cada día, en inglés de verdad. 🗣️",
+  "title": "¿Cómo se dice?",
+  "theme": "preguntas del día a día",
+  "intro": "[cheerful] Diez preguntas que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Cómo te fue?",
+      "english": "How did it go?"
+    },
+    {
+      "spanish": "¿Cómo lo supiste?",
+      "english": "How did you know?"
+    },
+    {
+      "spanish": "¿Qué te pareció?",
+      "english": "What did you think?"
+    },
+    {
+      "spanish": "¿Cómo llegaste aquí?",
+      "english": "How did you get here?"
+    },
+    {
+      "spanish": "¿Cómo te sentiste?",
+      "english": "How did you feel?"
+    },
+    {
+      "spanish": "¿Lo encontraste?",
+      "english": "Did you find it?"
+    },
+    {
+      "spanish": "¿Cómo te las arreglaste?",
+      "english": "How did you manage?"
+    },
+    {
+      "spanish": "¿Qué pasó?",
+      "english": "What happened?"
+    },
+    {
+      "spanish": "¿Quién te lo dijo?",
+      "english": "Who told you?"
+    },
+    {
+      "spanish": "¿Por qué no me avisaste?",
+      "english": "Why didn't you tell me?"
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#FrasesEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#InglésParaPrincipiantes"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf001",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}
