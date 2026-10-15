@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "DEVOLVER UN PRODUCTO en inglés: ¿hasta qué frase llegas? 🧾",
+  "video_description": "Recibos, reembolsos y cambios de talla: diez frases para devolver algo en inglés. 🧾",
+  "title": "Dilo en inglés",
+  "theme": "devolver un producto",
+  "intro": "[calm] Quieres devolver algo en una tienda. Te digo la frase y tú la dices en inglés.",
+  "items": [
+    {
+      "spanish": "Aquí tiene el recibo.",
+      "english": "Here's the receipt.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Quiero devolver esto.",
+      "english": "I'd like to return this.",
+      "cefr": "A1",
+      "alt": "I want to return this."
+    },
+    {
+      "spanish": "No funciona bien.",
+      "english": "It doesn't work properly.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Lo compré la semana pasada.",
+      "english": "I bought it last week.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Me pueden devolver el dinero?",
+      "english": "Can I get a refund?",
+      "cefr": "B1",
+      "alt": "Could I get my money back?"
+    },
+    {
+      "spanish": "¿Puedo cambiarlo por otra talla?",
+      "english": "Can I exchange it for another size?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "No lo he usado nunca.",
+      "english": "I've never used it.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me queda grande.",
+      "english": "It's too big on me.",
+      "cefr": "B2",
+      "alt": "It doesn't fit me.",
+      "tip": "«Me queda grande» es It's too big, sin «stay»"
+    },
+    {
+      "spanish": "Me cobraron de más.",
+      "english": "I was overcharged.",
+      "cefr": "B2",
+      "alt": "They charged me too much.",
+      "tip": "«Cobrar de más» es un solo verbo: overcharge"
+    },
+    {
+      "spanish": "Me dijeron que no aceptan devoluciones.",
+      "english": "I was told you don't accept returns.",
+      "cefr": "C1",
+      "alt": "They told me you don't accept returns.",
+      "tip": "«Me dijeron» suele ser pasiva en inglés: I was told"
+    }
+  ],
+  "verdict": "Hasta la tres eres básico, hasta la siete intermedio, y con las diez te devuelven hasta la sonrisa.",
+  "outro": "[warm] ¿Cuántas frases dijiste bien? Escribe tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#DeCompras"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy059",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Here's the receipt.": "Aquí tiene el recibo.",
+    "I'd like to return this.": "Quiero devolver esto.",
+    "It doesn't work properly.": "No funciona bien.",
+    "I bought it last week.": "Lo compré la semana pasada.",
+    "Can I get a refund?": "¿Me pueden devolver el dinero?",
+    "Can I exchange it for another size?": "¿Puedo cambiarlo por otra talla?",
+    "I've never used it.": "No lo he usado nunca.",
+    "It's too big on me.": "Me queda grande.",
+    "I was overcharged.": "Me cobraron de más.",
+    "I was told you don't accept returns.": "Me dijeron que no aceptan devoluciones."
+  },
+  "english_phrases": [
+    "Here's the receipt.",
+    "I'd like to return this.",
+    "It doesn't work properly.",
+    "I bought it last week.",
+    "Can I get a refund?",
+    "Can I exchange it for another size?",
+    "I've never used it.",
+    "It's too big on me.",
+    "I was overcharged.",
+    "I was told you don't accept returns.",
+    "I want to return this.",
+    "Could I get my money back?",
+    "It doesn't fit me.",
+    "They charged me too much.",
+    "They told me you don't accept returns."
+  ],
+  "full_script": "[calm] Quieres devolver algo en una tienda. Te digo la frase y tú la dices en inglés. Here's the receipt. I'd like to return this. It doesn't work properly. Ahora, nivel intermedio. I bought it last week. Can I get a refund? Can I exchange it for another size? I've never used it. Y ahora, nivel experto. It's too big on me. I was overcharged. I was told you don't accept returns. Hasta la tres eres básico, hasta la siete intermedio, y con las diez te devuelven hasta la sonrisa. [warm] ¿Cuántas frases dijiste bien? Escribe tu número en los comentarios."
+}

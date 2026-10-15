@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "Test de inglés en el HOTEL: de fácil a experto 🏨",
+  "video_description": "Check-in, desayuno y llaves olvidadas: diez frases de hotel en inglés con trampa al final. 🏨",
+  "title": "Dilo en inglés",
+  "theme": "en el hotel",
+  "intro": "[cheerful] Llegas al hotel. Yo lo digo en español, tú en inglés. ¿Hasta qué frase llegas?",
+  "items": [
+    {
+      "spanish": "¿A qué hora es el desayuno?",
+      "english": "What time is breakfast?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Estoy en la habitación 305.",
+      "english": "I'm in room 305.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Hay wifi gratis?",
+      "english": "Is there free wifi?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Puedo dejar aquí las maletas?",
+      "english": "Can I leave my bags here?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "La ducha no funciona.",
+      "english": "The shower isn't working.",
+      "cefr": "B1",
+      "alt": "The shower doesn't work."
+    },
+    {
+      "spanish": "¿Me puede despertar a las siete?",
+      "english": "Can you wake me up at seven?",
+      "cefr": "B1",
+      "alt": "Can I get a wake-up call at seven?"
+    },
+    {
+      "spanish": "Quería una habitación con vistas al mar.",
+      "english": "I'd like a room with an ocean view.",
+      "cefr": "B1",
+      "alt": "I'd like a room with a sea view."
+    },
+    {
+      "spanish": "¿A qué hora hay que dejar la habitación?",
+      "english": "What time is checkout?",
+      "cefr": "B1",
+      "alt": "What time do we have to check out?",
+      "tip": "«Dejar la habitación» en un hotel es check out"
+    },
+    {
+      "spanish": "Me he dejado la llave dentro.",
+      "english": "I locked myself out.",
+      "cefr": "B2",
+      "alt": "I left my key in the room.",
+      "tip": "Lo natural es I locked myself out (me quedé fuera)"
+    },
+    {
+      "spanish": "¿Me pueden subir otra almohada?",
+      "english": "Could you send up another pillow?",
+      "cefr": "B2",
+      "tip": "«Subir algo» a la habitación es send up, no climb"
+    }
+  ],
+  "verdict": "Tres frases: básico. Siete: intermedio. Las diez: experto con suite incluida.",
+  "outro": "[excited] ¿Te alojas en el nivel básico o en el experto? Cuéntamelo abajo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésDeViaje",
+    "#HablaInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy005",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "What time is breakfast?": "¿A qué hora es el desayuno?",
+    "I'm in room 305.": "Estoy en la habitación 305.",
+    "Is there free wifi?": "¿Hay wifi gratis?",
+    "Can I leave my bags here?": "¿Puedo dejar aquí las maletas?",
+    "The shower isn't working.": "La ducha no funciona.",
+    "Can you wake me up at seven?": "¿Me puede despertar a las siete?",
+    "I'd like a room with an ocean view.": "Quería una habitación con vistas al mar.",
+    "What time is checkout?": "¿A qué hora hay que dejar la habitación?",
+    "I locked myself out.": "Me he dejado la llave dentro.",
+    "Could you send up another pillow?": "¿Me pueden subir otra almohada?"
+  },
+  "english_phrases": [
+    "What time is breakfast?",
+    "I'm in room 305.",
+    "Is there free wifi?",
+    "Can I leave my bags here?",
+    "The shower isn't working.",
+    "Can you wake me up at seven?",
+    "I'd like a room with an ocean view.",
+    "What time is checkout?",
+    "I locked myself out.",
+    "Could you send up another pillow?",
+    "The shower doesn't work.",
+    "Can I get a wake-up call at seven?",
+    "I'd like a room with a sea view.",
+    "What time do we have to check out?",
+    "I left my key in the room."
+  ],
+  "full_script": "[cheerful] Llegas al hotel. Yo lo digo en español, tú en inglés. ¿Hasta qué frase llegas? What time is breakfast? I'm in room 305. Is there free wifi? Ahora, nivel intermedio. Can I leave my bags here? The shower isn't working. Can you wake me up at seven? I'd like a room with an ocean view. Y ahora, nivel experto. What time is checkout? I locked myself out. Could you send up another pillow? Tres frases: básico. Siete: intermedio. Las diez: experto con suite incluida. [excited] ¿Te alojas en el nivel básico o en el experto? Cuéntamelo abajo."
+}

@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "«HACE» + tiempo en inglés: ago, for… ¿o since? ⏳",
+  "video_description": "Hace dos días, hace mucho, desde hace un año: diez trampas con el tiempo en inglés. ⏳",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «hace» (tiempo)",
+  "intro": "[serious] Hoy, «hace» con el tiempo. Ago, for, present perfect… Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Hace una hora.",
+      "english": "An hour ago.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Nos conocimos hace diez años.",
+      "english": "We met ten years ago.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Lo vi hace un rato.",
+      "english": "I saw him a while ago.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Hace cuánto que llegaste?",
+      "english": "How long ago did you get here?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Lo compré hace poco.",
+      "english": "I bought it recently.",
+      "cefr": "B1",
+      "alt": "I bought it not long ago."
+    },
+    {
+      "spanish": "Hace mucho que no nos vemos.",
+      "english": "We haven't seen each other in ages.",
+      "cefr": "B2",
+      "alt": "It's been ages!"
+    },
+    {
+      "spanish": "Estudio inglés desde hace un año.",
+      "english": "I've been studying English for a year.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Hace un mes que no llueve.",
+      "english": "It hasn't rained in a month.",
+      "cefr": "B2",
+      "alt": "It hasn't rained for a month.",
+      "tip": "«Hace un mes que no…» es It hasn't… in/for a month"
+    },
+    {
+      "spanish": "¿Cuánto hace que vives aquí?",
+      "english": "How long have you lived here?",
+      "cefr": "B2",
+      "alt": "How long have you been living here?",
+      "tip": "«¿Cuánto hace que…?» pide present perfect, no «does»"
+    },
+    {
+      "spanish": "Hacía años que no lo veía.",
+      "english": "I hadn't seen him in years.",
+      "cefr": "C1",
+      "tip": "«Hacía… que no» pide past perfect: I hadn't seen"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si sabías las diez, experto desde hace tiempo.",
+  "outro": "[curious] ¿Hace cuánto que estudias inglés? Dímelo con tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#GramáticaInglesa",
+    "#PresentPerfect"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy088",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "An hour ago.": "Hace una hora.",
+    "We met ten years ago.": "Nos conocimos hace diez años.",
+    "I saw him a while ago.": "Lo vi hace un rato.",
+    "How long ago did you get here?": "¿Hace cuánto que llegaste?",
+    "I bought it recently.": "Lo compré hace poco.",
+    "We haven't seen each other in ages.": "Hace mucho que no nos vemos.",
+    "I've been studying English for a year.": "Estudio inglés desde hace un año.",
+    "It hasn't rained in a month.": "Hace un mes que no llueve.",
+    "How long have you lived here?": "¿Cuánto hace que vives aquí?",
+    "I hadn't seen him in years.": "Hacía años que no lo veía."
+  },
+  "english_phrases": [
+    "An hour ago.",
+    "We met ten years ago.",
+    "I saw him a while ago.",
+    "How long ago did you get here?",
+    "I bought it recently.",
+    "We haven't seen each other in ages.",
+    "I've been studying English for a year.",
+    "It hasn't rained in a month.",
+    "How long have you lived here?",
+    "I hadn't seen him in years.",
+    "I bought it not long ago.",
+    "It's been ages!",
+    "It hasn't rained for a month.",
+    "How long have you been living here?"
+  ],
+  "full_script": "[serious] Hoy, «hace» con el tiempo. Ago, for, present perfect… Dilas en inglés antes que yo. An hour ago. We met ten years ago. I saw him a while ago. Ahora, nivel intermedio. How long ago did you get here? I bought it recently. We haven't seen each other in ages. I've been studying English for a year. Y ahora, nivel experto. It hasn't rained in a month. How long have you lived here? I hadn't seen him in years. Si llegaste a la tres, básico. A la siete, intermedio. Y si sabías las diez, experto desde hace tiempo. [curious] ¿Hace cuánto que estudias inglés? Dímelo con tu número."
+}

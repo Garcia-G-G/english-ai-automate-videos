@@ -1,0 +1,105 @@
+{
+  "type": "say_it_level",
+  "video_title": "GUSTAR y ENCANTAR en inglés: ¿te salen las 10? ❤️",
+  "video_description": "Me gustas, me cae bien, no me va: diez frases con gustar y encantar en inglés. ❤️",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «gustar» y «encantar»",
+  "intro": "[warm] Diez frases con «gustar» y «encantar». Cuidado con el orden. Dilas en inglés.",
+  "items": [
+    {
+      "spanish": "Me gusta el café.",
+      "english": "I like coffee.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Me encanta esta canción.",
+      "english": "I love this song.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Te gusta el sushi?",
+      "english": "Do you like sushi?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "A mi hermana le gustan los perros.",
+      "english": "My sister likes dogs.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Me gustaría ir a Japón.",
+      "english": "I'd like to go to Japan.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me gusta más la playa que la montaña.",
+      "english": "I like the beach more than the mountains.",
+      "cefr": "B1",
+      "alt": "I prefer the beach over the mountains."
+    },
+    {
+      "spanish": "Me gusta que me llames.",
+      "english": "I like it when you call me.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Me gustas.",
+      "english": "I like you.",
+      "cefr": "B2",
+      "tip": "Va al revés que en español: I like you, no «you like me»"
+    },
+    {
+      "spanish": "Tu amigo me cae muy bien.",
+      "english": "I really like your friend.",
+      "cefr": "B2",
+      "tip": "«Caer bien» es like, no «fall well»"
+    },
+    {
+      "spanish": "No me va mucho el jazz.",
+      "english": "I'm not really into jazz.",
+      "cefr": "C1",
+      "tip": "«No me va mucho» es I'm not really into…"
+    }
+  ],
+  "verdict": "Hasta la tres, básico. Hasta la siete, intermedio. Y si te encantaron las diez, experto.",
+  "outro": "[happy] ¿Cuál te gustó más? Escríbela junto con tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#TrucosDeInglés",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy087",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I like coffee.": "Me gusta el café.",
+    "I love this song.": "Me encanta esta canción.",
+    "Do you like sushi?": "¿Te gusta el sushi?",
+    "My sister likes dogs.": "A mi hermana le gustan los perros.",
+    "I'd like to go to Japan.": "Me gustaría ir a Japón.",
+    "I like the beach more than the mountains.": "Me gusta más la playa que la montaña.",
+    "I like it when you call me.": "Me gusta que me llames.",
+    "I like you.": "Me gustas.",
+    "I really like your friend.": "Tu amigo me cae muy bien.",
+    "I'm not really into jazz.": "No me va mucho el jazz."
+  },
+  "english_phrases": [
+    "I like coffee.",
+    "I love this song.",
+    "Do you like sushi?",
+    "My sister likes dogs.",
+    "I'd like to go to Japan.",
+    "I like the beach more than the mountains.",
+    "I like it when you call me.",
+    "I like you.",
+    "I really like your friend.",
+    "I'm not really into jazz.",
+    "I prefer the beach over the mountains."
+  ],
+  "full_script": "[warm] Diez frases con «gustar» y «encantar». Cuidado con el orden. Dilas en inglés. I like coffee. I love this song. Do you like sushi? Ahora, nivel intermedio. My sister likes dogs. I'd like to go to Japan. I like the beach more than the mountains. I like it when you call me. Y ahora, nivel experto. I like you. I really like your friend. I'm not really into jazz. Hasta la tres, básico. Hasta la siete, intermedio. Y si te encantaron las diez, experto. [happy] ¿Cuál te gustó más? Escríbela junto con tu número."
+}

@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "Cómo ANIMAR A ALGUIEN en inglés, de básico a experto 💪",
+  "video_description": "Diez frases para dar ánimos en inglés cuando alguien lo necesita. 💪",
+  "title": "Dilo en inglés",
+  "theme": "animar a alguien",
+  "intro": "[excited] Toca dar ánimos. Te digo la frase en español y tú la dices en inglés.",
+  "items": [
+    {
+      "spanish": "¡Tú puedes!",
+      "english": "You can do it!",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¡Muy bien hecho!",
+      "english": "Well done!",
+      "cefr": "A1",
+      "alt": "Great job!"
+    },
+    {
+      "spanish": "No te rindas.",
+      "english": "Don't give up.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Estoy orgulloso de ti.",
+      "english": "I'm proud of you.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Lo estás haciendo genial.",
+      "english": "You're doing great.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Seguro que lo consigues.",
+      "english": "I'm sure you'll make it.",
+      "cefr": "B1",
+      "alt": "I'm sure you'll pull it off."
+    },
+    {
+      "spanish": "Lo peor ya ha pasado.",
+      "english": "The worst is over.",
+      "cefr": "B2",
+      "alt": "The worst is behind you."
+    },
+    {
+      "spanish": "¡Ánimo!",
+      "english": "Hang in there!",
+      "cefr": "B2",
+      "alt": "Keep your chin up!",
+      "tip": "«¡Ánimo!» no se traduce palabra por palabra: Hang in there!"
+    },
+    {
+      "spanish": "¡Lo vas a hacer genial!",
+      "english": "You're going to nail it!",
+      "cefr": "B2",
+      "alt": "You'll nail it!",
+      "tip": "Hacer algo genial o «bordarlo» es nail it"
+    },
+    {
+      "spanish": "Hay que mirar el lado bueno.",
+      "english": "Look on the bright side.",
+      "cefr": "C1",
+      "tip": "«El lado bueno» es the bright side, y se mira on"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si sacaste las diez, ¡enhorabuena, experto!",
+  "outro": "[happy] ¿Hasta qué frase llegaste? Manda este vídeo a alguien que necesite ánimos.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésConversacional",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Motivación"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy071",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "You can do it!": "¡Tú puedes!",
+    "Well done!": "¡Muy bien hecho!",
+    "Don't give up.": "No te rindas.",
+    "I'm proud of you.": "Estoy orgulloso de ti.",
+    "You're doing great.": "Lo estás haciendo genial.",
+    "I'm sure you'll make it.": "Seguro que lo consigues.",
+    "The worst is over.": "Lo peor ya ha pasado.",
+    "Hang in there!": "¡Ánimo!",
+    "You're going to nail it!": "¡Lo vas a hacer genial!",
+    "Look on the bright side.": "Hay que mirar el lado bueno."
+  },
+  "english_phrases": [
+    "You can do it!",
+    "Well done!",
+    "Don't give up.",
+    "I'm proud of you.",
+    "You're doing great.",
+    "I'm sure you'll make it.",
+    "The worst is over.",
+    "Hang in there!",
+    "You're going to nail it!",
+    "Look on the bright side.",
+    "Great job!",
+    "I'm sure you'll pull it off.",
+    "The worst is behind you.",
+    "Keep your chin up!",
+    "You'll nail it!"
+  ],
+  "full_script": "[excited] Toca dar ánimos. Te digo la frase en español y tú la dices en inglés. You can do it! Well done! Don't give up. Ahora, nivel intermedio. I'm proud of you. You're doing great. I'm sure you'll make it. The worst is over. Y ahora, nivel experto. Hang in there! You're going to nail it! Look on the bright side. Si llegaste a la tres, básico. A la siete, intermedio. Y si sacaste las diez, ¡enhorabuena, experto! [happy] ¿Hasta qué frase llegaste? Manda este vídeo a alguien que necesite ánimos."
+}

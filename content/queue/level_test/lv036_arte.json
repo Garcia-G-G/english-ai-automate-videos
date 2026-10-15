@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Vocabulario de ARTE en inglés: ¿hasta dónde llegas? 🎨",
+  "video_description": "Diez palabras de arte en inglés, cada una más difícil que la anterior. 🎨",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el arte",
+  "intro": "[curious] ¿Hasta qué número llegas? Diez palabras de arte; tú dices qué significan.",
+  "items": [
+    {
+      "english": "museum",
+      "spanish": "Museo",
+      "cefr": "A1"
+    },
+    {
+      "english": "draw",
+      "spanish": "Dibujar",
+      "cefr": "A1"
+    },
+    {
+      "english": "painting",
+      "spanish": "Cuadro / pintura",
+      "cefr": "A2"
+    },
+    {
+      "english": "brush",
+      "spanish": "Pincel",
+      "cefr": "B1"
+    },
+    {
+      "english": "exhibition",
+      "spanish": "Exposición",
+      "cefr": "B1"
+    },
+    {
+      "english": "portrait",
+      "spanish": "Retrato",
+      "cefr": "B1"
+    },
+    {
+      "english": "landscape",
+      "spanish": "Paisaje",
+      "cefr": "B2"
+    },
+    {
+      "english": "masterpiece",
+      "spanish": "Obra maestra",
+      "cefr": "B2"
+    },
+    {
+      "english": "canvas",
+      "spanish": "Lienzo",
+      "cefr": "C1"
+    },
+    {
+      "english": "still life",
+      "spanish": "Bodegón / naturaleza muerta",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Con tres tienes nivel básico, con siete nivel intermedio, y si sabías las diez, eres experto.",
+  "outro": "[warm] ¿Cuántas acertaste? Te leo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv036",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "museum": "Museo",
+    "draw": "Dibujar",
+    "painting": "Cuadro / pintura",
+    "brush": "Pincel",
+    "exhibition": "Exposición",
+    "portrait": "Retrato",
+    "landscape": "Paisaje",
+    "masterpiece": "Obra maestra",
+    "canvas": "Lienzo",
+    "still life": "Bodegón / naturaleza muerta"
+  },
+  "english_phrases": [
+    "museum",
+    "draw",
+    "painting",
+    "brush",
+    "exhibition",
+    "portrait",
+    "landscape",
+    "masterpiece",
+    "canvas",
+    "still life"
+  ],
+  "full_script": "[curious] ¿Hasta qué número llegas? Diez palabras de arte; tú dices qué significan. museum Museo draw Dibujar painting Cuadro / pintura Ahora, nivel intermedio. brush Pincel exhibition Exposición portrait Retrato landscape Paisaje Y ahora, nivel experto. masterpiece Obra maestra canvas Lienzo still life Bodegón / naturaleza muerta Con tres tienes nivel básico, con siete nivel intermedio, y si sabías las diez, eres experto. [warm] ¿Cuántas acertaste? Te leo en los comentarios."
+}

@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "10 ADJETIVOS PARA OPINAR en inglés, ¿hasta cuál llegas? 🤔",
+  "video_description": "De «good» a «cringeworthy»: adjetivos para dar tu opinión en inglés, de fácil a experto 💬",
+  "title": "¿Qué nivel tienes?",
+  "theme": "adjetivos para opinar",
+  "intro": "[thoughtful] Diez adjetivos para dar tu opinión en inglés. ¿Sabes qué significan antes que yo?",
+  "items": [
+    {
+      "english": "good",
+      "spanish": "Bueno",
+      "cefr": "A1"
+    },
+    {
+      "english": "bad",
+      "spanish": "Malo",
+      "cefr": "A1"
+    },
+    {
+      "english": "boring",
+      "spanish": "Aburrido",
+      "cefr": "A1"
+    },
+    {
+      "english": "amazing",
+      "spanish": "Increíble",
+      "cefr": "A2"
+    },
+    {
+      "english": "awful",
+      "spanish": "Horrible",
+      "cefr": "B1"
+    },
+    {
+      "english": "overrated",
+      "spanish": "Sobrevalorado",
+      "cefr": "B2"
+    },
+    {
+      "english": "pointless",
+      "spanish": "Sin sentido",
+      "cefr": "B2"
+    },
+    {
+      "english": "mind-blowing",
+      "spanish": "Alucinante",
+      "cefr": "B2"
+    },
+    {
+      "english": "underwhelming",
+      "spanish": "Decepcionante",
+      "cefr": "C1"
+    },
+    {
+      "english": "cringeworthy",
+      "spanish": "Que da vergüenza ajena",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Mi opinión: con tres eres básico, con siete intermedio y con las diez, experto.",
+  "outro": "[curious] ¿Hasta qué número llegaste? Opina en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#AdjetivosEnInglés",
+    "#AprenderInglés",
+    "#InglésDiario"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv074",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "good": "Bueno",
+    "bad": "Malo",
+    "boring": "Aburrido",
+    "amazing": "Increíble",
+    "awful": "Horrible",
+    "overrated": "Sobrevalorado",
+    "pointless": "Sin sentido",
+    "mind-blowing": "Alucinante",
+    "underwhelming": "Decepcionante",
+    "cringeworthy": "Que da vergüenza ajena"
+  },
+  "english_phrases": [
+    "good",
+    "bad",
+    "boring",
+    "amazing",
+    "awful",
+    "overrated",
+    "pointless",
+    "mind-blowing",
+    "underwhelming",
+    "cringeworthy"
+  ],
+  "full_script": "[thoughtful] Diez adjetivos para dar tu opinión en inglés. ¿Sabes qué significan antes que yo? good Bueno bad Malo boring Aburrido Ahora, nivel intermedio. amazing Increíble awful Horrible overrated Sobrevalorado pointless Sin sentido Y ahora, nivel experto. mind-blowing Alucinante underwhelming Decepcionante cringeworthy Que da vergüenza ajena Mi opinión: con tres eres básico, con siete intermedio y con las diez, experto. [curious] ¿Hasta qué número llegaste? Opina en los comentarios."
+}

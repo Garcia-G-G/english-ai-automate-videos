@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "Frases para hablar CON NIÑOS en inglés 🧸",
+  "video_description": "Para padres, profes y niñeras: diez frases para hablar con niños en inglés. 🧸",
+  "title": "Dilo en inglés",
+  "theme": "con niños",
+  "intro": "[cheerful] Hoy hablamos con niños. Te digo la frase en español y tú la dices en inglés.",
+  "items": [
+    {
+      "spanish": "¿Cuántos años tienes?",
+      "english": "How old are you?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Lávate las manos.",
+      "english": "Wash your hands.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Es hora de dormir.",
+      "english": "It's bedtime.",
+      "cefr": "A2",
+      "alt": "It's time for bed."
+    },
+    {
+      "spanish": "No toques eso.",
+      "english": "Don't touch that.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Si te lo comes todo, hay postre.",
+      "english": "If you eat everything, you get dessert.",
+      "cefr": "B1",
+      "alt": "If you finish your plate, you get dessert."
+    },
+    {
+      "spanish": "¿Has recogido los juguetes?",
+      "english": "Have you put your toys away?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Deja de pelearte con tu hermano.",
+      "english": "Stop fighting with your brother.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Pórtate bien.",
+      "english": "Behave yourself.",
+      "cefr": "B2",
+      "alt": "Be good.",
+      "tip": "«Portarse bien» es behave o be good"
+    },
+    {
+      "spanish": "¡Ni se te ocurra!",
+      "english": "Don't even think about it!",
+      "cefr": "B2",
+      "tip": "«¡Ni se te ocurra!» es Don't even think about it!"
+    },
+    {
+      "spanish": "Ha tenido una rabieta.",
+      "english": "He threw a tantrum.",
+      "cefr": "C1",
+      "alt": "He had a meltdown.",
+      "tip": "«Tener una rabieta» es throw a tantrum"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si te salieron las diez, hay postre: experto.",
+  "outro": "[warm] ¿Hablas inglés con niños? Cuéntame hasta qué número llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaNiños",
+    "#AprenderInglés",
+    "#InglésEnFamilia",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy097",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "How old are you?": "¿Cuántos años tienes?",
+    "Wash your hands.": "Lávate las manos.",
+    "It's bedtime.": "Es hora de dormir.",
+    "Don't touch that.": "No toques eso.",
+    "If you eat everything, you get dessert.": "Si te lo comes todo, hay postre.",
+    "Have you put your toys away?": "¿Has recogido los juguetes?",
+    "Stop fighting with your brother.": "Deja de pelearte con tu hermano.",
+    "Behave yourself.": "Pórtate bien.",
+    "Don't even think about it!": "¡Ni se te ocurra!",
+    "He threw a tantrum.": "Ha tenido una rabieta."
+  },
+  "english_phrases": [
+    "How old are you?",
+    "Wash your hands.",
+    "It's bedtime.",
+    "Don't touch that.",
+    "If you eat everything, you get dessert.",
+    "Have you put your toys away?",
+    "Stop fighting with your brother.",
+    "Behave yourself.",
+    "Don't even think about it!",
+    "He threw a tantrum.",
+    "It's time for bed.",
+    "If you finish your plate, you get dessert.",
+    "Be good.",
+    "He had a meltdown."
+  ],
+  "full_script": "[cheerful] Hoy hablamos con niños. Te digo la frase en español y tú la dices en inglés. How old are you? Wash your hands. It's bedtime. Ahora, nivel intermedio. Don't touch that. If you eat everything, you get dessert. Have you put your toys away? Stop fighting with your brother. Y ahora, nivel experto. Behave yourself. Don't even think about it! He threw a tantrum. Si llegaste a la tres, básico. A la siete, intermedio. Y si te salieron las diez, hay postre: experto. [warm] ¿Hablas inglés con niños? Cuéntame hasta qué número llegaste."
+}

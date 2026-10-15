@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "CANSADO O ESTRESADO: 10 frases en inglés para desahogarte 😩",
+  "video_description": "Agotado, quemado o sin poder más: diez frases para decir en inglés cómo estás de verdad. 😩",
+  "title": "Dilo en inglés",
+  "theme": "cuando estás cansado o estresado",
+  "intro": "[calm] ¿Semana dura? Te digo cómo te sientes en español y tú lo dices en inglés.",
+  "items": [
+    {
+      "spanish": "Estoy cansado.",
+      "english": "I'm tired.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Necesito dormir.",
+      "english": "I need some sleep.",
+      "cefr": "A1",
+      "alt": "I need to sleep."
+    },
+    {
+      "spanish": "Tengo mucho trabajo.",
+      "english": "I have a lot of work.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "No he dormido bien.",
+      "english": "I didn't sleep well.",
+      "cefr": "A2",
+      "alt": "I haven't slept well."
+    },
+    {
+      "spanish": "Necesito unas vacaciones.",
+      "english": "I need a vacation.",
+      "cefr": "A2",
+      "alt": "I need a holiday."
+    },
+    {
+      "spanish": "Estoy muy estresado últimamente.",
+      "english": "I've been really stressed lately.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Tengo que tomarme un descanso.",
+      "english": "I need to take a break.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Estoy agotado.",
+      "english": "I'm exhausted.",
+      "cefr": "B1",
+      "tip": "Exhausted ya es «muy»: nunca «very exhausted»"
+    },
+    {
+      "spanish": "No puedo más.",
+      "english": "I can't take it anymore.",
+      "cefr": "B2",
+      "alt": "I can't do this anymore.",
+      "tip": "«No puedo más» es I can't take it anymore"
+    },
+    {
+      "spanish": "Estoy quemado en el trabajo.",
+      "english": "I'm burned out at work.",
+      "cefr": "B2",
+      "alt": "I'm burnt out at work.",
+      "tip": "«Estar quemado» se dice be burned out"
+    }
+  ],
+  "verdict": "Tres frases: básico. Siete: intermedio. Diez: experto... y ahora sí, a descansar.",
+  "outro": "[warm] ¿Cómo llevas la semana? Cuéntamelo con tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy046",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm tired.": "Estoy cansado.",
+    "I need some sleep.": "Necesito dormir.",
+    "I have a lot of work.": "Tengo mucho trabajo.",
+    "I didn't sleep well.": "No he dormido bien.",
+    "I need a vacation.": "Necesito unas vacaciones.",
+    "I've been really stressed lately.": "Estoy muy estresado últimamente.",
+    "I need to take a break.": "Tengo que tomarme un descanso.",
+    "I'm exhausted.": "Estoy agotado.",
+    "I can't take it anymore.": "No puedo más.",
+    "I'm burned out at work.": "Estoy quemado en el trabajo."
+  },
+  "english_phrases": [
+    "I'm tired.",
+    "I need some sleep.",
+    "I have a lot of work.",
+    "I didn't sleep well.",
+    "I need a vacation.",
+    "I've been really stressed lately.",
+    "I need to take a break.",
+    "I'm exhausted.",
+    "I can't take it anymore.",
+    "I'm burned out at work.",
+    "I need to sleep.",
+    "I haven't slept well.",
+    "I need a holiday.",
+    "I can't do this anymore.",
+    "I'm burnt out at work."
+  ],
+  "full_script": "[calm] ¿Semana dura? Te digo cómo te sientes en español y tú lo dices en inglés. I'm tired. I need some sleep. I have a lot of work. Ahora, nivel intermedio. I didn't sleep well. I need a vacation. I've been really stressed lately. I need to take a break. Y ahora, nivel experto. I'm exhausted. I can't take it anymore. I'm burned out at work. Tres frases: básico. Siete: intermedio. Diez: experto... y ahora sí, a descansar. [warm] ¿Cómo llevas la semana? Cuéntamelo con tu número en los comentarios."
+}

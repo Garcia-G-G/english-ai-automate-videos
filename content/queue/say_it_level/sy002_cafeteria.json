@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Sabes pedir en una CAFETERÍA en inglés? ☕",
+  "video_description": "Del café más simple a frases que casi todos dicen mal: pide en inglés como un nativo. ☕",
+  "title": "Dilo en inglés",
+  "theme": "pedir en una cafetería",
+  "intro": "[happy] Estás en una cafetería. Yo digo la frase en español y tú pides en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Un café, por favor.",
+      "english": "A coffee, please.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Tienen leche de avena?",
+      "english": "Do you have oat milk?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Con leche y sin azúcar.",
+      "english": "With milk and no sugar.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Me pone también un cruasán?",
+      "english": "Can I also get a croissant?",
+      "cefr": "A2",
+      "alt": "Could I get a croissant too?"
+    },
+    {
+      "spanish": "¿Me lo puede calentar, por favor?",
+      "english": "Could you heat it up, please?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Ya he pedido, gracias.",
+      "english": "I've already ordered, thanks.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Está libre esta mesa?",
+      "english": "Is this table free?",
+      "cefr": "B1",
+      "alt": "Is this table taken?"
+    },
+    {
+      "spanish": "Para llevar, por favor.",
+      "english": "To go, please.",
+      "cefr": "B1",
+      "alt": "To take away, please.",
+      "tip": "Nada de «for carry»: en EE. UU. se dice to go"
+    },
+    {
+      "spanish": "¿Me pone un café solo?",
+      "english": "Can I get a black coffee?",
+      "cefr": "B2",
+      "tip": "«Café solo» es black coffee, no «coffee alone»"
+    },
+    {
+      "spanish": "Me apetece algo dulce.",
+      "english": "I feel like something sweet.",
+      "cefr": "B2",
+      "alt": "I'm in the mood for something sweet.",
+      "tip": "«Me apetece» se dice I feel like + algo"
+    }
+  ],
+  "verdict": "¿Llegaste a la tres? Nivel básico. ¿A la siete? Intermedio. ¿Las diez sin fallar? Experto total.",
+  "outro": "[cheerful] Dime en los comentarios hasta qué número llegaste. ¿Y tú qué pides?",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy002",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "A coffee, please.": "Un café, por favor.",
+    "Do you have oat milk?": "¿Tienen leche de avena?",
+    "With milk and no sugar.": "Con leche y sin azúcar.",
+    "Can I also get a croissant?": "¿Me pone también un cruasán?",
+    "Could you heat it up, please?": "¿Me lo puede calentar, por favor?",
+    "I've already ordered, thanks.": "Ya he pedido, gracias.",
+    "Is this table free?": "¿Está libre esta mesa?",
+    "To go, please.": "Para llevar, por favor.",
+    "Can I get a black coffee?": "¿Me pone un café solo?",
+    "I feel like something sweet.": "Me apetece algo dulce."
+  },
+  "english_phrases": [
+    "A coffee, please.",
+    "Do you have oat milk?",
+    "With milk and no sugar.",
+    "Can I also get a croissant?",
+    "Could you heat it up, please?",
+    "I've already ordered, thanks.",
+    "Is this table free?",
+    "To go, please.",
+    "Can I get a black coffee?",
+    "I feel like something sweet.",
+    "Could I get a croissant too?",
+    "Is this table taken?",
+    "To take away, please.",
+    "I'm in the mood for something sweet."
+  ],
+  "full_script": "[happy] Estás en una cafetería. Yo digo la frase en español y tú pides en inglés antes que yo. A coffee, please. Do you have oat milk? With milk and no sugar. Ahora, nivel intermedio. Can I also get a croissant? Could you heat it up, please? I've already ordered, thanks. Is this table free? Y ahora, nivel experto. To go, please. Can I get a black coffee? I feel like something sweet. ¿Llegaste a la tres? Nivel básico. ¿A la siete? Intermedio. ¿Las diez sin fallar? Experto total. [cheerful] Dime en los comentarios hasta qué número llegaste. ¿Y tú qué pides?"
+}

@@ -1,0 +1,107 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Sabrías pedir esto en la FARMACIA en inglés? 💊",
+  "video_description": "Recetas, dolores y falsos amigos: diez frases de farmacia en inglés, de fácil a experto. 💊",
+  "title": "Dilo en inglés",
+  "theme": "en la farmacia",
+  "intro": "[warm] Hoy vamos a la farmacia. Escucha la frase en español y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Tienen crema solar?",
+      "english": "Do you have sunscreen?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Me duele la cabeza.",
+      "english": "I have a headache.",
+      "cefr": "A2",
+      "alt": "My head hurts."
+    },
+    {
+      "spanish": "Necesito algo para la tos.",
+      "english": "I need something for a cough.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Necesito receta?",
+      "english": "Do I need a prescription?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Cada cuánto lo tengo que tomar?",
+      "english": "How often should I take it?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Tiene algo que no dé sueño?",
+      "english": "Do you have something non-drowsy?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Se puede tomar en ayunas?",
+      "english": "Can I take it on an empty stomach?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Estoy constipado.",
+      "english": "I have a cold.",
+      "cefr": "B1",
+      "tip": "Constipated es estreñido; constipado es have a cold"
+    },
+    {
+      "spanish": "Estoy embarazada.",
+      "english": "I'm pregnant.",
+      "cefr": "B1",
+      "tip": "Embarrassed es avergonzado, no embarazada"
+    },
+    {
+      "spanish": "Me ha picado algo.",
+      "english": "Something bit me.",
+      "cefr": "B2",
+      "alt": "I got bitten by something.",
+      "tip": "La picadura de un bicho es bite (de abeja, sting)"
+    }
+  ],
+  "verdict": "Hasta la tres eres básico; hasta la siete, intermedio; y con las diez, eres experto. ¿Qué tal te fue?",
+  "outro": "[warm] ¿Hasta qué número llegaste? Te leo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#FalsosAmigos",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy010",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Do you have sunscreen?": "¿Tienen crema solar?",
+    "I have a headache.": "Me duele la cabeza.",
+    "I need something for a cough.": "Necesito algo para la tos.",
+    "Do I need a prescription?": "¿Necesito receta?",
+    "How often should I take it?": "¿Cada cuánto lo tengo que tomar?",
+    "Do you have something non-drowsy?": "¿Tiene algo que no dé sueño?",
+    "Can I take it on an empty stomach?": "¿Se puede tomar en ayunas?",
+    "I have a cold.": "Estoy constipado.",
+    "I'm pregnant.": "Estoy embarazada.",
+    "Something bit me.": "Me ha picado algo."
+  },
+  "english_phrases": [
+    "Do you have sunscreen?",
+    "I have a headache.",
+    "I need something for a cough.",
+    "Do I need a prescription?",
+    "How often should I take it?",
+    "Do you have something non-drowsy?",
+    "Can I take it on an empty stomach?",
+    "I have a cold.",
+    "I'm pregnant.",
+    "Something bit me.",
+    "My head hurts.",
+    "I got bitten by something."
+  ],
+  "full_script": "[warm] Hoy vamos a la farmacia. Escucha la frase en español y dila en inglés antes que yo. Do you have sunscreen? I have a headache. I need something for a cough. Ahora, nivel intermedio. Do I need a prescription? How often should I take it? Do you have something non-drowsy? Can I take it on an empty stomach? Y ahora, nivel experto. I have a cold. I'm pregnant. Something bit me. Hasta la tres eres básico; hasta la siete, intermedio; y con las diez, eres experto. ¿Qué tal te fue? [warm] ¿Hasta qué número llegaste? Te leo en los comentarios."
+}

@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "Pasar la ADUANA en inglés: 10 frases de fácil a experto 🛂",
+  "video_description": "Pasaporte, maleta y preguntas del agente: ¿sabes responder en inglés? 🛂",
+  "title": "Dilo en inglés",
+  "theme": "en la aduana",
+  "intro": "[serious] Estás en la aduana y el agente te pregunta. Di cada frase en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Soy turista.",
+      "english": "I'm a tourist.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Estoy de vacaciones.",
+      "english": "I'm on vacation.",
+      "cefr": "A1",
+      "alt": "I'm on holiday."
+    },
+    {
+      "spanish": "Me quedo una semana.",
+      "english": "I'm staying for a week.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Es un regalo para mi hermana.",
+      "english": "It's a gift for my sister.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Tengo que abrir la maleta?",
+      "english": "Do I need to open my suitcase?",
+      "cefr": "B1",
+      "alt": "Do I have to open my bag?"
+    },
+    {
+      "spanish": "No tengo nada que declarar.",
+      "english": "I have nothing to declare.",
+      "cefr": "B1",
+      "alt": "I don't have anything to declare."
+    },
+    {
+      "spanish": "Tengo receta para estas pastillas.",
+      "english": "I have a prescription for these pills.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Vengo por trabajo.",
+      "english": "I'm here on business.",
+      "cefr": "B2",
+      "alt": "I'm here for work.",
+      "tip": "«Vengo por…» es I'm here on/for…, no «I come for»"
+    },
+    {
+      "spanish": "Me alojo en casa de unos amigos.",
+      "english": "I'm staying with friends.",
+      "cefr": "B2",
+      "tip": "«En casa de» alguien se dice con with: staying with"
+    },
+    {
+      "spanish": "¿Hay que pagar impuestos por esto?",
+      "english": "Do I have to pay duty on this?",
+      "cefr": "C1",
+      "alt": "Is there duty on this?",
+      "tip": "Los impuestos de aduana son duty, no «taxes»"
+    }
+  ],
+  "verdict": "Tres frases: nivel básico. Siete: intermedio. Las diez: pasas la aduana sin que te paren.",
+  "outro": "[curious] ¿Hasta qué número llegaste? ¿Te han parado alguna vez en la aduana?",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Viajar"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy061",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm a tourist.": "Soy turista.",
+    "I'm on vacation.": "Estoy de vacaciones.",
+    "I'm staying for a week.": "Me quedo una semana.",
+    "It's a gift for my sister.": "Es un regalo para mi hermana.",
+    "Do I need to open my suitcase?": "¿Tengo que abrir la maleta?",
+    "I have nothing to declare.": "No tengo nada que declarar.",
+    "I have a prescription for these pills.": "Tengo receta para estas pastillas.",
+    "I'm here on business.": "Vengo por trabajo.",
+    "I'm staying with friends.": "Me alojo en casa de unos amigos.",
+    "Do I have to pay duty on this?": "¿Hay que pagar impuestos por esto?"
+  },
+  "english_phrases": [
+    "I'm a tourist.",
+    "I'm on vacation.",
+    "I'm staying for a week.",
+    "It's a gift for my sister.",
+    "Do I need to open my suitcase?",
+    "I have nothing to declare.",
+    "I have a prescription for these pills.",
+    "I'm here on business.",
+    "I'm staying with friends.",
+    "Do I have to pay duty on this?",
+    "I'm on holiday.",
+    "Do I have to open my bag?",
+    "I don't have anything to declare.",
+    "I'm here for work.",
+    "Is there duty on this?"
+  ],
+  "full_script": "[serious] Estás en la aduana y el agente te pregunta. Di cada frase en inglés antes que yo. I'm a tourist. I'm on vacation. I'm staying for a week. Ahora, nivel intermedio. It's a gift for my sister. Do I need to open my suitcase? I have nothing to declare. I have a prescription for these pills. Y ahora, nivel experto. I'm here on business. I'm staying with friends. Do I have to pay duty on this? Tres frases: nivel básico. Siete: intermedio. Las diez: pasas la aduana sin que te paren. [curious] ¿Hasta qué número llegaste? ¿Te han parado alguna vez en la aduana?"
+}

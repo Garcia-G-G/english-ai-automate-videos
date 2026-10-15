@@ -1,0 +1,107 @@
+{
+  "type": "say_it_level",
+  "video_title": "Tu MAÑANA EN CASA en inglés: de básico a experto ☕",
+  "video_description": "Despertador, ducha y café: diez frases de cada mañana dichas en inglés. ☕",
+  "title": "Dilo en inglés",
+  "theme": "por la mañana en casa",
+  "intro": "[calm] Buenos días. Te digo frases de la mañana en español y tú las dices en inglés.",
+  "items": [
+    {
+      "spanish": "Me levanto a las siete.",
+      "english": "I get up at seven.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Quieres café?",
+      "english": "Do you want some coffee?",
+      "cefr": "A1",
+      "alt": "Would you like some coffee?"
+    },
+    {
+      "spanish": "Me voy a duchar.",
+      "english": "I'm going to take a shower.",
+      "cefr": "A2",
+      "alt": "I'm going to shower."
+    },
+    {
+      "spanish": "¿Has visto mis llaves?",
+      "english": "Have you seen my keys?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Date prisa, que llegamos tarde.",
+      "english": "Hurry up, we're going to be late.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Qué hay para desayunar?",
+      "english": "What's for breakfast?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "No ha sonado el despertador.",
+      "english": "My alarm didn't go off.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Me lavo los dientes.",
+      "english": "I brush my teeth.",
+      "cefr": "B2",
+      "tip": "Los dientes se brush, y con my, no «the»"
+    },
+    {
+      "spanish": "Me he quedado dormido.",
+      "english": "I overslept.",
+      "cefr": "B2",
+      "tip": "«Quedarse dormido» por la mañana es oversleep"
+    },
+    {
+      "spanish": "No soy persona hasta que tomo café.",
+      "english": "I'm not human until I've had coffee.",
+      "cefr": "C1",
+      "tip": "«No ser persona» es not human, y until I've had"
+    }
+  ],
+  "verdict": "Hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez antes del café: experto.",
+  "outro": "[cheerful] ¿Hasta qué frase llegaste? ¿Tú eres persona antes del café?",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#RutinaEnInglés",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy067",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I get up at seven.": "Me levanto a las siete.",
+    "Do you want some coffee?": "¿Quieres café?",
+    "I'm going to take a shower.": "Me voy a duchar.",
+    "Have you seen my keys?": "¿Has visto mis llaves?",
+    "Hurry up, we're going to be late.": "Date prisa, que llegamos tarde.",
+    "What's for breakfast?": "¿Qué hay para desayunar?",
+    "My alarm didn't go off.": "No ha sonado el despertador.",
+    "I brush my teeth.": "Me lavo los dientes.",
+    "I overslept.": "Me he quedado dormido.",
+    "I'm not human until I've had coffee.": "No soy persona hasta que tomo café."
+  },
+  "english_phrases": [
+    "I get up at seven.",
+    "Do you want some coffee?",
+    "I'm going to take a shower.",
+    "Have you seen my keys?",
+    "Hurry up, we're going to be late.",
+    "What's for breakfast?",
+    "My alarm didn't go off.",
+    "I brush my teeth.",
+    "I overslept.",
+    "I'm not human until I've had coffee.",
+    "Would you like some coffee?",
+    "I'm going to shower."
+  ],
+  "full_script": "[calm] Buenos días. Te digo frases de la mañana en español y tú las dices en inglés. I get up at seven. Do you want some coffee? I'm going to take a shower. Ahora, nivel intermedio. Have you seen my keys? Hurry up, we're going to be late. What's for breakfast? My alarm didn't go off. Y ahora, nivel experto. I brush my teeth. I overslept. I'm not human until I've had coffee. Hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez antes del café: experto. [cheerful] ¿Hasta qué frase llegaste? ¿Tú eres persona antes del café?"
+}

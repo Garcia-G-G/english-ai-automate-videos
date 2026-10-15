@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "LLAMAR POR TELÉFONO en inglés: ¿llegas a experto? 📞",
+  "video_description": "Al teléfono no hay gestos: diez frases para llamar en inglés sin quedarte en blanco. 📞",
+  "title": "Dilo en inglés",
+  "theme": "llamar por teléfono",
+  "intro": "[cheerful] Suena el teléfono y es en inglés. Te digo la frase y tú la dices antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Puedo hablar con Marta?",
+      "english": "Can I speak to Marta?",
+      "cefr": "A1",
+      "alt": "Could I speak with Marta?"
+    },
+    {
+      "spanish": "¿Está Pedro?",
+      "english": "Is Pedro there?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Te llamo luego.",
+      "english": "I'll call you later.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "No te oigo bien.",
+      "english": "I can't hear you very well.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "No cuelgue, por favor.",
+      "english": "Please don't hang up.",
+      "cefr": "B1",
+      "alt": "Please hold."
+    },
+    {
+      "spanish": "¿Le puedo dejar un mensaje?",
+      "english": "Can I leave a message?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Te devuelvo la llamada en cinco minutos.",
+      "english": "I'll call you back in five minutes.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Hola, soy Laura.",
+      "english": "Hi, this is Laura.",
+      "cefr": "B1",
+      "alt": "Hi, it's Laura.",
+      "tip": "Al teléfono se dice This is..., no «I am...»"
+    },
+    {
+      "spanish": "¿De parte de quién?",
+      "english": "Who's calling, please?",
+      "cefr": "B2",
+      "alt": "May I ask who's calling?",
+      "tip": "No va palabra por palabra: Who's calling?"
+    },
+    {
+      "spanish": "Se ha cortado la llamada.",
+      "english": "The call dropped.",
+      "cefr": "B2",
+      "alt": "We got cut off.",
+      "tip": "Cuando «se corta» la llamada: drop o get cut off"
+    }
+  ],
+  "verdict": "Si colgaste en la tres, eres básico. En la siete, intermedio. Y si hablaste hasta la diez, experto.",
+  "outro": "[happy] ¿Hasta qué número aguantaste al teléfono? Te leo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés",
+    "#HablaInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy017",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Can I speak to Marta?": "¿Puedo hablar con Marta?",
+    "Is Pedro there?": "¿Está Pedro?",
+    "I'll call you later.": "Te llamo luego.",
+    "I can't hear you very well.": "No te oigo bien.",
+    "Please don't hang up.": "No cuelgue, por favor.",
+    "Can I leave a message?": "¿Le puedo dejar un mensaje?",
+    "I'll call you back in five minutes.": "Te devuelvo la llamada en cinco minutos.",
+    "Hi, this is Laura.": "Hola, soy Laura.",
+    "Who's calling, please?": "¿De parte de quién?",
+    "The call dropped.": "Se ha cortado la llamada."
+  },
+  "english_phrases": [
+    "Can I speak to Marta?",
+    "Is Pedro there?",
+    "I'll call you later.",
+    "I can't hear you very well.",
+    "Please don't hang up.",
+    "Can I leave a message?",
+    "I'll call you back in five minutes.",
+    "Hi, this is Laura.",
+    "Who's calling, please?",
+    "The call dropped.",
+    "Could I speak with Marta?",
+    "Please hold.",
+    "Hi, it's Laura.",
+    "May I ask who's calling?",
+    "We got cut off."
+  ],
+  "full_script": "[cheerful] Suena el teléfono y es en inglés. Te digo la frase y tú la dices antes que yo. Can I speak to Marta? Is Pedro there? I'll call you later. Ahora, nivel intermedio. I can't hear you very well. Please don't hang up. Can I leave a message? I'll call you back in five minutes. Y ahora, nivel experto. Hi, this is Laura. Who's calling, please? The call dropped. Si colgaste en la tres, eres básico. En la siete, intermedio. Y si hablaste hasta la diez, experto. [happy] ¿Hasta qué número aguantaste al teléfono? Te leo en los comentarios."
+}

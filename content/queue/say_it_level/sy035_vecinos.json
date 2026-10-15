@@ -1,0 +1,105 @@
+{
+  "type": "say_it_level",
+  "video_title": "Habla con tus VECINOS en inglés: ¿hasta cuál llegas? 🏠",
+  "video_description": "Presentarte, pedir sal y quejarte del ruido: diez frases para hablar con los vecinos en inglés. 🏠",
+  "title": "Dilo en inglés",
+  "theme": "con los vecinos",
+  "intro": "[warm] Llaman a la puerta: es tu vecino. Contesta en inglés antes de que lo haga yo.",
+  "items": [
+    {
+      "spanish": "Hola, soy el nuevo vecino.",
+      "english": "Hi, I'm the new neighbor.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Vivo en el tercero.",
+      "english": "I live on the third floor.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Tienes un poco de sal?",
+      "english": "Do you have any salt?",
+      "cefr": "A2",
+      "alt": "Could I borrow some salt?"
+    },
+    {
+      "spanish": "Su perro ladra toda la noche.",
+      "english": "Your dog barks all night.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Podrías bajar un poco la música?",
+      "english": "Could you turn the music down a bit?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Te he dejado el paquete en la puerta.",
+      "english": "I left your package at the door.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Mañana viene el fontanero.",
+      "english": "The plumber's coming tomorrow.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Hay una gotera en el techo.",
+      "english": "There's a leak in the ceiling.",
+      "cefr": "B1",
+      "tip": "El techo de dentro es ceiling; el de fuera, roof"
+    },
+    {
+      "spanish": "Se ha ido la luz en todo el edificio.",
+      "english": "The power's out in the whole building.",
+      "cefr": "B2",
+      "tip": "«Se ha ido la luz» se dice The power's out"
+    },
+    {
+      "spanish": "No me llevo bien con mi vecino.",
+      "english": "I don't get along with my neighbor.",
+      "cefr": "B2",
+      "tip": "«Llevarse bien» con alguien es get along with"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, eres básico. En la siete, intermedio. Y si llegaste a la diez, el vecino experto.",
+  "outro": "[happy] ¿Qué tal te llevas con tus vecinos? Dímelo con tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy035",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Hi, I'm the new neighbor.": "Hola, soy el nuevo vecino.",
+    "I live on the third floor.": "Vivo en el tercero.",
+    "Do you have any salt?": "¿Tienes un poco de sal?",
+    "Your dog barks all night.": "Su perro ladra toda la noche.",
+    "Could you turn the music down a bit?": "¿Podrías bajar un poco la música?",
+    "I left your package at the door.": "Te he dejado el paquete en la puerta.",
+    "The plumber's coming tomorrow.": "Mañana viene el fontanero.",
+    "There's a leak in the ceiling.": "Hay una gotera en el techo.",
+    "The power's out in the whole building.": "Se ha ido la luz en todo el edificio.",
+    "I don't get along with my neighbor.": "No me llevo bien con mi vecino."
+  },
+  "english_phrases": [
+    "Hi, I'm the new neighbor.",
+    "I live on the third floor.",
+    "Do you have any salt?",
+    "Your dog barks all night.",
+    "Could you turn the music down a bit?",
+    "I left your package at the door.",
+    "The plumber's coming tomorrow.",
+    "There's a leak in the ceiling.",
+    "The power's out in the whole building.",
+    "I don't get along with my neighbor.",
+    "Could I borrow some salt?"
+  ],
+  "full_script": "[warm] Llaman a la puerta: es tu vecino. Contesta en inglés antes de que lo haga yo. Hi, I'm the new neighbor. I live on the third floor. Do you have any salt? Ahora, nivel intermedio. Your dog barks all night. Could you turn the music down a bit? I left your package at the door. The plumber's coming tomorrow. Y ahora, nivel experto. There's a leak in the ceiling. The power's out in the whole building. I don't get along with my neighbor. Si te quedaste en la tres, eres básico. En la siete, intermedio. Y si llegaste a la diez, el vecino experto. [happy] ¿Qué tal te llevas con tus vecinos? Dímelo con tu número."
+}

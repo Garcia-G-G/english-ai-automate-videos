@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "EN LA ESCUELA: frases para padres y profesores en inglés 🏫",
+  "video_description": "Tutorías, notas y castigos: diez frases para hablar con el colegio en inglés. 🏫",
+  "title": "Dilo en inglés",
+  "theme": "en la escuela (padres y profesores)",
+  "intro": "[calm] Tienes tutoría en el colegio. Escucha la frase en español y dila en inglés.",
+  "items": [
+    {
+      "spanish": "Soy la madre de Lucía.",
+      "english": "I'm Lucía's mom.",
+      "cefr": "A1",
+      "alt": "I'm Lucía's mother."
+    },
+    {
+      "spanish": "¿Cómo va mi hijo?",
+      "english": "How is my son doing?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Hoy no viene a clase.",
+      "english": "She's not coming to school today.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Qué tal se porta en clase?",
+      "english": "How does he behave in class?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Le cuesta mucho leer.",
+      "english": "He really struggles with reading.",
+      "cefr": "B1",
+      "alt": "He finds reading really hard."
+    },
+    {
+      "spanish": "¿Puede salir antes hoy?",
+      "english": "Can she leave early today?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Cuándo es la reunión de padres?",
+      "english": "When's the parent-teacher conference?",
+      "cefr": "B2",
+      "alt": "When's parents' evening?"
+    },
+    {
+      "spanish": "Ha suspendido matemáticas.",
+      "english": "He failed math.",
+      "cefr": "B2",
+      "alt": "He failed maths.",
+      "tip": "«Suspender» un examen es fail, no «suspend»"
+    },
+    {
+      "spanish": "Lo han expulsado tres días.",
+      "english": "He's been suspended for three days.",
+      "cefr": "B2",
+      "tip": "Ojo: suspend es «expulsar» unos días, no «suspender»"
+    },
+    {
+      "spanish": "Es muy aplicado.",
+      "english": "He's very hardworking.",
+      "cefr": "C1",
+      "alt": "He's a hard worker.",
+      "tip": "«Aplicado» es hardworking, no «applied»"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, aprobado: básico. A la siete, notable: intermedio. Las diez, matrícula: experto.",
+  "outro": "[happy] ¿Qué nota te pones? Dime hasta qué frase llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésEnFamilia",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Colegio"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy098",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm Lucía's mom.": "Soy la madre de Lucía.",
+    "How is my son doing?": "¿Cómo va mi hijo?",
+    "She's not coming to school today.": "Hoy no viene a clase.",
+    "How does he behave in class?": "¿Qué tal se porta en clase?",
+    "He really struggles with reading.": "Le cuesta mucho leer.",
+    "Can she leave early today?": "¿Puede salir antes hoy?",
+    "When's the parent-teacher conference?": "¿Cuándo es la reunión de padres?",
+    "He failed math.": "Ha suspendido matemáticas.",
+    "He's been suspended for three days.": "Lo han expulsado tres días.",
+    "He's very hardworking.": "Es muy aplicado."
+  },
+  "english_phrases": [
+    "I'm Lucía's mom.",
+    "How is my son doing?",
+    "She's not coming to school today.",
+    "How does he behave in class?",
+    "He really struggles with reading.",
+    "Can she leave early today?",
+    "When's the parent-teacher conference?",
+    "He failed math.",
+    "He's been suspended for three days.",
+    "He's very hardworking.",
+    "I'm Lucía's mother.",
+    "He finds reading really hard.",
+    "When's parents' evening?",
+    "He failed maths.",
+    "He's a hard worker."
+  ],
+  "full_script": "[calm] Tienes tutoría en el colegio. Escucha la frase en español y dila en inglés. I'm Lucía's mom. How is my son doing? She's not coming to school today. Ahora, nivel intermedio. How does he behave in class? He really struggles with reading. Can she leave early today? When's the parent-teacher conference? Y ahora, nivel experto. He failed math. He's been suspended for three days. He's very hardworking. Si llegaste a la tres, aprobado: básico. A la siete, notable: intermedio. Las diez, matrícula: experto. [happy] ¿Qué nota te pones? Dime hasta qué frase llegaste."
+}

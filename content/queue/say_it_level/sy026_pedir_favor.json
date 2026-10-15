@@ -1,0 +1,105 @@
+{
+  "type": "say_it_level",
+  "video_title": "PEDIR UN FAVOR en inglés: ¿básico, intermedio o experto? 🤝",
+  "video_description": "Lend o borrow, would you mind y más: diez frases para pedir un favor en inglés. 🤝",
+  "title": "Dilo en inglés",
+  "theme": "pedir un favor",
+  "intro": "[warm] Necesitas un favor. Te digo cómo lo pedirías en español y tú lo dices en inglés.",
+  "items": [
+    {
+      "spanish": "¿Me ayudas con esto?",
+      "english": "Can you help me with this?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Me haces un favor?",
+      "english": "Can you do me a favor?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Me dejas tu cargador?",
+      "english": "Can I borrow your charger?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Puedes recoger a los niños hoy?",
+      "english": "Can you pick up the kids today?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Te importaría regarme las plantas?",
+      "english": "Would you mind watering my plants?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Si no es mucha molestia...",
+      "english": "If it's not too much trouble...",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Podrías echarle un ojo a mi perro?",
+      "english": "Could you keep an eye on my dog?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Me dejas veinte euros?",
+      "english": "Can you lend me twenty euros?",
+      "cefr": "B1",
+      "tip": "Lend es dejar algo a otro; borrow, pedirlo prestado"
+    },
+    {
+      "spanish": "¿Me puedes cubrir el lunes?",
+      "english": "Can you cover for me on Monday?",
+      "cefr": "B2",
+      "tip": "Sustituir a alguien en el trabajo es cover for"
+    },
+    {
+      "spanish": "No te lo pediría si no fuera importante.",
+      "english": "I wouldn't ask if it weren't important.",
+      "cefr": "B2",
+      "alt": "I wouldn't ask if it wasn't important.",
+      "tip": "Condicional: wouldn't + verbo, y if + pasado"
+    }
+  ],
+  "verdict": "Tres frases te dejan en básico, siete en intermedio y diez en experto. ¿Me haces el favor de comentar?",
+  "outro": "[happy] ¿Hasta qué número llegaste? Hazme el favor y déjalo en comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy026",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Can you help me with this?": "¿Me ayudas con esto?",
+    "Can you do me a favor?": "¿Me haces un favor?",
+    "Can I borrow your charger?": "¿Me dejas tu cargador?",
+    "Can you pick up the kids today?": "¿Puedes recoger a los niños hoy?",
+    "Would you mind watering my plants?": "¿Te importaría regarme las plantas?",
+    "If it's not too much trouble...": "Si no es mucha molestia...",
+    "Could you keep an eye on my dog?": "¿Podrías echarle un ojo a mi perro?",
+    "Can you lend me twenty euros?": "¿Me dejas veinte euros?",
+    "Can you cover for me on Monday?": "¿Me puedes cubrir el lunes?",
+    "I wouldn't ask if it weren't important.": "No te lo pediría si no fuera importante."
+  },
+  "english_phrases": [
+    "Can you help me with this?",
+    "Can you do me a favor?",
+    "Can I borrow your charger?",
+    "Can you pick up the kids today?",
+    "Would you mind watering my plants?",
+    "If it's not too much trouble...",
+    "Could you keep an eye on my dog?",
+    "Can you lend me twenty euros?",
+    "Can you cover for me on Monday?",
+    "I wouldn't ask if it weren't important.",
+    "I wouldn't ask if it wasn't important."
+  ],
+  "full_script": "[warm] Necesitas un favor. Te digo cómo lo pedirías en español y tú lo dices en inglés. Can you help me with this? Can you do me a favor? Can I borrow your charger? Ahora, nivel intermedio. Can you pick up the kids today? Would you mind watering my plants? If it's not too much trouble... Could you keep an eye on my dog? Y ahora, nivel experto. Can you lend me twenty euros? Can you cover for me on Monday? I wouldn't ask if it weren't important. Tres frases te dejan en básico, siete en intermedio y diez en experto. ¿Me haces el favor de comentar? [happy] ¿Hasta qué número llegaste? Hazme el favor y déjalo en comentarios."
+}

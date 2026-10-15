@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "PEDIR CITA en inglés: ¿llegas al nivel experto? 📅",
+  "video_description": "Médico, peluquería o dentista: diez frases para pedir y cambiar una cita en inglés. 📅",
+  "title": "Dilo en inglés",
+  "theme": "pedir cita",
+  "intro": "[calm] Llamas para pedir cita. Escucha la frase en español y dila tú en inglés.",
+  "items": [
+    {
+      "spanish": "Quiero pedir una cita.",
+      "english": "I'd like to make an appointment.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Tiene algo el lunes?",
+      "english": "Do you have anything on Monday?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "A las diez me va bien.",
+      "english": "Ten is fine for me.",
+      "cefr": "A2",
+      "alt": "Ten works for me."
+    },
+    {
+      "spanish": "¿Hay algo más temprano?",
+      "english": "Is there anything earlier?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Tengo que cambiar mi cita.",
+      "english": "I need to reschedule my appointment.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Me puede llamar si alguien cancela?",
+      "english": "Can you call me if someone cancels?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Me apunta para el viernes?",
+      "english": "Can you put me down for Friday?",
+      "cefr": "B2",
+      "alt": "Could you book me in for Friday?"
+    },
+    {
+      "spanish": "El martes no me viene bien.",
+      "english": "Tuesday doesn't work for me.",
+      "cefr": "B2",
+      "alt": "Tuesday isn't good for me.",
+      "tip": "«No me viene bien» es doesn't work for me"
+    },
+    {
+      "spanish": "La cita es dentro de dos semanas.",
+      "english": "The appointment is in two weeks.",
+      "cefr": "B2",
+      "tip": "«Dentro de» + tiempo es in, no «inside»"
+    },
+    {
+      "spanish": "¿Para cuándo tiene hueco?",
+      "english": "When's your next opening?",
+      "cefr": "C1",
+      "alt": "When's your next available slot?",
+      "tip": "Un «hueco» en la agenda es opening o slot, no «hole»"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, nivel básico; a la siete, intermedio; y si clavaste las diez, experto con cita fija.",
+  "outro": "[cheerful] ¿Cuántas te salieron? Apúntalo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy064",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'd like to make an appointment.": "Quiero pedir una cita.",
+    "Do you have anything on Monday?": "¿Tiene algo el lunes?",
+    "Ten is fine for me.": "A las diez me va bien.",
+    "Is there anything earlier?": "¿Hay algo más temprano?",
+    "I need to reschedule my appointment.": "Tengo que cambiar mi cita.",
+    "Can you call me if someone cancels?": "¿Me puede llamar si alguien cancela?",
+    "Can you put me down for Friday?": "¿Me apunta para el viernes?",
+    "Tuesday doesn't work for me.": "El martes no me viene bien.",
+    "The appointment is in two weeks.": "La cita es dentro de dos semanas.",
+    "When's your next opening?": "¿Para cuándo tiene hueco?"
+  },
+  "english_phrases": [
+    "I'd like to make an appointment.",
+    "Do you have anything on Monday?",
+    "Ten is fine for me.",
+    "Is there anything earlier?",
+    "I need to reschedule my appointment.",
+    "Can you call me if someone cancels?",
+    "Can you put me down for Friday?",
+    "Tuesday doesn't work for me.",
+    "The appointment is in two weeks.",
+    "When's your next opening?",
+    "Ten works for me.",
+    "Could you book me in for Friday?",
+    "Tuesday isn't good for me.",
+    "When's your next available slot?"
+  ],
+  "full_script": "[calm] Llamas para pedir cita. Escucha la frase en español y dila tú en inglés. I'd like to make an appointment. Do you have anything on Monday? Ten is fine for me. Ahora, nivel intermedio. Is there anything earlier? I need to reschedule my appointment. Can you call me if someone cancels? Can you put me down for Friday? Y ahora, nivel experto. Tuesday doesn't work for me. The appointment is in two weeks. When's your next opening? Si llegaste a la tres, nivel básico; a la siete, intermedio; y si clavaste las diez, experto con cita fija. [cheerful] ¿Cuántas te salieron? Apúntalo en los comentarios."
+}

@@ -50,6 +50,10 @@ SPOKEN_FIELDS = {
     # items are counted separately: spanish once, english TWICE, and never
     # the emoji -- see spoken_words.
     "how_do_you_say": ("intro", "recap", "outro"),
+    # items counted in spoken_words: prompt (when the plan speaks it) + answer,
+    # plus the two cached tier lines, which are spoken in every video.
+    "level_test": ("intro", "verdict", "outro"),
+    "say_it_level": ("intro", "verdict", "outro"),
 }
 
 
@@ -129,6 +133,16 @@ def spoken_words(script: dict, items: int = None) -> int:
         # "Family. Family." -- the English twice, in one call.
         for item in script.get("items") or []:
             total += _count(item.get("spanish")) + 2 * _count(item.get("english"))
+        return total
+
+    if vtype in ("level_test", "say_it_level"):
+        from tts_elevenlabs import LEVEL_PLANS, LEVEL_TIER_LINES
+        plan = LEVEL_PLANS[vtype]
+        total += sum(_count(line) for line in LEVEL_TIER_LINES.values())
+        for item in script.get("items") or []:
+            total += _count(item.get(plan["answer"][0]))
+            if plan["speak_prompt"]:
+                total += _count(item.get(plan["prompt"][0]))
         return total
 
     spec = ITEM_ARRAY.get(vtype)

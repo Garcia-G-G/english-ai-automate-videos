@@ -26,6 +26,7 @@ class ElevenLabsTTSProvider(TTSProvider):
             generate_true_false_audio_segmented,
             generate_vocabulary_audio_segmented,
             generate_how_do_you_say_audio_segmented,
+            generate_level_audio_segmented,
             generate_segment_audio,
         )
         from tts_common import extract_english_words_from_script
@@ -51,6 +52,10 @@ class ElevenLabsTTSProvider(TTSProvider):
             )
         elif video_type == 'how_do_you_say':
             result = generate_how_do_you_say_audio_segmented(
+                script=script_data, output_path=output_path, voice_id=voice_id,
+            )
+        elif video_type in ('level_test', 'say_it_level'):
+            result = generate_level_audio_segmented(
                 script=script_data, output_path=output_path, voice_id=voice_id,
             )
         else:

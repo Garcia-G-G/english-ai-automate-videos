@@ -48,6 +48,11 @@ class OpenAITTSProvider(TTSProvider):
             raise NotImplementedError(
                 "how_do_you_say has no OpenAI audio generator; it is built for "
                 "ElevenLabs (eleven_v3). Set audio.provider to elevenlabs.")
+        elif video_type in ('level_test', 'say_it_level'):
+            # Refused for the same reason as how_do_you_say: no segment_times.
+            raise NotImplementedError(
+                f"{video_type} has no OpenAI audio generator; it is built for "
+                "ElevenLabs (eleven_v3). Set audio.provider to elevenlabs.")
         else:
             text = script_data.get('full_script', '')
             if not text:

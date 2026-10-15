@@ -1914,6 +1914,215 @@ def generate_how_do_you_say_audio_segmented(
             pass
 
 
+# ── The level family (STEP 58): level_test, say_it_level ────────────
+
+#: What each mode says, in which language, and the viewer's pause. say_it_level's
+#: Spanish is read off the page, not spoken: with it spoken sy001 measured 82.2 s
+#: of audio (2026-10-15), over the 80 s ceiling -- STEP 49 §5 lever 3, which asks
+#: for a think of at least 3.0 s in exchange.
+LEVEL_PLANS = {
+    "level_test":   {"prompt": ("english", "en"), "answer": ("spanish", "es"),
+                     "think": 1.7, "speak_prompt": True},
+    "say_it_level": {"prompt": ("spanish", "es"), "answer": ("english", "en"),
+                     "think": 3.0, "speak_prompt": False},
+}
+#: The tier lines, fixed by the format: recorded once per voice and model, then cached.
+LEVEL_TIER_LINES = {4: "Ahora, nivel intermedio.", 8: "Y ahora, nivel experto."}
+LEVEL_TIER_CACHE = Path(__file__).resolve().parent.parent / "output" / "cache" / "level_tiers"
+LEVEL_ITEM_GAP_S = 0.4
+LEVEL_AFTER_INTRO_S = 0.5
+LEVEL_AROUND_TIER_S = 0.3
+LEVEL_BEFORE_VERDICT_S = 0.5
+LEVEL_AFTER_VERDICT_S = 0.5
+#: Takes re-asked when an English clip starts dirty (the Manim onset gate, 3ad373d).
+LEVEL_ONSET_RETRIES = 2
+
+
+def _onset_clean(path: str) -> bool:
+    """The Manim onset gate's verdict on one clip as ElevenLabs returned it.
+
+    shortcut: loads experiments/manim_voiceover_poc/probes/onset.py by path; move
+    it into src/ if the Shorts keep the gate."""
+    import importlib.util
+    probe = Path(__file__).resolve().parent.parent / "experiments" / "manim_voiceover_poc" / "probes" / "onset.py"
+    spec = importlib.util.spec_from_file_location("_manim_onset", probe)
+    O = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(O)
+    x = O.load(path)
+    e = O.env_db(x)
+    start, _ = O.onset(x)
+    if start is None:
+        return False
+    return float(e[0] - e.max()) < -30 and O.fragment(e, start, e.max()) is None and O.doubled_onset(x) is None
+
+
+def _spoken_spanish(text: str) -> str:
+    """«Nevera / refrigerador» is read «Nevera o refrigerador»."""
+    return text.replace(" / ", " o ")
+
+
+def generate_level_audio_segmented(
+    script: dict,
+    output_path: str,
+    voice_id: str = None,
+    stability: float = DEFAULT_STABILITY,
+    similarity_boost: float = DEFAULT_SIMILARITY,
+) -> dict:
+    """
+    Audio for level_test and say_it_level, one plan per mode (LEVEL_PLANS).
+
+    Segments, each with measured boundaries in segment_times:
+        intro
+        tier_4, tier_8   fixed lines, cached per voice (no per-video cost)
+        prompt_i         the row's prompt, spoken (unless the plan says not)
+        think_i          generated silence, NO API call, declared '[silence]'
+        answer_i         the answer, spoken once; the renderer writes it in over it
+        verdict
+        outro
+
+    Every clip is requested on its own, with no previous/next text: the onset
+    stutters of the Manim lessons came from context across a language switch.
+    Every English clip is checked by the onset gate and re-asked when dirty.
+    Every clip is trimmed to its speech (≤ 0.1 s kept at either end).
+    """
+    import hashlib
+    import json
+    import shutil
+    from tts_common import clean_for_tts, trim_clip_silence
+
+    plan = LEVEL_PLANS[script["type"]]
+    voice_id = voice_id or DEFAULT_VOICE_ID
+    items = script["items"]
+    english_words = extract_english_words_from_script(script)
+    temp_dir = tempfile.mkdtemp(prefix="el_level_segments_")
+    characters = 0
+    retakes = 0
+
+    try:
+        segments, audio_files = [], []
+        running_time = 0.0
+
+        def add_audio(path: str):
+            nonlocal running_time
+            duration = get_audio_duration(path)
+            start = running_time
+            speech_end = start + measure_speech_end(path)
+            running_time += duration
+            audio_files.append(path)
+            # The shared 4-tuple (tests/test_generator_add_audio_arity.py).
+            return start, running_time, duration, speech_end
+
+        def add_silence(dur: float):
+            nonlocal running_time
+            start = running_time
+            path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
+            generate_silence(dur, path)
+            audio_files.append(path)
+            running_time += dur
+            return start, running_time
+
+        def add_segment(seg_id: str, text: str, start: float, end: float):
+            segments.append({"id": seg_id, "text": text, "start": round(start, 3),
+                             "end": round(end, 3), "duration": round(end - start, 3)})
+            logger.info("  [%s] %.2f-%.2f %s", seg_id, start, end, text[:60])
+
+        def request(text: str, path: str, segment_type: str):
+            nonlocal characters
+            characters += len(text)
+            generate_segment_audio(text=text, output_path=path, voice_id=voice_id,
+                                   stability=stability, similarity_boost=similarity_boost,
+                                   segment_type=segment_type, english_words=english_words)
+
+        def speak(seg_id: str, text: str, lang: str, segment_type: str) -> str:
+            nonlocal retakes
+            path = os.path.join(temp_dir, f"{seg_id}.mp3")
+            request(text, path, segment_type)
+            if lang == "en":
+                for take in range(LEVEL_ONSET_RETRIES):
+                    if _onset_clean(path):
+                        break
+                    retakes += 1
+                    logger.info("%s: dirty onset, asking again (%d/%d)", seg_id, take + 1,
+                                LEVEL_ONSET_RETRIES)
+                    request(text, path, segment_type)
+            trim_clip_silence(path)
+            return path
+
+        def say(seg_id: str, text: str, lang: str, segment_type: str):
+            start, _file_end, _dur, end = add_audio(speak(seg_id, text, lang, segment_type))
+            add_segment(seg_id, text, start, end)
+
+        def tier_clip(n: int) -> str:
+            text = LEVEL_TIER_LINES[n]
+            key = hashlib.sha1(f"{voice_id}|{MODEL_ID}|{text}".encode()).hexdigest()[:16]
+            cached = LEVEL_TIER_CACHE / f"{key}.mp3"
+            if not cached.exists():
+                LEVEL_TIER_CACHE.mkdir(parents=True, exist_ok=True)
+                shutil.copy(speak(f"tier_{n}", text, "es", "default"), cached)
+            return str(cached)
+
+        say("intro", clean_for_tts(script["intro"], keep_tags=_KEEP_TAGS), "es", "question")
+        add_silence(LEVEL_AFTER_INTRO_S)
+
+        prompt_field, prompt_lang = plan["prompt"]
+        answer_field, answer_lang = plan["answer"]
+        for i, item in enumerate(items, start=1):
+            if i in LEVEL_TIER_LINES:
+                start, _file_end, _dur, end = add_audio(tier_clip(i))
+                add_segment(f"tier_{i}", LEVEL_TIER_LINES[i], start, end)
+                add_silence(LEVEL_AROUND_TIER_S)
+            prompt = item[prompt_field]
+            if plan["speak_prompt"]:
+                text = prompt if prompt_lang == "en" else _spoken_spanish(prompt)
+                say(f"prompt_{i}", clean_for_tts(text if text.endswith((".", "?", "!")) else f"{text}.",
+                                                 keep_tags=_KEEP_TAGS),
+                    prompt_lang, "default")
+            start, end = add_silence(plan["think"])
+            add_segment(f"think_{i}", "[silence]", start, end)
+            answer = item[answer_field]
+            text = answer if answer_lang == "en" else _spoken_spanish(answer)
+            say(f"answer_{i}", clean_for_tts(text if text.endswith((".", "?", "!")) else f"{text}.",
+                                             keep_tags=_KEEP_TAGS),
+                answer_lang, "default")
+            add_silence(LEVEL_ITEM_GAP_S)
+
+        add_silence(LEVEL_BEFORE_VERDICT_S)
+        say("verdict", clean_for_tts(script["verdict"], keep_tags=_KEEP_TAGS), "es", "default")
+        add_silence(LEVEL_AFTER_VERDICT_S)
+        say("outro", clean_for_tts(script["outro"], keep_tags=_KEEP_TAGS), "es", "question")
+
+        concat = os.path.join(temp_dir, "concat.txt")
+        with open(concat, "w") as f:
+            f.writelines(f"file '{a}'\n" for a in audio_files)
+        if os.path.dirname(output_path):
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        done = subprocess.run(["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", concat,
+                               "-acodec", "libmp3lame", "-q:a", "2", "-ar", "44100", "-ac", "1",
+                               output_path], capture_output=True, text=True, timeout=120)
+        if done.returncode != 0:
+            raise RuntimeError(f"FFmpeg concat failed: {done.stderr[:500]}")
+
+        result_data = {
+            "duration": round(running_time, 3),
+            "segments": segments,
+            "segment_times": {s["id"]: {k: s[k] for k in ("start", "end", "duration")} for s in segments},
+            "tts_model_id": MODEL_ID,
+            "characters": characters,
+            "onset_retakes": retakes,
+            "words": [],
+            **{k: script.get(k, d) for k, d in (
+                ("type", ""), ("title", ""), ("theme", ""), ("intro", ""), ("items", []),
+                ("verdict", ""), ("outro", ""), ("full_script", ""), ("translations", {}),
+                ("english_phrases", []), ("hashtags", []), ("_meta", {}))},
+        }
+        with open(output_path.replace(".mp3", ".json"), "w", encoding="utf-8") as f:
+            json.dump(result_data, f, ensure_ascii=False, indent=2)
+        logger.info("Level audio: %.2fs, %d characters, %d onset re-asks", running_time, characters, retakes)
+        return result_data
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
+
 def list_voices() -> None:
     """List available ElevenLabs voices."""
     client = get_client()

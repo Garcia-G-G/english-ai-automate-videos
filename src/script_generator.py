@@ -763,6 +763,69 @@ FORMATO JSON REQUERIDO:
 Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 
+def build_prompt_level(category: str, topic: dict, video_type: str) -> str:
+    """The level family (STEP 58): ten items from easy to expert, one theme.
+
+    The 100 queued scripts per type were written by hand to
+    content/drafts/LEVEL_TYPES_SPEC.md; this is the door for the next ones,
+    and the schema holds every rule the prompt states.
+    """
+    from length_spec import prompt_instruction as _length_rule
+    from script_schema import LEVEL_TYPE_TAGS
+    theme = topic.get("theme") or topic.get("spanish") or topic.get("topic", "")
+    tags = ", ".join(f"[{t}]" for t in ("cheerful", "excited", "curious", "warm"))
+    if video_type == "level_test":
+        what = ("La palabra o expresión en inglés aparece y se dice; el espectador dice qué significa; "
+                "después se escribe y se dice el significado en español.")
+        item = '{"english": "spoon", "spanish": "Cuchara", "cefr": "A1"}'
+        levels = ("cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2, al menos dos B1/B2. "
+                  "Items 8-10: B2-C2, al menos dos C1/C2.")
+        extra = ('"english" ≤ 24 caracteres, minúscula. "spanish" ≤ 28, mayúscula inicial, el '
+                 'significado en ESTE sentido.')
+    else:
+        what = ("La frase en español aparece y se dice; el espectador la dice en inglés; después se "
+                "escribe y se dice en inglés. Los items 8-10 son TRAMPAS donde la traducción literal falla.")
+        item = ('{"spanish": "¿Nos trae la cuenta, por favor?", "english": "Can we get the check, please?", '
+                '"cefr": "B2", "alt": "Could we have the bill, please?", "tip": "«La cuenta» es check o bill, nunca account"}')
+        levels = "cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2. Items 8-10: B1-C1."
+        extra = ('"spanish" y "english" ≤ 42 caracteres con puntuación final; "alt" opcional (otra respuesta '
+                 'correcta); "tip" OBLIGATORIO en 8-10, ≤ 60, en español, explica la trampa.')
+    rules = _length_rule(video_type)
+    return f"""Genera un Short de nivel ("¿Hasta qué número llegas?") para hispanohablantes que aprenden inglés.
+
+{rules}
+
+TEMA: {theme}  (topic_id {topic.get("id", "")})
+
+CÓMO ES EL VIDEO: una página de cuaderno con los 10 items visibles desde el primer segundo.
+{what} Tras el 3 y el 7 se anuncia el nivel (lo pone el formato: NO lo escribas).
+
+REGLAS:
+1. EXACTAMENTE 10 items, de fácil a experto. {levels}
+2. {extra}
+3. Sin repetir english ni spanish dentro del video.
+4. Etiqueta de voz SOLO al inicio de intro y outro, una, de esta lista: {tags}.
+5. "verdict" (≤ 130, sin etiqueta) nombra los tres cortes: tres, siete y diez.
+6. "video_title" ≤ 70 y "video_description" ≤ 120, en español, terminan en UN emoji simple.
+7. "hashtags": exactamente 5, el primero {LEVEL_TYPE_TAGS[video_type]}.
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "{video_type}",
+  "video_title": "...", "video_description": "...",
+  "title": "{"¿Qué nivel tienes?" if video_type == "level_test" else "Dilo en inglés"}",
+  "theme": "{theme}",
+  "intro": "[cheerful] ...",
+  "items": [{item}],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "intro + cada item + verdict + outro",
+  "hashtags": ["{LEVEL_TYPE_TAGS[video_type]}", "...", "...", "...", "..."]
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
 def build_prompt(category: str, topic: dict, video_type: str = "educational") -> str:
     """Build prompt based on video type."""
     if video_type == "educational":
@@ -779,6 +842,8 @@ def build_prompt(category: str, topic: dict, video_type: str = "educational") ->
         return build_prompt_vocabulary(category, topic)
     elif video_type == "how_do_you_say":
         return build_prompt_how_do_you_say(category, topic)
+    elif video_type in ("level_test", "say_it_level"):
+        return build_prompt_level(category, topic, video_type)
     else:
         raise ValueError(f"Unknown video type: {video_type}. Choose from: {VIDEO_TYPES}")
 
@@ -828,6 +893,8 @@ def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None
         "pronunciation": ["full_script", "word", "phonetic"],
         "vocabulary": ["full_script", "title", "pairs"],
         "how_do_you_say": ["full_script", "theme", "intro", "items", "recap", "outro"],
+        "level_test": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "say_it_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
     }
 
     # Check required fields.

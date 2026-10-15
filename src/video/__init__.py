@@ -55,7 +55,7 @@ from .true_false import create_frame_true_false, resolve_true_false_timestamps
 from .fill_blank import create_frame_fill_blank
 from .pronunciation import create_frame_pronunciation
 from .vocabulary import create_frame_vocabulary
-from .how_do_you_say import create_frame_how_do_you_say
+from .how_do_you_say import create_frame_how_do_you_say, create_frame_level
 from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
 # Re-export from top-level src/backgrounds.py (on sys.path via main.py)
@@ -462,6 +462,12 @@ def generate_video(
 
         def frame_gen(t):
             return create_frame_how_do_you_say(t, data, duration, presentation=presentation)
+
+    elif video_type in ('level_test', 'say_it_level'):
+        logger.info(f"Level ({video_type}): {len(data['items'])} items, theme {data.get('theme')!r}")
+
+        def frame_gen(t):
+            return create_frame_level(t, data, duration, presentation=presentation)
 
     else:
         logger.error(f"Unknown video type: {video_type}")

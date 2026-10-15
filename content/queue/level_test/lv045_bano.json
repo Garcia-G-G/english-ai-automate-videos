@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "10 cosas del BAÑO en inglés: ¿las sabes todas? 🛁",
+  "video_description": "Diez palabras del baño para saber hasta dónde llega tu inglés. 🛁",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el baño",
+  "intro": "[happy] Aquí tienes diez palabras del baño. Tu misión: decir qué significan antes que yo.",
+  "items": [
+    {
+      "english": "shower",
+      "spanish": "Ducha",
+      "cefr": "A1"
+    },
+    {
+      "english": "towel",
+      "spanish": "Toalla",
+      "cefr": "A1"
+    },
+    {
+      "english": "toothbrush",
+      "spanish": "Cepillo de dientes",
+      "cefr": "A2"
+    },
+    {
+      "english": "toilet paper",
+      "spanish": "Papel higiénico",
+      "cefr": "A2"
+    },
+    {
+      "english": "mirror",
+      "spanish": "Espejo",
+      "cefr": "A2"
+    },
+    {
+      "english": "bathtub",
+      "spanish": "Bañera / tina",
+      "cefr": "B1"
+    },
+    {
+      "english": "faucet",
+      "spanish": "Grifo / llave",
+      "cefr": "B1"
+    },
+    {
+      "english": "razor",
+      "spanish": "Maquinilla de afeitar",
+      "cefr": "B2"
+    },
+    {
+      "english": "floss",
+      "spanish": "Hilo dental",
+      "cefr": "C1"
+    },
+    {
+      "english": "medicine cabinet",
+      "spanish": "Botiquín",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste?",
+  "outro": "[happy] Deja tu puntuación en los comentarios y nos vemos en el próximo test.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésOnline",
+    "#InglésParaHispanos",
+    "#ClasesDeInglés",
+    "#InglésDiario"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv045",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "shower": "Ducha",
+    "towel": "Toalla",
+    "toothbrush": "Cepillo de dientes",
+    "toilet paper": "Papel higiénico",
+    "mirror": "Espejo",
+    "bathtub": "Bañera / tina",
+    "faucet": "Grifo / llave",
+    "razor": "Maquinilla de afeitar",
+    "floss": "Hilo dental",
+    "medicine cabinet": "Botiquín"
+  },
+  "english_phrases": [
+    "shower",
+    "towel",
+    "toothbrush",
+    "toilet paper",
+    "mirror",
+    "bathtub",
+    "faucet",
+    "razor",
+    "floss",
+    "medicine cabinet"
+  ],
+  "full_script": "[happy] Aquí tienes diez palabras del baño. Tu misión: decir qué significan antes que yo. shower Ducha towel Toalla toothbrush Cepillo de dientes Ahora, nivel intermedio. toilet paper Papel higiénico mirror Espejo bathtub Bañera / tina faucet Grifo / llave Y ahora, nivel experto. razor Maquinilla de afeitar floss Hilo dental medicine cabinet Botiquín La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste? [happy] Deja tu puntuación en los comentarios y nos vemos en el próximo test."
+}

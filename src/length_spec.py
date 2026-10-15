@@ -37,6 +37,8 @@ wrong.
 
 from __future__ import annotations
 
+import math
+
 import logging
 from dataclasses import dataclass
 from typing import Dict, List, Optional
@@ -82,6 +84,9 @@ def _mean_char_width(size: int, face: Optional[str] = None) -> float:
     if face == "fredoka":
         from video.how_do_you_say import fredoka
         f = fredoka(size)
+    elif face == "fredoka_note":
+        from video.how_do_you_say import fredoka
+        f = fredoka(size, "display_medium")
     else:
         from video.utils import font
         f = font(size)
@@ -198,6 +203,26 @@ def _boxes() -> List[Dict]:
              height=None, face="fredoka",
              source="how_do_you_say.ENGLISH_W, WORD_FONT_MAX/MIN"),
 
+        # ── level_test, say_it_level (STEP 58) ───────────────────────
+        # Prompt and answer share one column, a line each, at one size
+        # for the whole page (how_do_you_say.page_size); the floor is
+        # LINE_FONT_MIN. say_it_level's tip and alternative go on the
+        # note over the title: the tip wraps to at most two lines, the
+        # alternative is one line after «También: ».
+        *[dict(video_type=vtype, field=field, width=hdys.LINE_W, lines=1,
+               font_max=hdys.LINE_FONT_MAX, font_min=hdys.LINE_FONT_MIN,
+               height=None, face="fredoka",
+               source="how_do_you_say.LINE_W, LINE_FONT_MAX/MIN")
+          for vtype in ("level_test", "say_it_level") for field in ("english", "spanish")],
+        dict(video_type="say_it_level", field="tip",
+             width=hdys.NOTE_W - 2 * hdys.NOTE_PAD, lines=hdys.NOTE_LINES - 1,
+             font_max=hdys.NOTE_FONT, font_min=hdys.NOTE_FONT, height=None,
+             face="fredoka_note", source="how_do_you_say.note_lines, NOTE_W"),
+        dict(video_type="say_it_level", field="alt",
+             width=hdys.NOTE_W - 2 * hdys.NOTE_PAD - hdys.NOTE_LEAD_W, lines=1,
+             font_max=hdys.NOTE_FONT, font_min=hdys.NOTE_FONT, height=None,
+             face="fredoka_note", source="how_do_you_say.NOTE_W - «También: »"),
+
         # ── true_false ───────────────────────────────────────────────
         dict(video_type="true_false", field="statement",
              width=CARD_WIDTH - 36 * 2, lines=3, font_max=56, font_min=36,
@@ -269,10 +294,25 @@ def measure(text: str, budget: Budget) -> Dict:
     if not text:
         return {"fits": True, "empty": True}
 
+    if budget.face == "fredoka_note":
+        # The note's own wrap, verbatim: lines past budget.lines do not fit.
+        from video.how_do_you_say import fredoka, note_lines
+        f = fredoka(budget.font_max, "display_medium")
+        lines = [t for _k, t in note_lines(text, None)]
+        width = max(int(math.ceil(f.getlength(t))) for t in lines)
+        over_width = max(0, width - budget.width)
+        over_lines = max(0, len(lines) - budget.lines)
+        return {
+            "fits": not (over_width or over_lines), "empty": False, "chars": len(text),
+            "size": budget.font_max, "lines": len(lines), "width": width,
+            "over_width": over_width, "over_lines": over_lines, "over_height": 0,
+            "shrunk": False, "at_floor": True,
+        }
+
     if budget.face == "fredoka":
-        # The renderer's fit, verbatim: one line, WORD_FONT_MAX down to MIN.
+        # The renderer's fit, verbatim: one line, font_max down to font_min.
         from video.how_do_you_say import fit_word
-        _f, size, width = fit_word(text, budget.width)
+        _f, size, width = fit_word(text, budget.width, budget.font_max, budget.font_min)
         over_width = max(0, width - budget.width)
         return {
             "fits": not over_width, "empty": False, "chars": len(text),
@@ -314,6 +354,8 @@ _SCRIPT_FIELDS = {
     "quiz": {"question": "question", "explanation": "explanation"},
     "true_false": {"statement": "statement", "explanation": "explanation"},
     "how_do_you_say": {"spanish": None, "english": None},   # per item
+    "level_test": {"english": None, "spanish": None},       # per item
+    "say_it_level": {"spanish": None, "english": None, "alt": None, "tip": None},
 }
 
 
@@ -355,6 +397,11 @@ def check_script(script: Dict) -> List[Dict]:
         for index, item in enumerate(script.get("items") or []):
             look("spanish", item.get("spanish"), f"items[{index}]")
             look("english", item.get("english"), f"items[{index}]")
+
+    if video_type in ("level_test", "say_it_level"):
+        for index, item in enumerate(script.get("items") or []):
+            for field in _SCRIPT_FIELDS[video_type]:
+                look(field, item.get(field), f"items[{index}]")
 
     if video_type == "fill_blank":
         options = script.get("options")

@@ -95,6 +95,21 @@ TYPES: Dict[str, dict] = {
         "text_band": (97, 1459),    # tilted notebook page, measured (test_how_do_you_say)
         "dashboard": "Cómo se dice",
     },
+    # STEP 58: two modes of the same notebook page, so the same band.
+    "level_test": {
+        "renderer":  "video.how_do_you_say:create_frame_level",
+        "audio":     "generate_level_audio_segmented",
+        "timing":    "v3",
+        "text_band": (97, 1459),
+        "dashboard": "¿Qué nivel tienes?",
+    },
+    "say_it_level": {
+        "renderer":  "video.how_do_you_say:create_frame_level",
+        "audio":     "generate_level_audio_segmented",
+        "timing":    "v3",
+        "text_band": (97, 1459),
+        "dashboard": "Dilo en inglés",
+    },
 }
 
 #: THE list. Order is the registry's order, which is the order every menu,

@@ -322,6 +322,13 @@ type_categories:
   how_do_you_say:
     - basic_vocab
 
+  # The level family (STEP 58), two modes of the same notebook. Each category
+  # feeds its type only.
+  level_test:
+    - level_vocab
+  say_it_level:
+    - say_it
+
   # A general explainer handles any content. Excludes pronunciation only
   # because text karaoke cannot convey sound.
   educational:
@@ -388,6 +395,8 @@ upload:
     pronunciation: "#Pronunciation #EnglishTips #SpeakEnglish"
     vocabulary: "#Vocabulary #EnglishWords #LearnEnglish"
     how_do_you_say: "#InglésParaPrincipiantes #VocabularioEnInglés #AprenderInglés #InglésFácil #HowDoYouSay"
+    level_test: "#NivelDeInglés #AprenderInglés #VocabularioEnInglés #TestDeInglés #InglésFácil"
+    say_it_level: "#DiloEnInglés #AprenderInglés #FrasesEnInglés #InglésFácil #InglésParaViajar"
 
 # Content Generation
 content:

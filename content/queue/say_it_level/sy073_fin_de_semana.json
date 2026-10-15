@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "PLANES PARA EL FIN DE SEMANA en inglés: test de nivel 🎉",
+  "video_description": "¿Sabrías contar tus planes del fin de semana en inglés? Diez frases de fácil a experto. 🎉",
+  "title": "Dilo en inglés",
+  "theme": "planes para el fin de semana",
+  "intro": "[happy] Llega el fin de semana. Escucha la frase en español y dila en inglés.",
+  "items": [
+    {
+      "spanish": "El sábado no trabajo.",
+      "english": "I don't work on Saturday.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Quiero descansar.",
+      "english": "I want to relax.",
+      "cefr": "A1",
+      "alt": "I want to rest."
+    },
+    {
+      "spanish": "¿Qué haces este fin de semana?",
+      "english": "What are you doing this weekend?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Vamos a ir de excursión a la montaña.",
+      "english": "We're going hiking in the mountains.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Igual salimos a cenar.",
+      "english": "We might go out for dinner.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Te apetece venir?",
+      "english": "Do you feel like coming?",
+      "cefr": "B1",
+      "alt": "Do you want to come?"
+    },
+    {
+      "spanish": "Todavía no tengo nada planeado.",
+      "english": "I don't have anything planned yet.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "He quedado con unos amigos.",
+      "english": "I'm meeting up with some friends.",
+      "cefr": "B2",
+      "tip": "«Quedar con» alguien es meet up with, no «stay with»"
+    },
+    {
+      "spanish": "Voy a hacer una barbacoa.",
+      "english": "I'm having a barbecue.",
+      "cefr": "B2",
+      "tip": "«Hacer» una fiesta o una barbacoa es have, no «make»"
+    },
+    {
+      "spanish": "Me quedo en casa sin hacer nada.",
+      "english": "I'm just staying in and chilling.",
+      "cefr": "C1",
+      "alt": "I'm having a lazy weekend.",
+      "tip": "«Quedarse en casa» es stay in; chill es relajarse"
+    }
+  ],
+  "verdict": "Tres frases y eres básico. Siete y eres intermedio. Las diez y tu fin de semana es de experto.",
+  "outro": "[excited] ¿Qué planes tienes tú? Cuéntamelo y dime hasta qué número llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#FinDeSemana"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy073",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I don't work on Saturday.": "El sábado no trabajo.",
+    "I want to relax.": "Quiero descansar.",
+    "What are you doing this weekend?": "¿Qué haces este fin de semana?",
+    "We're going hiking in the mountains.": "Vamos a ir de excursión a la montaña.",
+    "We might go out for dinner.": "Igual salimos a cenar.",
+    "Do you feel like coming?": "¿Te apetece venir?",
+    "I don't have anything planned yet.": "Todavía no tengo nada planeado.",
+    "I'm meeting up with some friends.": "He quedado con unos amigos.",
+    "I'm having a barbecue.": "Voy a hacer una barbacoa.",
+    "I'm just staying in and chilling.": "Me quedo en casa sin hacer nada."
+  },
+  "english_phrases": [
+    "I don't work on Saturday.",
+    "I want to relax.",
+    "What are you doing this weekend?",
+    "We're going hiking in the mountains.",
+    "We might go out for dinner.",
+    "Do you feel like coming?",
+    "I don't have anything planned yet.",
+    "I'm meeting up with some friends.",
+    "I'm having a barbecue.",
+    "I'm just staying in and chilling.",
+    "I want to rest.",
+    "Do you want to come?",
+    "I'm having a lazy weekend."
+  ],
+  "full_script": "[happy] Llega el fin de semana. Escucha la frase en español y dila en inglés. I don't work on Saturday. I want to relax. What are you doing this weekend? Ahora, nivel intermedio. We're going hiking in the mountains. We might go out for dinner. Do you feel like coming? I don't have anything planned yet. Y ahora, nivel experto. I'm meeting up with some friends. I'm having a barbecue. I'm just staying in and chilling. Tres frases y eres básico. Siete y eres intermedio. Las diez y tu fin de semana es de experto. [excited] ¿Qué planes tienes tú? Cuéntamelo y dime hasta qué número llegaste."
+}

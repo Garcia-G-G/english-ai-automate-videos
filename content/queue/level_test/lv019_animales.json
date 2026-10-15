@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "ANIMALES en inglés: ¿cuántos sabes nombrar? 🐻",
+  "video_description": "Vocabulario de animales en inglés de menos a más: ¿hasta dónde llegas? 🐻",
+  "title": "¿Qué nivel tienes?",
+  "theme": "los animales",
+  "intro": "[excited] Empezamos fácil y terminamos difícil: diez palabras de animales. Tradúcelas en voz alta.",
+  "items": [
+    {
+      "english": "dog",
+      "spanish": "Perro",
+      "cefr": "A1"
+    },
+    {
+      "english": "horse",
+      "spanish": "Caballo",
+      "cefr": "A1"
+    },
+    {
+      "english": "rabbit",
+      "spanish": "Conejo",
+      "cefr": "A2"
+    },
+    {
+      "english": "bear",
+      "spanish": "Oso",
+      "cefr": "A2"
+    },
+    {
+      "english": "deer",
+      "spanish": "Ciervo / venado",
+      "cefr": "B1"
+    },
+    {
+      "english": "squirrel",
+      "spanish": "Ardilla",
+      "cefr": "B1"
+    },
+    {
+      "english": "owl",
+      "spanish": "Búho / lechuza",
+      "cefr": "B2"
+    },
+    {
+      "english": "raccoon",
+      "spanish": "Mapache",
+      "cefr": "B2"
+    },
+    {
+      "english": "hedgehog",
+      "spanish": "Erizo",
+      "cefr": "C1"
+    },
+    {
+      "english": "beaver",
+      "spanish": "Castor",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Resultado: hasta la tres, básico; hasta la siete, intermedio; las diez, experto. ¿Cuál es el tuyo?",
+  "outro": "[excited] Pon tu número en los comentarios. ¿Quién llega a la diez?",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#TestDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv019",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "dog": "Perro",
+    "horse": "Caballo",
+    "rabbit": "Conejo",
+    "bear": "Oso",
+    "deer": "Ciervo / venado",
+    "squirrel": "Ardilla",
+    "owl": "Búho / lechuza",
+    "raccoon": "Mapache",
+    "hedgehog": "Erizo",
+    "beaver": "Castor"
+  },
+  "english_phrases": [
+    "dog",
+    "horse",
+    "rabbit",
+    "bear",
+    "deer",
+    "squirrel",
+    "owl",
+    "raccoon",
+    "hedgehog",
+    "beaver"
+  ],
+  "full_script": "[excited] Empezamos fácil y terminamos difícil: diez palabras de animales. Tradúcelas en voz alta. dog Perro horse Caballo rabbit Conejo Ahora, nivel intermedio. bear Oso deer Ciervo / venado squirrel Ardilla owl Búho / lechuza Y ahora, nivel experto. raccoon Mapache hedgehog Erizo beaver Castor Resultado: hasta la tres, básico; hasta la siete, intermedio; las diez, experto. ¿Cuál es el tuyo? [excited] Pon tu número en los comentarios. ¿Quién llega a la diez?"
+}

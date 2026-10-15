@@ -57,6 +57,9 @@ TITLE_TEMPLATES = {
     "how_do_you_say": [
         "¿Cómo se dice {theme} en inglés? {emoji}",
     ],
+    # Only when a script has no video_title of its own; every queued one does.
+    "level_test": ["¿Qué nivel de inglés tienes? 10 palabras, de fácil a experto 🎯"],
+    "say_it_level": ["Dilo en inglés: 10 frases, de fácil a experto 🗣️"],
 }
 
 # ── Hashtag strategy ────────────────────────────────────────────────
@@ -102,6 +105,10 @@ TYPE_HASHTAGS = {
     "vocabulary": ["#Vocabulary", "#EnglishWords", "#VocabularioIngles"],
     "how_do_you_say": ["#InglésParaPrincipiantes", "#VocabularioEnInglés",
                        "#AprenderInglés", "#InglésFácil", "#HowDoYouSay"],
+    "level_test": ["#NivelDeInglés", "#AprenderInglés", "#VocabularioEnInglés",
+                   "#TestDeInglés", "#InglésFácil"],
+    "say_it_level": ["#DiloEnInglés", "#AprenderInglés", "#FrasesEnInglés",
+                     "#InglésFácil", "#InglésParaViajar"],
 }
 
 #: Audience/intent tags. Spanish-first, because the audience searches in

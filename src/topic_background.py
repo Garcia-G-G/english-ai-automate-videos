@@ -252,6 +252,19 @@ CATEGORY_SCENES = {
         "a tidy living room with plants in morning light",
         "a school desk by a window on a clear day",
     ],
+    # The level family (STEP 58): steps, climbs and levels.
+    "level_vocab": [
+        "a mountain trail climbing to a sunny summit",
+        "stone stairs up a colourful hillside town",
+        "a climbing wall with bright holds",
+        "rice terraces stepping up a green hill",
+    ],
+    "say_it": [
+        "a busy cafe terrace with people chatting",
+        "a sunny street market with stalls and awnings",
+        "a hotel reception desk with flowers",
+        "a train station platform with a departures board",
+    ],
 }
 
 #: Light and time of day. No night, no low light — the readability band is
