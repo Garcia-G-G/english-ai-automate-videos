@@ -123,6 +123,18 @@ NICHE_HASHTAGS = [
 ]
 
 
+#: The site the channel promotes (STEP 61): one plain line after the body, before the hashtags.
+SITE_LINE = "Más lecciones en https://learningroutes.com"
+
+
+def with_site_line(description: str) -> str:
+    """The body, then SITE_LINE once. Idempotent, so a description that has it keeps one."""
+    body = (description or "").rstrip()
+    if SITE_LINE in body:
+        return body
+    return f"{body}\n\n{SITE_LINE}" if body else SITE_LINE
+
+
 def generate_metadata(script_data: dict, video_type: str, category: str = "") -> dict:
     """Extract or generate video metadata from script data.
 
@@ -146,7 +158,7 @@ def generate_metadata(script_data: dict, video_type: str, category: str = "") ->
 
     return {
         "title": title[:150],
-        "description": description,
+        "description": with_site_line(description),
         "hashtags": hashtags,
     }
 

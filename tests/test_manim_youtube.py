@@ -202,3 +202,12 @@ def test_a_consent_left_unfinished_is_a_clear_message_and_nothing_is_recorded(mo
     assert not out["ok"] and out["notes"] == [M.YT_AUTH_ERRORS["timeout"]]
     assert sent["post"] == [] and M.youtube_publication(row) is None
     assert not (tmp_path / "renders" / "l" / "r.youtube.json").exists()
+
+
+# ── STEP 61 Part C: the site in the description ──────────────────────
+
+def test_the_lesson_description_names_the_site_after_the_chapters(tmp_path):
+    from metadata_generator import SITE_LINE
+    parts = M.youtube_metadata(_lesson(), _render(tmp_path), tmp_path)["description"].split("\n\n")
+    assert parts.index(SITE_LINE) == parts.index(CHAPTERS.strip()) + 1
+    assert parts[parts.index(SITE_LINE) + 1] == M.YT_CTA

@@ -76,6 +76,7 @@ for _key in ("display", "body"):
 PX = 8 / 1080
 CHIP_PX, GLOSS_PX, CAPTION_PX = 68, 46, 42
 TITLE_PX, HEADING_PX, QUESTION_PX, BODY_PX = 100, 84, 60, 48
+SITE = "learningroutes.com"                        # where the channel sends viewers (STEP 61)
 DIALOG_EN_PX, DIALOG_ES_PX, TABLE_PX, LABEL_PX, BIN_PX = 54, 44, 56, 46, 56
 BAR_PX, TAG_PX, SMALL_PX = 26, 32, 36
 
@@ -1226,6 +1227,13 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                                      fill_color=PAPER, fill_opacity=1, stroke_width=0).move_to(logo)
             head = [FadeIn(plate)] + head
         title = text("Sigue aprendiendo", TITLE_PX * 0.9, ACCENT_TEXT).move_to([0, 1.35, 0])
+        # The site under the title, in the brand-v2 blue sticker pill; the two slots below keep
+        # their place and size because YouTube's end-screen elements are pinned to them.
+        url = text(SITE, BODY_PX * 0.85, PAPER)
+        pill = card(url, BRAND["color"]["english_blue"], pad=0.12, stroke=BRAND["color"]["ink"], radius=0.12,
+                    stroke_width=4)
+        site = VGroup(text("Más lecciones en", BODY_PX * 0.72, TEXT, DISPLAY, "MEDIUM"), pill).arrange(RIGHT, buff=0.18)
+        site.move_to([0, 0.26, 0])
         frame_w = 5.4
         frames = VGroup(*[DashedVMobject(RoundedRectangle(corner_radius=0.18, width=frame_w, height=frame_w * 9 / 16,
                                                           stroke_color=DIM, stroke_width=3), num_dashes=60)
@@ -1236,6 +1244,6 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                              fill_opacity=1).move_to(title.get_bottom() + UP * title.height * 0.2)
             mark.z_index = -1
             extra.append(FadeIn(mark))
-        self.play(*head, *extra, FadeIn(title, shift=UP * 0.2), Create(frames), run_time=0.9)
+        self.play(*head, *extra, FadeIn(title, shift=UP * 0.2), FadeIn(site), Create(frames), run_time=0.9)
         self.wait(END_SCREEN_S - (float(self.renderer.time) - start))
 

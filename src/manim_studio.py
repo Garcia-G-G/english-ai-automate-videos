@@ -266,6 +266,7 @@ YT_HASHTAGS = ("#AprenderInglés", "#InglésFácil", "#GramáticaInglesa")
 YT_TAGS = ("aprender inglés", "inglés fácil", "gramática inglesa", "clases de inglés", "inglés para hispanohablantes",
            "curso de inglés", "learn english", "english grammar", "english lesson", "english for spanish speakers")
 YT_CTA = "Suscríbete: una lección nueva cada semana."
+from metadata_generator import SITE_LINE  # noqa: E402 — the Shorts' line, word for word
 YT_GENERIC_HEADINGS = {"introducción", "practica", "práctica", "resumen", "repaso"}
 YT_VIDEO_TYPE = "manim_lesson"
 
@@ -295,7 +296,7 @@ def youtube_metadata(lesson: dict, render_row: dict, studio_dir: Path = STUDIO_D
     specific = lesson.get("hashtags") or ["#" + "".join(w.capitalize() for w in lesson["id"].split("-"))]
     hashtags = list(dict.fromkeys(list(YT_HASHTAGS) + [h if h.startswith("#") else "#" + h for h in specific]))[:5]
     parts = [summary, "En esta lección:\n" + "\n".join(f"• {b}" for b in bullets) if bullets else "",
-             chapters, YT_CTA, " ".join(hashtags)]
+             chapters, SITE_LINE, YT_CTA, " ".join(hashtags)]
     words = [w for w in re.split(r"\W+", re.sub(r"\|.*", "", lesson["title"]).lower()) if len(w) > 1]
     tags = list(dict.fromkeys(list(YT_TAGS) + [" ".join(lesson["id"].split("-")), lesson["title"].split(":")[0].lower()]
                               + ([f"inglés {level}"] if level else []) + words))[:15]
