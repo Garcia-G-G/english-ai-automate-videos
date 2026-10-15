@@ -47,15 +47,20 @@ YOUTUBE_UPLOAD_URL = "https://www.googleapis.com/upload/youtube/v3/videos"
 YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/videos"
 YOUTUBE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 YOUTUBE_TOKEN_URL = "https://oauth2.googleapis.com/token"
-YOUTUBE_SCOPES = [
+# Required scopes decide authenticate(): a token missing one forces re-consent.
+YOUTUBE_REQUIRED_SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube.readonly",
     "https://www.googleapis.com/auth/yt-analytics.readonly",
-    # captions.insert (the long lessons' Spanish subtitles). Missing from an older token, it
-    # forces one re-consent through _missing_scopes; until then captions are skipped, not failed.
+]
+# Optional scopes only enable a feature. youtube.force-ssl is captions.insert (the lessons'
+# Spanish subtitles); a token without it uploads and skips captions with a note, never re-consents.
+YOUTUBE_OPTIONAL_SCOPES = [
     "https://www.googleapis.com/auth/youtube.force-ssl",
 ]
-YOUTUBE_FORCE_SSL = YOUTUBE_SCOPES[-1]
+# What a fresh consent asks for: everything in one screen, so a future re-auth picks up captions.
+YOUTUBE_SCOPES = YOUTUBE_REQUIRED_SCOPES + YOUTUBE_OPTIONAL_SCOPES
+YOUTUBE_FORCE_SSL = YOUTUBE_OPTIONAL_SCOPES[0]
 YOUTUBE_THUMBNAIL_URL = "https://www.googleapis.com/upload/youtube/v3/thumbnails/set"
 YOUTUBE_CAPTIONS_URL = "https://www.googleapis.com/upload/youtube/v3/captions"
 INSTAGRAM_GRAPH_URL = "https://graph.facebook.com/v19.0"
@@ -890,9 +895,9 @@ class YouTubeUploader(BaseUploader):
     def upload_captions(self, video_id: str, srt_path: str, language: str = "es",
                         name: str = "Español") -> tuple:
         """(ok, note). Needs youtube.force-ssl; a token granted before it skips with a note."""
-        if YOUTUBE_FORCE_SSL in self._missing_scopes():
+        if YOUTUBE_FORCE_SSL in self._missing_scopes(YOUTUBE_OPTIONAL_SCOPES):
             return False, ("captions skipped: the YouTube token lacks youtube.force-ssl — "
-                           "authorize again once (the next upload asks) to send subtitles")
+                           "the next fresh consent asks for it; YouTube's own auto captions apply")
         boundary = "lesson-captions-boundary"
         snippet = json.dumps({"snippet": {"videoId": video_id, "language": language, "name": name,
                                           "isDraft": False}})
@@ -1012,18 +1017,19 @@ class YouTubeUploader(BaseUploader):
             return True
         return time.time() >= self._token_data.get("expires_at", 0) - 60
 
-    def _missing_scopes(self) -> list:
-        """Scopes YOUTUBE_SCOPES requires that the stored token does not have.
+    def _missing_scopes(self, scopes=None) -> list:
+        """Scopes of `scopes` (default YOUTUBE_REQUIRED_SCOPES) the stored token does not have.
 
         Google returns the granted scopes as a space-separated `scope` string
         on the token response. A token with no `scope` field at all is treated
         as satisfying nothing: it predates this check, and assuming it is
         adequate is exactly the failure mode being fixed.
         """
+        scopes = YOUTUBE_REQUIRED_SCOPES if scopes is None else scopes
         if not self._token_data:
-            return list(YOUTUBE_SCOPES)
+            return list(scopes)
         granted = set((self._token_data.get("scope") or "").split())
-        return [s for s in YOUTUBE_SCOPES if s not in granted]
+        return [s for s in scopes if s not in granted]
 
     def _exchange_code(self, code: str, redirect_uri: str) -> bool:
         # redirect_uri is passed in, not hardcoded: Google requires it to
@@ -1477,7 +1483,7 @@ def _describe_token(platform: str) -> dict:
         # Surfaced locally so a narrow token is visible in `status` without
         # waiting for an API call to 403. A token can be present, valid and
         # refreshable while still lacking a scope the code now needs.
-        "missing_scopes": ([s for s in YOUTUBE_SCOPES
+        "missing_scopes": ([s for s in YOUTUBE_REQUIRED_SCOPES
                             if s not in set((data.get("scope") or "").split())]
                            if platform == "youtube" else []),
     }

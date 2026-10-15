@@ -4,6 +4,7 @@
 """
 import json
 import sys
+import time
 from pathlib import Path
 
 import pytest
@@ -158,13 +159,35 @@ def test_a_render_is_uploaded_once_then_refused(monkeypatch, tmp_path):
     assert not again["ok"] and again["refused"] and len(sent["post"]) == before
 
 
-def test_the_panel_warns_before_a_click_that_needs_consent_again():
+def test_the_panel_warns_only_when_there_is_no_usable_token():
     yt = _yt()
-    assert M.youtube_consent_note(yt) is None
-    yt._token_data["scope"] = " ".join(s for s in uploader.YOUTUBE_SCOPES if s != uploader.YOUTUBE_FORCE_SSL)
-    assert "subtítulos" in M.youtube_consent_note(yt) and "3 minutos" in M.youtube_consent_note(yt)
+    assert M.youtube_consent_note(yt) is None and M.youtube_captions_note(yt) is None
+    yt._token_data["scope"] = " ".join(uploader.YOUTUBE_REQUIRED_SCOPES)
+    assert M.youtube_consent_note(yt) is None                    # captions missing: no yellow warning
+    assert M.youtube_captions_note(yt) == M.CAPTIONS_SKIPPED_NOTE
     yt._token_data = None
-    assert "autorización guardada" in M.youtube_consent_note(yt)
+    assert "autorización guardada" in M.youtube_consent_note(yt) and "3 minutos" in M.youtube_consent_note(yt)
+    assert M.youtube_captions_note(yt) is None                   # the consent warning says it all
+
+
+def test_a_token_with_the_three_old_scopes_uploads_and_skips_captions(monkeypatch, tmp_path):
+    """The owner's real token shape: no browser, the video goes up, captions are a note."""
+    sent = _capture(monkeypatch)
+    monkeypatch.setenv("YOUTUBE_CLIENT_ID", "id")
+    monkeypatch.setenv("YOUTUBE_CLIENT_SECRET", "secret")
+    monkeypatch.setattr(uploader, "run_loopback_auth",
+                        lambda build, timeout=None: pytest.fail("opened the browser"))
+    row = _render(tmp_path)
+    (tmp_path / "renders" / "l" / "r.mp4").write_bytes(b"x" * 16)
+    (tmp_path / "renders" / "l" / "r.srt").write_text("1\n00:00:00,000 --> 00:00:01,000\nHola\n", encoding="utf-8")
+    manager = uploader.UploadManager()
+    manager.uploaders["youtube"]._token_data = {"access_token": "tok", "expires_at": time.time() + 3600,
+                                                "scope": " ".join(uploader.YOUTUBE_REQUIRED_SCOPES)}
+    out = M.upload_to_youtube(row, {"title": "T", "description": "D", "tags": [], "hashtags": []},
+                              studio_dir=tmp_path, manager=manager)
+    assert out["ok"] and out["url"].endswith("vid123")
+    assert "captions skipped" in out["notes"][-1]
+    assert not any(url == uploader.YOUTUBE_CAPTIONS_URL for url, _ in sent["post"])
 
 
 def test_a_consent_left_unfinished_is_a_clear_message_and_nothing_is_recorded(monkeypatch, tmp_path):

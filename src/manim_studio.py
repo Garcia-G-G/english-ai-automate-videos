@@ -314,16 +314,144 @@ def youtube_publication(render_row: dict) -> Optional[dict]:
 
 
 def youtube_consent_note(youtube) -> Optional[str]:
-    """What the panel says BEFORE the click when Google must ask for consent again (no token yet,
-    or one without youtube.force-ssl — the captions scope). None when the stored token covers it all."""
-    from uploader import LOOPBACK_TIMEOUT_S, YOUTUBE_FORCE_SSL
-    missing = youtube._missing_scopes()
-    if not missing:
+    """The warning BEFORE the click, only when there is no usable token at all (none, or one missing
+    a required scope): that click opens Google's consent. None otherwise — like the Shorts upload."""
+    from uploader import LOOPBACK_TIMEOUT_S
+    if not youtube._missing_scopes():
         return None
-    why = ("falta el permiso para subir subtítulos" if missing == [YOUTUBE_FORCE_SSL]
-           else "aún no hay una autorización guardada")
-    return (f"Antes de subir, Google te pedirá permiso ({why}). Al pulsar se abre una pestaña de Google: "
-            f"elige la cuenta del canal, marca todas las casillas y acepta antes de {LOOPBACK_TIMEOUT_S // 60} minutos.")
+    return (f"Antes de subir, Google te pedirá permiso (aún no hay una autorización guardada). Al pulsar se abre "
+            f"una pestaña de Google: elige la cuenta del canal, marca todas las casillas y acepta antes de "
+            f"{LOOPBACK_TIMEOUT_S // 60} minutos.")
+
+
+CAPTIONS_SKIPPED_NOTE = ("Los subtítulos en español no se subirán: la cuenta no dio ese permiso. "
+                         "YouTube genera los suyos automáticamente.")
+
+
+def youtube_captions_note(youtube) -> Optional[str]:
+    """The small grey line when the token uploads but cannot send captions (no youtube.force-ssl)."""
+    from uploader import YOUTUBE_OPTIONAL_SCOPES
+    if youtube._missing_scopes() or not youtube._missing_scopes(YOUTUBE_OPTIONAL_SCOPES):
+        return None
+    return CAPTIONS_SKIPPED_NOTE
+
+
+def lesson_of(render_row: dict, studio_dir: Path = STUDIO_DIR) -> Optional[dict]:
+    """The lesson a render came from, or None when its file is gone."""
+    path = studio_dir / "lessons" / f"{render_row.get('lesson', '')}.json"
+    return L.load(path) if render_row.get("lesson") and path.exists() else None
+
+
+# ── Review → upload (STEP 61 Part A) ──────────────────────────────────────────
+# One current render per lesson (the newest), reviewed before it can be uploaded. Decisions are
+# appended to renders/reviews.jsonl; «subida» is read from the publication ledger, never from it.
+REVIEW_STATUSES = ("por revisar", "aprobada", "rehacer")
+
+
+def reviews_path(studio_dir: Path = STUDIO_DIR) -> Path:
+    return studio_dir / "renders" / "reviews.jsonl"
+
+
+def record_review(file: str, status: str, note: str = "", reopen: bool = False,
+                  studio_dir: Path = STUDIO_DIR) -> dict:
+    """Append one decision. `reopen` is «Usar esta versión»: an older render becomes the current one."""
+    if status not in REVIEW_STATUSES:
+        raise ValueError(f"unknown review status {status!r}")
+    line = {"file": file, "status": status, "note": note.strip(), "at": datetime.now().isoformat(timespec="seconds")}
+    if reopen:
+        line["reopen"] = True
+    path = reviews_path(studio_dir)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(line, ensure_ascii=False) + "\n")
+    return line
+
+
+def review_lines(studio_dir: Path = STUDIO_DIR) -> list:
+    path = reviews_path(studio_dir)
+    if not path.exists():
+        return []
+    lines = []
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        try:
+            lines.append(json.loads(raw))
+        except json.JSONDecodeError:
+            continue
+    return lines
+
+
+def latest_reviews(studio_dir: Path = STUDIO_DIR) -> dict:
+    """{file: its last decision} — the last line wins."""
+    return {line["file"]: line for line in review_lines(studio_dir) if line.get("file")}
+
+
+def _reviewable(row: dict) -> bool:
+    """Demos and draft qualities (under 1080p) never reach review: they are tests and drafts."""
+    m = re.match(r"(\d+)p", str(row.get("quality") or ""))
+    return bool(row.get("lesson")) and not row["lesson"].startswith("demo") and bool(m) and int(m.group(1)) >= 1080
+
+
+def current_render_per_lesson(rows: list, studio_dir: Path = STUDIO_DIR, lines: Optional[list] = None) -> dict:
+    """{lesson: row}: the newest render on disk, unless an older one was reopened after it."""
+    lines = review_lines(studio_dir) if lines is None else lines
+    on_disk = [r for r in rows if _reviewable(r) and (studio_dir / "renders" / r["file"]).exists()]
+    current = {}
+    for row in sorted(on_disk, key=lambda r: r.get("at", "")):
+        current[row["lesson"]] = row
+    by_file = {r["file"]: r for r in on_disk}
+    for line in lines:                                 # in order: a later reopen beats an earlier one
+        row = by_file.get(line.get("file"))
+        if line.get("reopen") and row and line.get("at", "") > current[row["lesson"]].get("at", ""):
+            current[row["lesson"]] = row
+    return current
+
+
+def review_board(studio_dir: Path = STUDIO_DIR, publication=None) -> dict:
+    """The «Revisar y subir» tab as data: por_revisar, aprobadas, rehacer, subidas, anteriores.
+    Each entry is (row, review line or None); anteriores also carry whether the file is gone."""
+    publication = publication or youtube_publication
+    rows = [r for r in R.ledger(studio_dir) if _reviewable(r)]
+    lines = review_lines(studio_dir)
+    last = {line["file"]: line for line in lines if line.get("file")}
+    current = {r["file"] for r in current_render_per_lesson(rows, studio_dir, lines).values()}
+    board = {"por_revisar": [], "aprobadas": [], "rehacer": [], "subidas": [], "anteriores": []}
+    for row in rows:
+        review = last.get(row["file"])
+        published = publication(row)
+        if published:
+            board["subidas"].append((row, published))
+        elif row["file"] in current:
+            status = review["status"] if review else "por revisar"
+            board[{"por revisar": "por_revisar", "aprobada": "aprobadas", "rehacer": "rehacer"}[status]].append((row, review))
+        else:
+            board["anteriores"].append((row, not (studio_dir / "renders" / row["file"]).exists()))
+    return board
+
+
+def redo_note(lesson_id: str, studio_dir: Path = STUDIO_DIR) -> Optional[str]:
+    """The note under the editor when this lesson's current render was marked «rehacer»."""
+    for row, review in review_board(studio_dir)["rehacer"]:
+        if row["lesson"] == lesson_id:
+            return review.get("note") or "sin nota"
+    return None
+
+
+def english_flags(row: dict, studio_dir: Path = STUDIO_DIR) -> list:
+    """[(beat, expected English)] the English-words audit flagged for this render's voice."""
+    path = studio_dir / "audio" / row["lesson"] / row.get("voice", "") / "english_audit.json"
+    if not path.exists():
+        return []
+    audit = json.loads(path.read_text(encoding="utf-8"))
+    return [(beat, r.get("expected", "")) for beat, entry in audit.items()
+            for r in entry.get("rows", []) if r.get("verdict") != "ok"]
+
+
+def voice_model(row: dict, studio_dir: Path = STUDIO_DIR) -> Optional[str]:
+    path = studio_dir / "audio" / row["lesson"] / row.get("voice", "") / "manifest.json"
+    try:
+        return json.loads(path.read_text(encoding="utf-8")).get("model")
+    except (OSError, json.JSONDecodeError):
+        return None
 
 
 YT_AUTH_ERRORS = {
@@ -411,335 +539,285 @@ def render() -> None:                                  # pragma: no cover — UI
         st.error(f"No encuentro `{R.SCENE_FILE}` en `{STUDIO_DIR}`.")
         return
 
-    env = effective_env()
-    el_key, oa_key = env["ELEVENLABS_API_KEY"], env["OPENAI_API_KEY"]
-    manim_bin = R.manim_binary(STUDIO_DIR)
-    local_env_path = STUDIO_DIR / ".env"
-    files = lesson_files()
+    board = review_board()
+    waiting = len(board["por_revisar"]) + len(board["aprobadas"])
+    tab_make, tab_review = st.tabs(["Hacer lección", f"Revisar y subir ({waiting})"])
+    with tab_review:
+        _review_tab(st, board)
 
-    # ── Environment ───────────────────────────────────────────────────────────
-    with st.expander("Entorno", expanded=not (manim_bin and el_key)):
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Manim", "listo" if manim_bin else "falta")
-        c2.metric("ffmpeg", "listo" if shutil.which("ffmpeg") else "falta")
-        src = {"studio": ".env studio", "root": ".env repo", "process": "entorno", "missing": "falta"}
-        c3.metric("ElevenLabs", src[env["ELEVENLABS_API_KEY_SOURCE"]])
-        c4.metric("OpenAI (guiones)", src[env["OPENAI_API_KEY_SOURCE"]])
-        if not manim_bin:
-            st.code(f"cd {STUDIO_DIR}\npython3 -m venv .venv && .venv/bin/pip install "
-                    '"manim==0.21.0" "manim-voiceover==0.4.0"\nbrew install pango ffmpeg', language="bash")
-        st.caption(f"Las claves se guardan en `{local_env_path}` (solo este studio, permisos 600, ignorado por git); "
-                   "si falta una, se usa la del `.env` de la raíz. Nunca se muestran enteras.")
-        e1, e2, e3, e4 = st.columns(4)
-        e1.text_input("ElevenLabs actual", mask(el_key), disabled=True)
-        e2.text_input("OpenAI actual", mask(oa_key), disabled=True)
-        e3.text_input("Voice ID por defecto", env["ELEVENLABS_VOICE_ID"] or "—", disabled=True)
-        e4.text_input("Learning Routes", f"{env['LR_BASE_URL'] or P.DEFAULT_BASE} · token {mask(env['LR_STUDIO_TOKEN'])}", disabled=True)
-        with st.form("studio_env", clear_on_submit=True):
-            new_el = st.text_input("Nueva clave de ElevenLabs", type="password", help="Vacío = conservar")
-            new_oa = st.text_input("Nueva clave de OpenAI", type="password", help="Vacío = conservar")
-            new_voice = st.text_input("Voice ID por defecto", env["ELEVENLABS_VOICE_ID"] or MATILDA)
-            l1, l2 = st.columns(2)
-            new_base = l1.text_input("URL de Learning Routes", env["LR_BASE_URL"] or P.DEFAULT_BASE,
-                                     help="http://localhost:3000 en desarrollo; https://learningroutes.com en producción")
-            new_lr = l2.text_input("Token del studio (studio.api_token en las credenciales de Rails)", type="password",
-                                   help="Vacío = conservar. Lo generas con bin/rails secret y lo pones en las credenciales y aquí.")
-            if st.form_submit_button("Guardar entorno", type="primary"):
-                updates = {"ELEVENLABS_VOICE_ID": new_voice.strip() or None, "LR_BASE_URL": new_base.strip() or None,
-                           "ELEVENLABS_API_KEY": new_el.strip() or None, "OPENAI_API_KEY": new_oa.strip() or None,
-                           "LR_STUDIO_TOKEN": new_lr.strip() or None}
-                write_env_file(local_env_path, updates)
-                st.session_state.pop("el_voices", None)
-                st.success("Entorno guardado.")
-                st.rerun()
+    with tab_make:
+        env = effective_env()
+        el_key, oa_key = env["ELEVENLABS_API_KEY"], env["OPENAI_API_KEY"]
+        manim_bin = R.manim_binary(STUDIO_DIR)
+        local_env_path = STUDIO_DIR / ".env"
+        files = lesson_files()
 
-    # ── 1. Write ──────────────────────────────────────────────────────────────
-    st.markdown("### 1 · Guion")
-    with st.expander("Nueva lección con IA", expanded=not files):
-        if len(oa_key) <= 10:
-            st.info("Sin clave de OpenAI no se pueden escribir guiones automáticamente. Ponla en «Entorno».")
-        with st.form("new_lesson"):
-            topic = st.text_input("Tema", placeholder="Ej.: Past simple: verbos regulares e irregulares del día a día")
-            f1, f2, f3 = st.columns(3)
-            level = f1.selectbox("Nivel", LEVELS, index=1)
-            minutes = f2.slider("Minutos", 3, 12, 7)
-            writer = f3.selectbox("Modelo", WRITER_MODELS, help="gpt-4o escribe mejor; gpt-4o-mini cuesta centavos")
-            extra = st.text_area("Indicaciones extra (opcional)", height=60,
-                                 placeholder="Ej.: incluye un diálogo en una entrevista de trabajo; público: adultos de Colombia")
-            if st.form_submit_button("Escribir guion", type="primary", disabled=len(oa_key) <= 10):
-                if topic.strip():
-                    st.session_state.ms_job = start_job("guion", script_command(topic, level, minutes, writer, extra), {}, STUDIO_DIR)
+        # ── Environment ───────────────────────────────────────────────────────────
+        with st.expander("Entorno", expanded=not (manim_bin and el_key)):
+            c1, c2, c3, c4 = st.columns(4)
+            c1.metric("Manim", "listo" if manim_bin else "falta")
+            c2.metric("ffmpeg", "listo" if shutil.which("ffmpeg") else "falta")
+            src = {"studio": ".env studio", "root": ".env repo", "process": "entorno", "missing": "falta"}
+            c3.metric("ElevenLabs", src[env["ELEVENLABS_API_KEY_SOURCE"]])
+            c4.metric("OpenAI (guiones)", src[env["OPENAI_API_KEY_SOURCE"]])
+            if not manim_bin:
+                st.code(f"cd {STUDIO_DIR}\npython3 -m venv .venv && .venv/bin/pip install "
+                        '"manim==0.21.0" "manim-voiceover==0.4.0"\nbrew install pango ffmpeg', language="bash")
+            st.caption(f"Las claves se guardan en `{local_env_path}` (solo este studio, permisos 600, ignorado por git); "
+                       "si falta una, se usa la del `.env` de la raíz. Nunca se muestran enteras.")
+            e1, e2, e3, e4 = st.columns(4)
+            e1.text_input("ElevenLabs actual", mask(el_key), disabled=True)
+            e2.text_input("OpenAI actual", mask(oa_key), disabled=True)
+            e3.text_input("Voice ID por defecto", env["ELEVENLABS_VOICE_ID"] or "—", disabled=True)
+            e4.text_input("Learning Routes", f"{env['LR_BASE_URL'] or P.DEFAULT_BASE} · token {mask(env['LR_STUDIO_TOKEN'])}", disabled=True)
+            with st.form("studio_env", clear_on_submit=True):
+                new_el = st.text_input("Nueva clave de ElevenLabs", type="password", help="Vacío = conservar")
+                new_oa = st.text_input("Nueva clave de OpenAI", type="password", help="Vacío = conservar")
+                new_voice = st.text_input("Voice ID por defecto", env["ELEVENLABS_VOICE_ID"] or MATILDA)
+                l1, l2 = st.columns(2)
+                new_base = l1.text_input("URL de Learning Routes", env["LR_BASE_URL"] or P.DEFAULT_BASE,
+                                         help="http://localhost:3000 en desarrollo; https://learningroutes.com en producción")
+                new_lr = l2.text_input("Token del studio (studio.api_token en las credenciales de Rails)", type="password",
+                                       help="Vacío = conservar. Lo generas con bin/rails secret y lo pones en las credenciales y aquí.")
+                if st.form_submit_button("Guardar entorno", type="primary"):
+                    updates = {"ELEVENLABS_VOICE_ID": new_voice.strip() or None, "LR_BASE_URL": new_base.strip() or None,
+                               "ELEVENLABS_API_KEY": new_el.strip() or None, "OPENAI_API_KEY": new_oa.strip() or None,
+                               "LR_STUDIO_TOKEN": new_lr.strip() or None}
+                    write_env_file(local_env_path, updates)
+                    st.session_state.pop("el_voices", None)
+                    st.success("Entorno guardado.")
                     st.rerun()
-                else:
-                    st.warning("Escribe un tema.")
-        st.caption("El guion sigue `prompts/lesson_script.md`: ~5 golpes por minuto, diálogos, tabla, tips, 3 quizzes, "
-                   "resumen; todo el inglés entre [[ ]] para que la voz lo lea en inglés. Se valida y, si hace falta, se "
-                   "corrige una vez antes de guardarse en `lessons/`.")
 
-    if not files:
-        st.info("Todavía no hay lecciones en `lessons/`. Escribe una arriba.")
-        _job_monitor(st)
-        return
-
-    summaries = [lesson_summary(p) for p in files]
-    labels = {f"{s['title']}  ·  {s['beats']} golpes · ≈{s['minutes']} min · {s['level']}" + (" · ⚠" if s["problems"] else ""): p
-              for s, p in zip(summaries, files)}
-    chosen_label = st.selectbox("Lección", list(labels), index=len(labels) - 1 if "ms_pick" not in st.session_state else
-                                min(st.session_state.ms_pick, len(labels) - 1))
-    st.session_state.ms_pick = list(labels).index(chosen_label)
-    path = labels[chosen_label]
-    lesson = L.load(path)
-    lesson_id = lesson["id"]
-
-    problems, notes = L.validate(lesson), L.warnings(lesson)
-    st.caption(f"`lessons/{path.name}` · {L.character_count(lesson)} caracteres de narración · "
-               f"{sum(1 for b in lesson['beats'] for x in L.segments(b['narration']) if 'text' in x)} segmentos de voz · "
-               f"≈ ${estimate_cost_usd(lesson):.2f} por voz")
-    with st.expander(f"Editar narración ({len(lesson['beats'])} golpes)", expanded=bool(problems)):
-        st.caption("Edita solo la narración; el inglés va entre [[ ]]. Las palabras que la animación espera deben "
-                   "decirse en la frase. Para cambiar la estructura (tipos, tablas, diálogos) edita el JSON abajo.")
-        edited = st.data_editor(beats_table(lesson), key=f"editor_{lesson_id}", use_container_width=True, hide_index=True,
-                                disabled=["id", "tipo"], column_config={"narración": st.column_config.TextColumn(width="large")})
-        candidate = apply_table(json.loads(json.dumps(lesson)), edited)
-        changed = candidate != lesson
-        cand_problems = L.validate(candidate)
-        for problem in cand_problems:
-            st.warning(problem)
-        for note in L.warnings(candidate):
-            st.info(note)
-        if st.button("Guardar narración", type="primary", disabled=not changed or bool(cand_problems)):
-            L.save(candidate, path)
-            st.success("Guardada. Solo los golpes cambiados se regenerarán al pedir la voz.")
-            st.rerun()
-        with st.expander("JSON completo (avanzado)"):
-            raw = st.text_area("lesson.json", json.dumps(lesson, ensure_ascii=False, indent=2), height=320, key=f"raw_{lesson_id}")
-            if st.button("Guardar JSON"):
-                try:
-                    new = json.loads(raw)
-                    errs = L.validate(new)
-                    if errs:
-                        st.error("\n".join(errs))
-                    else:
-                        L.save(new, path)
-                        st.success("Guardado.")
+        # ── 1. Write ──────────────────────────────────────────────────────────────
+        st.markdown("### 1 · Guion")
+        with st.expander("Nueva lección con IA", expanded=not files):
+            if len(oa_key) <= 10:
+                st.info("Sin clave de OpenAI no se pueden escribir guiones automáticamente. Ponla en «Entorno».")
+            with st.form("new_lesson"):
+                topic = st.text_input("Tema", placeholder="Ej.: Past simple: verbos regulares e irregulares del día a día")
+                f1, f2, f3 = st.columns(3)
+                level = f1.selectbox("Nivel", LEVELS, index=1)
+                minutes = f2.slider("Minutos", 3, 12, 7)
+                writer = f3.selectbox("Modelo", WRITER_MODELS, help="gpt-4o escribe mejor; gpt-4o-mini cuesta centavos")
+                extra = st.text_area("Indicaciones extra (opcional)", height=60,
+                                     placeholder="Ej.: incluye un diálogo en una entrevista de trabajo; público: adultos de Colombia")
+                if st.form_submit_button("Escribir guion", type="primary", disabled=len(oa_key) <= 10):
+                    if topic.strip():
+                        st.session_state.ms_job = start_job("guion", script_command(topic, level, minutes, writer, extra), {}, STUDIO_DIR)
                         st.rerun()
-                except json.JSONDecodeError as error:
-                    st.error(f"JSON inválido: {error}")
+                    else:
+                        st.warning("Escribe un tema.")
+            st.caption("El guion sigue `prompts/lesson_script.md`: ~5 golpes por minuto, diálogos, tabla, tips, 3 quizzes, "
+                       "resumen; todo el inglés entre [[ ]] para que la voz lo lea en inglés. Se valida y, si hace falta, se "
+                       "corrige una vez antes de guardarse en `lessons/`.")
 
-    # ── 2. Voice ──────────────────────────────────────────────────────────────
-    st.markdown("### 2 · Voz")
-    ready = voices_with_audio(lesson_id)
-    voice_slug, voice_id, tts_model = None, None, TTS_MODELS[0]
-    if len(el_key) <= 10:
-        st.info("Sin clave de ElevenLabs no se puede generar la voz. Ponla en «Entorno». El render sí funciona con audios ya hechos.")
-    else:
-        if st.session_state.get("el_voices") is None:
-            try:
-                st.session_state.el_voices = fetch_voices(el_key)
-            except Exception as error:                     # noqa: BLE001
-                st.session_state.el_voices = []
-                st.warning(f"No pude listar las voces ({error}). Pega un voice_id a mano.")
-        voices = st.session_state.el_voices or []
-        options = {f"{v['name']} — {v['labels'].get('gender', '?')}, {v['labels'].get('accent', '?')}, "
-                   f"{v['labels'].get('use_case', v['labels'].get('description', ''))}": v for v in voices}
-        preferred = env["ELEVENLABS_VOICE_ID"] or MATILDA
-        default_index = next((i for i, v in enumerate(options.values()) if v["voice_id"] == preferred),
-                             next((i for i, v in enumerate(options.values()) if v["voice_id"] == MATILDA), 0))
-        v1, v2, v3 = st.columns([2, 1, 1])
-        chosen = options.get(v1.selectbox("Voz", list(options) or ["(pega un voice_id)"], index=default_index))
-        manual = v2.text_input("voice_id", chosen["voice_id"] if chosen else preferred)
-        voice_id = manual.strip() or MATILDA
-        voice_slug = slugify(chosen["name"] if chosen and chosen["voice_id"] == voice_id else voice_id[:8])
-        tts_model = v3.selectbox("Modelo TTS", TTS_MODELS,
-                                 help="eleven_v4: una petición por beat, en español, inglés bien pronunciado (elegido de oído). multilingual_v2: el anterior. turbo/flash: más baratos.")
-        stale = stale_beats(lesson, voice_slug)
-        force = st.checkbox("Regenerar todos los golpes (forzar)", value=False,
-                            help="Para oír un cambio del generador de audio, no del texto: rehace la voz completa de esta lección.")
-        todo = [b["id"] for b in lesson["beats"]] if force else stale
-        cost = round(sum(len(L.spoken_text(b["narration"])) for b in lesson["beats"] if b["id"] in todo) / 1000 * PRICE_PER_1K_CHARS, 3)
-        label = (f"Generar audio · {voice_slug} · {len(todo)} de {len(lesson['beats'])} golpes (≈ ${cost:.2f})" if todo
-                 else f"Audio de {voice_slug} al día")
-        if st.button(label, disabled=not todo or bool(problems) or changed, type="primary",
-                     help="Guarda la narración primero" if changed else None):
-            st.session_state.ms_job = start_job("audio", audio_command(lesson_id, voice_slug, voice_id, tts_model, force), {}, STUDIO_DIR)
-            st.rerun()
-    if ready:
-        st.caption("Voces con audio para esta lección: " + ", ".join(
-            f"`{v}`" + (f" ({len(stale_beats(lesson, v))} desactualizados)" if stale_beats(lesson, v) else "") for v in ready))
+        if not files:
+            st.info("Todavía no hay lecciones en `lessons/`. Escribe una arriba.")
+            _job_monitor(st)
+            return
 
-    # ── 3. Render ─────────────────────────────────────────────────────────────
-    st.markdown("### 3 · Vídeo")
-    if not manim_bin:
-        st.info("Instala Manim (ver «Entorno») para renderizar aquí.")
-    elif not ready:
-        st.info("Primero genera el audio de una voz.")
-    else:
-        r1, r2, r3 = st.columns(3)
-        render_voice = r1.selectbox("Voz para el vídeo", ready)
-        quality = r2.selectbox("Calidad", list(R.QUALITIES), format_func=lambda q: R.QUALITIES[q][1],
-                               index=list(R.QUALITIES).index(R.DEFAULT_QUALITY))
-        themes, default_theme = R.theme_names(STUDIO_DIR)
-        preferred_theme = lesson.get("theme") or default_theme
-        theme = r3.selectbox("Tema", themes, index=themes.index(preferred_theme) if preferred_theme in themes else 0,
-                             help="sand: papel cálido (por defecto) · stone: papel gris · dark: escenario oscuro")
-        stale_now = stale_beats(lesson, render_voice)
-        if stale_now:
-            st.warning(f"{len(stale_now)} golpe(s) de `{render_voice}` no coinciden con la narración actual; regenera el audio antes.")
-        if st.button("Renderizar vídeo", type="primary", disabled=bool(stale_now) or changed):
-            argv, env_add = R.render_command(manim_bin, quality, lesson_id, render_voice, theme)
+        summaries = [lesson_summary(p) for p in files]
+        labels = {f"{s['title']}  ·  {s['beats']} golpes · ≈{s['minutes']} min · {s['level']}" + (" · ⚠" if s["problems"] else ""): p
+                  for s, p in zip(summaries, files)}
+        chosen_label = st.selectbox("Lección", list(labels), index=len(labels) - 1 if "ms_pick" not in st.session_state else
+                                    min(st.session_state.ms_pick, len(labels) - 1))
+        st.session_state.ms_pick = list(labels).index(chosen_label)
+        path = labels[chosen_label]
+        lesson = L.load(path)
+        lesson_id = lesson["id"]
+        redo = redo_note(lesson_id)
+        if redo:
+            st.warning(f"{lesson_id}: marcada para rehacer — {redo}")
 
-            def after_render(seconds, _q=quality, _v=render_voice, _l=lesson_id):
-                return R.register(R.rendered_output(_q, STUDIO_DIR), _l, _v, _q, seconds, STUDIO_DIR)
+        problems, notes = L.validate(lesson), L.warnings(lesson)
+        st.caption(f"`lessons/{path.name}` · {L.character_count(lesson)} caracteres de narración · "
+                   f"{sum(1 for b in lesson['beats'] for x in L.segments(b['narration']) if 'text' in x)} segmentos de voz · "
+                   f"≈ ${estimate_cost_usd(lesson):.2f} por voz")
+        with st.expander(f"Editar narración ({len(lesson['beats'])} golpes)", expanded=bool(problems)):
+            st.caption("Edita solo la narración; el inglés va entre [[ ]]. Las palabras que la animación espera deben "
+                       "decirse en la frase. Para cambiar la estructura (tipos, tablas, diálogos) edita el JSON abajo.")
+            edited = st.data_editor(beats_table(lesson), key=f"editor_{lesson_id}", use_container_width=True, hide_index=True,
+                                    disabled=["id", "tipo"], column_config={"narración": st.column_config.TextColumn(width="large")})
+            candidate = apply_table(json.loads(json.dumps(lesson)), edited)
+            changed = candidate != lesson
+            cand_problems = L.validate(candidate)
+            for problem in cand_problems:
+                st.warning(problem)
+            for note in L.warnings(candidate):
+                st.info(note)
+            if st.button("Guardar narración", type="primary", disabled=not changed or bool(cand_problems)):
+                L.save(candidate, path)
+                st.success("Guardada. Solo los golpes cambiados se regenerarán al pedir la voz.")
+                st.rerun()
+            with st.expander("JSON completo (avanzado)"):
+                raw = st.text_area("lesson.json", json.dumps(lesson, ensure_ascii=False, indent=2), height=320, key=f"raw_{lesson_id}")
+                if st.button("Guardar JSON"):
+                    try:
+                        new = json.loads(raw)
+                        errs = L.validate(new)
+                        if errs:
+                            st.error("\n".join(errs))
+                        else:
+                            L.save(new, path)
+                            st.success("Guardado.")
+                            st.rerun()
+                    except json.JSONDecodeError as error:
+                        st.error(f"JSON inválido: {error}")
 
-            st.session_state.ms_job = start_job("render", argv, env_add, STUDIO_DIR, on_success=after_render)
-            st.rerun()
-
-    # ── 4. Batch ──────────────────────────────────────────────────────────────
-    with st.expander("Lote · varias lecciones, audio + vídeo, un clic"):
-        if len(el_key) <= 10 or not manim_bin:
-            st.info("El lote necesita la clave de ElevenLabs y Manim instalado.")
+        # ── 2. Voice ──────────────────────────────────────────────────────────────
+        st.markdown("### 2 · Voz")
+        ready = voices_with_audio(lesson_id)
+        voice_slug, voice_id, tts_model = None, None, TTS_MODELS[0]
+        if len(el_key) <= 10:
+            st.info("Sin clave de ElevenLabs no se puede generar la voz. Ponla en «Entorno». El render sí funciona con audios ya hechos.")
         else:
-            picked = st.multiselect("Lecciones", [s["id"] for s in summaries], default=[s["id"] for s in summaries if not s["problems"]])
-            bq = st.selectbox("Calidad del lote", list(R.QUALITIES), format_func=lambda q: R.QUALITIES[q][1],
-                              index=list(R.QUALITIES).index(R.DEFAULT_QUALITY), key="bq")
-            total_chars = sum(s["chars"] for s in summaries if s["id"] in picked)
-            st.caption(f"{len(picked)} lección(es) · ≈ {sum(s['minutes'] for s in summaries if s['id'] in picked):.0f} min de vídeo · "
-                       f"audio ≈ ${total_chars / 1000 * PRICE_PER_1K_CHARS:.2f} como máximo (lo ya generado no se repite)")
-            if st.button("Lanzar lote", disabled=not picked or not voice_slug):
-                st.session_state.ms_job = start_job("lote", batch_command(picked, voice_slug, voice_id, bq, tts_model), {}, STUDIO_DIR)
-                st.rerun()
-
-    # ── 5. Publish into a Learning Routes step ────────────────────────────────
-    st.markdown("### 4 · Publicar en un curso de Learning Routes")
-    lr_base, lr_token = env["LR_BASE_URL"] or P.DEFAULT_BASE, env["LR_STUDIO_TOKEN"]
-    if len(lr_token) < 16:
-        st.info("Pon la URL y el token del studio en «Entorno» (el servidor necesita WP-38 con `studio.api_token`).")
-    else:
-        if st.button("Cargar cursos") or "lr_steps" not in st.session_state:
-            try:
-                st.session_state.lr_steps = P.flatten_steps(P.fetch_routes(lr_base, lr_token))
-                st.session_state.pop("lr_error", None)
-            except P.PublishError as error:
-                st.session_state.lr_steps, st.session_state.lr_error = [], str(error)
-        if st.session_state.get("lr_error"):
-            st.warning(st.session_state.lr_error)
-        steps = st.session_state.get("lr_steps") or []
-        if steps:
-            labels = {f"{r['route']} › {r['module']} › {r['step_title']}" + (" · 🎞 ya tiene vídeo" if r["has_video"] else ""): r
-                      for r in steps}
-            picked = labels[st.selectbox("Paso del curso", list(labels))]
-            p1, p2 = st.columns(2)
-            topic, extra = P.topic_for(picked)
-            if p1.button("Escribir guion desde este paso", disabled=len(oa_key) <= 10,
-                         help="gen_script.py con el título del paso como tema y su descripción como guía"):
-                st.session_state.ms_job = start_job("guion", script_command(topic, picked.get("level") or "A2", 7, WRITER_MODELS[0], extra),
-                                                    {}, STUDIO_DIR)
-                st.rerun()
-            latest = P.latest_render(lesson_id, STUDIO_DIR)
-            if not latest:
-                p2.caption("Esta lección aún no tiene un vídeo renderizado.")
-            elif p2.button(f"Publicar «{lesson['title']}» en este paso", type="primary"):
-                video = STUDIO_DIR / "renders" / latest["file"]
+            if st.session_state.get("el_voices") is None:
                 try:
-                    result = P.publish(lr_base, lr_token, picked["step_id"], video, video.with_suffix(".srt"), lesson["title"],
-                                       latest.get("duration_s") or 0, lesson_id, latest.get("voice", ""))
-                    st.success(f"Publicado en «{picked['step_title']}» (HTTP {result['status']}). Vídeo: `{result.get('video_url', '?')}`")
-                    if not result.get("subtitles_sent"):
-                        st.warning("Se publicó SIN subtítulos: no había `.srt` junto al render, y el servidor borra los "
-                                   "subtítulos del vídeo anterior. Renderiza de nuevo para tenerlos.")
-                    st.session_state.pop("lr_steps", None)
-                except P.PublishError as error:
-                    st.error(str(error))
-            if latest:
-                st.caption(f"Se publicará `{latest['file']}` ({latest.get('voice')}, {latest.get('quality')}, "
-                           f"{int((latest.get('duration_s') or 0) // 60)}:{int((latest.get('duration_s') or 0) % 60):02d}).")
+                    st.session_state.el_voices = fetch_voices(el_key)
+                except Exception as error:                     # noqa: BLE001
+                    st.session_state.el_voices = []
+                    st.warning(f"No pude listar las voces ({error}). Pega un voice_id a mano.")
+            voices = st.session_state.el_voices or []
+            options = {f"{v['name']} — {v['labels'].get('gender', '?')}, {v['labels'].get('accent', '?')}, "
+                       f"{v['labels'].get('use_case', v['labels'].get('description', ''))}": v for v in voices}
+            preferred = env["ELEVENLABS_VOICE_ID"] or MATILDA
+            default_index = next((i for i, v in enumerate(options.values()) if v["voice_id"] == preferred),
+                                 next((i for i, v in enumerate(options.values()) if v["voice_id"] == MATILDA), 0))
+            v1, v2, v3 = st.columns([2, 1, 1])
+            chosen = options.get(v1.selectbox("Voz", list(options) or ["(pega un voice_id)"], index=default_index))
+            manual = v2.text_input("voice_id", chosen["voice_id"] if chosen else preferred)
+            voice_id = manual.strip() or MATILDA
+            voice_slug = slugify(chosen["name"] if chosen and chosen["voice_id"] == voice_id else voice_id[:8])
+            tts_model = v3.selectbox("Modelo TTS", TTS_MODELS,
+                                     help="eleven_v4: una petición por beat, en español, inglés bien pronunciado (elegido de oído). multilingual_v2: el anterior. turbo/flash: más baratos.")
+            stale = stale_beats(lesson, voice_slug)
+            force = st.checkbox("Regenerar todos los golpes (forzar)", value=False,
+                                help="Para oír un cambio del generador de audio, no del texto: rehace la voz completa de esta lección.")
+            todo = [b["id"] for b in lesson["beats"]] if force else stale
+            cost = round(sum(len(L.spoken_text(b["narration"])) for b in lesson["beats"] if b["id"] in todo) / 1000 * PRICE_PER_1K_CHARS, 3)
+            label = (f"Generar audio · {voice_slug} · {len(todo)} de {len(lesson['beats'])} golpes (≈ ${cost:.2f})" if todo
+                     else f"Audio de {voice_slug} al día")
+            if st.button(label, disabled=not todo or bool(problems) or changed, type="primary",
+                         help="Guarda la narración primero" if changed else None):
+                st.session_state.ms_job = start_job("audio", audio_command(lesson_id, voice_slug, voice_id, tts_model, force), {}, STUDIO_DIR)
+                st.rerun()
+        if ready:
+            st.caption("Voces con audio para esta lección: " + ", ".join(
+                f"`{v}`" + (f" ({len(stale_beats(lesson, v))} desactualizados)" if stale_beats(lesson, v) else "") for v in ready))
 
-    _youtube_panel(st, lesson)
-    _job_monitor(st)
+        # ── 3. Render ─────────────────────────────────────────────────────────────
+        st.markdown("### 3 · Vídeo")
+        if not manim_bin:
+            st.info("Instala Manim (ver «Entorno») para renderizar aquí.")
+        elif not ready:
+            st.info("Primero genera el audio de una voz.")
+        else:
+            r1, r2, r3 = st.columns(3)
+            render_voice = r1.selectbox("Voz para el vídeo", ready)
+            quality = r2.selectbox("Calidad", list(R.QUALITIES), format_func=lambda q: R.QUALITIES[q][1],
+                                   index=list(R.QUALITIES).index(R.DEFAULT_QUALITY))
+            themes, default_theme = R.theme_names(STUDIO_DIR)
+            preferred_theme = lesson.get("theme") or default_theme
+            theme = r3.selectbox("Tema", themes, index=themes.index(preferred_theme) if preferred_theme in themes else 0,
+                                 help="sand: papel cálido (por defecto) · stone: papel gris · dark: escenario oscuro")
+            stale_now = stale_beats(lesson, render_voice)
+            if stale_now:
+                st.warning(f"{len(stale_now)} golpe(s) de `{render_voice}` no coinciden con la narración actual; regenera el audio antes.")
+            if st.button("Renderizar vídeo", type="primary", disabled=bool(stale_now) or changed):
+                argv, env_add = R.render_command(manim_bin, quality, lesson_id, render_voice, theme)
 
-    # ── Renders ───────────────────────────────────────────────────────────────
-    st.markdown("### Vídeos renderizados")
-    rows = R.ledger(STUDIO_DIR)
-    if not rows:
-        st.caption("Todavía ninguno.")
-    for row in rows[:12]:
-        video = STUDIO_DIR / "renders" / row["file"]
-        mins = f"{int(row['duration_s'] // 60)}:{int(row['duration_s'] % 60):02d}" if row.get("duration_s") else "?"
-        with st.expander(f"{row['at']} · {row.get('lesson', '')} · {row['voice']} · {row['quality']} · {mins} · "
-                         f"{row['bytes'] // 1024 // 1024} MB", expanded=row is rows[0]):
-            published = youtube_publication(row)
-            if published:
-                st.success(f"Subido · {published['published_at'][:10]} · {published.get('url') or published.get('upload_id')}")
-            if video.exists():
-                # ONE player open, the newest; the rest load on demand. st.video
-                # reads the whole file into Streamlit's media store on EVERY
-                # rerun, closed expander or not: twelve lessons were ~200 MB
-                # re-read per click, and every 3 s while a render was running.
-                _lazy_video(st, video, key=f"ms_render_{row['file']}", open_now=row is rows[0])
-                st.caption(f"`{video}`")
-                extras = []
-                if row.get("poster") and (STUDIO_DIR / "renders" / row["poster"]).exists():
-                    extras.append(f"miniatura `{row['poster']}`")
-                chapters = STUDIO_DIR / "renders" / row["chapters"] if row.get("chapters") else None
-                if chapters and chapters.exists():
-                    extras.append("capítulos para YouTube:")
-                if extras:
-                    st.caption(" · ".join(extras))
-                if chapters and chapters.exists():
-                    st.code(chapters.read_text(encoding="utf-8"), language="text")
+                def after_render(seconds, _q=quality, _v=render_voice, _l=lesson_id):
+                    return R.register(R.rendered_output(_q, STUDIO_DIR), _l, _v, _q, seconds, STUDIO_DIR)
+
+                st.session_state.ms_job = start_job("render", argv, env_add, STUDIO_DIR, on_success=after_render)
+                st.rerun()
+
+        # ── 4. Batch ──────────────────────────────────────────────────────────────
+        with st.expander("Lote · varias lecciones, audio + vídeo, un clic"):
+            if len(el_key) <= 10 or not manim_bin:
+                st.info("El lote necesita la clave de ElevenLabs y Manim instalado.")
             else:
-                st.caption("El archivo ya no está.")
+                picked = st.multiselect("Lecciones", [s["id"] for s in summaries], default=[s["id"] for s in summaries if not s["problems"]])
+                bq = st.selectbox("Calidad del lote", list(R.QUALITIES), format_func=lambda q: R.QUALITIES[q][1],
+                                  index=list(R.QUALITIES).index(R.DEFAULT_QUALITY), key="bq")
+                total_chars = sum(s["chars"] for s in summaries if s["id"] in picked)
+                st.caption(f"{len(picked)} lección(es) · ≈ {sum(s['minutes'] for s in summaries if s['id'] in picked):.0f} min de vídeo · "
+                           f"audio ≈ ${total_chars / 1000 * PRICE_PER_1K_CHARS:.2f} como máximo (lo ya generado no se repite)")
+                if st.button("Lanzar lote", disabled=not picked or not voice_slug):
+                    st.session_state.ms_job = start_job("lote", batch_command(picked, voice_slug, voice_id, bq, tts_model), {}, STUDIO_DIR)
+                    st.rerun()
+
+        # ── 5. Publish into a Learning Routes step ────────────────────────────────
+        st.markdown("### 4 · Publicar en un curso de Learning Routes")
+        lr_base, lr_token = env["LR_BASE_URL"] or P.DEFAULT_BASE, env["LR_STUDIO_TOKEN"]
+        if len(lr_token) < 16:
+            st.info("Pon la URL y el token del studio en «Entorno» (el servidor necesita WP-38 con `studio.api_token`).")
+        else:
+            if st.button("Cargar cursos") or "lr_steps" not in st.session_state:
+                try:
+                    st.session_state.lr_steps = P.flatten_steps(P.fetch_routes(lr_base, lr_token))
+                    st.session_state.pop("lr_error", None)
+                except P.PublishError as error:
+                    st.session_state.lr_steps, st.session_state.lr_error = [], str(error)
+            if st.session_state.get("lr_error"):
+                st.warning(st.session_state.lr_error)
+            steps = st.session_state.get("lr_steps") or []
+            if steps:
+                labels = {f"{r['route']} › {r['module']} › {r['step_title']}" + (" · 🎞 ya tiene vídeo" if r["has_video"] else ""): r
+                          for r in steps}
+                picked = labels[st.selectbox("Paso del curso", list(labels))]
+                p1, p2 = st.columns(2)
+                topic, extra = P.topic_for(picked)
+                if p1.button("Escribir guion desde este paso", disabled=len(oa_key) <= 10,
+                             help="gen_script.py con el título del paso como tema y su descripción como guía"):
+                    st.session_state.ms_job = start_job("guion", script_command(topic, picked.get("level") or "A2", 7, WRITER_MODELS[0], extra),
+                                                        {}, STUDIO_DIR)
+                    st.rerun()
+                latest = P.latest_render(lesson_id, STUDIO_DIR)
+                if not latest:
+                    p2.caption("Esta lección aún no tiene un vídeo renderizado.")
+                elif p2.button(f"Publicar «{lesson['title']}» en este paso", type="primary"):
+                    video = STUDIO_DIR / "renders" / latest["file"]
+                    try:
+                        result = P.publish(lr_base, lr_token, picked["step_id"], video, video.with_suffix(".srt"), lesson["title"],
+                                           latest.get("duration_s") or 0, lesson_id, latest.get("voice", ""))
+                        st.success(f"Publicado en «{picked['step_title']}» (HTTP {result['status']}). Vídeo: `{result.get('video_url', '?')}`")
+                        if not result.get("subtitles_sent"):
+                            st.warning("Se publicó SIN subtítulos: no había `.srt` junto al render, y el servidor borra los "
+                                       "subtítulos del vídeo anterior. Renderiza de nuevo para tenerlos.")
+                        st.session_state.pop("lr_steps", None)
+                    except P.PublishError as error:
+                        st.error(str(error))
+                if latest:
+                    st.caption(f"Se publicará `{latest['file']}` ({latest.get('voice')}, {latest.get('quality')}, "
+                               f"{int((latest.get('duration_s') or 0) // 60)}:{int((latest.get('duration_s') or 0) % 60):02d}).")
+
+        _job_monitor(st)
 
 
 YT_PRIVACY_WORDS = {"public": "Pública", "unlisted": "Oculta", "private": "Privada"}   # YouTube Studio's words
 
 
-def _youtube_panel(st, lesson: dict) -> None:          # pragma: no cover — UI
-    """«Subir a YouTube»: the newest render of this lesson (or an older one), its metadata
-    editable, one button. What the owner edits is what is sent and saved as <name>.youtube.json."""
-    from uploader import resolve_privacy
-    st.markdown("### Subir a YouTube")
-    renders = [r for r in R.ledger(STUDIO_DIR) if r.get("lesson") == lesson["id"]
-               and (STUDIO_DIR / "renders" / r["file"]).exists()]
-    if not renders:
-        st.caption("Esta lección aún no tiene un vídeo renderizado.")
-        return
-    row = renders[0] if len(renders) == 1 else {r["file"]: r for r in renders}[
-        st.selectbox("Render", [r["file"] for r in renders], key=f"yt_pick_{lesson['id']}",
-                     help="El más reciente primero.")]
-    published = youtube_publication(row)
-    if published:
-        st.success(f"Subido · {published['published_at'][:10]} · {published.get('url') or published.get('upload_id')}")
-        return
-    saved = youtube_json_path(row)
-    meta = json.loads(saved.read_text(encoding="utf-8")) if saved.exists() else youtube_metadata(lesson, row)
-    key = f"yt_{row['file']}"
-    c1, c2 = st.columns([3, 1])
-    title = c1.text_input("Título", meta["title"], max_chars=100, key=key + "_title")
-    poster = STUDIO_DIR / "renders" / row["poster"] if row.get("poster") else None
-    if poster and poster.exists():
-        c2.image(str(poster), caption="Miniatura")
-    description = st.text_area("Descripción", meta["description"], height=320, key=key + "_desc",
-                               help="Los capítulos deben empezar en 0:00 o YouTube los ignora.")
-    tags = st.text_input("Etiquetas (separadas por comas)", ", ".join(meta["tags"]), key=key + "_tags")
-    default = resolve_privacy("youtube")
-    privacy = st.selectbox("Visibilidad", list(YT_PRIVACY_WORDS), index=list(YT_PRIVACY_WORDS).index(default),
-                           format_func=YT_PRIVACY_WORDS.get, key=key + "_privacy")
-    edited = {"title": title.strip(), "description": description.strip(), "hashtags": meta.get("hashtags", []),
-              "tags": [t.strip() for t in tags.split(",") if t.strip()][:15]}
-
+def _upload_notes(st) -> None:                         # pragma: no cover — UI
+    """Yellow only when the click opens Google's consent; grey when only captions will be skipped."""
     from uploader import UploadManager
-    consent = youtube_consent_note(UploadManager().uploaders["youtube"])
+    youtube = UploadManager().uploaders["youtube"]
+    consent = youtube_consent_note(youtube)
     if consent:
         st.warning(consent)
+    captions = youtube_captions_note(youtube)
+    if captions:
+        st.caption(captions)
 
+
+def _upload_button(st, row: dict, meta: dict, privacy: Optional[str], key: str) -> None:   # pragma: no cover — UI
+    """The one «Subir a YouTube» button both doors share (the lesson panel and «Subir → Lecciones»)."""
     @st.fragment
     def _upload():
-        if not st.button("Autorizar en Google y subir" if consent else "Subir a YouTube", type="primary",
-                         key=key + "_go"):
+        if not st.button("Subir a YouTube", type="primary", key=key + "_go"):
             return
         bar = st.progress(0.0, text="Subiendo…")
-        outcome = upload_to_youtube(row, edited, privacy=None if privacy == default else privacy,
+        outcome = upload_to_youtube(row, meta, privacy=privacy,
                                     on_progress=lambda sent, total: bar.progress(sent / total, text=f"Subiendo… {sent * 100 // total} %"))
         if outcome["refused"]:
             st.warning(f"No se sube otra vez: {outcome['refused']}.")
@@ -749,6 +827,80 @@ def _youtube_panel(st, lesson: dict) -> None:          # pragma: no cover — UI
         for note in outcome["notes"]:
             (st.info if outcome["ok"] else st.error)(note)
     _upload()
+
+
+def _mins(row: dict) -> str:
+    return f"{int(row['duration_s'] // 60)}:{int(row['duration_s'] % 60):02d}" if row.get("duration_s") else "?"
+
+
+def _review_tab(st, board: dict) -> None:             # pragma: no cover — UI
+    """«Revisar y subir»: por revisar and listas para subir on one page, like the Shorts."""
+    from uploader import resolve_privacy
+    st.markdown(f"#### Por revisar ({len(board['por_revisar'])})")
+    if not board["por_revisar"]:
+        st.caption("Nada por revisar.")
+    for row, _ in board["por_revisar"]:
+        lesson = lesson_of(row)
+        model = voice_model(row)
+        cost = f" · ≈${estimate_cost_usd(lesson):.2f}" if lesson else ""
+        with st.expander(f"{row['lesson']} · {row['at'][:10]} · {_mins(row)} · voz {model or row.get('voice')}"
+                         f"{' · ' + str(row['speed']) + '×' if row.get('speed') else ''}{cost}"):
+            _lazy_video(st, STUDIO_DIR / "renders" / row["file"], key=f"rev_{row['file']}")
+            flags = english_flags(row)
+            st.caption("Palabras en inglés a escuchar: " + ", ".join(f"{b} «{t}»" for b, t in flags) if flags
+                       else "Palabras en inglés: 0 avisos")
+            note = st.text_input("Nota", key=f"rev_note_{row['file']}")
+            c1, c2 = st.columns(2)
+            if c1.button("✓ Aprobar", type="primary", key=f"rev_ok_{row['file']}"):
+                record_review(row["file"], "aprobada", note)
+                st.rerun()
+            if c2.button("✗ Rehacer", key=f"rev_redo_{row['file']}"):
+                record_review(row["file"], "rehacer", note)
+                st.rerun()
+
+    st.markdown(f"#### Listas para subir ({len(board['aprobadas'])})")
+    if not board["aprobadas"]:
+        st.caption("Aprueba un vídeo arriba para poder subirlo.")
+    else:
+        _upload_notes(st)
+    default = resolve_privacy("youtube")
+    for row, _ in board["aprobadas"]:
+        lesson = lesson_of(row)
+        saved = youtube_json_path(row)
+        meta = json.loads(saved.read_text(encoding="utf-8")) if saved.exists() else youtube_metadata(lesson, row)
+        key = f"yt_{row['file']}"
+        with st.container(border=True):
+            st.markdown(f"**{row['lesson']}** · {row['at'][:10]} · {_mins(row)}")
+            c1, c2 = st.columns([1, 3])
+            poster = STUDIO_DIR / "renders" / row["poster"] if row.get("poster") else None
+            if poster and poster.exists():
+                c1.image(str(poster), caption="Miniatura")
+            title = c2.text_input("Título", meta["title"], max_chars=100, key=key + "_title")
+            description = c2.text_area("Descripción", meta["description"], height=240, key=key + "_desc",
+                                       help="Los capítulos deben empezar en 0:00 o YouTube los ignora.")
+            tags = c2.text_input("Etiquetas (separadas por comas)", ", ".join(meta["tags"]), key=key + "_tags")
+            privacy = c2.selectbox("Visibilidad", list(YT_PRIVACY_WORDS), index=list(YT_PRIVACY_WORDS).index(default),
+                                   format_func=YT_PRIVACY_WORDS.get, key=key + "_privacy")
+            edited = {"title": title.strip(), "description": description.strip(), "hashtags": meta.get("hashtags", []),
+                      "tags": [t.strip() for t in tags.split(",") if t.strip()][:15]}
+            _upload_button(st, row, edited, privacy=None if privacy == default else privacy, key=key)
+
+    with st.expander(f"Subidas ({len(board['subidas'])})"):
+        for row, published in board["subidas"]:
+            st.markdown(f"**{row['lesson']}** · Subido · {published['published_at'][:10]} · "
+                        f"{published.get('url') or published.get('upload_id')}")
+    with st.expander(f"Versiones anteriores y rehechas ({len(board['anteriores']) + len(board['rehacer'])})"):
+        for row, review in board["rehacer"]:
+            st.caption(f"{row['file']} · marcada para rehacer — {review.get('note') or 'sin nota'}")
+        for row, missing in board["anteriores"]:
+            if missing:
+                st.caption(f"~~{row['file']}~~ · el archivo ya no está")
+                continue
+            c1, c2 = st.columns([4, 1])
+            c1.caption(f"{row['file']} · {row['at'][:10]} · {_mins(row)}")
+            if c2.button("Usar esta versión", key=f"rev_use_{row['file']}"):
+                record_review(row["file"], "por revisar", reopen=True)
+                st.rerun()
 
 
 def _lazy_video(st, path, key: str, open_now: bool = False) -> None:   # pragma: no cover — UI
