@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la PLAYA en inglés? 🏖️",
+  "video_description": "Diez palabras para tus vacaciones en la playa. 🌊",
+  "title": "¿Cómo se dice…?",
+  "theme": "la playa",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🏖️",
+      "spanish": "Arena",
+      "english": "sand"
+    },
+    {
+      "emoji": "🌊",
+      "spanish": "Mar",
+      "english": "sea"
+    },
+    {
+      "emoji": "🏄",
+      "spanish": "Ola",
+      "english": "wave"
+    },
+    {
+      "emoji": "🐚",
+      "spanish": "Concha",
+      "english": "shell"
+    },
+    {
+      "emoji": "🕶️",
+      "spanish": "Gafas de sol",
+      "english": "sunglasses"
+    },
+    {
+      "emoji": "👙",
+      "spanish": "Traje de baño",
+      "english": "swimsuit"
+    },
+    {
+      "emoji": "🧴",
+      "spanish": "Protector solar",
+      "english": "sunscreen"
+    },
+    {
+      "emoji": "🦀",
+      "spanish": "Cangrejo",
+      "english": "crab"
+    },
+    {
+      "emoji": "🏝️",
+      "spanish": "Isla",
+      "english": "island"
+    },
+    {
+      "emoji": "🏐",
+      "spanish": "Pelota",
+      "english": "ball"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: sand, sea, wave, shell, sunglasses, swimsuit, sunscreen, crab, island, ball.",
+  "outro": "[curious] ¿Cuál no sabías? Cuéntamelo abajo.",
+  "translations": {
+    "sand": "Arena",
+    "sea": "Mar",
+    "wave": "Ola",
+    "shell": "Concha",
+    "sunglasses": "Gafas de sol",
+    "swimsuit": "Traje de baño",
+    "sunscreen": "Protector solar",
+    "crab": "Cangrejo",
+    "island": "Isla",
+    "ball": "Pelota"
+  },
+  "english_phrases": [
+    "sand",
+    "sea",
+    "wave",
+    "shell",
+    "sunglasses",
+    "swimsuit",
+    "sunscreen",
+    "crab",
+    "island",
+    "ball"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv029",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Arena... sand. sand. Mar... sea. sea. Ola... wave. wave. Concha... shell. shell. Gafas de sol... sunglasses. sunglasses. Traje de baño... swimsuit. swimsuit. Protector solar... sunscreen. sunscreen. Cangrejo... crab. crab. Isla... island. island. Pelota... ball. ball. Otra vez, todas seguidas: sand, sea, wave, shell, sunglasses, swimsuit, sunscreen, crab, island, ball. [curious] ¿Cuál no sabías? Cuéntamelo abajo."
+}

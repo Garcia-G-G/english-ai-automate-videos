@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el ESPACIO en inglés? 🚀",
+  "video_description": "Diez palabras del espacio, de la Luna a la galaxia. 🌌",
+  "title": "¿Cómo se dice…?",
+  "theme": "el espacio",
+  "level": "A1",
+  "intro": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas?",
+  "items": [
+    {
+      "emoji": "🌙",
+      "spanish": "Luna",
+      "english": "moon"
+    },
+    {
+      "emoji": "⭐",
+      "spanish": "Estrella",
+      "english": "star"
+    },
+    {
+      "emoji": "🪐",
+      "spanish": "Planeta",
+      "english": "planet"
+    },
+    {
+      "emoji": "🚀",
+      "spanish": "Cohete",
+      "english": "rocket"
+    },
+    {
+      "emoji": "☄️",
+      "spanish": "Cometa",
+      "english": "comet"
+    },
+    {
+      "emoji": "🌍",
+      "spanish": "Tierra",
+      "english": "Earth"
+    },
+    {
+      "emoji": "🌌",
+      "spanish": "Galaxia",
+      "english": "galaxy"
+    },
+    {
+      "emoji": "🛰️",
+      "spanish": "Satélite",
+      "english": "satellite"
+    },
+    {
+      "emoji": "🔭",
+      "spanish": "Telescopio",
+      "english": "telescope"
+    },
+    {
+      "emoji": "👽",
+      "spanish": "Extraterrestre",
+      "english": "alien"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: moon, star, planet, rocket, comet, Earth, galaxy, satellite, telescope, alien.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "moon": "Luna",
+    "star": "Estrella",
+    "planet": "Planeta",
+    "rocket": "Cohete",
+    "comet": "Cometa",
+    "Earth": "Tierra",
+    "galaxy": "Galaxia",
+    "satellite": "Satélite",
+    "telescope": "Telescopio",
+    "alien": "Extraterrestre"
+  },
+  "english_phrases": [
+    "moon",
+    "star",
+    "planet",
+    "rocket",
+    "comet",
+    "Earth",
+    "galaxy",
+    "satellite",
+    "telescope",
+    "alien"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv051",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas? Luna... moon. moon. Estrella... star. star. Planeta... planet. planet. Cohete... rocket. rocket. Cometa... comet. comet. Tierra... Earth. Earth. Galaxia... galaxy. galaxy. Satélite... satellite. satellite. Telescopio... telescope. telescope. Extraterrestre... alien. alien. Ahora, todas conmigo: moon, star, planet, rocket, comet, Earth, galaxy, satellite, telescope, alien. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

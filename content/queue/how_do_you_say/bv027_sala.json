@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la SALA en inglés? 🛋️",
+  "video_description": "Diez cosas del salón para describir tu casa. 📺",
+  "title": "¿Cómo se dice…?",
+  "theme": "la sala",
+  "level": "A1",
+  "intro": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas?",
+  "items": [
+    {
+      "emoji": "🛋️",
+      "spanish": "Sofá",
+      "english": "couch"
+    },
+    {
+      "emoji": "📺",
+      "spanish": "Televisión",
+      "english": "TV"
+    },
+    {
+      "emoji": "📚",
+      "spanish": "Estantería",
+      "english": "shelf"
+    },
+    {
+      "emoji": "🖼️",
+      "spanish": "Cuadro",
+      "english": "painting"
+    },
+    {
+      "emoji": "🪴",
+      "spanish": "Planta",
+      "english": "plant"
+    },
+    {
+      "emoji": "🔥",
+      "spanish": "Chimenea",
+      "english": "fireplace"
+    },
+    {
+      "emoji": "🎮",
+      "spanish": "Control remoto",
+      "english": "remote"
+    },
+    {
+      "emoji": "🟫",
+      "spanish": "Cojín",
+      "english": "cushion"
+    },
+    {
+      "emoji": "🕰️",
+      "spanish": "Reloj",
+      "english": "clock"
+    },
+    {
+      "emoji": "🏺",
+      "spanish": "Florero",
+      "english": "vase"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: couch, TV, shelf, painting, plant, fireplace, remote, cushion, clock, vase.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "couch": "Sofá",
+    "TV": "Televisión",
+    "shelf": "Estantería",
+    "painting": "Cuadro",
+    "plant": "Planta",
+    "fireplace": "Chimenea",
+    "remote": "Control remoto",
+    "cushion": "Cojín",
+    "clock": "Reloj",
+    "vase": "Florero"
+  },
+  "english_phrases": [
+    "couch",
+    "TV",
+    "shelf",
+    "painting",
+    "plant",
+    "fireplace",
+    "remote",
+    "cushion",
+    "clock",
+    "vase"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv027",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas? Sofá... couch. couch. Televisión... TV. TV. Estantería... shelf. shelf. Cuadro... painting. painting. Planta... plant. plant. Chimenea... fireplace. fireplace. Control remoto... remote. remote. Cojín... cushion. cushion. Reloj... clock. clock. Florero... vase. vase. Ahora, todas conmigo: couch, TV, shelf, painting, plant, fireplace, remote, cushion, clock, vase. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

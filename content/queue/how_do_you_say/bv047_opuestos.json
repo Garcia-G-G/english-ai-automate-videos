@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los OPUESTOS en inglés? ↔️",
+  "video_description": "Diez adjetivos en parejas: grande y pequeño, caro y barato. ⚖️",
+  "title": "¿Cómo se dice…?",
+  "theme": "los opuestos",
+  "level": "A1",
+  "intro": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo.",
+  "items": [
+    {
+      "emoji": "🐘",
+      "spanish": "Grande",
+      "english": "big"
+    },
+    {
+      "emoji": "🐭",
+      "spanish": "Pequeño",
+      "english": "small"
+    },
+    {
+      "emoji": "🦒",
+      "spanish": "Alto",
+      "english": "tall"
+    },
+    {
+      "emoji": "🐁",
+      "spanish": "Bajo",
+      "english": "short"
+    },
+    {
+      "emoji": "🐆",
+      "spanish": "Rápido",
+      "english": "fast"
+    },
+    {
+      "emoji": "🐢",
+      "spanish": "Lento",
+      "english": "slow"
+    },
+    {
+      "emoji": "✨",
+      "spanish": "Nuevo",
+      "english": "new"
+    },
+    {
+      "emoji": "🏚️",
+      "spanish": "Viejo",
+      "english": "old"
+    },
+    {
+      "emoji": "💎",
+      "spanish": "Caro",
+      "english": "expensive"
+    },
+    {
+      "emoji": "🪙",
+      "spanish": "Barato",
+      "english": "cheap"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: big, small, tall, short, fast, slow, new, old, expensive, cheap.",
+  "outro": "[curious] ¿Cuál no sabías? Cuéntamelo abajo.",
+  "translations": {
+    "big": "Grande",
+    "small": "Pequeño",
+    "tall": "Alto",
+    "short": "Bajo",
+    "fast": "Rápido",
+    "slow": "Lento",
+    "new": "Nuevo",
+    "old": "Viejo",
+    "expensive": "Caro",
+    "cheap": "Barato"
+  },
+  "english_phrases": [
+    "big",
+    "small",
+    "tall",
+    "short",
+    "fast",
+    "slow",
+    "new",
+    "old",
+    "expensive",
+    "cheap"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv047",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo. Grande... big. big. Pequeño... small. small. Alto... tall. tall. Bajo... short. short. Rápido... fast. fast. Lento... slow. slow. Nuevo... new. new. Viejo... old. old. Caro... expensive. expensive. Barato... cheap. cheap. Otra vez, todas seguidas: big, small, tall, short, fast, slow, new, old, expensive, cheap. [curious] ¿Cuál no sabías? Cuéntamelo abajo."
+}

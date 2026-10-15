@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la CARA en inglés? 😊",
+  "video_description": "Diez partes de la cara que casi nadie sabe decir. 👄",
+  "title": "¿Cómo se dice…?",
+  "theme": "la cara",
+  "level": "A1",
+  "intro": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas?",
+  "items": [
+    {
+      "emoji": "🤔",
+      "spanish": "Frente",
+      "english": "forehead"
+    },
+    {
+      "emoji": "🤨",
+      "spanish": "Ceja",
+      "english": "eyebrow"
+    },
+    {
+      "emoji": "👁️",
+      "spanish": "Pestaña",
+      "english": "eyelash"
+    },
+    {
+      "emoji": "😊",
+      "spanish": "Mejilla",
+      "english": "cheek"
+    },
+    {
+      "emoji": "👄",
+      "spanish": "Labios",
+      "english": "lips"
+    },
+    {
+      "emoji": "🙂",
+      "spanish": "Barbilla",
+      "english": "chin"
+    },
+    {
+      "emoji": "👅",
+      "spanish": "Lengua",
+      "english": "tongue"
+    },
+    {
+      "emoji": "🧔",
+      "spanish": "Barba",
+      "english": "beard"
+    },
+    {
+      "emoji": "💇",
+      "spanish": "Pelo",
+      "english": "hair"
+    },
+    {
+      "emoji": "👨",
+      "spanish": "Bigote",
+      "english": "mustache"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: forehead, eyebrow, eyelash, cheek, lips, chin, tongue, beard, hair, mustache.",
+  "outro": "[curious] ¿Cuál no sabías? Cuéntamelo abajo.",
+  "translations": {
+    "forehead": "Frente",
+    "eyebrow": "Ceja",
+    "eyelash": "Pestaña",
+    "cheek": "Mejilla",
+    "lips": "Labios",
+    "chin": "Barbilla",
+    "tongue": "Lengua",
+    "beard": "Barba",
+    "hair": "Pelo",
+    "mustache": "Bigote"
+  },
+  "english_phrases": [
+    "forehead",
+    "eyebrow",
+    "eyelash",
+    "cheek",
+    "lips",
+    "chin",
+    "tongue",
+    "beard",
+    "hair",
+    "mustache"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv035",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas? Frente... forehead. forehead. Ceja... eyebrow. eyebrow. Pestaña... eyelash. eyelash. Mejilla... cheek. cheek. Labios... lips. lips. Barbilla... chin. chin. Lengua... tongue. tongue. Barba... beard. beard. Pelo... hair. hair. Bigote... mustache. mustache. Otra vez, todas seguidas: forehead, eyebrow, eyelash, cheek, lips, chin, tongue, beard, hair, mustache. [curious] ¿Cuál no sabías? Cuéntamelo abajo."
+}

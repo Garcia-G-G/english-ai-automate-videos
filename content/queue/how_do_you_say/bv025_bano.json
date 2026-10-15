@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el BAÑO en inglés? 🛁",
+  "video_description": "Diez cosas del baño que usas cada día. 🧼",
+  "title": "¿Cómo se dice…?",
+  "theme": "el baño",
+  "level": "A1",
+  "intro": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo.",
+  "items": [
+    {
+      "emoji": "🚿",
+      "spanish": "Ducha",
+      "english": "shower"
+    },
+    {
+      "emoji": "🛁",
+      "spanish": "Bañera",
+      "english": "bathtub"
+    },
+    {
+      "emoji": "🚽",
+      "spanish": "Inodoro",
+      "english": "toilet"
+    },
+    {
+      "emoji": "🚰",
+      "spanish": "Lavabo",
+      "english": "sink"
+    },
+    {
+      "emoji": "🧼",
+      "spanish": "Jabón",
+      "english": "soap"
+    },
+    {
+      "emoji": "🪒",
+      "spanish": "Cuchilla",
+      "english": "razor"
+    },
+    {
+      "emoji": "🦷",
+      "spanish": "Pasta dental",
+      "english": "toothpaste"
+    },
+    {
+      "emoji": "🧴",
+      "spanish": "Champú",
+      "english": "shampoo"
+    },
+    {
+      "emoji": "🧻",
+      "spanish": "Papel higiénico",
+      "english": "toilet paper"
+    },
+    {
+      "emoji": "💇",
+      "spanish": "Peine",
+      "english": "comb"
+    }
+  ],
+  "recap": "Repite conmigo las diez: shower, bathtub, toilet, sink, soap, razor, toothpaste, shampoo, toilet paper, comb.",
+  "outro": "[excited] ¿Las diez? Demuéstralo en los comentarios.",
+  "translations": {
+    "shower": "Ducha",
+    "bathtub": "Bañera",
+    "toilet": "Inodoro",
+    "sink": "Lavabo",
+    "soap": "Jabón",
+    "razor": "Cuchilla",
+    "toothpaste": "Pasta dental",
+    "shampoo": "Champú",
+    "toilet paper": "Papel higiénico",
+    "comb": "Peine"
+  },
+  "english_phrases": [
+    "shower",
+    "bathtub",
+    "toilet",
+    "sink",
+    "soap",
+    "razor",
+    "toothpaste",
+    "shampoo",
+    "toilet paper",
+    "comb"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv025",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo. Ducha... shower. shower. Bañera... bathtub. bathtub. Inodoro... toilet. toilet. Lavabo... sink. sink. Jabón... soap. soap. Cuchilla... razor. razor. Pasta dental... toothpaste. toothpaste. Champú... shampoo. shampoo. Papel higiénico... toilet paper. toilet paper. Peine... comb. comb. Repite conmigo las diez: shower, bathtub, toilet, sink, soap, razor, toothpaste, shampoo, toilet paper, comb. [excited] ¿Las diez? Demuéstralo en los comentarios."
+}

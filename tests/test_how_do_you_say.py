@@ -317,7 +317,10 @@ def test_basic_vocab_feeds_this_type_only():
         if other != "how_do_you_say":
             assert "basic_vocab" not in tc.allowed_for(other)
     topics = json.loads((ROOT / "content/topics/basic_vocab.json").read_text())
-    assert [t["id"] for t in topics] == [f"bv{i:03d}" for i in range(1, 21)]
+    ids = [t["id"] for t in topics]
+    # Contiguous from bv001; the set grows (bv021-bv060 added 2026-10-15).
+    assert len(ids) >= 20
+    assert ids == [f"bv{i:03d}" for i in range(1, len(ids) + 1)]
 
 
 def test_metadata_title_template():

@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las VERDURAS en inglés? 🥕",
+  "video_description": "Diez verduras para la lista de la compra, en inglés. 🥦",
+  "title": "¿Cómo se dice…?",
+  "theme": "las verduras",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🥕",
+      "spanish": "Zanahoria",
+      "english": "carrot"
+    },
+    {
+      "emoji": "🍅",
+      "spanish": "Tomate",
+      "english": "tomato"
+    },
+    {
+      "emoji": "🥔",
+      "spanish": "Papa",
+      "english": "potato"
+    },
+    {
+      "emoji": "🧅",
+      "spanish": "Cebolla",
+      "english": "onion"
+    },
+    {
+      "emoji": "🧄",
+      "spanish": "Ajo",
+      "english": "garlic"
+    },
+    {
+      "emoji": "🥬",
+      "spanish": "Lechuga",
+      "english": "lettuce"
+    },
+    {
+      "emoji": "🥒",
+      "spanish": "Pepino",
+      "english": "cucumber"
+    },
+    {
+      "emoji": "🥦",
+      "spanish": "Brócoli",
+      "english": "broccoli"
+    },
+    {
+      "emoji": "🌽",
+      "spanish": "Maíz",
+      "english": "corn"
+    },
+    {
+      "emoji": "🫑",
+      "spanish": "Pimiento",
+      "english": "pepper"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: carrot, tomato, potato, onion, garlic, lettuce, cucumber, broccoli, corn, pepper.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "carrot": "Zanahoria",
+    "tomato": "Tomate",
+    "potato": "Papa",
+    "onion": "Cebolla",
+    "garlic": "Ajo",
+    "lettuce": "Lechuga",
+    "cucumber": "Pepino",
+    "broccoli": "Brócoli",
+    "corn": "Maíz",
+    "pepper": "Pimiento"
+  },
+  "english_phrases": [
+    "carrot",
+    "tomato",
+    "potato",
+    "onion",
+    "garlic",
+    "lettuce",
+    "cucumber",
+    "broccoli",
+    "corn",
+    "pepper"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv021",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Zanahoria... carrot. carrot. Tomate... tomato. tomato. Papa... potato. potato. Cebolla... onion. onion. Ajo... garlic. garlic. Lechuga... lettuce. lettuce. Pepino... cucumber. cucumber. Brócoli... broccoli. broccoli. Maíz... corn. corn. Pimiento... pepper. pepper. Ahora, todas conmigo: carrot, tomato, potato, onion, garlic, lettuce, cucumber, broccoli, corn, pepper. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

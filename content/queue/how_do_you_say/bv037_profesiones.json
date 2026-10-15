@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las PROFESIONES en inglés? 👷",
+  "video_description": "Diez profesiones para decir en qué trabajas. 💼",
+  "title": "¿Cómo se dice…?",
+  "theme": "las profesiones",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🍎",
+      "spanish": "Profesor",
+      "english": "teacher"
+    },
+    {
+      "emoji": "👮",
+      "spanish": "Policía",
+      "english": "police officer"
+    },
+    {
+      "emoji": "🚒",
+      "spanish": "Bombero",
+      "english": "firefighter"
+    },
+    {
+      "emoji": "⚖️",
+      "spanish": "Abogado",
+      "english": "lawyer"
+    },
+    {
+      "emoji": "🦷",
+      "spanish": "Dentista",
+      "english": "dentist"
+    },
+    {
+      "emoji": "📬",
+      "spanish": "Cartero",
+      "english": "mail carrier"
+    },
+    {
+      "emoji": "💈",
+      "spanish": "Peluquero",
+      "english": "hairdresser"
+    },
+    {
+      "emoji": "🏗️",
+      "spanish": "Ingeniero",
+      "english": "engineer"
+    },
+    {
+      "emoji": "🐾",
+      "spanish": "Veterinario",
+      "english": "vet"
+    },
+    {
+      "emoji": "🛫",
+      "spanish": "Piloto",
+      "english": "pilot"
+    }
+  ],
+  "recap": "Repite conmigo las diez: teacher, police officer, firefighter, lawyer, dentist, mail carrier, hairdresser, engineer, vet, pilot.",
+  "outro": "[excited] ¿Las diez? Demuéstralo en los comentarios.",
+  "translations": {
+    "teacher": "Profesor",
+    "police officer": "Policía",
+    "firefighter": "Bombero",
+    "lawyer": "Abogado",
+    "dentist": "Dentista",
+    "mail carrier": "Cartero",
+    "hairdresser": "Peluquero",
+    "engineer": "Ingeniero",
+    "vet": "Veterinario",
+    "pilot": "Piloto"
+  },
+  "english_phrases": [
+    "teacher",
+    "police officer",
+    "firefighter",
+    "lawyer",
+    "dentist",
+    "mail carrier",
+    "hairdresser",
+    "engineer",
+    "vet",
+    "pilot"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv037",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Profesor... teacher. teacher. Policía... police officer. police officer. Bombero... firefighter. firefighter. Abogado... lawyer. lawyer. Dentista... dentist. dentist. Cartero... mail carrier. mail carrier. Peluquero... hairdresser. hairdresser. Ingeniero... engineer. engineer. Veterinario... vet. vet. Piloto... pilot. pilot. Repite conmigo las diez: teacher, police officer, firefighter, lawyer, dentist, mail carrier, hairdresser, engineer, vet, pilot. [excited] ¿Las diez? Demuéstralo en los comentarios."
+}

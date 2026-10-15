@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la OFICINA en inglés? 🖇️",
+  "video_description": "Diez cosas de tu escritorio, de la grapadora al sobre. 📎",
+  "title": "¿Cómo se dice…?",
+  "theme": "la oficina",
+  "level": "A2",
+  "intro": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo.",
+  "items": [
+    {
+      "emoji": "📎",
+      "spanish": "Clip",
+      "english": "paper clip"
+    },
+    {
+      "emoji": "🖇️",
+      "spanish": "Grapadora",
+      "english": "stapler"
+    },
+    {
+      "emoji": "📁",
+      "spanish": "Carpeta",
+      "english": "folder"
+    },
+    {
+      "emoji": "🗂️",
+      "spanish": "Archivo",
+      "english": "file"
+    },
+    {
+      "emoji": "🪑",
+      "spanish": "Escritorio",
+      "english": "desk"
+    },
+    {
+      "emoji": "✉️",
+      "spanish": "Sobre",
+      "english": "envelope"
+    },
+    {
+      "emoji": "📼",
+      "spanish": "Cinta adhesiva",
+      "english": "tape"
+    },
+    {
+      "emoji": "📮",
+      "spanish": "Sello",
+      "english": "stamp"
+    },
+    {
+      "emoji": "📆",
+      "spanish": "Calendario",
+      "english": "calendar"
+    },
+    {
+      "emoji": "📒",
+      "spanish": "Agenda",
+      "english": "planner"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: paper clip, stapler, folder, file, desk, envelope, tape, stamp, calendar, planner.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "paper clip": "Clip",
+    "stapler": "Grapadora",
+    "folder": "Carpeta",
+    "file": "Archivo",
+    "desk": "Escritorio",
+    "envelope": "Sobre",
+    "tape": "Cinta adhesiva",
+    "stamp": "Sello",
+    "calendar": "Calendario",
+    "planner": "Agenda"
+  },
+  "english_phrases": [
+    "paper clip",
+    "stapler",
+    "folder",
+    "file",
+    "desk",
+    "envelope",
+    "tape",
+    "stamp",
+    "calendar",
+    "planner"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv057",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo. Clip... paper clip. paper clip. Grapadora... stapler. stapler. Carpeta... folder. folder. Archivo... file. file. Escritorio... desk. desk. Sobre... envelope. envelope. Cinta adhesiva... tape. tape. Sello... stamp. stamp. Calendario... calendar. calendar. Agenda... planner. planner. Ahora, todas conmigo: paper clip, stapler, folder, file, desk, envelope, tape, stamp, calendar, planner. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

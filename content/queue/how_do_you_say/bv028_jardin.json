@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el JARDÍN en inglés? 🌻",
+  "video_description": "Diez palabras del jardín, de la semilla al árbol. 🌱",
+  "title": "¿Cómo se dice…?",
+  "theme": "el jardín",
+  "level": "A1",
+  "intro": "[warm] Vamos con diez palabras. Tú primero, luego yo.",
+  "items": [
+    {
+      "emoji": "🌸",
+      "spanish": "Flor",
+      "english": "flower"
+    },
+    {
+      "emoji": "🌳",
+      "spanish": "Árbol",
+      "english": "tree"
+    },
+    {
+      "emoji": "🌱",
+      "spanish": "Pasto",
+      "english": "grass"
+    },
+    {
+      "emoji": "🍃",
+      "spanish": "Hoja",
+      "english": "leaf"
+    },
+    {
+      "emoji": "🚧",
+      "spanish": "Valla",
+      "english": "fence"
+    },
+    {
+      "emoji": "💦",
+      "spanish": "Manguera",
+      "english": "hose"
+    },
+    {
+      "emoji": "⛏️",
+      "spanish": "Pala",
+      "english": "shovel"
+    },
+    {
+      "emoji": "🪴",
+      "spanish": "Maceta",
+      "english": "flowerpot"
+    },
+    {
+      "emoji": "🌰",
+      "spanish": "Semilla",
+      "english": "seed"
+    },
+    {
+      "emoji": "🌹",
+      "spanish": "Rosa",
+      "english": "rose"
+    }
+  ],
+  "recap": "Repite conmigo las diez: flower, tree, grass, leaf, fence, hose, shovel, flowerpot, seed, rose.",
+  "outro": "[cheerful] Escribe en los comentarios cuántas acertaste.",
+  "translations": {
+    "flower": "Flor",
+    "tree": "Árbol",
+    "grass": "Pasto",
+    "leaf": "Hoja",
+    "fence": "Valla",
+    "hose": "Manguera",
+    "shovel": "Pala",
+    "flowerpot": "Maceta",
+    "seed": "Semilla",
+    "rose": "Rosa"
+  },
+  "english_phrases": [
+    "flower",
+    "tree",
+    "grass",
+    "leaf",
+    "fence",
+    "hose",
+    "shovel",
+    "flowerpot",
+    "seed",
+    "rose"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv028",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[warm] Vamos con diez palabras. Tú primero, luego yo. Flor... flower. flower. Árbol... tree. tree. Pasto... grass. grass. Hoja... leaf. leaf. Valla... fence. fence. Manguera... hose. hose. Pala... shovel. shovel. Maceta... flowerpot. flowerpot. Semilla... seed. seed. Rosa... rose. rose. Repite conmigo las diez: flower, tree, grass, leaf, fence, hose, shovel, flowerpot, seed, rose. [cheerful] Escribe en los comentarios cuántas acertaste."
+}

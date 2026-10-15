@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los ANIMALES SALVAJES en inglés? 🦁",
+  "video_description": "Diez animales salvajes, del león a la cebra. 🐘",
+  "title": "¿Cómo se dice…?",
+  "theme": "los animales salvajes",
+  "level": "A1",
+  "intro": "[excited] Te enseño diez palabras. Dilas tú antes que yo.",
+  "items": [
+    {
+      "emoji": "🦁",
+      "spanish": "León",
+      "english": "lion"
+    },
+    {
+      "emoji": "🐯",
+      "spanish": "Tigre",
+      "english": "tiger"
+    },
+    {
+      "emoji": "🐘",
+      "spanish": "Elefante",
+      "english": "elephant"
+    },
+    {
+      "emoji": "🐒",
+      "spanish": "Mono",
+      "english": "monkey"
+    },
+    {
+      "emoji": "🦒",
+      "spanish": "Jirafa",
+      "english": "giraffe"
+    },
+    {
+      "emoji": "🐻",
+      "spanish": "Oso",
+      "english": "bear"
+    },
+    {
+      "emoji": "🐺",
+      "spanish": "Lobo",
+      "english": "wolf"
+    },
+    {
+      "emoji": "🦊",
+      "spanish": "Zorro",
+      "english": "fox"
+    },
+    {
+      "emoji": "🐍",
+      "spanish": "Serpiente",
+      "english": "snake"
+    },
+    {
+      "emoji": "🦓",
+      "spanish": "Cebra",
+      "english": "zebra"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: lion, tiger, elephant, monkey, giraffe, bear, wolf, fox, snake, zebra.",
+  "outro": "[cheerful] Comenta tu número del uno al diez. Sin trampas.",
+  "translations": {
+    "lion": "León",
+    "tiger": "Tigre",
+    "elephant": "Elefante",
+    "monkey": "Mono",
+    "giraffe": "Jirafa",
+    "bear": "Oso",
+    "wolf": "Lobo",
+    "fox": "Zorro",
+    "snake": "Serpiente",
+    "zebra": "Cebra"
+  },
+  "english_phrases": [
+    "lion",
+    "tiger",
+    "elephant",
+    "monkey",
+    "giraffe",
+    "bear",
+    "wolf",
+    "fox",
+    "snake",
+    "zebra"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv038",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Te enseño diez palabras. Dilas tú antes que yo. León... lion. lion. Tigre... tiger. tiger. Elefante... elephant. elephant. Mono... monkey. monkey. Jirafa... giraffe. giraffe. Oso... bear. bear. Lobo... wolf. wolf. Zorro... fox. fox. Serpiente... snake. snake. Cebra... zebra. zebra. Otra vez, todas seguidas: lion, tiger, elephant, monkey, giraffe, bear, wolf, fox, snake, zebra. [cheerful] Comenta tu número del uno al diez. Sin trampas."
+}
