@@ -87,4 +87,18 @@ experiments/**/renders/jobs/
 experiments/**/renders/**/*.mp4
 experiments/**/renders/**/*.jpg
 
-# Scratch tree for things handed back in chat. Never an input to the build.
+# Generated audio per lesson. Its manifest.json records the voice ID, which
+# must never reach git; the onset fixtures the tests need live in tests/fixtures/.
+experiments/**/audio/
+# Render sidecars, rebuilt with every render. The ledger and .youtube.json
+# carry upload ids and drafts, not code.
+experiments/**/renders/ledger.jsonl
+experiments/**/renders/**/*.srt
+experiments/**/renders/**/*.chapters.txt
+experiments/**/renders/**/*.timeline.json
+experiments/**/renders/**/*.youtube.json
+
+# Secrets that live outside .env.
+.streamlit/secrets.toml
+.tokens*/
+client_secret*.json
