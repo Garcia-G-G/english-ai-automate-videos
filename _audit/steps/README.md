@@ -12,7 +12,7 @@ the code wins:
 | brand colours and type | `assets/branding/english-unlimited/brand.json` |
 | audio repair (tails, gaps, onsets) | `src/tts_common.py` |
 
-New steps take the next number (`STEP_64.md`, …). A `b` file is an addendum to the step
+New steps take the next number (`STEP_65.md`, …). A `b` file is an addendum to the step
 with the same number.
 
 | step | what it was |
@@ -85,3 +85,4 @@ with the same number.
 | [STEP 61](STEP_61.md) | «¿Verdadero o falso?» in cascade with a blurred answer; learningroutes.com in descriptions and the lesson end card |
 | [STEP 62](STEP_62.md) | Completa, Elige la correcta and ¿Cómo se dice? frases on the notebook; on-brand Shorts outro |
 | [STEP 63](STEP_63.md) | The long lessons on the notebook: full tables from frame 1, sticky-note captions, site badge |
+| [STEP 64](STEP_64.md) | Lessons upload to the same account the same way as the Shorts; captions scope optional (run after 59, before 60) |
