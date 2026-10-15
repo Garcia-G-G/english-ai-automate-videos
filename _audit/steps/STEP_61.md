@@ -24,7 +24,7 @@ The owner's decisions (2026-10-15):
 4. **how_do_you_say is done.** It works as it is; do not change it. Its byte-identical
    pin stays.
 
-## Part A — Lessons upload like the Shorts (first: the owner is about to upload make-vs-do)
+## Part A — Lessons: review and upload like the Shorts, on one page (first: the owner is about to upload make-vs-do)
 
 Today the owner's next upload, a Short or a lesson, would open a Google consent screen.
 Part A removes that.
@@ -57,18 +57,79 @@ Keep all of that.
    - Test: a token with only the three old scopes authenticates **without** opening the
      browser, uploads, and skips captions with the note. A token with no scopes at all
      still forces consent.
-2. **The lesson panel must behave like the Shorts upload.**
-   - `youtube_consent_note` warns only when there is **no usable token at all**.
-   - A missing captions scope shows a small grey line: «Los subtítulos en español no se
-     subirán: la cuenta no dio ese permiso. YouTube genera los suyos automáticamente.» It
-     is not a yellow warning, and the button text does not change.
-   - The button says «Subir a YouTube», as the Shorts page does.
-3. **One place to upload.** On the «Subir» page, add a «Lecciones» tab next to the Shorts
-   list. It shows the lesson renders that are ready, with the same row layout, the same
-   «Subido · fecha · enlace» state from the ledger, and the same button. It calls the
-   same `upload_to_youtube`. The Lecciones page keeps its own button too, so both doors
-   lead to one function. If STEP 57 already started the «Subir» tab, extend it and do not
-   duplicate it.
+2. **Lessons get a «Revisar y subir» page, like the Shorts, on one page.** The owner's
+   verdict on today's panel (2026-10-15): «la parte de subir videos de lecciones está mal
+   hecha, literal solo me deja subir videos que ni existen… que haya como en los shorts,
+   una parte de revisar y una parte de subir, pero en una sola página».
+
+   What I saw on his running panel (`?page=Manim`):
+   - «Subir a YouTube» follows the lesson picked in «1 · Guion». With «Used to» picked,
+     it offered `used-to-soler/20261014-093231…`, an old render he never reviewed, and
+     not the make-vs-do he had just made.
+   - «Vídeos renderizados» lists 22 renders side by side: three make-vs-do, four
+     used-to-soler, demos. Nothing says which one is current, which is approved or which
+     is uploaded.
+   - There is no review step. Any render, superseded or never watched, can be uploaded.
+
+   **Remove** the upload box from the lesson editor, and **do not** add «Subir →
+   Lecciones» (drop it if it is already started). There is one door: a tab on the
+   Lecciones page.
+
+   ```
+   Lecciones   [ Hacer lección ]  [ Revisar y subir (2) ]          ← two tabs; the count = items waiting
+   ─────────────────────────────────────────────────────────────────────────────
+   POR REVISAR (1)
+   ┌ make-vs-do · 15 oct · 7:41 · voz v4 · ≈$0.39 ──────────────────────────────┐
+   │ [player]          Palabras en inglés a escuchar: b04 «make», b34 «did»       │
+   │                   (from english_audit.json; «0 avisos» when clean)           │
+   │                   [ ✓ Aprobar ]   [ ✗ Rehacer ]   note: ____________        │
+   └──────────────────────────────────────────────────────────────────────────────┘
+   LISTAS PARA SUBIR (1)
+   ┌ preposiciones-in-on-at · 14 oct · 7:46 ─────────────────────────────────────┐
+   │ [thumbnail]  Título ______  Descripción ______  Etiquetas ____  Pública ▾    │
+   │              [ Subir a YouTube ]   (progress bar, then «Subido · enlace»)     │
+   └──────────────────────────────────────────────────────────────────────────────┘
+   ▸ Subidas (0)          ▸ Versiones anteriores y rehechas (19)      ← collapsed
+   ```
+
+   Rules:
+   - **One current render per lesson:** the newest one. Older renders of the same lesson
+     go to «Versiones anteriores» automatically. They are never offered for upload unless
+     the owner reopens one there («Usar esta versión»).
+   - **Statuses:** `por revisar` → `aprobada` or `rehacer` → `subida`. Store them in
+     `renders/reviews.jsonl`, append-only, one line per decision: {file, status, note,
+     at}. A new render of a lesson starts at `por revisar`. «Subida» is read from the
+     publication ledger, as today, never from this file.
+   - **Por revisar** shows the player, which only loads when its card is opened (as
+     today), plus duration, voice model and speed, and cost when known. It also lists
+     the English-words audit flags for that render's voice, with the beat ids. Only the
+     approve and redo buttons live here.
+   - **Listas para subir** holds what is today's `_youtube_panel` body: title,
+     description, tags, visibility, the thumbnail, the shared `_upload_button`. Only
+     `aprobada` renders appear here.
+   - Above «Listas para subir»:
+     - the yellow consent note appears only when there is **no usable token at all**;
+     - when only the captions scope is missing, show the grey line «Los subtítulos en
+       español no se subirán: la cuenta no dio ese permiso. YouTube genera los suyos
+       automáticamente.»;
+     - the button always says «Subir a YouTube».
+   - `rehacer` takes the card out of both lists, keeps the note, and shows a line «make-vs-do:
+     marcada para rehacer — {note}» under the editor of that lesson in «Hacer lección».
+   - Lessons whose id starts with `demo` and renders with `quality` under 1080p never
+     appear (tests and drafts).
+   - The files must exist on disk for every card. A render whose `.mp4` is gone is
+     not shown anywhere except «Versiones anteriores», greyed, with «el archivo ya no
+     está».
+   - Today's renders start like this: for each lesson, the newest render is `por revisar`
+     and every older one goes to «Versiones anteriores». No migration file is needed.
+3. **Tests (AppTest plus pure functions):**
+   - `current_render_per_lesson` picks the newest per lesson and hides demos and draft
+     qualities;
+   - the review ledger round-trips, and the last line wins;
+   - only `aprobada` reaches «Listas para subir»;
+   - a render with a missing file is never uploadable;
+   - an uploaded render shows in «Subidas» with its link;
+   - the editor has no upload button any more.
 
 ### Part A — done when
 
@@ -190,7 +251,7 @@ byte-identically.
   - the commit, pushed;
   - the new tests;
   - the read-only token proof;
-  - a screenshot of «Subir → Lecciones» with make-vs-do ready.
+  - a screenshot of «Lecciones → Revisar y subir» with make-vs-do under «Por revisar».
 - **B:** the commit, pushed, and its tests.
 - **C:**
   - the commit, pushed;
