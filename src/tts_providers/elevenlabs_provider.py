@@ -54,7 +54,7 @@ class ElevenLabsTTSProvider(TTSProvider):
             result = generate_how_do_you_say_audio_segmented(
                 script=script_data, output_path=output_path, voice_id=voice_id,
             )
-        elif video_type in ('level_test', 'say_it_level'):
+        elif video_type in ('level_test', 'say_it_level', 'true_false_level'):
             result = generate_level_audio_segmented(
                 script=script_data, output_path=output_path, voice_id=voice_id,
             )

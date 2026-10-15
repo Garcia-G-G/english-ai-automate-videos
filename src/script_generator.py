@@ -782,6 +782,15 @@ def build_prompt_level(category: str, topic: dict, video_type: str) -> str:
                   "Items 8-10: B2-C2, al menos dos C1/C2.")
         extra = ('"english" ≤ 24 caracteres, minúscula. "spanish" ≤ 28, mayúscula inicial, el '
                  'significado en ESTE sentido.')
+    elif video_type == "true_false_level":
+        what = ("Las 10 afirmaciones en español (la palabra inglesa entre «») se ven desde el inicio y NO se "
+                "leen en voz alta; bajo cada una, la respuesta borrosa se aclara tras una pausa y se dice "
+                "«Verdadero.» o «Falso: <corrección>.».")
+        item = ('{"statement": "«Carpet» significa carpeta.", "truth": false, "correction": "es alfombra", '
+                '"cefr": "A1"}, {"statement": "«Exit» significa salida.", "truth": true, "cefr": "A1"}')
+        levels = "cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2. Items 8-10: B2-C2."
+        extra = ('"statement" ≤ 38 caracteres, una línea, la palabra inglesa entre «». "correction" SOLO si '
+                 '"truth" es false, ≤ 22, empieza por «es ...». Entre 3 y 7 afirmaciones verdaderas.')
     else:
         what = ("La frase en español aparece y se dice; el espectador la dice en inglés; después se "
                 "escribe y se dice en inglés. Los items 8-10 son TRAMPAS donde la traducción literal falla.")
@@ -791,6 +800,8 @@ def build_prompt_level(category: str, topic: dict, video_type: str) -> str:
         extra = ('"spanish" y "english" ≤ 42 caracteres con puntuación final; "alt" opcional (otra respuesta '
                  'correcta); "tip" OBLIGATORIO en 8-10, ≤ 60, en español, explica la trampa.')
     rules = _length_rule(video_type)
+    TITLES = {"level_test": "¿Qué nivel tienes?", "say_it_level": "Dilo en inglés",
+              "true_false_level": "¿Verdadero o falso?"}
     return f"""Genera un Short de nivel ("¿Hasta qué número llegas?") para hispanohablantes que aprenden inglés.
 
 {rules}
@@ -813,7 +824,7 @@ FORMATO JSON REQUERIDO:
 {{
   "type": "{video_type}",
   "video_title": "...", "video_description": "...",
-  "title": "{"¿Qué nivel tienes?" if video_type == "level_test" else "Dilo en inglés"}",
+  "title": "{TITLES[video_type]}",
   "theme": "{theme}",
   "intro": "[cheerful] ...",
   "items": [{item}],
@@ -842,7 +853,7 @@ def build_prompt(category: str, topic: dict, video_type: str = "educational") ->
         return build_prompt_vocabulary(category, topic)
     elif video_type == "how_do_you_say":
         return build_prompt_how_do_you_say(category, topic)
-    elif video_type in ("level_test", "say_it_level"):
+    elif video_type in ("level_test", "say_it_level", "true_false_level"):
         return build_prompt_level(category, topic, video_type)
     else:
         raise ValueError(f"Unknown video type: {video_type}. Choose from: {VIDEO_TYPES}")
@@ -895,6 +906,7 @@ def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None
         "how_do_you_say": ["full_script", "theme", "intro", "items", "recap", "outro"],
         "level_test": ["full_script", "theme", "intro", "items", "verdict", "outro"],
         "say_it_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "true_false_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
     }
 
     # Check required fields.

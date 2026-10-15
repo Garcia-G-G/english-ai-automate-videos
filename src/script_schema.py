@@ -531,13 +531,19 @@ CEFR_LEVELS = ("A1", "A2", "B1", "B2", "C1", "C2")
 LEVEL_ITEMS = 10
 LEVEL_TAGGED_FIELDS = ("intro", "outro")
 #: hashtags[0] per type.
-LEVEL_TYPE_TAGS = {"level_test": "#NivelDeInglés", "say_it_level": "#DiloEnInglés"}
+LEVEL_TYPE_TAGS = {"level_test": "#NivelDeInglés", "say_it_level": "#DiloEnInglés",
+                   "true_false_level": "#VerdaderoOFalso"}
 #: Per tier (items 1-3, 4-7, 8-10): allowed CEFR range and how many items must
 #: reach `min_high` or above.
 LEVEL_CEFR_RULES = {
     "level_test":   (("A1", "A2", 0, None), ("A2", "B2", 2, "B1"), ("B2", "C2", 2, "C1")),
     "say_it_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B1", "C1", 0, None)),
+    # level_test's ranges, without its counts: a false friend's CEFR is the word's,
+    # and requiring two C1 in the last tier would push out the classic traps.
+    "true_false_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B2", "C2", 0, None)),
 }
+#: true_false_level: how many statements are true, so «siempre falso» is not a strategy.
+TRUE_FALSE_TRUE_RANGE = (3, 7)
 
 
 class LevelTestItem(BaseModel):
@@ -554,6 +560,24 @@ class SayItLevelItem(BaseModel):
     cefr: Literal[CEFR_LEVELS]
     alt: Optional[str] = None
     tip: Optional[str] = None
+
+
+class TrueFalseLevelItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    statement: str = Field(min_length=1)
+    truth: bool
+    correction: Optional[str] = None
+    cefr: Literal[CEFR_LEVELS]
+
+    @model_validator(mode="after")
+    def _correction_only_when_false(self):
+        if not self.truth and not (self.correction or "").strip():
+            raise ValueError("a false statement needs its correction")
+        if self.truth and self.correction is not None:
+            raise ValueError("a true statement has no correction")
+        if not re.search(r"«[^»]+»", self.statement):
+            raise ValueError("the statement puts the English word in «»")
+        return self
 
 
 class _LevelScript(ScriptBase, _TranslationsMixin):
@@ -581,7 +605,9 @@ class _LevelScript(ScriptBase, _TranslationsMixin):
             for name, value in item.model_dump().items():
                 if isinstance(value, str) and TAG_RE.search(value):
                     problems.append(f"items[{i}].{name}: audio tags are only allowed in intro and outro")
-        for field in ("english", "spanish"):
+        for field in ("english", "spanish", "statement"):
+            if not items or not hasattr(items[0], field):
+                continue
             seen = [getattr(it, field).strip().lower() for it in items]
             dup = sorted({v for v in seen if seen.count(v) > 1})
             if dup:
@@ -620,6 +646,19 @@ class LevelTestScript(_LevelScript):
     items: List[LevelTestItem]
 
 
+class TrueFalseLevelScript(_LevelScript):
+    type: Literal["true_false_level"]
+    items: List[TrueFalseLevelItem]
+
+    @model_validator(mode="after")
+    def _check_truths(self):
+        lo, hi = TRUE_FALSE_TRUE_RANGE
+        n = sum(it.truth for it in self.items)
+        if not lo <= n <= hi:
+            raise ValueError(f"{n} true statements; the format needs {lo} to {hi}")
+        return self
+
+
 class SayItLevelScript(_LevelScript):
     type: Literal["say_it_level"]
     items: List[SayItLevelItem]
@@ -638,7 +677,8 @@ class SayItLevelScript(_LevelScript):
 
 AnyScript = Union[EducationalScript, QuizScript, TrueFalseScript,
                   FillBlankScript, PronunciationScript, VocabularyScript,
-                  HowDoYouSayScript, LevelTestScript, SayItLevelScript]
+                  HowDoYouSayScript, LevelTestScript, SayItLevelScript,
+                  TrueFalseLevelScript]
 
 SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalScript,
@@ -650,6 +690,7 @@ SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "how_do_you_say": HowDoYouSayScript,
     "level_test": LevelTestScript,
     "say_it_level": SayItLevelScript,
+    "true_false_level": TrueFalseLevelScript,
 }
 
 
@@ -728,6 +769,11 @@ class SayItLevelRenderData(_RenderExtras, SayItLevelScript):
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 
 
+class TrueFalseLevelRenderData(_RenderExtras, TrueFalseLevelScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
 RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalRenderData,
     "quiz": QuizRenderData,
@@ -738,6 +784,7 @@ RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "how_do_you_say": HowDoYouSayRenderData,
     "level_test": LevelTestRenderData,
     "say_it_level": SayItLevelRenderData,
+    "true_false_level": TrueFalseLevelRenderData,
 }
 
 

@@ -30,7 +30,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from .constants import VIDEO_WIDTH, VIDEO_HEIGHT
 from .motion import clamp01
@@ -641,6 +641,8 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
 LEVEL_MODES = {
     "level_test":   {"prompt": "english", "answer": "spanish"},
     "say_it_level": {"prompt": "spanish", "answer": "english"},
+    # STEP 61: the answer is derived (tf_answer) and comes into focus instead of being written.
+    "true_false_level": {"prompt": "statement", "answer": None},
 }
 #: Rows that open a tier, 0-based, and the tiers' bands and words.
 TIER_STARTS = (3, 7)
@@ -678,6 +680,22 @@ LABEL_PULSE = 0.22
 PENCIL_WAIT_X = PAGE_W - 70
 #: Parked right of the theme line: a level title is wider than "How do you say?".
 LEVEL_PENCIL_PARK = (PAGE_W - 70, THEME_Y + 24)
+
+
+#: true_false_level: every row shows the SAME grey placeholder, blurred, until its answer.
+#: Blurring the real answer leaked its colour and length (the first mock): a hint.
+TF_PLACEHOLDER = "VERDADERO · FALSO"
+BLUR_MAX = 14                    # px at frame 0
+BLUR_STEP = 2                    # radius steps, so the strip cache stays small
+BLUR_PAD = 2 * BLUR_MAX          # room for the blur around a strip
+CROSS_SIZE = 28
+
+
+def tf_answer(item: Dict) -> Tuple[str, str]:
+    """(text, colour name) of a true_false_level answer line."""
+    if item["truth"]:
+        return "VERDADERO", "correct"
+    return f"FALSO · {item['correction']}", "error"
 
 
 def fit_line(text: str, size: int = LINE_FONT_MAX) -> Tuple[ImageFont.FreeTypeFont, int, int]:
@@ -793,6 +811,62 @@ def _line_image(text: str, size: int, color: Tuple[int, int, int, int]) -> Image
     return img
 
 
+@lru_cache(maxsize=64)
+def _blurred_line(text: str, size: int, color: Tuple[int, int, int, int], radius: int) -> Image.Image:
+    """A line on a padded strip, Gaussian-blurred on the strip (never the frame)."""
+    line = _line_image(text, size, color)
+    img = Image.new("RGBA", (line.size[0] + 2 * BLUR_PAD, line.size[1] + 2 * BLUR_PAD), (0, 0, 0, 0))
+    img.alpha_composite(line, (BLUR_PAD, BLUR_PAD))
+    return img.filter(ImageFilter.GaussianBlur(radius)) if radius > 0 else img
+
+
+def _faded(img: Image.Image, a: float) -> Image.Image:
+    if a >= 1.0:
+        return img
+    out = img.copy()
+    out.putalpha(img.split()[3].point(lambda v: int(v * a)))
+    return out
+
+
+def _draw_cross(layer: Image.Image, x: float, cy: int, scale: float) -> None:
+    """An ✗ drawn like _draw_tick: an ink stroke under a red one."""
+    if scale <= 0:
+        return
+    s = CROSS_SIZE * scale
+    draw = ImageDraw.Draw(layer, "RGBA")
+    x0, y0 = x + (CROSS_SIZE - s) / 2, cy - s / 2
+    for a, b in (((x0, y0), (x0 + s, y0 + s)), ((x0 + s, y0), (x0, y0 + s))):
+        draw.line([_p(*a), _p(*b)], fill=_color("ink"), width=max(1, int(13 * scale)))
+        draw.line([_p(*a), _p(*b)], fill=_color("error"), width=max(1, int(7 * scale)))
+
+
+def _draw_tf_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items: List[Dict],
+                     centres: List[int]) -> None:
+    """The placeholder cross-fades to the real answer while the blur goes BLUR_MAX -> 0."""
+    lines = [tf_answer(it) for it in items]
+    size = page_size(tuple(text for text, _c in lines) + (TF_PLACEHOLDER,))
+    grey = _color("secondary_text")
+    for i, (text, color_name) in enumerate(lines):
+        cy = centres[i] + LINE2_DY
+        f = fit_line(text, size)[0]
+        at = tuple(int(v) for v in _p(LINE_X - 2 - BLUR_PAD, _text_y(f, cy) - 2 - BLUR_PAD))
+        p = tl.reveal(i, t)
+        radius = int(round(BLUR_MAX * (1.0 - p) / BLUR_STEP)) * BLUR_STEP
+        if p < 1.0:
+            layer.alpha_composite(_faded(_blurred_line(TF_PLACEHOLDER, size, grey, radius), 1.0 - p), at)
+        th0, th1 = tl.think[i]
+        if th0 <= t < th1:
+            _draw_countdown_at(layer, LINE_X + 110, cy, (t - th0) / max(1e-6, th1 - th0))
+        if p <= 0:
+            continue
+        layer.alpha_composite(_faded(_blurred_line(text, size, _color(color_name), radius), p), at)
+        if p >= 1.0:
+            mark_t = tl.answer[i][1]
+            scale = ease_out_cubic((t - mark_t) / TICK_POP) if t >= mark_t else 0.0
+            x = LINE_X + fit_line(text, size)[2] + TICK_GAP
+            (_draw_tick if items[i]["truth"] else _draw_cross)(layer, x, cy, scale)
+
+
 def _draw_countdown_at(layer: Image.Image, x0: float, cy: float, p: float) -> None:
     """_draw_countdown's three dots, at a given x."""
     draw = ImageDraw.Draw(layer, "RGBA")
@@ -875,8 +949,8 @@ def _draw_note(layer: Image.Image, lines: List[Tuple[str, str]], scale: float) -
     layer.alpha_composite(note, tuple(int(round(v)) for v in _p(cx - note.size[0] / 2, cy - note.size[1] / 2)))
 
 
-def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer: str,
-                          centres: List[int], size: int) -> Tuple[float, float]:
+def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer: Optional[str],
+                          centres: List[int], size: int, writes: bool = True) -> Tuple[float, float]:
     """Waits at the right end of the active row's answer line, jumps to its start as the
     answer begins, follows the mask, then goes back by the title for the verdict."""
     def glide(a, b, t0):
@@ -887,10 +961,15 @@ def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer
     for i in range(tl.n):
         base = centres[i] + LINE2_DY + 26
         start = (LINE_X, base)
-        end = (LINE_X + fit_line(items[i][answer], size)[2], base)
         if t < tl.row[i]:
             return pos
         wait = (PENCIL_WAIT_X, base)
+        if not writes:                                 # true_false_level: it points, it does not write
+            if t < tl.row_end(i):
+                return glide(pos, wait, tl.row[i])
+            pos = wait
+            continue
+        end = (LINE_X + fit_line(items[i][answer], size)[2], base)
         if t < tl.answer[i][0] - PENCIL_MOVE:
             return glide(pos, wait, tl.row[i])
         if t < tl.answer[i][0]:
@@ -906,7 +985,7 @@ def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer
 
 
 def create_frame_level(t: float, data: Dict, duration: float, presentation=None) -> np.ndarray:
-    """One frame of a level_test or say_it_level video."""
+    """One frame of a level_test, say_it_level or true_false_level video."""
     mode = LEVEL_MODES[data["type"]]
     items: List[Dict] = data["items"]
     tl = data.get("_level_timeline")
@@ -952,10 +1031,12 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
         cx, cy = (LABEL_X0 + LABEL_X1) / 2, (top + bottom) / 2
         layer.alpha_composite(pill, tuple(int(round(v)) for v in _p(cx - pill.size[0] / 2, cy - pill.size[1] / 2)))
 
-    # 3. countdown dots, the answers written in, ticks
+    # 3. countdown dots, the answers written in, ticks (true_false_level: brought into focus)
+    if answer is None:
+        _draw_tf_answers(layer, t, tl, items, centres)
     answer_color = blue if answer == "english" else ink
-    size = page_size(tuple(it[answer] for it in items))
-    for i, item in enumerate(items):
+    size = page_size(tuple(it[answer] for it in items)) if answer else 0
+    for i, item in enumerate(items if answer else []):
         cy = centres[i] + LINE2_DY
         th0, th1 = tl.think[i]
         if th0 <= t < th1:
@@ -989,7 +1070,7 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
 
     # 5. the pencil
     pencil, (pcx, pcy) = pencil_image()
-    px, py = level_pencil_position(t, tl, items, answer, centres, size)
+    px, py = level_pencil_position(t, tl, items, answer, centres, size, writes=answer is not None)
     lx, ly = _p(px, py)
     layer.alpha_composite(pencil, (int(round(lx - pcx)), int(round(ly - pcy))))
 

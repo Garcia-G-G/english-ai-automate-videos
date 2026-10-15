@@ -54,6 +54,7 @@ SPOKEN_FIELDS = {
     # plus the two cached tier lines, which are spoken in every video.
     "level_test": ("intro", "verdict", "outro"),
     "say_it_level": ("intro", "verdict", "outro"),
+    "true_false_level": ("intro", "verdict", "outro"),
 }
 
 
@@ -135,12 +136,12 @@ def spoken_words(script: dict, items: int = None) -> int:
             total += _count(item.get("spanish")) + 2 * _count(item.get("english"))
         return total
 
-    if vtype in ("level_test", "say_it_level"):
-        from tts_elevenlabs import LEVEL_PLANS, LEVEL_TIER_LINES
+    if vtype in ("level_test", "say_it_level", "true_false_level"):
+        from tts_elevenlabs import LEVEL_PLANS, LEVEL_TIER_LINES, level_answer
         plan = LEVEL_PLANS[vtype]
         total += sum(_count(line) for line in LEVEL_TIER_LINES.values())
         for item in script.get("items") or []:
-            total += _count(item.get(plan["answer"][0]))
+            total += _count(level_answer(item, plan["answer"][0]))
             if plan["speak_prompt"]:
                 total += _count(item.get(plan["prompt"][0]))
         return total

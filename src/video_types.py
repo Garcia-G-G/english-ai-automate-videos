@@ -61,12 +61,22 @@ TYPES: Dict[str, dict] = {
         "text_band": (270, 1450),   # question zone top .. countdown zone
         "dashboard": "Quiz",
     },
+    # STEP 61: the third mode of the notebook, ten statements with blurred answers.
+    # Listed before true_false so its button comes first; the old single-statement
+    # type stays registered because queued scripts still name it.
+    "true_false_level": {
+        "renderer":  "video.how_do_you_say:create_frame_level",
+        "audio":     "generate_level_audio_segmented",
+        "timing":    "v3",
+        "text_band": (97, 1459),
+        "dashboard": "Verdadero o falso (cascada)",
+    },
     "true_false": {
         "renderer":  "video.true_false:create_frame_true_false",
         "audio":     "generate_true_false_audio_segmented",
         "timing":    "v3",
         "text_band": (180, 1400),   # question .. explanation
-        "dashboard": "True/False",
+        "dashboard": "Verdadero o falso (uno)",
     },
     "fill_blank": {
         "renderer":  "video.fill_blank:create_frame_fill_blank",

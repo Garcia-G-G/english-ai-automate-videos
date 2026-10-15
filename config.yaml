@@ -230,6 +230,15 @@ duration:
       reject_min_seconds: 62.2
       reject_max_seconds: 110.7
 
+    # STEP 61: ten statements, 4.0 s to read and decide each, read off the page.
+    # Estimated ~79 s with the outro before the first render; reject_max as
+    # STEP 61 sets it. Re-derive from renders once tf001 and its siblings land.
+    true_false_level:
+      min_seconds: 65.0
+      max_seconds: 88.0
+      target_seconds: 79.0
+      reject_max_seconds: 95.0
+
 
   # ── REPETITION ────────────────────────────────────────────────────
   # "Repeat after me" — the English phrase said more than once with a real
@@ -328,6 +337,10 @@ type_categories:
     - level_vocab
   say_it_level:
     - say_it
+  # STEP 61: the notebook cascade of ten statements. false_friends feeds the
+  # single-statement true_false too; both types read it.
+  true_false_level:
+    - false_friends
 
   # A general explainer handles any content. Excludes pronunciation only
   # because text karaoke cannot convey sound.
@@ -397,6 +410,7 @@ upload:
     how_do_you_say: "#InglésParaPrincipiantes #VocabularioEnInglés #AprenderInglés #InglésFácil #HowDoYouSay"
     level_test: "#NivelDeInglés #AprenderInglés #VocabularioEnInglés #TestDeInglés #InglésFácil"
     say_it_level: "#DiloEnInglés #AprenderInglés #FrasesEnInglés #InglésFácil #InglésParaViajar"
+    true_false_level: "#VerdaderoOFalso #FalsosAmigos #AprenderInglés #InglésFácil #VocabularioEnInglés"
 
 # Content Generation
 content:

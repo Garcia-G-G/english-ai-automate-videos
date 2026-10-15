@@ -179,7 +179,7 @@ def type_spec(video_type: str) -> Optional[Dict[str, float]]:
     field as six measured ones.
     """
     entry = (_config().get("types") or {}).get((video_type or "").lower())
-    if not entry:
+    if not entry or "rate" not in entry:          # unmeasured, or a band-only entry
         return None
     return {"rate": float(entry["rate"]), "silence": float(entry["silence"]),
             "n": int(entry.get("n", 0)),

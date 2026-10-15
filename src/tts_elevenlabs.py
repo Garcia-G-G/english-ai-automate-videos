@@ -1925,7 +1925,19 @@ LEVEL_PLANS = {
                      "think": 1.7, "speak_prompt": True},
     "say_it_level": {"prompt": ("spanish", "es"), "answer": ("english", "en"),
                      "think": 3.0, "speak_prompt": False},
+    # STEP 61: the statement is read off the page; the 4.0 s pause is reading plus
+    # deciding. The answer is pure Spanish («Verdadero.» / «Falso: es alfombra.»),
+    # so it carries no English onset risk.
+    "true_false_level": {"prompt": ("statement", "es"), "answer": ("answer", "es"),
+                         "think": 4.0, "speak_prompt": False},
 }
+
+
+def level_answer(item: dict, field: str) -> str:
+    """The text an answer_i says: the field itself, or true_false_level's verdict line."""
+    if field != "answer":
+        return item[field]
+    return "Verdadero." if item["truth"] else f"Falso: {item['correction']}."
 #: The tier lines, fixed by the format: recorded once per voice and model, then cached.
 LEVEL_TIER_LINES = {4: "Ahora, nivel intermedio.", 8: "Y ahora, nivel experto."}
 LEVEL_TIER_CACHE = Path(__file__).resolve().parent.parent / "output" / "cache" / "level_tiers"
@@ -1969,7 +1981,7 @@ def generate_level_audio_segmented(
     similarity_boost: float = DEFAULT_SIMILARITY,
 ) -> dict:
     """
-    Audio for level_test and say_it_level, one plan per mode (LEVEL_PLANS).
+    Audio for level_test, say_it_level and true_false_level, one plan per mode (LEVEL_PLANS).
 
     Segments, each with measured boundaries in segment_times:
         intro
@@ -2079,7 +2091,7 @@ def generate_level_audio_segmented(
                     prompt_lang, "default")
             start, end = add_silence(plan["think"])
             add_segment(f"think_{i}", "[silence]", start, end)
-            answer = item[answer_field]
+            answer = level_answer(item, answer_field)
             text = answer if answer_lang == "en" else _spoken_spanish(answer)
             say(f"answer_{i}", clean_for_tts(text if text.endswith((".", "?", "!")) else f"{text}.",
                                              keep_tags=_KEEP_TAGS),
