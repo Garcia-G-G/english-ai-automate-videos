@@ -82,7 +82,7 @@ with the same number.
 | [STEP 58](STEP_58.md) | Build the level Shorts on the notebook that already works (full list from frame 1) |
 | [STEP 59](STEP_59.md) | Cleanup after STEP 58: push, onset gate keeps the cleanest take, dead_air fix, readability numbers |
 | [STEP 60](STEP_60.md) | Owner approves the level format; fix the cut first consonants and give long sentences more thinking time |
-| [STEP 61](STEP_61.md) | «¿Verdadero o falso?» in cascade with a blurred answer; learningroutes.com in descriptions and the lesson end card |
+| [STEP 61](STEP_61.md) | One step at a time: lessons upload like the Shorts (A), true/false cascade (B), learningroutes.com in descriptions and lesson end card (C), render (D) |
 | [STEP 62](STEP_62.md) | Completa, Elige la correcta and ¿Cómo se dice? frases on the notebook; on-brand Shorts outro |
 | [STEP 63](STEP_63.md) | The long lessons on the notebook: full tables from frame 1, sticky-note captions, site badge |
-| [STEP 64](STEP_64.md) | Lessons upload to the same account the same way as the Shorts; captions scope optional (run after 59, before 60) |
+| [STEP 64](STEP_64.md) | Merged into STEP 61, Part A |

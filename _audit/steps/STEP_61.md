@@ -1,20 +1,87 @@
-# STEP 61 — «¿Verdadero o falso?» in cascade on the notebook, and learningroutes.com everywhere it should be
+# STEP 61 — One step at a time: lessons upload like the Shorts, «¿Verdadero o falso?» in cascade, learningroutes.com everywhere
+
+This step merges STEP 64 into STEP 61, at the owner's request (2026-10-15): «combínalo… simplemente que trabaje paso a paso».
+
+**Work strictly in order, one part at a time: Part A, then B, then C, then D.** Each part
+ends with its own tests passing and its own commit, pushed, before the next part starts.
+If a part fails, stop there and report; do not start the next one on top of a broken part.
+
+**When:** run right after STEP 59. STEP 60 follows this one; then STEP 62, then STEP 63.
+Do not start `pronounce_level`.
 
 The owner's decisions (2026-10-15):
 
-1. **The brand on screen is learningroutes.com.** That is his site, and the channel
-   promotes it. The Shorts already carry it: the watermark and the outro ("Aprende inglés
-   en learningroutes.com"). It is still missing from the video descriptions and from the
+1. **Long lessons upload to the same account, the same way as the Shorts.** In his
+   words: «los videos se suben a la misma cuenta de la misma manera que se suben los
+   shorts».
+2. **The brand on screen is learningroutes.com.** That is his site, and the channel
+   promotes it. The Shorts already carry it: the watermark and the outro («Aprende inglés
+   en learningroutes.com»). It is still missing from the video descriptions and from the
    long lessons.
-2. **true_false becomes a cascade.** Several statements on one page, like how_do_you_say.
-   Each answer is blurred from the first frame and comes into focus after the pause.
-   Videos get longer and more interactive.
-3. **how_do_you_say is done.** It works as it is; do not change it. Its byte-identical pin
-   stays.
+3. **true_false becomes a cascade.** Several statements on one page, like
+   how_do_you_say. Each answer is blurred from the first frame and comes into focus after
+   the pause. Videos get longer and more interactive.
+4. **how_do_you_say is done.** It works as it is; do not change it. Its byte-identical
+   pin stays.
 
-Run after STEP 60. Do not start `pronounce_level`.
+## Part A — Lessons upload like the Shorts (first: the owner is about to upload make-vs-do)
 
-## 1. New type `true_false_level`: a third mode of the notebook
+Today the owner's next upload, a Short or a lesson, would open a Google consent screen.
+Part A removes that.
+
+### A.1 What is already the same
+
+`manim_studio.upload_to_youtube` uses:
+- the same `UploadManager` and the same `.tokens/youtube_token.json`, so the same channel;
+- the same `upload_guard.decide`, so no second publication;
+- the same `publication_log` ledger;
+- the same default visibility, `resolve_privacy("youtube")` = public.
+
+Keep all of that.
+
+### A.2 What is not, and must change
+
+1. **The captions scope made every upload ask Google again.** STEP 56 appended
+   `youtube.force-ssl` to `YOUTUBE_SCOPES`, and `authenticate()` treats every entry as
+   required. The stored token was granted without it (I read its scope list: upload,
+   readonly, yt-analytics.readonly). So `_missing_scopes()` is non-empty and the next
+   upload of *anything*, Shorts included, forces a full re-consent. The owner did not ask
+   for that, and the Shorts never needed it.
+   - Split the list: `YOUTUBE_REQUIRED_SCOPES` (upload, readonly, yt-analytics.readonly)
+     decides `authenticate()`. `YOUTUBE_OPTIONAL_SCOPES` (force-ssl) only enables
+     captions.
+   - `upload_captions` keeps its current behaviour when force-ssl is missing: skip with a
+     note, never fail the upload.
+   - A fresh consent (no token, or a revoked one) still asks for required **and**
+     optional scopes in one screen, so a future re-auth picks up captions for free.
+   - Test: a token with only the three old scopes authenticates **without** opening the
+     browser, uploads, and skips captions with the note. A token with no scopes at all
+     still forces consent.
+2. **The lesson panel must behave like the Shorts upload.**
+   - `youtube_consent_note` warns only when there is **no usable token at all**.
+   - A missing captions scope shows a small grey line: «Los subtítulos en español no se
+     subirán: la cuenta no dio ese permiso. YouTube genera los suyos automáticamente.» It
+     is not a yellow warning, and the button text does not change.
+   - The button says «Subir a YouTube», as the Shorts page does.
+3. **One place to upload.** On the «Subir» page, add a «Lecciones» tab next to the Shorts
+   list. It shows the lesson renders that are ready, with the same row layout, the same
+   «Subido · fecha · enlace» state from the ledger, and the same button. It calls the
+   same `upload_to_youtube`. The Lecciones page keeps its own button too, so both doors
+   lead to one function. If STEP 57 already started the «Subir» tab, extend it and do not
+   duplicate it.
+
+### Part A — done when
+
+- The tests below pass, plus the proof with the real token, read only:
+  - `_missing_scopes()` over the required set is empty;
+  - over the optional set it returns force-ssl;
+  - `authenticate()` returns True without opening the browser.
+- Do not upload anything; the owner uploads.
+- Snapshot `.tokens` first (`cp -r .tokens .tokens.bak-YYYYMMDD`). Never print a token or
+  a client secret.
+- Commit, push, then go on to Part B.
+
+## Part B — New type `true_false_level`: a third mode of the notebook
 
 A mock of the four key frames is at `_audit/stills/A_verdadero_falso.jpg` (frame 0 at
 full size: `A_verdadero_falso_frame0.png`). I rendered it with the real
@@ -77,7 +144,12 @@ The old single-statement `true_false` type stays registered (do not delete it, o
 items still reference it), but its dashboard button moves under the new one, labelled
 «Verdadero o falso (uno)».
 
-## 2. learningroutes.com in the descriptions and the long lessons
+### Part B — done when
+
+The schema, the renderer mode, the audio plan and the doors are in, with their tests and
+how_do_you_say's pin passing. Commit, push, then go on to Part C.
+
+## Part C — learningroutes.com in the descriptions and the long lessons
 
 - **Shorts descriptions** (`metadata_generator`): add the line
   `Más lecciones en https://learningroutes.com` after the body and before the hashtags,
@@ -91,7 +163,12 @@ items still reference it), but its dashboard button moves under the new one, lab
 - English Unlimited stays as the channel's name and logo; the site is where viewers go.
   These are not two competing brands.
 
-## 3. Render and stop
+### Part C — done when
+
+The description line is in for Shorts and lessons, and the end card is drawn, with tests.
+Commit, push, then go on to Part D.
+
+## Part D — Render and stop
 
 - One render of tf001: final QA, duration, characters, cost. Stills in `_audit/stills/`:
   frame 0, row 4 half in focus, row 10 revealed, the verdict note.
@@ -102,14 +179,24 @@ items still reference it), but its dashboard button moves under the new one, lab
 ## Constraints
 
 Only OpenAI and ElevenLabs are paid. Everything else is local and free. No MoviePy.
-The ceiling is $0.30 per Short. No keys, `.env`, voice IDs or home paths in commits.
-Commit messages carry no attribution lines. Do not commit the other session's
-uncommitted files. how_do_you_say must render byte-identically.
+The ceiling is $0.30 per Short. Part A adds no paid calls.
+No keys, `.env`, voice IDs or home paths in commits. Commit messages carry no attribution
+lines. Do not commit the other session's uncommitted files. how_do_you_say must render
+byte-identically.
 
-## Report back
+## Report back (one report at the end, with one section per part)
 
-- Commit hashes, pushed.
-- The tf001 numbers and stills.
-- The new description texts: one Short and the make-vs-do lesson.
-- The end-card still.
-- Test counts: pass / fail, naming any failure that is not yours.
+- **A:**
+  - the commit, pushed;
+  - the new tests;
+  - the read-only token proof;
+  - a screenshot of «Subir → Lecciones» with make-vs-do ready.
+- **B:** the commit, pushed, and its tests.
+- **C:**
+  - the commit, pushed;
+  - the new description texts: one Short and the make-vs-do lesson;
+  - the end-card still.
+- **D:**
+  - tf001's final QA, duration, characters and cost;
+  - its four stills.
+- Test counts for the whole suite: pass / fail, naming any failure that is not yours.
