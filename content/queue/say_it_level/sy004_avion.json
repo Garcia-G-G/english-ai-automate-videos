@@ -4,7 +4,7 @@
   "video_description": "Mantas, asientos y mareos: diez frases para tu próximo vuelo, de fácil a experto. 💺",
   "title": "Dilo en inglés",
   "theme": "en el avión",
-  "intro": "[calm] Abróchate el cinturón. Te digo la frase en español y tú la dices en inglés.",
+  "intro": "[calm] Abróchate el cinturón. Lee cada frase y dila en inglés antes que yo.",
   "items": [
     {
       "spanish": "¿Este es mi asiento?",
@@ -103,5 +103,5 @@
     "Excuse me, can I squeeze by?",
     "I get sick on planes."
   ],
-  "full_script": "[calm] Abróchate el cinturón. Te digo la frase en español y tú la dices en inglés. Is this my seat? Can I have a blanket? Can I change seats? Ahora, nivel intermedio. Do you mind if I recline my seat? Excuse me, can I get past? We landed early. Please fasten your seatbelts. Y ahora, nivel experto. I'm cold. I get airsick. I can't wait to get there. Con tres eres básico, con siete intermedio y con diez, experto. ¿En qué fila te quedaste? [warm] ¿Cuál te costó más? Escríbelo abajo con tu número."
+  "full_script": "[calm] Abróchate el cinturón. Lee cada frase y dila en inglés antes que yo. Is this my seat? Can I have a blanket? Can I change seats? Ahora, nivel intermedio. Do you mind if I recline my seat? Excuse me, can I get past? We landed early. Please fasten your seatbelts. Y ahora, nivel experto. I'm cold. I get airsick. I can't wait to get there. Con tres eres básico, con siete intermedio y con diez, experto. ¿En qué fila te quedaste? [warm] ¿Cuál te costó más? Escríbelo abajo con tu número."
 }

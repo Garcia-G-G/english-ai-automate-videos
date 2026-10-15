@@ -4,7 +4,7 @@
   "video_description": "Ruidos raros, ruedas pinchadas y presupuestos: diez frases para el taller del coche en inglés. 🔧",
   "title": "Dilo en inglés",
   "theme": "en el taller del coche",
-  "intro": "[serious] Tu coche hace un ruido raro. Te digo la frase en español y tú se la explicas al mecánico.",
+  "intro": "[serious] Tu coche hace un ruido raro. Lee la frase y explícaselo al mecánico en inglés.",
   "items": [
     {
       "spanish": "¿Cuánto va a costar?",
@@ -105,5 +105,5 @@
     "I've got a flat tire.",
     "Could I get a quote?"
   ],
-  "full_script": "[serious] Tu coche hace un ruido raro. Te digo la frase en español y tú se la explicas al mecánico. How much will it cost? When will it be ready? My car is making a weird noise. Ahora, nivel intermedio. I need an oil change. A red light came on. The brakes are squeaking. Is it covered by the warranty? Y ahora, nivel experto. My car won't start. I have a flat tire. Can you give me an estimate? Hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez, experto con las manos en el motor. [curious] ¿Hasta qué número arrancó tu inglés? Escríbelo abajo."
+  "full_script": "[serious] Tu coche hace un ruido raro. Lee la frase y explícaselo al mecánico en inglés. How much will it cost? When will it be ready? My car is making a weird noise. Ahora, nivel intermedio. I need an oil change. A red light came on. The brakes are squeaking. Is it covered by the warranty? Y ahora, nivel experto. My car won't start. I have a flat tire. Can you give me an estimate? Hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez, experto con las manos en el motor. [curious] ¿Hasta qué número arrancó tu inglés? Escríbelo abajo."
 }

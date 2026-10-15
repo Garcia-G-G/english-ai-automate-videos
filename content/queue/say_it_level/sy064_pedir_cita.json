@@ -4,7 +4,7 @@
   "video_description": "Médico, peluquería o dentista: diez frases para pedir y cambiar una cita en inglés. 📅",
   "title": "Dilo en inglés",
   "theme": "pedir cita",
-  "intro": "[calm] Llamas para pedir cita. Escucha la frase en español y dila tú en inglés.",
+  "intro": "[calm] Llamas para pedir cita. Lee la frase y dila tú en inglés antes que yo.",
   "items": [
     {
       "spanish": "Quiero pedir una cita.",
@@ -107,5 +107,5 @@
     "Tuesday isn't good for me.",
     "When's your next available slot?"
   ],
-  "full_script": "[calm] Llamas para pedir cita. Escucha la frase en español y dila tú en inglés. I'd like to make an appointment. Do you have anything on Monday? Ten is fine for me. Ahora, nivel intermedio. Is there anything earlier? I need to reschedule my appointment. Can you call me if someone cancels? Can you put me down for Friday? Y ahora, nivel experto. Tuesday doesn't work for me. The appointment is in two weeks. When's your next opening? Si llegaste a la tres, nivel básico; a la siete, intermedio; y si clavaste las diez, experto con cita fija. [cheerful] ¿Cuántas te salieron? Apúntalo en los comentarios."
+  "full_script": "[calm] Llamas para pedir cita. Lee la frase y dila tú en inglés antes que yo. I'd like to make an appointment. Do you have anything on Monday? Ten is fine for me. Ahora, nivel intermedio. Is there anything earlier? I need to reschedule my appointment. Can you call me if someone cancels? Can you put me down for Friday? Y ahora, nivel experto. Tuesday doesn't work for me. The appointment is in two weeks. When's your next opening? Si llegaste a la tres, nivel básico; a la siete, intermedio; y si clavaste las diez, experto con cita fija. [cheerful] ¿Cuántas te salieron? Apúntalo en los comentarios."
 }

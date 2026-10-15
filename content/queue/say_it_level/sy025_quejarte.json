@@ -39,7 +39,7 @@
     },
     {
       "spanish": "Me dijeron que llegaría ayer.",
-      "english": "They told me it would arrive yesterday.",
+      "english": "They said it'd arrive yesterday.",
       "cefr": "B1"
     },
     {
@@ -85,7 +85,7 @@
     "I'd like to speak to the manager.": "Quiero hablar con el encargado.",
     "This isn't what I ordered.": "No es lo que pedí.",
     "This isn't acceptable.": "Esto no es aceptable.",
-    "They told me it would arrive yesterday.": "Me dijeron que llegaría ayer.",
+    "They said it'd arrive yesterday.": "Me dijeron que llegaría ayer.",
     "I've been waiting for an hour.": "Llevo una hora esperando.",
     "I'm sick of calling.": "Estoy harto de llamar.",
     "This is a joke.": "Esto es una tomadura de pelo."
@@ -97,7 +97,7 @@
     "I'd like to speak to the manager.",
     "This isn't what I ordered.",
     "This isn't acceptable.",
-    "They told me it would arrive yesterday.",
+    "They said it'd arrive yesterday.",
     "I've been waiting for an hour.",
     "I'm sick of calling.",
     "This is a joke.",
@@ -105,5 +105,5 @@
     "I'm tired of calling.",
     "This is ridiculous."
   ],
-  "full_script": "[serious] Algo ha salido mal y te toca quejarte. Di cada frase en inglés antes de que la diga yo. This is cold. This doesn't work. There's a mistake on the bill. Ahora, nivel intermedio. I'd like to speak to the manager. This isn't what I ordered. This isn't acceptable. They told me it would arrive yesterday. Y ahora, nivel experto. I've been waiting for an hour. I'm sick of calling. This is a joke. Con tres eres básico. Con siete, intermedio. Y si llegaste a la diez, eres experto en reclamaciones. [excited] ¿De qué te quejarías tú? Dímelo en los comentarios con tu número."
+  "full_script": "[serious] Algo ha salido mal y te toca quejarte. Di cada frase en inglés antes de que la diga yo. This is cold. This doesn't work. There's a mistake on the bill. Ahora, nivel intermedio. I'd like to speak to the manager. This isn't what I ordered. This isn't acceptable. They said it'd arrive yesterday. Y ahora, nivel experto. I've been waiting for an hour. I'm sick of calling. This is a joke. Con tres eres básico. Con siete, intermedio. Y si llegaste a la diez, eres experto en reclamaciones. [excited] ¿De qué te quejarías tú? Dímelo en los comentarios con tu número."
 }

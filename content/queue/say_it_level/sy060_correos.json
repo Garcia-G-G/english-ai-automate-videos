@@ -33,7 +33,7 @@
       "cefr": "B1"
     },
     {
-      "spanish": "¿Puedo hacer el seguimiento del paquete?",
+      "spanish": "¿Puedo rastrear el paquete?",
       "english": "Can I track the package?",
       "cefr": "B1",
       "alt": "Can I track the parcel?"
@@ -85,7 +85,7 @@
     "How much is it to send it to Mexico?": "¿Cuánto cuesta enviarlo a México?",
     "When will it arrive?": "¿Cuándo llegará?",
     "It's fragile, please be careful.": "Es frágil, tenga cuidado.",
-    "Can I track the package?": "¿Puedo hacer el seguimiento del paquete?",
+    "Can I track the package?": "¿Puedo rastrear el paquete?",
     "I'd like to send it express.": "Quiero mandarlo urgente.",
     "I'm here to pick up a package.": "Vengo a recoger un paquete.",
     "Do I need to fill out a form?": "¿Hay que rellenar algún formulario?",

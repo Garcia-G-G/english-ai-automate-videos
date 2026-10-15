@@ -4,7 +4,7 @@
   "video_description": "Agotado, quemado o sin poder más: diez frases para decir en inglés cómo estás de verdad. 😩",
   "title": "Dilo en inglés",
   "theme": "cuando estás cansado o estresado",
-  "intro": "[calm] ¿Semana dura? Te digo cómo te sientes en español y tú lo dices en inglés.",
+  "intro": "[calm] ¿Semana dura? Lee cómo te sientes y dilo en inglés antes que yo.",
   "items": [
     {
       "spanish": "Estoy cansado.",
@@ -109,5 +109,5 @@
     "I can't do this anymore.",
     "I'm burnt out at work."
   ],
-  "full_script": "[calm] ¿Semana dura? Te digo cómo te sientes en español y tú lo dices en inglés. I'm tired. I need some sleep. I have a lot of work. Ahora, nivel intermedio. I didn't sleep well. I need a vacation. I've been really stressed lately. I need to take a break. Y ahora, nivel experto. I'm exhausted. I can't take it anymore. I'm burned out at work. Tres frases: básico. Siete: intermedio. Diez: experto... y ahora sí, a descansar. [warm] ¿Cómo llevas la semana? Cuéntamelo con tu número en los comentarios."
+  "full_script": "[calm] ¿Semana dura? Lee cómo te sientes y dilo en inglés antes que yo. I'm tired. I need some sleep. I have a lot of work. Ahora, nivel intermedio. I didn't sleep well. I need a vacation. I've been really stressed lately. I need to take a break. Y ahora, nivel experto. I'm exhausted. I can't take it anymore. I'm burned out at work. Tres frases: básico. Siete: intermedio. Diez: experto... y ahora sí, a descansar. [warm] ¿Cómo llevas la semana? Cuéntamelo con tu número en los comentarios."
 }

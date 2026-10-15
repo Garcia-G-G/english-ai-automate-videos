@@ -4,7 +4,7 @@
   "video_description": "¿Sabrías contar tus planes del fin de semana en inglés? Diez frases de fácil a experto. 🎉",
   "title": "Dilo en inglés",
   "theme": "planes para el fin de semana",
-  "intro": "[happy] Llega el fin de semana. Escucha la frase en español y dila en inglés.",
+  "intro": "[happy] Llega el fin de semana. Lee la frase y dila en inglés antes que yo.",
   "items": [
     {
       "spanish": "El sábado no trabajo.",
@@ -105,5 +105,5 @@
     "Do you want to come?",
     "I'm having a lazy weekend."
   ],
-  "full_script": "[happy] Llega el fin de semana. Escucha la frase en español y dila en inglés. I don't work on Saturday. I want to relax. What are you doing this weekend? Ahora, nivel intermedio. We're going hiking in the mountains. We might go out for dinner. Do you feel like coming? I don't have anything planned yet. Y ahora, nivel experto. I'm meeting up with some friends. I'm having a barbecue. I'm just staying in and chilling. Tres frases y eres básico. Siete y eres intermedio. Las diez y tu fin de semana es de experto. [excited] ¿Qué planes tienes tú? Cuéntamelo y dime hasta qué número llegaste."
+  "full_script": "[happy] Llega el fin de semana. Lee la frase y dila en inglés antes que yo. I don't work on Saturday. I want to relax. What are you doing this weekend? Ahora, nivel intermedio. We're going hiking in the mountains. We might go out for dinner. Do you feel like coming? I don't have anything planned yet. Y ahora, nivel experto. I'm meeting up with some friends. I'm having a barbecue. I'm just staying in and chilling. Tres frases y eres básico. Siete y eres intermedio. Las diez y tu fin de semana es de experto. [excited] ¿Qué planes tienes tú? Cuéntamelo y dime hasta qué número llegaste."
 }

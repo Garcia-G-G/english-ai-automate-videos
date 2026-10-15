@@ -4,7 +4,7 @@
   "video_description": "Recetas, dolores y falsos amigos: diez frases de farmacia en inglés, de fácil a experto. 💊",
   "title": "Dilo en inglés",
   "theme": "en la farmacia",
-  "intro": "[warm] Hoy vamos a la farmacia. Escucha la frase en español y dila en inglés antes que yo.",
+  "intro": "[warm] Hoy vamos a la farmacia. Lee cada frase y dila en inglés antes que yo.",
   "items": [
     {
       "spanish": "¿Tienen crema solar?",
@@ -103,5 +103,5 @@
     "My head hurts.",
     "I got bitten by something."
   ],
-  "full_script": "[warm] Hoy vamos a la farmacia. Escucha la frase en español y dila en inglés antes que yo. Do you have sunscreen? I have a headache. I need something for a cough. Ahora, nivel intermedio. Do I need a prescription? How often should I take it? Do you have something non-drowsy? Can I take it on an empty stomach? Y ahora, nivel experto. I have a cold. I'm pregnant. Something bit me. Hasta la tres eres básico; hasta la siete, intermedio; y con las diez, eres experto. ¿Qué tal te fue? [warm] ¿Hasta qué número llegaste? Te leo en los comentarios."
+  "full_script": "[warm] Hoy vamos a la farmacia. Lee cada frase y dila en inglés antes que yo. Do you have sunscreen? I have a headache. I need something for a cough. Ahora, nivel intermedio. Do I need a prescription? How often should I take it? Do you have something non-drowsy? Can I take it on an empty stomach? Y ahora, nivel experto. I have a cold. I'm pregnant. Something bit me. Hasta la tres eres básico; hasta la siete, intermedio; y con las diez, eres experto. ¿Qué tal te fue? [warm] ¿Hasta qué número llegaste? Te leo en los comentarios."
 }

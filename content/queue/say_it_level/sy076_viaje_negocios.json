@@ -32,8 +32,8 @@
       "cefr": "B1"
     },
     {
-      "spanish": "Me han mandado a la oficina de Chicago.",
-      "english": "They've sent me to the Chicago office.",
+      "spanish": "Me mandan a la oficina de Chicago.",
+      "english": "They're sending me to Chicago.",
       "cefr": "B1"
     },
     {
@@ -83,7 +83,7 @@
     "I'm going on a business trip.": "Me voy de viaje de negocios.",
     "I have meetings all week.": "Tengo reuniones toda la semana.",
     "Could I get an invoice, please?": "¿Me puede dar una factura?",
-    "They've sent me to the Chicago office.": "Me han mandado a la oficina de Chicago.",
+    "They're sending me to Chicago.": "Me mandan a la oficina de Chicago.",
     "I'm flying back on Thursday night.": "Vuelvo el jueves por la noche.",
     "I'm really jet-lagged.": "Tengo un jet lag horrible.",
     "I'm here on behalf of my company.": "Vengo de parte de mi empresa.",
@@ -95,7 +95,7 @@
     "I'm going on a business trip.",
     "I have meetings all week.",
     "Could I get an invoice, please?",
-    "They've sent me to the Chicago office.",
+    "They're sending me to Chicago.",
     "I'm flying back on Thursday night.",
     "I'm really jet-lagged.",
     "I'm here on behalf of my company.",
@@ -103,5 +103,5 @@
     "I have terrible jet lag.",
     "I'll charge it to the company."
   ],
-  "full_script": "[serious] Te vas de viaje de negocios. Lee la frase en español y dila en inglés. My flight is on Monday. I need a taxi to the hotel. I'm going on a business trip. Ahora, nivel intermedio. I have meetings all week. Could I get an invoice, please? They've sent me to the Chicago office. I'm flying back on Thursday night. Y ahora, nivel experto. I'm really jet-lagged. I'm here on behalf of my company. I'll expense it. Si llegaste a la tres, eres básico; a la siete, intermedio; y con las diez, viajas en business: experto. [curious] ¿Hasta qué número llegaste? ¿Viajas por trabajo? Cuéntamelo."
+  "full_script": "[serious] Te vas de viaje de negocios. Lee la frase en español y dila en inglés. My flight is on Monday. I need a taxi to the hotel. I'm going on a business trip. Ahora, nivel intermedio. I have meetings all week. Could I get an invoice, please? They're sending me to Chicago. I'm flying back on Thursday night. Y ahora, nivel experto. I'm really jet-lagged. I'm here on behalf of my company. I'll expense it. Si llegaste a la tres, eres básico; a la siete, intermedio; y con las diez, viajas en business: experto. [curious] ¿Hasta qué número llegaste? ¿Viajas por trabajo? Cuéntamelo."
 }

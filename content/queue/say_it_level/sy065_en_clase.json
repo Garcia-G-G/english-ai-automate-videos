@@ -4,7 +4,7 @@
   "video_description": "Deberes, exámenes y notas: diez frases que se dicen en clase, en inglés. 🎒",
   "title": "Dilo en inglés",
   "theme": "en clase",
-  "intro": "[happy] Volvemos a clase. Yo digo la frase en español y tú la dices en inglés.",
+  "intro": "[happy] Volvemos a clase. Lee cada frase y dila en inglés antes que yo.",
   "items": [
     {
       "spanish": "¿Puedo ir al baño?",
@@ -109,5 +109,5 @@
     "I got a good mark.",
     "I'm sitting the exam on Monday."
   ],
-  "full_script": "[happy] Volvemos a clase. Yo digo la frase en español y tú la dices en inglés. Can I go to the bathroom? I didn't do my homework. Can you write it on the board? Ahora, nivel intermedio. Can we work in pairs? When is the assignment due? Is this going to be on the test? Can I hand it in tomorrow? Y ahora, nivel experto. I got a good grade. I have to attend every class. I'm taking the exam on Monday. Tres de diez: básico. Siete de diez: intermedio. Diez de diez: matrícula de honor, nivel experto. [excited] ¿Qué nota te pones? Escribe hasta qué frase llegaste."
+  "full_script": "[happy] Volvemos a clase. Lee cada frase y dila en inglés antes que yo. Can I go to the bathroom? I didn't do my homework. Can you write it on the board? Ahora, nivel intermedio. Can we work in pairs? When is the assignment due? Is this going to be on the test? Can I hand it in tomorrow? Y ahora, nivel experto. I got a good grade. I have to attend every class. I'm taking the exam on Monday. Tres de diez: básico. Siete de diez: intermedio. Diez de diez: matrícula de honor, nivel experto. [excited] ¿Qué nota te pones? Escribe hasta qué frase llegaste."
 }

@@ -33,12 +33,12 @@
       "alt": "Do you use two-step verification?"
     },
     {
-      "spanish": "No compartas tus contraseñas con nadie.",
-      "english": "Don't share your passwords with anyone.",
+      "spanish": "No le des tu contraseña a nadie.",
+      "english": "Never share your password.",
       "cefr": "B1"
     },
     {
-      "spanish": "Deberías usar una contraseña más segura.",
+      "spanish": "Usa una contraseña más segura.",
       "english": "You should use a stronger password.",
       "cefr": "B1"
     },
@@ -84,8 +84,8 @@
     "The connection is really slow.": "La conexión va muy lenta.",
     "You need to change your password.": "Tienes que cambiar tu contraseña.",
     "Do you use two-factor authentication?": "¿Usas la verificación en dos pasos?",
-    "Don't share your passwords with anyone.": "No compartas tus contraseñas con nadie.",
-    "You should use a stronger password.": "Deberías usar una contraseña más segura.",
+    "Never share your password.": "No le des tu contraseña a nadie.",
+    "You should use a stronger password.": "Usa una contraseña más segura.",
     "My account got hacked.": "Me han hackeado la cuenta.",
     "Enter your email and hit send.": "Pon tu correo y dale a enviar.",
     "I'm not getting the confirmation email.": "No me llega el correo de confirmación."
@@ -96,7 +96,7 @@
     "The connection is really slow.",
     "You need to change your password.",
     "Do you use two-factor authentication?",
-    "Don't share your passwords with anyone.",
+    "Never share your password.",
     "You should use a stronger password.",
     "My account got hacked.",
     "Enter your email and hit send.",
@@ -105,5 +105,5 @@
     "My account has been hacked.",
     "Type in your email and click send."
   ],
-  "full_script": "[curious] Hoy hablamos de internet y contraseñas. Di cada frase en inglés antes de que aparezca. What's the Wi-Fi password? I forgot my password. The connection is really slow. Ahora, nivel intermedio. You need to change your password. Do you use two-factor authentication? Don't share your passwords with anyone. You should use a stronger password. Y ahora, nivel experto. My account got hacked. Enter your email and hit send. I'm not getting the confirmation email. Tres frases: nivel básico. Siete: intermedio. Las diez: tu inglés tiene contraseña de experto. [excited] ¿Cuál es tu número? Déjalo en los comentarios y comparte el vídeo."
+  "full_script": "[curious] Hoy hablamos de internet y contraseñas. Di cada frase en inglés antes de que aparezca. What's the Wi-Fi password? I forgot my password. The connection is really slow. Ahora, nivel intermedio. You need to change your password. Do you use two-factor authentication? Never share your password. You should use a stronger password. Y ahora, nivel experto. My account got hacked. Enter your email and hit send. I'm not getting the confirmation email. Tres frases: nivel básico. Siete: intermedio. Las diez: tu inglés tiene contraseña de experto. [excited] ¿Cuál es tu número? Déjalo en los comentarios y comparte el vídeo."
 }

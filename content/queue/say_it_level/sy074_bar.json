@@ -4,7 +4,7 @@
   "video_description": "Pedir, invitar y pagar a medias: diez frases para salir de bares en inglés. 🍻",
   "title": "Dilo en inglés",
   "theme": "en un bar",
-  "intro": "[cheerful] Estamos en un bar. Te digo la frase en español y tú la dices en inglés.",
+  "intro": "[cheerful] Estamos en un bar. Lee cada frase y dila en inglés antes que yo.",
   "items": [
     {
       "spanish": "Una cerveza, por favor.",
@@ -107,5 +107,5 @@
     "This one's on me.",
     "Should we split the check?"
   ],
-  "full_script": "[cheerful] Estamos en un bar. Te digo la frase en español y tú la dices en inglés. A beer, please. Two more, please. Do you have anything non-alcoholic? Ahora, nivel intermedio. What time do you close? Shall we sit outside? It's really loud in here. Another one of these, please. Y ahora, nivel experto. This round's on me. Shall we split it? I'm already a bit tipsy. Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Diez de diez: esta ronda la pagas tú, experto. [happy] ¿Hasta qué frase llegaste? ¡Salud y cuéntamelo abajo!"
+  "full_script": "[cheerful] Estamos en un bar. Lee cada frase y dila en inglés antes que yo. A beer, please. Two more, please. Do you have anything non-alcoholic? Ahora, nivel intermedio. What time do you close? Shall we sit outside? It's really loud in here. Another one of these, please. Y ahora, nivel experto. This round's on me. Shall we split it? I'm already a bit tipsy. Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Diez de diez: esta ronda la pagas tú, experto. [happy] ¿Hasta qué frase llegaste? ¡Salud y cuéntamelo abajo!"
 }

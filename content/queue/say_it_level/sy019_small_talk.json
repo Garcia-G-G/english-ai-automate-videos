@@ -41,7 +41,7 @@
     },
     {
       "spanish": "¿Tienes planes para el fin de semana?",
-      "english": "Do you have any plans for the weekend?",
+      "english": "Got any plans for the weekend?",
       "cefr": "B1",
       "alt": "Any plans for the weekend?"
     },
@@ -53,7 +53,7 @@
       "tip": "«Que tengas...» se dice directamente Have a...!"
     },
     {
-      "spanish": "¿Llevas mucho tiempo trabajando aquí?",
+      "spanish": "¿Llevas mucho trabajando aquí?",
       "english": "Have you been working here long?",
       "cefr": "B2",
       "alt": "Have you worked here long?",
@@ -89,9 +89,9 @@
     "How was your weekend?": "¿Qué tal el fin de semana?",
     "I've seen you at the gym.": "Te he visto en el gimnasio.",
     "It's finally Friday!": "¡Por fin es viernes!",
-    "Do you have any plans for the weekend?": "¿Tienes planes para el fin de semana?",
+    "Got any plans for the weekend?": "¿Tienes planes para el fin de semana?",
     "Have a good day!": "¡Que tengas un buen día!",
-    "Have you been working here long?": "¿Llevas mucho tiempo trabajando aquí?",
+    "Have you been working here long?": "¿Llevas mucho trabajando aquí?",
     "I'll see you around.": "Ya nos veremos por aquí."
   },
   "english_phrases": [
@@ -101,7 +101,7 @@
     "How was your weekend?",
     "I've seen you at the gym.",
     "It's finally Friday!",
-    "Do you have any plans for the weekend?",
+    "Got any plans for the weekend?",
     "Have a good day!",
     "Have you been working here long?",
     "I'll see you around.",
@@ -113,5 +113,5 @@
     "Have you worked here long?",
     "See you around."
   ],
-  "full_script": "[cheerful] Entras en el ascensor y hay alguien. Rompe el hielo: di cada frase en inglés. How's it going? Which floor? This elevator is so slow! Ahora, nivel intermedio. How was your weekend? I've seen you at the gym. It's finally Friday! Do you have any plans for the weekend? Y ahora, nivel experto. Have a good day! Have you been working here long? I'll see you around. Tres frases y eres básico. Siete y eres intermedio. Si llegaste a la diez, eres experto en small talk. [excited] ¿En qué piso te bajaste? Cuéntame tu número en los comentarios."
+  "full_script": "[cheerful] Entras en el ascensor y hay alguien. Rompe el hielo: di cada frase en inglés. How's it going? Which floor? This elevator is so slow! Ahora, nivel intermedio. How was your weekend? I've seen you at the gym. It's finally Friday! Got any plans for the weekend? Y ahora, nivel experto. Have a good day! Have you been working here long? I'll see you around. Tres frases y eres básico. Siete y eres intermedio. Si llegaste a la diez, eres experto en small talk. [excited] ¿En qué piso te bajaste? Cuéntame tu número en los comentarios."
 }

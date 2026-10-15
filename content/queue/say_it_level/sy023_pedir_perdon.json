@@ -4,7 +4,7 @@
   "video_description": "No todo es «sorry»: diez frases para pedir perdón en inglés de verdad, con trampas al final. 🙏",
   "title": "Dilo en inglés",
   "theme": "pedir perdón",
-  "intro": "[warm] Hoy toca pedir perdón en inglés. Escucha la frase en español y dila antes que yo.",
+  "intro": "[warm] Hoy toca pedir perdón en inglés. Lee la frase y dila antes que yo.",
   "items": [
     {
       "spanish": "Lo siento mucho.",
@@ -103,5 +103,5 @@
     "I'm sorry for yelling at you.",
     "I blew it."
   ],
-  "full_script": "[warm] Hoy toca pedir perdón en inglés. Escucha la frase en español y dila antes que yo. I'm really sorry. Sorry I'm late. It was my fault. Ahora, nivel intermedio. It won't happen again. Sorry, I stepped on your foot. I'm sorry I yelled at you. I should have called you. Y ahora, nivel experto. I apologize. I messed up. I didn't mean it. Si llegaste a la tres, nivel básico; a la siete, intermedio. ¿Y las diez? Experto, y perdonado. [happy] ¿Cuántas acertaste? No pasa nada si fallaste alguna: cuéntamelo abajo."
+  "full_script": "[warm] Hoy toca pedir perdón en inglés. Lee la frase y dila antes que yo. I'm really sorry. Sorry I'm late. It was my fault. Ahora, nivel intermedio. It won't happen again. Sorry, I stepped on your foot. I'm sorry I yelled at you. I should have called you. Y ahora, nivel experto. I apologize. I messed up. I didn't mean it. Si llegaste a la tres, nivel básico; a la siete, intermedio. ¿Y las diez? Experto, y perdonado. [happy] ¿Cuántas acertaste? No pasa nada si fallaste alguna: cuéntamelo abajo."
 }

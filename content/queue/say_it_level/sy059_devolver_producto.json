@@ -58,10 +58,10 @@
       "tip": "«Cobrar de más» es un solo verbo: overcharge"
     },
     {
-      "spanish": "Me dijeron que no aceptan devoluciones.",
+      "spanish": "Me dijeron que no hay devoluciones.",
       "english": "I was told you don't accept returns.",
       "cefr": "C1",
-      "alt": "They told me you don't accept returns.",
+      "alt": "They told me no returns.",
       "tip": "«Me dijeron» suele ser pasiva en inglés: I was told"
     }
   ],
@@ -90,7 +90,7 @@
     "I've never used it.": "No lo he usado nunca.",
     "It's too big on me.": "Me queda grande.",
     "I was overcharged.": "Me cobraron de más.",
-    "I was told you don't accept returns.": "Me dijeron que no aceptan devoluciones."
+    "I was told you don't accept returns.": "Me dijeron que no hay devoluciones."
   },
   "english_phrases": [
     "Here's the receipt.",
@@ -107,7 +107,7 @@
     "Could I get my money back?",
     "It doesn't fit me.",
     "They charged me too much.",
-    "They told me you don't accept returns."
+    "They told me no returns."
   ],
   "full_script": "[calm] Quieres devolver algo en una tienda. Te digo la frase y tú la dices en inglés. Here's the receipt. I'd like to return this. It doesn't work properly. Ahora, nivel intermedio. I bought it last week. Can I get a refund? Can I exchange it for another size? I've never used it. Y ahora, nivel experto. It's too big on me. I was overcharged. I was told you don't accept returns. Hasta la tres eres básico, hasta la siete intermedio, y con las diez te devuelven hasta la sonrisa. [warm] ¿Cuántas frases dijiste bien? Escribe tu número en los comentarios."
 }

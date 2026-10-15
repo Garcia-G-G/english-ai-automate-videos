@@ -39,7 +39,7 @@
     },
     {
       "emoji": "🧴",
-      "spanish": "Protector solar",
+      "spanish": "Bloqueador",
       "english": "sunscreen"
     },
     {
@@ -67,7 +67,7 @@
     "shell": "Concha",
     "sunglasses": "Gafas de sol",
     "swimsuit": "Traje de baño",
-    "sunscreen": "Protector solar",
+    "sunscreen": "Bloqueador",
     "crab": "Cangrejo",
     "island": "Isla",
     "ball": "Pelota"
@@ -97,5 +97,5 @@
     "video_type": "how_do_you_say",
     "model": "manual"
   },
-  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Arena... sand. sand. Mar... sea. sea. Ola... wave. wave. Concha... shell. shell. Gafas de sol... sunglasses. sunglasses. Traje de baño... swimsuit. swimsuit. Protector solar... sunscreen. sunscreen. Cangrejo... crab. crab. Isla... island. island. Pelota... ball. ball. Otra vez, todas seguidas: sand, sea, wave, shell, sunglasses, swimsuit, sunscreen, crab, island, ball. [curious] ¿Cuál no sabías? Cuéntamelo abajo."
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Arena... sand. sand. Mar... sea. sea. Ola... wave. wave. Concha... shell. shell. Gafas de sol... sunglasses. sunglasses. Traje de baño... swimsuit. swimsuit. Bloqueador... sunscreen. sunscreen. Cangrejo... crab. crab. Isla... island. island. Pelota... ball. ball. Otra vez, todas seguidas: sand, sea, wave, shell, sunglasses, swimsuit, sunscreen, crab, island, ball. [curious] ¿Cuál no sabías? Cuéntamelo abajo."
 }

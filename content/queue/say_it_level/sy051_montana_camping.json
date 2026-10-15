@@ -4,7 +4,7 @@
   "video_description": "Diez frases para sobrevivir a una acampada en inglés, de fácil a experto. ⛺",
   "title": "Dilo en inglés",
   "theme": "en la montaña y de camping",
-  "intro": "[cheerful] Nos vamos de acampada. Te digo la frase en español y tú la dices en inglés.",
+  "intro": "[cheerful] Nos vamos de acampada. Lee cada frase y dila en inglés antes que yo.",
   "items": [
     {
       "spanish": "Hace frío esta noche.",
@@ -26,7 +26,7 @@
       "spanish": "¿Has traído el saco de dormir?",
       "english": "Did you bring the sleeping bag?",
       "cefr": "A2",
-      "alt": "Have you brought the sleeping bag?"
+      "alt": "Have you got the sleeping bag?"
     },
     {
       "spanish": "Vamos a montar la tienda aquí.",
@@ -40,8 +40,8 @@
       "cefr": "B1"
     },
     {
-      "spanish": "Deberíamos volver antes de que oscurezca.",
-      "english": "We should head back before it gets dark.",
+      "spanish": "Volvamos antes de que oscurezca.",
+      "english": "Let's head back before dark.",
       "cefr": "B1"
     },
     {
@@ -87,7 +87,7 @@
     "Did you bring the sleeping bag?": "¿Has traído el saco de dormir?",
     "Let's set up the tent here.": "Vamos a montar la tienda aquí.",
     "If it rains, we'll stay in the cabin.": "Si llueve, nos quedaremos en la cabaña.",
-    "We should head back before it gets dark.": "Deberíamos volver antes de que oscurezca.",
+    "Let's head back before dark.": "Volvamos antes de que oscurezca.",
     "I think we're lost.": "Creo que nos hemos perdido.",
     "My feet hurt.": "Me duelen los pies.",
     "There's no signal here.": "Aquí no hay cobertura."
@@ -99,15 +99,15 @@
     "Did you bring the sleeping bag?",
     "Let's set up the tent here.",
     "If it rains, we'll stay in the cabin.",
-    "We should head back before it gets dark.",
+    "Let's head back before dark.",
     "I think we're lost.",
     "My feet hurt.",
     "There's no signal here.",
     "Do you have a torch?",
-    "Have you brought the sleeping bag?",
+    "Have you got the sleeping bag?",
     "Let's pitch the tent here.",
     "I think we got lost.",
     "I don't have any service here."
   ],
-  "full_script": "[cheerful] Nos vamos de acampada. Te digo la frase en español y tú la dices en inglés. It's cold tonight. Do you have a flashlight? I love sleeping outdoors. Ahora, nivel intermedio. Did you bring the sleeping bag? Let's set up the tent here. If it rains, we'll stay in the cabin. We should head back before it gets dark. Y ahora, nivel experto. I think we're lost. My feet hurt. There's no signal here. ¿Llegaste a la tres? Nivel básico. ¿A la siete? Intermedio. Y si sacaste las diez, experto de montaña. [happy] ¿Hasta qué frase llegaste sin perderte? Dímelo en los comentarios."
+  "full_script": "[cheerful] Nos vamos de acampada. Lee cada frase y dila en inglés antes que yo. It's cold tonight. Do you have a flashlight? I love sleeping outdoors. Ahora, nivel intermedio. Did you bring the sleeping bag? Let's set up the tent here. If it rains, we'll stay in the cabin. Let's head back before dark. Y ahora, nivel experto. I think we're lost. My feet hurt. There's no signal here. ¿Llegaste a la tres? Nivel básico. ¿A la siete? Intermedio. Y si sacaste las diez, experto de montaña. [happy] ¿Hasta qué frase llegaste sin perderte? Dímelo en los comentarios."
 }

@@ -4,7 +4,7 @@
   "video_description": "Diez frases para dar ánimos en inglés cuando alguien lo necesita. 💪",
   "title": "Dilo en inglés",
   "theme": "animar a alguien",
-  "intro": "[excited] Toca dar ánimos. Te digo la frase en español y tú la dices en inglés.",
+  "intro": "[excited] Toca dar ánimos. Lee cada frase y dila en inglés antes que yo.",
   "items": [
     {
       "spanish": "¡Tú puedes!",
@@ -109,5 +109,5 @@
     "Keep your chin up!",
     "You'll nail it!"
   ],
-  "full_script": "[excited] Toca dar ánimos. Te digo la frase en español y tú la dices en inglés. You can do it! Well done! Don't give up. Ahora, nivel intermedio. I'm proud of you. You're doing great. I'm sure you'll make it. The worst is over. Y ahora, nivel experto. Hang in there! You're going to nail it! Look on the bright side. Si llegaste a la tres, básico. A la siete, intermedio. Y si sacaste las diez, ¡enhorabuena, experto! [happy] ¿Hasta qué frase llegaste? Manda este vídeo a alguien que necesite ánimos."
+  "full_script": "[excited] Toca dar ánimos. Lee cada frase y dila en inglés antes que yo. You can do it! Well done! Don't give up. Ahora, nivel intermedio. I'm proud of you. You're doing great. I'm sure you'll make it. The worst is over. Y ahora, nivel experto. Hang in there! You're going to nail it! Look on the bright side. Si llegaste a la tres, básico. A la siete, intermedio. Y si sacaste las diez, ¡enhorabuena, experto! [happy] ¿Hasta qué frase llegaste? Manda este vídeo a alguien que necesite ánimos."
 }

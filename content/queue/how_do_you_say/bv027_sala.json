@@ -38,9 +38,9 @@
       "english": "fireplace"
     },
     {
-      "emoji": "🎮",
-      "spanish": "Control remoto",
-      "english": "remote"
+      "emoji": "💺",
+      "spanish": "Sillón",
+      "english": "armchair"
     },
     {
       "emoji": "🟫",
@@ -58,7 +58,7 @@
       "english": "vase"
     }
   ],
-  "recap": "Ahora, todas conmigo: couch, TV, shelf, painting, plant, fireplace, remote, cushion, clock, vase.",
+  "recap": "Ahora, todas conmigo: couch, TV, shelf, painting, plant, fireplace, armchair, cushion, clock, vase.",
   "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
   "translations": {
     "couch": "Sofá",
@@ -67,7 +67,7 @@
     "painting": "Cuadro",
     "plant": "Planta",
     "fireplace": "Chimenea",
-    "remote": "Control remoto",
+    "armchair": "Sillón",
     "cushion": "Cojín",
     "clock": "Reloj",
     "vase": "Florero"
@@ -79,7 +79,7 @@
     "painting",
     "plant",
     "fireplace",
-    "remote",
+    "armchair",
     "cushion",
     "clock",
     "vase"
@@ -97,5 +97,5 @@
     "video_type": "how_do_you_say",
     "model": "manual"
   },
-  "full_script": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas? Sofá... couch. couch. Televisión... TV. TV. Estantería... shelf. shelf. Cuadro... painting. painting. Planta... plant. plant. Chimenea... fireplace. fireplace. Control remoto... remote. remote. Cojín... cushion. cushion. Reloj... clock. clock. Florero... vase. vase. Ahora, todas conmigo: couch, TV, shelf, painting, plant, fireplace, remote, cushion, clock, vase. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+  "full_script": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas? Sofá... couch. couch. Televisión... TV. TV. Estantería... shelf. shelf. Cuadro... painting. painting. Planta... plant. plant. Chimenea... fireplace. fireplace. Sillón... armchair. armchair. Cojín... cushion. cushion. Reloj... clock. clock. Florero... vase. vase. Ahora, todas conmigo: couch, TV, shelf, painting, plant, fireplace, armchair, cushion, clock, vase. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
 }

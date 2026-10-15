@@ -4,7 +4,7 @@
   "video_description": "De «creo que sí» a «no compensa»: diez frases para dar tu opinión en inglés como un nativo. 💭",
   "title": "Dilo en inglés",
   "theme": "dar tu opinión",
-  "intro": "[thoughtful] ¿Qué opinas? Te digo la frase en español y tú la dices en inglés. ¡Sin pensarlo mucho!",
+  "intro": "[thoughtful] ¿Qué opinas? Lee la frase y dila en inglés. ¡Sin pensarlo mucho!",
   "items": [
     {
       "spanish": "Creo que sí.",
@@ -58,7 +58,7 @@
     },
     {
       "spanish": "Desde mi punto de vista, no compensa.",
-      "english": "From my point of view, it's not worth it.",
+      "english": "In my view, it's not worth it.",
       "cefr": "B2",
       "tip": "«Compensar» (merecer la pena) es be worth it"
     }
@@ -88,7 +88,7 @@
     "What worries me most is the time.": "Lo que más me preocupa es el tiempo.",
     "What do you think?": "¿Qué te parece?",
     "I think you're right.": "Me parece que tienes razón.",
-    "From my point of view, it's not worth it.": "Desde mi punto de vista, no compensa."
+    "In my view, it's not worth it.": "Desde mi punto de vista, no compensa."
   },
   "english_phrases": [
     "I think so.",
@@ -100,9 +100,9 @@
     "What worries me most is the time.",
     "What do you think?",
     "I think you're right.",
-    "From my point of view, it's not worth it.",
+    "In my view, it's not worth it.",
     "That sounds good.",
     "For me, the first one is better."
   ],
-  "full_script": "[thoughtful] ¿Qué opinas? Te digo la frase en español y tú la dices en inglés. ¡Sin pensarlo mucho! I think so. I don't think so. Sounds good. Ahora, nivel intermedio. In my opinion, it's too expensive. It depends on the price. To me, the first one is better. What worries me most is the time. Y ahora, nivel experto. What do you think? I think you're right. From my point of view, it's not worth it. Tres frases: básico. Siete: intermedio. Diez: experto. Y esa no es mi opinión, es un hecho. [curious] En tu opinión, ¿cuál era la más difícil? Comenta tu número."
+  "full_script": "[thoughtful] ¿Qué opinas? Lee la frase y dila en inglés. ¡Sin pensarlo mucho! I think so. I don't think so. Sounds good. Ahora, nivel intermedio. In my opinion, it's too expensive. It depends on the price. To me, the first one is better. What worries me most is the time. Y ahora, nivel experto. What do you think? I think you're right. In my view, it's not worth it. Tres frases: básico. Siete: intermedio. Diez: experto. Y esa no es mi opinión, es un hecho. [curious] En tu opinión, ¿cuál era la más difícil? Comenta tu número."
 }

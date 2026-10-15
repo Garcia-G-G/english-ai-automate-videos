@@ -4,7 +4,7 @@
   "video_description": "Despertador, ducha y café: diez frases de cada mañana dichas en inglés. ☕",
   "title": "Dilo en inglés",
   "theme": "por la mañana en casa",
-  "intro": "[calm] Buenos días. Te digo frases de la mañana en español y tú las dices en inglés.",
+  "intro": "[calm] Buenos días. Lee estas frases de la mañana y dilas en inglés antes que yo.",
   "items": [
     {
       "spanish": "Me levanto a las siete.",
@@ -103,5 +103,5 @@
     "Would you like some coffee?",
     "I'm going to shower."
   ],
-  "full_script": "[calm] Buenos días. Te digo frases de la mañana en español y tú las dices en inglés. I get up at seven. Do you want some coffee? I'm going to take a shower. Ahora, nivel intermedio. Have you seen my keys? Hurry up, we're going to be late. What's for breakfast? My alarm didn't go off. Y ahora, nivel experto. I brush my teeth. I overslept. I'm not human until I've had coffee. Hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez antes del café: experto. [cheerful] ¿Hasta qué frase llegaste? ¿Tú eres persona antes del café?"
+  "full_script": "[calm] Buenos días. Lee estas frases de la mañana y dilas en inglés antes que yo. I get up at seven. Do you want some coffee? I'm going to take a shower. Ahora, nivel intermedio. Have you seen my keys? Hurry up, we're going to be late. What's for breakfast? My alarm didn't go off. Y ahora, nivel experto. I brush my teeth. I overslept. I'm not human until I've had coffee. Hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez antes del café: experto. [cheerful] ¿Hasta qué frase llegaste? ¿Tú eres persona antes del café?"
 }

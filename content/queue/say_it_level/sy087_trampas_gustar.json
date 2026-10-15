@@ -33,9 +33,9 @@
     },
     {
       "spanish": "Me gusta más la playa que la montaña.",
-      "english": "I like the beach more than the mountains.",
+      "english": "I like beaches more than mountains.",
       "cefr": "B1",
-      "alt": "I prefer the beach over the mountains."
+      "alt": "I prefer the beach."
     },
     {
       "spanish": "Me gusta que me llames.",
@@ -82,7 +82,7 @@
     "Do you like sushi?": "¿Te gusta el sushi?",
     "My sister likes dogs.": "A mi hermana le gustan los perros.",
     "I'd like to go to Japan.": "Me gustaría ir a Japón.",
-    "I like the beach more than the mountains.": "Me gusta más la playa que la montaña.",
+    "I like beaches more than mountains.": "Me gusta más la playa que la montaña.",
     "I like it when you call me.": "Me gusta que me llames.",
     "I like you.": "Me gustas.",
     "I really like your friend.": "Tu amigo me cae muy bien.",
@@ -94,12 +94,12 @@
     "Do you like sushi?",
     "My sister likes dogs.",
     "I'd like to go to Japan.",
-    "I like the beach more than the mountains.",
+    "I like beaches more than mountains.",
     "I like it when you call me.",
     "I like you.",
     "I really like your friend.",
     "I'm not really into jazz.",
-    "I prefer the beach over the mountains."
+    "I prefer the beach."
   ],
-  "full_script": "[warm] Diez frases con «gustar» y «encantar». Cuidado con el orden. Dilas en inglés. I like coffee. I love this song. Do you like sushi? Ahora, nivel intermedio. My sister likes dogs. I'd like to go to Japan. I like the beach more than the mountains. I like it when you call me. Y ahora, nivel experto. I like you. I really like your friend. I'm not really into jazz. Hasta la tres, básico. Hasta la siete, intermedio. Y si te encantaron las diez, experto. [happy] ¿Cuál te gustó más? Escríbela junto con tu número."
+  "full_script": "[warm] Diez frases con «gustar» y «encantar». Cuidado con el orden. Dilas en inglés. I like coffee. I love this song. Do you like sushi? Ahora, nivel intermedio. My sister likes dogs. I'd like to go to Japan. I like beaches more than mountains. I like it when you call me. Y ahora, nivel experto. I like you. I really like your friend. I'm not really into jazz. Hasta la tres, básico. Hasta la siete, intermedio. Y si te encantaron las diez, experto. [happy] ¿Cuál te gustó más? Escríbela junto con tu número."
 }

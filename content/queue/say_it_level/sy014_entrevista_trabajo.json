@@ -4,7 +4,7 @@
   "video_description": "Diez frases para defenderte en una entrevista de trabajo en inglés, de fácil a experto. 💼",
   "title": "Dilo en inglés",
   "theme": "en una entrevista de trabajo",
-  "intro": "[serious] Te están entrevistando en inglés. Yo digo la frase en español y tú respondes en inglés.",
+  "intro": "[serious] Te están entrevistando en inglés. Lee la frase y responde antes que yo.",
   "items": [
     {
       "spanish": "Encantada de conocerle.",
@@ -42,7 +42,7 @@
       "spanish": "Me gustaría saber más sobre el puesto.",
       "english": "I'd like to know more about the role.",
       "cefr": "B1",
-      "alt": "I'd like to know more about the position."
+      "alt": "Tell me more about the position."
     },
     {
       "spanish": "Busco trabajo desde marzo.",
@@ -51,7 +51,7 @@
       "tip": "Algo que sigue desde marzo: I've been + -ing + since"
     },
     {
-      "spanish": "Me encargo de un equipo de diez personas.",
+      "spanish": "Dirijo un equipo de diez personas.",
       "english": "I'm in charge of a team of ten.",
       "cefr": "B2",
       "alt": "I manage a team of ten people.",
@@ -88,7 +88,7 @@
     "I could start next month.": "Podría empezar el mes que viene.",
     "I'd like to know more about the role.": "Me gustaría saber más sobre el puesto.",
     "I've been looking for a job since March.": "Busco trabajo desde marzo.",
-    "I'm in charge of a team of ten.": "Me encargo de un equipo de diez personas.",
+    "I'm in charge of a team of ten.": "Dirijo un equipo de diez personas.",
     "I'm willing to travel.": "Estoy dispuesta a viajar."
   },
   "english_phrases": [
@@ -103,8 +103,8 @@
     "I'm in charge of a team of ten.",
     "I'm willing to travel.",
     "I'm a good team player.",
-    "I'd like to know more about the position.",
+    "Tell me more about the position.",
     "I manage a team of ten people."
   ],
-  "full_script": "[serious] Te están entrevistando en inglés. Yo digo la frase en español y tú respondes en inglés. Nice to meet you. I speak three languages. I'm an engineer. Ahora, nivel intermedio. I have five years of experience. I work well in a team. I could start next month. I'd like to know more about the role. Y ahora, nivel experto. I've been looking for a job since March. I'm in charge of a team of ten. I'm willing to travel. Tres respuestas: nivel básico. Siete: intermedio. Las diez: contratado como experto. [excited] ¿Te contratarían? Dime en los comentarios hasta qué número llegaste."
+  "full_script": "[serious] Te están entrevistando en inglés. Lee la frase y responde antes que yo. Nice to meet you. I speak three languages. I'm an engineer. Ahora, nivel intermedio. I have five years of experience. I work well in a team. I could start next month. I'd like to know more about the role. Y ahora, nivel experto. I've been looking for a job since March. I'm in charge of a team of ten. I'm willing to travel. Tres respuestas: nivel básico. Siete: intermedio. Las diez: contratado como experto. [excited] ¿Te contratarían? Dime en los comentarios hasta qué número llegaste."
 }

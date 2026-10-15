@@ -4,7 +4,7 @@
   "video_description": "Entradas, audioguías y obras que impresionan: diez frases para visitar un museo en inglés. 🎨",
   "title": "Dilo en inglés",
   "theme": "en un museo",
-  "intro": "[calm] Entramos en un museo. Te digo la frase en español y tú, en voz baja, la dices en inglés.",
+  "intro": "[calm] Entramos en un museo. Lee la frase y, en voz baja, dila en inglés.",
   "items": [
     {
       "spanish": "¿Cuánto cuesta la entrada?",
@@ -109,5 +109,5 @@
     "Is photography allowed in here?",
     "It really impressed me."
   ],
-  "full_script": "[calm] Entramos en un museo. Te digo la frase en español y tú, en voz baja, la dices en inglés. How much is a ticket? What time does the museum close? Is there an audio guide in Spanish? Ahora, nivel intermedio. Is there a student discount? This painting is beautiful. Where's the temporary exhibition? You're not allowed to touch. Y ahora, nivel experto. Can you take pictures in here? I was really impressed. It's worth seeing. Si llegaste a la tres, nivel básico. Hasta la siete, intermedio. Con las diez, experto de museo. [warm] ¿Qué museo te gustaría visitar? Déjalo en comentarios con tu número."
+  "full_script": "[calm] Entramos en un museo. Lee la frase y, en voz baja, dila en inglés. How much is a ticket? What time does the museum close? Is there an audio guide in Spanish? Ahora, nivel intermedio. Is there a student discount? This painting is beautiful. Where's the temporary exhibition? You're not allowed to touch. Y ahora, nivel experto. Can you take pictures in here? I was really impressed. It's worth seeing. Si llegaste a la tres, nivel básico. Hasta la siete, intermedio. Con las diez, experto de museo. [warm] ¿Qué museo te gustaría visitar? Déjalo en comentarios con tu número."
 }

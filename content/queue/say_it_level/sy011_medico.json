@@ -4,7 +4,7 @@
   "video_description": "Explica qué te pasa en inglés: dolores, alergias y las trampas que fallan casi todos. 🩺",
   "title": "Dilo en inglés",
   "theme": "en el médico",
-  "intro": "[calm] Estás en la consulta. Te digo cómo te encuentras en español y tú lo dices en inglés.",
+  "intro": "[calm] Estás en la consulta. Lee cómo te encuentras y dilo en inglés antes que yo.",
   "items": [
     {
       "spanish": "Me duele aquí.",
@@ -35,7 +35,7 @@
       "alt": "I took some ibuprofen."
     },
     {
-      "spanish": "¿Tengo que volver la semana que viene?",
+      "spanish": "¿Vuelvo la semana que viene?",
       "english": "Do I need to come back next week?",
       "cefr": "B1"
     },
@@ -87,7 +87,7 @@
     "I have a sore throat.": "Me duele la garganta.",
     "I don't feel well.": "No me encuentro bien.",
     "I've taken some ibuprofen.": "Me he tomado un ibuprofeno.",
-    "Do I need to come back next week?": "¿Tengo que volver la semana que viene?",
+    "Do I need to come back next week?": "¿Vuelvo la semana que viene?",
     "I'm allergic to penicillin.": "Soy alérgico a la penicilina.",
     "I've been like this for three days.": "Llevo tres días así.",
     "I've sprained my ankle.": "Me he torcido el tobillo.",
@@ -111,5 +111,5 @@
     "I twisted my ankle.",
     "It's hard for me to breathe."
   ],
-  "full_script": "[calm] Estás en la consulta. Te digo cómo te encuentras en español y tú lo dices en inglés. It hurts here. I have a fever. I have a sore throat. Ahora, nivel intermedio. I don't feel well. I've taken some ibuprofen. Do I need to come back next week? I'm allergic to penicillin. Y ahora, nivel experto. I've been like this for three days. I've sprained my ankle. I'm having trouble breathing. Si te quedaste en la tres, básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, experto. [warm] ¿Qué número te ha salido en la consulta? Cuéntamelo abajo."
+  "full_script": "[calm] Estás en la consulta. Lee cómo te encuentras y dilo en inglés antes que yo. It hurts here. I have a fever. I have a sore throat. Ahora, nivel intermedio. I don't feel well. I've taken some ibuprofen. Do I need to come back next week? I'm allergic to penicillin. Y ahora, nivel experto. I've been like this for three days. I've sprained my ankle. I'm having trouble breathing. Si te quedaste en la tres, básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, experto. [warm] ¿Qué número te ha salido en la consulta? Cuéntamelo abajo."
 }

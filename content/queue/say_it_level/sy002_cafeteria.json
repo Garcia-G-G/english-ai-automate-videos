@@ -4,7 +4,7 @@
   "video_description": "Del café más simple a frases que casi todos dicen mal: pide en inglés como un nativo. ☕",
   "title": "Dilo en inglés",
   "theme": "pedir en una cafetería",
-  "intro": "[happy] Estás en una cafetería. Yo digo la frase en español y tú pides en inglés antes que yo.",
+  "intro": "[happy] Estás en una cafetería. Lee la frase y pide en inglés antes que yo.",
   "items": [
     {
       "spanish": "Un café, por favor.",
@@ -60,7 +60,7 @@
       "spanish": "Me apetece algo dulce.",
       "english": "I feel like something sweet.",
       "cefr": "B2",
-      "alt": "I'm in the mood for something sweet.",
+      "alt": "I'm in the mood for dessert.",
       "tip": "«Me apetece» se dice I feel like + algo"
     }
   ],
@@ -105,7 +105,7 @@
     "Could I get a croissant too?",
     "Is this table taken?",
     "To take away, please.",
-    "I'm in the mood for something sweet."
+    "I'm in the mood for dessert."
   ],
-  "full_script": "[happy] Estás en una cafetería. Yo digo la frase en español y tú pides en inglés antes que yo. A coffee, please. Do you have oat milk? With milk and no sugar. Ahora, nivel intermedio. Can I also get a croissant? Could you heat it up, please? I've already ordered, thanks. Is this table free? Y ahora, nivel experto. To go, please. Can I get a black coffee? I feel like something sweet. ¿Llegaste a la tres? Nivel básico. ¿A la siete? Intermedio. ¿Las diez sin fallar? Experto total. [cheerful] Dime en los comentarios hasta qué número llegaste. ¿Y tú qué pides?"
+  "full_script": "[happy] Estás en una cafetería. Lee la frase y pide en inglés antes que yo. A coffee, please. Do you have oat milk? With milk and no sugar. Ahora, nivel intermedio. Can I also get a croissant? Could you heat it up, please? I've already ordered, thanks. Is this table free? Y ahora, nivel experto. To go, please. Can I get a black coffee? I feel like something sweet. ¿Llegaste a la tres? Nivel básico. ¿A la siete? Intermedio. ¿Las diez sin fallar? Experto total. [cheerful] Dime en los comentarios hasta qué número llegaste. ¿Y tú qué pides?"
 }

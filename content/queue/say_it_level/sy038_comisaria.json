@@ -55,7 +55,7 @@
       "spanish": "No me di cuenta hasta llegar al hotel.",
       "english": "I didn't notice until I got to the hotel.",
       "cefr": "B2",
-      "alt": "I didn't realize until I got to the hotel.",
+      "alt": "I only realized at the hotel.",
       "tip": "«Darse cuenta» es notice o realize"
     },
     {
@@ -108,7 +108,7 @@
     "It was black and made of leather.",
     "I want to file a report.",
     "Someone stole my phone.",
-    "I didn't realize until I got to the hotel.",
+    "I only realized at the hotel.",
     "I got mugged."
   ],
   "full_script": "[serious] Has perdido algo y vas a la comisaría. Explícalo en inglés antes de que lo diga yo. Where's the police station? I've lost my wallet. It was black leather. Ahora, nivel intermedio. I left it in a taxi. My passport was in it. Will you let me know if it turns up? I'd like to report a theft. Y ahora, nivel experto. My phone was stolen. I didn't notice until I got to the hotel. I've been mugged. Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, experto: caso cerrado. [thoughtful] ¿Te ha pasado algo así de viaje? Cuéntamelo con tu número."

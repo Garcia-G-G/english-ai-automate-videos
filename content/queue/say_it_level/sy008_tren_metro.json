@@ -4,7 +4,7 @@
   "video_description": "Billetes, transbordos y paradas: diez frases para moverte en tren y metro en inglés. 🚇",
   "title": "Dilo en inglés",
   "theme": "en el tren y el metro",
-  "intro": "[happy] Próxima parada: el inglés. Escucha la frase en español y dila en inglés.",
+  "intro": "[happy] Próxima parada: el inglés. Lee la frase y dila en inglés antes que yo.",
   "items": [
     {
       "spanish": "Un billete de ida, por favor.",
@@ -16,7 +16,7 @@
       "spanish": "¿Cuándo sale el próximo tren?",
       "english": "When's the next train?",
       "cefr": "A1",
-      "alt": "What time does the next train leave?"
+      "alt": "When does the next train leave?"
     },
     {
       "spanish": "¿Qué línea va al centro?",
@@ -31,7 +31,7 @@
       "alt": "Where do I transfer?"
     },
     {
-      "spanish": "El tren lleva veinte minutos de retraso.",
+      "spanish": "El tren va veinte minutos tarde.",
       "english": "The train is twenty minutes late.",
       "cefr": "B1"
     },
@@ -87,7 +87,7 @@
     "When's the next train?": "¿Cuándo sale el próximo tren?",
     "Which line goes downtown?": "¿Qué línea va al centro?",
     "Where do I change trains?": "¿Dónde tengo que hacer transbordo?",
-    "The train is twenty minutes late.": "El tren lleva veinte minutos de retraso.",
+    "The train is twenty minutes late.": "El tren va veinte minutos tarde.",
     "We've gone past our stop.": "Nos hemos pasado la parada.",
     "The subway closes at midnight.": "El metro cierra a medianoche.",
     "Is this seat taken?": "¿Está ocupado este asiento?",
@@ -106,12 +106,12 @@
     "I got on the wrong train.",
     "Do I get off at the next stop?",
     "A single, please.",
-    "What time does the next train leave?",
+    "When does the next train leave?",
     "Which line goes to the city center?",
     "Where do I transfer?",
     "We missed our stop.",
     "The metro closes at midnight.",
     "I took the wrong train."
   ],
-  "full_script": "[happy] Próxima parada: el inglés. Escucha la frase en español y dila en inglés. A one-way ticket, please. When's the next train? Which line goes downtown? Ahora, nivel intermedio. Where do I change trains? The train is twenty minutes late. We've gone past our stop. The subway closes at midnight. Y ahora, nivel experto. Is this seat taken? I got on the wrong train. Do I get off at the next stop? ¿Te bajaste en la tres? Básico. ¿En la siete? Intermedio. ¿Llegaste a la diez? Experto. [excited] ¿En qué estación te bajaste? Escribe tu número abajo."
+  "full_script": "[happy] Próxima parada: el inglés. Lee la frase y dila en inglés antes que yo. A one-way ticket, please. When's the next train? Which line goes downtown? Ahora, nivel intermedio. Where do I change trains? The train is twenty minutes late. We've gone past our stop. The subway closes at midnight. Y ahora, nivel experto. Is this seat taken? I got on the wrong train. Do I get off at the next stop? ¿Te bajaste en la tres? Básico. ¿En la siete? Intermedio. ¿Llegaste a la diez? Experto. [excited] ¿En qué estación te bajaste? Escribe tu número abajo."
 }

@@ -4,7 +4,7 @@
   "video_description": "Nombre, edad y a qué te dedicas: diez frases para presentarte en inglés sin errores típicos. 🙋",
   "title": "Dilo en inglés",
   "theme": "presentarte",
-  "intro": "[happy] Vamos a presentarnos en inglés. Te digo la frase en español y tú la dices antes que yo.",
+  "intro": "[happy] Vamos a presentarnos en inglés. Lee cada frase y dila antes que yo.",
   "items": [
     {
       "spanish": "Me llamo Carlos.",
@@ -109,5 +109,5 @@
     "I'm thirty-two years old.",
     "I've been living here for two years."
   ],
-  "full_script": "[happy] Vamos a presentarnos en inglés. Te digo la frase en español y tú la dices antes que yo. My name is Carlos. I'm from Colombia. I live in Madrid. Ahora, nivel intermedio. I work as a nurse. I moved here last year. I love meeting new people. I'm married with two kids. Y ahora, nivel experto. I'm thirty-two. I've lived here for two years. I work in marketing. ¿Hasta la tres? Básico. ¿Hasta la siete? Intermedio. ¿Las diez? Experto, y encantado de conocerte. [warm] Ahora preséntate tú: dime en los comentarios hasta qué número llegaste."
+  "full_script": "[happy] Vamos a presentarnos en inglés. Lee cada frase y dila antes que yo. My name is Carlos. I'm from Colombia. I live in Madrid. Ahora, nivel intermedio. I work as a nurse. I moved here last year. I love meeting new people. I'm married with two kids. Y ahora, nivel experto. I'm thirty-two. I've lived here for two years. I work in marketing. ¿Hasta la tres? Básico. ¿Hasta la siete? Intermedio. ¿Las diez? Experto, y encantado de conocerte. [warm] Ahora preséntate tú: dime en los comentarios hasta qué número llegaste."
 }

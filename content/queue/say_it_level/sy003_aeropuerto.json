@@ -59,7 +59,7 @@
     },
     {
       "spanish": "¿Cuánto se tarda en llegar al centro?",
-      "english": "How long does it take to get downtown?",
+      "english": "How long to get downtown?",
       "cefr": "B2",
       "tip": "«Tardar» se dice con take: How long does it take...?"
     }
@@ -89,7 +89,7 @@
     "What time does boarding start?": "¿A qué hora empieza el embarque?",
     "I almost missed my flight.": "Casi pierdo el vuelo.",
     "I have a layover in Miami.": "Tengo una escala en Miami.",
-    "How long does it take to get downtown?": "¿Cuánto se tarda en llegar al centro?"
+    "How long to get downtown?": "¿Cuánto se tarda en llegar al centro?"
   },
   "english_phrases": [
     "Where's gate 12?",
@@ -101,11 +101,11 @@
     "What time does boarding start?",
     "I almost missed my flight.",
     "I have a layover in Miami.",
-    "How long does it take to get downtown?",
+    "How long to get downtown?",
     "I just have one suitcase.",
     "Can I bring this as a carry-on?",
     "My flight is delayed.",
     "I have a stopover in Miami."
   ],
-  "full_script": "[curious] Diez frases que vas a necesitar en el aeropuerto. Dilas en inglés antes de que yo lo haga. Where's gate 12? Here's my boarding pass. I only have one suitcase. Ahora, nivel intermedio. Can I take this on board? I'd like to check this bag. My flight has been delayed. What time does boarding start? Y ahora, nivel experto. I almost missed my flight. I have a layover in Miami. How long does it take to get downtown? Hasta la tres, nivel básico. Hasta la siete, nivel intermedio. Y las diez, nivel experto. ¿Dónde aterrizaste? [happy] Comenta tu número y comparte el vídeo con quien viaja contigo."
+  "full_script": "[curious] Diez frases que vas a necesitar en el aeropuerto. Dilas en inglés antes de que yo lo haga. Where's gate 12? Here's my boarding pass. I only have one suitcase. Ahora, nivel intermedio. Can I take this on board? I'd like to check this bag. My flight has been delayed. What time does boarding start? Y ahora, nivel experto. I almost missed my flight. I have a layover in Miami. How long to get downtown? Hasta la tres, nivel básico. Hasta la siete, nivel intermedio. Y las diez, nivel experto. ¿Dónde aterrizaste? [happy] Comenta tu número y comparte el vídeo con quien viaja contigo."
 }

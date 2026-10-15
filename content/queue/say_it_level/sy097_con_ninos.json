@@ -4,7 +4,7 @@
   "video_description": "Para padres, profes y niñeras: diez frases para hablar con niños en inglés. 🧸",
   "title": "Dilo en inglés",
   "theme": "con niños",
-  "intro": "[cheerful] Hoy hablamos con niños. Te digo la frase en español y tú la dices en inglés.",
+  "intro": "[cheerful] Hoy hablamos con niños. Lee cada frase y dila en inglés antes que yo.",
   "items": [
     {
       "spanish": "¿Cuántos años tienes?",
@@ -31,7 +31,7 @@
       "spanish": "Si te lo comes todo, hay postre.",
       "english": "If you eat everything, you get dessert.",
       "cefr": "B1",
-      "alt": "If you finish your plate, you get dessert."
+      "alt": "Finish your plate and get dessert."
     },
     {
       "spanish": "¿Has recogido los juguetes?",
@@ -103,9 +103,9 @@
     "Don't even think about it!",
     "He threw a tantrum.",
     "It's time for bed.",
-    "If you finish your plate, you get dessert.",
+    "Finish your plate and get dessert.",
     "Be good.",
     "He had a meltdown."
   ],
-  "full_script": "[cheerful] Hoy hablamos con niños. Te digo la frase en español y tú la dices en inglés. How old are you? Wash your hands. It's bedtime. Ahora, nivel intermedio. Don't touch that. If you eat everything, you get dessert. Have you put your toys away? Stop fighting with your brother. Y ahora, nivel experto. Behave yourself. Don't even think about it! He threw a tantrum. Si llegaste a la tres, básico. A la siete, intermedio. Y si te salieron las diez, hay postre: experto. [warm] ¿Hablas inglés con niños? Cuéntame hasta qué número llegaste."
+  "full_script": "[cheerful] Hoy hablamos con niños. Lee cada frase y dila en inglés antes que yo. How old are you? Wash your hands. It's bedtime. Ahora, nivel intermedio. Don't touch that. If you eat everything, you get dessert. Have you put your toys away? Stop fighting with your brother. Y ahora, nivel experto. Behave yourself. Don't even think about it! He threw a tantrum. Si llegaste a la tres, básico. A la siete, intermedio. Y si te salieron las diez, hay postre: experto. [warm] ¿Hablas inglés con niños? Cuéntame hasta qué número llegaste."
 }

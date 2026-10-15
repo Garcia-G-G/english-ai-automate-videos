@@ -4,7 +4,7 @@
   "video_description": "Diez frases de restaurante en inglés, de pedir mesa a la trampa final. 🍽️",
   "title": "Dilo en inglés",
   "theme": "en el restaurante",
-  "intro": "[cheerful] Te digo la frase en español y tú la dices en inglés. Diez frases, de fácil a experto.",
+  "intro": "[cheerful] Lee cada frase y dila en inglés antes que yo. Diez frases, de fácil a experto.",
   "items": [
     {
       "spanish": "Una mesa para dos, por favor.",
@@ -28,7 +28,7 @@
       "cefr": "A2"
     },
     {
-      "spanish": "Tenemos una reserva a nombre de Ana.",
+      "spanish": "Tenemos reserva a nombre de Ana.",
       "english": "We have a reservation under Ana.",
       "cefr": "B1"
     },
@@ -84,7 +84,7 @@
     "The menu, please.": "La carta, por favor.",
     "I'll have the chicken.": "Para mí, el pollo.",
     "What do you recommend?": "¿Qué nos recomienda?",
-    "We have a reservation under Ana.": "Tenemos una reserva a nombre de Ana.",
+    "We have a reservation under Ana.": "Tenemos reserva a nombre de Ana.",
     "Could you bring us some more bread?": "¿Nos podría traer más pan?",
     "Can we pay separately?": "¿Podemos pagar por separado?",
     "It's delicious!": "¡Está muy rico!",
@@ -107,5 +107,5 @@
     "It's really good!",
     "Could we have the bill, please?"
   ],
-  "full_script": "[cheerful] Te digo la frase en español y tú la dices en inglés. Diez frases, de fácil a experto. A table for two, please. The menu, please. I'll have the chicken. Ahora, nivel intermedio. What do you recommend? We have a reservation under Ana. Could you bring us some more bread? Can we pay separately? Y ahora, nivel experto. It's delicious! Can we get the check, please? Dinner didn't agree with me. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+  "full_script": "[cheerful] Lee cada frase y dila en inglés antes que yo. Diez frases, de fácil a experto. A table for two, please. The menu, please. I'll have the chicken. Ahora, nivel intermedio. What do you recommend? We have a reservation under Ana. Could you bring us some more bread? Can we pay separately? Y ahora, nivel experto. It's delicious! Can we get the check, please? Dinner didn't agree with me. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
 }

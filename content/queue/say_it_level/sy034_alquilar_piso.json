@@ -53,7 +53,7 @@
     },
     {
       "spanish": "El casero no me devuelve la fianza.",
-      "english": "My landlord won't give me my deposit back.",
+      "english": "My landlord won't return my deposit.",
       "cefr": "B2",
       "tip": "«No me devuelve» = se niega: won't + give back"
     },
@@ -88,7 +88,7 @@
     "When could I come and see it?": "¿Cuándo podría verlo?",
     "How much is the deposit?": "¿Cuánto hay que dejar de fianza?",
     "Is it furnished?": "¿Está amueblado?",
-    "My landlord won't give me my deposit back.": "El casero no me devuelve la fianza.",
+    "My landlord won't return my deposit.": "El casero no me devuelve la fianza.",
     "The apartment faces the street.": "El piso da a la calle."
   },
   "english_phrases": [
@@ -100,12 +100,12 @@
     "When could I come and see it?",
     "How much is the deposit?",
     "Is it furnished?",
-    "My landlord won't give me my deposit back.",
+    "My landlord won't return my deposit.",
     "The apartment faces the street.",
     "I'm looking for a flat.",
     "Are bills included?",
     "When can I see it?",
     "How much is the security deposit?"
   ],
-  "full_script": "[curious] Buscas piso en un país de habla inglesa. Escucha cada frase y dila en inglés. How much is the rent? I'm looking for an apartment. Does it have two bedrooms? Ahora, nivel intermedio. Are utilities included? Are pets allowed? When could I come and see it? How much is the deposit? Y ahora, nivel experto. Is it furnished? My landlord won't give me my deposit back. The apartment faces the street. Tres frases: básico. Siete: intermedio. Diez: experto, y con las llaves en la mano. [cheerful] ¿Firmarías el contrato? Cuéntame en comentarios hasta dónde llegaste."
+  "full_script": "[curious] Buscas piso en un país de habla inglesa. Escucha cada frase y dila en inglés. How much is the rent? I'm looking for an apartment. Does it have two bedrooms? Ahora, nivel intermedio. Are utilities included? Are pets allowed? When could I come and see it? How much is the deposit? Y ahora, nivel experto. Is it furnished? My landlord won't return my deposit. The apartment faces the street. Tres frases: básico. Siete: intermedio. Diez: experto, y con las llaves en la mano. [cheerful] ¿Firmarías el contrato? Cuéntame en comentarios hasta dónde llegaste."
 }

@@ -4,7 +4,7 @@
   "video_description": "Cajeros, cuentas y comisiones: diez frases bancarias en inglés de fácil a experto. 🏦",
   "title": "Dilo en inglés",
   "theme": "en el banco",
-  "intro": "[serious] Vamos al banco. Te digo la frase en español y tú tienes unos segundos para decirla en inglés.",
+  "intro": "[serious] Vamos al banco. Lee la frase y tienes unos segundos para decirla en inglés.",
   "items": [
     {
       "spanish": "¿Hay un cajero por aquí?",
@@ -113,5 +113,5 @@
     "I'm in the red.",
     "Can I have it in smaller notes?"
   ],
-  "full_script": "[serious] Vamos al banco. Te digo la frase en español y tú tienes unos segundos para decirla en inglés. Is there an ATM near here? I'd like to open an account. Can I exchange dollars here? Ahora, nivel intermedio. I've lost my card. What's the fee? I'd like to make a transfer. The ATM ate my card. Y ahora, nivel experto. I'd like to withdraw some money. I'm overdrawn. Can I get this in smaller bills? ¿Te quedaste en la tres? Básico. ¿En la siete? Intermedio. ¿Sacaste las diez? Experto. [happy] ¿Cuántas frases tienes en la cuenta? Déjame tu número en comentarios."
+  "full_script": "[serious] Vamos al banco. Lee la frase y tienes unos segundos para decirla en inglés. Is there an ATM near here? I'd like to open an account. Can I exchange dollars here? Ahora, nivel intermedio. I've lost my card. What's the fee? I'd like to make a transfer. The ATM ate my card. Y ahora, nivel experto. I'd like to withdraw some money. I'm overdrawn. Can I get this in smaller bills? ¿Te quedaste en la tres? Básico. ¿En la siete? Intermedio. ¿Sacaste las diez? Experto. [happy] ¿Cuántas frases tienes en la cuenta? Déjame tu número en comentarios."
 }

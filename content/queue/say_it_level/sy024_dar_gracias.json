@@ -4,7 +4,7 @@
   "video_description": "Diez maneras de dar las gracias en inglés, de la más básica a la que usan los nativos. 💐",
   "title": "Dilo en inglés",
   "theme": "dar las gracias",
-  "intro": "[cheerful] Diez formas de dar las gracias. Yo lo digo en español y tú en inglés. ¡Adelante!",
+  "intro": "[cheerful] Diez formas de dar las gracias. Lee la frase y dila en inglés. ¡Adelante!",
   "items": [
     {
       "spanish": "Muchas gracias.",
@@ -109,5 +109,5 @@
     "No problem.",
     "You didn't have to."
   ],
-  "full_script": "[cheerful] Diez formas de dar las gracias. Yo lo digo en español y tú en inglés. ¡Adelante! Thank you so much. Thanks for everything. Thanks for waiting for me. Ahora, nivel intermedio. That's very kind of you. Thanks for having me. I owe you one. I don't know how to thank you. Y ahora, nivel experto. Don't mention it. I really appreciate it. You shouldn't have. ¿Hasta la tres? Nivel básico. ¿Hasta la siete? Intermedio. ¿Las diez? Experto. ¡Gracias por jugar! [warm] Gracias por llegar hasta aquí. ¿Cuál fue tu número? Te leo."
+  "full_script": "[cheerful] Diez formas de dar las gracias. Lee la frase y dila en inglés. ¡Adelante! Thank you so much. Thanks for everything. Thanks for waiting for me. Ahora, nivel intermedio. That's very kind of you. Thanks for having me. I owe you one. I don't know how to thank you. Y ahora, nivel experto. Don't mention it. I really appreciate it. You shouldn't have. ¿Hasta la tres? Nivel básico. ¿Hasta la siete? Intermedio. ¿Las diez? Experto. ¡Gracias por jugar! [warm] Gracias por llegar hasta aquí. ¿Cuál fue tu número? Te leo."
 }
