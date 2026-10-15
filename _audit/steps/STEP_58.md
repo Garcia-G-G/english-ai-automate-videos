@@ -30,9 +30,12 @@ light up and their answers are written in, one at a time.
 
 ## 1. Push first
 
-`43ad720` on `6a-layout` (40 new how_do_you_say lists, bv021–bv060, plus their topics
-entries; the test pinning bv001–bv020 now accepts a contiguous, growing set). It is
-committed but not pushed, because the VM has no GitHub credentials. Push it.
+`6a-layout` is three commits ahead of origin, none pushed (the VM has no GitHub
+credentials). Push all three:
+- `43ad720`: 40 new how_do_you_say lists, bv021–bv060, plus their topics entries. The test
+  that pinned bv001–bv020 now accepts a contiguous, growing set.
+- the commit that adds this STEP;
+- the commit that adds it to the index.
 
 Do not commit the other uncommitted changes in the tree (`main.py`, `src/length_spec.py`,
 `src/video/vocabulary.py`, the queue deletions, and so on) unless they are yours. Report
@@ -83,7 +86,7 @@ voice IDs or home paths in commits. Commit messages carry no attribution lines.
 
 ## 5. Report back
 
-- Push confirmation for `43ad720`, plus the list of uncommitted changes you did not author.
+- Push confirmation for the three commits, plus the list of uncommitted changes you did not author.
 - Stills of lv001 and sy001 → `_audit/stills/`:
   - frame 0, which must show all 10 rows;
   - row 4 being revealed, with the INTERMEDIO pulse;

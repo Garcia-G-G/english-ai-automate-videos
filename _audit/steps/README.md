@@ -12,7 +12,7 @@ the code wins:
 | brand colours and type | `assets/branding/english-unlimited/brand.json` |
 | audio repair (tails, gaps, onsets) | `src/tts_common.py` |
 
-New steps take the next number (`STEP_58.md`, …). A `b` file is an addendum to the step
+New steps take the next number (`STEP_59.md`, …). A `b` file is an addendum to the step
 with the same number.
 
 | step | what it was |
@@ -79,3 +79,4 @@ with the same number.
 | [STEP 55](STEP_55.md) | English words said with Spanish sounds inside the lessons |
 | [STEP 56](STEP_56.md) | Upload the long lessons to YouTube from the dashboard |
 | [STEP 57](STEP_57.md) | The panel, second layer: Spanish, human, and fast to scan |
+| [STEP 58](STEP_58.md) | Build the level Shorts on the notebook that already works (full list from frame 1) |
