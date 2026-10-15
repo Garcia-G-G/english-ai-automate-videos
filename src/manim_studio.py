@@ -313,6 +313,27 @@ def youtube_publication(render_row: dict) -> Optional[dict]:
     return rows[0] if rows else None
 
 
+def youtube_consent_note(youtube) -> Optional[str]:
+    """What the panel says BEFORE the click when Google must ask for consent again (no token yet,
+    or one without youtube.force-ssl — the captions scope). None when the stored token covers it all."""
+    from uploader import LOOPBACK_TIMEOUT_S, YOUTUBE_FORCE_SSL
+    missing = youtube._missing_scopes()
+    if not missing:
+        return None
+    why = ("falta el permiso para subir subtítulos" if missing == [YOUTUBE_FORCE_SSL]
+           else "aún no hay una autorización guardada")
+    return (f"Antes de subir, Google te pedirá permiso ({why}). Al pulsar se abre una pestaña de Google: "
+            f"elige la cuenta del canal, marca todas las casillas y acepta antes de {LOOPBACK_TIMEOUT_S // 60} minutos.")
+
+
+YT_AUTH_ERRORS = {
+    "timeout": "No se completó la autorización en Google a tiempo. Pulsa otra vez y acepta en la pestaña que se abre.",
+    "access_denied": "Google no dio el permiso (cancelaste o no marcaste las casillas). Pulsa otra vez y acepta todo.",
+    "state_mismatch": "La respuesta de Google no correspondía a esta petición. Pulsa otra vez.",
+    "exchange_failed": "Google aceptó pero no entregó el token. Pulsa otra vez.",
+}
+
+
 def upload_to_youtube(render_row: dict, meta: dict, privacy: Optional[str] = None, on_progress=None,
                       studio_dir: Path = STUDIO_DIR, manager=None) -> dict:
     """One click → one upload, through the Shorts' guard and ledger: decide (no second publication),
@@ -332,8 +353,10 @@ def upload_to_youtube(render_row: dict, meta: dict, privacy: Optional[str] = Non
         return {"ok": False, "refused": verdict.reason, "upload_id": verdict.upload_id, "url": None, "notes": []}
     youtube = manager.uploaders["youtube"]
     if not youtube.authenticate():
-        return {"ok": False, "refused": None, "url": None, "upload_id": None,
-                "notes": [f"YouTube: authorization failed ({youtube.last_auth_error or 'not configured'})"]}
+        reason = youtube.last_auth_error if youtube.is_configured() else None
+        note = YT_AUTH_ERRORS.get(reason, f"Autorización de YouTube fallida ({reason}). Pulsa otra vez.") if reason \
+            else "Faltan YOUTUBE_CLIENT_ID / YOUTUBE_CLIENT_SECRET en .env."
+        return {"ok": False, "refused": None, "url": None, "upload_id": None, "notes": [note]}
     youtube_json_path(render_row, studio_dir).write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
     size = video.stat().st_size
     record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_STARTED, video_path=str(video),
@@ -705,9 +728,15 @@ def _youtube_panel(st, lesson: dict) -> None:          # pragma: no cover — UI
     edited = {"title": title.strip(), "description": description.strip(), "hashtags": meta.get("hashtags", []),
               "tags": [t.strip() for t in tags.split(",") if t.strip()][:15]}
 
+    from uploader import UploadManager
+    consent = youtube_consent_note(UploadManager().uploaders["youtube"])
+    if consent:
+        st.warning(consent)
+
     @st.fragment
     def _upload():
-        if not st.button("Subir a YouTube", type="primary", key=key + "_go"):
+        if not st.button("Autorizar en Google y subir" if consent else "Subir a YouTube", type="primary",
+                         key=key + "_go"):
             return
         bar = st.progress(0.0, text="Subiendo…")
         outcome = upload_to_youtube(row, edited, privacy=None if privacy == default else privacy,

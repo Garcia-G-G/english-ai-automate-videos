@@ -156,3 +156,26 @@ def test_a_render_is_uploaded_once_then_refused(monkeypatch, tmp_path):
     before = len(sent["post"])
     again = M.upload_to_youtube(row, meta, studio_dir=tmp_path, manager=manager)
     assert not again["ok"] and again["refused"] and len(sent["post"]) == before
+
+
+def test_the_panel_warns_before_a_click_that_needs_consent_again():
+    yt = _yt()
+    assert M.youtube_consent_note(yt) is None
+    yt._token_data["scope"] = " ".join(s for s in uploader.YOUTUBE_SCOPES if s != uploader.YOUTUBE_FORCE_SSL)
+    assert "subtítulos" in M.youtube_consent_note(yt) and "3 minutos" in M.youtube_consent_note(yt)
+    yt._token_data = None
+    assert "autorización guardada" in M.youtube_consent_note(yt)
+
+
+def test_a_consent_left_unfinished_is_a_clear_message_and_nothing_is_recorded(monkeypatch, tmp_path):
+    sent = _capture(monkeypatch)
+    row = _render(tmp_path)
+    (tmp_path / "renders" / "l" / "r.mp4").write_bytes(b"x" * 16)
+    manager = uploader.UploadManager()
+    yt = manager.uploaders["youtube"]
+    monkeypatch.setattr(yt, "is_configured", lambda: True)
+    monkeypatch.setattr(yt, "authenticate", lambda: setattr(yt, "last_auth_error", "timeout") or False)
+    out = M.upload_to_youtube(row, {"title": "T", "description": "D", "tags": []}, studio_dir=tmp_path, manager=manager)
+    assert not out["ok"] and out["notes"] == [M.YT_AUTH_ERRORS["timeout"]]
+    assert sent["post"] == [] and M.youtube_publication(row) is None
+    assert not (tmp_path / "renders" / "l" / "r.youtube.json").exists()
