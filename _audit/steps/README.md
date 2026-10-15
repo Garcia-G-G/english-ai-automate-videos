@@ -12,7 +12,7 @@ the code wins:
 | brand colours and type | `assets/branding/english-unlimited/brand.json` |
 | audio repair (tails, gaps, onsets) | `src/tts_common.py` |
 
-New steps take the next number (`STEP_61.md`, …). A `b` file is an addendum to the step
+New steps take the next number (`STEP_62.md`, …). A `b` file is an addendum to the step
 with the same number.
 
 | step | what it was |
@@ -82,3 +82,4 @@ with the same number.
 | [STEP 58](STEP_58.md) | Build the level Shorts on the notebook that already works (full list from frame 1) |
 | [STEP 59](STEP_59.md) | Cleanup after STEP 58: push, onset gate keeps the cleanest take, dead_air fix, readability numbers |
 | [STEP 60](STEP_60.md) | Owner approves the level format; fix the cut first consonants and give long sentences more thinking time |
+| [STEP 61](STEP_61.md) | «¿Verdadero o falso?» in cascade with a blurred answer; learningroutes.com in descriptions and the lesson end card |
