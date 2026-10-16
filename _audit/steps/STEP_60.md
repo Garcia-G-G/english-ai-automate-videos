@@ -84,7 +84,7 @@ how_do_you_say Shorts that work run about 70 s. So scale the pause by sentence l
 - `pronounce_level` (all English words, so all exposed to this cut) starts only after he
   confirms the fix.
 
-## 4. Seven tests that always fail (noise that hides real failures)
+## 4. Ten tests that always fail (noise that hides real failures)
 
 Every suite run ends with the same failures, and each one costs the owner a read.
 
