@@ -1,22 +1,15 @@
-# STEP 59 — Clean up after STEP 58 while the owner reviews lv001 and sy001
+# STEP 59 — Clean up after STEP 58, and stop cut renders from reaching the queue
 
 The owner is watching the first two level Shorts by eye and ear (lv001 cocina, sy001
 restaurante). `pronounce_level` waits for that verdict. Do not start it. This step is
 the cleanup that does not depend on the verdict.
 
-## 1. Push
+**Work section by section, in order. Each section gets its own tests and its own commit,
+pushed, before the next one starts. If one fails, stop and report.**
 
-`01594b5` is committed on `6a-layout` and not pushed (the VM has no GitHub credentials).
-It is content only:
-- 49 say_it_level lines that overflowed the 620 px column at 34 px are rewritten
-  shorter, in 34 scripts;
-- 32 intros no longer say «te digo la frase en español»;
-- bv027 «Control remoto» and bv029 «Protector solar» are replaced by «Sillón» and
-  «Bloqueador».
+## 1. Length report
 
-The derived fields were re-derived with `tools/level_migrate.py --rederive`.
-`queue_guard` reports 0 problems on all 102 files, and the content tests pass, including
-`test_every_queued_word_fits_its_column`. Push it, together with this STEP's own commits.
+`01594b5` (the shortened say_it lines and intros) is already pushed.
 
 Regenerate `_audit/STEP58_length_report.md`. Expected result: 0 texts that do not fit,
 for both types. If anything is still over, list it and I fix it.
@@ -72,6 +65,37 @@ PIL/FreeType) with the current working tree. Run it on the Mac with the tree as 
 The other session has uncommitted changes in `src/video/utils.py`. If the test fails
 there too, say which change breaks it. Do not touch that file.
 
+## 6. Cut renders must never reach the queue (found in STEP 65)
+
+STEP 65 traced the empty-title upload to this chain:
+- the bv010 render (job a384ee18) hit the 1200 s limit and was killed mid-write;
+- a 46 s mp4 stayed in `pending/` without its sidecar;
+- it got approved, then uploaded.
+
+`RRbZ-y2ohGY` was the same case. Two jobs were also rendering the same artifact at the
+same time. STEP 65 blocks the upload; this section fixes the cause.
+
+- **Write to a temp name, rename at the end.** The renderer writes `<artifact>.mp4.part`
+  and the sidecar, and only renames to `.mp4` after the sidecar exists and the duration
+  probe matches the timeline (±0.5 s). A killed job leaves a `.part` file that no page
+  lists.
+- **On timeout or kill**, move whatever exists to `output/rejected/_cut/` with a
+  `reason.txt`. Use `mv`, never delete.
+- **One job per artifact.** If a job for the same script (topic_id + type) is queued or
+  running, refuse a second one with «Ya se está renderizando bv010». The dashboard shows
+  it instead of starting it.
+- **The 1200 s limit:** log the stage where the time went (TTS, clips, frames, encode)
+  for that job, and raise the limit only if the frames stage needs it. A 70 s Short
+  should not take 20 minutes. Say why it did.
+- **Review page:** an mp4 without a sidecar or a `.part` is never shown in «Revisar».
+- **Tests:**
+  - a killed render leaves no `.mp4` in `pending/`;
+  - two submits of the same script give one job;
+  - Review ignores sidecar-less files.
+- **Report:**
+  - what took 1200 s in job a384ee18;
+  - every file you moved to `_cut/`.
+
 ## Constraints
 
 Only OpenAI and ElevenLabs are paid. Everything else is local and free. No MoviePy.
@@ -81,11 +105,13 @@ uncommitted files.
 
 ## Report back
 
-- Push confirmation.
+- Commits, pushed, one per section.
 - The new length report: totals.
 - For the onset gate: a table of the lv001 takes with the three values and the verdict
   of each, the threshold you chose and why, and re-asks plus cost before and after.
 - For dead_air: the test, plus one fresh how_do_you_say render (bv004 colores) with QA
   PASS and no dead_air, with its duration and cost.
 - The result of the pin test on the Mac.
+- For cut renders: what took 1200 s in job a384ee18, the files moved to `_cut/`, and
+  the tests.
 - Test counts: pass / fail, naming any failure that is not yours.
