@@ -1332,10 +1332,39 @@ def unapprove_video(video_path: Path):
         shutil.move(str(meta_path), str(dest_dir / meta_path.name))
 
 
-def _guard_decide(artifact: str, platform: str, manager=None):
+def _guard_decide(artifact: str, platform: str, manager=None, **content):
     """Ask the idempotency guard before uploading. See upload_guard."""
     from upload_guard import decide
-    return decide(artifact, platform, manager=manager)
+    return decide(artifact, platform, manager=manager, **content)
+
+
+def script_for_upload(video: dict) -> dict:
+    """The script behind an approved video: its sidecar's, else the audio JSON, else output/scripts.
+
+    STEP 65: bv010 reached approved/ with no sidecar (its render timed out
+    after writing the mp4) and went up as «¿Cómo se dice  en inglés?» because
+    this was `{}`. The audio JSON beside it carried the script all along.
+    """
+    script = (video.get("meta") or {}).get("script_data")
+    if script:
+        return script
+    for path in (AUDIO_DIR / video["type"] / f"{video['name']}.json", find_script_for(video["path"])):
+        try:
+            if path and Path(path).is_file():
+                return json.loads(Path(path).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            logger.warning("script_for_upload: unreadable %s", path)
+    return {}
+
+
+def upload_content(video: dict, script: dict, title: str, description: str,
+                   allow_duplicate: bool = False) -> dict:
+    """What upload_guard.content_refusal checks for one approved video."""
+    return {"title": title, "description": description,
+            "gate": (video.get("meta") or {}).get("gate"),
+            "topic_id": (script.get("_meta") or {}).get("topic_id"),
+            "topic_name": script.get("theme") or (script.get("_meta") or {}).get("topic"),
+            "allow_duplicate": allow_duplicate}
 
 
 def _guard_notice(st_module, artifact: str, platform_label: str, verdict) -> None:
@@ -1345,8 +1374,10 @@ def _guard_notice(st_module, artifact: str, platform_label: str, verdict) -> Non
     and the operator's next move would be to upload by hand — which is the
     route that produced the duplicate in the first place.
     """
-    from upload_guard import SKIP_DONE
-    if verdict.action == SKIP_DONE:
+    from upload_guard import REFUSE, SKIP_DONE
+    if verdict.action == REFUSE:
+        st_module.error(f"⛔ {platform_label}: no se sube — {verdict.reason}")
+    elif verdict.action == SKIP_DONE:
         st_module.info(
             f"⏭️ {platform_label}: already published"
             + (f" (id={verdict.upload_id})" if verdict.upload_id else "")
@@ -3018,11 +3049,8 @@ elif page == "Upload":
 
                 with col2:
                     # Generate metadata from script
-                    script = {}
-                    category = ""
-                    if video.get("meta") and "script_data" in video["meta"]:
-                        script = video["meta"]["script_data"]
-                        category = script.get("_meta", {}).get("category", "")
+                    script = script_for_upload(video)
+                    category = script.get("_meta", {}).get("category", "")
 
                     try:
                         from metadata_generator import generate_metadata, adapt_for_platform, regenerate_for_platform
@@ -3123,8 +3151,24 @@ elif page == "Upload":
                                     except Exception as e:
                                         st.error(f"Regeneration failed: {e}")
 
-                # Upload button
-                if target_platforms:
+                # Upload button. STEP 65: the guard is asked BEFORE the click
+                # too, so a refusal is on screen and the button stays grey.
+                from upload_guard import NO_GATE, content_refusal
+                allow_dup = False
+                _pre = content_refusal(**upload_content(
+                    video, script, st.session_state.get(title_key, ""),
+                    st.session_state.get(desc_key, "")))
+                if _pre and _pre.reason.startswith("Ya hay un vídeo"):
+                    st.error(_pre.reason)
+                    allow_dup = st.checkbox("Subir otra versión de todos modos",
+                                            key=f"dup_{video['name']}")
+                    if allow_dup:
+                        _pre = None    # the duplicate is checked last, so nothing else failed
+                elif _pre and _pre.reason == NO_GATE:
+                    st.warning(f"⚠️ {NO_GATE}: el QA gate no ha dado veredicto. Vuelve a renderizar o pasa el gate.")
+                elif _pre:
+                    st.error(f"⛔ {_pre.reason}")
+                if target_platforms and not _pre:
                     if st.button("📤 Upload", key=f"upload_{video['name']}", use_container_width=True):
                         try:
                             from uploader import get_upload_manager
@@ -3160,7 +3204,9 @@ elif page == "Upload":
                                 # path; the manual route is how the first
                                 # duplicate happened.
                                 _v = _guard_decide(video["name"], platform_key,
-                                                   manager=manager)
+                                                   manager=manager, **upload_content(
+                                                       video, script, sent_title, sent_desc,
+                                                       allow_dup))
                                 if not _v.should_upload:
                                     _guard_notice(st, video["name"], platform_name, _v)
                                     continue
@@ -3237,11 +3283,8 @@ elif page == "Upload":
                     }
                     uploaded_count = 0
                     for i, video in enumerate(approved):
-                        script = {}
-                        category = ""
-                        if video.get("meta") and "script_data" in video["meta"]:
-                            script = video["meta"]["script_data"]
-                            category = script.get("_meta", {}).get("category", "")
+                        script = script_for_upload(video)
+                        category = script.get("_meta", {}).get("category", "")
 
                         any_success = False
                         platforms_done = []
@@ -3256,7 +3299,10 @@ elif page == "Upload":
                                 video.get("type", "educational"), category,
                                 st.session_state,
                             )
-                            _v = _guard_decide(video["name"], pkey, manager=manager)
+                            # No duplicate override in bulk: that is a per-video decision.
+                            _v = _guard_decide(video["name"], pkey, manager=manager,
+                                               **upload_content(video, script, adapted["title"],
+                                                                adapted["description"]))
                             if not _v.should_upload:
                                 _guard_notice(st, video["name"], pname, _v)
                                 continue
