@@ -42,7 +42,13 @@ The fix is in `src/tts_common.py`, and you are authorized to change it:
 - Add a regression test: a synthetic clip of 100 ms of silence, 80 ms of noise at -50 dB
   re peak (the "s"), then a vowel at peak. The trimmed clip must keep ≥ 70 ms of the
   noise.
-- Re-measure the table above on a fresh lv001. All ten rows must ramp up from the floor.
+- Re-measure the table above on a fresh lv001. ~~All ten rows must ramp up from the floor.~~
+  **Corrected 2026-10-16 after §1 was done (4c3bfc1):** the criterion was wrong. eleven_v3
+  delivers spoon, sink, stove, ladle, fridge and frying pan already starting inside their
+  first consonant, so no trim can add a ramp. What was eating the /s/ was the 45 ms
+  fade-in, now 5 ms. The pass criterion is: the first consonant is **not attenuated**
+  (its first 30 ms within 15 dB of the word's own level), and the owner's ear finds no cut
+  word.
   STEP 59's onset-gate table (which takes are "dirty") must be redone after this fix: some
   "dirty" verdicts may have been this cut, not the voice.
 
