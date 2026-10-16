@@ -29,6 +29,9 @@ sys.path.insert(0, str(ROOT / "tools"))
 QUEUED = sorted((ROOT / "content" / "queue" / "how_do_you_say").glob("*.json"))
 DRAFTS = sorted((ROOT / "content" / "drafts" / "how_do_you_say").glob("*.json"))
 SCRIPTS = QUEUED or DRAFTS
+# Producing a video moves its script to queue/_done/: the corpus is both (STEP 60 §3).
+from level_length_report import scripts as _corpus  # noqa: E402
+CORPUS = _corpus("how_do_you_say")
 
 
 def _script(name="bv001_familia"):
@@ -113,9 +116,9 @@ def test_tags_only_in_intro_recap_outro_and_only_known_ones():
 def test_drafts_were_moved_not_copied():
     """The brief: move them into the queue once the schema accepts them, and
     drop the draft flag."""
-    assert {"bv001_familia", "bv002_casa", "bv003_comida"} <= {p.stem for p in QUEUED}
+    assert {"bv001_familia", "bv002_casa", "bv003_comida"} <= {p.stem for p in CORPUS}
     assert not DRAFTS, "a script left in drafts/ too is two copies of one topic"
-    for p in QUEUED:
+    for p in CORPUS:
         assert "draft" not in json.loads(p.read_text(encoding="utf-8"))["_meta"]
 
 

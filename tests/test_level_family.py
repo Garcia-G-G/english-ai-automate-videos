@@ -72,7 +72,9 @@ def test_how_do_you_say_renders_byte_identically(no_mascot, monkeypatch):
 
 SCRIPTS = {"level_test": ROOT / "tests" / "fixtures" / "scripts" / "level_test_lv001.json",
            "say_it_level": ROOT / "tests" / "fixtures" / "scripts" / "say_it_level_sy001.json"}
-QUEUED = {t: sorted((ROOT / "content" / "queue" / t).glob("*.json")) for t in SCRIPTS}
+# Producing a video moves its script to queue/_done/: the corpus is both (STEP 60 §3).
+from level_length_report import scripts as _corpus  # noqa: E402
+QUEUED = {t: _corpus(t) for t in SCRIPTS}
 
 
 def _script(vtype):

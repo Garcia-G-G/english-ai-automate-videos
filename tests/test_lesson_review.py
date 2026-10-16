@@ -115,15 +115,19 @@ def test_english_flags_list_the_beats_to_listen_to(tmp_path):
     assert M.english_flags(_row("used-to", "x"), tmp_path) == []
 
 
-def test_the_page_has_two_tabs_and_the_editor_has_no_upload_button():
+def test_the_page_has_two_tabs_and_the_editor_has_no_upload_button(monkeypatch):
     from streamlit.testing.v1 import AppTest
+
+    # The app runs in this process, on these very modules: patch them with monkeypatch
+    # so they are restored. Assigning inside app() left publish.fetch_routes a stub for
+    # every later test (test_publish failed after this one, STEP 60 §3).
+    monkeypatch.setattr(M, "fetch_voices", lambda key: [])
+    monkeypatch.setattr(M.P, "fetch_routes", lambda *a, **k: [])
+    monkeypatch.setattr(M, "review_board", lambda *a, **k: {"por_revisar": [], "aprobadas": [], "rehacer": [],
+                                                            "subidas": [], "anteriores": []})
 
     def app():
         import manim_studio as M
-        M.fetch_voices = lambda key: []
-        M.P.fetch_routes = lambda *a, **k: []
-        M.review_board = lambda *a, **k: {"por_revisar": [], "aprobadas": [], "rehacer": [],
-                                          "subidas": [], "anteriores": []}
         M.render()
 
     at = AppTest.from_function(app, default_timeout=60).run()
