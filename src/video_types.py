@@ -53,13 +53,23 @@ TYPES: Dict[str, dict] = {
         "text_band": (700, 1060),   # the headline band, widened for shadow
         "dashboard": "Educational",
     },
+    # STEP 62: the notebook modes that replace quiz, fill_blank and vocabulary in
+    # production. Each is listed just above the type it replaces, whose button now
+    # reads «(antiguo)»; the old types stay registered for queued scripts and renders.
+    "choose_level": {
+        "renderer":  "video.how_do_you_say:create_frame_level",
+        "audio":     "generate_level_audio_segmented",
+        "timing":    "v3",
+        "text_band": (97, 1459),
+        "dashboard": "Elige la correcta",
+    },
     "quiz": {
         "renderer":  "video.quiz:create_frame_quiz",
         "resolver":  "video.quiz:resolve_quiz_timestamps",
         "audio":     "generate_quiz_audio_segmented",
         "timing":    "v3",
         "text_band": (270, 1450),   # question zone top .. countdown zone
-        "dashboard": "Quiz",
+        "dashboard": "Quiz (antiguo)",
     },
     # STEP 61: the third mode of the notebook, ten statements with blurred answers.
     # Listed before true_false so its button comes first; the old single-statement
@@ -78,12 +88,19 @@ TYPES: Dict[str, dict] = {
         "text_band": (180, 1400),   # question .. explanation
         "dashboard": "Verdadero o falso (uno)",
     },
+    "fill_level": {
+        "renderer":  "video.how_do_you_say:create_frame_level",
+        "audio":     "generate_level_audio_segmented",
+        "timing":    "v3",
+        "text_band": (97, 1459),
+        "dashboard": "Completa (cascada)",
+    },
     "fill_blank": {
         "renderer":  "video.fill_blank:create_frame_fill_blank",
         "audio":     "generate_fill_blank_audio_segmented",
         "timing":    "v3",
         "text_band": (230, 1120),   # sentence card .. translation pill
-        "dashboard": "Fill Blank",
+        "dashboard": "Completa (antiguo)",
     },
     "pronunciation": {
         "renderer":  "video.pronunciation:create_frame_pronunciation",
@@ -91,12 +108,19 @@ TYPES: Dict[str, dict] = {
         "text_band": (230, 1160),   # title .. correct text
         "dashboard": "Pronunciation",
     },
+    "phrases_level": {
+        "renderer":  "video.how_do_you_say:create_frame_level",
+        "audio":     "generate_level_audio_segmented",
+        "timing":    "v3",
+        "text_band": (97, 1459),
+        "dashboard": "¿Cómo se dice? frases",
+    },
     "vocabulary": {
         "renderer":  "video.vocabulary:create_frame_vocabulary",
         "audio":     "generate_vocabulary_audio_segmented",
         "timing":    "v3",
         "text_band": (240, 1400),   # card top .. timer bar
-        "dashboard": "Vocabulary",
+        "dashboard": "Vocabulario (antiguo)",
     },
     "how_do_you_say": {
         "renderer":  "video.how_do_you_say:create_frame_how_do_you_say",

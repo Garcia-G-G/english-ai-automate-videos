@@ -61,6 +61,9 @@ TITLE_TEMPLATES = {
     "level_test": ["¿Qué nivel de inglés tienes? 10 palabras, de fácil a experto 🎯"],
     "say_it_level": ["Dilo en inglés: 10 frases, de fácil a experto 🗣️"],
     "true_false_level": ["¿Verdadero o falso? 10 frases para probar tu inglés 🤔"],
+    "fill_level": ["Completa la frase: 10 frases, de fácil a experto 📝"],
+    "choose_level": ["Elige la correcta: 10 frases, de fácil a experto 🤔"],
+    "phrases_level": ["¿Cómo se dice en inglés? 10 frases del día a día 💬"],
 }
 
 # ── Hashtag strategy ────────────────────────────────────────────────
@@ -112,6 +115,12 @@ TYPE_HASHTAGS = {
                      "#InglésFácil", "#InglésParaViajar"],
     "true_false_level": ["#VerdaderoOFalso", "#FalsosAmigos", "#AprenderInglés",
                          "#InglésFácil", "#VocabularioEnInglés"],
+    "fill_level": ["#CompletaLaFrase", "#GramáticaInglesa", "#AprenderInglés",
+                   "#InglésFácil", "#PracticaInglés"],
+    "choose_level": ["#ElegirLaCorrecta", "#GramáticaInglesa", "#AprenderInglés",
+                     "#InglésFácil", "#ErroresEnInglés"],
+    "phrases_level": ["#CómoSeDice", "#FrasesEnInglés", "#AprenderInglés",
+                      "#InglésFácil", "#InglésParaPrincipiantes"],
 }
 
 #: Audience/intent tags. Spanish-first, because the audience searches in

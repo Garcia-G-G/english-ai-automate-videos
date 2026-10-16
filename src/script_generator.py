@@ -791,6 +791,24 @@ def build_prompt_level(category: str, topic: dict, video_type: str) -> str:
         levels = "cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2. Items 8-10: B2-C2."
         extra = ('"statement" ≤ 38 caracteres, una línea, la palabra inglesa entre «». "correction" SOLO si '
                  '"truth" es false, ≤ 22, empieza por «es ...». Entre 3 y 7 afirmaciones verdaderas.')
+    elif video_type == "fill_level":
+        what = ("Las 10 frases en inglés, cada una con un hueco ____, se ven desde el inicio y NO se leen; tras "
+                "una pausa la respuesta se escribe en el hueco, la traducción aparece debajo y se dice la frase "
+                "completa en inglés.")
+        item = ('{"sentence": "I live ____ Madrid.", "answer": "in", "translation": "Vivo en Madrid.", '
+                '"cefr": "A1"}')
+        levels = "cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2. Items 8-10: B2-C2."
+        extra = ('"sentence" en inglés con EXACTAMENTE un hueco escrito ____ (cuatro guiones bajos), ≤ 34 '
+                 'caracteres; "answer" la palabra o palabras que lo llenan; "translation" en español, ≤ 34.')
+    elif video_type == "choose_level":
+        what = ("Las 10 frases en inglés, cada una con un hueco ____ y dos opciones debajo («make · do»), se ven "
+                "desde el inicio y NO se leen; tras una pausa se rodea la correcta, se tacha la otra y se dice "
+                "la frase completa en inglés.")
+        item = '{"sentence": "I need to ____ my homework.", "options": ["make", "do"], "answer": 1, "cefr": "A1"}'
+        levels = "cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2. Items 8-10: B2-C2."
+        extra = ('"sentence" en inglés con EXACTAMENTE un hueco ____, ≤ 34 caracteres; "options" exactamente 2, '
+                 'distintas; "answer" el índice de la correcta (0 o 1). Cada índice es el correcto entre 3 y 7 '
+                 'veces en el video.')
     else:
         what = ("La frase en español aparece y se dice; el espectador la dice en inglés; después se "
                 "escribe y se dice en inglés. Los items 8-10 son TRAMPAS donde la traducción literal falla.")
@@ -801,7 +819,8 @@ def build_prompt_level(category: str, topic: dict, video_type: str) -> str:
                  'correcta); "tip" OBLIGATORIO en 8-10, ≤ 60, en español, explica la trampa.')
     rules = _length_rule(video_type)
     TITLES = {"level_test": "¿Qué nivel tienes?", "say_it_level": "Dilo en inglés",
-              "true_false_level": "¿Verdadero o falso?"}
+              "true_false_level": "¿Verdadero o falso?", "fill_level": "Completa la frase",
+              "choose_level": "Elige la correcta"}
     return f"""Genera un Short de nivel ("¿Hasta qué número llegas?") para hispanohablantes que aprenden inglés.
 
 {rules}
@@ -837,6 +856,45 @@ FORMATO JSON REQUERIDO:
 Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 
+def build_prompt_phrases_level(category: str, topic: dict) -> str:
+    """phrases_level (STEP 62): «¿Cómo se dice?» with everyday sentences, no tiers, no verdict."""
+    from length_spec import prompt_instruction as _length_rule
+    from script_schema import PHRASES_LEVEL_TAG
+    theme = topic.get("theme") or topic.get("spanish") or topic.get("topic", "")
+    tags = ", ".join(f"[{t}]" for t in ("cheerful", "excited", "curious", "warm"))
+    return f"""Genera un Short «¿Cómo se dice?» con frases del día a día para hispanohablantes que aprenden inglés.
+
+{_length_rule("phrases_level")}
+
+TEMA: {theme}  (topic_id {topic.get("id", "")})
+
+CÓMO ES EL VIDEO: una página de cuaderno con las frases en español visibles desde el primer segundo, que NO
+se leen en voz alta; tras una pausa se escribe y se dice la frase en inglés, la que de verdad se usa.
+
+REGLAS:
+1. Entre 8 y 10 items. Sin niveles, sin cefr, sin veredicto.
+2. "spanish" y "english" ≤ 42 caracteres con puntuación final; inglés natural, no traducción palabra a palabra.
+3. Sin repetir english ni spanish dentro del video.
+4. Etiqueta de voz SOLO al inicio de intro y outro, una, de esta lista: {tags}.
+5. "video_title" ≤ 70 y "video_description" ≤ 120, en español, terminan en UN emoji simple.
+6. "hashtags": exactamente 5, el primero {PHRASES_LEVEL_TAG}.
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "phrases_level",
+  "video_title": "...", "video_description": "...",
+  "title": "¿Cómo se dice?",
+  "theme": "{theme}",
+  "intro": "[cheerful] ...",
+  "items": [{{"spanish": "¿Cómo te fue?", "english": "How did it go?"}}],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "intro + cada english + outro",
+  "hashtags": ["{PHRASES_LEVEL_TAG}", "...", "...", "...", "..."]
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
 def build_prompt(category: str, topic: dict, video_type: str = "educational") -> str:
     """Build prompt based on video type."""
     if video_type == "educational":
@@ -853,8 +911,10 @@ def build_prompt(category: str, topic: dict, video_type: str = "educational") ->
         return build_prompt_vocabulary(category, topic)
     elif video_type == "how_do_you_say":
         return build_prompt_how_do_you_say(category, topic)
-    elif video_type in ("level_test", "say_it_level", "true_false_level"):
+    elif video_type in ("level_test", "say_it_level", "true_false_level", "fill_level", "choose_level"):
         return build_prompt_level(category, topic, video_type)
+    elif video_type == "phrases_level":
+        return build_prompt_phrases_level(category, topic)
     else:
         raise ValueError(f"Unknown video type: {video_type}. Choose from: {VIDEO_TYPES}")
 
@@ -907,6 +967,9 @@ def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None
         "level_test": ["full_script", "theme", "intro", "items", "verdict", "outro"],
         "say_it_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
         "true_false_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "fill_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "choose_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "phrases_level": ["full_script", "theme", "intro", "items", "outro"],
     }
 
     # Check required fields.

@@ -463,7 +463,8 @@ def generate_video(
         def frame_gen(t):
             return create_frame_how_do_you_say(t, data, duration, presentation=presentation)
 
-    elif video_type in ('level_test', 'say_it_level', 'true_false_level'):
+    elif video_type in ('level_test', 'say_it_level', 'true_false_level', 'fill_level',
+                        'choose_level', 'phrases_level'):
         logger.info(f"Level ({video_type}): {len(data['items'])} items, theme {data.get('theme')!r}")
 
         def frame_gen(t):

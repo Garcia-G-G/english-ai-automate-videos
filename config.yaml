@@ -247,6 +247,25 @@ duration:
     say_it_level:
       reject_max_seconds: 95.0
 
+    # STEP 62: the new notebook modes. Estimated before their first render from
+    # the level plans (speech at sy001's rate, the thinks, the gaps and the card);
+    # re-derive each band from its first render (fc001, ec001, vf001).
+    fill_level:
+      min_seconds: 60.0
+      max_seconds: 88.0
+      target_seconds: 76.0
+      reject_max_seconds: 95.0
+    choose_level:
+      min_seconds: 60.0
+      max_seconds: 88.0
+      target_seconds: 76.0
+      reject_max_seconds: 95.0
+    phrases_level:
+      min_seconds: 40.0
+      max_seconds: 70.0
+      target_seconds: 55.0
+      reject_max_seconds: 85.0
+
 
   # ── REPETITION ────────────────────────────────────────────────────
   # "Repeat after me" — the English phrase said more than once with a real
@@ -349,6 +368,14 @@ type_categories:
   # single-statement true_false too; both types read it.
   true_false_level:
     - false_friends
+  # STEP 62: the notebook modes that replace fill_blank, quiz and vocabulary.
+  # These categories feed the old types too; both read them.
+  fill_level:
+    [grammar, common_mistakes, confusing_words]
+  choose_level:
+    [grammar, common_mistakes, confusing_words]
+  phrases_level:
+    [everyday_expressions, social, travel]
 
   # A general explainer handles any content. Excludes pronunciation only
   # because text karaoke cannot convey sound.
@@ -419,6 +446,9 @@ upload:
     level_test: "#NivelDeInglés #AprenderInglés #VocabularioEnInglés #TestDeInglés #InglésFácil"
     say_it_level: "#DiloEnInglés #AprenderInglés #FrasesEnInglés #InglésFácil #InglésParaViajar"
     true_false_level: "#VerdaderoOFalso #FalsosAmigos #AprenderInglés #InglésFácil #VocabularioEnInglés"
+    fill_level: "#CompletaLaFrase #GramáticaInglesa #AprenderInglés #InglésFácil #PracticaInglés"
+    choose_level: "#ElegirLaCorrecta #GramáticaInglesa #AprenderInglés #InglésFácil #ErroresEnInglés"
+    phrases_level: "#CómoSeDice #FrasesEnInglés #AprenderInglés #InglésFácil #InglésParaPrincipiantes"
 
 # Content Generation
 content:
