@@ -316,5 +316,70 @@ def predict(vtype: str, words: int, rate: float, overhead: float,
     return words / rate + fixed + items * PER_ITEM_SILENCE
 
 
+def _spoken_chars(texts) -> int:
+    return sum(len(strip_tags(t or "").strip()) for t in texts)
+
+
+def level_spoken(script: dict) -> list:
+    """Every text a level script says, from LEVEL_PLANS, as the generator sends it."""
+    from tts_elevenlabs import LEVEL_PLANS, LEVEL_TIER_LINES, level_answer
+    plan = LEVEL_PLANS[script["type"]]
+    out = [script.get("intro"), script.get("verdict"), script.get("outro"), *LEVEL_TIER_LINES.values()]
+    lines = [level_answer(item, plan["answer"][0]) for item in script.get("items") or []]
+    if plan["speak_prompt"]:
+        lines += [item[plan["prompt"][0]] for item in script.get("items") or []]
+    # the generator closes every item line with a full stop, and it is spoken time
+    return out + [t if t.endswith((".", "?", "!")) else f"{t}." for t in lines]
+
+
+def level_reference(artifact: Path) -> dict:
+    """Speech seconds per character, and the silence that is not a think, off one render.
+
+    A level video is speech + thinks + fixed gaps + the outro card. The thinks are
+    set by LEVEL_PLANS, so they are taken out of the measurement and added back
+    per script: that is what lets a think change be predicted before rendering.
+    """
+    import subprocess
+    meta = json.loads((artifact / "audio" / "narration.json").read_text(encoding="utf-8"))
+    segs = meta["segments"]
+    speech = [s for s in segs if s["text"] != "[silence]"]
+    think = sum(s["duration"] for s in segs if s["id"].startswith("think_"))
+    spoken = sum(s["duration"] for s in speech)
+    video = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
+                                  str(artifact / "video" / "final.mp4")],
+                                 capture_output=True, text=True, check=True).stdout)
+    return {"s_per_char": spoken / _spoken_chars(s["text"] for s in speech),
+            "gaps": meta["duration"] - spoken - think, "card": video - meta["duration"]}
+
+
+def predict_level(script: dict, ref: dict) -> float:
+    """Video seconds for one level script, with today's LEVEL_PLANS thinks."""
+    from tts_elevenlabs import LEVEL_PLANS, level_think
+    plan = LEVEL_PLANS[script["type"]]
+    think = sum(level_think(plan, item[plan["prompt"][0]]) for item in script["items"])
+    return _spoken_chars(level_spoken(script)) * ref["s_per_char"] + ref["gaps"] + think + ref["card"]
+
+
+def level_report(vtype: str, artifact: Path) -> None:
+    """min / median / max predicted video seconds over queue/<type>/ + queue/_done/."""
+    import duration_spec
+    queue = ROOT / "content" / "queue"
+    paths = list((queue / vtype).glob("*.json"))
+    paths += [p for p in (queue / "_done").glob("*.json")
+              if json.loads(p.read_text(encoding="utf-8")).get("type") == vtype]
+    ref = level_reference(artifact)
+    rows = sorted((predict_level(json.loads(p.read_text(encoding="utf-8")), ref), p.stem) for p in paths)
+    ceiling = duration_spec.reject_window(vtype)["max_seconds"]
+    secs = [r[0] for r in rows]
+    print(f"{vtype}: {len(rows)} scripts, reference {artifact.name}: "
+          f"min {secs[0]:.1f}s  median {statistics.median(secs):.1f}s  max {secs[-1]:.1f}s")
+    over = [r for r in rows if r[0] > ceiling]
+    print(f"  over {ceiling:g}s: " + (", ".join(f"{n} {d:.1f}s" for d, n in over) or "none"))
+
+
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:2] == ["--level"]:
+        # python3 tools/duration_calibrate.py --level say_it_level output/artifacts/sy001_restaurante
+        level_report(sys.argv[2], Path(sys.argv[3]))
+    else:
+        main()

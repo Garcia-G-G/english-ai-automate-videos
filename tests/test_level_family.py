@@ -222,7 +222,9 @@ def test_generator_declares_every_segment_and_caches_the_tier_lines(tmp_path, mo
     order += ["verdict", "outro"]
     assert [s["id"] for s in out["segments"]] == order
     st = out["segment_times"]
-    assert all(st[f"think_{i}"]["duration"] == pytest.approx(plan["think"], abs=0.002) for i in range(1, 11))
+    prompts = [it[plan["prompt"][0]] for it in script["items"]]
+    assert [st[f"think_{i}"]["duration"] for i in range(1, 11)] == \
+        pytest.approx([TE.level_think(plan, p) for p in prompts], abs=0.002)
     assert all(s["text"] == "[silence]" for s in out["segments"] if s["id"].startswith("think_"))
     starts = [st[k]["start"] for k in order]
     assert starts == sorted(starts)
@@ -324,3 +326,33 @@ def test_spoken_words_count_the_plan():
     script = _script("say_it_level")
     words = spoken_words(script)
     assert words > sum(len(it["english"].split()) for it in script["items"])
+
+
+# ── STEP 60 §2: thinking time ───────────────────────────────────────
+
+@pytest.mark.parametrize("length,seconds", [(1, 3.0), (20, 3.0), (21, 4.0), (27, 4.0), (28, 5.0), (60, 5.0)])
+def test_say_it_level_thinks_longer_on_a_longer_sentence(length, seconds):
+    import tts_elevenlabs as TE
+    assert TE.level_think(TE.LEVEL_PLANS["say_it_level"], "x" * length) == seconds
+
+
+def test_level_test_thinks_four_seconds_on_any_word():
+    import tts_elevenlabs as TE
+    plan = TE.LEVEL_PLANS["level_test"]
+    assert {TE.level_think(plan, w) for w in ("oven", "cutting board", "x" * 40)} == {4.0}
+
+
+@pytest.mark.parametrize("vtype", ["level_test", "say_it_level"])
+def test_the_level_types_reject_over_95_seconds(vtype):
+    import duration_spec
+    assert duration_spec.reject_window(vtype)["max_seconds"] == 95.0
+
+
+def test_the_predictor_adds_the_new_thinks_to_what_a_render_measured():
+    import duration_calibrate as D
+    import tts_elevenlabs as TE
+    script = _script("say_it_level")
+    ref = {"s_per_char": 0.0, "gaps": 10.0, "card": 4.0}
+    plan = TE.LEVEL_PLANS["say_it_level"]
+    thinks = sum(TE.level_think(plan, it["spanish"]) for it in script["items"])
+    assert D.predict_level(script, ref) == pytest.approx(14.0 + thinks)

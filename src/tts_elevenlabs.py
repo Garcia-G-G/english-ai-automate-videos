@@ -1920,17 +1920,30 @@ def generate_how_do_you_say_audio_segmented(
 #: Spanish is read off the page, not spoken: with it spoken sy001 measured 82.2 s
 #: of audio (2026-10-15), over the 80 s ceiling -- STEP 49 §5 lever 3, which asks
 #: for a think of at least 3.0 s in exchange.
+#:
+#: STEP 60 §2 (owner, 2026-10-16): level_test thinks 4.0 s, not 1.7 s; say_it_level
+#: scales its pause by the Spanish sentence's length, (most characters, seconds),
+#: so a long sentence gets 5 s without adding 20 s to every video.
 LEVEL_PLANS = {
     "level_test":   {"prompt": ("english", "en"), "answer": ("spanish", "es"),
-                     "think": 1.7, "speak_prompt": True},
+                     "think": 4.0, "speak_prompt": True},
     "say_it_level": {"prompt": ("spanish", "es"), "answer": ("english", "en"),
-                     "think": 3.0, "speak_prompt": False},
+                     "think": 3.0, "think_by_length": ((20, 3.0), (27, 4.0), (None, 5.0)),
+                     "speak_prompt": False},
     # STEP 61: the statement is read off the page; the 4.0 s pause is reading plus
     # deciding. The answer is pure Spanish («Verdadero.» / «Falso: es alfombra.»),
     # so it carries no English onset risk.
     "true_false_level": {"prompt": ("statement", "es"), "answer": ("answer", "es"),
                          "think": 4.0, "speak_prompt": False},
 }
+
+
+def level_think(plan: dict, prompt: str) -> float:
+    """Seconds of silence after one prompt: the plan's flat think, or its length table."""
+    for most, seconds in plan.get("think_by_length", ()):
+        if most is None or len(prompt) <= most:
+            return seconds
+    return plan["think"]
 
 
 def level_answer(item: dict, field: str) -> str:
@@ -2129,7 +2142,7 @@ def generate_level_audio_segmented(
                 say(f"prompt_{i}", clean_for_tts(text if text.endswith((".", "?", "!")) else f"{text}.",
                                                  keep_tags=_KEEP_TAGS),
                     prompt_lang, "default")
-            start, end = add_silence(plan["think"])
+            start, end = add_silence(level_think(plan, prompt))
             add_segment(f"think_{i}", "[silence]", start, end)
             answer = level_answer(item, answer_field)
             text = answer if answer_lang == "en" else _spoken_spanish(answer)

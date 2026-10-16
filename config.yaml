@@ -239,6 +239,14 @@ duration:
       target_seconds: 79.0
       reject_max_seconds: 95.0
 
+    # STEP 60 §2: the owner chose more thinking time over the 80 s ceiling
+    # (STEP 49 §5 lever 4). level_test thinks 4.0 s per word (lv001 ~91 s);
+    # say_it_level 3/4/5 s by sentence length (sy001 ~87 s).
+    level_test:
+      reject_max_seconds: 95.0
+    say_it_level:
+      reject_max_seconds: 95.0
+
 
   # ── REPETITION ────────────────────────────────────────────────────
   # "Repeat after me" — the English phrase said more than once with a real
