@@ -15,6 +15,22 @@ Mocks (rendered with the real `create_frame_level` plus monkeypatches) are in
 - `F_` (phrases_level)
 - `G_` (choose_level)
 
+## 0. First: keep level_test under 95 s without rewriting 42 scripts
+
+STEP 60 left this open. With 4.0 s to think, 42 of the 100 level_test scripts are predicted over the 95 s ceiling
+(median 94.4 s, lv082 105.2 s), and so are 4 say_it_level scripts (sy054, sy056, sy057, sy077).
+The owner asked for "unos 5 segundos" and chose 4 s. Rule:
+
+- `think` stays 4.0 s (level_test) and 3/4/5 s by sentence length (say_it_level). But if a script's predicted
+  duration (`tools/duration_calibrate.py --level`) is over 95 s, all its pauses shrink by the same
+  fraction until it fits, with a floor of 3.0 s (level_test) and 2.5 s (say_it_level).
+- Anything still over 95 s at the floor is listed, and I shorten those scripts.
+- Report: how many scripts got shorter pauses, the shortest pause used, and the list still over 95 s.
+- Commit and push this section before §1.
+
+Evidence for keeping videos near ~70–90 s (`_audit/analytics/shorts_2026-10-16.csv`): how_do_you_say runs about 70 s
+and keeps 39–46 % of viewers ("se quedaron para mirar"); no other type does that consistently.
+
 ## 1. `fill_level` — «Completa la frase» in cascade (replaces fill_blank)
 
 Draft: `content/drafts/fill_level/fc001_preposiciones.json`.
