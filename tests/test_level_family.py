@@ -207,7 +207,7 @@ def test_generator_declares_every_segment_and_caches_the_tier_lines(tmp_path, mo
         return 0.0
 
     monkeypatch.setattr(TE, "generate_segment_audio", fake)
-    monkeypatch.setattr(TE, "_onset_clean", lambda path: True)
+    monkeypatch.setattr(TE, "_onset_values", lambda path: CLEAN)
     monkeypatch.setattr(TE, "DEFAULT_VOICE_ID", "test-voice")
     monkeypatch.setattr(TE, "LEVEL_TIER_CACHE", tmp_path / "tiers")
     script = _script(vtype)
@@ -234,15 +234,56 @@ def test_generator_declares_every_segment_and_caches_the_tier_lines(tmp_path, mo
     assert not any(c in TE.LEVEL_TIER_LINES.values() for c in calls)
 
 
-def test_a_dirty_english_onset_is_asked_again(tmp_path, monkeypatch):
+CLEAN = {"start_db": -40.0, "fragment": None, "doubled_onset": None}
+
+
+def _rig(tmp_path, monkeypatch, values):
+    """generate_level_audio_segmented with each take's tone length marking which take it is."""
     import tts_elevenlabs as TE
-    calls, verdicts = [], iter([False, True] + [True] * 100)
-    monkeypatch.setattr(TE, "generate_segment_audio", lambda text, output_path, **kw: calls.append(text) or _tone(output_path))
-    monkeypatch.setattr(TE, "_onset_clean", lambda path: next(verdicts))
+    calls, takes = [], iter(values)
+    def fake(text, output_path, **kw):
+        calls.append(text)
+        _tone(output_path, total=0.9 + 0.1 * calls.count(text))
+    monkeypatch.setattr(TE, "generate_segment_audio", fake)
+    monkeypatch.setattr(TE, "_onset_values", lambda path: next(takes, CLEAN))
     monkeypatch.setattr(TE, "DEFAULT_VOICE_ID", "test-voice")
     monkeypatch.setattr(TE, "LEVEL_TIER_CACHE", tmp_path / "tiers")
+    import tts_common
+    monkeypatch.setattr(tts_common, "trim_clip_silence", lambda path: None)
     out = TE.generate_level_audio_segmented(_script("level_test"), str(tmp_path / "a.mp3"))
+    return out, calls
+
+
+def test_a_dirty_english_onset_is_asked_again(tmp_path, monkeypatch):
+    dirty = {"start_db": -2.0, "fragment": None, "doubled_onset": None}
+    out, calls = _rig(tmp_path, monkeypatch, [dirty, CLEAN])
     assert out["onset_retakes"] == 1 and calls.count("spoon.") == 2
+
+
+def test_after_two_re_asks_the_cleanest_take_is_kept_not_the_last(tmp_path, monkeypatch):
+    first = {"start_db": -5.0, "fragment": None, "doubled_onset": None}
+    second = {"start_db": -1.0, "fragment": None, "doubled_onset": None}
+    third = {"start_db": -40.0, "fragment": (70, 64.7), "doubled_onset": None}
+    out, calls = _rig(tmp_path, monkeypatch, [first, second, third])
+    assert out["onset_retakes"] == 2 and calls.count("spoon.") == 3
+    st = out["segment_times"]["prompt_1"]
+    assert st["end"] - st["start"] == pytest.approx(0.85, abs=0.03)   # take 0's speech: 1.0 s tone, 0.15 s tail
+
+
+def test_cleanest_take_ranks_flaws_before_level():
+    import tts_elevenlabs as TE
+    takes = [{"start_db": -50.0, "fragment": None, "doubled_onset": "held nasal"},
+             {"start_db": -5.0, "fragment": None, "doubled_onset": None},
+             {"start_db": -3.0, "fragment": None, "doubled_onset": None}]
+    assert TE.cleanest_take(takes) == 1
+    assert TE.cleanest_take([dict(takes[1], start_db=-9.0), takes[1]]) == 0     # clean on v3 wins
+
+
+def test_the_start_limit_is_per_model():
+    import tts_elevenlabs as TE
+    s_word = {"start_db": -9.0, "fragment": None, "doubled_onset": None}      # «sink» on v3
+    assert TE.onset_clean(s_word, "eleven_v3") and not TE.onset_clean(s_word, "eleven_multilingual_v2")
+    assert not TE.onset_clean(dict(s_word, start_db=-0.4), "eleven_v3")       # «oven» cut in at its peak
 
 
 # ── the doors that read the registry ─────────────────────────────────

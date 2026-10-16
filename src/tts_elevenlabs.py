@@ -1950,8 +1950,21 @@ LEVEL_AFTER_VERDICT_S = 0.5
 LEVEL_ONSET_RETRIES = 2
 
 
-def _onset_clean(path: str) -> bool:
-    """The Manim onset gate's verdict on one clip as ElevenLabs returned it.
+#: Start-to-peak (first 5 ms frame minus the clip's peak, dB) a clean take stays under.
+#: -30 came from the Manim lessons on multilingual_v2. eleven_v3 trims the lead-in, so a
+#: word opening on /s/ /n/ /f/ /l/ starts at -9…-24 dB (30 takes of lv001, STEP 59 §2);
+#: only takes that open within 5 dB of their peak (-4.1, -1.2, -0.4: a cut-in) sit above.
+#: -6.5 is the midpoint of that gap. shortcut: one script, no ear check yet; re-measure
+#: with tools/onset_calibrate.py when the owner flags a word.
+ONSET_START_DB = {"default": -30.0, "eleven_v3": -6.5}
+
+
+def onset_start_limit(model: str = None) -> float:
+    return ONSET_START_DB.get(model or MODEL_ID, ONSET_START_DB["default"])
+
+
+def _onset_values(path: str) -> dict:
+    """The Manim onset gate's three measurements of one clip as ElevenLabs returned it.
 
     shortcut: loads experiments/manim_voiceover_poc/probes/onset.py by path; move
     it into src/ if the Shorts keep the gate."""
@@ -1964,8 +1977,24 @@ def _onset_clean(path: str) -> bool:
     e = O.env_db(x)
     start, _ = O.onset(x)
     if start is None:
-        return False
-    return float(e[0] - e.max()) < -30 and O.fragment(e, start, e.max()) is None and O.doubled_onset(x) is None
+        return {"start_db": None, "fragment": None, "doubled_onset": None}
+    return {"start_db": round(float(e[0] - e.max()), 1), "fragment": O.fragment(e, start, e.max()),
+            "doubled_onset": O.doubled_onset(x)}
+
+
+def onset_clean(values: dict, model: str = None) -> bool:
+    return (values["start_db"] is not None and values["start_db"] < onset_start_limit(model)
+            and values["fragment"] is None and values["doubled_onset"] is None)
+
+
+def cleanest_take(takes: list) -> int:
+    """Index of the take to keep: a clean one, else no fragment and no doubled onset with the
+    quietest start, else the quietest start. Never just the last one."""
+    def rank(i):
+        v = takes[i]
+        flawed = v["start_db"] is None or v["fragment"] is not None or v["doubled_onset"] is not None
+        return (not onset_clean(v), flawed, v["start_db"] if v["start_db"] is not None else 0.0, i)
+    return min(range(len(takes)), key=rank)
 
 
 def _spoken_spanish(text: str) -> str:
@@ -2048,15 +2077,24 @@ def generate_level_audio_segmented(
         def speak(seg_id: str, text: str, lang: str, segment_type: str) -> str:
             nonlocal retakes
             path = os.path.join(temp_dir, f"{seg_id}.mp3")
-            request(text, path, segment_type)
-            if lang == "en":
-                for take in range(LEVEL_ONSET_RETRIES):
-                    if _onset_clean(path):
+            if lang != "en":
+                request(text, path, segment_type)
+            else:
+                takes, files = [], []
+                for take in range(1 + LEVEL_ONSET_RETRIES):
+                    files.append(os.path.join(temp_dir, f"{seg_id}.take{take}.mp3"))
+                    request(text, files[-1], segment_type)
+                    takes.append(_onset_values(files[-1]))
+                    logger.info("%s take %d: start %s dB, fragment %s, doubled %s", seg_id, take,
+                                takes[-1]["start_db"], takes[-1]["fragment"], takes[-1]["doubled_onset"])
+                    if onset_clean(takes[-1]):
                         break
-                    retakes += 1
-                    logger.info("%s: dirty onset, asking again (%d/%d)", seg_id, take + 1,
-                                LEVEL_ONSET_RETRIES)
-                    request(text, path, segment_type)
+                    if take < LEVEL_ONSET_RETRIES:
+                        retakes += 1
+                kept = cleanest_take(takes)
+                if len(takes) > 1:
+                    logger.info("%s: kept take %d of %d", seg_id, kept, len(takes))
+                shutil.copy(files[kept], path)
             trim_clip_silence(path)
             return path
 
