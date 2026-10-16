@@ -31,7 +31,6 @@ from PIL import Image, ImageDraw
 
 from .compositor import render_video_ffmpeg
 from .constants import FPS, VIDEO_HEIGHT, VIDEO_WIDTH
-from .utils import instrument_serif_italic, manrope
 
 logger = logging.getLogger(__name__)
 
@@ -41,14 +40,17 @@ OUTRO_DIR = ROOT / "assets" / "outro"
 
 OUTRO_DURATION = 4.0
 
-#: Learning Routes brand background.
-BG_COLOR = (15, 14, 13)            # #0F0E0D
-HEADING_COLOR = (247, 245, 240)
-URL_COLOR = (255, 255, 255)
-ACCENT_COLOR = (198, 168, 106)     # warm rule under the URL
-
-HEADING_SIZE = 76                  # Instrument Serif italic, the LR heading face
-URL_SIZE = 62                      # Manrope, the LR body face
+#: STEP 62 §4: the brand v2 sticker card on sand, the symbol on top (mock
+#: C_cierre_short.png). Colours and faces come from brand.json, as the notebook's do.
+SYMBOL = ROOT / "assets" / "branding" / "english-unlimited" / "simbolo_512.png"
+CARD_W, CARD_H = 900, 520
+CARD_RADIUS = 30
+CARD_OUTLINE = 7
+SYMBOL_PX = 170
+LEAD_SIZE = 64                     # «Aprende inglés en», Fredoka medium, ink
+URL_SIZE = 96                      # learningroutes.com, Fredoka bold, English blue
+SUB_SIZE = 40                      # the site's line, Fredoka medium, muted
+MARKER_H = 30                      # the yellow stroke under the URL's lower half
 
 FADE_IN = 0.35
 FADE_OUT = 0.35
@@ -80,38 +82,61 @@ def select_variant(seed: Optional[str] = None) -> Dict:
 
 # ── frames ───────────────────────────────────────────────────────────
 
+def _brand_colour(name: str) -> Tuple[int, int, int]:
+    from .how_do_you_say import brand
+    value = brand()["color"].get(name) or brand()["manim"]["themes"]["sand"][name]
+    return tuple(int(value[i:i + 2], 16) for i in (1, 3, 5))
+
+
+def _sand() -> Tuple[int, int, int]:
+    from .how_do_you_say import brand
+    value = brand()["manim"]["themes"]["sand"]["bg"]
+    return tuple(int(value[i:i + 2], 16) for i in (1, 3, 5))
+
+
+def outro_still(variant: Dict) -> Image.Image:
+    """The card: «line_1» in ink, line_2 big in English blue over a yellow marker
+    stroke, outro.json's `line_3` small and muted, the symbol on the top edge."""
+    from .how_do_you_say import fredoka
+    ink, blue, yellow = _brand_colour("ink"), _brand_colour("english_blue"), _brand_colour("brand_yellow")
+    paper, muted = _brand_colour("paper"), _brand_colour("secondary_text")
+    img = Image.new("RGB", (VIDEO_WIDTH, VIDEO_HEIGHT), _sand())
+    draw = ImageDraw.Draw(img)
+    x0, y0 = (VIDEO_WIDTH - CARD_W) // 2, (VIDEO_HEIGHT - CARD_H) // 2
+    draw.rounded_rectangle([x0 + 8, y0 + 8, x0 + CARD_W + 8, y0 + CARD_H + 8], radius=CARD_RADIUS, fill=ink)
+    draw.rounded_rectangle([x0, y0, x0 + CARD_W, y0 + CARD_H], radius=CARD_RADIUS, fill=paper,
+                           outline=ink, width=CARD_OUTLINE)
+
+    def centred(text, font, cy, fill):
+        box = draw.textbbox((0, 0), text, font=font)
+        draw.text(((VIDEO_WIDTH - (box[2] - box[0])) // 2 - box[0], cy - (box[1] + box[3]) // 2),
+                  text, font=font, fill=fill)
+        return box
+
+    lead = fredoka(LEAD_SIZE, "display_medium")
+    url = fredoka(URL_SIZE)
+    while draw.textlength(variant["line_2"], font=url) > CARD_W - 140:
+        url = fredoka(url.size - 4)
+    centred(variant["line_1"], lead, y0 + 150, ink)
+    ucy = y0 + 290
+    w = draw.textlength(variant["line_2"], font=url)
+    draw.rounded_rectangle([(VIDEO_WIDTH - w) // 2 - 8, ucy + 2, (VIDEO_WIDTH + w) // 2 + 8, ucy + 2 + MARKER_H],
+                           radius=MARKER_H // 2, fill=yellow)
+    centred(variant["line_2"], url, ucy, blue)
+    sub = load_variants().get("line_3")
+    if sub:
+        centred(sub, fredoka(SUB_SIZE, "display_medium"), y0 + 425, muted)
+    symbol = Image.open(SYMBOL).convert("RGBA").resize((SYMBOL_PX, SYMBOL_PX), Image.LANCZOS)
+    img.paste(symbol, ((VIDEO_WIDTH - SYMBOL_PX) // 2, y0 - SYMBOL_PX // 2 - 20), symbol)
+    return img
+
+
 def _make_frame_fn(variant: Dict):
-    heading = instrument_serif_italic(HEADING_SIZE)
-    url_font = manrope(URL_SIZE, "Bold")
-
-    base = Image.new("RGB", (VIDEO_WIDTH, VIDEO_HEIGHT), BG_COLOR)
-    draw = ImageDraw.Draw(base)
-
-    l1, l2 = variant["line_1"], variant["line_2"]
-    b1 = draw.textbbox((0, 0), l1, font=heading)
-    b2 = draw.textbbox((0, 0), l2, font=url_font)
-
-    total_h = (b1[3] - b1[1]) + 46 + (b2[3] - b2[1])
-    y = VIDEO_HEIGHT // 2 - total_h // 2 - 40
-
-    draw.text(((VIDEO_WIDTH - (b1[2] - b1[0])) // 2 - b1[0], y - b1[1]),
-              l1, font=heading, fill=HEADING_COLOR)
-
-    y2 = y + (b1[3] - b1[1]) + 46
-    draw.text(((VIDEO_WIDTH - (b2[2] - b2[0])) // 2 - b2[0], y2 - b2[1]),
-              l2, font=url_font, fill=URL_COLOR)
-
-    rule_w = int((b2[2] - b2[0]) * 0.42)
-    rule_y = y2 + (b2[3] - b2[1]) + 34
-    draw.rounded_rectangle(
-        [(VIDEO_WIDTH - rule_w) // 2, rule_y, (VIDEO_WIDTH + rule_w) // 2, rule_y + 5],
-        radius=3, fill=ACCENT_COLOR)
-
-    still = np.array(base, dtype=np.uint8)
-    bg = np.array(BG_COLOR, dtype=np.float32)
+    still = np.array(outro_still(variant), dtype=np.uint8)
+    bg = np.array(_sand(), dtype=np.float32)
 
     def frame_at(t: float) -> np.ndarray:
-        # Fade from and to the brand background rather than to black, so the
+        # Fade from and to the sand background rather than to black, so the
         # join with the main video and the end of the clip are both clean.
         k = 1.0
         if t < FADE_IN:
@@ -161,8 +186,16 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
     OUTRO_DIR.mkdir(parents=True, exist_ok=True)
 
     with tempfile.TemporaryDirectory() as tmp:
-        voice = Path(tmp) / "outro_voice.mp3"
-        _synthesize(variant, voice)
+        voice = Path(tmp) / "outro_voice.m4a"
+        if path.exists():
+            # A redraw (force=True) keeps the voice the clip already has: the same
+            # `spoken`, $0 (STEP 62 §4). Only a missing clip asks the TTS.
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(path), "-vn", "-c:a", "copy",
+                            str(voice)], check=True, capture_output=True)
+            logger.info("outro: redraw of %s keeps its voice, no TTS", variant["id"])
+        else:
+            voice = voice.with_suffix(".mp3")
+            _synthesize(variant, voice)
 
         # Pad the voice to the full clip length so the audio stream is exactly
         # as long as the video. A short audio stream under -shortest would
