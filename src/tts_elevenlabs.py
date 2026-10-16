@@ -2104,7 +2104,9 @@ def generate_level_audio_segmented(
 
         def tier_clip(n: int) -> str:
             text = LEVEL_TIER_LINES[n]
-            key = hashlib.sha1(f"{voice_id}|{MODEL_ID}|{text}".encode()).hexdigest()[:16]
+            # The trim is in the key: a clip trimmed the old way is asked again (STEP 60 §1).
+            from tts_common import LEAD_FADE_S, TRIM_LEAD_PAD
+            key = hashlib.sha1(f"{voice_id}|{MODEL_ID}|{text}|{TRIM_LEAD_PAD}|{LEAD_FADE_S}".encode()).hexdigest()[:16]
             cached = LEVEL_TIER_CACHE / f"{key}.mp3"
             if not cached.exists():
                 LEVEL_TIER_CACHE.mkdir(parents=True, exist_ok=True)

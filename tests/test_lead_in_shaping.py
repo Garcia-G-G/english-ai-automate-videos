@@ -83,20 +83,16 @@ def test_no_frame_at_the_start_sits_below_the_gap_floor(tmp_path):
             f"frame {i * 10}ms at {level:.0f} dB punches through the floor")
 
 
-def test_the_onset_is_not_a_slam(tmp_path):
-    """Trimmed clips reached full level in 20-30 ms; the model's own onsets
-    take 40-50. The first frame must not already be at full level."""
+def test_the_clip_does_not_start_on_a_full_level_sample(tmp_path):
+    """The first millisecond rises from near silence (no click); by 5 ms the clip is at its own
+    level. STEP 60 §1: a 45 ms fade ate the /s/ eleven_v3 starts its words on."""
     clip = _clip(tmp_path / "c.mp3")
-    audio_before = _pcm(clip)
-    first_before = _db(audio_before[:int(0.01 * SR)])
     shape_clip_lead_in(str(clip))
-    first_after = _db(_pcm(clip)[:int(0.01 * SR)])
-    # 15 dB, not 20: a synthetic sine has no natural pre-roll and the mp3
-    # encoder rings at the boundary, so the measured attenuation on this
-    # fixture (~19 dB) is smaller than on a real clip, which enters from
-    # -98 dB. The assertion is "not a slam", not a precise depth.
-    assert first_after < first_before - 15, (
-        "the clip still enters at full level")
+    audio = _pcm(clip)
+    ms = int(0.001 * SR)
+    first, steady = _db(audio[:ms]), _db(audio[int(0.02 * SR):int(0.03 * SR)])
+    assert first < steady - 12, "the clip enters at full level"
+    assert _db(audio[5 * ms:6 * ms]) > steady - 3, "the fade reaches into the first consonant"
 
 
 def test_the_body_of_the_clip_is_untouched(tmp_path):
@@ -109,9 +105,8 @@ def test_the_body_of_the_clip_is_untouched(tmp_path):
     assert mid_after == pytest.approx(mid_before, abs=1.5)
 
 
-def test_the_fade_matches_the_measured_natural_onset():
-    """45 ms, because untrimmed segments reach -25 dB in 40-50 ms. A sweep
-    to 90 ms did not move the median, so longer would only attenuate more
-    real speech for nothing."""
-    assert LEAD_FADE_S == 0.045
-    assert LEAD_CURVE == "esin"
+def test_the_fade_only_removes_the_click():
+    """5 ms linear (STEP 60 §1). 45 ms, matched to a natural onset, faded out the /s/ that
+    eleven_v3 starts «spoon», «sink» and «stove» on; the kept pre-roll is the onset now."""
+    assert LEAD_FADE_S == 0.005
+    assert LEAD_CURVE == "tri"

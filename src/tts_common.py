@@ -266,9 +266,20 @@ def measure_speech_end(audio_path: str, threshold_db: float = None,
 #: deterministic by construction rather than by luck.
 TRIM_TAIL_PAD = 0.08
 
-#: Leading silence is already small (0-0.096s measured), so this only avoids
-#: clipping the attack of the first phoneme.
-TRIM_LEAD_PAD = 0.02
+#: Pre-roll kept before the measured speech start. 0.02 s was measured on
+#: option clips that open on vowels; a soft /s/ or /n/ runs 30-100 ms under
+#: any edge threshold, so 0.08 s keeps it (STEP 60 §1).
+TRIM_LEAD_PAD = 0.08
+
+#: Speech starts where the level first rises above the clip's own peak minus
+#: this. An absolute -45 dBFS put the start inside a quiet onset: on lv001's
+#: «cutting board» it found 65 ms where the /k/ closure starts at 0 ms. -55,
+#: not -50: a soft /s/ sits near -50 re peak, and a threshold equal to it is
+#: a coin flip per 5 ms frame.
+SPEECH_START_RE_PEAK_DB = -55.0
+#: ...but never below this, so a near-silent clip is not "speech" from its
+#: room tone (ElevenLabs' floor measures -75 to -94 dBFS).
+SPEECH_START_FLOOR_DB = -70.0
 
 
 def measure_first_take_end(audio_path: str, threshold_db: float = None,
@@ -400,35 +411,28 @@ def measure_speech_start(audio_path: str, threshold_db: float = None,
                          min_dur: float = 0.03) -> float:
     """Offset where speech STARTS, i.e. the length of the leading silence.
 
-    Uses a shorter min_dur than measure_speech_end because leading silence is
-    an order of magnitude smaller — measured 0.000s to 0.096s across real
-    option clips, all of which would be invisible at the 0.10s window.
+    The threshold is relative to the clip's own peak (SPEECH_START_RE_PEAK_DB,
+    floored at SPEECH_START_FLOOR_DB) unless `threshold_db` gives an absolute
+    one. 5 ms RMS frames; `min_dur` is kept for the signature.
     """
-    import re
-    import subprocess
+    import numpy as np
 
-    threshold_db = SPEECH_EDGE_THRESHOLD_DB if threshold_db is None else threshold_db
     try:
-        proc = subprocess.run(
-            ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
-             f"silencedetect=noise={threshold_db}dB:d={min_dur}",
-             "-f", "null", "-"],
-            capture_output=True, text=True, timeout=60,
-        )
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", audio_path, "-ac", "1",
+                              "-ar", "44100", "-f", "s16le", "-"],
+                             capture_output=True, timeout=60).stdout
     except (OSError, subprocess.SubprocessError):
         return 0.0
-
-    spans, start = [], None
-    for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
-        if kind == "start":
-            start = float(value)
-        elif start is not None:
-            spans.append((start, float(value)))
-            start = None
-    # Leading silence only counts if it begins at the very top of the file.
-    if spans and spans[0][0] <= 0.02:
-        return spans[0][1]
-    return 0.0
+    x = np.frombuffer(raw, "<i2").astype(float) / 32768
+    frame = 220                                             # 5 ms
+    n = len(x) // frame
+    if not n:
+        return 0.0
+    e = 20 * np.log10(np.sqrt((x[:n * frame].reshape(n, frame) ** 2).mean(1)) + 1e-9)
+    if threshold_db is None:
+        threshold_db = max(float(e.max()) + SPEECH_START_RE_PEAK_DB, SPEECH_START_FLOOR_DB)
+    above = np.where(e > threshold_db)[0]
+    return round(float(above[0]) * frame / 44100, 4) if len(above) else 0.0
 
 
 def trim_clip_silence(audio_path: str, out_path: str = None) -> dict:
@@ -534,11 +538,14 @@ def trim_clip_silence(audio_path: str, out_path: str = None) -> dict:
 # reasoning: an onset is an amplitude curve, and this rebuilds it.
 # ═══════════════════════════════════════════════════════════════════════
 
-#: Fade-in length. Measured: untrimmed segments reach -25 dB in 40-50 ms,
-#: trimmed ones in 20-30 ms. Matched to the natural figure, not chosen.
-LEAD_FADE_S = 0.045
-#: Same family as the tail repair's curve, picked the same way.
-LEAD_CURVE = "esin"
+#: Fade-in length: only so no clip starts on a non-zero sample. It was 45 ms
+#: (the natural onset), but eleven_v3 returns words that already open inside
+#: their first consonant (lv001 «spoon», «sink», «stove» start at -11 dBFS in
+#: their first ms), and 45 ms of fade took the /s/ down to -59 dB re peak: the
+#: cut words the owner heard (STEP 60 §1). The kept pre-roll is the onset now.
+LEAD_FADE_S = 0.005
+#: Linear.
+LEAD_CURVE = "tri"
 
 
 def shape_clip_lead_in(audio_path: str) -> bool:
