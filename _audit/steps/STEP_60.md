@@ -78,7 +78,11 @@ how_do_you_say Shorts that work run about 70 s. So scale the pause by sentence l
   `duration_spec` (STEP 49 §5 lever 4: the owner chose more thinking time over the 80 s
   ceiling). If any of the 100 scripts would still go over 95 s, list them, and I shorten
   them.
-- level_test keeps `think = 1.7 s`; the owner did not ask to change it.
+- **level_test: think 1.7 s → 4.0 s** (owner, 2026-10-16, after hearing
+  lv001_cocina_step60: «están bien pero les daría unos 5 segundos de esperar respuesta»).
+  He chose 4 s over 5 s: lv001 goes from 68.3 s to about 91 s, where 5 s would give about
+  101 s. Give `level_test` its own `reject_max_seconds = 95` too. List any of the 100
+  scripts predicted over 95 s.
 
 ## 3. Ten tests that always fail (noise that hides real failures)
 
@@ -101,8 +105,8 @@ Goal: a clean suite reads «0 failed».
 - Re-render lv001 cocina and sy001 restaurante. Reuse cached clips where the text is
   unchanged. A clip whose trim changed must be re-trimmed from the original download, if
   it is kept. Otherwise re-ask it and count the cost.
-- Then **stop**. The owner listens to knife, spoon, sink and stove in lv001, and to the
-  long rows of sy001.
+- Then **stop**. The owner already approved lv001's words (4c3bfc1). He now listens to the
+  new pauses in lv001 and sy001.
 - `pronounce_level` (all English words, so all exposed to this cut) starts only after he
   confirms the fix.
 
