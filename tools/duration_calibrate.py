@@ -320,18 +320,6 @@ def _spoken_chars(texts) -> int:
     return sum(len(strip_tags(t or "").strip()) for t in texts)
 
 
-def level_spoken(script: dict) -> list:
-    """Every text a level script says, from LEVEL_PLANS, as the generator sends it."""
-    from tts_elevenlabs import LEVEL_PLANS, LEVEL_TIER_LINES, level_answer
-    plan = LEVEL_PLANS[script["type"]]
-    out = [script.get("intro"), script.get("verdict"), script.get("outro"), *LEVEL_TIER_LINES.values()]
-    lines = [level_answer(item, plan["answer"][0]) for item in script.get("items") or []]
-    if plan["speak_prompt"]:
-        lines += [item[plan["prompt"][0]] for item in script.get("items") or []]
-    # the generator closes every item line with a full stop, and it is spoken time
-    return out + [t if t.endswith((".", "?", "!")) else f"{t}." for t in lines]
-
-
 def level_reference(artifact: Path) -> dict:
     """Speech seconds per character, and the silence that is not a think, off one render.
 
@@ -352,34 +340,52 @@ def level_reference(artifact: Path) -> dict:
             "gaps": meta["duration"] - spoken - think, "card": video - meta["duration"]}
 
 
-def predict_level(script: dict, ref: dict) -> float:
-    """Video seconds for one level script, with today's LEVEL_PLANS thinks."""
-    from tts_elevenlabs import LEVEL_PLANS, level_think
-    plan = LEVEL_PLANS[script["type"]]
-    think = sum(level_think(plan, item[plan["prompt"][0]]) for item in script["items"])
-    return _spoken_chars(level_spoken(script)) * ref["s_per_char"] + ref["gaps"] + think + ref["card"]
+def predict_level(script: dict) -> tuple:
+    """(video seconds, thinks): what the generator will make of this script today."""
+    from tts_elevenlabs import level_predict, level_thinks
+    thinks = level_thinks(script)
+    return level_predict(script, thinks), thinks
 
 
-def level_report(vtype: str, artifact: Path) -> None:
-    """min / median / max predicted video seconds over queue/<type>/ + queue/_done/."""
+def level_report(vtype: str, artifact: Path = None) -> None:
+    """Predicted video seconds over queue/<type>/ + queue/_done/, with the pauses shrunk to fit.
+
+    With an artifact, also prints its measured speech rate, to check the plan's s_per_char.
+    """
     import duration_spec
+    from tts_elevenlabs import LEVEL_PLANS, level_think
+    plan = LEVEL_PLANS[vtype]
+    if artifact:
+        print(f"{artifact.name}: measured {level_reference(artifact)['s_per_char']:.4f} s/char, "
+              f"plan {plan['s_per_char']}")
     queue = ROOT / "content" / "queue"
     paths = list((queue / vtype).glob("*.json"))
     paths += [p for p in (queue / "_done").glob("*.json")
               if json.loads(p.read_text(encoding="utf-8")).get("type") == vtype]
-    ref = level_reference(artifact)
-    rows = sorted((predict_level(json.loads(p.read_text(encoding="utf-8")), ref), p.stem) for p in paths)
     ceiling = duration_spec.reject_window(vtype)["max_seconds"]
+    rows = []
+    for p in paths:
+        script = json.loads(p.read_text(encoding="utf-8"))
+        seconds, thinks = predict_level(script)
+        full = [level_think(plan, it[plan["prompt"][0]]) for it in script["items"]]
+        rows.append((seconds, p.stem, thinks, thinks != full))
+    if not rows:
+        print(f"{vtype}: no scripts in the queue")
+        return
+    rows.sort()
     secs = [r[0] for r in rows]
-    print(f"{vtype}: {len(rows)} scripts, reference {artifact.name}: "
+    shrunk = [r for r in rows if r[3]]
+    print(f"{vtype}: {len(rows)} scripts, ceiling {ceiling:g}s: "
           f"min {secs[0]:.1f}s  median {statistics.median(secs):.1f}s  max {secs[-1]:.1f}s")
-    over = [r for r in rows if r[0] > ceiling]
-    print(f"  over {ceiling:g}s: " + (", ".join(f"{n} {d:.1f}s" for d, n in over) or "none"))
+    print(f"  shorter pauses: {len(shrunk)} scripts"
+          + (f", shortest pause {min(min(r[2]) for r in shrunk):.2f}s" if shrunk else ""))
+    over = [r for r in rows if r[0] > ceiling + 0.05]
+    print(f"  still over {ceiling:g}s at the floor: " + (", ".join(f"{n} {d:.1f}s" for d, n, *_ in over) or "none"))
 
 
 if __name__ == "__main__":
     if sys.argv[1:2] == ["--level"]:
         # python3 tools/duration_calibrate.py --level say_it_level output/artifacts/sy001_restaurante
-        level_report(sys.argv[2], Path(sys.argv[3]))
+        level_report(sys.argv[2], Path(sys.argv[3]) if sys.argv[3:] else None)
     else:
         main()

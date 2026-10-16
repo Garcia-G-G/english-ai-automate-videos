@@ -36,13 +36,11 @@ def _encode(samples: np.ndarray, path: Path) -> None:
 
 def retime(meta: dict, samples: np.ndarray) -> tuple:
     """(new meta, new samples): each think_<i> lasts what LEVEL_PLANS says today."""
-    from tts_elevenlabs import LEVEL_PLANS, level_think
-    plan = LEVEL_PLANS[meta["type"]]
-    prompts = [item[plan["prompt"][0]] for item in meta["items"]]
+    from tts_elevenlabs import level_thinks
     inserts = []                                       # (at second, extra seconds), in time order
-    for i, prompt in enumerate(prompts, start=1):
+    for i, think in enumerate(level_thinks(meta), start=1):
         st = meta["segment_times"][f"think_{i}"]
-        extra = round(level_think(plan, prompt) - (st["end"] - st["start"]), 3)
+        extra = round(think - (st["end"] - st["start"]), 3)
         if extra < 0:
             raise ValueError(f"think_{i} would shrink by {-extra}s; this tool only lengthens")
         inserts.append((st["end"], extra))

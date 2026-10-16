@@ -224,9 +224,8 @@ def test_generator_declares_every_segment_and_caches_the_tier_lines(tmp_path, mo
     order += ["verdict", "outro"]
     assert [s["id"] for s in out["segments"]] == order
     st = out["segment_times"]
-    prompts = [it[plan["prompt"][0]] for it in script["items"]]
     assert [st[f"think_{i}"]["duration"] for i in range(1, 11)] == \
-        pytest.approx([TE.level_think(plan, p) for p in prompts], abs=0.002)
+        pytest.approx(TE.level_thinks(script), abs=0.002)
     assert all(s["text"] == "[silence]" for s in out["segments"] if s["id"].startswith("think_"))
     starts = [st[k]["start"] for k in order]
     assert starts == sorted(starts)
@@ -350,11 +349,55 @@ def test_the_level_types_reject_over_95_seconds(vtype):
     assert duration_spec.reject_window(vtype)["max_seconds"] == 95.0
 
 
-def test_the_predictor_adds_the_new_thinks_to_what_a_render_measured():
-    import duration_calibrate as D
+def test_the_predictor_adds_the_thinks_to_speech_gaps_and_the_card():
     import tts_elevenlabs as TE
     script = _script("say_it_level")
-    ref = {"s_per_char": 0.0, "gaps": 10.0, "card": 4.0}
-    plan = TE.LEVEL_PLANS["say_it_level"]
-    thinks = sum(TE.level_think(plan, it["spanish"]) for it in script["items"])
-    assert D.predict_level(script, ref) == pytest.approx(14.0 + thinks)
+    base = TE.level_predict(script, [0.0] * 10)
+    assert TE.level_predict(script, [3.0] * 10) == pytest.approx(base + 30.0)
+
+
+# ── STEP 62 §0: pauses shrink to keep a level video under its ceiling ──
+
+def _long(vtype, extra_chars):
+    """A real script with its verdict padded, so speech alone pushes it over 95 s."""
+    script = _script(vtype)
+    script["verdict"] += " " + "a" * extra_chars
+    return script
+
+
+@pytest.mark.parametrize("vtype", ["level_test", "say_it_level"])
+def test_a_script_under_the_ceiling_keeps_its_pauses(vtype):
+    import tts_elevenlabs as TE
+    script = _script(vtype)
+    plan = TE.LEVEL_PLANS[vtype]
+    assert TE.level_thinks(script) == [TE.level_think(plan, it[plan["prompt"][0]]) for it in script["items"]]
+
+
+@pytest.mark.parametrize("vtype", ["level_test", "say_it_level"])
+def test_an_overlong_script_shrinks_every_pause_by_one_fraction_to_fit(vtype):
+    import tts_elevenlabs as TE
+    plan = TE.LEVEL_PLANS[vtype]
+    script = _script(vtype)
+    full = TE.level_thinks(script)
+    over = 95.0 - TE.level_predict(script, full) + 3.0          # 3 s over the ceiling
+    script = _long(vtype, int(over / plan["s_per_char"]) + 1)
+    thinks = TE.level_thinks(script)
+    assert TE.level_predict(script, thinks) <= 95.0
+    ratios = {round(t / f, 2) for t, f in zip(thinks, full)}
+    assert len(ratios) == 1 and ratios.pop() < 1.0             # one fraction for every row
+    assert min(thinks) >= plan["think_floor"]
+
+
+@pytest.mark.parametrize("vtype", ["level_test", "say_it_level"])
+def test_no_pause_goes_under_the_floor_and_the_script_stays_over(vtype):
+    import tts_elevenlabs as TE
+    plan = TE.LEVEL_PLANS[vtype]
+    script = _long(vtype, 600)
+    thinks = TE.level_thinks(script)
+    assert min(thinks) == plan["think_floor"]
+    assert TE.level_predict(script, thinks) > 95.0              # duration_calibrate lists it
+
+
+def test_true_false_level_has_no_floor_and_never_shrinks():
+    import tts_elevenlabs as TE
+    assert "think_floor" not in TE.LEVEL_PLANS["true_false_level"]

@@ -1924,12 +1924,19 @@ def generate_how_do_you_say_audio_segmented(
 #: STEP 60 §2 (owner, 2026-10-16): level_test thinks 4.0 s, not 1.7 s; say_it_level
 #: scales its pause by the Spanish sentence's length, (most characters, seconds),
 #: so a long sentence gets 5 s without adding 20 s to every video.
+#:
+#: STEP 62 §0: a plan with a `think_floor` shrinks all its pauses by one fraction when
+#: the script is predicted over the type's reject ceiling, never under the floor.
+#: `s_per_char` is speech seconds per spoken character, measured on the approved
+#: renders lv001_cocina_think4 (0.0900) and sy001_restaurante_step60 (0.0696).
 LEVEL_PLANS = {
     "level_test":   {"prompt": ("english", "en"), "answer": ("spanish", "es"),
-                     "think": 4.0, "speak_prompt": True},
+                     "think": 4.0, "speak_prompt": True,
+                     "think_floor": 3.0, "s_per_char": 0.090},
     "say_it_level": {"prompt": ("spanish", "es"), "answer": ("english", "en"),
                      "think": 3.0, "think_by_length": ((20, 3.0), (27, 4.0), (None, 5.0)),
-                     "speak_prompt": False},
+                     "speak_prompt": False,
+                     "think_floor": 2.5, "s_per_char": 0.070},
     # STEP 61: the statement is read off the page; the 4.0 s pause is reading plus
     # deciding. The answer is pure Spanish («Verdadero.» / «Falso: es alfombra.»),
     # so it carries no English onset risk.
@@ -1959,6 +1966,47 @@ LEVEL_AFTER_INTRO_S = 0.5
 LEVEL_AROUND_TIER_S = 0.3
 LEVEL_BEFORE_VERDICT_S = 0.5
 LEVEL_AFTER_VERDICT_S = 0.5
+
+
+def level_spoken(script: dict) -> list:
+    """Every text a level script says, as the generator sends it (tags still in)."""
+    plan = LEVEL_PLANS[script["type"]]
+    items = script.get("items") or []
+    lines = [level_answer(item, plan["answer"][0]) for item in items]
+    if plan["speak_prompt"]:
+        lines += [item[plan["prompt"][0]] for item in items]
+    # the generator closes every item line with a full stop, and it is spoken time
+    return ([script.get("intro"), script.get("verdict"), script.get("outro"), *LEVEL_TIER_LINES.values()]
+            + [t if t.endswith((".", "?", "!")) else f"{t}." for t in lines])
+
+
+def level_predict(script: dict, thinks: list) -> float:
+    """Video seconds: speech at the plan's measured rate, the fixed gaps, the thinks, the outro card."""
+    import duration_spec
+    from audio_tags import strip_tags
+    plan = LEVEL_PLANS[script["type"]]
+    chars = sum(len(strip_tags(t or "").strip()) for t in level_spoken(script))
+    gaps = (LEVEL_AFTER_INTRO_S + len(script["items"]) * LEVEL_ITEM_GAP_S
+            + len(LEVEL_TIER_LINES) * LEVEL_AROUND_TIER_S + LEVEL_BEFORE_VERDICT_S + LEVEL_AFTER_VERDICT_S)
+    return chars * plan["s_per_char"] + gaps + sum(thinks) + duration_spec.outro_seconds()
+
+
+def level_thinks(script: dict) -> list:
+    """Each row's pause: the plan's, shrunk by one fraction to fit the ceiling, floored (STEP 62 §0)."""
+    import math
+    import duration_spec
+    plan = LEVEL_PLANS[script["type"]]
+    thinks = [level_think(plan, item[plan["prompt"][0]]) for item in script["items"]]
+    if "think_floor" not in plan:
+        return thinks
+    over = level_predict(script, thinks) - duration_spec.reject_window(script["type"])["max_seconds"]
+    if over <= 0:
+        return thinks
+    fraction = 1 - over / sum(thinks)
+    # rounded down to 10 ms, so rounding never puts a script back over
+    return [max(plan["think_floor"], math.floor(t * fraction * 100) / 100) for t in thinks]
+
+
 #: Takes re-asked when an English clip starts dirty (the Manim onset gate, 3ad373d).
 LEVEL_ONSET_RETRIES = 2
 
@@ -2131,6 +2179,7 @@ def generate_level_audio_segmented(
 
         prompt_field, prompt_lang = plan["prompt"]
         answer_field, answer_lang = plan["answer"]
+        thinks = level_thinks(script)
         for i, item in enumerate(items, start=1):
             if i in LEVEL_TIER_LINES:
                 start, _file_end, _dur, end = add_audio(tier_clip(i))
@@ -2142,7 +2191,7 @@ def generate_level_audio_segmented(
                 say(f"prompt_{i}", clean_for_tts(text if text.endswith((".", "?", "!")) else f"{text}.",
                                                  keep_tags=_KEEP_TAGS),
                     prompt_lang, "default")
-            start, end = add_silence(level_think(plan, prompt))
+            start, end = add_silence(thinks[i - 1])
             add_segment(f"think_{i}", "[silence]", start, end)
             answer = level_answer(item, answer_field)
             text = answer if answer_lang == "en" else _spoken_spanish(answer)
