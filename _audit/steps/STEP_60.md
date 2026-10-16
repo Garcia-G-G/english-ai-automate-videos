@@ -74,17 +74,7 @@ how_do_you_say Shorts that work run about 70 s. So scale the pause by sentence l
   them.
 - level_test keeps `think = 1.7 s`; the owner did not ask to change it.
 
-## 3. Re-render both and stop
-
-- Re-render lv001 cocina and sy001 restaurante. Reuse cached clips where the text is
-  unchanged. A clip whose trim changed must be re-trimmed from the original download, if
-  it is kept. Otherwise re-ask it and count the cost.
-- Then **stop**. The owner listens to knife, spoon, sink and stove in lv001, and to the
-  long rows of sy001.
-- `pronounce_level` (all English words, so all exposed to this cut) starts only after he
-  confirms the fix.
-
-## 4. Ten tests that always fail (noise that hides real failures)
+## 3. Ten tests that always fail (noise that hides real failures)
 
 Every suite run ends with the same failures, and each one costs the owner a read.
 
@@ -99,6 +89,16 @@ Every suite run ends with the same failures, and each one costs the owner a read
   and skip them unless `RUN_NETWORK_TESTS=1`.
 
 Goal: a clean suite reads «0 failed».
+
+## 4. Re-render both and stop
+
+- Re-render lv001 cocina and sy001 restaurante. Reuse cached clips where the text is
+  unchanged. A clip whose trim changed must be re-trimmed from the original download, if
+  it is kept. Otherwise re-ask it and count the cost.
+- Then **stop**. The owner listens to knife, spoon, sink and stove in lv001, and to the
+  long rows of sy001.
+- `pronounce_level` (all English words, so all exposed to this cut) starts only after he
+  confirms the fix.
 
 ## Constraints
 
