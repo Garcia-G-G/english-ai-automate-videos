@@ -722,6 +722,7 @@ def fill_parts(sentence: str) -> Tuple[str, str]:
     return before, after
 
 
+@lru_cache(maxsize=16)
 def fill_layout(items: Tuple[Tuple[str, str], ...]) -> Tuple[int, int]:
     """(font size, blank width) for a page of (sentence, answer): the largest size at which
     every sentence, with the page's blank in it, fits LINE_W on one line."""
@@ -745,6 +746,7 @@ def fit_line(text: str, size: int = LINE_FONT_MAX) -> Tuple[ImageFont.FreeTypeFo
     return fit_word(text, LINE_W, size, LINE_FONT_MIN)
 
 
+@lru_cache(maxsize=64)
 def page_size(texts: Tuple[str, ...]) -> int:
     """One size for a whole column of lines: the largest at which every one fits, so ten
     rows do not each pick their own and the page reads as one hand."""
