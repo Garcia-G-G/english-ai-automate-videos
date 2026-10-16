@@ -1,4 +1,4 @@
-# STEP 63 — The long lessons on the notebook (approved design E)
+# STEP 63 — Three fixes from the STEP 62 renders (§0), then the long lessons on the notebook (approved design E)
 
 The owner approved design E (2026-10-15). The mock is
 `output/qa/design_proposals/E_leccion_libreta.png`; the before/after is
@@ -6,9 +6,35 @@ The owner approved design E (2026-10-15). The mock is
 from the first frame. This step brings that rule and the notebook look into the Manim
 lessons.
 
-Run after STEP 61 (which adds the lesson end card's learningroutes.com line). Work in
+Run now (STEP 61 and STEP 62 are closed). Work section by section: each section has its own tests and its own pushed commit. Stop and report if a section fails. Work in
 `experiments/manim_voiceover_poc` (theme.py, lesson_scene.py). Apply it to make-vs-do
 first.
+
+## 0. Three fixes from the STEP 62 renders (do these first, one commit)
+
+I read the stills in `_audit/stills/STEP62/`.
+
+1. **The pencil covers the last answer.** In `fc001_preposiciones_last_row.png` the
+   pencil sits on top of «Depende de ti». The viewer can't read it, and that is the last
+   frame they see. When the last row is revealed, the pencil parks to the right of that
+   row's text and covers no glyph of it.
+   - Test, for every level type: in the final frame, the pencil's box does not intersect
+     any text box.
+2. **«Elige» circles touch the level dividers.** In `ec001_make_do_last_row.png` the
+   yellow line under row 3 and the red line under row 7 run into the circles of «do» and
+   «did». Leave at least 8 px between any answer circle or strike and a divider. Get that
+   space from the row layout, not by shrinking the text.
+   - Test: geometry check on choose_level with the longest option pair.
+3. **The render timeout is too tight.** fc001 took 1189 s and ec001 1008 s, against
+   `RENDER_TIMEOUT_S = 1200` (`src/pipeline.py`).
+   - Raise the limit to 1800 s for the level types only. The other types keep 1200 s.
+   - STEP 65 already blocks the upload of a render that was killed, so a longer limit
+     can't bring back the empty-title upload.
+   - Log each render's wall time in its sidecar.
+   - Test: a level type gets 1800 s, and a non-level type keeps 1200 s.
+
+Proof: re-render fc001 and ec001 **from cached audio** ($0). Report their new stills
+(`_audit/stills/STEP63/`) and wall times. Then go on to §1 without stopping.
 
 ## 1. What changes
 

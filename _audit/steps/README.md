@@ -84,7 +84,7 @@ with the same number.
 | [STEP 60](STEP_60.md) | Owner approves the level format; fix the cut first consonants and give long sentences more thinking time |
 | [STEP 61](STEP_61.md) | One step at a time: lessons upload like the Shorts (A), true/false cascade (B), learningroutes.com in descriptions and lesson end card (C), render (D) |
 | [STEP 62](STEP_62.md) | Completa, Elige la correcta and ¿Cómo se dice? frases on the notebook; on-brand Shorts outro |
-| [STEP 63](STEP_63.md) | The long lessons on the notebook: full tables from frame 1, sticky-note captions, site badge |
+| [STEP 63](STEP_63.md) | Three fixes from the STEP 62 renders (pencil, Elige dividers, level render timeout), then the long lessons on the notebook |
 | [STEP 64](STEP_64.md) | Merged into STEP 61, Part A |
 | [STEP 65](STEP_65.md) | Upload guards: no empty titles, no second copy of a topic, the script's own title, no upload without QA |
 | [STEP 66](STEP_66.md) | The same Short also goes to Instagram Reels and the Facebook Page (free Graph API, upload from the Mac) |
