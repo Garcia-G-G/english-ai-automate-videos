@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "¿MAKE o DO? Elige la correcta en 10 frases 🤔",
+  "video_description": "El error que más delata a un hispanohablante, en diez frases. ¿Cuántas aciertas? ✅",
+  "title": "Elige la correcta",
+  "theme": "make o do",
+  "intro": "[curious] Dos opciones en cada frase. Elige antes de que yo la diga.",
+  "items": [
+    {
+      "sentence": "I need to ____ my homework.",
+      "options": [
+        "make",
+        "do"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ a cake yesterday.",
+      "options": [
+        "made",
+        "did"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Can you ____ me a favor?",
+      "options": [
+        "make",
+        "do"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We ____ a decision today.",
+      "options": [
+        "made",
+        "did"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He ____ the dishes every night.",
+      "options": [
+        "makes",
+        "does"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Don't ____ noise, please.",
+      "options": [
+        "make",
+        "do"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I ____ my best.",
+      "options": [
+        "made",
+        "did"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "They ____ a lot of money.",
+      "options": [
+        "make",
+        "do"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Let's ____ business together.",
+      "options": [
+        "make",
+        "do"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She ____ the bed every morning.",
+      "options": [
+        "makes",
+        "does"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y las diez, experto.",
+  "outro": "[excited] ¿Cuántas acertaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#MakeVsDo",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec001",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "I need to do my homework.",
+    "She made a cake yesterday.",
+    "Can you do me a favor?",
+    "We made a decision today.",
+    "He does the dishes every night.",
+    "Don't make noise, please.",
+    "I did my best.",
+    "They make a lot of money.",
+    "Let's do business together.",
+    "She makes the bed every morning."
+  ],
+  "full_script": "[curious] Dos opciones en cada frase. Elige antes de que yo la diga. I need to do my homework. She made a cake yesterday. Can you do me a favor? Ahora, nivel intermedio. We made a decision today. He does the dishes every night. Don't make noise, please. I did my best. Y ahora, nivel experto. They make a lot of money. Let's do business together. She makes the bed every morning. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y las diez, experto. [excited] ¿Cuántas acertaste? Dímelo en los comentarios."
+}

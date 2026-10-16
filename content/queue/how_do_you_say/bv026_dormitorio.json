@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el DORMITORIO en inglés? 🛏️",
+  "video_description": "Diez palabras de tu cuarto, de la almohada al cajón. 😴",
+  "title": "¿Cómo se dice…?",
+  "theme": "el dormitorio",
+  "level": "A1",
+  "intro": "[curious] Lee cada palabra y piensa cómo se dice en inglés.",
+  "items": [
+    {
+      "emoji": "☁️",
+      "spanish": "Almohada",
+      "english": "pillow"
+    },
+    {
+      "emoji": "🧣",
+      "spanish": "Manta",
+      "english": "blanket"
+    },
+    {
+      "emoji": "🛌",
+      "spanish": "Sábana",
+      "english": "sheet"
+    },
+    {
+      "emoji": "🚪",
+      "spanish": "Armario",
+      "english": "closet"
+    },
+    {
+      "emoji": "💡",
+      "spanish": "Lámpara",
+      "english": "lamp"
+    },
+    {
+      "emoji": "⏰",
+      "spanish": "Despertador",
+      "english": "alarm clock"
+    },
+    {
+      "emoji": "🪟",
+      "spanish": "Cortina",
+      "english": "curtain"
+    },
+    {
+      "emoji": "🧶",
+      "spanish": "Alfombra",
+      "english": "rug"
+    },
+    {
+      "emoji": "🗄️",
+      "spanish": "Cajón",
+      "english": "drawer"
+    },
+    {
+      "emoji": "🛏️",
+      "spanish": "Colchón",
+      "english": "mattress"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: pillow, blanket, sheet, closet, lamp, alarm clock, curtain, rug, drawer, mattress.",
+  "outro": "[cheerful] Comenta tu número del uno al diez. Sin trampas.",
+  "translations": {
+    "pillow": "Almohada",
+    "blanket": "Manta",
+    "sheet": "Sábana",
+    "closet": "Armario",
+    "lamp": "Lámpara",
+    "alarm clock": "Despertador",
+    "curtain": "Cortina",
+    "rug": "Alfombra",
+    "drawer": "Cajón",
+    "mattress": "Colchón"
+  },
+  "english_phrases": [
+    "pillow",
+    "blanket",
+    "sheet",
+    "closet",
+    "lamp",
+    "alarm clock",
+    "curtain",
+    "rug",
+    "drawer",
+    "mattress"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv026",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] Lee cada palabra y piensa cómo se dice en inglés. Almohada... pillow. pillow. Manta... blanket. blanket. Sábana... sheet. sheet. Armario... closet. closet. Lámpara... lamp. lamp. Despertador... alarm clock. alarm clock. Cortina... curtain. curtain. Alfombra... rug. rug. Cajón... drawer. drawer. Colchón... mattress. mattress. Otra vez, todas seguidas: pillow, blanket, sheet, closet, lamp, alarm clock, curtain, rug, drawer, mattress. [cheerful] Comenta tu número del uno al diez. Sin trampas."
+}

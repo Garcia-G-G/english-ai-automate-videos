@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "CIENCIA en inglés: ¿sabes pronunciar estas palabras? 🔬",
+  "video_description": "Palabras de ciencia en inglés, de fácil a experto. 🧪",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la ciencia",
+  "intro": "[curious] Palabras de ciencia, de fácil a experto. Pronúncialas antes que yo.",
+  "items": [
+    {
+      "english": "cell",
+      "respelling": "SEL",
+      "ipa": "ˈsɛl",
+      "trap": "C suena S y la E es corta"
+    },
+    {
+      "english": "atom",
+      "respelling": "A-tem",
+      "ipa": "ˈætəm",
+      "trap": "Acento en A: A-tem"
+    },
+    {
+      "english": "gravity",
+      "respelling": "GRA-ve-ti",
+      "ipa": "ˈgrævəti",
+      "trap": "Acento en GRA, no en DAD"
+    },
+    {
+      "english": "energy",
+      "respelling": "E-ner-yi",
+      "ipa": "ˈɛnɚdʒi",
+      "trap": "G suena «y» fuerte: E-ner-yi"
+    },
+    {
+      "english": "microscope",
+      "respelling": "MAI-kre-skoup",
+      "ipa": "ˈmaɪkrəskoʊp",
+      "trap": "La I suena «ai» y acento en MAI"
+    },
+    {
+      "english": "experiment",
+      "respelling": "ik-SPE-re-ment",
+      "ipa": "ɪkˈspɛrəmənt",
+      "trap": "Acento en SPE"
+    },
+    {
+      "english": "molecule",
+      "respelling": "MA-le-kiuul",
+      "ipa": "ˈmɑləkjuːl",
+      "trap": "Acento en MA: MA-le-kiuul"
+    },
+    {
+      "english": "laboratory",
+      "respelling": "LA-bre-to-ri",
+      "ipa": "ˈlæbrətɔri",
+      "trap": "Acento en LA y solo 4 sílabas"
+    },
+    {
+      "english": "hypothesis",
+      "respelling": "jai-PA-the-sis",
+      "ipa": "haɪˈpɑθəsɪs",
+      "trap": "Y suena «ai» y TH en el medio"
+    },
+    {
+      "english": "photosynthesis",
+      "respelling": "fou-tou-SIN-the-sis",
+      "ipa": "foʊtoʊˈsɪnθəsɪs",
+      "trap": "Acento en SIN y TH inglesa"
+    }
+  ],
+  "verdict": "¿Llegaste a la tres? Eres básico. ¿A la siete? Intermedio. Si sacaste las diez, nivel experto.",
+  "outro": "[curious] ¿Cuál te costó más? Escríbela en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#CienciaEnInglés",
+    "#AprenderInglés",
+    "#InglésOnline",
+    "#InglésAmericano"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl045",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

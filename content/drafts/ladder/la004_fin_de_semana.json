@@ -1,0 +1,61 @@
+{
+  "type": "ladder",
+  "video_title": "Escalera: cuenta tu fin de semana en pasado 🎉",
+  "video_description": "Cinco escalones para el lunes por la mañana. 🪜",
+  "level": "A2",
+  "theme": "el fin de semana",
+  "intro": "[cheerful] Empezamos con una palabra. Subimos escalón a escalón. Repite cada frase en voz alta.",
+  "steps": [
+    {
+      "en": "I went.",
+      "es": "Fui.",
+      "added": "went"
+    },
+    {
+      "en": "I went out.",
+      "es": "Salí.",
+      "added": "out"
+    },
+    {
+      "en": "I went out with friends.",
+      "es": "Salí con amigos.",
+      "added": "with friends"
+    },
+    {
+      "en": "I went out with friends on Saturday.",
+      "es": "Salí con amigos el sábado.",
+      "added": "on Saturday"
+    },
+    {
+      "en": "I went out with some old friends on Saturday night.",
+      "es": "Salí con unos viejos amigos el sábado por la noche.",
+      "added": "some old … night"
+    }
+  ],
+  "challenge": {
+    "es": "Me quedé en casa con mi familia el domingo por la mañana.",
+    "en": "I stayed at home with my family on Sunday morning."
+  },
+  "outro": "[excited] ¿Te salió el reto? Escríbelo en los comentarios.",
+  "translations": {
+    "I went.": "Fui.",
+    "I went out.": "Salí.",
+    "I went out with friends.": "Salí con amigos.",
+    "I went out with friends on Saturday.": "Salí con amigos el sábado.",
+    "I went out with some old friends on Saturday night.": "Salí con unos viejos amigos el sábado por la noche."
+  },
+  "hashtags": [
+    "#Escalera",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "ladders",
+    "topic_id": "la004",
+    "video_type": "ladder",
+    "model": "manual",
+    "draft": true
+  }
+}

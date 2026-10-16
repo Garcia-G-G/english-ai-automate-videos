@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La V y la B en inglés: ¿las distingues? 🗳️",
+  "video_description": "Diez palabras para dominar la diferencia entre V y B en inglés. 💜",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la V y la B",
+  "intro": "[curious] V y B no suenan igual en inglés. Pronuncia cada palabra y compara.",
+  "items": [
+    {
+      "english": "very",
+      "respelling": "VE-ri",
+      "ipa": "ˈvɛri",
+      "trap": "V: dientes sobre el labio"
+    },
+    {
+      "english": "boy",
+      "respelling": "BOI",
+      "ipa": "ˈbɔɪ",
+      "trap": "B: con los dos labios"
+    },
+    {
+      "english": "five",
+      "respelling": "FAIV",
+      "ipa": "ˈfaɪv",
+      "trap": "V final con labio y dientes"
+    },
+    {
+      "english": "berry",
+      "respelling": "BE-ri",
+      "ipa": "ˈbɛri",
+      "trap": "B con labios: no es «very»"
+    },
+    {
+      "english": "vote",
+      "respelling": "VOUT",
+      "ipa": "ˈvoʊt",
+      "trap": "V con dientes: VOUT"
+    },
+    {
+      "english": "boat",
+      "respelling": "BOUT",
+      "ipa": "ˈboʊt",
+      "trap": "B con labios: BOUT"
+    },
+    {
+      "english": "village",
+      "respelling": "VI-lidch",
+      "ipa": "ˈvɪlɪdʒ",
+      "trap": "V con dientes y -AGE = «idch»"
+    },
+    {
+      "english": "verb",
+      "respelling": "VERB",
+      "ipa": "ˈvɝb",
+      "trap": "V al principio y B al final"
+    },
+    {
+      "english": "vibrant",
+      "respelling": "VAI-brent",
+      "ipa": "ˈvaɪbrənt",
+      "trap": "V y B en la misma palabra"
+    },
+    {
+      "english": "obvious",
+      "respelling": "AB-vi-es",
+      "ipa": "ˈɑbviəs",
+      "trap": "B y luego V: AB-vi-es"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si dijiste bien las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#VyB",
+    "#AprenderInglés",
+    "#InglésParaHispanos",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl035",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

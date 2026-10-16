@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "CIUDADES DEL REINO UNIDO: ¿sabes pronunciarlas? 💂",
+  "video_description": "Ciudades del Reino Unido que se pronuncian de forma inesperada. ☕",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "ciudades del Reino Unido",
+  "intro": "[curious] Ciudades del Reino Unido. Algunas no suenan nada como se escriben. Pruébalo.",
+  "items": [
+    {
+      "english": "London",
+      "respelling": "LAN-den",
+      "ipa": "ˈlʌndən",
+      "trap": "La O suena «a»: LAN-den"
+    },
+    {
+      "english": "Liverpool",
+      "respelling": "LI-ver-puul",
+      "ipa": "ˈlɪvɚpuːl",
+      "trap": "Acento en LI y OO suena «uu»"
+    },
+    {
+      "english": "Manchester",
+      "respelling": "MAN-ches-ter",
+      "ipa": "ˈmæntʃɛstɚ",
+      "trap": "Acento en MAN, no en CHES"
+    },
+    {
+      "english": "Oxford",
+      "respelling": "AKS-ferd",
+      "ipa": "ˈɑksfɚd",
+      "trap": "La O suena «a»: AKS-ferd"
+    },
+    {
+      "english": "Cambridge",
+      "respelling": "KEIM-bridch",
+      "ipa": "ˈkeɪmbrɪdʒ",
+      "trap": "CAM suena «keim»"
+    },
+    {
+      "english": "Birmingham",
+      "respelling": "BER-ming-em",
+      "ipa": "ˈbɝmɪŋəm",
+      "trap": "La H no suena: BER-ming-em"
+    },
+    {
+      "english": "Glasgow",
+      "respelling": "GLAZ-gou",
+      "ipa": "ˈglæzgoʊ",
+      "trap": "La S suena Z: GLAZ-gou"
+    },
+    {
+      "english": "Reading",
+      "respelling": "RE-ding",
+      "ipa": "ˈrɛdɪŋ",
+      "trap": "La ciudad es RE-ding, no «rii-ding»"
+    },
+    {
+      "english": "Edinburgh",
+      "respelling": "ED-en-ber-a",
+      "ipa": "ˈɛdənbɚə",
+      "trap": "Termina en «-bera», no en «burg»"
+    },
+    {
+      "english": "Leicester",
+      "respelling": "LES-ter",
+      "ipa": "ˈlɛstɚ",
+      "trap": "Solo dos sílabas: LES-ter"
+    }
+  ],
+  "verdict": "La tres marca el nivel básico, la siete el intermedio y las diez el experto. ¿Dónde te quedaste?",
+  "outro": "[curious] ¿Qué palabra te sorprendió más? Te leo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#ReinoUnido",
+    "#AprenderInglés",
+    "#InglésParaHispanos",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl014",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

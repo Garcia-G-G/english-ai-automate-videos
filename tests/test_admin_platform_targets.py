@@ -16,6 +16,11 @@ works alone:
 
 Dropping the key destroys the user half; keeping the key alone destroys the
 derived half. reconcile_platform_target owns the boundary.
+
+The derived half decides what is SELECTABLE. It never decides what is
+selected: every target defaults to unticked, and the operator opts in per
+press. A destination nobody chose must not be armed on a page whose button
+publishes irreversibly.
 """
 
 import logging
@@ -78,12 +83,17 @@ def test_shipped_pattern_would_target_an_unconfigured_platform():
 
 # ── the fix ──────────────────────────────────────────────────────────
 
-def test_checkbox_follows_auth_status_when_it_becomes_available():
-    """The live bug: YouTube auth started working this session."""
+def test_becoming_available_does_not_arm_the_target():
+    """Connecting a platform makes it selectABLE, not selected.
+
+    This used to assert True — "what the operator almost certainly wants
+    right after connecting". On a page whose button publishes irreversibly
+    that is the wrong trade: it armed a destination nobody picked.
+    """
     state = {}
 
     assert reconcile_platform_target(state, YT, enabled=False) is False
-    assert reconcile_platform_target(state, YT, enabled=True) is True
+    assert reconcile_platform_target(state, YT, enabled=True) is False
 
 
 def test_an_unavailable_platform_is_forced_off_even_if_stored_on():
@@ -95,23 +105,22 @@ def test_an_unavailable_platform_is_forced_off_even_if_stored_on():
 
 
 def test_the_operator_choice_survives_while_the_platform_stays_available():
-    """Dropping the key would have re-ticked this on every rerun."""
+    """Dropping the key would have reset this to off on every rerun."""
     state = {}
-    reconcile_platform_target(state, YT, enabled=True)     # defaults on
-    state[KEY] = False                                     # operator unticks
-
-    assert reconcile_platform_target(state, YT, enabled=True) is False
-
-
-def test_reconnecting_re_enables_the_target():
-    """unavailable -> available is a transition, and defaulting on is what an
-    operator wants immediately after connecting a platform."""
-    state = {}
-    reconcile_platform_target(state, YT, enabled=True)
-    state[KEY] = False
-    reconcile_platform_target(state, YT, enabled=False)     # creds pulled
+    reconcile_platform_target(state, YT, enabled=True)     # defaults off
+    state[KEY] = True                                      # operator ticks
 
     assert reconcile_platform_target(state, YT, enabled=True) is True
+
+
+def test_reconnecting_does_not_re_arm_the_target():
+    """Credentials coming back is not the operator choosing to publish."""
+    state = {}
+    reconcile_platform_target(state, YT, enabled=True)
+    state[KEY] = True                                       # operator ticks
+    reconcile_platform_target(state, YT, enabled=False)     # creds pulled
+
+    assert reconcile_platform_target(state, YT, enabled=True) is False
 
 
 def test_repeated_renders_are_stable():
@@ -124,11 +133,12 @@ def test_repeated_renders_are_stable():
 
 def test_platforms_are_tracked_independently():
     state = {}
-    reconcile_platform_target(state, "TikTok", enabled=False)
+    reconcile_platform_target(state, "TikTok", enabled=True)
     reconcile_platform_target(state, YT, enabled=True)
+    state[KEY] = True                                       # only YouTube ticked
 
-    assert state["target_TikTok"] is False
-    assert state[KEY] is True
+    assert reconcile_platform_target(state, "TikTok", enabled=True) is False
+    assert reconcile_platform_target(state, YT, enabled=True) is True
 
 
 # ── the widget key is not permanent, and the sentinel is ─────────────
@@ -147,24 +157,26 @@ def test_the_widget_key_can_vanish_while_the_sentinel_remains():
     """
     state = {f"_target_seen_{YT}": True}
 
-    assert reconcile_platform_target(state, YT, enabled=True) is True
+    assert reconcile_platform_target(state, YT, enabled=True) is False
+    assert KEY in state, "the caller renders a keyed widget straight after this"
 
 
 def test_the_operator_choice_survives_the_widget_key_being_collected():
-    """Unticking must outlive a trip to another tab.
+    """A deliberate tick must outlive a trip to another tab.
 
-    Losing the widget key must not silently re-tick a platform the operator
-    deliberately turned off — that is the exact regression this function was
-    written to prevent, and a garbage-collected key is no excuse for it.
+    Streamlit collecting the widget key must not throw away a choice the
+    operator made. The default is off, but "off because it was never chosen"
+    and "off because Streamlit lost it" have to stay distinguishable, which
+    is what the durable _target_want_ mirror is for.
     """
     state = {}
-    reconcile_platform_target(state, YT, enabled=True)      # defaults on
-    state[KEY] = False                                      # operator unticks
+    reconcile_platform_target(state, YT, enabled=True)      # defaults off
+    state[KEY] = True                                       # operator ticks
     reconcile_platform_target(state, YT, enabled=True)      # a rerun happens
 
     del state[KEY]                                          # Streamlit collects it
 
-    assert reconcile_platform_target(state, YT, enabled=True) is False
+    assert reconcile_platform_target(state, YT, enabled=True) is True
 
 
 def test_a_collected_key_on_an_unavailable_platform_stays_off():

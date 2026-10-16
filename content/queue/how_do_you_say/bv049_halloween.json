@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las palabras de HALLOWEEN en inglés? 🎃",
+  "video_description": "Diez palabras de Halloween para esta noche de miedo. 👻",
+  "title": "¿Cómo se dice…?",
+  "theme": "Halloween",
+  "level": "A1",
+  "intro": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo.",
+  "items": [
+    {
+      "emoji": "🎃",
+      "spanish": "Calabaza",
+      "english": "pumpkin"
+    },
+    {
+      "emoji": "👻",
+      "spanish": "Fantasma",
+      "english": "ghost"
+    },
+    {
+      "emoji": "🧙",
+      "spanish": "Bruja",
+      "english": "witch"
+    },
+    {
+      "emoji": "🦇",
+      "spanish": "Murciélago",
+      "english": "bat"
+    },
+    {
+      "emoji": "🕸️",
+      "spanish": "Telaraña",
+      "english": "spider web"
+    },
+    {
+      "emoji": "💀",
+      "spanish": "Esqueleto",
+      "english": "skeleton"
+    },
+    {
+      "emoji": "🧛",
+      "spanish": "Vampiro",
+      "english": "vampire"
+    },
+    {
+      "emoji": "🎭",
+      "spanish": "Disfraz",
+      "english": "costume"
+    },
+    {
+      "emoji": "🧹",
+      "spanish": "Escoba",
+      "english": "broom"
+    },
+    {
+      "emoji": "🍬",
+      "spanish": "Truco o trato",
+      "english": "trick or treat"
+    }
+  ],
+  "recap": "Repite conmigo las diez: pumpkin, ghost, witch, bat, spider web, skeleton, vampire, costume, broom, trick or treat.",
+  "outro": "[excited] ¿Las diez? Demuéstralo en los comentarios.",
+  "translations": {
+    "pumpkin": "Calabaza",
+    "ghost": "Fantasma",
+    "witch": "Bruja",
+    "bat": "Murciélago",
+    "spider web": "Telaraña",
+    "skeleton": "Esqueleto",
+    "vampire": "Vampiro",
+    "costume": "Disfraz",
+    "broom": "Escoba",
+    "trick or treat": "Truco o trato"
+  },
+  "english_phrases": [
+    "pumpkin",
+    "ghost",
+    "witch",
+    "bat",
+    "spider web",
+    "skeleton",
+    "vampire",
+    "costume",
+    "broom",
+    "trick or treat"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv049",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo. Calabaza... pumpkin. pumpkin. Fantasma... ghost. ghost. Bruja... witch. witch. Murciélago... bat. bat. Telaraña... spider web. spider web. Esqueleto... skeleton. skeleton. Vampiro... vampire. vampire. Disfraz... costume. costume. Escoba... broom. broom. Truco o trato... trick or treat. trick or treat. Repite conmigo las diez: pumpkin, ghost, witch, bat, spider web, skeleton, vampire, costume, broom, trick or treat. [excited] ¿Las diez? Demuéstralo en los comentarios."
+}

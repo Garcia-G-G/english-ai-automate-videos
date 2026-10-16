@@ -1,0 +1,92 @@
+{
+  "name": "English Unlimited",
+  "version": "v2 pegatina",
+  "tagline": "El inglés que usas cada día, explicado en español.",
+  "color": {
+    "brand_yellow": "#F2D66B",
+    "english_blue": "#1B6FA8",
+    "ink": "#1C1812",
+    "paper": "#FEFDFB",
+    "sky": "#9AD1F0",
+    "correct": "#2F8F5B",
+    "error": "#C0453A",
+    "secondary_text": "#6D665B"
+  },
+  "manim": {
+    "_use": "the long Manim lessons: THEME env, else the lesson's \"theme\", else default_theme. Yellow is only ever a fill or a highlighter on the paper themes, never text.",
+    "default_theme": "sand",
+    "themes": {
+      "sand": {
+        "bg": "#F3EEE4",
+        "card": "#FFFFFF",
+        "card2": "#EAE3D6",
+        "text": "#1C1812",
+        "muted": "#7A7164",
+        "yellow": "#F2D66B",
+        "blue": "#1B6FA8",
+        "green": "#2E8B57",
+        "red": "#C8453B"
+      },
+      "stone": {
+        "bg": "#E9E6E1",
+        "card": "#FFFFFF",
+        "card2": "#EAE3D6",
+        "text": "#1C1812",
+        "muted": "#7A7164",
+        "yellow": "#F2D66B",
+        "blue": "#1B6FA8",
+        "green": "#2E8B57",
+        "red": "#C8453B"
+      },
+      "dark": {
+        "bg": "#1C1812",
+        "card": "#2C2821",
+        "card2": "#49443D",
+        "text": "#FBF6EA",
+        "muted": "#A39B8C",
+        "yellow": "#F2D66B",
+        "blue": "#6CB4EE",
+        "green": "#7FD49B",
+        "red": "#F28B82"
+      }
+    }
+  },
+  "font": {
+    "display": {
+      "family": "Fredoka",
+      "weight": 700,
+      "file": "assets/fonts/Fredoka-Bold.ttf"
+    },
+    "display_medium": {
+      "family": "Fredoka",
+      "weight": 500,
+      "file": "assets/fonts/Fredoka-Medium.ttf"
+    },
+    "body": {
+      "family": "Manrope",
+      "weight": 500,
+      "file": "assets/fonts/Manrope[wght].ttf"
+    }
+  },
+  "sticker": {
+    "outline_px": [
+      7,
+      10
+    ],
+    "outline_color": "#1C1812",
+    "shadow_offset_px": [
+      8,
+      8
+    ],
+    "shadow_blur": 0,
+    "rotation_deg": [
+      -8,
+      8
+    ]
+  },
+  "rules": {
+    "english_is_blue": true,
+    "max_yellow_stickers_per_sentence": 1,
+    "min_symbol_px": 40
+  }
+}

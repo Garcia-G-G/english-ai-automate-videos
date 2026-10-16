@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La H MUDA en inglés: ¿la dices o no? 👻",
+  "video_description": "Diez palabras donde la H no suena. ¿Las dices bien? ⏰",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la H muda",
+  "intro": "[thoughtful] ¿Suena la H o no suena? Di cada palabra antes de escuchar la respuesta.",
+  "items": [
+    {
+      "english": "hour",
+      "respelling": "AU-er",
+      "ipa": "ˈaʊɚ",
+      "trap": "La H no suena: AU-er"
+    },
+    {
+      "english": "why",
+      "respelling": "UAI",
+      "ipa": "ˈwaɪ",
+      "trap": "WH suena «u»: la H no se oye"
+    },
+    {
+      "english": "honest",
+      "respelling": "A-nist",
+      "ipa": "ˈɑnɪst",
+      "trap": "H muda: A-nist"
+    },
+    {
+      "english": "honor",
+      "respelling": "A-ner",
+      "ipa": "ˈɑnɚ",
+      "trap": "H muda y la O suena «a»"
+    },
+    {
+      "english": "rhyme",
+      "respelling": "RAIM",
+      "ipa": "ˈraɪm",
+      "trap": "H muda y la Y suena «ai»"
+    },
+    {
+      "english": "heir",
+      "respelling": "ER",
+      "ipa": "ˈɛr",
+      "trap": "H muda: suena como «air»"
+    },
+    {
+      "english": "rhythm",
+      "respelling": "RI-dhem",
+      "ipa": "ˈrɪðəm",
+      "trap": "H muda y TH suave: RI-dhem"
+    },
+    {
+      "english": "khaki",
+      "respelling": "KA-ki",
+      "ipa": "ˈkæki",
+      "trap": "La H no suena: KA-ki"
+    },
+    {
+      "english": "Thailand",
+      "respelling": "TAI-land",
+      "ipa": "ˈtaɪlænd",
+      "trap": "TH suena T: la H no se oye"
+    },
+    {
+      "english": "herb",
+      "respelling": "ERB",
+      "ipa": "ˈɝb",
+      "trap": "En EE. UU. la H no suena: ERB"
+    }
+  ],
+  "verdict": "Tres bien dichas: nivel básico. Siete: intermedio. Las diez sin fallar: eres experto.",
+  "outro": "[excited] Pon tu número en los comentarios y pásaselo a un amigo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl022",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

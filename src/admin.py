@@ -13,12 +13,16 @@ import json
 import os
 import sys
 import shutil
+import subprocess
 import threading
 import time
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
 import uuid
+
+import video_types
+from run_log import attach_run_log, detach_run_log
 
 # Streamlit installs no handler of its own, so without this every
 # logger.* call in this module and in src/pipeline.py is discarded --
@@ -50,7 +54,122 @@ from script_generator import (
 
 # Shared pipeline — the SAME TTS dispatch, merge and renderer the CLI uses.
 import pipeline
+import topic_history
 from cost_tracker import reset_tracker
+
+
+# ============== WHAT THE DASHBOARD IS ALLOWED TO OFFER ==============
+#
+# UNA CAPACIDAD SIN PUERTA ES UNA CAPACIDAD QUE NO EXISTE.
+#
+# Every list below is READ from the place the engine reads it, never restated
+# here. That is not tidiness, it is the actual defect being fixed: the
+# scheduler offered four of the six video types because the UI wrote the list
+# out by hand, and fill_blank and pronunciation could not be produced from the
+# unattended batch at all. A second hand-written list under "5 of Each Type"
+# queued three types and reported fifteen videos.
+#
+# A hand-written copy in the UI cannot be caught by a test of the engine,
+# because the engine is correct. So the copies are gone, and
+# test_dashboard_doors asserts by AST that none comes back.
+
+
+#: Display names for the video types. NOT a gate on what may be offered —
+#: unknown types get a readable label from their own name, so adding a
+#: seventh type to VIDEO_TYPES makes it appear on every screen with no edit
+#: here. A dict that had to be extended per type would be the same defect one
+#: layer down.
+_TYPE_LABELS = {
+    "true_false": "True/False",
+}
+
+
+def type_label(video_type: str) -> str:
+    """Human label for a video type, for checkboxes and selectboxes."""
+    return _TYPE_LABELS.get(video_type,
+                            str(video_type).replace("_", " ").title())
+
+
+def scheduler_default_types() -> list:
+    """Types the unattended batch offers: all of them, from the one list."""
+    return list(VIDEO_TYPES)
+
+
+def _declared_profiles() -> list:
+    """Every audience profile named in config.yaml, resolvable or not."""
+    from profiles import load_profiles
+
+    # load_profiles returns {"default": <name>, "profiles": {...}} — the
+    # names are one level down, and the default is guaranteed to be among
+    # them even when config.yaml declares no profiles section at all.
+    loaded = load_profiles()
+    names = set((loaded.get("profiles") or {}).keys())
+    names.add(loaded.get("default") or "adults")
+    return sorted(names)
+
+
+def _profile_status() -> tuple:
+    """(available, {name: why not}) — resolved by actually resolving them.
+
+    A SELECTBOX IN FRONT OF A BROKEN PATH IS WORSE THAN NO SELECTBOX, and
+    `children` is exactly that today: it is declared in config.yaml with its
+    own audio settings and its own topic categories, and it CANNOT BE
+    RESOLVED, because its voice_id is the literal "default" and
+    audiences._validated_voice rejects that. Offering it would raise
+    InvalidAudienceProfile after the operator had already picked a topic.
+    Set CHILDREN_ELEVENLABS_VOICE_ID (or a real voice_id under
+    profiles.children.audio in config.yaml) and it appears here by itself.
+    """
+    # get_active_profile, NOT pipeline.resolve_profile: the latter calls
+    # apply_profile_env and pins os.environ["VIDEO_PROFILE"], so probing
+    # every declared profile with it would leave the process configured as
+    # whichever one happened to be tried last. A probe must not change the
+    # thing it is probing.
+    from profiles import get_active_profile
+
+    available, blocked = [], {}
+    for name in _declared_profiles():
+        try:
+            get_active_profile(name)
+        except Exception as exc:                                # noqa: BLE001
+            blocked[name] = str(exc)
+        else:
+            available.append(name)
+    return available, blocked
+
+
+def available_profiles() -> list:
+    """Audience profiles that actually resolve — what the UI may offer.
+
+    pipeline.resolve_profile(name) has always taken a name; admin called it
+    with none, so no profile but the config default was ever selectable.
+    """
+    return _profile_status()[0]
+
+
+def unavailable_profiles() -> dict:
+    """{name: reason} for declared profiles that cannot be resolved.
+
+    Shown on the page rather than swallowed: "children unavailable" with no
+    reason is the same dead end as no control at all.
+    """
+    return _profile_status()[1]
+
+
+def topic_memory_report(allowed_categories=None) -> dict:
+    """What topic_history already computes, shaped for a screen.
+
+    coverage() was written for exactly this and its only caller was its own
+    test — the memory was computed and never rendered. `percent_used` is
+    derived here rather than stored so the screen cannot go stale, and the
+    repeats list arrives worst-first because it is the part that answers
+    "why do I keep seeing the same video".
+    """
+    report = dict(topic_history.coverage(allowed_categories))
+    total = report.get("total") or 0
+    report["percent_used"] = (100.0 * report.get("used", 0) / total) if total else 0.0
+    return report
+
 
 # Output directories
 OUTPUT_DIR = ROOT / "output"
@@ -58,7 +177,15 @@ SCRIPTS_DIR = OUTPUT_DIR / "scripts"
 AUDIO_DIR = OUTPUT_DIR / "audio"
 VIDEO_DIR = OUTPUT_DIR / "video"
 PENDING_DIR = OUTPUT_DIR / "pending"
+# This video's own footage. The clip tier writes here and the renderer
+# reads from here; --batch keeps its clips inside the artifact directory,
+# and the dashboard has no artifact, so it gets one folder per video.
+CLIPS_DIR = OUTPUT_DIR / "clips"
 APPROVED_DIR = OUTPUT_DIR / "approved"
+#: Where a render is written until it is whole (STEP 59 §6). No page lists it.
+RENDERING_DIR = OUTPUT_DIR / "rendering"
+#: Where a cut render goes: moved, never deleted, with a reason.txt.
+CUT_DIR = OUTPUT_DIR / "rejected" / "_cut"
 REJECTED_DIR = OUTPUT_DIR / "rejected"
 UPLOADED_DIR = OUTPUT_DIR / "uploaded"
 
@@ -71,7 +198,10 @@ JOBS_FILE = OUTPUT_DIR / "generation_jobs.json"
 # Guards the whole read-modify-write of JOBS_FILE. Generation runs in worker
 # threads now, so create/update/complete interleave; without this a worker
 # reading before another's write and saving after it silently drops that job.
-_JOBS_LOCK = threading.RLock()
+# In dashboard_state, not here: this file is re-executed on every click, so a
+# lock defined here was a new lock per click (see dashboard_state's docstring).
+import dashboard_state as _ds
+_JOBS_LOCK = _ds.JOBS_LOCK
 
 
 def load_jobs() -> dict:
@@ -87,16 +217,90 @@ def load_jobs() -> dict:
 def save_jobs(jobs: dict):
     # Write-then-rename: a crash mid-write leaves the previous ledger intact
     # rather than a truncated file that load_jobs() silently reads as empty.
-    tmp = JOBS_FILE.with_suffix(JOBS_FILE.suffix + ".tmp")
+    # A tmp name per writer: with one shared name, two writers that ever got
+    # past the lock (2026-10-13, job ebe7bb3e) renamed each other's file away.
+    tmp = JOBS_FILE.with_name(
+        f"{JOBS_FILE.name}.{os.getpid()}.{threading.get_ident()}.tmp")
     with open(tmp, 'w') as f:
         json.dump(jobs, f, indent=2, default=str)
     os.replace(tmp, JOBS_FILE)
+
+
+def _proc_start(pid: int) -> Optional[str]:
+    """OS start time for `pid`, or None if no such process is running.
+
+    Shelled out rather than taken from psutil, which is not a dependency
+    here. The value is only ever compared for equality, so its format does
+    not matter — only that the OS reports the same string for the same
+    process and a different one for a recycled pid.
+    """
+    try:
+        out = subprocess.run(["ps", "-p", str(pid), "-o", "lstart="],
+                             capture_output=True, text=True, timeout=5)
+    except Exception:                                       # noqa: BLE001
+        return None
+    return out.stdout.strip() or None
+
+
+#: Identity of THIS process. Recomputed whenever Streamlit re-executes the
+#: script, and that is the point: a process does not change its pid or its
+#: start time when its source is reloaded, so both survive the reload that
+#: wipes every in-memory registry.
+_OWNER_PID = os.getpid()
+_OWNER_STARTED = _ds.once("owner_started", lambda: _proc_start(_OWNER_PID))
+
+
+def _owner_alive(job: dict) -> bool:
+    """Is the process that started this job still running?
+
+    This is the whole liveness test, and it deliberately does NOT consult
+    the heartbeat. A render stops stamping progress for minutes at a time
+    during encoding — one real job went 3m47s between updates — so any
+    staleness threshold either reaps live work or is too loose to catch
+    anything. Process liveness has no such window.
+
+    The previous version asked whether the job id was in an in-memory set.
+    That set is module state, Streamlit re-executes the module on any source
+    change, and the set comes back empty — so editing any watched file while
+    a render was running marked that render failed. It had exactly that
+    effect on 2026-08-17: job ab4ed292 was recorded as "Interrupted" at
+    15:51:51 and went on to render, pass the gate and ship at 15:57.
+    """
+    pid = job.get("owner_pid")
+    if not pid:
+        # Written before owners were recorded, so nothing can vouch for it.
+        return False
+    if pid == _OWNER_PID:
+        return True
+    started = _proc_start(pid)
+    if started is None:
+        return False
+    # A recycled pid is a different process wearing the same number.
+    return not job.get("owner_started") or started == job["owner_started"]
+
+
+def touch_heartbeat(job_id: str) -> None:
+    """Stamp a running job so its row shows the worker is still there.
+
+    Separate from update_job because `updated_at` means "progress changed"
+    and is read as such by the UI. A heartbeat is not progress.
+    """
+    with _JOBS_LOCK:
+        jobs = load_jobs()
+        for job in jobs["active"]:
+            if job["id"] == job_id:
+                job["heartbeat"] = datetime.now().isoformat()
+                save_jobs(jobs)
+                return
 
 
 def create_job(video_type: str, category: str = None, topic: str = None) -> str:
     job_id = str(uuid.uuid4())[:8]
     job = {
         "id": job_id,
+        "owner_pid": _OWNER_PID,
+        "owner_started": _OWNER_STARTED,
+        "heartbeat": datetime.now().isoformat(),
         "video_type": video_type,
         "category": category,
         "topic": topic,
@@ -147,6 +351,258 @@ def complete_job(job_id: str, success: bool, video_path: str = None, error: str 
         save_jobs(jobs)
 
 
+# ============== THE SCRIPT QUEUE ==============
+#
+# OpenAI has no credits, so `generate_script` raises 429 on every dashboard
+# video. The queue is the answer: scripts written ahead of time, produced one
+# at a time, no GPT call anywhere.
+#
+# THIS LIVES IN run_pipeline_with_tracking AND NOWHERE ELSE. Every door into
+# the dashboard -- the Generate button, "5 of each type", the batch, the
+# scheduler -- calls that one function, so putting the preference there gives
+# it to all of them at once. Wiring it into each button is how this project
+# has repeatedly fixed one door and left the others broken, most recently two
+# packages ago, and the rule that earned is: the fix goes in the shared
+# function.
+
+
+def _queue_guard():
+    """The guard module -- reloaded when its file changes.
+
+    `sys.path.insert` used to run on every call of all three helpers below,
+    and Streamlit calls them on every rerun — the list grew without bound
+    for the lifetime of the process.
+
+    RELOADED ON EDIT. tools/ is outside the folder Streamlit watches, so a
+    dashboard left running kept whatever queue_guard it imported first, for
+    days. A fix to the guard did not reach it until someone restarted it.
+    """
+    tools = str(ROOT / "tools")
+    if tools not in sys.path:
+        sys.path.insert(0, tools)
+    import importlib
+    import queue_guard
+    try:
+        mtime = (ROOT / "tools" / "queue_guard.py").stat().st_mtime_ns
+    except OSError:
+        return queue_guard
+    seen = getattr(queue_guard, "_LOADED_MTIME", None)
+    if seen is not None and seen != mtime:
+        queue_guard = importlib.reload(queue_guard)
+        _AUDIT_CACHE.update(at=0.0, bad=None)
+    queue_guard._LOADED_MTIME = mtime
+    return queue_guard
+
+
+#: The last audit, and when it was taken. AN AUDIT IS NOT CHEAP: it reads
+#: every queued script, validates it against the schema, measures every text
+#: field with the real font through length_spec, and walks every script and
+#: artifact on disk for topic_history. Streamlit reruns the whole page on
+#: every widget interaction, so an uncached queue_status() put all of that in
+#: front of every click on the Generate page.
+_AUDIT_CACHE = _ds.AUDIT_CACHE
+_AUDIT_TTL = 20.0
+
+
+def _queue_bad(guard, fresh: bool = False) -> set:
+    """Paths the guard refuses, from a short-lived cache.
+
+    `fresh=True` for the decision that actually hands a script to a render —
+    a stale audit there could produce a topic that was made 20 seconds ago.
+    """
+    now = time.time()
+    if (not fresh and _AUDIT_CACHE["bad"] is not None
+            and now - _AUDIT_CACHE["at"] < _AUDIT_TTL):
+        return _AUDIT_CACHE["bad"]
+    # ONLY WHAT BLOCKS. Severity is a property of the failure: a repeated
+    # topic reaches the channel and cannot be taken back, while a short video
+    # is a real video the owner can watch and judge. Refusing on duration
+    # produced NOTHING, and pushed every quiz, true_false and fill_blank job
+    # onto the GPT fallback -- which is how a dead OpenAI key ended up in the
+    # owner's face on a route built to need no API at all.
+    bad = {path for path, reason in guard.audit() if guard.blocks(reason)}
+    _AUDIT_CACHE.update(at=now, bad=bad)
+    return bad
+
+
+class AlreadyRendering(RuntimeError):
+    """A job for this script (topic_id + type) is already queued or running."""
+
+
+def script_key(script: dict) -> Optional[str]:
+    """topic_id:type, the identity of a script across jobs; None for a script without one."""
+    meta = (script or {}).get("_meta") or {}
+    vtype = (script or {}).get("type") or meta.get("video_type")
+    return f"{meta['topic_id']}:{vtype}" if meta.get("topic_id") else None
+
+
+def rendering_job_for(key: Optional[str], exclude: str = None) -> Optional[dict]:
+    """The active job holding `key`. The ledger is shared, so this sees other dashboards too."""
+    if not key:
+        return None
+    return next((j for j in get_active_jobs()
+                 if j.get("script_key") == key and j.get("id") != exclude), None)
+
+
+def move_to_cut(paths, reason: str, name: str) -> Optional[Path]:
+    """Move whatever a cut render left to output/rejected/_cut/<name>/ with reason.txt. Never deletes."""
+    present = [Path(p) for p in paths if p and Path(p).exists()]
+    if not present:
+        return None
+    dest = CUT_DIR / name
+    dest.mkdir(parents=True, exist_ok=True)
+    for path in present:
+        shutil.move(str(path), str(dest / path.name))
+    (dest / "reason.txt").write_text(f"{datetime.now().isoformat()}\n{reason}\n", encoding="utf-8")
+    logger.warning("cut render: moved %s to %s (%s)", [p.name for p in present], dest, reason[:200])
+    return dest
+
+
+def queue_pick(video_type: str = None):
+    """The next SAFE queued script for this type, or None.
+
+    Safe means the guard raised no problem against it: not a topic already
+    produced, not a duplicate of another queued script, and clean against the
+    schema, the duration band and length_spec. A script with any problem is
+    never handed out -- see tools/queue_guard.py.
+    """
+    try:
+        queue_guard = _queue_guard()
+    except Exception:                                       # noqa: BLE001
+        logger.debug("queue: guard unavailable", exc_info=True)
+        return None
+
+    try:
+        bad = _queue_bad(queue_guard, fresh=True)
+        for path in queue_guard.queued_scripts():
+            if path.relative_to(ROOT) in bad:
+                continue
+            with open(path, encoding="utf-8") as handle:
+                data = json.load(handle)
+            if video_type and data.get("type") != video_type:
+                continue
+            if rendering_job_for(script_key(data)):
+                continue                  # another job already holds it
+            return path, data
+    except Exception:                                       # noqa: BLE001
+        logger.warning("queue: could not read the queue", exc_info=True)
+    return None
+
+
+def queue_status() -> dict:
+    """What the Generate page shows: how many are ready, and per type."""
+    try:
+        queue_guard = _queue_guard()
+        bad = _queue_bad(queue_guard)
+        ready, by_type = 0, {}
+        for path in queue_guard.queued_scripts():
+            if path.relative_to(ROOT) in bad:
+                continue
+            ready += 1
+            by_type[path.parent.name] = by_type.get(path.parent.name, 0) + 1
+        return {"ready": ready, "blocked": len(bad), "by_type": by_type}
+    except Exception:                                       # noqa: BLE001
+        return {"ready": 0, "blocked": 0, "by_type": {}}
+
+
+def queue_shelve(path) -> None:
+    """Move a produced script to _done/. ONLY on success.
+
+    Shelved, not deleted: the deletion would be the only evidence the script
+    ever ran. Called after the video exists, so a failed job leaves the script
+    in the queue and the next run picks it up again.
+    """
+    try:
+        _queue_guard().main(["--done", str(path)])
+        # The shelf moved a file the cached audit still describes.
+        _AUDIT_CACHE.update(at=0.0, bad=None)
+    except Exception:                                       # noqa: BLE001
+        logger.warning("queue: could not shelve %s", path, exc_info=True)
+
+
+# ============== THE BATCH QUEUE, ON DISK ==============
+#
+# It used to live in st.session_state and be drained in one loop:
+#
+#     while st.session_state.queue_items:
+#         start_generation(st.session_state.queue_items.pop(0))
+#
+# which spawned a daemon thread per item. They serialise on _RENDER_LOCK, so
+# one rendered and the rest waited -- and ANY restart of the Streamlit process
+# killed every waiting thread at once while clearing the session that held the
+# queue. The owner saw exactly that: the first one or two appear, the rest
+# vanish. Five jobs sat "active" with their heartbeats frozen for six hours.
+#
+# So the queue outlives the process, the way the job ledger already does, and
+# ONE item is in flight at a time. A restart loses the running render and
+# nothing else; the rest are still on disk and resume.
+
+BATCH_QUEUE_PATH = OUTPUT_DIR / "batch_queue.json"
+_BATCH_LOCK = _ds.BATCH_LOCK
+
+
+def batch_queue() -> list:
+    """The items still waiting, oldest first."""
+    with _BATCH_LOCK:
+        try:
+            with open(BATCH_QUEUE_PATH, encoding="utf-8") as handle:
+                data = json.load(handle)
+        except (OSError, ValueError):
+            return []
+    return data.get("items", []) if isinstance(data, dict) else []
+
+
+def _write_batch_queue(items: list) -> None:
+    with _BATCH_LOCK:
+        BATCH_QUEUE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(BATCH_QUEUE_PATH, "w", encoding="utf-8") as handle:
+            json.dump({"items": items}, handle, ensure_ascii=False, indent=2)
+
+
+def batch_add(items: list) -> int:
+    with _BATCH_LOCK:
+        current = batch_queue() + list(items)
+        _write_batch_queue(current)
+        return len(current)
+
+
+def batch_clear() -> None:
+    _write_batch_queue([])
+
+
+def batch_take():
+    """Remove and return the next item, or None. Persisted immediately.
+
+    Popped under the lock and written back before the job starts, so a crash
+    between the two loses one item rather than replaying it forever.
+    """
+    with _BATCH_LOCK:
+        items = batch_queue()
+        if not items:
+            return None
+        nxt = items.pop(0)
+        _write_batch_queue(items)
+        return nxt
+
+
+def batch_advance() -> str:
+    """Start the next queued item if nothing is rendering. Returns its job id.
+
+    Called when a job finishes AND from the Queue page, so the chain survives a
+    restart: the page finds a non-empty queue with no active job and restarts
+    it. One driver would have been enough until the process died.
+    """
+    if get_active_jobs():
+        return ""
+    nxt = batch_take()
+    if not nxt:
+        return ""
+    logger.info("batch: starting %s (%d left)", nxt.get("type"),
+                len(batch_queue()))
+    return start_generation(nxt.get("type"), nxt.get("category"),
+                            nxt.get("topic"))
+
+
 def get_active_jobs() -> list:
     return load_jobs().get("active", [])
 
@@ -159,43 +615,171 @@ def get_job_history(limit: int = 5) -> list:
 
 def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = None,
                                 topic_name: str = None, script_data: dict = None,
-                                background: str = None, dry_run: bool = False) -> dict:
+                                use_queue: bool = True,
+                                background: str = None, dry_run: bool = False,
+                                profile_name: str = None) -> dict:
     """Generate one video through the shared pipeline (src/pipeline.py).
 
     Same TTS dispatch, same merge and same renderer as main.py — only the
     output layout differs (videos land in output/pending/<type>/ for review).
 
     Args:
-        script_data: Use this script instead of generating one with GPT.
-        dry_run:     Resolve and log the TTS plan only; no API calls, no render.
+        script_data:  Use this script instead of generating one with GPT.
+        background:   Preset name, or None to let the profile's resolver pick.
+        dry_run:      Generate the script, resolve and log the TTS plan, then
+                      stop. Skips the TTS call and the render. NOT free: the
+                      GPT script call happens before this takes effect.
+        profile_name: Audience profile ("adults", "children"), or None for the
+                      config default.
+
+    THREE OF THESE FIVE WERE ALREADY HERE AND UNREACHABLE. `background` and
+    `dry_run` were parameters no caller ever set, and resolve_profile has
+    always taken a name that this function never passed — so `children` was
+    configured, tested and impossible to select. The signature is the door;
+    it was narrower than the engine behind it.
     """
     result = {"success": False, "video_path": None, "error": None}
+
+    # Bound before the try so the failure paths can read them.
+    queued_path = None
+    script_path = None
+    video_path = None
+    # NOT video_path. video_path is the render TARGET and is bound before
+    # render_video runs, so a killed or timed-out ffmpeg that left a partial
+    # file behind made `video_path.exists()` true and the release below
+    # decided a video had been produced. This is bound only once the render
+    # returned, so "an mp4 survived the failure" means a finished mp4.
+    rendered_video = None
+    stage_path = None                 # the render while it is not whole yet
+    stage_seconds = {}                # where the job's time went, per stage
+    _t0 = time.monotonic()
+
+    def _stage(name):
+        nonlocal _t0
+        now = time.monotonic()
+        stage_seconds[name] = round(now - _t0, 1)
+        _t0 = now
+
+    def _cut_on_failure(error_msg):
+        """Name the stage the time went to, and move an unfinished render to _cut/."""
+        failed = next((n for n in ("script", "tts", "clips", "frames+encode", "gate+outro")
+                       if n not in stage_seconds), "after gate")
+        _stage(f"{failed} (failed)")
+        logger.error("job %s stage seconds: %s", job_id, stage_seconds)
+        if stage_path is not None:
+            move_to_cut([stage_path], f"job {job_id}: {error_msg[:500]}\nstage seconds: {stage_seconds}",
+                        stage_path.stem)
+
+    # OPENED HERE, NOT WHEN THE VIDEO GETS ITS NAME. The script is paid for
+    # before unique_name exists; a tracker reset after generate_script left
+    # that cost on the previous video's already-saved tracker, and it was
+    # never written. Named by job until the artifact name is known.
+    tracker = reset_tracker(video_id=f"job_{job_id}")
 
     try:
         update_job(job_id, status="running", step_number=1,
                    current_step="Selecting topic...", progress=5)
 
         # Audience profile (voice, backgrounds, topics) — same resolution as the CLI
-        profile = pipeline.resolve_profile()
+        profile = pipeline.resolve_profile(profile_name)
+        update_job(job_id, profile=profile.get("name"))
 
         if script_data is not None:
             topic_name = topic_name or script_data.get("word") or script_data.get("topic") or "script"
         elif category and topic_name:
+            # An explicit pick is still a pairing, and a bad pairing ships a
+            # false lesson rather than an ugly one. Refusing is loud and
+            # fixable; the video is not.
+            from type_categories import resolve as _eligible_categories, NoEligibleCategory
+
+            allowed = _eligible_categories(
+                video_type, profile.get("content", {}).get("categories"))
+            if category not in allowed:
+                raise NoEligibleCategory(
+                    f"a {video_type!r} video cannot be about a {category!r} "
+                    f"topic. Allowed for this type and audience: "
+                    f"{', '.join(allowed)}. Change the category, or widen the "
+                    f"type's list in config.yaml under type_categories.")
             topic = find_topic(category, topic_name)
         else:
-            category, topic = get_random_topic(
-                allowed_categories=profile.get("content", {}).get("categories"))
+            # VIDEO TYPE AND TOPIC CATEGORY WERE INDEPENDENT DRAWS HERE.
+            # type_categories.resolve was written for exactly this and had one
+            # caller, studio/legacy_pipeline.py:136 — the --batch door. On this
+            # door nothing constrained the pairing, and the result is on disk:
+            # of the 19 pronunciation scripts under output/scripts/, ZERO drew
+            # from content/topics/pronunciation.json. They drew from social,
+            # false_friends, business, cultural... A `business` topic reaching
+            # the pronunciation prompt is how "Job Interviews: Describing
+            # experience" got a phonetic transcription whose "correct" answer
+            # was the mistake the same script names.
+            #
+            # It intersects with the profile's own list rather than replacing
+            # it: the profile says who the video is for, this says what the
+            # type can teach. Both must hold. NoEligibleCategory is raised, not
+            # defaulted — an unconstrained draw is the bug.
+            from type_categories import resolve as _eligible_categories
+
+            allowed = _eligible_categories(
+                video_type, profile.get("content", {}).get("categories"))
+            category, topic = get_random_topic(allowed_categories=allowed)
             topic_name = (topic.get("english") or topic.get("topic") or topic.get("wrong")
                          or topic.get("word") or topic.get("sentence") or str(topic))
 
         update_job(job_id, category=category, topic=topic_name,
                    current_step=f"Topic: '{topic_name}'", progress=10)
 
-        # Step 2: Generate script
+        # Step 2: the script -- from the queue if there is one, else GPT
+        if script_data is None and use_queue:
+            picked = queue_pick(video_type)
+            if picked:
+                queued_path, script_data = picked
+                topic_meta = script_data.get("_meta") or {}
+                category = topic_meta.get("category") or category
+                # video_title BEFORE the drawn topic_name. Only the
+                # pronunciation queue carries `word` and only vocabulary
+                # carries `title`, so educational / quiz / true_false /
+                # fill_blank fell straight through to the topic the random
+                # draw had picked a moment earlier — an unrelated subject
+                # that then named the output file AND seeded the Pexels
+                # footage query for a script about something else.
+                topic_name = (script_data.get("word") or script_data.get("title")
+                              or script_data.get("video_title")
+                              or queued_path.stem)
+                update_job(job_id, step_number=2, category=category,
+                           topic=topic_name, script_source="queue",
+                           current_step=f"Queued script: {queued_path.name}",
+                           progress=15)
+
+        if script_data is None and use_queue and queue_pick() is not None:
+            # NO SILENT FALLBACK WHILE THE QUEUE HAS ANYTHING. The control
+            # says "use a queued script"; quietly calling GPT instead
+            # contradicts it, and with no working key it turned an empty type
+            # into a 401 the owner had to decode on a route built to need no
+            # API at all.
+            #
+            # The `queue_pick() is not None` guard is the honest edge: a queue
+            # that is empty ALTOGETHER has no promise to keep, and the page
+            # already unticks the box in that case. This only fires when other
+            # types have scripts and THIS one has run out.
+            raise RuntimeError(
+                f"no queued script left for {video_type!r}, though the queue "
+                f"still has others. Add more of this type, or turn off 'Use a "
+                f"queued script' to write one with GPT.")
+
         if script_data is None:
-            update_job(job_id, step_number=2,
+            update_job(job_id, step_number=2, script_source="gpt",
                        current_step="Generating script with GPT...", progress=15)
             script_data = generate_script(category, topic, video_type)
+
+        # ONE JOB PER SCRIPT. Another dashboard (or a pick that raced this
+        # one) may hold the same topic_id + type; two renders of bv010 is how
+        # a second copy of a topic reached YouTube.
+        key = script_key(script_data)
+        if rendering_job_for(key, exclude=job_id):
+            queued_path = None            # not ours to release or shelve
+            raise AlreadyRendering(f"Ya se está renderizando {key.split(':')[0]}")
+        if key:
+            update_job(job_id, script_key=key)
 
         import re as _re
         output_name = _re.sub(r'[^\w\-]', '_', topic_name).strip('_').lower()
@@ -204,8 +788,10 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         unique_name = f"{output_name}_{timestamp}"
 
         # Cost tracking for this video (TTS now runs in-process, so the
-        # tracker survives long enough to be saved).
-        tracker = reset_tracker(video_id=unique_name)
+        # tracker survives long enough to be saved). Renamed, not reset: the
+        # script's GPT call is already on it.
+        if tracker is not None:
+            tracker.rename(unique_name)
 
         script_dir = SCRIPTS_DIR / video_type
         script_dir.mkdir(parents=True, exist_ok=True)
@@ -215,6 +801,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             json.dump(script_data, f, ensure_ascii=False, indent=2)
 
         update_job(job_id, current_step=f"Script generated", progress=30)
+        _stage("script")
 
         # Step 3: Generate TTS audio.
         # The TTS input is script_path (under output/scripts/); its output is
@@ -233,6 +820,13 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             script_data, audio_path, script_path=script_path, dry_run=dry_run)
 
         if dry_run:
+            # A DRY RUN PRODUCED NO VIDEO, so it must not leave the history
+            # mark either. The output/scripts/ copy is written above, `_meta`
+            # and all, and topic_history counts that copy — so a dry run of a
+            # queued script made queue_guard refuse the original ALREADY
+            # PRODUCED forever, while the script itself was never shelved.
+            # Same release the failure paths do, for the same reason.
+            _release_queued_script(queued_path, script_path)
             update_job(job_id, current_step="Dry run complete", progress=100)
             complete_job(job_id, success=True)
             result["success"] = True
@@ -240,6 +834,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             return result
 
         update_job(job_id, current_step="Audio generated", progress=55)
+        _stage("tts")
 
         pipeline.merge_script_into_tts(script_data, json_path)
 
@@ -248,13 +843,87 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                    current_step="Rendering video...", progress=60)
 
         video_path = PENDING_DIR / video_type / f"{unique_name}.mp4"
+        # RENDERED ELSEWHERE, MOVED IN WHEN WHOLE (STEP 59 §6). A render killed
+        # at its 1200 s limit left a 46 s bv010 in pending/ with no sidecar; it
+        # was approved and uploaded. Only a finished, measured, gated file with
+        # its sidecar beside it ever gets the pending/ name.
+        stage_path = RENDERING_DIR / video_type / f"{unique_name}.mp4"
+        update_job(job_id, stage_path=str(stage_path))
+
+        # The same resolver --batch uses, with the topic and category this
+        # job already has. Before this, the dashboard called it without them,
+        # got None back and rendered a palette — so the per-video generated
+        # backgrounds existed only on the --batch path.
+        #
+        # on_record puts the decision on the job, so the dashboard shows
+        # which background a video got and whether the gate passed. It is a
+        # callback rather than the batch `entry` dict because admin has no
+        # such dict; the resolver takes either.
+        # Captured locally as well as written to the job row, because the
+        # job row is not durable: "Clear All History" wipes jobs["history"],
+        # and a video sitting in pending/ would lose its record while the
+        # artifact lived on. The artifact's json is the home; the row is a
+        # copy for convenience.
+        background_record = {}
+
+        def _record_background(payload):
+            background_record.update(payload)
+            update_job(job_id, background=payload)
+
+        # dest_dir AND duration, both of them.
+        #
+        # pipeline.py:194 guards the clip tier with `if topic and dest_dir`.
+        # This call passed neither, so tier 3 was never evaluated on the
+        # dashboard and every video fell to tier 4, the generated image. It is
+        # not a preference that lost — it is a branch that was never reached.
+        # Measured over output/generation_jobs.json: 50 jobs, 0 with clips,
+        # $0.902 spent on stills the free tier would have replaced.
+        #
+        # duration decides how much footage to fetch. Without it the tier uses
+        # a 30s default, which under-fetches for anything in the upper half of
+        # the duration band and makes the playlist loop.
+        clips_dir = CLIPS_DIR / unique_name
+        tts_duration = None
+        try:
+            with open(json_path, encoding="utf-8") as _f:
+                tts_duration = float(json.load(_f).get("duration") or 0) or None
+        except Exception:                                       # noqa: BLE001
+            # A missing duration costs a shorter playlist, never the video.
+            logger.warning("background: could not read the duration from %s; "
+                           "the clip tier will use its own default", json_path)
+
+        # THE V2 SKIP AND THE MISSING RECORD BOTH MOVED INTO THE RESOLVER.
+        #
+        # This function used to hold both: it short-circuited v2 itself, and
+        # it patched up the record when tier 1 returned without writing one.
+        # Both fixes were in the CALLER, so studio/legacy_pipeline — which
+        # never passes on_record at all — still had both defects. The
+        # resolver now guarantees a record on every path, refuses rather
+        # than substituting a flat preset, and skips the fetch for v2, so
+        # every door gets it once.
+        resolved_background = pipeline.resolve_background(
+            profile, background,
+            topic=topic_name, category=category,
+            dest_dir=clips_dir,
+            duration=tts_duration,
+            on_record=_record_background,
+        )
+        update_job(job_id, current_step=f"Rendering video ({resolved_background})...")
+        _stage("clips")
 
         pipeline.render_video(
-            audio_path, json_path, video_path,
+            audio_path, json_path, stage_path,
             video_type=video_type,
-            background=pipeline.resolve_background(profile, background),
+            background=resolved_background,
             timeout=pipeline.RENDER_TIMEOUT_S,
         )
+        _stage("frames+encode")
+        from qa_gate import probe_duration
+        measured = probe_duration(str(stage_path))
+        if tts_duration and (measured is None or abs(measured - tts_duration) > 0.5):
+            raise pipeline.PipelineError(
+                f"cut render: the video is {measured}s, the timeline {tts_duration:.2f}s")
+        rendered_video = stage_path
 
         update_job(job_id, current_step="Video rendered", progress=90)
 
@@ -263,34 +932,74 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         # outro added in 4a, and finalize_video had zero callers, so the
         # dashboard published ungated video with no Learning Routes CTA too.
         # One function, both paths.
-        fin = pipeline.finalize_video(video_path, json_path,
+        fin = pipeline.finalize_video(stage_path, json_path,
                                       variant_seed=unique_name)
+        _stage("gate+outro")
         result["gate"] = fin.get("gate")
         result["outro_appended"] = fin.get("outro_appended")
         result["blocking_flags"] = fin.get("blocking_flags", [])
+        result["outro_variant"] = fin.get("outro_variant")
         if fin.get("video"):
-            video_path = Path(fin["video"])
+            stage_path = Path(fin["video"])
 
-        update_job(job_id, current_step=f"Gate: {fin.get('gate')}", progress=95)
+        # THE VERDICT, in three places on purpose.
+        #
+        # `result` alone is where it used to live, and _worker() calls this
+        # function without capturing the return, so it died there — which is
+        # how a gate REJECT reached output/pending/ with a green tick next to
+        # the videos that passed.
+        verdict_record = {
+            "gate": fin.get("gate"),
+            "blocking_flags": fin.get("blocking_flags", []),
+            "outro_appended": bool(fin.get("outro_appended")),
+            "outro_variant": fin.get("outro_variant"),
+        }
+        update_job(job_id, current_step=f"Gate: {fin.get('gate')}", progress=95,
+                   **verdict_record)
 
         if tracker and tracker.entries:
             tracker.save()
 
         # Save metadata
+        video_path.parent.mkdir(parents=True, exist_ok=True)
         meta_path = video_path.with_suffix('.json')
         with open(meta_path, 'w', encoding='utf-8') as f:
             json.dump({
                 "job_id": job_id,
+                # The cost ledger's join key. Ledger rows carry
+                # video_id == unique_name and the artifact is
+                # <unique_name>.mp4, so no mapping needs inventing.
+                "artifact": unique_name,
                 "video_type": video_type,
                 "category": category,
                 "topic": topic_name,
+                # The verdict lives with the artifact, so the two live or die
+                # together. Clearing job history cannot orphan a video from
+                # the reason it should not be published.
+                **verdict_record,
+                "background": background_record or None,
+                # What this video cost, OpenAI vs ElevenLabs, as of the render.
+                # The ledger in output/costs/ stays the authoritative record.
+                "cost": tracker.summary() if tracker is not None else None,
                 "script_data": script_data,
+                "stage_seconds": stage_seconds,
                 "created_at": datetime.now().isoformat()
             }, f, ensure_ascii=False, indent=2)
+
+        # The sidecar exists, so now the video may have its pending/ name.
+        os.replace(stage_path, video_path)
+        rendered_video = video_path
+        logger.info("job %s stage seconds: %s", job_id, stage_seconds)
 
         result["success"] = True
         result["video_path"] = str(video_path)
         complete_job(job_id, success=True, video_path=str(video_path))
+
+        # AFTER the video exists, never before. A job that fails leaves its
+        # script in the queue so the next run picks it up again; shelving at
+        # pick time would burn a script on every crash.
+        if queued_path is not None:
+            queue_shelve(queued_path)
 
     except pipeline.PipelineError as e:
         # Already carries the renderer's own output — a Python traceback of the
@@ -299,14 +1008,73 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         result["error"] = error_msg
         complete_job(job_id, success=False, error=error_msg[:2000])
         logger.error("[Pipeline ERROR]: %s", error_msg)
+        _cut_on_failure(error_msg)
+        _release_queued_script(queued_path, script_path, rendered_video)
+    except AlreadyRendering as e:
+        result["error"] = str(e)
+        complete_job(job_id, success=False, error=str(e))
+        logger.warning("job %s refused: %s", job_id, e)
     except Exception as e:
         import traceback
         error_msg = f"{str(e)}\n{traceback.format_exc()}"
         result["error"] = error_msg
         complete_job(job_id, success=False, error=error_msg[:2000])
         logger.error("[Pipeline ERROR]: %s", error_msg)
+        _cut_on_failure(str(e))
+        _release_queued_script(queued_path, script_path, rendered_video)
+    finally:
+        # A failed run spent money too, and a ledger fed only by successes
+        # under-counts exactly while iterating on a broken pipeline. save()
+        # writes only what is not on disk yet, so the success path's own
+        # save above cannot be doubled here.
+        try:
+            if tracker is not None:
+                tracker.save()
+        except Exception:                                   # noqa: BLE001
+            logger.exception("could not persist the cost ledger")
 
     return result
+
+
+def _release_queued_script(queued_path, script_path, video_path=None) -> None:
+    """Undo the history mark a FAILED queued job left behind.
+
+    The comment above the shelve promises that "a job that fails leaves its
+    script in the queue so the next run picks it up again". It did not: the
+    script is copied into output/scripts/ before TTS runs, `_meta` and all,
+    and topic_history counts that copy as a produced video. On the next pick
+    queue_guard flags the very same file ALREADY PRODUCED and refuses it
+    forever — so one transient TTS or render failure permanently burned a
+    hand-written script.
+
+    Removing the copy on failure is what makes the promise true. Only for a
+    queued script, and only on failure: a GPT-written script is the only
+    record of what was generated and is kept either way.
+
+    NOT WHEN AN MP4 SURVIVED THE FAILURE. render_video can succeed and the
+    step after it still raise — finalize_video runs the gate and appends the
+    outro through ffmpeg, and the metadata write follows it. topic_history
+    counts SCRIPT json, never mp4s, so removing the copy while the video sits
+    in output/pending/ un-marks a topic that HAS been produced, and the guard
+    then re-offers the script and makes the same video twice. When the render
+    got that far the mark is correct and stays; the script is burned, which a
+    person can undo, whereas a duplicate reaches the channel.
+    """
+    if queued_path is None or script_path is None:
+        return
+    if video_path is not None and Path(video_path).exists():
+        logger.info("queue: %s failed after its video was rendered — the "
+                    "history mark stays, because %s is on disk",
+                    queued_path.name, video_path)
+        return
+    try:
+        Path(script_path).unlink(missing_ok=True)
+        _AUDIT_CACHE.update(at=0.0, bad=None)
+        logger.info("queue: %s failed — its output/scripts copy was removed "
+                    "so the guard will offer it again", queued_path.name)
+    except Exception:                                       # noqa: BLE001
+        logger.warning("queue: could not un-mark %s after a failure",
+                       queued_path, exc_info=True)
 
 
 # ============== RUNNING GENERATION OFF THE SCRIPT THREAD ==============
@@ -320,13 +1088,13 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
 # frame generation), so two concurrent jobs do not finish sooner — measured
 # 2026-08-14, two jobs 12s apart took ~4.5 min each against a 109s median.
 # A second tab therefore queues instead of contending.
-_RENDER_LOCK = threading.Lock()
+_RENDER_LOCK = _ds.RENDER_LOCK
 
-# Job ids with a live worker in THIS process. An active row that is not here
-# has no thread behind it — see reap_orphaned_jobs.
-_LIVE_JOBS: set = set()
-_LIVE_JOBS_LOCK = threading.Lock()
-_WORKERS: list = []
+_WORKERS: list = _ds.WORKERS
+
+#: How often a running job stamps its row. Small enough that a dead worker is
+#: obvious, large enough that it is not a write loop.
+HEARTBEAT_SEC = 10
 
 
 def start_generation(video_type: str, category: str = None, topic_name: str = None,
@@ -334,14 +1102,32 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
     """Queue one video and return its job id immediately.
 
     The job appears in the ledger before this returns, so the very next page
-    draw shows it as active.
+    draw shows it as active. A script another job holds is refused with
+    AlreadyRendering, before any job exists.
     """
+    key = script_key(kwargs.get("script_data"))
+    if rendering_job_for(key):
+        raise AlreadyRendering(f"Ya se está renderizando {key.split(':')[0]}")
     job_id = create_job(video_type, category, topic_name)
+    if key:
+        update_job(job_id, script_key=key)
 
-    with _LIVE_JOBS_LOCK:
-        _LIVE_JOBS.add(job_id)
+    # The heartbeat is what a running job leaves behind, and it keeps
+    # ticking through the long encode, when nothing else writes to the row.
+    stop_beating = threading.Event()
+
+    def _heartbeat():
+        while not stop_beating.wait(HEARTBEAT_SEC):
+            try:
+                touch_heartbeat(job_id)
+            except Exception:                               # noqa: BLE001
+                logger.debug("heartbeat failed for job %s", job_id, exc_info=True)
 
     def _worker():
+        # One file per job, recorded on the row so a 3am failure can be read
+        # back from the ledger rather than from a console nobody kept.
+        log_path = attach_run_log(f"job-{job_id}")
+        update_job(job_id, log_path=str(log_path))
         try:
             with _RENDER_LOCK:
                 run_pipeline_with_tracking(job_id, video_type, category,
@@ -353,9 +1139,18 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
             complete_job(job_id, success=False,
                          error="Generation worker crashed — see dashboard logs")
         finally:
-            with _LIVE_JOBS_LOCK:
-                _LIVE_JOBS.discard(job_id)
+            stop_beating.set()
+            detach_run_log(log_path)
+            # THE CHAIN. One item in flight at a time: the next starts only
+            # when this one finishes, so nothing sits in a thread waiting for
+            # a lock where a restart can kill it.
+            try:
+                batch_advance()
+            except Exception:                               # noqa: BLE001
+                logger.exception("batch: could not start the next item")
 
+    threading.Thread(target=_heartbeat, name=f"heartbeat-{job_id}",
+                     daemon=True).start()
     t = threading.Thread(target=_worker, name=f"generate-{job_id}", daemon=True)
     _WORKERS.append(t)
     t.start()
@@ -383,8 +1178,7 @@ def reap_orphaned_jobs() -> int:
     """
     with _JOBS_LOCK:
         jobs = load_jobs()
-        with _LIVE_JOBS_LOCK:
-            orphans = [j for j in jobs["active"] if j["id"] not in _LIVE_JOBS]
+        orphans = [j for j in jobs["active"] if not _owner_alive(j)]
         if not orphans:
             return 0
         for job in orphans:
@@ -398,6 +1192,9 @@ def reap_orphaned_jobs() -> int:
             jobs["history"].insert(0, job)
         jobs["history"] = jobs["history"][:50]
         save_jobs(jobs)
+    for job in orphans:
+        if job.get("stage_path"):
+            move_to_cut([job["stage_path"]], job["error"], Path(job["stage_path"]).stem)
 
     logger.info("Reaped %d orphaned job(s) from a previous dashboard process",
                 len(orphans))
@@ -428,15 +1225,18 @@ def get_pending_videos() -> list:
         if type_dir.is_dir():
             for video_file in type_dir.glob("*.mp4"):
                 meta_file = video_file.with_suffix('.json')
-                meta = {}
-                if meta_file.exists():
-                    with open(meta_file, 'r') as f:
-                        meta = json.load(f)
+                if not meta_file.exists():
+                    # STEP 59 §6: no sidecar means the job never finished it.
+                    logger.warning("review: %s has no sidecar; not shown", video_file.name)
+                    continue
+                with open(meta_file, 'r') as f:
+                    meta = json.load(f)
                 videos.append({
                     "path": video_file,
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "stage": "pending",
                     "created": datetime.fromtimestamp(video_file.stat().st_mtime)
                 })
     return sorted(videos, key=lambda x: x["created"], reverse=True)
@@ -477,6 +1277,7 @@ def get_approved_videos() -> list:
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "stage": "approved",
                     "published_to": sorted({r.get("platform") for r in published
                                             if r.get("platform")}),
                     "published_rows": published,
@@ -497,9 +1298,116 @@ def get_library_videos() -> list:
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "size": video_file.stat().st_size,
+                    # output/video/ is where `main.py --batch` stops. Until
+                    # promote_to_review existed this was a dead end.
+                    "stage": "batch",
                     "created": datetime.fromtimestamp(video_file.stat().st_mtime)
                 })
     return sorted(videos, key=lambda x: x["created"], reverse=True)
+
+
+def find_script_for(video_path: Path) -> Optional[Path]:
+    """The script that produced this artifact, if it is still on disk.
+
+    `main.py --batch` names the artifact after the script, so
+    output/scripts/<type>/<stem>.json is the match. Dashboard renders append a
+    timestamp to the stem, so a prefix search is the fallback, newest first.
+    """
+    type_dir = SCRIPTS_DIR / video_path.parent.name
+    if not type_dir.is_dir():
+        return None
+    exact = type_dir / f"{video_path.stem}.json"
+    if exact.exists():
+        return exact
+    matches = sorted(type_dir.glob(f"{video_path.stem}_*.json"), reverse=True)
+    return matches[0] if matches else None
+
+
+def promote_to_review(video_path: Path) -> dict:
+    """Put a `--batch` artifact onto the reviewed-and-published route.
+
+    output/video/ is where `main.py --batch` stops. Nothing in the dashboard
+    could move an artifact any further from there: Library offered preview and
+    download and that was the end of the road, so the six videos carrying the
+    first Learning Routes CTA have been unpublishable from the UI since
+    18 August.
+
+    Promotion is a MOVE INTO output/pending/, not a shortcut to upload. From
+    pending/ the artifact takes the identical route as anything the dashboard
+    rendered itself — Review approves it into approved/, Upload consults the
+    idempotency guard before a byte is sent. So this is a new DOOR into the
+    existing flow, not a second flow. This repo has had three upload paths
+    before and unifying them was Paso 5a.
+
+    The publication ledger is consulted here as well as at upload. Not because
+    the guard at the end is insufficient, but because an already-published
+    artifact sitting in the "ready to upload" list is the exact shape of the
+    mistake that published hPdSoqjvu3E twice, and the cheapest place to refuse
+    is before it ever joins the queue.
+
+    Returns a verdict dict rather than raising: this is called from a button.
+    """
+    from publication_log import find_by_artifact
+
+    artifact = video_path.stem
+    if not video_path.exists():
+        return {"ok": False, "reason": f"{video_path} no longer exists"}
+
+    published = find_by_artifact(artifact)
+    if published:
+        where = ", ".join(
+            f"{r.get('platform')}={r.get('upload_id')}" for r in published)
+        return {"ok": False, "artifact": artifact, "published_rows": published,
+                "reason": f"already published ({where}) — promoting it would "
+                          f"put a published video back in the upload queue"}
+
+    video_type = video_path.parent.name
+    dest_dir = PENDING_DIR / video_type
+    dest = dest_dir / video_path.name
+    if dest.exists():
+        return {"ok": False, "artifact": artifact,
+                "reason": f"{dest.relative_to(OUTPUT_DIR)} already exists; "
+                          f"refusing to overwrite it"}
+
+    script_path = find_script_for(video_path)
+    script_data, category, topic = {}, "", artifact.replace("_", " ")
+    if script_path:
+        try:
+            with open(script_path, "r", encoding="utf-8") as f:
+                script_data = json.load(f)
+            meta = script_data.get("_meta", {}) or {}
+            category = meta.get("category", "") or ""
+            topic = meta.get("topic") or script_data.get("word") or topic
+        except (json.JSONDecodeError, OSError) as e:
+            logger.warning("promote: could not read %s: %s", script_path, e)
+
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    shutil.move(str(video_path), str(dest))
+
+    # The same sidecar shape the dashboard writes, so Review and Upload cannot
+    # tell a promoted artifact from a natively rendered one. Without
+    # script_data the Upload page has no title to generate from and the
+    # operator would be typing metadata by hand for every one.
+    meta_path = dest.with_suffix(".json")
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump({
+            "artifact": artifact,
+            "video_type": video_type,
+            "category": category,
+            "topic": topic,
+            "script_data": script_data,
+            "promoted_from": "output/video",
+            "promoted_at": datetime.now().isoformat(),
+            "script_path": str(script_path) if script_path else None,
+            "created_at": datetime.now().isoformat(),
+        }, f, ensure_ascii=False, indent=2)
+
+    logger.info("promote: %s -> %s (script=%s)", video_path, dest,
+                script_path.name if script_path else "none")
+    return {"ok": True, "artifact": artifact, "dest": dest,
+            "meta_path": meta_path, "script_path": script_path,
+            "video_type": video_type, "category": category, "topic": topic,
+            "reason": "moved to pending; approve it in Review to upload"}
 
 
 def approve_video(video_path: Path):
@@ -532,10 +1440,39 @@ def unapprove_video(video_path: Path):
         shutil.move(str(meta_path), str(dest_dir / meta_path.name))
 
 
-def _guard_decide(artifact: str, platform: str, manager=None):
+def _guard_decide(artifact: str, platform: str, manager=None, **content):
     """Ask the idempotency guard before uploading. See upload_guard."""
     from upload_guard import decide
-    return decide(artifact, platform, manager=manager)
+    return decide(artifact, platform, manager=manager, **content)
+
+
+def script_for_upload(video: dict) -> dict:
+    """The script behind an approved video: its sidecar's, else the audio JSON, else output/scripts.
+
+    STEP 65: bv010 reached approved/ with no sidecar (its render timed out
+    after writing the mp4) and went up as «¿Cómo se dice  en inglés?» because
+    this was `{}`. The audio JSON beside it carried the script all along.
+    """
+    script = (video.get("meta") or {}).get("script_data")
+    if script:
+        return script
+    for path in (AUDIO_DIR / video["type"] / f"{video['name']}.json", find_script_for(video["path"])):
+        try:
+            if path and Path(path).is_file():
+                return json.loads(Path(path).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            logger.warning("script_for_upload: unreadable %s", path)
+    return {}
+
+
+def upload_content(video: dict, script: dict, title: str, description: str,
+                   allow_duplicate: bool = False) -> dict:
+    """What upload_guard.content_refusal checks for one approved video."""
+    return {"title": title, "description": description,
+            "gate": (video.get("meta") or {}).get("gate"),
+            "topic_id": (script.get("_meta") or {}).get("topic_id"),
+            "topic_name": script.get("theme") or (script.get("_meta") or {}).get("topic"),
+            "allow_duplicate": allow_duplicate}
 
 
 def _guard_notice(st_module, artifact: str, platform_label: str, verdict) -> None:
@@ -545,8 +1482,10 @@ def _guard_notice(st_module, artifact: str, platform_label: str, verdict) -> Non
     and the operator's next move would be to upload by hand — which is the
     route that produced the duplicate in the first place.
     """
-    from upload_guard import SKIP_DONE
-    if verdict.action == SKIP_DONE:
+    from upload_guard import REFUSE, SKIP_DONE
+    if verdict.action == REFUSE:
+        st_module.error(f"⛔ {platform_label}: no se sube — {verdict.reason}")
+    elif verdict.action == SKIP_DONE:
         st_module.info(
             f"⏭️ {platform_label}: already published"
             + (f" (id={verdict.upload_id})" if verdict.upload_id else "")
@@ -688,9 +1627,17 @@ def reconcile_platform_target(state: dict, platform_name: str,
     Rules:
       * not available        -> forced off, always. Never target a platform we
                                cannot authenticate to.
-      * became available     -> default on, because that is what the operator
-                               almost certainly wants right after connecting.
+      * became available     -> OFF. A destination the operator did not choose
+                               must not be armed.
       * still available      -> leave the operator's choice alone.
+
+    That middle rule used to default ON — "what the operator almost certainly
+    wants right after connecting". It is the wrong trade on a page whose
+    button publishes irreversibly. Every connected platform armed itself on
+    first render, so a distracted press published to a destination nobody
+    picked; during the E1 proof TikTok had to be unticked twice to keep a
+    demonstration upload off it. The cost of defaulting off is one extra
+    click. The cost of defaulting on is a video the operator cannot unpublish.
     """
     key = f"target_{platform_name}"
     seen_key = f"_target_seen_{platform_name}"
@@ -713,13 +1660,14 @@ def reconcile_platform_target(state: dict, platform_name: str,
         state[want_key] = bool(state[key])
 
     previously = state.get(seen_key)
-    want = bool(state.get(want_key, True))
+    # Unseen means unchosen. The operator opts in per press.
+    want = bool(state.get(want_key, False))
 
     if not enabled:
         want = False
     elif previously != enabled:
         # Transitioned unavailable -> available (or first ever render).
-        want = True
+        want = False
 
     # Assigned unconditionally: the caller renders a keyed widget straight
     # after this, and every path has to leave it something to render.
@@ -736,6 +1684,11 @@ def reconcile_platform_target(state: dict, platform_name: str,
 from upload_metadata import (  # noqa: E402,F401
     NO_OPERATOR_EDITS, metadata_session_keys, resolve_upload_metadata,
 )
+
+# Privacy is decided in exactly one place, uploader.PLATFORM_PRIVACY, and the
+# dashboard only reads it. Imported under a clearer name because at this call
+# site the question is "what does the page show", not "what does the API get".
+from uploader import privacy_label as platform_privacy_label  # noqa: E402,F401
 
 
 def move_to_uploaded(video_path: Path, upload_info: dict = None):
@@ -777,10 +1730,273 @@ def get_uploaded_videos() -> list:
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "stage": "uploaded",
                     "created": datetime.fromtimestamp(video_file.stat().st_mtime),
                     "upload_info": meta.get("upload_info", {}),
                 })
     return sorted(videos, key=lambda x: x["created"], reverse=True)
+
+
+# ============== WHAT INICIO IS ALLOWED TO SAY ==============
+#
+# Inicio used to open with Total Videos, Storage MB and "By Type 40%". Every
+# one of those is an aggregate ABOUT the system, and there is no move an
+# operator can make in response to any of them. The rule for that page is now:
+# a block either names specific artifacts and the one action that moves each
+# forward, or it does not appear.
+#
+# The helpers below exist so the page can obey that rule without doing its own
+# arithmetic inline, and so the arithmetic can be tested without Streamlit.
+
+#: What a video with no gate verdict on file says. NOT a tick, and not a
+#: silence. Seven of the artifacts on disk predate the commit that started
+#: writing the verdict into the sidecar; rendering them as unmarked would be
+#: indistinguishable from rendering them as passed, which is the exact defect
+#: that put a gate REJECT into pending/ with a green tick next to the videos
+#: that passed. Absence has to be visible or it reads as approval.
+GATE_MISSING_LABEL = "sin registro"
+
+#: Verdict -> (label, tone). Tone is for the page to colour with; the strings
+#: are the vocabulary the operator sees.
+GATE_LABELS = {
+    "PASS": ("PASS", "pass"),
+    "REJECT": ("REJECT", "reject"),
+    "NO_REPORT": ("sin informe", "unknown"),
+}
+
+
+def gate_record(meta: Optional[dict]) -> dict:
+    """What the artifact's own sidecar says about the QA gate.
+
+    Three states, deliberately, and the third is not the first:
+      recorded PASS      the gate ran and accepted it
+      recorded REJECT    the gate ran and refused it
+      no record at all   nobody knows, and the page must say so
+
+    A missing sidecar, a sidecar without the key, and a null value all mean
+    the same thing — no verdict was ever written — and all produce
+    GATE_MISSING_LABEL.
+    """
+    verdict = (meta or {}).get("gate")
+    if not verdict:
+        return {"verdict": None, "known": False,
+                "label": GATE_MISSING_LABEL, "tone": "unknown", "flags": []}
+    label, tone = GATE_LABELS.get(verdict, (str(verdict), "unknown"))
+    flags = (meta or {}).get("blocking_flags") or []
+    return {"verdict": verdict, "known": True,
+            "label": label, "tone": tone, "flags": list(flags)}
+
+
+def independent_disk_census(output_dir: Path = None) -> dict:
+    """Count the same artifacts again, by a route that shares no code.
+
+    This is the proof obligation, not a convenience. get_pending_videos and
+    friends walk iterdir() and glob per type directory and each attaches its
+    own metadata; if one of them silently skipped a directory, the page would
+    under-report and look perfectly healthy doing it. So the numbers Inicio
+    prints are checked against a plain recursive walk that knows nothing about
+    types, sidecars or the ledger reader, and the page shows BOTH.
+
+    A disagreement is a bug in one of the two, and the page says so rather
+    than picking a winner.
+    """
+    base = Path(output_dir) if output_dir else OUTPUT_DIR
+
+    def walk(name: str) -> int:
+        d = base / name
+        return sum(1 for f in d.rglob("*.mp4") if f.is_file()) if d.is_dir() else 0
+
+    # The gate split, recomputed from the sidecars directly rather than from
+    # anything get_pending_videos attached.
+    pending_dir = base / "pending"
+    gate_pass = gate_none = gate_other = 0
+    def _gate_of(sidecar_path):
+        return json.loads(Path(sidecar_path).read_text(encoding="utf-8")).get("gate")
+
+    if pending_dir.is_dir():
+        for mp4 in pending_dir.rglob("*.mp4"):
+            sidecar = mp4.with_suffix(".json")
+            verdict = None
+            if sidecar.is_file():
+                try:
+                    # Re-read only when the sidecar changes, not every click.
+                    verdict = _ds.per_file(sidecar, _gate_of)
+                except (json.JSONDecodeError, OSError, AttributeError):
+                    verdict = None
+            if verdict == "PASS":
+                gate_pass += 1
+            elif verdict is None:
+                gate_none += 1
+            else:
+                gate_other += 1
+
+    ledger_path = base / "published" / "ledger.jsonl"
+    ledger_rows = 0
+    if ledger_path.is_file():
+        with open(ledger_path, "r", encoding="utf-8") as f:
+            ledger_rows = sum(1 for line in f if line.strip())
+
+    return {
+        "batch": walk("video"),
+        "pending": walk("pending"),
+        "approved": walk("approved"),
+        "uploaded": walk("uploaded"),
+        "rejected": walk("rejected"),
+        "pending_gate_pass": gate_pass,
+        "pending_gate_missing": gate_none,
+        "pending_gate_other": gate_other,
+        "ledger_rows": ledger_rows,
+    }
+
+
+def get_ledger_rows(limit: int = None) -> list:
+    """Published rows, newest first, straight from the publication ledger."""
+    from publication_log import read_ledger
+    try:
+        rows = read_ledger()
+    except (OSError, ValueError) as e:
+        logger.warning("inicio: could not read the ledger: %s", e)
+        return []
+    rows.sort(key=lambda r: r.get("published_at") or "", reverse=True)
+    return rows[:limit] if limit else rows
+
+
+def get_failed_jobs(limit: int = None) -> list:
+    """Jobs that crashed, newest first.
+
+    A gate REJECT is NOT here. "failed" means the pipeline raised; a refused
+    video is a successful render of a bad artifact and carries its verdict on
+    the artifact instead. Merging the two would corrupt both counts.
+    """
+    failed = [j for j in load_jobs().get("history", [])
+              if j.get("status") == "failed"]
+    failed.sort(key=lambda j: j.get("completed_at") or j.get("updated_at") or "",
+                reverse=True)
+    return failed[:limit] if limit else failed
+
+
+
+def lazy_video(path, key: str, open_now: bool = False) -> None:
+    """A video player that costs nothing until someone asks for it.
+
+    WHY. st.video(path) reads the WHOLE file into Streamlit's media store and
+    ships it to the browser on EVERY rerun -- and Streamlit reruns the page on
+    every click. An expander does not help: its body runs while closed. The
+    Upload page drew 27 players (758 MB) and the Library 28, so every click
+    there re-read ~0.8 GB before the page could answer, and the browser held
+    dozens of <video> elements. Measured 2026-10-13: that is the "se tilda".
+
+    Now a button stands in for the player; one click loads that one video and
+    keeps it open for the session. `open_now` is for the single video a page
+    exists to show (the newest render, the first one waiting for review).
+    """
+    state_key = f"_lazy_video_{key}"
+    if open_now or st.session_state.get(state_key):
+        st.video(str(path))
+        return
+    if st.button("▶️ Ver vídeo", key=f"_lazy_btn_{key}"):
+        st.session_state[state_key] = True
+        st.video(str(path))
+
+
+def lazy_download(path, key: str) -> None:
+    """A download button that reads the file only when asked.
+
+    st.download_button(data=<file>) reads the whole video into memory on
+    every rerun, whether or not anyone downloads it: 27 of them on the Upload
+    page was 0.36 s and ~0.8 GB per click. The first press prepares this one
+    file; the second press downloads it.
+    """
+    state_key = f"_lazy_dl_{key}"
+    if not st.session_state.get(state_key):
+        if st.button("⬇️ Download", key=f"_lazy_dl_btn_{key}",
+                     use_container_width=True):
+            st.session_state[state_key] = True
+            st.rerun()
+        return
+    with open(path, "rb") as handle:
+        st.download_button("⬇️ Guardar archivo", data=handle,
+                           file_name=Path(path).name, mime="video/mp4",
+                           key=f"_lazy_dl_real_{key}", use_container_width=True)
+
+def focus_first(videos: list, artifact: Optional[str]) -> list:
+    """Put the artifact the operator pressed on at the top of the list.
+
+    Inicio's "Revisar" and "Subir" buttons are per-artifact; without this they
+    would land the operator at the top of a page listing every video, which
+    for the seventh row in the queue is a worse position than they started
+    from. Order only — nothing is filtered out, because the operator may well
+    want to keep going down the list once they are there.
+    """
+    if not artifact:
+        return videos
+    hit = [v for v in videos if v.get("name") == artifact]
+    if not hit:
+        return videos
+    return hit + [v for v in videos if v.get("name") != artifact]
+
+
+def cost_snapshot(config_path: Path = None, costs_dir: Path = None,
+                  today: str = None) -> dict:
+    """One line's worth of money: today, the month, and the ceiling.
+
+    Not the Costes panel — that is a later step. This answers only "did I
+    spend anything today, and how close is the month to the limit", which is
+    the one cost question that changes what the operator does next.
+
+    The ceiling comes from config.yaml `costs.monthly_ceiling_usd`. If it is
+    absent the line says so instead of inventing one, because a made-up
+    ceiling that nobody set is worse than a visible gap.
+    """
+    import yaml
+
+    cdir = Path(costs_dir) if costs_dir else (OUTPUT_DIR / "costs")
+    day = today or datetime.now().strftime("%Y-%m-%d")
+    month = day[:7]
+
+    def file_total(path) -> float:
+        acc = 0.0
+        with open(path, "r", encoding="utf-8") as fh:
+            for line in fh:
+                if not line.strip():
+                    continue
+                try:
+                    acc += float(json.loads(line).get("cost_usd") or 0)
+                except (json.JSONDecodeError, TypeError, ValueError, AttributeError):
+                    continue
+        return acc
+
+    def total(pattern: str) -> float:
+        acc = 0.0
+        if not cdir.is_dir():
+            return acc
+        for f in sorted(cdir.glob(pattern)):
+            try:
+                # Each day's file is summed once per change, not per click.
+                acc += _ds.per_file(f, file_total)
+            except OSError:
+                continue
+        return acc
+
+    ceiling = None
+    cfg_file = Path(config_path) if config_path else (ROOT / "config.yaml")
+    try:
+        from yaml_cache import load_yaml
+        cfg = load_yaml(cfg_file) or {}
+        raw = (cfg.get("costs") or {}).get("monthly_ceiling_usd")
+        ceiling = float(raw) if raw is not None else None
+    except (OSError, yaml.YAMLError, TypeError, ValueError):
+        ceiling = None
+
+    month_usd = round(total(f"costs_{month}*.jsonl"), 4)
+    return {
+        "day": day,
+        "month": month,
+        "today_usd": round(total(f"costs_{day}.jsonl"), 4),
+        "month_usd": month_usd,
+        "ceiling_usd": ceiling,
+        "pct_of_ceiling": (month_usd / ceiling * 100) if ceiling else None,
+    }
 
 
 def delete_video(video_path: Path):
@@ -870,176 +2086,113 @@ _STARTUP = _startup()
 # ============== CUSTOM THEME CSS ==============
 st.markdown("""
 <style>
-    /* ── Global ── */
-    .stApp {
-        background: linear-gradient(180deg, #0a0a1a 0%, #111128 100%);
+    /* ── English Unlimited · panel ──────────────────────────────────────────
+       Brand v2 «pegatina» on paper: sand background, white cards, ink text,
+       English blue for actions, yellow only as a highlighter (never text).
+       The palette itself lives in .streamlit/config.toml (theme), so Streamlit's
+       own widgets, the sidebar and both OS themes agree with these rules; this
+       block only styles the markup the panel writes by hand. Before 2026-10-14
+       a hard-coded navy gradient sat on top of Streamlit's light theme, and on
+       a Mac in light mode every label was dark grey on navy (contrast ~1.3:1). */
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap');
+    :root {
+        --eu-sand: #F3EEE4; --eu-card: #FFFFFF; --eu-card2: #EAE3D6;
+        --eu-ink: #1C1812; --eu-muted: #6D665B; --eu-line: #D9D0C0;
+        --eu-blue: #1B6FA8; --eu-blue-soft: #DCEAF4; --eu-yellow: #F2D66B;
+        --eu-green: #2F8F5B; --eu-green-soft: #DDEFE3;
+        --eu-red: #C0453A; --eu-red-soft: #F6DEDB; --eu-amber-soft: #F8EBC0;
     }
+    html, body, .stApp, [data-testid="stSidebar"], .stMarkdown, button, input, textarea, select {
+        font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    h1, h2, h3, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
+        font-family: "Fredoka", "Manrope", system-ui, sans-serif !important;
+        font-weight: 600 !important; letter-spacing: 0; color: var(--eu-ink);
+    }
+    [data-testid="stHeader"] { background: transparent; }
+    .block-container { padding-top: 2.2rem; max-width: 1200px; }
 
-    /* ── Sidebar ── */
-    section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0d0d24 0%, #0a0a1a 100%);
-        border-right: 1px solid rgba(99, 102, 241, 0.15);
-    }
+    /* ── Sidebar: brand, then one quiet list of pages ── */
+    section[data-testid="stSidebar"] { border-right: 1px solid var(--eu-line); }
     section[data-testid="stSidebar"] .stButton button {
-        border: 1px solid rgba(99, 102, 241, 0.2);
-        border-radius: 10px;
-        transition: all 0.2s;
-        font-size: 0.9rem;
+        justify-content: flex-start; border-radius: 10px; font-weight: 600;
+        border: 1px solid transparent; box-shadow: none; padding: 0.35rem 0.8rem;
+        min-height: 2.3rem;
     }
-    section[data-testid="stSidebar"] .stButton button:hover {
-        border-color: rgba(99, 102, 241, 0.6);
-        box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
-    }
+    section[data-testid="stSidebar"] .stButton button[kind="secondary"] { background: transparent; color: var(--eu-ink); }
+    section[data-testid="stSidebar"] .stButton button[kind="secondary"]:hover { background: var(--eu-card); border-color: var(--eu-line); }
+    section[data-testid="stSidebar"] .stButton button > div { justify-content: flex-start; width: 100%; }
+    .eu-brand { font-family: "Fredoka", system-ui, sans-serif; font-weight: 600; font-size: 1.35rem; line-height: 1.15; color: var(--eu-ink); }
+    .eu-brand mark { background: linear-gradient(transparent 58%, var(--eu-yellow) 58%, var(--eu-yellow) 92%, transparent 92%); color: inherit; padding: 0 2px; }
+    .eu-navlabel { font-size: 0.7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--eu-muted); padding-top: 0.9rem; }
+    .eu-ver { font-size: 0.75rem; color: var(--eu-muted); margin-top: 0.3rem; }
 
     /* ── Cards ── */
-    .metric-card {
-        background: linear-gradient(135deg, rgba(17, 17, 40, 0.9) 0%, rgba(26, 26, 58, 0.9) 100%);
-        border: 1px solid rgba(99, 102, 241, 0.2);
-        border-radius: 16px;
-        padding: 24px;
-        text-align: center;
-        transition: all 0.3s;
+    .metric-card, .platform-card, .video-card, .upload-item {
+        background: var(--eu-card); border: 1px solid var(--eu-line); border-radius: 14px;
+        padding: 20px; color: var(--eu-ink);
     }
-    .metric-card:hover {
-        border-color: rgba(99, 102, 241, 0.5);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(99, 102, 241, 0.1);
-    }
-    .metric-card .metric-value {
-        font-size: 2.5rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #818cf8, #6366f1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin: 8px 0;
-    }
-    .metric-card .metric-label {
-        font-size: 0.85rem;
-        color: #94a3b8;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
+    .metric-card { text-align: center; }
+    .metric-card .metric-value { font-family: "Fredoka", sans-serif; font-size: 2.3rem; font-weight: 600; color: var(--eu-blue); margin: 6px 0; font-variant-numeric: tabular-nums; }
+    .metric-card .metric-label { font-size: 0.78rem; color: var(--eu-muted); text-transform: uppercase; letter-spacing: .08em; }
+    .platform-card { text-align: center; min-height: 190px; }
+    .platform-card .platform-icon { font-size: 2.2rem; margin-bottom: 10px; }
+    .platform-card .platform-name { font-family: "Fredoka", sans-serif; font-size: 1.15rem; font-weight: 600; margin-bottom: 6px; color: var(--eu-ink); }
+    .upload-item { display: flex; align-items: center; gap: 16px; padding: 14px; margin: 8px 0; }
+    .video-card { padding: 14px; margin: 8px 0; }
 
-    /* ── Status indicators ── */
-    .status-badge {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.5px;
+    /* ── Status ── */
+    .status-badge, .gate-badge {
+        display: inline-block; padding: 3px 10px; border-radius: 999px;
+        font-size: 0.72rem; font-weight: 700; letter-spacing: .04em;
     }
-    .status-connected {
-        background: rgba(34, 197, 94, 0.15);
-        color: #4ade80;
-        border: 1px solid rgba(34, 197, 94, 0.3);
-    }
-    .status-disconnected {
-        background: rgba(100, 116, 139, 0.15);
-        color: #94a3b8;
-        border: 1px solid rgba(100, 116, 139, 0.3);
-    }
-    .status-required {
-        background: rgba(239, 68, 68, 0.15);
-        color: #f87171;
-        border: 1px solid rgba(239, 68, 68, 0.3);
-    }
+    .status-connected, .gate-pass, .key-ok { background: var(--eu-green-soft); color: var(--eu-green); border: 1px solid transparent; }
+    .status-disconnected, .key-missing { background: var(--eu-card2); color: var(--eu-muted); border: 1px solid transparent; }
+    .status-required, .gate-reject, .key-error { background: var(--eu-red-soft); color: var(--eu-red); border: 1px solid transparent; }
+    /* "sin registro" stays outlined and amber: a video nobody gated is a
+       decision the operator still owes, not a neutral fact. */
+    .gate-unknown { background: var(--eu-amber-soft); color: #7A5A00; border: 1px dashed #C9A227; }
+    .key-status { padding: 8px 14px; border-radius: 10px; margin: 4px 0; font-size: 0.85rem; }
 
-    /* ── Platform cards ── */
-    .platform-card {
-        background: linear-gradient(135deg, rgba(17, 17, 40, 0.95) 0%, rgba(30, 30, 60, 0.95) 100%);
-        border: 1px solid rgba(99, 102, 241, 0.15);
-        border-radius: 16px;
-        padding: 28px;
-        text-align: center;
-        min-height: 200px;
-    }
-    .platform-card .platform-icon {
-        font-size: 2.5rem;
-        margin-bottom: 12px;
-    }
-    .platform-card .platform-name {
-        font-size: 1.2rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
+    .stProgress > div > div > div > div { background: var(--eu-blue); border-radius: 10px; }
 
-    /* ── Progress bar ── */
-    .stProgress > div > div > div > div {
-        background: linear-gradient(90deg, #6366f1, #818cf8, #a78bfa);
-        border-radius: 10px;
-    }
-
-    /* ── Video cards ── */
-    .video-card {
-        background: rgba(17, 17, 40, 0.7);
-        border: 1px solid rgba(99, 102, 241, 0.1);
-        border-radius: 12px;
-        padding: 16px;
-        margin: 8px 0;
-    }
-
-    /* ── Section headers ── */
     .section-header {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #e2e8f0;
-        padding: 12px 0 8px 0;
-        border-bottom: 2px solid rgba(99, 102, 241, 0.2);
-        margin-bottom: 16px;
+        font-family: "Fredoka", sans-serif; font-size: 1.15rem; font-weight: 600; color: var(--eu-ink);
+        padding: 10px 0 8px; border-bottom: 2px solid var(--eu-line); margin-bottom: 14px;
     }
+    .activity-item, .ledger-row {
+        padding: 8px 14px; border-left: 3px solid var(--eu-blue); margin: 6px 0;
+        background: var(--eu-card); border-radius: 0 10px 10px 0; font-size: 0.85rem; color: var(--eu-ink);
+    }
+    .ledger-row a { color: var(--eu-blue); text-decoration: none; }
+    .ledger-row a:hover { text-decoration: underline; }
 
-    /* ── Upload queue item ── */
-    .upload-item {
-        background: rgba(17, 17, 40, 0.8);
-        border: 1px solid rgba(99, 102, 241, 0.15);
-        border-radius: 12px;
-        padding: 16px;
-        margin: 8px 0;
-        display: flex;
-        align-items: center;
-        gap: 16px;
+    /* ── Work queue (Inicio) ── */
+    .queue-head { display: flex; align-items: baseline; gap: 12px; padding: 14px 0 6px; border-bottom: 2px solid var(--eu-line); margin-bottom: 10px; }
+    .queue-head .queue-count { font-family: "Fredoka", sans-serif; font-size: 1.6rem; font-weight: 600; color: var(--eu-blue); font-variant-numeric: tabular-nums; }
+    .queue-head .queue-title { font-size: 1.05rem; font-weight: 700; color: var(--eu-ink); }
+    .queue-head .queue-action { margin-left: auto; font-size: 0.78rem; color: var(--eu-muted); }
+    .artifact-name { font-size: 0.92rem; font-weight: 600; color: var(--eu-ink); word-break: break-word; }
+    .artifact-meta { font-size: 0.78rem; color: var(--eu-muted); }
+    .census-ok { font-size: 0.75rem; color: var(--eu-muted); }
+    .census-mismatch { font-size: 0.78rem; color: var(--eu-red); font-weight: 700; }
+    .cost-line {
+        padding: 10px 16px; border-radius: 12px; background: var(--eu-card); border: 1px solid var(--eu-line);
+        font-size: 0.88rem; color: var(--eu-ink); font-variant-numeric: tabular-nums;
     }
+    /* One artifact, one line: thumbnail and text in one flex row, so a
+       21-item queue is not five screens of scrolling. */
+    .art-row { display: flex; align-items: center; gap: 14px; padding: 8px 12px; background: var(--eu-card); border: 1px solid var(--eu-line); border-radius: 12px; }
+    .art-thumb { height: 80px; width: 45px; object-fit: cover; border-radius: 6px; flex: 0 0 auto; background: var(--eu-card2); }
+    .art-thumb-empty { height: 80px; width: 45px; flex: 0 0 auto; border-radius: 6px; border: 1px dashed var(--eu-line); display: flex; align-items: center; justify-content: center; text-align: center; font-size: 0.55rem; line-height: 1.1; color: var(--eu-muted); }
+    .art-body { min-width: 0; }
+    .art-body .artifact-name { margin-bottom: 2px; }
+    .art-note { font-size: 0.75rem; color: #7A5A00; margin-top: 3px; }
+    .inicio-row div[data-testid="stVerticalBlock"] { gap: 0; }
 
-    /* ── Quick action buttons ── */
-    div[data-testid="stHorizontalBlock"] .stButton button[kind="primary"] {
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
-        border: none;
-        border-radius: 12px;
-        font-weight: 600;
-    }
-
-    /* ── Activity feed ── */
-    .activity-item {
-        padding: 10px 16px;
-        border-left: 3px solid rgba(99, 102, 241, 0.3);
-        margin: 6px 0;
-        background: rgba(17, 17, 40, 0.5);
-        border-radius: 0 8px 8px 0;
-    }
-
-    /* ── Key input ── */
-    .key-status {
-        padding: 8px 16px;
-        border-radius: 10px;
-        margin: 4px 0;
-        font-family: monospace;
-        font-size: 0.85rem;
-    }
-    .key-ok {
-        background: rgba(34, 197, 94, 0.1);
-        border: 1px solid rgba(34, 197, 94, 0.2);
-        color: #4ade80;
-    }
-    .key-missing {
-        background: rgba(100, 116, 139, 0.1);
-        border: 1px solid rgba(100, 116, 139, 0.2);
-        color: #64748b;
-    }
-    .key-error {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.2);
-        color: #f87171;
+    /* Inline code in captions read as random green pills on the cost line. */
+    [data-testid="stMarkdownContainer"] code, .stMarkdown code, [data-testid="stCaptionContainer"] code {
+        background: var(--eu-card2) !important; color: var(--eu-ink) !important; border-radius: 6px; padding: 1px 6px; font-size: 0.85em;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -1047,11 +2200,59 @@ st.markdown("""
 
 # ============== SIDEBAR NAVIGATION ==============
 
-st.sidebar.markdown("### 🎬 English AI Videos")
-st.sidebar.markdown("---")
+def _running_version() -> str:
+    """The commit this PROCESS is running, not the one on disk.
 
-if 'current_page' not in st.session_state:
-    st.session_state.current_page = "Dashboard"
+    Read once at import, so it freezes at whatever was current when the
+    process started. That is the whole point: three separate times the owner
+    was told a bug was fixed while his dashboard was still executing the old
+    module, and nothing on screen could have told him. A background worker
+    holds the old functions even after Streamlit re-runs the page, so
+    refreshing the browser is not a restart.
+    """
+    import subprocess
+    try:
+        sha = subprocess.run(
+            ["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"],
+            capture_output=True, text=True, timeout=5).stdout.strip()
+    except Exception:                                       # noqa: BLE001
+        sha = "?"
+    return sha or "?"
+
+
+_RUNNING_VERSION = _ds.once("running_version", _running_version)
+_STARTED_AT = _ds.once("started_at", lambda: datetime.now().strftime("%H:%M"))
+
+st.sidebar.markdown('<div class="eu-brand">English <mark>Unlimited</mark></div>'
+                    f'<div class="eu-ver">versión {_RUNNING_VERSION} · abierto a las {_STARTED_AT}</div>',
+                    unsafe_allow_html=True)
+
+#: Page key -> (label on screen, Material icon). Keys are what ?page= and the
+#: code use; only the label is translated.
+NAV_LABELS = {
+    "Dashboard": ("Inicio", ":material/home:"),
+    "Generate": ("Crear", ":material/movie:"),
+    "Queue": ("Cola", ":material/queue:"),
+    "Review": ("Revisar", ":material/task_alt:"),
+    "Upload": ("Subir", ":material/upload:"),
+    "Library": ("Biblioteca", ":material/video_library:"),
+    "Topics": ("Temas", ":material/psychology:"),
+    "Manim": ("Lecciones", ":material/school:"),
+    "Scheduler": ("Programar", ":material/schedule:"),
+    "Settings": ("Ajustes", ":material/settings:"),
+    "Logs": ("Registros", ":material/receipt_long:"),
+}
+
+
+def _nav_button(name: str, is_active: bool) -> bool:
+    label, icon = NAV_LABELS.get(name, (name, None))
+    kwargs = dict(key=f"nav_{name}", use_container_width=True,
+                  type="primary" if is_active else "secondary")
+    try:
+        return st.sidebar.button(label, icon=icon, **kwargs)
+    except TypeError:                       # a Streamlit without `icon=`
+        return st.sidebar.button(label, **kwargs)
+
 
 main_pages = {
     "Dashboard": "🏠",
@@ -1063,32 +2264,29 @@ main_pages = {
 }
 
 tool_pages = {
+    "Topics": "🧠",
+    "Manim": "🎞️",
     "Scheduler": "⏰",
     "Settings": "⚙️",
     "Logs": "📜",
 }
 
-st.sidebar.markdown("##### MAIN")
+if 'current_page' not in st.session_state:
+    # Direct links open a page: http://localhost:8501/?page=Manim
+    wanted = getattr(st, "query_params", {}).get("page", "Dashboard")
+    st.session_state.current_page = wanted if wanted in {**main_pages, **tool_pages} else "Dashboard"
+
+st.sidebar.markdown('<div class="eu-navlabel">Producción</div>', unsafe_allow_html=True)
 for name, icon in main_pages.items():
-    label = f"{icon} {name}"
     is_active = st.session_state.current_page == name
-    if st.sidebar.button(
-        label, key=f"nav_{name}",
-        use_container_width=True,
-        type="primary" if is_active else "secondary"
-    ):
+    if _nav_button(name, is_active):
         st.session_state.current_page = name
         st.rerun()
 
-st.sidebar.markdown("##### TOOLS")
+st.sidebar.markdown('<div class="eu-navlabel">Herramientas</div>', unsafe_allow_html=True)
 for name, icon in tool_pages.items():
-    label = f"{icon} {name}"
     is_active = st.session_state.current_page == name
-    if st.sidebar.button(
-        label, key=f"nav_{name}",
-        use_container_width=True,
-        type="primary" if is_active else "secondary"
-    ):
+    if _nav_button(name, is_active):
         st.session_state.current_page = name
         st.rerun()
 
@@ -1096,81 +2294,213 @@ for name, icon in tool_pages.items():
 st.sidebar.markdown("---")
 api_status = get_api_status()
 configured_count = sum(1 for s in api_status.values() if s["configured"])
-st.sidebar.markdown(f"**API Keys:** {configured_count}/{len(api_status)} configured")
+st.sidebar.caption(f"Claves API: {configured_count} de {len(api_status)} configuradas")
 
 pending_count = len(get_pending_videos())
 approved_count = len(get_approved_videos())
-st.sidebar.markdown(f"**Videos:** {pending_count} pending / {approved_count} approved")
+st.sidebar.caption(f"Videos: {pending_count} por revisar · {approved_count} aprobados")
 st.sidebar.markdown("---")
-st.sidebar.caption("v2.0 - English AI Videos")
 
 page = st.session_state.current_page
 
 # Session state init
-if 'queue_items' not in st.session_state:
-    st.session_state.queue_items = []
 if 'scheduler_enabled' not in st.session_state:
     st.session_state.scheduler_enabled = False
 if 'scheduler_config' not in st.session_state:
     st.session_state.scheduler_config = {
         "videos_per_batch": 5,
         "interval_minutes": 60,
-        "types": ["quiz", "educational", "true_false", "vocabulary"]
+        # All six, from the one list. Four were written out here by hand,
+        # which is how fill_blank and pronunciation became unproducible.
+        "types": scheduler_default_types(),
     }
 if 'upload_history' not in st.session_state:
     st.session_state.upload_history = []
 
 
-# ============== DASHBOARD PAGE ==============
+# ============== INICIO PAGE ==============
+#
+# THE RULE THIS PAGE OBEYS: every block names artifacts and the one action
+# that moves each of them forward. If a block cannot say "these N specific
+# videos, and here is what to do with them", it is not on this page.
+#
+# What that removed, and why each had to go rather than be shrunk:
+#
+#   Total Videos      an aggregate. 35 is not a thing to do.
+#   Storage MB        an aggregate, and one nobody has ever acted on. Disk
+#                     pressure is a machine problem, not a queue.
+#   By Type / %       "Quiz 40%" describes the archive. The operator does not
+#                     choose the next video by rebalancing a pie.
+#   Platform badges   system state, not artifact state, and already shown on
+#                     Upload where a press actually depends on it.
+#   Recent Activity   a feed of successes. Every one of those successes is
+#                     already sitting in the pending queue below, named, with
+#                     its button. The feed was a second, worse copy.
+#
+# What stayed or arrived: the four real queues, anything in flight, anything
+# that failed (with its reason and its log), and one line of money.
 if page == "Dashboard":
-    st.markdown("## 🏠 Dashboard")
+    st.markdown("## Inicio")
+    st.caption(
+        "Cada bloque nombra artefactos concretos y la acción que los mueve. "
+        "Si algo no se puede accionar, no está aquí."
+    )
 
+    import thumbnails
+    from thumbnails import ensure_thumbnail
+
+    batch = get_library_videos()
     pending = get_pending_videos()
     approved = get_approved_videos()
-    library = get_library_videos()
-    uploaded = get_uploaded_videos()
-    active_jobs = get_active_jobs()
-    all_videos = pending + approved + library + uploaded
+    published = get_ledger_rows()
+    census = independent_disk_census()
 
-    # Metrics row
-    cols = st.columns(6)
-    metrics = [
-        ("Total Videos", len(all_videos), "📹"),
-        ("Pending", len(pending), "📝"),
-        ("Approved", len(approved), "✅"),
-        ("Uploaded", len(uploaded), "📤"),
-        ("Active Jobs", len(active_jobs), "⚡"),
-        ("Storage", f"{sum(v.get('size', 0) or (v['path'].stat().st_size if v['path'].exists() else 0) for v in all_videos) / (1024*1024):.1f} MB", "💾"),
-    ]
-    for col, (label, value, icon) in zip(cols, metrics):
-        with col:
-            st.markdown(f"""
-            <div class="metric-card">
-                <div style="font-size:1.5rem">{icon}</div>
-                <div class="metric-value">{value}</div>
-                <div class="metric-label">{label}</div>
-            </div>
-            """, unsafe_allow_html=True)
+    def _census_line(listed: int, counted: int, what: str) -> None:
+        """Print both counts. Never just the one the page happens to like.
 
+        The list and the census are two different walks of the same disk. If
+        they agree, the number on the page is worth something. If they do not,
+        the page says which two numbers disagree and stops pretending.
+        """
+        if listed == counted:
+            st.markdown(
+                f'<span class="census-ok">{listed} en la lista · '
+                f'{counted} contados en disco por separado ✓</span>',
+                unsafe_allow_html=True)
+        else:
+            st.markdown(
+                f'<span class="census-mismatch">⚠ DESACUERDO en {what}: '
+                f'{listed} en la lista · {counted} contados en disco. '
+                f'Uno de los dos recuentos está mal.</span>',
+                unsafe_allow_html=True)
+
+    def _queue_head(count, title: str, source: str, action: str) -> None:
+        num = (f'<span class="queue-count">{count}</span>'
+               if count is not None else '')
+        st.markdown(
+            f'<div class="queue-head">{num}'
+            f'<span class="queue-title">{title}</span>'
+            f'<span class="artifact-meta">{source}</span>'
+            f'<span class="queue-action">→ {action}</span>'
+            f'</div>', unsafe_allow_html=True)
+
+    def _esc(value) -> str:
+        """Everything below builds HTML by concatenation, and every value in
+        it comes off disk: artifact names are filenames, the failure reasons
+        are exception strings, the URLs are ledger rows. An `&` in a topic or
+        a `<` in a traceback would otherwise silently mangle the row it is in.
+        """
+        import html as _html
+        return _html.escape(str(value), quote=True)
+
+    def _gate_html(meta: Optional[dict]) -> str:
+        g = gate_record(meta)
+        return f'<span class="gate-badge gate-{g["tone"]}">{_esc(g["label"])}</span>'
+
+    @st.cache_data(show_spinner=False)
+    def _thumb_uri(path: str, mtime: float) -> str:
+        """The still, inlined. Keyed on mtime so a re-render busts the cache.
+
+        Inlined rather than served through st.image because the picture has to
+        sit INSIDE the flex row with the name; two Streamlit elements stacked
+        in a column cannot be made to share a line."""
+        import base64
+        return ("data:image/jpeg;base64,"
+                + base64.b64encode(Path(path).read_bytes()).decode("ascii"))
+
+    def _thumb_html(video_path: Path) -> str:
+        thumb = ensure_thumbnail(video_path)
+        if not thumb:
+            return '<div class="art-thumb-empty">sin<br>imagen</div>'
+        try:
+            uri = _thumb_uri(thumb, Path(thumb).stat().st_mtime)
+        except OSError:
+            return '<div class="art-thumb-empty">sin<br>imagen</div>'
+        return f'<img class="art-thumb" src="{uri}" alt="">'
+
+    def _artifact_row(video: dict, meta_line: str, badge: str = "",
+                      note: str = "") -> str:
+        note_html = f'<div class="art-note">{_esc(note)}</div>' if note else ""
+        return (f'<div class="art-row">{_thumb_html(video["path"])}'
+                f'<div class="art-body">'
+                f'<div class="artifact-name">{_esc(video["name"])}</div>'
+                f'<div class="artifact-meta">{_esc(meta_line)}</div>'
+                f'{badge}{note_html}</div></div>')
+
+    def _go(page_name: str, artifact: str) -> None:
+        """Hand the operator to the page where the decision is made, with the
+        artifact they pressed on moved to the top of it. Without the second
+        half, pressing "Revisar" on the seventh video drops you at the first."""
+        st.session_state.focus_artifact = artifact
+        st.session_state.current_page = page_name
+        st.rerun()
+
+    # One pass over every artifact the page is about to draw, so the operator
+    # waits once with a spinner instead of watching rows appear one ffmpeg
+    # call at a time. After the first visit this loop is all cache hits.
+    to_warm = [v["path"] for v in (batch + pending + approved)]
+    uncached = [v for v in to_warm
+                if not thumbnails.thumbnail_path(v).exists()]
+    if uncached:
+        with st.spinner(f"Extrayendo {len(uncached)} miniaturas (una vez por artefacto)..."):
+            for v in uncached:
+                ensure_thumbnail(v)
+
+    # ── Money, one line ──────────────────────────────────────────────────
+    cost = cost_snapshot()
+    if cost["ceiling_usd"]:
+        ceiling_txt = (f'de un techo de ${cost["ceiling_usd"]:.2f} '
+                       f'({cost["pct_of_ceiling"]:.0f}%)')
+    else:
+        ceiling_txt = "sin techo configurado en config.yaml (costs.monthly_ceiling_usd)"
+    st.markdown(
+        f'<div class="cost-line">💸 Hoy <strong>${cost["today_usd"]:.4f}</strong>'
+        f' · {cost["month"]} acumulado <strong>${cost["month_usd"]:.2f}</strong>'
+        f' {ceiling_txt}</div>', unsafe_allow_html=True)
+
+    # ── Money, per video ─────────────────────────────────────────────────
+    # Collapsed: the line above is the question that changes what the
+    # operator does next; this is where they go when it looks wrong.
+    from cost_tracker import per_video_costs, video_cost_stats
+    _video_costs = per_video_costs(OUTPUT_DIR / "costs")
+    if _video_costs:
+        _stats = video_cost_stats(_video_costs)
+        _outliers = set(_stats["outliers"])
+        with st.expander(
+                f"💸 Costo por video — media ${_stats['mean_usd']:.4f} "
+                f"(OpenAI ${_stats['openai_mean_usd']:.4f} · ElevenLabs "
+                f"${_stats['elevenlabs_mean_usd']:.4f}) · mediana "
+                f"${_stats['median_usd']:.4f} · {_stats['videos']} videos"):
+            st.dataframe(
+                [{"video": r["video_id"],
+                  "fecha": (r["last_at"] or "")[:16].replace("T", " "),
+                  "OpenAI $": round(r["openai_usd"], 4),
+                  "ElevenLabs $": round(r["elevenlabs_usd"], 4),
+                  "total $": round(r["total_usd"], 4),
+                  "llamadas": r["calls"],
+                  "⚠": "> 2× mediana" if r["video_id"] in _outliers else ""}
+                 for r in _video_costs[:50]],
+                use_container_width=True, hide_index=True)
+            st.caption("Últimos 50. Detalle completo: "
+                       "`python3 src/cost_tracker.py --videos 100`")
     st.markdown("")
 
-    # Active jobs.
+    # ── In flight ────────────────────────────────────────────────────────
     #
     # A fragment, not a page-level rerun. The old version called st.rerun()
     # from inside this loop, which abandons the rest of the draw — harmless
     # while generation blocked the thread (nothing else could run anyway),
-    # but now that jobs run in the background it would hide Quick Generate
-    # and Recent Videos for as long as anything was rendering. run_every
-    # repaints only this block, and only while there is something to show.
+    # but now that jobs run in the background it would hide every queue below
+    # for as long as anything was rendering. run_every repaints only this
+    # block, and only while there is something to show.
     @st.fragment(run_every="2s")
     def _render_active_jobs():
         jobs = get_active_jobs()
         if not jobs:
             return
-        st.markdown('<div class="section-header">⚡ Currently Generating</div>',
-                    unsafe_allow_html=True)
+        _queue_head(len(jobs), "En curso", "", "esperar")
         for job in jobs:
-            c1, c2 = st.columns([3, 1])
+            c1, c2 = st.columns([4, 1])
             with c1:
                 st.markdown(f"**{job['video_type'].upper()}** — {job.get('topic', 'Selecting...')}")
                 st.progress(job.get('progress', 0) / 100)
@@ -1180,88 +2510,206 @@ if page == "Dashboard":
 
     _render_active_jobs()
 
-    # Quick Actions + Recent Videos
-    col_left, col_right = st.columns([2, 1])
-
-    with col_left:
-        st.markdown('<div class="section-header">⚡ Quick Generate</div>', unsafe_allow_html=True)
-        action_cols = st.columns(4)
-
-        quick_types = [
-            ("Quiz", "quiz"),
-            ("Educational", "educational"),
-            ("True/False", "true_false"),
-            ("Vocabulary", "vocabulary"),
-        ]
-        for col, (label, vtype) in zip(action_cols, quick_types):
-            with col:
-                if st.button(f"🎬 {label}", use_container_width=True, key=f"quick_{vtype}"):
-                    job_id = start_generation(vtype)
-                    st.toast(f"{label} queued (job {job_id})")
+    # ── 1. Rendered by --batch, never promoted ───────────────────────────
+    _queue_head(len(batch), "Sin promover", "output/video/", "Promover")
+    _census_line(len(batch), census["batch"], "output/video/")
+    if not batch:
+        st.caption("Nada esperando en output/video/.")
+    for idx, v in enumerate(batch):
+        c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
+        with c1:
+            st.markdown(_artifact_row(
+                v, f'{v["type"]} · {v["created"].strftime("%Y-%m-%d %H:%M")} · '
+                   f'{v["size"] / (1024*1024):.1f} MB'),
+                unsafe_allow_html=True)
+        with c2:
+            if st.button("⬆️ Promover", key=f"inicio_promote_{idx}",
+                         use_container_width=True):
+                verdict = promote_to_review(v["path"])
+                if verdict["ok"]:
+                    st.success(f"{verdict['artifact']} → pending. {verdict['reason']}")
                     st.rerun()
+                else:
+                    st.error(verdict["reason"])
+    st.markdown("")
 
-        st.markdown("")
-        st.markdown('<div class="section-header">📹 Recent Videos</div>', unsafe_allow_html=True)
+    # ── 2. Awaiting review ───────────────────────────────────────────────
+    _queue_head(len(pending), "Esperando revisión", "output/pending/", "Revisar")
+    _census_line(len(pending), census["pending"], "output/pending/")
 
-        recent = get_pending_videos()[:6]
-        if recent:
-            vid_cols = st.columns(3)
-            for idx, video in enumerate(recent):
-                with vid_cols[idx % 3]:
-                    name = video['name'][:18] + "..." if len(video['name']) > 18 else video['name']
-                    st.caption(f"{video['type']} | {name}")
-                    if video["path"].exists():
-                        st.video(str(video["path"]))
+    # The gate split, counted twice as well. This is the number that must not
+    # be allowed to drift: an artifact with no verdict rendering as one that
+    # passed is precisely the failure D0 was written to end.
+    listed_gate = {"pass": 0, "missing": 0, "other": 0}
+    for v in pending:
+        g = gate_record(v.get("meta"))
+        if not g["known"]:
+            listed_gate["missing"] += 1
+        elif g["verdict"] == "PASS":
+            listed_gate["pass"] += 1
         else:
-            st.info("No videos yet. Use Quick Generate above!")
+            listed_gate["other"] += 1
+    gate_ok = (listed_gate["pass"] == census["pending_gate_pass"]
+               and listed_gate["missing"] == census["pending_gate_missing"]
+               and listed_gate["other"] == census["pending_gate_other"])
+    gate_txt = (f'{listed_gate["pass"]} con PASS · '
+                f'{listed_gate["missing"]} {GATE_MISSING_LABEL}'
+                + (f' · {listed_gate["other"]} otro veredicto' if listed_gate["other"] else ''))
+    if gate_ok:
+        st.markdown(f'<span class="census-ok">{gate_txt} — '
+                    f'({census["pending_gate_pass"]}/{census["pending_gate_missing"]}'
+                    + (f'/{census["pending_gate_other"]}' if listed_gate["other"] else '')
+                    + ') releídos de los sidecars por separado ✓</span>',
+                    unsafe_allow_html=True)
+    else:
+        st.markdown(f'<span class="census-mismatch">⚠ DESACUERDO en los veredictos: '
+                    f'{gate_txt} vs {census["pending_gate_pass"]}/'
+                    f'{census["pending_gate_missing"]}/{census["pending_gate_other"]} '
+                    f'en disco.</span>', unsafe_allow_html=True)
+    if listed_gate["missing"]:
+        st.caption(
+            f'{listed_gate["missing"]} de estos no llevan veredicto de la puerta QA. '
+            f'"{GATE_MISSING_LABEL}" NO quiere decir que pasaran: quiere decir que '
+            f'nadie lo sabe. Son anteriores al commit que empezó a escribir el '
+            f'veredicto en el sidecar del artefacto.')
 
-    with col_right:
-        st.markdown('<div class="section-header">📊 By Type</div>', unsafe_allow_html=True)
-        type_counts = {}
-        for v in all_videos:
-            vtype = v.get("type", "unknown")
-            type_counts[vtype] = type_counts.get(vtype, 0) + 1
+    if not pending:
+        st.caption("Nada esperando revisión.")
+    for idx, v in enumerate(pending):
+        c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
+        with c1:
+            flags = gate_record(v.get("meta"))["flags"]
+            st.markdown(_artifact_row(
+                v, f'{v["type"]} · {v["created"].strftime("%Y-%m-%d %H:%M")}',
+                badge=_gate_html(v.get("meta")),
+                note=("⚠ " + ", ".join(str(f) for f in flags)) if flags else ""),
+                unsafe_allow_html=True)
+        with c2:
+            if st.button("👀 Revisar", key=f"inicio_review_{idx}",
+                         use_container_width=True):
+                _go("Review", v["name"])
+    st.markdown("")
 
-        if type_counts:
-            for vtype, count in sorted(type_counts.items(), key=lambda x: x[1], reverse=True):
-                pct = (count / len(all_videos) * 100) if all_videos else 0
-                st.write(f"**{vtype.replace('_', ' ').title()}**")
-                st.progress(pct / 100)
-                st.caption(f"{count} videos ({pct:.0f}%)")
-        else:
-            st.info("No videos yet")
+    # ── 3. Approved, not uploaded ────────────────────────────────────────
+    _queue_head(len(approved), "Aprobados sin subir", "output/approved/", "Subir")
+    _census_line(len(approved), census["approved"], "output/approved/")
+    if not approved:
+        st.caption("Nada aprobado esperando subida.")
+    for idx, v in enumerate(approved):
+        c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
+        with c1:
+            # The ledger is the authority on what is published, and a video
+            # already live sitting in the "ready to upload" list is the exact
+            # shape of the mistake that published hPdSoqjvu3E twice.
+            note = ("⚠ el registro ya lo da por publicado en: "
+                    + ", ".join(v["published_to"])) if v.get("published_to") else ""
+            st.markdown(_artifact_row(
+                v, f'{v["type"]} · {v["created"].strftime("%Y-%m-%d %H:%M")}',
+                badge=_gate_html(v.get("meta")), note=note),
+                unsafe_allow_html=True)
+        with c2:
+            if st.button("📤 Subir", key=f"inicio_upload_{idx}",
+                         use_container_width=True):
+                _go("Upload", v["name"])
+    st.markdown("")
 
+    # ── 4. Published ─────────────────────────────────────────────────────
+    _queue_head(len(published), "Publicados", "output/published/ledger.jsonl",
+                "Abrir en la plataforma")
+    _census_line(len(published), census["ledger_rows"], "el registro de publicación")
+
+    def _ledger_row(r: dict) -> str:
+        artifact = r.get("artifact") or "(sin artefacto)"
+        when = (r.get("published_at") or "")[:10]
+        url = r.get("url") or ""
+        plat = r.get("platform") or "?"
+        # The href is escaped AND scheme-checked: a ledger row is data, and a
+        # javascript: value reaching an anchor would be a click away from
+        # running in the operator's dashboard.
+        safe = url if url.startswith(("http://", "https://")) else ""
+        link = (f'<a href="{_esc(safe)}" target="_blank" rel="noopener noreferrer">'
+                f'▶ abrir</a>' if safe
+                else '<span class="artifact-meta">sin URL</span>')
+        # UNMATCHED:: rows were backfilled from the platform API and have no
+        # local file; saying so is the point of keeping them in the list.
+        note = (' <span class="artifact-meta">· sin fichero local</span>'
+                if artifact.startswith("UNMATCHED::") else '')
+        return (f'<div class="ledger-row">{link} · '
+                f'<span class="artifact-name">{_esc(artifact)}</span>'
+                f'<span class="artifact-meta"> · {_esc(plat)} · {_esc(when)}</span>'
+                f'{note}</div>')
+
+    LEDGER_SHOWN = 6
+    for r in published[:LEDGER_SHOWN]:
+        st.markdown(_ledger_row(r), unsafe_allow_html=True)
+    if len(published) > LEDGER_SHOWN:
+        with st.expander(f"Las otras {len(published) - LEDGER_SHOWN} publicaciones del registro"):
+            for r in published[LEDGER_SHOWN:]:
+                st.markdown(_ledger_row(r), unsafe_allow_html=True)
+    st.markdown("")
+
+    # ── Failures ─────────────────────────────────────────────────────────
+    #
+    # BELOW the queues, deliberately. This block was drawn first and the
+    # top of Inicio became five stale crashes — the newest nine days old,
+    # four of them the same ImportError from a bug fixed weeks ago — with
+    # every actionable queue pushed under the fold. A three-week-old
+    # traceback is not the next thing to do, so it does not get the
+    # position that says it is.
+    #
+    # A gate REJECT is deliberately NOT here: "failed" means the pipeline
+    # raised, a refused video is a successful render of a bad artifact and
+    # carries its verdict on the artifact instead. These are crashes, and the
+    # only thing to do with a crash is read its log — so the log is the row.
+    failed = get_failed_jobs()
+    if failed:
+        SHOWN = 3
+        _queue_head(len(failed), "Fallaron", "generation_jobs.json", "leer el log")
+        for job in failed[:SHOWN]:
+            when = (job.get("completed_at") or job.get("updated_at") or "")[:16].replace("T", " ")
+            topic = job.get("topic") or "(sin tema)"
+            reason = (job.get("error") or "sin motivo registrado").strip().splitlines()[0][:180]
+            log_path = job.get("log_path")
+            st.markdown(
+                f'<div class="activity-item">❌ <strong>{_esc(topic)}</strong> '
+                f'<span class="artifact-meta">· {_esc(job.get("video_type",""))} '
+                f'· {_esc(when)} · job {_esc(job.get("id",""))}</span><br>'
+                f'<span style="color:var(--eu-red);font-size:0.8rem">{_esc(reason)}</span></div>',
+                unsafe_allow_html=True)
+            if log_path:
+                exists = Path(log_path).exists()
+                st.caption(f'📜 `{log_path}`' + ("" if exists else "  — el archivo ya no está"))
+            else:
+                st.caption("📜 sin log_path en el registro del job")
+        if len(failed) > SHOWN:
+            with st.expander(f"Los otros {len(failed) - SHOWN} fallos del historial"):
+                for job in failed[SHOWN:]:
+                    when = (job.get("completed_at") or "")[:16].replace("T", " ")
+                    reason = (job.get("error") or "sin motivo").strip().splitlines()[0][:140]
+                    st.markdown(f"- **{job.get('topic') or '(sin tema)'}** · {when} — {reason}")
+                    if job.get("log_path"):
+                        st.caption(f"  📜 `{job['log_path']}`")
         st.markdown("")
-        st.markdown('<div class="section-header">🔗 Platforms</div>', unsafe_allow_html=True)
-        for name, info in api_status.items():
-            if name == "OpenAI":
-                continue
-            badge = "status-connected" if info["configured"] else "status-disconnected"
-            label = "CONNECTED" if info["configured"] else "NOT SET"
-            st.markdown(f'{name} <span class="status-badge {badge}">{label}</span>', unsafe_allow_html=True)
 
-        st.markdown("")
-        st.markdown('<div class="section-header">📊 Recent Activity</div>', unsafe_allow_html=True)
-        history = get_job_history(5)
-        if history:
-            for job in history:
-                icon = "✅" if job.get("status") == "completed" else "❌"
-                topic = job.get('topic', 'Unknown')
-                if len(topic) > 20:
-                    topic = topic[:17] + "..."
-                completed_time = ""
-                if job.get("completed_at"):
-                    completed_time = datetime.fromisoformat(job["completed_at"]).strftime("%H:%M")
-                st.markdown(
-                    f'<div class="activity-item">{icon} <strong>{topic}</strong>'
-                    f' <span style="color:#64748b">| {job.get("video_type", "")} | {completed_time}</span></div>',
-                    unsafe_allow_html=True
-                )
+    # ── How new artifacts enter the queues above ─────────────────────────
+    _queue_head(None, "Generar", "", "crear un artefacto nuevo")
+    # DERIVED, and that is a bug fix, not tidying. This row was written by
+    # hand with four of the six types, so fill_blank and pronunciation had no
+    # Generate button -- the exact defect admin.py:2264 documents having fixed
+    # in the scheduler, regrown in a different list in the same file.
+    _buttons = video_types.DASHBOARD_BUTTONS
+    action_cols = st.columns(len(_buttons))
+    for col, (label, vtype) in zip(action_cols, _buttons):
+        with col:
+            if st.button(f"🎬 {label}", use_container_width=True, key=f"quick_{vtype}"):
+                job_id = start_generation(vtype)
+                st.toast(f"{label} queued (job {job_id})")
+                st.rerun()
 
 
 # ============== GENERATE PAGE ==============
 elif page == "Generate":
-    st.markdown("## 🎥 Generate Video")
+    st.markdown("## Crear video")
 
     col1, col2 = st.columns([1, 1])
 
@@ -1290,7 +2738,66 @@ elif page == "Generate":
                 topic_names = [t.get("english") or t.get("topic") or t.get("wrong") for t in topics]
                 topic_name = st.selectbox("Topic", topic_names)
 
-        generate_btn = st.button("🚀 Generate Video", type="primary", use_container_width=True)
+        # ── the controls the engine has always accepted ──
+        #
+        # Each of these is a parameter run_pipeline_with_tracking already
+        # took, or a name pipeline.resolve_profile already resolved. None of
+        # them had a widget, which is the whole reason this page had three
+        # controls for an engine with seven.
+        with st.expander("Options", expanded=False):
+            profiles = available_profiles()
+            profile_name = st.selectbox(
+                "Audience profile", profiles,
+                index=profiles.index("adults") if "adults" in profiles else 0,
+                help="Voice, backgrounds and topic categories.")
+
+            # Named with its reason rather than silently missing. A profile
+            # that is declared but cannot resolve is a fixable configuration
+            # problem, and hiding it makes it an invisible one.
+            for name, reason in unavailable_profiles().items():
+                st.caption(f"Profile '{name}' unavailable — {reason}")
+
+            # NO BACKGROUND CONTROL AND NO ENGINE CONTROL.
+            #
+            # The selectbox listed 16 flat presets and pinning one is what
+            # produced three of the last five videos; the v2 checkbox chose
+            # an animated mesh gradient, which is flat by design and was the
+            # fourth. Every video now gets this video's own Pexels footage,
+            # or the local cache, or it fails.
+            background = None
+
+            # THE QUEUE, and why it is the default.
+            #
+            # Every dashboard video used to call GPT, which raises 429 while
+            # the OpenAI account has no credits. With scripts in the queue the
+            # page produces without a single API call, and the guard decides
+            # which one -- never a topic already produced.
+            _q = queue_status()
+            if _q["ready"]:
+                use_queue = st.checkbox(
+                    f"Use a queued script ({_q['ready']} ready)", value=True,
+                    help="Written ahead of time and checked by the guard: no "
+                         "OpenAI call, and never a topic already produced. "
+                         "Uncheck to write a fresh script with GPT, which "
+                         "needs credits.")
+                if use_queue:
+                    st.caption(" · ".join(f"{k} {v}" for k, v in
+                                          sorted(_q["by_type"].items())))
+            else:
+                use_queue = False
+                st.caption("Queue empty — this will write a new script with "
+                           "GPT, which needs OpenAI credits."
+                           + (f" {_q['blocked']} queued script(s) are blocked "
+                              f"by the guard." if _q["blocked"] else ""))
+
+            dry_run = st.checkbox(
+                "Dry run (no TTS, no render)",
+                help="Writes the script and resolves the TTS plan, then "
+                     "stops. Skips the TTS call and the render — but the "
+                     "GPT script call still happens, so this is cheap, not "
+                     "free.")
+
+        generate_btn = st.button("Crear video", type="primary", use_container_width=True)
 
     with col2:
         st.markdown('<div class="section-header">Generation Status</div>', unsafe_allow_html=True)
@@ -1321,21 +2828,30 @@ elif page == "Generate":
                     if job.get("error"):
                         st.error(job['error'][:300])
                     if video_file:
-                        st.video(str(video_file))
+                        lazy_video(video_file, f"gen_{i}_{video_file.name}",
+                                   open_now=auto_expand)
         else:
             st.info("No videos generated yet.")
 
         if generate_btn:
             # Queued, not awaited: the outcome arrives in the job list above,
             # which this page already renders from the ledger.
-            job_id = start_generation(video_type, category, topic_name)
-            st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
-            st.rerun()
+            try:
+                job_id = start_generation(video_type, category, topic_name,
+                                          profile_name=profile_name,
+                                          background=background,
+                                          use_queue=use_queue,
+                                          dry_run=dry_run)
+            except AlreadyRendering as e:
+                st.error(str(e))
+            else:
+                st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
+                st.rerun()
 
 
 # ============== QUEUE PAGE ==============
 elif page == "Queue":
-    st.markdown("## 📋 Batch Queue")
+    st.markdown("## Cola")
 
     col1, col2 = st.columns([1, 1])
 
@@ -1346,16 +2862,20 @@ elif page == "Queue":
         bc1, bc2 = st.columns(2)
         with bc1:
             if st.button("10 Random Quizzes", use_container_width=True):
-                for _ in range(10):
-                    st.session_state.queue_items.append({"type": "quiz", "category": None, "topic": None})
-                st.success("Added 10 quizzes!")
+                total = batch_add([{"type": "quiz", "category": None,
+                                    "topic": None} for _ in range(10)])
+                st.success(f"Added 10 quizzes — {total} waiting.")
                 st.rerun()
         with bc2:
             if st.button("5 of Each Type", use_container_width=True):
-                for vtype in ["quiz", "educational", "true_false"]:
-                    for _ in range(5):
-                        st.session_state.queue_items.append({"type": vtype, "category": None, "topic": None})
-                st.success("Added 15 videos!")
+                # "Each type" meant three of six, and the toast said 15
+                # regardless. Both came from the hand-written list.
+                total = batch_add([{"type": vtype, "category": None,
+                                    "topic": None}
+                                   for vtype in VIDEO_TYPES
+                                   for _ in range(5)])
+                st.success(f"Added {5 * len(VIDEO_TYPES)} videos — "
+                           f"{total} waiting.")
                 st.rerun()
 
         st.markdown("---")
@@ -1363,56 +2883,77 @@ elif page == "Queue":
         q_type = st.selectbox("Type", VIDEO_TYPES, key="queue_type")
         q_count = st.number_input("Count", min_value=1, max_value=50, value=5)
         if st.button("Add to Queue", use_container_width=True):
-            for _ in range(q_count):
-                st.session_state.queue_items.append({"type": q_type, "category": None, "topic": None})
-            st.success(f"Added {q_count} {q_type} videos!")
+            total = batch_add([{"type": q_type, "category": None,
+                                "topic": None} for _ in range(q_count)])
+            st.success(f"Added {q_count} {q_type} videos — {total} waiting.")
             st.rerun()
 
     with col2:
-        st.markdown(f'<div class="section-header">Queue ({len(st.session_state.queue_items)} items)</div>', unsafe_allow_html=True)
+        _queued = batch_queue()
+        _running = get_active_jobs()
+        st.markdown(f'<div class="section-header">Queue ({len(_queued)} waiting)</div>',
+                    unsafe_allow_html=True)
 
-        if st.session_state.queue_items:
+        if _running:
+            st.info(f"Rendering now: {_running[0].get('video_type', '?')} — "
+                    f"{_running[0].get('current_step', '...')}")
+
+        if _queued:
             c1, c2 = st.columns(2)
             with c1:
-                start_btn = st.button("▶️ Start Processing", type="primary", use_container_width=True)
+                start_btn = st.button("▶️ Start Processing", type="primary",
+                                      use_container_width=True,
+                                      disabled=bool(_running))
             with c2:
                 if st.button("Clear Queue", use_container_width=True):
-                    st.session_state.queue_items = []
+                    batch_clear()
                     st.rerun()
 
             by_type = {}
-            for item in st.session_state.queue_items:
+            for item in _queued:
                 t = item["type"]
                 by_type[t] = by_type.get(t, 0) + 1
             for t, count in by_type.items():
                 st.write(f"**{t}**: {count} videos")
 
-            if start_btn:
-                # Queue them all at once. _RENDER_LOCK runs them one at a
-                # time, so this is the same serial order the old loop had —
-                # without holding the page open for the whole batch.
-                total = len(st.session_state.queue_items)
-                while st.session_state.queue_items:
-                    item = st.session_state.queue_items.pop(0)
-                    start_generation(item["type"])
+            st.caption("The queue lives on disk and one video renders at a "
+                       "time. Closing this page does not stop it, and a "
+                       "restart resumes from whatever is left.")
 
-                st.success(f"Queued {total} video(s). They run one at a time — "
-                           "watch progress on the Generate page.")
+            if start_btn:
+                # ONE item. The rest stay on disk and the worker chains to
+                # them as each finishes — see batch_advance(). Starting them
+                # all at once is what made them vanish on every restart.
+                job_id = batch_advance()
+                if job_id:
+                    st.success(f"Started. {len(batch_queue())} still waiting — "
+                               "watch progress on the Generate page.")
+                else:
+                    st.warning("Something is already rendering; the queue "
+                               "continues on its own when it finishes.")
                 st.rerun()
+        elif _running:
+            st.info("Queue empty — finishing the last video.")
         else:
             st.info("Queue is empty. Add videos above!")
 
 
 # ============== REVIEW PAGE ==============
 elif page == "Review":
-    st.markdown("## ✅ Review Videos")
+    st.markdown("## Revisar")
 
     pending = get_pending_videos()
+
+    # Arriving from Inicio's "Revisar" button on a specific artifact.
+    _focus = st.session_state.pop("focus_artifact", None)
+    pending = focus_first(pending, _focus)
 
     if not pending:
         st.info("No videos pending review. Generate some new videos!")
     else:
         st.write(f"**{len(pending)} videos pending review**")
+        if _focus and any(v["name"] == _focus for v in pending):
+            st.caption(f"↑ {_focus} está el primero — vienes de Inicio.")
 
         types_available = list(set(v["type"] for v in pending))
         filter_type = st.selectbox("Filter by type", ["All"] + types_available)
@@ -1452,7 +2993,8 @@ elif page == "Review":
                     except ImportError:
                         pass
                 if video["path"].exists():
-                    st.video(str(video["path"]))
+                    lazy_video(video["path"], f"review_{video['path'].name}",
+                               open_now=(idx == 0))
 
             with col2:
                 st.write("")
@@ -1484,9 +3026,13 @@ elif page == "Review":
 
 # ============== UPLOAD PAGE ==============
 elif page == "Upload":
-    st.markdown("## 📤 Upload Center")
+    st.markdown("## Subir")
 
     approved = get_approved_videos()
+
+    # Arriving from Inicio's "Subir" button on a specific artifact.
+    _focus = st.session_state.pop("focus_artifact", None)
+    approved = focus_first(approved, _focus)
 
     # Platform status cards
     st.markdown('<div class="section-header">Connected Platforms</div>', unsafe_allow_html=True)
@@ -1496,6 +3042,7 @@ elif page == "Upload":
     platforms = [
         {
             "name": "TikTok",
+            "api": "tiktok",
             "icon": "🎵",
             "key": "TIKTOK_CLIENT_KEY",
             "desc": "Content Posting API",
@@ -1503,6 +3050,7 @@ elif page == "Upload":
         },
         {
             "name": "YouTube Shorts",
+            "api": "youtube",
             "icon": "▶️",
             "key": "YOUTUBE_CLIENT_ID",
             "desc": "YouTube Data API v3",
@@ -1510,6 +3058,7 @@ elif page == "Upload":
         },
         {
             "name": "Instagram Reels",
+            "api": "instagram",
             "icon": "📷",
             "key": "INSTAGRAM_ACCESS_TOKEN",
             "desc": "Graph API",
@@ -1524,13 +3073,21 @@ elif page == "Upload":
             platform_status[platform["name"]] = is_configured
             badge_class = "status-connected" if is_configured else "status-disconnected"
             badge_text = "CONNECTED" if is_configured else "NOT CONFIGURED"
+            # What this platform will publish AT, read from the one resolver
+            # the uploaders themselves use. On the page, before the press:
+            # the operator should never have to open a file to find out
+            # whether a video is going out to an audience of zero.
+            privacy = platform_privacy_label(platform["api"])
 
             st.markdown(f"""
             <div class="platform-card">
                 <div class="platform-icon">{platform['icon']}</div>
                 <div class="platform-name">{platform['name']}</div>
-                <div style="color:#94a3b8;font-size:0.85rem;margin-bottom:12px">{platform['desc']}</div>
+                <div style="color:var(--eu-muted);font-size:0.85rem;margin-bottom:12px">{platform['desc']}</div>
                 <span class="status-badge {badge_class}">{badge_text}</span>
+                <div style="color:var(--eu-ink);font-size:0.85rem;margin-top:10px">
+                    publishes as <strong>{privacy}</strong>
+                </div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -1564,8 +3121,11 @@ elif page == "Upload":
                 # widget ignores it, which is the bug this replaces.
                 reconcile_platform_target(
                     st.session_state, platform["name"], enabled)
+                # The privacy rides on the label, not a caption below it:
+                # the operator reads the thing they are about to tick.
                 if st.checkbox(
-                    f"{platform['icon']} {platform['name']}",
+                    f"{platform['icon']} {platform['name']} — "
+                    f"{platform_privacy_label(platform['api'])}",
                     disabled=not enabled,
                     key=f"target_{platform['name']}"
                 ):
@@ -1597,16 +3157,12 @@ elif page == "Upload":
                             + ". Uploading again would create a duplicate."
                         )
                     if video["path"].exists():
-                        with st.expander("Preview Video"):
-                            st.video(str(video["path"]))
+                        lazy_video(video["path"], f"upload_{video['path'].name}")
 
                 with col2:
                     # Generate metadata from script
-                    script = {}
-                    category = ""
-                    if video.get("meta") and "script_data" in video["meta"]:
-                        script = video["meta"]["script_data"]
-                        category = script.get("_meta", {}).get("category", "")
+                    script = script_for_upload(video)
+                    category = script.get("_meta", {}).get("category", "")
 
                     try:
                         from metadata_generator import generate_metadata, adapt_for_platform, regenerate_for_platform
@@ -1707,8 +3263,24 @@ elif page == "Upload":
                                     except Exception as e:
                                         st.error(f"Regeneration failed: {e}")
 
-                # Upload button
-                if target_platforms:
+                # Upload button. STEP 65: the guard is asked BEFORE the click
+                # too, so a refusal is on screen and the button stays grey.
+                from upload_guard import NO_GATE, content_refusal
+                allow_dup = False
+                _pre = content_refusal(**upload_content(
+                    video, script, st.session_state.get(title_key, ""),
+                    st.session_state.get(desc_key, "")))
+                if _pre and _pre.reason.startswith("Ya hay un vídeo"):
+                    st.error(_pre.reason)
+                    allow_dup = st.checkbox("Subir otra versión de todos modos",
+                                            key=f"dup_{video['name']}")
+                    if allow_dup:
+                        _pre = None    # the duplicate is checked last, so nothing else failed
+                elif _pre and _pre.reason == NO_GATE:
+                    st.warning(f"⚠️ {NO_GATE}: el QA gate no ha dado veredicto. Vuelve a renderizar o pasa el gate.")
+                elif _pre:
+                    st.error(f"⛔ {_pre.reason}")
+                if target_platforms and not _pre:
                     if st.button("📤 Upload", key=f"upload_{video['name']}", use_container_width=True):
                         try:
                             from uploader import get_upload_manager
@@ -1744,7 +3316,9 @@ elif page == "Upload":
                                 # path; the manual route is how the first
                                 # duplicate happened.
                                 _v = _guard_decide(video["name"], platform_key,
-                                                   manager=manager)
+                                                   manager=manager, **upload_content(
+                                                       video, script, sent_title, sent_desc,
+                                                       allow_dup))
                                 if not _v.should_upload:
                                     _guard_notice(st, video["name"], platform_name, _v)
                                     continue
@@ -1794,15 +3368,7 @@ elif page == "Upload":
                 btn_cols = st.columns(2)
                 with btn_cols[0]:
                     if video["path"].exists():
-                        with open(video["path"], "rb") as vf:
-                            st.download_button(
-                                "⬇️ Download",
-                                data=vf,
-                                file_name=video["path"].name,
-                                mime="video/mp4",
-                                key=f"dl_{video['name']}",
-                                use_container_width=True,
-                            )
+                        lazy_download(video["path"], f"dl_{video['name']}")
                 with btn_cols[1]:
                     if st.button("↩️", key=f"unapprove_{video['name']}", use_container_width=True,
                                  help="Move back to pending"):
@@ -1829,11 +3395,8 @@ elif page == "Upload":
                     }
                     uploaded_count = 0
                     for i, video in enumerate(approved):
-                        script = {}
-                        category = ""
-                        if video.get("meta") and "script_data" in video["meta"]:
-                            script = video["meta"]["script_data"]
-                            category = script.get("_meta", {}).get("category", "")
+                        script = script_for_upload(video)
+                        category = script.get("_meta", {}).get("category", "")
 
                         any_success = False
                         platforms_done = []
@@ -1848,7 +3411,10 @@ elif page == "Upload":
                                 video.get("type", "educational"), category,
                                 st.session_state,
                             )
-                            _v = _guard_decide(video["name"], pkey, manager=manager)
+                            # No duplicate override in bulk: that is a per-video decision.
+                            _v = _guard_decide(video["name"], pkey, manager=manager,
+                                               **upload_content(video, script, adapted["title"],
+                                                                adapted["description"]))
                             if not _v.should_upload:
                                 _guard_notice(st, video["name"], pname, _v)
                                 continue
@@ -1903,23 +3469,14 @@ elif page == "Upload":
                     st.caption(f"{video['type']} | Uploaded to: {platforms_str} | {uploaded_at}")
 
                     if video["path"].exists():
-                        with st.expander("Preview Video"):
-                            st.video(str(video["path"]))
+                        lazy_video(video["path"], f"upload_{video['path'].name}")
 
                 with col2:
                     upload_title = upload_info.get("title", "")
                     if upload_title:
                         st.caption(f"Title: {upload_title[:60]}...")
                     if video["path"].exists():
-                        with open(video["path"], "rb") as vf:
-                            st.download_button(
-                                "⬇️ Download",
-                                data=vf,
-                                file_name=video["path"].name,
-                                mime="video/mp4",
-                                key=f"dl_uploaded_{video['name']}",
-                                use_container_width=True,
-                            )
+                        lazy_download(video["path"], f"dl_uploaded_{video['name']}")
 
                 st.markdown("---")
 
@@ -1933,7 +3490,7 @@ elif page == "Upload":
 
 # ============== LIBRARY PAGE ==============
 elif page == "Library":
-    st.markdown("## 📚 Video Library")
+    st.markdown("## Biblioteca")
 
     library = get_library_videos()
     pending = get_pending_videos()
@@ -1953,6 +3510,13 @@ elif page == "Library":
         with cols[2]:
             st.metric("Video Types", len(set(v["type"] for v in all_videos)))
 
+        stuck = [v for v in all_videos if v.get("stage") == "batch"]
+        if stuck:
+            st.info(
+                f"{len(stuck)} artifact(s) from `main.py --batch` are sitting "
+                f"in output/video/. Promote one to send it through Review and "
+                f"the guarded upload flow.")
+
         st.markdown("---")
 
         fc1, fc2 = st.columns([1, 3])
@@ -1968,10 +3532,19 @@ elif page == "Library":
         if search:
             filtered = [v for v in filtered if search.lower() in v["name"].lower()]
 
-        st.write(f"Showing {len(filtered)} videos")
+        # Nine per page. The grid used to draw every video on disk at once.
+        per_page = 9
+        pages = max(1, -(-len(filtered) // per_page))
+        page_no = 1
+        if pages > 1:
+            page_no = st.number_input("Página", 1, pages, 1, key="lib_page")
+        start = (page_no - 1) * per_page
+        st.write(f"Showing {start + 1 if filtered else 0}–"
+                 f"{min(start + per_page, len(filtered))} of {len(filtered)} videos")
         st.markdown("---")
 
-        rows = [filtered[i:i+3] for i in range(0, len(filtered), 3)]
+        shown = filtered[start:start + per_page]
+        rows = [shown[i:i+3] for i in range(0, len(shown), 3)]
         for row in rows:
             cols = st.columns(3)
             for idx, video in enumerate(row):
@@ -1980,7 +3553,24 @@ elif page == "Library":
                     st.write(name)
                     st.caption(f"{video['type']} | {video['created'].strftime('%m/%d %H:%M')}")
                     if video["path"].exists():
-                        st.video(str(video["path"]))
+                        lazy_video(video["path"], f"lib_{video['path'].name}")
+                    # output/video/ artifacts had no road out of the library.
+                    # Promotion moves them into pending/, where they take the
+                    # same Review -> Approve -> guarded Upload route as
+                    # everything else.
+                    if video.get("stage") == "batch":
+                        if st.button("⬆️ Promote to Review",
+                                     key=f"promote_{video['path']}",
+                                     use_container_width=True):
+                            verdict = promote_to_review(video["path"])
+                            if verdict["ok"]:
+                                st.success(
+                                    f"{verdict['artifact']} → pending/"
+                                    f"{verdict['video_type']}/ — "
+                                    f"{verdict['reason']}")
+                                st.rerun()
+                            else:
+                                st.error(f"Not promoted: {verdict['reason']}")
                     if st.button("🗑️ Delete", key=f"del_{video['path']}", use_container_width=True):
                         delete_video(video["path"])
                         st.rerun()
@@ -1988,7 +3578,7 @@ elif page == "Library":
 
 # ============== SCHEDULER PAGE ==============
 elif page == "Scheduler":
-    st.markdown("## ⏰ Auto-Generation Scheduler")
+    st.markdown("## Programar")
 
     col1, col2 = st.columns([1, 1])
 
@@ -2008,16 +3598,18 @@ elif page == "Scheduler":
         )
 
         st.write("**Video types:**")
-        type_quiz = st.checkbox("Quiz", value="quiz" in st.session_state.scheduler_config["types"])
-        type_edu = st.checkbox("Educational", value="educational" in st.session_state.scheduler_config["types"])
-        type_tf = st.checkbox("True/False", value="true_false" in st.session_state.scheduler_config["types"])
-        type_vocab = st.checkbox("Vocabulary", value="vocabulary" in st.session_state.scheduler_config["types"])
-
-        selected_types = []
-        if type_quiz: selected_types.append("quiz")
-        if type_edu: selected_types.append("educational")
-        if type_tf: selected_types.append("true_false")
-        if type_vocab: selected_types.append("vocabulary")
+        # One checkbox per type in VIDEO_TYPES. Four were written out here by
+        # hand, so fill_blank and pronunciation could not be produced from the
+        # unattended batch at all — not misconfigured, absent.
+        enabled_types = st.session_state.scheduler_config["types"]
+        selected_types = [
+            vtype for vtype in VIDEO_TYPES
+            # No key=: a keyed widget ignores value= after its first draw
+            # and would freeze at whatever was checked then, which is what
+            # tests/test_admin_platform_targets pins. Labels are distinct, so
+            # Streamlit's own keying is correct here.
+            if st.checkbox(type_label(vtype), value=vtype in enabled_types)
+        ]
 
         if st.button("💾 Save Config", use_container_width=True):
             st.session_state.scheduler_config = {
@@ -2053,9 +3645,61 @@ elif page == "Scheduler":
                 st.rerun()
 
 
+# ============== TOPICS PAGE ==============
+#
+# topic_history.coverage() has always returned exactly what this page draws.
+# Its only caller was its own test: the memory was computed on every run and
+# never rendered, so "se me han repetido como 4 videos con el mismo tema" had
+# no screen that could have answered it.
+#
+# Every number here is COMPUTED at draw time. None is typed into a caption,
+# because a hardcoded 22% is wrong the day after it is written.
+elif page == "Topics":
+    st.markdown("## Temas")
+    st.caption("Which topics have been used, and which keep coming back. "
+               "Counted from the scripts on disk, not from a stored tally.")
+
+    report = topic_memory_report()
+
+    if not report["total"]:
+        st.info("No topics found. Add category files under content/topics/.")
+    else:
+        c1, c2, c3, c4 = st.columns(4)
+        c1.metric("Topics", f"{report['total']:,}")
+        c2.metric("Ever used", f"{report['used']:,}")
+        c3.metric("Never used", f"{report['unused']:,}")
+        c4.metric("Coverage", f"{report['percent_used']:.0f}%")
+
+        st.progress(min(1.0, report["percent_used"] / 100.0))
+
+        st.markdown('<div class="section-header">Repeats</div>',
+                    unsafe_allow_html=True)
+        repeats = report["repeats"]
+        if not repeats:
+            st.success("No topic has been used twice.")
+        else:
+            st.caption(f"{len(repeats)} topic(s) generated more than once, "
+                       "worst first. This is the list that explains a "
+                       "repeated video.")
+            st.dataframe(
+                [{"Category": r["category"], "Topic": r["topic_id"],
+                  "Times": r["times"]} for r in repeats],
+                use_container_width=True, hide_index=True)
+
+        st.markdown('<div class="section-header">By category</div>',
+                    unsafe_allow_html=True)
+        st.dataframe(
+            [{"Category": row["category"], "Total": row["total"],
+              "Used": row["used"], "Unused": row["unused"],
+              "Coverage": f"{(100.0 * row['used'] / row['total']):.0f}%"
+                          if row["total"] else "—"}
+             for row in report["by_category"]],
+            use_container_width=True, hide_index=True)
+
+
 # ============== SETTINGS PAGE ==============
 elif page == "Settings":
-    st.markdown("## ⚙️ Settings")
+    st.markdown("## Ajustes")
 
     tab1, tab2, tab3 = st.tabs(["🔑 API Keys & Security", "🎬 Video Config", "🔊 Audio Config"])
 
@@ -2158,22 +3802,13 @@ elif page == "Settings":
         col1, col2 = st.columns(2)
 
         with col1:
-            try:
-                from backgrounds import BACKGROUND_PRESETS, get_recommended_preset
-                preset_options = list(BACKGROUND_PRESETS.keys())
-                current_bg = config.get("video", {}).get("default_background", get_recommended_preset())
-                default_background = st.selectbox(
-                    "Default Background", options=preset_options,
-                    index=preset_options.index(current_bg) if current_bg in preset_options else 0,
-                )
-            except ImportError:
-                default_background = st.text_input(
-                    "Default Background",
-                    value=config.get("video", {}).get("default_background", "static_purple")
-                )
-
-            bg_mode = st.selectbox("Background Mode", ["random", "fixed"],
-                                   index=0 if config.get("video", {}).get("background_mode") == "random" else 1)
+            # THE BACKGROUND CONTROLS ARE GONE. They wrote background_mode
+            # and default_background, the two keys the config-pin tier read,
+            # and the preset they chose was one of 76 flat colour fields.
+            # Backgrounds are footage now and there is nothing here to pick.
+            st.caption("Backgrounds are Pexels footage — there is nothing to "
+                       "configure. A video that cannot get footage fails "
+                       "rather than rendering a colour.")
 
             video_width = st.number_input("Width", value=config.get("video", {}).get("width", 1080),
                                           min_value=480, max_value=2160)
@@ -2191,9 +3826,6 @@ elif page == "Settings":
         if st.button("💾 Save Video Config", type="primary", use_container_width=True):
             new_config = {
                 "video": {
-                    "background_mode": bg_mode,
-                    "default_background": default_background,
-                    "enabled_backgrounds": config.get("video", {}).get("enabled_backgrounds", []),
                     "width": video_width,
                     "height": video_height,
                     "fps": video_fps,
@@ -2260,9 +3892,16 @@ elif page == "Settings":
             st.success("Audio config saved!")
 
 
+# ============== MANIM STUDIO ==============
+# Everything lives in src/manim_studio.py; this file only routes to it.
+elif page == "Manim":
+    import manim_studio
+    manim_studio.render()
+
+
 # ============== LOGS PAGE ==============
 elif page == "Logs":
-    st.markdown("## 📜 Generation Logs")
+    st.markdown("## Registros")
 
     jobs = load_jobs()
     all_jobs = jobs.get("active", []) + jobs.get("history", [])

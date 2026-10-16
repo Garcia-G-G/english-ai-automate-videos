@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras con MB: ¿cuándo suena la B? 👍",
+  "video_description": "Number lleva B, pero climb no. Diez palabras para dominar el grupo MB. 🧗",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con MB",
+  "intro": "[curious] ¿La B suena o no suena? Di cada palabra en voz alta y descúbrelo.",
+  "items": [
+    {
+      "english": "number",
+      "respelling": "NAM-ber",
+      "ipa": "ˈnʌmbɚ",
+      "trap": "Aquí la B sí suena"
+    },
+    {
+      "english": "climb",
+      "respelling": "KLAIM",
+      "ipa": "ˈklaɪm",
+      "trap": "La B final no suena"
+    },
+    {
+      "english": "remember",
+      "respelling": "ri-MEM-ber",
+      "ipa": "rɪˈmɛmbɚ",
+      "trap": "Acento en MEM y la B suena"
+    },
+    {
+      "english": "thumb",
+      "respelling": "THAM",
+      "ipa": "ˈθʌm",
+      "trap": "B muda y TH con la lengua"
+    },
+    {
+      "english": "comb",
+      "respelling": "KOUM",
+      "ipa": "ˈkoʊm",
+      "trap": "B muda y la O es «ou»"
+    },
+    {
+      "english": "plumber",
+      "respelling": "PLA-mer",
+      "ipa": "ˈplʌmɚ",
+      "trap": "La B no suena: PLA-mer"
+    },
+    {
+      "english": "lamb",
+      "respelling": "LAM",
+      "ipa": "ˈlæm",
+      "trap": "La B final es muda"
+    },
+    {
+      "english": "tomb",
+      "respelling": "TUUM",
+      "ipa": "ˈtuːm",
+      "trap": "B muda y la O suena «uu»"
+    },
+    {
+      "english": "crumb",
+      "respelling": "KRAM",
+      "ipa": "ˈkrʌm",
+      "trap": "B muda, pero en «crumble» suena"
+    },
+    {
+      "english": "succumb",
+      "respelling": "sa-KAM",
+      "ipa": "səˈkʌm",
+      "trap": "B muda y acento al final"
+    }
+  ],
+  "verdict": "Tres bien: nivel básico. Siete bien: intermedio. Diez de diez: nivel experto.",
+  "outro": "[excited] ¿Cuántas acertaste? Pon tu número en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#InglésOnline",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl066",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

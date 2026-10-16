@@ -1,0 +1,13 @@
+# English Unlimited panel theme. One explicit light theme, so the panel looks
+# the same whatever the Mac's appearance setting is (before this file the OS
+# picked the theme and custom CSS fought it). Colours = brand.json v2.
+[theme]
+base = "light"
+primaryColor = "#1B6FA8"
+backgroundColor = "#F3EEE4"
+secondaryBackgroundColor = "#EAE3D6"
+textColor = "#1C1812"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"

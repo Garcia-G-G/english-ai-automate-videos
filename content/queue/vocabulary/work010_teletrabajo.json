@@ -1,0 +1,87 @@
+{
+  "type": "vocabulary",
+  "video_title": "Vocabulario para teletrabajar en inglés 💻",
+  "video_description": "Las frases de cada videollamada, de verdad. 🎧",
+  "title": "Vocabulario: teletrabajo",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "teletrabajar",
+      "english": "work from home"
+    },
+    {
+      "spanish": "una videollamada",
+      "english": "a video call"
+    },
+    {
+      "spanish": "estás silenciado",
+      "english": "you're on mute"
+    },
+    {
+      "spanish": "se te ha congelado",
+      "english": "you're frozen"
+    },
+    {
+      "spanish": "comparto pantalla",
+      "english": "I'll share my screen"
+    },
+    {
+      "spanish": "¿me oyes bien?",
+      "english": "can you hear me okay?"
+    },
+    {
+      "spanish": "perdí la conexión",
+      "english": "I lost connection"
+    },
+    {
+      "spanish": "horario flexible",
+      "english": "flexible hours"
+    },
+    {
+      "spanish": "estar conectado",
+      "english": "to be online"
+    },
+    {
+      "spanish": "desconectar",
+      "english": "to log off"
+    }
+  ],
+  "full_script": "[excited] Primera videollamada con el equipo internacional. Teletrabajar, work from home. Una videollamada, a video call. Estás silenciado, you're on mute. Se te ha congelado, you're frozen. Comparto pantalla, I'll share my screen. ¿me oyes bien?, can you hear me okay?. Perdí la conexión, I lost connection. Horario flexible, flexible hours. Estar conectado, to be online. Desconectar, to log off. Repítelas y la próxima reunión será más fácil.",
+  "translations": {
+    "work from home": "teletrabajar",
+    "a video call": "una videollamada",
+    "you're on mute": "estás silenciado",
+    "you're frozen": "se te ha congelado",
+    "I'll share my screen": "comparto pantalla",
+    "can you hear me okay?": "¿me oyes bien?",
+    "I lost connection": "perdí la conexión",
+    "flexible hours": "horario flexible",
+    "to be online": "estar conectado",
+    "to log off": "desconectar"
+  },
+  "english_phrases": [
+    "work from home",
+    "a video call",
+    "you're on mute",
+    "you're frozen",
+    "I'll share my screen",
+    "can you hear me okay?",
+    "I lost connection",
+    "flexible hours",
+    "to be online",
+    "to log off"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "work_office",
+    "topic_id": "work010",
+    "video_type": "vocabulary",
+    "model": "manual"
+  }
+}

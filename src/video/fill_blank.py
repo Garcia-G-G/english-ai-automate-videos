@@ -12,12 +12,15 @@ from animations.easing import (
     tiktok_pop_scale, spring_animation,
 )
 from .constants import VIDEO_WIDTH, VIDEO_HEIGHT
+from .motion import entrance, idle_dy, scene_cuts
 from config.colors import COUNTDOWN_COLORS, QUIZ_COLORS
 from config.layout import (
     CARD_MARGIN_X, CARD_WIDTH, CARD_RADIUS, CARD_PADDING,
     TIMER_BAR_X, TIMER_BAR_Y, TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT,
+    FB_SENTENCE_Y, FB_OPTIONS_START_Y, FB_COUNTDOWN_CENTER_Y, FB_TRANSLATION_Y,
 )
 from .utils import (
+    font_line_height,
     strip_display_quotes,
     font, draw_text_solid, draw_text_centered,
     draw_rounded_card, draw_circle_number, draw_progress_timer_bar,
@@ -36,14 +39,17 @@ _FB_SEGMENT_KEYS = [
 ]
 
 # ── Layout ────────────────────────────────────────────────────────
-_CARD_Y = 250                # sentence card top
-_OPTIONS_Y = 520             # first option card top
+# Positions come from config.layout now. They used to be private copies
+# here, diverging from the public constants by up to 100px with nothing
+# reading the public ones.
+_CARD_Y = FB_SENTENCE_Y      # sentence card top
+_OPTIONS_Y = FB_OPTIONS_START_Y  # first option card top
 _OPT_W = 860                 # option card width
 _OPT_H = 75                  # option card height
 _OPT_GAP = 12                # vertical gap between option cards
 _OPT_STAGGER = 0.10          # 100ms stagger between options
-_COUNTDOWN_CY = 950          # countdown number center Y
-_TRANSLATION_CY = 1050       # translation pill center Y
+_COUNTDOWN_CY = FB_COUNTDOWN_CENTER_Y      # countdown number center Y
+_TRANSLATION_CY = FB_TRANSLATION_Y         # translation pill center Y
 _TEXT_MAX_W = CARD_WIDTH - CARD_PADDING * 2
 
 # ── Colors ────────────────────────────────────────────────────────
@@ -123,9 +129,15 @@ def _draw_sentence_card(t, draw, frame, sentence, correct, show_answer, answer_t
     else:
         display = sentence
 
-    sf, sz, lines, total_h = fit_text_font(display, 48, 32, _TEXT_MAX_W)
-    card_h = max(140, total_h + CARD_PADDING * 2 + 12)
-    card_y = _CARD_Y + bounce
+    box = fit_text_font(display, 48, 32, _TEXT_MAX_W)
+    sf, sz, lines = box.font, box.size, box.lines
+    # INK, because this card is sized around the text: it should hug the
+    # glyphs, not the line box, or the padding reads as larger at the top
+    # and bottom than at the sides.
+    card_h = max(140, box.height + CARD_PADDING * 2 + 12)
+    # Floats once the spring has settled. Up only, so the card never
+    # crowds the options below it.
+    card_y = _CARD_Y + bounce + int(round(idle_dy(t, 0.45)))
 
     # White card
     draw_rounded_card(frame, CARD_MARGIN_X, card_y, CARD_WIDTH, card_h,
@@ -146,7 +158,10 @@ def _draw_sentence_card(t, draw, frame, sentence, correct, show_answer, answer_t
 
     # Multi-line or no blank → simple centered rendering
     if len(lines) > 1 or not parts:
-        ty = text_cy - total_h // 2
+        # ADVANCE, because draw_text_centered below steps line to line by a
+        # per-line advance rather than by ink, so the block it produces is
+        # advance-tall and has to be centred as such.
+        ty = text_cy - box.advance_height // 2
         color = _CORRECT_GREEN if show_answer else _TEXT_DARK
         draw_text_centered(draw, display, ty, sf, color, 255, outline=0,
                            max_width=_TEXT_MAX_W)
@@ -275,7 +290,11 @@ def _draw_option_cards(t, draw, frame, options, correct, show_answer,
         is_wrong = show_answer and not is_correct
 
         cx = opt_x + x_off
-        cy = y
+        # Rises in on its own audio alongside the slide, then floats out of
+        # step with the other cards. Only the card's y moves: the fit above
+        # is sized to the card, not to where it is.
+        _, rise = entrance(t, delay, rise=20)
+        cy = y + int(round(rise + idle_dy(t, delay + 0.42, phase=0.23 * i)))
 
         # Wrong options: fade to 25% and slide 10px outward
         if is_wrong:
@@ -316,13 +335,35 @@ def _draw_option_cards(t, draw, frame, options, correct, show_answer,
         draw_circle_number(draw, letters[i], cx + 45, cy + _OPT_H // 2,
                            radius=22, bg_color=lc, font_size=26)
 
-        # Option text
-        of, _, _, _ = fit_text_font(opt, 40, 28, _OPT_W - 120)
-        th = _text_h(draw, opt, of)
+        # Option text — THE LINES THE FIT RETURNED, not the source string.
+        #
+        # This was `of, _, _, _ = fit_text_font(opt, 40, 28, _OPT_W - 120)`
+        # followed by drawing `opt`: the same two failures removed from
+        # vocabulary._draw_cell. No max_height, so the fit returned 40px for
+        # every option of any length; and the wrapped lines were dropped on
+        # the floor while the raw string went to the canvas.
+        #
+        # LATENT, NOT LIVE, and fixed as a consistency matter rather than an
+        # emergency: measured across the 223 distinct options on disk, not
+        # one changes size or line count. The widest is "You can contact me
+        # at 555-123-4567" at 732px of a 740px column — 99% — so it is one
+        # long option from firing.
+        #
+        # The budget is the card, which is 75px: one line at 40px is 49px
+        # and fits, two lines at 40px is 98px and does not. A wrapped option
+        # therefore cannot fit this card at all, and the honest outcome for
+        # one is fit_text_font's log plus lines that at least stay inside
+        # the column horizontally — never a silently clipped string.
+        box = fit_text_font(opt, 40, 28, _OPT_W - 120, _OPT_H - 6)
+        of, lines = box.font, box.lines
         tc = ((30, 140, 60) if is_correct else
               (160, 155, 170) if is_wrong else _TEXT_DARK)
-        draw_text_solid(draw, opt, cx + 85, cy + (_OPT_H - th) // 2 - 1,
-                        of, tc, card_alpha, outline=0)
+        line_h = font_line_height(of)
+        block_h = (len(lines) - 1) * line_h + _text_h(draw, lines[0], of)
+        ty = cy + (_OPT_H - block_h) // 2 - 1
+        for index, line in enumerate(lines):
+            draw_text_solid(draw, line, cx + 85, ty + index * line_h,
+                            of, tc, card_alpha, outline=0)
 
         # Sparkles on correct answer
         if is_correct:
@@ -410,11 +451,15 @@ def create_frame_fill_blank(
     if show_answer and translation:
         ta = get_alpha(t, answer_time + 0.5, 0.3)
         if ta > 0:
+            # The pill is bounded by the card, not by the length of the
+            # translation: 9 of 69 translations on disk are wide enough to
+            # run off both edges of the frame without this.
             draw_pill_badge(frame, draw, translation,
                             VIDEO_WIDTH // 2, _TRANSLATION_CY,
                             font_size=30, bg_color=(60, 60, 90),
                             text_color=(220, 220, 240),
-                            padding_x=28, padding_y=12)
+                            padding_x=28, padding_y=12,
+                            max_width=CARD_WIDTH)
             draw = ImageDraw.Draw(frame, 'RGBA')
 
     # Trigger character excitement on answer reveal
@@ -427,4 +472,5 @@ def create_frame_fill_blank(
         except Exception:
             pass
 
-    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []),
+                          scene_cuts=scene_cuts(st))

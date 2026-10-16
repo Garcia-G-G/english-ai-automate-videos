@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "En el GIMNASIO en inglés: 10 palabras de menos a más 🏃",
+  "video_description": "¿Llegas a la décima palabra del gimnasio? Haz el test y compruébalo. 🏃",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el gimnasio",
+  "intro": "[curious] Mira cada palabra del gimnasio y di qué significa. La número diez es solo para expertos.",
+  "items": [
+    {
+      "english": "weights",
+      "spanish": "Pesas",
+      "cefr": "A2"
+    },
+    {
+      "english": "jog",
+      "spanish": "Trotar",
+      "cefr": "A2"
+    },
+    {
+      "english": "stretch",
+      "spanish": "Estirar",
+      "cefr": "A2"
+    },
+    {
+      "english": "work out",
+      "spanish": "Hacer ejercicio",
+      "cefr": "B1"
+    },
+    {
+      "english": "treadmill",
+      "spanish": "Cinta de correr",
+      "cefr": "B1"
+    },
+    {
+      "english": "push-up",
+      "spanish": "Flexión",
+      "cefr": "B1"
+    },
+    {
+      "english": "squat",
+      "spanish": "Sentadilla",
+      "cefr": "B2"
+    },
+    {
+      "english": "sore",
+      "spanish": "Con agujetas / adolorido",
+      "cefr": "B2"
+    },
+    {
+      "english": "pull-up",
+      "spanish": "Dominada",
+      "cefr": "C1"
+    },
+    {
+      "english": "bulk up",
+      "spanish": "Ganar músculo",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos son nivel básico, siete son intermedio y diez de diez, nivel experto.",
+  "outro": "[curious] ¿Cuál fue tu número? Déjalo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv032",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "weights": "Pesas",
+    "jog": "Trotar",
+    "stretch": "Estirar",
+    "work out": "Hacer ejercicio",
+    "treadmill": "Cinta de correr",
+    "push-up": "Flexión",
+    "squat": "Sentadilla",
+    "sore": "Con agujetas / adolorido",
+    "pull-up": "Dominada",
+    "bulk up": "Ganar músculo"
+  },
+  "english_phrases": [
+    "weights",
+    "jog",
+    "stretch",
+    "work out",
+    "treadmill",
+    "push-up",
+    "squat",
+    "sore",
+    "pull-up",
+    "bulk up"
+  ],
+  "full_script": "[curious] Mira cada palabra del gimnasio y di qué significa. La número diez es solo para expertos. weights Pesas jog Trotar stretch Estirar Ahora, nivel intermedio. work out Hacer ejercicio treadmill Cinta de correr push-up Flexión squat Sentadilla Y ahora, nivel experto. sore Con agujetas / adolorido pull-up Dominada bulk up Ganar músculo Tres aciertos son nivel básico, siete son intermedio y diez de diez, nivel experto. [curious] ¿Cuál fue tu número? Déjalo en los comentarios."
+}

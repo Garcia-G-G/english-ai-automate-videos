@@ -1,0 +1,52 @@
+{
+  "type": "minimal_pairs",
+  "video_title": "VERY o BERRY: la uve que el español no tiene 🍓",
+  "video_description": "La uve inglesa se hace con los dientes. 🦷",
+  "level": "A2",
+  "intro": "[curious] Dos palabras que para ti suenan igual. Para un nativo, no.",
+  "pair": [
+    {
+      "word": "very",
+      "phonetic": "VE-ri",
+      "meaning": "muy",
+      "emoji": "💯"
+    },
+    {
+      "word": "berry",
+      "phonetic": "BE-ri",
+      "meaning": "baya",
+      "emoji": "🍓"
+    }
+  ],
+  "sound_tip": "Para la uve, apoya los dientes de arriba en el labio de abajo y deja vibrar. La be junta los dos labios.",
+  "test": [
+    0,
+    0,
+    1,
+    1
+  ],
+  "sentence": {
+    "en": "This berry is very sweet.",
+    "es": "Esta baya es muy dulce."
+  },
+  "outro": "[excited] ¿Cuántas acertaste de cuatro? Dímelo en los comentarios.",
+  "translations": {
+    "very": "muy",
+    "berry": "baya",
+    "This berry is very sweet.": "Esta baya es muy dulce."
+  },
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#ParesMínimos"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr046",
+    "video_type": "minimal_pairs",
+    "model": "manual",
+    "draft": true
+  }
+}

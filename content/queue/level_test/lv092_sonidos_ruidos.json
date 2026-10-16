@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "SONIDOS Y RUIDOS en inglés: ¿básico o experto? 🔊",
+  "video_description": "Ladrar, pitido, chirrido, golpe seco: ¿cuántos sonidos y ruidos sabes en inglés? 👂",
+  "title": "¿Qué nivel tienes?",
+  "theme": "sonidos y ruidos",
+  "intro": "[excited] Diez palabras de sonidos y ruidos en inglés, de fácil a experto. Escucha: ¿qué significan?",
+  "items": [
+    {
+      "english": "noise",
+      "spanish": "Ruido",
+      "cefr": "A1"
+    },
+    {
+      "english": "loud",
+      "spanish": "Fuerte, alto",
+      "cefr": "A2"
+    },
+    {
+      "english": "quiet",
+      "spanish": "Silencioso",
+      "cefr": "A2"
+    },
+    {
+      "english": "bark",
+      "spanish": "Ladrar",
+      "cefr": "A2"
+    },
+    {
+      "english": "beep",
+      "spanish": "Pitido",
+      "cefr": "B1"
+    },
+    {
+      "english": "whistle",
+      "spanish": "Silbar",
+      "cefr": "B1"
+    },
+    {
+      "english": "buzz",
+      "spanish": "Zumbido",
+      "cefr": "B2"
+    },
+    {
+      "english": "squeak",
+      "spanish": "Chirrido",
+      "cefr": "B2"
+    },
+    {
+      "english": "thud",
+      "spanish": "Golpe seco",
+      "cefr": "C1"
+    },
+    {
+      "english": "rustle",
+      "spanish": "Crujido de hojas o papel",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Hasta la siete, intermedio. Y las diez, nivel experto, alto y claro.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Hazte oír en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv092",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "noise": "Ruido",
+    "loud": "Fuerte, alto",
+    "quiet": "Silencioso",
+    "bark": "Ladrar",
+    "beep": "Pitido",
+    "whistle": "Silbar",
+    "buzz": "Zumbido",
+    "squeak": "Chirrido",
+    "thud": "Golpe seco",
+    "rustle": "Crujido de hojas o papel"
+  },
+  "english_phrases": [
+    "noise",
+    "loud",
+    "quiet",
+    "bark",
+    "beep",
+    "whistle",
+    "buzz",
+    "squeak",
+    "thud",
+    "rustle"
+  ],
+  "full_script": "[excited] Diez palabras de sonidos y ruidos en inglés, de fácil a experto. Escucha: ¿qué significan? noise Ruido loud Fuerte, alto quiet Silencioso Ahora, nivel intermedio. bark Ladrar beep Pitido whistle Silbar buzz Zumbido Y ahora, nivel experto. squeak Chirrido thud Golpe seco rustle Crujido de hojas o papel Si llegaste a la tres, básico. Hasta la siete, intermedio. Y las diez, nivel experto, alto y claro. [cheerful] ¿Hasta qué número llegaste? Hazte oír en los comentarios."
+}

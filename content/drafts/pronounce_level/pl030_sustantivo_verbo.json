@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "SUSTANTIVO Y VERBO: REcord o reCORD, ¿lo sabías? 🎙️",
+  "video_description": "Sustantivo o verbo: el acento cambia y el sentido también. 🎁",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "sustantivo y verbo (REcord / reCORD)",
+  "intro": "[curious] Mira si es sustantivo o verbo y di la palabra. El acento cambia de sitio.",
+  "items": [
+    {
+      "english": "a record",
+      "respelling": "RE-kerd",
+      "ipa": "ˈrɛkɚd",
+      "trap": "Sustantivo: acento delante, RE-"
+    },
+    {
+      "english": "to record",
+      "respelling": "ri-KORD",
+      "ipa": "rɪˈkɔrd",
+      "trap": "Verbo: acento detrás, -KORD"
+    },
+    {
+      "english": "a present",
+      "respelling": "PRE-zent",
+      "ipa": "ˈprɛzənt",
+      "trap": "Regalo: acento en PRE"
+    },
+    {
+      "english": "to present",
+      "respelling": "pri-ZENT",
+      "ipa": "prɪˈzɛnt",
+      "trap": "Verbo: acento en ZENT"
+    },
+    {
+      "english": "a project",
+      "respelling": "PRA-yekt",
+      "ipa": "ˈprɑdʒɛkt",
+      "trap": "Sustantivo: PRA-yekt"
+    },
+    {
+      "english": "to project",
+      "respelling": "pre-YEKT",
+      "ipa": "prəˈdʒɛkt",
+      "trap": "Verbo: el acento pasa a YEKT"
+    },
+    {
+      "english": "an insult",
+      "respelling": "IN-salt",
+      "ipa": "ˈɪnsʌlt",
+      "trap": "Sustantivo: acento en IN"
+    },
+    {
+      "english": "to insult",
+      "respelling": "in-SALT",
+      "ipa": "ɪnˈsʌlt",
+      "trap": "Verbo: acento en SALT"
+    },
+    {
+      "english": "a rebel",
+      "respelling": "RE-bel",
+      "ipa": "ˈrɛbəl",
+      "trap": "Sustantivo: RE-bel"
+    },
+    {
+      "english": "to rebel",
+      "respelling": "ri-BEL",
+      "ipa": "rɪˈbɛl",
+      "trap": "Verbo: ri-BEL, acento al final"
+    }
+  ],
+  "verdict": "Si solo te salieron las tres primeras, básico. Hasta la siete, intermedio. Las diez, experto.",
+  "outro": "[warm] ¿Hasta qué palabra llegaste? Comenta y sigue practicando.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#SustantivoYVerbo",
+    "#AprenderInglés",
+    "#ClasesDeInglés",
+    "#HablarInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl030",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

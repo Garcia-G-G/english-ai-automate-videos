@@ -184,3 +184,38 @@ def test_a_rejected_video_gets_no_outro(monkeypatch, tmp_path):
 
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-v"]))
+
+
+# ── STEP 62 §4: the card on brand ────────────────────────────────────
+
+def test_the_card_is_sand_paper_and_the_url_is_english_blue():
+    import numpy as np
+    variant = O.load_variants()["variants"][0]
+    img = np.array(O.outro_still(variant))
+    assert tuple(img[40, 40]) == O._sand()                         # the background
+    blue = np.array(O._brand_colour("english_blue"))
+    assert (np.abs(img.reshape(-1, 3).astype(int) - blue).sum(axis=1) < 6).sum() > 5000
+
+
+def test_the_site_line_is_a_field_of_outro_json_and_the_spoken_text_is_unchanged():
+    cfg = O.load_variants()
+    assert cfg["line_3"] == "Rutas para aprender lo que quieras"
+    assert [v["spoken"] for v in cfg["variants"]] == [
+        "Aprende inglés en learningroutes.com", "Sigue aprendiendo en learningroutes.com",
+        "Más lecciones en learningroutes.com"]
+
+
+def test_a_forced_redraw_keeps_the_voice_and_costs_nothing(tmp_path, monkeypatch):
+    """force=True on an existing clip reuses its audio track: no TTS."""
+    clips = _existing()
+    if not clips:
+        pytest.skip("no rendered outro yet")
+    import shutil
+    monkeypatch.setattr(O, "OUTRO_DIR", tmp_path)
+    shutil.copy(clips[0], tmp_path / clips[0].name)
+    monkeypatch.setattr(O, "_synthesize", lambda *a, **k: pytest.fail("a redraw asked the TTS"))
+    variant = next(v for v in O.load_variants()["variants"] if v["id"] == clips[0].stem)
+    out = O.ensure_outro(variant, force=True)
+    probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries",
+                            "stream=codec_name", "-of", "csv=p=0", str(out)], capture_output=True, text=True)
+    assert probe.stdout.strip() == "aac"

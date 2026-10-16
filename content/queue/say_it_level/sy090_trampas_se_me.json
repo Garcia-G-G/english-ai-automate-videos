@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "Se me olvidó, se me cayó: ¿sabes decir «SE ME» en inglés? 🙈",
+  "video_description": "En inglés nada «se te cae»: tú lo dejas caer. Diez trampas con se me. 🙈",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «se me…» (se me olvidó, se me cayó)",
+  "intro": "[surprised] En inglés las cosas no «se te caen». Di cada frase con «se me» en inglés.",
+  "items": [
+    {
+      "spanish": "Se me cayó el teléfono.",
+      "english": "I dropped my phone.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Se me olvidó tu cumpleaños.",
+      "english": "I forgot your birthday.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Se me rompieron las gafas.",
+      "english": "I broke my glasses.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Se me perdieron las llaves.",
+      "english": "I lost my keys.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Se me quemó la cena.",
+      "english": "I burned dinner.",
+      "cefr": "B1",
+      "alt": "I burnt the dinner."
+    },
+    {
+      "spanish": "Se me da bien cocinar.",
+      "english": "I'm good at cooking.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Se me ha ocurrido una idea.",
+      "english": "I've just had an idea.",
+      "cefr": "B2",
+      "alt": "I've got an idea."
+    },
+    {
+      "spanish": "Se me hace tarde.",
+      "english": "I'm running late.",
+      "cefr": "B2",
+      "tip": "«Se me hace tarde» es I'm running late"
+    },
+    {
+      "spanish": "Se me durmió la pierna.",
+      "english": "My leg fell asleep.",
+      "cefr": "B2",
+      "tip": "Aquí el sujeto es la pierna: My leg fell asleep"
+    },
+    {
+      "spanish": "Se me escapó.",
+      "english": "It slipped out.",
+      "cefr": "C1",
+      "alt": "I let it slip.",
+      "tip": "Un secreto que «se te escapa» slips out"
+    }
+  ],
+  "verdict": "Tres frases: básico. Siete: intermedio. Las diez sin que se te escape ninguna: experto.",
+  "outro": "[happy] ¿Se te escapó alguna? Dime hasta qué número llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#TrucosDeInglés",
+    "#InglésCotidiano"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy090",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I dropped my phone.": "Se me cayó el teléfono.",
+    "I forgot your birthday.": "Se me olvidó tu cumpleaños.",
+    "I broke my glasses.": "Se me rompieron las gafas.",
+    "I lost my keys.": "Se me perdieron las llaves.",
+    "I burned dinner.": "Se me quemó la cena.",
+    "I'm good at cooking.": "Se me da bien cocinar.",
+    "I've just had an idea.": "Se me ha ocurrido una idea.",
+    "I'm running late.": "Se me hace tarde.",
+    "My leg fell asleep.": "Se me durmió la pierna.",
+    "It slipped out.": "Se me escapó."
+  },
+  "english_phrases": [
+    "I dropped my phone.",
+    "I forgot your birthday.",
+    "I broke my glasses.",
+    "I lost my keys.",
+    "I burned dinner.",
+    "I'm good at cooking.",
+    "I've just had an idea.",
+    "I'm running late.",
+    "My leg fell asleep.",
+    "It slipped out.",
+    "I burnt the dinner.",
+    "I've got an idea.",
+    "I let it slip."
+  ],
+  "full_script": "[surprised] En inglés las cosas no «se te caen». Di cada frase con «se me» en inglés. I dropped my phone. I forgot your birthday. I broke my glasses. Ahora, nivel intermedio. I lost my keys. I burned dinner. I'm good at cooking. I've just had an idea. Y ahora, nivel experto. I'm running late. My leg fell asleep. It slipped out. Tres frases: básico. Siete: intermedio. Las diez sin que se te escape ninguna: experto. [happy] ¿Se te escapó alguna? Dime hasta qué número llegaste."
+}

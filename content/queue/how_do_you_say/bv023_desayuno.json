@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el DESAYUNO en inglés? 🥞",
+  "video_description": "Lo que comes cada mañana, ahora en inglés. ☕",
+  "title": "¿Cómo se dice…?",
+  "theme": "el desayuno",
+  "level": "A1",
+  "intro": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo.",
+  "items": [
+    {
+      "emoji": "🍞",
+      "spanish": "Tostada",
+      "english": "toast"
+    },
+    {
+      "emoji": "🧈",
+      "spanish": "Mantequilla",
+      "english": "butter"
+    },
+    {
+      "emoji": "🍓",
+      "spanish": "Mermelada",
+      "english": "jam"
+    },
+    {
+      "emoji": "🥣",
+      "spanish": "Cereales",
+      "english": "cereal"
+    },
+    {
+      "emoji": "🥞",
+      "spanish": "Panqueques",
+      "english": "pancakes"
+    },
+    {
+      "emoji": "🥓",
+      "spanish": "Tocino",
+      "english": "bacon"
+    },
+    {
+      "emoji": "🥄",
+      "spanish": "Yogur",
+      "english": "yogurt"
+    },
+    {
+      "emoji": "🍯",
+      "spanish": "Miel",
+      "english": "honey"
+    },
+    {
+      "emoji": "🍪",
+      "spanish": "Galleta",
+      "english": "cookie"
+    },
+    {
+      "emoji": "🌭",
+      "spanish": "Salchicha",
+      "english": "sausage"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: toast, butter, jam, cereal, pancakes, bacon, yogurt, honey, cookie, sausage.",
+  "outro": "[curious] ¿Cuál no sabías? Cuéntamelo abajo.",
+  "translations": {
+    "toast": "Tostada",
+    "butter": "Mantequilla",
+    "jam": "Mermelada",
+    "cereal": "Cereales",
+    "pancakes": "Panqueques",
+    "bacon": "Tocino",
+    "yogurt": "Yogur",
+    "honey": "Miel",
+    "cookie": "Galleta",
+    "sausage": "Salchicha"
+  },
+  "english_phrases": [
+    "toast",
+    "butter",
+    "jam",
+    "cereal",
+    "pancakes",
+    "bacon",
+    "yogurt",
+    "honey",
+    "cookie",
+    "sausage"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv023",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo. Tostada... toast. toast. Mantequilla... butter. butter. Mermelada... jam. jam. Cereales... cereal. cereal. Panqueques... pancakes. pancakes. Tocino... bacon. bacon. Yogur... yogurt. yogurt. Miel... honey. honey. Galleta... cookie. cookie. Salchicha... sausage. sausage. Otra vez, todas seguidas: toast, butter, jam, cereal, pancakes, bacon, yogurt, honey, cookie, sausage. [curious] ¿Cuál no sabías? Cuéntamelo abajo."
+}

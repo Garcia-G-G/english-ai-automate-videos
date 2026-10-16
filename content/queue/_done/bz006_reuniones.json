@@ -1,0 +1,99 @@
+{
+  "type": "vocabulary",
+  "title": "Vocabulario: reuniones",
+  "difficulty": "medio",
+  "video_title": "Tu primera reunión en inglés, sin perderte 💼",
+  "video_description": "Las palabras que vas a oír en tu primera meeting en inglés. 📊",
+  "pairs": [
+    {
+      "spanish": "el orden del día",
+      "english": "the agenda"
+    },
+    {
+      "spanish": "el acta",
+      "english": "the minutes"
+    },
+    {
+      "spanish": "la fecha límite",
+      "english": "the deadline"
+    },
+    {
+      "spanish": "una actualización",
+      "english": "an update"
+    },
+    {
+      "spanish": "hacer seguimiento",
+      "english": "to follow up"
+    },
+    {
+      "spanish": "el presupuesto",
+      "english": "the budget"
+    },
+    {
+      "spanish": "aplazar la reunión",
+      "english": "postpone the meeting"
+    },
+    {
+      "spanish": "aprobar el plan",
+      "english": "approve the plan"
+    },
+    {
+      "spanish": "presentar los datos",
+      "english": "present the figures"
+    },
+    {
+      "spanish": "el siguiente punto",
+      "english": "the next item"
+    },
+    {
+      "spanish": "llegar a un acuerdo",
+      "english": "to agree on it"
+    },
+    {
+      "spanish": "tomar nota",
+      "english": "to take notes"
+    }
+  ],
+  "full_script": "[warm] Primera reunión en inglés. El orden del día, the agenda. El acta, the minutes. La fecha límite, the deadline. Una actualización, an update. Hacer seguimiento, to follow up. El presupuesto, the budget. Aplazar la reunión, postpone the meeting. Aprobar el plan, approve the plan. Presentar los datos, present the figures. El siguiente punto, the next item. Llegar a un acuerdo, to agree on it. Tomar nota, to take notes. Repítelas conmigo una vez más y ya son tuyas.",
+  "translations": {
+    "the agenda": "el orden del día",
+    "the minutes": "el acta",
+    "the deadline": "la fecha límite",
+    "an update": "una actualización",
+    "to follow up": "hacer seguimiento",
+    "the budget": "el presupuesto",
+    "postpone the meeting": "aplazar la reunión",
+    "approve the plan": "aprobar el plan",
+    "present the figures": "presentar los datos",
+    "the next item": "el siguiente punto",
+    "to agree on it": "llegar a un acuerdo",
+    "to take notes": "tomar nota"
+  },
+  "english_phrases": [
+    "the agenda",
+    "the minutes",
+    "the deadline",
+    "an update",
+    "to follow up",
+    "the budget",
+    "postpone the meeting",
+    "approve the plan",
+    "present the figures",
+    "the next item",
+    "to agree on it",
+    "to take notes"
+  ],
+  "hashtags": [
+    "#InglésDeNegocios",
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#BusinessEnglish",
+    "#Trabajo"
+  ],
+  "_meta": {
+    "category": "business",
+    "topic_id": "bz006",
+    "video_type": "vocabulary",
+    "model": "manual"
+  }
+}

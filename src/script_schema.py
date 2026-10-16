@@ -45,7 +45,10 @@ Two severities:
 
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List, Literal, Optional, Type, Union
+
+from config.layout import VOCAB_MAX_ROWS
 
 from pydantic import (
     BaseModel,
@@ -56,11 +59,14 @@ from pydantic import (
     model_validator,
 )
 
-VIDEO_TYPES = ("educational", "quiz", "true_false", "fill_blank",
-               "pronunciation", "vocabulary")
+# THE list lives in video_types, which is a leaf module: it names its
+# renderers as strings and imports none of them, so this stays as cheap to
+# import as the tuple it replaces. Both names below are derived, so the
+# schema and the Literal can no longer disagree with each other -- they were
+# two hand-maintained copies of the same six names.
+from video_types import VIDEO_TYPES  # noqa: F401  (re-exported)
 
-VideoType = Literal["educational", "quiz", "true_false", "fill_blank",
-                    "pronunciation", "vocabulary"]
+VideoType = Literal[VIDEO_TYPES]
 
 OptionLetter = Literal["A", "B", "C", "D"]
 
@@ -409,8 +415,22 @@ class VocabularyScript(ScriptBase, _TranslationsMixin):
     title: str = Field(min_length=1)
 
     # The prompt asks for 6-10 (script_generator.py:558). Hard floor is 2 —
-    # anything less is not a list — with the 6-10 window enforced as a lint.
-    pairs: List[VocabPair] = Field(min_length=2)
+    # anything less is not a list — with the 6-10 window kept as a lint,
+    # because overshooting the prompt is a generation quality signal rather
+    # than something that breaks a frame.
+    #
+    # The CEILING is different in kind and so is enforced here rather than in
+    # lint(). _draw_vocab_rows steps rows at VOCAB_ROW_HEIGHT with no clamp
+    # while only the CARD is clamped, so past a certain count the rows walk
+    # out of their own card: at 15 they cross SAFE_AREA_BOTTOM into the
+    # platform UI rail, and at 18 they leave the 1920px frame entirely. That
+    # is a layout invariant, not a style preference, and nothing downstream
+    # was catching it — validate_render_data never calls lint().
+    #
+    # VOCAB_MAX_ROWS (12) rather than the geometric limit (14) because the
+    # constant already declares the intent and two rows of margin costs
+    # nothing.
+    pairs: List[VocabPair] = Field(min_length=2, max_length=VOCAB_MAX_ROWS)
 
     # Free string rather than a Literal: the prompt names four values but the
     # renderer only prints it (video/vocabulary.py:81), so an unexpected word
@@ -433,11 +453,350 @@ class VocabularyScript(ScriptBase, _TranslationsMixin):
 
 
 # ─────────────────────────────────────────────────────────────────────────
+# how_do_you_say  ("¿Cómo se dice…?")
+# ─────────────────────────────────────────────────────────────────────────
+
+#: Rows on the notebook page. The floor is the brief's (8 minimum): fewer
+#: rows leave a page that reads half-empty and a video under the band.
+HDYS_MIN_ITEMS = 8
+HDYS_MAX_ITEMS = 10
+
+#: The fields a voice direction may live in. The per-item words are spoken
+#: one or two at a time between silences; a tag there would be the only
+#: thing the clip says besides the word.
+HDYS_TAGGED_FIELDS = ("intro", "recap", "outro")
+
+
+class HowDoYouSayItem(BaseModel):
+    """One row: an emoji, the Spanish word shown from frame one, and the
+    English word that is written in after the viewer's turn."""
+    model_config = ConfigDict(extra="forbid")
+
+    emoji: str = Field(min_length=1)
+    # The 14-character figure in the brief is a prompt aim. What decides
+    # whether a word fits is the row it is drawn in, and length_spec measures
+    # that with the real face at the real size.
+    spanish: str = Field(min_length=1)
+    english: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def _check_emoji(self):
+        from emoji_font import emoji_problem
+        problem = emoji_problem(self.emoji)
+        if problem:
+            raise ValueError(f"emoji: {problem}")
+        return self
+
+
+class HowDoYouSayScript(ScriptBase, _TranslationsMixin):
+    type: Literal["how_do_you_say"]
+
+    title: str = Field(min_length=1)
+    theme: str = Field(min_length=1)
+    level: Optional[str] = None
+
+    intro: str = Field(min_length=1)
+    items: List[HowDoYouSayItem] = Field(min_length=HDYS_MIN_ITEMS,
+                                         max_length=HDYS_MAX_ITEMS)
+    recap: str = Field(min_length=1)
+    outro: str = Field(min_length=1)
+
+    english_phrases: List[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _check_tags(self):
+        from audio_tags import TAG_RE, unknown_tags
+        problems = []
+        for name in HDYS_TAGGED_FIELDS:
+            for tag in unknown_tags(getattr(self, name)):
+                problems.append(f"{name}: unknown audio tag {tag}")
+        for i, item in enumerate(self.items):
+            for name in ("spanish", "english"):
+                if TAG_RE.search(getattr(item, name)):
+                    problems.append(
+                        f"items[{i}].{name}: audio tags are only allowed in "
+                        f"{', '.join(HDYS_TAGGED_FIELDS)}")
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# The level family (STEP 58): level_test, say_it_level
+# content/drafts/LEVEL_TYPES_SPEC.md; tools/level_drafts_check.py held these
+# rules while the drafts waited.
+# ─────────────────────────────────────────────────────────────────────────
+
+CEFR_LEVELS = ("A1", "A2", "B1", "B2", "C1", "C2")
+LEVEL_ITEMS = 10
+LEVEL_TAGGED_FIELDS = ("intro", "outro")
+#: hashtags[0] per type.
+LEVEL_TYPE_TAGS = {"level_test": "#NivelDeInglés", "say_it_level": "#DiloEnInglés",
+                   "true_false_level": "#VerdaderoOFalso", "fill_level": "#CompletaLaFrase",
+                   "choose_level": "#ElegirLaCorrecta"}
+#: Per tier (items 1-3, 4-7, 8-10): allowed CEFR range and how many items must
+#: reach `min_high` or above.
+LEVEL_CEFR_RULES = {
+    "level_test":   (("A1", "A2", 0, None), ("A2", "B2", 2, "B1"), ("B2", "C2", 2, "C1")),
+    "say_it_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B1", "C1", 0, None)),
+    # level_test's ranges, without its counts: a false friend's CEFR is the word's,
+    # and requiring two C1 in the last tier would push out the classic traps.
+    "true_false_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B2", "C2", 0, None)),
+    # STEP 62: level_test's ranges; a grammar point has no "two C1 words" to offer.
+    "fill_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B2", "C2", 0, None)),
+    "choose_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B2", "C2", 0, None)),
+}
+#: choose_level: how many times each option index is the right one, so «always the
+#: first» is not a strategy.
+CHOOSE_INDEX_RANGE = (3, 7)
+#: The blank in a fill_level sentence (tts_elevenlabs.LEVEL_BLANK).
+LEVEL_BLANK = "____"
+#: true_false_level: how many statements are true, so «siempre falso» is not a strategy.
+TRUE_FALSE_TRUE_RANGE = (3, 7)
+
+
+class LevelTestItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    english: str = Field(min_length=1)
+    spanish: str = Field(min_length=1)
+    cefr: Literal[CEFR_LEVELS]
+
+
+class SayItLevelItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    spanish: str = Field(min_length=1)
+    english: str = Field(min_length=1)
+    cefr: Literal[CEFR_LEVELS]
+    alt: Optional[str] = None
+    tip: Optional[str] = None
+
+
+class TrueFalseLevelItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    statement: str = Field(min_length=1)
+    truth: bool
+    correction: Optional[str] = None
+    cefr: Literal[CEFR_LEVELS]
+
+    @model_validator(mode="after")
+    def _correction_only_when_false(self):
+        if not self.truth and not (self.correction or "").strip():
+            raise ValueError("a false statement needs its correction")
+        if self.truth and self.correction is not None:
+            raise ValueError("a true statement has no correction")
+        if not re.search(r"«[^»]+»", self.statement):
+            raise ValueError("the statement puts the English word in «»")
+        return self
+
+
+class FillLevelItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    sentence: str = Field(min_length=1)
+    answer: str = Field(min_length=1)
+    translation: str = Field(min_length=1)
+    cefr: Literal[CEFR_LEVELS]
+
+    @model_validator(mode="after")
+    def _one_blank(self):
+        if self.sentence.count(LEVEL_BLANK) != 1 or "_____" in self.sentence:
+            raise ValueError(f"the sentence has exactly one blank, written {LEVEL_BLANK}")
+        if "_" in self.answer:
+            raise ValueError("the answer fills the blank; it has no blank of its own")
+        return self
+
+
+class ChooseLevelItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    sentence: str = Field(min_length=1)
+    options: List[str] = Field(min_length=2, max_length=2)
+    answer: Literal[0, 1]
+    cefr: Literal[CEFR_LEVELS]
+
+    @model_validator(mode="after")
+    def _one_blank_two_options(self):
+        if self.sentence.count(LEVEL_BLANK) != 1 or "_____" in self.sentence:
+            raise ValueError(f"the sentence has exactly one blank, written {LEVEL_BLANK}")
+        if any(not o.strip() or "_" in o for o in self.options):
+            raise ValueError("an option is a word or two, with no blank")
+        if self.options[0].strip().lower() == self.options[1].strip().lower():
+            raise ValueError("the two options are the same")
+        return self
+
+
+class _LevelScript(ScriptBase, _TranslationsMixin):
+    title: str = Field(min_length=1)
+    theme: str = Field(min_length=1)
+    intro: str = Field(min_length=1)
+    verdict: str = Field(min_length=1)
+    outro: str = Field(min_length=1)
+    english_phrases: List[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _check_level_rules(self):
+        from audio_tags import TAG_RE, unknown_tags
+        problems = []
+        items = self.items
+        if len(items) != LEVEL_ITEMS:
+            problems.append(f"items: {len(items)}, the format needs exactly {LEVEL_ITEMS}")
+        for name in LEVEL_TAGGED_FIELDS:
+            for tag in unknown_tags(getattr(self, name)):
+                problems.append(f"{name}: unknown audio tag {tag}")
+        for name in ("verdict", "title", "theme"):
+            if TAG_RE.search(getattr(self, name)):
+                problems.append(f"{name}: audio tags are only allowed in intro and outro")
+        for i, item in enumerate(items):
+            for name, value in item.model_dump().items():
+                if isinstance(value, str) and TAG_RE.search(value):
+                    problems.append(f"items[{i}].{name}: audio tags are only allowed in intro and outro")
+        for field in ("english", "spanish", "statement", "sentence"):
+            if not items or not hasattr(items[0], field):
+                continue
+            seen = [getattr(it, field).strip().lower() for it in items]
+            dup = sorted({v for v in seen if seen.count(v) > 1})
+            if dup:
+                problems.append(f"items: duplicate {field}: {dup}")
+        lows = self.verdict.lower()
+        for num, word in (("3", "tres"), ("7", "siete"), ("10", "diez")):
+            if num not in re.findall(r"\d+", lows) and word not in lows:
+                problems.append(f"verdict: does not name the tier boundary {word}")
+        if len(self.hashtags) != 5 or self.hashtags[:1] != [LEVEL_TYPE_TAGS[self.type]]:
+            problems.append(f"hashtags: exactly 5, the first {LEVEL_TYPE_TAGS[self.type]}")
+        levels = [CEFR_LEVELS.index(it.cefr) for it in items]
+        if levels != sorted(levels):
+            problems.append(f"cefr not non-decreasing: {[it.cefr for it in items]}")
+        if len(items) == LEVEL_ITEMS:
+            for (lo, hi, need, high), band in zip(LEVEL_CEFR_RULES[self.type],
+                                                  (levels[:3], levels[3:7], levels[7:])):
+                if not all(CEFR_LEVELS.index(lo) <= x <= CEFR_LEVELS.index(hi) for x in band):
+                    problems.append(f"a tier outside {lo}-{hi}: {[CEFR_LEVELS[x] for x in band]}")
+                if need and sum(x >= CEFR_LEVELS.index(high) for x in band) < need:
+                    problems.append(f"a tier needs at least {need} items at {high} or above")
+        for name in ("video_title", "video_description"):
+            value = getattr(self, name)
+            if value:
+                from emoji_font import emoji_problem
+                tail = value.rstrip().rstrip("\ufe0f")[-1:]
+                problem = emoji_problem(tail) if tail else "empty"
+                if problem:
+                    problems.append(f"{name}: must end with one Noto emoji ({problem})")
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
+
+
+class LevelTestScript(_LevelScript):
+    type: Literal["level_test"]
+    items: List[LevelTestItem]
+
+
+class TrueFalseLevelScript(_LevelScript):
+    type: Literal["true_false_level"]
+    items: List[TrueFalseLevelItem]
+
+    @model_validator(mode="after")
+    def _check_truths(self):
+        lo, hi = TRUE_FALSE_TRUE_RANGE
+        n = sum(it.truth for it in self.items)
+        if not lo <= n <= hi:
+            raise ValueError(f"{n} true statements; the format needs {lo} to {hi}")
+        return self
+
+
+class FillLevelScript(_LevelScript):
+    type: Literal["fill_level"]
+    items: List[FillLevelItem]
+
+
+class ChooseLevelScript(_LevelScript):
+    type: Literal["choose_level"]
+    items: List[ChooseLevelItem]
+
+    @model_validator(mode="after")
+    def _check_answer_spread(self):
+        lo, hi = CHOOSE_INDEX_RANGE
+        for index in (0, 1):
+            n = sum(it.answer == index for it in self.items)
+            if not lo <= n <= hi:
+                raise ValueError(f"option {index + 1} is right {n} times; the format needs {lo} to {hi}")
+        return self
+
+
+class PhrasesLevelItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    spanish: str = Field(min_length=1)
+    english: str = Field(min_length=1)
+
+
+#: phrases_level (STEP 62 §3): hashtags[0].
+PHRASES_LEVEL_TAG = "#CómoSeDice"
+
+
+class PhrasesLevelScript(ScriptBase, _TranslationsMixin):
+    """«¿Cómo se dice?» with sentences: the level notebook without tiers, CEFR or verdict,
+    8 to 10 rows like how_do_you_say."""
+    type: Literal["phrases_level"]
+    title: str = Field(min_length=1)
+    theme: str = Field(min_length=1)
+    intro: str = Field(min_length=1)
+    outro: str = Field(min_length=1)
+    english_phrases: List[str] = Field(default_factory=list)
+    items: List[PhrasesLevelItem] = Field(min_length=HDYS_MIN_ITEMS, max_length=HDYS_MAX_ITEMS)
+
+    @model_validator(mode="after")
+    def _check_phrase_rules(self):
+        from audio_tags import TAG_RE, unknown_tags
+        problems = []
+        for name in LEVEL_TAGGED_FIELDS:
+            for tag in unknown_tags(getattr(self, name)):
+                problems.append(f"{name}: unknown audio tag {tag}")
+        for name in ("title", "theme"):
+            if TAG_RE.search(getattr(self, name)):
+                problems.append(f"{name}: audio tags are only allowed in intro and outro")
+        for i, item in enumerate(self.items):
+            for name, value in item.model_dump().items():
+                if TAG_RE.search(value):
+                    problems.append(f"items[{i}].{name}: audio tags are only allowed in intro and outro")
+        for field in ("spanish", "english"):
+            seen = [getattr(it, field).strip().lower() for it in self.items]
+            dup = sorted({v for v in seen if seen.count(v) > 1})
+            if dup:
+                problems.append(f"items: duplicate {field}: {dup}")
+        if len(self.hashtags) != 5 or self.hashtags[:1] != [PHRASES_LEVEL_TAG]:
+            problems.append(f"hashtags: exactly 5, the first {PHRASES_LEVEL_TAG}")
+        for name in ("video_title", "video_description"):
+            value = getattr(self, name)
+            if value:
+                from emoji_font import emoji_problem
+                tail = value.rstrip().rstrip("\ufe0f")[-1:]
+                problem = emoji_problem(tail) if tail else "empty"
+                if problem:
+                    problems.append(f"{name}: must end with one Noto emoji ({problem})")
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
+
+
+class SayItLevelScript(_LevelScript):
+    type: Literal["say_it_level"]
+    items: List[SayItLevelItem]
+
+    @model_validator(mode="after")
+    def _check_tips(self):
+        missing = [i + 1 for i, it in enumerate(self.items) if i >= 7 and not it.tip]
+        if missing:
+            raise ValueError(f"items {missing}: the traps (8-10) need a tip")
+        return self
+
+
+# ─────────────────────────────────────────────────────────────────────────
 # Dispatch
 # ─────────────────────────────────────────────────────────────────────────
 
 AnyScript = Union[EducationalScript, QuizScript, TrueFalseScript,
-                  FillBlankScript, PronunciationScript, VocabularyScript]
+                  FillBlankScript, PronunciationScript, VocabularyScript,
+                  HowDoYouSayScript, LevelTestScript, SayItLevelScript,
+                  TrueFalseLevelScript, FillLevelScript, ChooseLevelScript,
+                  PhrasesLevelScript]
 
 SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalScript,
@@ -446,6 +805,13 @@ SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "fill_blank": FillBlankScript,
     "pronunciation": PronunciationScript,
     "vocabulary": VocabularyScript,
+    "how_do_you_say": HowDoYouSayScript,
+    "level_test": LevelTestScript,
+    "say_it_level": SayItLevelScript,
+    "true_false_level": TrueFalseLevelScript,
+    "fill_level": FillLevelScript,
+    "choose_level": ChooseLevelScript,
+    "phrases_level": PhrasesLevelScript,
 }
 
 
@@ -508,6 +874,42 @@ class VocabularyRenderData(_RenderExtras, VocabularyScript):
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 
 
+class HowDoYouSayRenderData(_RenderExtras, HowDoYouSayScript):
+    # Explicit, not inherited: pydantic merges model_config across bases
+    # and the Script side's extra="forbid" wins the merge otherwise.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class LevelTestRenderData(_RenderExtras, LevelTestScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class SayItLevelRenderData(_RenderExtras, SayItLevelScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class TrueFalseLevelRenderData(_RenderExtras, TrueFalseLevelScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class FillLevelRenderData(_RenderExtras, FillLevelScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class ChooseLevelRenderData(_RenderExtras, ChooseLevelScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
+class PhrasesLevelRenderData(_RenderExtras, PhrasesLevelScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
 RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalRenderData,
     "quiz": QuizRenderData,
@@ -515,6 +917,13 @@ RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "fill_blank": FillBlankRenderData,
     "pronunciation": PronunciationRenderData,
     "vocabulary": VocabularyRenderData,
+    "how_do_you_say": HowDoYouSayRenderData,
+    "level_test": LevelTestRenderData,
+    "say_it_level": SayItLevelRenderData,
+    "true_false_level": TrueFalseLevelRenderData,
+    "fill_level": FillLevelRenderData,
+    "choose_level": ChooseLevelRenderData,
+    "phrases_level": PhrasesLevelRenderData,
 }
 
 

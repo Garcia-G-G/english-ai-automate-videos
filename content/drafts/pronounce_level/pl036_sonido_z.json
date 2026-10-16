@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "El sonido Z en inglés: ¿lo haces bien? 🐝",
+  "video_description": "El sonido Z, que el español casi no tiene, en diez palabras. ⚡",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el sonido Z",
+  "intro": "[cheerful] Diez palabras con el zumbido de la Z. Dilas en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "zoo",
+      "respelling": "ZUU",
+      "ipa": "ˈzuː",
+      "trap": "Z que zumba, como una abeja"
+    },
+    {
+      "english": "is",
+      "respelling": "IZ",
+      "ipa": "ˈɪz",
+      "trap": "La S suena Z: IZ"
+    },
+    {
+      "english": "zero",
+      "respelling": "ZI-rou",
+      "ipa": "ˈzɪroʊ",
+      "trap": "Z que zumba y E = «i»"
+    },
+    {
+      "english": "easy",
+      "respelling": "II-zi",
+      "ipa": "ˈiːzi",
+      "trap": "La S suena Z: II-zi"
+    },
+    {
+      "english": "lazy",
+      "respelling": "LEI-zi",
+      "ipa": "ˈleɪzi",
+      "trap": "La Z zumba: LEI-zi"
+    },
+    {
+      "english": "visit",
+      "respelling": "VI-zit",
+      "ipa": "ˈvɪzɪt",
+      "trap": "La S suena Z: VI-zit"
+    },
+    {
+      "english": "music",
+      "respelling": "MIUU-zik",
+      "ipa": "ˈmjuːzɪk",
+      "trap": "La S suena Z: MIUU-zik"
+    },
+    {
+      "english": "dozen",
+      "respelling": "DA-zen",
+      "ipa": "ˈdʌzən",
+      "trap": "O suena «a» y Z que zumba"
+    },
+    {
+      "english": "business",
+      "respelling": "BIZ-nes",
+      "ipa": "ˈbɪznəs",
+      "trap": "Dos sílabas y la S suena Z"
+    },
+    {
+      "english": "possess",
+      "respelling": "pe-ZES",
+      "ipa": "pəˈzɛs",
+      "trap": "Las dos primeras S suenan Z"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio. Pronunciar bien las diez es de experto.",
+  "outro": "[happy] Escribe tu nivel en los comentarios: ¿básico, intermedio o experto?",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#SonidoZ",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl036",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

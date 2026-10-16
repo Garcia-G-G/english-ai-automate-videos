@@ -22,7 +22,7 @@ python src/script_generator.py
 ```
 ├── content/
 │   ├── topics/          # Base de datos de temas (JSON)
-│   └── prompts/         # Pasos
+│   └── prompts/         # Prompts para el generador de guiones
 ├── src/
 │   └── script_generator.py
 ├── assets/              # Fuentes, imágenes, audio
@@ -31,7 +31,7 @@ python src/script_generator.py
 
 ## Pipeline
 
-1. **Script** → Genera prompt con `script_generator.py`, pégalo en el asistente
+1. **Script** → Genera prompt con `script_generator.py`, pégalo en tu asistente de IA
 2. **Audio** → (próximo paso) Chatterbox TTS
 3. **Video** → (próximo paso) FFmpeg + texto animado
 4. **Upload** → (próximo paso) YouTube API, TikTok

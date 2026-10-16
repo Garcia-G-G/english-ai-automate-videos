@@ -551,6 +551,78 @@ def resolve_enabled(names) -> List[str]:
 
 # ============== BACKGROUND GENERATOR CLASS ==============
 
+# ── Ken Burns geometry ────────────────────────────────────────────
+#
+# One source for the crop rectangle, used by photo_kenburns and by
+# tools/kenburns_trace.py. They used to hold separate copies, so the tracer
+# measured the code as transcribed rather than the code as run.
+#
+# AMPLITUDE. The zoom summed three oscillators and reversed roughly 20 times
+# in 30s where the slow term alone reverses once; the pan summed three more
+# per axis and ran at 158 px/s on photo_earth, about 15% of the frame width
+# every second. Both are now a single slow term. See docs/KENBURNS_DIAGNOSIS.md
+# for the measurements these numbers come from.
+#
+# Amplitude could not be fixed on its own. Truncation error was constant per
+# frame, so slowing the camera made stepping a LARGER share of the movement:
+# photo_city_blur had the calmest true path (0.17 rev/s) and the most erratic
+# output (4.40 rev/s). Sub-pixel sampling had to land first, and it did — the
+# caller of this function samples with resize(box=...) on the floats returned
+# here rather than cropping to whole pixels.
+
+#: Fraction of the pannable margin the camera actually uses.
+KENBURNS_PAN_AMPLITUDE = 0.55
+#: Radians per second of the single pan term, before pan_speed scales it.
+KENBURNS_PAN_RATE = 0.10
+
+
+def kenburns_crop(t: float, photo_w: int, photo_h: int,
+                  out_w: int, out_h: int,
+                  zoom_range=(1.05, 1.20), pan_speed: float = 0.3,
+                  duration: float = 30.0):
+    """Float crop box (left, top, right, bottom) for the camera at time `t`.
+
+    Returns floats on purpose: the whole point of the sampling fix is that
+    nothing rounds this to whole source pixels.
+    """
+    zoom_min, zoom_max = zoom_range
+    cycle = duration if duration > 0 else 30.0
+
+    # One slow term. Reverses once per cycle, which is what a Ken Burns zoom
+    # is supposed to do.
+    zoom_t = (math.sin(t * math.pi * 2 / cycle - math.pi / 2) + 1) / 2
+    zoom = zoom_min + (zoom_max - zoom_min) * zoom_t
+
+    # One slow term per axis, a quarter-cycle apart so the path is an arc
+    # rather than a diagonal line.
+    rate = KENBURNS_PAN_RATE * pan_speed
+    pan_x = math.sin(t * rate) * KENBURNS_PAN_AMPLITUDE
+    pan_y = math.cos(t * rate + 1.1) * KENBURNS_PAN_AMPLITUDE
+
+    # Work in PHOTO space. The old code took out_w/zoom, i.e. 1080/zoom, from
+    # a source that can be narrower than 1080 — asking for a crop wider than
+    # the image. Start from the largest rectangle inside the photo that has
+    # the output's aspect ratio, then zoom into that.
+    base_w = min(float(photo_w), photo_h * out_w / out_h)
+    base_h = base_w * out_h / out_w
+    crop_w = base_w / zoom
+    crop_h = base_h / zoom
+
+    max_offset_x = max(0.0, (photo_w - crop_w) / 2)
+    max_offset_y = max(0.0, (photo_h - crop_h) / 2)
+
+    center_x = photo_w / 2 + pan_x * max_offset_x
+    center_y = photo_h / 2 + pan_y * max_offset_y
+
+    left = center_x - crop_w / 2
+    top = center_y - crop_h / 2
+    # Clamp the BOX, not the centre, so a clamped edge cannot shrink the crop
+    # and change the zoom for that frame.
+    left = min(max(0.0, left), max(0.0, photo_w - crop_w))
+    top = min(max(0.0, top), max(0.0, photo_h - crop_h))
+    return left, top, left + crop_w, top + crop_h
+
+
 class BackgroundGenerator:
     """
     Generates professional backgrounds for TikTok-style videos.
@@ -590,6 +662,10 @@ class BackgroundGenerator:
             Number of frames cached
         """
         self._cache_preset = preset_name
+        # Drop any static frame from a previous preset. gradient() checks
+        # get_static_frame() BEFORE has_cache(), so a stale static frame wins
+        # over the loop we are about to render.
+        self._static_frame = None
         self._cache_fps = fps
         self._cache_duration = loop_duration
         self._frame_cache = {}
@@ -642,7 +718,15 @@ class BackgroundGenerator:
         Render a static background once and cache it.
         Much faster than animated - same frame every time.
         """
-        if not hasattr(self, '_static_frame') or self._static_frame is None:
+        # The preset has to be part of the condition. This used to render
+        # only when _static_frame was None, so the SECOND video in a process
+        # got the FIRST video's background and every one after it did too —
+        # invisible to a batch, where each video is its own process, and
+        # guaranteed in the dashboard, which renders every video in one
+        # long-running Streamlit process. _cache_preset was already being
+        # stored; nothing consulted it.
+        if (getattr(self, '_static_frame', None) is None
+                or getattr(self, '_cache_preset', None) != preset_name):
             self._static_frame = self.render_from_preset(0, preset_name, duration=30.0)
             self._cache_preset = preset_name
         return self._static_frame
@@ -1427,6 +1511,19 @@ class BackgroundGenerator:
 
     # ============== PHOTO KEN BURNS ==============
 
+    def _load_image(self, path) -> Optional[Image.Image]:
+        """Load one specific image, cached by path."""
+        if not hasattr(self, "_image_cache"):
+            self._image_cache = {}
+        key = str(path)
+        if key not in self._image_cache:
+            try:
+                self._image_cache[key] = Image.open(key).convert("RGB")
+            except Exception as e:                          # noqa: BLE001
+                logger.error("Failed to load background image %s: %s", key, e)
+                self._image_cache[key] = None
+        return self._image_cache[key]
+
     def _load_photo(self, category: str) -> Optional[Image.Image]:
         """Load a random photo from assets/backgrounds/<category>/."""
         if not hasattr(self, '_photo_cache'):
@@ -1489,7 +1586,8 @@ class BackgroundGenerator:
                        zoom_range: tuple = (1.05, 1.20),
                        pan_speed: float = 0.3,
                        color_tint: str = None,
-                       duration: float = 30.0) -> np.ndarray:
+                       duration: float = 30.0,
+                       image_path: str = None) -> np.ndarray:
         """
         Real photograph background with Ken Burns effect (slow zoom + pan).
         Applies dark overlay and optional blur for text readability.
@@ -1507,58 +1605,32 @@ class BackgroundGenerator:
             color_tint: Optional hex color tint overlay
             duration: Total video duration
         """
-        photo = self._load_photo(category)
+        # An explicit image is the per-video path: the background was
+        # generated from this video's own topic and already cleared the
+        # contrast gate, so there is nothing to pick from a category.
+        photo = self._load_image(image_path) if image_path else self._load_photo(category)
 
         if photo is None:
             # Fallback to a dark gradient if no photo available
             logger.info("No photo for '%s', using fallback gradient", category)
             return self.animated_gradient(t, colors=["#0a0a14", "#1a1a3a", "#0a1a2a", "#0a0a14"])
 
-        # Ken Burns: calculate zoom and pan for current time
-        zoom_min, zoom_max = zoom_range
-        cycle = duration if duration > 0 else 30.0
+        # Geometry lives in kenburns_crop() so the renderer and the tracer
+        # cannot drift apart — the previous tracer kept its own copy of this
+        # arithmetic, which meant it could not measure a change to it.
+        left, top, right, bottom = kenburns_crop(
+            t, photo.width, photo.height, self.width, self.height,
+            zoom_range, pan_speed, duration)
 
-        # Dynamic zoom — three layered oscillations for organic, never-static feel
-        zoom_slow = (math.sin(t * math.pi * 2 / cycle) + 1) / 2       # full cycle
-        zoom_med = (math.sin(t * 1.2 + 0.7) + 1) / 2 * 0.35          # medium pulse
-        zoom_fast = (math.sin(t * 2.5 + 1.5) + 1) / 2 * 0.15         # fast shimmer
-        zoom_t = min(1.0, zoom_slow * 0.55 + zoom_med + zoom_fast)
-        zoom = zoom_min + (zoom_max - zoom_min) * zoom_t
-
-        # Dynamic pan — triple-layer lissajous with drift for cinematic motion
-        pan_x = (math.sin(t * 0.5 * pan_speed) * 0.45
-                 + math.sin(t * 0.22 * pan_speed + 1.2) * 0.35
-                 + math.sin(t * 0.9 * pan_speed + 3.0) * 0.15)
-        pan_y = (math.sin(t * 0.4 * pan_speed + 0.7) * 0.45
-                 + math.cos(t * 0.18 * pan_speed + 2.1) * 0.30
-                 + math.cos(t * 0.75 * pan_speed + 4.5) * 0.15)
-
-        # Calculate crop region
-        crop_w = int(self.width / zoom)
-        crop_h = int(self.height / zoom)
-
-        # Center point with pan offset
-        max_offset_x = (photo.width - crop_w) // 2
-        max_offset_y = (photo.height - crop_h) // 2
-
-        center_x = photo.width // 2 + int(pan_x * max_offset_x)
-        center_y = photo.height // 2 + int(pan_y * max_offset_y)
-
-        # Crop box
-        left = max(0, center_x - crop_w // 2)
-        top = max(0, center_y - crop_h // 2)
-        right = min(photo.width, left + crop_w)
-        bottom = min(photo.height, top + crop_h)
-
-        # Ensure minimum size
-        if right - left < crop_w:
-            left = max(0, right - crop_w)
-        if bottom - top < crop_h:
-            top = max(0, bottom - crop_h)
-
-        # Crop and resize to video dimensions
-        cropped = photo.crop((left, top, right, bottom))
-        frame = cropped.resize((self.width, self.height), Image.LANCZOS)
+        # SUB-PIXEL. resize(box=...) takes floats and samples between source
+        # pixels; crop() would round the box back to whole ones. The three
+        # int() truncations this replaces quantised the camera to whole SOURCE
+        # pixels, which put reversals into the rendered crop that the pan curve
+        # never made — 1.97/s against a true 0.33/s on photo_earth, and worst
+        # on the SLOWEST preset, because truncation error is constant per frame
+        # while the motion it corrupts is not.
+        frame = photo.resize((self.width, self.height), Image.LANCZOS,
+                             box=(left, top, right, bottom))
 
         # Apply blur if requested
         if blur_radius > 0:

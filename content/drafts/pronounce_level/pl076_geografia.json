@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "GEOGRAFÍA en inglés: 10 palabras para pronunciar 🌍",
+  "video_description": "Del norte a la Antártida: diez palabras de geografía con trampa. 🧭",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la geografía",
+  "intro": "[curious] Un viaje por la geografía en diez palabras. Di cada una antes que yo.",
+  "items": [
+    {
+      "english": "north",
+      "respelling": "NORTH",
+      "ipa": "ˈnɔrθ",
+      "trap": "TH final con la lengua entre los dientes"
+    },
+    {
+      "english": "south",
+      "respelling": "SAUTH",
+      "ipa": "ˈsaʊθ",
+      "trap": "OU suena «au»: SAUTH"
+    },
+    {
+      "english": "east",
+      "respelling": "IIST",
+      "ipa": "ˈiːst",
+      "trap": "Sin «e» extra al final: IIST"
+    },
+    {
+      "english": "coast",
+      "respelling": "KOUST",
+      "ipa": "ˈkoʊst",
+      "trap": "OA suena «ou»: KOUST"
+    },
+    {
+      "english": "continent",
+      "respelling": "KAN-ti-nent",
+      "ipa": "ˈkɑntɪnənt",
+      "trap": "Acento en KAN-: KAN-ti-nent"
+    },
+    {
+      "english": "peninsula",
+      "respelling": "pe-NIN-sa-la",
+      "ipa": "pəˈnɪnsələ",
+      "trap": "Acento en NIN: pe-NIN-sa-la"
+    },
+    {
+      "english": "latitude",
+      "respelling": "LA-ta-tuud",
+      "ipa": "ˈlætətuːd",
+      "trap": "Acento en LA-, no al final"
+    },
+    {
+      "english": "hemisphere",
+      "respelling": "JE-mas-fir",
+      "ipa": "ˈhɛməsfɪr",
+      "trap": "La H suena y acento en JE-"
+    },
+    {
+      "english": "archipelago",
+      "respelling": "ar-ka-PE-la-gou",
+      "ipa": "ɑrkəˈpɛləɡoʊ",
+      "trap": "CH suena «k» y acento en PE"
+    },
+    {
+      "english": "Antarctica",
+      "respelling": "an-TARK-ti-ka",
+      "ipa": "ænˈtɑrktɪkə",
+      "trap": "No olvides la C: an-TARK-ti-ka"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, eres básico; si llegaste a la siete, intermedio; con las diez, experto.",
+  "outro": "[happy] ¿Hasta dónde llegaste? Deja tu número en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Geografía",
+    "#InglésParaHispanohablantes",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl076",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

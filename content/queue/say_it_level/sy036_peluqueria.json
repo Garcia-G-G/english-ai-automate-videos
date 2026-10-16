@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "En la PELUQUERÍA en inglés: ¿te entenderían? 💇",
+  "video_description": "Puntas, flequillo y tintes: diez frases de peluquería en inglés, con trampas de las buenas. 💇",
+  "title": "Dilo en inglés",
+  "theme": "en la peluquería",
+  "intro": "[cheerful] Te sientas en la silla de la peluquería. Di cada frase en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Lo quiero corto.",
+      "english": "I want it short.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Cuánto cuesta un corte?",
+      "english": "How much is a haircut?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Solo las puntas.",
+      "english": "Just a trim, please.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Un poco más corto por los lados.",
+      "english": "A little shorter on the sides.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Quiero teñirme de rubia.",
+      "english": "I want to dye my hair blonde.",
+      "cefr": "B1",
+      "alt": "I'd like to go blonde."
+    },
+    {
+      "spanish": "Me encanta cómo ha quedado.",
+      "english": "I love how it turned out.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Me puede arreglar la barba?",
+      "english": "Can you trim my beard?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me corto el pelo cada mes.",
+      "english": "I get my hair cut every month.",
+      "cefr": "B1",
+      "alt": "I get a haircut every month.",
+      "tip": "Si te lo corta otro: get + my hair + cut"
+    },
+    {
+      "spanish": "Tengo el pelo graso.",
+      "english": "I have oily hair.",
+      "cefr": "B2",
+      "alt": "My hair is oily.",
+      "tip": "Hair es incontable y aquí va sin «the»"
+    },
+    {
+      "spanish": "Me han dejado el flequillo muy corto.",
+      "english": "They cut my bangs too short.",
+      "cefr": "B2",
+      "alt": "They cut my fringe too short.",
+      "tip": "«Flequillo» es bangs (EE. UU.) o fringe (R. U.)"
+    }
+  ],
+  "verdict": "Con tres eres básico, con siete intermedio y con diez, experto con un corte perfecto.",
+  "outro": "[excited] ¿Cómo te dejó el corte? Cuéntame hasta qué número llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy036",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I want it short.": "Lo quiero corto.",
+    "How much is a haircut?": "¿Cuánto cuesta un corte?",
+    "Just a trim, please.": "Solo las puntas.",
+    "A little shorter on the sides.": "Un poco más corto por los lados.",
+    "I want to dye my hair blonde.": "Quiero teñirme de rubia.",
+    "I love how it turned out.": "Me encanta cómo ha quedado.",
+    "Can you trim my beard?": "¿Me puede arreglar la barba?",
+    "I get my hair cut every month.": "Me corto el pelo cada mes.",
+    "I have oily hair.": "Tengo el pelo graso.",
+    "They cut my bangs too short.": "Me han dejado el flequillo muy corto."
+  },
+  "english_phrases": [
+    "I want it short.",
+    "How much is a haircut?",
+    "Just a trim, please.",
+    "A little shorter on the sides.",
+    "I want to dye my hair blonde.",
+    "I love how it turned out.",
+    "Can you trim my beard?",
+    "I get my hair cut every month.",
+    "I have oily hair.",
+    "They cut my bangs too short.",
+    "I'd like to go blonde.",
+    "I get a haircut every month.",
+    "My hair is oily.",
+    "They cut my fringe too short."
+  ],
+  "full_script": "[cheerful] Te sientas en la silla de la peluquería. Di cada frase en inglés antes que yo. I want it short. How much is a haircut? Just a trim, please. Ahora, nivel intermedio. A little shorter on the sides. I want to dye my hair blonde. I love how it turned out. Can you trim my beard? Y ahora, nivel experto. I get my hair cut every month. I have oily hair. They cut my bangs too short. Con tres eres básico, con siete intermedio y con diez, experto con un corte perfecto. [excited] ¿Cómo te dejó el corte? Cuéntame hasta qué número llegaste."
+}

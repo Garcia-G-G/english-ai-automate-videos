@@ -1,0 +1,107 @@
+{
+  "type": "say_it_level",
+  "video_title": "Dilo en inglés: en una TIENDA DE ELECTRÓNICA 🔌",
+  "video_description": "¿Sabrías comprar un portátil o unos auriculares en inglés? Pruébalo aquí. 🎧",
+  "title": "Dilo en inglés",
+  "theme": "en una tienda de electrónica",
+  "intro": "[curious] Estás en una tienda de electrónica. Lee la frase y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Cuánto cuesta este portátil?",
+      "english": "How much is this laptop?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Busco unos auriculares.",
+      "english": "I'm looking for headphones.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Lo tienen en negro?",
+      "english": "Do you have it in black?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Viene con cargador?",
+      "english": "Does it come with a charger?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Cuánto dura la batería?",
+      "english": "How long does the battery last?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Puedo probarlo antes de comprarlo?",
+      "english": "Can I try it before I buy it?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Tiene garantía de dos años?",
+      "english": "Does it have a two-year warranty?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Está en oferta.",
+      "english": "It's on sale.",
+      "cefr": "B2",
+      "tip": "«En oferta» es on sale, no «in offer»"
+    },
+    {
+      "spanish": "¿Me lo envuelve para regalo?",
+      "english": "Could you gift-wrap it?",
+      "cefr": "B2",
+      "alt": "Can you wrap it as a gift?",
+      "tip": "«Envolver para regalo» es un solo verbo: gift-wrap"
+    },
+    {
+      "spanish": "Mi teléfono se queda sin batería rápido.",
+      "english": "My phone dies really fast.",
+      "cefr": "C1",
+      "alt": "My battery runs out really fast.",
+      "tip": "«Quedarse sin batería» es die o run out, no «stay without»"
+    }
+  ],
+  "verdict": "Hasta la tres, básico. Hasta la siete, intermedio. Las diez sin fallar: experto en tecnología.",
+  "outro": "[cheerful] ¿Cuántas te salieron? Escribe tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Tecnología"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy052",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "How much is this laptop?": "¿Cuánto cuesta este portátil?",
+    "I'm looking for headphones.": "Busco unos auriculares.",
+    "Do you have it in black?": "¿Lo tienen en negro?",
+    "Does it come with a charger?": "¿Viene con cargador?",
+    "How long does the battery last?": "¿Cuánto dura la batería?",
+    "Can I try it before I buy it?": "¿Puedo probarlo antes de comprarlo?",
+    "Does it have a two-year warranty?": "¿Tiene garantía de dos años?",
+    "It's on sale.": "Está en oferta.",
+    "Could you gift-wrap it?": "¿Me lo envuelve para regalo?",
+    "My phone dies really fast.": "Mi teléfono se queda sin batería rápido."
+  },
+  "english_phrases": [
+    "How much is this laptop?",
+    "I'm looking for headphones.",
+    "Do you have it in black?",
+    "Does it come with a charger?",
+    "How long does the battery last?",
+    "Can I try it before I buy it?",
+    "Does it have a two-year warranty?",
+    "It's on sale.",
+    "Could you gift-wrap it?",
+    "My phone dies really fast.",
+    "Can you wrap it as a gift?",
+    "My battery runs out really fast."
+  ],
+  "full_script": "[curious] Estás en una tienda de electrónica. Lee la frase y dila en inglés antes que yo. How much is this laptop? I'm looking for headphones. Do you have it in black? Ahora, nivel intermedio. Does it come with a charger? How long does the battery last? Can I try it before I buy it? Does it have a two-year warranty? Y ahora, nivel experto. It's on sale. Could you gift-wrap it? My phone dies really fast. Hasta la tres, básico. Hasta la siete, intermedio. Las diez sin fallar: experto en tecnología. [cheerful] ¿Cuántas te salieron? Escribe tu número en los comentarios."
+}

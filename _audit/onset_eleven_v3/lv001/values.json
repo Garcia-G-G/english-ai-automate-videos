@@ -1,0 +1,275 @@
+[
+ {
+  "seg": "prompt_1",
+  "text": "spoon.",
+  "take": 0,
+  "start_db": -11.3,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_1",
+  "text": "spoon.",
+  "take": 1,
+  "start_db": -20.5,
+  "fragment": [
+   70,
+   64.7
+  ],
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_1",
+  "text": "spoon.",
+  "take": 2,
+  "start_db": -20.9,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_2",
+  "text": "knife.",
+  "take": 0,
+  "start_db": -19.1,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_2",
+  "text": "knife.",
+  "take": 1,
+  "start_db": -4.1,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_2",
+  "text": "knife.",
+  "take": 2,
+  "start_db": -1.2,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_3",
+  "text": "fridge.",
+  "take": 0,
+  "start_db": -23.5,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_3",
+  "text": "fridge.",
+  "take": 1,
+  "start_db": -40.0,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_3",
+  "text": "fridge.",
+  "take": 2,
+  "start_db": -22.1,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_4",
+  "text": "oven.",
+  "take": 0,
+  "start_db": -71.0,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_4",
+  "text": "oven.",
+  "take": 1,
+  "start_db": -0.4,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_4",
+  "text": "oven.",
+  "take": 2,
+  "start_db": -75.1,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_5",
+  "text": "frying pan.",
+  "take": 0,
+  "start_db": -20.9,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_5",
+  "text": "frying pan.",
+  "take": 1,
+  "start_db": -19.8,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_5",
+  "text": "frying pan.",
+  "take": 2,
+  "start_db": -29.5,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_6",
+  "text": "sink.",
+  "take": 0,
+  "start_db": -9.6,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_6",
+  "text": "sink.",
+  "take": 1,
+  "start_db": -14.9,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_6",
+  "text": "sink.",
+  "take": 2,
+  "start_db": -17.4,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_7",
+  "text": "stove.",
+  "take": 0,
+  "start_db": -9.0,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_7",
+  "text": "stove.",
+  "take": 1,
+  "start_db": -10.2,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_7",
+  "text": "stove.",
+  "take": 2,
+  "start_db": -13.2,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_8",
+  "text": "cutting board.",
+  "take": 0,
+  "start_db": -44.8,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_8",
+  "text": "cutting board.",
+  "take": 1,
+  "start_db": -76.2,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_8",
+  "text": "cutting board.",
+  "take": 2,
+  "start_db": -70.9,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_9",
+  "text": "colander.",
+  "take": 0,
+  "start_db": -77.9,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_9",
+  "text": "colander.",
+  "take": 1,
+  "start_db": -58.5,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_9",
+  "text": "colander.",
+  "take": 2,
+  "start_db": -38.1,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_10",
+  "text": "ladle.",
+  "take": 0,
+  "start_db": -13.8,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ },
+ {
+  "seg": "prompt_10",
+  "text": "ladle.",
+  "take": 1,
+  "start_db": -34.9,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": false
+ },
+ {
+  "seg": "prompt_10",
+  "text": "ladle.",
+  "take": 2,
+  "start_db": -12.8,
+  "fragment": null,
+  "doubled_onset": null,
+  "fails_only_start": true
+ }
+]

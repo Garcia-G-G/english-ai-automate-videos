@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Sabes decir esto en inglés? De CAMPING en la montaña ⛺",
+  "video_description": "Diez frases para sobrevivir a una acampada en inglés, de fácil a experto. ⛺",
+  "title": "Dilo en inglés",
+  "theme": "en la montaña y de camping",
+  "intro": "[cheerful] Nos vamos de acampada. Lee cada frase y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Hace frío esta noche.",
+      "english": "It's cold tonight.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Tienes una linterna?",
+      "english": "Do you have a flashlight?",
+      "cefr": "A1",
+      "alt": "Do you have a torch?"
+    },
+    {
+      "spanish": "Me encanta dormir al aire libre.",
+      "english": "I love sleeping outdoors.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Has traído el saco de dormir?",
+      "english": "Did you bring the sleeping bag?",
+      "cefr": "A2",
+      "alt": "Have you got the sleeping bag?"
+    },
+    {
+      "spanish": "Vamos a montar la tienda aquí.",
+      "english": "Let's set up the tent here.",
+      "cefr": "B1",
+      "alt": "Let's pitch the tent here."
+    },
+    {
+      "spanish": "Si llueve, nos quedaremos en la cabaña.",
+      "english": "If it rains, we'll stay in the cabin.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Volvamos antes de que oscurezca.",
+      "english": "Let's head back before dark.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Creo que nos hemos perdido.",
+      "english": "I think we're lost.",
+      "cefr": "B2",
+      "alt": "I think we got lost.",
+      "tip": "«Nos hemos perdido» es we're lost, no «we have lost us»"
+    },
+    {
+      "spanish": "Me duelen los pies.",
+      "english": "My feet hurt.",
+      "cefr": "B2",
+      "tip": "Con «doler» el sujeto es la parte del cuerpo: My feet hurt"
+    },
+    {
+      "spanish": "Aquí no hay cobertura.",
+      "english": "There's no signal here.",
+      "cefr": "C1",
+      "alt": "I don't have any service here.",
+      "tip": "«Cobertura» del móvil es signal o service, no «coverage»"
+    }
+  ],
+  "verdict": "¿Llegaste a la tres? Nivel básico. ¿A la siete? Intermedio. Y si sacaste las diez, experto de montaña.",
+  "outro": "[happy] ¿Hasta qué frase llegaste sin perderte? Dímelo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Camping"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy051",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "It's cold tonight.": "Hace frío esta noche.",
+    "Do you have a flashlight?": "¿Tienes una linterna?",
+    "I love sleeping outdoors.": "Me encanta dormir al aire libre.",
+    "Did you bring the sleeping bag?": "¿Has traído el saco de dormir?",
+    "Let's set up the tent here.": "Vamos a montar la tienda aquí.",
+    "If it rains, we'll stay in the cabin.": "Si llueve, nos quedaremos en la cabaña.",
+    "Let's head back before dark.": "Volvamos antes de que oscurezca.",
+    "I think we're lost.": "Creo que nos hemos perdido.",
+    "My feet hurt.": "Me duelen los pies.",
+    "There's no signal here.": "Aquí no hay cobertura."
+  },
+  "english_phrases": [
+    "It's cold tonight.",
+    "Do you have a flashlight?",
+    "I love sleeping outdoors.",
+    "Did you bring the sleeping bag?",
+    "Let's set up the tent here.",
+    "If it rains, we'll stay in the cabin.",
+    "Let's head back before dark.",
+    "I think we're lost.",
+    "My feet hurt.",
+    "There's no signal here.",
+    "Do you have a torch?",
+    "Have you got the sleeping bag?",
+    "Let's pitch the tent here.",
+    "I think we got lost.",
+    "I don't have any service here."
+  ],
+  "full_script": "[cheerful] Nos vamos de acampada. Lee cada frase y dila en inglés antes que yo. It's cold tonight. Do you have a flashlight? I love sleeping outdoors. Ahora, nivel intermedio. Did you bring the sleeping bag? Let's set up the tent here. If it rains, we'll stay in the cabin. Let's head back before dark. Y ahora, nivel experto. I think we're lost. My feet hurt. There's no signal here. ¿Llegaste a la tres? Nivel básico. ¿A la siete? Intermedio. Y si sacaste las diez, experto de montaña. [happy] ¿Hasta qué frase llegaste sin perderte? Dímelo en los comentarios."
+}

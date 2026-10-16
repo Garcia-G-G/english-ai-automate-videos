@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la NATURALEZA en inglés? 🏞️",
+  "video_description": "Diez lugares de la naturaleza, de la montaña a la cueva. ⛰️",
+  "title": "¿Cómo se dice…?",
+  "theme": "la naturaleza",
+  "level": "A1",
+  "intro": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo.",
+  "items": [
+    {
+      "emoji": "⛰️",
+      "spanish": "Montaña",
+      "english": "mountain"
+    },
+    {
+      "emoji": "🏞️",
+      "spanish": "Río",
+      "english": "river"
+    },
+    {
+      "emoji": "🛶",
+      "spanish": "Lago",
+      "english": "lake"
+    },
+    {
+      "emoji": "🌲",
+      "spanish": "Bosque",
+      "english": "forest"
+    },
+    {
+      "emoji": "🏜️",
+      "spanish": "Desierto",
+      "english": "desert"
+    },
+    {
+      "emoji": "🕳️",
+      "spanish": "Cueva",
+      "english": "cave"
+    },
+    {
+      "emoji": "🌋",
+      "spanish": "Volcán",
+      "english": "volcano"
+    },
+    {
+      "emoji": "💧",
+      "spanish": "Cascada",
+      "english": "waterfall"
+    },
+    {
+      "emoji": "🪨",
+      "spanish": "Piedra",
+      "english": "rock"
+    },
+    {
+      "emoji": "🌄",
+      "spanish": "Valle",
+      "english": "valley"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: mountain, river, lake, forest, desert, cave, volcano, waterfall, rock, valley.",
+  "outro": "[curious] ¿Cuál no sabías? Cuéntamelo abajo.",
+  "translations": {
+    "mountain": "Montaña",
+    "river": "Río",
+    "lake": "Lago",
+    "forest": "Bosque",
+    "desert": "Desierto",
+    "cave": "Cueva",
+    "volcano": "Volcán",
+    "waterfall": "Cascada",
+    "rock": "Piedra",
+    "valley": "Valle"
+  },
+  "english_phrases": [
+    "mountain",
+    "river",
+    "lake",
+    "forest",
+    "desert",
+    "cave",
+    "volcano",
+    "waterfall",
+    "rock",
+    "valley"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv041",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo. Montaña... mountain. mountain. Río... river. river. Lago... lake. lake. Bosque... forest. forest. Desierto... desert. desert. Cueva... cave. cave. Volcán... volcano. volcano. Cascada... waterfall. waterfall. Piedra... rock. rock. Valle... valley. valley. Otra vez, todas seguidas: mountain, river, lake, forest, desert, cave, volcano, waterfall, rock, valley. [curious] ¿Cuál no sabías? Cuéntamelo abajo."
+}

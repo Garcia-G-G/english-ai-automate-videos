@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Test de inglés: las partes del CUERPO, de fácil a experto 💪",
+  "video_description": "Vocabulario del cuerpo en inglés de menos a más: ¿hasta dónde llegas? 💪",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el cuerpo",
+  "intro": "[excited] Vamos con diez palabras del cuerpo. Dime su significado en español antes de que aparezca.",
+  "items": [
+    {
+      "english": "hand",
+      "spanish": "Mano",
+      "cefr": "A1"
+    },
+    {
+      "english": "head",
+      "spanish": "Cabeza",
+      "cefr": "A1"
+    },
+    {
+      "english": "leg",
+      "spanish": "Pierna",
+      "cefr": "A2"
+    },
+    {
+      "english": "shoulder",
+      "spanish": "Hombro",
+      "cefr": "A2"
+    },
+    {
+      "english": "knee",
+      "spanish": "Rodilla",
+      "cefr": "B1"
+    },
+    {
+      "english": "elbow",
+      "spanish": "Codo",
+      "cefr": "B1"
+    },
+    {
+      "english": "wrist",
+      "spanish": "Muñeca",
+      "cefr": "B2"
+    },
+    {
+      "english": "ankle",
+      "spanish": "Tobillo",
+      "cefr": "B2"
+    },
+    {
+      "english": "thigh",
+      "spanish": "Muslo",
+      "cefr": "C1"
+    },
+    {
+      "english": "collarbone",
+      "spanish": "Clavícula",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te paraste en la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, eres experto.",
+  "outro": "[happy] Escribe en los comentarios hasta qué número llegaste.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#TestDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv003",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "hand": "Mano",
+    "head": "Cabeza",
+    "leg": "Pierna",
+    "shoulder": "Hombro",
+    "knee": "Rodilla",
+    "elbow": "Codo",
+    "wrist": "Muñeca",
+    "ankle": "Tobillo",
+    "thigh": "Muslo",
+    "collarbone": "Clavícula"
+  },
+  "english_phrases": [
+    "hand",
+    "head",
+    "leg",
+    "shoulder",
+    "knee",
+    "elbow",
+    "wrist",
+    "ankle",
+    "thigh",
+    "collarbone"
+  ],
+  "full_script": "[excited] Vamos con diez palabras del cuerpo. Dime su significado en español antes de que aparezca. hand Mano head Cabeza leg Pierna Ahora, nivel intermedio. shoulder Hombro knee Rodilla elbow Codo wrist Muñeca Y ahora, nivel experto. ankle Tobillo thigh Muslo collarbone Clavícula Si te paraste en la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, eres experto. [happy] Escribe en los comentarios hasta qué número llegaste."
+}

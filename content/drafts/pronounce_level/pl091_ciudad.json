@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La CIUDAD en inglés: ¿sabes pronunciar estas palabras? 🏙️",
+  "video_description": "Bus, sidewalk, pedestrian: vocabulario de ciudad, de fácil a experto. 🚦",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la ciudad",
+  "intro": "[curious] Un paseo por la ciudad en diez palabras. Di cada una antes de que yo la diga.",
+  "items": [
+    {
+      "english": "bus",
+      "respelling": "BAS",
+      "ipa": "ˈbʌs",
+      "trap": "La U suena «a»: BAS"
+    },
+    {
+      "english": "city",
+      "respelling": "SI-ti",
+      "ipa": "ˈsɪti",
+      "trap": "La C suena «s» y la Y, «i»"
+    },
+    {
+      "english": "town",
+      "respelling": "TAUN",
+      "ipa": "ˈtaʊn",
+      "trap": "OW suena «au»: TAUN"
+    },
+    {
+      "english": "building",
+      "respelling": "BIL-ding",
+      "ipa": "ˈbɪldɪŋ",
+      "trap": "La U no suena: BIL-ding"
+    },
+    {
+      "english": "avenue",
+      "respelling": "A-ve-nuu",
+      "ipa": "ˈævənuː",
+      "trap": "Acento en A-: A-ve-nuu"
+    },
+    {
+      "english": "sidewalk",
+      "respelling": "SAID-uak",
+      "ipa": "ˈsaɪdwɑk",
+      "trap": "La L no suena: SAID-uak"
+    },
+    {
+      "english": "skyscraper",
+      "respelling": "SKAI-skrei-per",
+      "ipa": "ˈskaɪskreɪpɚ",
+      "trap": "Dos veces «sk», sin «e»"
+    },
+    {
+      "english": "cathedral",
+      "respelling": "ka-THII-dral",
+      "ipa": "kəˈθiːdrəl",
+      "trap": "TH sorda y acento en THII"
+    },
+    {
+      "english": "pedestrian",
+      "respelling": "pe-DES-tri-an",
+      "ipa": "pəˈdɛstriən",
+      "trap": "Acento en DES: pe-DES-tri-an"
+    },
+    {
+      "english": "suburbs",
+      "respelling": "SA-berbz",
+      "ipa": "ˈsʌbɚbz",
+      "trap": "Acento en SA- y final «berbz»"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres básico. A la siete, intermedio. Y si cruzaste hasta la diez, experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésDeViaje",
+    "#VocabularioEnInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl091",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

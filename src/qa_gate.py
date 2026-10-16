@@ -62,8 +62,17 @@ QA_DIR = ROOT / "output" / "qa"
 #: Model routing, from pipeline.py:157. Recorded per artifact because the TTS
 #: JSONs do NOT store which TTS model produced them — `_meta.model` is the
 #: SCRIPT generator (gpt-4o-mini). Only 3 .ttsplan.json files carry model_id.
-TURBO_TYPES = frozenset({"educational", "pronunciation"})
-V3_TYPES = frozenset({"quiz", "true_false", "fill_blank", "vocabulary"})
+#:
+#: These now live in timing_contract, because studio/media_validation.py had
+#: re-implemented the same rule stricter and typeless and blocked production
+#: for every video type. Re-exported here so every existing importer of
+#: qa_gate.TURBO_TYPES keeps working.
+from timing_contract import (  # noqa: E402  (re-export, see above)
+    REQUIRES_SEGMENT_TIMES,
+    REQUIRES_WORD_TIMELINE,
+    TURBO_TYPES,
+    V3_TYPES,
+)
 
 #: When True, `verdict()` returns REJECT for a failing artifact and the
 #: pipeline writes it to output/rejected/ with its report. The gate NEVER
@@ -78,8 +87,9 @@ BLOCKING = True
 #:   quiz / true_false / fill_blank / vocabulary -> segment_times
 #:   educational / pronunciation                 -> word timeline
 #:   neither                                     -> REJECT
-REQUIRES_SEGMENT_TIMES = V3_TYPES
-REQUIRES_WORD_TIMELINE = TURBO_TYPES
+#:
+#: Defined in timing_contract and imported above. studio.media_validation
+#: enforces the SAME objects at the production boundary.
 
 #: Flags that REJECT when BLOCKING. Everything else is reported and shipped.
 #:
@@ -179,7 +189,9 @@ SPAN_MAX_COVERAGE = 1.02
 #: segments, so any "detected regions == declared segments" count can never
 #: reconcile. These are checked against the declared SILENCE MAP — they must
 #: contain no speech — and excluded from boundary drift.
-SILENT_SEGMENT_PREFIXES = ("countdown_",)
+#: how_do_you_say's think_<i> is the same kind of span: the viewer's turn,
+#: declared with the text '[silence]'.
+SILENT_SEGMENT_PREFIXES = ("countdown_", "think_")
 
 #: A countdown is only SILENT when its segment text is the bracketed
 #: placeholder the silent path writes: '[3]', '[2]', '[1]'.
@@ -195,7 +207,7 @@ SILENT_SEGMENT_PREFIXES = ("countdown_",)
 #: generator produced it. A segment whose text is 'Tres.' is supposed to
 #: contain the word "tres", and flagging it for containing speech is the gate
 #: being wrong, not the audio.
-_SILENT_TEXT = re.compile(r"^\s*\[\s*\d+\s*\]\s*$")
+_SILENT_TEXT = re.compile(r"^\s*\[\s*(\d+|silence)\s*\]\s*$")
 
 _VOL_RE = re.compile(r"\[Parsed_volumedetect.*?\]\s*(\w+):\s*(-?[\d.]+|-inf)")
 _SIL_RE = re.compile(r"silence_(start|end):\s*(-?[\d.]+)")
@@ -283,6 +295,12 @@ def _nearest_edge(edges: List[float], x: float) -> Optional[float]:
     return min(edges, key=lambda e: abs(e - x)) if edges else None
 
 
+def _bare_id(seg_id: str) -> str:
+    """Segment id without its item prefix; see segment_ids."""
+    from segment_ids import bare
+    return bare(seg_id)
+
+
 def _silent_segment_ids(data: Dict) -> set:
     """Segment ids the artifact itself declares as silence.
 
@@ -294,7 +312,11 @@ def _silent_segment_ids(data: Dict) -> set:
     by_id = {s.get("id"): s.get("text") for s in segs if isinstance(s, dict)}
     out = set()
     for name in (data.get("segment_times") or {}):
-        if not name.startswith(SILENT_SEGMENT_PREFIXES):
+        # THE BARE NAME. A multi-item quiz writes `i2_countdown_3`, which
+        # does not start with "countdown_" -- so items 2 and 3 had their
+        # deliberately silent countdowns counted as unexplained dead air and
+        # the gate rejected a correct artifact for 14.525s of it.
+        if not _bare_id(name).startswith(SILENT_SEGMENT_PREFIXES):
             continue
         text = by_id.get(name)
         if text is None:
@@ -611,15 +633,39 @@ def segment_count(data: Dict, mp3: str) -> Dict:
 
 def _declared_silence_envelope(data: Dict) -> List[Tuple[float, float]]:
     """Spans where silence is intended: declared-silent segments, plus the
-    gaps between consecutive declared segments."""
+    gaps between consecutive declared segments.
+
+    READS BOTH SHAPES, and it has to. This looked only at `segment_times`,
+    the dict the segmented generators write. The bilingual path — the one
+    educational and pronunciation take — writes a `segments` LIST and no
+    segment_times at all, so for those two types the envelope was always
+    empty and EVERY gap over DEAD_AIR_S counted as unexplained.
+
+    That went unnoticed while their narration had no deliberate pauses in
+    it. Adding "repeat after me" to pronunciation put real 0.9 s gaps in
+    the audio, and the gate rejected a correct artifact for dead air it had
+    no way to know was intended. The gate was right to ask; the artifact
+    had simply never declared anything.
+
+    The rule itself is unchanged — gaps between consecutive declared
+    segments are intended — and is now applied to whichever declaration the
+    artifact actually carries.
+    """
     st = data.get("segment_times") or {}
     silent_ids = _silent_segment_ids(data)
     spans = []
     for k, v in st.items():
         if isinstance(v, dict) and "start" in v and "end" in v and k in silent_ids:
             spans.append((float(v["start"]), float(v["end"])))
-    ordered = sorted((float(v["start"]), float(v["end"])) for v in st.values()
-                     if isinstance(v, dict) and "start" in v and "end" in v)
+
+    bounds = [(float(v["start"]), float(v["end"])) for v in st.values()
+              if isinstance(v, dict) and "start" in v and "end" in v]
+    if not bounds:
+        bounds = [(float(seg["start"]), float(seg["end"]))
+                  for seg in (data.get("segments") or [])
+                  if isinstance(seg, dict) and "start" in seg and "end" in seg]
+
+    ordered = sorted(bounds)
     for (s0, e0), (s1, _e1) in zip(ordered, ordered[1:]):
         if s1 > e0:
             spans.append((e0, s1))

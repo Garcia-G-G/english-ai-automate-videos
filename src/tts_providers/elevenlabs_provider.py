@@ -25,6 +25,8 @@ class ElevenLabsTTSProvider(TTSProvider):
             generate_fill_blank_audio_segmented,
             generate_true_false_audio_segmented,
             generate_vocabulary_audio_segmented,
+            generate_how_do_you_say_audio_segmented,
+            generate_level_audio_segmented,
             generate_segment_audio,
         )
         from tts_common import extract_english_words_from_script
@@ -46,6 +48,14 @@ class ElevenLabsTTSProvider(TTSProvider):
             )
         elif video_type == 'vocabulary':
             result = generate_vocabulary_audio_segmented(
+                script=script_data, output_path=output_path, voice_id=voice_id,
+            )
+        elif video_type == 'how_do_you_say':
+            result = generate_how_do_you_say_audio_segmented(
+                script=script_data, output_path=output_path, voice_id=voice_id,
+            )
+        elif video_type in ('level_test', 'say_it_level', 'true_false_level'):
+            result = generate_level_audio_segmented(
                 script=script_data, output_path=output_path, voice_id=voice_id,
             )
         else:
@@ -95,7 +105,11 @@ class ElevenLabsTTSProvider(TTSProvider):
                     original_text=text,
                     explicit_english=english_phrases,
                 )
-                whisper_words = whisper_result.get('words', [])
+                # Same absorption as the bilingual path: Whisper also
+                # emits standalone punctuation tokens.
+                from tts_common import merge_punctuation_tokens
+                whisper_words = merge_punctuation_tokens(
+                    whisper_result.get('words', []), boundary_key=None)
                 whisper_duration = whisper_result.get('duration', duration)
                 if whisper_words:
                     duration = whisper_duration

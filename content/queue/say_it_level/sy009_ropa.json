@@ -1,0 +1,114 @@
+{
+  "type": "say_it_level",
+  "video_title": "Comprar ROPA en inglés: ¿llegas a la 10? 👕",
+  "video_description": "Tallas, probadores y rebajas: diez frases para ir de compras en inglés. 👕",
+  "title": "Dilo en inglés",
+  "theme": "comprar ropa",
+  "intro": "[excited] Nos vamos de tiendas. Te digo la frase y tú la dices en inglés. ¡Sin mirar!",
+  "items": [
+    {
+      "spanish": "¿Cuánto cuesta esta camisa?",
+      "english": "How much is this shirt?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Lo tienen en azul?",
+      "english": "Do you have it in blue?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Solo estoy mirando, gracias.",
+      "english": "I'm just looking, thanks.",
+      "cefr": "A2",
+      "alt": "I'm just browsing, thanks."
+    },
+    {
+      "spanish": "¿Dónde están los probadores?",
+      "english": "Where are the fitting rooms?",
+      "cefr": "A2",
+      "alt": "Where are the changing rooms?"
+    },
+    {
+      "spanish": "¿Me lo puedo probar?",
+      "english": "Can I try it on?",
+      "cefr": "B1",
+      "tip": "«Probarse» ropa es try on"
+    },
+    {
+      "spanish": "¿Tiene una talla más grande?",
+      "english": "Do you have a bigger size?",
+      "cefr": "B1",
+      "alt": "Do you have this in a larger size?"
+    },
+    {
+      "spanish": "Me lo llevo.",
+      "english": "I'll take it.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me queda pequeño.",
+      "english": "It's too small for me.",
+      "cefr": "B1",
+      "alt": "It's too small.",
+      "tip": "Aquí «quedar» no es stay: It's too small"
+    },
+    {
+      "spanish": "Te queda muy bien.",
+      "english": "It looks great on you.",
+      "cefr": "B2",
+      "alt": "It really suits you.",
+      "tip": "«Quedar bien» se dice look good on o suit"
+    },
+    {
+      "spanish": "¿Está rebajado?",
+      "english": "Is this on sale?",
+      "cefr": "B2",
+      "tip": "On sale es rebajado; for sale es «en venta»"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, nivel básico. Si llegaste a la siete, intermedio. ¿Las diez? Experto con estilo.",
+  "outro": "[cheerful] ¿Cuántas acertaste? Pon tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésDeCompras",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy009",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "How much is this shirt?": "¿Cuánto cuesta esta camisa?",
+    "Do you have it in blue?": "¿Lo tienen en azul?",
+    "I'm just looking, thanks.": "Solo estoy mirando, gracias.",
+    "Where are the fitting rooms?": "¿Dónde están los probadores?",
+    "Can I try it on?": "¿Me lo puedo probar?",
+    "Do you have a bigger size?": "¿Tiene una talla más grande?",
+    "I'll take it.": "Me lo llevo.",
+    "It's too small for me.": "Me queda pequeño.",
+    "It looks great on you.": "Te queda muy bien.",
+    "Is this on sale?": "¿Está rebajado?"
+  },
+  "english_phrases": [
+    "How much is this shirt?",
+    "Do you have it in blue?",
+    "I'm just looking, thanks.",
+    "Where are the fitting rooms?",
+    "Can I try it on?",
+    "Do you have a bigger size?",
+    "I'll take it.",
+    "It's too small for me.",
+    "It looks great on you.",
+    "Is this on sale?",
+    "I'm just browsing, thanks.",
+    "Where are the changing rooms?",
+    "Do you have this in a larger size?",
+    "It's too small.",
+    "It really suits you."
+  ],
+  "full_script": "[excited] Nos vamos de tiendas. Te digo la frase y tú la dices en inglés. ¡Sin mirar! How much is this shirt? Do you have it in blue? I'm just looking, thanks. Ahora, nivel intermedio. Where are the fitting rooms? Can I try it on? Do you have a bigger size? I'll take it. Y ahora, nivel experto. It's too small for me. It looks great on you. Is this on sale? Si te quedaste en la tres, nivel básico. Si llegaste a la siete, intermedio. ¿Las diez? Experto con estilo. [cheerful] ¿Cuántas acertaste? Pon tu número en los comentarios."
+}

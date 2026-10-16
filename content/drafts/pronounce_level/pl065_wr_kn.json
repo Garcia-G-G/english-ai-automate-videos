@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "WR y KN: las letras que no se pronuncian 🤫",
+  "video_description": "Write, know, wrestle: palabras con letras fantasma que no debes pronunciar. 👻",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con WR y KN",
+  "intro": "[thoughtful] Aquí hay letras que no se pronuncian. Lee la palabra en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "write",
+      "respelling": "RAIT",
+      "ipa": "ˈraɪt",
+      "trap": "La W no suena: RAIT"
+    },
+    {
+      "english": "know",
+      "respelling": "NOU",
+      "ipa": "ˈnoʊ",
+      "trap": "La K no suena: NOU"
+    },
+    {
+      "english": "wrong",
+      "respelling": "RONG",
+      "ipa": "ˈrɔŋ",
+      "trap": "La W no suena: RONG"
+    },
+    {
+      "english": "knock",
+      "respelling": "NAK",
+      "ipa": "ˈnɑk",
+      "trap": "La K no suena y la O es «a»"
+    },
+    {
+      "english": "wrist",
+      "respelling": "RIST",
+      "ipa": "ˈrɪst",
+      "trap": "W muda: RIST"
+    },
+    {
+      "english": "knead",
+      "respelling": "NIID",
+      "ipa": "ˈniːd",
+      "trap": "La K no suena: igual que «need»"
+    },
+    {
+      "english": "wrestle",
+      "respelling": "RE-sal",
+      "ipa": "ˈrɛsəl",
+      "trap": "La W y la T no suenan: RE-sal"
+    },
+    {
+      "english": "knuckle",
+      "respelling": "NA-kal",
+      "ipa": "ˈnʌkəl",
+      "trap": "K muda y la U suena «a»"
+    },
+    {
+      "english": "acknowledge",
+      "respelling": "ak-NA-lidch",
+      "ipa": "əkˈnɑlɪdʒ",
+      "trap": "Suena la C, no la K: ak-NA-"
+    },
+    {
+      "english": "wreath",
+      "respelling": "RIITH",
+      "ipa": "ˈriːθ",
+      "trap": "W muda y TH final sorda"
+    }
+  ],
+  "verdict": "Hasta la tres, básico. Hasta la siete, intermedio. Si te salieron las diez, eres todo un experto.",
+  "outro": "[warm] ¿Hasta qué número llegaste? Te espero en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl065",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -24,6 +24,9 @@ numpy>=1.24.0
 
 # Admin Dashboard
 streamlit>=1.30.0
+# Without it Streamlit polls every source file five times a second, per open
+# tab, for as long as the dashboard runs. Free, BSD-licensed.
+watchdog>=3.0
 
 # Social Media Uploads
 google-api-python-client>=2.100.0

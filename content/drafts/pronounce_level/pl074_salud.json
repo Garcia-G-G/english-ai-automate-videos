@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Salud y ENFERMEDADES en inglés: test de pronunciación 🤒",
+  "video_description": "Fever, disease, asthma: palabras de salud que conviene pronunciar bien. 🩺",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la salud y las enfermedades",
+  "intro": "[calm] Vocabulario de salud. Pronuncia cada palabra antes de oír la mía.",
+  "items": [
+    {
+      "english": "sick",
+      "respelling": "SIK",
+      "ipa": "ˈsɪk",
+      "trap": "La I es corta: SIK"
+    },
+    {
+      "english": "flu",
+      "respelling": "FLUU",
+      "ipa": "ˈfluː",
+      "trap": "Suena FLUU, con «u» larga"
+    },
+    {
+      "english": "fever",
+      "respelling": "FII-ver",
+      "ipa": "ˈfiːvɚ",
+      "trap": "La primera E suena «ii»"
+    },
+    {
+      "english": "virus",
+      "respelling": "VAI-ras",
+      "ipa": "ˈvaɪrəs",
+      "trap": "La I suena «ai»: VAI-ras"
+    },
+    {
+      "english": "disease",
+      "respelling": "di-ZIIZ",
+      "ipa": "dɪˈziːz",
+      "trap": "Las dos S suenan «z»"
+    },
+    {
+      "english": "allergy",
+      "respelling": "A-ler-yi",
+      "ipa": "ˈælɚdʒi",
+      "trap": "Acento en A-: A-ler-yi"
+    },
+    {
+      "english": "bruise",
+      "respelling": "BRUUZ",
+      "ipa": "ˈbruːz",
+      "trap": "UI suena «uu» y la S, «z»"
+    },
+    {
+      "english": "migraine",
+      "respelling": "MAI-grein",
+      "ipa": "ˈmaɪɡreɪn",
+      "trap": "La I suena «ai»: MAI-grein"
+    },
+    {
+      "english": "diabetes",
+      "respelling": "dai-a-BII-tiiz",
+      "ipa": "daɪəˈbiːtiːz",
+      "trap": "Cuatro sílabas, acento en BII"
+    },
+    {
+      "english": "asthma",
+      "respelling": "AZ-ma",
+      "ipa": "ˈæzmə",
+      "trap": "La TH no suena: AZ-ma"
+    }
+  ],
+  "verdict": "Hasta la tres, básico. Hasta la siete, intermedio. Y si acertaste las diez, nivel experto.",
+  "outro": "[warm] Dime en los comentarios hasta qué número llegaste.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésMédico",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl074",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

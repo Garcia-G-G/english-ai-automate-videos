@@ -1,0 +1,36 @@
+{
+  "type": "educational",
+  "video_title": "Cómo pedir ayuda en inglés sin sonar raro 🤝",
+  "video_description": "El modismo que usan todos los nativos para pedir ayuda. ¡Guárdalo! 🇺🇸",
+  "hook": "Pedir ayuda en inglés con 'help me' suena a emergencia médica.",
+  "full_script": "[curious] Estás cargando una caja, no puedes con ella, y dices help me. Tu compañero se asusta. 'Help me' es lo que gritas si te estás ahogando. Para todo lo demás los nativos usan otra cosa. Can you 'give me a hand' with this? Échame una mano. La misma imagen que en español, la misma mano. Y funciona en las dos direcciones. Ves a alguien peleándose con una maleta. Ofrécete. Let me give you a hand. Cuando el favor es más grande, sube un escalón: 'could you do me a favor'? Y si alguien te saca de un apuro de verdad, hay una sola respuesta. You're a lifesaver. Me has salvado la vida. Lo que nunca dirás, porque no existe, es throw me a hand.",
+  "english_phrases": [
+    "give me a hand",
+    "can you give me a hand with this box",
+    "let me give you a hand",
+    "could you do me a favor",
+    "you're a lifesaver"
+  ],
+  "translations": {
+    "give me a hand": "échame una mano",
+    "can you give me a hand with this box": "¿me echas una mano con esta caja?",
+    "let me give you a hand": "déjame ayudarte",
+    "could you do me a favor": "¿me harías un favor?",
+    "you're a lifesaver": "me salvaste la vida"
+  },
+  "tip": "Give me a hand es informal. En el trabajo prefiere could you help me with.",
+  "cta": "¿A quién le vas a pedir una mano hoy? ¡Cuéntamelo!",
+  "hashtags": [
+    "#AprenderInglés",
+    "#Modismos",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Idioms"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id004",
+    "video_type": "educational",
+    "model": "manual"
+  }
+}

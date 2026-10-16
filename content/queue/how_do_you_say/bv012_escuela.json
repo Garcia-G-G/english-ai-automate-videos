@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las cosas de la ESCUELA en inglés? 🎒",
+  "video_description": "Diez cosas de clase, para niños y para mayores. ✏️",
+  "title": "¿Cómo se dice…?",
+  "theme": "la escuela",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🏫",
+      "spanish": "Escuela",
+      "english": "school"
+    },
+    {
+      "emoji": "📕",
+      "spanish": "Libro",
+      "english": "book"
+    },
+    {
+      "emoji": "✏️",
+      "spanish": "Lápiz",
+      "english": "pencil"
+    },
+    {
+      "emoji": "🖊️",
+      "spanish": "Bolígrafo",
+      "english": "pen"
+    },
+    {
+      "emoji": "📓",
+      "spanish": "Cuaderno",
+      "english": "notebook"
+    },
+    {
+      "emoji": "🎒",
+      "spanish": "Mochila",
+      "english": "backpack"
+    },
+    {
+      "emoji": "📏",
+      "spanish": "Regla",
+      "english": "ruler"
+    },
+    {
+      "emoji": "✂️",
+      "spanish": "Tijeras",
+      "english": "scissors"
+    },
+    {
+      "emoji": "📝",
+      "spanish": "Examen",
+      "english": "exam"
+    },
+    {
+      "emoji": "🧮",
+      "spanish": "Calculadora",
+      "english": "calculator"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: school, book, pencil, pen, notebook, backpack, ruler, scissors, exam, calculator.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "school": "Escuela",
+    "book": "Libro",
+    "pencil": "Lápiz",
+    "pen": "Bolígrafo",
+    "notebook": "Cuaderno",
+    "backpack": "Mochila",
+    "ruler": "Regla",
+    "scissors": "Tijeras",
+    "exam": "Examen",
+    "calculator": "Calculadora"
+  },
+  "english_phrases": [
+    "school",
+    "book",
+    "pencil",
+    "pen",
+    "notebook",
+    "backpack",
+    "ruler",
+    "scissors",
+    "exam",
+    "calculator"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv012",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Escuela... school. school. Libro... book. book. Lápiz... pencil. pencil. Bolígrafo... pen. pen. Cuaderno... notebook. notebook. Mochila... backpack. backpack. Regla... ruler. ruler. Tijeras... scissors. scissors. Examen... exam. exam. Calculadora... calculator. calculator. Ahora, todas conmigo: school, book, pencil, pen, notebook, backpack, ruler, scissors, exam, calculator. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

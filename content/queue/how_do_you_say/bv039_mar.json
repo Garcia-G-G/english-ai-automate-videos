@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los ANIMALES DEL MAR en inglés? 🐬",
+  "video_description": "Diez animales del mar, de la ballena al calamar. 🐙",
+  "title": "¿Cómo se dice…?",
+  "theme": "los animales del mar",
+  "level": "A1",
+  "intro": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo.",
+  "items": [
+    {
+      "emoji": "🐋",
+      "spanish": "Ballena",
+      "english": "whale"
+    },
+    {
+      "emoji": "🐬",
+      "spanish": "Delfín",
+      "english": "dolphin"
+    },
+    {
+      "emoji": "🦈",
+      "spanish": "Tiburón",
+      "english": "shark"
+    },
+    {
+      "emoji": "🐙",
+      "spanish": "Pulpo",
+      "english": "octopus"
+    },
+    {
+      "emoji": "🐢",
+      "spanish": "Tortuga",
+      "english": "turtle"
+    },
+    {
+      "emoji": "🌊",
+      "spanish": "Medusa",
+      "english": "jellyfish"
+    },
+    {
+      "emoji": "⭐",
+      "spanish": "Estrella de mar",
+      "english": "starfish"
+    },
+    {
+      "emoji": "🦭",
+      "spanish": "Foca",
+      "english": "seal"
+    },
+    {
+      "emoji": "🦞",
+      "spanish": "Langosta",
+      "english": "lobster"
+    },
+    {
+      "emoji": "🦑",
+      "spanish": "Calamar",
+      "english": "squid"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: whale, dolphin, shark, octopus, turtle, jellyfish, starfish, seal, lobster, squid.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "whale": "Ballena",
+    "dolphin": "Delfín",
+    "shark": "Tiburón",
+    "octopus": "Pulpo",
+    "turtle": "Tortuga",
+    "jellyfish": "Medusa",
+    "starfish": "Estrella de mar",
+    "seal": "Foca",
+    "lobster": "Langosta",
+    "squid": "Calamar"
+  },
+  "english_phrases": [
+    "whale",
+    "dolphin",
+    "shark",
+    "octopus",
+    "turtle",
+    "jellyfish",
+    "starfish",
+    "seal",
+    "lobster",
+    "squid"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv039",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo. Ballena... whale. whale. Delfín... dolphin. dolphin. Tiburón... shark. shark. Pulpo... octopus. octopus. Tortuga... turtle. turtle. Medusa... jellyfish. jellyfish. Estrella de mar... starfish. starfish. Foca... seal. seal. Langosta... lobster. lobster. Calamar... squid. squid. Ahora, todas conmigo: whale, dolphin, shark, octopus, turtle, jellyfish, starfish, seal, lobster, squid. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

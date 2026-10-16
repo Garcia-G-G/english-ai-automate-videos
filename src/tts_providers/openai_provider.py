@@ -40,6 +40,19 @@ class OpenAITTSProvider(TTSProvider):
             result = generate_fill_blank_audio_segmented(script_data, output_path, voice, model, speed)
         elif video_type == 'vocabulary':
             result = generate_vocabulary_audio_segmented(script_data, output_path, voice, model, speed)
+        elif video_type == 'how_do_you_say':
+            # REFUSED, not routed to the full_script branch below. That branch
+            # would narrate the whole script in one call with no segment_times,
+            # and the renderer has no fallback timeline -- the failure would
+            # surface at render time as a missing key instead of here.
+            raise NotImplementedError(
+                "how_do_you_say has no OpenAI audio generator; it is built for "
+                "ElevenLabs (eleven_v3). Set audio.provider to elevenlabs.")
+        elif video_type in ('level_test', 'say_it_level', 'true_false_level'):
+            # Refused for the same reason as how_do_you_say: no segment_times.
+            raise NotImplementedError(
+                f"{video_type} has no OpenAI audio generator; it is built for "
+                "ElevenLabs (eleven_v3). Set audio.provider to elevenlabs.")
         else:
             text = script_data.get('full_script', '')
             if not text:

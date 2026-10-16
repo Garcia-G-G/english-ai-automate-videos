@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "Cómo DESPEDIRTE en inglés sin decir solo «bye» 👋",
+  "video_description": "Diez formas de despedirte en inglés, de la más básica a la más nativa. 👋",
+  "title": "Dilo en inglés",
+  "theme": "despedirte",
+  "intro": "[cheerful] Hoy aprendemos a despedirnos. Di cada frase en inglés antes de que salga.",
+  "items": [
+    {
+      "spanish": "Hasta mañana.",
+      "english": "See you tomorrow.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Que tengas buen viaje.",
+      "english": "Have a good trip.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Me tengo que ir.",
+      "english": "I have to go.",
+      "cefr": "A2",
+      "alt": "I've got to go."
+    },
+    {
+      "spanish": "Ha sido un placer conocerte.",
+      "english": "It was nice meeting you.",
+      "cefr": "A2",
+      "alt": "It was a pleasure meeting you."
+    },
+    {
+      "spanish": "Saluda a tu familia de mi parte.",
+      "english": "Say hi to your family for me.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Escríbeme cuando llegues.",
+      "english": "Text me when you get there.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Avísame si vuelves por aquí.",
+      "english": "Let me know if you're ever in town.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Cuídate.",
+      "english": "Take care.",
+      "cefr": "B2",
+      "tip": "«Cuídate» es Take care, no «care you»"
+    },
+    {
+      "spanish": "Bueno, me voy yendo.",
+      "english": "Well, I'd better get going.",
+      "cefr": "B2",
+      "alt": "Well, I'm off.",
+      "tip": "«Me voy yendo» es I'd better get going o I'm off"
+    },
+    {
+      "spanish": "No te pierdas.",
+      "english": "Don't be a stranger.",
+      "cefr": "C1",
+      "tip": "Al despedirse, «no te pierdas» es Don't be a stranger"
+    }
+  ],
+  "verdict": "¿Te quedaste en la tres? Básico. ¿En la siete? Intermedio. ¿Llegaste a la diez? Experto, y hasta la próxima.",
+  "outro": "[warm] Antes de irte, dime hasta qué número llegaste. ¡Nos vemos!",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésConversacional",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy078",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "See you tomorrow.": "Hasta mañana.",
+    "Have a good trip.": "Que tengas buen viaje.",
+    "I have to go.": "Me tengo que ir.",
+    "It was nice meeting you.": "Ha sido un placer conocerte.",
+    "Say hi to your family for me.": "Saluda a tu familia de mi parte.",
+    "Text me when you get there.": "Escríbeme cuando llegues.",
+    "Let me know if you're ever in town.": "Avísame si vuelves por aquí.",
+    "Take care.": "Cuídate.",
+    "Well, I'd better get going.": "Bueno, me voy yendo.",
+    "Don't be a stranger.": "No te pierdas."
+  },
+  "english_phrases": [
+    "See you tomorrow.",
+    "Have a good trip.",
+    "I have to go.",
+    "It was nice meeting you.",
+    "Say hi to your family for me.",
+    "Text me when you get there.",
+    "Let me know if you're ever in town.",
+    "Take care.",
+    "Well, I'd better get going.",
+    "Don't be a stranger.",
+    "I've got to go.",
+    "It was a pleasure meeting you.",
+    "Well, I'm off."
+  ],
+  "full_script": "[cheerful] Hoy aprendemos a despedirnos. Di cada frase en inglés antes de que salga. See you tomorrow. Have a good trip. I have to go. Ahora, nivel intermedio. It was nice meeting you. Say hi to your family for me. Text me when you get there. Let me know if you're ever in town. Y ahora, nivel experto. Take care. Well, I'd better get going. Don't be a stranger. ¿Te quedaste en la tres? Básico. ¿En la siete? Intermedio. ¿Llegaste a la diez? Experto, y hasta la próxima. [warm] Antes de irte, dime hasta qué número llegaste. ¡Nos vemos!"
+}

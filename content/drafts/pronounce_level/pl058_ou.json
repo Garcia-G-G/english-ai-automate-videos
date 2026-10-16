@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras con OU: el sonido que nunca adivinas 🏠",
+  "video_description": "OU puede sonar «au», «a», «uu» o «er». Pon a prueba tu pronunciación. 🔊",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con OU",
+  "intro": "[curious] Diez palabras con OU. Tú primero: dila en voz alta y luego escucha.",
+  "items": [
+    {
+      "english": "house",
+      "respelling": "JAUS",
+      "ipa": "ˈhaʊs",
+      "trap": "OU suena «au» y la H es suave"
+    },
+    {
+      "english": "you",
+      "respelling": "IUU",
+      "ipa": "ˈjuː",
+      "trap": "Suena IUU, como la letra U"
+    },
+    {
+      "english": "loud",
+      "respelling": "LAUD",
+      "ipa": "ˈlaʊd",
+      "trap": "OU suena «au»: LAUD"
+    },
+    {
+      "english": "young",
+      "respelling": "IANG",
+      "ipa": "ˈjʌŋ",
+      "trap": "OU suena «a»: IANG"
+    },
+    {
+      "english": "country",
+      "respelling": "KAN-tri",
+      "ipa": "ˈkʌntri",
+      "trap": "OU suena «a»: KAN-tri"
+    },
+    {
+      "english": "group",
+      "respelling": "GRUUP",
+      "ipa": "ˈɡruːp",
+      "trap": "OU suena «uu»: GRUUP"
+    },
+    {
+      "english": "soul",
+      "respelling": "SOUL",
+      "ipa": "ˈsoʊl",
+      "trap": "OU suena «ou», no «au»"
+    },
+    {
+      "english": "cousin",
+      "respelling": "KA-zen",
+      "ipa": "ˈkʌzən",
+      "trap": "OU suena «a» y la S, «z»"
+    },
+    {
+      "english": "journey",
+      "respelling": "YER-ni",
+      "ipa": "ˈdʒɝni",
+      "trap": "OUR suena «er»: YER-ni"
+    },
+    {
+      "english": "southern",
+      "respelling": "SA-dhern",
+      "ipa": "ˈsʌðɚn",
+      "trap": "No suena «au» como «south»"
+    }
+  ],
+  "verdict": "Si llegaste hasta la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, experto.",
+  "outro": "[cheerful] Comenta hasta qué número llegaste y cuál te engañó.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Pronunciación",
+    "#InglésOnline",
+    "#VocalesEnInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl058",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

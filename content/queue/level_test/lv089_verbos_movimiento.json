@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "¿Qué nivel de inglés tienes? 10 VERBOS DE MOVIMIENTO 🏃",
+  "video_description": "Caminar, gatear, tambalearse: ¿cuántos verbos de movimiento conoces en inglés? 👣",
+  "title": "¿Qué nivel tienes?",
+  "theme": "verbos de movimiento",
+  "intro": "[excited] Diez verbos de movimiento en inglés, de fácil a experto. Muévete: ¿qué significan?",
+  "items": [
+    {
+      "english": "walk",
+      "spanish": "Caminar",
+      "cefr": "A1"
+    },
+    {
+      "english": "run",
+      "spanish": "Correr",
+      "cefr": "A1"
+    },
+    {
+      "english": "jump",
+      "spanish": "Saltar",
+      "cefr": "A1"
+    },
+    {
+      "english": "climb",
+      "spanish": "Trepar",
+      "cefr": "A2"
+    },
+    {
+      "english": "crawl",
+      "spanish": "Gatear",
+      "cefr": "B1"
+    },
+    {
+      "english": "sneak",
+      "spanish": "Escabullirse",
+      "cefr": "B2"
+    },
+    {
+      "english": "wander",
+      "spanish": "Deambular",
+      "cefr": "B2"
+    },
+    {
+      "english": "stumble",
+      "spanish": "Tropezar",
+      "cefr": "B2"
+    },
+    {
+      "english": "stagger",
+      "spanish": "Tambalearse",
+      "cefr": "C1"
+    },
+    {
+      "english": "tiptoe",
+      "spanish": "Ir de puntillas",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Corre a los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VerbosEnInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv089",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "walk": "Caminar",
+    "run": "Correr",
+    "jump": "Saltar",
+    "climb": "Trepar",
+    "crawl": "Gatear",
+    "sneak": "Escabullirse",
+    "wander": "Deambular",
+    "stumble": "Tropezar",
+    "stagger": "Tambalearse",
+    "tiptoe": "Ir de puntillas"
+  },
+  "english_phrases": [
+    "walk",
+    "run",
+    "jump",
+    "climb",
+    "crawl",
+    "sneak",
+    "wander",
+    "stumble",
+    "stagger",
+    "tiptoe"
+  ],
+  "full_script": "[excited] Diez verbos de movimiento en inglés, de fácil a experto. Muévete: ¿qué significan? walk Caminar run Correr jump Saltar Ahora, nivel intermedio. climb Trepar crawl Gatear sneak Escabullirse wander Deambular Y ahora, nivel experto. stumble Tropezar stagger Tambalearse tiptoe Ir de puntillas Si llegaste a la tres, básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [cheerful] ¿Hasta qué número llegaste? Corre a los comentarios."
+}

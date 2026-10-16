@@ -1,0 +1,114 @@
+{
+  "type": "say_it_level",
+  "video_title": "QUEDAR CON AMIGOS en inglés: ¿llegas a la frase 10? 🍻",
+  "video_description": "Proponer plan, avisar de que llegas y apuntarte: diez frases para quedar con amigos en inglés. 🍻",
+  "title": "Dilo en inglés",
+  "theme": "quedar con amigos",
+  "intro": "[happy] Hoy organizamos un plan con amigos. Escucha cada frase y adelántate diciéndola en inglés.",
+  "items": [
+    {
+      "spanish": "¿Estás libre el sábado?",
+      "english": "Are you free on Saturday?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Dónde nos vemos?",
+      "english": "Where do you want to meet?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Llego en diez minutos.",
+      "english": "I'll be there in ten minutes.",
+      "cefr": "A2",
+      "alt": "I'm ten minutes away."
+    },
+    {
+      "spanish": "¿Tomamos algo?",
+      "english": "Do you want to grab a drink?",
+      "cefr": "A2",
+      "alt": "Shall we get a drink?"
+    },
+    {
+      "spanish": "Te recojo a las ocho.",
+      "english": "I'll pick you up at eight.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Avísame cuando llegues.",
+      "english": "Let me know when you get there.",
+      "cefr": "B1",
+      "tip": "Después de when, presente: when you get there"
+    },
+    {
+      "spanish": "Podríamos ir a ese bar nuevo.",
+      "english": "We could go to that new bar.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Quedamos a las siete?",
+      "english": "Shall we meet at seven?",
+      "cefr": "B1",
+      "alt": "Should we meet up at seven?",
+      "tip": "«Quedar» con alguien es meet (up), no stay"
+    },
+    {
+      "spanish": "¡Hace siglos que no te veo!",
+      "english": "I haven't seen you in ages!",
+      "cefr": "B2",
+      "alt": "Long time no see!",
+      "tip": "«Hace siglos que no...»: I haven't + participio + in ages"
+    },
+    {
+      "spanish": "Me apunto.",
+      "english": "I'm in!",
+      "cefr": "B2",
+      "alt": "Count me in!",
+      "tip": "«Me apunto» a un plan es I'm in o Count me in"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres básico. Hasta la siete, intermedio. Y con las diez, el experto del grupo.",
+  "outro": "[cheerful] Etiqueta a ese amigo con el que siempre quedas y dime tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés",
+    "#InglésConAmigos"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy021",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Are you free on Saturday?": "¿Estás libre el sábado?",
+    "Where do you want to meet?": "¿Dónde nos vemos?",
+    "I'll be there in ten minutes.": "Llego en diez minutos.",
+    "Do you want to grab a drink?": "¿Tomamos algo?",
+    "I'll pick you up at eight.": "Te recojo a las ocho.",
+    "Let me know when you get there.": "Avísame cuando llegues.",
+    "We could go to that new bar.": "Podríamos ir a ese bar nuevo.",
+    "Shall we meet at seven?": "¿Quedamos a las siete?",
+    "I haven't seen you in ages!": "¡Hace siglos que no te veo!",
+    "I'm in!": "Me apunto."
+  },
+  "english_phrases": [
+    "Are you free on Saturday?",
+    "Where do you want to meet?",
+    "I'll be there in ten minutes.",
+    "Do you want to grab a drink?",
+    "I'll pick you up at eight.",
+    "Let me know when you get there.",
+    "We could go to that new bar.",
+    "Shall we meet at seven?",
+    "I haven't seen you in ages!",
+    "I'm in!",
+    "I'm ten minutes away.",
+    "Shall we get a drink?",
+    "Should we meet up at seven?",
+    "Long time no see!",
+    "Count me in!"
+  ],
+  "full_script": "[happy] Hoy organizamos un plan con amigos. Escucha cada frase y adelántate diciéndola en inglés. Are you free on Saturday? Where do you want to meet? I'll be there in ten minutes. Ahora, nivel intermedio. Do you want to grab a drink? I'll pick you up at eight. Let me know when you get there. We could go to that new bar. Y ahora, nivel experto. Shall we meet at seven? I haven't seen you in ages! I'm in! Si llegaste a la tres, eres básico. Hasta la siete, intermedio. Y con las diez, el experto del grupo. [cheerful] Etiqueta a ese amigo con el que siempre quedas y dime tu número."
+}
