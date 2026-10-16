@@ -4,7 +4,7 @@
   "video_description": "«Call it a day», «learn the ropes»… ¿entiendes estos modismos del trabajo en inglés? 📊",
   "title": "¿Qué nivel tienes?",
   "theme": "modismos del trabajo",
-  "intro": "[serious] Diez expresiones del mundo laboral, de fácil a experto. ¿Sabes qué significan?",
+  "intro": "[serious] Diez expresiones del trabajo, de fácil a experto. ¿Sabes qué significan?",
   "items": [
     {
       "english": "day off",
@@ -48,17 +48,17 @@
     },
     {
       "english": "cut corners",
-      "spanish": "Hacer las cosas a medias",
+      "spanish": "Hacerlo a medias",
       "cefr": "C1"
     },
     {
       "english": "back to square one",
-      "spanish": "Volver a empezar de cero",
+      "spanish": "Volver a empezar",
       "cefr": "C1"
     }
   ],
   "verdict": "Balance: hasta la tres, nivel básico. Hasta la siete, intermedio. Y las diez, experto.",
-  "outro": "[cheerful] ¿Hasta qué número llegaste? Coméntalo antes de dar por terminado el día.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Coméntalo.",
   "hashtags": [
     "#NivelDeInglés",
     "#ModismosEnInglés",
@@ -81,8 +81,8 @@
     "call it a day": "Terminar por hoy",
     "think outside the box": "Pensar diferente",
     "learn the ropes": "Aprender el oficio",
-    "cut corners": "Hacer las cosas a medias",
-    "back to square one": "Volver a empezar de cero"
+    "cut corners": "Hacerlo a medias",
+    "back to square one": "Volver a empezar"
   },
   "english_phrases": [
     "day off",
@@ -96,5 +96,5 @@
     "cut corners",
     "back to square one"
   ],
-  "full_script": "[serious] Diez expresiones del mundo laboral, de fácil a experto. ¿Sabes qué significan? day off Día libre work from home Trabajar desde casa part-time Media jornada Ahora, nivel intermedio. team player Buen compañero de equipo on the same page En sintonía call it a day Terminar por hoy think outside the box Pensar diferente Y ahora, nivel experto. learn the ropes Aprender el oficio cut corners Hacer las cosas a medias back to square one Volver a empezar de cero Balance: hasta la tres, nivel básico. Hasta la siete, intermedio. Y las diez, experto. [cheerful] ¿Hasta qué número llegaste? Coméntalo antes de dar por terminado el día."
+  "full_script": "[serious] Diez expresiones del trabajo, de fácil a experto. ¿Sabes qué significan? day off Día libre work from home Trabajar desde casa part-time Media jornada Ahora, nivel intermedio. team player Buen compañero de equipo on the same page En sintonía call it a day Terminar por hoy think outside the box Pensar diferente Y ahora, nivel experto. learn the ropes Aprender el oficio cut corners Hacerlo a medias back to square one Volver a empezar Balance: hasta la tres, nivel básico. Hasta la siete, intermedio. Y las diez, experto. [cheerful] ¿Hasta qué número llegaste? Coméntalo."
 }
