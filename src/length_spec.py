@@ -213,7 +213,7 @@ def _boxes() -> List[Dict]:
                font_max=hdys.LINE_FONT_MAX, font_min=hdys.LINE_FONT_MIN,
                height=None, face="fredoka",
                source="how_do_you_say.LINE_W, LINE_FONT_MAX/MIN")
-          for vtype in ("level_test", "say_it_level") for field in ("english", "spanish")],
+          for vtype in ("level_test", "say_it_level", "phrases_level") for field in ("english", "spanish")],
         # true_false_level (STEP 61): the statement, and the answer line as drawn
         # («VERDADERO» / «FALSO · {correction}», how_do_you_say.tf_answer).
         *[dict(video_type="true_false_level", field=field, width=hdys.LINE_W, lines=1,
@@ -381,6 +381,7 @@ _SCRIPT_FIELDS = {
     "true_false_level": {"statement": None, "answer": None},   # per item
     "fill_level": {"sentence": None, "translation": None},     # per item
     "choose_level": {"sentence": None, "options": None},       # per item
+    "phrases_level": {"spanish": None, "english": None},       # per item
 }
 
 
@@ -423,7 +424,7 @@ def check_script(script: Dict) -> List[Dict]:
             look("spanish", item.get("spanish"), f"items[{index}]")
             look("english", item.get("english"), f"items[{index}]")
 
-    if video_type in ("level_test", "say_it_level"):
+    if video_type in ("level_test", "say_it_level", "phrases_level"):
         for index, item in enumerate(script.get("items") or []):
             for field in _SCRIPT_FIELDS[video_type]:
                 look(field, item.get(field), f"items[{index}]")

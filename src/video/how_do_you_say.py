@@ -647,7 +647,12 @@ LEVEL_MODES = {
     "fill_level": {"prompt": "sentence", "answer": None, "kind": "fill"},
     # STEP 62 §2: both options under the sentence; the right one is circled, the other struck.
     "choose_level": {"prompt": "sentence", "answer": None, "kind": "choose"},
+    # STEP 62 §3: say_it_level's page without tiers or verdict; until its reveal each
+    # English line is the shared grey blurred bar.
+    "phrases_level": {"prompt": "spanish", "answer": "english", "tiers": False, "placeholder": True},
 }
+#: phrases_level: the placeholder bar on the English line, one width for every row.
+PHRASE_BAR_W = 300
 #: Rows that open a tier, 0-based, and the tiers' bands and words.
 TIER_STARTS = (3, 7)
 TIERS = (("BÁSICO", "correct", 0, 3), ("INTERMEDIO", "brand_yellow", 3, 7),
@@ -787,8 +792,9 @@ class LevelTimeline:
         self.row = [span(f"prompt_{i}")[0] if f"prompt_{i}" in st else self.think[i - 1][0]
                     for i in range(1, self.n + 1)]
         self.tier = {i: span(f"tier_{i + 1}") for i in TIER_STARTS if f"tier_{i + 1}" in st}
-        self.verdict = span("verdict")
         self.outro = span("outro")
+        # phrases_level has no verdict: the last row runs to the outro
+        self.verdict = span("verdict") if "verdict" in st else (self.outro[0], self.outro[0])
 
     def row_end(self, i: int) -> float:
         return self.row[i + 1] if i + 1 < self.n else self.verdict[0]
@@ -801,14 +807,14 @@ class LevelTimeline:
 
 
 @lru_cache(maxsize=4)
-def _static_level_page(n: int, title: str, theme: str) -> Image.Image:
+def _static_level_page(n: int, title: str, theme: str, tiers: bool = True) -> Image.Image:
     """Paper, binding, title, theme and the ruled lines; the two that close a tier
-    are drawn thicker in the next tier's colour."""
+    are drawn thicker in the next tier's colour (all plain without tiers)."""
     layer = Image.new("RGBA", (LAYER_W, LAYER_H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer, "RGBA")
     _draw_paper(draw)
     sky = _on_paper(_color("sky"), 0.6)
-    closes = {t[2]: t[1] for t in TIERS[1:]}           # row count -> colour of the tier it opens
+    closes = {t[2]: t[1] for t in TIERS[1:]} if tiers else {}   # row count -> colour of the tier it opens
     for i, cy in enumerate(row_centres(n)):
         ly = cy + ROW_PITCH // 2 - 6
         if i + 1 in closes:                            # sticker rule: ink under the colour
@@ -1240,7 +1246,9 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
     blue, ink = _color("english_blue"), _color("ink")
 
     frame, _draw = create_base_frame(t)
-    layer = _static_level_page(n, data["title"], data["theme"]).copy()
+    tiers = mode.get("tiers", True)
+    layer = (_static_level_page(n, data["title"], data["theme"]) if tiers
+             else _static_level_page(n, data["title"], data["theme"], False)).copy()
     draw = ImageDraw.Draw(layer, "RGBA")
 
     # 1. highlighter behind the active row, then the printed numbers and prompts over it
@@ -1264,7 +1272,7 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
         layer.alpha_composite(_static_level_text(tuple(it[prompt] for it in items), prompt == "english"))
 
     # 2. tier pills in the margin; the one a tier line announces pulses once
-    for word, color, a, b in TIERS:
+    for word, color, a, b in TIERS if tiers else ():
         top = centres[a] - ROW_PITCH // 2 + 10
         bottom = centres[b - 1] + ROW_PITCH // 2 - 16
         pill = _tier_pill(word, color, bottom - top)
@@ -1286,12 +1294,18 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
         _draw_choose_answers(layer, t, tl, items, centres)
     answer_color = blue if answer == "english" else ink
     size = page_size(tuple(it[answer] for it in items)) if answer else 0
+    placeholder = mode.get("placeholder", False)
     for i, item in enumerate(items if answer else []):
         cy = centres[i] + LINE2_DY
+        p = tl.reveal(i, t)
+        if placeholder and p < 1.0:
+            radius = int(round(BLUR_MAX * 0.5 * (1.0 - p) / BLUR_STEP)) * BLUR_STEP
+            layer.alpha_composite(_faded(_blank_bar(PHRASE_BAR_W, radius), 1.0 - p), tuple(
+                int(v) for v in _p(LINE_X - BLUR_PAD, cy - BLANK_BAR_H / 2 - BLUR_PAD)))
         th0, th1 = tl.think[i]
         if th0 <= t < th1:
-            _draw_countdown_at(layer, LINE_X + 110, cy, (t - th0) / max(1e-6, th1 - th0))
-        p = tl.reveal(i, t)
+            _draw_countdown_at(layer, LINE_X + (PHRASE_BAR_W + DOTS_GAP if placeholder else 110), cy,
+                               (t - th0) / max(1e-6, th1 - th0))
         if p <= 0:
             continue
         f, _size, w = fit_line(item[answer], size)
@@ -1327,7 +1341,7 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
 
     # 6. the verdict note, over the lower rows while the verdict is spoken
     v0, v1 = tl.verdict
-    if v0 <= t < v1 + NOTE_POP:
+    if tiers and v0 <= t < v1 + NOTE_POP:
         note = _verdict_note()
         a = clamp01((t - v0) / NOTE_POP) * (1.0 - clamp01((t - v1) / NOTE_POP))
         s = 0.85 + 0.15 * ease_out_cubic((t - v0) / NOTE_POP)

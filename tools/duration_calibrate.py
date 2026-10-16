@@ -55,6 +55,9 @@ SPOKEN_FIELDS = {
     "level_test": ("intro", "verdict", "outro"),
     "say_it_level": ("intro", "verdict", "outro"),
     "true_false_level": ("intro", "verdict", "outro"),
+    "fill_level": ("intro", "verdict", "outro"),
+    "choose_level": ("intro", "verdict", "outro"),
+    "phrases_level": ("intro", "outro"),          # no tiers, no verdict
 }
 
 
@@ -136,10 +139,11 @@ def spoken_words(script: dict, items: int = None) -> int:
             total += _count(item.get("spanish")) + 2 * _count(item.get("english"))
         return total
 
-    if vtype in ("level_test", "say_it_level", "true_false_level"):
-        from tts_elevenlabs import LEVEL_PLANS, LEVEL_TIER_LINES, level_answer
+    if vtype in ("level_test", "say_it_level", "true_false_level", "fill_level", "choose_level",
+                 "phrases_level"):
+        from tts_elevenlabs import LEVEL_PLANS, level_answer, level_tier_lines
         plan = LEVEL_PLANS[vtype]
-        total += sum(_count(line) for line in LEVEL_TIER_LINES.values())
+        total += sum(_count(line) for line in level_tier_lines(plan).values())
         for item in script.get("items") or []:
             total += _count(level_answer(item, plan["answer"][0]))
             if plan["speak_prompt"]:

@@ -721,6 +721,61 @@ class ChooseLevelScript(_LevelScript):
         return self
 
 
+class PhrasesLevelItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    spanish: str = Field(min_length=1)
+    english: str = Field(min_length=1)
+
+
+#: phrases_level (STEP 62 §3): hashtags[0].
+PHRASES_LEVEL_TAG = "#CómoSeDice"
+
+
+class PhrasesLevelScript(ScriptBase, _TranslationsMixin):
+    """«¿Cómo se dice?» with sentences: the level notebook without tiers, CEFR or verdict,
+    8 to 10 rows like how_do_you_say."""
+    type: Literal["phrases_level"]
+    title: str = Field(min_length=1)
+    theme: str = Field(min_length=1)
+    intro: str = Field(min_length=1)
+    outro: str = Field(min_length=1)
+    english_phrases: List[str] = Field(default_factory=list)
+    items: List[PhrasesLevelItem] = Field(min_length=HDYS_MIN_ITEMS, max_length=HDYS_MAX_ITEMS)
+
+    @model_validator(mode="after")
+    def _check_phrase_rules(self):
+        from audio_tags import TAG_RE, unknown_tags
+        problems = []
+        for name in LEVEL_TAGGED_FIELDS:
+            for tag in unknown_tags(getattr(self, name)):
+                problems.append(f"{name}: unknown audio tag {tag}")
+        for name in ("title", "theme"):
+            if TAG_RE.search(getattr(self, name)):
+                problems.append(f"{name}: audio tags are only allowed in intro and outro")
+        for i, item in enumerate(self.items):
+            for name, value in item.model_dump().items():
+                if TAG_RE.search(value):
+                    problems.append(f"items[{i}].{name}: audio tags are only allowed in intro and outro")
+        for field in ("spanish", "english"):
+            seen = [getattr(it, field).strip().lower() for it in self.items]
+            dup = sorted({v for v in seen if seen.count(v) > 1})
+            if dup:
+                problems.append(f"items: duplicate {field}: {dup}")
+        if len(self.hashtags) != 5 or self.hashtags[:1] != [PHRASES_LEVEL_TAG]:
+            problems.append(f"hashtags: exactly 5, the first {PHRASES_LEVEL_TAG}")
+        for name in ("video_title", "video_description"):
+            value = getattr(self, name)
+            if value:
+                from emoji_font import emoji_problem
+                tail = value.rstrip().rstrip("\ufe0f")[-1:]
+                problem = emoji_problem(tail) if tail else "empty"
+                if problem:
+                    problems.append(f"{name}: must end with one Noto emoji ({problem})")
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
+
+
 class SayItLevelScript(_LevelScript):
     type: Literal["say_it_level"]
     items: List[SayItLevelItem]
@@ -740,7 +795,8 @@ class SayItLevelScript(_LevelScript):
 AnyScript = Union[EducationalScript, QuizScript, TrueFalseScript,
                   FillBlankScript, PronunciationScript, VocabularyScript,
                   HowDoYouSayScript, LevelTestScript, SayItLevelScript,
-                  TrueFalseLevelScript, FillLevelScript, ChooseLevelScript]
+                  TrueFalseLevelScript, FillLevelScript, ChooseLevelScript,
+                  PhrasesLevelScript]
 
 SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalScript,
@@ -755,6 +811,7 @@ SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "true_false_level": TrueFalseLevelScript,
     "fill_level": FillLevelScript,
     "choose_level": ChooseLevelScript,
+    "phrases_level": PhrasesLevelScript,
 }
 
 
@@ -848,6 +905,11 @@ class ChooseLevelRenderData(_RenderExtras, ChooseLevelScript):
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 
 
+class PhrasesLevelRenderData(_RenderExtras, PhrasesLevelScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
 RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalRenderData,
     "quiz": QuizRenderData,
@@ -861,6 +923,7 @@ RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "true_false_level": TrueFalseLevelRenderData,
     "fill_level": FillLevelRenderData,
     "choose_level": ChooseLevelRenderData,
+    "phrases_level": PhrasesLevelRenderData,
 }
 
 

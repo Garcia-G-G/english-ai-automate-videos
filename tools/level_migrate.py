@@ -17,10 +17,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from tts_elevenlabs import LEVEL_PLANS, LEVEL_TIER_LINES, level_answer  # noqa: E402
+from tts_elevenlabs import LEVEL_PLANS, level_answer, level_tier_lines  # noqa: E402
 
 TOPICS = {"level_test": "level_vocab", "say_it_level": "say_it", "true_false_level": "false_friends",
-          "fill_level": "grammar", "choose_level": "grammar"}
+          "fill_level": "grammar", "choose_level": "grammar", "phrases_level": "everyday_expressions"}
 
 
 def derive(script: dict) -> dict:
@@ -29,12 +29,12 @@ def derive(script: dict) -> dict:
     items = script["items"]
     spoken = [script["intro"]]
     for i, item in enumerate(items, start=1):
-        if i in LEVEL_TIER_LINES:
-            spoken.append(LEVEL_TIER_LINES[i])
+        if i in level_tier_lines(plan):
+            spoken.append(level_tier_lines(plan)[i])
         if plan["speak_prompt"]:
             spoken.append(item[plan["prompt"][0]])
         spoken.append(level_answer(item, plan["answer"][0]))
-    spoken += [script["verdict"], script["outro"]]
+    spoken += [script["verdict"], script["outro"]] if "verdict" in script else [script["outro"]]
     out = dict(script)
     if script["type"] == "true_false_level":
         # The English word of each statement, the one in «»; nothing is spoken in English.

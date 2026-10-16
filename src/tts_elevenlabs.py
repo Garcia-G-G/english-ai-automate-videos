@@ -1949,7 +1949,16 @@ LEVEL_PLANS = {
     # STEP 62 §2: the same, the blank filled with the right one of the two options.
     "choose_level": {"prompt": ("sentence", "en"), "answer": ("filled", "en"),
                      "think": 3.0, "speak_prompt": False},
+    # STEP 62 §3: how_do_you_say with sentences. The Spanish is read off the page;
+    # no tiers and no verdict, so no tier lines and no verdict clip.
+    "phrases_level": {"prompt": ("spanish", "es"), "answer": ("english", "en"),
+                      "think": 2.5, "speak_prompt": False, "tiers": False},
 }
+
+
+def level_tier_lines(plan: dict) -> dict:
+    """The tier lines this plan speaks: LEVEL_TIER_LINES, or none for a plan without tiers."""
+    return LEVEL_TIER_LINES if plan.get("tiers", True) else {}
 
 
 def level_think(plan: dict, prompt: str) -> float:
@@ -1991,7 +2000,7 @@ def level_spoken(script: dict) -> list:
     if plan["speak_prompt"]:
         lines += [item[plan["prompt"][0]] for item in items]
     # the generator closes every item line with a full stop, and it is spoken time
-    return ([script.get("intro"), script.get("verdict"), script.get("outro"), *LEVEL_TIER_LINES.values()]
+    return ([script.get("intro"), script.get("verdict"), script.get("outro"), *level_tier_lines(plan).values()]
             + [t if t.endswith((".", "?", "!")) else f"{t}." for t in lines])
 
 
@@ -2002,7 +2011,8 @@ def level_predict(script: dict, thinks: list) -> float:
     plan = LEVEL_PLANS[script["type"]]
     chars = sum(len(strip_tags(t or "").strip()) for t in level_spoken(script))
     gaps = (LEVEL_AFTER_INTRO_S + len(script["items"]) * LEVEL_ITEM_GAP_S
-            + len(LEVEL_TIER_LINES) * LEVEL_AROUND_TIER_S + LEVEL_BEFORE_VERDICT_S + LEVEL_AFTER_VERDICT_S)
+            + len(level_tier_lines(plan)) * LEVEL_AROUND_TIER_S
+            + (LEVEL_BEFORE_VERDICT_S + LEVEL_AFTER_VERDICT_S if plan.get("tiers", True) else 0.0))
     return chars * plan["s_per_char"] + gaps + sum(thinks) + duration_spec.outro_seconds()
 
 
@@ -2196,7 +2206,7 @@ def generate_level_audio_segmented(
         answer_field, answer_lang = plan["answer"]
         thinks = level_thinks(script)
         for i, item in enumerate(items, start=1):
-            if i in LEVEL_TIER_LINES:
+            if i in level_tier_lines(plan):
                 start, _file_end, _dur, end = add_audio(tier_clip(i))
                 add_segment(f"tier_{i}", LEVEL_TIER_LINES[i], start, end)
                 add_silence(LEVEL_AROUND_TIER_S)
@@ -2215,9 +2225,10 @@ def generate_level_audio_segmented(
                 answer_lang, "default")
             add_silence(LEVEL_ITEM_GAP_S)
 
-        add_silence(LEVEL_BEFORE_VERDICT_S)
-        say("verdict", clean_for_tts(script["verdict"], keep_tags=_KEEP_TAGS), "es", "default")
-        add_silence(LEVEL_AFTER_VERDICT_S)
+        if plan.get("tiers", True):
+            add_silence(LEVEL_BEFORE_VERDICT_S)
+            say("verdict", clean_for_tts(script["verdict"], keep_tags=_KEEP_TAGS), "es", "default")
+            add_silence(LEVEL_AFTER_VERDICT_S)
         say("outro", clean_for_tts(script["outro"], keep_tags=_KEEP_TAGS), "es", "question")
 
         concat = os.path.join(temp_dir, "concat.txt")
