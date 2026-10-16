@@ -87,3 +87,4 @@ with the same number.
 | [STEP 63](STEP_63.md) | The long lessons on the notebook: full tables from frame 1, sticky-note captions, site badge |
 | [STEP 64](STEP_64.md) | Merged into STEP 61, Part A |
 | [STEP 65](STEP_65.md) | Upload guards: no empty titles, no second copy of a topic, the script's own title, no upload without QA |
+| [STEP 66](STEP_66.md) | The same Short also goes to Instagram Reels and the Facebook Page (free Graph API, upload from the Mac) |
