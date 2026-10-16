@@ -7,8 +7,10 @@ sí está muy bien"**. He asked for two changes:
 2. "El ritmo podría bajar un poco en oraciones muy largas como restaurante. En vez de
    3 s, 5 s, para que el usuario tenga más tiempo de pensar" (sy001).
 
-Run this after STEP 59. If STEP 59 has not started, do STEP 59 §1 (push) first and then
-this, and treat STEP 59 §2 (onset gate) together with §1 below: they touch the same clips.
+Run this now (STEPs 59, 61 and 65 are done). Work section by section, in order. Each
+section gets its own tests and its own commit, pushed, before the next one starts.
+STEP 59 §2 set the eleven_v3 onset limit to -6.5 dB on takes measured before this trim
+fix, so §1 below must re-measure it.
 
 ## 1. Cut words: the trim eats the first consonant
 
@@ -82,6 +84,22 @@ how_do_you_say Shorts that work run about 70 s. So scale the pause by sentence l
 - `pronounce_level` (all English words, so all exposed to this cut) starts only after he
   confirms the fix.
 
+## 4. Seven tests that always fail (noise that hides real failures)
+
+Every suite run ends with the same failures, and each one costs the owner a read.
+
+- **3 queue tests** (`test_drafts_were_moved_not_copied`,
+  `test_every_queued_script_validates[level_test|say_it_level]`). They fail because
+  producing a video moves its script from `content/queue/` to `content/queue/_done/`.
+  That is the normal flow, not "another session". These tests must count
+  `queue/ + queue/_done/` as the corpus, as `tools/level_length_report.py` already does.
+- **3 `test_publish` tests** pass alone and fail under load. Find the shared state or
+  the timing they depend on, and fix it. Do not just raise a timeout.
+- **4 `test_tts` tests** need the network (Edge TTS). Mark them `@pytest.mark.network`
+  and skip them unless `RUN_NETWORK_TESTS=1`.
+
+Goal: a clean suite reads «0 failed».
+
 ## Constraints
 
 Only OpenAI and ElevenLabs are paid. Everything else is local and free. No MoviePy.
@@ -97,4 +115,4 @@ uncommitted files.
   say_it_level scripts as predicted by `duration_calibrate` (min / median / max) and any
   over 95 s.
 - Paths of both new renders.
-- Test counts: pass / fail, naming any failure that is not yours.
+- Test counts: the goal is 0 failed. Name any failure that remains and why.
