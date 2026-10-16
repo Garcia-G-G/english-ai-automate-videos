@@ -5,8 +5,10 @@ The owner approved these designs on 2026-10-15. On vocabulary and quiz his words
 mejorar". So the new modes below replace them in production. The old types stay
 registered, because old queue items and renders reference them.
 
-Run after STEP 61 and STEP 60 (order: 59 → 61 → 60 → 62 → 63). It reuses STEP 61's blurred-reveal machinery and STEP 60's trim fix for the English clips. Do not touch how_do_you_say;
-its pin stays.
+Run now (STEPs 59, 60, 61 and 65 are done), once the owner has approved the new pauses in lv001 and sy001.
+Work section by section, in order (§0 first). Each section gets its own tests and its own commit, pushed, before
+the next one starts. It reuses STEP 61's blurred-reveal machinery and STEP 60's trim fix for the English clips.
+Do not touch how_do_you_say; its pin stays.
 
 Mocks (rendered with the real `create_frame_level` plus monkeypatches) are in
 `output/qa/design_proposals/`. Their filenames start with:
