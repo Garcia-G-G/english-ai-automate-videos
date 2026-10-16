@@ -297,17 +297,18 @@ def measure_first_take_end(audio_path: str, threshold_db: float = None,
     except (OSError, subprocess.SubprocessError, RuntimeError):
         return None
 
-    start = None
+    # internal: speech before it AND speech after it. The longest one, as in
+    # clamp_take_gap: a micro-stop inside the word is not the take gap.
+    gaps, start = [], None
     for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
         value = float(value)
         if kind == "start":
             start = value
         elif start is not None:
-            # internal: speech before it AND speech after it
             if start > 0.15 and value < duration - 0.10:
-                return start
+                gaps.append((start, value))
             start = None
-    return None
+    return max(gaps, key=lambda g: g[1] - g[0])[0] if gaps else None
 
 
 #: The pause left between two takes of one word ("Family. Family.").
@@ -343,18 +344,20 @@ def clamp_take_gap(audio_path: str, max_gap: float = TAKE_GAP_S) -> dict:
     except (OSError, subprocess.SubprocessError, RuntimeError):
         return out
 
-    gap, start = None, None
+    # The LONGEST internal pause is the gap between the takes: in bv004 en_5 a
+    # 0.08 s micro-stop inside «black» came first and the 1.7 s gap was left.
+    gaps, start = [], None
     for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
         value = float(value)
         if kind == "start":
             start = value
         elif start is not None:
             if start > 0.15 and value < duration - 0.10:
-                gap = (start, value)
-                break
+                gaps.append((start, value))
             start = None
-    if gap is None:
+    if not gaps:
         return out
+    gap = max(gaps, key=lambda g: g[1] - g[0])
 
     first_end, second_start = gap
     out.update(gap_before=round(second_start - first_end, 3),
@@ -378,7 +381,8 @@ def clamp_take_gap(audio_path: str, max_gap: float = TAKE_GAP_S) -> dict:
              "-acodec", "libmp3lame", "-q:a", "2", "-ar", "44100", "-ac", "1", tmp],
             capture_output=True, text=True, timeout=60)
         if proc.returncode != 0 or not os.path.exists(tmp):
-            logger.warning("take gap: cut failed for %s; clip left as it is", audio_path)
+            logger.warning("take gap: cut failed for %s (ffmpeg rc=%s: %s); clip left as it is",
+                           audio_path, proc.returncode, (proc.stderr or "no stderr").strip()[-400:])
             return out
         os.replace(tmp, audio_path)
     finally:

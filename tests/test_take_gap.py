@@ -68,3 +68,35 @@ def test_a_short_pause_is_left_alone(tmp_path):
     before = get_audio_duration(path)
     assert not clamp_take_gap(path)["clamped"]
     assert get_audio_duration(path) == before
+
+
+def test_a_micro_stop_inside_the_word_is_not_the_take_gap(tmp_path):
+    """bv004 en_5 (STEP 59 §3): «black», a short dip inside it, «black», then 1.7 s, then the
+    second take. The first internal silence was the dip, so the 1.7 s pause stayed: 3.4 s of
+    dead_air over en_2 and en_5. The longest pause is the gap between the takes."""
+    from tts_common import TAKE_GAP_S, clamp_take_gap, measure_first_take_end
+    path = str(tmp_path / "en_5.mp3")
+    _tone(path, [(0.05, 0.35), (0.44, 0.70), (2.40, 2.90)], 3.05)    # 0.09 s dip, 1.7 s pause
+    r = clamp_take_gap(path)
+    assert r["clamped"] and r["gap_before"] == pytest.approx(1.7, abs=0.1)
+    assert r["gap_after"] <= TAKE_GAP_S
+    assert measure_first_take_end(path) == pytest.approx(0.70, abs=0.05)
+    assert clamp_take_gap(path)["gap_before"] <= TAKE_GAP_S + 0.10
+
+
+def test_a_failed_cut_says_why(tmp_path, monkeypatch, caplog):
+    import subprocess as sp
+
+    import tts_common
+    path = str(tmp_path / "en.mp3")
+    _tone(path, [(0.05, 0.55), (2.05, 2.55)], 2.7)
+    real = sp.run
+
+    def run(cmd, **kw):
+        if "-filter_complex" in cmd:
+            return sp.CompletedProcess(cmd, 1, "", "Invalid argument: atrim end before start")
+        return real(cmd, **kw)
+    monkeypatch.setattr(sp, "run", run)
+    with caplog.at_level("WARNING", logger=tts_common.logger.name):
+        assert not tts_common.clamp_take_gap(path)["clamped"]
+    assert "rc=1" in caplog.text and "atrim end before start" in caplog.text
