@@ -182,6 +182,10 @@ PENDING_DIR = OUTPUT_DIR / "pending"
 # and the dashboard has no artifact, so it gets one folder per video.
 CLIPS_DIR = OUTPUT_DIR / "clips"
 APPROVED_DIR = OUTPUT_DIR / "approved"
+#: Where a render is written until it is whole (STEP 59 §6). No page lists it.
+RENDERING_DIR = OUTPUT_DIR / "rendering"
+#: Where a cut render goes: moved, never deleted, with a reason.txt.
+CUT_DIR = OUTPUT_DIR / "rejected" / "_cut"
 REJECTED_DIR = OUTPUT_DIR / "rejected"
 UPLOADED_DIR = OUTPUT_DIR / "uploaded"
 
@@ -421,6 +425,39 @@ def _queue_bad(guard, fresh: bool = False) -> set:
     return bad
 
 
+class AlreadyRendering(RuntimeError):
+    """A job for this script (topic_id + type) is already queued or running."""
+
+
+def script_key(script: dict) -> Optional[str]:
+    """topic_id:type, the identity of a script across jobs; None for a script without one."""
+    meta = (script or {}).get("_meta") or {}
+    vtype = (script or {}).get("type") or meta.get("video_type")
+    return f"{meta['topic_id']}:{vtype}" if meta.get("topic_id") else None
+
+
+def rendering_job_for(key: Optional[str], exclude: str = None) -> Optional[dict]:
+    """The active job holding `key`. The ledger is shared, so this sees other dashboards too."""
+    if not key:
+        return None
+    return next((j for j in get_active_jobs()
+                 if j.get("script_key") == key and j.get("id") != exclude), None)
+
+
+def move_to_cut(paths, reason: str, name: str) -> Optional[Path]:
+    """Move whatever a cut render left to output/rejected/_cut/<name>/ with reason.txt. Never deletes."""
+    present = [Path(p) for p in paths if p and Path(p).exists()]
+    if not present:
+        return None
+    dest = CUT_DIR / name
+    dest.mkdir(parents=True, exist_ok=True)
+    for path in present:
+        shutil.move(str(path), str(dest / path.name))
+    (dest / "reason.txt").write_text(f"{datetime.now().isoformat()}\n{reason}\n", encoding="utf-8")
+    logger.warning("cut render: moved %s to %s (%s)", [p.name for p in present], dest, reason[:200])
+    return dest
+
+
 def queue_pick(video_type: str = None):
     """The next SAFE queued script for this type, or None.
 
@@ -444,6 +481,8 @@ def queue_pick(video_type: str = None):
                 data = json.load(handle)
             if video_type and data.get("type") != video_type:
                 continue
+            if rendering_job_for(script_key(data)):
+                continue                  # another job already holds it
             return path, data
     except Exception:                                       # noqa: BLE001
         logger.warning("queue: could not read the queue", exc_info=True)
@@ -611,6 +650,25 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
     # decided a video had been produced. This is bound only once the render
     # returned, so "an mp4 survived the failure" means a finished mp4.
     rendered_video = None
+    stage_path = None                 # the render while it is not whole yet
+    stage_seconds = {}                # where the job's time went, per stage
+    _t0 = time.monotonic()
+
+    def _stage(name):
+        nonlocal _t0
+        now = time.monotonic()
+        stage_seconds[name] = round(now - _t0, 1)
+        _t0 = now
+
+    def _cut_on_failure(error_msg):
+        """Name the stage the time went to, and move an unfinished render to _cut/."""
+        failed = next((n for n in ("script", "tts", "clips", "frames+encode", "gate+outro")
+                       if n not in stage_seconds), "after gate")
+        _stage(f"{failed} (failed)")
+        logger.error("job %s stage seconds: %s", job_id, stage_seconds)
+        if stage_path is not None:
+            move_to_cut([stage_path], f"job {job_id}: {error_msg[:500]}\nstage seconds: {stage_seconds}",
+                        stage_path.stem)
 
     # OPENED HERE, NOT WHEN THE VIDEO GETS ITS NAME. The script is paid for
     # before unique_name exists; a tracker reset after generate_script left
@@ -713,6 +771,16 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                        current_step="Generating script with GPT...", progress=15)
             script_data = generate_script(category, topic, video_type)
 
+        # ONE JOB PER SCRIPT. Another dashboard (or a pick that raced this
+        # one) may hold the same topic_id + type; two renders of bv010 is how
+        # a second copy of a topic reached YouTube.
+        key = script_key(script_data)
+        if rendering_job_for(key, exclude=job_id):
+            queued_path = None            # not ours to release or shelve
+            raise AlreadyRendering(f"Ya se está renderizando {key.split(':')[0]}")
+        if key:
+            update_job(job_id, script_key=key)
+
         import re as _re
         output_name = _re.sub(r'[^\w\-]', '_', topic_name).strip('_').lower()
         output_name = _re.sub(r'_+', '_', output_name)
@@ -733,6 +801,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             json.dump(script_data, f, ensure_ascii=False, indent=2)
 
         update_job(job_id, current_step=f"Script generated", progress=30)
+        _stage("script")
 
         # Step 3: Generate TTS audio.
         # The TTS input is script_path (under output/scripts/); its output is
@@ -765,6 +834,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             return result
 
         update_job(job_id, current_step="Audio generated", progress=55)
+        _stage("tts")
 
         pipeline.merge_script_into_tts(script_data, json_path)
 
@@ -773,6 +843,12 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                    current_step="Rendering video...", progress=60)
 
         video_path = PENDING_DIR / video_type / f"{unique_name}.mp4"
+        # RENDERED ELSEWHERE, MOVED IN WHEN WHOLE (STEP 59 §6). A render killed
+        # at its 1200 s limit left a 46 s bv010 in pending/ with no sidecar; it
+        # was approved and uploaded. Only a finished, measured, gated file with
+        # its sidecar beside it ever gets the pending/ name.
+        stage_path = RENDERING_DIR / video_type / f"{unique_name}.mp4"
+        update_job(job_id, stage_path=str(stage_path))
 
         # The same resolver --batch uses, with the topic and category this
         # job already has. Before this, the dashboard called it without them,
@@ -833,14 +909,21 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             on_record=_record_background,
         )
         update_job(job_id, current_step=f"Rendering video ({resolved_background})...")
+        _stage("clips")
 
         pipeline.render_video(
-            audio_path, json_path, video_path,
+            audio_path, json_path, stage_path,
             video_type=video_type,
             background=resolved_background,
             timeout=pipeline.RENDER_TIMEOUT_S,
         )
-        rendered_video = video_path
+        _stage("frames+encode")
+        from qa_gate import probe_duration
+        measured = probe_duration(str(stage_path))
+        if tts_duration and (measured is None or abs(measured - tts_duration) > 0.5):
+            raise pipeline.PipelineError(
+                f"cut render: the video is {measured}s, the timeline {tts_duration:.2f}s")
+        rendered_video = stage_path
 
         update_job(job_id, current_step="Video rendered", progress=90)
 
@@ -849,14 +932,15 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         # outro added in 4a, and finalize_video had zero callers, so the
         # dashboard published ungated video with no Learning Routes CTA too.
         # One function, both paths.
-        fin = pipeline.finalize_video(video_path, json_path,
+        fin = pipeline.finalize_video(stage_path, json_path,
                                       variant_seed=unique_name)
+        _stage("gate+outro")
         result["gate"] = fin.get("gate")
         result["outro_appended"] = fin.get("outro_appended")
         result["blocking_flags"] = fin.get("blocking_flags", [])
         result["outro_variant"] = fin.get("outro_variant")
         if fin.get("video"):
-            video_path = Path(fin["video"])
+            stage_path = Path(fin["video"])
 
         # THE VERDICT, in three places on purpose.
         #
@@ -877,6 +961,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             tracker.save()
 
         # Save metadata
+        video_path.parent.mkdir(parents=True, exist_ok=True)
         meta_path = video_path.with_suffix('.json')
         with open(meta_path, 'w', encoding='utf-8') as f:
             json.dump({
@@ -897,8 +982,14 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                 # The ledger in output/costs/ stays the authoritative record.
                 "cost": tracker.summary() if tracker is not None else None,
                 "script_data": script_data,
+                "stage_seconds": stage_seconds,
                 "created_at": datetime.now().isoformat()
             }, f, ensure_ascii=False, indent=2)
+
+        # The sidecar exists, so now the video may have its pending/ name.
+        os.replace(stage_path, video_path)
+        rendered_video = video_path
+        logger.info("job %s stage seconds: %s", job_id, stage_seconds)
 
         result["success"] = True
         result["video_path"] = str(video_path)
@@ -917,13 +1008,19 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         result["error"] = error_msg
         complete_job(job_id, success=False, error=error_msg[:2000])
         logger.error("[Pipeline ERROR]: %s", error_msg)
+        _cut_on_failure(error_msg)
         _release_queued_script(queued_path, script_path, rendered_video)
+    except AlreadyRendering as e:
+        result["error"] = str(e)
+        complete_job(job_id, success=False, error=str(e))
+        logger.warning("job %s refused: %s", job_id, e)
     except Exception as e:
         import traceback
         error_msg = f"{str(e)}\n{traceback.format_exc()}"
         result["error"] = error_msg
         complete_job(job_id, success=False, error=error_msg[:2000])
         logger.error("[Pipeline ERROR]: %s", error_msg)
+        _cut_on_failure(str(e))
         _release_queued_script(queued_path, script_path, rendered_video)
     finally:
         # A failed run spent money too, and a ledger fed only by successes
@@ -1005,9 +1102,15 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
     """Queue one video and return its job id immediately.
 
     The job appears in the ledger before this returns, so the very next page
-    draw shows it as active.
+    draw shows it as active. A script another job holds is refused with
+    AlreadyRendering, before any job exists.
     """
+    key = script_key(kwargs.get("script_data"))
+    if rendering_job_for(key):
+        raise AlreadyRendering(f"Ya se está renderizando {key.split(':')[0]}")
     job_id = create_job(video_type, category, topic_name)
+    if key:
+        update_job(job_id, script_key=key)
 
     # The heartbeat is what a running job leaves behind, and it keeps
     # ticking through the long encode, when nothing else writes to the row.
@@ -1089,6 +1192,9 @@ def reap_orphaned_jobs() -> int:
             jobs["history"].insert(0, job)
         jobs["history"] = jobs["history"][:50]
         save_jobs(jobs)
+    for job in orphans:
+        if job.get("stage_path"):
+            move_to_cut([job["stage_path"]], job["error"], Path(job["stage_path"]).stem)
 
     logger.info("Reaped %d orphaned job(s) from a previous dashboard process",
                 len(orphans))
@@ -1119,10 +1225,12 @@ def get_pending_videos() -> list:
         if type_dir.is_dir():
             for video_file in type_dir.glob("*.mp4"):
                 meta_file = video_file.with_suffix('.json')
-                meta = {}
-                if meta_file.exists():
-                    with open(meta_file, 'r') as f:
-                        meta = json.load(f)
+                if not meta_file.exists():
+                    # STEP 59 §6: no sidecar means the job never finished it.
+                    logger.warning("review: %s has no sidecar; not shown", video_file.name)
+                    continue
+                with open(meta_file, 'r') as f:
+                    meta = json.load(f)
                 videos.append({
                     "path": video_file,
                     "type": type_dir.name,
@@ -2728,13 +2836,17 @@ elif page == "Generate":
         if generate_btn:
             # Queued, not awaited: the outcome arrives in the job list above,
             # which this page already renders from the ledger.
-            job_id = start_generation(video_type, category, topic_name,
-                                      profile_name=profile_name,
-                                      background=background,
-                                      use_queue=use_queue,
-                                      dry_run=dry_run)
-            st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
-            st.rerun()
+            try:
+                job_id = start_generation(video_type, category, topic_name,
+                                          profile_name=profile_name,
+                                          background=background,
+                                          use_queue=use_queue,
+                                          dry_run=dry_run)
+            except AlreadyRendering as e:
+                st.error(str(e))
+            else:
+                st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
+                st.rerun()
 
 
 # ============== QUEUE PAGE ==============
