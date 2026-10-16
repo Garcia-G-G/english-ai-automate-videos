@@ -532,7 +532,8 @@ LEVEL_ITEMS = 10
 LEVEL_TAGGED_FIELDS = ("intro", "outro")
 #: hashtags[0] per type.
 LEVEL_TYPE_TAGS = {"level_test": "#NivelDeInglés", "say_it_level": "#DiloEnInglés",
-                   "true_false_level": "#VerdaderoOFalso", "fill_level": "#CompletaLaFrase"}
+                   "true_false_level": "#VerdaderoOFalso", "fill_level": "#CompletaLaFrase",
+                   "choose_level": "#ElegirLaCorrecta"}
 #: Per tier (items 1-3, 4-7, 8-10): allowed CEFR range and how many items must
 #: reach `min_high` or above.
 LEVEL_CEFR_RULES = {
@@ -543,7 +544,11 @@ LEVEL_CEFR_RULES = {
     "true_false_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B2", "C2", 0, None)),
     # STEP 62: level_test's ranges; a grammar point has no "two C1 words" to offer.
     "fill_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B2", "C2", 0, None)),
+    "choose_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B2", "C2", 0, None)),
 }
+#: choose_level: how many times each option index is the right one, so «always the
+#: first» is not a strategy.
+CHOOSE_INDEX_RANGE = (3, 7)
 #: The blank in a fill_level sentence (tts_elevenlabs.LEVEL_BLANK).
 LEVEL_BLANK = "____"
 #: true_false_level: how many statements are true, so «siempre falso» is not a strategy.
@@ -597,6 +602,24 @@ class FillLevelItem(BaseModel):
             raise ValueError(f"the sentence has exactly one blank, written {LEVEL_BLANK}")
         if "_" in self.answer:
             raise ValueError("the answer fills the blank; it has no blank of its own")
+        return self
+
+
+class ChooseLevelItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    sentence: str = Field(min_length=1)
+    options: List[str] = Field(min_length=2, max_length=2)
+    answer: Literal[0, 1]
+    cefr: Literal[CEFR_LEVELS]
+
+    @model_validator(mode="after")
+    def _one_blank_two_options(self):
+        if self.sentence.count(LEVEL_BLANK) != 1 or "_____" in self.sentence:
+            raise ValueError(f"the sentence has exactly one blank, written {LEVEL_BLANK}")
+        if any(not o.strip() or "_" in o for o in self.options):
+            raise ValueError("an option is a word or two, with no blank")
+        if self.options[0].strip().lower() == self.options[1].strip().lower():
+            raise ValueError("the two options are the same")
         return self
 
 
@@ -684,6 +707,20 @@ class FillLevelScript(_LevelScript):
     items: List[FillLevelItem]
 
 
+class ChooseLevelScript(_LevelScript):
+    type: Literal["choose_level"]
+    items: List[ChooseLevelItem]
+
+    @model_validator(mode="after")
+    def _check_answer_spread(self):
+        lo, hi = CHOOSE_INDEX_RANGE
+        for index in (0, 1):
+            n = sum(it.answer == index for it in self.items)
+            if not lo <= n <= hi:
+                raise ValueError(f"option {index + 1} is right {n} times; the format needs {lo} to {hi}")
+        return self
+
+
 class SayItLevelScript(_LevelScript):
     type: Literal["say_it_level"]
     items: List[SayItLevelItem]
@@ -703,7 +740,7 @@ class SayItLevelScript(_LevelScript):
 AnyScript = Union[EducationalScript, QuizScript, TrueFalseScript,
                   FillBlankScript, PronunciationScript, VocabularyScript,
                   HowDoYouSayScript, LevelTestScript, SayItLevelScript,
-                  TrueFalseLevelScript, FillLevelScript]
+                  TrueFalseLevelScript, FillLevelScript, ChooseLevelScript]
 
 SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalScript,
@@ -717,6 +754,7 @@ SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "say_it_level": SayItLevelScript,
     "true_false_level": TrueFalseLevelScript,
     "fill_level": FillLevelScript,
+    "choose_level": ChooseLevelScript,
 }
 
 
@@ -805,6 +843,11 @@ class FillLevelRenderData(_RenderExtras, FillLevelScript):
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 
 
+class ChooseLevelRenderData(_RenderExtras, ChooseLevelScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
 RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalRenderData,
     "quiz": QuizRenderData,
@@ -817,6 +860,7 @@ RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "say_it_level": SayItLevelRenderData,
     "true_false_level": TrueFalseLevelRenderData,
     "fill_level": FillLevelRenderData,
+    "choose_level": ChooseLevelRenderData,
 }
 
 

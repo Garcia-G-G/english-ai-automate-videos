@@ -645,6 +645,8 @@ LEVEL_MODES = {
     "true_false_level": {"prompt": "statement", "answer": None, "kind": "tf"},
     # STEP 62: the answer is written INTO the sentence's blank; the translation under it.
     "fill_level": {"prompt": "sentence", "answer": None, "kind": "fill"},
+    # STEP 62 §2: both options under the sentence; the right one is circled, the other struck.
+    "choose_level": {"prompt": "sentence", "answer": None, "kind": "choose"},
 }
 #: Rows that open a tier, 0-based, and the tiers' bands and words.
 TIER_STARTS = (3, 7)
@@ -943,8 +945,7 @@ def _plain_line(text: str, size: int, color: Tuple[int, int, int, int]) -> Image
 
 def fill_spans(items: List[Dict], centres: List[int]) -> List[Tuple[float, float, float]]:
     """(x start, x end, pencil y) where each answer is written: centred in its blank, on line 1."""
-    key = tuple((it["sentence"], it["answer"]) for it in items)
-    size, blank = fill_layout(key)
+    size, blank = fill_layout(tuple(blank_key(it) for it in items))
     f = fredoka(size)
     out = []
     for it, cy in zip(items, centres):
@@ -992,6 +993,108 @@ def _draw_fill_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items:
         if p >= 1.0:
             tick_t = tl.answer[i][1]
             _draw_tick(layer, LINE_X + tw + TICK_GAP, cy2,
+                       ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
+
+
+#: choose_level: «make · do» under the sentence, muted, from frame 0.
+CHOICE_SEP = "   ·   "           # wide, so a circle and a strike never touch
+CIRCLE_PAD_X, CIRCLE_PAD_Y = 12, 10
+DOTS_GAP = 34                    # the countdown starts this far after the options line
+
+
+def blank_key(item: Dict) -> Tuple[str, str]:
+    """(sentence, what the blank must hold): fill_level's answer, choose_level's longer option."""
+    if "options" in item:
+        return item["sentence"], max(item["options"], key=len)
+    return item["sentence"], item["answer"]
+
+
+def choice_line(item: Dict) -> str:
+    return CHOICE_SEP.join(item["options"])
+
+
+def choice_spans(items: List[Dict], centres: List[int]) -> List[List[Tuple[float, float]]]:
+    """[(x start, x end) of option 0, of option 1] per row, on line 2 at the page's size."""
+    size = page_size(tuple(choice_line(it) for it in items))
+    f = fredoka(size)
+    out = []
+    for it in items:
+        a, b = it["options"]
+        xb = LINE_X + f.getlength(a + CHOICE_SEP)
+        out.append([(LINE_X, LINE_X + f.getlength(a)), (xb, xb + f.getlength(b))])
+    return out
+
+
+def _hand_circle(draw: ImageDraw.ImageDraw, box: Tuple[float, float, float, float], p: float) -> None:
+    """A loop drawn by hand around box, p of the way: it starts top-left and overshoots a
+    little, with a slow wobble so it does not look like a stamp. Ink under green."""
+    if p <= 0:
+        return
+    x0, y0, x1, y1 = box
+    cx, cy, rx, ry = (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2
+    sweep = 2 * math.pi * 1.08 * p
+    a0 = -math.pi * 0.7
+    steps = max(2, int(48 * p))
+    pts = []
+    for k in range(steps + 1):
+        a = a0 + sweep * k / steps
+        wob = 1.0 + 0.05 * math.sin(3 * a + 0.6) + 0.04 * (a - a0) / (2 * math.pi)
+        pts.append(_p(cx + rx * wob * math.cos(a), cy + ry * wob * math.sin(a)))
+    draw.line(pts, fill=_color("ink"), width=10, joint="curve")
+    draw.line(pts, fill=_color("correct"), width=5, joint="curve")
+
+
+def _strike(draw: ImageDraw.ImageDraw, x0: float, x1: float, cy: float, p: float) -> None:
+    """A red stroke through the wrong option, left to right, ink under red."""
+    if p <= 0:
+        return
+    a, b = (x0 - 6, cy + 3), (x0 - 6 + (x1 - x0 + 12) * p, cy - 3 * (2 * p - 1))
+    draw.line([_p(*a), _p(*b)], fill=_color("ink"), width=7)
+    draw.line([_p(*a), _p(*b)], fill=_color("error"), width=3)
+
+
+def _draw_choose_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items: List[Dict],
+                         centres: List[int]) -> None:
+    """Both options stay readable: over answer_i the right one turns blue and is circled
+    in green, the wrong one is struck in red; the tick follows the line. The countdown
+    dots sit after the options, never over them."""
+    size = page_size(tuple(choice_line(it) for it in items))
+    f = fredoka(size)
+    draw = ImageDraw.Draw(layer, "RGBA")
+    grey, blue = _color("secondary_text"), _color("english_blue")
+    bsize, blank = fill_layout(tuple(blank_key(it) for it in items))
+    bf = fredoka(bsize)
+    for i, (it, spans) in enumerate(zip(items, choice_spans(items, centres))):
+        # the blank stays open: nothing is written in it, the options below answer it
+        bx, ry = LINE_X + bf.getlength(fill_parts(it["sentence"])[0]), centres[i] + LINE1_DY + bsize * 0.42
+        draw.line([_p(bx + 2, ry), _p(bx + blank - 2, ry)], fill=_color("ink"), width=BLANK_RULE)
+        cy = centres[i] + LINE2_DY
+        y = _text_y(f, cy) - 2
+        p = tl.reveal(i, t)
+        right = it["answer"]
+        sep_x = spans[0][1]
+        dot = CHOICE_SEP.strip()
+        layer.alpha_composite(_plain_line(dot, size, grey), tuple(int(v) for v in _p(
+            sep_x + (f.getlength(CHOICE_SEP) - f.getlength(dot)) / 2 - 2, y)))
+        for k, (x0, _x1) in enumerate(spans):
+            word = _plain_line(it["options"][k], size, grey)
+            at = tuple(int(v) for v in _p(x0 - 2, y))
+            layer.alpha_composite(word, at)
+            if k == right and p > 0:
+                layer.alpha_composite(_faded(_plain_line(it["options"][k], size, blue), p), at)
+        line_end = spans[1][1]
+        th0, th1 = tl.think[i]
+        if th0 <= t < th1:
+            _draw_countdown_at(layer, line_end + DOTS_GAP, cy, (t - th0) / max(1e-6, th1 - th0))
+        if p <= 0:
+            continue
+        x0, x1 = spans[right]
+        _hand_circle(draw, (x0 - CIRCLE_PAD_X, cy - size / 2 - CIRCLE_PAD_Y,
+                            x1 + CIRCLE_PAD_X, cy + size / 2 + CIRCLE_PAD_Y), p)
+        _strike(draw, *spans[1 - right], cy, p)
+        if p >= 1.0:
+            tick_t = tl.answer[i][1]
+            _draw_tick(layer, line_end + CIRCLE_PAD_X + TICK_GAP, cy,
                        ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
 
 
@@ -1113,8 +1216,18 @@ def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer
     return glide(pos, LEVEL_PENCIL_PARK, tl.verdict[0])
 
 
+def _pencil_spans(kind: str, items: List[Dict], centres: List[int]):
+    """Where the pencil writes: fill_level in the blank, choose_level round the right option."""
+    if kind == "fill":
+        return fill_spans(items, centres)
+    if kind == "choose":
+        return [(*spans[it["answer"]], cy + LINE2_DY + 26)
+                for it, spans, cy in zip(items, choice_spans(items, centres), centres)]
+    return None
+
+
 def create_frame_level(t: float, data: Dict, duration: float, presentation=None) -> np.ndarray:
-    """One frame of a level_test, say_it_level, true_false_level or fill_level video."""
+    """One frame of any level mode (LEVEL_MODES)."""
     mode = LEVEL_MODES[data["type"]]
     items: List[Dict] = data["items"]
     tl = data.get("_level_timeline")
@@ -1145,8 +1258,8 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
                                     *_p(PAGE_W - 22, cy + ROW_PITCH // 2 - 10)],
                                    radius=18, fill=_on_paper(yellow, 0.7 * a))
     kind = mode.get("kind", "write")
-    if kind == "fill":
-        layer.alpha_composite(_static_fill_text(tuple((it["sentence"], it["answer"]) for it in items)))
+    if kind in ("fill", "choose"):
+        layer.alpha_composite(_static_fill_text(tuple(blank_key(it) for it in items)))
     else:
         layer.alpha_composite(_static_level_text(tuple(it[prompt] for it in items), prompt == "english"))
 
@@ -1169,6 +1282,8 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
         _draw_tf_answers(layer, t, tl, items, centres)
     elif kind == "fill":
         _draw_fill_answers(layer, t, tl, items, centres)
+    elif kind == "choose":
+        _draw_choose_answers(layer, t, tl, items, centres)
     answer_color = blue if answer == "english" else ink
     size = page_size(tuple(it[answer] for it in items)) if answer else 0
     for i, item in enumerate(items if answer else []):
@@ -1206,7 +1321,7 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
     # 5. the pencil
     pencil, (pcx, pcy) = pencil_image()
     px, py = level_pencil_position(t, tl, items, answer, centres, size, writes=kind != "tf",
-                                   spans=fill_spans(items, centres) if kind == "fill" else None)
+                                   spans=_pencil_spans(kind, items, centres))
     lx, ly = _p(px, py)
     layer.alpha_composite(pencil, (int(round(lx - pcx)), int(round(ly - pcy))))
 

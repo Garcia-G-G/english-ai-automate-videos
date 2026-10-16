@@ -1946,6 +1946,9 @@ LEVEL_PLANS = {
     # sentence with the blank filled, one English clip through the onset gate.
     "fill_level": {"prompt": ("sentence", "en"), "answer": ("filled", "en"),
                    "think": 3.0, "speak_prompt": False},
+    # STEP 62 §2: the same, the blank filled with the right one of the two options.
+    "choose_level": {"prompt": ("sentence", "en"), "answer": ("filled", "en"),
+                     "think": 3.0, "speak_prompt": False},
 }
 
 

@@ -229,6 +229,13 @@ def _boxes() -> List[Dict]:
                height=None, face="fredoka",
                source="how_do_you_say.LINE_W, LINE_FONT_MAX/MIN, fill_layout")
           for field in ("sentence", "translation")],
+        # choose_level (STEP 62): the same sentence line, and «make · do» under it
+        # (how_do_you_say.choice_line).
+        *[dict(video_type="choose_level", field=field, width=hdys.LINE_W, lines=1,
+               font_max=hdys.LINE_FONT_MAX, font_min=hdys.LINE_FONT_MIN,
+               height=None, face="fredoka",
+               source="how_do_you_say.LINE_W, LINE_FONT_MAX/MIN, fill_layout, choice_line")
+          for field in ("sentence", "options")],
         dict(video_type="say_it_level", field="tip",
              width=hdys.NOTE_W - 2 * hdys.NOTE_PAD, lines=hdys.NOTE_LINES - 1,
              font_max=hdys.NOTE_FONT, font_min=hdys.NOTE_FONT, height=None,
@@ -373,6 +380,7 @@ _SCRIPT_FIELDS = {
     "say_it_level": {"spanish": None, "english": None, "alt": None, "tip": None},
     "true_false_level": {"statement": None, "answer": None},   # per item
     "fill_level": {"sentence": None, "translation": None},     # per item
+    "choose_level": {"sentence": None, "options": None},       # per item
 }
 
 
@@ -427,12 +435,15 @@ def check_script(script: Dict) -> List[Dict]:
             if "truth" in item:
                 look("answer", tf_answer(item)[0], f"items[{index}]")
 
-    if video_type == "fill_level":
-        from video.how_do_you_say import LINE_W, fill_layout, fill_line_width
-        items = [it for it in script.get("items") or [] if it.get("sentence") and it.get("answer")]
-        size, blank = fill_layout(tuple((it["sentence"], it["answer"]) for it in items)) if items else (0, 0)
+    if video_type in ("fill_level", "choose_level"):
+        from video.how_do_you_say import LINE_W, blank_key, choice_line, fill_layout, fill_line_width
+        items = [it for it in script.get("items") or []
+                 if it.get("sentence") and (it.get("options") if video_type == "choose_level" else it.get("answer"))]
+        size, blank = fill_layout(tuple(blank_key(it) for it in items)) if items else (0, 0)
         for index, item in enumerate(script.get("items") or []):
             look("translation", item.get("translation"), f"items[{index}]")
+            if item.get("options"):
+                look("options", choice_line(item), f"items[{index}]")
             if item in items and fill_line_width(item["sentence"], size, blank) > LINE_W:
                 violations.append({"type": video_type, "field": "sentence", "where": f"items[{index}]",
                                    "text": item["sentence"], "fits": False,

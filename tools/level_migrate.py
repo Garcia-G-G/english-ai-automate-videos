@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from tts_elevenlabs import LEVEL_PLANS, LEVEL_TIER_LINES, level_answer  # noqa: E402
 
 TOPICS = {"level_test": "level_vocab", "say_it_level": "say_it", "true_false_level": "false_friends",
-          "fill_level": "grammar"}
+          "fill_level": "grammar", "choose_level": "grammar"}
 
 
 def derive(script: dict) -> dict:
