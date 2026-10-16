@@ -19,7 +19,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from tts_elevenlabs import LEVEL_PLANS, LEVEL_TIER_LINES, level_answer  # noqa: E402
 
-TOPICS = {"level_test": "level_vocab", "say_it_level": "say_it", "true_false_level": "false_friends"}
+TOPICS = {"level_test": "level_vocab", "say_it_level": "say_it", "true_false_level": "false_friends",
+          "fill_level": "grammar"}
 
 
 def derive(script: dict) -> dict:
@@ -39,6 +40,11 @@ def derive(script: dict) -> dict:
         # The English word of each statement, the one in «»; nothing is spoken in English.
         out["translations"] = {}
         out["english_phrases"] = [re.search(r"«([^»]+)»", it["statement"]).group(1) for it in items]
+    elif plan["answer"][0] == "filled":
+        # The English spoken is the whole sentence with its blank filled (STEP 62).
+        filled = [level_answer(it, "filled") for it in items]
+        out["translations"] = {f: it["translation"] for f, it in zip(filled, items) if it.get("translation")}
+        out["english_phrases"] = filled
     else:
         out["translations"] = {it["english"]: it["spanish"] for it in items}
         out["english_phrases"] = [it["english"] for it in items] + [it["alt"] for it in items if it.get("alt")]

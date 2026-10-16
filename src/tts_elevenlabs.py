@@ -1942,6 +1942,10 @@ LEVEL_PLANS = {
     # so it carries no English onset risk.
     "true_false_level": {"prompt": ("statement", "es"), "answer": ("answer", "es"),
                          "think": 4.0, "speak_prompt": False},
+    # STEP 62: the sentence is read off the page with its blank; answer_i is the whole
+    # sentence with the blank filled, one English clip through the onset gate.
+    "fill_level": {"prompt": ("sentence", "en"), "answer": ("filled", "en"),
+                   "think": 3.0, "speak_prompt": False},
 }
 
 
@@ -1953,8 +1957,16 @@ def level_think(plan: dict, prompt: str) -> float:
     return plan["think"]
 
 
+#: The blank in a fill_level / choose_level sentence: exactly one per sentence.
+LEVEL_BLANK = "____"
+
+
 def level_answer(item: dict, field: str) -> str:
-    """The text an answer_i says: the field itself, or true_false_level's verdict line."""
+    """The text an answer_i says: the field itself, true_false_level's verdict line, or
+    the sentence with its blank filled (fill_level's answer, choose_level's right option)."""
+    if field == "filled":
+        word = item["answer"] if isinstance(item["answer"], str) else item["options"][item["answer"]]
+        return item["sentence"].replace(LEVEL_BLANK, word)
     if field != "answer":
         return item[field]
     return "Verdadero." if item["truth"] else f"Falso: {item['correction']}."

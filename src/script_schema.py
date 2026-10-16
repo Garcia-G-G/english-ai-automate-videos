@@ -532,7 +532,7 @@ LEVEL_ITEMS = 10
 LEVEL_TAGGED_FIELDS = ("intro", "outro")
 #: hashtags[0] per type.
 LEVEL_TYPE_TAGS = {"level_test": "#NivelDeInglés", "say_it_level": "#DiloEnInglés",
-                   "true_false_level": "#VerdaderoOFalso"}
+                   "true_false_level": "#VerdaderoOFalso", "fill_level": "#CompletaLaFrase"}
 #: Per tier (items 1-3, 4-7, 8-10): allowed CEFR range and how many items must
 #: reach `min_high` or above.
 LEVEL_CEFR_RULES = {
@@ -541,7 +541,11 @@ LEVEL_CEFR_RULES = {
     # level_test's ranges, without its counts: a false friend's CEFR is the word's,
     # and requiring two C1 in the last tier would push out the classic traps.
     "true_false_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B2", "C2", 0, None)),
+    # STEP 62: level_test's ranges; a grammar point has no "two C1 words" to offer.
+    "fill_level": (("A1", "A2", 0, None), ("A2", "B2", 0, None), ("B2", "C2", 0, None)),
 }
+#: The blank in a fill_level sentence (tts_elevenlabs.LEVEL_BLANK).
+LEVEL_BLANK = "____"
 #: true_false_level: how many statements are true, so «siempre falso» is not a strategy.
 TRUE_FALSE_TRUE_RANGE = (3, 7)
 
@@ -580,6 +584,22 @@ class TrueFalseLevelItem(BaseModel):
         return self
 
 
+class FillLevelItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    sentence: str = Field(min_length=1)
+    answer: str = Field(min_length=1)
+    translation: str = Field(min_length=1)
+    cefr: Literal[CEFR_LEVELS]
+
+    @model_validator(mode="after")
+    def _one_blank(self):
+        if self.sentence.count(LEVEL_BLANK) != 1 or "_____" in self.sentence:
+            raise ValueError(f"the sentence has exactly one blank, written {LEVEL_BLANK}")
+        if "_" in self.answer:
+            raise ValueError("the answer fills the blank; it has no blank of its own")
+        return self
+
+
 class _LevelScript(ScriptBase, _TranslationsMixin):
     title: str = Field(min_length=1)
     theme: str = Field(min_length=1)
@@ -605,7 +625,7 @@ class _LevelScript(ScriptBase, _TranslationsMixin):
             for name, value in item.model_dump().items():
                 if isinstance(value, str) and TAG_RE.search(value):
                     problems.append(f"items[{i}].{name}: audio tags are only allowed in intro and outro")
-        for field in ("english", "spanish", "statement"):
+        for field in ("english", "spanish", "statement", "sentence"):
             if not items or not hasattr(items[0], field):
                 continue
             seen = [getattr(it, field).strip().lower() for it in items]
@@ -659,6 +679,11 @@ class TrueFalseLevelScript(_LevelScript):
         return self
 
 
+class FillLevelScript(_LevelScript):
+    type: Literal["fill_level"]
+    items: List[FillLevelItem]
+
+
 class SayItLevelScript(_LevelScript):
     type: Literal["say_it_level"]
     items: List[SayItLevelItem]
@@ -678,7 +703,7 @@ class SayItLevelScript(_LevelScript):
 AnyScript = Union[EducationalScript, QuizScript, TrueFalseScript,
                   FillBlankScript, PronunciationScript, VocabularyScript,
                   HowDoYouSayScript, LevelTestScript, SayItLevelScript,
-                  TrueFalseLevelScript]
+                  TrueFalseLevelScript, FillLevelScript]
 
 SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalScript,
@@ -691,6 +716,7 @@ SCRIPT_MODELS: Dict[str, Type[ScriptBase]] = {
     "level_test": LevelTestScript,
     "say_it_level": SayItLevelScript,
     "true_false_level": TrueFalseLevelScript,
+    "fill_level": FillLevelScript,
 }
 
 
@@ -774,6 +800,11 @@ class TrueFalseLevelRenderData(_RenderExtras, TrueFalseLevelScript):
     model_config = ConfigDict(extra="allow", populate_by_name=True)
 
 
+class FillLevelRenderData(_RenderExtras, FillLevelScript):
+    # Explicit, not inherited: see HowDoYouSayRenderData.
+    model_config = ConfigDict(extra="allow", populate_by_name=True)
+
+
 RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "educational": EducationalRenderData,
     "quiz": QuizRenderData,
@@ -785,6 +816,7 @@ RENDER_MODELS: Dict[str, Type[ScriptBase]] = {
     "level_test": LevelTestRenderData,
     "say_it_level": SayItLevelRenderData,
     "true_false_level": TrueFalseLevelRenderData,
+    "fill_level": FillLevelRenderData,
 }
 
 

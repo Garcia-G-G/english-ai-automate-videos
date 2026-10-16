@@ -642,7 +642,9 @@ LEVEL_MODES = {
     "level_test":   {"prompt": "english", "answer": "spanish"},
     "say_it_level": {"prompt": "spanish", "answer": "english"},
     # STEP 61: the answer is derived (tf_answer) and comes into focus instead of being written.
-    "true_false_level": {"prompt": "statement", "answer": None},
+    "true_false_level": {"prompt": "statement", "answer": None, "kind": "tf"},
+    # STEP 62: the answer is written INTO the sentence's blank; the translation under it.
+    "fill_level": {"prompt": "sentence", "answer": None, "kind": "fill"},
 }
 #: Rows that open a tier, 0-based, and the tiers' bands and words.
 TIER_STARTS = (3, 7)
@@ -696,6 +698,40 @@ def tf_answer(item: Dict) -> Tuple[str, str]:
     if item["truth"]:
         return "VERDADERO", "correct"
     return f"FALSO · {item['correction']}", "error"
+
+
+#: fill_level: the blank is one width on the whole page, wide enough for the longest
+#: answer, so its length gives no hint; the grey blurred bar in it is the same in every row.
+FILL_BLANK = "____"
+BLANK_PAD = 10                   # air either side of the answer inside the blank
+BLANK_MIN = "_____"              # the narrowest blank, as wide as five underscores
+BLANK_BAR_H = 26
+BLANK_RULE = 4
+
+
+def fill_parts(sentence: str) -> Tuple[str, str]:
+    """(before, after) the blank. The before keeps its trailing space, the after its leading one."""
+    before, after = sentence.split(FILL_BLANK)
+    return before, after
+
+
+def fill_layout(items: Tuple[Tuple[str, str], ...]) -> Tuple[int, int]:
+    """(font size, blank width) for a page of (sentence, answer): the largest size at which
+    every sentence, with the page's blank in it, fits LINE_W on one line."""
+    for size in range(LINE_FONT_MAX, LINE_FONT_MIN - 1, -2):
+        f = fredoka(size)
+        blank = int(math.ceil(max([f.getlength(a) for _s, a in items] + [f.getlength(BLANK_MIN)]))) + 2 * BLANK_PAD
+        if all(f.getlength(b) + blank + f.getlength(a) <= LINE_W for b, a in (fill_parts(s) for s, _a in items)):
+            return size, blank
+    f = fredoka(LINE_FONT_MIN)
+    return LINE_FONT_MIN, int(math.ceil(max(f.getlength(a) for _s, a in items))) + 2 * BLANK_PAD
+
+
+def fill_line_width(sentence: str, size: int, blank: int) -> int:
+    """Drawn width of a sentence with the page's blank; length_spec measures it against LINE_W."""
+    f = fredoka(size)
+    before, after = fill_parts(sentence)
+    return int(math.ceil(f.getlength(before) + blank + f.getlength(after)))
 
 
 def fit_line(text: str, size: int = LINE_FONT_MAX) -> Tuple[ImageFont.FreeTypeFont, int, int]:
@@ -867,6 +903,98 @@ def _draw_tf_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items: L
             (_draw_tick if items[i]["truth"] else _draw_cross)(layer, x, cy, scale)
 
 
+@lru_cache(maxsize=4)
+def _static_fill_text(items: Tuple[Tuple[str, str], ...]) -> Image.Image:
+    """Row numbers and every sentence with its blank left open: on the page from frame 0."""
+    layer = Image.new("RGBA", (LAYER_W, LAYER_H), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(layer, "RGBA")
+    nf = fredoka(NUM_SIZE)
+    size, blank = fill_layout(items)
+    f = fredoka(size)
+    for i, ((sentence, _a), cy) in enumerate(zip(items, row_centres(len(items)))):
+        num = str(i + 1)
+        draw.text(_p(NUM_CX - nf.getlength(num) / 2, _text_y(nf, cy)), num, font=nf,
+                  fill=_color("secondary_text"))
+        before, after = fill_parts(sentence)
+        y = _text_y(f, cy + LINE1_DY)
+        draw.text(_p(LINE_X, y), before, font=f, fill=_color("ink"))
+        draw.text(_p(LINE_X + f.getlength(before) + blank, y), after, font=f, fill=_color("ink"))
+    return layer
+
+
+@lru_cache(maxsize=16)
+def _blank_bar(width: int, radius: int) -> Image.Image:
+    """The shared placeholder: a grey rounded bar, blurred, the blank's width."""
+    img = Image.new("RGBA", (width + 2 * BLUR_PAD, BLANK_BAR_H + 2 * BLUR_PAD), (0, 0, 0, 0))
+    ImageDraw.Draw(img).rounded_rectangle([BLUR_PAD + 4, BLUR_PAD, BLUR_PAD + width - 4, BLUR_PAD + BLANK_BAR_H],
+                                          radius=BLANK_BAR_H // 2, fill=_color("secondary_text", 150))
+    return img.filter(ImageFilter.GaussianBlur(radius)) if radius > 0 else img
+
+
+@lru_cache(maxsize=32)
+def _plain_line(text: str, size: int, color: Tuple[int, int, int, int]) -> Image.Image:
+    """A line at exactly `size` on its own strip (fit_line would shrink a long one)."""
+    f = fredoka(size)
+    ascent, descent = f.getmetrics()
+    img = Image.new("RGBA", (int(math.ceil(f.getlength(text))) + 8, ascent + descent + 8), (0, 0, 0, 0))
+    ImageDraw.Draw(img).text((2, 2), text, font=f, fill=color)
+    return img
+
+
+def fill_spans(items: List[Dict], centres: List[int]) -> List[Tuple[float, float, float]]:
+    """(x start, x end, pencil y) where each answer is written: centred in its blank, on line 1."""
+    key = tuple((it["sentence"], it["answer"]) for it in items)
+    size, blank = fill_layout(key)
+    f = fredoka(size)
+    out = []
+    for it, cy in zip(items, centres):
+        w = f.getlength(it["answer"])
+        x0 = LINE_X + f.getlength(fill_parts(it["sentence"])[0]) + (blank - w) / 2
+        out.append((x0, x0 + w, cy + LINE1_DY + 26))
+    return out
+
+
+def _draw_fill_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items: List[Dict],
+                       centres: List[int]) -> None:
+    """Before the reveal each blank holds the blurred grey bar over its rule. Over answer_i the
+    answer is written into the blank in blue while bar and rule fade, and the translation
+    comes up under the sentence in muted ink, with the tick after it."""
+    key = tuple((it["sentence"], it["answer"]) for it in items)
+    size, blank = fill_layout(key)
+    f = fredoka(size)
+    tsize = page_size(tuple(it["translation"] for it in items))
+    draw = ImageDraw.Draw(layer, "RGBA")
+    blue, grey = _color("english_blue"), _color("secondary_text")
+    for i, (it, (x0, _x1, _base)) in enumerate(zip(items, fill_spans(items, centres))):
+        cy1, cy2 = centres[i] + LINE1_DY, centres[i] + LINE2_DY
+        bx = LINE_X + f.getlength(fill_parts(it["sentence"])[0])
+        p = tl.reveal(i, t)
+        if p < 1.0:
+            radius = int(round(BLUR_MAX * 0.5 * (1.0 - p) / BLUR_STEP)) * BLUR_STEP
+            bar = _faded(_blank_bar(blank, radius), 1.0 - p)
+            layer.alpha_composite(bar, tuple(int(v) for v in _p(bx - BLUR_PAD, cy1 - BLANK_BAR_H / 2 - BLUR_PAD)))
+            ry = cy1 + size * 0.42
+            draw.line([_p(bx + 2, ry), _p(bx + blank - 2, ry)], fill=_color("ink", int(255 * (1.0 - p))),
+                      width=BLANK_RULE)
+        th0, th1 = tl.think[i]
+        if th0 <= t < th1:
+            _draw_countdown_at(layer, bx + blank / 2 - 40, cy2, (t - th0) / max(1e-6, th1 - th0))
+        if p <= 0:
+            continue
+        word = _plain_line(it["answer"], size, blue)
+        wy = _text_y(f, cy1) - 2
+        cut = word.size[0] if p >= 1.0 else int(round(word.size[0] * p))
+        if cut > 0:
+            layer.alpha_composite(word.crop((0, 0, cut, word.size[1])), tuple(int(v) for v in _p(x0 - 2, wy)))
+        tf, _s, tw = fit_line(it["translation"], tsize)
+        note = _faded(_line_image(it["translation"], tsize, grey), p)
+        layer.alpha_composite(note, tuple(int(v) for v in _p(LINE_X - 2, _text_y(tf, cy2) - 2)))
+        if p >= 1.0:
+            tick_t = tl.answer[i][1]
+            _draw_tick(layer, LINE_X + tw + TICK_GAP, cy2,
+                       ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
+
+
 def _draw_countdown_at(layer: Image.Image, x0: float, cy: float, p: float) -> None:
     """_draw_countdown's three dots, at a given x."""
     draw = ImageDraw.Draw(layer, "RGBA")
@@ -950,7 +1078,8 @@ def _draw_note(layer: Image.Image, lines: List[Tuple[str, str]], scale: float) -
 
 
 def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer: Optional[str],
-                          centres: List[int], size: int, writes: bool = True) -> Tuple[float, float]:
+                          centres: List[int], size: int, writes: bool = True,
+                          spans: Optional[List[Tuple[float, float, float]]] = None) -> Tuple[float, float]:
     """Waits at the right end of the active row's answer line, jumps to its start as the
     answer begins, follows the mask, then goes back by the title for the verdict."""
     def glide(a, b, t0):
@@ -959,8 +1088,8 @@ def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer
 
     pos = LEVEL_PENCIL_PARK
     for i in range(tl.n):
-        base = centres[i] + LINE2_DY + 26
-        start = (LINE_X, base)
+        base = centres[i] + LINE2_DY + 26 if spans is None else spans[i][2]
+        start = (LINE_X, base) if spans is None else (spans[i][0], base)
         if t < tl.row[i]:
             return pos
         wait = (PENCIL_WAIT_X, base)
@@ -969,7 +1098,7 @@ def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer
                 return glide(pos, wait, tl.row[i])
             pos = wait
             continue
-        end = (LINE_X + fit_line(items[i][answer], size)[2], base)
+        end = (LINE_X + fit_line(items[i][answer], size)[2], base) if spans is None else (spans[i][1], base)
         if t < tl.answer[i][0] - PENCIL_MOVE:
             return glide(pos, wait, tl.row[i])
         if t < tl.answer[i][0]:
@@ -985,7 +1114,7 @@ def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer
 
 
 def create_frame_level(t: float, data: Dict, duration: float, presentation=None) -> np.ndarray:
-    """One frame of a level_test, say_it_level or true_false_level video."""
+    """One frame of a level_test, say_it_level, true_false_level or fill_level video."""
     mode = LEVEL_MODES[data["type"]]
     items: List[Dict] = data["items"]
     tl = data.get("_level_timeline")
@@ -1015,7 +1144,11 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
             draw.rounded_rectangle([*_p(LABEL_X1 + 6, cy - ROW_PITCH // 2 + 6),
                                     *_p(PAGE_W - 22, cy + ROW_PITCH // 2 - 10)],
                                    radius=18, fill=_on_paper(yellow, 0.7 * a))
-    layer.alpha_composite(_static_level_text(tuple(it[prompt] for it in items), prompt == "english"))
+    kind = mode.get("kind", "write")
+    if kind == "fill":
+        layer.alpha_composite(_static_fill_text(tuple((it["sentence"], it["answer"]) for it in items)))
+    else:
+        layer.alpha_composite(_static_level_text(tuple(it[prompt] for it in items), prompt == "english"))
 
     # 2. tier pills in the margin; the one a tier line announces pulses once
     for word, color, a, b in TIERS:
@@ -1032,8 +1165,10 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
         layer.alpha_composite(pill, tuple(int(round(v)) for v in _p(cx - pill.size[0] / 2, cy - pill.size[1] / 2)))
 
     # 3. countdown dots, the answers written in, ticks (true_false_level: brought into focus)
-    if answer is None:
+    if kind == "tf":
         _draw_tf_answers(layer, t, tl, items, centres)
+    elif kind == "fill":
+        _draw_fill_answers(layer, t, tl, items, centres)
     answer_color = blue if answer == "english" else ink
     size = page_size(tuple(it[answer] for it in items)) if answer else 0
     for i, item in enumerate(items if answer else []):
@@ -1070,7 +1205,8 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
 
     # 5. the pencil
     pencil, (pcx, pcy) = pencil_image()
-    px, py = level_pencil_position(t, tl, items, answer, centres, size, writes=answer is not None)
+    px, py = level_pencil_position(t, tl, items, answer, centres, size, writes=kind != "tf",
+                                   spans=fill_spans(items, centres) if kind == "fill" else None)
     lx, ly = _p(px, py)
     layer.alpha_composite(pencil, (int(round(lx - pcx)), int(round(ly - pcy))))
 
