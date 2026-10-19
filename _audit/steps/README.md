@@ -90,3 +90,4 @@ with the same number.
 | [STEP 66](STEP_66.md) | The same Short also goes to Instagram Reels and the Facebook Page (free Graph API, upload from the Mac) |
 | [STEP 67](STEP_67.md) | Upload errors say why (Google reason kept), the panel knows the 24 h upload limit, no double starts |
 | [STEP 68](STEP_68.md) | Close the open work: commit or drop everything uncommitted, push, clean tree (run first) |
+| [STEP 69](STEP_69.md) | Lesson notebook: sticky note inside the frame, English column blue; re-render make-vs-do and stop |
