@@ -185,6 +185,16 @@ class VideoMetadata:
         return self.description or ""
 
 
+def _google_error(resp) -> str:
+    """«youtube 400 uploadLimitExceeded: message» from a non-2xx response's JSON body."""
+    from upload_limits import error_text
+    try:
+        body = resp.json()
+    except ValueError:
+        body = resp.text
+    return error_text("youtube", resp.status_code, body)
+
+
 @dataclass
 class UploadResult:
     """Standardised result returned by every uploader."""
@@ -814,10 +824,15 @@ class YouTubeUploader(BaseUploader):
                 json=body,
                 timeout=60,
             )
-            init_resp.raise_for_status()
         except requests.RequestException as exc:
             logger.error("YouTube resumable init failed: %s", exc)
             return UploadResult(self.PLATFORM, False, error=str(exc))
+        if not 200 <= init_resp.status_code < 300:
+            # STEP 67: keep Google's reason (uploadLimitExceeded, quotaExceeded, ...);
+            # raise_for_status() threw the body away. Never the request headers.
+            error = _google_error(init_resp)
+            logger.error("YouTube resumable init failed: %s", error)
+            return UploadResult(self.PLATFORM, False, error=error)
 
         upload_url = init_resp.headers.get("Location")
         if not upload_url:
@@ -869,7 +884,9 @@ class YouTubeUploader(BaseUploader):
                         else:
                             offset += len(chunk)
                     else:
-                        resp.raise_for_status()
+                        error = _google_error(resp)
+                        logger.error("YouTube chunk upload failed: %s", error)
+                        return UploadResult(self.PLATFORM, False, error=error, session_uri=upload_url)
         except requests.RequestException as exc:
             logger.error("YouTube chunk upload failed: %s", exc)
             return UploadResult(self.PLATFORM, False, error=str(exc),

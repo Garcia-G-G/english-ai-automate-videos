@@ -486,6 +486,19 @@ def upload_to_youtube(render_row: dict, meta: dict, privacy: Optional[str] = Non
         note = YT_AUTH_ERRORS.get(reason, f"Autorización de YouTube fallida ({reason}). Pulsa otra vez.") if reason \
             else "Faltan YOUTUBE_CLIENT_ID / YOUTUBE_CLIENT_SECRET en .env."
         return {"ok": False, "refused": None, "url": None, "upload_id": None, "notes": [note]}
+    from upload_limits import claim, release
+    if not claim(artifact, "youtube"):                 # STEP 67: a second press while it uploads does nothing
+        return {"ok": False, "refused": "ya se está subiendo esta lección", "upload_id": None, "url": None, "notes": []}
+    try:
+        return _upload_lesson(youtube, video, artifact, render_row, meta, privacy, on_progress, studio_dir)
+    finally:
+        release(artifact, "youtube")
+
+
+def _upload_lesson(youtube, video, artifact, render_row, meta, privacy, on_progress, studio_dir) -> dict:
+    from publication_log import (ATTEMPT_FAILED, ATTEMPT_PUBLISHED, ATTEMPT_SESSION, ATTEMPT_STARTED,
+                                 PublicationRecordError, read_attempts, record_attempt, record_upload_result)
+    from upload_limits import spanish
     youtube_json_path(render_row, studio_dir).write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
     size = video.stat().st_size
     record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_STARTED, video_path=str(video),
@@ -498,8 +511,9 @@ def upload_to_youtube(render_row: dict, meta: dict, privacy: Optional[str] = Non
                                                   detail=meta["title"][:120]))
     if not result.success:
         record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_FAILED, video_path=str(video),
-                       session_uri=result.session_uri, file_size=size, detail=str(result.error)[:200])
-        return {"ok": False, "refused": None, "url": None, "upload_id": None, "notes": [f"upload failed: {result.error}"]}
+                       session_uri=result.session_uri, file_size=size, detail=str(result.error)[:300])
+        return {"ok": False, "refused": None, "url": None, "upload_id": None,
+                "notes": [f"No se subió: {spanish(result.error, read_attempts(), datetime.now())}"]}
     notes = []
     try:
         record_upload_result(artifact=artifact, video_path=str(video), video_type=YT_VIDEO_TYPE, platform="youtube",
@@ -815,6 +829,12 @@ def _upload_button(st, row: dict, meta: dict, privacy: Optional[str], key: str) 
     """The one «Subir a YouTube» button both doors share (the lesson panel and «Subir → Lecciones»)."""
     @st.fragment
     def _upload():
+        from publication_log import read_attempts
+        from upload_limits import limit_block
+        block = limit_block(read_attempts(), datetime.now())
+        if block:                                       # STEP 67: wait for the channel's slot
+            st.error(block)
+            return
         if not st.button("Subir a YouTube", type="primary", key=key + "_go"):
             return
         bar = st.progress(0.0, text="Subiendo…")
@@ -836,7 +856,10 @@ def _mins(row: dict) -> str:
 
 def _review_tab(st, board: dict) -> None:             # pragma: no cover — UI
     """«Revisar y subir»: por revisar and listas para subir on one page, like the Shorts."""
+    from publication_log import read_attempts
+    from upload_limits import published_last_24h
     from uploader import resolve_privacy
+    st.caption(f"Subidos en las últimas 24 h: {len(published_last_24h(read_attempts(), datetime.now()))}")
     st.markdown(f"#### Por revisar ({len(board['por_revisar'])})")
     if not board["por_revisar"]:
         st.caption("Nada por revisar.")

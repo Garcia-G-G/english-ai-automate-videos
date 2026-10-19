@@ -1512,6 +1512,11 @@ def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
                                  ATTEMPT_SESSION, ATTEMPT_STARTED,
                                  record_attempt)
 
+    from upload_limits import claim, release
+
+    # STEP 67: a second press while this video is uploading does nothing, and logs nothing.
+    if not claim(artifact, platform):
+        return {"success": False, "error": "ya se está subiendo este vídeo", "in_flight": True}
     try:
         size = _os.path.getsize(video_path)
     except OSError:
@@ -1527,7 +1532,10 @@ def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
                        session_uri=uri, file_size=sz,
                        detail=str(kwargs.get("title", ""))[:120])
 
-    result = manager.upload(platform, video_path, on_session=_session, **kwargs)
+    try:
+        result = manager.upload(platform, video_path, on_session=_session, **kwargs)
+    finally:
+        release(artifact, platform)
 
     ok = (result.get("success") if isinstance(result, dict)
           else getattr(result, "success", False))
@@ -1540,10 +1548,12 @@ def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
     # ledger row, so it is left open here deliberately. On failure it is
     # closed now, because the platform said nothing was created.
     if not ok:
+        err = (result.get("error") if isinstance(result, dict)
+               else getattr(result, "error", None))
         record_attempt(artifact=artifact, platform=platform,
                        status=ATTEMPT_FAILED, video_path=video_path,
                        session_uri=uri, file_size=size,
-                       detail=str(result)[:200])
+                       detail=str(err or result)[:300])
     return result
 
 
@@ -3030,6 +3040,15 @@ elif page == "Upload":
 
     approved = get_approved_videos()
 
+    # STEP 67: the channel's 24 h upload limit, read from the attempts log.
+    from publication_log import read_attempts as _read_attempts
+    from upload_limits import limit_block as _limit_block, published_last_24h as _last_24h
+    _attempts = _read_attempts()
+    st.caption(f"Subidos en las últimas 24 h: {len(_last_24h(_attempts, datetime.now()))}")
+    _yt_block = _limit_block(_attempts, datetime.now())
+    if _yt_block:
+        st.error(_yt_block)
+
     # Arriving from Inicio's "Subir" button on a specific artifact.
     _focus = st.session_state.pop("focus_artifact", None)
     approved = focus_first(approved, _focus)
@@ -3280,6 +3299,8 @@ elif page == "Upload":
                     st.warning(f"⚠️ {NO_GATE}: el QA gate no ha dado veredicto. Vuelve a renderizar o pasa el gate.")
                 elif _pre:
                     st.error(f"⛔ {_pre.reason}")
+                if _yt_block and "YouTube Shorts" in target_platforms:
+                    _pre = _pre or True        # the YouTube button waits for the slot (message above)
                 if target_platforms and not _pre:
                     if st.button("📤 Upload", key=f"upload_{video['name']}", use_container_width=True):
                         try:
@@ -3346,9 +3367,10 @@ elif page == "Upload":
                                             "time": datetime.now().isoformat(),
                                             "status": "success"
                                         })
-                                    else:
+                                    elif not (isinstance(result, dict) and result.get("in_flight")):
+                                        from upload_limits import spanish as _spanish
                                         err = result.get("error", "Unknown") if isinstance(result, dict) else getattr(result, 'error', 'Unknown')
-                                        st.error(f"Failed: {err}")
+                                        st.error(f"Failed: {_spanish(err, _read_attempts(), datetime.now())}")
 
                             # Move to uploaded if at least one platform succeeded
                             if upload_success and video["path"].exists():
@@ -3378,7 +3400,7 @@ elif page == "Upload":
                 st.markdown("---")
 
         # Bulk upload
-        if target_platforms and len(approved) > 1:
+        if target_platforms and len(approved) > 1 and not (_yt_block and "YouTube Shorts" in target_platforms):
             st.markdown("---")
             st.markdown("**Bulk Upload**")
             if st.button(f"📤 Upload All {len(approved)} Videos to {', '.join(target_platforms)}", type="primary"):
@@ -3394,7 +3416,12 @@ elif page == "Upload":
                         "Instagram Reels": "instagram",
                     }
                     uploaded_count = 0
-                    for i, video in enumerate(approved):
+                    from upload_limits import run_batch
+
+                    def _bulk_one(video):
+                        nonlocal_state["i"] += 1
+                        i = nonlocal_state["i"]
+                        results = []
                         script = script_for_upload(video)
                         category = script.get("_meta", {}).get("category", "")
 
@@ -3427,6 +3454,7 @@ elif page == "Upload":
                                 description=adapted["description"],
                                 hashtags=adapted["hashtags"],
                             )
+                            results.append(result)
                             success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
                             if success:
                                 any_success = True
@@ -3440,14 +3468,22 @@ elif page == "Upload":
                             move_to_uploaded(video["path"], {
                                 "platforms": platforms_done,
                                 "uploaded_at": datetime.now().isoformat(),
-                                "title": meta["title"],
+                                "title": adapted["title"],
                             })
-                            uploaded_count += 1
+                            nonlocal_state["uploaded"] += 1
 
                         progress.progress((i + 1) / len(approved))
+                        return results
 
-                    st.success(f"Uploaded {uploaded_count} videos!")
-                    st.rerun()
+                    nonlocal_state = {"i": -1, "uploaded": 0}
+                    # STEP 67: the batch stops at the first upload limit.
+                    stopped = run_batch(approved, _bulk_one)
+                    uploaded_count = nonlocal_state["uploaded"]
+                    if stopped:
+                        st.error(f"{stopped} Lote detenido tras {uploaded_count} vídeos.")
+                    else:
+                        st.success(f"Uploaded {uploaded_count} videos!")
+                        st.rerun()
                 except Exception as e:
                     st.error(f"Bulk upload error: {str(e)}")
 
