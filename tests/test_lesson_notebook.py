@@ -5,6 +5,7 @@ Manim is not importable here (it lives in the studio's venv), so the scene's lay
 read from its source, as test_lesson_motion does; the colours are checked through theme.py.
 """
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -47,7 +48,6 @@ def test_the_sticky_note_reads_ink_and_english_blue_on_yellow():
 
 def test_the_note_wraps_to_two_lines_and_sits_bottom_right():
     assert _const("CAP_LINES") == 2
-    assert _const("NOTE_RIGHT") > 0 and _const("NOTE_BOTTOM") < _const("PAGE_BOTTOM")
     assert "CAPTION_Y" not in SOURCE, "the full-width caption band is gone"
     assert "NOTE_YELLOW" in SOURCE and "rotate(NOTE_ROT" in SOURCE
 
@@ -88,3 +88,44 @@ def test_the_note_is_drawn_over_whatever_a_beat_adds_after_it():
     the note's top edge (first 1080p render, 2026-10-19)."""
     body = SOURCE[SOURCE.index("def mount_captions"):SOURCE.index("def _word_times")]
     assert "group.set_z_index(" in body
+
+
+FRAME_W, FRAME_H, PX = 16 / 9 * 8, 8.0, 8 / 1080
+
+
+def _turned_note_box(w, h):
+    """The note as mount_captions places it: the rectangle and its shadow turned NOTE_ROT
+    about the rectangle's centre, then shifted so the box's right and bottom edges sit on
+    NOTE_MARGIN. Returns (left, bottom, right, top)."""
+    t, s = math.radians(_const("NOTE_ROT")), _const("NOTE_SHADOW")
+    pts = [(x * math.cos(t) - y * math.sin(t), x * math.sin(t) + y * math.cos(t))
+           for sx in (-1, 1) for sy in (-1, 1) for d in (0, s)
+           for x, y in [(sx * w / 2 + d, sy * h / 2 - d)]]
+    m = _const("NOTE_MARGIN")
+    dx = FRAME_W / 2 - m - max(p[0] for p in pts)
+    dy = -FRAME_H / 2 + m - min(p[1] for p in pts)
+    return (min(p[0] for p in pts) + dx, min(p[1] for p in pts) + dy,
+            max(p[0] for p in pts) + dx, max(p[1] for p in pts) + dy)
+
+
+@pytest.mark.parametrize("lines", [1, 2])
+def test_the_turned_note_and_its_shadow_stay_inside_the_frame(lines):
+    """STEP 69 §1: placed from the unturned rectangle, a wide note's low corner and shadow ran
+    to about -4.05 under a -4.0 frame edge. The widest note any lesson can show (a line is
+    scaled to CAP_LINE_W, make-vs-do's widest included) with 1 and 2 lines keeps 0.15 to
+    every edge, and its top stays under the stage."""
+    pad, m = _const("NOTE_PAD"), _const("NOTE_MARGIN")
+    assert m >= 0.15
+    w = _const("CAP_LINE_W") + 2 * pad
+    h = lines * _const("CAPTION_PX") * 1.45 * PX + (lines - 1) * 0.16 + 2 * pad   # "Hg": cap + descender
+    left, bottom, right, top = _turned_note_box(w, h)
+    assert left >= -FRAME_W / 2 + m and right <= FRAME_W / 2 - m + 1e-9
+    assert bottom >= -FRAME_H / 2 + m - 1e-9 and top <= FRAME_H / 2 - m
+    assert top <= _const("STAGE_BOTTOM"), "the note must not cover the stage's last row"
+
+
+def test_the_scene_places_the_note_from_its_turned_box():
+    body = SOURCE[SOURCE.index("def mount_captions"):SOURCE.index("def _word_times")]
+    turn, place = body.index("group.rotate(NOTE_ROT"), body.index("group.get_right()")
+    assert turn < place, "measure the box after the turn, shadow included"
+    assert "group.get_bottom()" in body and "NOTE_MARGIN" in body

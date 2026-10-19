@@ -91,10 +91,11 @@ PAGE_MID = (PAGE_TOP + PAGE_BOTTOM) / 2
 PAGE_RINGS = 13
 PAGE_TITLE_PX, PAGE_TITLE_Y = 46, 2.52             # the part's name, Fredoka on the yellow marker
 STAGE_W = 10.2                                     # the page's writing width, clear of the rings
-STAGE_TOP, STAGE_BOTTOM = 2.02, -2.3               # under the page title, above the turned sticky note
+STAGE_TOP, STAGE_BOTTOM = 2.02, -2.0               # under the page title, above a 2-line turned sticky note
 STAGE_MID = (STAGE_TOP + STAGE_BOTTOM) / 2
 # The caption is a yellow sticky note, bottom right, slightly turned: measured, 2 lines at most.
-NOTE_RIGHT, NOTE_BOTTOM, NOTE_PAD, NOTE_ROT = 6.85, -3.86, 0.22, -2.0
+# It is placed from its turned box, shadow included, NOTE_MARGIN inside the frame (STEP 69).
+NOTE_MARGIN, NOTE_PAD, NOTE_ROT, NOTE_SHADOW = 0.15, 0.22, -2.0, 0.07
 CAP_LINE_W, CAP_LINES = 6.0, 2
 SITE_PX, SITE_Y = 24, 3.32                         # the «learningroutes.com» badge under the dashes
 INK, NOTE_YELLOW, NOTE_BLUE = BRAND["color"]["ink"], BRAND["color"]["brand_yellow"], BRAND["color"]["english_blue"]
@@ -533,12 +534,15 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         w = max(p.width for p in group) + 2 * NOTE_PAD
         h = max([two.height] + [p.height for p in group]) + 2 * NOTE_PAD
         note = Rectangle(width=w, height=h, fill_color=NOTE_YELLOW, fill_opacity=1, stroke_color=INK, stroke_width=3)
-        note.move_to([NOTE_RIGHT - w / 2, NOTE_BOTTOM + h / 2, 0])
-        shadow = note.copy().set_fill(INK).set_stroke(width=0).shift([0.07, -0.07, 0])
+        shadow = note.copy().set_fill(INK).set_stroke(width=0).shift([NOTE_SHADOW, -NOTE_SHADOW, 0])
         for p in group:
             p.move_to(note).align_to(note, LEFT).shift(RIGHT * NOTE_PAD)
         group.add_to_back(shadow, note)
         group.rotate(NOTE_ROT * PI / 180, about_point=note.get_center())
+        # the turned corners and the shadow set the box: its right and bottom edges sit on the margin
+        group.shift([FRAME_W / 2 - NOTE_MARGIN - group.get_right()[0],
+                     -FRAME_H / 2 + NOTE_MARGIN - group.get_bottom()[1], 0])
+        assert group.get_left()[0] >= -FRAME_W / 2 + NOTE_MARGIN and group.get_top()[1] <= STAGE_BOTTOM, group.get_top()
         state = {"page": -1, "lit": set()}
 
         def tick(mobj, dt):
