@@ -1,6 +1,6 @@
 {
   "name": "English Unlimited",
-  "version": "v2 pegatina",
+  "version": "v3 cuaderno + Bubi",
   "tagline": "El inglés que usas cada día, explicado en español.",
   "color": {
     "brand_yellow": "#F2D66B",
@@ -10,7 +10,8 @@
     "sky": "#9AD1F0",
     "correct": "#2F8F5B",
     "error": "#C0453A",
-    "secondary_text": "#6D665B"
+    "secondary_text": "#6D665B",
+    "coral": "#FF8F7A"
   },
   "manim": {
     "_use": "the long Manim lessons: THEME env, else the lesson's \"theme\", else default_theme. Yellow is only ever a fill or a highlighter on the paper themes, never text.",
@@ -88,5 +89,19 @@
     "english_is_blue": true,
     "max_yellow_stickers_per_sentence": 1,
     "min_symbol_px": 40
+  },
+  "mascot": {
+    "name": "Bubi",
+    "what": "a speech bubble with a face, arms and the yellow EN badge; ink contour and hard shadow like the notebook cards",
+    "files": {
+      "symbol": "simbolo_512.png (668 px, transparent, waving)",
+      "logo": "logo_horizontal.png (transparent: Bubi + «English» ink + «Unlimited» blue pill)"
+    },
+    "expressions": [
+      "hola",
+      "guino",
+      "wow",
+      "bien"
+    ]
   }
 }
