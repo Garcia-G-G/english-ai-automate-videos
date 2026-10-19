@@ -4,8 +4,8 @@
     result = publisher.publish("output/approved/quiz/x.mp4", caption, ["AprendeInglés"])
     result.success, result.upload_id, result.url   # remote id and permalink
 
-Credentials come only from the environment: IG_USER_ID, IG_ACCESS_TOKEN,
-FB_PAGE_ID, FB_PAGE_TOKEN. Both classes are uploader.BaseUploader backends, so
+Credentials come only from the environment: FB_PAGE_ID and FB_PAGE_TOKEN, for
+both (Instagram publishes through the Page, STEP 72). Both classes are uploader.BaseUploader backends, so
 UploadManager and the idempotency guard drive them like any other platform.
 """
 from .common import MetaError, RateLimited, ReelSpecError, TokenExpired, validate_reel

@@ -19,8 +19,9 @@ from publishers import FacebookReelsPublisher, InstagramReelsPublisher, common, 
 from publishers import meta_instagram as IG
 from publishers.common import ReelSpecError, validate_reel
 
-TOKEN = "IGtoken-SECRET-123456789"
-PAGE_TOKEN = "PAGEtoken-SECRET-987654321"
+# One token since STEP 72: Instagram publishes through the Page with the Page token.
+TOKEN = PAGE_TOKEN = "PAGEtoken-SECRET-987654321"
+IG_ID = "17841400000000000"
 
 GOOD_PROBE = {"format": {"duration": "30.0"},
               "streams": [{"codec_type": "video", "codec_name": "h264", "width": 1080,
@@ -46,6 +47,8 @@ class Router:
         monkeypatch.setattr(requests, "post", lambda url, **kw: self("post", url, kw))
 
     def __call__(self, method, url, kw):
+        if hasattr(kw.get("data"), "read"):              # a streamed body: keep its bytes
+            kw = {**kw, "body": kw["data"].read()}
         self.calls.append((method, url, kw))
         for i, (m, frag, resp) in enumerate(self.routes):
             if m == method and frag in url:
@@ -72,19 +75,24 @@ def video(tmp_path, monkeypatch):
 
 
 @pytest.fixture
-def ig_env(monkeypatch):
-    monkeypatch.setenv("IG_USER_ID", "17841400000000000")
-    monkeypatch.setenv("IG_ACCESS_TOKEN", TOKEN)
-    monkeypatch.setattr(IG.time, "sleep", lambda s: None)
-    # A stored token far from expiry, so no refresh call unless a test wants one.
-    uploader._save_token("instagram", {"access_token": TOKEN, "expires_at": time.time() + 50 * 86400,
-                                       "source": IG._fingerprint(TOKEN)})
-
-
-@pytest.fixture
 def fb_env(monkeypatch):
     monkeypatch.setenv("FB_PAGE_ID", "1234567890")
     monkeypatch.setenv("FB_PAGE_TOKEN", PAGE_TOKEN)
+
+
+@pytest.fixture
+def ig_env(fb_env, monkeypatch):
+    """The Page's credentials, and its Instagram id already cached (no lookup unless a test wants one)."""
+    monkeypatch.delenv("IG_USER_ID", raising=False)
+    monkeypatch.setattr(IG.time, "sleep", lambda s: None)
+    uploader._ensure_token_dir()
+    (uploader.TOKEN_DIR / IG.IDS_FILE).write_text(json.dumps(
+        {"page_id": "1234567890", "id": IG_ID, "username": "eu"}))
+
+
+def linked(ig_id=IG_ID):
+    return ("get", "/1234567890", Resp(body={"name": "Page", "id": "1234567890",
+                                             "instagram_business_account": {"id": ig_id, "username": "eu"}}))
 
 
 def quota(used=1, total=50):
@@ -98,7 +106,7 @@ def test_instagram_publishes_after_the_container_is_ready(ig_env, video, monkeyp
     sessions = []
     r = Router(monkeypatch, [
         quota(),
-        ("post", "/media", Resp(body={"id": "C1", "uri": "https://rupload.facebook.com/x"})),
+        ("post", "/media", Resp(body={"id": "C1", "uri": "https://rupload.facebook.com/ig-api-upload/v26.0/C1"})),
         ("post", "rupload.facebook.com/ig-api-upload/v26.0/C1", Resp(body={"success": True})),
         ("get", "/C1", Resp(body={"status_code": "IN_PROGRESS"})),
         ("get", "/C1", Resp(body={"status_code": "FINISHED"})),
@@ -110,11 +118,26 @@ def test_instagram_publishes_after_the_container_is_ready(ig_env, video, monkeyp
     assert res.success and res.upload_id == "M9"
     assert res.url == "https://www.instagram.com/reel/abc/"
     assert sessions == [("C1", 2)]                       # before the bytes went
-    created = r.hit("/media")[0][2]["data"]
+    method, url, kw = r.hit("/media")[0]
+    assert url == f"https://graph.facebook.com/v26.0/{IG_ID}/media"
+    created = kw["data"]
     assert created["media_type"] == "REELS" and created["upload_type"] == "resumable"
+    assert "video_url" not in created and created["share_to_feed"] == "true"
     assert created["caption"] == "Hola\n\n#AprendeInglés"
-    up = r.hit("rupload")[0][2]["headers"]
-    assert up["Authorization"] == f"OAuth {TOKEN}" and up["offset"] == "0" and up["file_size"] == "1024"
+    up = r.hit("rupload")[0][2]
+    assert up["headers"] == {"Authorization": f"OAuth {TOKEN}", "offset": "0", "file_size": "1024"}
+    assert up["body"] == b"\0" * 1024                     # the raw file, nothing around it
+    assert all(c[1].startswith(("https://graph.facebook.com/", "https://rupload.facebook.com/")) for c in r.calls)
+
+
+def test_instagram_builds_the_upload_uri_when_the_container_has_none(ig_env, video, monkeypatch):
+    r = Router(monkeypatch, [quota(), ("post", "/media", Resp(body={"id": "C7"})),
+                             ("post", "rupload", Resp(body={"success": True})),
+                             ("get", "/C7", Resp(body={"status_code": "FINISHED"})),
+                             ("post", "/media_publish", Resp(body={"id": "M7"})),
+                             ("get", "/M7", Resp(body={"permalink": "p"}))])
+    assert InstagramReelsPublisher().publish(video, "x", []).success
+    assert r.hit("rupload")[0][1] == "https://rupload.facebook.com/ig-api-upload/v26.0/C7"
 
 
 def test_instagram_container_never_ready_does_not_publish(ig_env, video, monkeypatch):
@@ -143,12 +166,10 @@ def test_instagram_rate_limit_error_on_publish_is_a_plain_failure(ig_env, video,
     assert not res.success and not res.in_doubt and "2207042" in res.error
 
 
-def test_instagram_expired_token_says_to_regenerate_and_never_leaks_it(ig_env, video, monkeypatch):
-    uploader._save_token("instagram", {"access_token": TOKEN, "expires_at": time.time() + 3600,
-                                       "source": IG._fingerprint(TOKEN)})
-    Router(monkeypatch, [("get", "refresh_access_token", err(190, 463, 400, f"bad {TOKEN}"))])
+def test_instagram_expired_token_never_leaks_it(ig_env, video, monkeypatch):
+    Router(monkeypatch, [("get", "content_publishing_limit", err(190, 463, 400, f"bad {TOKEN}"))])
     res = InstagramReelsPublisher().publish(video, "x", [])
-    assert not res.success and "generate a new" in res.error and TOKEN not in res.error
+    assert not res.success and "code=190" in res.error and TOKEN not in res.error
 
 
 def test_network_errors_are_redacted(ig_env, video, monkeypatch):
@@ -158,23 +179,23 @@ def test_network_errors_are_redacted(ig_env, video, monkeypatch):
     assert not res.success and TOKEN not in res.error and "***" in res.error
 
 
-def test_token_near_expiry_is_refreshed_and_stored_privately(ig_env, monkeypatch):
-    uploader._save_token("instagram", {"access_token": TOKEN, "expires_at": time.time() + 86400,
-                                       "source": IG._fingerprint(TOKEN)})
-    Router(monkeypatch, [("get", "refresh_access_token",
-                          Resp(body={"access_token": "NEW", "expires_in": 5184000}))])
-    assert IG.current_token() == "NEW"
-    path = uploader.TOKEN_DIR / "instagram_token.json"
-    assert json.loads(path.read_text())["access_token"] == "NEW"
-    assert oct(path.stat().st_mode & 0o777) == "0o600"
-    assert IG.current_token() == "NEW"                      # 60 days left: no second call
+def test_the_instagram_id_is_the_pages_looked_up_once_and_cached_privately(ig_env, monkeypatch):
+    (uploader.TOKEN_DIR / IG.IDS_FILE).unlink()
+    monkeypatch.setenv("IG_USER_ID", "999")                 # the old Instagram-Login id: never used
+    r = Router(monkeypatch, [linked()])
+    assert InstagramReelsPublisher().user_id == IG_ID
+    assert r.calls[0][2]["params"]["fields"] == "instagram_business_account{id,username}"
+    path = uploader.TOKEN_DIR / IG.IDS_FILE
+    assert json.loads(path.read_text())["id"] == IG_ID and oct(path.stat().st_mode & 0o777) == "0o600"
+    assert InstagramReelsPublisher().user_id == IG_ID and len(r.calls) == 1
 
 
-def test_a_new_env_token_replaces_the_stored_chain(ig_env, monkeypatch):
-    monkeypatch.setenv("IG_ACCESS_TOKEN", "FRESH-FROM-ENV")
-    r = Router(monkeypatch, [("get", "refresh_access_token", err(100, None, 400, "too new"))])
-    assert IG.current_token() == "FRESH-FROM-ENV"           # under 24 h old: used as is
-    assert r.calls[0][2]["params"]["access_token"] == "FRESH-FROM-ENV"
+def test_a_page_without_instagram_says_so(ig_env, video, monkeypatch):
+    (uploader.TOKEN_DIR / IG.IDS_FILE).unlink()
+    Router(monkeypatch, [("get", "/1234567890", Resp(body={"id": "1234567890"}))])
+    res = InstagramReelsPublisher().publish(video, "x", [])
+    assert not res.success and IG.NOT_LINKED in res.error
+    assert not (uploader.TOKEN_DIR / IG.IDS_FILE).exists()
 
 
 def test_instagram_lost_publish_answer_checks_the_container(ig_env, video, monkeypatch):
@@ -388,23 +409,20 @@ def test_dry_run_sends_nothing(approved, monkeypatch):
     assert not PL.read_attempts()
 
 
-def test_a_dry_run_never_refreshes_or_rewrites_the_token(approved, ig_env, fb_env, monkeypatch):
-    """STEP 70 §2: 5 days from expiry, a dry run reports it and leaves .tokens as it was."""
+def test_a_dry_run_writes_nothing_and_sends_only_gets(approved, ig_env, monkeypatch):
+    """STEP 70 §2, kept through STEP 72: .tokens untouched (the IG id is not cached from a dry run)."""
+    (uploader.TOKEN_DIR / IG.IDS_FILE).unlink()
     schedule.enqueue(approved)
     monkeypatch.setattr(common, "probe", lambda p: GOOD_PROBE)
     monkeypatch.setattr("upload_metadata.resolve_upload_metadata", lambda *a, **k: {
         "title": "", "description": "caption", "hashtags": [], "source": "generated"})
-    uploader._save_token("instagram", {"access_token": TOKEN, "expires_at": time.time() + 5 * 86400 + 60,
-                                       "source": IG._fingerprint(TOKEN)})
-    path = uploader.TOKEN_DIR / "instagram_token.json"
-    before = (path.read_bytes(), path.stat().st_mtime_ns)
-    r = Router(monkeypatch, [("get", "/me", Resp(body={"username": "eu"})), quota(),
-                             ("get", "/1234567890", Resp(body={"name": "Page"}))])
+    before = sorted((p.name, p.read_bytes(), p.stat().st_mtime_ns) for p in uploader.TOKEN_DIR.iterdir())
+    r = Router(monkeypatch, [linked(), quota(), linked()])
     out = schedule.tick(datetime(2026, 10, 19, 10, 1), dry=True, cfg=CFG)
     assert out["action"] == "dry_run"
-    assert out["platforms"]["instagram"]["api"]["token"] == "expires in 5 days (refresh with refresh-token)"
-    assert not r.hit("refresh_access_token") and all(m == "get" for m, _u, _k in r.calls)
-    assert (path.read_bytes(), path.stat().st_mtime_ns) == before
+    assert out["platforms"]["instagram"]["api"]["account"] == "eu"
+    assert all(m == "get" for m, _u, _k in r.calls)
+    assert sorted((p.name, p.read_bytes(), p.stat().st_mtime_ns) for p in uploader.TOKEN_DIR.iterdir()) == before
     assert not PL.read_attempts()
 
 

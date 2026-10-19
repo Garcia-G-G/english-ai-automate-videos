@@ -1,20 +1,26 @@
-"""Instagram Reels through the Instagram API with Instagram Login (graph.instagram.com).
+"""Instagram Reels through the Instagram API with Facebook Login (graph.facebook.com).
 
 Flow (developers.facebook.com/docs/instagram-platform/content-publishing):
+    0. GET  /<PAGE_ID>?fields=instagram_business_account   the IG id, cached
     1. GET  /<IG_ID>/content_publishing_limit   refuse early when the quota is used
-    2. POST /<IG_ID>/media  media_type=REELS upload_type=resumable  -> container id
-    3. POST rupload.facebook.com/ig-api-upload/<ver>/<container>   the bytes
+    2. POST /<IG_ID>/media  media_type=REELS upload_type=resumable  -> container id (+ uri)
+    3. POST rupload.facebook.com/ig-api-upload/<ver>/<container>   the raw bytes
     4. GET  /<container>?fields=status_code   until FINISHED
     5. POST /<IG_ID>/media_publish creation_id  -> media id, then its permalink
 
-TOKEN. IG_ACCESS_TOKEN is a 60-day long-lived token. Each refresh returns a
-NEW token, which is kept in .tokens/instagram_token.json (gitignored, 0600)
-together with a fingerprint of the env token it came from: put a fresh token
-in .env and the stored chain is ignored and restarted from it.
+WHY THIS PATH (STEP 72). The Instagram Login API (graph.instagram.com) wants a
+public video_url for Reels; resumable upload is documented only here. So
+Instagram publishes with FB_PAGE_TOKEN, the same Page token Facebook uses: one
+token, nothing hosted, nothing to refresh (a Page token from a long-lived user
+token does not expire).
+
+THE INSTAGRAM ID is the Page's instagram_business_account.id, looked up once and
+kept in .tokens/meta_ids.json (0600). IG_USER_ID in .env never overrides it:
+setup-check reports a mismatch.
 """
 from __future__ import annotations
 
-import hashlib
+import json
 import logging
 import os
 import time
@@ -24,79 +30,57 @@ import uploader
 from env_setup import ensure_env_loaded
 from uploader import UploadResult
 
-from .common import GRAPH_VERSION, RUPLOAD, MetaError, RateLimited, ReelsPublisher, TokenExpired, call, rupload
+from .common import GRAPH_VERSION, RUPLOAD, MetaError, RateLimited, ReelsPublisher, call, rupload
 
 logger = logging.getLogger(__name__)
 
-GRAPH = f"https://graph.instagram.com/{GRAPH_VERSION}"
-REFRESH_URL = "https://graph.instagram.com/refresh_access_token"
-TOKEN_NAME = "instagram"
-#: Refresh once the token has less than this left. The docs allow a refresh
-#: once a token is 24 h old, so anything well inside 60 days works.
-REFRESH_MARGIN_S = 10 * 86400
+GRAPH = f"https://graph.facebook.com/{GRAPH_VERSION}"
+IDS_FILE = "meta_ids.json"
+NOT_LINKED = "Instagram no está vinculado a la Página"
 #: The docs: query the container once per minute, for no more than five minutes.
 POLL_INTERVAL_S = 60
 POLL_ATTEMPTS = 5
 
 
-def _fingerprint(token: str) -> str:
-    return hashlib.sha256(token.encode()).hexdigest()[:16]
+class NotLinked(MetaError):
+    """The Page has no Instagram professional account linked. A setup error."""
 
 
-def stored_token() -> tuple:
-    """(token, expires_at) as kept: the stored chain if it came from the env token, else the
-    env token with an unknown expiry. Reads only; never refreshes or writes."""
-    ensure_env_loaded()
-    env = os.getenv("IG_ACCESS_TOKEN", "")
-    stored = uploader._load_token(TOKEN_NAME) or {}
-    if stored.get("source") == _fingerprint(env) and stored.get("access_token"):
-        return stored["access_token"], stored.get("expires_at")
-    return env, None
+def _ids_path():
+    return uploader.TOKEN_DIR / IDS_FILE
 
 
-def token_note(expires_at: Optional[float], now: Optional[float] = None) -> str:
-    """The token's state for a read-only report (check, dry run)."""
-    if not expires_at:
-        return "expiry unknown (refresh with refresh-token)"
-    left = expires_at - (time.time() if now is None else now)
-    days = int(left // 86400)
-    if left > REFRESH_MARGIN_S:
-        return f"expires in {days} days"
-    return f"expires in {days} days (refresh with refresh-token)"
+def lookup_ig_account(page_id: str, token: str) -> Dict:
+    """{"id", "username"} of the Instagram account linked to the Page. Raises NotLinked."""
+    data = call("get", f"{GRAPH}/{page_id}", token,
+                params={"fields": "instagram_business_account{id,username}", "access_token": token})
+    account = data.get("instagram_business_account") or {}
+    if not account.get("id"):
+        raise NotLinked(f"{NOT_LINKED}: vincúlalo en Meta Business Suite y ejecuta setup-check")
+    return {"id": str(account["id"]), "username": account.get("username")}
 
 
-def current_token(now: Optional[float] = None) -> str:
-    """The token to use, refreshed first when it is near expiry. Only a real publish and
-    `refresh-token` come here; check() and the dry run read stored_token().
-
-    Raises TokenExpired when Meta says the token is dead: refreshing cannot
-    revive it, a new one has to be generated (README, Meta setup).
-    """
-    now = time.time() if now is None else now
-    env = os.getenv("IG_ACCESS_TOKEN", "")
-    token, expires_at = stored_token()
-    if expires_at and expires_at - now > REFRESH_MARGIN_S:
-        return token
+def cached_ig_account(page_id: str) -> Optional[Dict]:
     try:
-        data = call("get", REFRESH_URL, token,
-                    params={"grant_type": "ig_refresh_token", "access_token": token})
-    except TokenExpired:
-        raise TokenExpired("IG_ACCESS_TOKEN is expired or invalid; generate a new long-lived "
-                           "token (README, Meta setup) and put it in .env") from None
-    except MetaError as exc:
-        # A token younger than 24 h cannot be refreshed yet; it still works.
-        if expires_at is None or expires_at > now:
-            logger.warning("instagram token refresh skipped: %s", exc)
-            return token
-        raise
-    uploader._save_token(TOKEN_NAME, {
-        "access_token": data["access_token"],
-        "expires_at": now + int(data.get("expires_in") or 60 * 86400),
-        "refreshed_at": now,
-        "source": _fingerprint(env),
-    })
-    logger.info("instagram token refreshed; valid %d days", int(data.get("expires_in") or 0) // 86400)
-    return data["access_token"]
+        data = json.loads(_ids_path().read_text())
+    except (OSError, ValueError):
+        return None
+    return data if data.get("page_id") == page_id and data.get("id") else None
+
+
+def ig_account(page_id: str, token: str, *, cache: bool = True) -> Dict:
+    """The cached account, else a lookup (stored only when `cache`: check and dry runs write nothing)."""
+    found = cached_ig_account(page_id)
+    if found:
+        return found
+    found = lookup_ig_account(page_id, token)
+    if cache:
+        uploader._ensure_token_dir()
+        fd = os.open(_ids_path(), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+        with os.fdopen(fd, "w") as fh:
+            json.dump({"page_id": page_id, **found}, fh)
+        _ids_path().chmod(0o600)
+    return {"page_id": page_id, **found}
 
 
 class InstagramReelsPublisher(ReelsPublisher):
@@ -104,24 +88,30 @@ class InstagramReelsPublisher(ReelsPublisher):
 
     def __init__(self) -> None:
         ensure_env_loaded()
-        self.user_id = os.getenv("IG_USER_ID", "")
+        self.page_id = os.getenv("FB_PAGE_ID", "")
+        self.token = os.getenv("FB_PAGE_TOKEN", "")
 
     def is_configured(self) -> bool:
-        return bool(self.user_id and os.getenv("IG_ACCESS_TOKEN"))
+        return bool(self.page_id and self.token)
+
+    @property
+    def user_id(self) -> str:
+        """The Page's Instagram id (looked up once, then cached)."""
+        return ig_account(self.page_id, self.token)["id"]
 
     def authenticate(self) -> bool:
         if not self.is_configured():
-            logger.error("Instagram: set IG_USER_ID and IG_ACCESS_TOKEN.")
+            logger.error("Instagram: set FB_PAGE_ID and FB_PAGE_TOKEN.")
             return False
         try:
-            current_token()
+            self.user_id
         except MetaError as exc:
             logger.error("Instagram: %s", exc)
             return False
         return True
 
-    def quota(self, token: str) -> Dict:
-        data = call("get", f"{GRAPH}/{self.user_id}/content_publishing_limit", token,
+    def quota(self, token: str, ig_id: Optional[str] = None) -> Dict:
+        data = call("get", f"{GRAPH}/{ig_id or self.user_id}/content_publishing_limit", token,
                     params={"fields": "quota_usage,config", "access_token": token})
         row = (data.get("data") or [{}])[0]
         # The docs disagree (50 vs 100 per 24 h), so the total is read, never assumed.
@@ -129,23 +119,23 @@ class InstagramReelsPublisher(ReelsPublisher):
                 "total": int((row.get("config") or {}).get("quota_total") or 0)}
 
     def check(self) -> Dict:
-        """Read-only: the token as stored, never refreshed (STEP 70 §2)."""
-        token, expires_at = stored_token()
-        me = call("get", f"{GRAPH}/me", token, params={"fields": "user_id,username", "access_token": token})
-        return {"account": me.get("username"), "quota": self.quota(token), "token": token_note(expires_at)}
+        """Read-only: GETs only, and the IG id is not cached from here (STEP 70 §2)."""
+        account = ig_account(self.page_id, self.token, cache=False)
+        return {"account": account.get("username"), "quota": self.quota(self.token, account["id"])}
 
     def _publish(self, video_path: str, caption: str, on_session) -> UploadResult:
-        token = current_token()
+        token = self.token
         q = self.quota(token)
         if q["total"] and q["used"] >= q["total"]:
             raise RateLimited(f"publishing limit reached ({q['used']}/{q['total']} in 24 h)")
 
-        container = call("post", f"{GRAPH}/{self.user_id}/media", token, data={
-            "media_type": "REELS", "upload_type": "resumable",
-            "caption": caption, "access_token": token})["id"]
+        made = call("post", f"{GRAPH}/{self.user_id}/media", token, data={
+            "media_type": "REELS", "upload_type": "resumable", "share_to_feed": "true",
+            "caption": caption, "access_token": token})
+        container = made["id"]
         if on_session:
             on_session(container, os.path.getsize(video_path))
-        rupload(f"{RUPLOAD}/ig-api-upload/{GRAPH_VERSION}/{container}", token, video_path)
+        rupload(made.get("uri") or f"{RUPLOAD}/ig-api-upload/{GRAPH_VERSION}/{container}", token, video_path)
 
         status = ""
         for _ in range(POLL_ATTEMPTS):
@@ -196,7 +186,7 @@ class InstagramReelsPublisher(ReelsPublisher):
     def query_session(self, session_uri: str, file_size: int) -> Dict:
         """upload_guard's question for an interrupted attempt: is container `session_uri` live?"""
         try:
-            token = current_token()
+            token = self.token
             status = call("get", f"{GRAPH}/{session_uri}", token,
                           params={"fields": "status_code", "access_token": token}).get("status_code")
         except MetaError as exc:
@@ -212,8 +202,7 @@ class InstagramReelsPublisher(ReelsPublisher):
 
     def get_upload_status(self, upload_id: str) -> UploadResult:
         try:
-            token = current_token()
-            url = self._permalink(upload_id, token)
+            url = self._permalink(upload_id, self.token)
         except MetaError as exc:
             return UploadResult(self.PLATFORM, False, upload_id=upload_id, error=str(exc))
         return UploadResult(self.PLATFORM, bool(url), upload_id=upload_id, url=url)

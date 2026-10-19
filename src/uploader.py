@@ -9,7 +9,7 @@ Tokens are persisted in .tokens/ for reuse across sessions.
 Environment variables:
     TIKTOK_CLIENT_KEY, TIKTOK_CLIENT_SECRET
     YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET
-    IG_USER_ID, IG_ACCESS_TOKEN, FB_PAGE_ID, FB_PAGE_TOKEN  (src/publishers/)
+    FB_PAGE_ID, FB_PAGE_TOKEN  (src/publishers/: Facebook and Instagram both)
 """
 
 import argparse
@@ -1277,7 +1277,7 @@ def get_upload_manager() -> UploadManager:
         logger.warning(
             "No upload platforms configured. Set the appropriate environment "
             "variables (TIKTOK_CLIENT_KEY, YOUTUBE_CLIENT_ID, "
-            "IG_ACCESS_TOKEN, FB_PAGE_TOKEN, etc.) to enable uploads."
+            "FB_PAGE_TOKEN, etc.) to enable uploads."
         )
     return manager
 
@@ -1294,9 +1294,9 @@ def get_upload_manager() -> UploadManager:
 # The upload path, the redirect URIs and the loopback listener are Step 5 and
 # are deliberately untouched here.
 
-#: Platforms with an interactive OAuth authorization-code flow. Instagram is
-#: and Facebook are excluded on purpose: they authenticate from long-lived
-#: tokens in IG_ACCESS_TOKEN / FB_PAGE_TOKEN and have no code to exchange, so `auth` would have
+#: Platforms with an interactive OAuth authorization-code flow. Instagram
+#: and Facebook are excluded on purpose: they authenticate from the long-lived
+#: Page token in FB_PAGE_TOKEN and have no code to exchange, so `auth` would have
 #: nothing to do. `status` still reports it.
 OAUTH_PLATFORMS = ("youtube", "tiktok")
 
@@ -1512,11 +1512,9 @@ def cmd_status() -> int:
         info = _describe_token(name)
         configured = "yes" if up.is_configured() else "no"
 
-        if name == "facebook" or (name == "instagram" and not info.get("present")):
-            # No OAuth code flow: the token IS the env var until Instagram's
-            # first refresh writes .tokens/instagram_token.json.
-            what = ("long-lived Page token, does not expire" if name == "facebook"
-                    else "IG_ACCESS_TOKEN, not refreshed yet")
+        if name in ("facebook", "instagram"):
+            # No OAuth code flow: both use FB_PAGE_TOKEN as is (STEP 72).
+            what = "long-lived Page token (FB_PAGE_TOKEN), does not expire"
             print(f"{name:12}{configured:>12}{'env':>9}{'-':>8}{'-':>9}  {what}")
             continue
 

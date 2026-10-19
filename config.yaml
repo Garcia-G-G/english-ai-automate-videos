@@ -432,7 +432,7 @@ upload:
   platforms:
     - tiktok
     - youtube
-    # - instagram  # Reels via IG_USER_ID/IG_ACCESS_TOKEN (see meta_publish below)
+    # - instagram  # Reels through the Page: FB_PAGE_ID/FB_PAGE_TOKEN (see meta_publish below)
     # - facebook   # Page Reels via FB_PAGE_ID/FB_PAGE_TOKEN
 
   # Default hashtags per video type

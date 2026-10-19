@@ -68,12 +68,7 @@ _KEY_DEFINITIONS = {
     "IG_USER_ID": {
         "required": False,
         "pattern": r"^\d{5,}$",
-        "description": "Instagram professional account ID (numeric)",
-    },
-    "IG_ACCESS_TOKEN": {
-        "required": False,
-        "pattern": r"^.{20,}$",
-        "description": "Instagram long-lived access token (Instagram Login)",
+        "description": "Instagram account ID (optional; the Page's linked account is used)",
     },
     "FB_PAGE_ID": {
         "required": False,

@@ -6,8 +6,8 @@ they expose `publish(video_path, caption, hashtags)`, the platform-neutral
 call the scheduler and the CLI use.
 
 TOKENS NEVER LEAVE THIS PROCESS IN TEXT. requests puts the full URL, query
-string included, into its exception messages, and refresh_access_token takes
-the token in the query. Every error string built here goes through `redact`.
+string included, into its exception messages, and debug_token takes the token
+in the query. Every error string built here goes through `redact`.
 """
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 #: Graph API version, from developers.facebook.com/docs/graph-api/changelog (checked 2026-10-19).
 GRAPH_VERSION = "v26.0"
 RUPLOAD = "https://rupload.facebook.com"
+GRAPH = f"https://graph.facebook.com/{GRAPH_VERSION}"
 
 #: Graph error codes that mean "slow down", not "broken". 9/2207042 is IG's publishing cap.
 RATE_CODES = {4, 17, 9, 32, 613}
@@ -81,6 +82,21 @@ def call(method: str, url: str, token: str, **kwargs) -> Dict:
            else RateLimited if code in RATE_CODES or sub in RATE_SUBCODES
            else MetaError)
     raise cls(msg, code, sub, resp.status_code)
+
+
+def debug_token(token: str) -> Dict:
+    """/debug_token on the token itself: type, expires_at (0 = never), scopes, is_valid."""
+    return call("get", f"{GRAPH}/debug_token", token,
+                params={"input_token": token, "access_token": token}).get("data") or {}
+
+
+def expiry_text(info: Dict) -> str:
+    """debug_token's expiry, said plainly: a Page token from a long-lived user token never expires."""
+    at = info.get("expires_at")
+    if at in (0, None):
+        return "never"
+    from datetime import datetime
+    return datetime.fromtimestamp(int(at)).strftime("%Y-%m-%d %H:%M")
 
 
 def rupload(url: str, token: str, video_path: str) -> Dict:

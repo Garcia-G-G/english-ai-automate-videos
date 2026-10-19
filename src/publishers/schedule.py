@@ -173,8 +173,8 @@ def script_for(path: Path, video_type: str) -> Dict:
 def dry_run(item: Dict) -> Dict:
     """What would be sent, checked against the specs and, if credentials exist, the live API.
 
-    No side effects: nothing is sent, and the Instagram token is read as stored, never
-    refreshed or rewritten (refresh-token and a real publish do that).
+    No side effects: nothing is sent and nothing is written, not even the cached
+    Instagram id (only GETs, STEP 70 §2).
     """
     from publishers import get_publisher, validate_reel
     from upload_metadata import NO_OPERATOR_EDITS, resolve_upload_metadata

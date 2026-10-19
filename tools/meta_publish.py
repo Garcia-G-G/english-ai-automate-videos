@@ -7,7 +7,7 @@
     python3 tools/meta_publish.py now [ARTIFACT] [--dry-run]   # ignore the slots
     python3 tools/meta_publish.py loop                  # tick every 5 minutes, forever
     python3 tools/meta_publish.py check                 # credentials + quota, read-only
-    python3 tools/meta_publish.py refresh-token         # Instagram long-lived token
+    python3 tools/meta_publish.py refresh-token         # the Page token's type and expiry
 
 Slots and platforms come from config.yaml `meta_publish`.
 """
@@ -90,10 +90,11 @@ def main(argv=None) -> int:
         _print(report)
         return 0
     if args.cmd == "refresh-token":
-        from publishers.meta_instagram import current_token
-        import uploader
-        current_token()
-        _print({k: v for k, v in (uploader._load_token("instagram") or {}).items() if k != "access_token"})
+        # Nothing to refresh since STEP 72: Instagram rides on the Page token, which does not expire.
+        import os
+        from publishers.common import debug_token, expiry_text
+        info = debug_token(os.getenv("FB_PAGE_TOKEN", ""))
+        _print({"type": info.get("type"), "valid": info.get("is_valid"), "expires": expiry_text(info)})
         return 0
     return 1
 

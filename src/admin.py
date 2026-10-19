@@ -2076,7 +2076,7 @@ def get_api_status() -> dict:
         "ElevenLabs": ("ELEVENLABS_API_KEY", False),
         "TikTok": ("TIKTOK_CLIENT_KEY", False),
         "YouTube": ("YOUTUBE_CLIENT_ID", False),
-        "Instagram": ("IG_ACCESS_TOKEN", False),
+        "Instagram": ("FB_PAGE_TOKEN", False),
         "Facebook": ("FB_PAGE_TOKEN", False),
     }
     status = {}
@@ -3128,8 +3128,8 @@ elif page == "Upload":
             "name": "Instagram Reels",
             "api": "instagram",
             "icon": "📷",
-            "key": "IG_ACCESS_TOKEN",
-            "desc": "Instagram Login API",
+            "key": "FB_PAGE_TOKEN",
+            "desc": "Instagram API with Facebook Login",
             "color": "#e1306c",
         },
         {
@@ -3831,8 +3831,7 @@ elif page == "Settings":
                 ("TIKTOK_CLIENT_SECRET", "TikTok Client Secret", "Content Posting API", False),
                 ("YOUTUBE_CLIENT_ID", "YouTube Client ID", "YouTube Data API v3", False),
                 ("YOUTUBE_CLIENT_SECRET", "YouTube Client Secret", "YouTube Data API v3", False),
-                ("IG_USER_ID", "Instagram User ID", "Instagram Login API", False),
-                ("IG_ACCESS_TOKEN", "Instagram Access Token", "Long-lived, refreshed automatically", False),
+                ("IG_USER_ID", "Instagram User ID", "Optional: only checked against the Page's (setup-check)", False),
                 ("FB_PAGE_ID", "Facebook Page ID", "Reels Publishing API", False),
                 ("FB_PAGE_TOKEN", "Facebook Page Token", "Long-lived Page token", False),
             ],
