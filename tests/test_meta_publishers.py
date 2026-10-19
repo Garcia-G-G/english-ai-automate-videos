@@ -610,3 +610,24 @@ def test_what_counts_as_a_setup_error(error, setup):
 def test_the_bulk_loop_uses_the_setup_stop():
     src = (ROOT_DIR / "src" / "admin.py").read_text(encoding="utf-8")
     assert "if pkey in setup_pending:" in src and "note_setup_failure(setup_pending, pkey, result)" in src
+
+
+def test_a_dry_run_of_one_approved_video_for_one_platform_writes_nothing(approved, fb_env, monkeypatch, capsys):
+    """STEP 72 §5: `now q1 --dry-run --platform facebook` on a video that is not queued:
+    it is checked, the queue file is not created and only GETs reach Meta."""
+    import importlib.util
+    import env_setup
+    monkeypatch.setattr(env_setup, "_loaded", True)
+    monkeypatch.setattr(common, "probe", lambda p: GOOD_PROBE)
+    monkeypatch.setattr("upload_metadata.resolve_upload_metadata", lambda *a, **k: {
+        "title": "", "description": "caption", "hashtags": [], "source": "generated"})
+    r = Router(monkeypatch, [("get", "/1234567890", Resp(body={"name": "Page"}))])
+    spec = importlib.util.spec_from_file_location("meta_publish_cli2", ROOT_DIR / "tools" / "meta_publish.py")
+    cli = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cli)
+    assert cli.main(["now", "q1", "--dry-run", "--platform", "facebook"]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert out["action"] == "dry_run" and list(out["platforms"]) == ["facebook"]
+    assert out["platforms"]["facebook"]["spec"] == "ok" and out["platforms"]["facebook"]["api"]["account"] == "Page"
+    assert all(m == "get" for m, _u, _k in r.calls) and not schedule.queue_path().exists()
+    assert not PL.read_attempts()

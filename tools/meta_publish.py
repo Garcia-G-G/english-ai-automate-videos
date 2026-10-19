@@ -4,7 +4,7 @@
     python3 tools/meta_publish.py enqueue output/approved/quiz/x.mp4   # or --approved
     python3 tools/meta_publish.py list                  # queued/published/failed + permalink
     python3 tools/meta_publish.py tick [--dry-run]      # publish if a slot is due (cron)
-    python3 tools/meta_publish.py now [ARTIFACT] [--dry-run]   # ignore the slots
+    python3 tools/meta_publish.py now [ARTIFACT] [--dry-run] [--platform facebook]   # ignore the slots
     python3 tools/meta_publish.py loop                  # tick every 5 minutes, forever
     python3 tools/meta_publish.py check                 # credentials + quota, read-only
     python3 tools/meta_publish.py setup-check           # what the Meta setup is missing; exit 0 = ready
@@ -46,6 +46,7 @@ def main(argv=None) -> int:
     now = sub.add_parser("now")
     now.add_argument("artifact", nargs="?")
     now.add_argument("--dry-run", action="store_true")
+    now.add_argument("--platform", choices=["instagram", "facebook"], help="only this platform")
     sub.add_parser("loop")
     sub.add_parser("check")
     sub.add_parser("refresh-token")
@@ -74,8 +75,11 @@ def main(argv=None) -> int:
             print(f"{row['artifact']:40} {cells}")
         return 0
     if args.cmd in ("tick", "now"):
+        cfg = schedule.settings()
+        if getattr(args, "platform", None):
+            cfg = {**cfg, "platforms": [args.platform]}
         _print(schedule.tick(dry=args.dry_run, force=args.cmd == "now",
-                             artifact=getattr(args, "artifact", None)))
+                             artifact=getattr(args, "artifact", None), cfg=cfg))
         return 0
     if args.cmd == "loop":
         while True:

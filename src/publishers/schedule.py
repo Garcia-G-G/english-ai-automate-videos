@@ -156,6 +156,19 @@ def next_item(cfg: Dict, artifact: Optional[str] = None) -> Optional[Dict]:
     return None
 
 
+def approved_item(cfg: Dict, artifact: str) -> Optional[Dict]:
+    """An approved video that is not queued, shaped like next_item's row: for a dry run only,
+    so checking one video does not put it in the slot queue (STEP 72 §5)."""
+    found = sorted((_output() / "approved").glob(f"*/{artifact}.mp4"))
+    if not found:
+        return None
+    path = found[0]
+    status = {p: platform_status(artifact, p) for p in cfg["platforms"]}
+    todo = [p for p in cfg["platforms"] if status[p]["status"] in ("queued", "failed")]
+    return {"artifact": artifact, "video_type": path.parent.name, "path": path, **status,
+            "todo": todo} if todo else None
+
+
 def script_for(path: Path, video_type: str) -> Dict:
     """The script behind a video: its sidecar's, else the audio JSON (as admin.script_for_upload)."""
     for candidate, key in ((path.with_suffix(".json"), "script_data"),
@@ -237,6 +250,8 @@ def tick(now: Optional[datetime] = None, *, dry: bool = False, force: bool = Fal
     if not (force or slot):
         return {"action": "wait", "reason": "no slot due", "slots": cfg["slots"]}
     item = next_item(cfg, artifact)
+    if item is None and dry and artifact:
+        item = approved_item(cfg, artifact)
     if item is None:
         return {"action": "idle", "reason": "nothing queued"}
     if dry:
