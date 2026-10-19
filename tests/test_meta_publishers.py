@@ -555,3 +555,58 @@ def test_setup_check_without_credentials(monkeypatch, capsys):
     r = Router(monkeypatch, [])
     code, out = _setup_check(capsys, monkeypatch)
     assert code == 1 and "Falta FB_PAGE_ID o FB_PAGE_TOKEN" in out and not r.calls
+
+
+# ── STEP 72 §3: a setup error stops that platform for the rest of the batch ──
+
+def test_a_setup_error_skips_the_platform_for_the_batch_and_facebook_goes_on(ig_env, tmp_path, monkeypatch):
+    """The 16:35 batch, replayed: Instagram not linked, Facebook fine. Instagram is tried once,
+    marked «configuración pendiente», and Facebook publishes all four."""
+    import admin
+    (uploader.TOKEN_DIR / IG.IDS_FILE).unlink()
+    monkeypatch.setattr(common, "probe", lambda p: GOOD_PROBE)
+    videos = []
+    for name in ("desayuno", "postres", "bano", "dormitorio"):
+        path = tmp_path / f"{name}.mp4"
+        path.write_bytes(b"\0" * 1024)
+        videos.append(path)
+    fb = []
+    for n in range(4):
+        fb += [("post", "video_reels", Resp(body={"video_id": f"V{n}"})),
+               ("post", f"video-upload/v26.0/V{n}", Resp(body={"success": True})),
+               ("post", "video_reels", Resp(body={"success": True})),
+               ("get", f"/V{n}", Resp(body={"permalink_url": f"/reel/V{n}"}))]
+    r = Router(monkeypatch, [("get", "/1234567890", Resp(body={"id": "1234567890"}))] + fb)
+    manager = uploader.UploadManager()
+    pending, messages, done = set(), [], []
+    for path in videos:                                     # the panel's bulk loop, without Streamlit
+        for platform in ("instagram", "facebook"):
+            if platform in pending:
+                continue
+            result = admin._guarded_upload(manager, path.stem, platform, str(path), title="t", description="d")
+            msg = admin.note_setup_failure(pending, platform, result)
+            messages += [msg] if msg else []
+            done += [(path.stem, platform)] if result.get("success") else []
+    assert pending == {"instagram"} and len(messages) == 1
+    assert "configuración pendiente" in messages[0] and "setup-check" in messages[0] and TOKEN not in messages[0]
+    assert len([c for c in r.calls if c[1].endswith("/1234567890")]) == 1   # Instagram tried once, not 4 times
+    assert done == [(p.stem, "facebook") for p in videos]
+
+
+@pytest.mark.parametrize("error,setup", [
+    ("instagram: HTTP 400 code=100 subcode=None: The parameter video_url is required", True),
+    ("facebook: HTTP 403 code=200 subcode=None: lack of pages_manage_posts permission", True),
+    ("facebook: HTTP 400 code=190 subcode=463: Session has expired", True),
+    ("instagram: HTTP 403 code=10 subcode=None: Application does not have permission", True),
+    ("instagram: Instagram no está vinculado a la Página: vincúlalo", True),
+    ("facebook: HTTP 500 code=1 subcode=None: An unknown error occurred", False),
+    ("instagram: HTTP 400 code=9 subcode=2207042: max posts", False),
+])
+def test_what_counts_as_a_setup_error(error, setup):
+    from publishers.setup import is_setup_error
+    assert is_setup_error(error) is setup
+
+
+def test_the_bulk_loop_uses_the_setup_stop():
+    src = (ROOT_DIR / "src" / "admin.py").read_text(encoding="utf-8")
+    assert "if pkey in setup_pending:" in src and "note_setup_failure(setup_pending, pkey, result)" in src

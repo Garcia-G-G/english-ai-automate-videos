@@ -1552,6 +1552,24 @@ def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
         return _guarded_upload_unlocked(manager, artifact, platform, video_path, **kwargs)
 
 
+SETUP_PENDING = "configuración pendiente"
+
+
+def note_setup_failure(pending: set, platform: str, result) -> Optional[str]:
+    """STEP 72 §3: a Meta platform that failed for its setup (token, permissions, Instagram
+    link) is added to `pending` and the batch skips its other videos. Returns the one
+    message to show, or None."""
+    from publishers import schedule
+    from publishers.setup import is_setup_error
+    error = (result.get("error") if isinstance(result, dict) else getattr(result, "error", None)) or ""
+    ok = result.get("success") if isinstance(result, dict) else getattr(result, "success", False)
+    if ok or platform not in schedule.LOCKED_PLATFORMS or platform in pending or not is_setup_error(error):
+        return None
+    pending.add(platform)
+    return (f"{platform}: {SETUP_PENDING} ({error[:200]}). Se omiten sus demás vídeos de este lote; "
+            f"ejecuta `python3 tools/meta_publish.py setup-check`.")
+
+
 def _guarded_upload_unlocked(manager, artifact: str, platform: str, video_path: str,
                              **kwargs):
     """manager.upload, with the attempt persisted before a byte is sent.
@@ -3437,6 +3455,8 @@ elif page == "Upload":
                                         })
                                     elif isinstance(result, dict) and result.get("locked"):
                                         st.warning(result["error"])
+                                    elif note_setup_failure(set(), platform_key, result):
+                                        st.error(note_setup_failure(set(), platform_key, result))
                                     elif not (isinstance(result, dict) and result.get("in_flight")):
                                         from upload_limits import spanish as _spanish
                                         err = result.get("error", "Unknown") if isinstance(result, dict) else getattr(result, 'error', 'Unknown')
@@ -3509,6 +3529,8 @@ elif page == "Upload":
                         platforms_done = []
                         for pname in target_platforms:
                             pkey = bulk_platform_map.get(pname, pname.lower())
+                            if pkey in setup_pending:     # failed for its setup earlier in this batch
+                                continue
                             # Was generate_metadata(script, ...) + adapt, which
                             # ignored session_state entirely and published text
                             # the operator never saw. One resolver now serves
@@ -3537,6 +3559,9 @@ elif page == "Upload":
                             results.append(result)
                             if isinstance(result, dict) and result.get("locked"):
                                 st.warning(f"{video['name']} · {pname}: {result['error']}")
+                            setup_msg = note_setup_failure(setup_pending, pkey, result)
+                            if setup_msg:
+                                st.error(setup_msg)
                             success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
                             if success:
                                 any_success = True
@@ -3558,6 +3583,7 @@ elif page == "Upload":
                         return results
 
                     nonlocal_state = {"i": -1, "uploaded": 0}
+                    setup_pending = set()
                     # STEP 67: the batch stops at the first upload limit.
                     stopped = run_batch(approved, _bulk_one)
                     uploaded_count = nonlocal_state["uploaded"]

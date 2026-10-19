@@ -100,15 +100,11 @@ class InstagramReelsPublisher(ReelsPublisher):
         return ig_account(self.page_id, self.token)["id"]
 
     def authenticate(self) -> bool:
+        # As Facebook: credentials present is enough here. The Instagram id is looked up
+        # in _publish, so «not linked» reaches the result instead of "Authentication failed".
         if not self.is_configured():
             logger.error("Instagram: set FB_PAGE_ID and FB_PAGE_TOKEN.")
-            return False
-        try:
-            self.user_id
-        except MetaError as exc:
-            logger.error("Instagram: %s", exc)
-            return False
-        return True
+        return self.is_configured()
 
     def quota(self, token: str, ig_id: Optional[str] = None) -> Dict:
         data = call("get", f"{GRAPH}/{ig_id or self.user_id}/content_publishing_limit", token,
