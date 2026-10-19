@@ -129,3 +129,44 @@ def test_the_scene_places_the_note_from_its_turned_box():
     turn, place = body.index("group.rotate(NOTE_ROT"), body.index("group.get_right()")
     assert turn < place, "measure the box after the turn, shadow included"
     assert "group.get_bottom()" in body and "NOTE_MARGIN" in body
+
+
+# ── STEP 69 §2: English in a table's first column is blue, by the script's own markup ──
+
+import lesson as L  # noqa: E402
+
+
+def _table(slug, beat_id):
+    lesson = L.load(STUDIO / "lessons" / f"{slug}.json")
+    return next(b for b in lesson["beats"] if b["id"] == beat_id)
+
+
+def _first_column_inks(beat):
+    """beat_table's rule, read back: green for emphasis, blue for marked English, else ink."""
+    english, emphasis = L.english_terms(beat["narration"]), set(beat.get("emphasis", []))
+    return ["green" if str(r[0]) in emphasis else "blue" if str(r[0]).casefold() in english else "ink"
+            for r in beat["rows"]]
+
+
+def test_make_vs_do_has_a_blue_first_column_and_do_time_keeps_its_green():
+    assert _first_column_inks(_table("make-vs-do", "b18")) == ["blue"] * 5 + ["green"]
+
+
+def test_a_spanish_first_column_stays_ink():
+    beat = _table("can-could-pedir", "b08")
+    assert [str(r[0]) for r in beat["rows"]] == ["habilidad", "posibilidad", "permiso"]
+    assert _first_column_inks(beat) == ["ink"] * 3
+
+
+def test_the_scene_colours_the_table_by_that_rule():
+    body = SOURCE[SOURCE.index("def beat_table"):SOURCE.index("def beat_list")]
+    assert 'L.english_terms(beat.get("narration", ""))' in body
+    assert "GREEN if c in emphasis else BLUE if i == 0 and c.casefold() in english else TEXT" in body
+
+
+@pytest.mark.parametrize("name", list(TH.manim_block()["themes"]))
+def test_blue_reads_on_the_table_highlighter(name):
+    p = TH.palette(name)
+    assert 'hl_fill = mix(P["page"], YELLOW, 0.25) if P["dark"] else YELLOW' in SOURCE
+    hl = TH.mix(p["page"], p["yellow"], 0.25) if p["dark"] else p["yellow"]
+    assert TH.contrast(p["blue"], hl) >= 3.0, (name, p["blue"], hl)

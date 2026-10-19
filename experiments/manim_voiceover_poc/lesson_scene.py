@@ -922,8 +922,13 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         table = VGroup()
         if beat.get("headers"):
             table.add(VGroup(*[text(h.upper(), TAG_PX, MUTED, BODY, BOLD) for h in beat["headers"]]))
+        english = L.english_terms(beat.get("narration", ""))
+
+        def ink_of(i, c):                               # featured green wins; English blue by the markup only
+            return GREEN if c in emphasis else BLUE if i == 0 and c.casefold() in english else TEXT
+
         for row in rows:
-            table.add(VGroup(*[text(str(c), TABLE_PX, GREEN if str(c) in emphasis else TEXT) for c in row]))
+            table.add(VGroup(*[text(str(c), TABLE_PX, ink_of(i, str(c))) for i, c in enumerate(row)]))
         ncols = max(len(r) for r in table)
         col_w = [max(r[i].width for r in table if i < len(r)) for i in range(ncols)]
         gap = 1.8                                       # the meanings start near the page's middle (design E)
@@ -951,7 +956,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                                  color=GREEN if str(rows[n][i]) in emphasis else TEXT).set_opacity(0)
                          for i, cell in enumerate(row) if i > 0]) for n, row in enumerate(body)]
         pitch = (body[0].get_top()[1] - body[1].get_top()[1]) if len(body) > 1 else body[0].height + 0.42
-        hl_fill = mix(P["page"], YELLOW, 0.3) if P["dark"] else YELLOW
+        hl_fill = mix(P["page"], YELLOW, 0.25) if P["dark"] else YELLOW   # 0.25: blue keeps 3:1 on it
         hl = RoundedRectangle(corner_radius=0.12, width=rules.width if len(rules) else whole.width + 0.6,
                               height=pitch, fill_color=hl_fill, fill_opacity=1, stroke_width=0)
         hl.move_to([rules.get_center()[0] if len(rules) else whole.get_center()[0], body[0].get_center()[1], 0])

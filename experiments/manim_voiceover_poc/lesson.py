@@ -78,6 +78,11 @@ def spoken_text(narration: str) -> str:
     return " ".join(EN_SPAN.sub(r"\1", PAUSE.sub(" ", narration)).split())
 
 
+def english_terms(narration: str) -> set:
+    """What the script marks as English ([[...]]), folded for a case-blind lookup."""
+    return {" ".join(m.split()).casefold() for m in EN_SPAN.findall(narration)}
+
+
 def pauses(narration: str) -> list:
     """Pause lengths in seconds, in order of appearance."""
     return [min(MAX_PAUSE, float(m.group(1))) for m in PAUSE.finditer(narration)]
