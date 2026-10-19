@@ -6,7 +6,7 @@ Context: b9593b7 (Instagram + Facebook Reels publisher) is local and not pushed.
 Before any code change: `cp -Rp .tokens ".tokens.bak-$(date +%Y%m%d-%H%M)"`. The dry run in STEP 66 already rewrote `.tokens/instagram_token.json`; from now on every change that can write tokens starts with a snapshot. Report the snapshot name only, never its contents.
 
 ## §1 No home paths in the repo
-README.md line ~116 has the cron line with `/Users/...`. Replace it with a placeholder (`cd /path/to/english-ai-videos && ...`) and say in one sentence to replace it with the real folder. Then add a test that fails if any tracked text file contains `/Users/` or `/home/<name>/` (allow-list only test fixtures that need it, if any). Proof: `git grep -n "/Users/"` prints nothing.
+README.md line ~116 has the cron line with a home path. Replace it with a placeholder (`cd /path/to/english-ai-videos && ...`) and say in one sentence to replace it with the real folder. Then add a test that fails if any tracked text file contains a macOS or Linux home path (Users or home/<name> under the root) (allow-list only test fixtures that need it, if any). Proof: `git grep` for the macOS home prefix prints nothing.
 
 ## §2 `--dry-run` writes nothing
 `dry_run()` currently calls `publisher.check()`, which calls `current_token()`, which can refresh and save the Instagram token. A dry run must have no side effects:

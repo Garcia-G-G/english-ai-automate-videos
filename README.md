@@ -113,8 +113,10 @@ python3 tools/meta_publish.py loop               # tick cada 5 min, en una termi
 O desde cron (en macOS, cron necesita *Acceso total al disco* para leer `~/Downloads`):
 
 ```
-*/5 * * * * cd /Users/go/Downloads/english-ai-videos && /usr/bin/python3 tools/meta_publish.py tick >> logs/meta_publish.log 2>&1
+*/5 * * * * cd /path/to/english-ai-videos && /usr/bin/python3 tools/meta_publish.py tick >> logs/meta_publish.log 2>&1
 ```
+
+Cambia `/path/to/english-ai-videos` por la carpeta real del proyecto en tu máquina.
 
 Antes de subir nada se comprueba el archivo contra la especificación de Reels:
 MP4/MOV, H.264/HEVC, 9:16, al menos 540 px de ancho, 23–60 fps (Facebook 24–60),

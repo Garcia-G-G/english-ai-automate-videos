@@ -11,7 +11,7 @@ hizo con cada una.
 | qué | dónde estaba | ahora |
 |---|---|---|
 | ID de la voz del canal | 4 archivos de `src/`, `.env.example`, un test, una nota | sólo en `.env` |
-| ruta de tu Mac (`/Users/go/…`) | `run_admin.sh`, dos notas de `_audit/` | fuera; `run_admin.sh` busca streamlit en el `user-base` de quien lo ejecute |
+| ruta de tu carpeta de usuario en el Mac | `run_admin.sh`, dos notas de `_audit/` | fuera; `run_admin.sh` busca streamlit en el `user-base` de quien lo ejecute |
 | correo personal en commits **nuevos** | `git config` del repo | `62484989+Garcia-G-G@users.noreply.github.com` |
 
 **La voz ya no tiene valor por defecto en el código.** Antes, si `.env` perdía
