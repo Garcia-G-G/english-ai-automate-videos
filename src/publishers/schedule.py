@@ -172,7 +172,8 @@ def script_for(path: Path, video_type: str) -> Dict:
 def dry_run(item: Dict) -> Dict:
     """What would be sent, checked against the specs and, if credentials exist, the live API.
 
-    Read-only on Meta's side, except that Instagram's token may be refreshed.
+    No side effects: nothing is sent, and the Instagram token is read as stored, never
+    refreshed or rewritten (refresh-token and a real publish do that).
     """
     from publishers import get_publisher, validate_reel
     from upload_metadata import NO_OPERATOR_EDITS, resolve_upload_metadata

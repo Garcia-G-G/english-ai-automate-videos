@@ -92,7 +92,8 @@ tiene permisos 0600. `.env` no se modifica. Si pones un token nuevo en `.env`, e
 guardado se descarta y la cadena empieza otra vez desde el nuevo. Si el token
 caduca (60 días sin publicar ni renovar), hay que generar otro (paso 5).
 Para renovarlo aunque no se publique: `python3 tools/meta_publish.py refresh-token`
-(por ejemplo, una vez por semana).
+(por ejemplo, una vez por semana). `check` y `--dry-run` nunca lo renuevan ni tocan
+`.tokens`: solo dicen cuántos días le quedan.
 
 ### Cola y horarios
 

@@ -43,20 +43,38 @@ def _fingerprint(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()[:16]
 
 
+def stored_token() -> tuple:
+    """(token, expires_at) as kept: the stored chain if it came from the env token, else the
+    env token with an unknown expiry. Reads only; never refreshes or writes."""
+    ensure_env_loaded()
+    env = os.getenv("IG_ACCESS_TOKEN", "")
+    stored = uploader._load_token(TOKEN_NAME) or {}
+    if stored.get("source") == _fingerprint(env) and stored.get("access_token"):
+        return stored["access_token"], stored.get("expires_at")
+    return env, None
+
+
+def token_note(expires_at: Optional[float], now: Optional[float] = None) -> str:
+    """The token's state for a read-only report (check, dry run)."""
+    if not expires_at:
+        return "expiry unknown (refresh with refresh-token)"
+    left = expires_at - (time.time() if now is None else now)
+    days = int(left // 86400)
+    if left > REFRESH_MARGIN_S:
+        return f"expires in {days} days"
+    return f"expires in {days} days (refresh with refresh-token)"
+
+
 def current_token(now: Optional[float] = None) -> str:
-    """The token to use, refreshed first when it is near expiry.
+    """The token to use, refreshed first when it is near expiry. Only a real publish and
+    `refresh-token` come here; check() and the dry run read stored_token().
 
     Raises TokenExpired when Meta says the token is dead: refreshing cannot
     revive it, a new one has to be generated (README, Meta setup).
     """
     now = time.time() if now is None else now
-    ensure_env_loaded()
     env = os.getenv("IG_ACCESS_TOKEN", "")
-    stored = uploader._load_token(TOKEN_NAME) or {}
-    if stored.get("source") == _fingerprint(env) and stored.get("access_token"):
-        token, expires_at = stored["access_token"], stored.get("expires_at")
-    else:
-        token, expires_at = env, None
+    token, expires_at = stored_token()
     if expires_at and expires_at - now > REFRESH_MARGIN_S:
         return token
     try:
@@ -111,9 +129,10 @@ class InstagramReelsPublisher(ReelsPublisher):
                 "total": int((row.get("config") or {}).get("quota_total") or 0)}
 
     def check(self) -> Dict:
-        token = current_token()
+        """Read-only: the token as stored, never refreshed (STEP 70 §2)."""
+        token, expires_at = stored_token()
         me = call("get", f"{GRAPH}/me", token, params={"fields": "user_id,username", "access_token": token})
-        return {"account": me.get("username"), "quota": self.quota(token)}
+        return {"account": me.get("username"), "quota": self.quota(token), "token": token_note(expires_at)}
 
     def _publish(self, video_path: str, caption: str, on_session) -> UploadResult:
         token = current_token()

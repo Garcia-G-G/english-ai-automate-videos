@@ -386,3 +386,23 @@ def test_dry_run_sends_nothing(approved, monkeypatch):
     assert out["platforms"]["instagram"] == {"spec": "ok", "caption": "caption",
                                              "api": "not configured (env vars missing)"}
     assert not PL.read_attempts()
+
+
+def test_a_dry_run_never_refreshes_or_rewrites_the_token(approved, ig_env, fb_env, monkeypatch):
+    """STEP 70 §2: 5 days from expiry, a dry run reports it and leaves .tokens as it was."""
+    schedule.enqueue(approved)
+    monkeypatch.setattr(common, "probe", lambda p: GOOD_PROBE)
+    monkeypatch.setattr("upload_metadata.resolve_upload_metadata", lambda *a, **k: {
+        "title": "", "description": "caption", "hashtags": [], "source": "generated"})
+    uploader._save_token("instagram", {"access_token": TOKEN, "expires_at": time.time() + 5 * 86400 + 60,
+                                       "source": IG._fingerprint(TOKEN)})
+    path = uploader.TOKEN_DIR / "instagram_token.json"
+    before = (path.read_bytes(), path.stat().st_mtime_ns)
+    r = Router(monkeypatch, [("get", "/me", Resp(body={"username": "eu"})), quota(),
+                             ("get", "/1234567890", Resp(body={"name": "Page"}))])
+    out = schedule.tick(datetime(2026, 10, 19, 10, 1), dry=True, cfg=CFG)
+    assert out["action"] == "dry_run"
+    assert out["platforms"]["instagram"]["api"]["token"] == "expires in 5 days (refresh with refresh-token)"
+    assert not r.hit("refresh_access_token") and all(m == "get" for m, _u, _k in r.calls)
+    assert (path.read_bytes(), path.stat().st_mtime_ns) == before
+    assert not PL.read_attempts()
