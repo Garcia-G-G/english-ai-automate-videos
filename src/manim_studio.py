@@ -651,7 +651,7 @@ def render() -> None:                                  # pragma: no cover — UI
         with st.expander(f"Editar narración ({len(lesson['beats'])} golpes)", expanded=bool(problems)):
             st.caption("Edita solo la narración; el inglés va entre [[ ]]. Las palabras que la animación espera deben "
                        "decirse en la frase. Para cambiar la estructura (tipos, tablas, diálogos) edita el JSON abajo.")
-            edited = st.data_editor(beats_table(lesson), key=f"editor_{lesson_id}", use_container_width=True, hide_index=True,
+            edited = st.data_editor(beats_table(lesson), key=f"editor_{lesson_id}", width="stretch", hide_index=True,
                                     disabled=["id", "tipo"], column_config={"narración": st.column_config.TextColumn(width="large")})
             candidate = apply_table(json.loads(json.dumps(lesson)), edited)
             changed = candidate != lesson

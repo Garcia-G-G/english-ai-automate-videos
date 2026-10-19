@@ -51,49 +51,38 @@ cuentas que tienen un rol en la app, así que no hace falta App Review.
 
 ### Configuración (una sola vez)
 
-**Instagram** (Instagram API with Instagram Login)
+Instagram y Facebook usan **el mismo token: el de la Página** (Instagram API con
+Facebook Login). No hay que alojar el vídeo en ningún sitio y el token no caduca.
 
-1. La cuenta de Instagram tiene que ser profesional (Empresa o Creador).
-2. En developers.facebook.com: *My Apps → Create app*, caso de uso *Other*, tipo *Business*.
-3. En la app: *Add product → Instagram → Set up*. Se añade *API setup with Instagram login*.
-4. *App roles → Roles → Instagram Testers → Add*, con nuestra cuenta. Acepta la
-   invitación desde Instagram (web: *Configuración → Apps y sitios web → Invitaciones de tester*).
-5. En *API setup with Instagram login → Generate access tokens*, añade la cuenta y
-   genera el token. Necesita `instagram_business_basic` e `instagram_business_content_publish`.
-   Es un token de larga duración (60 días).
-6. En `.env`:
-   ```
-   IG_USER_ID=<id numérico de la cuenta, el que aparece junto al token>
-   IG_ACCESS_TOKEN=<token>
-   ```
-
-**Facebook** (Reels Publishing API)
-
-1. En *Tools → Graph API Explorer*, elige la app y genera un token de usuario con
-   `pages_show_list`, `pages_read_engagement` y `pages_manage_posts`.
-2. Cámbialo por uno de larga duración (el secreto de la app está en *App settings → Basic*):
+1. La cuenta de Instagram tiene que ser profesional (Empresa o Creador) y estar
+   **vinculada a la Página**: Meta Business Suite → *Configuración → Cuentas de Instagram*.
+2. En developers.facebook.com, abre la app (o créala: *My Apps → Create app*, tipo *Business*).
+3. *Tools → Graph API Explorer*: elige la app y genera un token de usuario con estos 5 permisos:
+   `pages_show_list`, `pages_read_engagement`, `pages_manage_posts`, `instagram_basic`,
+   `instagram_content_publish`.
+4. Cámbialo por uno de larga duración (el secreto de la app está en *App settings → Basic*):
    ```
    curl "https://graph.facebook.com/v26.0/oauth/access_token?grant_type=fb_exchange_token&client_id=APP_ID&client_secret=APP_SECRET&fb_exchange_token=TOKEN_CORTO"
    ```
-3. Con ese token, pide los tokens de las páginas. El de la Página no caduca:
+5. Con ese token, pide los de tus páginas. El de la Página sacado así no caduca:
    ```
    curl "https://graph.facebook.com/v26.0/me/accounts?access_token=TOKEN_LARGO"
    ```
-4. En `.env`: `FB_PAGE_ID=<id>` y `FB_PAGE_TOKEN=<access_token de la página>`.
+6. En `.env`: `FB_PAGE_ID=<id de la Página>` y `FB_PAGE_TOKEN=<access_token de la Página>`.
+   `IG_USER_ID` es opcional: el id de Instagram se lee de la Página y se guarda en
+   `.tokens/meta_ids.json` (0600).
+7. Ejecuta `python3 tools/meta_publish.py setup-check` (o `make meta-check`). Dice la
+   Página, la cuenta de Instagram vinculada, el tipo y la caducidad del token, los
+   permisos que faltan y cómo arreglar cada cosa. Sale con código 0 solo si todo está.
+   El panel tiene el mismo informe en la tarjeta de la cola de Instagram/Facebook.
 
-Comprueba la conexión sin publicar nada: `python3 tools/meta_publish.py check`.
+`python3 tools/meta_publish.py check` y `--dry-run` solo hacen lecturas: no
+publican ni escriben nada. `refresh-token` ya no renueva nada; solo muestra el tipo
+y la caducidad del token de la Página.
 
-### Renovación del token de Instagram
-
-Antes de cada publicación, si al token le quedan menos de 10 días, se renueva
-con `refresh_access_token`. El token nuevo se guarda en
-`.tokens/instagram_token.json`: ese directorio está en `.gitignore` y el archivo
-tiene permisos 0600. `.env` no se modifica. Si pones un token nuevo en `.env`, el
-guardado se descarta y la cadena empieza otra vez desde el nuevo. Si el token
-caduca (60 días sin publicar ni renovar), hay que generar otro (paso 5).
-Para renovarlo aunque no se publique: `python3 tools/meta_publish.py refresh-token`
-(por ejemplo, una vez por semana). `check` y `--dry-run` nunca lo renuevan ni tocan
-`.tokens`: solo dicen cuántos días le quedan.
+Si en el panel una plataforma falla por la configuración (permisos, token o Instagram
+sin vincular), queda en «configuración pendiente» para el resto del lote y las demás
+siguen.
 
 ### Cola y horarios
 

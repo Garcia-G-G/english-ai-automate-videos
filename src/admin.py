@@ -1438,7 +1438,7 @@ def render_meta_queue(st_module) -> None:
             [{"vídeo": r["artifact"], **{p: r[p]["status"] for p in cfg["platforms"]},
               **{f"{p} enlace / motivo": r[p].get("url") or r[p].get("detail") or "" for p in cfg["platforms"]}}
              for r in rows],
-            use_container_width=True, hide_index=True)
+            width="stretch", hide_index=True)
 
 
 def approve_video(video_path: Path):
@@ -1995,14 +1995,14 @@ def lazy_download(path, key: str) -> None:
     state_key = f"_lazy_dl_{key}"
     if not st.session_state.get(state_key):
         if st.button("⬇️ Download", key=f"_lazy_dl_btn_{key}",
-                     use_container_width=True):
+                     width="stretch"):
             st.session_state[state_key] = True
             st.rerun()
         return
     with open(path, "rb") as handle:
         st.download_button("⬇️ Guardar archivo", data=handle,
                            file_name=Path(path).name, mime="video/mp4",
-                           key=f"_lazy_dl_real_{key}", use_container_width=True)
+                           key=f"_lazy_dl_real_{key}", width="stretch")
 
 def focus_first(videos: list, artifact: Optional[str]) -> list:
     """Put the artifact the operator pressed on at the top of the list.
@@ -2332,7 +2332,7 @@ NAV_LABELS = {
 
 def _nav_button(name: str, is_active: bool) -> bool:
     label, icon = NAV_LABELS.get(name, (name, None))
-    kwargs = dict(key=f"nav_{name}", use_container_width=True,
+    kwargs = dict(key=f"nav_{name}", width="stretch",
                   type="primary" if is_active else "secondary")
     try:
         return st.sidebar.button(label, icon=icon, **kwargs)
@@ -2566,7 +2566,7 @@ if page == "Dashboard":
                   "llamadas": r["calls"],
                   "⚠": "> 2× mediana" if r["video_id"] in _outliers else ""}
                  for r in _video_costs[:50]],
-                use_container_width=True, hide_index=True)
+                width="stretch", hide_index=True)
             st.caption("Últimos 50. Detalle completo: "
                        "`python3 src/cost_tracker.py --videos 100`")
     st.markdown("")
@@ -2610,7 +2610,7 @@ if page == "Dashboard":
                 unsafe_allow_html=True)
         with c2:
             if st.button("⬆️ Promover", key=f"inicio_promote_{idx}",
-                         use_container_width=True):
+                         width="stretch"):
                 verdict = promote_to_review(v["path"])
                 if verdict["ok"]:
                     st.success(f"{verdict['artifact']} → pending. {verdict['reason']}")
@@ -2672,7 +2672,7 @@ if page == "Dashboard":
                 unsafe_allow_html=True)
         with c2:
             if st.button("👀 Revisar", key=f"inicio_review_{idx}",
-                         use_container_width=True):
+                         width="stretch"):
                 _go("Review", v["name"])
     st.markdown("")
 
@@ -2695,7 +2695,7 @@ if page == "Dashboard":
                 unsafe_allow_html=True)
         with c2:
             if st.button("📤 Subir", key=f"inicio_upload_{idx}",
-                         use_container_width=True):
+                         width="stretch"):
                 _go("Upload", v["name"])
     st.markdown("")
 
@@ -2787,7 +2787,7 @@ if page == "Dashboard":
     action_cols = st.columns(len(_buttons))
     for col, (label, vtype) in zip(action_cols, _buttons):
         with col:
-            if st.button(f"🎬 {label}", use_container_width=True, key=f"quick_{vtype}"):
+            if st.button(f"🎬 {label}", width="stretch", key=f"quick_{vtype}"):
                 job_id = start_generation(vtype)
                 st.toast(f"{label} queued (job {job_id})")
                 st.rerun()
@@ -2883,7 +2883,7 @@ elif page == "Generate":
                      "GPT script call still happens, so this is cheap, not "
                      "free.")
 
-        generate_btn = st.button("Crear video", type="primary", use_container_width=True)
+        generate_btn = st.button("Crear video", type="primary", width="stretch")
 
     with col2:
         st.markdown('<div class="section-header">Generation Status</div>', unsafe_allow_html=True)
@@ -2947,13 +2947,13 @@ elif page == "Queue":
         st.write("**Quick Batch:**")
         bc1, bc2 = st.columns(2)
         with bc1:
-            if st.button("10 Random Quizzes", use_container_width=True):
+            if st.button("10 Random Quizzes", width="stretch"):
                 total = batch_add([{"type": "quiz", "category": None,
                                     "topic": None} for _ in range(10)])
                 st.success(f"Added 10 quizzes — {total} waiting.")
                 st.rerun()
         with bc2:
-            if st.button("5 of Each Type", use_container_width=True):
+            if st.button("5 of Each Type", width="stretch"):
                 # "Each type" meant three of six, and the toast said 15
                 # regardless. Both came from the hand-written list.
                 total = batch_add([{"type": vtype, "category": None,
@@ -2968,7 +2968,7 @@ elif page == "Queue":
         st.write("**Custom:**")
         q_type = st.selectbox("Type", VIDEO_TYPES, key="queue_type")
         q_count = st.number_input("Count", min_value=1, max_value=50, value=5)
-        if st.button("Add to Queue", use_container_width=True):
+        if st.button("Add to Queue", width="stretch"):
             total = batch_add([{"type": q_type, "category": None,
                                 "topic": None} for _ in range(q_count)])
             st.success(f"Added {q_count} {q_type} videos — {total} waiting.")
@@ -2988,10 +2988,10 @@ elif page == "Queue":
             c1, c2 = st.columns(2)
             with c1:
                 start_btn = st.button("▶️ Start Processing", type="primary",
-                                      use_container_width=True,
+                                      width="stretch",
                                       disabled=bool(_running))
             with c2:
-                if st.button("Clear Queue", use_container_width=True):
+                if st.button("Clear Queue", width="stretch"):
                     batch_clear()
                     st.rerun()
 
@@ -3085,11 +3085,11 @@ elif page == "Review":
             with col2:
                 st.write("")
                 st.write("")
-                if st.button("✅ Approve", key=f"approve_{idx}", type="primary", use_container_width=True):
+                if st.button("✅ Approve", key=f"approve_{idx}", type="primary", width="stretch"):
                     approve_video(video["path"])
                     st.success("Approved!")
                     st.rerun()
-                if st.button("❌ Reject", key=f"reject_{idx}", use_container_width=True):
+                if st.button("❌ Reject", key=f"reject_{idx}", width="stretch"):
                     reject_video(video["path"])
                     st.rerun()
 
@@ -3098,13 +3098,13 @@ elif page == "Review":
         st.markdown("**Bulk Actions**")
         bc1, bc2 = st.columns(2)
         with bc1:
-            if st.button("✅ Approve All", use_container_width=True):
+            if st.button("✅ Approve All", width="stretch"):
                 for v in pending:
                     approve_video(v["path"])
                 st.success(f"Approved {len(pending)} videos!")
                 st.rerun()
         with bc2:
-            if st.button("❌ Reject All", use_container_width=True):
+            if st.button("❌ Reject All", width="stretch"):
                 for v in pending:
                     reject_video(v["path"])
                 st.rerun()
@@ -3348,7 +3348,7 @@ elif page == "Upload":
                         ]):
                             with regen_cols[i]:
                                 if st.button(f"{icon} {pname}", key=f"regen_{pkey}_{video['name']}",
-                                             use_container_width=True, help=f"Regenerate for {pname}"):
+                                             width="stretch", help=f"Regenerate for {pname}"):
                                     try:
                                         with st.spinner(f"Generating for {pname}..."):
                                             result = regenerate_for_platform(
@@ -3387,7 +3387,7 @@ elif page == "Upload":
                 if _yt_block and "YouTube Shorts" in target_platforms:
                     _pre = _pre or True        # the YouTube button waits for the slot (message above)
                 if target_platforms and not _pre:
-                    if st.button("📤 Upload", key=f"upload_{video['name']}", use_container_width=True):
+                    if st.button("📤 Upload", key=f"upload_{video['name']}", width="stretch"):
                         try:
                             from uploader import get_upload_manager
                             manager = get_upload_manager()
@@ -3475,14 +3475,14 @@ elif page == "Upload":
                         except Exception as e:
                             st.error(f"Upload error: {str(e)}")
                 else:
-                    st.button("📤 Upload", key=f"upload_{video['name']}", disabled=True, use_container_width=True)
+                    st.button("📤 Upload", key=f"upload_{video['name']}", disabled=True, width="stretch")
 
                 btn_cols = st.columns(3)
                 with btn_cols[0]:
                     if video["path"].exists():
                         lazy_download(video["path"], f"dl_{video['name']}")
                 with btn_cols[2]:
-                    if st.button("📅", key=f"metaq_{video['name']}", use_container_width=True,
+                    if st.button("📅", key=f"metaq_{video['name']}", width="stretch",
                                  help="Encolar para Instagram/Facebook (franjas de config.yaml)"):
                         from publishers import schedule
                         try:
@@ -3491,7 +3491,7 @@ elif page == "Upload":
                         except (OSError, ValueError) as e:
                             st.error(f"No se pudo encolar: {e}")
                 with btn_cols[1]:
-                    if st.button("↩️", key=f"unapprove_{video['name']}", use_container_width=True,
+                    if st.button("↩️", key=f"unapprove_{video['name']}", width="stretch",
                                  help="Move back to pending"):
                         unapprove_video(video['path'])
                         st.rerun()
@@ -3705,7 +3705,7 @@ elif page == "Library":
                     if video.get("stage") == "batch":
                         if st.button("⬆️ Promote to Review",
                                      key=f"promote_{video['path']}",
-                                     use_container_width=True):
+                                     width="stretch"):
                             verdict = promote_to_review(video["path"])
                             if verdict["ok"]:
                                 st.success(
@@ -3715,7 +3715,7 @@ elif page == "Library":
                                 st.rerun()
                             else:
                                 st.error(f"Not promoted: {verdict['reason']}")
-                    if st.button("🗑️ Delete", key=f"del_{video['path']}", use_container_width=True):
+                    if st.button("🗑️ Delete", key=f"del_{video['path']}", width="stretch"):
                         delete_video(video["path"])
                         st.rerun()
 
@@ -3755,7 +3755,7 @@ elif page == "Scheduler":
             if st.checkbox(type_label(vtype), value=vtype in enabled_types)
         ]
 
-        if st.button("💾 Save Config", use_container_width=True):
+        if st.button("💾 Save Config", width="stretch"):
             st.session_state.scheduler_config = {
                 "videos_per_batch": videos_per_batch,
                 "interval_minutes": interval,
@@ -3768,17 +3768,17 @@ elif page == "Scheduler":
 
         if st.session_state.scheduler_enabled:
             st.success("Scheduler is ACTIVE")
-            if st.button("Stop Scheduler", use_container_width=True):
+            if st.button("Stop Scheduler", width="stretch"):
                 st.session_state.scheduler_enabled = False
                 st.rerun()
         else:
             st.warning("Scheduler is INACTIVE")
-            if st.button("Start Scheduler", type="primary", use_container_width=True):
+            if st.button("Start Scheduler", type="primary", width="stretch"):
                 st.session_state.scheduler_enabled = True
                 st.rerun()
 
         st.markdown("---")
-        if st.button("🚀 Generate Batch Now", use_container_width=True):
+        if st.button("🚀 Generate Batch Now", width="stretch"):
             if not selected_types:
                 st.error("Select at least one type!")
             else:
@@ -3828,7 +3828,7 @@ elif page == "Topics":
             st.dataframe(
                 [{"Category": r["category"], "Topic": r["topic_id"],
                   "Times": r["times"]} for r in repeats],
-                use_container_width=True, hide_index=True)
+                width="stretch", hide_index=True)
 
         st.markdown('<div class="section-header">By category</div>',
                     unsafe_allow_html=True)
@@ -3838,7 +3838,7 @@ elif page == "Topics":
               "Coverage": f"{(100.0 * row['used'] / row['total']):.0f}%"
                           if row["total"] else "—"}
              for row in report["by_category"]],
-            use_container_width=True, hide_index=True)
+            width="stretch", hide_index=True)
 
 
 # ============== SETTINGS PAGE ==============
@@ -3910,7 +3910,7 @@ elif page == "Settings":
                     )
 
                 with col3:
-                    if st.button("Save", key=f"save_{env_var}", use_container_width=True):
+                    if st.button("Save", key=f"save_{env_var}", width="stretch"):
                         if new_value:
                             save_env_key(env_var, new_value)
                             st.success(f"Saved!")
@@ -3971,7 +3971,7 @@ elif page == "Settings":
                                         index=VIDEO_TYPES.index(config.get("content", {}).get("default_type", "educational"))
                                         if config.get("content", {}).get("default_type", "educational") in VIDEO_TYPES else 0)
 
-        if st.button("💾 Save Video Config", type="primary", use_container_width=True):
+        if st.button("💾 Save Video Config", type="primary", width="stretch"):
             new_config = {
                 "video": {
                     "width": video_width,
@@ -4023,7 +4023,7 @@ elif page == "Settings":
             similarity = st.slider("Similarity Boost", 0.0, 1.0, audio_config.get("similarity_boost", 0.80), 0.05)
             style = st.slider("Style", 0.0, 1.0, audio_config.get("style", 0.05), 0.05)
 
-        if st.button("💾 Save Audio Config", type="primary", use_container_width=True):
+        if st.button("💾 Save Audio Config", type="primary", width="stretch"):
             config["audio"] = {
                 "provider": provider,
                 "voice_id": voice_id,
@@ -4111,13 +4111,13 @@ elif page == "Logs":
     st.markdown("---")
     c1, c2 = st.columns(2)
     with c1:
-        if st.button("Clear Failed Jobs", use_container_width=True):
+        if st.button("Clear Failed Jobs", width="stretch"):
             jobs["history"] = [j for j in jobs.get("history", []) if j.get("status") != "failed"]
             save_jobs(jobs)
             st.success("Cleared!")
             st.rerun()
     with c2:
-        if st.button("Clear All History", use_container_width=True):
+        if st.button("Clear All History", width="stretch"):
             jobs["history"] = []
             save_jobs(jobs)
             st.success("Cleared!")
