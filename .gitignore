@@ -93,6 +93,8 @@ experiments/**/audio/
 # Render sidecars, rebuilt with every render. The ledger and .youtube.json
 # carry upload ids and drafts, not code.
 experiments/**/renders/ledger.jsonl
+# «Revisar y subir» decisions, runtime data like the Shorts review state under output/.
+experiments/**/renders/reviews.jsonl
 experiments/**/renders/**/*.srt
 experiments/**/renders/**/*.chapters.txt
 experiments/**/renders/**/*.timeline.json
