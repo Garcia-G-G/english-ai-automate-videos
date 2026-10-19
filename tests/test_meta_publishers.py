@@ -406,3 +406,71 @@ def test_a_dry_run_never_refreshes_or_rewrites_the_token(approved, ig_env, fb_en
     assert not r.hit("refresh_access_token") and all(m == "get" for m, _u, _k in r.calls)
     assert (path.read_bytes(), path.stat().st_mtime_ns) == before
     assert not PL.read_attempts()
+
+
+# ── STEP 70 §3: one lock for every Meta publish ─────────────────────────
+
+import threading  # noqa: E402
+
+
+class _SlowManager:
+    """A manager whose upload holds until released, counting calls to the publish endpoint."""
+
+    def __init__(self):
+        self.calls, self.inside, self.go = [], threading.Event(), threading.Event()
+
+    def upload(self, platform, video_path, on_session=None, **kw):
+        self.calls.append(platform)
+        self.inside.set()
+        assert self.go.wait(5)
+        return {"success": True, "upload_id": "R1", "url": "https://x/r1"}
+
+
+def test_the_panel_and_the_tick_never_publish_the_same_reel_twice(approved, monkeypatch):
+    """Panel click holding the lock while the slot tick fires: one publish, the tick waits."""
+    import admin
+    schedule.enqueue(approved)
+    manager = _SlowManager()
+    monkeypatch.setattr(schedule, "publish", lambda item: manager.upload("tick", item["path"]))
+    out = {}
+    panel = threading.Thread(target=lambda: out.setdefault("panel", admin._guarded_upload(
+        manager, "q1", "instagram", str(approved), title="t", description="d", hashtags=[])))
+    panel.start()
+    assert manager.inside.wait(5)
+    # The click's open attempt already uses today's slot, so a slot tick waits; `now` ignores
+    # the slots and must be stopped by the lock itself.
+    tick = schedule.tick(datetime.now(), cfg=CFG)
+    now = schedule.tick(datetime.now(), force=True, cfg=CFG)
+    manager.go.set()
+    panel.join(5)
+    assert manager.calls == ["instagram"]
+    assert tick["action"] == "wait"
+    assert now["action"] == "wait" and "locked" in now["reason"]
+    assert out["panel"]["success"]
+
+
+def test_a_click_during_the_slot_publish_does_nothing(approved, monkeypatch):
+    """The tick holding the lock: the panel button says so and sends nothing."""
+    import admin
+    schedule.enqueue(approved)
+    manager = _SlowManager()
+    monkeypatch.setattr(schedule, "publish", lambda item: manager.upload("tick", item["path"]))
+    ticker = threading.Thread(target=lambda: schedule.tick(datetime(2026, 10, 19, 10, 1), cfg=CFG))
+    ticker.start()
+    assert manager.inside.wait(5)
+    res = admin._guarded_upload(manager, "q1", "instagram", str(approved), title="t", description="d", hashtags=[])
+    manager.go.set()
+    ticker.join(5)
+    assert manager.calls == ["tick"]
+    assert res == {"success": False, "error": "publicando en la franja, espera", "locked": True}
+    assert not [r for r in PL.read_attempts() if r.get("platform") == "instagram"]
+
+
+def test_a_click_after_the_tick_published_is_refused_under_the_lock(approved):
+    import admin
+    PL.record_publication(artifact="q1", video_path=str(approved), platform="instagram",
+                          upload_id="M1", url="https://www.instagram.com/reel/m1/",
+                          published_title="", published_description="")
+    manager = _SlowManager()
+    res = admin._guarded_upload(manager, "q1", "instagram", str(approved), title="t")
+    assert not manager.calls and res["locked"] and "ya publicado" in res["error"]

@@ -20,6 +20,7 @@ import json
 import logging
 import os
 import tempfile
+from contextlib import contextmanager
 from datetime import datetime, time as dtime
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -201,6 +202,26 @@ def dry_run(item: Dict) -> Dict:
     return report
 
 
+#: The platforms whose every publish takes publish_lock (panel button, now, tick, loop).
+LOCKED_PLATFORMS = ("instagram", "facebook")
+LOCKED = "publicando en la franja, espera"
+
+
+@contextmanager
+def publish_lock():
+    """One Meta publish at a time across processes and threads. Yields False, at once, when
+    another holds it: the caller must do nothing then."""
+    path = queue_path().with_suffix(".lock")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w") as fh:
+        try:
+            fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            yield False
+            return
+        yield True
+
+
 def publish(item: Dict) -> Dict:
     import main
     return main.upload_video(item["path"], item["video_type"], script_for(item["path"], item["video_type"]),
@@ -220,15 +241,10 @@ def tick(now: Optional[datetime] = None, *, dry: bool = False, force: bool = Fal
         return {"action": "idle", "reason": "nothing queued"}
     if dry:
         return {"action": "dry_run", "slot": slot and slot.isoformat(), **dry_run(item)}
-    # One publisher at a time across processes (cron tick, `loop`, `now`).
-    # shortcut: the dashboard Upload button does not take this lock; publish by hand outside the slots.
-    lock_path = queue_path().with_suffix(".lock")
-    lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(lock_path, "w") as lock:
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            return {"action": "wait", "reason": "another publish is running"}
+    # One publisher at a time: cron tick, `loop`, `now` and the dashboard's Upload button.
+    with publish_lock() as got:
+        if not got:
+            return {"action": "wait", "reason": "locked: another publish is running"}
         if next_item(cfg, artifact) != item:              # re-read under the lock
             return {"action": "wait", "reason": "queue changed; next tick"}
         return {"action": "published", "slot": slot and slot.isoformat(), "outcome": publish(item)}

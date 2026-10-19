@@ -375,7 +375,7 @@ def test_all_three_upload_call_sites_go_through_the_guard():
     tree = ast.parse(admin)
     offenders = []
     for fn in [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]:
-        if fn.name == "_guarded_upload":
+        if fn.name in ("_guarded_upload", "_guarded_upload_unlocked"):
             continue
         for call in ast.walk(fn):
             if (isinstance(call, ast.Call)
@@ -396,14 +396,20 @@ def test_all_three_upload_call_sites_go_through_the_guard():
             if "_guarded_upload" not in src_line:
                 offenders.append(f"<module>:{call.lineno}")
 
-    guarded_lineno = next(
-        n.lineno for n in ast.walk(tree)
-        if isinstance(n, ast.FunctionDef) and n.name == "_guarded_upload")
+    spans = [(n.lineno, n.end_lineno) for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)
+             and n.name in ("_guarded_upload", "_guarded_upload_unlocked")]
     offenders = [o for o in offenders
-                 if not (guarded_lineno <= int(o.split(":")[1]) <= guarded_lineno + 40)]
+                 if not any(a <= int(o.split(":")[1]) <= b for a, b in spans)]
 
     assert not offenders, (
         f"unguarded manager.upload call(s) in admin.py at {offenders}")
+
+    # STEP 70 §3: the body runs only through _guarded_upload, which takes the Meta lock.
+    callers = {fn.name for fn in ast.walk(tree) if isinstance(fn, ast.FunctionDef)
+               for c in ast.walk(fn) if isinstance(c, ast.Call)
+               and isinstance(c.func, ast.Name) and c.func.id == "_guarded_upload_unlocked"}
+    assert callers == {"_guarded_upload"}, callers
+    assert admin.count("_guarded_upload_unlocked(") == 3   # its def and the two calls in the wrapper
 
 
 if __name__ == "__main__":

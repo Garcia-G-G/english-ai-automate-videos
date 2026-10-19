@@ -1528,6 +1528,23 @@ def _guard_notice(st_module, artifact: str, platform_label: str, verdict) -> Non
 
 def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
                     **kwargs):
+    """_guarded_upload_unlocked, under the Meta publish lock for Instagram and Facebook
+    (STEP 70 §3): a click while the slot tick publishes does nothing, and a video the tick
+    has just published is not sent again."""
+    from publishers import schedule
+    if platform not in schedule.LOCKED_PLATFORMS:
+        return _guarded_upload_unlocked(manager, artifact, platform, video_path, **kwargs)
+    with schedule.publish_lock() as got:
+        if not got:
+            return {"success": False, "error": schedule.LOCKED, "locked": True}
+        state = schedule.platform_status(artifact, platform)["status"]
+        if state in ("published", "holding"):           # re-read under the lock
+            return {"success": False, "error": f"ya publicado o en curso en {platform}", "locked": True}
+        return _guarded_upload_unlocked(manager, artifact, platform, video_path, **kwargs)
+
+
+def _guarded_upload_unlocked(manager, artifact: str, platform: str, video_path: str,
+                             **kwargs):
     """manager.upload, with the attempt persisted before a byte is sent.
 
     The dashboard needs this for the same reason main.py does: the window
@@ -3409,6 +3426,8 @@ elif page == "Upload":
                                             "time": datetime.now().isoformat(),
                                             "status": "success"
                                         })
+                                    elif isinstance(result, dict) and result.get("locked"):
+                                        st.warning(result["error"])
                                     elif not (isinstance(result, dict) and result.get("in_flight")):
                                         from upload_limits import spanish as _spanish
                                         err = result.get("error", "Unknown") if isinstance(result, dict) else getattr(result, 'error', 'Unknown')
@@ -3507,6 +3526,8 @@ elif page == "Upload":
                                 hashtags=adapted["hashtags"],
                             )
                             results.append(result)
+                            if isinstance(result, dict) and result.get("locked"):
+                                st.warning(f"{video['name']} · {pname}: {result['error']}")
                             success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
                             if success:
                                 any_success = True
