@@ -1167,6 +1167,15 @@ def draw_pill_badge(
                             inner)
         f, lines = box.font, box.lines
 
+    # line_break returns [] for text that is blank once stripped, and a
+    # whitespace-only string is still truthy at every call site — fill_blank
+    # draws this pill under `if show_answer and translation:`. With no lines
+    # the block height below goes NEGATIVE ((0-1) * line_h), so pill_h and
+    # pill_radius go negative and rounded_rectangle raises in the middle of
+    # a render. Nothing to draw is the right answer for a blank badge.
+    if not lines:
+        return 0, 0
+
     line_h = font_line_height(f)
     widths = [draw.textbbox((0, 0), line, font=f)[2] for line in lines]
     tw = max(widths) if widths else 0

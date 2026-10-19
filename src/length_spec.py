@@ -298,7 +298,18 @@ def budget_for(video_type: str, field: str) -> Optional[Budget]:
     return budgets().get(f"{(video_type or '').lower()}.{field}")
 
 
-FIELDS = tuple(sorted(budgets())) if False else ()   # populated lazily below
+def __getattr__(name):
+    """`FIELDS`, resolved on first access rather than at import.
+
+    It was `tuple(sorted(budgets())) if False else ()` — permanently empty,
+    while the module docstring advertises it as an import. A module-level
+    tuple cannot be lazy and building one at import time would pull the
+    whole renderer stack in on `import length_spec`, so the name is served
+    here instead.
+    """
+    if name == "FIELDS":
+        return tuple(sorted(budgets()))
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 # ─────────────────────────── the measurement ───────────────────────────

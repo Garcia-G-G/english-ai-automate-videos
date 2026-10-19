@@ -359,11 +359,15 @@ def _draw_option_cards(t, draw, frame, options, correct, show_answer,
         tc = ((30, 140, 60) if is_correct else
               (160, 155, 170) if is_wrong else _TEXT_DARK)
         line_h = font_line_height(of)
-        block_h = (len(lines) - 1) * line_h + _text_h(draw, lines[0], of)
-        ty = cy + (_OPT_H - block_h) // 2 - 1
-        for index, line in enumerate(lines):
-            draw_text_solid(draw, line, cx + 85, ty + index * line_h,
-                            of, tc, card_alpha, outline=0)
+        # line_break returns [] for a blank option; the card still draws,
+        # it just carries no text. lines[0] on an empty list would be an
+        # IndexError in the middle of a render.
+        if lines:
+            block_h = (len(lines) - 1) * line_h + _text_h(draw, lines[0], of)
+            ty = cy + (_OPT_H - block_h) // 2 - 1
+            for index, line in enumerate(lines):
+                draw_text_solid(draw, line, cx + 85, ty + index * line_h,
+                                of, tc, card_alpha, outline=0)
 
         # Sparkles on correct answer
         if is_correct:

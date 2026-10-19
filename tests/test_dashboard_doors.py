@@ -295,6 +295,53 @@ def _job_row(job_id):
     return next(j for j in jobs["history"] + jobs["active"] if j["id"] == job_id)
 
 
+def test_a_dashboard_run_does_not_eat_the_owners_queue(recorder, ledger,
+                                                       queue_sandbox):
+    """THE PIN FOR A LEAK THIS FILE CAUSED.
+
+    Every run in this file takes use_queue=True by default, so it claimed a
+    real hand-written script out of content/queue/ and — because the
+    recorder makes the run "succeed" without rendering anything — shelved it
+    into content/queue/_done/. Eight scripts were consumed that way and not
+    one of them produced a video.
+
+    The fixture isolated SCRIPTS_DIR, AUDIO_DIR, PENDING_DIR and CLIPS_DIR
+    and stopped there; the queue is not under output/, so neither the
+    redirect nor the output guard covered it. Both now do
+    (tests/conftest.py, tests/output_guard.py).
+
+    WHAT A TEST SEES IS AN EMPTY QUEUE, and the run falls through to the
+    generator this file already stubs. That is the whole intent rather than
+    a limitation: queue_guard does its path arithmetic relative to the repo
+    root, so a queue outside the repo cannot be audited at all, and nothing
+    in the suite asserts anything about queue contents. The queue route was
+    never really under test — it was only being consumed.
+
+    The QUEUE_DIR assertion is what goes red if the redirect is undone, and
+    it goes red BEFORE the run, so the pin cannot burn a script on its way
+    to failing.
+    """
+    import queue_guard
+
+    real_queue = ROOT / "content" / "queue"
+    assert Path(queue_guard.QUEUE_DIR) == queue_sandbox, (
+        "the run would have read the owner's queue")
+    assert Path(queue_guard.DONE_DIR) == queue_sandbox / "_done", (
+        "a successful run would have shelved into the owner's queue")
+
+    before = sorted(q.relative_to(real_queue).as_posix()
+                    for q in real_queue.rglob("*.json"))
+
+    admin.run_pipeline_with_tracking(admin.create_job("vocabulary"),
+                                     "vocabulary")
+
+    after = sorted(q.relative_to(real_queue).as_posix()
+                   for q in real_queue.rglob("*.json"))
+    assert after == before, (
+        "a test run moved the owner's queued scripts: "
+        f"{sorted(set(before) ^ set(after))}")
+
+
 def test_the_dashboard_delegates_the_background_decision(recorder, ledger):
     """WHAT YOU PICKED MUST BE WHAT THE ROW SAYS YOU GOT — but the guarantee
     belongs to resolve_background, not here.
@@ -313,3 +360,63 @@ def test_the_dashboard_delegates_the_background_decision(recorder, ledger):
     assert recorder.background_arg == "static_fire"
 
 
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# THE RELEASE ON FAILURE, AND THE ONE FAILURE THAT MUST NOT RELEASE.
+#
+# _release_queued_script exists because a failed queued job used to burn the
+# script forever: the output/scripts/ copy is written before TTS, and
+# topic_history counts that copy, so queue_guard flagged the original
+# ALREADY PRODUCED on the next pick.
+#
+# Deleting the copy fixes that, but only while no video came out of the run.
+# render_video can succeed and finalize_video — the gate plus an ffmpeg outro
+# — still raise, and the metadata write after it can raise too. usage_counts()
+# reads SCRIPT json and artifact json; it never looks at an mp4. So releasing
+# after a successful render un-marks a topic that HAS been produced, and the
+# queue serves the same script again.
+#
+# Burning a script is recoverable by a person. A duplicate video is not.
+# ═══════════════════════════════════════════════════════════════════════
+
+def test_a_failure_before_the_video_gives_the_queued_script_back(tmp_path):
+    """The whole point of the release: a transient TTS or render failure
+    must not cost the script permanently."""
+    script_copy = tmp_path / "cu001_saludos.json"
+    script_copy.write_text("{}", encoding="utf-8")
+    never_rendered = tmp_path / "pending" / "cu001_saludos.mp4"
+
+    admin._release_queued_script(tmp_path / "queued.json", script_copy,
+                                 never_rendered)
+
+    assert not script_copy.exists(), (
+        "the history mark survived a failure that produced no video, so "
+        "queue_guard will refuse the script as ALREADY PRODUCED forever")
+
+
+def test_a_failure_after_the_video_keeps_the_history_mark(tmp_path):
+    """THE PIN. An mp4 on disk means the topic was produced, whatever the
+    step after the render did. Releasing here makes the video twice."""
+    script_copy = tmp_path / "cu001_saludos.json"
+    script_copy.write_text("{}", encoding="utf-8")
+    rendered = tmp_path / "cu001_saludos.mp4"
+    rendered.write_bytes(b"\x00")           # finalize_video raised after this
+
+    admin._release_queued_script(tmp_path / "queued.json", script_copy,
+                                 rendered)
+
+    assert script_copy.exists(), (
+        "a topic whose video is on disk was un-marked: the guard will offer "
+        "the script again and the same video gets produced twice")
+
+
+def test_the_release_is_only_ever_for_a_queued_script(tmp_path):
+    """A GPT-written script is the only record of what was generated, so it
+    is kept whether the run failed or not."""
+    script_copy = tmp_path / "generated.json"
+    script_copy.write_text("{}", encoding="utf-8")
+
+    admin._release_queued_script(None, script_copy, None)
+
+    assert script_copy.exists(), "a generated script was deleted on failure"

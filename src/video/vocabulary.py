@@ -331,6 +331,13 @@ def _draw_cell(draw, text, *, col_w, budget, row_y, color, alpha,
     f, lines = box.font, box.lines
     line_h = font_line_height(f)
 
+    # line_break returns [] for text that is blank once stripped, and the
+    # schema's min_length=1 lets a single space through. Drawing nothing is
+    # the right answer for a blank cell; indexing lines[0] would take the
+    # whole render down with an IndexError.
+    if not lines:
+        return
+
     # fit_text_font logs its own overflow with the text and the excess when
     # nothing in the range fits. Nothing is truncated and no row is dropped:
     # a cell that cannot fit is drawn too large and reported, because a

@@ -782,7 +782,7 @@ Examples:
                 artifact, video = run_creation(
                     workspace=args.workspace, audience=audience, idea=topic_name,
                     mode="auto", video_type=args.type, background=args.background,
-            upload=args.upload,
+                    upload=args.upload,
                 )
                 entry["artifact_id"] = artifact.artifact_id
                 entry["artifact_path"] = str(video) if video else None

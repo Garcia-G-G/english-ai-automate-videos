@@ -586,7 +586,12 @@ def treatment_for_dir(clips_dir: Path, video_type: str = None,
             reports.append(report)
 
     if not reports:
-        return {"clips": [], "strength": 0.0, "worst_contrast": None,
+        # A PINNED BAND SURVIVES AN EMPTY MEASUREMENT. Returning 0.0 here
+        # discarded the caller's `scrim=` whenever no clip could be decoded,
+        # so a deliberately pinned band silently became no band at all.
+        return {"clips": [],
+                "strength": 0.0 if band_strength is None else float(band_strength),
+                "worst_contrast": None,
                 "mark_strength": 0.0, "mark_worst_contrast": None,
                 "mark_treated_contrast": None, "mark_meets_floor": True,
                 "interval": interval, "video_type": video_type}
