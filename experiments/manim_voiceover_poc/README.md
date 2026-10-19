@@ -55,6 +55,17 @@ names. Sizes are cap heights at 1080p, for a phone: English chips 68 px, glosses
 scrolls. Punctuation stays on its word (`seven.`). Every render ends on a silent 20 s card — the
 logo, «Sigue aprendiendo» and two empty frames for YouTube's end-screen elements.
 
+## The notebook page (STEP 63, design E)
+
+Every beat is written on a landscape notebook page: paper a shade lighter than the ground, an ink
+outline with a hard ink shadow, spiral rings on the left, and the part's name at the top in Fredoka
+on the yellow marker (an updater on the clock, so it adds no time). The top bar stays above the page
+and a small blue «learningroutes.com» pill sits under its dashes. The caption is a yellow sticky note,
+bottom right, slightly turned, as wide as the beat's widest line and two lines at most. A table prints
+every row from the first frame; each meaning waits under one shared grey blurred bar and comes into
+focus on the yellow highlighter when the narration reaches it. A quiz reveals the answer with a green
+hand-drawn circle and a tick, and strikes the wrong options in red.
+
 ## Grammar in motion — `transform`, `timeline`, `sort`
 
 The camera eases ≈ 1.06× in on a transform morph, a sentence fix and a sort, and back on the next

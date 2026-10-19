@@ -22,14 +22,15 @@ never crops them. Sound effects (sfx.py) sit 22 dB under the voice; SFX=0 turns 
 import json
 import math
 import os
+import re
 from pathlib import Path
 
 import manimpango
 from manim import (
     BOLD, DOWN, LEFT, NORMAL, ORIGIN, PI, RIGHT, UP, AnimationGroup, Arc, Circle, Create, Dot,
-    DashedLine, DashedVMobject, FadeIn, FadeOut, GrowFromCenter, ImageMobject, LaggedStart, Line,
+    DashedLine, DashedVMobject, FadeIn, FadeOut, GrowFromCenter, Group, ImageMobject, LaggedStart, Line,
     MovingCameraScene, Polygon, Rectangle, ReplacementTransform, RoundedRectangle, Text, Transform,
-    Succession, ValueTracker, VGroup, VMobject, Wait, Wiggle, Write, config, rush_into, smooth, there_and_back,
+    Succession, ValueTracker, VGroup, VMobject, Wait, Wiggle, Write, config, rush_from, rush_into, smooth, there_and_back,
 )
 from manim_voiceover import VoiceoverScene
 
@@ -81,12 +82,23 @@ DIALOG_EN_PX, DIALOG_ES_PX, TABLE_PX, LABEL_PX, BIN_PX = 54, 44, 56, 46, 56
 BAR_PX, TAG_PX, SMALL_PX = 26, 32, 36
 
 FRAME_W, FRAME_H = config.frame_width, config.frame_height
-STAGE_W = 0.8 * FRAME_W                            # layouts use ~80 % of the width, centred
+BAR_W = 0.8 * FRAME_W                              # the top bar spans ~80 % of the width, centred
 BAR_Y = 3.62
-CAPTION_Y, CAPTION_H = -3.19, 1.34                 # the karaoke band at the bottom
-STAGE_TOP, STAGE_BOTTOM = 3.25, -2.38
+# The notebook page (STEP 63, design E): every beat sits on it, the top bar and the site badge
+# above it, the sticky note over its bottom-right corner. Rings down the left edge.
+PAGE_L, PAGE_R, PAGE_TOP, PAGE_BOTTOM = -5.85, 5.85, 3.02, -2.78
+PAGE_MID = (PAGE_TOP + PAGE_BOTTOM) / 2
+PAGE_RINGS = 13
+PAGE_TITLE_PX, PAGE_TITLE_Y = 46, 2.52             # the part's name, Fredoka on the yellow marker
+STAGE_W = 10.2                                     # the page's writing width, clear of the rings
+STAGE_TOP, STAGE_BOTTOM = 2.02, -2.3               # under the page title, above the turned sticky note
 STAGE_MID = (STAGE_TOP + STAGE_BOTTOM) / 2
-CAP_LINE_W, CAP_LINES = 12.6, 2
+# The caption is a yellow sticky note, bottom right, slightly turned: measured, 2 lines at most.
+NOTE_RIGHT, NOTE_BOTTOM, NOTE_PAD, NOTE_ROT = 6.85, -3.86, 0.22, -2.0
+CAP_LINE_W, CAP_LINES = 6.0, 2
+SITE_PX, SITE_Y = 24, 3.32                         # the «learningroutes.com» badge under the dashes
+INK, NOTE_YELLOW, NOTE_BLUE = BRAND["color"]["ink"], BRAND["color"]["brand_yellow"], BRAND["color"]["english_blue"]
+PX_PER_UNIT = config.pixel_height / FRAME_H
 CHIP_H = 2.0 * CHIP_PX * PX
 END_SCREEN_S = L.END_SCREEN_S
 PUSH = 1.06                                        # camera focus: how far in, and how fast
@@ -233,6 +245,109 @@ def pause_icon(h=0.36, color=TEXT):
     return VGroup(bar(), bar()).arrange(RIGHT, buff=h * 0.22)
 
 
+def hand_circle(mobj, color=GREEN, pad_x=0.24, pad_y=0.13):
+    """A loop drawn by hand round `mobj`, as choose_level draws it (STEP 62): it starts top
+    left and overshoots, with a slow wobble. Ink under the colour on the paper themes."""
+    cx, cy = mobj.get_center()[:2]
+    rx, ry = mobj.width / 2 + pad_x, mobj.height / 2 + pad_y
+    a0, sweep, steps = -0.7 * PI, 2 * PI * 1.08, 64
+    pts = []
+    for k in range(steps + 1):
+        a = a0 + sweep * k / steps
+        wob = 1.0 + 0.05 * math.sin(3 * a + 0.6) + 0.04 * (a - a0) / (2 * PI)
+        pts.append([cx + rx * wob * math.cos(a), cy - ry * wob * math.sin(a), 0])
+    loop = VGroup(VMobject(stroke_color=color, stroke_width=5).set_points_smoothly(pts))
+    if not P["dark"]:
+        loop.add_to_back(VMobject(stroke_color=INK, stroke_width=10).set_points_smoothly(pts))
+    return loop
+
+
+def strike(line):
+    """A red stroke through a wrong option, slightly rising, ink under red on paper."""
+    a, b = line.get_left() + LEFT * 0.08 + DOWN * 0.03, line.get_right() + RIGHT * 0.08 + UP * 0.03
+    group = VGroup(Line(a, b, color=RED, stroke_width=5))
+    if not P["dark"]:
+        group.add_to_back(Line(a, b, color=INK, stroke_width=9))
+    return group
+
+
+def _font_file(font):
+    return str(REPO / BRAND["font"]["display" if font == DISPLAY else "body"]["file"])
+
+
+def blurred(mobj, label=None, bar_w=None, color=None):
+    """An image laid over `mobj`'s box, for the table's reveal (as in the Shorts, STEP 61):
+    `label` set in Fredoka and Gaussian-blurred (the focus pull), or, with `bar_w`, the shared
+    placeholder: a grey rounded bar that wide, so its length gives no hint."""
+    from PIL import Image, ImageDraw, ImageFilter, ImageFont
+    import numpy as np
+    k = 2.0                                            # drawn at twice the frame's pixels, then blurred
+    h_px = max(4, int(round(mobj.height * PX_PER_UNIT * k)))
+    radius = 0.28 * h_px
+    pad = int(3 * radius)
+    if bar_w is None:
+        font = ImageFont.truetype(_font_file(DISPLAY), size=int(h_px * 1.25))
+        x0, y0, x1, y1 = font.getbbox(label)
+        img = Image.new("RGBA", (x1 - x0 + 2 * pad, y1 - y0 + 2 * pad), (0, 0, 0, 0))
+        ImageDraw.Draw(img).text((pad - x0, pad - y0), label, font=font, fill=TH.rgb(color or TEXT) + (255,))
+        width = mobj.width * img.size[0] / (x1 - x0)
+    else:
+        w_px = int(round(bar_w * PX_PER_UNIT * k))
+        bar_h = int(h_px * 0.62)
+        img = Image.new("RGBA", (w_px + 2 * pad, h_px + 2 * pad), (0, 0, 0, 0))
+        ImageDraw.Draw(img).rounded_rectangle([pad, pad + (h_px - bar_h) // 2, pad + w_px, pad + (h_px + bar_h) // 2],
+                                              radius=bar_h // 2, fill=TH.rgb(MUTED) + (170,))
+        width = bar_w * img.size[0] / w_px
+    img = img.filter(ImageFilter.GaussianBlur(radius))
+    out = ImageMobject(np.array(img)).scale_to_fit_width(width)
+    if bar_w is None:
+        return out.move_to(mobj)
+    return out.move_to(mobj.get_left() + RIGHT * bar_w / 2)
+
+
+def notebook_page():
+    """The page every beat is written on: paper, an outline and a hard shadow in ink, and the
+    spiral binding over the left edge (a punched hole and a wire loop per ring)."""
+    w, h = PAGE_R - PAGE_L, PAGE_TOP - PAGE_BOTTOM
+    centre = [(PAGE_L + PAGE_R) / 2, PAGE_MID, 0]
+    shadow = RoundedRectangle(corner_radius=0.22, width=w, height=h, fill_color=P["page_shadow"], fill_opacity=1,
+                              stroke_width=0).move_to(centre).shift([0.1, -0.1, 0])
+    paper = RoundedRectangle(corner_radius=0.22, width=w, height=h, fill_color=P["page"], fill_opacity=1,
+                             stroke_color=P["page_line"], stroke_width=5).move_to(centre)
+    rings = VGroup()
+    for k in range(PAGE_RINGS):
+        y = PAGE_TOP - 0.3 - k * (h - 0.6) / (PAGE_RINGS - 1)
+        rings.add(Circle(radius=0.055, stroke_color=P["page_line"], stroke_width=3, fill_color=BG,
+                         fill_opacity=1).move_to([PAGE_L + 0.3, y, 0]))
+        rings.add(Arc(radius=0.15, start_angle=PI / 2 - 0.4, angle=PI + 0.8, stroke_color=P["page_line"],
+                      stroke_width=6).move_to([PAGE_L - 0.03, y, 0]))
+    return VGroup(shadow, paper, rings)
+
+
+def page_title(name):
+    """A part's name at the top of the page, Fredoka on the yellow marker (on the dark stage,
+    over a yellow stroke: yellow is never under light type)."""
+    title = fit(text(name, PAGE_TITLE_PX), STAGE_W).move_to([0, PAGE_TITLE_Y, 0])
+    if P["dark"]:
+        mark = Line(LEFT, RIGHT, color=YELLOW, stroke_width=8).set_width(title.width + 0.3)
+        mark.next_to(title, DOWN, buff=0.1)
+    else:
+        mark = Rectangle(width=title.width + 0.3, height=title.height * 0.42, stroke_width=0, fill_color=YELLOW,
+                         fill_opacity=1).move_to(title.get_bottom() + UP * title.height * 0.18)
+    return VGroup(mark, title)
+
+
+def site_badge():
+    """«learningroutes.com» in the brand-v2 blue pill, small, top right under the dashes."""
+    pill = card(text(SITE, SITE_PX, PAPER), NOTE_BLUE, pad=0.1, stroke=INK, radius=0.1, stroke_width=3)
+    return pill.move_to([BAR_W / 2 - pill.width / 2, SITE_Y, 0])
+
+
+def part_name(name):
+    """«Parte 4 · Las parejas traicioneras» -> «Las parejas traicioneras»."""
+    return re.sub(r"^\s*Parte\s+\d+\s*[·:.\-–]\s*", "", name or "")
+
+
 def caret(x, top, bottom):
     """The proofreader's ‸ in red, drawn (no font has to carry the glyph): a thin bar where
     the missing word goes and the caret under the line."""
@@ -255,7 +370,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
 
         self.hud = None            # the top bar (lesson title + chapter progress), once the title card has played
         self.hud_ready = not any(b["type"] == "title" for b in self.lesson["beats"])
-        self.stage = VGroup()      # everything a beat may leave behind
+        self.stage = Group()       # everything a beat may leave behind (a table's reveal has images)
         self.sentence = None       # the chips of the current sentence, for `same` and for continuity
         self.pushed = False        # the camera is eased in
         self.speech = []           # [(start, end)] of the current beat's words, absolute — sfx duck under them
@@ -265,6 +380,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.timeline = []         # [{id, type, text?, start}] — chapters and the WP-38 poster read it
         self.parts = self.chapter_plan()
         self.clock = None          # (start, duration) of the beat playing, for the progress bar
+        self.beat_index = 0
+        self.mount_page()
         for n, beat in enumerate(self.lesson["beats"]):
             self.beat_index = n
             self.play_beat(beat)
@@ -374,9 +491,11 @@ class Lesson(VoiceoverScene, MovingCameraScene):
     # ── karaoke captions ──────────────────────────────────────────────────────
 
     def mount_captions(self, beat, tracker):
-        """The narration at the bottom, sentence by sentence, each word lighting up when it is
-        spoken. Times come from the recorded word boundaries (ElevenLabs alignment) so the
-        highlight lands on the spoken word; English (what sat in [[ ]]) is blue and bold.
+        """The narration on a yellow sticky note at the bottom right, sentence by sentence,
+        each word lighting up when it is spoken. Times come from the recorded word boundaries
+        (ElevenLabs alignment) so the highlight lands on the spoken word; English (what sat in
+        [[ ]]) is blue and bold, Spanish ink. The note is as wide as the beat's widest line and
+        holds 2 lines; it is turned NOTE_ROT degrees with an ink shadow (STEP 63).
         One Text per line (true baseline and kerning); words are coloured by glyph slice
         (ligatures off: glyph n is character n)."""
         words = L.tokens(beat["narration"])
@@ -384,9 +503,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             return None
         times = self._word_times(words, tracker)
         pages = self._caption_pages(words)          # [[line, line], ...]; line = [word, ...]
-        band = RoundedRectangle(corner_radius=0.22, width=CAP_LINE_W + 0.7, height=CAPTION_H, fill_color=SURFACE,
-                                fill_opacity=1, stroke_color=LINE_C, stroke_width=1.5).move_to([0, CAPTION_Y, 0])
-        group, page_starts, lit_map = VGroup(band), [], []
+        dim, en_dim = mix(NOTE_YELLOW, INK, 0.5), mix(NOTE_YELLOW, NOTE_BLUE, 0.5)   # not said yet
+        group, page_starts, lit_map = VGroup(), [], []
         for page in pages:
             line_mobjs = VGroup()
             page_words = []
@@ -398,35 +516,46 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                         t2w[f"[{pos}:{pos + len(w['text'])}]"] = BOLD
                     w["glyphs"] = (pos, pos + len(w["text"]))
                     pos += len(w["text"]) + 1
-                mobj = text(string, CAPTION_PX, DIM, BODY, NORMAL, t2w=t2w)
+                mobj = text(string, CAPTION_PX, dim, BODY, NORMAL, t2w=t2w)
                 for w in line:
                     if w["en"]:
-                        mobj[w["glyphs"][0]:w["glyphs"][1]].set_color(EN_DIM)
+                        mobj[w["glyphs"][0]:w["glyphs"][1]].set_color(en_dim)
                 if mobj.width > CAP_LINE_W:                       # measured layout makes this rare
                     mobj.scale_to_fit_width(CAP_LINE_W)
                 line_mobjs.add(mobj)
                 page_words += [(w, mobj) for w in line]
-            line_mobjs.arrange(DOWN, buff=0.16).move_to([0, CAPTION_Y, 0])
+            line_mobjs.arrange(DOWN, buff=0.16, aligned_edge=LEFT)
             line_mobjs.set_opacity(0)
             group.add(line_mobjs)
             page_starts.append(tracker.start_t + times[page[0][0]["index"]])
             lit_map.append(page_words)
+        two = VGroup(*[text("Hg", CAPTION_PX, INK, BODY, NORMAL) for _ in range(CAP_LINES)]).arrange(DOWN, buff=0.16)
+        w = max(p.width for p in group) + 2 * NOTE_PAD
+        h = max([two.height] + [p.height for p in group]) + 2 * NOTE_PAD
+        note = Rectangle(width=w, height=h, fill_color=NOTE_YELLOW, fill_opacity=1, stroke_color=INK, stroke_width=3)
+        note.move_to([NOTE_RIGHT - w / 2, NOTE_BOTTOM + h / 2, 0])
+        shadow = note.copy().set_fill(INK).set_stroke(width=0).shift([0.07, -0.07, 0])
+        for p in group:
+            p.move_to(note).align_to(note, LEFT).shift(RIGHT * NOTE_PAD)
+        group.add_to_back(shadow, note)
+        group.rotate(NOTE_ROT * PI / 180, about_point=note.get_center())
         state = {"page": -1, "lit": set()}
 
         def tick(mobj, dt):
             now = float(self.renderer.time)
             active = max((i for i, t0 in enumerate(page_starts) if t0 <= now + 1e-3), default=0)
             if active != state["page"]:
-                for i, page_group in enumerate(mobj[1:]):
+                for i, page_group in enumerate(mobj[2:]):
                     page_group.set_opacity(1 if i == active else 0)
                 state["page"] = active
             for w, line_mobj in lit_map[active]:
                 if w["index"] not in state["lit"] and tracker.start_t + times[w["index"]] <= now + 1e-3:
                     a, b = w["glyphs"]
-                    line_mobj[a:b].set_color(BLUE if w["en"] else TEXT)
+                    line_mobj[a:b].set_color(NOTE_BLUE if w["en"] else INK)
                     state["lit"].add(w["index"])
 
         group.add_updater(tick)
+        group.set_z_index(10)                           # over anything a beat adds after it (the table's highlighter)
         self.pin(group)
         self.add(group)
         return group
@@ -483,6 +612,45 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                 pages.append(lines[k:k + CAP_LINES])
         return pages
 
+    # ── the notebook page, its title and the site badge (STEP 63) ─────────────
+
+    def mount_page(self):
+        """The page goes down first, under everything, and stays to the end card. Its title is
+        the part's name, swapped by an updater (a 0.3 s cross-fade read from the clock), so it
+        adds no time to the lesson: a heading or the title card leaves the page without one.
+        The badge is pinned like the top bar, on every beat."""
+        self.page = notebook_page()
+        self.add(self.page)
+        titles = VGroup()
+        state = {"name": None, "since": 0.0, "old": None}
+
+        def update(group, dt=0):
+            now = float(self.renderer.time)
+            beat = self.lesson["beats"][self.beat_index]
+            k, _frac = self.progress()
+            name = "" if beat["type"] in ("heading", "title") or k is None else part_name(self.parts[k][0])
+            if name != state["name"]:
+                if state["old"] is not None:
+                    group.remove(state["old"])
+                state["old"] = group.submobjects[-1] if group.submobjects else None
+                state["name"], state["since"] = name, now
+                if name:
+                    group.add(page_title(name).set_opacity(0))
+            a = max(0.0, min(1.0, (now - state["since"]) / 0.3))
+            if state["old"] is not None:
+                state["old"].set_opacity(1.0 - a)
+                if a >= 1.0:
+                    group.remove(state["old"])
+                    state["old"] = None
+            if name and group.submobjects:
+                group.submobjects[-1].set_opacity(a)
+
+        titles.add_updater(update)
+        self.page_titles = titles
+        self.add(titles)
+        self.badge = self.pin(site_badge())
+        self.add(self.badge)
+
     # ── the top bar: lesson title and chapter progress ────────────────────────
 
     def chapter_plan(self):
@@ -501,8 +669,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             return
         title = text(self.lesson["title"], BAR_PX, MUTED, BODY, BOLD)
         fit(title, 5.6)
-        title.move_to([-STAGE_W / 2 + title.width / 2, BAR_Y, 0])
-        x0, x1, gap, h = 0.4, STAGE_W / 2, 0.1, 0.075
+        title.move_to([-BAR_W / 2 + title.width / 2, BAR_Y, 0])
+        x0, x1, gap, h = 0.4, BAR_W / 2, 0.1, 0.075
         n = len(self.parts)
         seg_w = (x1 - x0 - gap * (n - 1)) / n
         tracks, fills = VGroup(), VGroup()
@@ -512,8 +680,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                                         fill_color=LINE_C, fill_opacity=1).move_to([left + seg_w / 2, BAR_Y + 0.08, 0]))
             fills.add(Rectangle(width=seg_w, height=h, stroke_width=0, fill_color=ACCENT_LINE, fill_opacity=1)
                       .move_to(tracks[k]))
-        label = VGroup()
-        state = {"part": None, "frac": [None] * n}
+        state = {"frac": [None] * n}
 
         def update(group, dt=0):
             k, frac = self.progress()
@@ -524,17 +691,10 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                     f.set_opacity(1 if want > 0 else 0)
                     f.stretch_to_fit_width(max(1e-3, tracks[i].width * max(want, 1e-3)))
                     f.align_to(tracks[i], LEFT)
-            name = self.parts[k][0] if k is not None else ""
-            if name != state["part"]:                  # the part's name, small, under the bar
-                state["part"] = name
-                label.remove(*label.submobjects)
-                if name:
-                    scale = self.camera.frame.width / FRAME_W          # the bar is pinned: match its scale
-                    new = fit(text(name, BAR_PX - 2, MUTED, BODY, NORMAL), x1 - x0).scale(scale)
-                    new.next_to(tracks, DOWN, buff=0.1 * scale).align_to(tracks[-1], RIGHT)
-                    label.add(new)
+        # the part's name moved from under the bar to the top of the page (page_title); the
+        # site badge has its place under the bar
 
-        hud = VGroup(title, tracks, fills, label)
+        hud = VGroup(title, tracks, fills)
         hud.add_updater(update)
         self.pin(hud)
         self.hud = hud
@@ -558,7 +718,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         if anims:
             self.play(*anims)
             self.remove(*self.stage)
-        self.stage = VGroup()
+        self.stage = Group()
         self.sentence = None
 
     def keep(self, *mobjs):
@@ -608,7 +768,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             kicker = text(kicker_text.upper(), SMALL_PX, ACCENT_TEXT, BODY, BOLD).next_to(title, UP, buff=0.5)
             group.add(kicker)
             anims.append(FadeIn(kicker, shift=DOWN * 0.15))
-        centre_on(group)
+        centre_on(group, y=PAGE_MID)
         if self.hud is not None:
             self.hud.set_opacity(0)
         self.play(*anims, run_time=min(1.6, tracker.duration * 0.5))
@@ -625,7 +785,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.show_bar()
         heading = fit(para(beat["text"], HEADING_PX, STAGE_W), STAGE_W, 3.0)
         rule = Line(LEFT * 1.4, RIGHT * 1.4, color=YELLOW, stroke_width=10).next_to(heading, DOWN, buff=0.45)
-        centre_on(heading, rule)
+        centre_on(heading, rule, y=PAGE_MID)
         self.keep(heading, rule)
         self.play(FadeIn(heading, shift=UP * 0.2), Create(rule), run_time=min(1.0, tracker.duration * 0.5))
 
@@ -762,7 +922,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             table.add(VGroup(*[text(str(c), TABLE_PX, GREEN if str(c) in emphasis else TEXT) for c in row]))
         ncols = max(len(r) for r in table)
         col_w = [max(r[i].width for r in table if i < len(r)) for i in range(ncols)]
-        gap = 1.0
+        gap = 1.8                                       # the meanings start near the page's middle (design E)
         for r in table:
             x = 0
             for i, cell in enumerate(r):
@@ -774,17 +934,42 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                          .move_to([table.get_left()[0] + width / 2, (table[k].get_bottom()[1] + table[k + 1].get_top()[1]) / 2, 0])
                          for k in range(len(table) - 1)])
         whole = VGroup(table, rules)
-        fit(whole, STAGE_W, STAGE_TOP - STAGE_BOTTOM - 0.5, grow=1.5).move_to([0, STAGE_MID, 0])
-        self.keep(whole)
+        fit(whole, STAGE_W, STAGE_TOP - STAGE_BOTTOM - 0.35, grow=1.5).move_to([0, STAGE_MID, 0])
         start = 1 if beat.get("headers") else 0
+        body = table[start:]
+        # Every row from the first frame (STEP 63, as the Shorts): the first column printed, each
+        # other cell under one shared grey blurred bar as wide as its column, so a bar's length
+        # gives nothing away. When the narration reaches a row it comes into focus on the
+        # yellow highlighter.
+        col_w = [max((r[i].width for r in body if i < len(r)), default=0) for i in range(ncols)]
+        holders = [Group(*[blurred(cell, bar_w=col_w[i]) for i, cell in enumerate(row) if i > 0]) for row in body]
+        focus = [Group(*[blurred(cell, label=str(rows[n][i]),
+                                 color=GREEN if str(rows[n][i]) in emphasis else TEXT).set_opacity(0)
+                         for i, cell in enumerate(row) if i > 0]) for n, row in enumerate(body)]
+        pitch = (body[0].get_top()[1] - body[1].get_top()[1]) if len(body) > 1 else body[0].height + 0.42
+        hl_fill = mix(P["page"], YELLOW, 0.3) if P["dark"] else YELLOW
+        hl = RoundedRectangle(corner_radius=0.12, width=rules.width if len(rules) else whole.width + 0.6,
+                              height=pitch, fill_color=hl_fill, fill_opacity=1, stroke_width=0)
+        hl.move_to([rules.get_center()[0] if len(rules) else whole.get_center()[0], body[0].get_center()[1], 0])
+        hl.set_opacity(0)
+        self.add(hl)                                    # under the rows: added before them
+        self.keep(hl, whole, *holders, *focus)
         first = self.cue_time(tracker, marks, "#0", 0.1)
         self.play(*([FadeIn(table[0])] if start else []), Create(rules),        # the frame is up before row 1 is said
+                  *[FadeIn(row[0]) for row in body], *[FadeIn(h) for h in holders],
                   run_time=self.run_until(0.5, first, floor=0.1))
-        for n, row in enumerate(table[start:]):
+        self.add(*focus)
+        for n, row in enumerate(body):
             self.at(tracker, marks, f"#{n}", 0.1 + 0.8 * n / len(rows), word=str(rows[n][0]))
             later = (self.cue_time(tracker, marks, f"#{n + 1}", 0.1 + 0.8 * (n + 1) / len(rows))
                      if n + 1 < len(rows) else None)
-            self.play(FadeIn(row, shift=RIGHT * 0.2), run_time=self.run_until(0.3, later))
+            light = (hl.animate.set_opacity(1) if n == 0
+                     else hl.animate.move_to([hl.get_center()[0], row.get_center()[1], 0]))
+            self.play(light, FadeOut(holders[n], rate_func=rush_from),
+                      *[img.animate(rate_func=there_and_back).set_opacity(1) for img in focus[n]],
+                      *[FadeIn(cell, rate_func=rush_into) for cell in row[1:]],
+                      run_time=self.run_until(0.3, later))
+            self.remove(*focus[n])
 
     def beat_list(self, beat, tracker, marks, checks=False):
         self.show_bar()
@@ -839,7 +1024,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         for o in options:                                    # one width: the cards read as a set
             o[0].stretch_to_fit_width(width).align_to(o[1], LEFT).shift(LEFT * 0.26)
         whole = VGroup(question, options).arrange(DOWN, buff=0.55)
-        fit(whole, STAGE_W, STAGE_TOP - STAGE_BOTTOM - 0.8, grow=1.15).move_to([0, STAGE_MID, 0])
+        fit(whole, STAGE_W, STAGE_TOP - STAGE_BOTTOM - 0.3, grow=1.15).move_to([0, STAGE_MID, 0])
         self.keep(question, options)
         self.play(FadeIn(question, shift=DOWN * 0.15), run_time=0.4)
         self.play(LaggedStart(*[FadeIn(o, shift=RIGHT * 0.15) for o in options], lag_ratio=0.4, run_time=0.6))
@@ -872,14 +1057,20 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             self.play(*back, FadeOut(track), FadeOut(arc), FadeOut(pill), run_time=0.2)
             self.remove(track, arc, pill)
 
+        # the reveal as choose_level's (STEP 62): the right option circled in green with a tick,
+        # every wrong one struck in red, all still readable
         answer = beat["answer"]
         self.at(tracker, marks, L.cue_key(beat["options"][answer].split()[0]), 0.6)
         anims = []
         for n, opt in enumerate(options):
             if n == answer:
-                anims += [opt[0].animate.set_fill(mix(BG, GREEN, 0.22)).set_stroke(GREEN), opt[1][1].animate.set_color(GREEN)]
+                ring = hand_circle(opt[1])
+                self.keep(ring)
+                anims += [Create(ring), opt[1][1].animate.set_color(GREEN)]
             else:
-                anims.append(opt.animate.set_opacity(0.35))
+                strikes = VGroup(*[strike(line) for line in opt[1][1]])
+                self.keep(strikes)
+                anims += [Create(strikes), opt[1][1].animate.set_color(MUTED)]
         mark = check_mark(options[answer].get_right() + RIGHT * 0.55)
         self.keep(mark)
         self.play(*anims, Create(mark), run_time=0.5)
@@ -1214,10 +1405,15 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         """20 s, silent: the logo, «Sigue aprendiendo», and two empty frames where YouTube
         places its end-screen elements. On the dark stage the logo sits on a light plate."""
         self.clear_stage()
+        # the page, its title and the badge leave with the top bar: the end card has its own site
+        self.page_titles.clear_updaters()
+        self.play(*([FadeOut(self.hud)] if self.hud is not None else []), FadeOut(self.page), FadeOut(self.page_titles),
+                  FadeOut(self.badge), run_time=0.3)
         if self.hud is not None:
-            self.play(FadeOut(self.hud), run_time=0.3)
             self.hud.clear_updaters()
             self.remove(self.hud)
+        self.badge.clear_updaters()
+        self.remove(self.page, self.page_titles, self.badge)
         start = float(self.renderer.time)
         self.timeline.append({"id": "end", "type": "end_screen", "start": round(start, 2), "seconds": END_SCREEN_S})
         logo = ImageMobject(str(BRAND_DIR / "logo_horizontal.png")).scale_to_fit_width(4.4).move_to([0, 2.75, 0])

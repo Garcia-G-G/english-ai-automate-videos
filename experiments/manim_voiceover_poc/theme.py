@@ -16,8 +16,10 @@ BRAND_PATH = HERE.parent.parent / "assets" / "branding" / "english-unlimited" / 
 TOKENS = ("bg", "card", "card2", "text", "muted", "yellow", "blue", "green", "red")
 # (foreground, background, minimum ratio): text must read on the ground and on a card;
 # the grammar colours carry meaning as strokes, fills and large type, so 3:1 (WCAG non-text).
+# The notebook page (STEP 63) is a ground too, so it gets the same rules.
 CONTRAST_RULES = (("text", "bg", 4.5), ("text", "card", 4.5), ("blue", "bg", 3.0), ("green", "bg", 3.0),
-                  ("red", "bg", 3.0))
+                  ("red", "bg", 3.0), ("text", "page", 4.5), ("blue", "page", 3.0), ("green", "page", 3.0),
+                  ("red", "page", 3.0))
 VIGNETTE_CENTRE, VIGNETTE_EDGE, GRAIN = 0.03, -0.04, 0.02      # lightness, as fractions of full scale
 
 
@@ -58,7 +60,7 @@ def contrast_table() -> list:
     """[{theme, fg, bg, ratio, minimum, ok}] for every theme and rule."""
     rows = []
     for name in manim_block()["themes"]:
-        t = tokens(name)
+        t = palette(name)
         for fg, bg, minimum in CONTRAST_RULES:
             ratio = contrast(t[fg], t[bg])
             rows.append({"theme": name, "fg": fg, "bg": bg, "ratio": round(ratio, 2), "minimum": minimum,
@@ -78,6 +80,11 @@ def palette(name: str) -> dict:
     p["en_dim"] = mix(t["bg"], t["blue"], 0.50)
     p["accent_text"] = t["yellow"] if dark else t["text"]         # where the dark stage had yellow type
     p["accent_line"] = t["yellow"] if dark else mix(t["yellow"], t["text"], 0.45)   # rings, «ahora», gold lanes
+    # the notebook page (STEP 63): a paper a shade lighter than the ground, an ink outline and
+    # a hard ink shadow; on the dark stage a card-coloured page with a light outline
+    p["page"] = t["card"] if dark else mix(t["bg"], t["card"], 0.6)
+    p["page_line"] = mix(t["card"], t["text"], 0.6) if dark else t["text"]
+    p["page_shadow"] = mix(t["bg"], "#000000", 0.6) if dark else t["text"]
     return p
 
 
