@@ -1421,6 +1421,15 @@ def render_meta_queue(st_module) -> None:
         return
     with st_module.expander(f"📅 Cola Instagram/Facebook ({len(rows)}) · franjas {', '.join(cfg['slots'])}",
                             expanded=False):
+        # The same report as `meta_publish.py setup-check`, on demand: it calls Meta.
+        if st_module.button("Comprobar configuración de Meta", key="meta_setup_check"):
+            from publishers.setup import report_lines, setup_report
+            try:
+                st_module.session_state["meta_setup"] = report_lines(setup_report())
+            except Exception as exc:                      # noqa: BLE001
+                st_module.session_state["meta_setup"] = [f"✗ setup-check falló: {exc}"]
+        for line in st_module.session_state.get("meta_setup", []):
+            (st_module.error if line.startswith("✗") else st_module.write)(line)
         if not rows:
             st_module.caption("Vacía. Encola con `python3 tools/meta_publish.py enqueue --approved` "
                               "o activa `meta_publish.auto_enqueue_on_approve`.")

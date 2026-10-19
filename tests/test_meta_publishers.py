@@ -492,3 +492,66 @@ def test_a_click_after_the_tick_published_is_refused_under_the_lock(approved):
     manager = _SlowManager()
     res = admin._guarded_upload(manager, "q1", "instagram", str(approved), title="t")
     assert not manager.calls and res["locked"] and "ya publicado" in res["error"]
+
+
+# ── STEP 72 §2: setup-check ─────────────────────────────────────────────
+
+ALL_SCOPES = ["pages_show_list", "pages_read_engagement", "pages_manage_posts",
+              "instagram_basic", "instagram_content_publish", "public_profile"]
+
+
+def debug(type_="PAGE", expires=0, scopes=ALL_SCOPES, valid=True):
+    return ("get", "debug_token", Resp(body={"data": {"type": type_, "expires_at": expires,
+                                                      "scopes": scopes, "is_valid": valid}}))
+
+
+def _setup_check(capsys, monkeypatch):
+    import importlib.util
+    import env_setup
+    monkeypatch.setattr(env_setup, "_loaded", True)        # never read the real .env here
+    spec = importlib.util.spec_from_file_location("meta_publish_cli", ROOT_DIR / "tools" / "meta_publish.py")
+    cli = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cli)
+    code = cli.main(["setup-check"])
+    out = capsys.readouterr().out
+    assert TOKEN not in out
+    return code, out
+
+
+from pathlib import Path  # noqa: E402
+ROOT_DIR = Path(__file__).resolve().parent.parent
+
+
+def test_setup_check_is_green_when_everything_is_there(fb_env, monkeypatch, capsys):
+    r = Router(monkeypatch, [debug(), linked()])
+    code, out = _setup_check(capsys, monkeypatch)
+    assert code == 0 and "✓ Todo listo" in out
+    assert "Página: Page (1234567890)" in out and f"Instagram: @eu ({IG_ID})" in out
+    assert "Token: PAGE, caduca: nunca" in out and "Permisos: los 5 necesarios" in out
+    assert all(m == "get" for m, _u, _k in r.calls)
+
+
+def test_setup_check_today_reports_exactly_the_missing_instagram_link(fb_env, monkeypatch, capsys):
+    Router(monkeypatch, [debug(), ("get", "/1234567890", Resp(body={"name": "Page", "id": "1234567890"}))])
+    code, out = _setup_check(capsys, monkeypatch)
+    problems = [l for l in out.splitlines() if l.startswith("✗")]
+    assert code == 1 and len(problems) == 1 and "Instagram no está vinculado a la Página" in problems[0]
+
+
+def test_setup_check_names_each_problem_with_its_fix(fb_env, monkeypatch, capsys):
+    monkeypatch.setenv("IG_USER_ID", "999")
+    Router(monkeypatch, [debug("USER", 1_900_000_000, ["pages_show_list"]), linked()])
+    code, out = _setup_check(capsys, monkeypatch)
+    assert code == 1
+    assert "tipo USER, no de Página" in out and "El token caduca" in out
+    assert "Faltan permisos: pages_read_engagement, pages_manage_posts, instagram_basic, " \
+           "instagram_content_publish" in out
+    assert f"IG_USER_ID en .env (999) no es el de la Página ({IG_ID})" in out
+
+
+def test_setup_check_without_credentials(monkeypatch, capsys):
+    monkeypatch.delenv("FB_PAGE_ID", raising=False)
+    monkeypatch.delenv("FB_PAGE_TOKEN", raising=False)
+    r = Router(monkeypatch, [])
+    code, out = _setup_check(capsys, monkeypatch)
+    assert code == 1 and "Falta FB_PAGE_ID o FB_PAGE_TOKEN" in out and not r.calls

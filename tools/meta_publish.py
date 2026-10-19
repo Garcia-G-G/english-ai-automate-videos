@@ -7,6 +7,7 @@
     python3 tools/meta_publish.py now [ARTIFACT] [--dry-run]   # ignore the slots
     python3 tools/meta_publish.py loop                  # tick every 5 minutes, forever
     python3 tools/meta_publish.py check                 # credentials + quota, read-only
+    python3 tools/meta_publish.py setup-check           # what the Meta setup is missing; exit 0 = ready
     python3 tools/meta_publish.py refresh-token         # the Page token's type and expiry
 
 Slots and platforms come from config.yaml `meta_publish`.
@@ -48,6 +49,7 @@ def main(argv=None) -> int:
     sub.add_parser("loop")
     sub.add_parser("check")
     sub.add_parser("refresh-token")
+    sub.add_parser("setup-check")
     args = parser.parse_args(argv)
 
     ensure_env_loaded()
@@ -89,6 +91,11 @@ def main(argv=None) -> int:
                 report[name] = f"error: {exc}"
         _print(report)
         return 0
+    if args.cmd == "setup-check":
+        from publishers.setup import report_lines, setup_report
+        report = setup_report()
+        print("\n".join(report_lines(report)))
+        return 0 if not report["problems"] else 1
     if args.cmd == "refresh-token":
         # Nothing to refresh since STEP 72: Instagram rides on the Page token, which does not expire.
         import os
