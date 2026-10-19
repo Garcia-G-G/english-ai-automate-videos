@@ -1410,6 +1410,28 @@ def promote_to_review(video_path: Path) -> dict:
             "reason": "moved to pending; approve it in Review to upload"}
 
 
+def render_meta_queue(st_module) -> None:
+    """The Instagram/Facebook queue: status per platform, permalink or reason."""
+    from publishers import schedule
+    try:
+        cfg = schedule.settings()
+        rows = schedule.status_rows(cfg)
+    except (OSError, ValueError) as e:
+        st_module.error(f"Cola Instagram/Facebook ilegible: {e}")
+        return
+    with st_module.expander(f"📅 Cola Instagram/Facebook ({len(rows)}) · franjas {', '.join(cfg['slots'])}",
+                            expanded=False):
+        if not rows:
+            st_module.caption("Vacía. Encola con `python3 tools/meta_publish.py enqueue --approved` "
+                              "o activa `meta_publish.auto_enqueue_on_approve`.")
+            return
+        st_module.dataframe(
+            [{"vídeo": r["artifact"], **{p: r[p]["status"] for p in cfg["platforms"]},
+              **{f"{p} enlace / motivo": r[p].get("url") or r[p].get("detail") or "" for p in cfg["platforms"]}}
+             for r in rows],
+            use_container_width=True, hide_index=True)
+
+
 def approve_video(video_path: Path):
     video_type = video_path.parent.name
     dest_dir = APPROVED_DIR / video_type
@@ -1418,6 +1440,12 @@ def approve_video(video_path: Path):
     meta_path = video_path.with_suffix('.json')
     if meta_path.exists():
         shutil.move(str(meta_path), str(dest_dir / meta_path.name))
+    from publishers import schedule
+    if schedule.settings()["auto_enqueue_on_approve"]:
+        try:
+            schedule.enqueue(dest_dir / video_path.name)
+        except (OSError, ValueError):
+            logger.exception("could not queue %s for Meta publishing", video_path.name)
 
 
 def reject_video(video_path: Path):
@@ -1510,7 +1538,7 @@ def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
 
     from publication_log import (ATTEMPT_FAILED, ATTEMPT_PUBLISHED,
                                  ATTEMPT_SESSION, ATTEMPT_STARTED,
-                                 record_attempt)
+                                 ATTEMPT_UNKNOWN, record_attempt)
 
     from upload_limits import claim, release
 
@@ -1550,8 +1578,11 @@ def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
     if not ok:
         err = (result.get("error") if isinstance(result, dict)
                else getattr(result, "error", None))
+        doubt = (result.get("in_doubt") if isinstance(result, dict)
+                 else getattr(result, "in_doubt", False))
         record_attempt(artifact=artifact, platform=platform,
-                       status=ATTEMPT_FAILED, video_path=video_path,
+                       status=ATTEMPT_UNKNOWN if doubt else ATTEMPT_FAILED,
+                       video_path=video_path,
                        session_uri=uri, file_size=size,
                        detail=str(err or result)[:300])
     return result
@@ -2028,7 +2059,8 @@ def get_api_status() -> dict:
         "ElevenLabs": ("ELEVENLABS_API_KEY", False),
         "TikTok": ("TIKTOK_CLIENT_KEY", False),
         "YouTube": ("YOUTUBE_CLIENT_ID", False),
-        "Instagram": ("INSTAGRAM_ACCESS_TOKEN", False),
+        "Instagram": ("IG_ACCESS_TOKEN", False),
+        "Facebook": ("FB_PAGE_TOKEN", False),
     }
     status = {}
     for name, (env_var, required) in keys.items():
@@ -3056,7 +3088,7 @@ elif page == "Upload":
     # Platform status cards
     st.markdown('<div class="section-header">Connected Platforms</div>', unsafe_allow_html=True)
 
-    platform_cols = st.columns(3)
+    platform_cols = st.columns(4)
 
     platforms = [
         {
@@ -3079,9 +3111,17 @@ elif page == "Upload":
             "name": "Instagram Reels",
             "api": "instagram",
             "icon": "📷",
-            "key": "INSTAGRAM_ACCESS_TOKEN",
-            "desc": "Graph API",
+            "key": "IG_ACCESS_TOKEN",
+            "desc": "Instagram Login API",
             "color": "#e1306c",
+        },
+        {
+            "name": "Facebook Reels",
+            "api": "facebook",
+            "icon": "📘",
+            "key": "FB_PAGE_TOKEN",
+            "desc": "Reels Publishing API",
+            "color": "#1877f2",
         },
     ]
 
@@ -3111,6 +3151,7 @@ elif page == "Upload":
             """, unsafe_allow_html=True)
 
     st.markdown("")
+    render_meta_queue(st)
 
     # Upload section
     if not approved:
@@ -3125,13 +3166,13 @@ elif page == "Upload":
             st.warning("No platforms configured. Add your API keys in **Settings** to enable uploads.")
             st.markdown("**Quick setup:**")
             st.markdown("1. Go to **Settings** > **API Keys & Security**")
-            st.markdown("2. Add your TikTok, YouTube, or Instagram credentials")
+            st.markdown("2. Add your TikTok, YouTube, Instagram or Facebook credentials")
             st.markdown("3. Come back here to upload")
             st.markdown("---")
 
         # Upload targets
         target_platforms = []
-        tcols = st.columns(3)
+        tcols = st.columns(len(platforms))
         for col, platform in zip(tcols, platforms):
             with col:
                 enabled = platform_status.get(platform["name"], False)
@@ -3321,6 +3362,7 @@ elif page == "Upload":
                                 "TikTok": "tiktok",
                                 "YouTube Shorts": "youtube",
                                 "Instagram Reels": "instagram",
+                                "Facebook Reels": "facebook",
                             }
                             upload_success = False
                             upload_platforms = []
@@ -3387,10 +3429,19 @@ elif page == "Upload":
                 else:
                     st.button("📤 Upload", key=f"upload_{video['name']}", disabled=True, use_container_width=True)
 
-                btn_cols = st.columns(2)
+                btn_cols = st.columns(3)
                 with btn_cols[0]:
                     if video["path"].exists():
                         lazy_download(video["path"], f"dl_{video['name']}")
+                with btn_cols[2]:
+                    if st.button("📅", key=f"metaq_{video['name']}", use_container_width=True,
+                                 help="Encolar para Instagram/Facebook (franjas de config.yaml)"):
+                        from publishers import schedule
+                        try:
+                            schedule.enqueue(video["path"])
+                            st.toast("En cola para Instagram/Facebook")
+                        except (OSError, ValueError) as e:
+                            st.error(f"No se pudo encolar: {e}")
                 with btn_cols[1]:
                     if st.button("↩️", key=f"unapprove_{video['name']}", use_container_width=True,
                                  help="Move back to pending"):
@@ -3414,6 +3465,7 @@ elif page == "Upload":
                         "TikTok": "tiktok",
                         "YouTube Shorts": "youtube",
                         "Instagram Reels": "instagram",
+                        "Facebook Reels": "facebook",
                     }
                     uploaded_count = 0
                     from upload_limits import run_batch
@@ -3758,8 +3810,13 @@ elif page == "Settings":
                 ("TIKTOK_CLIENT_SECRET", "TikTok Client Secret", "Content Posting API", False),
                 ("YOUTUBE_CLIENT_ID", "YouTube Client ID", "YouTube Data API v3", False),
                 ("YOUTUBE_CLIENT_SECRET", "YouTube Client Secret", "YouTube Data API v3", False),
-                ("INSTAGRAM_ACCESS_TOKEN", "Instagram Access Token", "Graph API", False),
-                ("INSTAGRAM_BUSINESS_ACCOUNT_ID", "Instagram Business Account ID", "Graph API", False),
+                ("IG_USER_ID", "Instagram User ID", "Instagram Login API", False),
+                ("IG_ACCESS_TOKEN", "Instagram Access Token", "Long-lived, refreshed automatically", False),
+                ("FB_PAGE_ID", "Facebook Page ID", "Reels Publishing API", False),
+                ("FB_PAGE_TOKEN", "Facebook Page Token", "Long-lived Page token", False),
+            ],
+            "Email": [
+                ("BREVO_API_KEY", "Brevo API Key", "Transactional email API", False),
             ],
         }
 

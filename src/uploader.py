@@ -9,7 +9,7 @@ Tokens are persisted in .tokens/ for reuse across sessions.
 Environment variables:
     TIKTOK_CLIENT_KEY, TIKTOK_CLIENT_SECRET
     YOUTUBE_CLIENT_ID, YOUTUBE_CLIENT_SECRET
-    INSTAGRAM_ACCESS_TOKEN, INSTAGRAM_BUSINESS_ACCOUNT_ID
+    IG_USER_ID, IG_ACCESS_TOKEN, FB_PAGE_ID, FB_PAGE_TOKEN  (src/publishers/)
 """
 
 import argparse
@@ -63,7 +63,6 @@ YOUTUBE_SCOPES = YOUTUBE_REQUIRED_SCOPES + YOUTUBE_OPTIONAL_SCOPES
 YOUTUBE_FORCE_SSL = YOUTUBE_OPTIONAL_SCOPES[0]
 YOUTUBE_THUMBNAIL_URL = "https://www.googleapis.com/upload/youtube/v3/thumbnails/set"
 YOUTUBE_CAPTIONS_URL = "https://www.googleapis.com/upload/youtube/v3/captions"
-INSTAGRAM_GRAPH_URL = "https://graph.facebook.com/v19.0"
 
 # Retry / polling settings
 MAX_POLL_ATTEMPTS = 30
@@ -106,7 +105,12 @@ PLATFORM_PRIVACY = {
     "youtube": "public",
     "tiktok": "private",
     "instagram": "public",
+    "facebook": "public",
 }
+
+#: Backends whose upload_video takes on_session(handle, size): a handle the
+#: guard can later hand to query_session.
+RESUMABLE_PLATFORMS = ("youtube", "instagram", "facebook")
 
 #: An unknown platform gets the quiet answer. A wrong "private" is a support
 #: ticket; a wrong "public" is unpublishable.
@@ -118,6 +122,7 @@ UNKNOWN_PLATFORM_PRIVACY = "private"
 _PRIVACY_LABELS = {
     ("tiktok", "private"): "SELF_ONLY (only you)",
     ("instagram", "public"): "public (follows the account)",
+    ("facebook", "public"): "public (follows the Page)",
 }
 
 
@@ -208,6 +213,9 @@ class UploadResult:
     #: the only thing that can later answer "did that upload actually land?",
     #: and every failure path below used to discard it.
     session_uri: Optional[str] = None
+    #: True when the platform may have published but could not confirm it.
+    #: Callers keep the attempt OPEN (status unknown) so the guard reconciles.
+    in_doubt: bool = False
 
 
 # ---------------------------------------------------------------------------
@@ -251,7 +259,11 @@ def _save_token(platform: str, data: dict) -> None:
         )
 
     token_path = _ensure_token_dir() / f"{platform}_token.json"
-    token_path.write_text(json.dumps(data, indent=2))
+    # Created 0600, never world-readable even for an instant.
+    fd = os.open(token_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w") as fh:
+        fh.write(json.dumps(data, indent=2))
+    token_path.chmod(0o600)
     logger.debug("Saved %s token to %s", platform, token_path)
 
 
@@ -1098,179 +1110,6 @@ class YouTubeUploader(BaseUploader):
 # Instagram Reels
 # ---------------------------------------------------------------------------
 
-class InstagramUploader(BaseUploader):
-    """Upload Reels via the Instagram Graph API (Facebook platform).
-
-    Flow:
-        1. Create a media container with the video URL.
-        2. Poll until the container is ready.
-        3. Publish the container.
-
-    Because the Graph API requires a *public* video URL (not a local file),
-    callers must either:
-        - Host the file themselves and pass the URL, or
-        - Use a temporary hosting solution (e.g., S3 presigned URL).
-    The upload_video method accepts a ``video_url`` keyword argument for this.
-    When only a local path is given, it will raise an error with guidance.
-    """
-
-    PLATFORM = "instagram"
-
-    def __init__(self) -> None:
-        self.access_token = os.getenv("INSTAGRAM_ACCESS_TOKEN", "")
-        self.account_id = os.getenv("INSTAGRAM_BUSINESS_ACCOUNT_ID", "")
-
-    # -- public interface ----------------------------------------------------
-
-    def is_configured(self) -> bool:
-        return bool(self.access_token and self.account_id)
-
-    def authenticate(self) -> bool:
-        if not self.is_configured():
-            logger.error(
-                "Instagram access token or business account ID not set. "
-                "Set INSTAGRAM_ACCESS_TOKEN and INSTAGRAM_BUSINESS_ACCOUNT_ID."
-            )
-            return False
-        # Long-lived tokens are passed directly; no interactive flow needed.
-        logger.info("Instagram: credentials present, ready to upload.")
-        return True
-
-    def upload_video(
-        self,
-        video_path: str,
-        title: str,
-        description: str,
-        hashtags: Optional[list[str]] = None,
-        *,
-        video_url: Optional[str] = None,
-    ) -> UploadResult:
-        if not self.is_configured():
-            return UploadResult(self.PLATFORM, False, error="Not configured.")
-
-        if not video_url:
-            return UploadResult(
-                self.PLATFORM, False,
-                error=(
-                    "Instagram requires a publicly accessible video URL. "
-                    "Pass video_url='https://...' pointing to the hosted file."
-                ),
-            )
-
-        meta = VideoMetadata(title, description, hashtags or [])
-        caption = f"{meta.title}\n\n{meta.full_description}"
-
-        # Step 1 – create media container
-        container_id = self._create_container(video_url, caption)
-        if not container_id:
-            return UploadResult(self.PLATFORM, False,
-                                error="Failed to create media container.")
-
-        # Step 2 – wait for container to finish processing
-        if not self._wait_for_container(container_id):
-            return UploadResult(self.PLATFORM, False, upload_id=container_id,
-                                error="Container processing timed out.")
-
-        # Step 3 – publish
-        publish_id = self._publish_container(container_id)
-        if not publish_id:
-            return UploadResult(self.PLATFORM, False, upload_id=container_id,
-                                error="Publish failed.")
-
-        logger.info("Instagram Reel published – id=%s", publish_id)
-        url = f"https://www.instagram.com/reel/{publish_id}/"
-        return UploadResult(self.PLATFORM, True, upload_id=publish_id, url=url)
-
-    def get_upload_status(self, upload_id: str) -> UploadResult:
-        try:
-            resp = requests.get(
-                f"{INSTAGRAM_GRAPH_URL}/{upload_id}",
-                params={
-                    "fields": "status_code,status",
-                    "access_token": self.access_token,
-                },
-                timeout=30,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-        except requests.RequestException as exc:
-            return UploadResult(self.PLATFORM, False, upload_id=upload_id,
-                                error=str(exc))
-
-        status_code = data.get("status_code", "UNKNOWN")
-        success = status_code == "PUBLISHED"
-        return UploadResult(self.PLATFORM, success, upload_id=upload_id,
-                            raw_response=data,
-                            error=None if success else f"Status: {status_code}")
-
-    # -- private helpers -----------------------------------------------------
-
-    def _create_container(self, video_url: str, caption: str) -> Optional[str]:
-        try:
-            resp = requests.post(
-                f"{INSTAGRAM_GRAPH_URL}/{self.account_id}/media",
-                data={
-                    "media_type": "REELS",
-                    "video_url": video_url,
-                    "caption": caption[:2200],
-                    "share_to_feed": "true",
-                    "access_token": self.access_token,
-                },
-                timeout=60,
-            )
-            resp.raise_for_status()
-            return resp.json().get("id")
-        except requests.RequestException as exc:
-            logger.error("Instagram create container failed: %s", exc)
-            return None
-
-    def _wait_for_container(self, container_id: str) -> bool:
-        for attempt in range(1, MAX_POLL_ATTEMPTS + 1):
-            try:
-                resp = requests.get(
-                    f"{INSTAGRAM_GRAPH_URL}/{container_id}",
-                    params={
-                        "fields": "status_code",
-                        "access_token": self.access_token,
-                    },
-                    timeout=30,
-                )
-                resp.raise_for_status()
-                status = resp.json().get("status_code", "")
-            except requests.RequestException as exc:
-                logger.warning("Instagram poll attempt %d failed: %s", attempt, exc)
-                time.sleep(POLL_INTERVAL_SECONDS)
-                continue
-
-            if status == "FINISHED":
-                return True
-            if status == "ERROR":
-                logger.error("Instagram container %s entered ERROR state.", container_id)
-                return False
-
-            logger.debug("Instagram container %s status: %s (attempt %d/%d)",
-                         container_id, status, attempt, MAX_POLL_ATTEMPTS)
-            time.sleep(POLL_INTERVAL_SECONDS)
-
-        return False
-
-    def _publish_container(self, container_id: str) -> Optional[str]:
-        try:
-            resp = requests.post(
-                f"{INSTAGRAM_GRAPH_URL}/{self.account_id}/media_publish",
-                data={
-                    "creation_id": container_id,
-                    "access_token": self.access_token,
-                },
-                timeout=60,
-            )
-            resp.raise_for_status()
-            return resp.json().get("id")
-        except requests.RequestException as exc:
-            logger.error("Instagram publish failed: %s", exc)
-            return None
-
-
 # ---------------------------------------------------------------------------
 # Upload Manager
 # ---------------------------------------------------------------------------
@@ -1292,10 +1131,13 @@ class UploadManager:
     """
 
     def __init__(self) -> None:
+        # Imported here: publishers subclass BaseUploader from this module.
+        from publishers import FacebookReelsPublisher, InstagramReelsPublisher
         self.uploaders: dict[str, BaseUploader] = {
             "tiktok": TikTokUploader(),
             "youtube": YouTubeUploader(),
-            "instagram": InstagramUploader(),
+            "instagram": InstagramReelsPublisher(),
+            "facebook": FacebookReelsPublisher(),
         }
 
     @property
@@ -1348,8 +1190,8 @@ class UploadManager:
         target_platforms = platforms or self.configured_platforms
         results: list[UploadResult] = []
 
-        # Only the YouTube backend implements a resumable session. Forwarding
-        # this to TikTok/Instagram through **kwargs would TypeError.
+        # Only the resumable backends take a session callback. Forwarding
+        # this to TikTok through **kwargs would TypeError.
         on_session = kwargs.pop("on_session", None)
 
         for name in target_platforms:
@@ -1371,7 +1213,7 @@ class UploadManager:
                     continue
 
                 extra = dict(kwargs)
-                if on_session is not None and name == "youtube":
+                if on_session is not None and name in RESUMABLE_PLATFORMS:
                     extra["on_session"] = on_session
                 result = uploader.upload_video(
                     video_path, title, description, hashtags, **extra,
@@ -1402,7 +1244,7 @@ class UploadManager:
             r = results[0]
             return {"success": r.success, "error": r.error,
                     "upload_id": r.upload_id, "url": r.url,
-                    "session_uri": r.session_uri}
+                    "session_uri": r.session_uri, "in_doubt": r.in_doubt}
         return {"success": False, "error": "No result returned"}
 
     def get_status(self, platform: str, upload_id: str) -> UploadResult:
@@ -1435,7 +1277,7 @@ def get_upload_manager() -> UploadManager:
         logger.warning(
             "No upload platforms configured. Set the appropriate environment "
             "variables (TIKTOK_CLIENT_KEY, YOUTUBE_CLIENT_ID, "
-            "INSTAGRAM_ACCESS_TOKEN, etc.) to enable uploads."
+            "IG_ACCESS_TOKEN, FB_PAGE_TOKEN, etc.) to enable uploads."
         )
     return manager
 
@@ -1453,8 +1295,8 @@ def get_upload_manager() -> UploadManager:
 # are deliberately untouched here.
 
 #: Platforms with an interactive OAuth authorization-code flow. Instagram is
-#: excluded on purpose: it authenticates from a long-lived token in
-#: INSTAGRAM_ACCESS_TOKEN and has no code to exchange, so `auth` would have
+#: and Facebook are excluded on purpose: they authenticate from long-lived
+#: tokens in IG_ACCESS_TOKEN / FB_PAGE_TOKEN and have no code to exchange, so `auth` would have
 #: nothing to do. `status` still reports it.
 OAUTH_PLATFORMS = ("youtube", "tiktok")
 
@@ -1665,16 +1507,17 @@ def cmd_status() -> int:
           f"{'refresh':>9}  expires")
     print("-" * 78)
 
-    for name in ("youtube", "tiktok", "instagram"):
+    for name in ("youtube", "tiktok", "instagram", "facebook"):
         up = manager.uploaders[name]
         info = _describe_token(name)
         configured = "yes" if up.is_configured() else "no"
 
-        if name == "instagram":
-            # No OAuth code flow: the token IS the env var, so there is no
-            # file to inspect and no expiry we can see locally.
-            print(f"{name:12}{configured:>12}{'env':>9}{'-':>8}{'-':>9}  "
-                  f"static INSTAGRAM_ACCESS_TOKEN (not inspectable locally)")
+        if name == "facebook" or (name == "instagram" and not info.get("present")):
+            # No OAuth code flow: the token IS the env var until Instagram's
+            # first refresh writes .tokens/instagram_token.json.
+            what = ("long-lived Page token, does not expire" if name == "facebook"
+                    else "IG_ACCESS_TOKEN, not refreshed yet")
+            print(f"{name:12}{configured:>12}{'env':>9}{'-':>8}{'-':>9}  {what}")
             continue
 
         detail = _fmt_expiry(info)

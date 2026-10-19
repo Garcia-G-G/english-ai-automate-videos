@@ -265,8 +265,8 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
     """
     from publication_log import (ATTEMPT_FAILED, ATTEMPT_PUBLISHED,
                                  ATTEMPT_SESSION, ATTEMPT_STARTED,
-                                 PublicationRecordError, record_attempt,
-                                 record_upload_result)
+                                 ATTEMPT_UNKNOWN, PublicationRecordError,
+                                 record_attempt, record_upload_result)
     from upload_guard import SKIP_DONE, SKIP_HOLD, decide
     from upload_metadata import NO_OPERATOR_EDITS, resolve_upload_metadata
 
@@ -302,7 +302,8 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
     if script_data:
         category = script_data.get("_meta", {}).get("category", "")
 
-    platform_map = {"tiktok": "tiktok", "youtube": "youtube", "instagram": "instagram"}
+    platform_map = {"tiktok": "tiktok", "youtube": "youtube", "instagram": "instagram",
+                    "facebook": "facebook"}
     manager = UploadManager()
 
     for platform_name in platforms:
@@ -400,20 +401,24 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
             ident = result.get("url") or result.get("upload_id")
             got_id = result.get("upload_id")
             session_uri = result.get("session_uri")
+            in_doubt = bool(result.get("in_doubt"))
         else:
             success = bool(getattr(result, "success", False))
             error = getattr(result, "error", None)
             ident = getattr(result, "url", None) or getattr(result, "upload_id", None)
             got_id = getattr(result, "upload_id", None)
             session_uri = getattr(result, "session_uri", None)
+            in_doubt = bool(getattr(result, "in_doubt", False))
 
         if not success:
             logger.error("Upload to %s failed: %s", platform_name, error)
             # Close the attempt ONLY when the platform said it failed. An
             # attempt left open would hold every future run; one closed on a
             # guess would let a live video be published twice.
+            # In doubt (the platform may have published) stays OPEN, as unknown.
             record_attempt(artifact=artifact, platform=platform_key,
-                           status=ATTEMPT_FAILED, video_path=str(video_path),
+                           status=ATTEMPT_UNKNOWN if in_doubt else ATTEMPT_FAILED,
+                           video_path=str(video_path),
                            session_uri=session_uri, file_size=file_size,
                            detail=str(error))
             outcome["errors"].append({"platform": platform_name,

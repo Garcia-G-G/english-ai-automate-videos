@@ -1,0 +1,388 @@
+"""Instagram and Facebook Reels publishers, against a fake Graph API.
+
+No network: requests.get/post are replaced by a router that answers by URL
+fragment, in order, and records every call.
+"""
+import json
+import os
+import shutil
+import subprocess
+import time
+from datetime import datetime, timedelta
+
+import pytest
+import requests
+
+import publication_log as PL
+import uploader
+from publishers import FacebookReelsPublisher, InstagramReelsPublisher, common, schedule
+from publishers import meta_instagram as IG
+from publishers.common import ReelSpecError, validate_reel
+
+TOKEN = "IGtoken-SECRET-123456789"
+PAGE_TOKEN = "PAGEtoken-SECRET-987654321"
+
+GOOD_PROBE = {"format": {"duration": "30.0"},
+              "streams": [{"codec_type": "video", "codec_name": "h264", "width": 1080,
+                           "height": 1920, "avg_frame_rate": "30/1"},
+                          {"codec_type": "audio", "codec_name": "aac", "sample_rate": "48000"}]}
+
+
+class Resp:
+    def __init__(self, status=200, body=None):
+        self.status_code, self._body = status, body if body is not None else {}
+        self.text = json.dumps(self._body)
+
+    def json(self):
+        return self._body
+
+
+class Router:
+    """routes: list of (method, url fragment, response or exception). First match is consumed."""
+
+    def __init__(self, monkeypatch, routes):
+        self.routes, self.calls = list(routes), []
+        monkeypatch.setattr(requests, "get", lambda url, **kw: self("get", url, kw))
+        monkeypatch.setattr(requests, "post", lambda url, **kw: self("post", url, kw))
+
+    def __call__(self, method, url, kw):
+        self.calls.append((method, url, kw))
+        for i, (m, frag, resp) in enumerate(self.routes):
+            if m == method and frag in url:
+                del self.routes[i]
+                if isinstance(resp, Exception):
+                    raise resp
+                return resp
+        raise AssertionError(f"unexpected {method} {url}")
+
+    def hit(self, frag):
+        return [c for c in self.calls if frag in c[1]]
+
+
+def err(code, sub=None, status=400, msg="boom"):
+    return Resp(status, {"error": {"code": code, "error_subcode": sub, "message": msg}})
+
+
+@pytest.fixture
+def video(tmp_path, monkeypatch):
+    path = tmp_path / "clip.mp4"
+    path.write_bytes(b"\0" * 1024)
+    monkeypatch.setattr(common, "probe", lambda p: GOOD_PROBE)
+    return str(path)
+
+
+@pytest.fixture
+def ig_env(monkeypatch):
+    monkeypatch.setenv("IG_USER_ID", "17841400000000000")
+    monkeypatch.setenv("IG_ACCESS_TOKEN", TOKEN)
+    monkeypatch.setattr(IG.time, "sleep", lambda s: None)
+    # A stored token far from expiry, so no refresh call unless a test wants one.
+    uploader._save_token("instagram", {"access_token": TOKEN, "expires_at": time.time() + 50 * 86400,
+                                       "source": IG._fingerprint(TOKEN)})
+
+
+@pytest.fixture
+def fb_env(monkeypatch):
+    monkeypatch.setenv("FB_PAGE_ID", "1234567890")
+    monkeypatch.setenv("FB_PAGE_TOKEN", PAGE_TOKEN)
+
+
+def quota(used=1, total=50):
+    return ("get", "content_publishing_limit",
+            Resp(body={"data": [{"quota_usage": used, "config": {"quota_total": total}}]}))
+
+
+# ── Instagram ───────────────────────────────────────────────────────────
+
+def test_instagram_publishes_after_the_container_is_ready(ig_env, video, monkeypatch):
+    sessions = []
+    r = Router(monkeypatch, [
+        quota(),
+        ("post", "/media", Resp(body={"id": "C1", "uri": "https://rupload.facebook.com/x"})),
+        ("post", "rupload.facebook.com/ig-api-upload/v26.0/C1", Resp(body={"success": True})),
+        ("get", "/C1", Resp(body={"status_code": "IN_PROGRESS"})),
+        ("get", "/C1", Resp(body={"status_code": "FINISHED"})),
+        ("post", "/media_publish", Resp(body={"id": "M9"})),
+        ("get", "/M9", Resp(body={"permalink": "https://www.instagram.com/reel/abc/"})),
+    ])
+    res = InstagramReelsPublisher().publish(video, "Hola", ["AprendeInglés"],
+                                            on_session=lambda h, s: sessions.append((h, len(r.calls))))
+    assert res.success and res.upload_id == "M9"
+    assert res.url == "https://www.instagram.com/reel/abc/"
+    assert sessions == [("C1", 2)]                       # before the bytes went
+    created = r.hit("/media")[0][2]["data"]
+    assert created["media_type"] == "REELS" and created["upload_type"] == "resumable"
+    assert created["caption"] == "Hola\n\n#AprendeInglés"
+    up = r.hit("rupload")[0][2]["headers"]
+    assert up["Authorization"] == f"OAuth {TOKEN}" and up["offset"] == "0" and up["file_size"] == "1024"
+
+
+def test_instagram_container_never_ready_does_not_publish(ig_env, video, monkeypatch):
+    r = Router(monkeypatch, [quota(),
+                             ("post", "/media", Resp(body={"id": "C2"})),
+                             ("post", "rupload", Resp(body={"success": True}))]
+               + [("get", "/C2", Resp(body={"status_code": "IN_PROGRESS"}))] * IG.POLL_ATTEMPTS)
+    res = InstagramReelsPublisher().publish(video, "x", [])
+    assert not res.success and "IN_PROGRESS" in res.error and res.session_uri == "C2"
+    assert not r.hit("media_publish") and not res.in_doubt
+
+
+def test_instagram_quota_used_up_stops_before_any_upload(ig_env, video, monkeypatch):
+    r = Router(monkeypatch, [quota(used=50, total=50)])
+    res = InstagramReelsPublisher().publish(video, "x", [])
+    assert not res.success and "publishing limit" in res.error
+    assert len(r.calls) == 1
+
+
+def test_instagram_rate_limit_error_on_publish_is_a_plain_failure(ig_env, video, monkeypatch):
+    Router(monkeypatch, [quota(), ("post", "/media", Resp(body={"id": "C3"})),
+                         ("post", "rupload", Resp(body={"success": True})),
+                         ("get", "/C3", Resp(body={"status_code": "FINISHED"})),
+                         ("post", "media_publish", err(9, 2207042, 403, "max posts"))])
+    res = InstagramReelsPublisher().publish(video, "x", [])
+    assert not res.success and not res.in_doubt and "2207042" in res.error
+
+
+def test_instagram_expired_token_says_to_regenerate_and_never_leaks_it(ig_env, video, monkeypatch):
+    uploader._save_token("instagram", {"access_token": TOKEN, "expires_at": time.time() + 3600,
+                                       "source": IG._fingerprint(TOKEN)})
+    Router(monkeypatch, [("get", "refresh_access_token", err(190, 463, 400, f"bad {TOKEN}"))])
+    res = InstagramReelsPublisher().publish(video, "x", [])
+    assert not res.success and "generate a new" in res.error and TOKEN not in res.error
+
+
+def test_network_errors_are_redacted(ig_env, video, monkeypatch):
+    Router(monkeypatch, [("get", "content_publishing_limit",
+                          requests.ConnectionError(f"Max retries with url: /x?access_token={TOKEN}"))])
+    res = InstagramReelsPublisher().publish(video, "x", [])
+    assert not res.success and TOKEN not in res.error and "***" in res.error
+
+
+def test_token_near_expiry_is_refreshed_and_stored_privately(ig_env, monkeypatch):
+    uploader._save_token("instagram", {"access_token": TOKEN, "expires_at": time.time() + 86400,
+                                       "source": IG._fingerprint(TOKEN)})
+    Router(monkeypatch, [("get", "refresh_access_token",
+                          Resp(body={"access_token": "NEW", "expires_in": 5184000}))])
+    assert IG.current_token() == "NEW"
+    path = uploader.TOKEN_DIR / "instagram_token.json"
+    assert json.loads(path.read_text())["access_token"] == "NEW"
+    assert oct(path.stat().st_mode & 0o777) == "0o600"
+    assert IG.current_token() == "NEW"                      # 60 days left: no second call
+
+
+def test_a_new_env_token_replaces_the_stored_chain(ig_env, monkeypatch):
+    monkeypatch.setenv("IG_ACCESS_TOKEN", "FRESH-FROM-ENV")
+    r = Router(monkeypatch, [("get", "refresh_access_token", err(100, None, 400, "too new"))])
+    assert IG.current_token() == "FRESH-FROM-ENV"           # under 24 h old: used as is
+    assert r.calls[0][2]["params"]["access_token"] == "FRESH-FROM-ENV"
+
+
+def test_instagram_lost_publish_answer_checks_the_container(ig_env, video, monkeypatch):
+    base = [quota(), ("post", "/media", Resp(body={"id": "C4"})), ("post", "rupload", Resp()),
+            ("get", "/C4", Resp(body={"status_code": "FINISHED"})),
+            ("post", "media_publish", requests.Timeout("read timed out"))]
+    Router(monkeypatch, base + [("get", "/C4", Resp(body={"status_code": "PUBLISHED"}))])
+    assert InstagramReelsPublisher().publish(video, "x", []).success
+    Router(monkeypatch, base + [("get", "/C4", requests.ConnectionError("down"))])
+    res = InstagramReelsPublisher().publish(video, "x", [])
+    assert not res.success and res.in_doubt and res.session_uri == "C4"
+
+
+def test_instagram_unexpected_error_after_upload_is_in_doubt(ig_env, video, monkeypatch):
+    Router(monkeypatch, [quota(), ("post", "/media", Resp(body={"id": "C5"})), ("post", "rupload", Resp()),
+                         ("get", "/C5", Resp(body={"status_code": "FINISHED"})),
+                         ("post", "media_publish", Resp(body={}))])          # 200 with no id
+    res = InstagramReelsPublisher().publish(video, "x", [])
+    assert not res.success and res.in_doubt and res.session_uri == "C5"
+
+
+def test_a_finished_unpublished_container_is_held_not_replaced(ig_env, monkeypatch):
+    from upload_guard import SKIP_HOLD, decide
+    PL.record_attempt(artifact="v3", platform="instagram", status=PL.ATTEMPT_UNKNOWN, session_uri="C6")
+    Router(monkeypatch, [("get", "/C6", Resp(body={"status_code": "FINISHED"}))])
+    assert decide("v3", "instagram", manager=uploader.UploadManager()).action == SKIP_HOLD
+
+
+def test_facebook_finish_success_false_is_not_recorded_as_published(fb_env, video, monkeypatch):
+    Router(monkeypatch, fb_start() + [("post", "video_reels", Resp(body={"success": False}))])
+    res = FacebookReelsPublisher().publish(video, "x", [])
+    assert not res.success and "success=false" in res.error
+
+
+# ── Facebook ────────────────────────────────────────────────────────────
+
+def fb_start():
+    return [("post", "video_reels", Resp(body={"video_id": "V1",
+                                               "upload_url": "https://rupload.facebook.com/video-upload/v26.0/V1"})),
+            ("post", "rupload.facebook.com/video-upload/v26.0/V1", Resp(body={"success": True}))]
+
+
+def test_facebook_publishes_a_reel(fb_env, video, monkeypatch):
+    r = Router(monkeypatch, fb_start() + [
+        ("post", "video_reels", Resp(body={"success": True})),
+        ("get", "/V1", Resp(body={"permalink_url": "/reel/V1"}))])
+    res = FacebookReelsPublisher().publish(video, "Hola", ["Inglés"])
+    assert res.success and res.upload_id == "V1" and res.url == "https://www.facebook.com/reel/V1"
+    finish = r.hit("video_reels")[1][2]["data"]
+    assert finish["upload_phase"] == "finish" and finish["video_state"] == "PUBLISHED"
+    assert finish["description"] == "Hola\n\n#Inglés"
+
+
+@pytest.mark.parametrize("status,ok,doubt", [
+    ({"video_status": "processing", "uploading_phase": {"status": "complete"},
+      "publishing_phase": {"status": "complete", "publish_status": "published"}}, True, False),
+    ({"video_status": "upload_complete", "uploading_phase": {"status": "complete"},
+      "publishing_phase": {"status": "not_started"}}, False, True),   # may not be processed yet
+    (None, False, True),
+])
+def test_facebook_lost_finish_answer_checks_status_and_never_finishes_twice(
+        fb_env, video, monkeypatch, status, ok, doubt):
+    r = Router(monkeypatch, fb_start() + [
+        ("post", "video_reels", requests.Timeout("read timed out")),
+        ("get", "/V1", Resp(body={"status": status}) if status else requests.ConnectionError("down")),
+        ("get", "/V1", Resp(body={}))])
+    res = FacebookReelsPublisher().publish(video, "x", [])
+    assert (res.success, res.in_doubt) == (ok, doubt)
+    assert len([c for c in r.hit("video_reels") if c[2]["data"]["upload_phase"] == "finish"]) == 1
+
+
+def test_facebook_daily_limit_comes_from_the_attempt_log(fb_env, video, monkeypatch):
+    for i in range(30):
+        PL.record_attempt(artifact=f"a{i}", platform="facebook", status=PL.ATTEMPT_PUBLISHED)
+    r = Router(monkeypatch, [])
+    res = FacebookReelsPublisher().publish(video, "x", [])
+    assert not res.success and "30/30" in res.error and not r.calls
+
+
+def test_facebook_expired_page_token(fb_env, video, monkeypatch):
+    Router(monkeypatch, [("post", "video_reels", err(190, 463, 400, "Session has expired"))])
+    res = FacebookReelsPublisher().publish(video, "x", [])
+    assert not res.success and "code=190" in res.error and PAGE_TOKEN not in res.error
+
+
+# ── spec validation ─────────────────────────────────────────────────────
+
+def test_validation_lists_every_problem(tmp_path):
+    path = tmp_path / "v.mp4"
+    path.write_bytes(b"x")
+    bad = {"format": {"duration": "120"},
+           "streams": [{"codec_type": "video", "codec_name": "vp9", "width": 1920, "height": 1080,
+                        "avg_frame_rate": "15/1"},
+                       {"codec_type": "audio", "codec_name": "mp3", "sample_rate": "96000"}]}
+    with pytest.raises(ReelSpecError) as exc:
+        validate_reel(str(path), "facebook", bad)
+    for part in ("vp9", "9:16", "120.0s", "15.00 fps", "mp3", "96000"):
+        assert part in str(exc.value)
+    assert validate_reel(str(path), "instagram", GOOD_PROBE)
+    mkv = tmp_path / "v.mkv"
+    mkv.write_bytes(b"x")
+    with pytest.raises(ReelSpecError, match="mp4 or .mov"):
+        validate_reel(str(mkv), "instagram", GOOD_PROBE)
+
+
+def test_a_bad_file_fails_before_any_request(ig_env, tmp_path, monkeypatch):
+    path = tmp_path / "wide.mp4"
+    path.write_bytes(b"x")
+    monkeypatch.setattr(common, "probe", lambda p: {**GOOD_PROBE, "streams": [
+        {**GOOD_PROBE["streams"][0], "width": 1920, "height": 1080}]})
+    r = Router(monkeypatch, [])
+    res = InstagramReelsPublisher().publish(str(path), "x", [])
+    assert not res.success and "9:16" in res.error and not r.calls
+
+
+@pytest.mark.skipif(not shutil.which("ffmpeg"), reason="needs ffmpeg")
+def test_validation_on_a_real_encoded_file(tmp_path):
+    path = tmp_path / "real.mp4"
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=c=blue:s=540x960:r=30:d=3.5",
+                    "-f", "lavfi", "-i", "sine=f=440:sample_rate=48000:d=3.5", "-c:v", "libx264",
+                    "-pix_fmt", "yuv420p", "-c:a", "aac", "-shortest", str(path)], check=True)
+    validate_reel(str(path), "facebook")
+    validate_reel(str(path), "instagram")
+
+
+# ── idempotency through the guard ───────────────────────────────────────
+
+def test_an_in_doubt_attempt_is_reconciled_not_republished(fb_env, monkeypatch):
+    from upload_guard import SKIP_DONE, decide
+    PL.record_attempt(artifact="v1", platform="facebook", status=PL.ATTEMPT_UNKNOWN, session_uri="V7")
+    Router(monkeypatch, [("get", "/V7", Resp(body={"status": {
+        "publishing_phase": {"status": "complete", "publish_status": "published"}}}))])
+    verdict = decide("v1", "facebook", manager=uploader.UploadManager())
+    assert verdict.action == SKIP_DONE and verdict.upload_id == "V7"
+    assert PL.find_by_artifact("v1")[0]["url"] == "https://www.facebook.com/reel/V7"
+
+
+def test_main_keeps_an_in_doubt_attempt_open(fb_env, tmp_path, monkeypatch):
+    import main
+    path = tmp_path / "v2.mp4"
+    path.write_bytes(b"x")
+    monkeypatch.setattr(uploader.UploadManager, "upload", lambda self, *a, **k: {
+        "success": False, "error": "lost", "session_uri": "V8", "in_doubt": True})
+    monkeypatch.setattr("upload_metadata.resolve_upload_metadata", lambda *a, **k: {
+        "title": "t", "description": "d", "hashtags": [], "source": "generated"})
+    main.upload_video(path, "quiz", {}, platforms=["facebook"], artifact="v2")
+    assert PL.open_attempt("v2", "facebook")["status"] == PL.ATTEMPT_UNKNOWN
+
+
+# ── queue and slots ─────────────────────────────────────────────────────
+
+@pytest.fixture
+def approved(tmp_path):
+    out = PL.LEDGER_DIR.parent
+    path = out / "approved" / "quiz" / "q1.mp4"
+    path.parent.mkdir(parents=True)
+    path.write_bytes(b"x")
+    return path
+
+
+CFG = {"platforms": ["instagram", "facebook"], "slots": ["10:00", "19:00"], "auto_enqueue_on_approve": False}
+
+
+def test_only_approved_videos_can_be_queued(approved):
+    pending = approved.parents[2] / "pending" / "quiz" / "p.mp4"
+    pending.parent.mkdir(parents=True)
+    pending.write_bytes(b"x")
+    with pytest.raises(ValueError, match="owner approval"):
+        schedule.enqueue(pending)
+    assert schedule.enqueue(approved) == schedule.enqueue(approved)
+    assert len(schedule.load_queue()) == 1
+
+
+def test_slots_fire_once_each():
+    day = datetime(2026, 10, 19)
+    assert schedule.due_slot(day.replace(hour=9), CFG["slots"], CFG["platforms"], []) is None
+    at10 = day.replace(hour=10, minute=5)
+    assert schedule.due_slot(at10, CFG["slots"], CFG["platforms"], []) == day.replace(hour=10)
+    used = [{"platform": "instagram", "status": "started", "at": day.replace(hour=10, minute=1).isoformat()}]
+    assert schedule.due_slot(at10, CFG["slots"], CFG["platforms"], used) is None
+    assert schedule.due_slot(day.replace(hour=19, minute=1), CFG["slots"], CFG["platforms"], used)
+
+
+def test_tick_publishes_the_queue_head_to_what_is_left(approved, monkeypatch):
+    schedule.enqueue(approved)
+    PL.record_publication(artifact="q1", video_path=str(approved), platform="instagram",
+                          upload_id="M1", url="https://www.instagram.com/reel/m1/",
+                          published_title="", published_description="")
+    sent = []
+    monkeypatch.setattr(schedule, "publish", lambda item: sent.append(item["todo"]) or {"uploaded": item["todo"]})
+    assert schedule.tick(datetime(2026, 10, 19, 8), cfg=CFG)["action"] == "wait"
+    assert schedule.tick(datetime(2026, 10, 19, 10, 1), cfg=CFG)["action"] == "published"
+    assert sent == [["facebook"]]
+    row = schedule.status_rows(CFG)[0]
+    assert row["instagram"] == {"status": "published", "url": "https://www.instagram.com/reel/m1/", "id": "M1"}
+    assert row["facebook"]["status"] == "queued"
+
+
+def test_dry_run_sends_nothing(approved, monkeypatch):
+    schedule.enqueue(approved)
+    monkeypatch.setattr(common, "probe", lambda p: GOOD_PROBE)
+    monkeypatch.setattr("upload_metadata.resolve_upload_metadata", lambda *a, **k: {
+        "title": "", "description": "caption", "hashtags": [], "source": "generated"})
+    monkeypatch.delenv("IG_USER_ID", raising=False)
+    monkeypatch.delenv("FB_PAGE_ID", raising=False)
+    r = Router(monkeypatch, [])
+    out = schedule.tick(datetime(2026, 10, 19, 10, 1), dry=True, cfg=CFG)
+    assert out["action"] == "dry_run" and not r.calls
+    assert out["platforms"]["instagram"] == {"spec": "ok", "caption": "caption",
+                                             "api": "not configured (env vars missing)"}
+    assert not PL.read_attempts()

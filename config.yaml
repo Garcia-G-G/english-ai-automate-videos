@@ -432,7 +432,8 @@ upload:
   platforms:
     - tiktok
     - youtube
-    # - instagram  # Requires public video URL hosting (S3/CloudFlare)
+    # - instagram  # Reels via IG_USER_ID/IG_ACCESS_TOKEN (see meta_publish below)
+    # - facebook   # Page Reels via FB_PAGE_ID/FB_PAGE_TOKEN
 
   # Default hashtags per video type
   hashtags:
@@ -575,3 +576,11 @@ voices:
         provider: "elevenlabs"
         voice_id: "default"
         traits: ["female", "natural", "clear", "expressive", "not_infantilized"]
+
+# Instagram + Facebook Reels publisher (tools/meta_publish.py, README "Meta Reels").
+# One approved video per slot goes to every platform below. Run `tick` from
+# cron/launchd every few minutes, or `loop` in a terminal.
+meta_publish:
+  platforms: [instagram, facebook]
+  slots: ["10:00", "19:00"]          # local time
+  auto_enqueue_on_approve: false     # true: approving in the dashboard queues the video

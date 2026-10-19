@@ -152,7 +152,7 @@ def decide(artifact: str, platform: str, *, manager=None,
     session_uri = pending.get("session_uri")
     if not session_uri:
         # The attempt was written but the session never opened, so no bytes
-        # can have reached YouTube: the init POST had not returned yet.
+        # can have reached the platform: the init POST had not returned yet.
         if pending.get("status") == "started":
             return Decision(PROCEED,
                             "attempt started but no session was ever opened")
@@ -192,8 +192,9 @@ def decide(artifact: str, platform: str, *, manager=None,
                 video_type="",
                 platform=platform,
                 result={"upload_id": upload_id,
-                        "url": f"https://youtube.com/shorts/{upload_id}"
-                               if upload_id else None,
+                        "url": state.get("url") or (
+                            f"https://youtube.com/shorts/{upload_id}"
+                            if upload_id and platform == "youtube" else None),
                         "success": True},
                 sent_title=pending.get("detail", ""),
                 sent_description="",

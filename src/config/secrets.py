@@ -65,15 +65,30 @@ _KEY_DEFINITIONS = {
         "pattern": r"^.{10,}$",
         "description": "YouTube/Google OAuth client secret",
     },
-    "INSTAGRAM_ACCESS_TOKEN": {
+    "IG_USER_ID": {
+        "required": False,
+        "pattern": r"^\d{5,}$",
+        "description": "Instagram professional account ID (numeric)",
+    },
+    "IG_ACCESS_TOKEN": {
         "required": False,
         "pattern": r"^.{20,}$",
-        "description": "Instagram/Meta access token",
+        "description": "Instagram long-lived access token (Instagram Login)",
     },
-    "INSTAGRAM_BUSINESS_ACCOUNT_ID": {
+    "FB_PAGE_ID": {
         "required": False,
-        "pattern": r"^\d{10,}$",
-        "description": "Instagram business account ID (numeric)",
+        "pattern": r"^\d{5,}$",
+        "description": "Facebook Page ID (numeric)",
+    },
+    "FB_PAGE_TOKEN": {
+        "required": False,
+        "pattern": r"^.{20,}$",
+        "description": "Facebook long-lived Page access token",
+    },
+    "BREVO_API_KEY": {
+        "required": False,
+        "pattern": r"^xkeysib-.{20,}$",
+        "description": "Brevo API key (transactional email)",
     },
     "TTS_PROVIDER": {
         "required": False,

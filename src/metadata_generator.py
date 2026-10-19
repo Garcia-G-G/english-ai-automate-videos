@@ -18,6 +18,7 @@ PLATFORM_LIMITS = {
     "tiktok": {"title": 150, "description": 2200},
     "youtube": {"title": 100, "description": 5000},
     "instagram": {"title": 0, "description": 2200},
+    "facebook": {"title": 0, "description": 2200},
 }
 
 # Fallback title templates by video type
@@ -225,7 +226,7 @@ def adapt_for_platform(metadata: dict, platform: str) -> dict:
         yt_desc = compose_description(description, tags)
         return {"title": yt_title, "description": yt_desc[:5000], "hashtags": tags}
 
-    elif platform == "instagram":
+    elif platform in ("instagram", "facebook"):
         # No title field; the caption is everything. Keyword-first, because
         # Instagram now indexes caption text more heavily than tags.
         ig_caption = compose_description(f"{title}\n\n{description}", tags)

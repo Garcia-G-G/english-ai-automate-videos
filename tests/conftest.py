@@ -86,6 +86,10 @@ def _isolate_output_tree(tmp_path, monkeypatch):
     monkeypatch.setattr(PL, "LEDGER_PATH", ledger_dir / "ledger.jsonl")
     monkeypatch.setattr(PL, "ATTEMPTS_PATH", ledger_dir / "attempts.jsonl")
 
+    # The Instagram publisher refreshes and stores its token; never in the real .tokens/.
+    import uploader
+    monkeypatch.setattr(uploader, "TOKEN_DIR", out / ".tokens")
+
     try:
         import batch_report as BR
         monkeypatch.setattr(BR, "REPORT_DIR", out / "batch_reports")
