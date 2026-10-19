@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import json
 import logging
+import time
 from pathlib import Path
 from typing import Callable
 
@@ -321,6 +322,7 @@ class LegacyProductionGateway:
             raise ValueError("background resolver returned invalid output")
         progress("background_resolved", 65)
 
+        render_started = time.monotonic()
         produced_video = self._render_video(
             produced_audio,
             metadata_path,
@@ -329,6 +331,7 @@ class LegacyProductionGateway:
             background=selected_background,
             native_language=canonical_profile["workspace"]["native_language"],
         )
+        render_finished = time.monotonic()
         produced_video = self._required_output(
             produced_video, artifact_dir, "video output"
         )
@@ -382,6 +385,8 @@ class LegacyProductionGateway:
                 ).value,
             },
             "finalization": finalization,
+            # STEP 63: the render's wall time, so a slow type shows before it hits the limit
+            "render_seconds": round(render_finished - render_started, 1),
         }
         for field in ("duration", "segments"):
             if field in tts_metadata:

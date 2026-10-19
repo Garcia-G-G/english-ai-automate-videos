@@ -162,6 +162,9 @@ TEXT_ZONES = {k: v["text_band"] for k, v in TYPES.items() if v.get("text_band")}
 DASHBOARD_BUTTONS = [(v["dashboard"], k) for k, v in TYPES.items()
                      if v.get("dashboard")]
 
+#: The notebook level pages (create_frame_level): the slowest renders, STEP 63.
+LEVEL_TYPES = frozenset(k for k, v in TYPES.items() if v["renderer"].endswith(":create_frame_level"))
+
 #: {type: "create_frame_x"} — the bare function name, for callers that
 #: already know which module they are looking in.
 FRAME_FN = {k: v["renderer"].split(":", 1)[1] for k, v in TYPES.items()}

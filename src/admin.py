@@ -915,7 +915,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             audio_path, json_path, stage_path,
             video_type=video_type,
             background=resolved_background,
-            timeout=pipeline.RENDER_TIMEOUT_S,
+            timeout=pipeline.render_timeout(video_type),
         )
         _stage("frames+encode")
         from qa_gate import probe_duration

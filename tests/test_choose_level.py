@@ -119,7 +119,7 @@ def test_the_right_option_is_circled_and_the_wrong_one_struck(no_mascot, monkeyp
     monkeypatch.setattr(H, "_hand_circle", lambda draw, box, p: circles.append((box, p)) or real_c(draw, box, p))
     monkeypatch.setattr(H, "_strike", lambda draw, x0, x1, cy, p: strikes.append((x0, x1, p)) or real_s(draw, x0, x1, cy, p))
     data, dur = _timeline(_script())
-    centres = H.row_centres(10)
+    centres = list(H.level_rows(10, H.CHOOSE_TIER_GAP)[0])
     spans = H.choice_spans(data["items"], centres)
     ans = data["segment_times"]["answer_5"]           # row 5: «makes · does», does is right
     H.create_frame_level(ans["end"] + 0.1, data, dur)
@@ -136,7 +136,7 @@ def test_the_countdown_sits_after_the_options_never_over_them(no_mascot, monkeyp
     dots = []
     monkeypatch.setattr(H, "_draw_countdown_at", lambda layer, x0, cy, p: dots.append(x0))
     data, dur = _timeline(_script())
-    spans = H.choice_spans(data["items"], H.row_centres(10))
+    spans = H.choice_spans(data["items"], list(H.level_rows(10, H.CHOOSE_TIER_GAP)[0]))
     for i in range(10):
         dots.clear()
         th = data["segment_times"][f"think_{i + 1}"]

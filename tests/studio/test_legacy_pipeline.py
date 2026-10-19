@@ -555,7 +555,9 @@ def test_gateway_paths_costs_and_available_metadata_are_exact(tmp_path):
             "characters": 42,
         },
     }]
-    assert result.production == {
+    production = dict(result.production)
+    assert production.pop("render_seconds") >= 0      # STEP 63: wall time, not a fixed value
+    assert production == {
         "background": "static_midnight",
         "video_type": "quiz",
         "tts_metadata": "audio/narration.json",

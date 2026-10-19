@@ -63,6 +63,15 @@ MIN_OUTPUT_BYTES = 1000
 # typical quiz already costs 139s. Anything still running at 20 minutes is a
 # genuine hang and should be killed.
 RENDER_TIMEOUT_S = 1200
+# STEP 63: the level pages took 1189 s (fc001) and 1008 s (ec001) on the Mac, against
+# 1200 s. They get 1800 s; every other type keeps the 1200 s above.
+LEVEL_RENDER_TIMEOUT_S = 1800
+
+
+def render_timeout(video_type: Optional[str]) -> int:
+    """The render limit for this type: LEVEL_RENDER_TIMEOUT_S for the level pages."""
+    from video_types import LEVEL_TYPES
+    return LEVEL_RENDER_TIMEOUT_S if video_type in LEVEL_TYPES else RENDER_TIMEOUT_S
 
 
 class PipelineError(RuntimeError):

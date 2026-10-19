@@ -8,11 +8,17 @@ asks no API for it), so lengthening it is inserting silence at its end and shift
 follows. The words, already heard and approved, stay the very same samples. The new
 artifact gets the retimed audio and its own video, rendered over the source's clips and
 gated like any other render.
+
+When every think is already today's, nothing is inserted and the source's audio is copied
+byte for byte (a decode and re-encode would move the MP3 padding): that is a re-render
+from cached audio, for a change in the picture alone. The render's wall time goes in
+video/render.json.
 """
 import json
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -77,15 +83,25 @@ def main():
         sys.exit(f"{dst} exists; pick another name")
     meta = json.loads((src / "audio" / "narration.json").read_text(encoding="utf-8"))
     new_meta, new = retime(meta, _decode(src / "audio" / "narration.mp3"))
-    new_meta["retimed_from"] = src.name
     (dst / "audio").mkdir(parents=True)
     shutil.copytree(src / "script", dst / "script")
     audio, data = dst / "audio" / "narration.mp3", dst / "audio" / "narration.json"
-    _encode(new, audio)
+    if new_meta["segment_times"] == meta["segment_times"]:
+        shutil.copy2(src / "audio" / "narration.mp3", audio)    # nothing grew: the cached audio as is
+        new_meta = dict(meta, rerendered_from=src.name)
+    else:
+        _encode(new, audio)
+        new_meta["retimed_from"] = src.name
     data.write_text(json.dumps(new_meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    timeout = pipeline.render_timeout(meta["type"])
+    started = time.monotonic()
     video = pipeline.render_video(audio, data, dst / "video" / "final.mp4", video_type=meta["type"],
-                                  background=f"clips:{src / 'clips'}", timeout=pipeline.RENDER_TIMEOUT_S)
-    print(json.dumps(pipeline.finalize_video(video, data), ensure_ascii=False, indent=1, default=str))
+                                  background=f"clips:{src / 'clips'}", timeout=timeout)
+    wall = round(time.monotonic() - started, 1)
+    (dst / "video" / "render.json").write_text(json.dumps(
+        {"video_type": meta["type"], "render_seconds": wall, "timeout_s": timeout}, indent=1), encoding="utf-8")
+    print(json.dumps({"render_seconds": wall, **pipeline.finalize_video(video, data)},
+                     ensure_ascii=False, indent=1, default=str))
 
 
 if __name__ == "__main__":
