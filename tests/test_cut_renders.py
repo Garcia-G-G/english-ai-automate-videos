@@ -36,6 +36,10 @@ class _Pipeline:
     def __init__(self, render):
         self.render = render
 
+    def render_timeout(self, video_type=None):
+        import pipeline
+        return pipeline.render_timeout(video_type)     # the real per-type limit
+
     def resolve_profile(self, name=None):
         return {"name": "adults", "content": {"categories": None}}
 
