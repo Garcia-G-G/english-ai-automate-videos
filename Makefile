@@ -1,4 +1,4 @@
-.PHONY: test smoke qa qa-one auth-status auth-youtube auth-tiktok meta-check meta-dry-run meta-tick help
+.PHONY: test smoke qa qa-one auth-status auth-youtube auth-tiktok meta-check meta-dry-run meta-tick clean-dry clean help
 
 help:
 	@echo "make test    — full unit suite, free, no API. Run per commit."
@@ -14,6 +14,8 @@ help:
 	@echo "make meta-check    — what the Instagram/Facebook setup is missing, read-only"
 	@echo "make meta-dry-run  — what the next Meta publish would send, sends nothing"
 	@echo "make meta-tick     — publish the queued video if a slot is due"
+	@echo "make clean-dry     — what make clean would delete, per rule; deletes nothing"
+	@echo "make clean         — the same table, then asks before deleting"
 
 test:
 	python3 -m pytest tests/ -q
@@ -54,3 +56,9 @@ meta-dry-run:
 
 meta-tick:
 	python3 tools/meta_publish.py tick
+
+clean-dry:
+	python3 tools/cleanup.py --dry-run
+
+clean:
+	python3 tools/cleanup.py
