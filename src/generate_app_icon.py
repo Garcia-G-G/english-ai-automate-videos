@@ -15,6 +15,11 @@ load_dotenv()
 
 QUALITY = "high"  # An app icon is a one-off; buy the good one.
 
+# Brand v3 («cuaderno + Bubi», STEP 71) ships its own app_icon.png. This paid generator
+# would replace it, and docs/icon.png with it, so it refuses unless told to.
+if Path("assets/branding/app_icon.png").exists() and "--force" not in sys.argv:
+    sys.exit("assets/branding/app_icon.png is the brand v3 icon; pass --force to replace it.")
+
 client = get_client()
 if client is None:
     sys.exit(1)
