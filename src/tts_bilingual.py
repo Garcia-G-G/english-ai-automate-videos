@@ -172,17 +172,17 @@ def plan_calls(script_data: Dict, settings: Dict = None,
 
 # ── Real synthesis ────────────────────────────────────────────────────
 
-def _synthesize_segment(call: Dict, out_path: str, settings: Dict) -> Dict:
+def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0) -> Dict:
     """One ElevenLabs request. Returns {'duration', 'words': [...] or None}.
 
     Tries the with-timestamps endpoint first (exact char timings); falls
-    back to the plain convert stream.
+    back to the plain convert stream. A cached identical request (tts_cache,
+    the take index included) is copied with its alignment instead.
     """
     from tts_elevenlabs import get_client, _elevenlabs_with_retry
     from tts_common import get_audio_duration
     from elevenlabs.types import VoiceSettings
 
-    client = get_client()
     vs = VoiceSettings(
         stability=settings["stability"],
         similarity_boost=settings["similarity"],
@@ -204,6 +204,17 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict) -> Dict:
         kwargs["previous_text"] = call["previous_text"]
     if call.get("next_text"):
         kwargs["next_text"] = call["next_text"]
+
+    import tts_cache
+    from tts_common import get_audio_duration as _duration
+    cache_key = tts_cache.key({**kwargs, "endpoint": "with_timestamps"}, take)
+    cached = tts_cache.restore(cache_key, out_path)
+    if cached is not None:
+        a = cached.get("alignment") or {}
+        words = (_chars_to_words(a["characters"], a["character_start_times_seconds"],
+                                 a["character_end_times_seconds"]) if a.get("characters") else None)
+        return {"duration": _duration(out_path), "words": words}
+    client = get_client()
 
     # Cost tracking (best-effort)
     try:
@@ -234,9 +245,14 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict) -> Dict:
                     or alignment.get("character_end_times_seconds"))
             if chars and starts and ends:
                 words = _chars_to_words(chars, starts, ends)
+                tts_cache.store(cache_key, out_path, {**kwargs, "endpoint": "with_timestamps"},
+                                {"characters": list(chars), "character_start_times_seconds": list(starts),
+                                 "character_end_times_seconds": list(ends)})
+            else:
+                tts_cache.store(cache_key, out_path, {**kwargs, "endpoint": "with_timestamps"})
     except Exception as e:
         logger.info("with_timestamps unavailable (%s) — using plain convert", e)
-        _elevenlabs_with_retry(client, out_path, **kwargs)
+        _elevenlabs_with_retry(client, out_path, take=take, **kwargs)
 
     duration = get_audio_duration(out_path)
     if duration <= 0:
@@ -328,7 +344,7 @@ def generate_bilingual_narration(
             takes = []
             for attempt in range(1 + stitch.ONSET_RETRIES):
                 path = seg_path if not attempt else seg_path.replace(".mp3", f".t{attempt}.mp3")
-                res = _synthesize_segment(call, path, settings)
+                res = _synthesize_segment(call, path, settings, take=attempt)
                 takes.append((path, res, stitch.onset_values(path)))
                 if stitch.onset_clean(takes[-1][2], call["model_id"]):
                     break

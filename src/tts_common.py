@@ -14,6 +14,11 @@ import os
 import re
 import subprocess
 import proc as _proc   # `proc` is a local name for results in this module
+
+#: Room tone is white noise from anoisesrc. Without a seed it is new noise on every run, so the
+#: same cached clips stitched twice gave different files (STEP 76 §4); a fixed seed makes a
+#: re-stitch reproducible. The noise sits ~75 dB down: one seed for every clip is inaudible.
+ROOM_TONE_SEED = 7607
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -569,7 +574,7 @@ def shape_clip_lead_in(audio_path: str) -> bool:
     tmp = f"{audio_path}.lead.mp3"
     chain = (
         f"[0:a]afade=t=in:st=0:d={LEAD_FADE_S}:curve={LEAD_CURVE}[v];"
-        f"anoisesrc=color=white:amplitude={amplitude:.8f}"
+        f"anoisesrc=color=white:amplitude={amplitude:.8f}:seed={ROOM_TONE_SEED}"
         f":duration={duration + 0.5:.3f}:sample_rate=44100[n];"
         f"[v][n]amix=inputs=2:duration=first:normalize=0[out]"
     )
@@ -669,7 +674,7 @@ def generate_silence(duration: float, output_path: str,
     cmd = [
         'ffmpeg', '-y',
         '-f', 'lavfi', '-i',
-        f'anoisesrc=color=white:amplitude={amplitude:.8f}'
+        f'anoisesrc=color=white:amplitude={amplitude:.8f}:seed={ROOM_TONE_SEED}'
         f':duration={duration}:sample_rate={sample_rate}',
         '-t', str(duration),
         '-acodec', 'libmp3lame', '-q:a', '2',
@@ -1227,7 +1232,7 @@ def repair_truncated_tail(audio_path: str, out_path: str = None) -> dict:
     chain = (
         f"[0:a]afade=t=out:st={max(0.0, duration - TAIL_FADE):.4f}:"
         f"d={TAIL_FADE}:curve={TAIL_CURVE}[v];"
-        f"anoisesrc=color=white:amplitude={amplitude:.6f}:"
+        f"anoisesrc=color=white:amplitude={amplitude:.6f}:seed={ROOM_TONE_SEED}:"
         f"duration={TAIL_PAD}:sample_rate=44100,"
         f"volume=volume='max(0.10\\,exp(-t*{TAIL_NOISE_K}))':eval=frame[n];"
         f"[v][n]concat=n=2:v=0:a=1[out]"

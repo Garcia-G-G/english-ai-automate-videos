@@ -90,6 +90,11 @@ def _isolate_output_tree(tmp_path, monkeypatch):
     import uploader
     monkeypatch.setattr(uploader, "TOKEN_DIR", out / ".tokens")
 
+    # The TTS cache (STEP 76 §4): a test's fake clip must never be served to a real render.
+    import tts_cache
+    monkeypatch.setattr(tts_cache, "CACHE_DIR", out / "cache" / "tts")
+    tts_cache.STATS.update(hits=0, misses=0)
+
     try:
         import batch_report as BR
         monkeypatch.setattr(BR, "REPORT_DIR", out / "batch_reports")

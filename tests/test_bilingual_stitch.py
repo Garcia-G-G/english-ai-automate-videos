@@ -34,7 +34,7 @@ def _fake_clip(path, db):
 def fake_tts(monkeypatch):
     sent = []
 
-    def synth(call, out_path, settings):
+    def synth(call, out_path, settings, take=0):
         sent.append(dict(call))
         _fake_clip(out_path, -18.0 if call["is_english"] else -24.0)
         return {"duration": LEAD + SPEECH + TAIL,

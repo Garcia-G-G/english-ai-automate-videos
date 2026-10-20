@@ -379,14 +379,20 @@ def estimate_word_timestamps(text: str, duration: float, english_phrases: list =
     return words, segments
 
 
-def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, **kwargs) -> None:
-    """Call ElevenLabs TTS API with exponential backoff retry."""
+def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, take: int = 0, **kwargs) -> None:
+    """Call ElevenLabs TTS API with exponential backoff retry; a cached identical request
+    (tts_cache, `take` included) is copied instead of asked again."""
     import time as _time
 
     # Every ElevenLabs call in this module passes through here, so this is the
     # one place a missing voice id is caught -- not six call sites.
     if not kwargs.get("voice_id"):
         raise RuntimeError("ELEVENLABS_VOICE_ID no está configurado. Ponlo en .env (el ID de la voz del canal); ya no hay voz por defecto en el código.")
+
+    import tts_cache
+    cache_key = tts_cache.key({**kwargs, "endpoint": "convert"}, take)
+    if tts_cache.restore(cache_key, output_path) is not None:
+        return
 
     # Track cost
     try:
@@ -403,6 +409,7 @@ def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, **kwa
             with open(output_path, 'wb') as f:
                 for chunk in audio_generator:
                     f.write(chunk)
+            tts_cache.store(cache_key, output_path, {**kwargs, "endpoint": "convert"})
             return
         except Exception as e:
             if attempt == max_retries - 1:
@@ -424,6 +431,7 @@ def generate_segment_audio(
     segment_type: str = 'default',
     english_words: set = None,
     humanize: bool = True,
+    take: int = 0,
 ) -> float:
     """
     Generate a single audio segment using ElevenLabs TTS.
@@ -446,6 +454,7 @@ def generate_segment_audio(
         segment_type: Type of segment for context-aware enhancements
         english_words: Set of English words for bilingual pronunciation
         humanize: Whether to add natural pauses and breathing (default True)
+        take: Which take of this request (the onset gate's re-asks); part of the cache key
 
     Returns:
         Duration in seconds
@@ -472,6 +481,7 @@ def generate_segment_audio(
 
     _elevenlabs_with_retry(
         client, output_path,
+        take=take,
         voice_id=voice_id,
         text=text,
         model_id=MODEL_ID,
@@ -2122,12 +2132,12 @@ def generate_level_audio_segmented(
                              "end": round(end, 3), "duration": round(end - start, 3)})
             logger.info("  [%s] %.2f-%.2f %s", seg_id, start, end, text[:60])
 
-        def request(text: str, path: str, segment_type: str):
+        def request(text: str, path: str, segment_type: str, take: int = 0):
             nonlocal characters
             characters += len(text)
             generate_segment_audio(text=text, output_path=path, voice_id=voice_id,
                                    stability=stability, similarity_boost=similarity_boost,
-                                   segment_type=segment_type, english_words=english_words)
+                                   segment_type=segment_type, english_words=english_words, take=take)
 
         def speak(seg_id: str, text: str, lang: str, segment_type: str) -> str:
             nonlocal retakes
@@ -2137,7 +2147,7 @@ def generate_level_audio_segmented(
                 takes, files = [], []
                 for take in range(1 + LEVEL_ONSET_RETRIES):
                     files.append(os.path.join(temp_dir, f"{seg_id}.take{take}.mp3"))
-                    request(text, files[-1], segment_type)
+                    request(text, files[-1], segment_type, take)
                     takes.append(_onset_values(files[-1]))
                     logger.info("%s take %d: start %s dB, fragment %s, doubled %s", seg_id, take,
                                 takes[-1]["start_db"], takes[-1]["fragment"], takes[-1]["doubled_onset"])
