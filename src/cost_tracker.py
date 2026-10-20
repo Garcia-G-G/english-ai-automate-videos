@@ -53,11 +53,51 @@ PRICING = {
     # gone with the model (retired from the API 2026-05-12), along with the
     # $0.080 figure that under-reported hd calls by a third.
     # ElevenLabs TTS (Starter plan ~$5/30k chars, Creator ~$22/100k chars)
-    # Using Creator plan rate: $0.22 per 1k chars = $220 per 1M chars
+    # Using Creator plan rate: $0.22 per 1k chars = $220 per 1M chars.
+    # ONE TABLE for Shorts and lessons (STEP 76 §5; gen_audio and manim_studio read it).
+    # A full-credit model (v3, v4, multilingual) costs 1 credit per character, turbo and
+    # flash half. shortcut: v4 and flash follow that rule, not an invoice; check them
+    # against the first ElevenLabs statement that carries them.
     "eleven_v3": {"per_1m_chars": 220.00},
+    "eleven_v4": {"per_1m_chars": 220.00},
     "eleven_multilingual_v2": {"per_1m_chars": 220.00},
     "eleven_turbo_v2_5": {"per_1m_chars": 110.00},
+    "eleven_flash_v2_5": {"per_1m_chars": 110.00},
 }
+
+#: Per-video TTS budget when config.yaml sets none (costs.per_video_tts_usd).
+DEFAULT_PER_VIDEO_TTS_USD = 0.25
+
+
+class TTSBudgetExceeded(RuntimeError):
+    """The next TTS call would take this video over its budget; nothing was asked."""
+
+
+def tts_price_per_1k(model: str) -> float:
+    """Dollars per 1,000 characters for an ElevenLabs model (the v3 rate for an unknown one)."""
+    return PRICING.get(model, PRICING["eleven_v3"])["per_1m_chars"] / 1000
+
+
+def per_video_tts_usd() -> float:
+    try:
+        import yaml
+        cfg = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8")) or {}
+        return float((cfg.get("costs") or {}).get("per_video_tts_usd", DEFAULT_PER_VIDEO_TTS_USD))
+    except (OSError, ValueError, TypeError):
+        return DEFAULT_PER_VIDEO_TTS_USD
+
+
+def check_tts_budget(characters: int, model: str) -> None:
+    """Refuse the next TTS call if it would take the current video over its budget."""
+    tracker = get_tracker()
+    spent = sum(e["cost_usd"] for e in tracker.entries if e.get("api_type") == "elevenlabs_tts")
+    upcoming = characters * tts_price_per_1k(model) / 1000
+    limit = per_video_tts_usd()
+    if spent + upcoming > limit:
+        raise TTSBudgetExceeded(
+            f"Presupuesto de voz superado: este vídeo lleva ${spent:.3f} en TTS y la siguiente "
+            f"llamada costaría ${upcoming:.3f}; el tope es ${limit:.2f} por vídeo "
+            f"(config.yaml costs.per_video_tts_usd). No se pidió nada más.")
 
 
 def provider_of(api_type: str) -> str:

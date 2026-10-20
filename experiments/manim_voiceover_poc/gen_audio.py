@@ -47,7 +47,6 @@ import lesson as L  # noqa: E402
 
 DEFAULT_ENV = HERE.parent.parent / ".env"          # english-ai-videos/.env
 MATILDA = "XrExE9yKIg1WjnnlVkGX"
-PRICE_PER_1K_CHARS = 0.10
 # Models that accept language_code (per-segment accent) and return timestamps.
 SEGMENT_MODELS = ("eleven_turbo_v2_5", "eleven_flash_v2_5")
 DEFAULT_MODEL = "eleven_turbo_v2_5"           # --stitch only (the lesson's "model" applies there)
@@ -58,6 +57,10 @@ _SRC = str(HERE.parents[1] / "src")
 if _SRC not in sys.path:
     sys.path.append(_SRC)
 import stitch as S  # noqa: E402
+
+# One price table with the Shorts (STEP 76 §5): cost_tracker.PRICING, at the lesson's model.
+from cost_tracker import tts_price_per_1k  # noqa: E402
+PRICE_PER_1K_CHARS = tts_price_per_1k(ONE_REQUEST_MODEL)
 
 GAP_AFTER, DEFAULT_GAP = S.GAP_AFTER, S.DEFAULT_GAP
 EDGE_PAD = 0.04             # silence kept at each end of a segment after trimming

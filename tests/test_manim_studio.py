@@ -69,8 +69,9 @@ def test_table_roundtrip_edits_only_narration():
 
 def test_cost_is_per_thousand_spoken_characters():
     lesson = {"beats": [{"narration": "[[" + "a" * 500 + "]]"}, {"narration": "b" * 500}]}
-    assert ms.estimate_cost_usd(lesson) == pytest.approx(0.10)
-    assert ms.estimate_cost_usd(lesson, voices=2) == pytest.approx(0.20)
+    price = ms.PRICE_PER_1K_CHARS                                   # cost_tracker's table (STEP 76 §5)
+    assert ms.estimate_cost_usd(lesson) == pytest.approx(price)
+    assert ms.estimate_cost_usd(lesson, voices=2) == pytest.approx(2 * price)
 
 
 # ── commands the page launches ─────────────────────────────────────────────────

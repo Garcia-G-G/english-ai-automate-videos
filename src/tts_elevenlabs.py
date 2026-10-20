@@ -186,7 +186,7 @@ def add_natural_pauses(text: str, segment_type: str = 'default') -> str:
     return text.strip()
 
 
-def enhance_bilingual_text(text: str, english_words: set) -> str:
+def enhance_bilingual_text(text: str, english_words: set, model: str = None) -> str:
     """
     Enhance text for correct bilingual pronunciation.
 
@@ -203,6 +203,10 @@ def enhance_bilingual_text(text: str, english_words: set) -> str:
         Enhanced text optimized for bilingual TTS
     """
     if not english_words or not text:
+        return text
+    # STEP 76 §5: eleven_v3 says «schedule» and «through» right; the respellings below made
+    # it read them oddly. The table stays for the older models that needed it.
+    if (model or MODEL_ID) == "eleven_v3":
         return text
 
     # Phonetic spelling hints for words the Spanish model commonly
@@ -394,14 +398,10 @@ def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, take:
     if tts_cache.restore(cache_key, output_path) is not None:
         return
 
-    # Track cost
-    try:
-        from cost_tracker import get_tracker
-        text = kwargs.get('text', '')
-        model_id = kwargs.get('model_id', 'eleven_v3')
-        get_tracker().log_elevenlabs_tts(characters=len(text), model=model_id, label="tts_segment")
-    except Exception:
-        pass
+    from cost_tracker import check_tts_budget, get_tracker
+    text = kwargs.get('text', '')
+    model_id = kwargs.get('model_id', 'eleven_v3')
+    check_tts_budget(len(text), model_id)
 
     for attempt in range(max_retries):
         try:
@@ -409,14 +409,43 @@ def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, take:
             with open(output_path, 'wb') as f:
                 for chunk in audio_generator:
                     f.write(chunk)
-            tts_cache.store(cache_key, output_path, {**kwargs, "endpoint": "convert"})
-            return
         except Exception as e:
-            if attempt == max_retries - 1:
+            wait = retry_wait(e, attempt)
+            if wait is None or attempt == max_retries - 1:
                 raise
-            wait = 2 ** attempt
-            logger.warning("ElevenLabs attempt %d failed (%s), retrying in %ds...", attempt + 1, e, wait)
+            logger.warning("ElevenLabs attempt %d failed (%s), retrying in %.1fs...", attempt + 1, e, wait)
             _time.sleep(wait)
+            continue
+        # Cost once, for the attempt that came back 2xx (STEP 76 §5): a refused or
+        # timed-out request is not billed, and logging before the call counted retries.
+        get_tracker().log_elevenlabs_tts(characters=len(text), model=model_id, label="tts_segment")
+        tts_cache.store(cache_key, output_path, {**kwargs, "endpoint": "convert"})
+        return
+
+
+def retry_wait(exc: Exception, attempt: int):
+    """Seconds to wait before re-asking, or None when the error is not worth a retry.
+
+    Only rate limits (429), server errors (5xx) and timeouts are retried (STEP 76 §5); a
+    401/400/422 fails the same way every time, and retrying it only spends the wait.
+    Retry-After is honoured when the server sends it (capped at 60 s)."""
+    status = getattr(exc, "status_code", None)
+    if status == 429 or (isinstance(status, int) and 500 <= status < 600):
+        headers = getattr(exc, "headers", None) or {}
+        after = headers.get("retry-after") or headers.get("Retry-After")
+        try:
+            return min(60.0, max(0.0, float(after)))
+        except (TypeError, ValueError):
+            return float(2 ** attempt)
+    try:
+        import httpx
+        if isinstance(exc, httpx.TimeoutException):
+            return float(2 ** attempt)
+    except ImportError:
+        pass
+    if isinstance(exc, TimeoutError):
+        return float(2 ** attempt)
+    return None
 
 
 def generate_segment_audio(
@@ -472,7 +501,7 @@ def generate_segment_audio(
 
     # Enhance bilingual pronunciation
     if english_words:
-        text = enhance_bilingual_text(text, english_words)
+        text = enhance_bilingual_text(text, english_words, MODEL_ID)
 
     logger.debug("TTS [%s] speed=%.2f text='%s'", segment_type, speed, text[:80])
 

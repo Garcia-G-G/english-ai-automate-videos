@@ -36,5 +36,5 @@ join); the fades are why it is now ≤ −44.
 
 Cost: three runs of ~370 characters (304 planned + retakes): $0.0414 and $0.0406 measured, the
 middle one ≈ $0.041 (its report was overwritten). §2 total ≈ $0.123.
-Found for §5: none of these calls reached the cost log (`_synthesize_segment` swallows the
-logging error).
+(Corrected in §5: these calls were logged; the tracker keeps rows in memory until the job
+saves it, and this proof script never saved. The real pipeline does.)

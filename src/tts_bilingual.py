@@ -216,14 +216,8 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0
         return {"duration": _duration(out_path), "words": words}
     client = get_client()
 
-    # Cost tracking (best-effort)
-    try:
-        from cost_tracker import get_tracker
-        get_tracker().log_elevenlabs_tts(
-            characters=len(call["text"]), model=call["model_id"],
-            label="tts_bilingual_segment")
-    except Exception:
-        pass
+    from cost_tracker import TTSBudgetExceeded, check_tts_budget, get_tracker
+    check_tts_budget(len(call["text"]), call["model_id"])
 
     words = None
     try:
@@ -236,6 +230,11 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0
             raise RuntimeError("no audio in with_timestamps response")
         with open(out_path, "wb") as f:
             f.write(base64.b64decode(audio_b64))
+        # Cost once, for a 2xx that carried audio (STEP 76 §5); the plain-convert fallback
+        # logs its own, so an empty answer is not counted twice.
+        get_tracker().log_elevenlabs_tts(
+            characters=len(call["text"]), model=call["model_id"],
+            label="tts_bilingual_segment")
         if alignment is not None:
             chars = (getattr(alignment, "characters", None)
                      or alignment.get("characters"))
@@ -250,7 +249,10 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0
                                  "character_end_times_seconds": list(ends)})
             else:
                 tts_cache.store(cache_key, out_path, {**kwargs, "endpoint": "with_timestamps"})
+    except TTSBudgetExceeded:
+        raise
     except Exception as e:
+        # with_timestamps is tried once; the plain stream has the retry policy.
         logger.info("with_timestamps unavailable (%s) — using plain convert", e)
         _elevenlabs_with_retry(client, out_path, take=take, **kwargs)
 

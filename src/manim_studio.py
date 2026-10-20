@@ -50,9 +50,11 @@ except ImportError as exc:                     # pragma: no cover — clone with
     STUDIO_IMPORT_ERROR = str(exc)
 
 MATILDA = "XrExE9yKIg1WjnnlVkGX"
-PRICE_PER_1K_CHARS = 0.10
 ENV_KEYS = ("ELEVENLABS_API_KEY", "ELEVENLABS_VOICE_ID", "OPENAI_API_KEY", "LR_BASE_URL", "LR_STUDIO_TOKEN")
 TTS_MODELS = ("eleven_v4", "eleven_multilingual_v2", "eleven_turbo_v2_5", "eleven_flash_v2_5")   # first: the owner's pick by ear
+# One price table with the Shorts (STEP 76 §5): cost_tracker.PRICING, at the default model.
+from cost_tracker import tts_price_per_1k  # noqa: E402
+PRICE_PER_1K_CHARS = tts_price_per_1k(TTS_MODELS[0])
 WRITER_MODELS = ("gpt-4o-mini", "gpt-4o", "gpt-4.1-mini")
 LEVELS = ("A1", "A2", "B1", "B2")
 
