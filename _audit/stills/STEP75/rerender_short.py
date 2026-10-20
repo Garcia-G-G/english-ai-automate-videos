@@ -48,4 +48,9 @@ def main(sidecar: str, out_dir: str) -> dict:
 
 
 if __name__ == "__main__":
-    print(json.dumps(main(sys.argv[1], sys.argv[2]), ensure_ascii=False, default=str, indent=1))
+    import logging
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(message)s")
+    result = main(sys.argv[1], sys.argv[2])
+    text = json.dumps(result, ensure_ascii=False, default=str, indent=1)
+    (Path(sys.argv[2]) / "result.json").write_text(text, encoding="utf-8")
+    print(text)

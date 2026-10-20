@@ -205,12 +205,17 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
             voice = voice.with_suffix(".mp3")
             _synthesize(variant, voice)
 
+        # STEP 75 §5: the outro speaks at the narration's −14 LUFS, so the seam has no jump.
+        import loudness
+        level = Path(tmp) / "outro_voice.wav"
+        loudness.loudnorm_two_pass(voice, level)
+
         # Pad the voice to the full clip length so the audio stream is exactly
         # as long as the video. A short audio stream under -shortest would
         # truncate the video instead.
-        padded = Path(tmp) / "outro_audio.mp3"
+        padded = Path(tmp) / "outro_audio.wav"
         proc.run(
-            ["ffmpeg", "-y", "-loglevel", "error", "-i", str(voice),
+            ["ffmpeg", "-y", "-loglevel", "error", "-i", str(level),
              "-af", f"apad=whole_dur={OUTRO_DURATION}",
              "-t", str(OUTRO_DURATION), str(padded)],
             check=True, capture_output=True, timeout=proc.FFMPEG
@@ -228,12 +233,6 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
             width=VIDEO_WIDTH,
             height=VIDEO_HEIGHT,
         )
-        if path.exists():
-            # The new picture over the OLD audio stream, copied: byte-identical sound (STEP 71 §1).
-            proc.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(rendered), "-i", str(path),
-                            "-map", "0:v", "-map", "1:a", "-c", "copy", "-movflags", "+faststart",
-                            str(Path(tmp) / "outro_out.mp4")], check=True, capture_output=True, timeout=proc.FFMPEG)
-            rendered = Path(tmp) / "outro_out.mp4"
         # tmp may be another volume: copy next to the clip first, then an atomic rename.
         part = path.with_name(f".{path.name}.part")
         shutil.move(str(rendered), str(part))

@@ -245,20 +245,24 @@ def test_bubi_is_440px_wide_and_stands_on_the_cards_top_edge():
     assert abs(ys.min() - (y_card + O.SYMBOL_OVERLAP - drawn_h)) <= 3 and O.SYMBOL_OVERLAP == 70
 
 
-def test_a_redraw_never_calls_the_tts_and_keeps_the_audio_byte_for_byte(tmp_path, monkeypatch):
+def test_a_redraw_never_calls_the_tts_and_brings_the_voice_to_minus_14_lufs(tmp_path, monkeypatch):
+    """STEP 71 kept the audio byte for byte; STEP 75 §5 normalises it to the narration's
+    target on a redraw. Still no TTS, still the same length."""
     clips = _existing()
     if not clips:
         pytest.skip("no rendered outro yet")
     import shutil
+    import loudness
     import tts_elevenlabs
     monkeypatch.setattr(O, "OUTRO_DIR", tmp_path)
     shutil.copy(clips[0], tmp_path / clips[0].name)
-    before = _audio_md5(tmp_path / clips[0].name)
     monkeypatch.setattr(tts_elevenlabs, "generate_segment_audio",
                         lambda *a, **k: pytest.fail("a redraw called generate_segment_audio"))
     variant = next(v for v in O.load_variants()["variants"] if v["id"] == clips[0].stem)
     out = O.ensure_outro(variant, force=True)
-    assert _audio_md5(out) == before
+    m = loudness.measure(out)
+    assert abs(m["I"] - loudness.TARGET_I) <= 1.0 and m["TP"] <= -1.0
+    assert O._probe_params(str(out)) == O._probe_params(str(clips[0]))
 
 
 # ── STEP 73 §0: a cut render never becomes a cached clip ─────────────

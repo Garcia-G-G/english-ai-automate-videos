@@ -709,9 +709,16 @@ def render_video(audio_path,
     video_path = Path(video_path)
     video_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # STEP 75 §5: the mux gets a levelled, −14 LUFS copy of the narration. The cached mp3
+    # is the TTS cache and stays as it is; the copy has the same length, so no timestamp moves.
+    import loudness
+    narration = video_path.with_name(f".{video_path.stem}.narration.wav")
+    loud = loudness.prepare_narration(audio_path, data_path, narration)
+    logger.info("Narration loudness: %s", loud)
+
     cmd = [
         sys.executable, "-u", "-m", "video",
-        "-a", str(audio_path.resolve()),
+        "-a", str(narration.resolve()),
         "-d", str(data_path.resolve()),
         "-o", str(video_path.resolve()),
     ]
@@ -766,6 +773,8 @@ def render_video(audio_path,
         proc.wait()
         reader.join(timeout=5)
         raise RenderError(f"Video render timed out after {timeout}s", tail)
+    finally:
+        narration.unlink(missing_ok=True)
 
     reader.join(timeout=5)
 
@@ -831,6 +840,13 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
                 "blocking_flags": [f"final_duration:{final_check['reason']}"],
                 "final_duration": final_check}
 
+    # STEP 75 §5: the rendered audio, as uploaded: −14 ±1 LUFS, TP ≤ −1 dBTP, spread ≤ 3 dB.
+    loud = _loudness_check(video_path, audio_json_path)
+    if loud and loud["flags"]:
+        logger.warning("QA gate REJECTED %s: %s — no outro appended", video_path.name, loud["flags"])
+        return {"video": str(video_path), "gate": "REJECT", "outro_appended": False,
+                "blocking_flags": loud["flags"], "loudness": loud}
+
     # THE ARTIFACT KEEPS ITS NAME. append_outro defaults to writing
     # <name>_with_outro.mp4, which would change the stem — and the stem is the
     # ledger's key and the idempotency guard's key (publication_log,
@@ -846,11 +862,27 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
     logger.info("outro variant %s appended to %s", variant["id"], final)
     result = {"video": final, "gate": "PASS", "outro_appended": True,
               "outro_variant": variant["id"], "seam": seam}
+    if loud:
+        result["loudness"] = loud
     if final_check:
         from qa_gate import probe_duration
         final_check["measured_final_seconds"] = probe_duration(final)
         result["final_duration"] = final_check
     return result
+
+
+def _loudness_check(video_path: Path, audio_json_path) -> Optional[Dict]:
+    """loudness.gate on the rendered file, or None when it has no readable audio."""
+    import loudness
+    try:
+        segments = json.loads(Path(audio_json_path).read_text(encoding="utf-8")).get("segments")
+    except (OSError, ValueError):
+        segments = None
+    try:
+        return loudness.gate(video_path, segments)
+    except (OSError, ValueError, AttributeError, subprocess.SubprocessError):
+        logger.warning("loudness: could not measure %s", video_path)
+        return None
 
 
 def _final_duration_check(video_path: Path, audio_json_path, report: Dict, variant: Dict) -> Optional[Dict]:
