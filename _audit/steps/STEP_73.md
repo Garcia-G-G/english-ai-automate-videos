@@ -7,6 +7,8 @@ Context (audited 2026-10-20 in the TikTok developer portal and the repo):
 
 Garcia does the portal part first (sandbox, products, scopes, target user, sandbox keys in `.env`). Section by section, tests and one pushed commit per section, stop at the first failure. $0. Never print client_secret or tokens.
 
+> **Update 2026-10-20 (Garcia): TikTok stays manual for now.** Do §0 and §4 only, then push and stop. §1, §2, §3 and §5 (OAuth, inbox drafts, tiktok-check, live proof) are parked until Garcia asks for them; do not touch the TikTok portal. Also take `tiktok` out of `upload.platforms` in config.yaml so the panel stops trying an upload that cannot authenticate; the manual record (§4) is how TikTok uploads get counted.
+
 ## §0 Code's review findings from the STEP 71 pass
 - 1: anchor `src/generate_app_icon.py`'s guard path to the repo root (test: run it from another cwd, the guard still finds `assets/branding/app_icon.png` and refuses).
 - 2: compute `note_setup_failure(...)` once in the single-upload path of `src/admin.py`.
