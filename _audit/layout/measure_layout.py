@@ -40,8 +40,8 @@ CASES = [
     ("quiz",          "output/step3_verify/q_FRESH.json",      "output/step3_verify/q_FRESH.mp3"),
     ("true_false",    "output/step3_verify/tf_FRESH.json",     "output/step3_verify/tf_FRESH.mp3"),
     ("fill_blank",    "output/r1_verify/trim_run1.json",       "output/r1_verify/trim_run1.mp3"),
-    ("pronunciation", "output/smoke/pronunciation.json",       "output/smoke/pronunciation.mp3"),
-    ("vocabulary",    "output/smoke/vocabulary.json",          "output/smoke/vocabulary.mp3"),
+    ("pronunciation", "tests/fixtures/layout/pronunciation.json",       "tests/fixtures/layout/pronunciation.mp3"),
+    ("vocabulary",    "tests/fixtures/layout/vocabulary.json",          "tests/fixtures/layout/vocabulary.mp3"),
 ]
 
 FRAME_FNS = {

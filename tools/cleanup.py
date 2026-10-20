@@ -5,7 +5,7 @@
     python3 tools/cleanup.py               # make clean: the table, «¿Borrar? [s/N]», then delete
 
 Each rule is one function that returns what it would delete and what it keeps and why.
-`delete()` refuses anything git tracks or anything under NEVER, whatever a rule says.
+`delete()` refuses anything git tracks, anything a test reads, tests/ and NEVER, whatever a rule says.
 """
 from __future__ import annotations
 
@@ -51,7 +51,25 @@ def tracked_files(root: Path) -> set:
     return {p for p in out.stdout.decode("utf-8").split("\0") if p}
 
 
-def protected_reason(path: Path, root: Path, tracked: set) -> Optional[str]:
+TEST_PATH = re.compile(r"""(output/[^\s'"`{}()<>,;:*]+)""")
+
+
+def test_references(root: Path) -> set:
+    """Files under output/ that a test reads: `output/...` strings in tests/ that exist as files."""
+    refs = set()
+    for test in (root / "tests").rglob("*.py"):
+        for ref in TEST_PATH.findall(test.read_text(encoding="utf-8", errors="replace")):
+            if (root / ref).is_file():
+                refs.add(ref)
+    return refs
+
+
+def guards(root: Path) -> Dict[str, set]:
+    """What delete() refuses besides NEVER: git-tracked files and files the tests read."""
+    return {"git": tracked_files(root), "tests": test_references(root)}
+
+
+def protected_reason(path: Path, root: Path, guard: Dict[str, set]) -> Optional[str]:
     """Why `path` must not be deleted, or None."""
     try:
         rel = path.resolve().relative_to(root.resolve()).as_posix()
@@ -59,6 +77,8 @@ def protected_reason(path: Path, root: Path, tracked: set) -> Optional[str]:
         return "fuera del repo"
     if rel in ("", "."):
         return "la raíz del repo"
+    if rel == "tests" or rel.startswith("tests/"):
+        return "nunca se borra (tests)"
     if any(NEVER_NAME.match(part) for part in rel.split("/")):
         return "nunca se borra (.env, .tokens, .venv)"
     for keep in NEVER:
@@ -66,8 +86,10 @@ def protected_reason(path: Path, root: Path, tracked: set) -> Optional[str]:
             return f"nunca se borra ({keep})"
     if rel.startswith("assets/") and not rel.startswith("assets/clips/_cache/"):
         return "nunca se borra (assets)"
-    if rel in tracked or any(t.startswith(rel + "/") for t in tracked):
+    if rel in guard["git"] or any(t.startswith(rel + "/") for t in guard["git"]):
         return "git lo sigue"
+    if rel in guard["tests"] or any(t.startswith(rel + "/") for t in guard["tests"]):
+        return "un test lo usa"
     return None
 
 
@@ -258,7 +280,7 @@ RULES = (rule_uploaded, rule_rejected, rule_artifacts, rule_intermediates, rule_
 
 
 def plan(root: Path = ROOT, now: Optional[float] = None) -> List[Dict]:
-    tracked = tracked_files(root)
+    tracked = guards(root)
     now = time.time() if now is None else now
     return [rule(root, tracked, now) for rule in RULES]
 
@@ -266,7 +288,7 @@ def plan(root: Path = ROOT, now: Optional[float] = None) -> List[Dict]:
 def delete(paths: Iterable[Path], root: Path = ROOT) -> int:
     """Delete `paths`; refuses the whole call if any one is protected. Returns the bytes freed."""
     paths = list(paths)
-    tracked = tracked_files(root)
+    tracked = guards(root)
     for p in paths:
         why = protected_reason(p, root, tracked)
         if why:

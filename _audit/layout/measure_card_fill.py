@@ -40,9 +40,9 @@ CASES = [
     ("educational", "output/audio/educational/giving_compliments_20260817_154739.json",
      "output/audio/educational/giving_compliments_20260817_154739.mp3",
      "create_frame_educational"),
-    ("pronunciation", "output/smoke/pronunciation.json", "output/smoke/pronunciation.mp3",
+    ("pronunciation", "tests/fixtures/layout/pronunciation.json", "tests/fixtures/layout/pronunciation.mp3",
      "create_frame_pronunciation"),
-    ("vocabulary", "output/smoke/vocabulary.json", "output/smoke/vocabulary.mp3",
+    ("vocabulary", "tests/fixtures/layout/vocabulary.json", "tests/fixtures/layout/vocabulary.mp3",
      "create_frame_vocabulary"),
 ]
 

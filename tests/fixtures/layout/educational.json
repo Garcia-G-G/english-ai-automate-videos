@@ -1,0 +1,1062 @@
+{
+  "duration": 49.448,
+  "words": [
+    {
+      "word": "Te",
+      "start": 0.0,
+      "end": 0.163,
+      "is_english": false,
+      "segment_id": 0,
+      "segment_end": false
+    },
+    {
+      "word": "ofrecen",
+      "start": 0.221,
+      "end": 0.697,
+      "is_english": false,
+      "segment_id": 0,
+      "segment_end": false
+    },
+    {
+      "word": "entradas",
+      "start": 0.743,
+      "end": 1.207,
+      "is_english": false,
+      "segment_id": 0,
+      "segment_end": false
+    },
+    {
+      "word": "gratis",
+      "start": 1.324,
+      "end": 1.858,
+      "is_english": false,
+      "segment_id": 0,
+      "segment_end": false
+    },
+    {
+      "word": "para",
+      "start": 1.927,
+      "end": 2.113,
+      "is_english": false,
+      "segment_id": 0,
+      "segment_end": false
+    },
+    {
+      "word": "tu",
+      "start": 2.171,
+      "end": 2.264,
+      "is_english": false,
+      "segment_id": 0,
+      "segment_end": false
+    },
+    {
+      "word": "grupo",
+      "start": 2.31,
+      "end": 2.601,
+      "is_english": false,
+      "segment_id": 0,
+      "segment_end": false
+    },
+    {
+      "word": "favorito.",
+      "start": 2.647,
+      "end": 3.425,
+      "is_english": false,
+      "segment_id": 0,
+      "segment_end": true
+    },
+    {
+      "word": "¿Lo",
+      "start": 3.75,
+      "end": 4.017,
+      "is_english": false,
+      "segment_id": 1,
+      "segment_end": false
+    },
+    {
+      "word": "piensas?",
+      "start": 4.052,
+      "end": 4.807,
+      "is_english": false,
+      "segment_id": 1,
+      "segment_end": true
+    },
+    {
+      "word": "No.",
+      "start": 5.248,
+      "end": 5.782,
+      "is_english": false,
+      "segment_id": 2,
+      "segment_end": true
+    },
+    {
+      "word": "Eso",
+      "start": 6.06,
+      "end": 6.432,
+      "is_english": false,
+      "segment_id": 3,
+      "segment_end": false
+    },
+    {
+      "word": "en",
+      "start": 6.478,
+      "end": 6.525,
+      "is_english": false,
+      "segment_id": 3,
+      "segment_end": false
+    },
+    {
+      "word": "inglés",
+      "start": 6.594,
+      "end": 7.012,
+      "is_english": false,
+      "segment_id": 3,
+      "segment_end": false
+    },
+    {
+      "word": "es",
+      "start": 7.163,
+      "end": 7.372,
+      "is_english": false,
+      "segment_id": 3,
+      "segment_end": false
+    },
+    {
+      "word": "un",
+      "start": 7.523,
+      "end": 7.616,
+      "is_english": false,
+      "segment_id": 3,
+      "segment_end": false
+    },
+    {
+      "word": "no-brainer.",
+      "start": 7.674,
+      "end": 8.557,
+      "is_english": false,
+      "segment_id": 3,
+      "segment_end": true
+    },
+    {
+      "word": "Literalmente,",
+      "start": 8.766,
+      "end": 9.787,
+      "is_english": false,
+      "segment_id": 4,
+      "segment_end": false
+    },
+    {
+      "word": "un",
+      "start": 9.938,
+      "end": 10.112,
+      "is_english": false,
+      "segment_id": 4,
+      "segment_end": false
+    },
+    {
+      "word": "sin-cerebro.",
+      "start": 10.182,
+      "end": 11.204,
+      "is_english": false,
+      "segment_id": 4,
+      "segment_end": true
+    },
+    {
+      "word": "Algo",
+      "start": 11.529,
+      "end": 11.831,
+      "is_english": false,
+      "segment_id": 5,
+      "segment_end": false
+    },
+    {
+      "word": "tan",
+      "start": 11.889,
+      "end": 12.051,
+      "is_english": false,
+      "segment_id": 5,
+      "segment_end": false
+    },
+    {
+      "word": "obvio",
+      "start": 12.132,
+      "end": 12.469,
+      "is_english": false,
+      "segment_id": 5,
+      "segment_end": false
+    },
+    {
+      "word": "que",
+      "start": 12.55,
+      "end": 12.701,
+      "is_english": false,
+      "segment_id": 5,
+      "segment_end": false
+    },
+    {
+      "word": "no",
+      "start": 12.817,
+      "end": 12.934,
+      "is_english": false,
+      "segment_id": 5,
+      "segment_end": false
+    },
+    {
+      "word": "hace",
+      "start": 12.992,
+      "end": 13.189,
+      "is_english": false,
+      "segment_id": 5,
+      "segment_end": false
+    },
+    {
+      "word": "falta",
+      "start": 13.235,
+      "end": 13.502,
+      "is_english": false,
+      "segment_id": 5,
+      "segment_end": false
+    },
+    {
+      "word": "pensarlo.",
+      "start": 13.549,
+      "end": 14.218,
+      "is_english": false,
+      "segment_id": 5,
+      "segment_end": true
+    },
+    {
+      "word": "That's",
+      "start": 14.901,
+      "end": 15.284,
+      "is_english": true,
+      "segment_id": 6,
+      "segment_end": false
+    },
+    {
+      "word": "a",
+      "start": 15.412,
+      "end": 15.493,
+      "is_english": true,
+      "segment_id": 6,
+      "segment_end": false
+    },
+    {
+      "word": "no-brainer.",
+      "start": 15.598,
+      "end": 16.447,
+      "is_english": true,
+      "segment_id": 6,
+      "segment_end": true
+    },
+    {
+      "word": "Está",
+      "start": 17.078,
+      "end": 17.473,
+      "is_english": false,
+      "segment_id": 7,
+      "segment_end": false
+    },
+    {
+      "word": "clarísimo.",
+      "start": 17.519,
+      "end": 18.448,
+      "is_english": false,
+      "segment_id": 7,
+      "segment_end": true
+    },
+    {
+      "word": "Se",
+      "start": 18.622,
+      "end": 18.796,
+      "is_english": false,
+      "segment_id": 8,
+      "segment_end": false
+    },
+    {
+      "word": "usa",
+      "start": 18.854,
+      "end": 19.11,
+      "is_english": false,
+      "segment_id": 8,
+      "segment_end": false
+    },
+    {
+      "word": "muchísimo",
+      "start": 19.156,
+      "end": 19.864,
+      "is_english": false,
+      "segment_id": 8,
+      "segment_end": false
+    },
+    {
+      "word": "en",
+      "start": 19.922,
+      "end": 19.969,
+      "is_english": false,
+      "segment_id": 8,
+      "segment_end": false
+    },
+    {
+      "word": "reuniones",
+      "start": 20.039,
+      "end": 20.549,
+      "is_english": false,
+      "segment_id": 8,
+      "segment_end": false
+    },
+    {
+      "word": "de",
+      "start": 20.596,
+      "end": 20.665,
+      "is_english": false,
+      "segment_id": 8,
+      "segment_end": false
+    },
+    {
+      "word": "trabajo.",
+      "start": 20.712,
+      "end": 21.397,
+      "is_english": false,
+      "segment_id": 8,
+      "segment_end": true
+    },
+    {
+      "word": "Suena",
+      "start": 21.606,
+      "end": 22.001,
+      "is_english": false,
+      "segment_id": 9,
+      "segment_end": false
+    },
+    {
+      "word": "a",
+      "start": 22.047,
+      "end": 22.07,
+      "is_english": false,
+      "segment_id": 9,
+      "segment_end": false
+    },
+    {
+      "word": "que",
+      "start": 22.14,
+      "end": 22.221,
+      "is_english": false,
+      "segment_id": 9,
+      "segment_end": false
+    },
+    {
+      "word": "la",
+      "start": 22.268,
+      "end": 22.349,
+      "is_english": false,
+      "segment_id": 9,
+      "segment_end": false
+    },
+    {
+      "word": "decisión",
+      "start": 22.407,
+      "end": 22.987,
+      "is_english": false,
+      "segment_id": 9,
+      "segment_end": false
+    },
+    {
+      "word": "es",
+      "start": 23.069,
+      "end": 23.196,
+      "is_english": false,
+      "segment_id": 9,
+      "segment_end": false
+    },
+    {
+      "word": "evidente",
+      "start": 23.255,
+      "end": 23.8,
+      "is_english": false,
+      "segment_id": 9,
+      "segment_end": false
+    },
+    {
+      "word": "para",
+      "start": 23.847,
+      "end": 24.044,
+      "is_english": false,
+      "segment_id": 9,
+      "segment_end": false
+    },
+    {
+      "word": "todos.",
+      "start": 24.102,
+      "end": 24.706,
+      "is_english": false,
+      "segment_id": 9,
+      "segment_end": true
+    },
+    {
+      "word": "También",
+      "start": 24.88,
+      "end": 25.321,
+      "is_english": false,
+      "segment_id": 10,
+      "segment_end": false
+    },
+    {
+      "word": "sirve",
+      "start": 25.391,
+      "end": 25.739,
+      "is_english": false,
+      "segment_id": 10,
+      "segment_end": false
+    },
+    {
+      "word": "para",
+      "start": 25.785,
+      "end": 25.948,
+      "is_english": false,
+      "segment_id": 10,
+      "segment_end": false
+    },
+    {
+      "word": "empujar",
+      "start": 25.971,
+      "end": 26.459,
+      "is_english": false,
+      "segment_id": 10,
+      "segment_end": false
+    },
+    {
+      "word": "una",
+      "start": 26.552,
+      "end": 26.761,
+      "is_english": false,
+      "segment_id": 10,
+      "segment_end": false
+    },
+    {
+      "word": "idea.",
+      "start": 26.807,
+      "end": 27.329,
+      "is_english": false,
+      "segment_id": 10,
+      "segment_end": true
+    },
+    {
+      "word": "It's",
+      "start": 27.847,
+      "end": 28.149,
+      "is_english": true,
+      "segment_id": 11,
+      "segment_end": false
+    },
+    {
+      "word": "a",
+      "start": 28.207,
+      "end": 28.23,
+      "is_english": true,
+      "segment_id": 11,
+      "segment_end": false
+    },
+    {
+      "word": "no-brainer,",
+      "start": 28.323,
+      "end": 29.112,
+      "is_english": true,
+      "segment_id": 11,
+      "segment_end": false
+    },
+    {
+      "word": "really.",
+      "start": 29.159,
+      "end": 29.583,
+      "is_english": true,
+      "segment_id": 11,
+      "segment_end": true
+    },
+    {
+      "word": "Vamos,",
+      "start": 29.977,
+      "end": 30.511,
+      "is_english": false,
+      "segment_id": 12,
+      "segment_end": false
+    },
+    {
+      "word": "que",
+      "start": 30.627,
+      "end": 30.743,
+      "is_english": false,
+      "segment_id": 12,
+      "segment_end": false
+    },
+    {
+      "word": "no",
+      "start": 30.801,
+      "end": 30.883,
+      "is_english": false,
+      "segment_id": 12,
+      "segment_end": false
+    },
+    {
+      "word": "hay",
+      "start": 30.917,
+      "end": 31.022,
+      "is_english": false,
+      "segment_id": 12,
+      "segment_end": false
+    },
+    {
+      "word": "ni",
+      "start": 31.068,
+      "end": 31.15,
+      "is_english": false,
+      "segment_id": 12,
+      "segment_end": false
+    },
+    {
+      "word": "que",
+      "start": 31.196,
+      "end": 31.266,
+      "is_english": false,
+      "segment_id": 12,
+      "segment_end": false
+    },
+    {
+      "word": "pensarlo.",
+      "start": 31.312,
+      "end": 32.044,
+      "is_english": false,
+      "segment_id": 12,
+      "segment_end": true
+    },
+    {
+      "word": "Si",
+      "start": 32.218,
+      "end": 32.345,
+      "is_english": false,
+      "segment_id": 13,
+      "segment_end": false
+    },
+    {
+      "word": "quieres",
+      "start": 32.392,
+      "end": 32.647,
+      "is_english": false,
+      "segment_id": 13,
+      "segment_end": false
+    },
+    {
+      "word": "decir",
+      "start": 32.694,
+      "end": 32.914,
+      "is_english": false,
+      "segment_id": 13,
+      "segment_end": false
+    },
+    {
+      "word": "lo",
+      "start": 32.961,
+      "end": 33.03,
+      "is_english": false,
+      "segment_id": 13,
+      "segment_end": false
+    },
+    {
+      "word": "contrario,",
+      "start": 33.077,
+      "end": 33.715,
+      "is_english": false,
+      "segment_id": 13,
+      "segment_end": false
+    },
+    {
+      "word": "hay",
+      "start": 33.785,
+      "end": 33.913,
+      "is_english": false,
+      "segment_id": 13,
+      "segment_end": false
+    },
+    {
+      "word": "una",
+      "start": 33.971,
+      "end": 34.11,
+      "is_english": false,
+      "segment_id": 13,
+      "segment_end": false
+    },
+    {
+      "word": "frase",
+      "start": 34.157,
+      "end": 34.424,
+      "is_english": false,
+      "segment_id": 13,
+      "segment_end": false
+    },
+    {
+      "word": "natural.",
+      "start": 34.47,
+      "end": 34.986,
+      "is_english": false,
+      "segment_id": 13,
+      "segment_end": true
+    },
+    {
+      "word": "It's",
+      "start": 35.405,
+      "end": 35.695,
+      "is_english": true,
+      "segment_id": 14,
+      "segment_end": false
+    },
+    {
+      "word": "a",
+      "start": 35.753,
+      "end": 35.777,
+      "is_english": true,
+      "segment_id": 14,
+      "segment_end": false
+    },
+    {
+      "word": "tough",
+      "start": 35.881,
+      "end": 36.241,
+      "is_english": true,
+      "segment_id": 14,
+      "segment_end": false
+    },
+    {
+      "word": "call.",
+      "start": 36.334,
+      "end": 36.856,
+      "is_english": true,
+      "segment_id": 14,
+      "segment_end": true
+    },
+    {
+      "word": "Es",
+      "start": 37.489,
+      "end": 37.64,
+      "is_english": false,
+      "segment_id": 15,
+      "segment_end": false
+    },
+    {
+      "word": "una",
+      "start": 37.698,
+      "end": 37.826,
+      "is_english": false,
+      "segment_id": 15,
+      "segment_end": false
+    },
+    {
+      "word": "decisión",
+      "start": 37.884,
+      "end": 38.348,
+      "is_english": false,
+      "segment_id": 15,
+      "segment_end": false
+    },
+    {
+      "word": "difícil.",
+      "start": 38.395,
+      "end": 39.045,
+      "is_english": false,
+      "segment_id": 15,
+      "segment_end": true
+    },
+    {
+      "word": "Y",
+      "start": 39.172,
+      "end": 39.242,
+      "is_english": false,
+      "segment_id": 16,
+      "segment_end": false
+    },
+    {
+      "word": "si",
+      "start": 39.312,
+      "end": 39.393,
+      "is_english": false,
+      "segment_id": 16,
+      "segment_end": false
+    },
+    {
+      "word": "estás",
+      "start": 39.439,
+      "end": 39.741,
+      "is_english": false,
+      "segment_id": 16,
+      "segment_end": false
+    },
+    {
+      "word": "partido",
+      "start": 39.811,
+      "end": 40.264,
+      "is_english": false,
+      "segment_id": 16,
+      "segment_end": false
+    },
+    {
+      "word": "por",
+      "start": 40.31,
+      "end": 40.426,
+      "is_english": false,
+      "segment_id": 16,
+      "segment_end": false
+    },
+    {
+      "word": "la",
+      "start": 40.484,
+      "end": 40.554,
+      "is_english": false,
+      "segment_id": 16,
+      "segment_end": false
+    },
+    {
+      "word": "mitad,",
+      "start": 40.6,
+      "end": 41.146,
+      "is_english": false,
+      "segment_id": 16,
+      "segment_end": false
+    },
+    {
+      "word": "di",
+      "start": 41.355,
+      "end": 41.746,
+      "is_english": false,
+      "segment_id": 16,
+      "segment_end": false
+    },
+    {
+      "word": "I'm",
+      "start": 41.884,
+      "end": 42.093,
+      "is_english": true,
+      "segment_id": 16,
+      "segment_end": false
+    },
+    {
+      "word": "torn.",
+      "start": 42.174,
+      "end": 42.645,
+      "is_english": true,
+      "segment_id": 16,
+      "segment_end": true
+    },
+    {
+      "word": "Estoy",
+      "start": 42.947,
+      "end": 43.539,
+      "is_english": false,
+      "segment_id": 17,
+      "segment_end": false
+    },
+    {
+      "word": "dividido.",
+      "start": 43.597,
+      "end": 44.421,
+      "is_english": false,
+      "segment_id": 17,
+      "segment_end": true
+    },
+    {
+      "word": "Tres",
+      "start": 44.538,
+      "end": 44.839,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "frases",
+      "start": 44.909,
+      "end": 45.35,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "y",
+      "start": 45.42,
+      "end": 45.536,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "ya",
+      "start": 45.582,
+      "end": 45.733,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "sabes",
+      "start": 45.815,
+      "end": 46.128,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "hablar",
+      "start": 46.186,
+      "end": 46.465,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "de",
+      "start": 46.523,
+      "end": 46.593,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "cualquier",
+      "start": 46.651,
+      "end": 47.103,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "decisión,",
+      "start": 47.161,
+      "end": 47.823,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "fácil",
+      "start": 47.939,
+      "end": 48.369,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "o",
+      "start": 48.462,
+      "end": 48.543,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": false
+    },
+    {
+      "word": "difícil.",
+      "start": 48.601,
+      "end": 49.263,
+      "is_english": false,
+      "segment_id": 18,
+      "segment_end": true
+    }
+  ],
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 3.425,
+      "text": "Te ofrecen entradas gratis para tu grupo favorito."
+    },
+    {
+      "start": 3.75,
+      "end": 4.807,
+      "text": "¿Lo piensas?"
+    },
+    {
+      "start": 5.248,
+      "end": 5.782,
+      "text": "No."
+    },
+    {
+      "start": 6.06,
+      "end": 8.557,
+      "text": "Eso en inglés es un no-brainer."
+    },
+    {
+      "start": 8.766,
+      "end": 11.204,
+      "text": "Literalmente, un sin-cerebro."
+    },
+    {
+      "start": 11.529,
+      "end": 14.218,
+      "text": "Algo tan obvio que no hace falta pensarlo."
+    },
+    {
+      "start": 14.901,
+      "end": 16.447,
+      "text": "That's a no-brainer."
+    },
+    {
+      "start": 17.078,
+      "end": 18.448,
+      "text": "Está clarísimo."
+    },
+    {
+      "start": 18.622,
+      "end": 21.397,
+      "text": "Se usa muchísimo en reuniones de trabajo."
+    },
+    {
+      "start": 21.606,
+      "end": 24.706,
+      "text": "Suena a que la decisión es evidente para todos."
+    },
+    {
+      "start": 24.88,
+      "end": 27.329,
+      "text": "También sirve para empujar una idea."
+    },
+    {
+      "start": 27.847,
+      "end": 29.583,
+      "text": "It's a no-brainer, really."
+    },
+    {
+      "start": 29.977,
+      "end": 32.044,
+      "text": "Vamos, que no hay ni que pensarlo."
+    },
+    {
+      "start": 32.218,
+      "end": 34.986,
+      "text": "Si quieres decir lo contrario, hay una frase natural."
+    },
+    {
+      "start": 35.405,
+      "end": 36.856,
+      "text": "It's a tough call."
+    },
+    {
+      "start": 37.489,
+      "end": 39.045,
+      "text": "Es una decisión difícil."
+    },
+    {
+      "start": 39.172,
+      "end": 42.645,
+      "text": "Y si estás partido por la mitad, di I'm torn."
+    },
+    {
+      "start": 42.947,
+      "end": 44.421,
+      "text": "Estoy dividido."
+    },
+    {
+      "start": 44.538,
+      "end": 49.263,
+      "text": "Tres frases y ya sabes hablar de cualquier decisión, fácil o difícil."
+    }
+  ],
+  "timing_source": {
+    "asr_segments": 0,
+    "estimated_segments": 0,
+    "clamped_segments": 9,
+    "backend": "elevenlabs_alignment"
+  },
+  "tts_model_id": "eleven_turbo_v2_5",
+  "tts_calls": [
+    {
+      "index": 0,
+      "lang": "es",
+      "text": "Te ofrecen entradas gratis para tu grupo favorito. ¿Lo piensas? No. Eso en inglés es un no-brainer. Literalmente, un sin-cerebro. Algo tan obvio que no hace falta pensarlo.",
+      "speed": 1.0,
+      "pause_after": 0.18
+    },
+    {
+      "index": 1,
+      "lang": "en",
+      "text": "That's a no-brainer.",
+      "speed": 0.92,
+      "pause_after": 0.18
+    },
+    {
+      "index": 2,
+      "lang": "es",
+      "text": "Está clarísimo. Se usa muchísimo en reuniones de trabajo. Suena a que la decisión es evidente para todos. También sirve para empujar una idea.",
+      "speed": 1.0,
+      "pause_after": 0.18
+    },
+    {
+      "index": 3,
+      "lang": "en",
+      "text": "It's a no-brainer, really.",
+      "speed": 0.92,
+      "pause_after": 0.18
+    },
+    {
+      "index": 4,
+      "lang": "es",
+      "text": "Vamos, que no hay ni que pensarlo. Si quieres decir lo contrario, hay una frase natural.",
+      "speed": 1.0,
+      "pause_after": 0.18
+    },
+    {
+      "index": 5,
+      "lang": "en",
+      "text": "It's a tough call.",
+      "speed": 0.92,
+      "pause_after": 0.18
+    },
+    {
+      "index": 6,
+      "lang": "es",
+      "text": "Es una decisión difícil. Y si estás partido por la mitad, di",
+      "speed": 1.0,
+      "pause_after": 0.03
+    },
+    {
+      "index": 7,
+      "lang": "en",
+      "text": "I'm torn.",
+      "speed": 0.92,
+      "pause_after": 0.18
+    },
+    {
+      "index": 8,
+      "lang": "es",
+      "text": "Estoy dividido. Tres frases y ya sabes hablar de cualquier decisión, fácil o difícil.",
+      "speed": 1.0,
+      "pause_after": 0.18
+    }
+  ],
+  "type": "educational",
+  "full_script": "[curious] Te ofrecen entradas gratis para tu grupo favorito. ¿Lo piensas? No. Eso en inglés es un no-brainer. Literalmente, un sin-cerebro. Algo tan obvio que no hace falta pensarlo. That's 'a no-brainer'. Está clarísimo. Se usa muchísimo en reuniones de trabajo. Suena a que la decisión es evidente para todos. También sirve para empujar una idea. It's 'a no-brainer', really. Vamos, que no hay ni que pensarlo. Si quieres decir lo contrario, hay una frase natural. It's a tough call. Es una decisión difícil. Y si estás partido por la mitad, di 'I'm torn'. Estoy dividido. Tres frases y ya sabes hablar de cualquier decisión, fácil o difícil.",
+  "translations": {
+    "a no-brainer": "algo obvio",
+    "that's a no-brainer": "está clarísimo",
+    "it's a tough call": "es una decisión difícil",
+    "I'm torn": "estoy dividido"
+  },
+  "hashtags": [
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Modismos",
+    "#InglésFácil"
+  ],
+  "english_phrases": [
+    "a no-brainer",
+    "that's a no-brainer",
+    "it's a tough call",
+    "I'm torn"
+  ],
+  "tip": "No-brainer suena confiado. Si dudas, usa tough call y quedas mejor.",
+  "cta": "¿Cuál ha sido tu último no-brainer?",
+  "video_title": "'No-brainer': la decisión que no hay que pensar 🧠",
+  "video_description": "La expresión perfecta para cuando algo está clarísimo. ✅",
+  "hook": "Hay decisiones que no requieren pensar, y en inglés tienen nombre.",
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp004",
+    "video_type": "educational",
+    "model": "claude-opus-5"
+  }
+}

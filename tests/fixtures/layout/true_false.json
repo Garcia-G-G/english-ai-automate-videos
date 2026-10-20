@@ -1,0 +1,146 @@
+{
+  "duration": 27.9,
+  "segments": [
+    {
+      "id": "statement",
+      "text": "'Fair enough' sirve para aceptar el argumento de otro.",
+      "start": 0.0,
+      "end": 3.115,
+      "duration": 3.115
+    },
+    {
+      "id": "options",
+      "text": "¿Verdadero o falso?",
+      "start": 3.864,
+      "end": 5.594,
+      "duration": 1.73
+    },
+    {
+      "id": "think",
+      "text": "[thoughtful] Piénsalo un segundo.",
+      "start": 6.468,
+      "end": 7.984,
+      "duration": 1.516
+    },
+    {
+      "id": "countdown_3",
+      "text": "[3]",
+      "start": 9.732,
+      "end": 11.232,
+      "duration": 1.5
+    },
+    {
+      "id": "countdown_2",
+      "text": "[2]",
+      "start": 11.232,
+      "end": 12.732,
+      "duration": 1.5
+    },
+    {
+      "id": "countdown_1",
+      "text": "[1]",
+      "start": 12.732,
+      "end": 14.232,
+      "duration": 1.5
+    },
+    {
+      "id": "answer",
+      "text": "[excited] ¡Eso es! La respuesta es Verdadero.",
+      "start": 15.232,
+      "end": 18.427,
+      "duration": 3.195
+    },
+    {
+      "id": "explanation",
+      "text": "[excited] Verdadero. Es vale, tiene sentido. No es un sí entusiasta: es reconocer que el otro tiene su parte de razón.",
+      "start": 19.076,
+      "end": 27.149,
+      "duration": 8.073
+    }
+  ],
+  "segment_times": {
+    "statement": {
+      "start": 0.0,
+      "end": 3.115,
+      "duration": 3.115
+    },
+    "options": {
+      "start": 3.864,
+      "end": 5.594,
+      "duration": 1.73
+    },
+    "think": {
+      "start": 6.468,
+      "end": 7.984,
+      "duration": 1.516
+    },
+    "countdown_3": {
+      "start": 9.732,
+      "end": 11.232,
+      "duration": 1.5
+    },
+    "countdown_2": {
+      "start": 11.232,
+      "end": 12.732,
+      "duration": 1.5
+    },
+    "countdown_1": {
+      "start": 12.732,
+      "end": 14.232,
+      "duration": 1.5
+    },
+    "answer": {
+      "start": 15.232,
+      "end": 18.427,
+      "duration": 3.195
+    },
+    "explanation": {
+      "start": 19.076,
+      "end": 27.149,
+      "duration": 8.073
+    }
+  },
+  "tts_model_id": "eleven_v3",
+  "type": "true_false",
+  "statement": "'Fair enough' sirve para aceptar el argumento de otro.",
+  "correct": true,
+  "explanation": "[excited] Verdadero. Es vale, tiene sentido. No es un sí entusiasta: es reconocer que el otro tiene su parte de razón.",
+  "full_script": "[excited] ¡Verdadero o falso! Afirmación número uno. 'Fair enough' sirve para aceptar el argumento de otro..... [thoughtful] Piensa bien... Tres... dos... uno... [excited] Verdadero. Es vale, tiene sentido. No es un sí entusiasta: es reconocer que el otro tiene su parte de razón. Afirmación número dos. 'Fair enough' significa que algo es justo y suficiente..... [thoughtful] Piensa bien... Tres... dos... uno... [excited] Falso. Por separado son justo y suficiente, pero juntas significan vale, es razonable.",
+  "translations": {
+    "fair enough": "vale, es razonable",
+    "let's try it your way": "probemos a tu manera"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Quiz"
+  ],
+  "words": [],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp029",
+    "video_type": "true_false",
+    "model": "claude-opus-5"
+  },
+  "video_title": "'FAIR ENOUGH' ⚖️ ¿Verdadero o falso?",
+  "video_description": "Dos palabras que los nativos dicen veinte veces al día. 💬",
+  "statements": [
+    {
+      "statement": "'Fair enough' sirve para aceptar el argumento de otro.",
+      "correct": true,
+      "explanation": "[excited] Verdadero. Es vale, tiene sentido. No es un sí entusiasta: es reconocer que el otro tiene su parte de razón."
+    },
+    {
+      "statement": "'Fair enough' significa que algo es justo y suficiente.",
+      "correct": false,
+      "explanation": "[excited] Falso. Por separado son justo y suficiente, pero juntas significan vale, es razonable."
+    },
+    {
+      "statement": "Puedes decir 'fair enough' en una reunión de trabajo.",
+      "correct": true,
+      "explanation": "[excited] Verdadero. Es neutro y educado. Fair enough, let's try it your way."
+    }
+  ]
+}

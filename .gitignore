@@ -104,3 +104,6 @@ experiments/**/renders/**/*.youtube.json
 .streamlit/secrets.toml
 .tokens*/
 client_secret*.json
+
+# Layout-pin inputs: versioned on purpose (STEP 74)
+!tests/fixtures/layout/*.mp3

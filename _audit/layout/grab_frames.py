@@ -26,7 +26,7 @@ TARGETS = [
     ("educational", 6.0, "output/step3_verify/edu2_FRESH.json", "output/step3_verify/edu2_FRESH.mp3"),
     ("quiz", 31.0, "output/step3_verify/q_FRESH.json", "output/step3_verify/q_FRESH.mp3"),
     ("fill_blank", 1.0, "output/r1_verify/trim_run1.json", "output/r1_verify/trim_run1.mp3"),
-    ("vocabulary", 1.0, "output/smoke/vocabulary.json", "output/smoke/vocabulary.mp3"),
+    ("vocabulary", 1.0, "tests/fixtures/layout/vocabulary.json", "tests/fixtures/layout/vocabulary.mp3"),
 ]
 
 FN = {

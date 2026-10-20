@@ -40,7 +40,7 @@ def track(root: Path, rel: str):
 
 
 def planned(root, rule):
-    return {p.relative_to(root).as_posix() for p in rule(root, C.tracked_files(root), NOW)["paths"]}
+    return {p.relative_to(root).as_posix() for p in rule(root, C.guards(root), NOW)["paths"]}
 
 
 def test_whole_folders_rules_take_their_contents_and_leave_the_folder(tree):
@@ -73,7 +73,7 @@ def test_artifacts_go_after_14_days_unless_approved_queued_or_in_doubt(tree):
         b'{"artifact": "doubt", "platform": "youtube", "status": "unknown"}\n')
     put(tree, "output/artifacts/held/artifact.json", json.dumps({"state": "approved"}).encode(), age_days=30)
     put(tree, "output/artifacts/broken/artifact.json", b"{not json", age_days=30)
-    plan = C.rule_artifacts(tree, C.tracked_files(tree), NOW)
+    plan = C.rule_artifacts(tree, C.guards(tree), NOW)
     assert {p.name for p in plan["paths"]} == {"old"}
     assert {p.name: why for p, why in plan["kept"]} == {
         "approved_one": "aprobado y sin subir a todo", "queued": "en la cola de Meta",
@@ -134,7 +134,7 @@ def test_nothing_on_the_never_list_is_planned_even_inside_a_rule_folder(tree):
 def test_a_git_tracked_path_is_kept_by_the_plan_and_refused_by_delete(tree):
     track(tree, "output/uploaded/tracked.mp4")
     put(tree, "output/uploaded/loose.mp4")
-    plan = C.rule_uploaded(tree, C.tracked_files(tree), NOW)
+    plan = C.rule_uploaded(tree, C.guards(tree), NOW)
     assert [p.name for p in plan["paths"]] == ["loose.mp4"]
     assert plan["kept"] == [(tree / "output/uploaded/tracked.mp4", "git lo sigue")]
     with pytest.raises(C.RefusedPath, match="git lo sigue"):
@@ -157,3 +157,18 @@ def test_main_dry_run_deletes_nothing_and_only_s_deletes(tree, monkeypatch, caps
     monkeypatch.setattr("builtins.input", lambda prompt: "s")
     assert C.main([]) == 0 and not target.exists()
     assert "Liberado: 10 B" in capsys.readouterr().out
+
+
+def test_tests_and_files_a_test_reads_are_never_deleted(tree):
+    put(tree, "tests/fixtures/layout/quiz.mp3", age_days=400)
+    put(tree, "tests/test_x.py", b'FIX = "output/clips/run1/fixture.mp3"  # and output/rejected/ in prose\n')
+    put(tree, "output/clips/run1/fixture.mp3")
+    put(tree, "output/clips/run2/loose.mp3")
+    put(tree, "output/rejected/b.mp4")
+    plan = C.rule_intermediates(tree, C.guards(tree), NOW)
+    assert [p.name for p in plan["paths"]] == ["run2"]
+    assert plan["kept"] == [(tree / "output/clips/run1", "un test lo usa")]
+    assert planned(tree, C.rule_rejected) == {"output/rejected/b.mp4"}    # a folder named in prose is not a file
+    for rel in ("tests/fixtures/layout/quiz.mp3", "tests", "output/clips/run1/fixture.mp3"):
+        with pytest.raises(C.RefusedPath):
+            C.delete([tree / rel], root=tree)

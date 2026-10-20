@@ -48,14 +48,10 @@ ROW_MIN_PIXELS = 20     # a row carries content above this many pixels
 BAND_BUCKET = 8         # row bands quantised to this, to absorb antialiasing
 TOLERANCE = 2           # px of slack on bbox edges
 
-FIXTURES = [
-    ("educational",   "output/step3_verify/edu2_FRESH.json", "output/step3_verify/edu2_FRESH.mp3"),
-    ("quiz",          "output/step3_verify/q_FRESH.json",    "output/step3_verify/q_FRESH.mp3"),
-    ("true_false",    "output/step3_verify/tf_FRESH.json",   "output/step3_verify/tf_FRESH.mp3"),
-    ("fill_blank",    "output/r1_verify/trim_run1.json",     "output/r1_verify/trim_run1.mp3"),
-    ("pronunciation", "output/smoke/pronunciation.json",     "output/smoke/pronunciation.mp3"),
-    ("vocabulary",    "output/smoke/vocabulary.json",        "output/smoke/vocabulary.mp3"),
-]
+# Copies in git (tests/fixtures/layout/), not output/: STEP 74's cleanup deleted the
+# originals under output/step3_verify and output/r1_verify once.
+FIXTURES = [(vt, f"tests/fixtures/layout/{vt}.json", f"tests/fixtures/layout/{vt}.mp3")
+            for vt in ("educational", "quiz", "true_false", "fill_blank", "pronunciation", "vocabulary")]
 
 FRAME_FN = {
     "educational": "create_frame_educational",
