@@ -219,3 +219,43 @@ def test_a_forced_redraw_keeps_the_voice_and_costs_nothing(tmp_path, monkeypatch
     probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries",
                             "stream=codec_name", "-of", "csv=p=0", str(out)], capture_output=True, text=True)
     assert probe.stdout.strip() == "aac"
+
+
+# ── STEP 71 §1: Bubi on the card (brand v3) ──────────────────────────
+
+def _audio_md5(path):
+    return subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-map", "0:a", "-c", "copy", "-f", "md5", "-"],
+                          capture_output=True, text=True, check=True).stdout.strip()
+
+
+def test_bubi_is_440px_wide_and_stands_on_the_cards_top_edge():
+    import numpy as np
+    from PIL import Image
+    img = np.array(O.outro_still(O.load_variants()["variants"][0])).astype(int)
+    sand = np.array(O._sand())
+    y_card = (O.VIDEO_HEIGHT - O.CARD_H) // 2 + O.CARD_DY
+    assert y_card + O.CARD_H // 2 == O.VIDEO_HEIGHT // 2 + 60
+    above = np.abs(img[:y_card - 10] - sand).sum(axis=2) > 30          # Bubi, above the card
+    ys, xs = np.nonzero(above)
+    assert abs((xs.max() - xs.min() + 1) - 440) <= 10      # his arm stays on screen (faint AA edge aside)
+    assert abs((xs.min() + xs.max()) / 2 - O.VIDEO_WIDTH / 2) <= 4
+    sym = Image.open(O.SYMBOL).convert("RGBA")
+    box = sym.getchannel("A").getbbox()
+    drawn_h = round((box[3] - box[1]) * 440 / (box[2] - box[0]))
+    assert abs(ys.min() - (y_card + O.SYMBOL_OVERLAP - drawn_h)) <= 3 and O.SYMBOL_OVERLAP == 70
+
+
+def test_a_redraw_never_calls_the_tts_and_keeps_the_audio_byte_for_byte(tmp_path, monkeypatch):
+    clips = _existing()
+    if not clips:
+        pytest.skip("no rendered outro yet")
+    import shutil
+    import tts_elevenlabs
+    monkeypatch.setattr(O, "OUTRO_DIR", tmp_path)
+    shutil.copy(clips[0], tmp_path / clips[0].name)
+    before = _audio_md5(tmp_path / clips[0].name)
+    monkeypatch.setattr(tts_elevenlabs, "generate_segment_audio",
+                        lambda *a, **k: pytest.fail("a redraw called generate_segment_audio"))
+    variant = next(v for v in O.load_variants()["variants"] if v["id"] == clips[0].stem)
+    out = O.ensure_outro(variant, force=True)
+    assert _audio_md5(out) == before

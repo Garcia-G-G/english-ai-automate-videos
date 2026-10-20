@@ -21,6 +21,7 @@ import logging
 import os
 import random
 import re
+import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -40,13 +41,15 @@ OUTRO_DIR = ROOT / "assets" / "outro"
 
 OUTRO_DURATION = 4.0
 
-#: STEP 62 §4: the brand v2 sticker card on sand, the symbol on top (mock
-#: C_cierre_short.png). Colours and faces come from brand.json, as the notebook's do.
+#: STEP 62 §4: the brand sticker card on sand. Colours and faces come from brand.json.
+#: STEP 71 (brand v3, mock_cierre_short.png): Bubi waving stands on the card's top edge.
 SYMBOL = ROOT / "assets" / "branding" / "english-unlimited" / "simbolo_512.png"
 CARD_W, CARD_H = 900, 520
 CARD_RADIUS = 30
 CARD_OUTLINE = 7
-SYMBOL_PX = 170
+CARD_DY = 60                       # the card's centre sits this far below the frame's
+SYMBOL_PX = 440                    # Bubi's drawn width (his visible pixels, arm and badge included)
+SYMBOL_OVERLAP = 70                # how far his body comes down over the card's top edge
 LEAD_SIZE = 64                     # «Aprende inglés en», Fredoka medium, ink
 URL_SIZE = 96                      # learningroutes.com, Fredoka bold, English blue
 SUB_SIZE = 40                      # the site's line, Fredoka medium, muted
@@ -102,7 +105,7 @@ def outro_still(variant: Dict) -> Image.Image:
     paper, muted = _brand_colour("paper"), _brand_colour("secondary_text")
     img = Image.new("RGB", (VIDEO_WIDTH, VIDEO_HEIGHT), _sand())
     draw = ImageDraw.Draw(img)
-    x0, y0 = (VIDEO_WIDTH - CARD_W) // 2, (VIDEO_HEIGHT - CARD_H) // 2
+    x0, y0 = (VIDEO_WIDTH - CARD_W) // 2, (VIDEO_HEIGHT - CARD_H) // 2 + CARD_DY
     draw.rounded_rectangle([x0 + 8, y0 + 8, x0 + CARD_W + 8, y0 + CARD_H + 8], radius=CARD_RADIUS, fill=ink)
     draw.rounded_rectangle([x0, y0, x0 + CARD_W, y0 + CARD_H], radius=CARD_RADIUS, fill=paper,
                            outline=ink, width=CARD_OUTLINE)
@@ -126,8 +129,10 @@ def outro_still(variant: Dict) -> Image.Image:
     sub = load_variants().get("line_3")
     if sub:
         centred(sub, fredoka(SUB_SIZE, "display_medium"), y0 + 425, muted)
-    symbol = Image.open(SYMBOL).convert("RGBA").resize((SYMBOL_PX, SYMBOL_PX), Image.LANCZOS)
-    img.paste(symbol, ((VIDEO_WIDTH - SYMBOL_PX) // 2, y0 - SYMBOL_PX // 2 - 20), symbol)
+    symbol = Image.open(SYMBOL).convert("RGBA")
+    symbol = symbol.crop(symbol.getchannel("A").getbbox())          # his pixels, not the canvas
+    symbol = symbol.resize((SYMBOL_PX, round(symbol.height * SYMBOL_PX / symbol.width)), Image.LANCZOS)
+    img.paste(symbol, ((VIDEO_WIDTH - SYMBOL_PX) // 2, y0 + SYMBOL_OVERLAP - symbol.height), symbol)
     return img
 
 
@@ -208,15 +213,23 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
             check=True, capture_output=True,
         )
 
+        redraw = path.exists()
+        rendered = Path(tmp) / "outro_new.mp4" if redraw else path
         render_video_ffmpeg(
             frame_generator=_make_frame_fn(variant),
             audio_path=str(padded),
-            output_path=str(path),
+            output_path=str(rendered),
             duration=OUTRO_DURATION,
             fps=FPS,
             width=VIDEO_WIDTH,
             height=VIDEO_HEIGHT,
         )
+        if redraw:
+            # The new picture over the OLD audio stream, copied: byte-identical sound (STEP 71 §1).
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(rendered), "-i", str(path),
+                            "-map", "0:v", "-map", "1:a", "-c", "copy", "-movflags", "+faststart",
+                            str(Path(tmp) / "outro_out.mp4")], check=True, capture_output=True)
+            shutil.move(str(Path(tmp) / "outro_out.mp4"), str(path))
 
     logger.info("outro rendered once -> %s", path)
     return path
