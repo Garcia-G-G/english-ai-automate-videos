@@ -2032,55 +2032,24 @@ def level_thinks(script: dict) -> list:
     return [max(plan["think_floor"], math.floor(t * fraction * 100) / 100) for t in thinks]
 
 
-#: Takes re-asked when an English clip starts dirty (the Manim onset gate, 3ad373d).
-LEVEL_ONSET_RETRIES = 2
+#: The onset gate lives in src/stitch.py (STEP 76 §2), shared with tts_bilingual and the
+#: lessons. Names kept here: the level path and its tests use them.
+import stitch as _stitch  # noqa: E402
+from stitch import ONSET_START_DB, onset_values as _onset_values  # noqa: E402,F401
 
-
-#: Start-to-peak (first 5 ms frame minus the clip's peak, dB) a clean take stays under.
-#: -30 came from the Manim lessons on multilingual_v2. eleven_v3 trims the lead-in, so a
-#: word opening on /s/ /n/ /f/ /l/ starts at -9…-24 dB (30 takes of lv001, STEP 59 §2);
-#: only takes that open within 5 dB of their peak (-4.1, -1.2, -0.4: a cut-in) sit above.
-#: -6.5 is the midpoint of that gap. shortcut: one script, no ear check yet; re-measure
-#: with tools/onset_calibrate.py when the owner flags a word.
-ONSET_START_DB = {"default": -30.0, "eleven_v3": -6.5}
+LEVEL_ONSET_RETRIES = _stitch.ONSET_RETRIES
 
 
 def onset_start_limit(model: str = None) -> float:
-    return ONSET_START_DB.get(model or MODEL_ID, ONSET_START_DB["default"])
-
-
-def _onset_values(path: str) -> dict:
-    """The Manim onset gate's three measurements of one clip as ElevenLabs returned it.
-
-    shortcut: loads experiments/manim_voiceover_poc/probes/onset.py by path; move
-    it into src/ if the Shorts keep the gate."""
-    import importlib.util
-    probe = Path(__file__).resolve().parent.parent / "experiments" / "manim_voiceover_poc" / "probes" / "onset.py"
-    spec = importlib.util.spec_from_file_location("_manim_onset", probe)
-    O = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(O)
-    x = O.load(path)
-    e = O.env_db(x)
-    start, _ = O.onset(x)
-    if start is None:
-        return {"start_db": None, "fragment": None, "doubled_onset": None}
-    return {"start_db": round(float(e[0] - e.max()), 1), "fragment": O.fragment(e, start, e.max()),
-            "doubled_onset": O.doubled_onset(x)}
+    return _stitch.onset_start_limit(model or MODEL_ID)
 
 
 def onset_clean(values: dict, model: str = None) -> bool:
-    return (values["start_db"] is not None and values["start_db"] < onset_start_limit(model)
-            and values["fragment"] is None and values["doubled_onset"] is None)
+    return _stitch.onset_clean(values, model or MODEL_ID)
 
 
 def cleanest_take(takes: list) -> int:
-    """Index of the take to keep: a clean one, else no fragment and no doubled onset with the
-    quietest start, else the quietest start. Never just the last one."""
-    def rank(i):
-        v = takes[i]
-        flawed = v["start_db"] is None or v["fragment"] is not None or v["doubled_onset"] is not None
-        return (not onset_clean(v), flawed, v["start_db"] if v["start_db"] is not None else 0.0, i)
-    return min(range(len(takes)), key=rank)
+    return _stitch.cleanest_take(takes, MODEL_ID)
 
 
 def _spoken_spanish(text: str) -> str:

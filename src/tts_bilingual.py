@@ -42,7 +42,10 @@ import tempfile
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import numpy as np
+
 from tts_segmenter import LANGUAGE_POLICIES, segment_script, describe_segments
+import stitch
 
 logger = logging.getLogger(__name__)
 
@@ -145,17 +148,25 @@ def plan_calls(script_data: Dict, settings: Dict = None,
             # a pause. In a type that teaches by repetition every English
             # utterance is something the learner repeats, whatever its
             # length, so length is not the right question to ask.
+            # STEP 76 §2: the clips are trimmed to their speech, so the gap is the
+            # punctuation's own (stitch.gap_after), as in the lessons.
             "pause_after": (
                 repeat_gap
                 if (repeat_gap is not None and seg["lang"] == "en")
-                else seg["pause_after"]
+                else stitch.gap_after(seg["text"])
             ),
             "voice_id": settings["voice_id"],
             "model_id": settings["model_id"],
             "speed": max(0.7, min(1.2, speed)),
-            "previous_text": segments[i - 1]["text"] if i > 0 else None,
-            "next_text": segments[i + 1]["text"] if i + 1 < len(segments) else None,
         })
+        # At a language switch only next_text (stitch.context): the previous text made
+        # the model start mid-sound («m-make», «d-do»).
+        previous, following = stitch.context(
+            segments[i - 1]["lang"] if i > 0 else None, seg["lang"],
+            segments[i - 1]["text"] if i > 0 else "",
+            segments[i + 1]["text"] if i + 1 < len(segments) else "")
+        calls[-1]["previous_text"] = previous or None
+        calls[-1]["next_text"] = following or None
     return calls
 
 
@@ -299,42 +310,42 @@ def generate_bilingual_narration(
     if dry_run:
         return _dry_run(calls, script_data, output_path, settings)
 
-    from tts_common import (generate_silence, measure_speech_end,
-                            merge_punctuation_tokens)
+    from tts_common import (measure_speech_end, merge_punctuation_tokens,
+                            trim_clip_silence)
+    import loudness
 
     temp_dir = tempfile.mkdtemp(prefix="el_bilingual_")
-    audio_files: List[str] = []
-    all_words: List[Dict] = []
-    running = 0.0
+    clips: List[Dict] = []
     asr_segments = estimated_segments = clamped_segments = 0
     try:
         for call in calls:
             seg_path = os.path.join(temp_dir, f"seg_{call['index']:03d}.mp3")
             logger.info("  [%02d] %-2s %s", call["index"], call["lang"],
                         call["text"][:70])
-            res = _synthesize_segment(call, seg_path, settings)
+
+            # ONSET GATE (stitch): re-ask a clip that starts mid-sound or doubled, up to
+            # ONSET_RETRIES times, and keep the cleanest take — never just the last.
+            takes = []
+            for attempt in range(1 + stitch.ONSET_RETRIES):
+                path = seg_path if not attempt else seg_path.replace(".mp3", f".t{attempt}.mp3")
+                res = _synthesize_segment(call, path, settings)
+                takes.append((path, res, stitch.onset_values(path)))
+                if stitch.onset_clean(takes[-1][2], call["model_id"]):
+                    break
+            keep = stitch.cleanest_take([t[2] for t in takes], call["model_id"])
+            seg_path, res, onset = takes[keep]
+            call["takes"], call["onset"] = len(takes), {**onset, "clean": stitch.onset_clean(onset, call["model_id"])}
+            if not call["onset"]["clean"]:
+                logger.warning("  [%02d] no clean onset in %d takes; kept the cleanest %s",
+                               call["index"], len(takes), onset)
 
             # REAL TIMINGS, NOT AN ESTIMATE. This is D5.
-            #
-            # The fallback below splits a clip's duration in proportion to
-            # each token's character count. A uniform split cannot know
-            # that the voice pauses at a comma or stops 0.4 s before the
-            # file does, so the LAST word's end — which becomes the
-            # segment's declared end — routinely overran the real speech.
-            # Tolerable until pronunciation's 0.9 s repeat pauses turned it
-            # into a dead_air rejection on a correct artifact.
-            #
-            # Per CLIP rather than over the finished narration: each clip's
-            # [start, start+duration] is already exact because `running`
-            # accumulates real durations, so only the positions inside a
-            # clip were ever in doubt. Working per clip also keeps each
-            # word's language attribution exact — it is the call's language,
-            # by construction, with no alignment guesswork.
             #
             # Order of preference: what the TTS itself reported, then ASR,
             # then the estimate. None of the three ever fabricates: ASR
             # returns None when no backend is available and the estimate is
-            # what we had before.
+            # what we had before. Per CLIP, so each word's language is the
+            # call's language by construction.
             seg_words = res["words"]
             if not seg_words:
                 from asr_timings import fit_to_clip, transcribe_words
@@ -347,70 +358,60 @@ def generate_bilingual_narration(
                 seg_words = _estimate_words(call["text"], res["duration"])
                 estimated_segments += 1
 
-            # ABSORB PUNCTUATION-ONLY TOKENS FIRST.
-            #
-            # The alignment returns "," and "." as tokens with their own
-            # spans. Left alone they reach the karaoke as words — a period
-            # highlighted on its own after "a different size?" — AND they
-            # keep a declared span that is not speech, which the clamp
-            # below and the QA gate would then both read as real.
-            #
-            # Applied per CLIP, so a mark can only ever attach to a word
-            # from its own segment.
+            # Punctuation-only tokens ("," ".") are absorbed into their words, per clip.
             seg_words = merge_punctuation_tokens(seg_words, boundary_key=None)
 
-            # CLAMP THE DECLARED END TO WHERE THE VOICE ACTUALLY STOPS.
-            #
-            # THIS, not the estimate, is what produced the dead air. The
-            # ElevenLabs character alignment is real — measured, not
-            # guessed — but it runs to the END OF THE FILE, and a TTS clip
-            # keeps 0.3-1.3 s of trailing silence after the voice stops.
-            # On a pronunciation narration the word '(noun)' came back
-            # declared 3.07 -> 4.12 when speech had ended at 2.95: a 1.05 s
-            # "word" that is really the tail of the clip.
-            #
-            # The consequence was that a declared SPEECH span swallowed the
-            # silence next to it, so the gap between two declarations —
-            # which is all the QA gate counts as intended silence — shrank
-            # to 0.33 s where 1.6 s of real silence sat. The gate called it
-            # dead air and was right to.
-            #
-            # measure_speech_end is the function the segmented generators
-            # have used for this all along, and its own docstring names the
-            # defect: "old-generator educational segments overran by up to
-            # 1.29 s". The bilingual path simply never called it.
-            #
-            # The AUDIO IS NOT TRIMMED. Trailing silence is real pacing and
-            # stays in the mix; only the declaration moves, so the renderer
-            # follows the voice instead of the file.
+            # TRIMMED TO ITS SPEECH (STEP 76 §2, the lessons' rule): a TTS clip carries
+            # 0.3-1.3 s of silence the model chose, different on every run; the pause
+            # between clips is set by stitch.gap_after instead. Words move with the cut.
+            trim = trim_clip_silence(seg_path)
+            cut = float(trim["start"]) if trim.get("trimmed") else 0.0
+            call["trim_start"] = round(cut, 3)
+
+            # CLAMP THE DECLARED END TO WHERE THE VOICE ACTUALLY STOPS: the alignment
+            # runs to the end of the file, so a word would swallow the silence after it
+            # and the QA gate would call the real silence dead air.
             speech_end = measure_speech_end(seg_path)
-            if speech_end > 0 and speech_end < res["duration"]:
-                clamped = []
-                for w in seg_words:
-                    start = min(float(w["start"]), speech_end)
-                    end = min(float(w["end"]), speech_end)
-                    if end > start:
-                        clamped.append({**w, "start": round(start, 3),
-                                        "end": round(end, 3)})
-                if clamped:
-                    seg_words = clamped
-                    clamped_segments += 1
+            words = []
             for w in seg_words:
+                start, end = float(w["start"]) - cut, float(w["end"]) - cut
+                if speech_end > 0:
+                    start, end = min(start, speech_end), min(end, speech_end)
+                start = max(0.0, start)
+                if end > start:
+                    words.append({**w, "start": start, "end": end})
+            if speech_end > 0 and any(float(w["end"]) - cut > speech_end for w in seg_words):
+                clamped_segments += 1
+            clips.append({"call": call, "path": seg_path, "words": words or seg_words})
+
+        # LEVEL MATCH (loudness.level_clips): every clip to the median level, ±6 dB, as
+        # WAV — the Spanish line and the English word next to it at the same loudness.
+        levelled = loudness.level_clips([c["path"] for c in clips], Path(temp_dir))
+
+        # One PCM timeline: clip, gap, clip … every piece WAV, one encode at the end.
+        audio_files: List[str] = []
+        all_words: List[Dict] = []
+        running = 0.0
+        for n, (clip, lv) in enumerate(zip(clips, levelled)):
+            call = clip["call"]
+            call["gain_db"] = lv["gain_db"]
+            length = loudness.decode(lv["path"]).size / loudness.RATE
+            for w in clip["words"]:
                 all_words.append({
                     "word": w["word"],
-                    "start": round(w["start"] + running, 3),
-                    "end": round(w["end"] + running, 3),
+                    "start": round(min(w["start"], length) + running, 3),
+                    "end": round(min(w["end"], length) + running, 3),
                     "is_english": call["is_english"],
                 })
-            audio_files.append(seg_path)
-            running += res["duration"]
-
+            audio_files.append(str(lv["path"]))
+            call["clip_start"], call["clip_end"] = round(running, 3), round(running + length, 3)
+            running += length
             gap = call["pause_after"]
-            if call["index"] + 1 < len(calls) and gap > 0.01:
-                sil = os.path.join(temp_dir, f"sil_{call['index']:03d}.mp3")
-                generate_silence(gap, sil)
-                audio_files.append(sil)
-                running += gap
+            if n + 1 < len(clips) and gap > 0.01:
+                sil = Path(temp_dir) / f"sil_{call['index']:03d}.wav"
+                loudness._write_wav(np.zeros(int(round(gap * loudness.RATE))), sil)
+                audio_files.append(str(sil))
+                running += round(gap * loudness.RATE) / loudness.RATE
 
         # Stitch — concat demuxer with re-encode (uniform format/bitrate).
         out_dir = os.path.dirname(output_path)
@@ -506,8 +507,10 @@ def _build_result(script_data: Dict, words: List[Dict], duration: float,
         # this is the same function and the same trap.
         "timing_source": dict(timing_source or {}),
         "tts_model_id": (calls[0].get("model_id") if calls else None),
+        # takes / onset / trim_start / gain_db: what the stitch rule did to each clip (STEP 76 §2).
         "tts_calls": [{k: c[k] for k in
-                       ("index", "lang", "text", "speed", "pause_after")}
+                       ("index", "lang", "text", "speed", "pause_after",
+                        "takes", "onset", "trim_start", "gain_db", "clip_start", "clip_end") if k in c}
                       for c in calls],
     }
 

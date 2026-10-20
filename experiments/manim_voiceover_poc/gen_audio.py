@@ -53,8 +53,13 @@ SEGMENT_MODELS = ("eleven_turbo_v2_5", "eleven_flash_v2_5")
 DEFAULT_MODEL = "eleven_turbo_v2_5"           # --stitch only (the lesson's "model" applies there)
 LANGUAGE_CODE_MODELS = SEGMENT_MODELS + ("eleven_v4",)   # multilingual_v2 refuses language_code
 ONE_REQUEST_MODEL = "eleven_v4"     # owner's ear, STEP 55: every English word English, no cuts; --model eleven_multilingual_v2 for the old one
-GAP_AFTER = {".": 0.30, "?": 0.30, "!": 0.30, ":": 0.20, ",": 0.14, ";": 0.18}
-DEFAULT_GAP = 0.05          # a language switch mid-sentence: pad + gap + pad ≈ 130 ms
+# The stitch rule (context, onset gate, gaps) is shared with the Shorts: src/stitch.py.
+_SRC = str(HERE.parents[1] / "src")
+if _SRC not in sys.path:
+    sys.path.append(_SRC)
+import stitch as S  # noqa: E402
+
+GAP_AFTER, DEFAULT_GAP = S.GAP_AFTER, S.DEFAULT_GAP
 EDGE_PAD = 0.04             # silence kept at each end of a segment after trimming
 SILENCE_DB = -42            # below this a segment edge counts as silence
 TARGET_RMS_DB = -20.0       # every segment is brought near this level before joining
@@ -139,20 +144,14 @@ def eleven_segment(api_key: str, voice_id: str, text: str, lang: str, model: str
 
 
 def stitch_context(segs: list, n: int, previous_spoken: str, request_ids: list, full: bool = False) -> tuple:
-    """(previous_text, next_text, previous_request_ids) for segment n of a beat.
-
-    Measured 2026-10-13 (audio/_probe/stitching): with the previous text and request ids
-    the turbo model often starts a segment mid-sound or with a ~50 ms fragment of the
-    previous context — the owner's «i-ira la tabla», «d-do the beds» — clean onsets 1/10;
-    with next_text only 7/10. So at a language switch and at the start of a beat only the
-    text that follows is sent; full stitching is kept where the voice continues in the
-    same language (across a {{pause}}). `full` restores the old behaviour everywhere."""
+    """(previous_text, next_text, previous_request_ids) for segment n of a beat — stitch.context:
+    at a language switch and at the start of a beat only the text that follows is sent; full
+    stitching where the voice continues in the same language (across a {{pause}})."""
     after = " ".join(x["text"] for x in segs[n + 1:] if "text" in x).strip()
     before = " ".join(x["text"] for x in segs[:n] if "text" in x).strip()
     last = next((x["lang"] for x in reversed(segs[:n]) if "lang" in x), None)
-    if full or (last is not None and last == segs[n]["lang"]):
-        return before or previous_spoken, after, list(request_ids)
-    return "", after, []
+    previous, following = S.context(last, segs[n]["lang"], before or previous_spoken, after, full)
+    return previous, following, (list(request_ids) if previous else [])
 
 
 def beat_chunks(narration: str, lang: str) -> list:
@@ -171,24 +170,15 @@ def beat_chunks(narration: str, lang: str) -> list:
 # ── Onset gate ────────────────────────────────────────────────────────────────
 # Even with the stitching fix the model starts ~3 segments in 10 mid-sound or with a ~50 ms
 # fragment. Every segment is checked as it arrives and re-asked up to ONSET_RETRIES times.
-ONSET_RETRIES = 2
+ONSET_RETRIES = S.ONSET_RETRIES
 
 
 def onset_report(path: Path) -> dict:
-    """{clean, first_db, fragment} for one segment as ElevenLabs returned it: clean when its
-    first 5 ms is ≥ 30 dB under its peak, it has no loud burst → dip → speech fragment, and
-    no doubled start (probes.onset.doubled_onset: a quiet fragment + dip, a held nasal)."""
-    from probes import onset as O
-    x = O.load(path)
-    e = O.env_db(x)
-    start, _ = O.onset(x)
-    if start is None:
-        return {"clean": False, "first_db": 0.0, "fragment": None}
-    first = float(e[0] - e.max())
-    fragment = O.fragment(e, start, e.max())
-    doubled = O.doubled_onset(x)                     # the quiet «d-do» / «m-make» the owner hears
-    return {"clean": first < -30 and fragment is None and doubled is None, "first_db": round(first, 1),
-            "fragment": fragment or doubled}
+    """{clean, first_db, fragment} for one segment as ElevenLabs returned it (stitch.onset_values
+    and stitch.onset_clean at the lessons' −30 dB start limit)."""
+    v = S.onset_values(path)
+    return {"clean": S.onset_clean(v), "first_db": v["start_db"] if v["start_db"] is not None else 0.0,
+            "fragment": v["fragment"] or v["doubled_onset"]}
 
 
 def cleanest(takes: list) -> dict:
@@ -235,8 +225,7 @@ def probe_duration(path: Path) -> float:
     return float(value) if value and value != "N/A" else 0.0
 
 
-def gap_after(text: str) -> float:
-    return GAP_AFTER.get(text.rstrip()[-1:], DEFAULT_GAP)
+gap_after = S.gap_after
 
 
 def shift_words(pieces: list) -> list:

@@ -115,6 +115,43 @@ def level_segments(samples: np.ndarray, segments: List[Dict]) -> tuple:
     return samples * gain, gains
 
 
+#: Edge fades of a stitched clip (the lessons' prepare_segment): a TTS clip can end on a
+#: loud sample, and a join there is a click (give_up: two clips ended at −14 and −17 dBFS).
+FADE_IN_S, FADE_OUT_S = 0.012, 0.020
+#: Peak ceiling of a levelled clip: +6 dB on a TTS clip otherwise lands at 0 dBFS and the
+#: mp3 encode of the narration overshoots it.
+CLIP_CEILING = 10 ** (-1.0 / 20)
+
+
+def level_clips(paths: List, out_dir: Path) -> List[Dict]:
+    """Bring separate clips to the median of their levels (gated RMS, ±MAX_GAIN_DB), fade
+    their edges, and write each as a mono 44.1 kHz WAV in `out_dir`. The per-clip half of
+    level_segments, for the paths that still hold their clips apart (tts_bilingual,
+    STEP 76 §2). Durations unchanged.
+    Returns [{path, level_db, gain_db}] in input order; a silent clip gets gain 0."""
+    out_dir = Path(out_dir)
+    decoded = [decode(p) for p in paths]
+    levels = [_db(x) for x in decoded]
+    spoken = [l for l in levels if l > SILENT_DB]
+    target = float(np.median(spoken)) if spoken else None
+    result = []
+    for n, (src, x, level) in enumerate(zip(paths, decoded, levels)):
+        gain = 0.0 if target is None or level <= SILENT_DB else max(-MAX_GAIN_DB, min(MAX_GAIN_DB, target - level))
+        y = x * 10 ** (gain / 20)
+        peak = float(np.max(np.abs(y))) if y.size else 0.0
+        if peak > CLIP_CEILING:                           # a raised clip must not clip
+            y *= CLIP_CEILING / peak
+        fi, fo = min(int(FADE_IN_S * RATE), y.size // 2), min(int(FADE_OUT_S * RATE), y.size // 2)
+        if fi:
+            y[:fi] *= np.linspace(0.0, 1.0, fi)
+        if fo:
+            y[-fo:] *= np.linspace(1.0, 0.0, fo)
+        out = out_dir / f"{Path(src).stem}.lvl.wav"
+        _write_wav(y, out)
+        result.append({"path": out, "level_db": round(level, 2), "gain_db": round(gain, 2)})
+    return result
+
+
 def _write_wav(samples: np.ndarray, path: Path) -> None:
     proc.run(["ffmpeg", "-v", "error", "-y", "-f", "f64le", "-ar", str(RATE), "-ac", "1", "-i", "-",
               "-c:a", "pcm_s24le", str(path)], input=samples.astype("<f8").tobytes(), check=True,
