@@ -1570,6 +1570,30 @@ def note_setup_failure(pending: set, platform: str, result) -> Optional[str]:
             f"ejecuta `python3 tools/meta_publish.py setup-check`.")
 
 
+def _cleanup_module():
+    """tools/cleanup.py, the same code `make clean` runs (STEP 74 §3)."""
+    tools = str(ROOT / "tools")
+    if tools not in sys.path:
+        sys.path.insert(0, tools)
+    import cleanup
+    return cleanup
+
+
+def cleanup_blockers(studio_jobs: Optional[Path] = None) -> list:
+    """Jobs still running: the cleanup deletes intermediates a live render reads."""
+    busy = [f"vídeo {j.get('id', '?')}" for j in load_jobs().get("active", []) if _owner_alive(j)]
+    live = {t.name for t in threading.enumerate()}
+    folder = studio_jobs or ROOT / "experiments" / "manim_voiceover_poc" / "renders" / "jobs"
+    for status in sorted(folder.glob("*.json")) if folder.is_dir() else []:
+        try:
+            state = json.loads(status.read_text(encoding="utf-8")).get("state")
+        except (OSError, ValueError):
+            continue
+        if state == "running" and status.stem in live:
+            busy.append(f"Manim {status.stem}")
+    return busy
+
+
 def _upload_platforms() -> list:
     """config.yaml upload.platforms, as main.py reads it."""
     import yaml
@@ -4110,6 +4134,31 @@ elif page == "Settings":
             with open(ROOT / "config.yaml", 'w') as f:
                 yaml.dump(config, f, default_flow_style=False)
             st.success("Audio config saved!")
+
+    # STEP 74 §3: the same cleanup as `make clean`; the table is `make clean-dry`.
+    st.markdown('<div class="section-header">Limpiar</div>', unsafe_allow_html=True)
+    _clean = _cleanup_module()
+    try:
+        _plans = _clean.plan()
+    except (OSError, subprocess.CalledProcessError) as e:
+        _plans = None
+        st.error(f"No se pudo calcular la limpieza: {e}")
+    if _plans is not None:
+        _total = sum(p["bytes"] for p in _plans)
+        st.caption("Borra vídeos ya subidos, rechazados, artefactos de más de 14 días, intermedios "
+                   "y cachés. Nunca toca lo aprobado, audio/TTS, contenido, registros ni lo que git o un test usa.")
+        st.code(_clean.table(_plans), language=None)
+        _busy = cleanup_blockers()
+        if _busy:
+            st.warning(f"Hay trabajos en marcha ({', '.join(_busy)}). Espera a que terminen para limpiar.")
+        _sure = st.checkbox(f"Sí, borrar {_clean.human(_total)}", key="cleanup_confirm",
+                            disabled=bool(_busy) or not _total)
+        if st.button("🧹 Limpiar", key="cleanup_run", disabled=not _sure or bool(_busy) or not _total):
+            try:
+                _freed = _clean.delete([p for pl in _clean.plan() for p in pl["paths"]])
+                st.success(f"Liberado: {_clean.human(_freed)}")
+            except (_clean.RefusedPath, OSError) as e:
+                st.error(f"Limpieza detenida: {e}")
 
 
 # ============== MANIM STUDIO ==============

@@ -43,6 +43,19 @@ y luego se reutiliza. Si cambias el `spoken` de una variante, borra solo su clip
 (`assets/outro/<id>.mp4`): el siguiente vídeo lo vuelve a generar con la voz nueva, con
 una llamada de TTS. Un redibujado con `force=True` mantiene la voz anterior.
 
+## Limpieza
+
+`make clean-dry` muestra cuánto liberaría cada regla, sin borrar nada. `make clean` muestra la
+misma tabla y pide confirmación (`s`) antes de borrar. También está en el panel, en *Ajustes →
+Limpiar*. Se borran los vídeos ya subidos y los rechazados, los artefactos de `output/artifacts/`
+con más de 14 días (salvo los aprobados sin subir, los que están en la cola de Meta o los que
+tienen una subida sin confirmar), los intermedios de `output/`, `_to_delete/`, la caché de Manim,
+los renders de Manim antiguos (se queda el más nuevo de cada lección, y los aprobados o subidos),
+los clips de Pexels que no se usan desde hace 30 días (con un tope de 1 GB) y los `__pycache__`.
+Nunca se toca: lo que sigue git, `tests/` ni ningún archivo que use un test, `.env*`,
+`.tokens*`, `content/`, `output/approved/`, `output/audio/` y las demás cachés de voz,
+`output/published/`, `output/costs/`, `output/scripts/`, `logs/`, `.venv/` ni el resto de `assets/`.
+
 ## Categorías disponibles
 
 - `phrasal_verbs` - 10 verbos frasales

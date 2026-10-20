@@ -172,3 +172,29 @@ def test_tests_and_files_a_test_reads_are_never_deleted(tree):
     for rel in ("tests/fixtures/layout/quiz.mp3", "tests", "output/clips/run1/fixture.mp3"):
         with pytest.raises(C.RefusedPath):
             C.delete([tree / rel], root=tree)
+
+
+# ── STEP 74 §3: the panel's «Limpiar» card waits for running jobs ────
+
+def test_the_panel_cleanup_waits_for_a_live_manim_job(tmp_path, monkeypatch):
+    import threading
+    sys.path.insert(0, str(ROOT / "src"))
+    import admin
+    monkeypatch.setattr(admin, "load_jobs", lambda: {"active": [], "history": []})
+    jobs = tmp_path / "jobs"
+    jobs.mkdir()
+    (jobs / "render-101010.json").write_text('{"state": "running"}')
+    (jobs / "render-090909.json").write_text('{"state": "running"}')     # its thread is gone
+    (jobs / "audio-080808.json").write_text('{"state": "done"}')
+    assert admin.cleanup_blockers(jobs) == []
+    stop = threading.Event()
+    t = threading.Thread(target=stop.wait, name="render-101010", daemon=True)
+    t.start()
+    try:
+        assert admin.cleanup_blockers(jobs) == ["Manim render-101010"]
+    finally:
+        stop.set()
+        t.join()
+    monkeypatch.setattr(admin, "load_jobs", lambda: {"active": [{"id": "j1", "pid": os.getpid()}]})
+    monkeypatch.setattr(admin, "_owner_alive", lambda job: True)
+    assert admin.cleanup_blockers(jobs) == ["vídeo j1"]
