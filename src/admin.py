@@ -3455,8 +3455,8 @@ elif page == "Upload":
                                         })
                                     elif isinstance(result, dict) and result.get("locked"):
                                         st.warning(result["error"])
-                                    elif note_setup_failure(set(), platform_key, result):
-                                        st.error(note_setup_failure(set(), platform_key, result))
+                                    elif setup_msg := note_setup_failure(set(), platform_key, result):
+                                        st.error(setup_msg)
                                     elif not (isinstance(result, dict) and result.get("in_flight")):
                                         from upload_limits import spanish as _spanish
                                         err = result.get("error", "Unknown") if isinstance(result, dict) else getattr(result, 'error', 'Unknown')

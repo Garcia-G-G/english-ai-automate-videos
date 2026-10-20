@@ -36,6 +36,13 @@ python src/script_generator.py
 3. **Video** → (próximo paso) FFmpeg + texto animado
 4. **Upload** → YouTube, TikTok, e Instagram/Facebook Reels (ver abajo)
 
+### Outro de los Shorts
+
+Cada variante de `src/config/outro.json` se renderiza una sola vez en `assets/outro/<id>.mp4`
+y luego se reutiliza. Si cambias el `spoken` de una variante, borra solo su clip
+(`assets/outro/<id>.mp4`): el siguiente vídeo lo vuelve a generar con la voz nueva, con
+una llamada de TTS. Un redibujado con `force=True` mantiene la voz anterior.
+
 ## Categorías disponibles
 
 - `phrasal_verbs` - 10 verbos frasales

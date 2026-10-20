@@ -194,7 +194,9 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
         voice = Path(tmp) / "outro_voice.m4a"
         if path.exists():
             # A redraw (force=True) keeps the voice the clip already has: the same
-            # `spoken`, $0 (STEP 62 §4). Only a missing clip asks the TTS.
+            # `spoken`, $0 (STEP 62 §4). Only a missing clip asks the TTS. After editing
+            # a variant's `spoken`, delete assets/outro/<id>.mp4 to get the new voice
+            # (one TTS call); force=True alone keeps the old one.
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(path), "-vn", "-c:a", "copy",
                             str(voice)], check=True, capture_output=True)
             logger.info("outro: redraw of %s keeps its voice, no TTS", variant["id"])
@@ -213,8 +215,9 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
             check=True, capture_output=True,
         )
 
-        redraw = path.exists()
-        rendered = Path(tmp) / "outro_new.mp4" if redraw else path
+        # Rendered in tmp and moved in only when complete: a cut render must never
+        # become a cached clip, since a cache hit is never checked again (STEP 73 §0).
+        rendered = Path(tmp) / "outro_new.mp4"
         render_video_ffmpeg(
             frame_generator=_make_frame_fn(variant),
             audio_path=str(padded),
@@ -224,12 +227,16 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
             width=VIDEO_WIDTH,
             height=VIDEO_HEIGHT,
         )
-        if redraw:
+        if path.exists():
             # The new picture over the OLD audio stream, copied: byte-identical sound (STEP 71 §1).
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(rendered), "-i", str(path),
                             "-map", "0:v", "-map", "1:a", "-c", "copy", "-movflags", "+faststart",
                             str(Path(tmp) / "outro_out.mp4")], check=True, capture_output=True)
-            shutil.move(str(Path(tmp) / "outro_out.mp4"), str(path))
+            rendered = Path(tmp) / "outro_out.mp4"
+        # tmp may be another volume: copy next to the clip first, then an atomic rename.
+        part = path.with_name(f".{path.name}.part")
+        shutil.move(str(rendered), str(part))
+        os.replace(part, path)
 
     logger.info("outro rendered once -> %s", path)
     return path

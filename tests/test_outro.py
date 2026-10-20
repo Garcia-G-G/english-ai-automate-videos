@@ -259,3 +259,22 @@ def test_a_redraw_never_calls_the_tts_and_keeps_the_audio_byte_for_byte(tmp_path
     variant = next(v for v in O.load_variants()["variants"] if v["id"] == clips[0].stem)
     out = O.ensure_outro(variant, force=True)
     assert _audio_md5(out) == before
+
+
+# ── STEP 73 §0: a cut render never becomes a cached clip ─────────────
+
+def test_a_render_that_dies_halfway_leaves_no_cached_clip(tmp_path, monkeypatch):
+    outro_dir = tmp_path / "outro"
+    monkeypatch.setattr(O, "OUTRO_DIR", outro_dir)
+    monkeypatch.setattr(O, "_synthesize", lambda variant, out: subprocess.run(
+        ["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono",
+         "-t", "1", str(out)], check=True))
+
+    def cut(output_path, **kwargs):
+        Path(output_path).write_bytes(b"half a clip")
+        raise RuntimeError("render cut")
+    monkeypatch.setattr(O, "render_video_ffmpeg", cut)
+    variant = O.load_variants()["variants"][0]
+    with pytest.raises(RuntimeError, match="render cut"):
+        O.ensure_outro(variant)
+    assert list(outro_dir.iterdir()) == []

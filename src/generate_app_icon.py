@@ -14,10 +14,11 @@ from image_gen import IMAGE_MODEL, SIZE_SQUARE, estimate, generate_image, get_cl
 load_dotenv()
 
 QUALITY = "high"  # An app icon is a one-off; buy the good one.
+ROOT = Path(__file__).resolve().parent.parent  # paths hold from any cwd
 
 # Brand v3 («cuaderno + Bubi», STEP 71) ships its own app_icon.png. This paid generator
 # would replace it, and docs/icon.png with it, so it refuses unless told to.
-if Path("assets/branding/app_icon.png").exists() and "--force" not in sys.argv:
+if (ROOT / "assets/branding/app_icon.png").exists() and "--force" not in sys.argv:
     sys.exit("assets/branding/app_icon.png is the brand v3 icon; pass --force to replace it.")
 
 client = get_client()
@@ -38,7 +39,7 @@ Requirements:
 - Clean geometric shapes, modern flat design
 """
 
-output_dir = Path("assets/branding")
+output_dir = ROOT / "assets/branding"
 output_dir.mkdir(parents=True, exist_ok=True)
 
 print(f"Generating app icon with {IMAGE_MODEL} "
@@ -53,7 +54,7 @@ if result is None:
 print(f"Saved to {output_path}")
 
 # Also copy to docs for website
-docs_path = Path("docs/icon.png")
+docs_path = ROOT / "docs/icon.png"
 docs_path.parent.mkdir(parents=True, exist_ok=True)
 docs_path.write_bytes(output_path.read_bytes())
 print(f"Also saved to {docs_path}")
