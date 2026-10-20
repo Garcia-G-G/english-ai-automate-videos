@@ -15,6 +15,10 @@ explicit ``language_code``.
 
 Source of truth for what is English
 -----------------------------------
+0. ``[[...]]`` markers (STEP 76 §1), the markup the lessons and the
+   hecho_con_claude drafts use. When a script has ANY marker, the markers are
+   the English and nothing below runs: the author said what is English.
+Only for a script with no markers at all (logged):
 1. Script metadata (``english_phrases``, ``translations`` keys, ``word``,
    ``pairs[].english``, quiz options for "cómo se dice") — these are the
    target teaching terms and always win.
@@ -32,9 +36,10 @@ Each segment is ``{"text": str, "lang": "es"|"en", "pause_after": float}``.
 ``pause_after`` is a stitching hint derived from trailing punctuation.
 """
 
+import logging
 import re
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, List, Optional
 from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
 # Spanish words that AI-generated english_phrases sometimes contain by
@@ -45,6 +50,11 @@ from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 _SPANISH_COMMON = SPANISH_FILTER
 
 _SPANISH_CHARS = set('áéíóúñüÁÉÍÓÚÑÜ¿¡')
+
+logger = logging.getLogger(__name__)
+
+#: Explicit English: «Tengo una [[meeting on Wednesday]].» One definition, in audio_tags.
+from audio_tags import MARKER  # noqa: E402
 
 # High-signal English function words for the heuristic classifier.
 _EN_HINTS = {
@@ -298,16 +308,82 @@ def _extend_en_spans(text: str, spans: list) -> list:
     return [tuple(x) for x in merged]
 
 
+def _english_sentences(text: str, spans: list) -> list:
+    """Grow an EN span to its whole sentence when that sentence reads as English.
+
+    «I have a meeting on Wednesday.» used to come out «I have a | meeting on
+    Wednesday»: the backward absorption stops at «a», which is also Spanish. A
+    sentence that already holds English, and whose every other word is English on its own, is one
+    English line, so it is voiced as one (STEP 76 §1). A sentence with no EN span
+    is never touched, so «WENZ-day.» stays with the narration.
+    """
+    if not spans:
+        return spans
+    grown = list(spans)
+    for m in re.finditer(r"[^.!?¿¡:;。！？]+[.!?:;。！？]*", text):   # «Hoy: I have…» splits at the colon
+        a, b = m.start(), m.end()
+        if not text[a:b].strip() or not any(s < b and e > a and lang == 'en' for s, e, lang in spans):
+            continue
+        # Every word OUTSIDE the English already found must be English on its own:
+        # «I have a» passes; «Dices … no do» and any CJK narration do not.
+        rest = "".join(ch if not any(s <= a + i < e for s, e, _ in spans) else " "
+                       for i, ch in enumerate(text[a:b]))
+        words = re.findall(r"[^\W\d_][\w'’]*", rest)
+        if words and all(w.isascii() and (w.lower() in _EN_HINTS or looks_english(w)) for w in words):
+            lead = len(text[a:b]) - len(text[a:b].lstrip())
+            body = text[a + lead:b].rstrip()
+            grown.append((a + lead, a + lead + len(body.rstrip('.!?:;')), 'en'))
+    merged = []
+    for s, e, lang in sorted(grown):
+        if merged and merged[-1][2] == lang and s <= merged[-1][1]:
+            merged[-1] = (merged[-1][0], max(merged[-1][1], e), lang)
+        else:
+            merged.append((s, e, lang))
+    return merged
+
+
+def strip_markers(raw: str, clean=lambda t: t) -> tuple:
+    """(text without ``[[ ]]``, [(start, end) of each marked span in that text]).
+
+    `clean` (clean_for_tts) runs on each piece separately: on the whole string it
+    would read ``[[x]]`` as an audio tag and delete it.
+    """
+    out, marked = "", []
+    for part in re.split(r"(\[\[.+?\]\])", raw or "", flags=re.S):
+        if not part:
+            continue
+        m = MARKER.fullmatch(part)
+        if m:
+            inner = re.sub(r"\s+", " ", clean(m.group(1))).strip()
+            if inner:
+                marked.append((len(out), len(out) + len(inner)))
+                out += inner
+            continue
+        cleaned = clean(part).strip()
+        lead = " " if part[:1].isspace() else ""
+        tail = " " if part[-1:].isspace() else ""
+        out += (lead + cleaned + tail) if cleaned else (lead or tail)
+    return out, marked
+
+
 def segment_text(text: str, english_terms: List[str],
                  narration_lang: str = "es", *,
-                 language_policy: LanguagePolicy = None) -> List[Dict]:
+                 language_policy: LanguagePolicy = None,
+                 marked: Optional[List[tuple]] = None) -> List[Dict]:
     """Split ``text`` into ordered {text, lang, pause_after} segments.
 
-    Priority: metadata terms > quoted spans (heuristic) > narration lang.
+    `marked` — the (start, end) spans of ``[[ ]]`` markers (strip_markers): when
+    given, they ARE the English and the heuristics below do not run.
+    Otherwise: metadata terms > quoted spans (heuristic) > narration lang.
     English words embedded in a Spanish sentence become their own segment.
     """
     policy = _resolve_policy(narration_lang, language_policy)
     narration_lang = policy.narration_code
+    if marked is None and MARKER.search(text or ""):
+        text, marked = strip_markers(text)
+    if marked is not None:
+        shift = len(text) - len(text.lstrip())
+        marked = [(s - shift, e - shift) for s, e in marked]
     text = (text or "").strip()
     if not text:
         return []
@@ -318,27 +394,31 @@ def segment_text(text: str, english_terms: List[str],
     def _overlaps(s: int, e: int) -> bool:
         return any(not (e <= a or s >= b) for a, b, _ in spans)
 
-    for term in sorted(english_terms or [], key=len, reverse=True):
-        try:
-            pat = re.compile(_term_pattern(term), re.IGNORECASE)
-        except re.error:
-            continue
-        for m in pat.finditer(text):
-            if not _overlaps(m.start(), m.end()):
-                spans.append((m.start(), m.end(), 'en'))
+    if marked is not None:
+        spans = sorted((max(0, s), min(len(text), e), 'en') for s, e in marked if e > s)
+    else:
+        for term in sorted(english_terms or [], key=len, reverse=True):
+            try:
+                pat = re.compile(_term_pattern(term), re.IGNORECASE)
+            except re.error:
+                continue
+            for m in pat.finditer(text):
+                if not _overlaps(m.start(), m.end()):
+                    spans.append((m.start(), m.end(), 'en'))
 
-    # 2. Quoted spans not already covered — classify heuristically.
-    for m in re.finditer(r"'([^']{1,80})'", text):
-        s, e = m.start(1), m.end(1)
-        if _overlaps(s, e):
-            continue
-        inner = m.group(1)
-        lang = 'en' if looks_english(inner) else narration_lang
-        if lang == 'en':
-            spans.append((s, e, 'en'))
+        # 2. Quoted spans not already covered — classify heuristically.
+        for m in re.finditer(r"'([^']{1,80})'", text):
+            s, e = m.start(1), m.end(1)
+            if _overlaps(s, e):
+                continue
+            inner = m.group(1)
+            lang = 'en' if looks_english(inner) else narration_lang
+            if lang == 'en':
+                spans.append((s, e, 'en'))
 
-    spans.sort()
-    spans = _extend_en_spans(text, spans)
+        spans.sort()
+        spans = _extend_en_spans(text, spans)
+    spans = _english_sentences(text, spans)
 
     if language_policy is not None:
         return _policy_segments(text, spans, policy)
@@ -528,8 +608,12 @@ def segment_script(script_data: Dict, narration_lang: str = "es", *,
     # (voice_settings.style, or the wording itself), and that is a known gap
     # rather than an oversight. keep_tags defaults to False; naming it makes
     # the choice visible at the one place that makes it.
-    text = clean_for_tts(script_data.get('full_script', '') or '',
-                         keep_tags=False)
+    raw = script_data.get('full_script', '') or ''
+    if MARKER.search(raw):
+        text, marked = strip_markers(raw, lambda t: clean_for_tts(t, keep_tags=False))
+        return segment_text(text, [], narration_lang, language_policy=language_policy, marked=marked)
+    logger.info("tts_segmenter: no [[ ]] markers in this script; English found by heuristic")
+    text = clean_for_tts(raw, keep_tags=False)
     terms = collect_english_terms(script_data)
     return segment_text(
         text,

@@ -6,6 +6,7 @@ with platform-specific formatting for TikTok, YouTube, and Instagram.
 """
 
 import json
+from audio_tags import unmark
 import logging
 import os
 import random
@@ -291,7 +292,7 @@ def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -
     )
 
     hook = script_data.get("hook") or script_data.get("question") or script_data.get("statement") or ""
-    full_script_preview = (script_data.get("full_script") or "")[:200]
+    full_script_preview = unmark(script_data.get("full_script") or "")[:200]
 
     prompt = f"""Generate an optimized title and description for a {platform} video about learning English (for Spanish speakers).
 
@@ -420,7 +421,7 @@ def _build_fallback_description(script_data: dict, video_type: str, title: str) 
 
     # If we still have nothing meaningful, use script preview
     if not parts:
-        script_preview = (script_data.get("full_script") or "")[:150]
+        script_preview = unmark(script_data.get("full_script") or "")[:150]
         if script_preview:
             parts.append(script_preview)
         parts.append("Sígueme para más tips de inglés 🦊")

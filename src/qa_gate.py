@@ -108,6 +108,7 @@ BLOCKING_FLAGS = (
     "UNCOVERED_no_timing_declaration",   # nothing to check against
     "missing_required_timing",           # wrong timing kind for the type
     "no_word_timeline",                  # word karaoke with no timeline
+    "english_outside_markers",           # [[ ]] present, English voiced as Spanish
 )
 
 # ── THRESHOLD PROVENANCE ────────────────────────────────────────────
@@ -755,6 +756,7 @@ def analyze(json_path: Path) -> Optional[Dict]:
     report["checks"]["letter_to_word"] = letter_to_word(data, mp3)    # 3
     report["checks"]["segment_count"] = segment_count(data, mp3)      # 4
     report["checks"]["levels"] = levels(data, mp3)                    # 5
+    report["checks"]["english_markers"] = english_markers(data)       # 6
 
     # An artifact is COVERED if at least one timing check could run on it.
     # Reported explicitly so the coverage number cannot quietly become
@@ -765,6 +767,21 @@ def analyze(json_path: Path) -> Optional[Dict]:
     ]
     report["flags"] = _collect_flags(report)
     return report
+
+
+def english_markers(data: Dict) -> Dict:
+    """STEP 76 §1: with [[ ]] markers in full_script, the markers ARE the English the
+    voice speaks in English. A teaching term (collect_english_terms) found outside them
+    would be voiced by the Spanish voice, so it is listed here."""
+    from audio_tags import MARKER
+    from tts_segmenter import _term_pattern, collect_english_terms
+    text = data.get("full_script") or ""
+    if not MARKER.search(text):
+        return {"available": False, "outside": []}
+    bare = MARKER.sub(lambda m: " " * len(m.group(0)), text)
+    outside = [t for t in collect_english_terms(data)
+               if re.search(_term_pattern(t), bare, re.IGNORECASE)]
+    return {"available": True, "markers": len(MARKER.findall(text)), "outside": outside}
 
 
 def _collect_flags(report: Dict) -> List[str]:
@@ -784,6 +801,8 @@ def _collect_flags(report: Dict) -> List[str]:
         f.append(f"dead_air:{c['levels']['dead_air']['total_s']}s")
     if not report["covered_by"]:
         f.append("UNCOVERED_no_timing_declaration")
+    for term in c.get("english_markers", {}).get("outside", []):
+        f.append(f"english_outside_markers:{term}")
     # Per-type timing requirement. A quiz without segment_times has no measured
     # option boundaries and the renderer would fall back to the /4 estimator at
     # video/quiz.py:130 — inventing timing and presenting it as sound. An

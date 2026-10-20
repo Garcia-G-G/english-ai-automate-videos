@@ -56,6 +56,7 @@ from pydantic import (
     Field,
     StrictBool,
     ValidationError,
+    field_validator,
     model_validator,
 )
 
@@ -131,6 +132,28 @@ class ScriptBase(BaseModel):
     # The narration. pipeline.generate_tts already refuses anything under 10
     # chars (pipeline.py:240); this makes the same rule a contract.
     full_script: str = Field(min_length=10)
+
+    @field_validator("full_script")
+    @classmethod
+    def _balanced_english_markers(cls, text: str) -> str:
+        """STEP 76 §1: every «[[» closes with «]]», none nest, none is empty — the
+        segmenter voices exactly what is inside them as English."""
+        depth, start = 0, 0
+        for i in range(len(text) - 1):
+            pair = text[i:i + 2]
+            if pair == "[[" and (i == 0 or text[i - 1] != "["):
+                if depth:
+                    raise ValueError(f"nested «[[» at character {i}")
+                depth, start = 1, i + 2
+            elif pair == "]]" and (i + 2 >= len(text) or text[i + 2] != "]"):
+                if not depth:
+                    raise ValueError(f"«]]» with no «[[» at character {i}")
+                if not text[start:i].strip():
+                    raise ValueError(f"empty «[[ ]]» at character {start - 2}")
+                depth = 0
+        if depth:
+            raise ValueError(f"«[[» at character {start - 2} is never closed")
+        return text
 
     # Publishing metadata. Optional in the model because 9 of 12 historical
     # fixtures predate it — validate_and_clean_script:703-714 synthesises a

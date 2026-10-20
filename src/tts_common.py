@@ -860,6 +860,10 @@ def clean_for_tts(text: str, *, keep_tags: bool = False) -> str:
     # Blanks become an audible pause, not a hole in the sentence.
     text = _BLANK_RE.sub(BLANK_SPOKEN, text)
     # Single underscore between words should become space
+    # [[English]] markers are unwrapped, not stripped: the `\[.*?\]` below would
+    # leave «]» where the English was (STEP 76 §1). The segmenter splits on them first.
+    from audio_tags import unmark
+    text = unmark(text)
     text = re.sub(r'(?<=\w)_(?=\w)', ' ', text)
 
     # Remove markdown formatting

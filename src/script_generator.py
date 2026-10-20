@@ -291,8 +291,8 @@ def build_prompt_educational(category: str, topic: dict) -> str:
 TEMA: {context}
 
 REGLAS IMPORTANTES:
-1. El script debe ser en ESPAÑOL, con las palabras en inglés entre comillas simples
-2. Ejemplo: "La palabra 'embarrassed' NO significa embarazada"
+1. El script debe ser en ESPAÑOL. En full_script, CADA palabra o frase en inglés va entre dobles corchetes: [[así]]. La frase inglesa entera, no solo la palabra clave: "[[I have a meeting on Wednesday]]", nunca "I have a [[meeting]]". Lo que esté fuera de [[ ]] lo lee la voz en español.
+2. Ejemplo: "La palabra [[embarrassed]] NO significa embarazada"
 3. Incluye AL MENOS 2-3 ejemplos prácticos de uso en inglés
 4. Usa un tono energético y educativo como profesor de TikTok
 5. Incluye un tip memorable para recordar
@@ -320,7 +320,7 @@ FORMATO JSON REQUERIDO:
   "video_title": "Título viral bilingüe ≤80 chars con curiosidad/reto/identidad",
   "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "hook": "Frase inicial que capte atención (con palabra inglés en 'comillas')",
-  "full_script": "Script completo en español con palabras inglés en 'comillas simples'. Debe fluir naturalmente para ser leído en voz alta y respetar el número de palabras indicado arriba.",
+  "full_script": "Script completo en español con todo el inglés entre [[dobles corchetes]]. Debe fluir naturalmente para ser leído en voz alta y respetar el número de palabras indicado arriba.",
   "english_phrases": ["lista", "de", "palabras", "inglés", "usadas"],
   "translations": {{"palabra_ingles": "traduccion_español"}},
   "tip": "Tip memorable para recordar",
@@ -629,10 +629,13 @@ REGLAS:
    palabra en inglés debe decirse TRES veces en total, cada una como su
    propia oración corta y separada, para que el estudiante pueda repetirla
    en la pausa. Escríbelo así:
-     "... Escucha y repite. '{word}'. Otra vez. '{word}'. Una vez más. '{word}'."
+     "... Escucha y repite. [[{word}]]. Otra vez. [[{word}]]. Una vez más. [[{word}]]."
    NO escribas las tres seguidas en una sola oración.
 4c. Incluye UNA frase de ejemplo en inglés que use la palabra en contexto,
-   y su traducción al español.
+   y su traducción al español. La frase inglesa COMPLETA va entre [[ ]]:
+   "[[I have a meeting on Wednesday]]", nunca "I have a [[meeting on Wednesday]]".
+4d. En full_script todo el inglés va entre [[dobles corchetes]]; lo de fuera lo lee la voz
+   en español. La fonética simplificada (ej. "WENZ-day") NO es inglés: va sin corchetes.
 5. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "Llevas toda tu vida diciendo '{word}' MAL 😬"
 6. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
 7. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
@@ -646,7 +649,7 @@ FORMATO JSON REQUERIDO:
   "phonetic": "Pronunciación fonética simplificada en mayúsculas",
   "common_mistake": "Error de pronunciación común",
   "tip": "Tip para recordar la pronunciación",
-  "full_script": "Script narrado con la palabra, error común, pronunciación correcta y tip.",
+  "full_script": "Script narrado con la palabra, error común, pronunciación correcta y tip; todo el inglés entre [[ ]].",
   "translation": "traducción de la palabra",
   "hashtags": ["#Pronunciacion", "#AprendeIngles", "#LearnEnglish", "#SpeakEnglish", "#PronunciacionIngles", "#InglesParaHispanohablantes", "#EstudiaIngles", "#InglesFacil", "#EnglishPractice", "#AprenderIngles", "#InglesDiario", "#HablarIngles"]
 }}
@@ -1095,6 +1098,9 @@ def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None
         # desynchronise. Restore them in the captured text.
         quoted = [q.replace(_CONTRACTION, "'")
                   for q in re.findall(r"'([^']+)'", full_script)]
+        # STEP 76 §1: [[marked]] English is English by the author's say-so.
+        from audio_tags import MARKER
+        quoted += [m.replace(_CONTRACTION, "'").strip(" '") for m in MARKER.findall(full_script)]
 
         current_phrases = set(p.lower() for p in script["english_phrases"])
         found_phrases = set(q.lower().strip() for q in quoted)

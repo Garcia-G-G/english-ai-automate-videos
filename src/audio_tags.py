@@ -61,11 +61,21 @@ def is_tag(token: str) -> bool:
     return bool(TAG_RE.fullmatch(token.strip()))
 
 
+#: STEP 76 §1: «[[meeting on Wednesday]]» marks English for the segmenter. Not an audio
+#: tag: TAG_RE would eat its inner «[meeting on Wednesday]» and leave «[]» on screen.
+MARKER = re.compile(r"\[\[(.+?)\]\]", re.S)
+
+
+def unmark(text: str) -> str:
+    """The text with every ``[[x]]`` replaced by ``x`` (what is drawn and what a non-segmenting voice reads)."""
+    return MARKER.sub(r"\1", text) if text and "[[" in text else text
+
+
 def strip_tags(text: str) -> str:
-    """The same text with every tag removed and spacing tidied."""
+    """The same text with every tag removed and spacing tidied (English markers unwrapped)."""
     if not text or "[" not in text:
         return text
-    return re.sub(r"\s{2,}", " ", TAG_RE.sub("", text)).strip()
+    return re.sub(r"\s{2,}", " ", TAG_RE.sub("", unmark(text))).strip()
 
 
 def unknown_tags(text: str) -> list:
