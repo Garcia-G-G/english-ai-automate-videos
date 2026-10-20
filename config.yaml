@@ -430,7 +430,7 @@ character:
 upload:
   # Platforms to upload to (requires API keys in .env)
   platforms:
-    - tiktok
+    # - tiktok   # STEP 73: uploaded by hand (Subir → «Preparar para TikTok») until the API can post
     - youtube
     # - instagram  # Reels through the Page: FB_PAGE_ID/FB_PAGE_TOKEN (see meta_publish below)
     # - facebook   # Page Reels via FB_PAGE_ID/FB_PAGE_TOKEN

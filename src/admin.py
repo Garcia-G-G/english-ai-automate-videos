@@ -1570,6 +1570,43 @@ def note_setup_failure(pending: set, platform: str, result) -> Optional[str]:
             f"ejecuta `python3 tools/meta_publish.py setup-check`.")
 
 
+def _upload_platforms() -> list:
+    """config.yaml upload.platforms, as main.py reads it."""
+    import yaml
+    try:
+        with open(ROOT / "config.yaml", encoding="utf-8") as f:
+            return (yaml.safe_load(f) or {}).get("upload", {}).get("platforms", []) or []
+    except (OSError, yaml.YAMLError):
+        return []
+
+
+def tiktok_caption(title: str, description: str, hashtags) -> str:
+    """STEP 73 §4: the text Garcia pastes in the TikTok app, ≤ 2200 characters."""
+    from publishers.common import compose_caption
+    return compose_caption("\n\n".join(p for p in (title, description) if p), hashtags, limit=2200)
+
+
+def prepare_for_tiktok(video_path, caption: str, run=subprocess.run) -> None:
+    """Reveal the MP4 in Finder and put the caption on the clipboard (macOS)."""
+    run(["open", "-R", str(video_path)], check=True)
+    run(["pbcopy"], input=caption, text=True, check=True)
+
+
+def record_manual_tiktok(artifact: str, video_path, caption: str) -> dict:
+    """A TikTok upload done by hand, recorded so the queue and the stats count it."""
+    from publication_log import ATTEMPT_MANUAL, record_attempt
+    return record_attempt(artifact=artifact, platform="tiktok", status=ATTEMPT_MANUAL,
+                          video_path=str(video_path), detail=caption)
+
+
+def manual_tiktok_row(artifact: str, attempts) -> Optional[dict]:
+    """The latest manual TikTok record for this artifact, or None."""
+    from publication_log import ATTEMPT_MANUAL
+    rows = [r for r in attempts if r.get("artifact") == artifact and r.get("platform") == "tiktok"
+            and r.get("status") == ATTEMPT_MANUAL]
+    return rows[-1] if rows else None
+
+
 def _guarded_upload_unlocked(manager, artifact: str, platform: str, video_path: str,
                              **kwargs):
     """manager.upload, with the attempt persisted before a byte is sent.
@@ -3173,6 +3210,10 @@ elif page == "Upload":
     for col, platform in zip(platform_cols, platforms):
         with col:
             is_configured = bool(os.getenv(platform["key"], ""))
+            if platform["api"] == "tiktok":
+                # STEP 73: TikTok cannot authenticate yet; it is uploaded by hand
+                # (buttons per video) until config.yaml upload.platforms names it again.
+                is_configured = is_configured and "tiktok" in _upload_platforms()
             platform_status[platform["name"]] = is_configured
             badge_class = "status-connected" if is_configured else "status-disconnected"
             badge_text = "CONNECTED" if is_configured else "NOT CONFIGURED"
@@ -3495,6 +3536,37 @@ elif page == "Upload":
                                  help="Move back to pending"):
                         unapprove_video(video['path'])
                         st.rerun()
+
+                # STEP 73 §4: TikTok is uploaded by hand from the app; this hands over the
+                # file and the text, and records the upload so the queue and stats know.
+                _tk_done = manual_tiktok_row(video["name"], _attempts)
+                tk_cols = st.columns(2)
+                with tk_cols[0]:
+                    if st.button("🎵 Preparar para TikTok", key=f"tkprep_{video['name']}", width="stretch",
+                                 help="Muestra el MP4 en Finder y copia el texto de TikTok"):
+                        _tk = resolve_upload_metadata(video["name"], script, "tiktok",
+                                                      video.get("type", "educational"), category,
+                                                      st.session_state)
+                        try:
+                            prepare_for_tiktok(video["path"], tiktok_caption(
+                                _tk["title"], _tk["description"], _tk["hashtags"]))
+                            st.toast("Texto copiado. El vídeo está seleccionado en Finder.")
+                        except (OSError, subprocess.CalledProcessError) as e:
+                            st.error(f"No se pudo preparar para TikTok: {e}")
+                with tk_cols[1]:
+                    if _tk_done:
+                        st.caption(f"✅ Subido a TikTok a mano · {_tk_done.get('at', '')[:16].replace('T', ' ')}")
+                    elif st.button("✅ Marcar como subido a mano", key=f"tkmanual_{video['name']}",
+                                   width="stretch", help="Registra que lo subiste a TikTok desde la app"):
+                        _tk = resolve_upload_metadata(video["name"], script, "tiktok",
+                                                      video.get("type", "educational"), category,
+                                                      st.session_state)
+                        try:
+                            record_manual_tiktok(video["name"], video["path"], tiktok_caption(
+                                _tk["title"], _tk["description"], _tk["hashtags"]))
+                            st.rerun()
+                        except OSError as e:
+                            st.error(f"No se pudo registrar la subida: {e}")
 
                 st.markdown("---")
 

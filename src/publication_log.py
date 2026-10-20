@@ -76,6 +76,7 @@ ATTEMPT_SESSION = "session"      # a resumable session URI exists
 ATTEMPT_PUBLISHED = "published"  # confirmed live, ledger row written
 ATTEMPT_FAILED = "failed"        # confirmed NOT live; safe to retry
 ATTEMPT_UNKNOWN = "unknown"      # could not be determined; needs a human
+ATTEMPT_MANUAL = "manual"        # the operator uploaded it by hand (TikTok, STEP 73 §4)
 
 
 #: The real files, captured at import before any test can monkeypatch them.
