@@ -195,7 +195,9 @@ def test_the_timeline_producers_all_absorb_marks(module, marker):
 
 
 def test_the_provider_and_whisper_helper_absorb_marks_too():
-    assert "merge_punctuation_tokens" in (
+    # The provider's single-call path transcribes through asr_timings (STEP 76 §5), which
+    # absorbs the marks itself (test_the_timeline_producers_all_absorb_marks).
+    assert "transcribe_words" in (
         ROOT / "src" / "tts_providers" / "elevenlabs_provider.py").read_text()
     assert "merge_punctuation_tokens" in (
         ROOT / "src" / "tts_openai.py").read_text()

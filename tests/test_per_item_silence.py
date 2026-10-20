@@ -58,14 +58,16 @@ def _silence_for(el, monkeypatch, beep, tmp_path, n_items):
         lambda text=None, output_path=None, voice_id=None, **k: (
             shutil.copy(beep, output_path), output_path)[1])
 
+    # Silences are asked for through the one timeline (STEP 76 §6), so that is where they are counted.
+    import tts_common
     total = {"s": 0.0}
-    real = el.generate_silence
+    real = tts_common.Timeline.add_silence
 
-    def spy(duration, path, *args, **kwargs):
+    def spy(self, duration):
         total["s"] += duration
-        return real(duration, path, *args, **kwargs)
+        return real(self, duration)
 
-    monkeypatch.setattr(el, "generate_silence", spy)
+    monkeypatch.setattr(tts_common.Timeline, "add_silence", spy)
 
     script = {"type": "quiz", **_item(1),
               "questions": [_item(i) for i in range(1, n_items + 1)],

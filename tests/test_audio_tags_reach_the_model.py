@@ -155,9 +155,11 @@ def test_a_real_quiz_hands_its_tags_to_the_api(tmp_path, monkeypatch, beep):
 
     monkeypatch.setattr(el, "generate_segment_audio", fake_segment)
 
-    script = json.loads(
-        (ROOT / "content" / "queue" / "quiz"
-         / "gr004_first_conditional.json").read_text(encoding="utf-8"))
+    # The script leaves the queue for _done/ once the panel has produced it; either place.
+    queue = ROOT / "content" / "queue"
+    script_path = next(p for p in (queue / "quiz" / "gr004_first_conditional.json",
+                                   queue / "_done" / "gr004_first_conditional.json") if p.exists())
+    script = json.loads(script_path.read_text(encoding="utf-8"))
 
     el.generate_quiz_audio_segmented(script, str(tmp_path / "q.mp3"))
 
