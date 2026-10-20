@@ -101,20 +101,36 @@ def test_the_gate_judges_the_final_duration_with_the_outro(monkeypatch, tmp_path
     assert res["final_duration"]["measured_seconds"] == pytest.approx(ceiling + 2.0)
 
 
-def test_a_type_without_its_own_window_is_warned_not_rejected(monkeypatch, tmp_path):
+def _finalize_how_do_you_say(monkeypatch, tmp_path, body_seconds):
     import pipeline
     import qa_gate
     from video import outro as O
     monkeypatch.setattr(qa_gate, "analyze", lambda p: {"artifact": "x", "video_type": "how_do_you_say",
-                                                       "measured_duration": 78.7})
+                                                       "measured_duration": body_seconds})
     monkeypatch.setattr(qa_gate, "verdict", lambda r: {"verdict": "PASS", "blocking_flags": []})
     monkeypatch.setattr(O, "select_variant", lambda seed=None: {"id": "v"})
     monkeypatch.setattr(O, "append_outro", lambda p, v, output_path=None:
                         Path(output_path).write_bytes(b"y") or output_path)
     monkeypatch.setattr(O, "measure_seam", lambda *a, **k: None)
-    monkeypatch.setattr(qa_gate, "probe_duration", lambda p: 4.0 if "outro" in p and "tmp" not in p else 78.7)
+    monkeypatch.setattr(pipeline, "_loudness_check", lambda *a, **k: None)
+    monkeypatch.setattr(qa_gate, "probe_duration",
+                        lambda p: 4.0 if "outro" in p and "tmp" not in p else body_seconds)
     vid = tmp_path / "v.mp4"
     vid.write_bytes(b"x")
-    res = pipeline.finalize_video(vid, tmp_path / "a.json")
+    return pipeline.finalize_video(vid, tmp_path / "a.json")
+
+
+def test_how_do_you_say_has_its_own_window_and_is_rejected_outside_it(monkeypatch, tmp_path):
+    """STEP 76 §0: 66-86 s aimed, 55-95 s accepted, with the outro."""
+    ok = _finalize_how_do_you_say(monkeypatch, tmp_path, 78.7)              # 82.7 s, an approved render
+    assert ok["gate"] == "PASS" and ok["final_duration"]["blocks"] is True
+    long = _finalize_how_do_you_say(monkeypatch, tmp_path, 92.0)            # 96 s
+    assert long["gate"] == "REJECT" and long["blocking_flags"][0].startswith("final_duration:")
+
+
+def test_a_type_without_its_own_window_is_warned_not_rejected(monkeypatch, tmp_path):
+    import duration_spec
+    monkeypatch.setattr(duration_spec, "declares_window", lambda t: False)
+    res = _finalize_how_do_you_say(monkeypatch, tmp_path, 92.0)
     assert res["gate"] == "PASS" and res["outro_appended"] is True
     assert res["final_duration"]["status"] == "OUT_OF_BAND" and res["final_duration"]["blocks"] is False
