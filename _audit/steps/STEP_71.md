@@ -2,7 +2,7 @@
 
 Context: Garcia approved brand v3 («cuaderno + Bubi») and already uses it on every network. The brand files were replaced in place, same names, by the commit that adds this STEP: `assets/branding/english-unlimited/{simbolo_512.png, logo_horizontal.png, perfil_*, banner_youtube_2560x1440.png, guia_de_marca.*}`, `assets/branding/{app_icon.png, tiktok_profile.png}`, and `brand.json` (version "v3 cuaderno + Bubi", colour `coral`, a `mascot` block). Mocks: `_audit/mocks/STEP71/mock_cierre_short.png` and `mock_cierre_leccion.png`.
 
-Do this after STEP 70. Section by section: tests and one pushed commit per section; stop at the first failure and report. Cost must stay $0: no TTS call anywhere in this STEP.
+Do this after STEP 72. Section by section: tests and one pushed commit per section; stop at the first failure and report. Cost must stay $0: no TTS call anywhere in this STEP.
 
 ## §1 Shorts outro card (src/video/outro.py)
 - `simbolo_512.png` is now Bubi waving (668 px, transparent, with arms and the EN badge). At the current `SYMBOL_PX = 170` he is too small and his arm runs off the card. Follow the mock: Bubi about 440 px wide, centred, standing on the card's top edge so his body overlaps the edge by ~70 px; move the card down as the mock does (card centre ~60 px below the frame centre) and keep the card's text where it is relative to the card.
@@ -19,9 +19,8 @@ Do this after STEP 70. Section by section: tests and one pushed commit per secti
 - `git grep -n "simbolo_512\|logo_horizontal\|perfil_1024\|app_icon"` and list every consumer; each one either uses the new files as they are or is fixed here. The owl in `assets/characters/owl` is not used by any renderer; leave it.
 - The panel (if it shows `app_icon.png` or the logo anywhere): one screenshot with `tools/ui/shoot_pages.py` of the page that shows it.
 
-## §4 Queue housekeeping, then push
-- The working tree shows `bv023_desayuno.json` and `bv024_postres.json` moved from `content/queue/how_do_you_say/` to `content/queue/_done/`. If both were produced (artifact folders exist in `output/artifacts/`), commit the move; if not, report and leave them.
-- Push.
+## §4 Push
+- The queue moves were already committed in STEP 72 §0 (53fcdab). Just push.
 
 ## Report
 Per section: commit hash, tests and results, the stills' paths. End with `git log --oneline -8` and `git status --short`. Then stop.
