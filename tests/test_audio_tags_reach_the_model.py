@@ -80,6 +80,10 @@ def test_every_tag_the_corpus_uses_is_one_the_model_knows():
     """An unknown tag is a write-time defect: the model reads it as text."""
     offenders = []
     for path in sorted((ROOT / "content").rglob("*.json")):
+        # «Hecho con Claude» marks English as [[...]] (as the Manim lessons do), not v3
+        # audio tags; the series gets its own validator with its renderer.
+        if (ROOT / "content" / "hecho_con_claude") in path.parents:
+            continue
         try:
             blob = path.read_text(encoding="utf-8")
         except OSError:
