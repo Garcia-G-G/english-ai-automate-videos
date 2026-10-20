@@ -1,0 +1,45 @@
+{
+  "id": "hc_p002",
+  "style": "poster",
+  "angle": "errores",
+  "title": "«People is»: por qué está mal",
+  "hook_text": "PEOPLE IS → PEOPLE ARE",
+  "poster": {
+    "error_no": "016",
+    "big_wrong": "PEOPLE IS",
+    "big_right": "PEOPLE ARE",
+    "examples": [
+      "People are nice here. — La gente es amable aquí.",
+      "A person is… / People are…"
+    ]
+  },
+  "correction": {
+    "wrong": "People is",
+    "right": "People are",
+    "rule": "«People» es plural: una persona = a person; varias = people"
+  },
+  "voice": [
+    "En español «la gente» es singular: la gente es amable. Por eso decimos [[people is]]. Y está mal.",
+    "En inglés [[people]] es plural, como «las personas». Va con [[are]]: [[People are nice here]].",
+    "Una sola persona es [[a person]]: [[A person is]]. Varias: [[people are]].",
+    "Lo mismo con [[police]]: [[The police are coming]]. Y con [[family]] en inglés británico a veces también.",
+    "Reto: corrige esta frase: [[People is talking about it]]. Escríbela bien abajo."
+  ],
+  "challenge": {
+    "prompt": "Corrige: «People is talking about it»",
+    "answer": "People are talking about it."
+  },
+  "caption": "Se dice «people are», no «people is». Por qué en inglés «people» es plural aunque en español «la gente» sea singular.",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "principiante",
+  "level_label": "Principiante · A1–A2",
+  "voice_words": 74
+}

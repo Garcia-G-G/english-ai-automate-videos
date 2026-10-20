@@ -1,0 +1,55 @@
+{
+  "id": "hc_m005",
+  "style": "mensajes",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«Can you borrow me…?» y por qué suena raro",
+  "hook_text": "Le pedí su cargador así…",
+  "chat": {
+    "contact": "Liam · Dublín",
+    "messages": [
+      [
+        "me",
+        "Can you borrow me your charger? 🔋",
+        "error"
+      ],
+      [
+        "them",
+        "I can't borrow you anything 😅"
+      ],
+      [
+        "them",
+        "but I can LEND you it!"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "Can you borrow me…?",
+    "right": "Can you lend me…? / Can I borrow…?",
+    "rule": "Borrow = pedir prestado · Lend = prestar"
+  },
+  "voice": [
+    "Le pedí el cargador a mi amigo así: [[Can you borrow me your charger?]] Y no entendió.",
+    "En inglés hay dos verbos: [[borrow]] es pedir prestado y [[lend]] es prestar.",
+    "Si tú pides algo: [[Can I borrow your charger?]], «¿me prestas tu cargador?», desde tu lado.",
+    "Si lo pides desde el lado del otro: [[Can you lend me your charger?]]",
+    "Truco: [[borrow]] va hacia ti, [[lend]] sale de ti.",
+    "Reto: ¿cómo dirías «te presto mi libro»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Te presto mi libro»",
+    "answer": "I'll lend you my book."
+  },
+  "caption": "Borrow vs lend: «Can I borrow…?» o «Can you lend me…?», nunca «Can you borrow me…?». Con un chat de ejemplo.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 79
+}
