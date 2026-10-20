@@ -2451,12 +2451,9 @@ st.sidebar.markdown("---")
 page = st.session_state.current_page
 
 # Session state init
-if 'scheduler_enabled' not in st.session_state:
-    st.session_state.scheduler_enabled = False
 if 'scheduler_config' not in st.session_state:
     st.session_state.scheduler_config = {
         "videos_per_batch": 5,
-        "interval_minutes": 60,
         # All six, from the one list. Four were written out here by hand,
         # which is how fill_blank and pronunciation became unproducible.
         "types": scheduler_default_types(),
@@ -3830,13 +3827,6 @@ elif page == "Scheduler":
             value=st.session_state.scheduler_config["videos_per_batch"]
         )
 
-        interval = st.selectbox(
-            "Generation interval",
-            options=[15, 30, 60, 120, 240],
-            index=2,
-            format_func=lambda x: f"{x} min" if x < 60 else f"{x//60}h"
-        )
-
         st.write("**Video types:**")
         # One checkbox per type in VIDEO_TYPES. Four were written out here by
         # hand, so fill_blank and pronunciation could not be produced from the
@@ -3854,26 +3844,13 @@ elif page == "Scheduler":
         if st.button("💾 Save Config", width="stretch"):
             st.session_state.scheduler_config = {
                 "videos_per_batch": videos_per_batch,
-                "interval_minutes": interval,
                 "types": selected_types
             }
             st.success("Saved!")
 
     with col2:
         st.markdown('<div class="section-header">Control</div>', unsafe_allow_html=True)
-
-        if st.session_state.scheduler_enabled:
-            st.success("Scheduler is ACTIVE")
-            if st.button("Stop Scheduler", width="stretch"):
-                st.session_state.scheduler_enabled = False
-                st.rerun()
-        else:
-            st.warning("Scheduler is INACTIVE")
-            if st.button("Start Scheduler", type="primary", width="stretch"):
-                st.session_state.scheduler_enabled = True
-                st.rerun()
-
-        st.markdown("---")
+        # STEP 75 §1: «Start Scheduler» set a flag nothing read. Batches run from here.
         if st.button("🚀 Generate Batch Now", width="stretch"):
             if not selected_types:
                 st.error("Select at least one type!")
@@ -4028,112 +4005,37 @@ elif page == "Settings":
     # ── Video Config Tab ──
     with tab2:
         import yaml
-
-        CONFIG_PATH = ROOT / "config.yaml"
-
-        def load_config():
-            if CONFIG_PATH.exists():
-                with open(CONFIG_PATH, 'r') as f:
-                    return yaml.safe_load(f) or {}
-            return {}
-
-        def save_config(config):
-            with open(CONFIG_PATH, 'w') as f:
-                yaml.dump(config, f, default_flow_style=False)
-
-        config = load_config()
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            # THE BACKGROUND CONTROLS ARE GONE. They wrote background_mode
-            # and default_background, the two keys the config-pin tier read,
-            # and the preset they chose was one of 76 flat colour fields.
-            # Backgrounds are footage now and there is nothing here to pick.
-            st.caption("Backgrounds are Pexels footage — there is nothing to "
-                       "configure. A video that cannot get footage fails "
-                       "rather than rendering a colour.")
-
-            video_width = st.number_input("Width", value=config.get("video", {}).get("width", 1080),
-                                          min_value=480, max_value=2160)
-
-        with col2:
-            video_height = st.number_input("Height", value=config.get("video", {}).get("height", 1920),
-                                            min_value=854, max_value=3840)
-            video_fps = st.number_input("FPS", value=config.get("video", {}).get("fps", 30),
-                                        min_value=24, max_value=60)
-
-            default_type = st.selectbox("Default Video Type", options=VIDEO_TYPES,
-                                        index=VIDEO_TYPES.index(config.get("content", {}).get("default_type", "educational"))
-                                        if config.get("content", {}).get("default_type", "educational") in VIDEO_TYPES else 0)
-
-        if st.button("💾 Save Video Config", type="primary", width="stretch"):
-            new_config = {
-                "video": {
-                    "width": video_width,
-                    "height": video_height,
-                    "fps": video_fps,
-                    "animation_style": config.get("video", {}).get("animation_style", "clean_pop"),
-                },
-                "audio": config.get("audio", {}),
-                "output": config.get("output", {
-                    "videos": "output/video",
-                    "audio": "output/audio",
-                    "frames": "output/frames"
-                }),
-                "content": {
-                    "default_type": default_type,
-                },
-            }
-            save_config(new_config)
-            st.success("Video config saved!")
-
+        config = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8")) or {}
+        # STEP 75 §1: the width/height/fps/style, output.* and default-type editors were
+        # removed; nothing reads those keys. Backgrounds are Pexels footage.
+        st.caption("Nothing here is configurable from the panel: size, fps and backgrounds are "
+                   "fixed by the renderers. Edit config.yaml for anything else.")
         with st.expander("Raw config.yaml"):
-            st.code(yaml.dump(config, default_flow_style=False), language="yaml")
+            st.code((ROOT / "config.yaml").read_text(encoding="utf-8"), language="yaml")
 
     # ── Audio Config Tab ──
     with tab3:
         import yaml
-
-        CONFIG_PATH = ROOT / "config.yaml"
-        config = {}
-        if CONFIG_PATH.exists():
-            with open(CONFIG_PATH, 'r') as f:
-                config = yaml.safe_load(f) or {}
-
-        audio_config = config.get("audio", {})
-
+        audio_config = (yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8")) or {}).get("audio", {})
+        # Only the four keys tts_bilingual reads. provider, voice_id, model, humanize and
+        # speaker_boost had editors here and no reader (STEP 75 §1).
+        st.caption("Voice and model come from .env (ELEVENLABS_VOICE_ID, segment_model).")
         col1, col2 = st.columns(2)
         with col1:
-            provider = st.selectbox("TTS Provider",
-                                    ["elevenlabs", "openai", "google", "edge"],
-                                    index=["elevenlabs", "openai", "google", "edge"].index(
-                                        audio_config.get("provider", "elevenlabs")))
-            voice_id = st.text_input("Voice ID", value=audio_config.get("voice_id", "default"))
-            model = st.selectbox("Model", ["eleven_v3", "eleven_multilingual_v2", "eleven_monolingual_v1"],
-                                 index=0)
-
+            global_speed = st.slider("Global Speed", 0.5, 2.0, float(audio_config.get("global_speed", 1.0)), 0.05)
+            stability = st.slider("Stability", 0.0, 1.0, float(audio_config.get("stability", 0.50)), 0.05)
         with col2:
-            global_speed = st.slider("Global Speed", 0.5, 2.0, audio_config.get("global_speed", 1.0), 0.05)
-            stability = st.slider("Stability", 0.0, 1.0, audio_config.get("stability", 0.50), 0.05)
-            similarity = st.slider("Similarity Boost", 0.0, 1.0, audio_config.get("similarity_boost", 0.80), 0.05)
-            style = st.slider("Style", 0.0, 1.0, audio_config.get("style", 0.05), 0.05)
+            similarity = st.slider("Similarity Boost", 0.0, 1.0, float(audio_config.get("similarity_boost", 0.80)), 0.05)
+            style = st.slider("Style", 0.0, 1.0, float(audio_config.get("style", 0.05)), 0.05)
 
         if st.button("💾 Save Audio Config", type="primary", width="stretch"):
-            config["audio"] = {
-                "provider": provider,
-                "voice_id": voice_id,
-                "model": model,
-                "global_speed": global_speed,
-                "stability": stability,
-                "similarity_boost": similarity,
-                "style": style,
-                "speaker_boost": audio_config.get("speaker_boost", True),
-                "humanize": audio_config.get("humanize", True),
-            }
-            with open(ROOT / "config.yaml", 'w') as f:
-                yaml.dump(config, f, default_flow_style=False)
-            st.success("Audio config saved!")
+            from config_edit import patch_config
+            try:
+                saved = patch_config({("audio", "global_speed"): global_speed, ("audio", "stability"): stability,
+                                      ("audio", "similarity_boost"): similarity, ("audio", "style"): style})
+                st.success(f"Audio config saved (copia: {saved.name}).")
+            except (OSError, KeyError, TypeError, ValueError) as e:
+                st.error(f"No se guardó nada: {e}")
 
     # STEP 74 §3: the same cleanup as `make clean`; the table is `make clean-dry`.
     st.markdown('<div class="section-header">Limpiar</div>', unsafe_allow_html=True)

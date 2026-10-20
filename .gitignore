@@ -107,3 +107,6 @@ client_secret*.json
 
 # Layout-pin inputs: versioned on purpose (STEP 74)
 !tests/fixtures/layout/*.mp3
+
+# config.yaml backups written by the panel's Save (STEP 75)
+config.yaml.bak-*
