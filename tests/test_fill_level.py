@@ -178,4 +178,4 @@ def test_each_answer_is_the_whole_sentence_in_english_through_the_onset_gate(tmp
     texts = {s["id"]: s["text"] for s in out["segments"]}
     assert texts["answer_1"] == "I live in Madrid." and texts["answer_10"] == "It's up to you."
     assert not any("____" in c for c in calls)
-    assert len(gated) == 10                          # every English clip, and only those
+    assert sum("answer_" in p for p in gated) == 10 and any("intro" in p for p in gated)   # every clip (STEP 76 §3)

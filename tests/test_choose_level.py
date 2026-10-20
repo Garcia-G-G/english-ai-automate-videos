@@ -164,4 +164,4 @@ def test_each_answer_is_the_sentence_with_the_right_option(tmp_path, monkeypatch
     out = TE.generate_level_audio_segmented(_script(), str(tmp_path / "a.mp3"))
     texts = {s["id"]: s["text"] for s in out["segments"]}
     assert texts["answer_1"] == "I need to do my homework." and texts["answer_10"] == "She makes the bed every morning."
-    assert len(gated) == 10
+    assert sum("answer_" in p for p in gated) == 10 and any("intro" in p for p in gated)   # Spanish too (STEP 76 §3)

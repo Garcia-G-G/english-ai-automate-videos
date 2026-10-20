@@ -37,6 +37,14 @@ ONSET_RETRIES = 2
 #: -6.5 is the midpoint of that gap. Re-measure with tools/onset_calibrate.py.
 ONSET_START_DB = {"default": -30.0, "eleven_v3": -6.5}
 
+#: STEP 76 §3, by ear: on eleven_v3 the start-to-peak limit above let through the takes the
+#: owner hears as cut in (first 10 ms at −19…−16 dBFS, start-to-peak −13…−9 dB). The first
+#: 10 ms level separates them: tools/onset_calibrate.py --on-disk _audit/onset_eleven_v3 put
+#: 30 stored takes on a continuum with the gap between −21.7 and −19.0 dBFS; −20.9 is its
+#: middle. It flags 10 of 30 (the old limit flagged 3). shortcut: one script's takes; re-run
+#: the calibration when the owner flags a word on another script.
+ONSET_FIRST_DBFS = {"eleven_v3": -20.9}
+
 #: Gap after a trimmed clip, by the mark that ends it (seconds).
 GAP_AFTER = {".": 0.30, "?": 0.30, "!": 0.30, ":": 0.20, ",": 0.14, ";": 0.18}
 DEFAULT_GAP = 0.05          # a language switch mid-sentence: pad + gap + pad ≈ 130 ms
@@ -153,6 +161,14 @@ def doubled_onset(x):
     return None
 
 
+def first_dbfs(x, ms: float = 10.0) -> float:
+    """RMS level of a clip's first `ms`, in dBFS: a clip that rises from the noise floor sits
+    far below speech; one that starts mid-sound («cut-in») sits at speech level."""
+    n = max(1, int(RATE * ms / 1000))
+    head = x[:n]
+    return round(float(20 * np.log10(np.sqrt(np.mean(head ** 2)) + 1e-9)), 1) if head.size else -120.0
+
+
 # ── the gate ─────────────────────────────────────────────────────────
 
 def onset_start_limit(model: Optional[str] = None) -> float:
@@ -165,14 +181,20 @@ def onset_values(path) -> Dict:
     e = env_db(x)
     start, _ = onset(x)
     if start is None:
-        return {"start_db": None, "fragment": None, "doubled_onset": None}
+        return {"start_db": None, "fragment": None, "doubled_onset": None, "first_dbfs": first_dbfs(x)}
     return {"start_db": round(float(e[0] - e.max()), 1), "fragment": fragment(e, start, e.max()),
-            "doubled_onset": doubled_onset(x)}
+            "doubled_onset": doubled_onset(x), "first_dbfs": first_dbfs(x)}
 
 
 def onset_clean(values: Dict, model: Optional[str] = None) -> bool:
-    return (values["start_db"] is not None and values["start_db"] < onset_start_limit(model)
-            and values["fragment"] is None and values["doubled_onset"] is None)
+    """No fragment, no doubled onset, and a quiet start: under the model's first-10 ms limit
+    where it has one (eleven_v3), else under its start-to-peak limit."""
+    if values["start_db"] is None or values["fragment"] is not None or values["doubled_onset"] is not None:
+        return False
+    first_limit = ONSET_FIRST_DBFS.get(model or "default")
+    if first_limit is not None and values.get("first_dbfs") is not None:
+        return values["first_dbfs"] < first_limit
+    return values["start_db"] < onset_start_limit(model)
 
 
 def cleanest_take(takes: List[Dict], model: Optional[str] = None) -> int:

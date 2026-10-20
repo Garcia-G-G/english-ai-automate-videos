@@ -1,0 +1,24 @@
+30 clips
+  -86 …  -84 dBFS  # 1
+  -84 …  -82 dBFS  # 1
+  -82 …  -80 dBFS  ## 2
+  -78 …  -76 dBFS  # 1
+  -66 …  -64 dBFS  # 1
+  -56 …  -54 dBFS  # 1
+  -48 …  -46 dBFS  # 1
+  -46 …  -44 dBFS  # 1
+  -36 …  -34 dBFS  # 1
+  -34 …  -32 dBFS  # 1
+  -32 …  -30 dBFS  # 1
+  -30 …  -28 dBFS  ### 3
+  -26 …  -24 dBFS  # 1
+  -24 …  -22 dBFS  ### 3
+  -22 …  -20 dBFS  # 1
+  -20 …  -18 dBFS  ## 2
+  -18 …  -16 dBFS  ## 2
+  -16 …  -14 dBFS  ## 2
+  -14 …  -12 dBFS  ## 2
+  -10 …   -8 dBFS  # 1
+   -8 …   -6 dBFS  # 1
+
+proposed threshold: -20.9 dBFS — flags 10, keeps 20

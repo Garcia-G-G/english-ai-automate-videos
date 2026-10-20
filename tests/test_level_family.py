@@ -248,7 +248,8 @@ def _rig(tmp_path, monkeypatch, values):
         calls.append(text)
         _tone(output_path, total=0.9 + 0.1 * calls.count(text))
     monkeypatch.setattr(TE, "generate_segment_audio", fake)
-    monkeypatch.setattr(TE, "_onset_values", lambda path: next(takes, CLEAN))
+    # Every clip is gated (STEP 76 §3); the scripted takes belong to prompt_1, the rest are clean.
+    monkeypatch.setattr(TE, "_onset_values", lambda path: next(takes, CLEAN) if "prompt_1." in path else CLEAN)
     monkeypatch.setattr(TE, "DEFAULT_VOICE_ID", "test-voice")
     monkeypatch.setattr(TE, "LEVEL_TIER_CACHE", tmp_path / "tiers")
     import tts_common

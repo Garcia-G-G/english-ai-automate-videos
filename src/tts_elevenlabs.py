@@ -2132,9 +2132,8 @@ def generate_level_audio_segmented(
         def speak(seg_id: str, text: str, lang: str, segment_type: str) -> str:
             nonlocal retakes
             path = os.path.join(temp_dir, f"{seg_id}.mp3")
-            if lang != "en":
-                request(text, path, segment_type)
-            else:
+            # Every clip is gated, Spanish too (STEP 76 §3): a cut-in start is as audible there.
+            if True:
                 takes, files = [], []
                 for take in range(1 + LEVEL_ONSET_RETRIES):
                     files.append(os.path.join(temp_dir, f"{seg_id}.take{take}.mp3"))

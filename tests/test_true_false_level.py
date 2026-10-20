@@ -169,10 +169,13 @@ def test_the_audio_is_spanish_only_with_a_four_second_think(tmp_path, monkeypatc
     calls = []
     monkeypatch.setattr(TE, "generate_segment_audio",
                         lambda text, output_path, **kw: calls.append(text) or _tone(output_path))
-    monkeypatch.setattr(TE, "_onset_values", lambda path: pytest.fail("no English clip to gate"))
+    gated = []
+    monkeypatch.setattr(TE, "_onset_values",                      # Spanish clips are gated too (STEP 76 §3)
+                        lambda path: gated.append(path) or {"start_db": -40.0, "fragment": None, "doubled_onset": None})
     monkeypatch.setattr(TE, "DEFAULT_VOICE_ID", "test-voice")
     monkeypatch.setattr(TE, "LEVEL_TIER_CACHE", tmp_path / "tiers")
     out = TE.generate_level_audio_segmented(_script(), str(tmp_path / "a.mp3"))
+    assert any("answer_" in p for p in gated) and any("intro" in p for p in gated)
 
     order = ["intro"]
     for i in range(1, 11):
