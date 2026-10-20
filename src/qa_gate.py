@@ -49,6 +49,7 @@ import logging
 import os
 import re
 import subprocess
+import proc
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -217,14 +218,14 @@ _DUR_RE = re.compile(r"Duration:\s*(\d+):(\d+):([\d.]+)")
 # ── ffmpeg primitives ────────────────────────────────────────────────
 
 def _run(cmd: List[str]) -> str:
-    return subprocess.run(cmd, capture_output=True, text=True).stderr
+    return proc.run(cmd, capture_output=True, text=True, timeout=proc.FFMPEG).stderr
 
 
 def probe_duration(path: str) -> Optional[float]:
-    r = subprocess.run(
+    r = proc.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration",
          "-of", "csv=p=0", path],
-        capture_output=True, text=True,
+        capture_output=True, text=True, timeout=proc.FFPROBE
     )
     try:
         return float(r.stdout.strip())

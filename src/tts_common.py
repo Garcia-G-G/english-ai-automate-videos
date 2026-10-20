@@ -13,6 +13,7 @@ import logging
 import os
 import re
 import subprocess
+import proc as _proc   # `proc` is a local name for results in this module
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -220,7 +221,7 @@ def measure_speech_end(audio_path: str, threshold_db: float = None,
 
     duration = get_audio_duration(audio_path)
     try:
-        proc = subprocess.run(
+        proc = _proc.run(
             ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
              f"silencedetect=noise={threshold_db}dB:d={min_dur}",
              "-f", "null", "-"],
@@ -299,7 +300,7 @@ def measure_first_take_end(audio_path: str, threshold_db: float = None,
     threshold_db = SPEECH_EDGE_THRESHOLD_DB if threshold_db is None else threshold_db
     try:
         duration = get_audio_duration(audio_path)
-        proc = subprocess.run(
+        proc = _proc.run(
             ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
              f"silencedetect=noise={threshold_db}dB:d={min_gap}",
              "-f", "null", "-"],
@@ -347,7 +348,7 @@ def clamp_take_gap(audio_path: str, max_gap: float = TAKE_GAP_S) -> dict:
            "first_end": None}
     try:
         duration = get_audio_duration(audio_path)
-        proc = subprocess.run(
+        proc = _proc.run(
             ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
              f"silencedetect=noise={SPEECH_EDGE_THRESHOLD_DB}dB:d=0.08",
              "-f", "null", "-"],
@@ -386,7 +387,7 @@ def clamp_take_gap(audio_path: str, max_gap: float = TAKE_GAP_S) -> dict:
              f"[0:a]atrim={cut_to:.3f},asetpts=PTS-STARTPTS[b];"
              f"[a][b]concat=n=2:v=0:a=1[out]")
     try:
-        proc = subprocess.run(
+        proc = _proc.run(
             ["ffmpeg", "-y", "-loglevel", "error", "-i", audio_path,
              "-filter_complex", chain, "-map", "[out]",
              "-acodec", "libmp3lame", "-q:a", "2", "-ar", "44100", "-ac", "1", tmp],
@@ -418,7 +419,7 @@ def measure_speech_start(audio_path: str, threshold_db: float = None,
     import numpy as np
 
     try:
-        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", audio_path, "-ac", "1",
+        raw = _proc.run(["ffmpeg", "-v", "error", "-i", audio_path, "-ac", "1",
                               "-ar", "44100", "-f", "s16le", "-"],
                              capture_output=True, timeout=60).stdout
     except (OSError, subprocess.SubprocessError):
@@ -474,7 +475,7 @@ def trim_clip_silence(audio_path: str, out_path: str = None) -> dict:
 
     tmp = f"{out_path}.trim.mp3"
     try:
-        proc = subprocess.run(
+        proc = _proc.run(
             ["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{start:.3f}",
              "-to", f"{end:.3f}", "-i", audio_path, "-c:a", "libmp3lame",
              "-q:a", "2", "-ar", "44100", "-ac", "1", tmp],
@@ -573,7 +574,7 @@ def shape_clip_lead_in(audio_path: str) -> bool:
         f"[v][n]amix=inputs=2:duration=first:normalize=0[out]"
     )
     try:
-        proc = subprocess.run(
+        proc = _proc.run(
             ["ffmpeg", "-y", "-loglevel", "error", "-i", str(audio_path),
              "-filter_complex", chain, "-map", "[out]",
              "-acodec", "libmp3lame", "-q:a", "2", "-ar", "44100", "-ac", "1",
@@ -606,7 +607,7 @@ def get_audio_duration(audio_path: str) -> float:
         '-of', 'default=noprint_wrappers=1:nokey=1',
         audio_path
     ]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    result = _proc.run(cmd, capture_output=True, text=True, timeout=30)
     raw = result.stdout.strip()
     if not raw:
         raise RuntimeError(f"ffprobe returned no duration for {audio_path}")
@@ -674,12 +675,12 @@ def generate_silence(duration: float, output_path: str,
         '-acodec', 'libmp3lame', '-q:a', '2',
         output_path
     ]
-    result = subprocess.run(cmd, capture_output=True, timeout=30)
+    result = _proc.run(cmd, capture_output=True, timeout=30)
     if result.returncode != 0 or not os.path.exists(output_path):
         # Falling back to silence is worse-sounding but never wrong; a gap
         # that fails to exist would desynchronise everything after it.
         logger.warning("silence: room tone failed, falling back to anullsrc")
-        subprocess.run([
+        _proc.run([
             'ffmpeg', '-y',
             '-f', 'lavfi', '-i', f'anullsrc=r={sample_rate}:cl={channels}',
             '-t', str(duration),
@@ -723,7 +724,7 @@ def concatenate_audio_files(audio_files: list, output_path: str,
             output_path
         ]
 
-    subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    _proc.run(cmd, capture_output=True, text=True, timeout=120)
 
     # Clean up concat list
     try:
@@ -1228,10 +1229,10 @@ def repair_truncated_tail(audio_path: str, out_path: str = None) -> dict:
         f"[v][n]concat=n=2:v=0:a=1[out]"
     )
     try:
-        subprocess.run(
+        _proc.run(
             ["ffmpeg", "-v", "error", "-y", "-i", str(audio_path),
              "-filter_complex", chain, "-map", "[out]", tmp],
-            check=True, capture_output=True)
+            check=True, capture_output=True, timeout=_proc.FFMPEG)
         os.replace(tmp, out_path)
     except Exception:                                       # noqa: BLE001
         logger.warning("tail: repair failed for %s; leaving the clip as it is",

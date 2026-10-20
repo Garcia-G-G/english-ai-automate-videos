@@ -15,6 +15,7 @@ import json
 import logging
 import os
 import subprocess
+import proc
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -132,9 +133,9 @@ def _rate(text: str) -> float:
 
 
 def probe(video_path: str) -> Dict:
-    done = subprocess.run(["ffprobe", "-v", "error", "-show_streams", "-show_format",
+    done = proc.run(["ffprobe", "-v", "error", "-show_streams", "-show_format",
                            "-of", "json", str(video_path)],
-                          capture_output=True, text=True, check=False)
+                          capture_output=True, text=True, check=False, timeout=proc.FFPROBE)
     if done.returncode:
         raise ReelSpecError(f"ffprobe could not read {video_path}: {done.stderr.strip()[:200]}")
     return json.loads(done.stdout)

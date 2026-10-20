@@ -23,6 +23,7 @@ import random
 import re
 import shutil
 import subprocess
+import proc
 import tempfile
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -197,8 +198,8 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
             # `spoken`, $0 (STEP 62 §4). Only a missing clip asks the TTS. After editing
             # a variant's `spoken`, delete assets/outro/<id>.mp4 to get the new voice
             # (one TTS call); force=True alone keeps the old one.
-            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(path), "-vn", "-c:a", "copy",
-                            str(voice)], check=True, capture_output=True)
+            proc.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(path), "-vn", "-c:a", "copy",
+                            str(voice)], check=True, capture_output=True, timeout=proc.FFMPEG)
             logger.info("outro: redraw of %s keeps its voice, no TTS", variant["id"])
         else:
             voice = voice.with_suffix(".mp3")
@@ -208,11 +209,11 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
         # as long as the video. A short audio stream under -shortest would
         # truncate the video instead.
         padded = Path(tmp) / "outro_audio.mp3"
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-y", "-loglevel", "error", "-i", str(voice),
              "-af", f"apad=whole_dur={OUTRO_DURATION}",
              "-t", str(OUTRO_DURATION), str(padded)],
-            check=True, capture_output=True,
+            check=True, capture_output=True, timeout=proc.FFMPEG
         )
 
         # Rendered in tmp and moved in only when complete: a cut render must never
@@ -229,9 +230,9 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
         )
         if path.exists():
             # The new picture over the OLD audio stream, copied: byte-identical sound (STEP 71 §1).
-            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(rendered), "-i", str(path),
+            proc.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(rendered), "-i", str(path),
                             "-map", "0:v", "-map", "1:a", "-c", "copy", "-movflags", "+faststart",
-                            str(Path(tmp) / "outro_out.mp4")], check=True, capture_output=True)
+                            str(Path(tmp) / "outro_out.mp4")], check=True, capture_output=True, timeout=proc.FFMPEG)
             rendered = Path(tmp) / "outro_out.mp4"
         # tmp may be another volume: copy next to the clip first, then an atomic rename.
         part = path.with_name(f".{path.name}.part")
@@ -246,11 +247,11 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
 
 def _probe_params(path: str) -> Dict:
     """Codec/format parameters that must match for `-c copy` to be legal."""
-    out = subprocess.run(
+    out = proc.run(
         ["ffprobe", "-v", "error", "-show_entries",
          "stream=codec_name,width,height,r_frame_rate,pix_fmt,sample_rate,channels",
          "-of", "json", str(path)],
-        capture_output=True, text=True, check=True,
+        capture_output=True, text=True, check=True, timeout=proc.FFPROBE
     )
     streams = json.loads(out.stdout).get("streams", [])
     params = {}
@@ -289,10 +290,10 @@ def append_outro(video_path: str, variant: Dict,
         list_path = fh.name
 
     try:
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0",
              "-i", list_path, "-c", "copy", output_path],
-            check=True, capture_output=True,
+            check=True, capture_output=True, timeout=proc.FFMPEG
         )
     finally:
         os.unlink(list_path)

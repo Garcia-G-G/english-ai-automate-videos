@@ -212,7 +212,33 @@ def jobs_dir(studio_dir: Path = STUDIO_DIR) -> Path:
     return path
 
 
-def start_job(kind: str, argv: list, env: dict, cwd: Path, on_success=None, studio_dir: Path = STUDIO_DIR) -> str:
+#: Seconds per job kind (STEP 75 §2). A render's limit is 3× its lesson's audio, see render_timeout.
+JOB_TIMEOUTS = {"guion": 15 * 60, "audio": 45 * 60, "render": 60 * 60, "lote": 4 * 3600}
+RENDER_TIMEOUT_FLOOR = 120
+
+
+def lesson_audio_seconds(lesson_id: str, voice: str, studio_dir: Path = STUDIO_DIR) -> float:
+    """Length of a lesson's narration for one voice: the sum of its beat mp3s."""
+    import proc
+    total = 0.0
+    for beat in sorted((studio_dir / "audio" / lesson_id / voice).glob("b*.mp3")):
+        out = proc.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", beat],
+                       capture_output=True, text=True, timeout=proc.FFPROBE)
+        try:
+            total += float(out.stdout.strip())
+        except ValueError:
+            continue
+    return total
+
+
+def render_timeout(lesson_id: str, voice: str, studio_dir: Path = STUDIO_DIR) -> float:
+    """3× the lesson's audio length; the floor covers Manim's start-up on a short lesson."""
+    seconds = lesson_audio_seconds(lesson_id, voice, studio_dir)
+    return max(RENDER_TIMEOUT_FLOOR, 3 * seconds) if seconds else JOB_TIMEOUTS["render"]
+
+
+def start_job(kind: str, argv: list, env: dict, cwd: Path, on_success=None, studio_dir: Path = STUDIO_DIR,
+              timeout: Optional[float] = None) -> str:
     job_id = f"{kind}-{datetime.now().strftime('%H%M%S')}"
     folder = jobs_dir(studio_dir)
     status_path, log_path = folder / f"{job_id}.json", folder / f"{job_id}.log"
@@ -223,16 +249,22 @@ def start_job(kind: str, argv: list, env: dict, cwd: Path, on_success=None, stud
     def run():
         started = time.time()
         write(state="running", started=started)
+        import proc
+        limit = timeout or JOB_TIMEOUTS.get(kind, JOB_TIMEOUTS["lote"])
+        result = {}
         try:
             with log_path.open("w", encoding="utf-8") as log:
                 log.write("$ " + " ".join(argv) + "\n\n")
                 log.flush()
-                code = subprocess.run(argv, cwd=str(cwd), env={**os.environ, **env}, stdout=log,
-                                      stderr=subprocess.STDOUT).returncode
+                code = proc.run(argv, cwd=str(cwd), env={**os.environ, **env}, stdout=log,
+                                stderr=subprocess.STDOUT, timeout=limit).returncode
+        except proc.CommandTimeout:
+            with log_path.open("a", encoding="utf-8") as log:
+                log.write(f"\n\nTIMEOUT: stopped after {limit:.0f} s\n")
+            code, result = -3, {"error": f"se pasó del límite de {limit:.0f} s"}
         except OSError as error:
             log_path.write_text(f"{error}\n")
             code = -1
-        result = {}
         if code == 0 and on_success:
             try:
                 result = on_success(time.time() - started) or {}
@@ -744,7 +776,8 @@ def render() -> None:                                  # pragma: no cover — UI
                 def after_render(seconds, _q=quality, _v=render_voice, _l=lesson_id):
                     return R.register(R.rendered_output(_q, STUDIO_DIR), _l, _v, _q, seconds, STUDIO_DIR)
 
-                st.session_state.ms_job = start_job("render", argv, env_add, STUDIO_DIR, on_success=after_render)
+                st.session_state.ms_job = start_job("render", argv, env_add, STUDIO_DIR, on_success=after_render,
+                                                    timeout=render_timeout(lesson_id, render_voice))
                 st.rerun()
 
         # ── 4. Batch ──────────────────────────────────────────────────────────────

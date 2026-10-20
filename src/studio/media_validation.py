@@ -5,20 +5,21 @@ from __future__ import annotations
 import json
 import math
 import subprocess
+import proc
 from pathlib import Path
 
 from timing_contract import describe, required_timeline
 
 
 def probe_media(path: Path) -> dict:
-    completed = subprocess.run(
+    completed = proc.run(
         [
             "ffprobe", "-v", "error", "-count_frames", "-show_streams", "-show_format",
             "-of", "json", str(path),
         ],
         capture_output=True,
         text=True,
-        check=False,
+        check=False, timeout=proc.FFMPEG  # -count_frames decodes every frame
     )
     if completed.returncode:
         raise ValueError(f"media probe failed for {path}: {completed.stderr.strip()}")
