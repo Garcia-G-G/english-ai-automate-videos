@@ -1,0 +1,43 @@
+{
+  "id": "hc_e012",
+  "style": "escena",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«Thank you for invite me»: el -ing que falta",
+  "hook_text": "ESCENA — FIESTA DE CUMPLEAÑOS EN LONDRES",
+  "scene": {
+    "location": "Fiesta de cumpleaños en Londres",
+    "take1": "Thank you for invite me!",
+    "take2": "Thanks for inviting me!",
+    "note": "Después de una preposición, el verbo va en -ing."
+  },
+  "correction": {
+    "wrong": "for invite me",
+    "right": "for inviting me",
+    "rule": "Preposición + verbo en -ing"
+  },
+  "voice": [
+    "Escena: llegas a una fiesta en Londres. Toma uno: [[Thank you for invite me!]]",
+    "¡Corten! Después de una preposición como [[for]], el verbo va en -ing.",
+    "Toma dos: [[Thanks for inviting me!]]",
+    "Igual con otras: [[Thanks for coming]], [[I'm good at cooking]], [[before leaving]].",
+    "Y al irte: [[Thanks for having me]], «gracias por recibirme». Muy nativo.",
+    "Reto: ¿cómo dirías «gracias por ayudarme»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Gracias por ayudarme»",
+    "answer": "Thanks for helping me."
+  },
+  "caption": "Se dice «Thanks for inviting me», con -ing. La regla de preposición + -ing, en una fiesta.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 65
+}

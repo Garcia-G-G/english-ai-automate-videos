@@ -1,0 +1,47 @@
+{
+  "id": "hc_c015",
+  "style": "comic",
+  "level": "medio",
+  "angle": "reto",
+  "title": "RETO: «tengo ganas de salir»",
+  "hook_text": "La que más falla",
+  "quiz": {
+    "prompt": "¿Cómo dirías «tengo ganas de salir»?",
+    "options": [
+      "I have wishes to go out",
+      "I feel like going out",
+      "I have want of go out"
+    ],
+    "answer": 1,
+    "after": "Tener ganas de = feel like + -ing."
+  },
+  "correction": {
+    "wrong": "I have want of go out",
+    "right": "I feel like going out",
+    "rule": "Feel like + -ing"
+  },
+  "voice": [
+    "La que más falla. ¿Cómo dirías «tengo ganas de salir»?",
+    "¿[[I have wishes to go out]], [[I feel like going out]] o [[I have want of go out]]?",
+    "¡La B! [[I feel like going out]]. [[Feel like]] + verbo en -ing.",
+    "En negativo: [[I don't feel like cooking]], «no tengo ganas de cocinar».",
+    "Y para algo que esperas con ilusión: [[I can't wait]].",
+    "¿Qué tienes ganas de hacer hoy? Escríbelo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«No tengo ganas de trabajar»",
+    "answer": "I don't feel like working."
+  },
+  "caption": "«Tengo ganas de» es «I feel like + -ing». Reto de inglés de nivel medio.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 73
+}

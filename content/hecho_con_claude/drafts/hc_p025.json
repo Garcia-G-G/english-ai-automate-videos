@@ -1,0 +1,46 @@
+{
+  "id": "hc_p025",
+  "style": "poster",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«Each other» vs «themselves»",
+  "hook_text": "THEY LOVE THEMSELVES → THEY LOVE EACH OTHER",
+  "poster": {
+    "error_no": "040",
+    "big_wrong": "THEY LOVE THEMSELVES",
+    "big_right": "THEY LOVE EACH OTHER",
+    "examples": [
+      "They love each other. — Se quieren (el uno al otro).",
+      "They love themselves. — Se quieren a sí mismos."
+    ]
+  },
+  "correction": {
+    "wrong": "THEY LOVE THEMSELVES",
+    "right": "THEY LOVE EACH OTHER",
+    "rule": "Recíproco vs reflexivo"
+  },
+  "voice": [
+    "En español «se quieren» vale para dos cosas. En inglés no.",
+    "Si se quieren el uno al otro: [[They love each other]].",
+    "Si cada uno se quiere a sí mismo: [[They love themselves]]. Suena a narcisistas.",
+    "Igual con [[We know each other]], «nos conocemos».",
+    "Y [[They hurt themselves]] es «se hicieron daño» cada uno.",
+    "Reto: ¿cómo dirías «nos escribimos todos los días»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Nos escribimos todos los días»",
+    "answer": "We text each other every day."
+  },
+  "caption": "«Each other» es «el uno al otro»; «themselves», «a sí mismos». Un «se» que en inglés cambia el sentido.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 65
+}

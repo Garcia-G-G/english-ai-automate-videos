@@ -1,0 +1,46 @@
+{
+  "id": "hc_p013",
+  "style": "poster",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«Fabric» no es fábrica",
+  "hook_text": "FABRIC = FÁBRICA → FACTORY = FÁBRICA",
+  "poster": {
+    "error_no": "028",
+    "big_wrong": "FABRIC = FÁBRICA",
+    "big_right": "FACTORY = FÁBRICA",
+    "examples": [
+      "He works in a factory. — Trabaja en una fábrica.",
+      "This fabric is soft. — Esta tela es suave."
+    ]
+  },
+  "correction": {
+    "wrong": "FABRIC = FÁBRICA",
+    "right": "FACTORY = FÁBRICA",
+    "rule": "Falso amigo"
+  },
+  "voice": [
+    "Si dices [[I work in a fabric]], estás diciendo que trabajas dentro de una tela.",
+    "Porque [[fabric]] es tela, tejido: [[This fabric is very soft]].",
+    "La fábrica es [[factory]]: [[He works in a factory]].",
+    "Y fabricar es [[manufacture]] o [[make]]: [[They make cars]].",
+    "Otro primo: [[plant]] también es fábrica o planta industrial.",
+    "Reto: ¿cómo dirías «la fábrica cerró»? Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«La fábrica cerró»",
+    "answer": "The factory closed down."
+  },
+  "caption": "Fabric no es fábrica, es tela. Fábrica es «factory». Falso amigo del inglés explicado.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 62
+}

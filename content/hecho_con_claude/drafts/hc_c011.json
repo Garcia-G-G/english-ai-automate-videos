@@ -1,0 +1,47 @@
+{
+  "id": "hc_c011",
+  "style": "comic",
+  "level": "medio",
+  "angle": "reto",
+  "title": "RETO: «me da igual» (cuidado con el tono)",
+  "hook_text": "Una opción suena borde",
+  "quiz": {
+    "prompt": "Te preguntan si prefieres pizza o pasta y te da lo mismo. ¿Qué dices?",
+    "options": [
+      "I don't care",
+      "I don't mind",
+      "It gives me equal"
+    ],
+    "answer": 1,
+    "after": "I don't mind = me da igual (amable). I don't care puede sonar a desinterés."
+  },
+  "correction": {
+    "wrong": "It gives me equal",
+    "right": "I don't mind",
+    "rule": "I don't mind vs I don't care"
+  },
+  "voice": [
+    "Una de estas suena borde. Te preguntan pizza o pasta y te da igual.",
+    "¿[[I don't care]], [[I don't mind]] o [[It gives me equal]]?",
+    "¡La B! [[I don't mind]]: «me da igual, lo que tú prefieras». Amable.",
+    "[[I don't care]] puede sonar a «me importa un pepino». Úsalo con cuidado.",
+    "Otra muy natural: [[Either is fine]], «cualquiera me vale».",
+    "¿Cuál habrías elegido tú? Dímelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "Te preguntan «¿té o café?» y te da igual",
+    "answer": "I don't mind, either is fine."
+  },
+  "caption": "«Me da igual» con amabilidad es «I don't mind»; «I don't care» puede sonar borde. Reto de tono.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 67
+}

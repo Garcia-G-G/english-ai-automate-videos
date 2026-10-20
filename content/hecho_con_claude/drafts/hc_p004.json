@@ -1,0 +1,46 @@
+{
+  "id": "hc_p004",
+  "style": "poster",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«She have»: la -s que siempre se olvida",
+  "hook_text": "SHE HAVE → SHE HAS",
+  "poster": {
+    "error_no": "019",
+    "big_wrong": "SHE HAVE",
+    "big_right": "SHE HAS",
+    "examples": [
+      "She has a dog. — Tiene un perro.",
+      "He works here. — Trabaja aquí."
+    ]
+  },
+  "correction": {
+    "wrong": "SHE HAVE",
+    "right": "SHE HAS",
+    "rule": "Tercera persona: -s"
+  },
+  "voice": [
+    "Es el error más común de nivel básico: [[she have]].",
+    "Con [[he]], [[she]] e [[it]], el verbo en presente lleva -s. Y [[have]] cambia a [[has]].",
+    "Así: [[She has a dog]], [[He works here]], [[It costs ten dollars]].",
+    "Con [[I]], [[you]], [[we]] y [[they]], sin -s: [[They have a dog]].",
+    "Y en preguntas la -s se va al auxiliar: [[Does she have a dog?]]",
+    "Reto: corrige [[My brother live in Madrid]]. Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "Corrige: «My brother live in Madrid»",
+    "answer": "My brother lives in Madrid."
+  },
+  "caption": "Se dice «she has», no «she have». La -s de tercera persona explicada en 30 segundos.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 73
+}

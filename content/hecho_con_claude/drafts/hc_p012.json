@@ -1,0 +1,46 @@
+{
+  "id": "hc_p012",
+  "style": "poster",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«Exit» no es éxito",
+  "hook_text": "EXIT = ÉXITO → SUCCESS = ÉXITO",
+  "poster": {
+    "error_no": "027",
+    "big_wrong": "EXIT = ÉXITO",
+    "big_right": "SUCCESS = ÉXITO",
+    "examples": [
+      "The show was a success. — El espectáculo fue un éxito.",
+      "The exit is on the left. — La salida está a la izquierda."
+    ]
+  },
+  "correction": {
+    "wrong": "EXIT = ÉXITO",
+    "right": "SUCCESS = ÉXITO",
+    "rule": "Falso amigo"
+  },
+  "voice": [
+    "[[Exit]] parece «éxito», pero es la salida, como en los carteles de [[EXIT]].",
+    "Éxito es [[success]]: [[The launch was a huge success]].",
+    "Tener éxito: [[succeed]] o [[be successful]]: [[She's very successful]].",
+    "Y si triunfa una canción: [[It's a hit]].",
+    "Así que si alguien te desea éxito: [[Good luck!]] o [[I wish you success]].",
+    "Reto: ¿cómo dirías «el proyecto fue un éxito»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«El proyecto fue un éxito»",
+    "answer": "The project was a success."
+  },
+  "caption": "Exit no es éxito, es salida. Éxito es «success». Uno de los falsos amigos más curiosos del inglés.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 63
+}

@@ -1,0 +1,46 @@
+{
+  "id": "hc_p023",
+  "style": "poster",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«You had better»: más te vale",
+  "hook_text": "YOU BETTER TO GO → YOU'D BETTER GO",
+  "poster": {
+    "error_no": "038",
+    "big_wrong": "YOU BETTER TO GO",
+    "big_right": "YOU'D BETTER GO",
+    "examples": [
+      "You'd better leave now. — Más te vale irte ya.",
+      "We'd better not be late. — Más vale que no lleguemos tarde."
+    ]
+  },
+  "correction": {
+    "wrong": "YOU BETTER TO GO",
+    "right": "YOU'D BETTER GO",
+    "rule": "Had better + verbo sin to"
+  },
+  "voice": [
+    "Para «más te vale» se usa [[had better]], y casi siempre contraído: [[you'd better]].",
+    "Va con el verbo sin [[to]]: [[You'd better leave now]]. Nunca [[better to go]].",
+    "En negativo, [[not]] después: [[You'd better not be late]].",
+    "Es más fuerte que [[should]]: lleva un aviso.",
+    "En la calle muchos dicen solo [[You better]].",
+    "Reto: ¿cómo dirías «más te vale estudiar»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Más te vale estudiar»",
+    "answer": "You'd better study."
+  },
+  "caption": "«Más te vale» en inglés es «you'd better + verbo», sin «to». Inglés avanzado en 30 segundos.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 63
+}

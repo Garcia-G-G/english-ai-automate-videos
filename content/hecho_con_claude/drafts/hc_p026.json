@@ -1,0 +1,46 @@
+{
+  "id": "hc_p026",
+  "style": "poster",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«Get over it»: superar algo",
+  "hook_text": "OVERCOME IT (siempre) → GET OVER IT",
+  "poster": {
+    "error_no": "041",
+    "big_wrong": "OVERCOME IT (siempre)",
+    "big_right": "GET OVER IT",
+    "examples": [
+      "It took me months to get over the breakup. — Tardé meses en superar la ruptura.",
+      "Get over it! — ¡Supéralo!"
+    ]
+  },
+  "correction": {
+    "wrong": "OVERCOME IT (siempre)",
+    "right": "GET OVER IT",
+    "rule": "Phrasal verb de superar"
+  },
+  "voice": [
+    "Para «superar» buscamos [[overcome]]. Existe, pero en conversación se usa otra cosa.",
+    "Lo natural es [[get over]]: [[It took me months to get over the breakup]].",
+    "También para una enfermedad: [[I'm getting over a cold]].",
+    "Y con tono duro: [[Get over it!]], «¡supéralo!».",
+    "[[Overcome]] suena más formal: [[overcome a challenge]].",
+    "Reto: ¿cómo dirías «todavía no lo he superado»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Todavía no lo he superado»",
+    "answer": "I'm still not over it. / I haven't gotten over it yet."
+  },
+  "caption": "«Get over» es superar algo en inglés de conversación; «overcome», más formal. Phrasal verb explicado.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 60
+}

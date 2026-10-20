@@ -1,0 +1,45 @@
+{
+  "id": "hc_p022",
+  "style": "poster",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«Let alone»: la expresión que suena muy nativa",
+  "hook_text": "AND MUCH LESS → LET ALONE",
+  "poster": {
+    "error_no": "037",
+    "big_wrong": "AND MUCH LESS",
+    "big_right": "LET ALONE",
+    "examples": [
+      "I can't boil an egg, let alone cook dinner. — No sé hervir un huevo, y mucho menos hacer la cena."
+    ]
+  },
+  "correction": {
+    "wrong": "AND MUCH LESS",
+    "right": "LET ALONE",
+    "rule": "Y mucho menos = let alone"
+  },
+  "voice": [
+    "Para decir «y mucho menos» traducimos [[and much less]]. Un nativo diría [[let alone]].",
+    "[[I can't boil an egg, let alone cook dinner]].",
+    "Va después de una frase negativa, y lo que sigue es todavía más difícil.",
+    "[[He can't run a kilometre, let alone a marathon]].",
+    "Suena a inglés de nivel alto y es muy útil en conversación.",
+    "Reto: completa: [[I don't speak French, let alone…]] Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "Completa: «I don't speak French, let alone…»",
+    "answer": "…let alone Russian."
+  },
+  "caption": "«Let alone» = «y mucho menos». Una expresión que te hace sonar nativo, explicada en un póster.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 68
+}

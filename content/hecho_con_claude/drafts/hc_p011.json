@@ -1,0 +1,46 @@
+{
+  "id": "hc_p011",
+  "style": "poster",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«Career» no es carrera universitaria",
+  "hook_text": "CAREER = CARRERA → DEGREE = CARRERA",
+  "poster": {
+    "error_no": "026",
+    "big_wrong": "CAREER = CARRERA",
+    "big_right": "DEGREE = CARRERA",
+    "examples": [
+      "I have a degree in law. — Soy licenciado en Derecho.",
+      "She has a great career. — Tiene una gran trayectoria."
+    ]
+  },
+  "correction": {
+    "wrong": "CAREER = CARRERA",
+    "right": "DEGREE = CARRERA",
+    "rule": "Falso amigo"
+  },
+  "voice": [
+    "Si dices [[I'm studying a career in law]], un nativo no lo entiende bien.",
+    "[[Career]] es tu trayectoria profesional: [[She has a great career]].",
+    "La carrera universitaria es [[degree]]: [[I'm doing a degree in law]].",
+    "Y estudiar algo en la universidad: [[I'm majoring in law]], en Estados Unidos.",
+    "La carrera de correr es [[race]].",
+    "Reto: ¿cómo dirías «terminé la carrera en 2022»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Terminé la carrera en 2022»",
+    "answer": "I finished my degree in 2022. / I graduated in 2022."
+  },
+  "caption": "Career no es carrera universitaria: eso es «degree». Career es tu trayectoria profesional. Falso amigo.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 65
+}
