@@ -631,6 +631,11 @@ GAP_FLOOR_DB = -75.0
 GAP_AMP_CALIBRATION_DB = 4.6
 
 
+def _codec_for(path: str) -> list:
+    """PCM for a .wav intermediate (the Timeline's), the old mp3 otherwise."""
+    return ['-acodec', 'pcm_s16le'] if str(path).lower().endswith('.wav') else ['-acodec', 'libmp3lame', '-q:a', '2']
+
+
 def generate_silence(duration: float, output_path: str,
                      sample_rate: int = 44100, channels: str = "mono") -> None:
     """Generate a silence audio file of specified duration.
@@ -677,7 +682,7 @@ def generate_silence(duration: float, output_path: str,
         f'anoisesrc=color=white:amplitude={amplitude:.8f}:seed={ROOM_TONE_SEED}'
         f':duration={duration}:sample_rate={sample_rate}',
         '-t', str(duration),
-        '-acodec', 'libmp3lame', '-q:a', '2',
+        *_codec_for(output_path),
         output_path
     ]
     result = _proc.run(cmd, capture_output=True, timeout=30)
@@ -689,53 +694,77 @@ def generate_silence(duration: float, output_path: str,
             'ffmpeg', '-y',
             '-f', 'lavfi', '-i', f'anullsrc=r={sample_rate}:cl={channels}',
             '-t', str(duration),
-            '-acodec', 'libmp3lame', '-q:a', '2',
+            *_codec_for(output_path),
             output_path
         ], capture_output=True, timeout=30)
 
 
-def concatenate_audio_files(audio_files: list, output_path: str,
-                            sample_rate: int = 44100, channels: int = 1,
-                            copy_codec: bool = False) -> None:
-    """Concatenate multiple audio files using ffmpeg.
+class Timeline:
+    """One PCM timeline for a narration (STEP 76 §6).
 
-    Args:
-        audio_files: List of audio file paths to concatenate.
-        output_path: Path for the output file.
-        sample_rate: Output sample rate.
-        channels: Number of output channels (1=mono, 2=stereo).
-        copy_codec: If True, use -c:a copy (no re-encoding). Otherwise re-encode.
+    Replaces the add_audio / add_silence closures each generator carried (22 copies, kept in
+    step by an arity test) and the ffmpeg concat each one ended with. The timing contract is
+    the old one, so segment timings do not move: a clip advances the clock by its
+    get_audio_duration, a silence by what was asked, and add_audio returns
+    (start, file_end, duration, speech_end).
+
+    What changes is the audio. Every piece is decoded to PCM and placed at the sample its
+    start time names, cut or padded to its declared length; the old concat joined each clip's
+    DECODED length, so clips drifted against their declared starts. Silences are room tone
+    (generate_silence) as WAV, and the narration is encoded once, in finalize.
     """
-    import tempfile
 
-    concat_list_path = Path(output_path).with_suffix('.txt')
-    with open(concat_list_path, 'w') as f:
-        for audio_file in audio_files:
-            f.write(f"file '{audio_file}'\n")
+    def __init__(self, temp_dir, sample_rate: int = 44100):
+        self.temp_dir, self.rate = str(temp_dir), int(sample_rate)
+        self.pieces = []                    # (kind, path or None, start, end)
+        self.time = 0.0
 
-    if copy_codec:
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', str(concat_list_path),
-            '-c:a', 'copy',
-            output_path
-        ]
-    else:
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', str(concat_list_path),
-            '-acodec', 'libmp3lame', '-q:a', '2',
-            '-ar', str(sample_rate), '-ac', str(channels),
-            output_path
-        ]
+    def add_audio(self, path: str, duration: float = None):
+        if duration is None:
+            duration = get_audio_duration(path)
+        start = self.time
+        speech_end = start + measure_speech_end(path)
+        self.time += duration
+        self.pieces.append(("audio", str(path), start, self.time))
+        return start, self.time, duration, speech_end
 
-    _proc.run(cmd, capture_output=True, text=True, timeout=120)
+    def add_silence(self, duration: float):
+        start = self.time
+        self.time += duration
+        self.pieces.append(("silence", None, start, self.time))
+        return start, self.time
 
-    # Clean up concat list
-    try:
-        concat_list_path.unlink()
-    except OSError:
-        pass
+    def _decode(self, path: str):
+        import numpy as np
+        raw = _proc.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", str(self.rate),
+                         "-f", "f32le", "-"], capture_output=True, check=True, timeout=_proc.FFMPEG).stdout
+        return np.frombuffer(raw, "<f4")
+
+    def finalize(self, output_path: str) -> float:
+        """Write the narration (one encode, mp3 mono at this rate). Returns its declared length."""
+        import numpy as np
+        pcm = np.zeros(int(round(self.time * self.rate)), dtype=np.float32)
+        for n, (kind, path, start, end) in enumerate(self.pieces):
+            a, b = int(round(start * self.rate)), int(round(end * self.rate))
+            if b <= a:
+                continue
+            if kind == "silence":
+                path = os.path.join(self.temp_dir, f"timeline_silence_{n}.wav")
+                generate_silence(end - start, path, sample_rate=self.rate)
+            x = self._decode(path)[: b - a]
+            pcm[a:a + x.size] = x
+        wav = os.path.join(self.temp_dir, "timeline.wav")
+        _proc.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(self.rate), "-ac", "1", "-i", "-",
+                   "-c:a", "pcm_s16le", wav], input=pcm.tobytes(), check=True, capture_output=True,
+                  timeout=_proc.FFMPEG)
+        if os.path.dirname(output_path):
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        done = _proc.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-acodec", "libmp3lame",
+                          "-q:a", "2", "-ar", str(self.rate), "-ac", "1", str(output_path)],
+                         capture_output=True, text=True, timeout=_proc.FFMPEG)
+        if done.returncode != 0:
+            raise RuntimeError(f"FFmpeg encode failed: {done.stderr[:500]}")
+        return round(self.time, 3)
 
 
 # ============== ENGLISH WORD EXTRACTION ==============

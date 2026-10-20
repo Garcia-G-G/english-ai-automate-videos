@@ -18,9 +18,8 @@ It matters more with BLOCKING on: a broken generator means every artifact is
 rejected for the wrong reason, and the reject report will say "no timing
 declaration" rather than "the generator raised".
 
-tests/test_generator_add_audio_arity.py is the free complement — it catches
-contract drift from source, at commit time. Keep both: one proves the shape,
-this one proves it runs.
+The add_audio contract no longer needs a source-parsing guard: every generator uses the
+one tts_common.Timeline (STEP 76 §6), tested in tests/test_timeline.py. This proves it runs.
 """
 
 import argparse

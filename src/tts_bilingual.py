@@ -406,45 +406,27 @@ def generate_bilingual_narration(
         # WAV — the Spanish line and the English word next to it at the same loudness.
         levelled = loudness.level_clips([c["path"] for c in clips], Path(temp_dir))
 
-        # One PCM timeline: clip, gap, clip … every piece WAV, one encode at the end.
-        audio_files: List[str] = []
+        # One PCM timeline (tts_common.Timeline, STEP 76 §6): clip, gap, clip … one encode.
+        from tts_common import Timeline
+        timeline = Timeline(temp_dir)
         all_words: List[Dict] = []
-        running = 0.0
         for n, (clip, lv) in enumerate(zip(clips, levelled)):
             call = clip["call"]
             call["gain_db"] = lv["gain_db"]
             length = loudness.decode(lv["path"]).size / loudness.RATE
+            start, end, _, _ = timeline.add_audio(str(lv["path"]), duration=length)
             for w in clip["words"]:
                 all_words.append({
                     "word": w["word"],
-                    "start": round(min(w["start"], length) + running, 3),
-                    "end": round(min(w["end"], length) + running, 3),
+                    "start": round(min(w["start"], length) + start, 3),
+                    "end": round(min(w["end"], length) + start, 3),
                     "is_english": call["is_english"],
                 })
-            audio_files.append(str(lv["path"]))
-            call["clip_start"], call["clip_end"] = round(running, 3), round(running + length, 3)
-            running += length
+            call["clip_start"], call["clip_end"] = round(start, 3), round(end, 3)
             gap = call["pause_after"]
             if n + 1 < len(clips) and gap > 0.01:
-                sil = Path(temp_dir) / f"sil_{call['index']:03d}.wav"
-                loudness._write_wav(np.zeros(int(round(gap * loudness.RATE))), sil)
-                audio_files.append(str(sil))
-                running += round(gap * loudness.RATE) / loudness.RATE
-
-        # Stitch — concat demuxer with re-encode (uniform format/bitrate).
-        out_dir = os.path.dirname(output_path)
-        if out_dir:
-            os.makedirs(out_dir, exist_ok=True)
-        concat = os.path.join(temp_dir, "concat.txt")
-        with open(concat, "w") as f:
-            for p in audio_files:
-                f.write(f"file '{p}'\n")
-        cmd = ["ffmpeg", "-y", "-f", "concat", "-safe", "0", "-i", concat,
-               "-acodec", "libmp3lame", "-q:a", "2", "-ar", "44100",
-               "-ac", "1", output_path]
-        r = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
-        if r.returncode != 0:
-            raise RuntimeError(f"ffmpeg concat failed: {r.stderr[:400]}")
+                timeline.add_silence(round(gap * loudness.RATE) / loudness.RATE)
+        timeline.finalize(output_path)
 
         from tts_common import get_audio_duration
         duration = get_audio_duration(output_path)

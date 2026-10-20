@@ -28,6 +28,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 from tts_common import (
+    Timeline,
     get_audio_duration, generate_silence, measure_speech_end,
     extract_english_words_from_script,
     SPANISH_DIR, WORDS_DIR,
@@ -518,40 +519,21 @@ def fix_countdown_timing(
             )
             countdown_paths.append(clip_path)
 
-        # 4. Create silence gap
-        silence_path = os.path.join(temp_dir, "silence.mp3")
-        cmd_silence = [
-            'ffmpeg', '-y',
-            '-f', 'lavfi', '-i', f'anullsrc=r=44100:cl=stereo',
-            '-t', str(gap_duration),
-            '-acodec', 'libmp3lame', '-q:a', '2',
-            silence_path
-        ]
-        subprocess.run(cmd_silence, capture_output=True, timeout=30)
-
-        # 5. Create concat file for ffmpeg
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            f.write(f"file '{before_path}'\n")
-            f.write(f"file '{countdown_paths[0]}'\n")  # Tres
-            f.write(f"file '{silence_path}'\n")
-            f.write(f"file '{countdown_paths[1]}'\n")  # Dos
-            f.write(f"file '{silence_path}'\n")
-            f.write(f"file '{countdown_paths[2]}'\n")  # Uno
-            f.write(f"file '{after_path}'\n")
-
-        # 6. Concatenate with ffmpeg
+        # 4-6. One PCM timeline (tts_common.Timeline, STEP 76 §6): the old concat mixed this
+        # 24 kHz speech with a 44.1 kHz stereo silence.
+        from tts_common import Timeline
+        timeline = Timeline(temp_dir, sample_rate=24000)
+        timeline.add_audio(before_path)
+        for n, clip in enumerate(countdown_paths):
+            if n:
+                timeline.add_silence(gap_duration)
+            timeline.add_audio(clip)
+        timeline.add_audio(after_path)
         output_temp = os.path.join(temp_dir, "final.mp3")
-        cmd_concat = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-acodec', 'libmp3lame', '-q:a', '2',
-            output_temp
-        ]
-        result = subprocess.run(cmd_concat, capture_output=True, timeout=60)
-
-        if result.returncode != 0:
-            logger.warning("ffmpeg concat failed: %s", result.stderr.decode()[:200])
+        try:
+            timeline.finalize(output_temp)
+        except Exception as e:                              # noqa: BLE001
+            logger.warning("countdown timeline failed: %s", str(e)[:200])
             return timestamps
 
         # 7. Replace original audio
@@ -712,34 +694,9 @@ def generate_quiz_audio_segmented(
         logger.debug("  Words cache: %s", WORDS_DIR)
 
         segments = []
-        audio_files = []
-        running_time = 0.0
-
-        def add_audio(path: str, duration: float = None):
-            """Add audio file to sequence.
-
-            Returns (start, file_end, duration, speech_end). `speech_end` is
-            where the VOICE stops; `file_end` is where the CLIP stops, and the
-            two differ by the trailing silence every TTS model leaves behind.
-            Segments must be recorded against speech_end — see
-            tts_common.measure_speech_end. The audio itself is untouched.
-            """
-            nonlocal running_time
-            if duration is None:
-                duration = get_audio_duration(path)
-            audio_files.append(path)
-            start = running_time
-            speech_end = start + measure_speech_end(path)
-            running_time += duration
-            return start, running_time, duration, speech_end
-
-        def add_silence(duration: float):
-            """Add silence to sequence."""
-            nonlocal running_time
-            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(duration, silence_path, channels="stereo")
-            audio_files.append(silence_path)
-            running_time += duration
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir, sample_rate=24000)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
 
         def add_segment(seg_id: str, text: str, start: float, end: float):
             """Record segment metadata."""
@@ -863,9 +820,9 @@ def generate_quiz_audio_segmented(
             logger.info("[5] COUNTDOWN (visual only, audio silence)")
             countdown_interval = 1.5  # 1.5 seconds per number for full visual display
             for num in ['3', '2', '1']:
-                cd_start = running_time
+                cd_start = timeline.time
                 add_silence(countdown_interval)
-                cd_end = running_time
+                cd_end = timeline.time
                 add_segment(f'{prefix}countdown_{num}', f'[{num}]', cd_start, cd_end)
                 logger.info("  [%scountdown_%s] %.2fs - %.2fs (silent)", prefix, num, cd_start, cd_end)
 
@@ -878,7 +835,7 @@ def generate_quiz_audio_segmented(
             # NOT single word! Single word = TTS doesn't know it's Spanish
             # ============================================================
             logger.info("[6] ANSWER")
-            answer_start = running_time
+            answer_start = timeline.time
 
             # Generate COMPLETE answer as one full Spanish sentence
             # This gives TTS full context to pronounce correctly
@@ -945,7 +902,7 @@ def generate_quiz_audio_segmented(
             emit_item(item, "" if index == 1 else f"i{index}_")
 
 
-        total_duration = running_time
+        total_duration = timeline.time
         logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
         logger.info("=" * 60)
@@ -953,26 +910,7 @@ def generate_quiz_audio_segmented(
         # ============================================================
         # CONCATENATE (no re-encoding)
         # ============================================================
-        logger.info("Concatenating audio files...")
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            for audio_file in audio_files:
-                f.write(f"file '{audio_file}'\n")
-
-        output_dir = os.path.dirname(output_path)
-        if output_dir:
-            os.makedirs(output_dir, exist_ok=True)
-
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-c:a', 'copy',
-            output_path
-        ]
-        result = subprocess.run(cmd, capture_output=True, timeout=120)
-
-        if result.returncode != 0:
-            raise RuntimeError(f"ffmpeg concat failed: {result.stderr.decode()[:500]}")
+        timeline.finalize(output_path)
 
         logger.info("Audio saved: %s", output_path)
 
@@ -1045,28 +983,10 @@ def generate_fill_blank_audio_segmented(
         logger.info("=" * 60)
 
         segments = []
-        audio_files = []
-        running_time = 0.0
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir, sample_rate=24000)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
         client = _get_openai_client()
-
-        def add_audio(path: str, duration: float = None):
-            nonlocal running_time
-            if duration is None:
-                duration = get_audio_duration(path)
-            audio_files.append(path)
-            start = running_time
-            # speech_end: where the VOICE stops, vs running_time where the
-            # CLIP stops. Segments must be recorded against the former.
-            speech_end = start + measure_speech_end(path)
-            running_time += duration
-            return start, running_time, duration, speech_end
-
-        def add_silence(dur: float):
-            nonlocal running_time
-            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(dur, silence_path, channels="stereo")
-            audio_files.append(silence_path)
-            running_time += dur
 
         def add_segment(seg_id: str, text: str, start: float, end: float):
             segment = {
@@ -1121,9 +1041,9 @@ def generate_fill_blank_audio_segmented(
         logger.info("[4] COUNTDOWN (visual only, audio silence)")
         countdown_interval = 1.5
         for num in ['3', '2', '1']:
-            cd_start = running_time
+            cd_start = timeline.time
             add_silence(countdown_interval)
-            cd_end = running_time
+            cd_end = timeline.time
             add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
             logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
 
@@ -1157,30 +1077,13 @@ def generate_fill_blank_audio_segmented(
             add_segment('explanation', clean_explanation, exp_start, exp_end_speech)
             add_silence(PAUSE_AFTER_EXPLANATION)
 
-        total_duration = running_time
+        total_duration = timeline.time
         logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
         logger.info("=" * 60)
 
         # Concatenate
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            for audio_file in audio_files:
-                f.write(f"file '{audio_file}'\n")
-
-        output_dir = os.path.dirname(output_path)
-        if output_dir:
-            os.makedirs(output_dir, exist_ok=True)
-
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-c:a', 'copy',
-            output_path
-        ]
-        result = subprocess.run(cmd, capture_output=True, timeout=120)
-        if result.returncode != 0:
-            raise RuntimeError(f"ffmpeg concat failed: {result.stderr.decode()[:500]}")
+        timeline.finalize(output_path)
 
         logger.info("Audio saved: %s", output_path)
 
@@ -1251,28 +1154,10 @@ def generate_true_false_audio_segmented(
         logger.info("=" * 60)
 
         segments = []
-        audio_files = []
-        running_time = 0.0
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir, sample_rate=24000)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
         client = _get_openai_client()
-
-        def add_audio(path: str, duration: float = None):
-            nonlocal running_time
-            if duration is None:
-                duration = get_audio_duration(path)
-            audio_files.append(path)
-            start = running_time
-            # speech_end: where the VOICE stops, vs running_time where the
-            # CLIP stops. Segments must be recorded against the former.
-            speech_end = start + measure_speech_end(path)
-            running_time += duration
-            return start, running_time, duration, speech_end
-
-        def add_silence(dur: float):
-            nonlocal running_time
-            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(dur, silence_path, channels="stereo")
-            audio_files.append(silence_path)
-            running_time += dur
 
         def add_segment(seg_id: str, text: str, start: float, end: float):
             segment = {
@@ -1322,9 +1207,9 @@ def generate_true_false_audio_segmented(
         logger.info("[4] COUNTDOWN (visual only, audio silence)")
         countdown_interval = 1.5
         for num in ['3', '2', '1']:
-            cd_start = running_time
+            cd_start = timeline.time
             add_silence(countdown_interval)
-            cd_end = running_time
+            cd_end = timeline.time
             add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
             logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
 
@@ -1358,30 +1243,13 @@ def generate_true_false_audio_segmented(
             add_segment('explanation', clean_explanation, exp_start, exp_end_speech)
             add_silence(PAUSE_AFTER_EXPLANATION)
 
-        total_duration = running_time
+        total_duration = timeline.time
         logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
         logger.info("=" * 60)
 
         # Concatenate
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            for audio_file in audio_files:
-                f.write(f"file '{audio_file}'\n")
-
-        output_dir = os.path.dirname(output_path)
-        if output_dir:
-            os.makedirs(output_dir, exist_ok=True)
-
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-c:a', 'copy',
-            output_path
-        ]
-        result = subprocess.run(cmd, capture_output=True, timeout=120)
-        if result.returncode != 0:
-            raise RuntimeError(f"ffmpeg concat failed: {result.stderr.decode()[:500]}")
+        timeline.finalize(output_path)
 
         logger.info("Audio saved: %s", output_path)
 
@@ -1442,28 +1310,10 @@ def generate_vocabulary_audio_segmented(
         logger.info("=" * 60)
 
         segments = []
-        audio_files = []
-        running_time = 0.0
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir, sample_rate=24000)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
         client = _get_openai_client()
-
-        def add_audio(path: str, duration: float = None):
-            nonlocal running_time
-            if duration is None:
-                duration = get_audio_duration(path)
-            audio_files.append(path)
-            start = running_time
-            # speech_end: where the VOICE stops, vs running_time where the
-            # CLIP stops. Segments must be recorded against the former.
-            speech_end = start + measure_speech_end(path)
-            running_time += duration
-            return start, running_time, duration, speech_end
-
-        def add_silence(dur: float):
-            nonlocal running_time
-            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(dur, silence_path, channels="stereo")
-            audio_files.append(silence_path)
-            running_time += dur
 
         def add_segment(seg_id: str, text: str, start: float, end: float):
             segment = {
@@ -1507,30 +1357,13 @@ def generate_vocabulary_audio_segmented(
             add_segment(f'pair_{i}', pair_text, p_start, p_end_speech)
             add_silence(0.5)  # Pause between pairs
 
-        total_duration = running_time
+        total_duration = timeline.time
         logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
         logger.info("=" * 60)
 
         # Concatenate
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            for audio_file in audio_files:
-                f.write(f"file '{audio_file}'\n")
-
-        output_dir = os.path.dirname(output_path)
-        if output_dir:
-            os.makedirs(output_dir, exist_ok=True)
-
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-c:a', 'copy',
-            output_path
-        ]
-        result = subprocess.run(cmd, capture_output=True, timeout=120)
-        if result.returncode != 0:
-            raise RuntimeError(f"ffmpeg concat failed: {result.stderr.decode()[:500]}")
+        timeline.finalize(output_path)
 
         logger.info("Audio saved: %s", output_path)
 
