@@ -603,6 +603,18 @@ def batch_advance() -> str:
                             nxt.get("topic"))
 
 
+def scheduler_batch(types: list, count: int) -> list:
+    """The batch-queue items for «Generate Batch Now»: `count` videos cycling through `types`."""
+    return [{"type": types[i % len(types)], "category": None, "topic": None} for i in range(count)]
+
+
+def batch_estimate_usd(count: int, costs_dir: Path = None) -> Optional[float]:
+    """count × the mean cost per video in output/costs, or None when nothing was recorded."""
+    from cost_tracker import per_video_costs, video_cost_stats
+    stats = video_cost_stats(per_video_costs(costs_dir or OUTPUT_DIR / "costs"))
+    return round(count * stats["mean_usd"], 2) if stats["videos"] else None
+
+
 def get_active_jobs() -> list:
     return load_jobs().get("active", [])
 
@@ -1217,6 +1229,22 @@ def find_video_file(video_path_str: str) -> Optional[Path]:
     return None
 
 
+#: What a page shows for a sidecar that is not valid JSON (STEP 75 §3).
+DAMAGED = "archivo dañado"
+
+
+def read_sidecar(meta_file: Path):
+    """(meta, problem): problem is None, or «archivo dañado: name (why)» instead of a crash."""
+    try:
+        meta = json.loads(Path(meta_file).read_text(encoding="utf-8"))
+        if not isinstance(meta, dict):
+            raise ValueError("not an object")
+        return meta, None
+    except (OSError, ValueError) as e:
+        logger.warning("sidecar %s unreadable: %s", meta_file, e)
+        return {}, f"{DAMAGED}: {Path(meta_file).name} ({type(e).__name__})"
+
+
 def get_pending_videos() -> list:
     videos = []
     if not PENDING_DIR.exists():
@@ -1229,13 +1257,13 @@ def get_pending_videos() -> list:
                     # STEP 59 §6: no sidecar means the job never finished it.
                     logger.warning("review: %s has no sidecar; not shown", video_file.name)
                     continue
-                with open(meta_file, 'r') as f:
-                    meta = json.load(f)
+                meta, damaged = read_sidecar(meta_file)
                 videos.append({
                     "path": video_file,
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "damaged": damaged,
                     "stage": "pending",
                     "created": datetime.fromtimestamp(video_file.stat().st_mtime)
                 })
@@ -1267,16 +1295,14 @@ def get_approved_videos() -> list:
         if type_dir.is_dir():
             for video_file in type_dir.glob("*.mp4"):
                 meta_file = video_file.with_suffix('.json')
-                meta = {}
-                if meta_file.exists():
-                    with open(meta_file, 'r') as f:
-                        meta = json.load(f)
+                meta, damaged = read_sidecar(meta_file) if meta_file.exists() else ({}, None)
                 published = find_by_artifact(video_file.stem)
                 videos.append({
                     "path": video_file,
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "damaged": damaged,
                     "stage": "approved",
                     "published_to": sorted({r.get("platform") for r in published
                                             if r.get("platform")}),
@@ -1848,9 +1874,7 @@ def move_to_uploaded(video_path: Path, upload_info: dict = None):
     dest_meta = dest_dir / meta_path.name
     if meta_path.exists():
         # Merge upload info into metadata
-        meta = {}
-        with open(meta_path, 'r') as f:
-            meta = json.load(f)
+        meta, _ = read_sidecar(meta_path)
         if upload_info:
             meta["upload_info"] = upload_info
         shutil.move(str(meta_path), str(dest_meta))
@@ -1867,15 +1891,13 @@ def get_uploaded_videos() -> list:
         if type_dir.is_dir():
             for video_file in type_dir.glob("*.mp4"):
                 meta_file = video_file.with_suffix('.json')
-                meta = {}
-                if meta_file.exists():
-                    with open(meta_file, 'r') as f:
-                        meta = json.load(f)
+                meta, damaged = read_sidecar(meta_file) if meta_file.exists() else ({}, None)
                 videos.append({
                     "path": video_file,
                     "type": type_dir.name,
                     "name": video_file.stem,
                     "meta": meta,
+                    "damaged": damaged,
                     "stage": "uploaded",
                     "created": datetime.fromtimestamp(video_file.stat().st_mtime),
                     "upload_info": meta.get("upload_info", {}),
@@ -2180,32 +2202,9 @@ def get_api_status() -> dict:
 
 
 def save_env_key(key_name: str, value: str):
-    """Update a key in the .env file."""
-    env_path = ROOT / ".env"
-    lines = []
-    found = False
-
-    if env_path.exists():
-        with open(env_path, 'r') as f:
-            lines = f.readlines()
-
-    new_lines = []
-    for line in lines:
-        stripped = line.strip()
-        if stripped.startswith(f"{key_name}=") or stripped.startswith(f"# {key_name}="):
-            new_lines.append(f"{key_name}={value}\n")
-            found = True
-        else:
-            new_lines.append(line)
-
-    if not found:
-        new_lines.append(f"{key_name}={value}\n")
-
-    with open(env_path, 'w') as f:
-        f.writelines(new_lines)
-
-    # Also update current process environment
-    os.environ[key_name] = value
+    """Update a key in .env: validated, no line breaks, temp file + rename (config/secrets)."""
+    from config.secrets import save_env_key as _save
+    _save(key_name, value)
 
 
 # ============== STREAMLIT PAGE CONFIG ==============
@@ -3111,6 +3110,9 @@ elif page == "Review":
             with col1:
                 st.subheader(f"{video['name']}")
                 st.write(f"**Type:** {video['type']} | **Created:** {video['created'].strftime('%Y-%m-%d %H:%M')}")
+                if video.get("damaged"):
+                    st.error(f"⚠️ {video['damaged']}. No se puede revisar hasta repararlo o volver a renderizarlo.")
+                    continue
                 if video["meta"] and "script_data" in video["meta"]:
                     script = video["meta"]["script_data"]
                     with st.expander("Script Details"):
@@ -3307,6 +3309,8 @@ elif page == "Upload":
                 with col1:
                     st.write(f"**{video['name']}**")
                     st.caption(f"{video['type']} | {video['created'].strftime('%Y-%m-%d %H:%M')}")
+                    if video.get("damaged"):
+                        st.error(f"⚠️ {video['damaged']}")
                     # A published video can still be sitting here (main.py did
                     # not move it, or a move failed). Say so before the
                     # operator presses upload — the manual route is how the
@@ -3700,6 +3704,8 @@ elif page == "Upload":
 
                 with col1:
                     st.write(f"**{video['name']}**")
+                    if video.get("damaged"):
+                        st.error(f"⚠️ {video['damaged']}")
                     upload_info = video.get("upload_info", {})
                     platforms_str = ", ".join(upload_info.get("platforms", ["Unknown"]))
                     uploaded_at = upload_info.get("uploaded_at", "")[:16]
@@ -3851,15 +3857,20 @@ elif page == "Scheduler":
     with col2:
         st.markdown('<div class="section-header">Control</div>', unsafe_allow_html=True)
         # STEP 75 §1: «Start Scheduler» set a flag nothing read. Batches run from here.
-        if st.button("🚀 Generate Batch Now", width="stretch"):
-            if not selected_types:
-                st.error("Select at least one type!")
-            else:
-                for i in range(videos_per_batch):
-                    start_generation(selected_types[i % len(selected_types)])
-                st.success(f"Queued {videos_per_batch} video(s). They run one at "
-                           "a time — watch progress on the Generate page.")
-                st.rerun()
+        # STEP 75 §3: these are paid jobs. Say how many and roughly what they cost, ask,
+        # and go through the batch queue (one at a time, survives a restart).
+        _est = batch_estimate_usd(videos_per_batch)
+        _cost = f"≈ ${_est:.2f}" if _est is not None else "coste desconocido (sin historial)"
+        st.caption(f"{videos_per_batch} vídeo(s) · {_cost} según la media de output/costs.")
+        _ok = st.checkbox(f"Sí, generar {videos_per_batch} vídeo(s) ({_cost})", key="batch_now_confirm",
+                          disabled=not selected_types)
+        if st.button("🚀 Generate Batch Now", width="stretch", disabled=not (_ok and selected_types)):
+            total = batch_add(scheduler_batch(selected_types, videos_per_batch))
+            batch_advance()
+            st.success(f"{videos_per_batch} vídeo(s) en la cola ({total} esperando). Se generan "
+                       "de uno en uno — el progreso está en Queue.")
+        if not selected_types:
+            st.caption("Elige al menos un tipo.")
 
 
 # ============== TOPICS PAGE ==============
@@ -3985,9 +3996,12 @@ elif page == "Settings":
                 with col3:
                     if st.button("Save", key=f"save_{env_var}", width="stretch"):
                         if new_value:
-                            save_env_key(env_var, new_value)
-                            st.success(f"Saved!")
-                            st.rerun()
+                            try:
+                                save_env_key(env_var, new_value)
+                                st.success(f"Saved!")
+                                st.rerun()
+                            except (ValueError, OSError) as e:
+                                st.error(f"No se guardó: {e}")
                         else:
                             st.warning("Enter a value")
 

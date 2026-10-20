@@ -35,8 +35,9 @@ NEVER_NAME = re.compile(r"^(\.env.*|\.tokens.*|\.venv)$")    # at any depth
 
 #: Statuses of an attempt that has not settled: the video may be live (publication_log).
 OPEN_ATTEMPT = {"started", "session", "unknown"}
-#: Artifact states that are approved but not (fully) published yet.
-HELD_STATES = {"approved", "publishing", "partially_published"}
+#: Artifact states that are approved but not (fully) published yet, and finished videos
+#: waiting for a review the panel cannot show yet (ready_for_review, STEP 75 §3).
+HELD_STATES = {"approved", "publishing", "partially_published", "ready_for_review"}
 
 
 class RefusedPath(Exception):
