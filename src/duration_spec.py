@@ -158,6 +158,12 @@ def reject_window(video_type: str = None) -> Dict[str, float]:
     return w
 
 
+def declares_window(video_type: str) -> bool:
+    """Does the type set its own band or reject window (rather than fall back on the global)?"""
+    entry = (_config().get("types") or {}).get((video_type or "").lower()) or {}
+    return any(entry.get(k) is not None for k in (*BAND_KEYS, *REJECT_KEYS))
+
+
 def _s(seconds: float) -> str:
     """A threshold as written in config: 74.7 stays 74.7, 50.0 reads 50.
 

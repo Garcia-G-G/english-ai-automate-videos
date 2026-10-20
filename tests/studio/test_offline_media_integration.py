@@ -23,8 +23,7 @@ def test_synthetic_local_compositor_has_duration_frames_portrait_and_audio(tmp_p
         return image
 
     render_video_ffmpeg(frame, str(audio), str(video), 0.6, fps=5,
-                        width=1080, height=1920, preset="ultrafast",
-                        use_hardware=False)
+                        width=1080, height=1920, preset="ultrafast")
     probe = probe_media(video)
     frames = inspect_frames(video)
     validate_video(probe, frames, 0.6)

@@ -292,7 +292,7 @@ def append_outro(video_path: str, variant: Dict,
     try:
         proc.run(
             ["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0",
-             "-i", list_path, "-c", "copy", output_path],
+             "-i", list_path, "-c", "copy", "-movflags", "+faststart", output_path],
             check=True, capture_output=True, timeout=proc.FFMPEG
         )
     finally:

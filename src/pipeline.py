@@ -816,6 +816,21 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
     variant = select_variant(seed=variant_seed or str(video_path))
     seam_t = float(report.get("measured_duration") or 0.0)
 
+    # STEP 75 §4: what is uploaded is the video WITH its outro, so that is what the
+    # type's window judges. Checked before appending: a rejected video gets no outro.
+    final_check = _final_duration_check(video_path, audio_json_path, report, variant)
+    if final_check and final_check["status"] == "OUT_OF_BAND" and not final_check["blocks"]:
+        # A type with neither a calibrated rate nor its own window is judged on the
+        # global 50–80 s band; rejecting on that would stop how_do_you_say outright.
+        logger.warning("final duration of %s: %s (not blocking: the type has no window of its own)",
+                       video_path.name, final_check["reason"])
+    elif final_check and final_check["status"] == "OUT_OF_BAND":
+        logger.warning("QA gate REJECTED %s: final duration %s — no outro appended",
+                       video_path.name, final_check["reason"])
+        return {"video": str(video_path), "gate": "REJECT", "outro_appended": False,
+                "blocking_flags": [f"final_duration:{final_check['reason']}"],
+                "final_duration": final_check}
+
     # THE ARTIFACT KEEPS ITS NAME. append_outro defaults to writing
     # <name>_with_outro.mp4, which would change the stem — and the stem is the
     # ledger's key and the idempotency guard's key (publication_log,
@@ -829,5 +844,30 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
 
     # Logged so a later A/B read can attribute performance to copy.
     logger.info("outro variant %s appended to %s", variant["id"], final)
-    return {"video": final, "gate": "PASS", "outro_appended": True,
-            "outro_variant": variant["id"], "seam": seam}
+    result = {"video": final, "gate": "PASS", "outro_appended": True,
+              "outro_variant": variant["id"], "seam": seam}
+    if final_check:
+        from qa_gate import probe_duration
+        final_check["measured_final_seconds"] = probe_duration(final)
+        result["final_duration"] = final_check
+    return result
+
+
+def _final_duration_check(video_path: Path, audio_json_path, report: Dict, variant: Dict) -> Optional[Dict]:
+    """duration_spec.check on video + outro clip, or None when either cannot be measured."""
+    import duration_spec
+    from qa_gate import probe_duration
+    from video.outro import outro_path
+    video_type = report.get("video_type")
+    if not video_type:
+        try:
+            video_type = json.loads(Path(audio_json_path).read_text(encoding="utf-8")).get("type")
+        except (OSError, ValueError):
+            video_type = None
+    body = probe_duration(str(video_path))
+    tail = probe_duration(str(outro_path(variant["id"])))
+    if not (video_type and body and tail):
+        return None
+    record = duration_spec.check(video_type, body, measured_video_seconds=body + tail)
+    record["blocks"] = record.get("calibrated", True) or duration_spec.declares_window(video_type)
+    return record

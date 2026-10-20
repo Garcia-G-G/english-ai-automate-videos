@@ -9,7 +9,6 @@ FFmpeg handle muxing/encoding in a single pass.
 
 import logging
 import os
-import platform
 import subprocess
 import time as _time
 from typing import Callable, Optional
@@ -17,6 +16,17 @@ from typing import Callable, Optional
 import numpy as np
 
 logger = logging.getLogger(__name__)
+
+
+#: STEP 75 §4: one software encode. VideoToolbox at -q:v 65 gave 2.7 Mb/s, no B-frames
+#: and a keyframe every 0.4 s on a mostly still card; colour went out untagged, so
+#: players guessed BT.601 and shifted the brand colours.
+X264_PARAMS = ["-g", "60", "-bf", "3", "-profile:v", "high"]
+# setparams too: on ffmpeg 9 the frames' own (unset) primaries/trc win over -color_primaries
+# and -color_trc, so without it the file says bt709/unknown/unknown.
+BT709_FILTER = ("scale=out_color_matrix=bt709:out_range=tv:flags=lanczos+accurate_rnd+full_chroma_int,"
+                "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv")
+BT709_TAGS = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv"]
 
 
 def render_video_ffmpeg(
@@ -27,12 +37,11 @@ def render_video_ffmpeg(
     fps: int = 30,
     width: int = 1080,
     height: int = 1920,
-    crf: int = 18,
-    preset: str = "medium",
-    use_hardware: bool = True,
+    crf: int = 17,
+    preset: str = "slow",
     progress_callback: Optional[Callable[[float], None]] = None,
 ) -> str:
-    """Render video by piping PIL frames to FFmpeg.
+    """Render video by piping PIL frames to FFmpeg (libx264, BT.709).
 
     Args:
         frame_generator: ``f(t: float) -> np.ndarray`` returning an
@@ -42,12 +51,8 @@ def render_video_ffmpeg(
         duration: Video duration in seconds.
         fps: Frames per second.
         width, height: Expected frame dimensions.
-        crf: FFmpeg CRF quality (lower = better, 18 ≈ visually
-            lossless for libx264).
-        preset: FFmpeg encoding preset (``ultrafast`` … ``veryslow``).
-            Ignored when hardware encoding is active.
-        use_hardware: Attempt macOS VideoToolbox hardware encoding
-            before falling back to libx264.
+        crf: libx264 CRF (17: transparent for flat cards and text).
+        preset: libx264 preset; ``ultrafast`` only for --fast drafts.
         progress_callback: Called with a float in ``[0, 1]`` once per
             second of rendered video.
 
@@ -55,8 +60,7 @@ def render_video_ffmpeg(
         *output_path* on success.
 
     Raises:
-        RuntimeError: If FFmpeg exits with a non-zero code and no
-            fallback is available.
+        RuntimeError: If FFmpeg exits non-zero or closes its input early.
     """
     total_frames = int(duration * fps)
     if total_frames <= 0:
@@ -64,30 +68,11 @@ def render_video_ffmpeg(
 
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
 
-    # Decide codec
-    is_mac = platform.system() == "Darwin"
-    try_hw = use_hardware and is_mac
-
-    if try_hw:
-        try:
-            return _encode(
-                frame_generator, audio_path, output_path,
-                total_frames, fps, width, height,
-                codec="h264_videotoolbox",
-                extra_params=["-q:v", "65"],
-                progress_callback=progress_callback,
-            )
-        except RuntimeError:
-            logger.warning(
-                "Hardware encoding (VideoToolbox) failed, "
-                "falling back to libx264"
-            )
-
     return _encode(
         frame_generator, audio_path, output_path,
         total_frames, fps, width, height,
         codec="libx264",
-        extra_params=["-crf", str(crf), "-preset", preset],
+        extra_params=["-crf", str(crf), "-preset", preset, *X264_PARAMS],
         progress_callback=progress_callback,
     )
 
@@ -121,13 +106,16 @@ def _encode(
         # --- audio file ---
         "-i", audio_path,
         # --- video codec ---
+        "-vf", BT709_FILTER,
         "-c:v", codec,
         *extra_params,
         "-pix_fmt", "yuv420p",
+        *BT709_TAGS,
         # --- audio codec ---
         "-c:a", "aac",
         "-b:a", "192k",
         # --- general ---
+        "-movflags", "+faststart",
         "-shortest",
         "-threads", "4",
         output_path,
@@ -178,7 +166,17 @@ def _encode(
             if not frame_rgb.flags["C_CONTIGUOUS"]:
                 frame_rgb = np.ascontiguousarray(frame_rgb)
 
-            process.stdin.write(frame_rgb.tobytes())
+            try:
+                process.stdin.write(frame_rgb.tobytes())
+            except BrokenPipeError:
+                # ffmpeg died mid-encode; its own words say why, the pipe does not.
+                process.kill()
+                err_tail = process.stderr.read().decode(errors="replace")[-800:]
+                process.wait()
+                logger.error("FFmpeg closed its input at frame %d (rc=%s): …%s",
+                             frame_num, process.returncode, err_tail)
+                raise RuntimeError(f"FFmpeg stopped reading frames at {frame_num}/{total_frames} "
+                                   f"(rc={process.returncode}): {err_tail.strip()[-300:]}") from None
 
             if progress_callback and frame_num % fps == 0:
                 progress_callback(frame_num / total_frames)

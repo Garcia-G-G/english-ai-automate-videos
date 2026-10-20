@@ -497,8 +497,7 @@ def generate_video(
             fps=fps,
             width=VIDEO_WIDTH,
             height=VIDEO_HEIGHT,
-            preset="ultrafast" if fast_mode else "medium",
-            use_hardware=True,
+            **({"preset": "ultrafast"} if fast_mode else {}),
         )
 
     # MoviePy renderer (legacy, explicit opt-in only)
