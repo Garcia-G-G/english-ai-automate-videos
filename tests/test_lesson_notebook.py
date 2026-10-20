@@ -170,3 +170,27 @@ def test_blue_reads_on_the_table_highlighter(name):
     assert 'hl_fill = mix(P["page"], YELLOW, 0.25) if P["dark"] else YELLOW' in SOURCE
     hl = TH.mix(p["page"], p["yellow"], 0.25) if p["dark"] else p["yellow"]
     assert TH.contrast(p["blue"], hl) >= 3.0, (name, p["blue"], hl)
+
+
+# ── STEP 71 §2: the brand v3 logo on the lesson end card ──
+
+def test_the_end_card_logo_clears_the_title_by_a_quarter_unit():
+    """The logo is drawn from its inked pixels, LOGO_W wide at LOGO_Y; the title's box comes from
+    Fredoka itself, scaled as text() does (cap height = px * 8/1080)."""
+    from PIL import Image, ImageFont
+    img = Image.open(REPO / "assets" / "branding" / "english-unlimited" / "logo_horizontal.png")
+    x0, y0, x1, y1 = img.getchannel("A").getbbox()
+    logo_bottom = _const("LOGO_Y") - _const("LOGO_W") * (y1 - y0) / (x1 - x0) / 2
+    font = ImageFont.truetype(str(REPO / BRAND["font"]["display"]["file"]), 400)
+    cap = font.getbbox("H")[3] - font.getbbox("H")[1]
+    box = font.getbbox("Sigue aprendiendo")
+    px = _const("TITLE_PX") * 0.9
+    title_top = _const("END_TITLE_Y") + (box[3] - box[1]) / cap * px * PX / 2
+    assert logo_bottom - title_top >= 0.25, (logo_bottom, title_top)
+    body = SOURCE[SOURCE.index("def end_screen"):]
+    assert "logo = brand_logo()" in body and 'move_to([0, END_TITLE_Y, 0])' in body
+
+
+def test_the_end_screen_frames_did_not_move():
+    body = SOURCE[SOURCE.index("def end_screen"):]
+    assert "frame_w = 5.4" in body and ".arrange(RIGHT, buff=0.8).move_to([0, -1.75, 0])" in body

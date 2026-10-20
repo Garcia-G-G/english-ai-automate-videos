@@ -97,6 +97,10 @@ STAGE_MID = (STAGE_TOP + STAGE_BOTTOM) / 2
 # It is placed from its turned box, shadow included, NOTE_MARGIN inside the frame (STEP 69).
 NOTE_MARGIN, NOTE_PAD, NOTE_ROT, NOTE_SHADOW = 0.15, 0.22, -2.0, 0.07
 CAP_LINE_W, CAP_LINES = 6.0, 2
+# The end card's logo (brand v3, 1871×600 with a transparent margin): drawn from its inked
+# pixels, LOGO_W wide (the whole PNG ~4.7) and centred at LOGO_Y, over the title at END_TITLE_Y
+# (STEP 71, mock_cierre_leccion.png). The two end-screen frames below do not move.
+LOGO_W, LOGO_Y, END_TITLE_Y = 4.4, 2.7, 1.35
 SITE_PX, SITE_Y = 24, 3.32                         # the «learningroutes.com» badge under the dashes
 INK, NOTE_YELLOW, NOTE_BLUE = BRAND["color"]["ink"], BRAND["color"]["brand_yellow"], BRAND["color"]["english_blue"]
 PX_PER_UNIT = config.pixel_height / FRAME_H
@@ -336,6 +340,15 @@ def page_title(name):
         mark = Rectangle(width=title.width + 0.3, height=title.height * 0.42, stroke_width=0, fill_color=YELLOW,
                          fill_opacity=1).move_to(title.get_bottom() + UP * title.height * 0.18)
     return VGroup(mark, title)
+
+
+def brand_logo():
+    """logo_horizontal.png cropped to its inked pixels, so its box is the logo the viewer sees."""
+    import numpy as np
+    from PIL import Image
+    img = Image.open(BRAND_DIR / "logo_horizontal.png").convert("RGBA")
+    img = img.crop(img.getchannel("A").getbbox())
+    return ImageMobject(np.array(img)).scale_to_fit_width(LOGO_W).move_to([0, LOGO_Y, 0])
 
 
 def site_badge():
@@ -1425,13 +1438,14 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.remove(self.page, self.page_titles, self.badge)
         start = float(self.renderer.time)
         self.timeline.append({"id": "end", "type": "end_screen", "start": round(start, 2), "seconds": END_SCREEN_S})
-        logo = ImageMobject(str(BRAND_DIR / "logo_horizontal.png")).scale_to_fit_width(4.4).move_to([0, 2.75, 0])
+        logo = brand_logo()
         head = [FadeIn(logo)]
         if P["dark"]:
             plate = RoundedRectangle(corner_radius=0.3, width=logo.width + 0.7, height=logo.height + 0.5,
                                      fill_color=PAPER, fill_opacity=1, stroke_width=0).move_to(logo)
             head = [FadeIn(plate)] + head
-        title = text("Sigue aprendiendo", TITLE_PX * 0.9, ACCENT_TEXT).move_to([0, 1.35, 0])
+        title = text("Sigue aprendiendo", TITLE_PX * 0.9, ACCENT_TEXT).move_to([0, END_TITLE_Y, 0])
+        assert logo.get_bottom()[1] - title.get_top()[1] >= 0.25, "the logo must clear the title"
         # The site under the title, in the brand-v2 blue sticker pill; the two slots below keep
         # their place and size because YouTube's end-screen elements are pinned to them.
         url = text(SITE, BODY_PX * 0.85, PAPER)
