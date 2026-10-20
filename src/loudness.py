@@ -33,9 +33,14 @@ MAX_GAIN_DB = 6.0
 SILENT_DB = -50.0               # a segment quieter than this is silence, not speech
 RAMP_S = 0.010
 #: A sample limiter at 4× the rate sees (nearly) the true peak. The sample-peak limiter
-#: before loudnorm left inter-sample overs at −0.5 dBTP at 44.1 kHz.
-TRUE_PEAK_GUARD = ("aresample=176400:filter_size=64,"
-                   "alimiter=limit=0.7943:level=false:attack=0.5:release=40:latency=true")   # −2 dBFS
+#: before loudnorm left inter-sample overs at −0.5 dBTP; −2.5 dBFS leaves room for the AAC
+#: encode, which added ~1 dB on a 48 kHz stereo lesson (−1.1 dBTP at a −2 dBFS guard).
+TRUE_PEAK_CEILING = 0.7499                                                   # −2.5 dBFS
+
+
+def true_peak_guard(rate: int) -> str:
+    return (f"aresample={4 * rate}:filter_size=64,"
+            f"alimiter=limit={TRUE_PEAK_CEILING}:level=false:attack=0.5:release=40:latency=true")
 
 
 def decode(path) -> np.ndarray:
@@ -121,7 +126,7 @@ def _loudnorm_json(stderr: str) -> Dict:
     return json.loads(block)
 
 
-def loudnorm_two_pass(src: Path, dst: Path) -> Dict:
+def loudnorm_two_pass(src: Path, dst: Path, rate: int = RATE, channels: int = 1) -> Dict:
     """Two-pass loudnorm, linear. Returns pass 2's report.
 
     loudnorm only stays linear when the gain it needs leaves the peak under TP; TTS peaks
@@ -130,7 +135,7 @@ def loudnorm_two_pass(src: Path, dst: Path) -> Dict:
     spec = f"I={TARGET_I}:TP={TARGET_TP}:LRA={TARGET_LRA}"
     level = measure(src)["I"]
     if level <= -60:                                    # silence (ebur128 floors it at −70): nothing to do
-        proc.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-ac", "1", "-ar", str(RATE),
+        proc.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-ac", str(channels), "-ar", str(rate),
                   "-c:a", "pcm_s24le", str(dst)], check=True, capture_output=True, timeout=proc.FFMPEG)
         return {"input_i": str(level), "normalization_type": "none (silence)"}
     gain = TARGET_I - level
@@ -143,8 +148,8 @@ def loudnorm_two_pass(src: Path, dst: Path) -> Dict:
     second = proc.run(["ffmpeg", "-hide_banner", "-nostats", "-y", "-i", str(src), "-af",
                        f"{limiter},loudnorm={spec}:linear=true:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
                        f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:"
-                       f"offset={m['target_offset']}:print_format=json,{TRUE_PEAK_GUARD},aresample={RATE}:filter_size=64",
-                       "-ac", "1", "-c:a", "pcm_s24le", str(dst)],
+                       f"offset={m['target_offset']}:print_format=json,{true_peak_guard(rate)},aresample={rate}:filter_size=64",
+                       "-ac", str(channels), "-c:a", "pcm_s24le", str(dst)],
                       capture_output=True, text=True, check=True, timeout=proc.FFMPEG)
     return _loudnorm_json(second.stderr)
 

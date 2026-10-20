@@ -1,7 +1,11 @@
 """Where finished videos go and how they are recorded — shared by the admin page and batch_run.py."""
 import json
+import logging
+import os
 import shutil
 import subprocess
+import sys
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -87,6 +91,46 @@ def make_poster(video: Path, at: float, out: Path) -> bool:
         return False
 
 
+#: STEP 75 §7. Manim writes crf 23 (275–480 kb/s) with a BT.601 matrix and no tags, so HD
+#: players decode it as BT.709 and the brand blue lands ΔE ≈ 7 off; its audio sat at −18 LUFS.
+LESSON_X264 = ["-c:v", "libx264", "-crf", "14", "-preset", "slow", "-tune", "animation",
+               "-pix_fmt", "yuv420p", "-colorspace", "bt709", "-color_primaries", "bt709",
+               "-color_trc", "bt709", "-color_range", "tv"]
+LESSON_COLOUR = ("scale=in_color_matrix=bt601:in_range=tv:out_color_matrix=bt709:out_range=tv:"
+                 "flags=lanczos+accurate_rnd+full_chroma_int,"
+                 "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv")
+LESSON_RATE = 48000
+
+
+def final_encode(path: Path) -> dict:
+    """One ffmpeg pass over a registered lesson: libx264 crf 14 slow -tune animation, BT.601→709
+    with tags, +faststart, audio two-pass loudnorm to −14 LUFS / −1.5 dBTP, AAC 48 kHz 192k.
+    The file is replaced only when the pass succeeds and its length matches; any failure
+    raises and leaves the original as it was."""
+    src_dir = str(HERE.parents[1] / "src")
+    if src_dir not in sys.path:
+        sys.path.insert(0, src_dir)
+    import loudness
+    import proc
+    path = Path(path)
+    before = probe_duration(path)
+    limit = max(600.0, 3 * (before or 0))
+    with tempfile.TemporaryDirectory(dir=str(path.parent), prefix=".encode-") as tmp:
+        wav, level, out = Path(tmp) / "a.wav", Path(tmp) / "n.wav", Path(tmp) / "out.mp4"
+        proc.run(["ffmpeg", "-v", "error", "-y", "-i", str(path), "-vn", "-c:a", "pcm_s24le", str(wav)],
+                 check=True, capture_output=True, timeout=limit)
+        report = loudness.loudnorm_two_pass(wav, level, rate=LESSON_RATE, channels=2)
+        proc.run(["ffmpeg", "-v", "error", "-y", "-i", str(path), "-i", str(level), "-map", "0:v:0", "-map", "1:a:0",
+                  "-vf", LESSON_COLOUR, *LESSON_X264, "-c:a", "aac", "-b:a", "192k", "-ar", str(LESSON_RATE),
+                  "-movflags", "+faststart", str(out)], check=True, capture_output=True, timeout=limit)
+        after = probe_duration(out)
+        if before is None or after is None or abs(after - before) > 0.1:
+            raise RuntimeError(f"final encode changed the length: {before} -> {after}")
+        os.replace(out, path)
+    return {"loudnorm": report.get("normalization_type"), "output_i": report.get("output_i"),
+            "output_tp": report.get("output_tp"), "bytes": path.stat().st_size}
+
+
 def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds: float,
              studio_dir: Path = HERE, now: Optional[datetime] = None) -> dict:
     """Copy the render, its .srt, the beat timeline, a poster frame and a chapters file into
@@ -99,6 +143,11 @@ def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds
     suffix = f"_{look}" if look else ""
     target = folder / f"{now.strftime('%Y%m%d-%H%M%S')}_{voice}_{QUALITIES[quality][0]}{suffix}.mp4"
     shutil.copyfile(source_mp4, target)
+    try:
+        encode = final_encode(target)
+    except Exception as error:                              # noqa: BLE001 — the copy stays as Manim wrote it
+        logging.getLogger(__name__).exception("final encode failed for %s", target)
+        encode = {"error": str(error)[:300]}
     srt = source_mp4.with_suffix(".srt")
     if srt.exists():
         shutil.copyfile(srt, target.with_suffix(".srt"))
@@ -117,6 +166,7 @@ def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds
            "chapters": f"{lesson_id}/{target.with_suffix('.chapters.txt').name}" if timeline else None,
            "theme": timeline.get("theme"), "sfx": timeline.get("sfx"),
            "max_cue_lag": (timeline.get("sync") or {}).get("max_lag"),
+           "final_encode": encode,
            **render_features(lesson_id, timeline, studio_dir)}
     with (studio_dir / "renders" / "ledger.jsonl").open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False) + "\n")
