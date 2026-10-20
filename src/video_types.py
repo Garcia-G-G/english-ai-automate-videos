@@ -165,6 +165,10 @@ DASHBOARD_BUTTONS = [(v["dashboard"], k) for k, v in TYPES.items()
 #: The notebook level pages (create_frame_level): the slowest renders, STEP 63.
 LEVEL_TYPES = frozenset(k for k, v in TYPES.items() if v["renderer"].endswith(":create_frame_level"))
 
+#: Types whose words sit on an opaque page (STEP 75 §6): the footage around the page carries
+#: no text, so it gets no contrast band, only a soft, warm, vignetted look.
+OPAQUE_PAGE_TYPES = LEVEL_TYPES | {"how_do_you_say"}
+
 #: {type: "create_frame_x"} — the bare function name, for callers that
 #: already know which module they are looking in.
 FRAME_FN = {k: v["renderer"].split(":", 1)[1] for k, v in TYPES.items()}

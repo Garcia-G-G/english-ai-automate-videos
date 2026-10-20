@@ -43,8 +43,9 @@ TEXT_AREA_WIDTH = 920
 HEADLINE_TOP = 780
 HEADLINE_BOTTOM = 990
 
-# The yellow the English headline is drawn in (config.colors.ENGLISH_WORD_COLOR).
-HEADLINE_COLOR = (255, 215, 0)
+# The colour English words are drawn in over footage. Imported, not copied: a copy is how
+# this module kept judging contrast against a colour after the renderers moved on (STEP 75 §6).
+from config.colors import ENGLISH_WORD_COLOR as HEADLINE_COLOR  # noqa: E402
 
 # The box the watermark's glyphs and shadow occupy, from
 # video.brand.watermark_bounds(). Pinned here rather than imported for the

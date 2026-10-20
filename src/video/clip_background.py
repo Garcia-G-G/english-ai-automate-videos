@@ -7,6 +7,8 @@ Optimized for sequential reads (one open cv2.VideoCapture at a time).
 
 import logging
 import random
+import shutil
+import tempfile
 from pathlib import Path
 
 import cv2
@@ -84,6 +86,15 @@ class ClipLibraryBackground:
                 "Add clips or point the 'clips' background to another directory."
             )
 
+        # STEP 75 §6: behind an opaque page the footage is only atmosphere. Softened once
+        # per clip (quarter-res blur, warm grade, vignette) instead of measured for a band
+        # that would only darken pixels the page hides. Smaller clips also decode faster.
+        from video_types import OPAQUE_PAGE_TYPES
+        self.softened = video_type in OPAQUE_PAGE_TYPES and scrim is None
+        self._soft_dir = tempfile.mkdtemp(prefix="soft_clips_") if self.softened else None
+        if self.softened:
+            clip_paths = [soften_clip(p, Path(self._soft_dir), width, height) for p in clip_paths]
+
         # Probe real duration/fps of each clip once
         self._clips = []  # list of dicts: path, duration, fps, frames
         for p in clip_paths:
@@ -133,8 +144,8 @@ class ClipLibraryBackground:
         # the BAND — the mark is a different zone measured against a
         # different colour, and letting a pinned band switch it off silently
         # is how it shipped illegible in the first place.
-        plan = treatment_for_dir(self.clips_dir, video_type,
-                                 band_strength=scrim)
+        plan = (self._soft_plan() if self.softened
+                else treatment_for_dir(self.clips_dir, video_type, band_strength=scrim))
         self.contrast_report = plan
         self.scrim = plan["strength"]
         self.mark_scrim = plan["mark_strength"]
@@ -191,6 +202,39 @@ class ClipLibraryBackground:
         self._cap_frame_idx = -1  # index of the NEXT frame cap.read() returns
         self._last_frame = None
 
+    def _soft_plan(self) -> dict:
+        """No band behind an opaque page; the mark's local scrim is still solved, over the
+        softened clips (a quarter-res decode is cheap), against the same 3:1 floor."""
+        from clip_contrast import (FLOOR, MARK_BOX, MARK_COLOR, _contrast_at, measure_zone_patch,
+                                   sample_times, solve_strength)
+        x0, y0, x1, y1 = MARK_BOX
+        pixels, untreated = [], []
+        for clip in self._clips:
+            wanted = {int(t * clip["fps"]) for t in sample_times(clip["duration"])}
+            cap = cv2.VideoCapture(clip["path"])
+            index = 0
+            while wanted:                                # sequential: no seek per sample
+                ok, frame = cap.read()
+                if not ok:
+                    break
+                if index in wanted:
+                    wanted.discard(index)
+                    rgb = cv2.cvtColor(self._fit(frame), cv2.COLOR_BGR2RGB)
+                    m = measure_zone_patch(rgb[y0:y1, x0:x1], text_color=MARK_COLOR)
+                    pixels.append(m["p95_rgb"])
+                    untreated.append(m["contrast_worst"])
+                index += 1
+            cap.release()
+        strength = solve_strength(pixels, FLOOR, MARK_COLOR) if pixels else 0.0
+        achieved = _contrast_at(pixels, strength, MARK_COLOR) if pixels else None
+        return {"strength": 0.0, "mark_strength": round(float(strength), 3),
+                "worst_contrast": None, "worst_clip": None, "worst_at": None,
+                "clips": [c["path"] for c in self._clips], "interval": 0.5,
+                "mark_rect": None, "mark_worst_contrast": round(min(untreated), 2) if untreated else None,
+                "mark_treated_contrast": round(achieved, 2) if achieved else None,
+                "mark_band_credit": 1.0, "mark_meets_floor": achieved is None or achieved >= FLOOR,
+                "skipped": "opaque page: softened, no band"}
+
     def _entry_for(self, t: float):
         """Find playlist entry and local time for global time t."""
         t = max(0.0, t)
@@ -243,7 +287,8 @@ class ClipLibraryBackground:
         if (fw, fh) != (self.width, self.height):
             scale = max(self.width / fw, self.height / fh)
             new_w, new_h = int(round(fw * scale)), int(round(fh * scale))
-            frame = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
+            frame = cv2.resize(frame, (new_w, new_h),
+                               interpolation=cv2.INTER_AREA if scale < 1 else cv2.INTER_LINEAR)
             x0 = (new_w - self.width) // 2
             y0 = (new_h - self.height) // 2
             frame = frame[y0:y0 + self.height, x0:x0 + self.width]
@@ -278,8 +323,36 @@ class ClipLibraryBackground:
         return np.clip(out, 0, 255).astype(np.uint8)
 
     def close(self):
-        """Release the open video capture."""
+        """Release the open video capture and the softened copies."""
         if self._cap is not None:
             self._cap.release()
             self._cap = None
             self._cap_path = None
+        if self._soft_dir:
+            shutil.rmtree(self._soft_dir, ignore_errors=True)
+            self._soft_dir = None
+
+
+#: Quarter resolution: the blur happens there and the upscale softens it further.
+SOFT_SCALE = 4
+#: Warm grade toward the sand paper (#F3EEE4) and a gentle vignette.
+SOFT_FILTER = ("gblur=sigma=3,eq=saturation=0.85:brightness=0.01,"
+               "colorbalance=rm=0.05:gm=0.02:bm=-0.06:rh=0.03:bh=-0.04,vignette=angle=PI/5")
+
+
+def soften_clip(path: Path, out_dir: Path, width: int, height: int) -> Path:
+    """A quarter-res, blurred, warm, vignetted copy of `path` (no audio), or `path` itself
+    if ffmpeg fails: a background problem costs the look, never the video."""
+    import proc
+    w, h = max(2, width // SOFT_SCALE // 2 * 2), max(2, height // SOFT_SCALE // 2 * 2)
+    out = out_dir / f"{Path(path).stem}.soft.mp4"
+    try:
+        proc.run(["ffmpeg", "-v", "error", "-y", "-i", str(path), "-an", "-vf",
+                  f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=area,crop={w}:{h},{SOFT_FILTER}",
+                  "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", str(out)],
+                 check=True, capture_output=True, timeout=proc.FFMPEG)
+        return out
+    except Exception:                                   # noqa: BLE001
+        logger.exception("Clip background: could not soften %s; using it as it is", path)
+        return Path(path)
+
