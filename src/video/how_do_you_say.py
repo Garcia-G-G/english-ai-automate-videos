@@ -33,56 +33,21 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from .constants import VIDEO_WIDTH, VIDEO_HEIGHT
-from .motion import clamp01
+from .motion import clamp01, ease_in_out, ease_out_cubic
+from .notebook import kit
 from .utils import create_base_frame, finalize_frame
 
 logger = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-BRAND_PATH = ROOT / "assets" / "branding" / "english-unlimited" / "brand.json"
-EMOJI_FONT = ROOT / "assets" / "fonts" / "NotoColorEmoji.ttf"
 
-#: Noto Color Emoji is a bitmap (CBDT) font with ONE strike. FreeType only
-#: rasterises it at that size; anything else raises. Render here, resize.
-EMOJI_STRIKE = 109
-
-
-def _hex(value: str, alpha: int = 255) -> Tuple[int, int, int, int]:
-    value = value.lstrip("#")
-    return (int(value[0:2], 16), int(value[2:4], 16), int(value[4:6], 16), alpha)
-
-
-@lru_cache(maxsize=1)
-def brand() -> dict:
-    with open(BRAND_PATH, encoding="utf-8") as handle:
-        return json.load(handle)
-
-
-def _color(name: str, alpha: int = 255):
-    return _hex(brand()["color"][name], alpha)
-
-
-def _on_paper(color, k: float):
-    """`color` laid over the paper at strength k, as an OPAQUE colour.
-
-    Drawing a translucent fill onto the RGBA page layer replaces the paper's
-    alpha rather than blending into it, so the background shows through the
-    page wherever a highlighter or a ruled line was drawn. Blending against
-    the paper here keeps the page solid.
-    """
-    k = clamp01(k)
-    return tuple(int(round(PAPER[c] * (1 - k) + color[c] * k)) for c in range(3)) + (255,)
-
-
-INK = _hex("#1C1812")              # replaced from brand.json at first use
-PAPER = _hex("#FBF8F0")            # the brief's off-white, warmer than `paper`
-
-
-@lru_cache(maxsize=64)
-def fredoka(size: int, weight: str = "display") -> ImageFont.FreeTypeFont:
-    """The brand display face. Raises rather than substituting: a notebook
-    lettered in Inter is a brand defect that looks like success."""
-    return ImageFont.truetype(str(ROOT / brand()["font"][weight]["file"]), size)
+# Everything this module draws comes from the notebook kit (STEP 77 §1); these names stay
+# because length_spec, outro and the tests read them from here.
+brand, fredoka, _hex = kit.brand, kit.fredoka, kit.hex_colour
+_color, _on_paper = kit.colour, kit.on_paper
+PAPER = kit.PAPER
+INK = kit.hex_colour("#1C1812")
+emoji_image = kit.emoji
 
 
 # ── Geometry (canvas pixels) ─────────────────────────────────────────
@@ -187,41 +152,6 @@ def _text_y(f: ImageFont.FreeTypeFont, centre: int) -> int:
     return int(centre - (top + bottom) / 2)
 
 
-# ── Emoji ────────────────────────────────────────────────────────────
-
-@lru_cache(maxsize=64)
-def _emoji_strike(emoji: str) -> Image.Image:
-    f = ImageFont.truetype(str(EMOJI_FONT), EMOJI_STRIKE)
-    canvas = Image.new("RGBA", (EMOJI_STRIKE * 2, EMOJI_STRIKE * 2), (0, 0, 0, 0))
-    ImageDraw.Draw(canvas).text((EMOJI_STRIKE // 2, EMOJI_STRIKE // 2), emoji,
-                                font=f, embedded_color=True)
-    box = canvas.getbbox()
-    if box is None:
-        raise ValueError(f"emoji {emoji!r} rendered nothing")
-    return canvas.crop(box)
-
-
-@lru_cache(maxsize=256)
-def emoji_image(emoji: str, size: int) -> Image.Image:
-    """The emoji fitted into a size x size square, aspect kept."""
-    src = _emoji_strike(emoji)
-    scale = size / max(src.size)
-    w, h = max(1, round(src.size[0] * scale)), max(1, round(src.size[1] * scale))
-    return src.resize((w, h), Image.LANCZOS)
-
-
-# ── Easing ───────────────────────────────────────────────────────────
-
-def ease_out_cubic(p: float) -> float:
-    p = clamp01(p)
-    return 1.0 - (1.0 - p) ** 3
-
-
-def ease_in_out(p: float) -> float:
-    p = clamp01(p)
-    return 3 * p * p - 2 * p * p * p
-
-
 # ── Timing, read from segment_times ──────────────────────────────────
 
 class Timeline:
@@ -305,20 +235,9 @@ def _p(x: float, y: float) -> Tuple[float, float]:
     return x + PAD, y + PAD
 
 
-def _draw_rings(draw: ImageDraw.ImageDraw, top: int, bottom: int) -> None:
-    """Spiral binding: a punched hole and an ink-outlined wire loop per ring,
-    the loop wrapping over the page's left edge."""
-    ink = _color("ink")
-    wire = (178, 174, 166, 255)
-    step = (bottom - top) / (RINGS - 1)
-    for k in range(RINGS):
-        y = top + step * k
-        hx, hy = _p(RING_X, y)
-        draw.ellipse([hx - 9, hy - 9, hx + 9, hy + 9], fill=ink)
-        # the loop: from the hole, out past the edge and back
-        box = [hx - 62, hy - 17, hx + 4, hy + 13]
-        draw.arc(box, start=150, end=390, fill=ink, width=11)
-        draw.arc(box, start=158, end=382, fill=wire, width=5)
+def _draw_rings(layer: Image.Image, top: int, bottom: int) -> None:
+    """Spiral binding (kit.rings), page-local top..bottom."""
+    kit.rings(layer, *_p(RING_X, top), _p(0, bottom)[1], RINGS)
 
 
 @lru_cache(maxsize=4)
@@ -326,46 +245,38 @@ def _static_page(items_key: Tuple[Tuple[str, str], ...], theme: str) -> Image.Im
     """Paper, binding, title, theme, ruled lines. Nothing that changes."""
     layer = Image.new("RGBA", (LAYER_W, LAYER_H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer, "RGBA")
-    _draw_paper(draw)
+    _draw_paper(layer)
 
     # ruled lines, one under each row, in the brand's sky blue
     sky = _on_paper(_color("sky"), 0.6)
     for cy in row_centres(len(items_key)):
         ly = cy + ROW_PITCH // 2 - 6
-        draw.line([_p(60, ly), _p(PAGE_W - 30, ly)], fill=sky, width=3)
+        kit.rule(layer, _p(60, 0)[0], _p(PAGE_W - 30, 0)[0], _p(0, ly)[1], 3, sky)
 
-    _draw_title(draw, TITLE_TEXT, theme, fredoka(TITLE_SIZE), _color("english_blue"))
-    _draw_rings(draw, 40, PAGE_H - 40)
+    _draw_title(layer, TITLE_TEXT, theme, fredoka(TITLE_SIZE), _color("english_blue"))
+    _draw_rings(layer, 40, PAGE_H - 40)
     return layer
 
 
-def _draw_paper(draw: ImageDraw.ImageDraw) -> None:
-    """Hard sticker shadow, then the outlined page."""
-    ink = _color("ink")
-    x0, y0 = _p(0, 0)
-    x1, y1 = _p(PAGE_W, PAGE_H)
-    draw.rounded_rectangle([x0 + SHADOW[0], y0 + SHADOW[1], x1 + SHADOW[0], y1 + SHADOW[1]],
-                           radius=PAGE_RADIUS, fill=ink)
-    draw.rounded_rectangle([x0, y0, x1, y1], radius=PAGE_RADIUS, fill=PAPER,
-                           outline=ink, width=PAGE_OUTLINE)
+def _draw_paper(layer: Image.Image) -> None:
+    """Hard sticker shadow, then the outlined page (kit.page)."""
+    kit.page(layer, *_p(0, 0), PAGE_W, PAGE_H, PAGE_RADIUS, PAGE_OUTLINE, SHADOW)
 
 
-def _draw_title(draw: ImageDraw.ImageDraw, title: str, theme: str,
+def _draw_title(layer: Image.Image, title: str, theme: str,
                 tf: ImageFont.FreeTypeFont, color) -> None:
     """Title centred right of the binding over a yellow marker stroke, theme under it.
     English is blue (brand rule); a Spanish title is ink."""
+    draw = ImageDraw.Draw(layer, "RGBA")
     ink = _color("ink")
-    yellow = _color("brand_yellow")
     tw = tf.getlength(title)
     cx = (64 + PAGE_W) / 2
     tx = cx - tw / 2
     # hand-drawn underline: a brand-yellow marker stroke that wobbles once
     uy = TITLE_Y + 92
-    pts = []
-    for s in range(41):
-        u = s / 40
-        pts.append(_p(tx - 8 + u * (tw + 16), uy + 5 * math.sin(u * math.pi * 1.5) - 3 * u))
-    draw.line(pts, fill=yellow, width=18, joint="curve")
+    pts = [_p(tx - 8 + u * (tw + 16), uy + 5 * math.sin(u * math.pi * 1.5) - 3 * u)
+           for u in (k / 40 for k in range(41))]
+    kit.marker_stroke(layer, pts, 18, _color("brand_yellow"))
     draw.text(_p(tx, TITLE_Y), title, font=tf, fill=color)
 
     thf = fredoka(THEME_SIZE, "display_medium")
@@ -409,43 +320,12 @@ def _word_offset_y(text: str, width: int, centre: int) -> int:
 PENCIL_ANGLE = 38
 
 
-@lru_cache(maxsize=1)
-def pencil_image() -> Tuple[Image.Image, Tuple[int, int]]:
-    """The pencil, tilted, and where its tip sits inside the image.
+PENCIL_ANGLE = kit.PENCIL_ANGLE
 
-    Drawn horizontally with the tip at the canvas centre, then rotated about
-    that centre, so the tip does not move and needs no trigonometry.
-    """
-    ink = _color("ink")
-    yellow = _color("brand_yellow")
-    wood = (236, 196, 140, 255)
-    pink = (232, 128, 140, 255)
-    metal = (178, 174, 166, 255)
-    size = 560
-    c = size // 2
-    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    d = ImageDraw.Draw(img, "RGBA")
-    h = 40                                  # body thickness
-    cone, body, ferrule, eraser = 54, 170, 24, 30
-    x = c
-    # wood cone with the graphite tip
-    d.polygon([(x, c), (x + cone, c - h / 2), (x + cone, c + h / 2)], fill=wood,
-              outline=ink)
-    d.polygon([(x, c), (x + 17, c - h / 2 * 17 / cone), (x + 17, c + h / 2 * 17 / cone)],
-              fill=ink)
-    x += cone
-    d.rectangle([x, c - h / 2, x + body, c + h / 2], fill=yellow, outline=ink, width=4)
-    d.line([(x, c), (x + body, c)], fill=(214, 182, 80, 255), width=3)
-    x += body
-    d.rectangle([x, c - h / 2, x + ferrule, c + h / 2], fill=metal, outline=ink, width=4)
-    x += ferrule
-    d.rounded_rectangle([x - 2, c - h / 2, x + eraser, c + h / 2], radius=10, fill=pink,
-                        outline=ink, width=4)
-    # the cone's outline drawn last so the body's edge does not cut it
-    d.line([(c, c), (c + cone, c - h / 2)], fill=ink, width=4)
-    d.line([(c, c), (c + cone, c + h / 2)], fill=ink, width=4)
-    rotated = img.rotate(-PENCIL_ANGLE, resample=Image.BICUBIC, center=(c, c))
-    return rotated, (c, c)
+
+def pencil_image() -> Tuple[Image.Image, Tuple[int, int]]:
+    """The pencil, tilted, and where its tip sits inside the image (kit.pencil)."""
+    return kit.pencil()
 
 
 def _pencil_targets(tl: Timeline, items: List[Dict], centres: List[int]):
@@ -495,32 +375,13 @@ def pencil_position(t: float, tl: Timeline, items: List[Dict],
 # ── Frame ────────────────────────────────────────────────────────────
 
 def _draw_tick(layer: Image.Image, x: float, cy: int, scale: float) -> None:
-    if scale <= 0:
-        return
-    s = TICK_SIZE * scale
-    draw = ImageDraw.Draw(layer, "RGBA")
-    pts = [(x, cy), (x + s * 0.38, cy + s * 0.38), (x + s, cy - s * 0.5)]
-    pts = [_p(px, py) for px, py in pts]
-    draw.line(pts, fill=_color("ink"), width=max(1, int(13 * scale)), joint="curve")
-    draw.line(pts, fill=_color("correct"), width=max(1, int(7 * scale)), joint="curve")
+    kit.tick(layer, *_p(x, cy), scale, TICK_SIZE)
 
 
 def _draw_countdown(layer: Image.Image, cy: int, p: float) -> None:
-    """Three dots in the English column that empty over the think pause, so
-    the silence reads as "your turn" and not as dead air."""
-    draw = ImageDraw.Draw(layer, "RGBA")
-    blue = _color("english_blue")
-    r = 11
-    for j in range(3):
-        # mid-column: the pencil rests at the column's start during the pause
-        cx = ENGLISH_X + 110 + j * 40
-        x, y = _p(cx, cy)
-        # dot j empties when the remaining time passes (3 - j) / 3
-        left = clamp01((1.0 - p) * 3 - (2 - j))
-        draw.ellipse([x - r, y - r, x + r, y + r], outline=blue, width=4)
-        if left > 0:
-            ir = (r - 2) * left
-            draw.ellipse([x - ir, y - ir, x + ir, y + ir], fill=blue)
+    """Three dots in the English column that empty over the think pause, so the silence
+    reads as "your turn" and not as dead air. Mid-column: the pencil rests at its start."""
+    kit.dots(layer, *_p(ENGLISH_X + 110, cy), p)
 
 
 def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
@@ -552,10 +413,8 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
         if a <= 0:
             continue
         cy = centres[i]
-        x0, y0 = _p(56, cy - ROW_PITCH // 2 + 6)
-        x1, y1 = _p(PAGE_W - 22, cy + ROW_PITCH // 2 - 10)
-        draw.rounded_rectangle([x0, y0, x1, y1], radius=18,
-                               fill=_on_paper(yellow, 0.7 * a))
+        kit.highlighter(layer, (*_p(56, cy - ROW_PITCH // 2 + 6), *_p(PAGE_W - 22, cy + ROW_PITCH // 2 - 10)),
+                        0.7 * a, yellow)
 
     # 2. emoji, popping on its row's es_i
     for i, item in enumerate(items):
@@ -840,18 +699,18 @@ def _static_level_page(n: int, title: str, theme: str, tiers: bool = True,
     are drawn thicker in the next tier's colour (all plain without tiers)."""
     layer = Image.new("RGBA", (LAYER_W, LAYER_H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer, "RGBA")
-    _draw_paper(draw)
+    _draw_paper(layer)
     sky = _on_paper(_color("sky"), 0.6)
     closes = {t[2]: t[1] for t in TIERS[1:]} if tiers else {}   # row count -> colour of the tier it opens
     for i, ly in enumerate(level_rows(n, tier_gap)[1]):
         if i + 1 in closes:                            # sticker rule: ink under the colour
-            draw.line([_p(LABEL_X1 + 6, ly), _p(PAGE_W - 30, ly)], fill=_color("ink"), width=11)
-            draw.line([_p(LABEL_X1 + 8, ly), _p(PAGE_W - 32, ly)], fill=_color(closes[i + 1]), width=6)
+            kit.rule(layer, _p(LABEL_X1 + 6, 0)[0], _p(PAGE_W - 30, 0)[0], _p(0, ly)[1], 11, _color("ink"))
+            kit.rule(layer, _p(LABEL_X1 + 8, 0)[0], _p(PAGE_W - 32, 0)[0], _p(0, ly)[1], 6, _color(closes[i + 1]))
         else:
-            draw.line([_p(LABEL_X1 + 6, ly), _p(PAGE_W - 30, ly)], fill=sky, width=3)
+            kit.rule(layer, _p(LABEL_X1 + 6, 0)[0], _p(PAGE_W - 30, 0)[0], _p(0, ly)[1], 3, sky)
     # a Spanish title is ink; English is always blue (brand rule)
-    _draw_title(draw, title, theme, fit_word(title, PAGE_W - 140, TITLE_SIZE, 56)[0], _color("ink"))
-    _draw_rings(draw, 40, PAGE_H - 40)
+    _draw_title(layer, title, theme, fit_word(title, PAGE_W - 140, TITLE_SIZE, 56)[0], _color("ink"))
+    _draw_rings(layer, 40, PAGE_H - 40)
     return layer
 
 
@@ -900,15 +759,8 @@ def _faded(img: Image.Image, a: float) -> Image.Image:
 
 
 def _draw_cross(layer: Image.Image, x: float, cy: int, scale: float) -> None:
-    """An ✗ drawn like _draw_tick: an ink stroke under a red one."""
-    if scale <= 0:
-        return
-    s = CROSS_SIZE * scale
-    draw = ImageDraw.Draw(layer, "RGBA")
-    x0, y0 = x + (CROSS_SIZE - s) / 2, cy - s / 2
-    for a, b in (((x0, y0), (x0 + s, y0 + s)), ((x0 + s, y0), (x0, y0 + s))):
-        draw.line([_p(*a), _p(*b)], fill=_color("ink"), width=max(1, int(13 * scale)))
-        draw.line([_p(*a), _p(*b)], fill=_color("error"), width=max(1, int(7 * scale)))
+    """An ✗ (kit.cross)."""
+    kit.cross(layer, *_p(x, cy), scale, CROSS_SIZE)
 
 
 def _draw_tf_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items: List[Dict],
@@ -1008,8 +860,8 @@ def _draw_fill_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items:
             bar = _faded(_blank_bar(blank, radius), 1.0 - p)
             layer.alpha_composite(bar, tuple(int(v) for v in _p(bx - BLUR_PAD, cy1 - BLANK_BAR_H / 2 - BLUR_PAD)))
             ry = cy1 + size * 0.42
-            draw.line([_p(bx + 2, ry), _p(bx + blank - 2, ry)], fill=_color("ink", int(255 * (1.0 - p))),
-                      width=BLANK_RULE)
+            kit.rule(layer, _p(bx + 2, 0)[0], _p(bx + blank - 2, 0)[0], _p(0, ry)[1], BLANK_RULE,
+                     _color("ink", int(round(255 * (1.0 - p) * 16) / 16)))
         th0, th1 = tl.think[i]
         if th0 <= t < th1:
             _draw_countdown_at(layer, bx + blank / 2 - 40, cy2, (t - th0) / max(1e-6, th1 - th0))
@@ -1058,32 +910,20 @@ def choice_spans(items: List[Dict], centres: List[int]) -> List[List[Tuple[float
     return out
 
 
-def _hand_circle(draw: ImageDraw.ImageDraw, box: Tuple[float, float, float, float], p: float) -> None:
-    """A loop drawn by hand around box, p of the way: it starts top-left and overshoots a
-    little, with a slow wobble so it does not look like a stamp. Ink under green."""
-    if p <= 0:
-        return
+def _as_layer(target) -> Image.Image:
+    """The image an ImageDraw paints on, or the image itself (the tests pass a draw)."""
+    return target if isinstance(target, Image.Image) else target._image
+
+
+def _hand_circle(target, box: Tuple[float, float, float, float], p: float) -> None:
+    """A loop drawn by hand around box (page-local), p of the way (kit.circle)."""
     x0, y0, x1, y1 = box
-    cx, cy, rx, ry = (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2
-    sweep = 2 * math.pi * 1.08 * p
-    a0 = -math.pi * 0.7
-    steps = max(2, int(48 * p))
-    pts = []
-    for k in range(steps + 1):
-        a = a0 + sweep * k / steps
-        wob = 1.0 + 0.05 * math.sin(3 * a + 0.6) + 0.04 * (a - a0) / (2 * math.pi)
-        pts.append(_p(cx + rx * wob * math.cos(a), cy + ry * wob * math.sin(a)))
-    draw.line(pts, fill=_color("ink"), width=10, joint="curve")
-    draw.line(pts, fill=_color("correct"), width=5, joint="curve")
+    kit.circle(_as_layer(target), (*_p(x0, y0), *_p(x1, y1)), p)
 
 
-def _strike(draw: ImageDraw.ImageDraw, x0: float, x1: float, cy: float, p: float) -> None:
-    """A red stroke through the wrong option, left to right, ink under red."""
-    if p <= 0:
-        return
-    a, b = (x0 - 6, cy + 3), (x0 - 6 + (x1 - x0 + 12) * p, cy - 3 * (2 * p - 1))
-    draw.line([_p(*a), _p(*b)], fill=_color("ink"), width=7)
-    draw.line([_p(*a), _p(*b)], fill=_color("error"), width=3)
+def _strike(target, x0: float, x1: float, cy: float, p: float) -> None:
+    """A red stroke through the wrong option, left to right (kit.strike)."""
+    kit.strike(_as_layer(target), _p(x0, 0)[0], _p(x1, 0)[0], _p(0, cy)[1], p)
 
 
 def _draw_choose_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items: List[Dict],
@@ -1100,7 +940,7 @@ def _draw_choose_answers(layer: Image.Image, t: float, tl: "LevelTimeline", item
     for i, (it, spans) in enumerate(zip(items, choice_spans(items, centres))):
         # the blank stays open: nothing is written in it, the options below answer it
         bx, ry = LINE_X + bf.getlength(fill_parts(it["sentence"])[0]), centres[i] + LINE1_DY + bsize * 0.42
-        draw.line([_p(bx + 2, ry), _p(bx + blank - 2, ry)], fill=_color("ink"), width=BLANK_RULE)
+        kit.rule(layer, _p(bx + 2, 0)[0], _p(bx + blank - 2, 0)[0], _p(0, ry)[1], BLANK_RULE, _color("ink"))
         cy = centres[i] + LINE2_DY
         y = _text_y(f, cy) - 2
         p = tl.reveal(i, t)
@@ -1122,9 +962,9 @@ def _draw_choose_answers(layer: Image.Image, t: float, tl: "LevelTimeline", item
         if p <= 0:
             continue
         x0, x1 = spans[right]
-        _hand_circle(draw, (x0 - CIRCLE_PAD_X, cy - size / 2 - CIRCLE_PAD_Y,
-                            x1 + CIRCLE_PAD_X, cy + size / 2 + CIRCLE_PAD_Y), p)
-        _strike(draw, *spans[1 - right], cy, p)
+        _hand_circle(layer, (x0 - CIRCLE_PAD_X, cy - size / 2 - CIRCLE_PAD_Y,
+                             x1 + CIRCLE_PAD_X, cy + size / 2 + CIRCLE_PAD_Y), p)
+        _strike(layer, *spans[1 - right], cy, p)
         if p >= 1.0:
             tick_t = tl.answer[i][1]
             _draw_tick(layer, line_end + CIRCLE_PAD_X + TICK_GAP, cy,
@@ -1132,27 +972,15 @@ def _draw_choose_answers(layer: Image.Image, t: float, tl: "LevelTimeline", item
 
 
 def _draw_countdown_at(layer: Image.Image, x0: float, cy: float, p: float) -> None:
-    """_draw_countdown's three dots, at a given x."""
-    draw = ImageDraw.Draw(layer, "RGBA")
-    blue = _color("english_blue")
-    r = 11
-    for j in range(3):
-        x, y = _p(x0 + j * 40, cy)
-        left = clamp01((1.0 - p) * 3 - (2 - j))
-        draw.ellipse([x - r, y - r, x + r, y + r], outline=blue, width=4)
-        if left > 0:
-            ir = (r - 2) * left
-            draw.ellipse([x - ir, y - ir, x + ir, y + ir], fill=blue)
+    """The three countdown dots at a given x (kit.dots)."""
+    kit.dots(layer, *_p(x0, cy), p)
 
 
 @lru_cache(maxsize=8)
 def _tier_pill(word: str, color_name: str, height: int) -> Image.Image:
     """A vertical pill in the tier's colour with its word read bottom to top."""
     w = LABEL_X1 - LABEL_X0
-    pill = Image.new("RGBA", (w + 4, height + 4), (0, 0, 0, 0))
-    d = ImageDraw.Draw(pill, "RGBA")
-    d.rounded_rectangle([2, 2, w + 1, height + 1], radius=w // 2, fill=_color(color_name),
-                        outline=_color("ink"), width=3)
+    pill = kit.pill(w, height, _color(color_name)).copy()
     f = fredoka(LABEL_SIZE)
     text = Image.new("RGBA", (int(f.getlength(word)) + 4, LABEL_SIZE + 10), (0, 0, 0, 0))
     ink_on = color_name == "brand_yellow"           # yellow is never under paper-coloured text
@@ -1163,10 +991,9 @@ def _tier_pill(word: str, color_name: str, height: int) -> Image.Image:
     return pill
 
 
-def _draw_arrow(draw: ImageDraw.ImageDraw, x: float, y: float, length: float, color) -> None:
-    """Fredoka has no «→»: a stroke and a head."""
-    draw.line([(x, y), (x + length - 14, y)], fill=color, width=8)
-    draw.polygon([(x + length, y), (x + length - 20, y - 14), (x + length - 20, y + 14)], fill=color)
+def _draw_arrow(img: Image.Image, x: float, y: float, length: float, color) -> None:
+    """Fredoka has no «→» (kit.arrow)."""
+    kit.arrow(img, x, y, length, color)
 
 
 @lru_cache(maxsize=1)
@@ -1174,15 +1001,14 @@ def _verdict_note() -> Image.Image:
     """«3 → básico · 7 → intermedio · 10 → experto», one tier per line, on a sticky note."""
     ink = _color("ink")
     note = Image.new("RGBA", (VERDICT_W + SHADOW[0] + 4, VERDICT_H + SHADOW[1] + 4), (0, 0, 0, 0))
+    note.alpha_composite(kit.note_card(VERDICT_W, VERDICT_H, _color("brand_yellow"), 5, SHADOW))
     d = ImageDraw.Draw(note, "RGBA")
-    d.rectangle([SHADOW[0], SHADOW[1], VERDICT_W + SHADOW[0], VERDICT_H + SHADOW[1]], fill=ink)
-    d.rectangle([0, 0, VERDICT_W, VERDICT_H], fill=_color("brand_yellow"), outline=ink, width=5)
     f = fredoka(VERDICT_SIZE)
     for k, (num, (word, color, _a, _b)) in enumerate(zip(("3", "7", "10"), TIERS)):
         cy = 80 + k * 120
         y = _text_y(f, cy)
         d.text((48, y), num, font=f, fill=ink)
-        _draw_arrow(d, 150, cy, 70, ink)
+        _draw_arrow(note, 150, cy, 70, ink)
         d.text((250, y), word.lower(), font=f, fill=_color(color) if color != "brand_yellow" else ink)
     return note.rotate(VERDICT_ROT, expand=True, resample=Image.BICUBIC)
 
@@ -1192,9 +1018,8 @@ def _draw_note(layer: Image.Image, lines: List[Tuple[str, str]], scale: float) -
         return
     ink = _color("ink")
     note = Image.new("RGBA", (NOTE_W + SHADOW[0], NOTE_H + SHADOW[1]), (0, 0, 0, 0))
+    note.alpha_composite(kit.note_card(NOTE_W, NOTE_H, _color("brand_yellow"), 4, SHADOW).crop((0, 0, *note.size)))
     d = ImageDraw.Draw(note, "RGBA")
-    d.rectangle([SHADOW[0], SHADOW[1], NOTE_W + SHADOW[0] - 1, NOTE_H + SHADOW[1] - 1], fill=ink)
-    d.rectangle([0, 0, NOTE_W - 1, NOTE_H - 1], fill=_color("brand_yellow"), outline=ink, width=4)
     f = fredoka(NOTE_FONT, "display_medium")
     step = (NOTE_H - 2 * NOTE_PAD) / NOTE_LINES
     top = NOTE_PAD + (NOTE_LINES - len(lines)) * step / 2
@@ -1258,7 +1083,7 @@ def level_text_boxes(vtype: str, items: List[Dict], centres: List[int]) -> List[
 
 
 #: The pencil image's box around its tip (pencil_image, PENCIL_ANGLE), and the air it keeps.
-PENCIL_BOX = (-4, -3, 230, 186)
+PENCIL_BOX = (-4, -4, 230, 186)          # kit.pencil, drawn at 4× (STEP 77 §1)
 PENCIL_CLEAR = 8
 
 
@@ -1362,9 +1187,8 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
             a *= 1.0 - clamp01((t - nxt) / HIGHLIGHT_FADE)
         if a > 0:
             cy = centres[i]
-            draw.rounded_rectangle([*_p(LABEL_X1 + 6, cy - ROW_PITCH // 2 + 6),
-                                    *_p(PAGE_W - 22, cy + ROW_PITCH // 2 - 10)],
-                                   radius=18, fill=_on_paper(yellow, 0.7 * a))
+            kit.highlighter(layer, (*_p(LABEL_X1 + 6, cy - ROW_PITCH // 2 + 6),
+                                    *_p(PAGE_W - 22, cy + ROW_PITCH // 2 - 10)), 0.7 * a, yellow)
     kind = mode.get("kind", "write")
     if kind in ("fill", "choose"):
         layer.alpha_composite(_static_fill_text(tuple(blank_key(it) for it in items), tier_gap))

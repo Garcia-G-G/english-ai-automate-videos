@@ -54,6 +54,17 @@ def ease_out_back(p: float, overshoot: float = 1.70158) -> float:
     return 1.0 + (overshoot + 1.0) * q * q * q + overshoot * q * q
 
 
+def ease_out_cubic(p: float) -> float:
+    p = clamp01(p)
+    return 1.0 - (1.0 - p) ** 3
+
+
+def ease_in_out(p: float) -> float:
+    """Smoothstep: the notebook's glides (was a copy in how_do_you_say.py)."""
+    p = clamp01(p)
+    return 3 * p * p - 2 * p * p * p
+
+
 def ease_out_expo(p: float) -> float:
     p = clamp01(p)
     return 1.0 if p >= 1.0 else 1.0 - math.pow(2.0, -10.0 * p)

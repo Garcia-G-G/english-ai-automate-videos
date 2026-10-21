@@ -103,13 +103,14 @@ def outro_still(variant: Dict) -> Image.Image:
     stroke, outro.json's `line_3` small and muted, the symbol on the top edge."""
     from .how_do_you_say import fredoka
     ink, blue, yellow = _brand_colour("ink"), _brand_colour("english_blue"), _brand_colour("brand_yellow")
-    paper, muted = _brand_colour("paper"), _brand_colour("secondary_text")
-    img = Image.new("RGB", (VIDEO_WIDTH, VIDEO_HEIGHT), _sand())
-    draw = ImageDraw.Draw(img)
+    from .notebook import kit
+    muted = _brand_colour("secondary_text")
     x0, y0 = (VIDEO_WIDTH - CARD_W) // 2, (VIDEO_HEIGHT - CARD_H) // 2 + CARD_DY
-    draw.rounded_rectangle([x0 + 8, y0 + 8, x0 + CARD_W + 8, y0 + CARD_H + 8], radius=CARD_RADIUS, fill=ink)
-    draw.rounded_rectangle([x0, y0, x0 + CARD_W, y0 + CARD_H], radius=CARD_RADIUS, fill=paper,
-                           outline=ink, width=CARD_OUTLINE)
+    # The notebook kit's card, in the page's one paper colour (STEP 77 §1).
+    card = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (*_sand(), 255))
+    kit.page(card, x0, y0, CARD_W, CARD_H, CARD_RADIUS, CARD_OUTLINE, (8, 8), fill=kit.PAPER)
+    img = card.convert("RGB")
+    draw = ImageDraw.Draw(img)
 
     def centred(text, font, cy, fill):
         box = draw.textbbox((0, 0), text, font=font)

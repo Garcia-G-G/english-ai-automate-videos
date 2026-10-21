@@ -42,12 +42,13 @@ def _hdys_timeline(data):
     return data, t + 4.0
 
 
-#: sha256[:16] of raw frames over a flat base, rendered by the renderer as it was
-#: BEFORE the level modes (3c5ab68, computed in a worktree of that commit).
+#: sha256[:16] of raw frames over a flat base. First pinned before the level modes (3c5ab68);
+#: RE-PINNED at STEP 77 §1, when every mark started coming from the supersampled notebook kit
+#: (the frames changed on purpose: anti-aliased edges; stills reviewed in _audit/stills/STEP77/).
 HDYS_PIN = {
-    0.0: "e9748d62b6d5818a", 4.7: "0f9a322115eabb7a", 15.5: "075710f7c4db07e8",
-    25.9: "3f5aa23f928a0a6e", 50.2: "86996ac9db397a43", 53.6: "32deada8b8f4df3e",
-    63.7: "25a4d3e035ccd7f6",
+    0.0: "7290cf28bb6ca070", 4.7: "a47c124181477d05", 15.5: "07b9e53a1a2b2c4c",
+    25.9: "2ba971a9fa260e00", 50.2: "8c4b0a9b114a822a", 53.6: "58de244f71d2199a",
+    63.7: "223a9a0dded6e51a",
 }
 
 
