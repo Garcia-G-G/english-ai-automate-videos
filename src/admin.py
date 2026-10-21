@@ -52,6 +52,10 @@ from script_generator import (
     VIDEO_TYPES
 )
 
+# STEP 77 §0: what the panel offers — the notebook types only (the old neon renderers stay
+# reachable from the CLI until STEP 79).
+from video_types import PANEL_TYPES  # noqa: E402
+
 # Shared pipeline — the SAME TTS dispatch, merge and renderer the CLI uses.
 import pipeline
 import topic_history
@@ -91,8 +95,9 @@ def type_label(video_type: str) -> str:
 
 
 def scheduler_default_types() -> list:
-    """Types the unattended batch offers: all of them, from the one list."""
-    return list(VIDEO_TYPES)
+    """Types the unattended batch offers: the panel's (notebook) types, from the one list."""
+    from video_types import PANEL_TYPES
+    return list(PANEL_TYPES)
 
 
 def _declared_profiles() -> list:
@@ -2859,7 +2864,7 @@ elif page == "Generate":
     with col1:
         st.markdown('<div class="section-header">Configuration</div>', unsafe_allow_html=True)
 
-        video_type = st.selectbox("Video Type", VIDEO_TYPES, index=0)
+        video_type = st.selectbox("Video Type", PANEL_TYPES, index=0)
 
         selection_mode = st.radio(
             "Topic Selection",
@@ -3015,15 +3020,15 @@ elif page == "Queue":
                 # regardless. Both came from the hand-written list.
                 total = batch_add([{"type": vtype, "category": None,
                                     "topic": None}
-                                   for vtype in VIDEO_TYPES
+                                   for vtype in PANEL_TYPES
                                    for _ in range(5)])
-                st.success(f"Added {5 * len(VIDEO_TYPES)} videos — "
+                st.success(f"Added {5 * len(PANEL_TYPES)} videos — "
                            f"{total} waiting.")
                 st.rerun()
 
         st.markdown("---")
         st.write("**Custom:**")
-        q_type = st.selectbox("Type", VIDEO_TYPES, key="queue_type")
+        q_type = st.selectbox("Type", PANEL_TYPES, key="queue_type")
         q_count = st.number_input("Count", min_value=1, max_value=50, value=5)
         if st.button("Add to Queue", width="stretch"):
             total = batch_add([{"type": q_type, "category": None,
@@ -3839,7 +3844,7 @@ elif page == "Scheduler":
         # unattended batch at all — not misconfigured, absent.
         enabled_types = st.session_state.scheduler_config["types"]
         selected_types = [
-            vtype for vtype in VIDEO_TYPES
+            vtype for vtype in PANEL_TYPES
             # No key=: a keyed widget ignores value= after its first draw
             # and would freeze at whatever was checked then, which is what
             # tests/test_admin_platform_targets pins. Labels are distinct, so

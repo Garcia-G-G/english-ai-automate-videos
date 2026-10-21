@@ -115,13 +115,15 @@ def recorder(monkeypatch, tmp_path, ledger):
 
 # ═══════════════════ §2 · the scheduler offers every type ═══════════════════
 
-def test_the_scheduler_can_produce_all_six_types():
-    """fill_blank and pronunciation could not be produced from the unattended
-    batch at all — not misconfigured, absent from the UI's own list."""
+def test_the_scheduler_offers_every_panel_type_and_no_old_one():
+    """It offers every type the panel can make, from the one list. Since STEP 77 §0 that is
+    the notebook types; the old neon ones stay in VIDEO_TYPES for the CLI until STEP 79."""
+    from video_types import PANEL_TYPES
     offered = set(admin.scheduler_default_types())
 
-    assert offered == set(VIDEO_TYPES)
-    assert {"fill_blank", "pronunciation"} <= offered
+    assert offered == set(PANEL_TYPES) and {"how_do_you_say", "choose_level"} <= offered
+    assert not offered & {"quiz", "fill_blank", "pronunciation", "educational", "vocabulary", "true_false"}
+    assert {"fill_blank", "pronunciation"} <= set(VIDEO_TYPES)
 
 
 def test_the_dashboard_holds_no_hand_written_copy_of_the_type_list():

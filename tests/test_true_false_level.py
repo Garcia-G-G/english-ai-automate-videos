@@ -194,7 +194,7 @@ def test_the_audio_is_spanish_only_with_a_four_second_think(tmp_path, monkeypatc
 def test_the_registry_puts_the_cascade_above_the_old_true_false():
     import video_types
     labels = [label for label, _t in video_types.DASHBOARD_BUTTONS]
-    assert labels.index("Verdadero o falso (cascada)") + 1 == labels.index("Verdadero o falso (uno)")
+    assert "Verdadero o falso (cascada)" in labels and "Verdadero o falso (uno)" not in labels   # STEP 77 §0
     assert video_types.renderer_for(VTYPE).__name__ == "create_frame_level"
     assert video_types.spec(VTYPE)["text_band"] == video_types.spec("how_do_you_say")["text_band"]
     assert "true_false" in video_types.VIDEO_TYPES

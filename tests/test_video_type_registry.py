@@ -77,12 +77,14 @@ def test_every_type_declares_a_text_band():
         assert 0 <= top < bottom
 
 
-def test_every_type_has_a_dashboard_door():
-    """THE ONE THIS REGISTRY EXISTS FOR. fill_blank and pronunciation were
-    produced by the engine and unreachable from the Generate page."""
+def test_every_panel_type_has_a_dashboard_door_and_no_old_type_does():
+    """THE ONE THIS REGISTRY EXISTS FOR, scoped by STEP 77 §0: every notebook type can be
+    asked for; the old neon types, still in the registry for the CLI, have no button."""
     with_doors = {vtype for _, vtype in vt.DASHBOARD_BUTTONS}
-    missing = set(vt.VIDEO_TYPES) - with_doors
-    assert not missing, f"types the engine can make and nobody can ask for: {missing}"
+    missing = set(vt.PANEL_TYPES) - with_doors
+    assert not missing, f"types the panel can make and nobody can ask for: {missing}"
+    assert with_doors == set(vt.PANEL_TYPES)
+    assert vt.PANEL_TYPES and set(vt.PANEL_TYPES) < set(vt.VIDEO_TYPES)
 
 
 def test_every_type_names_a_renderer_that_actually_imports():

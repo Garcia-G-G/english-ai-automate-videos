@@ -278,7 +278,8 @@ def test_the_scheduler_still_produces_every_type():
     import admin
     from script_generator import VIDEO_TYPES
 
-    assert set(admin.scheduler_default_types()) == set(VIDEO_TYPES)
+    from video_types import PANEL_TYPES
+    assert set(admin.scheduler_default_types()) == set(PANEL_TYPES) <= set(VIDEO_TYPES)
 
 
 def _resolve(**kwargs):

@@ -31,11 +31,12 @@ def _script(vtype):
 
 
 @pytest.mark.parametrize("vtype", sorted(FIXTURES))
-def test_the_registry_puts_the_new_button_right_above_the_old_one(vtype):
+def test_the_registry_shows_the_new_button_and_hides_the_old_one(vtype):
+    """STEP 77 §0: the old neon type keeps its code but loses its button."""
     import video_types
     label, old, old_label = NEW_OVER_OLD[vtype]
     buttons = video_types.DASHBOARD_BUTTONS
-    assert buttons.index((label, vtype)) + 1 == buttons.index((old_label, old))
+    assert (label, vtype) in buttons and (old_label, old) not in buttons
     assert old in video_types.VIDEO_TYPES and vtype in video_types.V3_TYPES
     assert video_types.renderer_for(vtype).__name__ == "create_frame_level"
     assert video_types.audio_generator_name(vtype) == "generate_level_audio_segmented"

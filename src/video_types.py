@@ -159,8 +159,12 @@ TEXT_ZONES = {k: v["text_band"] for k, v in TYPES.items() if v.get("text_band")}
 
 #: [(label, type)] for the dashboard's Generate buttons -- every type with a
 #: label gets a door, which is the whole point.
+#: The types the panel offers (STEP 77 §0): the ones the notebook renderer draws. The others
+#: still render the old neon brand; their code stays (CLI, schema) until STEP 79 removes it.
+PANEL_TYPES = tuple(k for k, v in TYPES.items() if v["renderer"].startswith("video.how_do_you_say:"))
+
 DASHBOARD_BUTTONS = [(v["dashboard"], k) for k, v in TYPES.items()
-                     if v.get("dashboard")]
+                     if v.get("dashboard") and k in PANEL_TYPES]
 
 #: The notebook level pages (create_frame_level): the slowest renders, STEP 63.
 LEVEL_TYPES = frozenset(k for k, v in TYPES.items() if v["renderer"].endswith(":create_frame_level"))

@@ -483,8 +483,9 @@ costs:
   # STEP 76 §5: an ENFORCED per-video cap on ElevenLabs TTS. Before every call the job's
   # spend plus that call's price is checked against it; crossing it stops the job with a
   # Spanish message and asks nothing more. Measured 2026-10-20 over 176 videos: median
-  # $0.073, p90 $0.137, max $0.453 (sy001 $0.30 and gr004 $0.28 would have stopped).
-  per_video_tts_usd: 0.25
+  # $0.073, p90 $0.137, max $0.453. STEP 77 §0: 0.30 is Garcia's per-Short budget (0.25
+  # would have stopped sy001 at $0.30 and gr004 at $0.28).
+  per_video_tts_usd: 0.30
 
 # Active profile: adults | children
 profile: "adults"

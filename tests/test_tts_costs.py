@@ -83,7 +83,7 @@ def test_the_budget_stops_the_job_before_the_next_call(tmp_path, tracker, monkey
 
 
 def test_the_budget_reads_config():
-    assert CT.per_video_tts_usd() == 0.25
+    assert CT.per_video_tts_usd() == 0.30          # Garcia's per-Short budget (STEP 77 §0)
 
 
 def test_a_failed_bilingual_run_is_the_jobs_failure_not_a_paid_fallback(tmp_path, monkeypatch):
