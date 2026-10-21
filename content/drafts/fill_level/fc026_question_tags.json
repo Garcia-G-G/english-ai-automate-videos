@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "Rellena el hueco: ¿VERDAD? en inglés 🤨",
+  "video_description": "Isn't it, don't you, did she: las coletillas en diez frases. 🤨",
+  "title": "Completa la frase",
+  "theme": "las coletillas ¿verdad?",
+  "intro": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "sentence": "It's cold, ____ it?",
+      "answer": "isn't",
+      "translation": "Hace frío, ¿verdad?",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "You're Spanish, ____ you?",
+      "answer": "aren't",
+      "translation": "Eres español, ¿no?",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She likes coffee, ____ she?",
+      "answer": "doesn't",
+      "translation": "Le gusta el café, ¿verdad?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "They went home, ____ they?",
+      "answer": "didn't",
+      "translation": "Se fueron a casa, ¿no?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "You can swim, ____ you?",
+      "answer": "can't",
+      "translation": "Sabes nadar, ¿verdad?",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He hasn't called, ____ he?",
+      "answer": "has",
+      "translation": "No ha llamado, ¿verdad?",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'm late, ____ I?",
+      "answer": "aren't",
+      "translation": "Llego tarde, ¿no?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Let's go, ____ we?",
+      "answer": "shall",
+      "translation": "Vamos, ¿te parece?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Nobody called, ____ they?",
+      "answer": "did",
+      "translation": "No llamó nadie, ¿verdad?",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Everybody's here, ____ they?",
+      "answer": "aren't",
+      "translation": "Están todos, ¿verdad?",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#QuestionTags",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc026",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

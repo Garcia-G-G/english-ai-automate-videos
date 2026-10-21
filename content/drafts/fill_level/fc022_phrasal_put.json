@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: PHRASAL VERBS con PUT 🧥",
+  "video_description": "Put on, put off, put up with: diez phrasal verbs con put. 🧥",
+  "title": "Completa la frase",
+  "theme": "phrasal verbs con PUT",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "Put ____ your coat, it's cold.",
+      "answer": "on",
+      "translation": "Ponte el abrigo, hace frío.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Put ____ the TV, please.",
+      "answer": "on",
+      "translation": "Pon la tele, por favor.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Put your toys ____.",
+      "answer": "away",
+      "translation": "Guarda tus juguetes.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We had to put ____ the meeting.",
+      "answer": "off",
+      "translation": "Tuvimos que aplazar la reunión.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Can you put me ____ for the night?",
+      "answer": "up",
+      "translation": "¿Puedes alojarme esta noche?",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "They put ____ the fire quickly.",
+      "answer": "out",
+      "translation": "Apagaron el fuego rápido.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I can't put ____ with this noise.",
+      "answer": "up",
+      "translation": "No aguanto este ruido.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Hold on, I'll put you ____ to the manager.",
+      "answer": "through",
+      "translation": "Un momento, le paso con el encargado.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The smell put me ____ my food.",
+      "answer": "off",
+      "translation": "El olor me quitó las ganas de comer.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Don't put yourself ____ like that.",
+      "answer": "down",
+      "translation": "No te menosprecies así.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc022",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

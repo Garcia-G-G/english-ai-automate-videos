@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿DE PARTE DE QUIÉN?» en inglés? 📞",
+  "video_description": "Diez frases para hablar por teléfono en inglés. 📞",
+  "title": "¿Cómo se dice?",
+  "theme": "al teléfono",
+  "intro": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Diga?",
+      "english": "Hello?"
+    },
+    {
+      "spanish": "¿Quién es?",
+      "english": "Who's this?"
+    },
+    {
+      "spanish": "¿De parte de quién?",
+      "english": "Who's calling?"
+    },
+    {
+      "spanish": "Un momento, por favor.",
+      "english": "Hold on, please."
+    },
+    {
+      "spanish": "Ahora te paso.",
+      "english": "I'll put you through."
+    },
+    {
+      "spanish": "No está ahora mismo.",
+      "english": "She's not here right now."
+    },
+    {
+      "spanish": "¿Quieres dejar un mensaje?",
+      "english": "Would you like to leave a message?"
+    },
+    {
+      "spanish": "Te llamo luego.",
+      "english": "I'll call you back."
+    },
+    {
+      "spanish": "Te has equivocado de número.",
+      "english": "You've got the wrong number."
+    },
+    {
+      "spanish": "Se me va a acabar la batería.",
+      "english": "My battery's about to die."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf017",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

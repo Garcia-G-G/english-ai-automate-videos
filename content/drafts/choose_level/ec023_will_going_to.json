@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "WILL o GOING TO: ¿cuál va en cada frase? 🔮",
+  "video_description": "Futuro en inglés: will o going to. Diez frases para elegir bien. 🔮",
+  "title": "Elige la correcta",
+  "theme": "will o going to",
+  "intro": "[cheerful] Diez frases, dos opciones. Di la correcta antes que yo.",
+  "items": [
+    {
+      "sentence": "Look at those clouds! It's ____ rain.",
+      "options": [
+        "going to",
+        "will"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'm cold. — OK, ____ close the window.",
+      "options": [
+        "I'm going to",
+        "I'll"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We're ____ visit Rome next month.",
+      "options": [
+        "will",
+        "going to"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I think she ____ love it.",
+      "options": [
+        "will",
+        "is going to"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Careful! You're ____ fall!",
+      "options": [
+        "will",
+        "going to"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The phone's ringing. — ____ get it!",
+      "options": [
+        "I'll",
+        "I'm going to"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I promise ____ tell anyone.",
+      "options": [
+        "I won't",
+        "I'm not going to"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "They've bought paint. They're ____ paint the house.",
+      "options": [
+        "will",
+        "going to"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ you marry me?",
+      "options": [
+        "Will",
+        "Are you going to"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "By 2030, cars ____ drive themselves.",
+      "options": [
+        "are going to",
+        "will"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#WillVsGoingTo",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec023",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

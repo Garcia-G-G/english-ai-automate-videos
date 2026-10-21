@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "«¿ESTÁN INCLUIDOS LOS GASTOS?» y 9 frases más en inglés 🔑",
+  "video_description": "Diez frases para alquilar un piso en inglés. 🔑",
+  "title": "¿Cómo se dice?",
+  "theme": "al alquilar un piso",
+  "intro": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo?",
+  "items": [
+    {
+      "spanish": "Busco piso.",
+      "english": "I'm looking for an apartment."
+    },
+    {
+      "spanish": "¿Cuánto es el alquiler?",
+      "english": "How much is the rent?"
+    },
+    {
+      "spanish": "¿Puedo verlo?",
+      "english": "Can I see it?"
+    },
+    {
+      "spanish": "¿Está amueblado?",
+      "english": "Is it furnished?"
+    },
+    {
+      "spanish": "¿Están incluidos los gastos?",
+      "english": "Are utilities included?"
+    },
+    {
+      "spanish": "¿Se admiten mascotas?",
+      "english": "Are pets allowed?"
+    },
+    {
+      "spanish": "¿Cuánto es la fianza?",
+      "english": "How much is the deposit?"
+    },
+    {
+      "spanish": "¿Cuándo puedo mudarme?",
+      "english": "When can I move in?"
+    },
+    {
+      "spanish": "La caldera no funciona.",
+      "english": "The boiler isn't working."
+    },
+    {
+      "spanish": "Me mudo el mes que viene.",
+      "english": "I'm moving out next month."
+    }
+  ],
+  "outro": "[happy] Guarda el vídeo y repítelas mañana.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésÚtil",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf038",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "Verdadero o falso: CONTABLES 🧮",
+  "video_description": "¿Se puede contar? Contables e incontables en inglés. 🧮",
+  "title": "¿Verdadero o falso?",
+  "theme": "contables e incontables",
+  "intro": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo.",
+  "items": [
+    {
+      "statement": "«Water» es incontable.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Apples» es un plural correcto.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Money» se cuenta: «two moneys».",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "money es incontable"
+    },
+    {
+      "statement": "«Advice» es incontable.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Furnitures» es correcto.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es furniture, sin -s"
+    },
+    {
+      "statement": "«News» lleva verbo en singular: «the news is».",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«A luggage» es correcto.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es a piece of luggage"
+    },
+    {
+      "statement": "«Hair» suele ser incontable cuando hablas de todo el pelo.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Researches» es la forma normal.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "normalmente se dice research"
+    },
+    {
+      "statement": "«Two coffees, please» es correcto en un bar.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#GramáticaInglesa",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf016",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

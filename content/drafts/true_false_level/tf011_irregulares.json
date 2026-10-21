@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "Verdadero o falso: VERBOS IRREGULARES 📚",
+  "video_description": "¿Conoces estos pasados irregulares? Verdadero o falso. 📚",
+  "title": "¿Verdadero o falso?",
+  "theme": "verbos irregulares",
+  "intro": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo.",
+  "items": [
+    {
+      "statement": "El pasado de «go» es «went».",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "El pasado de «eat» es «eated».",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es ate"
+    },
+    {
+      "statement": "El pasado de «buy» es «bought».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "El pasado de «think» es «thinked».",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es thought"
+    },
+    {
+      "statement": "El pasado de «catch» es «caught».",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "El participio de «write» es «wrote».",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es written"
+    },
+    {
+      "statement": "El pasado de «lie» (tumbarse) es «lay».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "El pasado de «fly» es «flied».",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es flew"
+    },
+    {
+      "statement": "El participio de «swim» es «swum».",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "El pasado de «hang» (colgar un cuadro) es «hung».",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VerbosIrregulares",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf011",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

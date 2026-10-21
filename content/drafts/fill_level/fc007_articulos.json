@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: A, AN o THE 🍎",
+  "video_description": "A, an, the o nada: los artículos en inglés en diez frases. 🍎",
+  "title": "Completa la frase",
+  "theme": "los artículos a, an y the",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "I want ____ apple.",
+      "answer": "an",
+      "translation": "Quiero una manzana.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She's ____ doctor.",
+      "answer": "a",
+      "translation": "Es médica.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ sun is very hot today.",
+      "answer": "The",
+      "translation": "El sol calienta mucho hoy.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "It's ____ honor to meet you.",
+      "answer": "an",
+      "translation": "Es un honor conocerte.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I play ____ guitar in a band.",
+      "answer": "the",
+      "translation": "Toco la guitarra en un grupo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She goes to ____ university in Boston.",
+      "answer": "a",
+      "translation": "Va a una universidad en Boston.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He's ____ best player on the team.",
+      "answer": "the",
+      "translation": "Es el mejor jugador del equipo.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Twice ____ week, I go swimming.",
+      "answer": "a",
+      "translation": "Dos veces por semana voy a nadar.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ rich should pay more taxes.",
+      "answer": "The",
+      "translation": "Los ricos deberían pagar más impuestos.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I'll be there in half ____ hour.",
+      "answer": "an",
+      "translation": "Estaré allí en media hora.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#ArticulosEnIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc007",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases dar las gracias en inglés 💛",
+  "video_description": "Diez formas de decir gracias, y de responder. 💛",
+  "title": "¿Cómo se dice?",
+  "theme": "dar las gracias",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "Muchas gracias.",
+      "english": "Thanks a lot."
+    },
+    {
+      "spanish": "De nada.",
+      "english": "You're welcome."
+    },
+    {
+      "spanish": "No hay de qué.",
+      "english": "No problem."
+    },
+    {
+      "spanish": "Te lo agradezco.",
+      "english": "I appreciate it."
+    },
+    {
+      "spanish": "Eres muy amable.",
+      "english": "That's very kind of you."
+    },
+    {
+      "spanish": "Gracias por todo.",
+      "english": "Thanks for everything."
+    },
+    {
+      "spanish": "No tenías por qué.",
+      "english": "You didn't have to."
+    },
+    {
+      "spanish": "Te debo una.",
+      "english": "I owe you one."
+    },
+    {
+      "spanish": "Un placer.",
+      "english": "My pleasure."
+    },
+    {
+      "spanish": "No sé cómo agradecértelo.",
+      "english": "I can't thank you enough."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#FrasesÚtiles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf010",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

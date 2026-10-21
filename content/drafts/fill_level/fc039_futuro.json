@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "10 frases con hueco: EL FUTURO en inglés 🚀",
+  "video_description": "Will, going to y el presente continuo para el futuro, en diez frases. 🚀",
+  "title": "Completa la frase",
+  "theme": "el futuro",
+  "intro": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido.",
+  "items": [
+    {
+      "sentence": "I ____ call you tomorrow.",
+      "answer": "will",
+      "translation": "Te llamo mañana.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "It's going ____ rain.",
+      "answer": "to",
+      "translation": "Va a llover.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We're ____ a party on Saturday.",
+      "answer": "having",
+      "translation": "Hacemos una fiesta el sábado.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "The train ____ at 6:15.",
+      "answer": "leaves",
+      "translation": "El tren sale a las 6:15.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'll call you when I ____ home.",
+      "answer": "get",
+      "translation": "Te llamo cuando llegue a casa.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "This time next week I'll be ____ in Rome.",
+      "answer": "sitting",
+      "translation": "La semana que viene a esta hora estaré sentado en Roma.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "By June, I'll ____ finished the course.",
+      "answer": "have",
+      "translation": "Para junio habré terminado el curso.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'm about ____ leave. Can I call you later?",
+      "answer": "to",
+      "translation": "Estoy a punto de salir. ¿Te llamo luego?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The president is ____ to visit Spain.",
+      "answer": "due",
+      "translation": "Está previsto que el presidente visite España.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "We were ____ to meet, but she cancelled.",
+      "answer": "going",
+      "translation": "Íbamos a vernos, pero ella canceló.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#FuturoEnIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc039",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "10 frases con hueco: EXPRESIONES DE TIEMPO 🗓️",
+  "video_description": "Ago, last, next, by: expresiones de tiempo en diez frases. 🗓️",
+  "title": "Completa la frase",
+  "theme": "expresiones de tiempo",
+  "intro": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido.",
+  "items": [
+    {
+      "sentence": "I saw her two days ____.",
+      "answer": "ago",
+      "translation": "La vi hace dos días.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We went to Spain ____ summer.",
+      "answer": "last",
+      "translation": "Fuimos a España el verano pasado.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "See you ____ week!",
+      "answer": "next",
+      "translation": "¡Nos vemos la semana que viene!",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I go to the gym three times a ____.",
+      "answer": "week",
+      "translation": "Voy al gimnasio tres veces por semana.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I was born ____ 1998.",
+      "answer": "in",
+      "translation": "Nací en 1998.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "We arrived just in ____.",
+      "answer": "time",
+      "translation": "Llegamos justo a tiempo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The train is never on ____.",
+      "answer": "time",
+      "translation": "El tren nunca llega puntual.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'll finish it ____ Friday.",
+      "answer": "by",
+      "translation": "Lo termino para el viernes.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I see him every now and ____.",
+      "answer": "then",
+      "translation": "Lo veo de vez en cuando.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "We meet ____ other week.",
+      "answer": "every",
+      "translation": "Nos vemos cada dos semanas.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc029",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

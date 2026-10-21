@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "¿USED TO o BE USED TO? Elige la correcta en 10 frases 🔄",
+  "video_description": "Solía o estoy acostumbrado: used to en diez frases. 🔄",
+  "title": "Elige la correcta",
+  "theme": "used to o be used to",
+  "intro": "[curious] Dos opciones en cada frase. Elige antes de que yo la diga.",
+  "items": [
+    {
+      "sentence": "I ____ play football as a kid.",
+      "options": [
+        "used to",
+        "am used to"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ have long hair.",
+      "options": [
+        "is used to",
+        "used to"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Did you ____ live here?",
+      "options": [
+        "used to",
+        "use to"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'm ____ the cold now.",
+      "options": [
+        "used to",
+        "use to"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I ____ waking up early.",
+      "options": [
+        "used to",
+        "am used to"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He ____ smoke, but he quit.",
+      "options": [
+        "used to",
+        "is used to"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "You'll get ____ it.",
+      "options": [
+        "used to",
+        "use to"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'm not used to ____ up so early.",
+      "options": [
+        "get",
+        "getting"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "We ____ go there every summer.",
+      "options": [
+        "would",
+        "were used to"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "It takes time to get used to ____ abroad.",
+      "options": [
+        "live",
+        "living"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#UsedTo",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec022",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

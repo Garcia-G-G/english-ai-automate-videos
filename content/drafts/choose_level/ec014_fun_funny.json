@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "10 frases con FUN o FUNNY. ¿Aciertas todas? 😂",
+  "video_description": "Divertido o gracioso: fun y funny no son lo mismo. ¿Aciertas? 😂",
+  "title": "Elige la correcta",
+  "theme": "fun o funny",
+  "intro": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos.",
+  "items": [
+    {
+      "sentence": "The party was really ____.",
+      "options": [
+        "fun",
+        "funny"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "That joke is so ____!",
+      "options": [
+        "fun",
+        "funny"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We had a lot of ____.",
+      "options": [
+        "funny",
+        "fun"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He's a really ____ guy, he always makes me laugh.",
+      "options": [
+        "funny",
+        "fun"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Skiing is ____.",
+      "options": [
+        "funny",
+        "fun"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "This milk smells ____. Is it old?",
+      "options": [
+        "funny",
+        "fun"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Have ____ at the concert!",
+      "options": [
+        "fun",
+        "funny"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Don't make ____ of him.",
+      "options": [
+        "funny",
+        "fun"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "That's ____, I thought I locked the door.",
+      "options": [
+        "funny",
+        "fun"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "It was all just a bit of ____.",
+      "options": [
+        "funny",
+        "fun"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#FunVsFunny",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec014",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}
