@@ -53,6 +53,26 @@ def longest_still(mp4: Path, fps: float = 30.0) -> Dict:
     return {"seconds": round(seconds, 2), "from": round((best_end - best) / fps, 2) if best else None}
 
 
+#: Whisper writes what it hears, not what the script spells (STEP 78b §2, hc_c010 from the panel:
+#: «since three o'clock» came back «since 3 o clock», a lone «for» came back «4»). Both sides are
+#: compared by sound: numbers as words, «o clock» as one word, then the homophones folded.
+_NUMBER = {str(n): w for n, w in enumerate(
+    "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen "
+    "sixteen seventeen eighteen nineteen twenty".split())}
+_SOUND = {"four": "for", "two": "to", "too": "to"}
+
+
+def _by_sound(tokens: List[str]) -> List[str]:
+    out = []
+    for tok in tokens:
+        tok = _NUMBER.get(tok, tok)
+        if tok == "clock" and out and out[-1] == "o":
+            out[-1] = "oclock"
+            continue
+        out.append(_SOUND.get(tok, tok))
+    return out
+
+
 def _same_word(a: str, b: str) -> bool:
     """Equal, or one letter apart in a word of three or more (Ana / Anna, your / youre); never
     two short words («am» / «an»)."""
@@ -82,9 +102,9 @@ def english_heard(timeline: Dict, words: List[Dict]) -> Dict:
     toks = [(B._norm(w["word"]), float(w["start"])) for w in words]
     rows = []
     for beat in timeline["beats"]:
-        near = [t for t, s in toks if beat["start"] - HEARD_WINDOW <= s <= beat["end"] + HEARD_WINDOW]
+        near = _by_sound([t for t, s in toks if t and beat["start"] - HEARD_WINDOW <= s <= beat["end"] + HEARD_WINDOW])
         for e in beat["english"]:
-            want = B._tokens(e["text"])
+            want = _by_sound(B._tokens(e["text"]))
             got = _in_order(want, near)
             heard = len(want) - got <= len(want) // 4
             rows.append({"text": e["text"], "share": round(got / max(1, len(want)), 2), "heard": heard})

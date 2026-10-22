@@ -180,3 +180,22 @@ def test_the_no_stamp_sits_beside_the_option_not_over_its_words(sid):
     for k, opt in enumerate(comic.layout(s)["opt_boxes"]):
         if k != s["quiz"]["answer"]:
             assert boxes[f"stamp {comic.LETTERS[k]}"][0] >= opt[2] - 30
+
+
+def test_the_inter_licence_is_the_official_one_of_the_vendored_version():
+    """rsms/inter, tag v4.0, LICENSE.txt (the fonts' name table says Version 4.000)."""
+    import hashlib
+    data = (ROOT / "assets" / "fonts" / "OFL-Inter.txt").read_bytes()
+    assert hashlib.sha256(data).hexdigest() == "262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a"
+
+
+def test_english_is_compared_by_sound_not_by_spelling():
+    """hc_c010 through the panel: «since three o'clock» heard as «since 3 o clock», «for» as «4»."""
+    assert G._by_sound(["since", "3", "o", "clock"]) == G._by_sound(["since", "three", "oclock"])
+    assert G._by_sound(["4"]) == G._by_sound(["for"]) == ["for"]
+    assert G._by_sound(["i", "am", "cold"]) != G._by_sound(["i", "have", "cold"])
+    tl = {"beats": [{"start": 20.0, "end": 27.0, "english": [{"text": "for", "start": 23.0},
+                                                              {"text": "since three o'clock", "start": 26.0}]}]}
+    words = [{"word": w, "start": t} for w, t in [("va.", 23.4), ("4.", 23.9), ("since", 26.3), ("3", 26.4),
+                                                  ("o", 26.8), ("clock.", 27.0)]]
+    assert G.english_heard(tl, words)["missing"] == []

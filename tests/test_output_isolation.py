@@ -315,7 +315,7 @@ def test_deleting_a_real_queued_script_is_refused():
     """A queued script is the only copy. Removal must be refused as loudly
     as creation — the damage from this class was deletion, not litter."""
     with pytest.raises(OutputTreeWriteRefused):
-        os.remove(str(REAL_QUEUE / "vocabulary" / "cu001_saludos.json"))
+        os.remove(str(next((REAL_QUEUE / "vocabulary").glob("*.json"))))
 
 
 def test_writing_a_real_log_file_is_refused():

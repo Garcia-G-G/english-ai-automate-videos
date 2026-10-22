@@ -94,12 +94,16 @@ def _load(path: Path):
 SERIES_DIR = QUEUE_DIR / "hecho_con_claude"
 
 
+#: Queued scripts set aside, not produced (STEP 78b §2): their topic already has a video.
+SKIPPED_DIR = QUEUE_DIR / "_skipped"
+
+
 def queued_scripts():
-    """Every queued script, name order, excluding the _done shelf."""
+    """Every queued script, name order, excluding the _done and _skipped shelves and the series."""
     if not QUEUE_DIR.exists():
         return []
     return sorted(p for p in QUEUE_DIR.rglob("*.json")
-                  if DONE_DIR not in p.parents and SERIES_DIR not in p.parents)
+                  if not {DONE_DIR, SKIPPED_DIR, SERIES_DIR} & set(p.parents))
 
 
 #: (fingerprint -> problems). The audit reads every queued script, validates

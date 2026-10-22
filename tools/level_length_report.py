@@ -3,7 +3,7 @@
 
     python3 tools/level_length_report.py
 
-Reads content/queue/<type>/ and content/queue/_done/ (a rendered script is
+Reads content/queue/<type>/, content/queue/_done/ and _skipped/ (a rendered script is
 moved there, it still counts). Measured with the renderer's own fit.
 """
 import datetime
@@ -23,7 +23,8 @@ OUT = ROOT / "_audit" / "STEP58_length_report.md"
 def scripts(vtype):
     queue = ROOT / "content" / "queue"
     found = list((queue / vtype).glob("*.json"))
-    for path in (queue / "_done").glob("*.json"):
+    # _done: rendered; _skipped: set aside, topic already produced (STEP 78b §2). Both still written.
+    for path in [*(queue / "_done").glob("*.json"), *(queue / "_skipped").glob("*.json")]:
         if json.loads(path.read_text(encoding="utf-8")).get("type") == vtype:
             found.append(path)
     return sorted(found, key=lambda p: p.name)

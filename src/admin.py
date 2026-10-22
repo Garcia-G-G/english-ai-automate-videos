@@ -1130,9 +1130,9 @@ def start_series_generation(style: Optional[str] = None, level: Optional[str] = 
         update_job(job_id, log_path=str(log_path))
         try:
             result = series.render_one(style, level, progress=lambda msg: update_job(job_id, current_step=msg))
-            ok = result["gate"]["gate"] == "PASS"
+            ok = result["gate"] == "PASS"
             complete_job(job_id, ok, result["video"],
-                         None if ok else "quality gate: " + ", ".join(result["gate"]["flags"]))
+                         None if ok else "quality gate: " + ", ".join(result["blocking_flags"]))
         except Exception as exc:                            # noqa: BLE001 — the job row says why
             logger.exception("series job %s failed", job_id)
             complete_job(job_id, False, None, str(exc))

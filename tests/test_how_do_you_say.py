@@ -34,8 +34,12 @@ from level_length_report import scripts as _corpus  # noqa: E402
 CORPUS = _corpus("how_do_you_say")
 
 
+#: bv001_familia, the fixture below, was set aside in STEP 78b §2 (its topic has a video).
+SKIPPED = sorted((ROOT / "content" / "queue" / "_skipped").glob("bv*.json"))
+
+
 def _script(name="bv001_familia"):
-    for p in SCRIPTS:
+    for p in [*SCRIPTS, *SKIPPED]:
         if p.stem == name:
             return json.loads(p.read_text(encoding="utf-8"))
     raise FileNotFoundError(name)

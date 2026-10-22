@@ -98,7 +98,8 @@ def test_render_one_files_the_video_by_its_gate(dirs, monkeypatch, verdict):
         Path(out).write_bytes(b"mp4")
         return {"timeline": {}, "duration": 40.0, "tts_usd": 0.09, "outro_variant": "aprende-ingles"}
     monkeypatch.setattr(RR, "render_series", fake_render)
-    monkeypatch.setattr(G, "check", lambda *a, **k: {"gate": verdict, "flags": [] if verdict == "PASS" else ["x"]})
+    monkeypatch.setattr(G, "check", lambda *a, **k: {"gate": verdict, "flags": [] if verdict == "PASS" else ["x"],
+                                                     "checks": {}})
     out = series.render_one(style="poster", level="dificil")
     video = Path(out["video"])
     assert video.exists() and video.parent.name == "hecho_con_claude"
@@ -106,6 +107,10 @@ def test_render_one_files_the_video_by_its_gate(dirs, monkeypatch, verdict):
     side = json.loads(video.with_suffix(".json").read_text())
     s = _draft(out["script_id"])
     assert side["title"] == s["title"] and side["description"] == s["caption"] and side["hashtags"] == s["hashtags"]
+    # the panel reads the sidecar's verdict as a string (STEP 78b: a dict here broke every page)
+    import admin
+    record = admin.gate_record(side)
+    assert record["known"] and record["verdict"] == verdict and record["flags"] == side["blocking_flags"]
     moved = (dirs / "done" / f"{out['script_id']}.json").exists()
     assert moved == (verdict == "PASS")
 
@@ -119,3 +124,11 @@ def test_the_panel_can_start_a_series_render_now():
     assert [b.disabled for b in at.button if b.label == "Crear video"] == [False]
     import admin
     assert callable(admin.start_series_generation)
+
+
+def test_the_guard_reads_neither_the_skipped_shelf_nor_the_series():
+    sys.path.insert(0, str(ROOT / "tools"))
+    import queue_guard as Q
+    shelves = {Q.DONE_DIR, Q.SKIPPED_DIR, Q.SERIES_DIR}
+    assert not [p for p in Q.queued_scripts() if shelves & set(p.parents)]
+    assert (Q.SKIPPED_DIR / "README.md").exists()
