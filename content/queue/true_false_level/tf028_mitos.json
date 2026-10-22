@@ -1,0 +1,93 @@
+{
+  "type": "true_false_level",
+  "video_title": "MITOS del inglés: ¿verdadero o falso? 🧐",
+  "video_description": "Lo que crees saber del inglés: ¿mito o realidad? 🧐",
+  "title": "¿Verdadero o falso?",
+  "theme": "mitos sobre el inglés",
+  "intro": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto.",
+  "items": [
+    {
+      "statement": "Se dice «two big cars», sin -s en el adjetivo.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«The table» es femenino en inglés.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "las cosas no tienen género"
+    },
+    {
+      "statement": "«You» sirve para tú y para vosotros.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Gonna» es una forma coloquial de «going to».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "Nunca se puede empezar una frase con «and».",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "en estilo informal se hace"
+    },
+    {
+      "statement": "«Ain't» es inglés formal.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es coloquial"
+    },
+    {
+      "statement": "«Café» lleva tilde porque viene del francés.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Who are you talking to?» es incorrecto.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "terminar con preposición es normal"
+    },
+    {
+      "statement": "«They» puede referirse a una sola persona.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Literally» se usa a veces para exagerar.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf028",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "two big cars",
+    "The table",
+    "You",
+    "Gonna",
+    "and",
+    "Ain't",
+    "Café",
+    "Who are you talking to?",
+    "They",
+    "Literally"
+  ],
+  "full_script": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto. Verdadero. Falso: las cosas no tienen género. Verdadero. Ahora, nivel intermedio. Verdadero. Falso: en estilo informal se hace. Falso: es coloquial. Verdadero. Y ahora, nivel experto. Falso: terminar con preposición es normal. Verdadero. Verdadero. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

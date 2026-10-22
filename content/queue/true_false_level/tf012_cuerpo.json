@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Verdadero o falso? el CUERPO 💪",
+  "video_description": "Expresiones con partes del cuerpo: ¿verdadero o falso? 💪",
+  "title": "¿Verdadero o falso?",
+  "theme": "expresiones con el cuerpo",
+  "intro": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta.",
+  "items": [
+    {
+      "statement": "«Head» es cabeza.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Knee» es nariz.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es rodilla"
+    },
+    {
+      "statement": "«Elbow» es codo.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Give someone a hand» es ayudarle.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Keep an eye on» significa vigilar.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Get cold feet» significa tener frío.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es echarse atrás por nervios"
+    },
+    {
+      "statement": "«Learn by heart» significa aprender de memoria.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Pain in the neck» es algo o alguien muy pesado.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Have a chip on your shoulder» es estar muy contento.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es estar resentido"
+    },
+    {
+      "statement": "«Put your foot in it» es meter la pata.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#Idioms",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf012",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Head",
+    "Knee",
+    "Elbow",
+    "Give someone a hand",
+    "Keep an eye on",
+    "Get cold feet",
+    "Learn by heart",
+    "Pain in the neck",
+    "Have a chip on your shoulder",
+    "Put your foot in it"
+  ],
+  "full_script": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta. Verdadero. Falso: es rodilla. Verdadero. Ahora, nivel intermedio. Verdadero. Verdadero. Falso: es echarse atrás por nervios. Verdadero. Y ahora, nivel experto. Verdadero. Falso: es estar resentido. Verdadero. Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

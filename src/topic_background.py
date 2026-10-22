@@ -265,6 +265,13 @@ CATEGORY_SCENES = {
         "a hotel reception desk with flowers",
         "a train station platform with a departures board",
     ],
+    # STEP 77 §9: the true_false_level drafts' category, scenes of choosing.
+    "quiz_facts": [
+        "a fork in a sunny forest path",
+        "two colourful doors side by side on a street",
+        "a signpost pointing two ways on a hill",
+        "a chess board on a bright cafe table",
+    ],
 }
 
 #: Light and time of day. No night, no low light — the readability band is

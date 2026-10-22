@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: el ESTILO INDIRECTO 🗞️",
+  "video_description": "Dijo que, me preguntó si: el estilo indirecto en diez frases. 🗞️",
+  "title": "Completa la frase",
+  "theme": "el estilo indirecto",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "She said she ____ tired.",
+      "answer": "was",
+      "translation": "Dijo que estaba cansada.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "He told me he ____ come.",
+      "answer": "would",
+      "translation": "Me dijo que vendría.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "They said they ____ hungry.",
+      "answer": "were",
+      "translation": "Dijeron que tenían hambre.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She asked me ____ I was OK.",
+      "answer": "if",
+      "translation": "Me preguntó si estaba bien.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He said he ____ seen the film.",
+      "answer": "had",
+      "translation": "Dijo que había visto la película.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I asked her where she ____.",
+      "answer": "lived",
+      "translation": "Le pregunté dónde vivía.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She told me ____ to worry.",
+      "answer": "not",
+      "translation": "Me dijo que no me preocupara.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He asked me what time it ____.",
+      "answer": "was",
+      "translation": "Me preguntó qué hora era.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She denied ____ the money.",
+      "answer": "taking",
+      "translation": "Negó haber cogido el dinero.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "He suggested ____ a taxi.",
+      "answer": "taking",
+      "translation": "Sugirió coger un taxi.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#ReportedSpeech",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc027",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "She said she was tired.": "Dijo que estaba cansada.",
+    "He told me he would come.": "Me dijo que vendría.",
+    "They said they were hungry.": "Dijeron que tenían hambre.",
+    "She asked me if I was OK.": "Me preguntó si estaba bien.",
+    "He said he had seen the film.": "Dijo que había visto la película.",
+    "I asked her where she lived.": "Le pregunté dónde vivía.",
+    "She told me not to worry.": "Me dijo que no me preocupara.",
+    "He asked me what time it was.": "Me preguntó qué hora era.",
+    "She denied taking the money.": "Negó haber cogido el dinero.",
+    "He suggested taking a taxi.": "Sugirió coger un taxi."
+  },
+  "english_phrases": [
+    "She said she was tired.",
+    "He told me he would come.",
+    "They said they were hungry.",
+    "She asked me if I was OK.",
+    "He said he had seen the film.",
+    "I asked her where she lived.",
+    "She told me not to worry.",
+    "He asked me what time it was.",
+    "She denied taking the money.",
+    "He suggested taking a taxi."
+  ],
+  "full_script": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare. She said she was tired. He told me he would come. They said they were hungry. Ahora, nivel intermedio. She asked me if I was OK. He said he had seen the film. I asked her where she lived. She told me not to worry. Y ahora, nivel experto. He asked me what time it was. She denied taking the money. He suggested taking a taxi. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

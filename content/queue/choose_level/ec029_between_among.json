@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "10 frases con BETWEEN o AMONG. ¿Aciertas todas? ↔️",
+  "video_description": "Entre dos o entre muchos: between o among. Diez frases. ↔️",
+  "title": "Elige la correcta",
+  "theme": "between o among",
+  "intro": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos.",
+  "items": [
+    {
+      "sentence": "The bank is ____ the café and the school.",
+      "options": [
+        "between",
+        "among"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Keep this ____ us.",
+      "options": [
+        "among",
+        "between"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She sat ____ her parents.",
+      "options": [
+        "among",
+        "between"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He's popular ____ teenagers.",
+      "options": [
+        "among",
+        "between"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "What's the difference ____ these two?",
+      "options": [
+        "among",
+        "between"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I found it ____ my old papers.",
+      "options": [
+        "among",
+        "between"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Divide the cake ____ the two kids.",
+      "options": [
+        "between",
+        "among"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The village is hidden ____ the trees.",
+      "options": [
+        "between",
+        "among"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Read ____ the lines.",
+      "options": [
+        "between",
+        "among"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ other things, she's a great cook.",
+      "options": [
+        "Between",
+        "Among"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#BetweenVsAmong",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec029",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "The bank is between the café and the school.",
+    "Keep this between us.",
+    "She sat between her parents.",
+    "He's popular among teenagers.",
+    "What's the difference between these two?",
+    "I found it among my old papers.",
+    "Divide the cake between the two kids.",
+    "The village is hidden among the trees.",
+    "Read between the lines.",
+    "Among other things, she's a great cook."
+  ],
+  "full_script": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos. The bank is between the café and the school. Keep this between us. She sat between her parents. Ahora, nivel intermedio. He's popular among teenagers. What's the difference between these two? I found it among my old papers. Divide the cake between the two kids. Y ahora, nivel experto. The village is hidden among the trees. Read between the lines. Among other things, she's a great cook. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

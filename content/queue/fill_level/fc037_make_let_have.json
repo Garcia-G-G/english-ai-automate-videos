@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: MAKE y LET 🎛️",
+  "video_description": "Me hizo, me dejó, me lo hice hacer: make, let y have. 🎛️",
+  "title": "Completa la frase",
+  "theme": "make, let y have someone do",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "My mom ____ me clean my room.",
+      "answer": "makes",
+      "translation": "Mi madre me obliga a ordenar mi cuarto.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ me help you.",
+      "answer": "Let",
+      "translation": "Déjame ayudarte.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "You make me ____.",
+      "answer": "laugh",
+      "translation": "Me haces reír.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "They let us ____ late.",
+      "answer": "stay",
+      "translation": "Nos dejaron quedarnos hasta tarde.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Don't make me ____ it again.",
+      "answer": "say",
+      "translation": "No me hagas repetirlo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I had my car ____ yesterday.",
+      "answer": "fixed",
+      "translation": "Ayer me arreglaron el coche.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She got her nails ____.",
+      "answer": "done",
+      "translation": "Se hizo las uñas.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'll have him ____ you back.",
+      "answer": "call",
+      "translation": "Le diré que te devuelva la llamada.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Let me ____ what you think.",
+      "answer": "know",
+      "translation": "Dime qué te parece.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "The movie made me ____ like crying.",
+      "answer": "feel",
+      "translation": "La película me dio ganas de llorar.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc037",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "My mom makes me clean my room.": "Mi madre me obliga a ordenar mi cuarto.",
+    "Let me help you.": "Déjame ayudarte.",
+    "You make me laugh.": "Me haces reír.",
+    "They let us stay late.": "Nos dejaron quedarnos hasta tarde.",
+    "Don't make me say it again.": "No me hagas repetirlo.",
+    "I had my car fixed yesterday.": "Ayer me arreglaron el coche.",
+    "She got her nails done.": "Se hizo las uñas.",
+    "I'll have him call you back.": "Le diré que te devuelva la llamada.",
+    "Let me know what you think.": "Dime qué te parece.",
+    "The movie made me feel like crying.": "La película me dio ganas de llorar."
+  },
+  "english_phrases": [
+    "My mom makes me clean my room.",
+    "Let me help you.",
+    "You make me laugh.",
+    "They let us stay late.",
+    "Don't make me say it again.",
+    "I had my car fixed yesterday.",
+    "She got her nails done.",
+    "I'll have him call you back.",
+    "Let me know what you think.",
+    "The movie made me feel like crying."
+  ],
+  "full_script": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare. My mom makes me clean my room. Let me help you. You make me laugh. Ahora, nivel intermedio. They let us stay late. Don't make me say it again. I had my car fixed yesterday. She got her nails done. Y ahora, nivel experto. I'll have him call you back. Let me know what you think. The movie made me feel like crying. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

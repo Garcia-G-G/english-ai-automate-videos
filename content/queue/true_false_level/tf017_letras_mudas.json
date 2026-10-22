@@ -1,0 +1,93 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Verdadero o falso? LETRAS MUDAS 🤫",
+  "video_description": "Letras que no se pronuncian: ¿verdadero o falso? 🤫",
+  "title": "¿Verdadero o falso?",
+  "theme": "letras mudas",
+  "intro": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta.",
+  "items": [
+    {
+      "statement": "En «know», la K es muda.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "En «write», la W suena.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "la W es muda"
+    },
+    {
+      "statement": "En «lamb», la B es muda.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "En «castle», la T suena.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "la T es muda"
+    },
+    {
+      "statement": "En «honest», la H es muda.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "En «listen», la T se pronuncia.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "la T es muda"
+    },
+    {
+      "statement": "En «Wednesday», la primera D es muda.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "En «receipt», la P suena.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "la P es muda"
+    },
+    {
+      "statement": "En «debt», la B es muda.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "En «muscle», la C es muda.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf017",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "know",
+    "write",
+    "lamb",
+    "castle",
+    "honest",
+    "listen",
+    "Wednesday",
+    "receipt",
+    "debt",
+    "muscle"
+  ],
+  "full_script": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta. Verdadero. Falso: la W es muda. Verdadero. Ahora, nivel intermedio. Falso: la T es muda. Verdadero. Falso: la T es muda. Verdadero. Y ahora, nivel experto. Falso: la P es muda. Verdadero. Verdadero. Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

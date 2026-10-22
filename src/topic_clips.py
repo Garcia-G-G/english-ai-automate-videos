@@ -641,6 +641,29 @@ CATEGORY_FOOTAGE = {
         "a picnic in a park from above",
     ],
 }
+#: STEP 77 §9: the true_false_level drafts' own category: scenes of choosing, two ways at once.
+CATEGORY_FOOTAGE["quiz_facts"] = [
+    "a fork in a forest path in autumn",
+    "a coin spinning on a wooden table",
+    "two doors in a sunlit corridor",
+    "a rail switch moving on a branch line",
+    "a traffic light changing at dusk",
+    "a weather vane turning on a rooftop",
+    "a compass on an old map",
+    "a crossroads in open farmland",
+    "a revolving door in a lobby",
+    "a seesaw in an empty playground",
+    "a lighthouse beam sweeping at night",
+    "dominoes falling in a long line",
+    "a chess board by a window",
+    "a pair of dice rolling on felt",
+    "a signpost on a mountain pass",
+    "a mirror lake reflecting pines",
+    "a split road through desert hills",
+    "a tidal causeway at low tide",
+    "a hedge maze from above",
+    "a swing bridge opening on a canal",
+]
 
 #: The second axis. Stock video responds strongly to camera language, so
 #: this changes the returned footage far more than its length suggests — an

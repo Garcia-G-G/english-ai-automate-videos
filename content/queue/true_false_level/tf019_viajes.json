@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "10 frases sobre los VIAJES: ¿V o F? ✈️",
+  "video_description": "Palabras para viajar: ¿verdadero o falso? ✈️",
+  "title": "¿Verdadero o falso?",
+  "theme": "inglés de viaje",
+  "intro": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total.",
+  "items": [
+    {
+      "statement": "«Flight» es vuelo.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Luggage» es equipaje.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Boarding pass» es la tarjeta de embarque.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Delay» es cancelación.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es retraso"
+    },
+    {
+      "statement": "«Aisle seat» es el asiento de pasillo.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Customs» son las costumbres en el aeropuerto.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es la aduana"
+    },
+    {
+      "statement": "«Layover» es una escala.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Jet lag» es un tipo de avión.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es el desfase horario"
+    },
+    {
+      "statement": "«Round trip» es ida y vuelta.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Carry-on» es el equipaje de mano.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf019",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Flight",
+    "Luggage",
+    "Boarding pass",
+    "Delay",
+    "Aisle seat",
+    "Customs",
+    "Layover",
+    "Jet lag",
+    "Round trip",
+    "Carry-on"
+  ],
+  "full_script": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total. Verdadero. Verdadero. Verdadero. Ahora, nivel intermedio. Falso: es retraso. Verdadero. Falso: es la aduana. Verdadero. Y ahora, nivel experto. Falso: es el desfase horario. Verdadero. Verdadero. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

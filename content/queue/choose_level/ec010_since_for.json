@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "¿Sabes cuándo usar SINCE o FOR? ⏳",
+  "video_description": "Desde cuándo o durante cuánto: since y for en diez frases. ⏳",
+  "title": "Elige la correcta",
+  "theme": "since o for",
+  "intro": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto.",
+  "items": [
+    {
+      "sentence": "I've lived here ____ 2020.",
+      "options": [
+        "since",
+        "for"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She's been waiting ____ an hour.",
+      "options": [
+        "since",
+        "for"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I haven't seen him ____ Monday.",
+      "options": [
+        "for",
+        "since"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We've been friends ____ ten years.",
+      "options": [
+        "for",
+        "since"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He's worked here ____ he finished school.",
+      "options": [
+        "for",
+        "since"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I haven't eaten ____ hours.",
+      "options": [
+        "for",
+        "since"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It's been raining ____ we arrived.",
+      "options": [
+        "since",
+        "for"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "They've been married ____ ages.",
+      "options": [
+        "since",
+        "for"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ then, nothing has been the same.",
+      "options": [
+        "Since",
+        "For"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I've known her ____ we were kids.",
+      "options": [
+        "for",
+        "since"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#SinceVsFor",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec010",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "I've lived here since 2020.",
+    "She's been waiting for an hour.",
+    "I haven't seen him since Monday.",
+    "We've been friends for ten years.",
+    "He's worked here since he finished school.",
+    "I haven't eaten for hours.",
+    "It's been raining since we arrived.",
+    "They've been married for ages.",
+    "Since then, nothing has been the same.",
+    "I've known her since we were kids."
+  ],
+  "full_script": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto. I've lived here since 2020. She's been waiting for an hour. I haven't seen him since Monday. Ahora, nivel intermedio. We've been friends for ten years. He's worked here since he finished school. I haven't eaten for hours. It's been raining since we arrived. Y ahora, nivel experto. They've been married for ages. Since then, nothing has been the same. I've known her since we were kids. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

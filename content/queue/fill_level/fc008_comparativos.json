@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "COMPARATIVOS: ¿sabes completar estas 10 frases? 📏",
+  "video_description": "Bigger, better, more expensive: los comparativos en diez frases. 📏",
+  "title": "Completa la frase",
+  "theme": "los comparativos",
+  "intro": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto.",
+  "items": [
+    {
+      "sentence": "My brother is ____ than me.",
+      "answer": "taller",
+      "translation": "Mi hermano es más alto que yo.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "This book is ____ than the movie.",
+      "answer": "better",
+      "translation": "Este libro es mejor que la película.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Today is ____ than yesterday.",
+      "answer": "colder",
+      "translation": "Hoy hace más frío que ayer.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Gold is more ____ than silver.",
+      "answer": "expensive",
+      "translation": "El oro es más caro que la plata.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I feel ____ than last week.",
+      "answer": "worse",
+      "translation": "Me siento peor que la semana pasada.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The train is ____ than the bus.",
+      "answer": "faster",
+      "translation": "El tren es más rápido que el autobús.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Your English is getting better and ____.",
+      "answer": "better",
+      "translation": "Tu inglés es cada vez mejor.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The ____ you practice, the better you get.",
+      "answer": "more",
+      "translation": "Cuanto más practicas, mejor lo haces.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It's getting ____ and harder to find a flat.",
+      "answer": "harder",
+      "translation": "Cada vez es más difícil encontrar piso.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "This is no ____ than a joke.",
+      "answer": "more",
+      "translation": "Esto no es más que una broma.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Comparativos",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc008",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "My brother is taller than me.": "Mi hermano es más alto que yo.",
+    "This book is better than the movie.": "Este libro es mejor que la película.",
+    "Today is colder than yesterday.": "Hoy hace más frío que ayer.",
+    "Gold is more expensive than silver.": "El oro es más caro que la plata.",
+    "I feel worse than last week.": "Me siento peor que la semana pasada.",
+    "The train is faster than the bus.": "El tren es más rápido que el autobús.",
+    "Your English is getting better and better.": "Tu inglés es cada vez mejor.",
+    "The more you practice, the better you get.": "Cuanto más practicas, mejor lo haces.",
+    "It's getting harder and harder to find a flat.": "Cada vez es más difícil encontrar piso.",
+    "This is no more than a joke.": "Esto no es más que una broma."
+  },
+  "english_phrases": [
+    "My brother is taller than me.",
+    "This book is better than the movie.",
+    "Today is colder than yesterday.",
+    "Gold is more expensive than silver.",
+    "I feel worse than last week.",
+    "The train is faster than the bus.",
+    "Your English is getting better and better.",
+    "The more you practice, the better you get.",
+    "It's getting harder and harder to find a flat.",
+    "This is no more than a joke."
+  ],
+  "full_script": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto. My brother is taller than me. This book is better than the movie. Today is colder than yesterday. Ahora, nivel intermedio. Gold is more expensive than silver. I feel worse than last week. The train is faster than the bus. Your English is getting better and better. Y ahora, nivel experto. The more you practice, the better you get. It's getting harder and harder to find a flat. This is no more than a joke. Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

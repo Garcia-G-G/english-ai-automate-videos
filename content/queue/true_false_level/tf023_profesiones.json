@@ -1,0 +1,93 @@
+{
+  "type": "true_false_level",
+  "video_title": "PROFESIONES: ¿verdadero o falso? 🧑",
+  "video_description": "Profesiones en inglés: ¿verdadero o falso? 🧑",
+  "title": "¿Verdadero o falso?",
+  "theme": "las profesiones",
+  "intro": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto.",
+  "items": [
+    {
+      "statement": "«Teacher» es profesor.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Nurse» es enfermera.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Lawyer» es ladrón.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es abogado"
+    },
+    {
+      "statement": "«Waiter» es camarero.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Plumber» es fontanero.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Chef» es el jefe de la empresa.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es el cocinero jefe"
+    },
+    {
+      "statement": "«Firefighter» es bombero.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Surgeon» es surfista.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es cirujano"
+    },
+    {
+      "statement": "«Accountant» es contable.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Locksmith» es un herrero.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es cerrajero"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf023",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Teacher",
+    "Nurse",
+    "Lawyer",
+    "Waiter",
+    "Plumber",
+    "Chef",
+    "Firefighter",
+    "Surgeon",
+    "Accountant",
+    "Locksmith"
+  ],
+  "full_script": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto. Verdadero. Verdadero. Falso: es abogado. Ahora, nivel intermedio. Verdadero. Verdadero. Falso: es el cocinero jefe. Verdadero. Y ahora, nivel experto. Falso: es cirujano. Verdadero. Falso: es cerrajero. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

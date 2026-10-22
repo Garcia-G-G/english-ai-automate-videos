@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "10 frases con BORROW o LEND. ¿Aciertas todas? 🤝",
+  "video_description": "Pedir prestado o prestar: diez frases para no confundirlas. 🤝",
+  "title": "Elige la correcta",
+  "theme": "borrow o lend",
+  "intro": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos.",
+  "items": [
+    {
+      "sentence": "Can I ____ your pen?",
+      "options": [
+        "borrow",
+        "lend"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Can you ____ me ten dollars?",
+      "options": [
+        "borrow",
+        "lend"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I ____ a book from the library.",
+      "options": [
+        "lent",
+        "borrowed"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She never ____ her car to anyone.",
+      "options": [
+        "lends",
+        "borrows"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Could I ____ your charger for a minute?",
+      "options": [
+        "lend",
+        "borrow"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Banks ____ money to companies.",
+      "options": [
+        "lend",
+        "borrow"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He ____ the idea from an old film.",
+      "options": [
+        "borrowed",
+        "lent"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Can you ____ me a hand with this box?",
+      "options": [
+        "borrow",
+        "lend"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "We're living on ____ time.",
+      "options": [
+        "borrowed",
+        "lent"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Her accent ____ a certain charm to the story.",
+      "options": [
+        "borrows",
+        "lends"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#BorrowVsLend",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec004",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Can I borrow your pen?",
+    "Can you lend me ten dollars?",
+    "I borrowed a book from the library.",
+    "She never lends her car to anyone.",
+    "Could I borrow your charger for a minute?",
+    "Banks lend money to companies.",
+    "He borrowed the idea from an old film.",
+    "Can you lend me a hand with this box?",
+    "We're living on borrowed time.",
+    "Her accent lends a certain charm to the story."
+  ],
+  "full_script": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos. Can I borrow your pen? Can you lend me ten dollars? I borrowed a book from the library. Ahora, nivel intermedio. She never lends her car to anyone. Could I borrow your charger for a minute? Banks lend money to companies. He borrowed the idea from an old film. Y ahora, nivel experto. Can you lend me a hand with this box? We're living on borrowed time. Her accent lends a certain charm to the story. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

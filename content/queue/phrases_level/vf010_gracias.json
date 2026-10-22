@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases dar las gracias en inglés 💛",
+  "video_description": "Diez formas de decir gracias, y de responder. 💛",
+  "title": "¿Cómo se dice?",
+  "theme": "dar las gracias",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "Muchas gracias.",
+      "english": "Thanks a lot."
+    },
+    {
+      "spanish": "De nada.",
+      "english": "You're welcome."
+    },
+    {
+      "spanish": "No hay de qué.",
+      "english": "No problem."
+    },
+    {
+      "spanish": "Te lo agradezco.",
+      "english": "I appreciate it."
+    },
+    {
+      "spanish": "Eres muy amable.",
+      "english": "That's very kind of you."
+    },
+    {
+      "spanish": "Gracias por todo.",
+      "english": "Thanks for everything."
+    },
+    {
+      "spanish": "No tenías por qué.",
+      "english": "You didn't have to."
+    },
+    {
+      "spanish": "Te debo una.",
+      "english": "I owe you one."
+    },
+    {
+      "spanish": "Un placer.",
+      "english": "My pleasure."
+    },
+    {
+      "spanish": "No sé cómo agradecértelo.",
+      "english": "I can't thank you enough."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#FrasesÚtiles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf010",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Thanks a lot.": "Muchas gracias.",
+    "You're welcome.": "De nada.",
+    "No problem.": "No hay de qué.",
+    "I appreciate it.": "Te lo agradezco.",
+    "That's very kind of you.": "Eres muy amable.",
+    "Thanks for everything.": "Gracias por todo.",
+    "You didn't have to.": "No tenías por qué.",
+    "I owe you one.": "Te debo una.",
+    "My pleasure.": "Un placer.",
+    "I can't thank you enough.": "No sé cómo agradecértelo."
+  },
+  "english_phrases": [
+    "Thanks a lot.",
+    "You're welcome.",
+    "No problem.",
+    "I appreciate it.",
+    "That's very kind of you.",
+    "Thanks for everything.",
+    "You didn't have to.",
+    "I owe you one.",
+    "My pleasure.",
+    "I can't thank you enough."
+  ],
+  "full_script": "[cheerful] Lee la frase en español y dila en inglés en voz alta. Thanks a lot. You're welcome. No problem. I appreciate it. That's very kind of you. Thanks for everything. You didn't have to. I owe you one. My pleasure. I can't thank you enough. [cheerful] Escribe en los comentarios la que más te gustó."
+}

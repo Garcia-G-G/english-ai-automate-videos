@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «A VER...» en inglés? 🤔",
+  "video_description": "Diez frases para pensar mientras hablas, sin quedarte en blanco. 🤔",
+  "title": "¿Cómo se dice?",
+  "theme": "para ganar tiempo al hablar",
+  "intro": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan.",
+  "items": [
+    {
+      "spanish": "A ver...",
+      "english": "Let me see..."
+    },
+    {
+      "spanish": "Bueno...",
+      "english": "Well..."
+    },
+    {
+      "spanish": "¿Cómo se dice?",
+      "english": "How do you say it?"
+    },
+    {
+      "spanish": "Es que...",
+      "english": "The thing is..."
+    },
+    {
+      "spanish": "O sea...",
+      "english": "I mean..."
+    },
+    {
+      "spanish": "Déjame pensarlo.",
+      "english": "Let me think about it."
+    },
+    {
+      "spanish": "Buena pregunta.",
+      "english": "That's a good question."
+    },
+    {
+      "spanish": "Lo tengo en la punta de la lengua.",
+      "english": "It's on the tip of my tongue."
+    },
+    {
+      "spanish": "¿Por dónde iba?",
+      "english": "Where was I?"
+    },
+    {
+      "spanish": "Como te decía...",
+      "english": "As I was saying..."
+    }
+  ],
+  "outro": "[curious] ¿Cuál no conocías? Cuéntamelo abajo.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#ConversaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf034",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Let me see...": "A ver...",
+    "Well...": "Bueno...",
+    "How do you say it?": "¿Cómo se dice?",
+    "The thing is...": "Es que...",
+    "I mean...": "O sea...",
+    "Let me think about it.": "Déjame pensarlo.",
+    "That's a good question.": "Buena pregunta.",
+    "It's on the tip of my tongue.": "Lo tengo en la punta de la lengua.",
+    "Where was I?": "¿Por dónde iba?",
+    "As I was saying...": "Como te decía..."
+  },
+  "english_phrases": [
+    "Let me see...",
+    "Well...",
+    "How do you say it?",
+    "The thing is...",
+    "I mean...",
+    "Let me think about it.",
+    "That's a good question.",
+    "It's on the tip of my tongue.",
+    "Where was I?",
+    "As I was saying..."
+  ],
+  "full_script": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan. Let me see... Well... How do you say it? The thing is... I mean... Let me think about it. That's a good question. It's on the tip of my tongue. Where was I? As I was saying... [curious] ¿Cuál no conocías? Cuéntamelo abajo."
+}

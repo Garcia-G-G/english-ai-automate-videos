@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases en el trabajo en inglés 💼",
+  "video_description": "Diez frases que se oyen cada día en una oficina en inglés. 💼",
+  "title": "¿Cómo se dice?",
+  "theme": "en el trabajo",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "¿Tienes un minuto?",
+      "english": "Do you have a minute?"
+    },
+    {
+      "spanish": "Estoy en ello.",
+      "english": "I'm on it."
+    },
+    {
+      "spanish": "Te lo mando ahora.",
+      "english": "I'll send it over now."
+    },
+    {
+      "spanish": "Voy un poco atrasado.",
+      "english": "I'm running a bit behind."
+    },
+    {
+      "spanish": "¿Para cuándo lo necesitas?",
+      "english": "When do you need it by?"
+    },
+    {
+      "spanish": "Déjame comprobarlo.",
+      "english": "Let me double-check."
+    },
+    {
+      "spanish": "Lo hablamos luego.",
+      "english": "Let's talk about it later."
+    },
+    {
+      "spanish": "Te tengo al tanto.",
+      "english": "I'll keep you posted."
+    },
+    {
+      "spanish": "Eso no me corresponde a mí.",
+      "english": "That's not up to me."
+    },
+    {
+      "spanish": "Me tomo el día libre.",
+      "english": "I'm taking the day off."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf005",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Do you have a minute?": "¿Tienes un minuto?",
+    "I'm on it.": "Estoy en ello.",
+    "I'll send it over now.": "Te lo mando ahora.",
+    "I'm running a bit behind.": "Voy un poco atrasado.",
+    "When do you need it by?": "¿Para cuándo lo necesitas?",
+    "Let me double-check.": "Déjame comprobarlo.",
+    "Let's talk about it later.": "Lo hablamos luego.",
+    "I'll keep you posted.": "Te tengo al tanto.",
+    "That's not up to me.": "Eso no me corresponde a mí.",
+    "I'm taking the day off.": "Me tomo el día libre."
+  },
+  "english_phrases": [
+    "Do you have a minute?",
+    "I'm on it.",
+    "I'll send it over now.",
+    "I'm running a bit behind.",
+    "When do you need it by?",
+    "Let me double-check.",
+    "Let's talk about it later.",
+    "I'll keep you posted.",
+    "That's not up to me.",
+    "I'm taking the day off."
+  ],
+  "full_script": "[cheerful] Lee la frase en español y dila en inglés en voz alta. Do you have a minute? I'm on it. I'll send it over now. I'm running a bit behind. When do you need it by? Let me double-check. Let's talk about it later. I'll keep you posted. That's not up to me. I'm taking the day off. [cheerful] Escribe en los comentarios la que más te gustó."
+}

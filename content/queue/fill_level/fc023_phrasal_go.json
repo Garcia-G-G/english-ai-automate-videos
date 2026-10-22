@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "PHRASAL VERBS con GO: ¿sabes completar estas 10 frases? 🚦",
+  "video_description": "Go on, go out, go off: diez phrasal verbs con go. 🚦",
+  "title": "Completa la frase",
+  "theme": "phrasal verbs con GO",
+  "intro": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto.",
+  "items": [
+    {
+      "sentence": "Let's go ____ tonight!",
+      "answer": "out",
+      "translation": "¡Salgamos esta noche!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Go ____, I'm listening.",
+      "answer": "on",
+      "translation": "Sigue, te escucho.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Prices keep going ____.",
+      "answer": "up",
+      "translation": "Los precios no paran de subir.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "My alarm didn't go ____.",
+      "answer": "off",
+      "translation": "No me sonó la alarma.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Can we go ____ the plan once more?",
+      "answer": "over",
+      "translation": "¿Repasamos el plan una vez más?",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The milk has gone ____.",
+      "answer": "off",
+      "translation": "La leche se ha puesto mala.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "What's going ____ here?",
+      "answer": "on",
+      "translation": "¿Qué pasa aquí?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'll go ____ with whatever you decide.",
+      "answer": "along",
+      "translation": "Aceptaré lo que decidas.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "They went ____ a hard time.",
+      "answer": "through",
+      "translation": "Pasaron por una época difícil.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I could go ____ a pizza right now.",
+      "answer": "for",
+      "translation": "Me comería una pizza ahora mismo.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc023",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Let's go out tonight!": "¡Salgamos esta noche!",
+    "Go on, I'm listening.": "Sigue, te escucho.",
+    "Prices keep going up.": "Los precios no paran de subir.",
+    "My alarm didn't go off.": "No me sonó la alarma.",
+    "Can we go over the plan once more?": "¿Repasamos el plan una vez más?",
+    "The milk has gone off.": "La leche se ha puesto mala.",
+    "What's going on here?": "¿Qué pasa aquí?",
+    "I'll go along with whatever you decide.": "Aceptaré lo que decidas.",
+    "They went through a hard time.": "Pasaron por una época difícil.",
+    "I could go for a pizza right now.": "Me comería una pizza ahora mismo."
+  },
+  "english_phrases": [
+    "Let's go out tonight!",
+    "Go on, I'm listening.",
+    "Prices keep going up.",
+    "My alarm didn't go off.",
+    "Can we go over the plan once more?",
+    "The milk has gone off.",
+    "What's going on here?",
+    "I'll go along with whatever you decide.",
+    "They went through a hard time.",
+    "I could go for a pizza right now."
+  ],
+  "full_script": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto. Let's go out tonight! Go on, I'm listening. Prices keep going up. Ahora, nivel intermedio. My alarm didn't go off. Can we go over the plan once more? The milk has gone off. What's going on here? Y ahora, nivel experto. I'll go along with whatever you decide. They went through a hard time. I could go for a pizza right now. Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

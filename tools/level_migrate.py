@@ -3,6 +3,11 @@
 
     python3 tools/level_migrate.py
     python3 tools/level_migrate.py --rederive   # queue files again, after a LEVEL_PLANS change
+    python3 tools/level_migrate.py --copy choose_level fill_level ...   # STEP 77 §9
+
+--copy queues each draft of the named types the same way but LEAVES the draft where it is,
+validates every script (validate_script and length_spec) before anything is written, and
+skips a draft whose id is already queued, done or rendered.
 
 Per draft: `translations`, `english_phrases` and `full_script` are derived the way
 how_do_you_say's were, `_meta.draft` is dropped, the file goes to
@@ -64,9 +69,79 @@ def rederive() -> int:
     return 0
 
 
+def _taken(name: str, vtype: str, meta: dict) -> bool:
+    """Queued, done, or already produced (the topic history the queue guard reads)."""
+    if (ROOT / "content" / "queue" / vtype / name).exists() or (ROOT / "content" / "queue" / "_done" / name).exists():
+        return True
+    from topic_history import usage_counts
+    return bool(usage_counts().get((str(meta.get("category")), str(meta.get("topic_id")))))
+
+
+def add_topics(scripts) -> dict:
+    """The topic entry each queued script names, appended to content/topics/<category>.json
+    when it is not there yet: the queue guard refuses a script whose topic cannot be drawn."""
+    added = {}
+    for vtype, script in scripts:
+        meta = script["_meta"]
+        path = ROOT / "content" / "topics" / f"{meta['category']}.json"
+        text = path.read_text(encoding="utf-8") if path.exists() else "[\n]\n"
+        topics = json.loads(text)
+        if any(str(t.get("id")) == str(meta["topic_id"]) for t in topics):
+            continue
+        entry = json.dumps({"id": meta["topic_id"], "topic": script["theme"], "spanish": script["theme"],
+                            "theme": script["theme"], "category": meta["category"], "difficulty": "mixed",
+                            "level": "A1-C2", "tags": [vtype, "level_family"]}, ensure_ascii=False)
+        # Appended as text before the closing bracket: the file's own formatting stays as it is.
+        end = text.rstrip().rfind("]")
+        head = text[:end].rstrip()
+        text = head + ("," if topics else "") + "\n  " + entry + "\n]\n"
+        json.loads(text)                                     # still one valid list
+        path.write_text(text, encoding="utf-8")
+        added[meta["category"]] = added.get(meta["category"], 0) + 1
+    return added
+
+
+def copy(types) -> int:
+    """STEP 77 §9: queue the drafts of `types`, keep the drafts; all-or-nothing per run."""
+    import length_spec
+    from script_schema import validate_script
+    plan, problems = [], []
+    for vtype in types:
+        for p in sorted((ROOT / "content" / "drafts" / vtype).glob("*.json")):
+            script = derive(json.loads(p.read_text(encoding="utf-8")))
+            if _taken(p.name, vtype, script["_meta"]):
+                print(f"{vtype}: {p.name} already queued, done or produced: skipped")
+                continue
+            try:
+                validate_script(script, vtype, source=str(p))
+            except Exception as exc:                     # noqa: BLE001
+                problems.append(f"{p.name}: {exc}")
+                continue
+            over = length_spec.check_script(script)
+            if over:
+                problems.append(f"{p.name}: does not fit: {[(v['where'], v['field']) for v in over]}")
+                continue
+            plan.append((vtype, p.name, script))
+    if problems:
+        print("\n".join(problems))
+        sys.exit(f"{len(problems)} drafts do not validate: nothing queued")
+    print(f"topics added: {add_topics([(vtype, script) for vtype, _n, script in plan])}")
+    counts = {}
+    for vtype, name, script in plan:
+        queue = ROOT / "content" / "queue" / vtype
+        queue.mkdir(parents=True, exist_ok=True)
+        (queue / name).write_text(json.dumps(script, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        counts[vtype] = counts.get(vtype, 0) + 1
+    for vtype in types:
+        print(f"{vtype}: {counts.get(vtype, 0)} scripts queued (drafts kept)")
+    return 0
+
+
 def main() -> int:
     if "--rederive" in sys.argv[1:]:
         return rederive()
+    if "--copy" in sys.argv[1:]:
+        return copy([a for a in sys.argv[1:] if a != "--copy"])
     for vtype, category in TOPICS.items():
         drafts = sorted((ROOT / "content" / "drafts" / vtype).glob("*.json"))
         queue = ROOT / "content" / "queue" / vtype
