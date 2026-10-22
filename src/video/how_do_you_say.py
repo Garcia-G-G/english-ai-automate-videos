@@ -914,7 +914,7 @@ LINE_FONT_MAX = 46
 LINE_FONT_MIN = 42
 LINE_PITCH = 1.2                 # line height, in font sizes
 ROW_PAD = 24                     # air inside a row, top and bottom together
-ROW_EXTRA_MAX = 36               # at most this much more, when a page has room to spare
+ROW_EXTRA_MAX = 60               # at most this much more, when a page has room to spare
 ROWS_PER_PAGE = 8
 TIER_GAP = 30                    # between two tiers on one page: a choose circle hangs below its line
 LEVEL_MAX_LINES = 3              # per field; length_spec reads it
@@ -1745,6 +1745,9 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
             s = round(s * 100) / 100
         if s != 1.0:
             pill = pill.resize((max(1, round(pill.size[0] * s)), max(1, round(pill.size[1] * s))), Image.LANCZOS)
+        pill = _faded(pill, round(ease_out_cubic(cascade(a - first, t_page)) * 16) / 16)   # in with its first row
+        if pill.getbbox() is None:
+            continue
         cx, cy = (LABEL_X0 + LABEL_X1) / 2, (top + bottom) / 2
         layer.alpha_composite(pill, tuple(int(round(v)) for v in _p(cx - pill.size[0] / 2, cy - pill.size[1] / 2)))
 
