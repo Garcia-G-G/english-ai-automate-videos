@@ -543,6 +543,19 @@ class HowDoYouSayScript(ScriptBase, _TranslationsMixin):
             raise ValueError("; ".join(problems))
         return self
 
+    @model_validator(mode="after")
+    def _check_distinct_emoji(self):
+        """STEP 77 §5: one distinct emoji per item on the page (sábana and colchón both 🛏️
+        told the viewer nothing)."""
+        seen = {}
+        for i, item in enumerate(self.items):
+            key = item.emoji.replace("\ufe0f", "")
+            if key in seen:
+                raise ValueError(f"items[{i}].emoji: duplicate emoji {item.emoji} "
+                                 f"(also items[{seen[key]}]); one distinct emoji per item")
+            seen[key] = i
+        return self
+
 
 # ─────────────────────────────────────────────────────────────────────────
 # The level family (STEP 58): level_test, say_it_level

@@ -739,7 +739,9 @@ REGLAS:
 1. Entre 8 y 10 items; 10 es lo ideal. Palabras de nivel A1, muy frecuentes, del tema.
 2. "spanish" con mayúscula inicial y SIN artículo ("Madre", no "la madre"). "english" en minúscula, sin artículo.
 3. "emoji": UN SOLO emoji simple por item (un carácter). PROHIBIDO usar emojis compuestos
-   con varias personas, banderas o tonos de piel.
+   con varias personas, banderas o tonos de piel. Un emoji DISTINTO por item: el objeto
+   literal de la palabra, no uno parecido ni un sinónimo (manta no es 🧣, alfombra no es 🧶;
+   si dos palabras solo tienen el mismo emoji, cambia una de las palabras).
 4. "intro" pregunta si saben decir las palabras; "outro" pregunta cuántas sabían.
    Puedes usar UNA etiqueta de voz al inicio de intro y outro, solo de esta lista: {tags}.
 5. "recap" = "Ahora todas en inglés, conmigo: " + las palabras en inglés separadas por comas.

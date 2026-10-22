@@ -47,15 +47,16 @@ def _hdys_timeline(data):
 #: (the frames changed on purpose: anti-aliased edges; stills reviewed in _audit/stills/STEP77/), and
 #: again at §2 (page tilted by cv2 once per state, the pencil drawn unrotated after the tilt),
 #: and at §3 (motion: rise, cascade, hook, swipe, stroke ticks, feather, 200 px pencil, CTA),
-#: and at §4 (safe areas: title down, footer, narrower columns, no frame chrome, pencil shadow).
+#: and at §4 (safe areas: title down, footer, narrower columns, no frame chrome, pencil shadow),
+#: and at §5 (emoji on sticker discs).
 HDYS_PIN = {
     0.0: "5c5bc1ab493b1eee",
-    4.7: "60e51f1004aec66d",
-    15.5: "4fa6300952c869f1",
-    25.9: "c8e0f01711160d88",
-    50.2: "932eacc5fa907c3a",
-    53.6: "09143e3734fd0942",
-    63.7: "feb37c39e52dc6f1",
+    4.7: "3e5330764582ff25",
+    15.5: "e5af0d54602ba26f",
+    25.9: "9ae8b50a04843629",
+    50.2: "23ef5731f8a9dd34",
+    53.6: "739eb183c1e3136f",
+    63.7: "4cae3a2fec56529a",
 }
 
 

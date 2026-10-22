@@ -449,3 +449,27 @@ def emoji(char: str, size: int) -> Image.Image:
     scale = size / max(src.size)
     w, h = max(1, round(src.size[0] * scale)), max(1, round(src.size[1] * scale))
     return src.resize((w, h), Image.LANCZOS)
+
+
+#: STEP 77 §5: the emoji sits in a white sticker disc, ink outline and hard shadow, so the
+#: Noto artwork matches the notebook's stickers.
+EMOJI_IN_DISC = 0.62                 # a square emoji fits inside the circle
+DISC_OUTLINE = 3
+DISC_SHADOW = (4, 4)
+
+
+@lru_cache(maxsize=256)
+def emoji_sticker(char: str, size: int) -> Image.Image:
+    """The emoji in a `size`-wide white disc (ink outline, hard ink shadow), drawn at SS×."""
+    k = SS
+    w = size + DISC_SHADOW[0] + 2
+    big = Image.new("RGBA", (w * k, w * k), (0, 0, 0, 0))
+    d = ImageDraw.Draw(big, "RGBA")
+    sx, sy = DISC_SHADOW
+    d.ellipse([(1 + sx) * k, (1 + sy) * k, (1 + sx + size) * k - 1, (1 + sy + size) * k - 1], fill=colour("ink"))
+    d.ellipse([k, k, (1 + size) * k - 1, (1 + size) * k - 1], fill=(255, 255, 255, 255),
+              outline=colour("ink"), width=DISC_OUTLINE * k)
+    disc = big.resize((w, w), Image.LANCZOS)
+    e = emoji(char, max(1, round(size * EMOJI_IN_DISC)))
+    disc.alpha_composite(e, (1 + (size - e.width) // 2, 1 + (size - e.height) // 2))
+    return disc

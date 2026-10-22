@@ -807,7 +807,7 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
         if e <= 0:
             continue
         size = max(1, round(EMOJI_SIZE * scale))
-        img = _faded(emoji_image(item["emoji"], size), round(e * 16) / 16)
+        img = _faded(kit.emoji_sticker(item["emoji"], size), round(e * 16) / 16)   # STEP 77 §5
         ex, ey = _p(EMOJI_X + (EMOJI_SIZE - img.size[0]) / 2,
                     centres[i] - img.size[1] / 2 + CASCADE_DY * (1.0 - e))
         layer.alpha_composite(img, (int(round(ex)), int(round(ey))))
