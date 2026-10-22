@@ -110,6 +110,13 @@ def prepare_background_cache(bg, preset: str, duration: float,
                 _time.time() - _bg_start, peak_rss_mb())
 
 
+def _notebook_workers(video_type: str) -> int:
+    """STEP 77 §2: the notebook types (video_types.PANEL_TYPES) render in parallel."""
+    from video_types import PANEL_TYPES
+    from .compositor import render_workers
+    return render_workers() if video_type in PANEL_TYPES else 1
+
+
 def generate_video(
     audio_path: str,
     data_path: str,
@@ -498,6 +505,8 @@ def generate_video(
             width=VIDEO_WIDTH,
             height=VIDEO_HEIGHT,
             **({"preset": "ultrafast"} if fast_mode else {}),
+            # The notebook renderers are pure functions of t: frames render in a process pool.
+            workers=_notebook_workers(video_type),
         )
 
     # MoviePy renderer (legacy, explicit opt-in only)

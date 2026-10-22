@@ -279,7 +279,9 @@ def dots(layer: Image.Image, x0: float, cy: float, p: float, c: Colour = None) -
     """Three countdown dots that empty over the think pause: «your turn», not dead air."""
     c = c or colour("english_blue")
     r = 11
-    fills = tuple(round(max(0.0, min(1.0, (1.0 - p) * 3 - (2 - j))), 2) for j in range(3))
+    # Eighths: a dot empties over a third of the pause, so a step is ~2 frames and 1 px of
+    # its 9 px fill; coarser steps let the page memo reuse a think pause's frames.
+    fills = tuple(round(max(0.0, min(1.0, (1.0 - p) * 3 - (2 - j))) * 8) / 8 for j in range(3))
 
     def painter(draw, at, k):
         for j, left in enumerate(fills):

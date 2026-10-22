@@ -40,6 +40,7 @@ def render_video_ffmpeg(
     crf: int = 17,
     preset: str = "slow",
     progress_callback: Optional[Callable[[float], None]] = None,
+    workers: int = 1,
 ) -> str:
     """Render video by piping PIL frames to FFmpeg (libx264, BT.709).
 
@@ -55,6 +56,10 @@ def render_video_ffmpeg(
         preset: libx264 preset; ``ultrafast`` only for --fast drafts.
         progress_callback: Called with a float in ``[0, 1]`` once per
             second of rendered video.
+        workers: Processes that render frames (STEP 77 §2). Above 1 the
+            frame_generator runs in forked processes over contiguous chunks
+            of frames, written to ffmpeg in order; it must be a pure
+            function of t, as every renderer here already is.
 
     Returns:
         *output_path* on success.
@@ -74,7 +79,82 @@ def render_video_ffmpeg(
         codec="libx264",
         extra_params=["-crf", str(crf), "-preset", preset, *X264_PARAMS],
         progress_callback=progress_callback,
+        workers=workers,
     )
+
+
+# ── frames, in one process or several (STEP 77 §2) ──────────────────
+
+_POOL_GENERATOR: Optional[Callable[[float], np.ndarray]] = None
+
+
+def _pool_frame(args) -> np.ndarray:
+    index, fps = args
+    frame = _POOL_GENERATOR(index / fps)
+    if frame.dtype != np.uint8:
+        frame = np.clip(frame, 0, 255).astype(np.uint8)
+    return np.ascontiguousarray(frame)
+
+
+def frames(frame_generator: Callable[[float], np.ndarray], total_frames: int, fps: int,
+           workers: int = 1):
+    """Every frame in order. With workers > 1, forked processes render contiguous chunks
+    (each keeps its own caches and reads the footage forward); a semaphore holds back the
+    task feed so finished frames never pile up faster than ffmpeg takes them."""
+    import multiprocessing
+    import threading
+    if workers <= 1 or "fork" not in multiprocessing.get_all_start_methods():
+        for i in range(total_frames):
+            yield frame_generator(i / fps)
+        return
+    global _POOL_GENERATOR
+    _POOL_GENERATOR = frame_generator
+    # Warm up once here so the children inherit the background (softened clips, scrims), the
+    # static pages and the font caches instead of each building them: that setup cost every
+    # worker more than its frames did (~0.5 CPU-s per frame with 6 workers, 0.04 without).
+    frame_generator(0.0)
+    from .backgrounds import before_fork
+    before_fork()
+    try:
+        import cv2
+        cv2.setNumThreads(1)                     # six processes already; no thread pool per process
+    except ImportError:
+        pass
+    chunk = max(1, min(60, total_frames // (workers * 6)))
+    ahead = threading.Semaphore(workers * chunk * 2)
+    stop = threading.Event()
+
+    def tasks():
+        for i in range(total_frames):
+            ahead.acquire()
+            if stop.is_set():                    # the render ended early: feed nothing more
+                return
+            yield (i, fps)
+
+    logger.info("Rendering frames in %d processes, chunks of %d", workers, chunk)
+    pool = multiprocessing.get_context("fork").Pool(workers)
+    try:
+        for frame in pool.imap(_pool_frame, tasks(), chunksize=chunk):
+            ahead.release()
+            yield frame
+        pool.close()
+    finally:
+        # A failed frame (or a dead ffmpeg) ends the render: unblock the task feed first, or
+        # terminate() waits forever on the thread parked in ahead.acquire().
+        stop.set()
+        for _ in range(workers * chunk * 2 + 1):
+            ahead.release()
+        pool.terminate()
+        pool.join()
+
+
+def render_workers() -> int:
+    """Processes for a render: VIDEO_RENDER_WORKERS, else the cores minus two for ffmpeg and
+    the panel, at most 6."""
+    env = os.environ.get("VIDEO_RENDER_WORKERS")
+    if env:
+        return max(1, int(env))
+    return max(1, min(6, (os.cpu_count() or 2) - 2))
 
 
 def _encode(
@@ -88,6 +168,7 @@ def _encode(
     codec: str,
     extra_params: list,
     progress_callback: Optional[Callable[[float], None]],
+    workers: int = 1,
 ) -> str:
     """Run the actual FFmpeg pipe encode."""
 
@@ -117,7 +198,8 @@ def _encode(
         # --- general ---
         "-movflags", "+faststart",
         "-shortest",
-        "-threads", "4",
+        # No thread cap (was 4): x264 slow at 1080x1920 encodes 54 fps with 4, 60 with its own
+        # count, and the encoder is a render's longest stage once frames come from a pool (STEP 77 §2).
         output_path,
     ]
 
@@ -134,10 +216,7 @@ def _encode(
     t_last = t_start
 
     try:
-        for frame_num in range(total_frames):
-            t = frame_num / fps
-
-            frame_rgb = frame_generator(t)
+        for frame_num, frame_rgb in enumerate(frames(frame_generator, total_frames, fps, workers)):
 
             # Progress every 100 frames. A timeout that shows these lines
             # advancing was slow; one that shows them stop dead was stalled.

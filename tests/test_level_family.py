@@ -44,11 +44,16 @@ def _hdys_timeline(data):
 
 #: sha256[:16] of raw frames over a flat base. First pinned before the level modes (3c5ab68);
 #: RE-PINNED at STEP 77 §1, when every mark started coming from the supersampled notebook kit
-#: (the frames changed on purpose: anti-aliased edges; stills reviewed in _audit/stills/STEP77/).
+#: (the frames changed on purpose: anti-aliased edges; stills reviewed in _audit/stills/STEP77/), and
+#: again at §2 (page tilted by cv2 once per state, the pencil drawn unrotated after the tilt).
 HDYS_PIN = {
-    0.0: "7290cf28bb6ca070", 4.7: "a47c124181477d05", 15.5: "07b9e53a1a2b2c4c",
-    25.9: "2ba971a9fa260e00", 50.2: "8c4b0a9b114a822a", 53.6: "58de244f71d2199a",
-    63.7: "223a9a0dded6e51a",
+    0.0: "9d61e845081ca805",
+    4.7: "e786ef307ff08db0",
+    15.5: "877d184792170bd0",
+    25.9: "d8d40bc2f423ac26",
+    50.2: "006fc0b3481f98c5",
+    53.6: "efe57d9e56452f3e",
+    63.7: "b0743ecdf48e6a29",
 }
 
 

@@ -311,6 +311,115 @@ def _word_offset_y(text: str, width: int, centre: int) -> int:
     return _text_y(f, centre) - 2
 
 
+# ── Page memo (STEP 77 §2) ───────────────────────────────────────────
+#
+# Rotating the whole page layer was ~105 ms of every frame. A frame's page is now first
+# DESCRIBED: every composite onto it is recorded instead of drawn (all drawing reaches the page
+# through alpha_composite, the kit's included). The record — each image's content and where
+# it lands — is the page's state. A state seen in the last few frames reuses its rotated page;
+# a new one is drawn and rotated once. The pencil is not part of the page: it moves every
+# frame, so it is drawn after the rotation, at its tip's rotated position (STEP 77 §2).
+
+import hashlib
+from collections import OrderedDict
+
+
+class _PageRecorder:
+    """Stands in for the page layer while a frame is described."""
+
+    size = None
+
+    def __init__(self, base: Image.Image):
+        self.size = base.size
+        self.ops = [(base, (0, 0))]
+
+    def alpha_composite(self, im: Image.Image, dest=(0, 0), source=(0, 0)) -> None:
+        if tuple(source) != (0, 0):
+            im = im.crop((*source, *im.size))
+        self.ops.append((im, (int(dest[0]), int(dest[1]))))
+
+
+#: id(image) -> (image, digest) for the big, cached layers; holding the image keeps its id unique.
+_DIGESTS: Dict[int, Tuple[Image.Image, bytes]] = {}
+
+
+def _digest(im: Image.Image) -> bytes:
+    if im.size[0] * im.size[1] < 400_000:
+        return hashlib.blake2b(im.tobytes(), digest_size=12).digest() + bytes(str(im.size), "ascii")
+    hit = _DIGESTS.get(id(im))
+    if hit is None or hit[0] is not im:
+        if len(_DIGESTS) > 64:
+            _DIGESTS.clear()
+        hit = _DIGESTS[id(im)] = (im, hashlib.blake2b(im.tobytes(), digest_size=12).digest())
+    return hit[1]
+
+
+_PAGES: "OrderedDict[tuple, Image.Image]" = OrderedDict()
+_PAGES_MAX = 12
+PAGE_STATS = {"drawn": 0, "reused": 0}
+
+
+def _page(rec: _PageRecorder) -> Image.Image:
+    """The rotated page for this frame's record: reused when the state was seen recently."""
+    key = tuple((_digest(im), dest) for im, dest in rec.ops)
+    page = _PAGES.get(key)
+    if page is not None:
+        _PAGES.move_to_end(key)
+        PAGE_STATS["reused"] += 1
+        return page
+    layer = rec.ops[0][0].copy()
+    for im, dest in rec.ops[1:]:
+        layer.alpha_composite(im, dest)
+    page = _PAGES[key] = _rotate(layer)
+    PAGE_STATS["drawn"] += 1
+    if len(_PAGES) > _PAGES_MAX:
+        _PAGES.popitem(last=False)
+    return page
+
+
+def _rotate(layer: Image.Image) -> Image.Image:
+    """The page tilted by TILT_DEG about its centre: cv2's bicubic warp, 10× PIL's rotate
+    (16 ms against 160) and within a mean 0.27 of it (the largest differences sit in pixels at
+    alpha 1-2)."""
+    import cv2
+    m = cv2.getRotationMatrix2D((layer.width / 2 - 0.5, layer.height / 2 - 0.5), TILT_DEG, 1.0)
+    out = cv2.warpAffine(np.asarray(layer), m, layer.size, flags=cv2.INTER_CUBIC,
+                         borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
+    return Image.fromarray(out)                          # 4 channels: RGBA
+
+
+def page_to_frame(x: float, y: float) -> Tuple[float, float]:
+    """A page-local point after the page's tilt, in frame pixels (PIL rotates about the
+    layer's centre, counter-clockwise)."""
+    lx, ly = _p(x, y)
+    cx, cy = LAYER_W / 2, LAYER_H / 2
+    a = math.radians(TILT_DEG)
+    rx = cx + (lx - cx) * math.cos(a) + (ly - cy) * math.sin(a)
+    ry = cy - (lx - cx) * math.sin(a) + (ly - cy) * math.cos(a)
+    return rx + PAGE_X - PAD, ry + PAGE_Y - PAD
+
+
+@lru_cache(maxsize=1)
+def _pencil_cropped() -> Tuple[Image.Image, Tuple[int, int]]:
+    img, (cx, cy) = kit.pencil()
+    box = img.getbbox()
+    return img.crop(box), (cx - box[0], cy - box[1])
+
+
+def _place_pencil(frame: Image.Image, px: float, py: float) -> None:
+    """The pencil, unrotated (1° is invisible on it), its tip on the page point (px, py) after
+    the tilt, placed with a sub-pixel affine shift so a slow move does not step."""
+    sprite, (tx, ty) = _pencil_cropped()
+    fx, fy = page_to_frame(px, py)
+    x, y = fx - tx, fy - ty
+    ix, iy = math.floor(x), math.floor(y)
+    dx, dy = x - ix, y - iy
+    if dx or dy:
+        sprite = sprite.transform((sprite.width + 1, sprite.height + 1), Image.AFFINE,
+                                  (1, 0, -dx, 0, 1, -dy), resample=Image.BILINEAR)
+    frame.alpha_composite(sprite, (ix, iy))
+
+
 # ── Pencil ───────────────────────────────────────────────────────────
 
 #: Degrees BELOW horizontal: tip upper-left, body trailing down-right.
@@ -397,8 +506,7 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
     key = tuple((it["spanish"], it["emoji"]) for it in items)
 
     frame, _draw = create_base_frame(t)
-    layer = _static_page(key, data["theme"]).copy()
-    draw = ImageDraw.Draw(layer, "RGBA")
+    layer = _PageRecorder(_static_page(key, data["theme"]))
 
     # 1. highlighter behind the active row (and fading out of the last one)
     yellow = _color("brand_yellow")
@@ -456,6 +564,7 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
         tc = pulses[i]
         if tc is not None and abs(t - tc) < PULSE_HALF:
             s = 1.0 + PULSE_SCALE * math.cos((t - tc) / PULSE_HALF * math.pi / 2) ** 2
+            s = round(s * 200) / 200                     # 0.5 % steps: the page memo can reuse them
         if s != 1.0:
             big = word.resize((max(1, round(word.size[0] * s)),
                                max(1, round(word.size[1] * s))), Image.LANCZOS)
@@ -471,15 +580,9 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
         _draw_tick(layer, ENGLISH_X + w + TICK_GAP, cy,
                    ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
 
-    # 5. the pencil, on top of everything on the page
-    pencil, (pcx, pcy) = pencil_image()
-    px, py = pencil_position(t, tl, items, centres)
-    lx, ly = _p(px, py)
-    layer.alpha_composite(pencil, (int(round(lx - pcx)), int(round(ly - pcy))))
-
-    # 6. tilt the whole page once, then place it
-    tilted = layer.rotate(TILT_DEG, resample=Image.BICUBIC)
-    frame.alpha_composite(tilted, (PAGE_X - PAD, PAGE_Y - PAD))
+    # 5. the page, tilted (memoised by state), then the pencil over it
+    frame.alpha_composite(_page(layer), (PAGE_X - PAD, PAGE_Y - PAD))
+    _place_pencil(frame, *pencil_position(t, tl, items, centres))
 
     return finalize_frame(frame, ImageDraw.Draw(frame, "RGBA"), t, duration,
                           scene_cuts=[tl.recap[0]])
@@ -616,6 +719,7 @@ def page_size(texts: Tuple[str, ...]) -> int:
     return min(fit_line(text)[1] for text in texts)
 
 
+@lru_cache(maxsize=64)
 def note_lines(tip: Optional[str], alt: Optional[str]) -> List[Tuple[str, str]]:
     """[(kind, text)] the note draws: the tip wrapped to the note, then the alternative.
     length_spec reads the same wrap, so a tip that needs a third line is caught there."""
@@ -849,7 +953,6 @@ def _draw_fill_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items:
     size, blank = fill_layout(key)
     f = fredoka(size)
     tsize = page_size(tuple(it["translation"] for it in items))
-    draw = ImageDraw.Draw(layer, "RGBA")
     blue, grey = _color("english_blue"), _color("secondary_text")
     for i, (it, (x0, _x1, _base)) in enumerate(zip(items, fill_spans(items, centres))):
         cy1, cy2 = centres[i] + LINE1_DY, centres[i] + LINE2_DY
@@ -912,7 +1015,7 @@ def choice_spans(items: List[Dict], centres: List[int]) -> List[List[Tuple[float
 
 def _as_layer(target) -> Image.Image:
     """The image an ImageDraw paints on, or the image itself (the tests pass a draw)."""
-    return target if isinstance(target, Image.Image) else target._image
+    return target if hasattr(target, "alpha_composite") else target._image   # an image or the page recorder
 
 
 def _hand_circle(target, box: Tuple[float, float, float, float], p: float) -> None:
@@ -933,7 +1036,6 @@ def _draw_choose_answers(layer: Image.Image, t: float, tl: "LevelTimeline", item
     dots sit after the options, never over them."""
     size = page_size(tuple(choice_line(it) for it in items))
     f = fredoka(size)
-    draw = ImageDraw.Draw(layer, "RGBA")
     grey, blue = _color("secondary_text"), _color("english_blue")
     bsize, blank = fill_layout(tuple(blank_key(it) for it in items))
     bf = fredoka(bsize)
@@ -1013,9 +1115,9 @@ def _verdict_note() -> Image.Image:
     return note.rotate(VERDICT_ROT, expand=True, resample=Image.BICUBIC)
 
 
-def _draw_note(layer: Image.Image, lines: List[Tuple[str, str]], scale: float) -> None:
-    if scale <= 0 or not lines:
-        return
+@lru_cache(maxsize=16)
+def _note_image(lines: Tuple[Tuple[str, str], ...]) -> Image.Image:
+    """The say_it_level note (kit.note_card + its lines), drawn once per note."""
     ink = _color("ink")
     note = Image.new("RGBA", (NOTE_W + SHADOW[0], NOTE_H + SHADOW[1]), (0, 0, 0, 0))
     note.alpha_composite(kit.note_card(NOTE_W, NOTE_H, _color("brand_yellow"), 4, SHADOW).crop((0, 0, *note.size)))
@@ -1031,9 +1133,21 @@ def _draw_note(layer: Image.Image, lines: List[Tuple[str, str]], scale: float) -
             d.text((NOTE_PAD + NOTE_LEAD_W, y), text, font=f, fill=_color("english_blue"))
         else:
             d.text((NOTE_PAD, y), text, font=f, fill=ink)
-    if scale != 1.0:
-        note = note.resize((max(1, round(note.size[0] * scale)), max(1, round(note.size[1] * scale))),
-                           Image.LANCZOS)
+    return note
+
+
+@lru_cache(maxsize=64)
+def _note_scaled(lines: Tuple[Tuple[str, str], ...], scale: float) -> Image.Image:
+    note = _note_image(lines)
+    if scale == 1.0:
+        return note
+    return note.resize((max(1, round(note.size[0] * scale)), max(1, round(note.size[1] * scale))), Image.LANCZOS)
+
+
+def _draw_note(layer: Image.Image, lines: List[Tuple[str, str]], scale: float) -> None:
+    if scale <= 0 or not lines:
+        return
+    note = _note_scaled(tuple(lines), round(scale * 100) / 100)      # 1 % steps for the page memo
     cx, cy = NOTE_X + NOTE_W / 2, NOTE_Y + NOTE_H / 2
     layer.alpha_composite(note, tuple(int(round(v)) for v in _p(cx - note.size[0] / 2, cy - note.size[1] / 2)))
 
@@ -1172,9 +1286,8 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
 
     frame, _draw = create_base_frame(t)
     tiers = mode.get("tiers", True)
-    layer = (_static_level_page(n, data["title"], data["theme"], True, tier_gap) if tiers
-             else _static_level_page(n, data["title"], data["theme"], False)).copy()
-    draw = ImageDraw.Draw(layer, "RGBA")
+    layer = _PageRecorder(_static_level_page(n, data["title"], data["theme"], True, tier_gap) if tiers
+                          else _static_level_page(n, data["title"], data["theme"], False))
 
     # 1. highlighter behind the active row, then the printed numbers and prompts over it
     yellow = _color("brand_yellow")
@@ -1256,13 +1369,9 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
             _draw_note(layer, lines, ease_out_cubic((t - start) / NOTE_POP) * 0.15 + 0.85
                        if t < start + NOTE_POP else 1.0)
 
-    # 5. the pencil
-    pencil, (pcx, pcy) = pencil_image()
-    px, py = level_pencil_position(t, tl, items, answer, centres, size, writes=kind != "tf",
-                                   spans=_pencil_spans(kind, items, centres),
-                                   boxes=boxes)
-    lx, ly = _p(px, py)
-    layer.alpha_composite(pencil, (int(round(lx - pcx)), int(round(ly - pcy))))
+    # 5. the pencil: drawn after the page is tilted (see _place_pencil)
+    pencil_at = level_pencil_position(t, tl, items, answer, centres, size, writes=kind != "tf",
+                                      spans=_pencil_spans(kind, items, centres), boxes=boxes)
 
     # 6. the verdict note, over the lower rows while the verdict is spoken
     v0, v1 = tl.verdict
@@ -1278,6 +1387,6 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
         cx, cy = VERDICT_X + VERDICT_W / 2, VERDICT_Y + VERDICT_H / 2
         layer.alpha_composite(note, tuple(int(round(v)) for v in _p(cx - note.size[0] / 2, cy - note.size[1] / 2)))
 
-    tilted = layer.rotate(TILT_DEG, resample=Image.BICUBIC)
-    frame.alpha_composite(tilted, (PAGE_X - PAD, PAGE_Y - PAD))
+    frame.alpha_composite(_page(layer), (PAGE_X - PAD, PAGE_Y - PAD))
+    _place_pencil(frame, *pencil_at)
     return finalize_frame(frame, ImageDraw.Draw(frame, "RGBA"), t, duration, scene_cuts=[v0])

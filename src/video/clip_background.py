@@ -304,6 +304,13 @@ class ClipLibraryBackground:
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         if self.dim <= 0 and self._scrim is None and self._mark is None:
             return rgb
+        if self.dim <= 0 and self._scrim is None:
+            # Only the mark's rectangle is treated: work on that slice, not a float copy of the
+            # whole frame (14 of a notebook frame's 52 ms, STEP 77 §2). Same arithmetic.
+            x0, y0, x1, y1 = self._mark_rect
+            patch = rgb[y0:y1, x0:x1].astype(np.float32) * self._mark
+            rgb[y0:y1, x0:x1] = np.clip(patch, 0, 255).astype(np.uint8)
+            return rgb
 
         out = rgb.astype(np.float32)
         if self.dim > 0:
