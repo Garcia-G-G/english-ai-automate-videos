@@ -112,6 +112,27 @@ def _format_pydantic_errors(exc: ValidationError) -> List[str]:
 # Base
 # ─────────────────────────────────────────────────────────────────────────
 
+def check_english_markers(text: str) -> str:
+    """STEP 76 §1: every «[[» closes with «]]», none nest, none is empty — the
+    segmenter voices exactly what is inside them as English."""
+    depth, start = 0, 0
+    for i in range(len(text) - 1):
+        pair = text[i:i + 2]
+        if pair == "[[" and (i == 0 or text[i - 1] != "["):
+            if depth:
+                raise ValueError(f"nested «[[» at character {i}")
+            depth, start = 1, i + 2
+        elif pair == "]]" and (i + 2 >= len(text) or text[i + 2] != "]"):
+            if not depth:
+                raise ValueError(f"«]]» with no «[[» at character {i}")
+            if not text[start:i].strip():
+                raise ValueError(f"empty «[[ ]]» at character {start - 2}")
+            depth = 0
+    if depth:
+        raise ValueError(f"«[[» at character {start - 2} is never closed")
+    return text
+
+
 class ScriptBase(BaseModel):
     """Fields every video type carries.
 
@@ -136,24 +157,7 @@ class ScriptBase(BaseModel):
     @field_validator("full_script")
     @classmethod
     def _balanced_english_markers(cls, text: str) -> str:
-        """STEP 76 §1: every «[[» closes with «]]», none nest, none is empty — the
-        segmenter voices exactly what is inside them as English."""
-        depth, start = 0, 0
-        for i in range(len(text) - 1):
-            pair = text[i:i + 2]
-            if pair == "[[" and (i == 0 or text[i - 1] != "["):
-                if depth:
-                    raise ValueError(f"nested «[[» at character {i}")
-                depth, start = 1, i + 2
-            elif pair == "]]" and (i + 2 >= len(text) or text[i + 2] != "]"):
-                if not depth:
-                    raise ValueError(f"«]]» with no «[[» at character {i}")
-                if not text[start:i].strip():
-                    raise ValueError(f"empty «[[ ]]» at character {start - 2}")
-                depth = 0
-        if depth:
-            raise ValueError(f"«[[» at character {start - 2} is never closed")
-        return text
+        return check_english_markers(text)
 
     # Publishing metadata. Optional in the model because 9 of 12 historical
     # fixtures predate it — validate_and_clean_script:703-714 synthesises a
@@ -1089,3 +1093,140 @@ def lint_script(data: Dict[str, Any],
     """Advisory-only checks. Returns [] for a script that fails validation."""
     _, _, warnings = check_script(data, video_type=video_type, source=source)
     return warnings
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# «Hecho con Claude» (STEP 78 §1): the series, written by Claude, four styles
+# ─────────────────────────────────────────────────────────────────────────
+#
+# Not a ScriptBase: a series script has no full_script and no type. Its narration is
+# `voice`, one line per beat; each style draws its own block.
+
+SERIES_STYLES = ("mensajes", "escena", "poster", "comic")
+SERIES_LEVELS = ("principiante", "medio", "dificil")
+#: The block each style draws, and the letter in its id (hc_m001, hc_e001…).
+SERIES_BLOCK = {"mensajes": "chat", "escena": "scene", "poster": "poster", "comic": "quiz"}
+SERIES_LETTER = {"mensajes": "m", "escena": "e", "poster": "p", "comic": "c"}
+
+
+class _SeriesCorrection(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    wrong: str = Field(min_length=1)
+    right: str = Field(min_length=1)
+    rule: str = Field(min_length=1)
+
+
+class _SeriesChallenge(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    prompt: str = Field(min_length=1)
+    answer: str = Field(min_length=1)
+
+
+class _SeriesChat(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    contact: str = Field(min_length=1)
+    messages: List[List[str]] = Field(min_length=1)
+
+    @field_validator("messages")
+    @classmethod
+    def _messages(cls, messages):
+        for k, m in enumerate(messages):
+            if len(m) not in (2, 3) or m[0] not in ("them", "me") or not m[1].strip():
+                raise ValueError(f"messages[{k}]: [who, text] or [who, text, \"error\"], who «them» or «me»")
+            if len(m) == 3 and m[2] != "error":
+                raise ValueError(f"messages[{k}]: the third element can only be \"error\"")
+        if sum(len(m) == 3 for m in messages) != 1:
+            raise ValueError("exactly one message is marked \"error\"")
+        return messages
+
+
+class _SeriesScene(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    location: str = Field(min_length=1)
+    take1: str = Field(min_length=1)
+    take2: str = Field(min_length=1)
+    note: str = Field(min_length=1)
+
+
+class _SeriesPoster(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    error_no: str = Field(pattern=r"^\d{3}$")
+    big_wrong: str = Field(min_length=1)
+    big_right: str = Field(min_length=1)
+    examples: List[str] = Field(min_length=1)
+
+
+class _SeriesQuiz(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    prompt: str = Field(min_length=1)
+    options: List[str] = Field(min_length=3, max_length=3)
+    answer: int = Field(ge=0, le=2)
+    after: str = Field(min_length=1)
+
+
+class HechoConClaudeScript(BaseModel):
+    """One «Hecho con Claude» script: ten common fields, one block for its style."""
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+
+    id: str = Field(pattern=r"^hc_[mepc]\d{3}$")
+    style: Literal[SERIES_STYLES]
+    level: Literal[SERIES_LEVELS]
+    level_label: str = Field(min_length=1)
+    angle: str = Field(min_length=1)
+    title: str = Field(min_length=1)
+    hook_text: str = Field(min_length=1)
+    correction: _SeriesCorrection
+    voice: List[str] = Field(min_length=1)
+    challenge: _SeriesChallenge
+
+    chat: Optional[_SeriesChat] = None
+    scene: Optional[_SeriesScene] = None
+    poster: Optional[_SeriesPoster] = None
+    quiz: Optional[_SeriesQuiz] = None
+
+    caption: Optional[str] = None
+    hashtags: Optional[List[str]] = None
+    series: Optional[str] = None
+    duration_target_s: Optional[float] = None
+    voice_words: Optional[int] = None
+    # set when it is queued (STEP 78 §7)
+    type: Optional[Literal["hecho_con_claude"]] = None
+    meta: Dict[str, Any] = Field(default_factory=dict, alias="_meta")
+
+    @field_validator("voice")
+    @classmethod
+    def _voice(cls, lines):
+        from audio_tags import unknown_tags
+        for k, line in enumerate(lines):
+            if not line.strip():
+                raise ValueError(f"voice[{k}] is empty")
+            try:
+                check_english_markers(line)
+            except ValueError as exc:
+                raise ValueError(f"voice[{k}]: {exc}") from None
+            bad = unknown_tags(line)
+            if bad:
+                raise ValueError(f"voice[{k}]: unknown audio tag {bad[0]}")
+        return lines
+
+    @field_validator("hashtags")
+    @classmethod
+    def _five_hashtags(cls, tags):
+        if tags is not None and (len(tags) != 5 or not all(t.startswith("#") and len(t) > 1 for t in tags)):
+            raise ValueError("hashtags: exactly 5, each starting with #")
+        return tags
+
+    @model_validator(mode="after")
+    def _one_block_for_its_style(self):
+        want = SERIES_BLOCK[self.style]
+        present = [b for b in SERIES_BLOCK.values() if getattr(self, b) is not None]
+        if present != [want]:
+            raise ValueError(f"style {self.style!r} takes exactly one block, «{want}»; found {present or 'none'}")
+        if self.id[3] != SERIES_LETTER[self.style]:
+            raise ValueError(f"id {self.id!r} does not match style {self.style!r}")
+        return self
+
+
+def validate_series(data: Dict[str, Any]) -> HechoConClaudeScript:
+    """Validate one series script (ValueError/ValidationError on a problem)."""
+    return HechoConClaudeScript.model_validate(data)

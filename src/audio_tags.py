@@ -85,7 +85,8 @@ def unknown_tags(text: str) -> list:
     text. So an unknown tag is a defect at write time, not a nuance.
     """
     found = []
-    for match in TAG_RE.findall(text or ""):
+    # «[[I have cold]]» is English for the segmenter, not the tag «[I have cold]» (STEP 78 §1)
+    for match in TAG_RE.findall(MARKER.sub(" ", text or "")):
         name = match[1:-1].strip().lower()
         if name not in TAGS:
             found.append(match)

@@ -55,6 +55,7 @@ from script_generator import (
 # STEP 77 §0: what the panel offers — the notebook types only (the old neon renderers stay
 # reachable from the CLI until STEP 79).
 from video_types import PANEL_TYPES  # noqa: E402
+import series  # noqa: E402
 
 # Shared pipeline — the SAME TTS dispatch, merge and renderer the CLI uses.
 import pipeline
@@ -2869,7 +2870,19 @@ elif page == "Generate":
     with col1:
         st.markdown('<div class="section-header">Configuration</div>', unsafe_allow_html=True)
 
-        video_type = st.selectbox("Video Type", PANEL_TYPES, index=0)
+        video_type = st.selectbox("Video Type", [*PANEL_TYPES, series.PANEL_LABEL], index=0)
+
+        # STEP 78 §1: «Hecho con Claude», its own scripts and queue, filtered by style and level.
+        is_series = video_type == series.PANEL_LABEL
+        series_style = series_level = None
+        if is_series:
+            from script_schema import SERIES_LEVELS, SERIES_STYLES
+            _style = st.selectbox("Estilo", ["Todos", *SERIES_STYLES])
+            _level = st.selectbox("Nivel", ["Todos", *SERIES_LEVELS],
+                                  format_func=lambda v: series.LEVEL_NAMES.get(v, v))
+            series_style = None if _style == "Todos" else _style
+            series_level = None if _level == "Todos" else _level
+            st.caption(f"{len(series.queued(series_style, series_level))} guiones en cola")
 
         selection_mode = st.radio(
             "Topic Selection",
@@ -2950,7 +2963,8 @@ elif page == "Generate":
                      "GPT script call still happens, so this is cheap, not "
                      "free.")
 
-        generate_btn = st.button("Crear video", type="primary", width="stretch")
+        generate_btn = st.button("Crear video", type="primary", width="stretch",
+                                 disabled=is_series and not hasattr(series, "render_one"))
 
     with col2:
         st.markdown('<div class="section-header">Generation Status</div>', unsafe_allow_html=True)
