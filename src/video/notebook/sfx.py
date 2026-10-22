@@ -56,6 +56,15 @@ def scratch(rate: int, seconds: float) -> np.ndarray:
     return smooth * strokes * ramp
 
 
+def clap(rate: int) -> np.ndarray:
+    """A clapperboard: a hard noise crack (2 ms attack, 25 ms decay) over a short wooden knock."""
+    n = int(0.12 * rate)
+    t = np.arange(n) / rate
+    crack = np.random.default_rng(7).standard_normal(n) * np.minimum(1, t / 0.002) * np.exp(-t / 0.025)
+    knock = np.sin(2 * np.pi * 180 * t) * np.exp(-t / 0.03) * 0.6
+    return crack + knock
+
+
 def rms_db(x: np.ndarray) -> float:
     return 20 * np.log10(np.sqrt(np.mean(np.square(x))) + 1e-12)
 
@@ -68,7 +77,7 @@ def voice_rms_db(samples: np.ndarray, rate: int, spoken: Sequence[Tuple[float, f
 
 
 def render(name: str, rate: int, seconds: float = 0.0) -> np.ndarray:
-    return {"pop": lambda: pop(rate), "swish": lambda: swish(rate),
+    return {"pop": lambda: pop(rate), "swish": lambda: swish(rate), "clap": lambda: clap(rate),
             "scratch": lambda: scratch(rate, seconds)}[name]()
 
 

@@ -101,17 +101,17 @@ def build_beats(script: Dict, words: List[Dict], duration: float) -> Dict:
 def word_time(beat: Dict, phrase: str) -> Optional[float]:
     """When the voice starts saying `phrase` (Spanish or English) inside a beat, from its words."""
     want = _tokens(phrase)
-    hit = _find_phrase(beat.get("words") or [], want) if want else None
+    hit = _find_phrase(beat.get("words") or [], want, loose=False) if want else None   # «Toma uno» ≠ «Toma dos»
     return hit[0] if hit else None
 
 
-def _find_phrase(words: List[Dict], want: List[str]) -> Optional[Tuple[float, float]]:
+def _find_phrase(words: List[Dict], want: List[str], loose: bool = True) -> Optional[Tuple[float, float]]:
     toks = [_norm(w["word"]) for w in words]
     n = len(want)
     for i in range(len(toks) - n + 1):
         if all(toks[i + j] == want[j] or toks[i + j].startswith(want[j]) for j in range(n)):
             return words[i]["start"], words[i + n - 1]["end"]
-    if want:                                         # the first token alone, as a fallback
+    if want and loose:                               # the first token alone, as a fallback
         for i, t in enumerate(toks):
             if t == want[0]:
                 return words[i]["start"], words[min(len(words) - 1, i + n - 1)]["end"]

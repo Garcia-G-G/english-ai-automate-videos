@@ -76,12 +76,13 @@ def length(text: str, f: ImageFont.FreeTypeFont) -> float:
     return sum(f.getlength(piece) if not e else f.size * 1.15 for piece, e in runs(text))
 
 
-def draw_line(img: Image.Image, x: float, y: float, text: str, f: ImageFont.FreeTypeFont, fill) -> None:
+def draw_line(img: Image.Image, x: float, y: float, text: str, f: ImageFont.FreeTypeFont, fill,
+              stroke: int = 0, stroke_fill=None) -> None:
     d = ImageDraw.Draw(img, "RGBA")
     top, bottom = f.getbbox("Hx")[1], f.getbbox("Hx")[3]
     for piece, e in runs(text):
         if not e:
-            d.text((x, y), piece, font=f, fill=fill)
+            d.text((x, y), piece, font=f, fill=fill, stroke_width=stroke, stroke_fill=stroke_fill)
             x += f.getlength(piece)
             continue
         size = int(round(f.size * 1.05))
@@ -125,7 +126,8 @@ def line_height(size: int, face: str) -> int:
 
 
 def text_block(img: Image.Image, lines: Sequence[str], face: str, size: int, x: float, y: float,
-               fill, align: str = "left", width: Optional[float] = None, alpha: float = 1.0) -> Box:
+               fill, align: str = "left", width: Optional[float] = None, alpha: float = 1.0,
+               stroke: int = 0, stroke_fill=None) -> Box:
     """Draw lines from top-left (x, y); returns the block's ink box. align: left / center."""
     f = font(face, size)
     lh = line_height(size, face)
@@ -135,7 +137,7 @@ def text_block(img: Image.Image, lines: Sequence[str], face: str, size: int, x: 
     for k, line in enumerate(lines):
         lw = length(line, f)
         lx = x + ((width or lw) - lw) / 2 if align == "center" else x
-        draw_line(layer, lx, y + k * lh, line, f, fill)
+        draw_line(layer, lx, y + k * lh, line, f, fill, stroke, stroke_fill)
     if alpha < 1:
         a = layer.getchannel("A").point(lambda v: int(v * alpha))
         layer.putalpha(a)

@@ -1,0 +1,23 @@
+{
+ "id": "hc_e011",
+ "style": "escena",
+ "level": "medio",
+ "duration": 35.095,
+ "voice_seconds": 31.095,
+ "tts_usd": 0.1008,
+ "outro_variant": "aprende-ingles",
+ "silent": false,
+ "cpu_s": 289.3,
+ "wall_s": 84.5,
+ "load": [
+  7.2,
+  16.5
+ ],
+ "measure": {
+  "LUFS I": -14.1,
+  "true peak dBTP": -2.2,
+  "duration s": 35.07,
+  "colour": "bt709/bt709/bt709/tv",
+  "median kf gap s": 2.0
+ }
+}

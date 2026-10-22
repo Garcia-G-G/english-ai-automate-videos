@@ -16,7 +16,7 @@ from video.series import render as R  # noqa: E402
 from video.series import series_kit as K  # noqa: E402
 
 #: The styles built so far (§3 mensajes, §4 escena, §5 poster, §6 comic).
-STYLES = ["mensajes"]
+STYLES = ["mensajes", "escena"]
 DRAFTS = sorted((ROOT / "content" / "hecho_con_claude" / "drafts").glob("hc_*.json"))
 
 
