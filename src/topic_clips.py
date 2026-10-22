@@ -717,17 +717,100 @@ def _axis_pick(seq, seed_text: str, salt: str):
     return seq[int.from_bytes(h[:4], "big") % len(seq)]
 
 
+#: STEP 78 §0: a theme that names a place or an activity gets footage OF that place. Spanish
+#: keyword (accents stripped, lower case) -> queries for the same Pexels source.
+PLACE_FOOTAGE = {
+    "restaurant": ["restaurant interior with diners", "waiter serving food at a restaurant table",
+                   "restaurant kitchen pass with plates", "candle lit restaurant table",
+                   "people ordering food in a restaurant", "restaurant terrace with tables"],
+    "aeropuert": ["airport terminal with travellers", "airport departures board", "airplane taking off",
+                  "passengers walking with suitcases in an airport", "airport check in desk", "airport window with planes"],
+    "hotel": ["hotel lobby with reception desk", "hotel room with a made bed", "hotel corridor with doors",
+              "hotel pool in the morning", "guest checking in at a hotel", "hotel breakfast buffet"],
+    "medic": ["doctor's office with a desk", "doctor listening with a stethoscope", "hospital corridor",
+              "pharmacy shelves with medicine", "waiting room in a clinic", "nurse at a hospital desk"],
+    "farmacia": ["pharmacy shelves with medicine", "pharmacist at a counter", "medicine boxes on a shelf",
+                 "pharmacy sign on a street", "pills on a table", "waiting room in a clinic"],
+    "compra": ["shopping street with stores", "people shopping in a clothing store", "shopping bags in hand",
+               "supermarket aisle with products", "cashier at a store checkout", "shop window display"],
+    "tienda": ["shop window display", "people shopping in a clothing store", "small shop counter",
+               "shopping street with stores", "cashier at a store checkout", "store shelves with products"],
+    "supermercado": ["supermarket aisle with products", "shopping cart in a supermarket", "fresh fruit in a supermarket",
+                     "supermarket checkout", "supermarket shelves", "people shopping for groceries"],
+    "gimnasio": ["gym with exercise machines", "person lifting weights in a gym", "running on a treadmill",
+                 "fitness class in a studio", "gym locker room", "stretching on a gym mat"],
+    "cocina": ["home kitchen cooking", "chopping vegetables on a board", "pan frying on a stove",
+               "kitchen counter with ingredients", "boiling pot on a stove", "baking in a home oven"],
+    "taxi": ["taxi driving through a city", "yellow taxi at night", "hailing a taxi on a street",
+             "taxi interior with driver", "taxi rank at a station", "city traffic with taxis"],
+    "tren": ["train arriving at a platform", "train station hall", "passengers on a train",
+             "metro train in a tunnel", "subway platform with commuters", "train window landscape"],
+    "metro": ["subway platform with commuters", "metro train in a tunnel", "subway map on a wall",
+              "people on an escalator in a metro station", "metro car interior", "train arriving at a platform"],
+    "playa": ["beach with umbrellas", "waves on a sandy beach", "people walking on a beach",
+              "beach bar by the sea", "seaside promenade", "beach towel and sunscreen"],
+    "banco": ["bank teller counter", "atm cash machine", "bank interior", "counting money at a desk",
+              "credit card payment", "bank building entrance"],
+    "oficina": ["office desk with a laptop", "people in a meeting room", "open plan office",
+                "typing on a keyboard at work", "coffee break in an office", "office window with a city view"],
+    "trabajo": ["office desk with a laptop", "people in a meeting room", "open plan office",
+                "typing on a keyboard at work", "coffee break in an office", "office window with a city view"],
+    "escuela": ["classroom with desks", "teacher at a whiteboard", "students writing in notebooks",
+                "school hallway with lockers", "school library", "backpack on a desk"],
+    "clase": ["classroom with desks", "teacher at a whiteboard", "students writing in notebooks",
+              "school library", "backpack on a desk", "school hallway with lockers"],
+    "viaje": ["suitcase being packed", "traveller with a backpack at a station", "map and passport on a table",
+              "airplane window view", "train window landscape", "tourist street in an old town"],
+    "cafe": ["barista making coffee", "coffee shop counter", "cup of coffee on a cafe table",
+             "people chatting in a cafe", "espresso machine pouring", "cafe window with rain"],
+}
+
+#: Grammar and abstract themes: one calm, consistent set, no random landscapes.
+CALM_FOOTAGE = ["open notebook on a wooden desk", "cafe table with coffee and a notebook",
+                "window with soft morning light", "pencil writing in a notebook",
+                "desk with books and a lamp", "steam rising from a coffee cup",
+                "pages of a book turning", "sunlight on a quiet study desk"]
+
+#: Types whose script names no visual objects: their theme decides place or calm.
+_LEVEL_TYPES = ("level_test", "say_it_level", "true_false_level", "fill_level", "choose_level", "phrases_level")
+
+
+def _plain(text: str) -> str:
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFD", (text or "").lower()) if unicodedata.category(c) != "Mn")
+
+
+def place_queries(theme: str) -> List[str]:
+    """The place footage a Spanish theme names, or [] (STEP 78 §0)."""
+    import re
+    words = re.findall(r"[a-z]+", _plain(theme))
+    for key, queries in PLACE_FOOTAGE.items():
+        if any(w.startswith(key) for w in words):            # «entrenar» is not «tren»
+            return list(queries)
+    return []
+
+
 def footage_themes(script: Dict) -> List[str]:
-    """STEP 77 §4/§6: queries from the script's own theme, asked BEFORE the category's
-    fallbacks. A how_do_you_say page names its objects in English (pillow, blanket, lamp…):
-    those are the theme on screen. Other types carry no English, visual theme: none."""
-    if (script or {}).get("type") != "how_do_you_say":
-        return []
-    words = [str(it.get("english") or "").strip() for it in script.get("items") or []]
-    return [f"{w} close up" for w in words if w][:THEME_QUERIES]
+    """Queries from the script's own theme, asked BEFORE (and for the level types, INSTEAD OF)
+    the category's fallbacks.
+
+    how_do_you_say names its objects in English (pillow, blanket, lamp…): those, then its place.
+    The level types: the place their theme names (restaurante, aeropuerto…), else — grammar,
+    phrasal verbs, abstract themes — the calm desk/notebook/café set. Enough queries to fill
+    every clip slot, so no category landscape is mixed in (STEP 78 §0)."""
+    script = script or {}
+    vtype = script.get("type")
+    place = place_queries(script.get("theme") or "")
+    if vtype == "how_do_you_say":
+        words = [str(it.get("english") or "").strip() for it in script.get("items") or []]
+        return [f"{w} close up" for w in words if w][:THEME_QUERIES] + place
+    if vtype in _LEVEL_TYPES:
+        out = place or list(CALM_FOOTAGE)
+        return (out + [q for q in CALM_FOOTAGE if q not in out])[:MAX_CLIPS]
+    return []
 
 
-#: At most this many theme queries per video; the category fills the rest.
+#: At most this many object queries per how_do_you_say; its place and the category fill the rest.
 THEME_QUERIES = 4
 
 

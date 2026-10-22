@@ -22,7 +22,9 @@ def _hdys():
 def test_a_how_do_you_say_page_asks_for_its_own_objects_before_the_category():
     themes = topic_clips.footage_themes(_hdys())
     assert themes == ["pillow close up", "blanket close up", "lamp close up", "rug close up"]
-    assert topic_clips.footage_themes({"type": "choose_level", "items": [{"english": "x"}]}) == []
+    # STEP 78 §0: a level type without a place in its theme gets the calm set, not nothing
+    assert topic_clips.footage_themes({"type": "choose_level", "items": [{"english": "x"}]})[0] in topic_clips.CALM_FOOTAGE
+    assert topic_clips.footage_themes({"type": "quiz"}) == []
     q = topic_clips.build_queries("Bedroom", "basic_vocab", count=6, themes=themes)
     assert q[:4] == themes and len(q) == len(set(q)) == 6                 # then two category subjects
     assert topic_clips.build_queries("Bedroom", "basic_vocab", count=2, themes=themes) == themes[:2]

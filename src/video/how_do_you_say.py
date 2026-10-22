@@ -412,6 +412,19 @@ def _page(rec: _PageRecorder, scale: float = 1.0) -> Image.Image:
     return page
 
 
+@lru_cache(maxsize=1)
+def _blank_layer() -> Image.Image:
+    return Image.new("RGBA", (LAYER_W, LAYER_H), (0, 0, 0, 0))
+
+
+def _flatten(rec: _PageRecorder) -> Image.Image:
+    """A recorder's composites, drawn (no tilt): the rows of a cascading page (STEP 78 §0)."""
+    out = rec.ops[0][0].copy()
+    for im, dest in rec.ops[1:]:
+        out.alpha_composite(im, dest)
+    return out
+
+
 def _rotate(layer: Image.Image, scale: float = 1.0) -> Image.Image:
     """The page tilted by TILT_DEG about its centre: cv2's bicubic warp, 10× PIL's rotate
     (16 ms against 160) and within a mean 0.27 of it (the largest differences sit in pixels at
@@ -939,8 +952,8 @@ LABEL_PULSE = 0.22
 #: Steeper than the writing angle, so it narrows as it turns (STEP 77 §4).
 PENCIL_WAIT_X = PAGE_W - 22
 PENCIL_PARK_ANGLE = 74
-#: Parked right of the theme line: a level title is wider than "How do you say?".
-LEVEL_PENCIL_PARK = (PAGE_W - 70, THEME_Y + 24)
+#: Before the first row: standing in the margin by the theme line (the title is wider).
+LEVEL_PENCIL_PARK = (PAGE_W - 22, THEME_Y + 24)
 
 
 #: true_false_level: every row shows the SAME grey placeholder, blurred, until its answer.
@@ -1211,19 +1224,23 @@ def _static_level_page(layout: LevelLayout, page: int, title: str, theme: str,
     return layer
 
 
-def _draw_sentence(draw: ImageDraw.ImageDraw, line: str, y_centre: float, f, blank: int, color) -> None:
-    """A line of text; a sentence line keeps a `blank`-wide gap where its blank is."""
+def _draw_sentence(draw: ImageDraw.ImageDraw, line: str, y_centre: float, f, blank: int, color,
+                   after_blank: bool = True) -> None:
+    """A line of text; a sentence line keeps a `blank`-wide gap where its blank is. Without
+    `after_blank` the words after the blank are left out (fill_level draws them per frame)."""
     y = _text_y(f, y_centre)
     if FILL_BLANK not in line:
         draw.text(_p(LINE_X, y), line, font=f, fill=color)
         return
     before, after = line.split(FILL_BLANK, 1)
     draw.text(_p(LINE_X, y), before, font=f, fill=color)
-    draw.text(_p(LINE_X + f.getlength(before) + blank, y), after, font=f, fill=color)
+    if after_blank:
+        draw.text(_p(LINE_X + f.getlength(before) + blank, y), after, font=f, fill=color)
 
 
 @lru_cache(maxsize=8)
-def _static_level_text(layout: LevelLayout, page: int, prompt_blue: bool) -> Image.Image:
+def _static_level_text(layout: LevelLayout, page: int, prompt_blue: bool,
+                       after_blank: bool = True) -> Image.Image:
     """The row numbers and every line 1 of the page: on it from the moment it shows."""
     layer = Image.new("RGBA", (LAYER_W, LAYER_H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer, "RGBA")
@@ -1235,7 +1252,7 @@ def _static_level_text(layout: LevelLayout, page: int, prompt_blue: bool) -> Ima
         draw.text(_p(NUM_CX - nf.getlength(num) / 2, _text_y(nf, row.l1[0][1])), num, font=nf,
                   fill=_color("secondary_text"))
         for line, y in row.l1:
-            _draw_sentence(draw, line, y, f, layout.blank, color)
+            _draw_sentence(draw, line, y, f, layout.blank, color, after_blank)
     return layer
 
 
@@ -1381,10 +1398,19 @@ def _draw_fill_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items:
     f = fredoka(layout.size)
     blue, grey = _color("english_blue"), _color("secondary_text")
     spans = fill_spans(items, layout)
+    ink = _color("ink")
     for i in layout.rows_on(page):
         it, row = items[i], layout.rows[i]
         bx, y1 = blank_at(layout, i)
         p = tl.reveal(i, t)
+        # the words after the blank: at its end, then closing up with the answer (§0)
+        line = next(text for text, y in row.l1 if FILL_BLANK in text)
+        after = line.split(FILL_BLANK, 1)[1]
+        if after.strip():
+            e = ease_out_cubic((t - tl.answer[i][1]) / REFLOW) if p >= 1.0 else 0.0
+            x_after = (bx + layout.blank) + (bx + f.getlength(it["answer"]) - (bx + layout.blank)) * e
+            layer.alpha_composite(_line_image(after, layout.size, ink),
+                                  tuple(int(round(v)) for v in _p(x_after - 2, _text_y(f, y1) - 2)))
         if p < 1.0:
             radius = int(round(BLUR_MAX * 0.5 * (1.0 - p) / BLUR_STEP)) * BLUR_STEP
             bar = _faded(_blank_bar(layout.blank, radius), 1.0 - p)
@@ -1395,9 +1421,18 @@ def _draw_fill_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items:
             _draw_countdown_at(layer, LINE_X + 110, row.l2[0][1], (t - th0) / max(1e-6, th1 - th0))
         if p <= 0:
             continue
+        # STEP 78 §0: written into the middle of the fixed blank; once written the line closes
+        # up to normal spacing (REFLOW) and a short hand-drawn underline marks the filled gap.
+        e = ease_out_cubic((t - tl.answer[i][1]) / REFLOW) if p >= 1.0 else 0.0
+        w = f.getlength(it["answer"])
+        ax = spans[i][0] + (bx - spans[i][0]) * e
         part = _written(_line_image(it["answer"], layout.size, blue), p)
         if part is not None:
-            layer.alpha_composite(part, tuple(int(v) for v in _p(spans[i][0] - 2, _text_y(f, y1) - 2)))
+            layer.alpha_composite(part, tuple(int(v) for v in _p(ax - 2, _text_y(f, y1) - 2)))
+        if e > 0:
+            uy = y1 + layout.size * 0.42
+            kit.marker_stroke(layer, [_p(ax - 3 + (w + 6) * u, uy + 1.5 * math.sin(u * math.pi * 2)) for u in
+                                      (k / 8 for k in range(9))], 4, _color("english_blue", int(round(200 * e / 25) * 25)))
         for text, y in row.l2:
             layer.alpha_composite(_faded(_line_image(text, layout.size, grey), p),
                                   tuple(int(v) for v in _p(LINE_X - 2, _text_y(f, y) - 2)))
@@ -1405,6 +1440,10 @@ def _draw_fill_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items:
             tick_t = tl.answer[i][1]
             x, y = _line_end(layout, i)
             _draw_tick(layer, x + TICK_GAP, y, ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
+
+
+#: fill_level: seconds the filled line takes to close up to normal word spacing (STEP 78 §0).
+REFLOW = 0.3
 
 
 #: choose_level: «make · do» under the sentence, muted, from frame 0.
@@ -1507,13 +1546,31 @@ def _draw_countdown_at(layer: Image.Image, x0: float, cy: float, p: float) -> No
     kit.dots(layer, *_p(x0, cy), p)
 
 
+LABEL_MIN = 22
+#: Under LABEL_MIN a tier's word is too long for its tab: the short label.
+SHORT_LABELS = {"BÁSICO": "BÁSICO", "INTERMEDIO": "MEDIO", "EXPERTO": "EXPERTO"}
+LABEL_PAD = 6                    # air at both ends of the word inside the tab
+
+
+def tier_label(word: str, height: int) -> Tuple[str, int]:
+    """(label, size) that fits a tab `height` tall, read bottom to top: LABEL_SIZE down to
+    LABEL_MIN, then the short label at the largest size it fits (STEP 78 §0)."""
+    room = height - 2 * LABEL_PAD
+    for label in (word, SHORT_LABELS.get(word, word)):
+        for size in range(LABEL_SIZE, LABEL_MIN - 1, -1):
+            if fredoka(size).getlength(label) <= room:
+                return label, size
+    return SHORT_LABELS.get(word, word), LABEL_MIN
+
+
 @lru_cache(maxsize=8)
 def _tier_pill(word: str, color_name: str, height: int) -> Image.Image:
     """A vertical pill in the tier's colour with its word read bottom to top."""
     w = LABEL_X1 - LABEL_X0
     pill = kit.pill(w, height, _color(color_name)).copy()
-    f = fredoka(LABEL_SIZE)
-    text = Image.new("RGBA", (int(f.getlength(word)) + 4, LABEL_SIZE + 12), (0, 0, 0, 0))
+    word, size = tier_label(word, height)
+    f = fredoka(size)
+    text = Image.new("RGBA", (int(f.getlength(word)) + 4, size + 12), (0, 0, 0, 0))
     ink_on = color_name == "brand_yellow"           # yellow is never under paper-coloured text
     ImageDraw.Draw(text).text((2, 2), word, font=f, fill=_color("ink") if ink_on else PAPER)
     text = text.rotate(90, expand=True, resample=Image.BICUBIC)
@@ -1638,67 +1695,62 @@ def _write_path(kind: str, items: List[Dict], layout: LevelLayout):
 
 def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], layout: LevelLayout,
                           kind: str = "write") -> Tuple[float, float]:
-    """Stands in the right margin by the active row while the viewer thinks, comes to the
-    answer as it begins and writes it; after the last answer it stands in the margin again,
-    so the last frames show every answer (STEP 63: it sat on «Depende de ti»)."""
+    """The pencil STANDS in the right margin, by the active row's answer line, except while it
+    writes: it comes in PENCIL_MOVE before the answer, writes it, and goes back to the margin
+    as soon as it is written (STEP 78 §0: it used to wait on the written answer, and rest by the
+    title over row 1). true_false_level never writes: it only moves down the margin."""
     writes = kind != "tf"
     paths = _write_path(kind, items, layout)
 
     def glide(a, b, t0):
         return _glide(a, b, t, t0)
 
-    if writes and t >= tl.answer[-1][1]:
-        end = paths[-1](1.0)
-        return glide(end, (PENCIL_WAIT_X, layout.rows[-1].l2[-1][1] - 6), tl.answer[-1][1])
-
     pos = LEVEL_PENCIL_PARK
     for i in range(tl.n):
         if t < tl.row[i]:
             return pos
         wait = (PENCIL_WAIT_X, layout.rows[i].l2[0][1] - 6)
-        if not writes:                                 # true_false_level: it points, it does not write
+        if not writes:
             if t < tl.row_end(i):
                 return glide(pos, wait, tl.row[i])
             pos = wait
             continue
         start, end = paths[i](0.0), paths[i](1.0)
-        if t < tl.answer[i][0] - PENCIL_MOVE:
+        a0, a1 = tl.answer[i]
+        if t < a0 - PENCIL_MOVE:
             return glide(pos, wait, tl.row[i])
-        if t < tl.answer[i][0]:
-            return glide(wait, start, tl.answer[i][0] - PENCIL_MOVE)
+        if t < a0:
+            return glide(wait, start, a0 - PENCIL_MOVE)
         p = tl.reveal(i, t)
         if p < 1.0:
             x, y = paths[i](p)
             wx, wy = wobble(t)
             return x + wx, y + wy
-        pos = end
+        if t < a1 + PENCIL_MOVE:
+            return glide(end, wait, a1)
+        pos = wait
     return pos
 
 
 def level_pencil_angle(t: float, tl: LevelTimeline, kind: str = "write") -> float:
-    """The pencil's angle: PENCIL_ANGLE to write, PENCIL_PARK_ANGLE (standing) while it waits
-    in the margin, turned over the same glide that moves it."""
+    """PENCIL_PARK_ANGLE (standing in the margin) except while it writes, PENCIL_ANGLE, turned
+    over the same glides that bring it to the answer and back."""
     def turn(a, b, t0):
-        e = ease_in_out((t - t0) / PENCIL_MOVE)
-        return a + (b - a) * e
+        return a + (b - a) * ease_in_out((t - t0) / PENCIL_MOVE)
 
-    angle = PENCIL_ANGLE
+    if kind == "tf":
+        return PENCIL_PARK_ANGLE
     for i in range(tl.n):
-        if t < tl.row[i]:
-            return angle
-        if kind == "tf":
-            if t < tl.row_end(i):
-                return turn(angle, PENCIL_PARK_ANGLE, tl.row[i])
-            angle = PENCIL_PARK_ANGLE
-            continue
-        if t < tl.answer[i][0] - PENCIL_MOVE:
-            return turn(angle, PENCIL_PARK_ANGLE, tl.row[i])
-        if t < tl.answer[i][0]:
-            return turn(PENCIL_PARK_ANGLE, PENCIL_ANGLE, tl.answer[i][0] - PENCIL_MOVE)
-        if t < tl.answer[i][1]:
+        a0, a1 = tl.answer[i]
+        if t < a0 - PENCIL_MOVE:
+            return PENCIL_PARK_ANGLE
+        if t < a0:
+            return turn(PENCIL_PARK_ANGLE, PENCIL_ANGLE, a0 - PENCIL_MOVE)
+        if t < a1:
             return PENCIL_ANGLE
-        angle = PENCIL_ANGLE
-    return turn(angle, PENCIL_PARK_ANGLE, tl.answer[-1][1])          # standing again, to the end
+        if t < a1 + PENCIL_MOVE:
+            return turn(PENCIL_ANGLE, PENCIL_PARK_ANGLE, a1)
+    return PENCIL_PARK_ANGLE
 
 
 def create_frame_level(t: float, data: Dict, duration: float, presentation=None) -> np.ndarray:
@@ -1725,18 +1777,24 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
     layer = _PageRecorder(_static_level_page(layout, page, data["title"], data["theme"], tiers))
     t_page = t - enters[page]                          # the page's own clock: its rows cascade in
 
+    # While the page's rows cascade in, a row enters as ONE unit (STEP 78 §0): everything a row
+    # draws goes to `target`, and the rows are faded and offset together at the end.
+    page_rows = [rows[i] for i in range(first, end)]
+    cascading = cascade(len(page_rows) - 1, t_page) < 1.0
+    target = _PageRecorder(_blank_layer()) if cascading else layer
+
     # 1. the marker swipes in behind the active row, then the printed numbers and prompts over it
     for i in range(first, end):
-        _highlight_band(layer, LABEL_X1 + 6, rows[i].top + 4, rows[i].bottom - 6, t, tl.row[i], tl.row_end(i))
-    _rows_in(layer, _static_level_text(layout, page, prompt == "english" and kind == "write"),
-             [rows[i] for i in range(first, end)], t_page)
+        _highlight_band(target, LABEL_X1 + 6, rows[i].top + 4, rows[i].bottom - 6, t, tl.row[i], tl.row_end(i))
+    target.alpha_composite(_static_level_text(layout, page, prompt == "english" and kind == "write",
+                                              after_blank=kind != "fill"))
 
     # 2. tier pills in the margin, for the tiers on this page; the one a tier line announces pulses
     for word, color, a, b in TIERS if tiers else ():
         a, b = max(a, first), min(b, end)
         if a >= b:
             continue
-        top, bottom = rows[a].top + 8, rows[b - 1].bottom - 12
+        top, bottom = rows[a].top + 4, rows[b - 1].bottom - 4      # the rows' whole height (§0)
         pill = _tier_pill(word, color, int(bottom - top))
         s = 1.0
         span = tl.tier.get(a)
@@ -1753,11 +1811,11 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
 
     # 3. countdown dots, the answers written in, ticks (true_false_level: brought into focus)
     if kind == "tf":
-        _draw_tf_answers(layer, t, tl, items, layout, page)
+        _draw_tf_answers(target, t, tl, items, layout, page)
     elif kind == "fill":
-        _draw_fill_answers(layer, t, tl, items, layout, page)
+        _draw_fill_answers(target, t, tl, items, layout, page)
     elif kind == "choose":
-        _draw_choose_answers(layer, t, tl, items, layout, page)
+        _draw_choose_answers(target, t, tl, items, layout, page)
     answer_color = blue if answer == "english" else ink
     placeholder = mode.get("placeholder", False)
     f = fredoka(layout.size)
@@ -1767,19 +1825,22 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
         p = tl.reveal(i, t)
         if placeholder and p < 1.0:
             radius = int(round(BLUR_MAX * 0.5 * (1.0 - p) / BLUR_STEP)) * BLUR_STEP
-            layer.alpha_composite(_faded(_blank_bar(PHRASE_BAR_W, radius), 1.0 - p), tuple(
+            target.alpha_composite(_faded(_blank_bar(PHRASE_BAR_W, radius), 1.0 - p), tuple(
                 int(v) for v in _p(LINE_X - BLUR_PAD, y0 - BLANK_BAR_H / 2 - BLUR_PAD)))
         th0, th1 = tl.think[i]
         if th0 <= t < th1:
-            _draw_countdown_at(layer, LINE_X + (PHRASE_BAR_W + DOTS_GAP if placeholder else 110), y0,
+            _draw_countdown_at(target, LINE_X + (PHRASE_BAR_W + DOTS_GAP if placeholder else 110), y0,
                                (t - th0) / max(1e-6, th1 - th0))
         if p <= 0:
             continue
-        _draw_written(layer, layout, i, p, answer_color)
+        _draw_written(target, layout, i, p, answer_color)
         if p >= 1.0:
             tick_t = tl.answer[i][1]
             x, y = _line_end(layout, i)
-            _draw_tick(layer, x + TICK_GAP, y, ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
+            _draw_tick(target, x + TICK_GAP, y, ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
+
+    if cascading:                                      # the rows, each as one unit
+        _rows_in(layer, _flatten(target), page_rows, t_page)
 
     # 4. say_it_level: the tip and the other right answer, from the reveal to the next row
     for i in range(first, end):
