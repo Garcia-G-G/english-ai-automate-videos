@@ -1,0 +1,23 @@
+{
+ "id": "hc_c001",
+ "style": "comic",
+ "level": "principiante",
+ "duration": 35.45,
+ "voice_seconds": 31.45,
+ "tts_usd": 0,
+ "outro_variant": "aprende-ingles",
+ "silent": false,
+ "cpu_s": 137.9,
+ "wall_s": 47.1,
+ "load": [
+  4.0,
+  15.8
+ ],
+ "measure": {
+  "LUFS I": -14.1,
+  "true peak dBTP": -2.4,
+  "duration s": 35.43,
+  "colour": "bt709/bt709/bt709/tv",
+  "median kf gap s": 2.0
+ }
+}
