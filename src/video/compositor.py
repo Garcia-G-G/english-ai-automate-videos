@@ -38,7 +38,7 @@ def render_video_ffmpeg(
     width: int = 1080,
     height: int = 1920,
     crf: int = 17,
-    preset: str = "slow",
+    preset: str = "medium",
     progress_callback: Optional[Callable[[float], None]] = None,
     workers: int = 1,
 ) -> str:
@@ -53,7 +53,9 @@ def render_video_ffmpeg(
         fps: Frames per second.
         width, height: Expected frame dimensions.
         crf: libx264 CRF (17: transparent for flat cards and text).
-        preset: libx264 preset; ``ultrafast`` only for --fast drafts.
+        preset: libx264 preset. medium (STEP 77 §2b): at a fixed CRF the preset trades file
+            size for encoder CPU, not colour; −20 % CPU for +3 % size against slow.
+            ``ultrafast`` only for --fast drafts.
         progress_callback: Called with a float in ``[0, 1]`` once per
             second of rendered video.
         workers: Processes that render frames (STEP 77 §2). Above 1 the

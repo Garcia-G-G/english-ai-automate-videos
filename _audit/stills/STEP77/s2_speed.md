@@ -32,3 +32,25 @@ The ≤ 60 s target for an 80 s Short is not met (estimate ~80 s idle). What wou
 a decision, not a fix: x264 `medium` instead of `slow` (−20 % encoder CPU, files 3 % larger),
 and/or cutting frame work further (pickling 6 MB frames between processes, memo misses at chunk
 edges). Not changed here, because `slow` was chosen in STEP 75.
+
+## §2b — x264 `medium` (addendum A, 22 Oct)
+
+Full suite before the change: 2369 passed, 9 skipped, 1 xfailed, 0 failed.
+
+`render_video_ffmpeg`'s default preset is now `medium`; CRF 17, `X264_PARAMS` and the BT.709
+tags are unchanged; `--fast` still asks `ultrafast`.
+
+Encode-only A/B, the same 900 frames (load 10–12):
+
+| preset | CPU s (user+sys) | wall s | bytes |
+|---|---|---|---|
+| slow | 69.7 | 12.8 | 10,332,420 |
+| medium | 61.0 | 10.8 | 10,611,120 (+2.7 %) |
+
+Whole render, `cómo_se_dice_20261021_172946` (69.1 s of video, 6 workers, load 16 → 28):
+422 CPU s (was 505 with slow) → **≈ 70 s idle wall estimate, ≈ 81.5 s for an 80 s Short**.
+That is between 75 and 90 s: noted, and the STEP continues (the addendum's rule). The measured
+wall time under load was 113.7 s.
+
+Colour on that render at t = 20 s (`_audit/stills/STEP75/colour_check.py`, BT.709):
+title blue median ΔE **0.85** (≤ 1.0 ✓), sticky yellow 1.52, the same as STEP 75's slow encode.

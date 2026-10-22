@@ -134,3 +134,12 @@ def test_a_type_without_its_own_window_is_warned_not_rejected(monkeypatch, tmp_p
     res = _finalize_how_do_you_say(monkeypatch, tmp_path, 92.0)
     assert res["gate"] == "PASS" and res["outro_appended"] is True
     assert res["final_duration"]["status"] == "OUT_OF_BAND" and res["final_duration"]["blocks"] is False
+
+
+def test_the_default_preset_is_medium_and_drafts_stay_ultrafast():
+    """STEP 77 §2b: medium is the default (CPU, not colour); --fast still asks ultrafast."""
+    import inspect
+    from video import compositor
+    assert inspect.signature(compositor.render_video_ffmpeg).parameters["preset"].default == "medium"
+    src = (Path(__file__).resolve().parent.parent / "src" / "video" / "__init__.py").read_text()
+    assert '{"preset": "ultrafast"} if fast_mode' in src
