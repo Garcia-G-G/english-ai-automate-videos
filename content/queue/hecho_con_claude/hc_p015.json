@@ -4,7 +4,7 @@
   "level": "medio",
   "angle": "errores",
   "title": "«Can you suggest me…?»: suena raro",
-  "hook_text": "SUGGEST ME → RECOMMEND / SUGGEST TO ME",
+  "hook_text": "¿Está bien decir «SUGGEST ME»?",
   "poster": {
     "error_no": "030",
     "big_wrong": "SUGGEST ME",

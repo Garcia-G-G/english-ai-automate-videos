@@ -4,7 +4,7 @@
   "level": "medio",
   "angle": "errores",
   "title": "«Career» no es carrera universitaria",
-  "hook_text": "CAREER = CARRERA → DEGREE = CARRERA",
+  "hook_text": "¿Está bien decir «CAREER = CARRERA»?",
   "poster": {
     "error_no": "026",
     "big_wrong": "CAREER = CARRERA",

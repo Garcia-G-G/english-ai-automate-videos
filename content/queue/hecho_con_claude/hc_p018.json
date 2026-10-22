@@ -4,7 +4,7 @@
   "level": "medio",
   "angle": "errores",
   "title": "«Parents» no es parientes",
-  "hook_text": "PARENTS = PARIENTES → RELATIVES = PARIENTES",
+  "hook_text": "«PARENTS = PARIENTES»: ¿bien o mal?",
   "poster": {
     "error_no": "033",
     "big_wrong": "PARENTS = PARIENTES",

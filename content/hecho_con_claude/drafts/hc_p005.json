@@ -4,7 +4,7 @@
   "level": "principiante",
   "angle": "errores",
   "title": "«I'm student»: falta una palabra",
-  "hook_text": "I'M STUDENT → I'M A STUDENT",
+  "hook_text": "¿Tú también dices «I'M STUDENT»?",
   "poster": {
     "error_no": "020",
     "big_wrong": "I'M STUDENT",

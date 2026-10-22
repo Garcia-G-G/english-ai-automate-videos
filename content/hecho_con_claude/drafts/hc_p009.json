@@ -4,7 +4,7 @@
   "level": "principiante",
   "angle": "errores",
   "title": "«Library» no es librería",
-  "hook_text": "LIBRARY = LIBRERÍA → LIBRARY = BIBLIOTECA",
+  "hook_text": "¿Tú también dices «LIBRARY = LIBRERÍA»?",
   "poster": {
     "error_no": "024",
     "big_wrong": "LIBRARY = LIBRERÍA",

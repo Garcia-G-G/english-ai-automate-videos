@@ -4,7 +4,7 @@
   "level": "dificil",
   "angle": "calle",
   "title": "«Make up for»: compensar",
-  "hook_text": "COMPENSATE (siempre) → MAKE UP FOR",
+  "hook_text": "¿Está bien decir «COMPENSATE»?",
   "poster": {
     "error_no": "042",
     "big_wrong": "COMPENSATE (siempre)",

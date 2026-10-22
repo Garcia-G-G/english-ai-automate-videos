@@ -4,7 +4,7 @@
   "level": "medio",
   "angle": "errores",
   "title": "«Fabric» no es fábrica",
-  "hook_text": "FABRIC = FÁBRICA → FACTORY = FÁBRICA",
+  "hook_text": "¿Tú también dices «FABRIC = FÁBRICA»?",
   "poster": {
     "error_no": "028",
     "big_wrong": "FABRIC = FÁBRICA",

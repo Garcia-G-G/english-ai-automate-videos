@@ -4,7 +4,7 @@
   "level": "principiante",
   "angle": "errores",
   "title": "«Informations»: la palabra que no tiene plural",
-  "hook_text": "INFORMATIONS → INFORMATION",
+  "hook_text": "¿Está bien decir «INFORMATIONS»?",
   "poster": {
     "error_no": "018",
     "big_wrong": "INFORMATIONS",

@@ -4,7 +4,7 @@
   "level": "principiante",
   "angle": "errores",
   "title": "«Is raining»: el sujeto invisible",
-  "hook_text": "IS RAINING → IT'S RAINING",
+  "hook_text": "¿Está bien decir «IS RAINING»?",
   "poster": {
     "error_no": "022",
     "big_wrong": "IS RAINING",

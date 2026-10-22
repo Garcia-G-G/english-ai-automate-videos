@@ -4,7 +4,7 @@
   "level": "medio",
   "angle": "errores",
   "title": "«Lecture» no es lectura",
-  "hook_text": "LECTURE = LECTURA → LECTURE = CLASE MAGISTRAL",
+  "hook_text": "¿Tú también dices «LECTURE = LECTURA»?",
   "poster": {
     "error_no": "032",
     "big_wrong": "LECTURE = LECTURA",

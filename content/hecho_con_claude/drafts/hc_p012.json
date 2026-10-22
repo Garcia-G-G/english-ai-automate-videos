@@ -4,7 +4,7 @@
   "level": "medio",
   "angle": "errores",
   "title": "«Exit» no es éxito",
-  "hook_text": "EXIT = ÉXITO → SUCCESS = ÉXITO",
+  "hook_text": "Casi todos lo dicen mal: «EXIT = ÉXITO»",
   "poster": {
     "error_no": "027",
     "big_wrong": "EXIT = ÉXITO",
