@@ -93,8 +93,16 @@ def build_beats(script: Dict, words: List[Dict], duration: float) -> Dict:
                 english.append({"text": phrase, "start": hit[0], "end": hit[1]})
             else:                                    # not heard where expected: the line's own span
                 english.append({"text": phrase, "start": start, "end": end, "unheard": True})
-        beats.append({"i": k, "text": line, "start": round(start, 3), "end": round(end, 3), "english": english})
+        beats.append({"i": k, "text": line, "start": round(start, 3), "end": round(end, 3), "english": english,
+                      "words": [{"word": w["word"], "start": w["start"], "end": w["end"]} for w in mine]})
     return {"beats": beats, "duration": round(duration, 3), "countdown": None}
+
+
+def word_time(beat: Dict, phrase: str) -> Optional[float]:
+    """When the voice starts saying `phrase` (Spanish or English) inside a beat, from its words."""
+    want = _tokens(phrase)
+    hit = _find_phrase(beat.get("words") or [], want) if want else None
+    return hit[0] if hit else None
 
 
 def _find_phrase(words: List[Dict], want: List[str]) -> Optional[Tuple[float, float]]:
@@ -128,7 +136,9 @@ def insert_countdown(timeline: Dict, samples: np.ndarray, rate: int, after: int)
         if beat["start"] >= at:
             beat = dict(beat, start=round(beat["start"] + COUNTDOWN, 3), end=round(beat["end"] + COUNTDOWN, 3),
                         english=[dict(e, start=round(e["start"] + COUNTDOWN, 3), end=round(e["end"] + COUNTDOWN, 3))
-                                 for e in beat["english"]])
+                                 for e in beat["english"]],
+                        words=[dict(w, start=round(w["start"] + COUNTDOWN, 3), end=round(w["end"] + COUNTDOWN, 3))
+                               for w in beat.get("words") or []])
         shifted.append(beat)
     return ({**timeline, "beats": shifted, "duration": round(timeline["duration"] + COUNTDOWN, 3),
              "countdown": (round(at, 3), round(at + COUNTDOWN, 3))}, out)

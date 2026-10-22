@@ -46,7 +46,11 @@ def estimated_timeline(script: Dict) -> Dict:
             a = t + dur * pos / max(1, len(plain))
             english.append({"text": m.group(1), "start": round(a, 3),
                             "end": round(a + dur * len(m.group(1)) / max(1, len(plain)), 3)})
-        beats.append({"i": k, "text": line, "start": round(t, 3), "end": round(t + dur, 3), "english": english})
+        toks = plain.split()
+        words = [{"word": w, "start": round(t + dur * j / len(toks), 3), "end": round(t + dur * (j + 0.9) / len(toks), 3)}
+                 for j, w in enumerate(toks)]
+        beats.append({"i": k, "text": line, "start": round(t, 3), "end": round(t + dur, 3), "english": english,
+                      "words": words})
         t += dur + EST_GAP
     tl = {"beats": beats, "duration": round(t, 3), "countdown": None, "estimated": True}
     after = B.countdown_line(script)
