@@ -172,6 +172,10 @@ def plan_calls(script_data: Dict, settings: Dict = None,
 
 # ── Real synthesis ────────────────────────────────────────────────────
 
+#: Models the API refuses context for (STEP 78 §2: the series voices with eleven_v3).
+NO_CONTEXT_MODELS = frozenset({"eleven_v3"})
+
+
 def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0) -> Dict:
     """One ElevenLabs request. Returns {'duration', 'words': [...] or None}.
 
@@ -200,10 +204,12 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0
         voice_settings=vs,
         output_format="mp3_44100_128",
     )
-    if call.get("previous_text"):
-        kwargs["previous_text"] = call["previous_text"]
-    if call.get("next_text"):
-        kwargs["next_text"] = call["next_text"]
+    # eleven_v3 refuses previous_text / next_text (HTTP 400, «not yet supported»): no context for it.
+    if call["model_id"] not in NO_CONTEXT_MODELS:
+        if call.get("previous_text"):
+            kwargs["previous_text"] = call["previous_text"]
+        if call.get("next_text"):
+            kwargs["next_text"] = call["next_text"]
 
     import tts_cache
     from tts_common import get_audio_duration as _duration
