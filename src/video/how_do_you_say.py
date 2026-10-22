@@ -1815,3 +1815,35 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
     _composite_page(frame, layer, motion)
     _place_pencil(frame, *pencil_at, motion, angle)
     return finalize_frame(frame, ImageDraw.Draw(frame, "RGBA"), t, duration, scene_cuts=[v0], chrome=False)
+
+
+# ── Sound design (STEP 77 §7) ────────────────────────────────────────
+
+def sfx_events(data: Dict, duration: float) -> Tuple[List[Tuple[str, float, float]], List[Tuple[float, float]]]:
+    """(events, spoken spans) for a notebook Short, read off the same timeline the frames are:
+    a swish as the page comes in, turns and leaves, a pop on every emoji, tick and note, and
+    the pencil's scratch while it writes. Spoken spans: every segment but the think pauses."""
+    st = data["segment_times"]
+    spoken = sorted((float(v["start"]), float(v["end"])) for k, v in st.items() if not k.startswith("think"))
+    events = [("swish", 0.0, 0.0), ("pop", HOOK_IN, 0.0)]
+    if data["type"] == "how_do_you_say":
+        tl = Timeline(data, duration)
+        for i in range(tl.n):
+            events.append(("pop", tl.es[i][0], 0.0))
+            if tl.reveal_end[i] > tl.en[i][0]:
+                events.append(("scratch", tl.en[i][0], tl.reveal_end[i] - tl.en[i][0]))
+            events.append(("pop", tl.reveal_end[i], 0.0))
+        cta = tl.outro[0]
+    else:
+        tl = LevelTimeline(data, duration)
+        writes = LEVEL_MODES[data["type"]].get("kind", "write") != "tf"
+        for i in range(tl.n):
+            a, b = tl.answer[i]
+            if writes and b > a:
+                events.append(("scratch", a, b - a))
+            events.append(("pop", b, 0.0))
+        for enter in page_enters(tl, level_layout(data["type"], data["items"]))[1:]:
+            events.append(("swish", enter - HANDOFF, 0.0))
+        cta = tl.outro[0]
+    events += [("pop", cta, 0.0), ("swish", max(0.0, duration - HANDOFF), 0.0)]
+    return sorted(events, key=lambda e: e[1]), spoken

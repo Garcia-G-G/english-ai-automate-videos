@@ -691,6 +691,27 @@ def merge_script_into_tts(script_data: Dict, json_path) -> None:
 
 # ── Video ─────────────────────────────────────────────────────────────
 
+def add_notebook_sfx(narration: Path, data_path: Path) -> Dict:
+    """STEP 77 §7: the notebook Short's sound effects, mixed into the levelled narration in
+    place, 22 dB under its voice (6 dB more on a spoken word). Same length: no timestamp moves."""
+    import numpy as np
+    import loudness
+    from video.how_do_you_say import sfx_events
+    from video.notebook import sfx
+    data = json.loads(Path(data_path).read_text(encoding="utf-8"))
+    samples = loudness.decode(narration)
+    duration = float(data.get("duration") or samples.size / loudness.RATE)
+    events, spoken = sfx_events(data, duration)
+    mixed, placed = sfx.mix(samples, loudness.RATE, events, spoken)
+    peak = float(np.max(np.abs(mixed))) if mixed.size else 0.0
+    if peak > 0.999:
+        mixed *= 0.999 / peak
+    loudness._write_wav(mixed, narration)
+    logger.info("sfx: %d effects mixed under the voice (%d ducked)", len(placed),
+                sum(p["ducked"] for p in placed))
+    return {"effects": len(placed), "ducked": sum(p["ducked"] for p in placed)}
+
+
 def render_video(audio_path,
                  data_path,
                  video_path,
@@ -715,6 +736,9 @@ def render_video(audio_path,
     narration = video_path.with_name(f".{video_path.stem}.narration.wav")
     loud = loudness.prepare_narration(audio_path, data_path, narration)
     logger.info("Narration loudness: %s", loud)
+    from video_types import PANEL_TYPES
+    if video_type in PANEL_TYPES:
+        add_notebook_sfx(narration, data_path)
 
     cmd = [
         sys.executable, "-u", "-m", "video",
