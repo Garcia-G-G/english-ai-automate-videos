@@ -7,6 +7,9 @@
                  HEARD_WINDOW of the beat; one miss allowed per four words
     hook         frame 0 shows `hook_text`: its box differs from the same frame drawn without it
     safe areas   every readable box of the style inside them (series_kit.in_safe_area)
+    stillness    no stretch longer than STILL_MAX_S of consecutive frames whose mean absolute
+                 difference stays under STILL_DIFF (STEP 78b §1: a cursor, grain, a breath or a
+                 slow push all count as motion; a static x264 frame repeats at exactly 0)
 
 check() returns {"gate": "PASS" | "REJECT", "flags": [...], "checks": {...}}.
 """
@@ -22,6 +25,43 @@ from . import beats as B
 from . import series_kit as K
 
 HEARD_WINDOW = 1.5
+STILL_DIFF = 0.003          # grey levels, mean over the frame: above x264's static repeat (0.000)
+STILL_MAX_S = 4.0
+
+
+def longest_still(mp4: Path, fps: float = 30.0) -> Dict:
+    """The longest run of consecutive frames that do not move, in seconds, and where it starts."""
+    proc = subprocess.Popen(["ffmpeg", "-v", "error", "-i", str(mp4), "-f", "rawvideo", "-pix_fmt", "gray", "-"],
+                            stdout=subprocess.PIPE)
+    n = K.W * K.H
+    prev, run, best, best_end, k = None, 0, 0, 0, 0
+    try:
+        while True:
+            buf = proc.stdout.read(n)
+            if len(buf) < n:
+                break
+            frame = np.frombuffer(buf, np.uint8).astype(np.int16)
+            if prev is not None:
+                run = run + 1 if float(np.abs(frame - prev).mean()) < STILL_DIFF else 0
+                if run > best:
+                    best, best_end = run, k
+            prev, k = frame, k + 1
+    finally:
+        proc.stdout.close()
+        proc.wait()
+    seconds = (best + 1) / fps if best else 0.0
+    return {"seconds": round(seconds, 2), "from": round((best_end - best) / fps, 2) if best else None}
+
+
+def _same_word(a: str, b: str) -> bool:
+    """Equal, or one letter apart in a word of three or more (Ana / Anna, your / youre); never
+    two short words («am» / «an»)."""
+    if a == b:
+        return True
+    if min(len(a), len(b)) < 3 or abs(len(a) - len(b)) > 1:
+        return False
+    from difflib import SequenceMatcher
+    return SequenceMatcher(None, a, b).ratio() >= 0.85
 
 
 def _in_order(want: List[str], stream: List[str]) -> int:
@@ -30,7 +70,7 @@ def _in_order(want: List[str], stream: List[str]) -> int:
     for i in range(len(stream)):
         window, k = stream[i:i + n + 1], 0
         for tok in window:
-            if k < n and tok == want[k]:
+            if k < n and _same_word(tok, want[k]):
                 k += 1
         best = max(best, k)
     return best
@@ -90,11 +130,30 @@ def check(script: Dict, mp4, info: Dict, narration_wav: Optional[Path] = None, s
     checks["loudness"] = {k: loud.get(k) for k in ("I", "TP", "LRA")}
     flags += [f for f in loud.get("flags", []) if not f.startswith("spread")]
 
+    source = narration_wav or timeline.get("audio") or mp4
     if transcribe is None:
+        # Local only ($0). The base model's temperature fallback makes runs differ on a mixed
+        # Spanish/English voice, so a phrase counts as heard in the auto-language transcript or
+        # in one forced to English.
         import asr_timings as A
-        transcribe = lambda path: A._words_from_local(Path(path), None) or []     # local only: $0
-    words = transcribe(narration_wav or timeline.get("audio") or mp4)
-    heard = english_heard(timeline, words)
+        passes = [lambda path: A._words_from_local(Path(path), None) or [],
+                  lambda path: A._words_from_local(Path(path), "en") or []]
+    else:
+        passes = [transcribe]
+    words, heard = [], None
+    for run in passes:
+        got = run(source)
+        words = words or got
+        this = english_heard(timeline, got)
+        if heard is None:
+            heard = this
+        else:
+            for row, other in zip(heard["phrases"], this["phrases"]):
+                row["heard"] = row["heard"] or other["heard"]
+                row["share"] = max(row["share"], other["share"])
+            heard["missing"] = [r["text"] for r in heard["phrases"] if not r["heard"]]
+        if not heard["missing"]:
+            break
     checks["english"] = heard
     flags += [f"english_unheard:{t}" for t in heard["missing"]]
     if not words:
@@ -110,5 +169,10 @@ def check(script: Dict, mp4, info: Dict, narration_wav: Optional[Path] = None, s
         outside.append("outro answer")
     checks["safe_areas"] = {"outside": outside}
     flags += [f"unsafe:{label}" for label in outside]
+
+    still = longest_still(mp4)
+    checks["still"] = still
+    if still["seconds"] > STILL_MAX_S:
+        flags.append(f"still:{still['seconds']}s_from_{still['from']}s")
 
     return {"gate": "REJECT" if flags else "PASS", "flags": flags, "checks": checks}

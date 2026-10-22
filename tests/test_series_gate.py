@@ -60,13 +60,16 @@ def test_frame_zero_without_its_hook_is_caught(tmp_path):
     assert G.hook_shown(s, poster, tl, full)["shown"]
 
 
-@pytest.mark.parametrize("sid, sec", [("hc_m001", "s3"), ("hc_e011", "s4"), ("hc_p019", "s5"), ("hc_c001", "s6")])
-def test_the_four_proofs_pass_the_gate(sid, sec):
-    folder = ROOT / "_audit" / "stills" / "STEP78" / sec
-    if not (folder / f"{sid}.mp4").exists():
+PROOFS = ROOT / "_audit" / "stills" / "STEP78b"
+
+
+@pytest.mark.parametrize("sid", ["hc_m001", "hc_p019", "hc_m010", "hc_e001", "hc_p011", "hc_c019"])
+def test_the_proofs_pass_the_gate(sid):
+    """The STEP 78b renders (the STEP 78 ones predate the stillness rule)."""
+    if not (PROOFS / f"{sid}.mp4").exists():
         pytest.skip("the proof is not rendered on this machine")
-    info = json.loads((folder / f"{sid}.json").read_text(encoding="utf-8"))
-    report = G.check(_draft(sid), folder / f"{sid}.mp4", info, transcribe=lambda p: _heard_words(info["timeline"]))
+    info = json.loads((PROOFS / f"{sid}.json").read_text(encoding="utf-8"))
+    report = G.check(_draft(sid), PROOFS / f"{sid}.mp4", info, transcribe=lambda p: _heard_words(info["timeline"]))
     assert report["gate"] == "PASS", report["flags"]
 
 

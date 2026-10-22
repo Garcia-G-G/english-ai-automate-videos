@@ -1,0 +1,405 @@
+{
+ "id": "hc_c019",
+ "style": "comic",
+ "level": "dificil",
+ "duration": 32.877,
+ "voice_seconds": 28.877,
+ "tts_usd": 0,
+ "outro_variant": "sigue-aprendiendo",
+ "timeline": {
+  "beats": [
+   {
+    "i": 0,
+    "text": "Nivel avanzado. ¿Cómo dirías «estás en las nubes»?",
+    "start": 0.0,
+    "end": 5.072,
+    "english": [],
+    "words": [
+     {
+      "word": "Nivel",
+      "start": 0.0,
+      "end": 0.48
+     },
+     {
+      "word": "avanzado.",
+      "start": 0.547,
+      "end": 1.44
+     },
+     {
+      "word": "¿Cómo",
+      "start": 1.56,
+      "end": 1.84
+     },
+     {
+      "word": "dirías",
+      "start": 1.9,
+      "end": 2.48
+     },
+     {
+      "word": "«estás",
+      "start": 2.56,
+      "end": 3.2
+     },
+     {
+      "word": "en",
+      "start": 3.227,
+      "end": 3.28
+     },
+     {
+      "word": "las",
+      "start": 3.32,
+      "end": 3.44
+     },
+     {
+      "word": "nubes»?¿",
+      "start": 3.52,
+      "end": 5.072
+     }
+    ]
+   },
+   {
+    "i": 1,
+    "text": "¿[[You're in the clouds]], [[You have your head in the clouds]] o [[You're on the sky]]?",
+    "start": 5.122,
+    "end": 10.154,
+    "english": [
+     {
+      "text": "You're in the clouds",
+      "start": 5.122,
+      "end": 6.437
+     },
+     {
+      "text": "You have your head in the clouds",
+      "start": 6.577,
+      "end": 8.497
+     },
+     {
+      "text": "You're on the sky",
+      "start": 9.079,
+      "end": 10.154
+     }
+    ],
+    "words": [
+     {
+      "word": "You're",
+      "start": 5.122,
+      "end": 5.362
+     },
+     {
+      "word": "in",
+      "start": 5.415,
+      "end": 5.522
+     },
+     {
+      "word": "the",
+      "start": 5.542,
+      "end": 5.602
+     },
+     {
+      "word": "clouds,",
+      "start": 5.693,
+      "end": 6.437
+     },
+     {
+      "word": "You",
+      "start": 6.577,
+      "end": 6.737
+     },
+     {
+      "word": "have",
+      "start": 6.785,
+      "end": 6.977
+     },
+     {
+      "word": "your",
+      "start": 6.993,
+      "end": 7.057
+     },
+     {
+      "word": "head",
+      "start": 7.121,
+      "end": 7.377
+     },
+     {
+      "word": "in",
+      "start": 7.457,
+      "end": 7.617
+     },
+     {
+      "word": "the",
+      "start": 7.637,
+      "end": 7.697
+     },
+     {
+      "word": "clouds",
+      "start": 7.788,
+      "end": 8.497
+     },
+     {
+      "word": "o",
+      "start": 8.547,
+      "end": 9.029
+     },
+     {
+      "word": "You're",
+      "start": 9.079,
+      "end": 9.319
+     },
+     {
+      "word": "on",
+      "start": 9.372,
+      "end": 9.479
+     },
+     {
+      "word": "the",
+      "start": 9.499,
+      "end": 9.559
+     },
+     {
+      "word": "sky?",
+      "start": 9.659,
+      "end": 10.154
+     }
+    ]
+   },
+   {
+    "i": 2,
+    "text": "¡La B! [[You have your head in the clouds]].",
+    "start": 13.454,
+    "end": 16.39,
+    "english": [
+     {
+      "text": "You have your head in the clouds",
+      "start": 14.63,
+      "end": 16.39
+     }
+    ],
+    "words": [
+     {
+      "word": "¡La",
+      "start": 13.454,
+      "end": 13.684
+     },
+     {
+      "word": "B!",
+      "start": 13.884,
+      "end": 14.164
+     },
+     {
+      "word": "You",
+      "start": 14.63,
+      "end": 14.71
+     },
+     {
+      "word": "have",
+      "start": 14.758,
+      "end": 14.95
+     },
+     {
+      "word": "your",
+      "start": 14.982,
+      "end": 15.11
+     },
+     {
+      "word": "head",
+      "start": 15.158,
+      "end": 15.35
+     },
+     {
+      "word": "in",
+      "start": 15.377,
+      "end": 15.43
+     },
+     {
+      "word": "the",
+      "start": 15.45,
+      "end": 15.51
+     },
+     {
+      "word": "clouds.",
+      "start": 15.624,
+      "end": 16.39
+     }
+    ]
+   },
+   {
+    "i": 3,
+    "text": "Más coloquial: [[You're miles away]] o [[You're spacing out]].",
+    "start": 16.69,
+    "end": 21.153,
+    "english": [
+     {
+      "text": "You're miles away",
+      "start": 17.851,
+      "end": 19.291
+     },
+     {
+      "text": "You're spacing out",
+      "start": 19.873,
+      "end": 21.153
+     }
+    ],
+    "words": [
+     {
+      "word": "Más",
+      "start": 16.69,
+      "end": 16.93
+     },
+     {
+      "word": "coloquial:",
+      "start": 16.97,
+      "end": 17.651
+     },
+     {
+      "word": "You're",
+      "start": 17.851,
+      "end": 18.091
+     },
+     {
+      "word": "miles",
+      "start": 18.171,
+      "end": 18.571
+     },
+     {
+      "word": "away",
+      "start": 18.683,
+      "end": 19.291
+     },
+     {
+      "word": "o",
+      "start": 19.341,
+      "end": 19.823
+     },
+     {
+      "word": "You're",
+      "start": 19.873,
+      "end": 20.113
+     },
+     {
+      "word": "spacing",
+      "start": 20.173,
+      "end": 20.593
+     },
+     {
+      "word": "out.",
+      "start": 20.713,
+      "end": 21.153
+     }
+    ]
+   },
+   {
+    "i": 4,
+    "text": "Y para volver a la tierra: [[Earth to Ana!]]",
+    "start": 21.917,
+    "end": 25.077,
+    "english": [
+     {
+      "text": "Earth to Ana!",
+      "start": 23.717,
+      "end": 25.077
+     }
+    ],
+    "words": [
+     {
+      "word": "Y",
+      "start": 21.917,
+      "end": 21.997
+     },
+     {
+      "word": "para",
+      "start": 22.045,
+      "end": 22.237
+     },
+     {
+      "word": "volver",
+      "start": 22.294,
+      "end": 22.637
+     },
+     {
+      "word": "a",
+      "start": 22.677,
+      "end": 22.717
+     },
+     {
+      "word": "la",
+      "start": 22.77,
+      "end": 22.877
+     },
+     {
+      "word": "tierra:",
+      "start": 22.93,
+      "end": 23.517
+     },
+     {
+      "word": "Earth",
+      "start": 23.717,
+      "end": 24.117
+     },
+     {
+      "word": "to",
+      "start": 24.17,
+      "end": 24.277
+     },
+     {
+      "word": "Ana!",
+      "start": 24.437,
+      "end": 25.077
+     }
+    ]
+   },
+   {
+    "i": 5,
+    "text": "¿Cuál usarías con un amigo? Escríbelo abajo.",
+    "start": 25.517,
+    "end": 28.877,
+    "english": [],
+    "words": [
+     {
+      "word": "¿Cuál",
+      "start": 25.517,
+      "end": 25.757
+     },
+     {
+      "word": "usarías",
+      "start": 25.821,
+      "end": 26.397
+     },
+     {
+      "word": "con",
+      "start": 26.437,
+      "end": 26.557
+     },
+     {
+      "word": "un",
+      "start": 26.61,
+      "end": 26.717
+     },
+     {
+      "word": "amigo?",
+      "start": 26.797,
+      "end": 27.517
+     },
+     {
+      "word": "Escríbelo",
+      "start": 27.597,
+      "end": 28.237
+     },
+     {
+      "word": "abajo.",
+      "start": 28.29,
+      "end": 28.877
+     }
+    ]
+   }
+  ],
+  "duration": 28.877,
+  "countdown": [
+   10.304,
+   13.304
+  ],
+  "tts_calls": 14,
+  "tts_usd": 0,
+  "audio": "output/rendering/step78b_work/hc_c019.voice.wav"
+ },
+ "silent": false
+}

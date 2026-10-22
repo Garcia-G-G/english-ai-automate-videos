@@ -1,0 +1,32 @@
+{
+ "id": "hc_m010",
+ "style": "mensajes",
+ "level": "principiante",
+ "duration": 36.696,
+ "voice_seconds": 32.696,
+ "tts_usd": 0.0834,
+ "outro_variant": "sigue-aprendiendo",
+ "silent": false,
+ "cpu_s": 73.5,
+ "wall_s": 43.5,
+ "load": [
+  19.8,
+  15.3
+ ],
+ "measure": {
+  "LUFS I": -14.2,
+  "true peak dBTP": -2.3,
+  "duration s": 36.67,
+  "colour": "bt709/bt709/bt709/tv",
+  "median kf gap s": 2.0
+ },
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "still": {
+   "seconds": 1.37,
+   "from": 35.0
+  },
+  "english_missing": []
+ }
+}

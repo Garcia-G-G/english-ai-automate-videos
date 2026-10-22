@@ -104,9 +104,84 @@ def layout(script: Dict) -> Dict:
     rule_h = K.line_height(rule_size, "fredoka") * len(rule_lines) + 50
     card_box = (K.W / 2 - CARD_W / 2, CARD_Y, K.W / 2 + CARD_W / 2, CARD_Y + card_h)
     rule_box = (K.W / 2 - 370, card_box[3] + STICKY_GAP, K.W / 2 + 370, card_box[3] + STICKY_GAP + rule_h)
+    lift = card_box[1] - FOCUS_CARD_Y                       # card and rule move up by this much
+    focus_card = (card_box[0], card_box[1] - lift, card_box[2], card_box[3] - lift)
+    focus_rule = (rule_box[0], rule_box[1] - lift, rule_box[2], rule_box[3] - lift)
+    stack_top = focus_rule[3] + 30
+    slots = max(1, int((K.SAFE_BOTTOM - 8 - stack_top + EX_GAP) // (EX_H + EX_GAP)))
     return {"bubbles": bubbles, "size": size, "hook": (hook_size, hook_lines), "card": (card_size, card_lines, card_box),
-            "rule": (rule_size, rule_lines, rule_box),
+            "rule": (rule_size, rule_lines, rule_box), "stack_top": stack_top, "slots": slots, "lift": lift,
+            "focus_card": focus_card, "focus_rule": focus_rule,
             "challenge": K.challenge_layout(script["challenge"]["prompt"], 560)}
+
+
+# ── STEP 78b §1: the examples the voice gives after the correction, one card each ──
+
+EX_W, EX_H, EX_GAP = 600, 86, 14
+#: When the examples start, «Se dice» and the rule move up over the dimmed chat (its context is
+#: read by then) and the stack takes the lower half (STEP 78b §1).
+FOCUS_CARD_Y = 420
+FOCUS_MOVE = 0.5
+EX_SHIFT = 0.3                        # the stack moves up over this long when a card leaves
+
+
+def _same(a: str, b: str) -> bool:
+    x, y = set(_norm_tokens(a)), set(_norm_tokens(b))
+    return bool(x and y) and len(x & y) / len(x | y) >= 0.75
+
+
+def examples(script: Dict, tl: Dict) -> List[Tuple[str, float, bool]]:
+    """(phrase, when it is said, right?) for every [[English]] phrase after the «Se dice» card,
+    other than the right form itself, before the challenge. The wrong form said again keeps its
+    card, with a cross: it is the error, not an example."""
+    tm = times(script, tl)
+    right, wrong = script["correction"]["right"], script["correction"]["wrong"]
+    out = []
+    for beat in tl["beats"]:
+        for e in beat["english"]:
+            if tm["card"] + 0.3 < e["start"] < tm["challenge"] and not _same(e["text"], right):
+                out.append((e["text"], e["start"], not _same(e["text"], wrong)))
+    return out
+
+
+def focus_time(script: Dict, tl: Dict) -> Optional[float]:
+    ex = examples(script, tl)
+    return max(times(script, tl)["rule"] + 0.5, ex[0][1] - 0.4) if ex else None
+
+
+def _example_card(text: str) -> Image.Image:
+    return _example_card_cached(text)
+
+
+@lru_cache(maxsize=32)
+def _example_card_cached(text: str) -> Image.Image:
+    size, lines = K.fit(text, "fredoka", EX_W - 130, 40, 26, 1)
+    card = kit.note_card(EX_W, EX_H, WHITE, 4, (7, 7)).copy()
+    K.text_block(card, lines, "fredoka", size, 34, EX_H / 2 - K.line_height(size, "fredoka") / 2 + 2, kit.colour("ink"))
+    return card
+
+
+def _draw_examples(img: Image.Image, t: float, lay: Dict, shown: List[Tuple[str, float, bool]]) -> None:
+    """The stack under the rule: the newest at the bottom; past `slots`, the oldest fades out
+    and the rest move up."""
+    if not shown:
+        return
+    n, slots = len(shown), lay["slots"]
+    e = ease_out_cubic(clamp01((t - shown[-1][1]) / EX_SHIFT))
+    offset = max(0, n - slots) - (1 - e if n > slots else 0)
+    for j, (text, at, ok) in enumerate(shown):
+        slot = j - offset
+        if slot <= -1:
+            continue
+        alpha = clamp01(slot + 1) * clamp01((t - at) / 0.25)
+        p = clamp01((t - at) / 0.3)
+        y = lay["stack_top"] + slot * (EX_H + EX_GAP)
+        card = _example_card(text)
+        _place(img, card, K.W / 2, y + EX_H / 2, 0.85 + 0.15 * ease_out_back(p, 2.0), alpha)
+        if t >= at + 0.15 and ok:                              # the tick, drawn on its stroke
+            kit.tick(img, K.W / 2 + EX_W / 2 - 92, y + EX_H / 2 + 4, 1.0, 40, progress=round(clamp01((t - at - 0.15) / 0.3) * 24) / 24)
+        elif t >= at + 0.15:
+            kit.cross(img, K.W / 2 + EX_W / 2 - 88, y + EX_H / 2, ease_out_cubic(clamp01((t - at - 0.15) / 0.25)), 34)
 
 
 def times(script: Dict, tl: Dict) -> Dict:
@@ -154,7 +229,7 @@ def _chrome(contact: str, level_label: str) -> Image.Image:
     K.text_block(img, [contact], "manrope_semibold", 36, 0, 252, WHITE, "center", K.W)
     K.text_block(img, ["Hoy 21:14"], "manrope", 30, 0, CHAT_TOP - 66, GREY, "center", K.W)
     d.rounded_rectangle([40, 1700, K.W - 40, 1790], radius=45, outline=(64, 64, 70, 255), width=3)
-    d.text((90, 1726), "Mensaje", font=K.font("manrope", 38), fill=GREY)
+    d.text((100, 1726), "Mensaje", font=K.font("manrope", 38), fill=GREY)
     K.level_pill(img, level_label, kit.colour("brand_yellow"), kit.colour("ink"), cx=K.W - 190, y=K.SAFE_TOP + 4,
                  size=30)
     return img
@@ -229,6 +304,9 @@ def _sticky(lines: Tuple[str, ...], size: int) -> Image.Image:
 
 def frame(t: float, script: Dict, tl: Dict) -> Image.Image:
     lay, tm = layout(script), times(script, tl)
+    tf = focus_time(script, tl)
+    focus = ease_out_cubic(clamp01((t - tf) / FOCUS_MOVE)) if tf is not None and t >= tf else 0.0
+    focused = focus > 0.5
     img = _chrome(script["chat"]["contact"], script["level_label"]).copy()
 
     # the hook, alone over the empty chat, then away as the first message comes
@@ -257,25 +335,36 @@ def frame(t: float, script: Dict, tl: Dict) -> Image.Image:
         _place(img, sprite, cx, (y0 + y1) / 2 + 2, 0.82 + 0.18 * ease_out_back(p, 2.0), clamp01(p * 2.5))
         if b["error"] and t >= tm["ring"]:
             K.ring(img, (x0 - 22, y0 - 16, x1 + 22, y1 + 16), (t - tm["ring"]) / 0.5, RED)
-            if t >= tm["arrow"]:
+            if t >= tm["arrow"] and not focused:
                 start = (x0 + (x1 - x0) * 0.25, y1 + 24)
                 end = (K.W / 2 - 120, CARD_Y - 30)
                 mid = ((start[0] + end[0]) / 2 - 90, (start[1] + end[1]) / 2)
                 pts = [_bez(start, mid, end, u / 16) for u in range(17)]
                 K.arrow_on(img, pts, (t - tm["arrow"]) / 0.4, RED)
 
-    # «Se dice: …» drops in, the rule sticky after it
+    # «Se dice: …» drops in, the rule sticky after it; with the examples they move up over the
+    # dimmed chat
+    if focus > 0:
+        img.alpha_composite(Image.new("RGBA", img.size, (0, 0, 0, int(165 * focus))))
+    up = lay["lift"] * focus
     size, lines, box = lay["card"]
     if t >= tm["card"]:
         p = clamp01((t - tm["card"]) / 0.45)
         drop = (1.0 - ease_out_back(p, 1.6)) * -140
-        _place(img, _card(lines, size, script["correction"]["right"]), K.W / 2, (box[1] + box[3]) / 2 + drop, 1.0,
+        _place(img, _card(lines, size, script["correction"]["right"]), K.W / 2, (box[1] + box[3]) / 2 + drop - up, 1.0,
                clamp01(p * 3))
     rsize, rlines, rbox = lay["rule"]
     if t >= tm["rule"]:
         p = clamp01((t - tm["rule"]) / 0.35)
-        _place(img, _sticky(rlines, rsize), K.W / 2, (rbox[1] + rbox[3]) / 2, 0.7 + 0.3 * ease_out_back(p, 2.0),
+        _place(img, _sticky(rlines, rsize), K.W / 2, (rbox[1] + rbox[3]) / 2 - up, 0.7 + 0.3 * ease_out_back(p, 2.0),
                clamp01(p * 3))
+
+    # the examples the voice gives after the correction (STEP 78b §1)
+    _draw_examples(img, t, lay, [e for e in examples(script, tl) if e[1] <= t])
+
+    # the input's cursor blinks: the screen is never quite still
+    if int(t * 2) % 2 == 0:
+        ImageDraw.Draw(img).rectangle([84, 1722, 89, 1768], fill=ME)
 
     # the challenge, over the dimmed chat
     if t >= tm["challenge"]:
@@ -296,6 +385,7 @@ def sfx_events(script: Dict, tl: Dict) -> List[Tuple[str, float, float]]:
     ev = [("pop", at, 0.0) for at in tm["arrive"]]
     ev += [("scratch", tm["ring"], 0.5), ("scratch", tm["arrow"], 0.4), ("swish", tm["card"], 0.0),
            ("pop", tm["rule"], 0.0), ("pop", tm["challenge"], 0.0)]
+    ev += [("pop", e[1], 0.0) for e in examples(script, tl)]
     return sorted(ev, key=lambda e: e[1])
 
 
@@ -305,5 +395,9 @@ def text_boxes(script: Dict) -> List[Tuple[str, K.Box]]:
     hook_size, hook_lines = lay["hook"]
     out = [("hook", K.block_box(hook_lines, "fredoka", hook_size, 0, CHAT_TOP + 40, "center", K.W))]
     out += [(f"message {k + 1}", b["box"]) for k, b in enumerate(lay["bubbles"])]
-    out += [("se dice", lay["card"][2]), ("rule", lay["rule"][2]), ("challenge", lay["challenge"]["box"])]
+    out += [("se dice", lay["card"][2]), ("rule", lay["rule"][2]), ("challenge", lay["challenge"]["box"]),
+            ("se dice, raised", lay["focus_card"]), ("rule, raised", lay["focus_rule"])]
+    for k in range(lay["slots"]):                             # every slot the example stack can use
+        y = lay["stack_top"] + k * (EX_H + EX_GAP)
+        out.append((f"example slot {k + 1}", (K.W / 2 - EX_W / 2, y, K.W / 2 + EX_W / 2, y + EX_H)))
     return out

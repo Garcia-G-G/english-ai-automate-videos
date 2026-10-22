@@ -15,8 +15,9 @@ the header under the top 8 %, everything readable above the bottom 22 %. Timed o
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
+import numpy as np
 from PIL import Image, ImageDraw
 
 from ..motion import clamp01, ease_out_cubic
@@ -40,6 +41,46 @@ EX_W = 860                             # examples: x 60..920
 BOTTOM = K.SAFE_BOTTOM - 8
 
 
+# ── display lines (STEP 78b §1) ──────────────────────────────────────
+
+SEPARATORS = {"/", "→", "=", "≠", "—"}
+#: A line holding only one word this short reads as a widow («IN», «OF»).
+SHORT_WORD = 3
+
+
+@lru_cache(maxsize=1024)
+def display_lines(text: str, size: int, width: int, max_lines: int) -> Optional[Tuple[str, ...]]:
+    """The display type's lines at `size`, or None when nothing valid fits `width`.
+
+    Valid: every line fits; no line starts with a separator (/ → = ≠ —) or is one; no line is a
+    lone short word. Best: fewest lines, then breaks right after separators, then the most even
+    line lengths."""
+    from itertools import combinations
+    f = K.font("inter_black", size)
+    words = text.split()
+    n = len(words)
+    best, best_key = None, None
+    for k in range(1, min(max_lines, n) + 1):
+        for cuts in combinations(range(1, n), k - 1):
+            bounds = (0, *cuts, n)
+            lines = [words[a:b] for a, b in zip(bounds, bounds[1:])]
+            if any(line[0] in SEPARATORS for line in lines):
+                continue
+            if k > 1 and any(len(line) == 1 and len(line[0].strip(".,;:!?¡¿")) <= SHORT_WORD for line in lines):
+                continue
+            texts = [" ".join(line) for line in lines]
+            widths = [K.length(x, f) for x in texts]
+            if max(widths) > width:
+                continue
+            off_sep = sum(1 for c in cuts if words[c - 1] not in SEPARATORS)
+            key = (k, off_sep if any(w in SEPARATORS for w in words) else 0, max(widths) - min(widths))
+            if best_key is None or key < best_key:
+                best, best_key = tuple(texts), key
+        if best is not None:
+            return best
+    return None
+
+
 # ── layout ───────────────────────────────────────────────────────────
 
 def layout(script: Dict) -> Dict:
@@ -48,7 +89,10 @@ def layout(script: Dict) -> Dict:
     po = script["poster"]
     kicker = K.fit(script["hook_text"], "inter", X1 - X0, 44, 30, 2)
     wrong_top = KICKER_Y + K.line_height(kicker[0], "inter") * len(kicker[1]) + 30
-    right = K.fit(po["big_right"], "inter_black", BLOCK_TEXT_W, 120, 52, 2)
+    right = next(((sz, ln) for sz in range(120, 50, -2)
+                  for ln in [display_lines(po["big_right"], sz, BLOCK_TEXT_W, 2)] if ln), None)
+    if right is None:
+        raise K.Overflow(f"{script['id']}: big_right {po['big_right']!r} does not fit the block")
     block_h = 30 + 40 + 16 + K.line_height(right[0], "inter_black") * len(right[1]) + 34
     examples, ex_h = [], 0
     for e in po["examples"]:
@@ -67,9 +111,8 @@ def layout(script: Dict) -> Dict:
     limit = block_top - 26
     width = X1 - X0 if limit <= 950 else 880
     for size in range(190, 64, -6):
-        try:
-            _s, lines = K.fit(po["big_wrong"], "inter_black", width, size, size, 4)
-        except K.Overflow:
+        lines = display_lines(po["big_wrong"], size, width, 4)
+        if lines is None:
             continue
         if wrong_top + K.line_height(size, "inter_black") * len(lines) <= limit:
             break
@@ -148,9 +191,24 @@ def _block(lines: Tuple[str, ...], size: int, h: int) -> Image.Image:
     return img
 
 
+@lru_cache(maxsize=1)
+def _print_grain() -> Tuple[Image.Image, ...]:
+    """Four tiles of ink grain over the paper, cycled 8 times a second: a printed poster is never
+    perfectly still (STEP 78b §1, no still stretch over 4 s)."""
+    tiles = []
+    for k in range(4):
+        a = np.random.default_rng(70 + k).integers(0, 14, (K.H, K.W), dtype=np.uint8)
+        rgba = np.zeros((K.H, K.W, 4), np.uint8)
+        rgba[..., :3] = 40
+        rgba[..., 3] = a
+        tiles.append(Image.fromarray(rgba))
+    return tuple(tiles)
+
+
 def frame(t: float, script: Dict, tl: Dict) -> Image.Image:
     lay, tm = layout(script), times(script, tl)
     img = _paper(script["level_label"]).copy()
+    img.alpha_composite(_print_grain()[int(t * 8) % 4])
     ks, kl = lay["kicker"]
     K.text_block(img, kl, "inter", ks, X0, KICKER_Y, RED)
     ws, wl = lay["wrong"]

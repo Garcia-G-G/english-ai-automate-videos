@@ -36,41 +36,43 @@ EXPRESSIONS = Path(__file__).resolve().parents[3] / "assets" / "branding" / "eng
 
 BAR_Y = 168
 CHIP_Y = 198
-CARD_Y = 300
+CARD_Y = 286                             # the hook card; the question and options cascade under it
 CARD_W = 760
-OPT_Y = 610
-OPT_H = 112
-OPT_GAP = 26
-OPT_W = 640
+HOOK_W = 640
+OPT_H = 104
+OPT_GAP = 22
+OPT_W = 600
 OPT_X = 110
-RING_C = (900, 690)                      # the countdown ring, right of the options (above y 950)
-STICKY_Y = 1030
 STICKY_W = 600
-BUBI_W = 330
-BUBI_C = (858, 1270)
+BUBI_W = 300
+BUBI_C = (884, 1330)
 LETTERS = "ABC"
 
 
 # ── layout ───────────────────────────────────────────────────────────
 
 def layout(script: Dict) -> Dict:
+    """Top to bottom (STEP 78b §1: frame 0 shows the hook, the question and the three options):
+    the hook card, the question card, the options, the countdown ring beside them, the sticky."""
     q = script["quiz"]
-    hook = K.fit(script["hook_text"], "fredoka", CARD_W - 80, 74, 44, 3)
-    prompt = K.fit(q["prompt"], "fredoka", CARD_W - 80, 64, 40, 3)
-    options = [K.fit(o, "fredoka", OPT_W - 150, 52, 30, 2) for o in q["options"]]
-    after = K.fit(q["after"], "fredoka", STICKY_W - 60, 40, 26, 6)
-    after_h = K.line_height(after[0], "fredoka") * len(after[1]) + 50
-    opt_boxes = []
-    y = OPT_Y
+    hook = K.fit(script["hook_text"], "fredoka", HOOK_W - 70, 52, 34, 2)
+    prompt = K.fit(q["prompt"], "fredoka", CARD_W - 80, 56, 36, 3)
+    options = [K.fit(o, "fredoka", OPT_W - 140, 48, 28, 2) for o in q["options"]]
+    card_h = lambda fit, pad=60: K.line_height(fit[0], "fredoka") * len(fit[1]) + pad
+    hook_box = ((K.W - HOOK_W) / 2, CARD_Y, (K.W + HOOK_W) / 2, CARD_Y + card_h(hook, 50))
+    prompt_box = ((K.W - CARD_W) / 2, hook_box[3] + 26, (K.W + CARD_W) / 2, hook_box[3] + 26 + card_h(prompt))
+    opt_boxes, y = [], prompt_box[3] + 34
     for size, lines in options:
-        h = max(OPT_H, K.line_height(size, "fredoka") * len(lines) + 40)
+        h = max(OPT_H, K.line_height(size, "fredoka") * len(lines) + 36)
         opt_boxes.append((OPT_X, y, OPT_X + OPT_W, y + h))
         y += h + OPT_GAP
-    card_h = lambda fit: K.line_height(fit[0], "fredoka") * len(fit[1]) + 70
+    after_y = y + 6
+    after = K.fit(q["after"], "fredoka", STICKY_W - 60, 38, 24, max(1, int((K.SAFE_BOTTOM - 8 - after_y - 50) // 30)))
+    after_h = K.line_height(after[0], "fredoka") * len(after[1]) + 50
+    ring_c = (OPT_X + OPT_W + 150, round((opt_boxes[0][1] + opt_boxes[-1][3]) / 2))
     return {"hook": hook, "prompt": prompt, "options": options, "opt_boxes": opt_boxes, "after": after,
-            "after_box": (70, STICKY_Y, 70 + STICKY_W, STICKY_Y + after_h),
-            "hook_box": ((K.W - CARD_W) / 2, CARD_Y, (K.W + CARD_W) / 2, CARD_Y + card_h(hook)),
-            "prompt_box": ((K.W - CARD_W) / 2, CARD_Y, (K.W + CARD_W) / 2, CARD_Y + card_h(prompt)),
+            "after_box": (70, after_y, 70 + STICKY_W, after_y + after_h), "ring_c": ring_c,
+            "hook_box": hook_box, "prompt_box": prompt_box,
             "challenge": K.challenge_layout(script["challenge"]["prompt"], 560)}
 
 
@@ -140,6 +142,11 @@ def _option(letter: str, lines: Tuple[str, ...], size: int, w: int, h: int) -> I
     return card
 
 
+def _stamp_cx(x1: float) -> float:
+    """Beside the option, overlapping only its edge: never over the option's words."""
+    return x1 + _stamp().width / 2 - 24
+
+
 @lru_cache(maxsize=2)
 def _stamp() -> Image.Image:
     f = K.font("fredoka", 72)
@@ -161,17 +168,24 @@ def _chip(text: str, fill: Tuple[int, ...], ink: Tuple[int, ...], size: int = 28
     return card
 
 
-def _countdown(img: Image.Image, t: float, count0: float, reveal: float) -> None:
+def _bump(t: float, at: float, length: float = 0.35, amount: float = 0.12) -> float:
+    """A pop from the visible state: up by `amount` and back, over `length` from `at`."""
+    if not at <= t < at + length:
+        return 0.0
+    return round(amount * math.sin(math.pi * (t - at) / length), 3)
+
+
+def _countdown(img: Image.Image, t: float, count0: float, reveal: float, ring_c) -> None:
     span = max(0.5, reveal - count0)
     n = 3 - int((t - count0) / (span / 3))
     p = ((t - count0) % (span / 3)) / (span / 3)
     r = 72
     disc = Image.new("RGBA", (2 * r * kit.SS, 2 * r * kit.SS), (0, 0, 0, 0))
     ImageDraw.Draw(disc).ellipse([0, 0, 2 * r * kit.SS - 1, 2 * r * kit.SS - 1], fill=WHITE, outline=INK, width=6 * kit.SS)
-    img.alpha_composite(disc.resize((2 * r, 2 * r), Image.LANCZOS), (RING_C[0] - r, RING_C[1] - r))
-    K.ring(img, (RING_C[0] - r + 12, RING_C[1] - r + 12, RING_C[0] + r - 12, RING_C[1] + r - 12), 1.0 - p,
+    img.alpha_composite(disc.resize((2 * r, 2 * r), Image.LANCZOS), (ring_c[0] - r, ring_c[1] - r))
+    K.ring(img, (ring_c[0] - r + 12, ring_c[1] - r + 12, ring_c[0] + r - 12, ring_c[1] + r - 12), 1.0 - p,
            (248, 190, 40, 255), 12)
-    K.text_block(img, [str(max(1, n))], "fredoka", 76, RING_C[0] - r, RING_C[1] - 48, INK, "center", 2 * r)
+    K.text_block(img, [str(max(1, n))], "fredoka", 76, ring_c[0] - r, ring_c[1] - 48, INK, "center", 2 * r)
 
 
 def frame(t: float, script: Dict, tl: Dict) -> Image.Image:
@@ -187,34 +201,29 @@ def frame(t: float, script: Dict, tl: Dict) -> Image.Image:
     brand = _chip("English Unlimited", BLUE, (255, 255, 255, 255), 24)
     img.alpha_composite(brand, (K.W - 60 - brand.width, CHIP_Y + 4))
 
-    # the speech card: the hook, then the question
-    if t < tm["prompt"]:
-        size, lines = lay["hook"]
-        _place(img, _speech(lines, size, CARD_W, False), K.W / 2, (lay["hook_box"][1] + lay["hook_box"][3]) / 2, 1.0)
-    else:
-        p = clamp01((t - tm["prompt"]) / 0.3)
-        size, lines = lay["prompt"]
-        _place(img, _speech(lines, size, CARD_W, True), K.W / 2, (lay["prompt_box"][1] + lay["prompt_box"][3]) / 2,
-               0.85 + 0.15 * ease_out_back(p, 2.2))
+    # the hook card, then the question under it: both on screen from frame 0, the question
+    # popping when the voice asks it
+    size, lines = lay["hook"]
+    _place(img, _speech(lines, size, HOOK_W, False), K.W / 2, (lay["hook_box"][1] + lay["hook_box"][3]) / 2, 1.0)
+    size, lines = lay["prompt"]
+    _place(img, _speech(lines, size, CARD_W, True), K.W / 2, (lay["prompt_box"][1] + lay["prompt_box"][3]) / 2,
+           1.0 + _bump(t, tm["prompt"]))
 
     # the options; the countdown; the reveal
     q = script["quiz"]
     for k, (fit, box, at) in enumerate(zip(lay["options"], lay["opt_boxes"], tm["options"])):
-        if t < at:
-            continue
-        p = clamp01((t - at) / 0.3)
         x0, y0, x1, y1 = box
         _place(img, _option(LETTERS[k], fit[1], fit[0], int(x1 - x0), int(y1 - y0)), (x0 + x1) / 2 + 5, (y0 + y1) / 2 + 5,
-               0.6 + 0.4 * ease_out_back(p, 2.4), clamp01(p * 3))
+               1.0 + _bump(t, at))
         if t >= tm["reveal"]:
             if k == q["answer"]:
                 K.ring(img, (x0 - 26, y0 - 22, x1 + 26, y1 + 22), (t - tm["reveal"]) / 0.5, GREEN, 10)
             else:
                 ps = clamp01((t - tm["reveal"] - 0.1 * k) / 0.25)
                 if ps > 0:
-                    _place(img, _stamp(), x1 - 40, (y0 + y1) / 2, 1.0 + 0.6 * (1 - ease_out_back(ps, 1.8)), clamp01(ps * 3))
+                    _place(img, _stamp(), _stamp_cx(x1), (y0 + y1) / 2, 1.0 + 0.6 * (1 - ease_out_back(ps, 1.8)), clamp01(ps * 3))
     if tm["count0"] <= t < tm["reveal"]:
-        _countdown(img, t, tm["count0"], tm["reveal"])
+        _countdown(img, t, tm["count0"], tm["reveal"], lay["ring_c"])
 
     if t >= tm["after"]:
         p = clamp01((t - tm["after"]) / 0.35)
@@ -230,7 +239,9 @@ def frame(t: float, script: Dict, tl: Dict) -> Image.Image:
     since = t - (tm["reveal"] if t >= tm["reveal"] else 0.0)
     hop = 40 * math.sin(math.pi * clamp01(since / 0.4)) if since < 0.4 else 0.0
     shake = 6 * math.sin(t * 9) if name == "wow" else 0.0
+    breath = 1.0 + 0.015 * math.sin(t * 2 * math.pi / 2.4)            # a slow breath (STEP 78b §1)
     bubi = _expression(name, BUBI_W)
+    bubi = bubi.resize((round(bubi.width * breath), round(bubi.height * breath)), Image.LANCZOS)
     img.alpha_composite(bubi, (int(BUBI_C[0] - bubi.width / 2 + shake), int(BUBI_C[1] - bubi.height / 2 - hop)))
 
     if t >= tm["challenge"]:
@@ -253,4 +264,8 @@ def text_boxes(script: Dict) -> List[Tuple[str, K.Box]]:
     lay = layout(script)
     out = [("hook", lay["hook_box"]), ("prompt", lay["prompt_box"])]
     out += [(f"option {LETTERS[k]}", b) for k, b in enumerate(lay["opt_boxes"])]
+    sw, sh = _stamp().size
+    out += [(f"stamp {LETTERS[k]}", (_stamp_cx(b[2]) - sw / 2, (b[1] + b[3]) / 2 - sh / 2,
+                                     _stamp_cx(b[2]) + sw / 2, (b[1] + b[3]) / 2 + sh / 2))
+            for k, b in enumerate(lay["opt_boxes"]) if k != script["quiz"]["answer"]]
     return out + [("after", lay["after_box"]), ("challenge", lay["challenge"]["box"])]

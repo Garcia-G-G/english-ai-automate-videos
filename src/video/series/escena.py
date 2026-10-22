@@ -46,6 +46,10 @@ TEXT_W = 860
 LOW_W = 780
 
 
+#: Under take 1 at frame 0 and until the strike (STEP 78b §1).
+SPOT_THE_ERROR = "¿Ves el error?"
+
+
 def _scene_no(script: Dict) -> str:
     return f"ESCENA {int(script['id'][4:]):02d}"
 
@@ -71,6 +75,9 @@ def layout(script: Dict) -> Dict:
         "note": K.block_box(note[1], "inter", note[0], 0, note_y, "center", K.W),
         "clapper": (CLAP_CX - CLAP_W / 2 - 20, CLAP_CY - CLAP_H / 2 - 110, CLAP_CX + CLAP_W / 2 + 20, CLAP_CY + CLAP_H / 2 + 20),
     }
+    t1 = boxes["take1"]
+    w = K.font("inter", 30).getlength(SPOT_THE_ERROR) + 48
+    boxes["spot"] = (K.W / 2 - w / 2, t1[3] + 22, K.W / 2 + w / 2, t1[3] + 22 + 60)
     return {"slate": slate, "take1": take1, "corten": corten, "take2": take2, "note": note, "note_y": note_y,
             "boxes": boxes, "challenge": K.challenge_layout(script["challenge"]["prompt"], 560)}
 
@@ -185,13 +192,25 @@ def frame(t: float, script: Dict, tl: Dict) -> Image.Image:
     clap = _clapper(_scene_no(script), take, _clap_angle(t, tm["toma1"]))
     img.alpha_composite(clap, (int(CLAP_CX - clap.width / 2), int(CLAP_CY - clap.height / 2 - 80)))
 
-    # take 1: a yellow subtitle, then a red marker strike
+    # take 1: on screen from frame 0, the thumbnail (STEP 78b §1), a pop when the voice reads it,
+    # «¿Ves el error?» under it until the strike, then a red marker strike
     s1, l1 = lay["take1"]
-    if t >= tm["take1"]:
-        a = clamp01((t - tm["take1"]) / 0.2)
+    if l1:
         top = TAKE1_Y - K.line_height(s1, "inter_black") * (len(l1) - 1)
-        box = K.text_block(img, l1, "inter_black", s1, 0, top, YELLOW, "center", K.W, a, stroke=4,
-                           stroke_fill=(0, 0, 0, 255))
+        bump = 0.0
+        if tm["take1"] <= t < tm["take1"] + 0.35:
+            bump = 0.08 * math.sin(math.pi * (t - tm["take1"]) / 0.35)
+        if bump:
+            sub = Image.new("RGBA", img.size, (0, 0, 0, 0))
+            K.text_block(sub, l1, "inter_black", s1, 0, top, YELLOW, "center", K.W, 1.0, stroke=4, stroke_fill=(0, 0, 0, 255))
+            bb = K.block_box(l1, "inter_black", s1, 0, top, "center", K.W)
+            crop = sub.crop((0, int(bb[1]) - 12, K.W, int(bb[3]) + 12))
+            _place(img, crop, K.W / 2, (bb[1] + bb[3]) / 2, 1.0 + bump)
+        else:
+            K.text_block(img, l1, "inter_black", s1, 0, top, YELLOW, "center", K.W, 1.0, stroke=4,
+                         stroke_fill=(0, 0, 0, 255))
+        if t < tm["strike"]:
+            K.level_pill(img, SPOT_THE_ERROR, RED, CREAM, cx=K.W / 2, y=lay["boxes"]["take1"][3] + 22, face="inter", size=30)
         if t >= tm["strike"]:
             p = clamp01((t - tm["strike"]) / 0.3)
             for k, line in enumerate(l1):
