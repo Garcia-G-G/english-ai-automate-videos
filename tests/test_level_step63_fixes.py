@@ -61,22 +61,20 @@ def test_the_pencil_box_constant_is_the_pencil_image():
 @pytest.mark.parametrize("vtype", sorted(LEVEL_FIXTURES))
 def test_in_the_last_frames_the_pencil_covers_no_text(vtype):
     """After the last answer (the frame the viewer is left reading) and in the video's
-    final frame, the pencil's box intersects no text box of any row."""
+    final frame, the pencil's box intersects no text box of any row on the last page."""
     import video.how_do_you_say as H
     data, dur = _timeline(vtype)
-    mode = H.LEVEL_MODES[vtype]
-    kind = mode.get("kind", "write")
+    kind = H.LEVEL_MODES[vtype].get("kind", "write")
     items = data["items"]
-    centres = list(H.level_rows(len(items), mode.get("tier_gap", 0))[0])
     tl = H.LevelTimeline(data, dur)
-    answer = mode["answer"]
-    size = H.page_size(tuple(it[answer] for it in items)) if answer else 0
-    boxes = H.level_text_boxes(vtype, items, centres)
+    layout = H.level_layout(vtype, items)
+    boxes = H.level_text_boxes(vtype, items, layout)
+    last = layout.rows_on(len(layout.pages) - 1)
     for t in (tl.verdict[0] - 0.01, dur - 0.01):
-        x, y = H.level_pencil_position(t, tl, items, answer, centres, size, writes=kind != "tf",
-                                       spans=H._pencil_spans(kind, items, centres), boxes=boxes)
-        pencil = (x + H.PENCIL_BOX[0], y + H.PENCIL_BOX[1], x + H.PENCIL_BOX[2], y + H.PENCIL_BOX[3])
-        hit = [(i + 1, b) for i, row in enumerate(boxes) for b in row if _overlaps(pencil, b)]
+        x, y = H.level_pencil_position(t, tl, items, layout, kind)
+        sprite, (tx, ty) = H._pencil_cropped(int(round(H.level_pencil_angle(t, tl, kind) / 6) * 6))
+        pencil = (x - tx, y - ty, x - tx + sprite.width, y - ty + sprite.height)
+        hit = [(i + 1, b) for i in last for b in boxes[i] if _overlaps(pencil, b)]
         assert not hit, f"{vtype} t={t:.2f}: pencil {pencil} covers rows {hit}"
 
 
@@ -85,27 +83,26 @@ def test_the_pencil_still_writes_the_last_answer_before_it_parks():
     import video.how_do_you_say as H
     data, dur = _timeline("fill_level")
     items = data["items"]
-    centres = list(H.level_rows(10)[0])
     tl = H.LevelTimeline(data, dur)
-    spans = H.fill_spans(items, centres)
-    boxes = H.level_text_boxes("fill_level", items, centres)
+    layout = H.level_layout("fill_level", items)
+    spans = H.fill_spans(items, layout)
     end = tl.answer[-1][1]
-    assert H.level_pencil_position(end, tl, items, None, centres, 0, spans=spans, boxes=boxes) == \
+    assert H.level_pencil_position(end, tl, items, layout, "fill") == \
         pytest.approx((spans[-1][1], spans[-1][2]))
 
 
 def test_level_text_boxes_hold_the_longest_drawn_line():
-    """The boxes the pencil avoids are as wide as the drawn text: the longest translation
-    of fc001, measured on its own strip, ends inside its box."""
+    """The boxes the pencil avoids are as wide as the drawn text: every translation line of
+    fc001, measured on its own strip, ends inside its box."""
     import video.how_do_you_say as H
     data, _dur = _timeline("fill_level")
     items = data["items"]
-    centres = list(H.level_rows(10)[0])
-    boxes = H.level_text_boxes("fill_level", items, centres)
-    tsize = H.page_size(tuple(it["translation"] for it in items))
-    for it, (_l1, l2) in zip(items, boxes):
-        strip = H._line_image(it["translation"], tsize, (0, 0, 0, 255))
-        assert H.LINE_X - 2 + strip.getbbox()[2] <= l2[2]
+    layout = H.level_layout("fill_level", items)
+    boxes = H.level_text_boxes("fill_level", items, layout)
+    for row, row_boxes in zip(layout.rows, boxes):
+        for (text, _y), box in zip(row.l2, row_boxes[len(row.l1):]):
+            strip = H._line_image(text, layout.size, (0, 0, 0, 255))
+            assert H.LINE_X - 2 + strip.getbbox()[2] <= box[2]
 
 
 # ── 2. choose_level: 8 px between a circle or strike and a tier divider ──
@@ -122,33 +119,38 @@ def _longest_pair_everywhere():
 def test_choose_circles_and_strikes_keep_8px_from_the_tier_dividers(right):
     import video.how_do_you_say as H
     items = [dict(it, answer=right) for it in _longest_pair_everywhere()]
-    centres, rules = H.level_rows(10, H.LEVEL_MODES["choose_level"]["tier_gap"])
-    size = H.page_size(tuple(H.choice_line(it) for it in items))
-    assert size == H.LINE_FONT_MAX, "the longest pair must be measured at full size"
-    dividers = [rules[s - 1] for s in H.TIER_STARTS]
+    layout = H.level_layout("choose_level", items)
+    # a divider is drawn where a tier starts on the same page (see _static_level_page)
+    dividers = [(layout.rows[s - 1].page, layout.rows[s - 1].bottom - 4 + H.TIER_GAP / 2)
+                for s in H.TIER_STARTS if layout.rows[s].page == layout.rows[s - 1].page]
     half = 11 / 2                                   # the ink under the tier colour
-    for i, spans in enumerate(H.choice_spans(items, centres)):
-        cy = centres[i] + H.LINE2_DY
+    for i, spans in enumerate(H.choice_spans(items, layout)):
+        cy = layout.rows[i].l2[0][1]
         layer = Image.new("RGBA", (H.LAYER_W, H.LAYER_H), (0, 0, 0, 0))
         draw = ImageDraw.Draw(layer, "RGBA")
-        x0, x1 = spans[right]
-        H._hand_circle(draw, (x0 - H.CIRCLE_PAD_X, cy - size / 2 - H.CIRCLE_PAD_Y,
-                              x1 + H.CIRCLE_PAD_X, cy + size / 2 + H.CIRCLE_PAD_Y), 1.0)
+        H._hand_circle(draw, H.circle_box(spans, right, cy, layout.size), 1.0)
         H._strike(draw, *spans[1 - right], cy, 1.0)
         top, bottom = layer.getbbox()[1] - H.PAD, layer.getbbox()[3] - H.PAD
-        for d in dividers:
+        for page, d in dividers:
+            if page != layout.rows[i].page:
+                continue
             gap = (d - half) - bottom if d > cy else top - (d + half)
             assert gap >= 8, f"row {i + 1}: {gap:.1f} px from the divider at {d}"
 
 
-def test_the_gap_comes_from_the_rows_not_the_text():
-    """The options keep LINE_FONT_MAX; the ten rows still fit the page's row band."""
+@pytest.mark.parametrize("vtype", sorted(LEVEL_FIXTURES))
+def test_the_rows_fit_the_band_at_42px_or_more_and_8_to_a_page(vtype):
+    """STEP 77 §4: one size ≥ LINE_FONT_MIN; every row inside the page's band; ≤ 8 rows a page."""
     import video.how_do_you_say as H
-    centres, _rules = H.level_rows(10, H.CHOOSE_TIER_GAP)
-    assert H.ROWS_TOP <= centres[0] - (centres[1] - centres[0]) // 2
-    assert centres[-1] + (centres[1] - centres[0]) // 2 <= H.ROWS_BOTTOM
-    assert H.level_rows(10) == (tuple(H.row_centres(10)),
-                                tuple(c + H.ROW_PITCH // 2 - 6 for c in H.row_centres(10)))
+    data, _dur = _timeline(vtype)
+    layout = H.level_layout(vtype, data["items"])
+    assert H.LINE_FONT_MIN == 42 and layout.size >= 42
+    assert all(H.ROWS_TOP - 1e-6 <= r.top and r.bottom <= H.ROWS_BOTTOM + 1e-6 for r in layout.rows)
+    assert all(b - a <= H.ROWS_PER_PAGE for a, b in layout.pages)
+    f = H.fredoka(layout.size)
+    for r in layout.rows:
+        assert all(H._line_w(t, f, layout.blank) <= H.LINE1_W for t, _y in r.l1)
+        assert all(f.getlength(t) <= H.LINE_W for t, _y in r.l2)
 
 
 # ── 3. the render limit ─────────────────────────────────────────────

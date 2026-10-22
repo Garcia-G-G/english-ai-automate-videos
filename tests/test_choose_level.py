@@ -84,7 +84,7 @@ def test_length_spec_measures_the_sentence_and_the_options_line():
     import length_spec
     assert length_spec.check_script(_script()) == []
     long = _script()
-    long["items"][1]["sentence"] = "She ____ a cake for the whole family and the neighbours yesterday."
+    long["items"][1]["sentence"] = "She ____ a cake for the whole family and the neighbours yesterday. " * 2
     long["items"][2]["options"] = ["make the bed every single", "do the dishes every single"]
     assert {(v["where"], v["field"]) for v in length_spec.check_script(long)} >= \
         {("items[1]", "sentence"), ("items[2]", "options")}
@@ -119,11 +119,11 @@ def test_the_right_option_is_circled_and_the_wrong_one_struck(no_mascot, monkeyp
     monkeypatch.setattr(H, "_hand_circle", lambda draw, box, p: circles.append((box, p)) or real_c(draw, box, p))
     monkeypatch.setattr(H, "_strike", lambda draw, x0, x1, cy, p: strikes.append((x0, x1, p)) or real_s(draw, x0, x1, cy, p))
     data, dur = _timeline(_script())
-    centres = list(H.level_rows(10, H.CHOOSE_TIER_GAP)[0])
-    spans = H.choice_spans(data["items"], centres)
+    layout = H.level_layout("choose_level", data["items"])
+    spans = H.choice_spans(data["items"], layout)
     ans = data["segment_times"]["answer_5"]           # row 5: «makes · does», does is right
     H.create_frame_level(ans["end"] + 0.1, data, dur)
-    row5_circle = [c for c in circles if abs((c[0][1] + c[0][3]) / 2 - (centres[4] + H.LINE2_DY)) < 1]
+    row5_circle = [c for c in circles if abs((c[0][1] + c[0][3]) / 2 - layout.rows[4].l2[0][1]) < 1]
     assert len(row5_circle) == 1 and row5_circle[0][0][0] < spans[4][1][0] < row5_circle[0][0][2]
     assert (spans[4][0][0], spans[4][0][1], 1.0) in strikes
     circles.clear(), strikes.clear()
@@ -136,7 +136,7 @@ def test_the_countdown_sits_after_the_options_never_over_them(no_mascot, monkeyp
     dots = []
     monkeypatch.setattr(H, "_draw_countdown_at", lambda layer, x0, cy, p: dots.append(x0))
     data, dur = _timeline(_script())
-    spans = H.choice_spans(data["items"], list(H.level_rows(10, H.CHOOSE_TIER_GAP)[0]))
+    spans = H.choice_spans(data["items"], H.level_layout("choose_level", data["items"]))
     for i in range(10):
         dots.clear()
         th = data["segment_times"][f"think_{i + 1}"]

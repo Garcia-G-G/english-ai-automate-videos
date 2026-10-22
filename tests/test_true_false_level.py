@@ -87,8 +87,9 @@ def test_length_spec_measures_the_statement_and_the_answer_line():
     import length_spec
     assert length_spec.check_script(_script()) == []
     long = _script()
-    long["items"][0]["correction"] = "es una alfombra muy grande y muy larga de verdad"
-    long["items"][1]["statement"] = "«Exit» significa salida de emergencia del edificio grande."
+    # STEP 77 §4: lines wrap at 42 px; past LEVEL_MAX_LINES lines a field does not fit
+    long["items"][0]["correction"] = "es una alfombra muy grande y muy larga de verdad, " * 3
+    long["items"][1]["statement"] = "«Exit» significa salida de emergencia del edificio grande. " * 3
     assert {(v["where"], v["field"]) for v in length_spec.check_script(long)} == \
         {("items[0]", "answer"), ("items[1]", "statement")}
 
@@ -115,7 +116,7 @@ def test_no_hint_before_the_reveal(no_mascot, monkeypatch):
                         drawn.append((text, color, radius)) or real(text, size, color, radius))
     data, dur = _timeline(_script())
     H.create_frame_level(0.0, data, dur)
-    assert len(drawn) == 10
+    assert len(drawn) == len(H.level_layout("true_false_level", data["items"]).rows_on(0))   # page 1
     assert set(drawn) == {(H.TF_PLACEHOLDER, H._color("secondary_text"), H.BLUR_MAX)}
 
 
@@ -144,14 +145,15 @@ def test_answer_lines_are_green_true_or_red_false_with_the_correction():
 
 
 def test_the_pencil_points_at_the_active_row_and_does_not_write():
-    from video.how_do_you_say import (PENCIL_MOVE, PENCIL_WAIT_X, LevelTimeline,
-                                      level_pencil_position, row_centres)
+    from video.how_do_you_say import (PENCIL_MOVE, PENCIL_WAIT_X, LevelTimeline, level_layout,
+                                      level_pencil_position)
     data, dur = _timeline(_script())
-    tl, items, centres = LevelTimeline(data, dur), data["items"], row_centres(10)
+    tl, items = LevelTimeline(data, dur), data["items"]
+    layout = level_layout("true_false_level", items)
     ans = data["segment_times"]["answer_2"]
     for t in (data["segment_times"]["think_2"]["start"] + PENCIL_MOVE + 0.01, ans["start"],
               (ans["start"] + ans["end"]) / 2, ans["end"]):
-        x, _y = level_pencil_position(t, tl, items, None, centres, 0, writes=False)
+        x, _y = level_pencil_position(t, tl, items, layout, "tf")
         assert x == pytest.approx(PENCIL_WAIT_X)
 
 

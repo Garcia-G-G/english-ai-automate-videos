@@ -47,12 +47,13 @@ def _alpha_box(img):
 
 def test_the_page_rises_with_an_overshoot_pushes_over_the_recap_and_leaves_through_the_top():
     push = (50.0, 60.0)
-    assert H.page_motion(0.0, 70.0, push) == (float(H.RISE_FROM), 1.0)
-    rise = [H.page_motion(k / 100, 70.0, push)[0] for k in range(0, 51)]
+    assert H.page_motion(0.0, 0.0, 70.0, push) == (float(H.RISE_FROM), 1.0)
+    rise = [H.page_motion(k / 100, 0.0, 70.0, push)[0] for k in range(0, 51)]
     assert min(rise) < 0 and rise[-1] == 0.0                   # overshoots, then settles
-    assert H.page_motion(55.0, 70.0, push)[1] == pytest.approx(1.02, abs=0.004)
-    assert H.page_motion(60.0, 70.0, push)[1] == H.PUSH_TO
-    dy, _s = H.page_motion(70.0, 70.0, push)
+    assert H.page_motion(55.0, 0.0, 70.0, push)[1] == pytest.approx(1.02, abs=0.004)
+    assert H.page_motion(60.0, 0.0, 70.0, push)[1] == H.PUSH_TO
+    assert H.page_motion(30.0, 30.0, 70.0, push)[0] == float(H.RISE_FROM)   # a later page rises too
+    dy, _s = H.page_motion(70.0, 0.0, 70.0, push)
     assert H.PAGE_Y - H.PAD + dy + H.LAYER_H <= 0               # the page is out of the frame
 
 
@@ -170,50 +171,57 @@ def test_the_tick_keeps_14px_from_the_word_in_how_do_you_say_and_the_writing_mod
         word = H._word_image(it["english"], H.ENGLISH_W, H._color("english_blue"))
         _f, _s, w = H.fit_word(it["english"], H.ENGLISH_W)
         assert _tick_ink_left(H.ENGLISH_X + w + H.TICK_GAP, cy) - _ink_right(word, H.ENGLISH_X - 2) >= 14
-    for vtype in ("level_test", "say_it_level", "phrases_level"):
+    for vtype in ("level_test", "say_it_level", "phrases_level", "fill_level", "true_false_level"):
         d, _ = _level(vtype)
-        answer = H.LEVEL_MODES[vtype]["answer"]
-        size = H.page_size(tuple(it[answer] for it in d["items"]))
-        for it in d["items"]:
-            line = H._line_image(it[answer], size, H._color("ink"))
-            w = H.fit_line(it[answer], size)[2]
-            assert _tick_ink_left(H.LINE_X + w + H.TICK_GAP, 600) - _ink_right(line, H.LINE_X - 2) >= 14, vtype
+        layout = H.level_layout(vtype, d["items"])
+        for i, row in enumerate(layout.rows):
+            text, _y = row.l2[-1]
+            line = H._line_image(text, layout.size, H._color("ink"))
+            x, _y = H._line_end(layout, i)
+            assert _tick_ink_left(x + H.TICK_GAP, 600) - _ink_right(line, H.LINE_X - 2) >= 14, vtype
 
 
 def test_the_tick_keeps_14px_from_the_circle_and_the_strike_in_choose_level():
     d, _ = _level("choose_level")
-    centres = list(H.level_rows(len(d["items"]), H.CHOOSE_TIER_GAP)[0])
-    size = H.page_size(tuple(H.choice_line(it) for it in d["items"]))
-    for it, spans, cy in zip(d["items"], H.choice_spans(d["items"], centres), centres):
-        cy += H.LINE2_DY
+    layout = H.level_layout("choose_level", d["items"])
+    for it, spans, row in zip(d["items"], H.choice_spans(d["items"], layout), layout.rows):
+        cy = row.l2[0][1]
         right = it["answer"]
         layer = Image.new("RGBA", (H.LAYER_W, H.LAYER_H), (0, 0, 0, 0))
-        x0, x1 = spans[right]
-        H._hand_circle(layer, (x0 - H.CIRCLE_PAD_X, cy - size / 2 - H.CIRCLE_PAD_Y,
-                               x1 + H.CIRCLE_PAD_X, cy + size / 2 + H.CIRCLE_PAD_Y), 1.0)
+        H._hand_circle(layer, H.circle_box(spans, right, cy, layout.size), 1.0)
         H._strike(layer, *spans[1 - right], cy, 1.0)
         marks_right = _alpha_box(layer)[2] - H.PAD
         assert _tick_ink_left(H.choose_tick_x(spans, right), cy) - marks_right >= 14
 
 
-def test_the_pencil_is_never_cut_by_the_page_or_the_frame_in_choose_level():
-    d, dur = _level("choose_level")
+@pytest.mark.parametrize("vtype", ["choose_level", "fill_level", "say_it_level", "true_false_level"])
+def test_the_pencil_is_never_cut_by_the_page_or_the_frame(vtype):
+    """Every 0.25 s, at every angle it takes, the pencil sprite (with its shadow) lies inside
+    the frame; on row 6 every pixel of it lands (addendum B2)."""
+    d, dur = _level(vtype)
     tl = H.LevelTimeline(d, dur)
-    centres = list(H.level_rows(len(d["items"]), H.CHOOSE_TIER_GAP)[0])
-    boxes = H.level_text_boxes("choose_level", d["items"], centres)
-    sprite, (tx, ty) = H._pencil_cropped()
+    layout = H.level_layout(vtype, d["items"])
+    kind = H.LEVEL_MODES[vtype].get("kind", "write")
+    enters = H.page_enters(tl, layout)
     t = H.RISE
     while t < dur - H.HANDOFF:
-        at = H.level_pencil_position(t, tl, d["items"], None, centres, 0, writes=True,
-                                     spans=H._pencil_spans("choose", d["items"], centres), boxes=boxes)
-        fx, fy = H.page_to_frame(*at, H.page_motion(t, dur, (tl.answer[-1][1], tl.outro[0])))
-        assert 0 <= fx - tx and fx - tx + sprite.width <= 1080, t
-        assert 0 <= fy - ty and fy - ty + sprite.height <= 1920, t
+        page = H.current_page(t, enters)
+        leave = enters[page + 1] if page + 1 < len(enters) else dur
+        if not (enters[page] + H.RISE <= t <= leave - H.HANDOFF):
+            t += 0.25
+            continue                                     # the page itself is moving in or out
+        at = H.level_pencil_position(t, tl, d["items"], layout, kind)
+        angle = H.level_pencil_angle(t, tl, kind)
+        sprite, (tx, ty) = H._pencil_cropped(int(round(angle / 6) * 6))
+        fx, fy = H.page_to_frame(*at, H.page_motion(t, enters[page], leave, (tl.answer[-1][1], tl.outro[0])))
+        assert 0 <= fx - tx and fx - tx + sprite.width <= 1080, (vtype, t)
+        assert 0 <= fy - ty and fy - ty + sprite.height <= 1920, (vtype, t)
         t += 0.25
-    row6 = tl.think[5][0] + 0.5                               # waiting on row 6, by the right edge
+    row6 = tl.think[5][0] + 0.5                              # waiting by row 6, standing in the margin
+    angle = int(round(H.level_pencil_angle(row6, tl, kind) / 6) * 6)
+    sprite, _tip = H._pencil_cropped(angle)
     frame = Image.new("RGBA", (1080, 1920), (0, 0, 0, 0))
-    H._place_pencil(frame, *H.level_pencil_position(row6, tl, d["items"], None, centres, 0, True,
-                                                     H._pencil_spans("choose", d["items"], centres), boxes))
+    H._place_pencil(frame, *H.level_pencil_position(row6, tl, d["items"], layout, kind), H.STILL, angle)
     assert np.asarray(frame)[:, :, 3].astype(int).sum() == pytest.approx(
         np.asarray(sprite)[:, :, 3].astype(int).sum(), rel=0.01)   # every pixel of it landed
 

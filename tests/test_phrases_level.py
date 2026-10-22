@@ -83,8 +83,9 @@ def test_length_spec_measures_both_lines():
     import length_spec
     assert length_spec.check_script(_script()) == []
     long = _script()
-    long["items"][0]["english"] = "How did it go yesterday afternoon at the big meeting downtown?"
-    assert [(v["where"], v["field"]) for v in length_spec.check_script(long)] == [("items[0]", "english")]
+    # STEP 77 §4: the line wraps at 42 px; past LEVEL_MAX_LINES lines it does not fit
+    long["items"][0]["english"] = "How did it go yesterday afternoon at the big meeting downtown? " * 3
+    assert ("items[0]", "english") in [(v["where"], v["field"]) for v in length_spec.check_script(long)]
 
 
 # ── renderer ─────────────────────────────────────────────────────────

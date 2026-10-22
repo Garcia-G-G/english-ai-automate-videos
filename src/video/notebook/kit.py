@@ -327,10 +327,11 @@ PENCIL_ANGLE = 38
 PENCIL_LENGTH = 200
 
 
-@lru_cache(maxsize=1)
-def pencil() -> Tuple[Image.Image, Tuple[int, int]]:
-    """The pencil, tilted, and where its tip sits inside the image (the canvas centre:
-    drawn horizontally with the tip there, then rotated about it at SS×)."""
+@lru_cache(maxsize=32)
+def pencil(angle: float = PENCIL_ANGLE) -> Tuple[Image.Image, Tuple[int, int]]:
+    """The pencil at `angle` degrees below horizontal (negative: standing up), and where its
+    tip sits inside the image (the canvas centre: drawn horizontally with the tip there, then
+    rotated about it at SS×)."""
     ink, yellow = colour("ink"), colour("brand_yellow")
     wood, pink, metal = (236, 196, 140, 255), (232, 128, 140, 255), (178, 174, 166, 255)
     size = 2 * PENCIL_LENGTH
@@ -353,7 +354,7 @@ def pencil() -> Tuple[Image.Image, Tuple[int, int]]:
                         outline=ink, width=round(4 * k))
     d.line([(c, c), (c + cone, c - h / 2)], fill=ink, width=round(4 * k))
     d.line([(c, c), (c + cone, c + h / 2)], fill=ink, width=round(4 * k))
-    big = big.rotate(-PENCIL_ANGLE, resample=Image.BICUBIC, center=(c, c))
+    big = big.rotate(-angle, resample=Image.BICUBIC, center=(c, c))
     return big.resize((size, size), Image.LANCZOS), (size // 2, size // 2)
 
 

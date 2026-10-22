@@ -994,7 +994,8 @@ def create_base_frame(t: float) -> Tuple[Image.Image, ImageDraw.Draw]:
 def finalize_frame(frame: Image.Image, draw: ImageDraw.Draw,
                    t: float, duration: float,
                    words: list = None,
-                   scene_cuts: list = None) -> np.ndarray:
+                   scene_cuts: list = None,
+                   chrome: bool = True) -> np.ndarray:
     """Add character, progress bar, and convert to numpy RGB array.
 
     `scene_cuts` (seconds, from video.motion.scene_cuts) punches the CONTENT
@@ -1014,6 +1015,11 @@ def finalize_frame(frame: Image.Image, draw: ImageDraw.Draw,
             char.render(frame, t, words)
     except Exception:
         pass  # Character is optional — never block video rendering
+
+    if not chrome:
+        # STEP 77 §4: the notebook Shorts carry their brand on the page's footer; no progress
+        # bar, no watermark in the platforms' caption zone.
+        return np.array(frame.convert('RGB'))
 
     progress = min(1.0, t / duration)
     draw_progress_bar(draw, progress)

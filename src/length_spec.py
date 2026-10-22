@@ -203,45 +203,34 @@ def _boxes() -> List[Dict]:
              height=None, face="fredoka",
              source="how_do_you_say.ENGLISH_W, WORD_FONT_MAX/MIN"),
 
-        # ── level_test, say_it_level (STEP 58) ───────────────────────
-        # Prompt and answer share one column, a line each, at one size
-        # for the whole page (how_do_you_say.page_size); the floor is
-        # LINE_FONT_MIN. say_it_level's tip and alternative go on the
-        # note over the title: the tip wraps to at most two lines, the
-        # alternative is one line after «También: ».
-        *[dict(video_type=vtype, field=field, width=hdys.LINE_W, lines=1,
+        # ── the level modes (STEP 58-62, relaid in STEP 77 §4) ───────
+        # One size per video, never under 42 px; a line that does not fit wraps.
+        # Line 1 (prompt, statement, sentence with its blank) has the whole column,
+        # line 2 (answer, translation, options) leaves room for the tick. Each field
+        # may take LEVEL_MAX_LINES lines; check_script also lays the whole page out
+        # (how_do_you_say.level_layout), which is what decides whether ten rows fit.
+        *[dict(video_type=vtype, field=field, width=width, lines=hdys.LEVEL_MAX_LINES,
                font_max=hdys.LINE_FONT_MAX, font_min=hdys.LINE_FONT_MIN,
-               height=None, face="fredoka",
-               source="how_do_you_say.LINE_W, LINE_FONT_MAX/MIN")
-          for vtype in ("level_test", "say_it_level", "phrases_level") for field in ("english", "spanish")],
-        # true_false_level (STEP 61): the statement, and the answer line as drawn
-        # («VERDADERO» / «FALSO · {correction}», how_do_you_say.tf_answer).
-        *[dict(video_type="true_false_level", field=field, width=hdys.LINE_W, lines=1,
-               font_max=hdys.LINE_FONT_MAX, font_min=hdys.LINE_FONT_MIN,
-               height=None, face="fredoka",
-               source="how_do_you_say.LINE_W, LINE_FONT_MAX/MIN")
-          for field in ("statement", "answer")],
-        # fill_level (STEP 62): the sentence, its blank as wide as the page's longest
-        # answer (check_script measures that with how_do_you_say.fill_layout), and the
-        # translation under it.
-        *[dict(video_type="fill_level", field=field, width=hdys.LINE_W, lines=1,
-               font_max=hdys.LINE_FONT_MAX, font_min=hdys.LINE_FONT_MIN,
-               height=None, face="fredoka",
-               source="how_do_you_say.LINE_W, LINE_FONT_MAX/MIN, fill_layout")
-          for field in ("sentence", "translation")],
-        # choose_level (STEP 62): the same sentence line, and «make · do» under it
-        # (how_do_you_say.choice_line).
-        *[dict(video_type="choose_level", field=field, width=hdys.LINE_W, lines=1,
-               font_max=hdys.LINE_FONT_MAX, font_min=hdys.LINE_FONT_MIN,
-               height=None, face="fredoka",
-               source="how_do_you_say.LINE_W, LINE_FONT_MAX/MIN, fill_layout, choice_line")
-          for field in ("sentence", "options")],
+               height=None, face="fredoka_wrap",
+               source="how_do_you_say.LINE1_W / LINE_W, LINE_FONT_MAX/MIN, level_layout")
+          for vtype, field, width in (
+              *[(v, f, w) for v, prompt in (("level_test", "english"), ("say_it_level", "spanish"),
+                                            ("phrases_level", "spanish"))
+                for f, w in ((prompt, hdys.LINE1_W),
+                             ("spanish" if prompt == "english" else "english", hdys.LINE_W))],
+              ("true_false_level", "statement", hdys.LINE1_W), ("true_false_level", "answer", hdys.LINE_W),
+              ("fill_level", "sentence", hdys.LINE1_W), ("fill_level", "translation", hdys.LINE_W),
+              ("choose_level", "sentence", hdys.LINE1_W))],
+        # choose_level's «make · do» is ONE line: the circle and the strike go round it.
+        dict(video_type="choose_level", field="options", width=hdys.LINE_W, lines=1,
+             font_max=hdys.LINE_FONT_MAX, font_min=hdys.LINE_FONT_MIN, height=None,
+             face="fredoka_wrap", source="how_do_you_say.LINE_W, choice_line"),
         dict(video_type="say_it_level", field="tip",
-             width=hdys.NOTE_W - 2 * hdys.NOTE_PAD, lines=hdys.NOTE_LINES - 1,
+             width=hdys.NOTE_W - 2 * hdys.NOTE_PAD, lines=hdys.NOTE_LINES - hdys.NOTE_ALT_LINES,
              font_max=hdys.NOTE_FONT, font_min=hdys.NOTE_FONT, height=None,
              face="fredoka_note", source="how_do_you_say.note_lines, NOTE_W"),
         dict(video_type="say_it_level", field="alt",
-             width=hdys.NOTE_W - 2 * hdys.NOTE_PAD - hdys.NOTE_LEAD_W, lines=1,
+             width=hdys.NOTE_W - 2 * hdys.NOTE_PAD - hdys.NOTE_LEAD_W, lines=hdys.NOTE_ALT_LINES,
              font_max=hdys.NOTE_FONT, font_min=hdys.NOTE_FONT, height=None,
              face="fredoka_note", source="how_do_you_say.NOTE_W - «También: »"),
 
@@ -331,7 +320,7 @@ def measure(text: str, budget: Budget) -> Dict:
         # The note's own wrap, verbatim: lines past budget.lines do not fit.
         from video.how_do_you_say import fredoka, note_lines
         f = fredoka(budget.font_max, "display_medium")
-        lines = [t for _k, t in note_lines(text, None)]
+        lines = [t for _k, t in (note_lines(None, text) if budget.field == "alt" else note_lines(text, None))]
         width = max(int(math.ceil(f.getlength(t))) for t in lines)
         over_width = max(0, width - budget.width)
         over_lines = max(0, len(lines) - budget.lines)
@@ -340,6 +329,22 @@ def measure(text: str, budget: Budget) -> Dict:
             "size": budget.font_max, "lines": len(lines), "width": width,
             "over_width": over_width, "over_lines": over_lines, "over_height": 0,
             "shrunk": False, "at_floor": True,
+        }
+
+    if budget.face == "fredoka_wrap":
+        # The level page's wrap, verbatim (STEP 77 §4): at font_min, at most budget.lines lines.
+        from video.how_do_you_say import BLANK_MIN, BLANK_PAD, _line_w, _wrap_line, fredoka
+        f = fredoka(budget.font_min)
+        blank = int(math.ceil(f.getlength(BLANK_MIN))) + 2 * BLANK_PAD   # the page's blank is never narrower
+        lines = _wrap_line(text, f, budget.width, blank)
+        width = max(int(math.ceil(_line_w(t, f, blank))) for t in lines)
+        over_width = max(0, width - budget.width)                 # one word wider than the column
+        over_lines = max(0, len(lines) - budget.lines)
+        return {
+            "fits": not (over_width or over_lines), "empty": False, "chars": len(text),
+            "size": budget.font_min, "lines": len(lines), "width": width,
+            "over_width": over_width, "over_lines": over_lines, "over_height": 0,
+            "shrunk": True, "at_floor": True,
         }
 
     if budget.face == "fredoka":
@@ -448,19 +453,24 @@ def check_script(script: Dict) -> List[Dict]:
                 look("answer", tf_answer(item)[0], f"items[{index}]")
 
     if video_type in ("fill_level", "choose_level"):
-        from video.how_do_you_say import LINE_W, blank_key, choice_line, fill_layout, fill_line_width
-        items = [it for it in script.get("items") or []
-                 if it.get("sentence") and (it.get("options") if video_type == "choose_level" else it.get("answer"))]
-        size, blank = fill_layout(tuple(blank_key(it) for it in items)) if items else (0, 0)
+        from video.how_do_you_say import choice_line
         for index, item in enumerate(script.get("items") or []):
+            look("sentence", item.get("sentence"), f"items[{index}]")
             look("translation", item.get("translation"), f"items[{index}]")
             if item.get("options"):
                 look("options", choice_line(item), f"items[{index}]")
-            if item in items and fill_line_width(item["sentence"], size, blank) > LINE_W:
-                violations.append({"type": video_type, "field": "sentence", "where": f"items[{index}]",
-                                   "text": item["sentence"], "fits": False,
-                                   "over_width": fill_line_width(item["sentence"], size, blank) - LINE_W,
-                                   "over_lines": 0, "over_height": 0})
+
+    if video_type in ("level_test", "say_it_level", "phrases_level", "true_false_level",
+                      "fill_level", "choose_level"):
+        # STEP 77 §4: the rows, wrapped at the video's one size, must go onto pages.
+        from video.how_do_you_say import LayoutError, level_layout
+        try:
+            level_layout(video_type, script.get("items") or [])
+        except LayoutError as exc:
+            violations.append({"type": video_type, "field": "page", "where": "items", "text": str(exc),
+                               "fits": False, "over_width": 0, "over_lines": 1, "over_height": 0})
+        except (KeyError, TypeError, ValueError):
+            pass                                   # an incomplete script: the schema reports it
 
     if video_type == "fill_blank":
         options = script.get("options")

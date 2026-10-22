@@ -80,8 +80,9 @@ def test_length_spec_measures_the_sentence_with_its_blank_and_the_translation():
     import length_spec
     assert length_spec.check_script(_script()) == []
     long = _script()
-    long["items"][1]["sentence"] = "See you ____ Monday morning at the big station downtown."
-    long["items"][2]["translation"] = "La clase empieza a las nueve en punto de la mañana, sin falta."
+    # STEP 77 §4: lines wrap at 42 px; a field over LEVEL_MAX_LINES lines does not fit
+    long["items"][1]["sentence"] = "See you ____ Monday morning at the big station downtown, " * 2
+    long["items"][2]["translation"] = "La clase empieza a las nueve en punto de la mañana, sin falta. " * 2
     assert {(v["where"], v["field"]) for v in length_spec.check_script(long)} == \
         {("items[1]", "sentence"), ("items[2]", "translation")}
 
@@ -89,10 +90,9 @@ def test_length_spec_measures_the_sentence_with_its_blank_and_the_translation():
 # ── renderer ─────────────────────────────────────────────────────────
 
 def test_the_blank_is_one_width_on_the_page_and_holds_the_longest_answer():
-    from video.how_do_you_say import BLANK_PAD, fill_layout, fredoka
-    items = tuple((it["sentence"], it["answer"]) for it in _script()["items"])
-    size, blank = fill_layout(items)
-    assert blank >= fredoka(size).getlength("with") + 2 * BLANK_PAD
+    from video.how_do_you_say import BLANK_PAD, fredoka, level_layout
+    lay = level_layout(VTYPE, _script()["items"])
+    assert lay.blank >= fredoka(lay.size).getlength("with") + 2 * BLANK_PAD
 
 
 def test_frame_zero_gives_no_hint_of_any_answer(no_mascot):
@@ -121,9 +121,7 @@ def test_frames_are_a_pure_function_of_t(no_mascot):
 def test_the_answer_is_written_into_the_blank_and_the_translation_comes_with_it(no_mascot, monkeypatch):
     import video.how_do_you_say as H
     drawn = []
-    real_plain, real_line = H._plain_line, H._line_image
-    monkeypatch.setattr(H, "_plain_line", lambda text, size, color:
-                        drawn.append(("answer", text, color)) or real_plain(text, size, color))
+    real_line = H._line_image
     monkeypatch.setattr(H, "_line_image", lambda text, size, color:
                         drawn.append(("line", text, color)) or real_line(text, size, color))
     data, dur = _timeline(_script())
@@ -132,20 +130,20 @@ def test_the_answer_is_written_into_the_blank_and_the_translation_comes_with_it(
     assert ("line", "Depende del tiempo.", H._color("secondary_text")) not in drawn   # row 5 not yet
     drawn.clear()
     H.create_frame_level((ans["start"] + ans["end"]) / 2, data, dur)
-    assert ("answer", "on", H._color("english_blue")) in drawn
+    assert ("line", "on", H._color("english_blue")) in drawn
     assert ("line", "Depende del tiempo.", H._color("secondary_text")) in drawn
 
 
 def test_the_pencil_writes_inside_the_blank_on_the_sentence_line():
-    from video.how_do_you_say import LevelTimeline, fill_spans, level_pencil_position, row_centres
+    from video.how_do_you_say import LevelTimeline, fill_spans, level_layout, level_pencil_position
     data, dur = _timeline(_script())
-    tl, items, centres = LevelTimeline(data, dur), data["items"], row_centres(10)
-    spans = fill_spans(items, centres)
+    tl, items = LevelTimeline(data, dur), data["items"]
+    layout = level_layout(VTYPE, items)
+    spans = fill_spans(items, layout)
     ans = data["segment_times"]["answer_2"]
-    assert level_pencil_position(ans["start"], tl, items, None, centres, 0, spans=spans) == \
+    assert level_pencil_position(ans["start"], tl, items, layout, "fill") == \
         pytest.approx(spans[1][0::2], abs=2.0)                # ±2: the pencil wobbles as it writes
-    assert level_pencil_position(ans["end"], tl, items, None, centres, 0, spans=spans) == \
-        pytest.approx(spans[1][1:])
+    assert level_pencil_position(ans["end"], tl, items, layout, "fill") == pytest.approx(spans[1][1:])
 
 
 # ── audio ────────────────────────────────────────────────────────────

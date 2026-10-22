@@ -46,15 +46,16 @@ def _hdys_timeline(data):
 #: RE-PINNED at STEP 77 §1, when every mark started coming from the supersampled notebook kit
 #: (the frames changed on purpose: anti-aliased edges; stills reviewed in _audit/stills/STEP77/), and
 #: again at §2 (page tilted by cv2 once per state, the pencil drawn unrotated after the tilt),
-#: and at §3 (motion: rise, cascade, hook, swipe, stroke ticks, feather, 200 px pencil, CTA).
+#: and at §3 (motion: rise, cascade, hook, swipe, stroke ticks, feather, 200 px pencil, CTA),
+#: and at §4 (safe areas: title down, footer, narrower columns, no frame chrome, pencil shadow).
 HDYS_PIN = {
-    0.0: "38a36cc013070f75",
-    4.7: "4c0f682443d3f606",
-    15.5: "4061f78307443edf",
-    25.9: "841eb7d5d85e5334",
-    50.2: "b55dad4ed5eeeddf",
-    53.6: "3c898e316c3fd650",
-    63.7: "04b15d530f3cb48d",
+    0.0: "5c5bc1ab493b1eee",
+    4.7: "60e51f1004aec66d",
+    15.5: "4fa6300952c869f1",
+    25.9: "c8e0f01711160d88",
+    50.2: "932eacc5fa907c3a",
+    53.6: "09143e3734fd0942",
+    63.7: "feb37c39e52dc6f1",
 }
 
 
@@ -142,15 +143,16 @@ def test_say_it_traps_need_a_tip():
 
 def test_length_spec_measures_with_the_renderers_line_and_note():
     import length_spec
-    from video.how_do_you_say import LINE_W, fit_line
+    from video.how_do_you_say import LEVEL_MAX_LINES, LINE1_W, LINE_FONT_MIN, _wrap_line, fredoka
     assert length_spec.check_script(_script("level_test")) == []
     long = _script("say_it_level")
     before = {(v["where"], v["field"]) for v in length_spec.check_script(long)}
-    long["items"][0]["spanish"] = "Una mesa para dos personas junto a la ventana, por favor."
+    # STEP 77 §4: a prompt wraps at 42 px; past LEVEL_MAX_LINES lines it does not fit
+    long["items"][0]["spanish"] = "Una mesa para dos personas junto a la ventana, por favor. " * 3
     long["items"][1]["tip"] = "Una explicación muy larga " * 6
     bad = {(v["where"], v["field"]) for v in length_spec.check_script(long)}
-    assert bad - before == {("items[0]", "spanish"), ("items[1]", "tip")}
-    assert fit_line(long["items"][0]["spanish"])[2] > LINE_W
+    assert {("items[0]", "spanish"), ("items[1]", "tip")} <= bad - before
+    assert len(_wrap_line(long["items"][0]["spanish"], fredoka(LINE_FONT_MIN), LINE1_W)) > LEVEL_MAX_LINES
 
 
 # ── renderer ─────────────────────────────────────────────────────────
@@ -181,21 +183,23 @@ def test_an_unspoken_prompt_lights_its_row_at_the_pause():
 
 
 def test_the_pencil_waits_off_the_prompts_then_writes_the_answer():
-    from video.how_do_you_say import (LINE_X, PENCIL_MOVE, PENCIL_WAIT_X, LevelTimeline,
-                                      fit_line, level_pencil_position, page_size, row_centres)
+    from video.how_do_you_say import (LINE_X, PENCIL_MOVE, PENCIL_WAIT_X, LevelTimeline, fredoka,
+                                      level_layout, level_pencil_angle, level_pencil_position,
+                                      PENCIL_ANGLE, PENCIL_PARK_ANGLE)
     data, dur = _timeline(_script("level_test"))
     tl, items = LevelTimeline(data, dur), data["items"]
-    size = page_size(tuple(it["spanish"] for it in items))
-    centres = row_centres(10)
+    layout = level_layout("level_test", items)
     think = data["segment_times"]["think_2"]
-    assert level_pencil_position(think["end"] - PENCIL_MOVE - 0.01, tl, items, "spanish", centres, size)[0] \
-        == pytest.approx(PENCIL_WAIT_X)
+    t = think["end"] - PENCIL_MOVE - 0.01
+    assert level_pencil_position(t, tl, items, layout)[0] == pytest.approx(PENCIL_WAIT_X)
+    assert level_pencil_angle(t, tl) == PENCIL_PARK_ANGLE               # standing in the margin
     ans = data["segment_times"]["answer_2"]
     # ±WOBBLE: the pencil's hand while it writes (STEP 77 §3)
-    assert level_pencil_position(ans["start"], tl, items, "spanish", centres, size)[0] == \
-        pytest.approx(LINE_X, abs=2.0)
-    assert level_pencil_position(ans["end"], tl, items, "spanish", centres, size)[0] == \
-        pytest.approx(LINE_X + fit_line(items[1]["spanish"], size)[2])
+    assert level_pencil_position(ans["start"], tl, items, layout)[0] == pytest.approx(LINE_X, abs=2.0)
+    assert level_pencil_angle(ans["start"], tl) == PENCIL_ANGLE
+    text, _y = layout.rows[1].l2[-1]
+    assert level_pencil_position(ans["end"], tl, items, layout)[0] == \
+        pytest.approx(LINE_X + fredoka(layout.size).getlength(text))
 
 
 # ── audio ────────────────────────────────────────────────────────────

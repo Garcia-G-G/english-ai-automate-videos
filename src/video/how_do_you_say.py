@@ -27,7 +27,7 @@ import math
 import re
 from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import NamedTuple, Dict, List, Optional, Tuple
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -79,28 +79,31 @@ RING_X = 34                                    # the punched hole, page-local
 
 TITLE_TEXT = "How do you say?"
 TITLE_SIZE = 76
-TITLE_Y = 34
-THEME_SIZE = 40
-THEME_Y = 146
+TITLE_Y = 94                    # 60 px below STEP 76: clear of TikTok's top tabs (STEP 77 §4)
+THEME_SIZE = 42
+THEME_Y = 206
 
-ROWS_TOP = 222
-ROWS_BOTTOM = PAGE_H - 30
-ROW_PITCH = 108                                # ten rows fill ROWS_TOP..BOTTOM
+ROWS_TOP = 282
+ROWS_BOTTOM = PAGE_H - 70                      # the brand footer below
+ROW_PITCH = 98                                 # ten rows fill ROWS_TOP..BOTTOM
 
-EMOJI_SIZE = 90
-EMOJI_X = 76
+EMOJI_SIZE = 76
+EMOJI_X = 66
 
 #: The two word columns. Their widths are what length_spec measures a word
 #: against, at WORD_FONT_MAX shrinking to WORD_FONT_MIN.
-SPANISH_X = 184
+SPANISH_X = 150
 SPANISH_W = 296
-ENGLISH_X = 496
-ENGLISH_W = 304
+ENGLISH_X = 454
+ENGLISH_W = 298                                # its tick ends by CONTENT_R
 WORD_FONT_MAX = 58
 WORD_FONT_MIN = 42
 
 TICK_GAP = 24             # ≥ 14 px of paper between a word's ink and the tick's (STEP 77 §3)
 TICK_SIZE = 34
+#: STEP 77 §4, safe areas: nothing the viewer reads lies right of page-local x CONTENT_R, which
+#: the 1° tilt puts at frame x ≤ 938 at the page's foot (the button rail starts at 940).
+CONTENT_R = 816
 
 # ── Motion constants (seconds) ───────────────────────────────────────
 HIGHLIGHT_FADE = 0.25
@@ -274,7 +277,20 @@ def _static_page(items_key: Tuple[Tuple[str, str], ...], theme: str) -> Image.Im
 
     _draw_title(layer, TITLE_TEXT, theme, fredoka(TITLE_SIZE), _color("english_blue"))
     _draw_rings(layer, 40, PAGE_H - 40)
+    _draw_footer(layer)
     return layer
+
+
+FOOTER_SIZE = 36
+FOOTER_CY = PAGE_H - 38
+
+
+def _draw_footer(layer: Image.Image) -> None:
+    """The brand on the page (STEP 77 §4): Bubi mini + «learningroutes.com», centred at its foot,
+    inside the safe area; it replaces the frame's watermark and progress bar."""
+    foot = kit.footer(FOOTER_SIZE)
+    cx = (64 + PAGE_W) / 2
+    layer.alpha_composite(foot, tuple(int(round(v)) for v in _p(cx - foot.width / 2, FOOTER_CY - foot.height / 2)))
 
 
 def _draw_paper(layer: Image.Image) -> None:
@@ -430,17 +446,28 @@ def _composite_page(frame: Image.Image, rec: _PageRecorder, motion: Motion) -> N
     kit._composite_clipped(frame, _page(rec, s), PAGE_X - PAD, PAGE_Y - PAD + int(dy))
 
 
-@lru_cache(maxsize=1)
-def _pencil_cropped() -> Tuple[Image.Image, Tuple[int, int]]:
-    img, (cx, cy) = kit.pencil()
-    box = img.getbbox()
-    return img.crop(box), (cx - box[0], cy - box[1])
+PENCIL_SHADOW = (6, 9)                   # offset of its soft shadow (STEP 77 §4)
 
 
-def _place_pencil(frame: Image.Image, px: float, py: float, motion: Motion = STILL) -> None:
+@lru_cache(maxsize=32)
+def _pencil_cropped(angle: int = None) -> Tuple[Image.Image, Tuple[int, int]]:
+    """The pencil at `angle` with a soft ink shadow under it, cropped, and its tip in it."""
+    from PIL import ImageFilter as _F
+    img, (cx, cy) = kit.pencil(kit.PENCIL_ANGLE if angle is None else angle)
+    shadow = Image.new("RGBA", img.size, _color("ink"))
+    shadow.putalpha(img.getchannel("A").point(lambda v: v * 0.28).filter(_F.GaussianBlur(4)))
+    out = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    out.alpha_composite(shadow, PENCIL_SHADOW)
+    out.alpha_composite(img)
+    box = out.getbbox()
+    return out.crop(box), (cx - box[0], cy - box[1])
+
+
+def _place_pencil(frame: Image.Image, px: float, py: float, motion: Motion = STILL,
+                  angle: float = None) -> None:
     """The pencil, unrotated (1° is invisible on it), its tip on the page point (px, py) after
     the tilt, placed with a sub-pixel affine shift so a slow move does not step."""
-    sprite, (tx, ty) = _pencil_cropped()
+    sprite, (tx, ty) = _pencil_cropped(None if angle is None else int(round(angle / 6) * 6))
     fx, fy = page_to_frame(px, py, motion)
     x, y = fx - tx, fy - ty
     ix, iy = math.floor(x), math.floor(y)
@@ -455,13 +482,14 @@ def _place_pencil(frame: Image.Image, px: float, py: float, motion: Motion = STI
 #
 # Every move here is a pure function of t, like the rest of the renderer.
 
-def page_motion(t: float, duration: float, push: Tuple[float, float]) -> Motion:
-    """(dy, scale) of the page: it rises from RISE_FROM px below with an overshoot, pushes in
-    1.00 → PUSH_TO over `push` and holds, then slides up out of the frame in the last HANDOFF
-    seconds, into the outro. dy is whole pixels; the scale moves in 0.2 % steps (page memo)."""
-    dy = RISE_FROM * (1.0 - ease_out_back(t / RISE)) if t < RISE else 0.0
-    if t > duration - HANDOFF:
-        q = clamp01((t - (duration - HANDOFF)) / HANDOFF)
+def page_motion(t: float, enter: float, leave: float, push: Tuple[float, float]) -> Motion:
+    """(dy, scale) of a page shown from `enter` to `leave`: it rises from RISE_FROM px below
+    with an overshoot, pushes in 1.00 → PUSH_TO over `push` and holds, and slides up out of the
+    frame in the HANDOFF seconds before `leave` (the next page, or the video's end and its
+    outro). dy is whole pixels; the scale moves in 0.2 % steps (page memo)."""
+    dy = RISE_FROM * (1.0 - ease_out_back((t - enter) / RISE)) if t < enter + RISE else 0.0
+    if t > leave - HANDOFF:
+        q = clamp01((t - (leave - HANDOFF)) / HANDOFF)
         dy -= (PAGE_Y + LAYER_H) * q ** 3
     s = 1.0
     if t >= push[0]:
@@ -475,19 +503,23 @@ def cascade(i: int, t: float) -> float:
     return clamp01((t - CASCADE_START - i * CASCADE_STAGGER) / CASCADE_DUR)
 
 
-def _rows_in(layer, img: Image.Image, centres: List[int], t: float) -> None:
-    """A static layer of row text, whole — or, in the opening, row by row, each band fading
-    and rising CASCADE_DY px into place."""
-    n = len(centres)
+def _bands(centres: List[float]) -> List[Tuple[float, float]]:
+    """(top, bottom) of rows at ROW_PITCH about their centres."""
+    return [(cy - ROW_PITCH / 2, cy + ROW_PITCH / 2) for cy in centres]
+
+
+def _rows_in(layer, img: Image.Image, rows, t: float) -> None:
+    """A static layer of row text, whole — or, as its page comes in, row by row, each band
+    (anything with .top/.bottom, or a (top, bottom) pair) fading and rising CASCADE_DY px."""
+    bands = [(r.top, r.bottom) if hasattr(r, "top") else r for r in rows]
+    n = len(bands)
     if cascade(n - 1, t) >= 1.0:
         layer.alpha_composite(img)
         return
-    for i, cy in enumerate(centres):
+    for i, (top, bottom) in enumerate(bands):
         e = ease_out_cubic(cascade(i, t))
         if e <= 0:
             continue
-        top = (centres[i - 1] + cy) / 2 if i else cy - ROW_PITCH / 2
-        bottom = (cy + centres[i + 1]) / 2 if i + 1 < n else cy + ROW_PITCH / 2
         y0, y1 = int(_p(0, top)[1]), int(_p(0, bottom)[1])
         band = _faded(img.crop((0, y0, img.width, y1)), round(e * 16) / 16)
         layer.alpha_composite(band, (0, y0 + int(round(CASCADE_DY * (1.0 - e)))))
@@ -495,6 +527,10 @@ def _rows_in(layer, img: Image.Image, centres: List[int], t: float) -> None:
 
 def _highlight(layer, x0: float, cy: float, t: float, start: float, end: float) -> None:
     """The row's marker: swipes in left to right from `start`, fades out after `end`."""
+    _highlight_band(layer, x0, cy - ROW_PITCH // 2 + 6, cy + ROW_PITCH // 2 - 10, t, start, end)
+
+
+def _highlight_band(layer, x0: float, top: float, bottom: float, t: float, start: float, end: float) -> None:
     if t < start or t >= end + HIGHLIGHT_FADE:
         return
     a = 0.7 * (1.0 - clamp01((t - end) / HIGHLIGHT_FADE) if t >= end else 1.0)
@@ -502,8 +538,7 @@ def _highlight(layer, x0: float, cy: float, t: float, start: float, end: float) 
     w = round((x1 - x0) * ease_out_expo((t - start) / HIGHLIGHT_SWEEP) / 4) * 4
     if w < 40 or a <= 0:
         return
-    kit.highlighter(layer, (*_p(x0, cy - ROW_PITCH // 2 + 6), *_p(x0 + w, cy + ROW_PITCH // 2 - 10)),
-                    a, _color("brand_yellow"))
+    kit.highlighter(layer, (*_p(x0, top), *_p(x0 + w, bottom)), a, _color("brand_yellow"))
 
 
 def _written(word: Image.Image, p: float) -> Optional[Image.Image]:
@@ -632,7 +667,7 @@ def _place_note(layer, img: Image.Image, cx: float, cy: float, a: float = 1.0) -
 #: left of where the pencil parks.
 HOOK_AT = (PAGE_W / 2 + 20, 700)
 CTA_W, CTA_OVERLAP = 620, 50
-CTA_Y = 118
+CTA_Y = TITLE_Y + 84
 BUBI_STICKER_W = 186                     # kit.bubi_sticker(150)   # the note centred on the title
 
 
@@ -778,7 +813,7 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
         layer.alpha_composite(img, (int(round(ex)), int(round(ey))))
 
     # 3. the Spanish column, static (row by row in the opening)
-    _rows_in(layer, _static_words(key), centres, t)
+    _rows_in(layer, _static_words(key), _bands(centres), t)
 
     # 4. countdown dots, English reveal, ticks, recap pulses
     blue = _color("english_blue")
@@ -824,12 +859,12 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
     _draw_cta(layer, t, tl.outro[0], fredoka(TITLE_SIZE).getlength(TITLE_TEXT))
 
     # 6. the page, tilted (memoised by state) and moved, then the pencil over it
-    motion = page_motion(t, duration, tl.recap)
+    motion = page_motion(t, 0.0, duration, tl.recap)
     _composite_page(frame, layer, motion)
     _place_pencil(frame, *pencil_position(t, tl, items, centres), motion)
 
     return finalize_frame(frame, ImageDraw.Draw(frame, "RGBA"), t, duration,
-                          scene_cuts=[tl.recap[0]])
+                          scene_cuts=[tl.recap[0]], chrome=False)
 
 
 # ═════════════════════════════════════════════════════════════════════
@@ -844,10 +879,6 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
 # ═════════════════════════════════════════════════════════════════════
 
 #: Which field is the prompt (line 1, from frame 1) and which is written in.
-#: choose_level: a circle hangs below its options line, so each tier divider gets this much
-#: room of its own and the rows close up to pay for it (STEP 63: «do» and «did» ran into them).
-CHOOSE_TIER_GAP = 24
-
 LEVEL_MODES = {
     "level_test":   {"prompt": "english", "answer": "spanish"},
     "say_it_level": {"prompt": "spanish", "answer": "english"},
@@ -856,7 +887,7 @@ LEVEL_MODES = {
     # STEP 62: the answer is written INTO the sentence's blank; the translation under it.
     "fill_level": {"prompt": "sentence", "answer": None, "kind": "fill"},
     # STEP 62 §2: both options under the sentence; the right one is circled, the other struck.
-    "choose_level": {"prompt": "sentence", "answer": None, "kind": "choose", "tier_gap": CHOOSE_TIER_GAP},
+    "choose_level": {"prompt": "sentence", "answer": None, "kind": "choose"},
     # STEP 62 §3: say_it_level's page without tiers or verdict; until its reveal each
     # English line is the shared grey blurred bar.
     "phrases_level": {"prompt": "spanish", "answer": "english", "tiers": False, "placeholder": True},
@@ -868,35 +899,46 @@ TIER_STARTS = (3, 7)
 TIERS = (("BÁSICO", "correct", 0, 3), ("INTERMEDIO", "brand_yellow", 3, 7),
          ("EXPERTO", "error", 7, 10))
 
-NUM_CX = 122                     # row number, centred here
+NUM_CX = 130                     # row number, centred here
 NUM_SIZE = 46
-LABEL_X0, LABEL_X1 = 50, 86      # the tier pill, in the margin right of the rings
-LABEL_SIZE = 26
-#: One text column for both lines; length_spec measures every prompt and
-#: answer against it. Right edge leaves room for the tick.
-LINE_X = 166
-LINE_W = PAGE_W - 30 - (10 + TICK_SIZE) - LINE_X   # 620: the column kept its width when TICK_GAP grew (STEP 77 §3); §4 relays it
+LABEL_X0, LABEL_X1 = 46, 92      # the tier pill, in the margin right of the rings
+LABEL_SIZE = 32                  # ≥ 32 (STEP 77 §4)
+#: One text column for both lines. Its right edge is CONTENT_R less the tick, so nothing the
+#: viewer reads crosses the platforms' button rail (STEP 77 §4).
+LINE_X = 172
+LINE_W = CONTENT_R - (TICK_GAP + TICK_SIZE + 6) - LINE_X          # 580: line 2, which ends in a tick
+LINE1_W = CONTENT_R - LINE_X                                     # 644: line 1 carries no tick
+#: STEP 77 §4: one size per video, never under 42 px. A line that does not fit wraps; rows
+#: take the height their lines need, and a page holds at most ROWS_PER_PAGE of them.
 LINE_FONT_MAX = 46
-LINE_FONT_MIN = 34
-LINE1_DY, LINE2_DY = -23, 25     # line centres from the row centre
+LINE_FONT_MIN = 42
+LINE_PITCH = 1.2                 # line height, in font sizes
+ROW_PAD = 24                     # air inside a row, top and bottom together
+ROW_EXTRA_MAX = 36               # at most this much more, when a page has room to spare
+ROWS_PER_PAGE = 8
+TIER_GAP = 30                    # between two tiers on one page: a choose circle hangs below its line
+LEVEL_MAX_LINES = 3              # per field; length_spec reads it
 
 #: The say_it_level note over the title: the tip and the other right answer.
-NOTE_X, NOTE_Y, NOTE_W, NOTE_H = 96, 16, 740, 196
+NOTE_X, NOTE_Y, NOTE_W, NOTE_H = 96, 30, 740, 250       # ends above the first row (ROWS_TOP)
 NOTE_PAD = 22
-NOTE_FONT = 34
-NOTE_LINES = 3                   # tip up to two lines + «También: …»
+NOTE_FONT = 42
+NOTE_LINES = 4                   # tip up to two lines + «También: …» up to two
+NOTE_ALT_LINES = 2
 NOTE_POP = 0.25
 NOTE_LEAD = "También: "
-NOTE_LEAD_W = 156                # NOTE_LEAD at NOTE_FONT plus a little air; length_spec reads it
+NOTE_LEAD_W = 190                # NOTE_LEAD at NOTE_FONT plus a little air; length_spec reads it
 
 #: The verdict note over the lower rows.
-VERDICT_X, VERDICT_Y, VERDICT_W, VERDICT_H = 120, PAGE_H - 470, 640, 400
+VERDICT_X, VERDICT_Y, VERDICT_W, VERDICT_H = 120, PAGE_H - 520, 640, 400
 VERDICT_SIZE = 64
 VERDICT_ROT = -3.0
 LABEL_PULSE = 0.22
-#: Where the pencil waits while the viewer thinks: the right end of the answer line, its
-#: body off the page, so it covers none of the prompts the viewer is reading.
-PENCIL_WAIT_X = PAGE_W - 70
+#: Where the pencil waits while the viewer thinks: STANDING in the right margin, tip by the
+#: answer line, body hanging down the margin, so it covers no text and stays in the frame.
+#: Steeper than the writing angle, so it narrows as it turns (STEP 77 §4).
+PENCIL_WAIT_X = PAGE_W - 22
+PENCIL_PARK_ANGLE = 74
 #: Parked right of the theme line: a level title is wider than "How do you say?".
 LEVEL_PENCIL_PARK = (PAGE_W - 70, THEME_Y + 24)
 
@@ -932,35 +974,8 @@ def fill_parts(sentence: str) -> Tuple[str, str]:
     return before, after
 
 
-@lru_cache(maxsize=16)
-def fill_layout(items: Tuple[Tuple[str, str], ...]) -> Tuple[int, int]:
-    """(font size, blank width) for a page of (sentence, answer): the largest size at which
-    every sentence, with the page's blank in it, fits LINE_W on one line."""
-    for size in range(LINE_FONT_MAX, LINE_FONT_MIN - 1, -2):
-        f = fredoka(size)
-        blank = int(math.ceil(max([f.getlength(a) for _s, a in items] + [f.getlength(BLANK_MIN)]))) + 2 * BLANK_PAD
-        if all(f.getlength(b) + blank + f.getlength(a) <= LINE_W for b, a in (fill_parts(s) for s, _a in items)):
-            return size, blank
-    f = fredoka(LINE_FONT_MIN)
-    return LINE_FONT_MIN, int(math.ceil(max(f.getlength(a) for _s, a in items))) + 2 * BLANK_PAD
-
-
-def fill_line_width(sentence: str, size: int, blank: int) -> int:
-    """Drawn width of a sentence with the page's blank; length_spec measures it against LINE_W."""
-    f = fredoka(size)
-    before, after = fill_parts(sentence)
-    return int(math.ceil(f.getlength(before) + blank + f.getlength(after)))
-
-
 def fit_line(text: str, size: int = LINE_FONT_MAX) -> Tuple[ImageFont.FreeTypeFont, int, int]:
     return fit_word(text, LINE_W, size, LINE_FONT_MIN)
-
-
-@lru_cache(maxsize=64)
-def page_size(texts: Tuple[str, ...]) -> int:
-    """One size for a whole column of lines: the largest at which every one fits, so ten
-    rows do not each pick their own and the page reads as one hand."""
-    return min(fit_line(text)[1] for text in texts)
 
 
 @lru_cache(maxsize=64)
@@ -968,20 +983,10 @@ def note_lines(tip: Optional[str], alt: Optional[str]) -> List[Tuple[str, str]]:
     """[(kind, text)] the note draws: the tip wrapped to the note, then the alternative.
     length_spec reads the same wrap, so a tip that needs a third line is caught there."""
     f = fredoka(NOTE_FONT, "display_medium")
-    width = NOTE_W - 2 * NOTE_PAD
-    out = []
-    if tip:
-        line = ""
-        for word in tip.split():
-            trial = f"{line} {word}".strip()
-            if line and f.getlength(trial) > width:
-                out.append(("tip", line))
-                line = word
-            else:
-                line = trial
-        out.append(("tip", line))
-    if alt:
-        out.append(("alt", alt))
+    out = [("tip", line) for line in _wrap(tip, f, NOTE_W - 2 * NOTE_PAD)] if tip else []
+    if alt:                       # «También: » once, the alternative wrapped beside it
+        out += [("alt" if k == 0 else "alt+", line)
+                for k, line in enumerate(_wrap(alt, f, NOTE_W - 2 * NOTE_PAD - NOTE_LEAD_W))]
     return out
 
 
@@ -1019,39 +1024,182 @@ class LevelTimeline:
         return 1.0 if end <= start else clamp01((t - start) / (end - start))
 
 
-@lru_cache(maxsize=8)
-def level_rows(n: int, tier_gap: int = 0) -> Tuple[Tuple[int, ...], Tuple[int, ...]]:
-    """(row centres, y of the ruled line under each row), page-local. With a tier gap the
-    rows close up so the band still holds them, and the line that closes a tier sits in
-    its own gap, clear of the circles above it and the sentence below it."""
-    if not tier_gap:
-        centres = tuple(row_centres(n))
-        return centres, tuple(cy + ROW_PITCH // 2 - 6 for cy in centres)
-    gaps = sum(1 for s in TIER_STARTS if s < n)
+# ── The level page's layout (STEP 77 §4) ─────────────────────────────
+#
+# Each row is two blocks of lines: line 1 (the prompt, the statement or the sentence with its
+# blank) and line 2 (the answer, the translation or the options), each wrapped to LINE_W at
+# the video's one size. Rows are as tall as their lines; they go onto pages of at most
+# ROWS_PER_PAGE, split where a tier starts when one fits, and the page turns between them.
+
+class LevelRow(NamedTuple):
+    page: int
+    top: float
+    bottom: float
+    l1: Tuple[Tuple[str, float], ...]          # (text, y centre); a sentence line may hold the blank
+    l2: Tuple[Tuple[str, float], ...]
+
+    @property
+    def cy(self) -> float:
+        return (self.top + self.bottom) / 2
+
+
+class LevelLayout(NamedTuple):
+    size: int
+    blank: int                                 # fill/choose: the blank's width; 0 otherwise
+    pages: Tuple[Tuple[int, int], ...]         # [first, end) rows per page
+    rows: Tuple[LevelRow, ...]
+
+    def rows_on(self, page: int) -> range:
+        return range(*self.pages[page])
+
+
+def _line_w(line: str, f: ImageFont.FreeTypeFont, blank: int) -> float:
+    return f.getlength(line.replace(FILL_BLANK, "")) + (blank if FILL_BLANK in line else 0)
+
+
+def _wrap_line(text: str, f: ImageFont.FreeTypeFont, width: float, blank: int = 0) -> List[str]:
+    """Words onto lines no wider than `width`; the blank counts as `blank` px."""
+    lines, line = [], ""
+    for word in text.split(" "):
+        trial = f"{line} {word}" if line else word
+        if line and _line_w(trial, f, blank) > width:
+            lines.append(line)
+            line = word
+        else:
+            line = trial
+    return lines + [line]
+
+
+def _row_texts(vtype: str, item: Dict) -> Tuple[str, Tuple[str, ...], str]:
+    """(line 1 text, line 2 texts, what the blank must hold) of one item."""
+    mode = LEVEL_MODES[vtype]
+    kind = mode.get("kind", "write")
+    if kind == "fill":
+        return item["sentence"], (item["translation"],), item["answer"]
+    if kind == "choose":
+        return item["sentence"], (choice_line(item),), max(item["options"], key=len)
+    if kind == "tf":
+        return item[mode["prompt"]], (tf_answer(item)[0],), ""
+    return item[mode["prompt"]], (item[mode["answer"]],), ""
+
+
+def level_layout(vtype: str, items: List[Dict]) -> LevelLayout:
+    texts = tuple(_row_texts(vtype, it) for it in items)
+    return _level_layout(LEVEL_MODES[vtype].get("tiers", True), LEVEL_MODES[vtype].get("kind", "write"), texts)
+
+
+class LayoutError(ValueError):
+    """The rows do not fit the pages at LINE_FONT_MIN: length_spec reports it."""
+
+
+@lru_cache(maxsize=16)
+def _level_layout(tiers: bool, kind: str, texts) -> LevelLayout:
+    """The layout read best: fewest pages, split where a tier starts, fewest lines, then the
+    largest size; more than two pages only when nothing else fits at LINE_FONT_MIN."""
+    found = [lay for lay in (_layout_at(size, tiers, kind, texts, greedy=False)
+                             for size in range(LINE_FONT_MAX, LINE_FONT_MIN - 1, -2)) if lay]
+    if not found:
+        lay = _layout_at(LINE_FONT_MIN, tiers, kind, texts, greedy=True)
+        if lay is None:
+            raise LayoutError("the rows do not fit at the smallest size")
+        return lay
+
+    def score(lay):
+        split = len(lay.pages) == 1 or (tiers and lay.pages[1][0] in TIER_STARTS)
+        lines = sum(len(r.l1) + len(r.l2) for r in lay.rows)
+        return len(lay.pages), not split, lines, -lay.size
+    return min(found, key=score)
+
+
+def _layout_at(size: int, tiers: bool, kind: str, texts, greedy: bool) -> Optional[LevelLayout]:
+    n = len(texts)
     band = ROWS_BOTTOM - ROWS_TOP
-    pitch = min(ROW_PITCH, (band - gaps * tier_gap) // n)
-    y = ROWS_TOP + (band - n * pitch - gaps * tier_gap) // 2
-    centres, rules = [], []
-    for i in range(n):
-        y += tier_gap if i in TIER_STARTS else 0
-        centres.append(y + pitch // 2)
-        y += pitch
-        rules.append(centres[-1] + pitch // 2 + (tier_gap if i + 1 in TIER_STARTS else -6))
-    return tuple(centres), tuple(rules)
+    f = fredoka(size)
+    blank = 0
+    if kind in ("fill", "choose"):
+        blank = int(math.ceil(max([f.getlength(b) for _a, _l, b in texts] + [f.getlength(BLANK_MIN)]))) \
+            + 2 * BLANK_PAD
+    lines = [(_wrap_line(a, f, LINE1_W, blank), [x for t in l2 for x in _wrap_line(t, f, LINE_W)])
+             for a, l2, _b in texts]
+    if any(f.getlength(x) > LINE1_W for l1, _l2 in lines for x in l1 if " " not in x) or \
+            any(f.getlength(x) > LINE_W for _l1, l2 in lines for x in l2 if " " not in x):
+        return None                                        # one word wider than the column
+    pitch = round(size * LINE_PITCH)
+    heights = [ROW_PAD + pitch * (len(l1) + len(l2)) for l1, l2 in lines]
+
+    def fits(a, b):
+        gaps = sum(TIER_GAP for i in range(a + 1, b) if tiers and i in TIER_STARTS)
+        return b - a <= ROWS_PER_PAGE and sum(heights[a:b]) + gaps <= band
+
+    pages = None
+    if fits(0, n):
+        pages = [(0, n)]
+    elif not greedy:
+        order = (list(reversed(TIER_STARTS)) if tiers else []) + sorted(range(1, n), key=lambda k: abs(k - n / 2))
+        for k in order:
+            if 0 < k < n and fits(0, k) and fits(k, n):
+                pages = [(0, k), (k, n)]
+                break
+    else:
+        pages, a = [], 0
+        while a < n:
+            b = a + 1
+            while b < n and fits(a, b + 1):
+                b += 1
+            if not fits(a, b):
+                return None                                # a row taller than a page
+            pages.append((a, b))
+            a = b
+    if pages is None:
+        return None
+    rows = [None] * n
+    for p, (a, b) in enumerate(pages):
+        gaps = [TIER_GAP if tiers and i in TIER_STARTS and i > a else 0 for i in range(a, b)]
+        total = sum(heights[a:b]) + sum(gaps)
+        extra = min(ROW_EXTRA_MAX, (band - total) / (b - a))
+        y = ROWS_TOP + (band - total - extra * (b - a)) / 2
+        for i in range(a, b):
+            y += gaps[i - a]
+            h = heights[i] + extra
+            l1, l2 = lines[i]
+            y0 = y + (h - pitch * (len(l1) + len(l2))) / 2
+            ys = [y0 + pitch * (k + 0.5) for k in range(len(l1) + len(l2))]
+            rows[i] = LevelRow(p, y, y + h, tuple(zip(l1, ys)), tuple(zip(l2, ys[len(l1):])))
+            y += h
+    return LevelLayout(size, blank, tuple(pages), tuple(rows))
 
 
-@lru_cache(maxsize=4)
-def _static_level_page(n: int, title: str, theme: str, tiers: bool = True,
-                       tier_gap: int = 0) -> Image.Image:
-    """Paper, binding, title, theme and the ruled lines; the two that close a tier
-    are drawn thicker in the next tier's colour (all plain without tiers)."""
+def page_enters(tl: LevelTimeline, layout: LevelLayout) -> Tuple[float, ...]:
+    """When each page is on: the first at 0; a later one when the tier line that opens it
+    starts (+HANDOFF), else between the last answer and the next row. The page before it
+    slides out over the HANDOFF before that."""
+    out = [0.0]
+    for a, _b in layout.pages[1:]:
+        if a in tl.tier:
+            out.append(tl.tier[a][0] + HANDOFF)
+        else:
+            out.append(max(tl.answer[a - 1][1] + TICK_POP, (tl.answer[a - 1][1] + tl.row[a]) / 2) + HANDOFF)
+    return tuple(out)
+
+
+def current_page(t: float, enters: Tuple[float, ...]) -> int:
+    return max(p for p, e in enumerate(enters) if e <= t)
+
+
+@lru_cache(maxsize=8)
+def _static_level_page(layout: LevelLayout, page: int, title: str, theme: str,
+                       tiers: bool = True) -> Image.Image:
+    """Paper, binding, title, theme, footer and the ruled line under each row of the page;
+    a line that closes a tier is thicker, in the next tier's colour."""
     layer = Image.new("RGBA", (LAYER_W, LAYER_H), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(layer, "RGBA")
     _draw_paper(layer)
     sky = _on_paper(_color("sky"), 0.6)
     closes = {t[2]: t[1] for t in TIERS[1:]} if tiers else {}   # row count -> colour of the tier it opens
-    for i, ly in enumerate(level_rows(n, tier_gap)[1]):
-        if i + 1 in closes:                            # sticker rule: ink under the colour
+    a, b = layout.pages[page]
+    for i in range(a, b):
+        ly = layout.rows[i].bottom - 4
+        if i + 1 in closes and i + 1 < b:                       # sticker rule: ink under the colour
+            ly += TIER_GAP / 2
             kit.rule(layer, _p(LABEL_X1 + 6, 0)[0], _p(PAGE_W - 30, 0)[0], _p(0, ly)[1], 11, _color("ink"))
             kit.rule(layer, _p(LABEL_X1 + 8, 0)[0], _p(PAGE_W - 32, 0)[0], _p(0, ly)[1], 6, _color(closes[i + 1]))
         else:
@@ -1059,34 +1207,58 @@ def _static_level_page(n: int, title: str, theme: str, tiers: bool = True,
     # a Spanish title is ink; English is always blue (brand rule)
     _draw_title(layer, title, theme, fit_word(title, PAGE_W - 140, TITLE_SIZE, 56)[0], _color("ink"))
     _draw_rings(layer, 40, PAGE_H - 40)
+    _draw_footer(layer)
     return layer
 
 
-@lru_cache(maxsize=4)
-def _static_level_text(prompts: Tuple[str, ...], prompt_blue: bool) -> Image.Image:
-    """The row numbers and every prompt: on the page from the first frame."""
+def _draw_sentence(draw: ImageDraw.ImageDraw, line: str, y_centre: float, f, blank: int, color) -> None:
+    """A line of text; a sentence line keeps a `blank`-wide gap where its blank is."""
+    y = _text_y(f, y_centre)
+    if FILL_BLANK not in line:
+        draw.text(_p(LINE_X, y), line, font=f, fill=color)
+        return
+    before, after = line.split(FILL_BLANK, 1)
+    draw.text(_p(LINE_X, y), before, font=f, fill=color)
+    draw.text(_p(LINE_X + f.getlength(before) + blank, y), after, font=f, fill=color)
+
+
+@lru_cache(maxsize=8)
+def _static_level_text(layout: LevelLayout, page: int, prompt_blue: bool) -> Image.Image:
+    """The row numbers and every line 1 of the page: on it from the moment it shows."""
     layer = Image.new("RGBA", (LAYER_W, LAYER_H), (0, 0, 0, 0))
     draw = ImageDraw.Draw(layer, "RGBA")
-    nf = fredoka(NUM_SIZE)
+    nf, f = fredoka(NUM_SIZE), fredoka(layout.size)
     color = _color("english_blue" if prompt_blue else "ink")
-    size = page_size(prompts)
-    for i, (text, cy) in enumerate(zip(prompts, row_centres(len(prompts)))):
+    for i in layout.rows_on(page):
+        row = layout.rows[i]
         num = str(i + 1)
-        draw.text(_p(NUM_CX - nf.getlength(num) / 2, _text_y(nf, cy)), num, font=nf,
+        draw.text(_p(NUM_CX - nf.getlength(num) / 2, _text_y(nf, row.l1[0][1])), num, font=nf,
                   fill=_color("secondary_text"))
-        f = fit_line(text, size)[0]
-        draw.text(_p(LINE_X, _text_y(f, cy + LINE1_DY)), text, font=f, fill=color)
+        for line, y in row.l1:
+            _draw_sentence(draw, line, y, f, layout.blank, color)
     return layer
+
+
+def blank_at(layout: LevelLayout, i: int) -> Tuple[float, float]:
+    """(x, y centre) where row i's blank starts."""
+    f = fredoka(layout.size)
+    for line, y in layout.rows[i].l1:
+        if FILL_BLANK in line:
+            return LINE_X + f.getlength(line.split(FILL_BLANK, 1)[0]), y
+    raise ValueError(f"row {i + 1} has no blank")
 
 
 @lru_cache(maxsize=32)
 def _line_image(text: str, size: int, color: Tuple[int, int, int, int]) -> Image.Image:
-    """An answer on its own transparent strip, for the reveal mask."""
-    f, _size, w = fit_line(text, size)
+    """A line at exactly `size` on its own strip, for the reveal mask."""
+    f = fredoka(size)
     ascent, descent = f.getmetrics()
-    img = Image.new("RGBA", (w + 8, ascent + descent + 8), (0, 0, 0, 0))
+    img = Image.new("RGBA", (int(math.ceil(f.getlength(text))) + 8, ascent + descent + 8), (0, 0, 0, 0))
     ImageDraw.Draw(img).text((2, 2), text, font=f, fill=color)
     return img
+
+
+_plain_line = _line_image
 
 
 @lru_cache(maxsize=64)
@@ -1111,50 +1283,66 @@ def _draw_cross(layer: Image.Image, x: float, cy: int, scale: float) -> None:
     kit.cross(layer, *_p(x, cy), scale, CROSS_SIZE)
 
 
+def written_point(layout: LevelLayout, i: int, p: float) -> Tuple[int, float, float]:
+    """(line, x) where row i's line 2 is being written at p of its reveal, and the width
+    written on that line. The lines are written one after another, by width."""
+    f = fredoka(layout.size)
+    widths = [f.getlength(text) for text, _y in layout.rows[i].l2]
+    left = sum(widths) * clamp01(p)
+    for k, w in enumerate(widths):
+        if left <= w or k == len(widths) - 1:
+            return k, LINE_X + min(left, w), min(left, w)
+        left -= w
+    return len(widths) - 1, LINE_X + widths[-1], widths[-1]
+
+
+def _draw_written(layer, layout: LevelLayout, i: int, p: float, color) -> None:
+    """Row i's line 2, written in up to p; the line being written has the feathered edge."""
+    f = fredoka(layout.size)
+    k_now, _x, done = written_point(layout, i, p)
+    for k, (text, y) in enumerate(layout.rows[i].l2):
+        if k > k_now:
+            break
+        word = _line_image(text, layout.size, color)
+        part = word if k < k_now or p >= 1.0 else _written(word, (done + 2) / word.width)
+        if part is not None:
+            layer.alpha_composite(part, tuple(int(v) for v in _p(LINE_X - 2, _text_y(f, y) - 2)))
+
+
+def _line_end(layout: LevelLayout, i: int) -> Tuple[float, float]:
+    """(x, y) right after row i's last line 2."""
+    f = fredoka(layout.size)
+    text, y = layout.rows[i].l2[-1]
+    return LINE_X + f.getlength(text), y
+
+
 def _draw_tf_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items: List[Dict],
-                     centres: List[int]) -> None:
+                     layout: LevelLayout, page: int) -> None:
     """The placeholder cross-fades to the real answer while the blur goes BLUR_MAX -> 0."""
-    lines = [tf_answer(it) for it in items]
-    size = page_size(tuple(text for text, _c in lines) + (TF_PLACEHOLDER,))
+    f = fredoka(layout.size)
     grey = _color("secondary_text")
-    for i, (text, color_name) in enumerate(lines):
-        cy = centres[i] + LINE2_DY
-        f = fit_line(text, size)[0]
-        at = tuple(int(v) for v in _p(LINE_X - 2 - BLUR_PAD, _text_y(f, cy) - 2 - BLUR_PAD))
+    for i in layout.rows_on(page):
+        row, item = layout.rows[i], items[i]
+        color = _color(tf_answer(item)[1])
         p = tl.reveal(i, t)
         radius = int(round(BLUR_MAX * (1.0 - p) / BLUR_STEP)) * BLUR_STEP
+        y0 = row.l2[0][1]
         if p < 1.0:
-            layer.alpha_composite(_faded(_blurred_line(TF_PLACEHOLDER, size, grey, radius), 1.0 - p), at)
+            layer.alpha_composite(_faded(_blurred_line(TF_PLACEHOLDER, layout.size, grey, radius), 1.0 - p),
+                                  tuple(int(v) for v in _p(LINE_X - 2 - BLUR_PAD, _text_y(f, y0) - 2 - BLUR_PAD)))
         th0, th1 = tl.think[i]
         if th0 <= t < th1:
-            _draw_countdown_at(layer, LINE_X + 110, cy, (t - th0) / max(1e-6, th1 - th0))
+            _draw_countdown_at(layer, LINE_X + 110, y0, (t - th0) / max(1e-6, th1 - th0))
         if p <= 0:
             continue
-        layer.alpha_composite(_faded(_blurred_line(text, size, _color(color_name), radius), p), at)
+        for text, y in row.l2:
+            at = tuple(int(v) for v in _p(LINE_X - 2 - BLUR_PAD, _text_y(f, y) - 2 - BLUR_PAD))
+            layer.alpha_composite(_faded(_blurred_line(text, layout.size, color, radius), p), at)
         if p >= 1.0:
             mark_t = tl.answer[i][1]
             scale = ease_out_cubic((t - mark_t) / TICK_POP) if t >= mark_t else 0.0
-            x = LINE_X + fit_line(text, size)[2] + TICK_GAP
-            (_draw_tick if items[i]["truth"] else _draw_cross)(layer, x, cy, scale)
-
-
-@lru_cache(maxsize=4)
-def _static_fill_text(items: Tuple[Tuple[str, str], ...], tier_gap: int = 0) -> Image.Image:
-    """Row numbers and every sentence with its blank left open: on the page from frame 0."""
-    layer = Image.new("RGBA", (LAYER_W, LAYER_H), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(layer, "RGBA")
-    nf = fredoka(NUM_SIZE)
-    size, blank = fill_layout(items)
-    f = fredoka(size)
-    for i, ((sentence, _a), cy) in enumerate(zip(items, level_rows(len(items), tier_gap)[0])):
-        num = str(i + 1)
-        draw.text(_p(NUM_CX - nf.getlength(num) / 2, _text_y(nf, cy)), num, font=nf,
-                  fill=_color("secondary_text"))
-        before, after = fill_parts(sentence)
-        y = _text_y(f, cy + LINE1_DY)
-        draw.text(_p(LINE_X, y), before, font=f, fill=_color("ink"))
-        draw.text(_p(LINE_X + f.getlength(before) + blank, y), after, font=f, fill=_color("ink"))
-    return layer
+            x, y = _line_end(layout, i)
+            (_draw_tick if item["truth"] else _draw_cross)(layer, x + TICK_GAP, y, scale)
 
 
 @lru_cache(maxsize=16)
@@ -1166,71 +1354,62 @@ def _blank_bar(width: int, radius: int) -> Image.Image:
     return img.filter(ImageFilter.GaussianBlur(radius)) if radius > 0 else img
 
 
-@lru_cache(maxsize=32)
-def _plain_line(text: str, size: int, color: Tuple[int, int, int, int]) -> Image.Image:
-    """A line at exactly `size` on its own strip (fit_line would shrink a long one)."""
-    f = fredoka(size)
-    ascent, descent = f.getmetrics()
-    img = Image.new("RGBA", (int(math.ceil(f.getlength(text))) + 8, ascent + descent + 8), (0, 0, 0, 0))
-    ImageDraw.Draw(img).text((2, 2), text, font=f, fill=color)
-    return img
-
-
-def fill_spans(items: List[Dict], centres: List[int]) -> List[Tuple[float, float, float]]:
-    """(x start, x end, pencil y) where each answer is written: centred in its blank, on line 1."""
-    size, blank = fill_layout(tuple(blank_key(it) for it in items))
-    f = fredoka(size)
+def fill_spans(items: List[Dict], layout: LevelLayout) -> List[Tuple[float, float, float]]:
+    """(x start, x end, pencil y) where each answer is written: centred in its blank."""
+    f = fredoka(layout.size)
     out = []
-    for it, cy in zip(items, centres):
+    for i, it in enumerate(items):
+        bx, y = blank_at(layout, i)
         w = f.getlength(it["answer"])
-        x0 = LINE_X + f.getlength(fill_parts(it["sentence"])[0]) + (blank - w) / 2
-        out.append((x0, x0 + w, cy + LINE1_DY + 26))
+        x0 = bx + (layout.blank - w) / 2
+        out.append((x0, x0 + w, y + 26))
     return out
 
 
+def _blank_rule(layer, layout: LevelLayout, i: int, alpha: int = 255) -> None:
+    bx, y = blank_at(layout, i)
+    ry = y + layout.size * 0.42
+    kit.rule(layer, _p(bx + 2, 0)[0], _p(bx + layout.blank - 2, 0)[0], _p(0, ry)[1], BLANK_RULE,
+             _color("ink", alpha))
+
+
 def _draw_fill_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items: List[Dict],
-                       centres: List[int]) -> None:
+                       layout: LevelLayout, page: int) -> None:
     """Before the reveal each blank holds the blurred grey bar over its rule. Over answer_i the
     answer is written into the blank in blue while bar and rule fade, and the translation
     comes up under the sentence in muted ink, with the tick after it."""
-    key = tuple((it["sentence"], it["answer"]) for it in items)
-    size, blank = fill_layout(key)
-    f = fredoka(size)
-    tsize = page_size(tuple(it["translation"] for it in items))
+    f = fredoka(layout.size)
     blue, grey = _color("english_blue"), _color("secondary_text")
-    for i, (it, (x0, _x1, _base)) in enumerate(zip(items, fill_spans(items, centres))):
-        cy1, cy2 = centres[i] + LINE1_DY, centres[i] + LINE2_DY
-        bx = LINE_X + f.getlength(fill_parts(it["sentence"])[0])
+    spans = fill_spans(items, layout)
+    for i in layout.rows_on(page):
+        it, row = items[i], layout.rows[i]
+        bx, y1 = blank_at(layout, i)
         p = tl.reveal(i, t)
         if p < 1.0:
             radius = int(round(BLUR_MAX * 0.5 * (1.0 - p) / BLUR_STEP)) * BLUR_STEP
-            bar = _faded(_blank_bar(blank, radius), 1.0 - p)
-            layer.alpha_composite(bar, tuple(int(v) for v in _p(bx - BLUR_PAD, cy1 - BLANK_BAR_H / 2 - BLUR_PAD)))
-            ry = cy1 + size * 0.42
-            kit.rule(layer, _p(bx + 2, 0)[0], _p(bx + blank - 2, 0)[0], _p(0, ry)[1], BLANK_RULE,
-                     _color("ink", int(round(255 * (1.0 - p) * 16) / 16)))
+            bar = _faded(_blank_bar(layout.blank, radius), 1.0 - p)
+            layer.alpha_composite(bar, tuple(int(v) for v in _p(bx - BLUR_PAD, y1 - BLANK_BAR_H / 2 - BLUR_PAD)))
+            _blank_rule(layer, layout, i, int(round(255 * (1.0 - p) * 16) / 16))
         th0, th1 = tl.think[i]
         if th0 <= t < th1:
-            _draw_countdown_at(layer, bx + blank / 2 - 40, cy2, (t - th0) / max(1e-6, th1 - th0))
+            _draw_countdown_at(layer, LINE_X + 110, row.l2[0][1], (t - th0) / max(1e-6, th1 - th0))
         if p <= 0:
             continue
-        word = _plain_line(it["answer"], size, blue)
-        wy = _text_y(f, cy1) - 2
-        part = _written(word, p)
+        part = _written(_line_image(it["answer"], layout.size, blue), p)
         if part is not None:
-            layer.alpha_composite(part, tuple(int(v) for v in _p(x0 - 2, wy)))
-        tf, _s, tw = fit_line(it["translation"], tsize)
-        note = _faded(_line_image(it["translation"], tsize, grey), p)
-        layer.alpha_composite(note, tuple(int(v) for v in _p(LINE_X - 2, _text_y(tf, cy2) - 2)))
+            layer.alpha_composite(part, tuple(int(v) for v in _p(spans[i][0] - 2, _text_y(f, y1) - 2)))
+        for text, y in row.l2:
+            layer.alpha_composite(_faded(_line_image(text, layout.size, grey), p),
+                                  tuple(int(v) for v in _p(LINE_X - 2, _text_y(f, y) - 2)))
         if p >= 1.0:
             tick_t = tl.answer[i][1]
-            _draw_tick(layer, LINE_X + tw + TICK_GAP, cy2,
-                       ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
+            x, y = _line_end(layout, i)
+            _draw_tick(layer, x + TICK_GAP, y, ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
 
 
 #: choose_level: «make · do» under the sentence, muted, from frame 0.
 CHOICE_SEP = "   ·   "           # wide, so a circle and a strike never touch
-CIRCLE_PAD_X, CIRCLE_PAD_Y = 12, 6     # 6: the rows close up 4 px for the tier gaps
+CIRCLE_PAD_X, CIRCLE_PAD_Y = 12, 6
 DOTS_GAP = 34                    # the countdown starts this far after the options line
 
 
@@ -1245,10 +1424,9 @@ def choice_line(item: Dict) -> str:
     return CHOICE_SEP.join(item["options"])
 
 
-def choice_spans(items: List[Dict], centres: List[int]) -> List[List[Tuple[float, float]]]:
+def choice_spans(items: List[Dict], layout: LevelLayout) -> List[List[Tuple[float, float]]]:
     """[(x start, x end) of option 0, of option 1] per row, on line 2 at the page's size."""
-    size = page_size(tuple(choice_line(it) for it in items))
-    f = fredoka(size)
+    f = fredoka(layout.size)
     out = []
     for it in items:
         a, b = it["options"]
@@ -1273,43 +1451,40 @@ def _strike(target, x0: float, x1: float, cy: float, p: float) -> None:
     kit.strike(_as_layer(target), _p(x0, 0)[0], _p(x1, 0)[0], _p(0, cy)[1], p)
 
 
+def circle_box(spans: List[Tuple[float, float]], right: int, cy: float, size: int) -> Tuple[float, ...]:
+    x0, x1 = spans[right]
+    return x0 - CIRCLE_PAD_X, cy - size / 2 - CIRCLE_PAD_Y, x1 + CIRCLE_PAD_X, cy + size / 2 + CIRCLE_PAD_Y
+
+
 def _draw_choose_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items: List[Dict],
-                         centres: List[int]) -> None:
+                         layout: LevelLayout, page: int) -> None:
     """Both options stay readable: over answer_i the right one turns blue and is circled
     in green, the wrong one is struck in red; the tick follows the line. The countdown
     dots sit after the options, never over them."""
-    size = page_size(tuple(choice_line(it) for it in items))
-    f = fredoka(size)
+    f = fredoka(layout.size)
     grey, blue = _color("secondary_text"), _color("english_blue")
-    bsize, blank = fill_layout(tuple(blank_key(it) for it in items))
-    bf = fredoka(bsize)
-    for i, (it, spans) in enumerate(zip(items, choice_spans(items, centres))):
-        # the blank stays open: nothing is written in it, the options below answer it
-        bx, ry = LINE_X + bf.getlength(fill_parts(it["sentence"])[0]), centres[i] + LINE1_DY + bsize * 0.42
-        kit.rule(layer, _p(bx + 2, 0)[0], _p(bx + blank - 2, 0)[0], _p(0, ry)[1], BLANK_RULE, _color("ink"))
-        cy = centres[i] + LINE2_DY
+    all_spans = choice_spans(items, layout)
+    for i in layout.rows_on(page):
+        it, spans = items[i], all_spans[i]
+        _blank_rule(layer, layout, i)              # the blank stays open: the options answer it
+        cy = layout.rows[i].l2[0][1]
         y = _text_y(f, cy) - 2
         p = tl.reveal(i, t)
         right = it["answer"]
-        sep_x = spans[0][1]
         dot = CHOICE_SEP.strip()
-        layer.alpha_composite(_plain_line(dot, size, grey), tuple(int(v) for v in _p(
-            sep_x + (f.getlength(CHOICE_SEP) - f.getlength(dot)) / 2 - 2, y)))
+        layer.alpha_composite(_plain_line(dot, layout.size, grey), tuple(int(v) for v in _p(
+            spans[0][1] + (f.getlength(CHOICE_SEP) - f.getlength(dot)) / 2 - 2, y)))
         for k, (x0, _x1) in enumerate(spans):
-            word = _plain_line(it["options"][k], size, grey)
             at = tuple(int(v) for v in _p(x0 - 2, y))
-            layer.alpha_composite(word, at)
+            layer.alpha_composite(_plain_line(it["options"][k], layout.size, grey), at)
             if k == right and p > 0:
-                layer.alpha_composite(_faded(_plain_line(it["options"][k], size, blue), p), at)
-        line_end = spans[1][1]
+                layer.alpha_composite(_faded(_plain_line(it["options"][k], layout.size, blue), p), at)
         th0, th1 = tl.think[i]
         if th0 <= t < th1:
-            _draw_countdown_at(layer, line_end + DOTS_GAP, cy, (t - th0) / max(1e-6, th1 - th0))
+            _draw_countdown_at(layer, spans[1][1] + DOTS_GAP, cy, (t - th0) / max(1e-6, th1 - th0))
         if p <= 0:
             continue
-        x0, x1 = spans[right]
-        _hand_circle(layer, (x0 - CIRCLE_PAD_X, cy - size / 2 - CIRCLE_PAD_Y,
-                             x1 + CIRCLE_PAD_X, cy + size / 2 + CIRCLE_PAD_Y), p)
+        _hand_circle(layer, circle_box(spans, right, cy, layout.size), p)
         _strike(layer, *spans[1 - right], cy, p)
         if p >= 1.0:
             tick_t = tl.answer[i][1]
@@ -1338,7 +1513,7 @@ def _tier_pill(word: str, color_name: str, height: int) -> Image.Image:
     w = LABEL_X1 - LABEL_X0
     pill = kit.pill(w, height, _color(color_name)).copy()
     f = fredoka(LABEL_SIZE)
-    text = Image.new("RGBA", (int(f.getlength(word)) + 4, LABEL_SIZE + 10), (0, 0, 0, 0))
+    text = Image.new("RGBA", (int(f.getlength(word)) + 4, LABEL_SIZE + 12), (0, 0, 0, 0))
     ink_on = color_name == "brand_yellow"           # yellow is never under paper-coloured text
     ImageDraw.Draw(text).text((2, 2), word, font=f, fill=_color("ink") if ink_on else PAPER)
     text = text.rotate(90, expand=True, resample=Image.BICUBIC)
@@ -1382,8 +1557,9 @@ def _note_image(lines: Tuple[Tuple[str, str], ...]) -> Image.Image:
     for k, (kind, text) in enumerate(lines[:NOTE_LINES]):
         cy = top + step * (k + 0.5)
         y = _text_y(f, cy)
-        if kind == "alt":
-            d.text((NOTE_PAD, y), NOTE_LEAD, font=f, fill=ink)
+        if kind in ("alt", "alt+"):
+            if kind == "alt":
+                d.text((NOTE_PAD, y), NOTE_LEAD, font=f, fill=ink)
             d.text((NOTE_PAD + NOTE_LEAD_W, y), text, font=f, fill=_color("english_blue"))
         else:
             d.text((NOTE_PAD, y), text, font=f, fill=ink)
@@ -1406,161 +1582,167 @@ def _draw_note(layer: Image.Image, lines: List[Tuple[str, str]], scale: float) -
     layer.alpha_composite(note, tuple(int(round(v)) for v in _p(cx - note.size[0] / 2, cy - note.size[1] / 2)))
 
 
-def level_text_boxes(vtype: str, items: List[Dict], centres: List[int]) -> List[List[Tuple[float, ...]]]:
-    """[[line 1 box, line 2 box]] per row, page-local (x0, y0, x1, y1), as each row reads
-    once revealed: line 2 carries its tick, and in choose_level its circle and strike."""
-    mode = LEVEL_MODES[vtype]
-    kind = mode.get("kind", "write")
+def level_text_boxes(vtype: str, items: List[Dict], layout: LevelLayout) -> List[List[Tuple[float, ...]]]:
+    """[line boxes] per row, page-local (x0, y0, x1, y1), as each row reads once revealed:
+    the last line 2 carries its tick, and in choose_level its circle and strike."""
+    kind = LEVEL_MODES[vtype].get("kind", "write")
+    f = fredoka(layout.size)
+    bb = f.getbbox("Hgjy")
 
-    def box(f, x1, cy, x0=LINE_X):
+    def box(x1, cy):
         top = _text_y(f, cy)
-        bb = f.getbbox("Hgjy")
-        return (x0, top + bb[1], x1, top + bb[3])
+        return (LINE_X, top + bb[1], x1, top + bb[3])
 
-    tick = TICK_GAP + TICK_SIZE
+    spans = choice_spans(items, layout) if kind == "choose" else None
     out = []
-    if kind in ("fill", "choose"):
-        bsize, blank = fill_layout(tuple(blank_key(it) for it in items))
-        line1 = [box(fredoka(bsize), LINE_X + fill_line_width(it["sentence"], bsize, blank), cy + LINE1_DY)
-                 for it, cy in zip(items, centres)]
-    else:
-        psize = page_size(tuple(it[mode["prompt"]] for it in items))
-        line1 = [box(fit_line(it[mode["prompt"]], psize)[0],
-                     LINE_X + fit_line(it[mode["prompt"]], psize)[2], cy + LINE1_DY)
-                 for it, cy in zip(items, centres)]
-    if kind == "choose":
-        size = page_size(tuple(choice_line(it) for it in items))
-        ry = (size / 2 + CIRCLE_PAD_Y) * 1.1 + 5          # the hand circle's wobble and stroke
-        line2 = [(LINE_X - CIRCLE_PAD_X - 6, cy + LINE2_DY - ry, sp[1][1] + CIRCLE_PAD_X + tick, cy + LINE2_DY + ry)
-                 for sp, cy in zip(choice_spans(items, centres), centres)]
-    else:
-        if kind == "tf":
-            texts, mark = [tf_answer(it)[0] for it in items], TICK_GAP + max(TICK_SIZE, CROSS_SIZE)
-            size = page_size(tuple(texts) + (TF_PLACEHOLDER,))
-        elif kind == "fill":
-            texts, mark = [it["translation"] for it in items], tick
-            size = page_size(tuple(texts))
+    for i, row in enumerate(layout.rows):
+        boxes = [box(LINE_X + _line_w(line, f, layout.blank), y) for line, y in row.l1]
+        if kind == "choose":
+            cy = row.l2[0][1]
+            ry = (layout.size / 2 + CIRCLE_PAD_Y) * 1.1 + 5          # the hand circle's wobble and stroke
+            boxes.append((LINE_X - CIRCLE_PAD_X - 6, cy - ry, choose_tick_x(spans[i], items[i]["answer"])
+                          + TICK_SIZE + 7, cy + ry))
         else:
-            texts, mark = [it[mode["answer"]] for it in items], tick
-            size = page_size(tuple(texts))
-        line2 = []
-        for text, cy in zip(texts, centres):
-            f, _s, w = fit_line(text, size)
-            line2.append(box(f, LINE_X + w + mark, cy + LINE2_DY))
-    return [[a, b] for a, b in zip(line1, line2)]
+            mark = TICK_GAP + (max(TICK_SIZE, CROSS_SIZE) if kind == "tf" else TICK_SIZE) + 7
+            for k, (text, y) in enumerate(row.l2):
+                end = LINE_X + f.getlength(text) + (mark if k == len(row.l2) - 1 else 0)
+                boxes.append(box(end, y))
+        out.append(boxes)
+    return out
 
 
-#: The pencil image's box around its tip (pencil_image, PENCIL_ANGLE), and the air it keeps.
+#: The pencil image's box around its tip (pencil_image, PENCIL_ANGLE).
 PENCIL_BOX = (-4, -4, 166, 135)          # kit.pencil, 200 px long (STEP 77 §3)
-PENCIL_CLEAR = 8
 
 
-def pencil_rest(boxes: List[List[Tuple[float, ...]]], at: Tuple[float, float]) -> Tuple[float, float]:
-    """`at`, moved right until the pencil's box clears every text box it would cover."""
-    x, y = at
-    y0, y1 = y + PENCIL_BOX[1], y + PENCIL_BOX[3]
-    reach = [b[2] for row in boxes for b in row if b[1] < y1 and b[3] > y0]
-    return (max([x] + [r + PENCIL_CLEAR - PENCIL_BOX[0] for r in reach]), y)
+def _write_path(kind: str, items: List[Dict], layout: LevelLayout):
+    """Per row, a function p -> (x, y) of the pencil tip while the row's answer is written:
+    along line 2 (wrapped lines one after another), in the blank, or round the right option."""
+    if kind == "fill":
+        spans = fill_spans(items, layout)
+        return [(lambda p, s=s: (s[0] + (s[1] - s[0]) * p, s[2])) for s in spans]
+    if kind == "choose":
+        paths = []
+        for it, sp, row in zip(items, choice_spans(items, layout), layout.rows):
+            x0, x1 = sp[it["answer"]]
+            paths.append(lambda p, x0=x0, x1=x1, y=row.l2[0][1] + 26: (x0 + (x1 - x0) * p, y))
+        return paths
+
+    def along(i):
+        def at(p):
+            k, x, _done = written_point(layout, i, p)
+            return x, layout.rows[i].l2[k][1] + 26
+        return at
+    return [along(i) for i in range(len(layout.rows))]
 
 
-def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer: Optional[str],
-                          centres: List[int], size: int, writes: bool = True,
-                          spans: Optional[List[Tuple[float, float, float]]] = None,
-                          boxes: Optional[List[List[Tuple[float, ...]]]] = None) -> Tuple[float, float]:
-    """Waits at the right end of the active row's answer line, jumps to its start as the
-    answer begins, follows the mask, then goes back by the title for the verdict.
+def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], layout: LevelLayout,
+                          kind: str = "write") -> Tuple[float, float]:
+    """Stands in the right margin by the active row while the viewer thinks, comes to the
+    answer as it begins and writes it; after the last answer it stands in the margin again,
+    so the last frames show every answer (STEP 63: it sat on «Depende de ti»)."""
+    writes = kind != "tf"
+    paths = _write_path(kind, items, layout)
 
-    With `boxes` (level_text_boxes), once the last answer is written the pencil parks right
-    of the last row, and by the title it parks clear of the rows under it: the last frames
-    show every answer (STEP 63: it sat on «Depende de ti»)."""
     def glide(a, b, t0):
         return _glide(a, b, t, t0)
 
-    if boxes is not None and t >= tl.answer[-1][1]:
-        rest = pencil_rest(boxes[-1:], (LINE_X, centres[-1] + LINE2_DY))
-        if t < tl.verdict[0]:
-            last = level_pencil_position(tl.answer[-1][1], tl, items, answer, centres, size, writes, spans)
-            return glide(last, rest, tl.answer[-1][1])
-        return glide(rest, pencil_rest(boxes, LEVEL_PENCIL_PARK), tl.verdict[0])
+    if writes and t >= tl.answer[-1][1]:
+        end = paths[-1](1.0)
+        return glide(end, (PENCIL_WAIT_X, layout.rows[-1].l2[-1][1] - 6), tl.answer[-1][1])
 
     pos = LEVEL_PENCIL_PARK
     for i in range(tl.n):
-        base = centres[i] + LINE2_DY + 26 if spans is None else spans[i][2]
-        start = (LINE_X, base) if spans is None else (spans[i][0], base)
         if t < tl.row[i]:
             return pos
-        wait = (PENCIL_WAIT_X, base)
+        wait = (PENCIL_WAIT_X, layout.rows[i].l2[0][1] - 6)
         if not writes:                                 # true_false_level: it points, it does not write
             if t < tl.row_end(i):
                 return glide(pos, wait, tl.row[i])
             pos = wait
             continue
-        end = (LINE_X + fit_line(items[i][answer], size)[2], base) if spans is None else (spans[i][1], base)
+        start, end = paths[i](0.0), paths[i](1.0)
         if t < tl.answer[i][0] - PENCIL_MOVE:
             return glide(pos, wait, tl.row[i])
         if t < tl.answer[i][0]:
             return glide(wait, start, tl.answer[i][0] - PENCIL_MOVE)
         p = tl.reveal(i, t)
-        pos = (start[0] + (end[0] - start[0]) * p, base)
         if p < 1.0:
+            x, y = paths[i](p)
             wx, wy = wobble(t)
-            return pos[0] + wx, pos[1] + wy
+            return x + wx, y + wy
         pos = end
-    if t < tl.verdict[0]:
-        return pos
-    return glide(pos, LEVEL_PENCIL_PARK, tl.verdict[0])
+    return pos
 
 
-def _pencil_spans(kind: str, items: List[Dict], centres: List[int]):
-    """Where the pencil writes: fill_level in the blank, choose_level round the right option."""
-    if kind == "fill":
-        return fill_spans(items, centres)
-    if kind == "choose":
-        return [(*spans[it["answer"]], cy + LINE2_DY + 26)
-                for it, spans, cy in zip(items, choice_spans(items, centres), centres)]
-    return None
+def level_pencil_angle(t: float, tl: LevelTimeline, kind: str = "write") -> float:
+    """The pencil's angle: PENCIL_ANGLE to write, PENCIL_PARK_ANGLE (standing) while it waits
+    in the margin, turned over the same glide that moves it."""
+    def turn(a, b, t0):
+        e = ease_in_out((t - t0) / PENCIL_MOVE)
+        return a + (b - a) * e
+
+    angle = PENCIL_ANGLE
+    for i in range(tl.n):
+        if t < tl.row[i]:
+            return angle
+        if kind == "tf":
+            if t < tl.row_end(i):
+                return turn(angle, PENCIL_PARK_ANGLE, tl.row[i])
+            angle = PENCIL_PARK_ANGLE
+            continue
+        if t < tl.answer[i][0] - PENCIL_MOVE:
+            return turn(angle, PENCIL_PARK_ANGLE, tl.row[i])
+        if t < tl.answer[i][0]:
+            return turn(PENCIL_PARK_ANGLE, PENCIL_ANGLE, tl.answer[i][0] - PENCIL_MOVE)
+        if t < tl.answer[i][1]:
+            return PENCIL_ANGLE
+        angle = PENCIL_ANGLE
+    return turn(angle, PENCIL_PARK_ANGLE, tl.answer[-1][1])          # standing again, to the end
 
 
 def create_frame_level(t: float, data: Dict, duration: float, presentation=None) -> np.ndarray:
     """One frame of any level mode (LEVEL_MODES)."""
-    mode = LEVEL_MODES[data["type"]]
+    vtype = data["type"]
+    mode = LEVEL_MODES[vtype]
     items: List[Dict] = data["items"]
     tl = data.get("_level_timeline")
     if tl is None:
         tl = LevelTimeline(data, duration)
         data["_level_timeline"] = tl
-    n = len(items)
-    tier_gap = mode.get("tier_gap", 0)
-    centres = list(level_rows(n, tier_gap)[0])
-    boxes = data.get("_level_boxes")
-    if boxes is None:
-        boxes = data["_level_boxes"] = level_text_boxes(data["type"], items, centres)
+        data["_level_layout"] = level_layout(vtype, items)
+        data["_level_enters"] = page_enters(tl, data["_level_layout"])
+    layout, enters = data["_level_layout"], data["_level_enters"]
+    page = current_page(t, enters)
+    first, end = layout.pages[page]
+    rows = layout.rows
     prompt, answer = mode["prompt"], mode["answer"]
     blue, ink = _color("english_blue"), _color("ink")
+    kind = mode.get("kind", "write")
+    tiers = mode.get("tiers", True)
 
     frame, _draw = create_base_frame(t)
-    tiers = mode.get("tiers", True)
-    layer = _PageRecorder(_static_level_page(n, data["title"], data["theme"], True, tier_gap) if tiers
-                          else _static_level_page(n, data["title"], data["theme"], False))
+    layer = _PageRecorder(_static_level_page(layout, page, data["title"], data["theme"], tiers))
+    t_page = t - enters[page]                          # the page's own clock: its rows cascade in
 
     # 1. the marker swipes in behind the active row, then the printed numbers and prompts over it
-    for i in range(n):
-        _highlight(layer, LABEL_X1 + 6, centres[i], t, tl.row[i], tl.row_end(i))
-    kind = mode.get("kind", "write")
-    if kind in ("fill", "choose"):
-        _rows_in(layer, _static_fill_text(tuple(blank_key(it) for it in items), tier_gap), centres, t)
-    else:
-        _rows_in(layer, _static_level_text(tuple(it[prompt] for it in items), prompt == "english"), centres, t)
+    for i in range(first, end):
+        _highlight_band(layer, LABEL_X1 + 6, rows[i].top + 4, rows[i].bottom - 6, t, tl.row[i], tl.row_end(i))
+    _rows_in(layer, _static_level_text(layout, page, prompt == "english" and kind == "write"),
+             [rows[i] for i in range(first, end)], t_page)
 
-    # 2. tier pills in the margin; the one a tier line announces pulses once
+    # 2. tier pills in the margin, for the tiers on this page; the one a tier line announces pulses
     for word, color, a, b in TIERS if tiers else ():
-        top = centres[a] - ROW_PITCH // 2 + 10
-        bottom = centres[b - 1] + ROW_PITCH // 2 - 16
-        pill = _tier_pill(word, color, bottom - top)
+        a, b = max(a, first), min(b, end)
+        if a >= b:
+            continue
+        top, bottom = rows[a].top + 8, rows[b - 1].bottom - 12
+        pill = _tier_pill(word, color, int(bottom - top))
         s = 1.0
         span = tl.tier.get(a)
         if span and span[0] <= t < span[1]:
             s = 1.0 + LABEL_PULSE * math.sin(math.pi * (t - span[0]) / (span[1] - span[0]))
+            s = round(s * 100) / 100
         if s != 1.0:
             pill = pill.resize((max(1, round(pill.size[0] * s)), max(1, round(pill.size[1] * s))), Image.LANCZOS)
         cx, cy = (LABEL_X0 + LABEL_X1) / 2, (top + bottom) / 2
@@ -1568,53 +1750,47 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
 
     # 3. countdown dots, the answers written in, ticks (true_false_level: brought into focus)
     if kind == "tf":
-        _draw_tf_answers(layer, t, tl, items, centres)
+        _draw_tf_answers(layer, t, tl, items, layout, page)
     elif kind == "fill":
-        _draw_fill_answers(layer, t, tl, items, centres)
+        _draw_fill_answers(layer, t, tl, items, layout, page)
     elif kind == "choose":
-        _draw_choose_answers(layer, t, tl, items, centres)
+        _draw_choose_answers(layer, t, tl, items, layout, page)
     answer_color = blue if answer == "english" else ink
-    size = page_size(tuple(it[answer] for it in items)) if answer else 0
     placeholder = mode.get("placeholder", False)
-    for i, item in enumerate(items if answer else []):
-        cy = centres[i] + LINE2_DY
+    f = fredoka(layout.size)
+    for i in range(first, end) if answer else ():
+        row = rows[i]
+        y0 = row.l2[0][1]
         p = tl.reveal(i, t)
         if placeholder and p < 1.0:
             radius = int(round(BLUR_MAX * 0.5 * (1.0 - p) / BLUR_STEP)) * BLUR_STEP
             layer.alpha_composite(_faded(_blank_bar(PHRASE_BAR_W, radius), 1.0 - p), tuple(
-                int(v) for v in _p(LINE_X - BLUR_PAD, cy - BLANK_BAR_H / 2 - BLUR_PAD)))
+                int(v) for v in _p(LINE_X - BLUR_PAD, y0 - BLANK_BAR_H / 2 - BLUR_PAD)))
         th0, th1 = tl.think[i]
         if th0 <= t < th1:
-            _draw_countdown_at(layer, LINE_X + (PHRASE_BAR_W + DOTS_GAP if placeholder else 110), cy,
+            _draw_countdown_at(layer, LINE_X + (PHRASE_BAR_W + DOTS_GAP if placeholder else 110), y0,
                                (t - th0) / max(1e-6, th1 - th0))
         if p <= 0:
             continue
-        f, _size, w = fit_line(item[answer], size)
-        word = _line_image(item[answer], size, answer_color)
-        wy = _text_y(f, cy) - 2
-        if p < 1.0:
-            part = _written(word, p)
-            if part is not None:
-                layer.alpha_composite(part, tuple(int(v) for v in _p(LINE_X - 2, wy)))
-            continue
-        layer.alpha_composite(word, tuple(int(v) for v in _p(LINE_X - 2, wy)))
-        tick_t = tl.answer[i][1]
-        _draw_tick(layer, LINE_X + w + TICK_GAP, cy,
-                   ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
+        _draw_written(layer, layout, i, p, answer_color)
+        if p >= 1.0:
+            tick_t = tl.answer[i][1]
+            x, y = _line_end(layout, i)
+            _draw_tick(layer, x + TICK_GAP, y, ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
 
     # 4. say_it_level: the tip and the other right answer, from the reveal to the next row
-    for i, item in enumerate(items):
-        lines = note_lines(item.get("tip"), item.get("alt"))
+    for i in range(first, end):
+        lines = note_lines(items[i].get("tip"), items[i].get("alt"))
         if not lines:
             continue
-        start, end = tl.answer[i][0], tl.row_end(i)
-        if start <= t < end:
+        start, stop = tl.answer[i][0], tl.row_end(i)
+        if start <= t < stop:
             _draw_note(layer, lines, ease_out_cubic((t - start) / NOTE_POP) * 0.15 + 0.85
                        if t < start + NOTE_POP else 1.0)
 
     # 5. the pencil: drawn after the page is tilted (see _place_pencil)
-    pencil_at = level_pencil_position(t, tl, items, answer, centres, size, writes=kind != "tf",
-                                      spans=_pencil_spans(kind, items, centres), boxes=boxes)
+    pencil_at = level_pencil_position(t, tl, items, layout, kind)
+    angle = level_pencil_angle(t, tl, kind)
 
     # 6. the verdict note, over the lower rows while the verdict is spoken
     v0, v1 = tl.verdict
@@ -1634,7 +1810,8 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
     _draw_hook(layer, t, data, tl.row[0])
     _draw_cta(layer, t, tl.outro[0], fit_word(data["title"], PAGE_W - 140, TITLE_SIZE, 56)[0].getlength(data["title"]))
 
-    motion = page_motion(t, duration, (tl.answer[-1][1], tl.outro[0]))
+    leave = enters[page + 1] if page + 1 < len(enters) else duration
+    motion = page_motion(t, enters[page], leave, (tl.answer[-1][1], tl.outro[0]))
     _composite_page(frame, layer, motion)
-    _place_pencil(frame, *pencil_at, motion)
-    return finalize_frame(frame, ImageDraw.Draw(frame, "RGBA"), t, duration, scene_cuts=[v0])
+    _place_pencil(frame, *pencil_at, motion, angle)
+    return finalize_frame(frame, ImageDraw.Draw(frame, "RGBA"), t, duration, scene_cuts=[v0], chrome=False)
