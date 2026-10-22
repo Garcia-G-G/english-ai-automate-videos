@@ -206,7 +206,9 @@ def gradient(w: int, h: int, t: float) -> np.ndarray:
         40 * np.sin(y_coords * 0.005 + t * 0.3 + 3.0)
     ) / h * 0.08
 
-    ratio = ((y_coords / h) + wave + wave2 * (x_coords / w) + aurora) % 1.0
+    # Folded, not wrapped (STEP 77 §3): `% 1.0` jumped from the last colour back to the first,
+    # a hard diagonal seam; the fold runs 0→1→0 so the gradient stays continuous.
+    ratio = 1.0 - np.abs(((y_coords / h) + wave + wave2 * (x_coords / w) + aurora) % 2.0 - 1.0)
 
     img = np.zeros((h, w, 3), dtype=np.float32)
 

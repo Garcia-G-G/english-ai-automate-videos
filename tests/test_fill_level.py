@@ -143,7 +143,7 @@ def test_the_pencil_writes_inside_the_blank_on_the_sentence_line():
     spans = fill_spans(items, centres)
     ans = data["segment_times"]["answer_2"]
     assert level_pencil_position(ans["start"], tl, items, None, centres, 0, spans=spans) == \
-        pytest.approx(spans[1][0::2])
+        pytest.approx(spans[1][0::2], abs=2.0)                # ±2: the pencil wobbles as it writes
     assert level_pencil_position(ans["end"], tl, items, None, centres, 0, spans=spans) == \
         pytest.approx(spans[1][1:])
 

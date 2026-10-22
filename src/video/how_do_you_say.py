@@ -33,7 +33,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from .constants import VIDEO_WIDTH, VIDEO_HEIGHT
-from .motion import clamp01, ease_in_out, ease_out_cubic
+from .motion import clamp01, ease_in_out, ease_out_back, ease_out_cubic, ease_out_expo
 from .notebook import kit
 from .utils import create_base_frame, finalize_frame
 
@@ -99,17 +99,36 @@ ENGLISH_W = 304
 WORD_FONT_MAX = 58
 WORD_FONT_MIN = 42
 
-TICK_GAP = 10
+TICK_GAP = 24             # ≥ 14 px of paper between a word's ink and the tick's (STEP 77 §3)
 TICK_SIZE = 34
 
 # ── Motion constants (seconds) ───────────────────────────────────────
 HIGHLIGHT_FADE = 0.25
+HIGHLIGHT_SWEEP = 0.25           # the marker swipes left to right (ease_out_expo)
 EMOJI_POP = 0.30
-EMOJI_POP_FROM = 0.85
+EMOJI_POP_FROM = 0.6
+EMOJI_OVERSHOOT = 4.0            # ease_out_back from 0.6 peaks at 1.15
 PENCIL_MOVE = 0.35
 TICK_POP = 0.25
 PULSE_HALF = 0.20
 PULSE_SCALE = 0.08
+
+# ── Motion (STEP 77 §3) ──
+RISE = 0.5                       # the page rises from RISE_FROM px below (ease_out_back)
+RISE_FROM = 120
+CASCADE_START, CASCADE_STAGGER, CASCADE_DUR, CASCADE_DY = 0.2, 0.05, 0.3, 24
+HOOK_IN, HOOK_POP, HOOK_OUT = 0.45, 0.3, 0.2
+HOOK_ROT = -4.0
+HOOK_SIZE = 68                   # Fredoka 64–72
+HOOK_W = 700
+FEATHER = 12                     # px: the soft edge of a word being written, at the pencil tip
+WOBBLE = 2.0                     # px, the pencil while it writes
+LIFT = 22                        # px, the pencil between rows
+PUSH_TO = 1.04                   # the slow push over the recap
+HANDOFF = 0.3                    # the page slides away into the outro
+CTA_LINES = ("¿Cuántas sabías?", "__/10")
+CTA_SIZE = 58
+CTA_POP = 0.35
 
 
 # ── Text fitting, shared with length_spec ────────────────────────────
@@ -359,9 +378,9 @@ _PAGES_MAX = 12
 PAGE_STATS = {"drawn": 0, "reused": 0}
 
 
-def _page(rec: _PageRecorder) -> Image.Image:
+def _page(rec: _PageRecorder, scale: float = 1.0) -> Image.Image:
     """The rotated page for this frame's record: reused when the state was seen recently."""
-    key = tuple((_digest(im), dest) for im, dest in rec.ops)
+    key = (scale,) + tuple((_digest(im), dest) for im, dest in rec.ops)
     page = _PAGES.get(key)
     if page is not None:
         _PAGES.move_to_end(key)
@@ -370,33 +389,45 @@ def _page(rec: _PageRecorder) -> Image.Image:
     layer = rec.ops[0][0].copy()
     for im, dest in rec.ops[1:]:
         layer.alpha_composite(im, dest)
-    page = _PAGES[key] = _rotate(layer)
+    page = _PAGES[key] = _rotate(layer, scale)
     PAGE_STATS["drawn"] += 1
     if len(_PAGES) > _PAGES_MAX:
         _PAGES.popitem(last=False)
     return page
 
 
-def _rotate(layer: Image.Image) -> Image.Image:
+def _rotate(layer: Image.Image, scale: float = 1.0) -> Image.Image:
     """The page tilted by TILT_DEG about its centre: cv2's bicubic warp, 10× PIL's rotate
     (16 ms against 160) and within a mean 0.27 of it (the largest differences sit in pixels at
     alpha 1-2)."""
     import cv2
-    m = cv2.getRotationMatrix2D((layer.width / 2 - 0.5, layer.height / 2 - 0.5), TILT_DEG, 1.0)
+    m = cv2.getRotationMatrix2D((layer.width / 2 - 0.5, layer.height / 2 - 0.5), TILT_DEG, scale)
     out = cv2.warpAffine(np.asarray(layer), m, layer.size, flags=cv2.INTER_CUBIC,
                          borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
     return Image.fromarray(out)                          # 4 channels: RGBA
 
 
-def page_to_frame(x: float, y: float) -> Tuple[float, float]:
-    """A page-local point after the page's tilt, in frame pixels (PIL rotates about the
-    layer's centre, counter-clockwise)."""
+Motion = Tuple[float, float]
+STILL: Motion = (0.0, 1.0)
+
+
+def page_to_frame(x: float, y: float, motion: Motion = STILL) -> Tuple[float, float]:
+    """A page-local point after the page's tilt and scale (about the layer's centre,
+    counter-clockwise) and its vertical move (page_motion), in frame pixels."""
+    dy, s = motion
     lx, ly = _p(x, y)
     cx, cy = LAYER_W / 2, LAYER_H / 2
     a = math.radians(TILT_DEG)
-    rx = cx + (lx - cx) * math.cos(a) + (ly - cy) * math.sin(a)
-    ry = cy - (lx - cx) * math.sin(a) + (ly - cy) * math.cos(a)
-    return rx + PAGE_X - PAD, ry + PAGE_Y - PAD
+    rx = cx + s * ((lx - cx) * math.cos(a) + (ly - cy) * math.sin(a))
+    ry = cy + s * (-(lx - cx) * math.sin(a) + (ly - cy) * math.cos(a))
+    return rx + PAGE_X - PAD, ry + PAGE_Y - PAD + dy
+
+
+def _composite_page(frame: Image.Image, rec: _PageRecorder, motion: Motion) -> None:
+    """The page onto the frame, moved by `motion` (clipped: it rises from below and leaves
+    through the top)."""
+    dy, s = motion
+    kit._composite_clipped(frame, _page(rec, s), PAGE_X - PAD, PAGE_Y - PAD + int(dy))
 
 
 @lru_cache(maxsize=1)
@@ -406,18 +437,229 @@ def _pencil_cropped() -> Tuple[Image.Image, Tuple[int, int]]:
     return img.crop(box), (cx - box[0], cy - box[1])
 
 
-def _place_pencil(frame: Image.Image, px: float, py: float) -> None:
+def _place_pencil(frame: Image.Image, px: float, py: float, motion: Motion = STILL) -> None:
     """The pencil, unrotated (1° is invisible on it), its tip on the page point (px, py) after
     the tilt, placed with a sub-pixel affine shift so a slow move does not step."""
     sprite, (tx, ty) = _pencil_cropped()
-    fx, fy = page_to_frame(px, py)
+    fx, fy = page_to_frame(px, py, motion)
     x, y = fx - tx, fy - ty
     ix, iy = math.floor(x), math.floor(y)
     dx, dy = x - ix, y - iy
     if dx or dy:
         sprite = sprite.transform((sprite.width + 1, sprite.height + 1), Image.AFFINE,
                                   (1, 0, -dx, 0, 1, -dy), resample=Image.BILINEAR)
-    frame.alpha_composite(sprite, (ix, iy))
+    kit._composite_clipped(frame, sprite, ix, iy)          # clipped to the frame, never to the page
+
+
+# ── Motion (STEP 77 §3) ──────────────────────────────────────────────
+#
+# Every move here is a pure function of t, like the rest of the renderer.
+
+def page_motion(t: float, duration: float, push: Tuple[float, float]) -> Motion:
+    """(dy, scale) of the page: it rises from RISE_FROM px below with an overshoot, pushes in
+    1.00 → PUSH_TO over `push` and holds, then slides up out of the frame in the last HANDOFF
+    seconds, into the outro. dy is whole pixels; the scale moves in 0.2 % steps (page memo)."""
+    dy = RISE_FROM * (1.0 - ease_out_back(t / RISE)) if t < RISE else 0.0
+    if t > duration - HANDOFF:
+        q = clamp01((t - (duration - HANDOFF)) / HANDOFF)
+        dy -= (PAGE_Y + LAYER_H) * q ** 3
+    s = 1.0
+    if t >= push[0]:
+        s = 1.0 + (PUSH_TO - 1.0) * ease_in_out((t - push[0]) / max(1.0, push[1] - push[0]))
+        s = round(s * 500) / 500
+    return float(round(dy)), s
+
+
+def cascade(i: int, t: float) -> float:
+    """0..1 of row i's entrance in the opening (50 ms apart)."""
+    return clamp01((t - CASCADE_START - i * CASCADE_STAGGER) / CASCADE_DUR)
+
+
+def _rows_in(layer, img: Image.Image, centres: List[int], t: float) -> None:
+    """A static layer of row text, whole — or, in the opening, row by row, each band fading
+    and rising CASCADE_DY px into place."""
+    n = len(centres)
+    if cascade(n - 1, t) >= 1.0:
+        layer.alpha_composite(img)
+        return
+    for i, cy in enumerate(centres):
+        e = ease_out_cubic(cascade(i, t))
+        if e <= 0:
+            continue
+        top = (centres[i - 1] + cy) / 2 if i else cy - ROW_PITCH / 2
+        bottom = (cy + centres[i + 1]) / 2 if i + 1 < n else cy + ROW_PITCH / 2
+        y0, y1 = int(_p(0, top)[1]), int(_p(0, bottom)[1])
+        band = _faded(img.crop((0, y0, img.width, y1)), round(e * 16) / 16)
+        layer.alpha_composite(band, (0, y0 + int(round(CASCADE_DY * (1.0 - e)))))
+
+
+def _highlight(layer, x0: float, cy: float, t: float, start: float, end: float) -> None:
+    """The row's marker: swipes in left to right from `start`, fades out after `end`."""
+    if t < start or t >= end + HIGHLIGHT_FADE:
+        return
+    a = 0.7 * (1.0 - clamp01((t - end) / HIGHLIGHT_FADE) if t >= end else 1.0)
+    x1 = PAGE_W - 22
+    w = round((x1 - x0) * ease_out_expo((t - start) / HIGHLIGHT_SWEEP) / 4) * 4
+    if w < 40 or a <= 0:
+        return
+    kit.highlighter(layer, (*_p(x0, cy - ROW_PITCH // 2 + 6), *_p(x0 + w, cy + ROW_PITCH // 2 - 10)),
+                    a, _color("brand_yellow"))
+
+
+def _written(word: Image.Image, p: float) -> Optional[Image.Image]:
+    """The first p of a word being written, its edge a FEATHER px ramp centred on the cut
+    (where the pencil tip is)."""
+    if p >= 1.0:
+        return word
+    w, h = word.size
+    cut = int(round(w * p))
+    end = min(w, cut + FEATHER // 2)
+    if end <= 0:
+        return None
+    arr = np.array(word.crop((0, 0, end, h)))
+    r0 = max(0, cut - FEATHER // 2)
+    ramp = np.clip((cut + FEATHER / 2 - (np.arange(r0, end) + 0.5)) / FEATHER, 0.0, 1.0)
+    arr[:, r0:end, 3] = (arr[:, r0:end, 3] * ramp).astype(np.uint8)
+    return Image.fromarray(arr)
+
+
+def wobble(t: float) -> Tuple[float, float]:
+    """The pencil's hand while it writes: two slow sines, within ±WOBBLE px."""
+    return WOBBLE * math.sin(2 * math.pi * 6.3 * t), WOBBLE * math.sin(2 * math.pi * 8.9 * t + 0.7)
+
+
+def _glide(a: Tuple[float, float], b: Tuple[float, float], t: float, t0: float) -> Tuple[float, float]:
+    """The pencil from a to b over PENCIL_MOVE, lifted LIFT px at the middle of the move."""
+    p = ease_in_out((t - t0) / PENCIL_MOVE)
+    lift = LIFT * math.sin(math.pi * p) if a != b else 0.0
+    return a[0] + (b[0] - a[0]) * p, a[1] + (b[1] - a[1]) * p - lift
+
+
+def hook_text(data: Dict) -> str:
+    """The opening sticky note: the script's `hook`, else one built from the theme."""
+    if data.get("hook"):
+        return data["hook"]
+    n = len(data["items"])
+    if data.get("type", "how_do_you_say") == "how_do_you_say":
+        theme = (data.get("theme") or "").strip()
+        de = "del " + theme[3:] if theme.lower().startswith("el ") else "de " + theme
+        return f"¿Sabes decir estas {n} palabras {de}?"
+    return f"¿Cuántas aciertas de {n}?"
+
+
+def hook_end(data: Dict, first_row: float) -> float:
+    """The hook leaves when the intro ends (or the first row starts), not before 1.5 s."""
+    intro = (data.get("segment_times") or {}).get("intro")
+    end = float(intro["end"]) if intro else first_row
+    return max(end, HOOK_IN + HOOK_POP + 0.75)
+
+
+def hook_state(t: float, end: float) -> Tuple[float, float]:
+    """(scale, alpha) of the hook note: it slaps on at HOOK_IN (from 1.4× with an overshoot)
+    and leaves over HOOK_OUT from `end`."""
+    if t < HOOK_IN or t >= end + HOOK_OUT:
+        return 0.0, 0.0
+    if t < end:
+        p = (t - HOOK_IN) / HOOK_POP
+        return round((1.0 + 0.4 * (1.0 - ease_out_back(p))) * 100) / 100, round(clamp01(p * 3) * 16) / 16
+    q = (t - end) / HOOK_OUT
+    return round((1.0 - 0.2 * q) * 100) / 100, round((1.0 - q) * 16) / 16
+
+
+def _wrap(text: str, f: ImageFont.FreeTypeFont, width: int) -> List[str]:
+    lines, line = [], ""
+    for word in text.split():
+        trial = f"{line} {word}".strip()
+        if line and f.getlength(trial) > width:
+            lines.append(line)
+            line = word
+        else:
+            line = trial
+    return lines + [line]
+
+
+def _sticky(lines: Tuple[str, ...], size: int, angle: float, width: int = 0) -> Image.Image:
+    """A yellow sticky note (kit.note_card, hard shadow) with centred lines, tilted."""
+    f = fredoka(size)
+    pad = 30
+    lh = int(size * 1.18)
+    w = width or int(max(f.getlength(x) for x in lines)) + 2 * pad
+    h = lh * len(lines) + 2 * pad
+    note = kit.note_card(w, h, _color("brand_yellow"), 4, SHADOW).copy()
+    d = ImageDraw.Draw(note)
+    top, bottom = f.getbbox("Hx")[1], f.getbbox("Hx")[3]
+    for k, line in enumerate(lines):
+        cy = pad + lh * (k + 0.5)
+        d.text(((w - f.getlength(line)) / 2, cy - (top + bottom) / 2), line, font=f, fill=_color("ink"))
+    return note.rotate(-angle, resample=Image.BICUBIC, expand=True)
+
+
+@lru_cache(maxsize=4)
+def _hook_note(text: str) -> Image.Image:
+    size = HOOK_SIZE
+    while True:
+        lines = _wrap(text, fredoka(size), HOOK_W - 60)
+        if len(lines) <= 2 or size <= 56:
+            break
+        size -= 4
+    return _sticky(tuple(lines), size, HOOK_ROT, HOOK_W)
+
+
+@lru_cache(maxsize=4)
+def _cta_card(width: int) -> Image.Image:
+    """«¿Cuántas sabías? __/10» on a sticky note `width` wide, the Bubi sticker on its corner."""
+    note = _sticky(CTA_LINES, CTA_SIZE, -3.0, width)
+    bubi = kit.bubi_sticker(150)
+    img = Image.new("RGBA", (bubi.width + note.width - CTA_OVERLAP, max(bubi.height, note.height)), (0, 0, 0, 0))
+    img.alpha_composite(note, (bubi.width - CTA_OVERLAP, (img.height - note.height) // 2))
+    img.alpha_composite(bubi, (0, (img.height - bubi.height) // 2 + 30))   # on the note's corner
+    return img
+
+
+@lru_cache(maxsize=64)
+def _scaled_note(kind: str, text: str, s: float, width: int = 0) -> Image.Image:
+    img = _hook_note(text) if kind == "hook" else _cta_card(width)
+    if s == 1.0:
+        return img
+    return img.resize((max(1, round(img.width * s)), max(1, round(img.height * s))), Image.LANCZOS)
+
+
+def _place_note(layer, img: Image.Image, cx: float, cy: float, a: float = 1.0) -> None:
+    layer.alpha_composite(_faded(img, a), tuple(int(round(v)) for v in _p(cx - img.width / 2, cy - img.height / 2)))
+
+
+#: Over the rows' middle in the opening; over the title (the end needs no title) for the CTA,
+#: left of where the pencil parks.
+HOOK_AT = (PAGE_W / 2 + 20, 700)
+CTA_W, CTA_OVERLAP = 620, 50
+CTA_Y = 118
+BUBI_STICKER_W = 186                     # kit.bubi_sticker(150)   # the note centred on the title
+
+
+def _draw_hook(layer, t: float, data: Dict, first_row: float) -> None:
+    s, a = hook_state(t, hook_end(data, first_row))
+    if s > 0 and a > 0:
+        _place_note(layer, _scaled_note("hook", hook_text(data), s), *HOOK_AT, a)
+
+
+def cta_scale(t: float, start: float) -> float:
+    """The CTA pops with an overshoot when the spoken outro starts, and stays."""
+    if t < start:
+        return 0.0
+    return round((0.5 + 0.5 * ease_out_back((t - start) / CTA_POP)) * 100) / 100
+
+
+def cta_width(title_w: float) -> int:
+    """The CTA note covers the title it sits on (the end needs no title), within the page."""
+    return int(min(PAGE_W - 120, max(CTA_W, title_w + 70)))
+
+
+def _draw_cta(layer, t: float, start: float, title_w: float) -> None:
+    """The CTA, its note centred on the title."""
+    s = cta_scale(t, start)
+    if s > 0:
+        x = (64 + PAGE_W) / 2 - (BUBI_STICKER_W - CTA_OVERLAP) / 2 * s
+        _place_note(layer, _scaled_note("cta", "", s, cta_width(title_w)), x, CTA_Y)
 
 
 # ── Pencil ───────────────────────────────────────────────────────────
@@ -451,7 +693,7 @@ def _pencil_targets(tl: Timeline, items: List[Dict], centres: List[int]):
 #: Right of the title, body running off the page's right edge, so at rest it
 #: covers neither the title nor the first row.
 PENCIL_PARK_INTRO = (PAGE_W - 105, TITLE_Y + 20)
-PENCIL_PARK_RECAP = PENCIL_PARK_INTRO        # back by the title, off the rows
+PENCIL_PARK_RECAP = (PAGE_W - 80, THEME_Y + 10)   # in the margin, clear of the CTA on the title
 
 
 def pencil_position(t: float, tl: Timeline, items: List[Dict],
@@ -460,8 +702,7 @@ def pencil_position(t: float, tl: Timeline, items: List[Dict],
     starts, ends = _pencil_targets(tl, items, centres)
 
     def glide(a, b, t0):
-        p = ease_in_out((t - t0) / PENCIL_MOVE)
-        return (a[0] + (b[0] - a[0]) * p, a[1] + (b[1] - a[1]) * p)
+        return _glide(a, b, t, t0)
 
     pos = PENCIL_PARK_INTRO
     for i in range(tl.n):
@@ -474,7 +715,8 @@ def pencil_position(t: float, tl: Timeline, items: List[Dict],
         p = tl.reveal(i, t)
         pos = (starts[i][0] + (ends[i][0] - starts[i][0]) * p, starts[i][1])
         if p < 1.0:
-            return pos
+            wx, wy = wobble(t)
+            return pos[0] + wx, pos[1] + wy
         pos = ends[i]
     if t < tl.recap[0]:
         return pos
@@ -483,8 +725,9 @@ def pencil_position(t: float, tl: Timeline, items: List[Dict],
 
 # ── Frame ────────────────────────────────────────────────────────────
 
-def _draw_tick(layer: Image.Image, x: float, cy: int, scale: float) -> None:
-    kit.tick(layer, *_p(x, cy), scale, TICK_SIZE)
+def _draw_tick(layer: Image.Image, x: float, cy: int, p: float) -> None:
+    """A ✓ drawn along its stroke, p of the way (STEP 77 §3; it used to pop in by scale)."""
+    kit.tick(layer, *_p(x, cy), 1.0, TICK_SIZE, progress=round(p * 24) / 24)
 
 
 def _draw_countdown(layer: Image.Image, cy: int, p: float) -> None:
@@ -508,40 +751,37 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
     frame, _draw = create_base_frame(t)
     layer = _PageRecorder(_static_page(key, data["theme"]))
 
-    # 1. highlighter behind the active row (and fading out of the last one)
-    yellow = _color("brand_yellow")
+    # 1. the marker swipes in behind the active row; in the recap it re-sweeps each row as
+    #    the voice reaches its word
+    pulses = _recap_word_times(data.get("recap", ""), items, tl.recap)
     for i in range(n):
-        start = tl.es[i][0]
-        nxt = tl.es[i + 1][0] if i + 1 < n else tl.recap[0]
-        if t < start or t >= nxt + HIGHLIGHT_FADE:
-            continue
-        a = clamp01((t - start) / HIGHLIGHT_FADE)
-        if t >= nxt:
-            a *= 1.0 - clamp01((t - nxt) / HIGHLIGHT_FADE)
-        if a <= 0:
-            continue
-        cy = centres[i]
-        kit.highlighter(layer, (*_p(56, cy - ROW_PITCH // 2 + 6), *_p(PAGE_W - 22, cy + ROW_PITCH // 2 - 10)),
-                        0.7 * a, yellow)
+        _highlight(layer, 56, centres[i], t, tl.es[i][0], tl.es[i + 1][0] if i + 1 < n else tl.recap[0])
+    for i, tc in enumerate(pulses):
+        if tc is not None:
+            nxt = next((u for u in pulses[i + 1:] if u is not None), tl.recap[1] + 0.15)
+            _highlight(layer, 56, centres[i], t, tc - 0.15, nxt - 0.15)
 
-    # 2. emoji, popping on its row's es_i
+    # 2. emoji: in with its row in the opening, popping (ease_out_back) on its row's es_i
     for i, item in enumerate(items):
         scale = 1.0
         es0 = tl.es[i][0]
         if es0 <= t < es0 + EMOJI_POP:
-            scale = EMOJI_POP_FROM + (1.0 - EMOJI_POP_FROM) * ease_out_cubic((t - es0) / EMOJI_POP)
+            scale = EMOJI_POP_FROM + (1.0 - EMOJI_POP_FROM) * ease_out_back((t - es0) / EMOJI_POP,
+                                                                              EMOJI_OVERSHOOT)
+        e = ease_out_cubic(cascade(i, t))
+        if e <= 0:
+            continue
         size = max(1, round(EMOJI_SIZE * scale))
-        img = emoji_image(item["emoji"], size)
+        img = _faded(emoji_image(item["emoji"], size), round(e * 16) / 16)
         ex, ey = _p(EMOJI_X + (EMOJI_SIZE - img.size[0]) / 2,
-                    centres[i] - img.size[1] / 2)
+                    centres[i] - img.size[1] / 2 + CASCADE_DY * (1.0 - e))
         layer.alpha_composite(img, (int(round(ex)), int(round(ey))))
 
-    # 3. the Spanish column, static
-    layer.alpha_composite(_static_words(key))
+    # 3. the Spanish column, static (row by row in the opening)
+    _rows_in(layer, _static_words(key), centres, t)
 
     # 4. countdown dots, English reveal, ticks, recap pulses
     blue = _color("english_blue")
-    pulses = _recap_word_times(data.get("recap", ""), items, tl.recap)
     for i, item in enumerate(items):
         cy = centres[i]
         th0, th1 = tl.think[i]
@@ -554,10 +794,9 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
         word = _word_image(item["english"], ENGLISH_W, blue)
         wy = _word_offset_y(item["english"], ENGLISH_W, cy)
         if p < 1.0:
-            cut = int(round(word.size[0] * p))
-            if cut > 0:
-                layer.alpha_composite(word.crop((0, 0, cut, word.size[1])),
-                                      tuple(int(v) for v in _p(ENGLISH_X - 2, wy)))
+            part = _written(word, p)
+            if part is not None:
+                layer.alpha_composite(part, tuple(int(v) for v in _p(ENGLISH_X - 2, wy)))
             continue
 
         s = 1.0
@@ -580,9 +819,14 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
         _draw_tick(layer, ENGLISH_X + w + TICK_GAP, cy,
                    ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
 
-    # 5. the page, tilted (memoised by state), then the pencil over it
-    frame.alpha_composite(_page(layer), (PAGE_X - PAD, PAGE_Y - PAD))
-    _place_pencil(frame, *pencil_position(t, tl, items, centres))
+    # 5. the opening hook, and the CTA from the spoken outro on
+    _draw_hook(layer, t, data, tl.es[0][0])
+    _draw_cta(layer, t, tl.outro[0], fredoka(TITLE_SIZE).getlength(TITLE_TEXT))
+
+    # 6. the page, tilted (memoised by state) and moved, then the pencil over it
+    motion = page_motion(t, duration, tl.recap)
+    _composite_page(frame, layer, motion)
+    _place_pencil(frame, *pencil_position(t, tl, items, centres), motion)
 
     return finalize_frame(frame, ImageDraw.Draw(frame, "RGBA"), t, duration,
                           scene_cuts=[tl.recap[0]])
@@ -631,7 +875,7 @@ LABEL_SIZE = 26
 #: One text column for both lines; length_spec measures every prompt and
 #: answer against it. Right edge leaves room for the tick.
 LINE_X = 166
-LINE_W = PAGE_W - 30 - (TICK_GAP + TICK_SIZE) - LINE_X          # 620
+LINE_W = PAGE_W - 30 - (10 + TICK_SIZE) - LINE_X   # 620: the column kept its width when TICK_GAP grew (STEP 77 §3); §4 relays it
 LINE_FONT_MAX = 46
 LINE_FONT_MIN = 34
 LINE1_DY, LINE2_DY = -23, 25     # line centres from the row centre
@@ -972,9 +1216,9 @@ def _draw_fill_answers(layer: Image.Image, t: float, tl: "LevelTimeline", items:
             continue
         word = _plain_line(it["answer"], size, blue)
         wy = _text_y(f, cy1) - 2
-        cut = word.size[0] if p >= 1.0 else int(round(word.size[0] * p))
-        if cut > 0:
-            layer.alpha_composite(word.crop((0, 0, cut, word.size[1])), tuple(int(v) for v in _p(x0 - 2, wy)))
+        part = _written(word, p)
+        if part is not None:
+            layer.alpha_composite(part, tuple(int(v) for v in _p(x0 - 2, wy)))
         tf, _s, tw = fit_line(it["translation"], tsize)
         note = _faded(_line_image(it["translation"], tsize, grey), p)
         layer.alpha_composite(note, tuple(int(v) for v in _p(LINE_X - 2, _text_y(tf, cy2) - 2)))
@@ -1069,8 +1313,18 @@ def _draw_choose_answers(layer: Image.Image, t: float, tl: "LevelTimeline", item
         _strike(layer, *spans[1 - right], cy, p)
         if p >= 1.0:
             tick_t = tl.answer[i][1]
-            _draw_tick(layer, line_end + CIRCLE_PAD_X + TICK_GAP, cy,
+            _draw_tick(layer, choose_tick_x(spans, right), cy,
                        ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
+
+
+def choose_tick_x(spans: List[Tuple[float, float]], right: int) -> float:
+    """After the options line, the hand-drawn circle (its loop runs up to 1.1× its radius, plus
+    its ink) and the strike (6 px past the word, plus its ink), so the tick touches none of them
+    (STEP 77 §3)."""
+    x0, x1 = spans[right]
+    cx, rx = (x0 + x1) / 2, (x1 - x0) / 2 + CIRCLE_PAD_X
+    struck = spans[1 - right][1] + 6 + 7
+    return max(spans[1][1], struck, cx + 1.1 * rx + 7) + TICK_GAP
 
 
 def _draw_countdown_at(layer: Image.Image, x0: float, cy: float, p: float) -> None:
@@ -1197,7 +1451,7 @@ def level_text_boxes(vtype: str, items: List[Dict], centres: List[int]) -> List[
 
 
 #: The pencil image's box around its tip (pencil_image, PENCIL_ANGLE), and the air it keeps.
-PENCIL_BOX = (-4, -4, 230, 186)          # kit.pencil, drawn at 4× (STEP 77 §1)
+PENCIL_BOX = (-4, -4, 166, 135)          # kit.pencil, 200 px long (STEP 77 §3)
 PENCIL_CLEAR = 8
 
 
@@ -1220,8 +1474,7 @@ def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer
     of the last row, and by the title it parks clear of the rows under it: the last frames
     show every answer (STEP 63: it sat on «Depende de ti»)."""
     def glide(a, b, t0):
-        p = ease_in_out((t - t0) / PENCIL_MOVE)
-        return (a[0] + (b[0] - a[0]) * p, a[1] + (b[1] - a[1]) * p)
+        return _glide(a, b, t, t0)
 
     if boxes is not None and t >= tl.answer[-1][1]:
         rest = pencil_rest(boxes[-1:], (LINE_X, centres[-1] + LINE2_DY))
@@ -1250,7 +1503,8 @@ def level_pencil_position(t: float, tl: LevelTimeline, items: List[Dict], answer
         p = tl.reveal(i, t)
         pos = (start[0] + (end[0] - start[0]) * p, base)
         if p < 1.0:
-            return pos
+            wx, wy = wobble(t)
+            return pos[0] + wx, pos[1] + wy
         pos = end
     if t < tl.verdict[0]:
         return pos
@@ -1289,24 +1543,14 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
     layer = _PageRecorder(_static_level_page(n, data["title"], data["theme"], True, tier_gap) if tiers
                           else _static_level_page(n, data["title"], data["theme"], False))
 
-    # 1. highlighter behind the active row, then the printed numbers and prompts over it
-    yellow = _color("brand_yellow")
+    # 1. the marker swipes in behind the active row, then the printed numbers and prompts over it
     for i in range(n):
-        start, nxt = tl.row[i], tl.row_end(i)
-        if t < start or t >= nxt + HIGHLIGHT_FADE:
-            continue
-        a = clamp01((t - start) / HIGHLIGHT_FADE)
-        if t >= nxt:
-            a *= 1.0 - clamp01((t - nxt) / HIGHLIGHT_FADE)
-        if a > 0:
-            cy = centres[i]
-            kit.highlighter(layer, (*_p(LABEL_X1 + 6, cy - ROW_PITCH // 2 + 6),
-                                    *_p(PAGE_W - 22, cy + ROW_PITCH // 2 - 10)), 0.7 * a, yellow)
+        _highlight(layer, LABEL_X1 + 6, centres[i], t, tl.row[i], tl.row_end(i))
     kind = mode.get("kind", "write")
     if kind in ("fill", "choose"):
-        layer.alpha_composite(_static_fill_text(tuple(blank_key(it) for it in items), tier_gap))
+        _rows_in(layer, _static_fill_text(tuple(blank_key(it) for it in items), tier_gap), centres, t)
     else:
-        layer.alpha_composite(_static_level_text(tuple(it[prompt] for it in items), prompt == "english"))
+        _rows_in(layer, _static_level_text(tuple(it[prompt] for it in items), prompt == "english"), centres, t)
 
     # 2. tier pills in the margin; the one a tier line announces pulses once
     for word, color, a, b in TIERS if tiers else ():
@@ -1349,10 +1593,9 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
         word = _line_image(item[answer], size, answer_color)
         wy = _text_y(f, cy) - 2
         if p < 1.0:
-            cut = int(round(word.size[0] * p))
-            if cut > 0:
-                layer.alpha_composite(word.crop((0, 0, cut, word.size[1])),
-                                      tuple(int(v) for v in _p(LINE_X - 2, wy)))
+            part = _written(word, p)
+            if part is not None:
+                layer.alpha_composite(part, tuple(int(v) for v in _p(LINE_X - 2, wy)))
             continue
         layer.alpha_composite(word, tuple(int(v) for v in _p(LINE_X - 2, wy)))
         tick_t = tl.answer[i][1]
@@ -1387,6 +1630,11 @@ def create_frame_level(t: float, data: Dict, duration: float, presentation=None)
         cx, cy = VERDICT_X + VERDICT_W / 2, VERDICT_Y + VERDICT_H / 2
         layer.alpha_composite(note, tuple(int(round(v)) for v in _p(cx - note.size[0] / 2, cy - note.size[1] / 2)))
 
-    frame.alpha_composite(_page(layer), (PAGE_X - PAD, PAGE_Y - PAD))
-    _place_pencil(frame, *pencil_at)
+    # 7. the opening hook, and the CTA from the spoken outro on
+    _draw_hook(layer, t, data, tl.row[0])
+    _draw_cta(layer, t, tl.outro[0], fit_word(data["title"], PAGE_W - 140, TITLE_SIZE, 56)[0].getlength(data["title"]))
+
+    motion = page_motion(t, duration, (tl.answer[-1][1], tl.outro[0]))
+    _composite_page(frame, layer, motion)
+    _place_pencil(frame, *pencil_at, motion)
     return finalize_frame(frame, ImageDraw.Draw(frame, "RGBA"), t, duration, scene_cuts=[v0])

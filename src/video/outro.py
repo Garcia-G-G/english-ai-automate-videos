@@ -56,8 +56,14 @@ URL_SIZE = 96                      # learningroutes.com, Fredoka bold, English b
 SUB_SIZE = 40                      # the site's line, Fredoka medium, muted
 MARKER_H = 30                      # the yellow stroke under the URL's lower half
 
-FADE_IN = 0.35
 FADE_OUT = 0.35
+#: STEP 77 §3: the card comes up from below with an overshoot as the page leaves the Short,
+#: and Bubi waves: two poses, tilted either way about his feet, swapped every WAVE_STEP.
+ENTER = 0.5
+ENTER_FROM = 520
+WAVE_STEP = 0.2
+WAVE_SWINGS = 6
+WAVE_DEG = 6.0
 
 
 # ── copy ─────────────────────────────────────────────────────────────
@@ -99,17 +105,25 @@ def _sand() -> Tuple[int, int, int]:
 
 
 def outro_still(variant: Dict) -> Image.Image:
-    """The card: «line_1» in ink, line_2 big in English blue over a yellow marker
+    """The card at rest: «line_1» in ink, line_2 big in English blue over a yellow marker
     stroke, outro.json's `line_3` small and muted, the symbol on the top edge."""
+    card, bubi, at = outro_layers(variant)
+    img = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (*_sand(), 255))
+    img.alpha_composite(card)
+    img.alpha_composite(bubi, at)
+    return img.convert("RGB")
+
+
+def outro_layers(variant: Dict) -> Tuple[Image.Image, Image.Image, Tuple[int, int]]:
+    """(the card and its text on a transparent frame, Bubi, where Bubi stands)."""
     from .how_do_you_say import fredoka
     ink, blue, yellow = _brand_colour("ink"), _brand_colour("english_blue"), _brand_colour("brand_yellow")
     from .notebook import kit
     muted = _brand_colour("secondary_text")
     x0, y0 = (VIDEO_WIDTH - CARD_W) // 2, (VIDEO_HEIGHT - CARD_H) // 2 + CARD_DY
     # The notebook kit's card, in the page's one paper colour (STEP 77 §1).
-    card = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (*_sand(), 255))
-    kit.page(card, x0, y0, CARD_W, CARD_H, CARD_RADIUS, CARD_OUTLINE, (8, 8), fill=kit.PAPER)
-    img = card.convert("RGB")
+    img = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (0, 0, 0, 0))
+    kit.page(img, x0, y0, CARD_W, CARD_H, CARD_RADIUS, CARD_OUTLINE, (8, 8), fill=kit.PAPER)
     draw = ImageDraw.Draw(img)
 
     def centred(text, font, cy, fill):
@@ -134,25 +148,46 @@ def outro_still(variant: Dict) -> Image.Image:
     symbol = Image.open(SYMBOL).convert("RGBA")
     symbol = symbol.crop(symbol.getchannel("A").getbbox())          # his pixels, not the canvas
     symbol = symbol.resize((SYMBOL_PX, round(symbol.height * SYMBOL_PX / symbol.width)), Image.LANCZOS)
-    img.paste(symbol, ((VIDEO_WIDTH - SYMBOL_PX) // 2, y0 + SYMBOL_OVERLAP - symbol.height), symbol)
-    return img
+    return img, symbol, ((VIDEO_WIDTH - SYMBOL_PX) // 2, y0 + SYMBOL_OVERLAP - symbol.height)
+
+
+def wave_pose(t: float) -> int:
+    """Bubi's pose at t: 0 at rest, +1 / -1 while he waves (after the card lands)."""
+    k = int((t - ENTER) // WAVE_STEP)
+    if t < ENTER or k >= WAVE_SWINGS:
+        return 0
+    return 1 if k % 2 == 0 else -1
+
+
+def card_dy(t: float) -> int:
+    from .motion import ease_out_back
+    return int(round(ENTER_FROM * (1.0 - ease_out_back(t / ENTER)))) if t < ENTER else 0
 
 
 def _make_frame_fn(variant: Dict):
-    still = np.array(outro_still(variant), dtype=np.uint8)
+    from .notebook import kit
+    card, bubi, (bx, by) = outro_layers(variant)
+    # a pose tilts him about his feet; the canvas grows so the tilt never clips him
+    poses = {0: (bubi, bx, by)}
+    for sign in (1, -1):
+        r = bubi.rotate(sign * WAVE_DEG, resample=Image.BICUBIC, expand=True,
+                        center=(bubi.width / 2, bubi.height))
+        poses[sign] = (r, bx - (r.width - bubi.width) // 2, by - (r.height - bubi.height))
+    sand = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (*_sand(), 255))
     bg = np.array(_sand(), dtype=np.float32)
 
     def frame_at(t: float) -> np.ndarray:
-        # Fade from and to the sand background rather than to black, so the
-        # join with the main video and the end of the clip are both clean.
-        k = 1.0
-        if t < FADE_IN:
-            k = t / FADE_IN
-        elif t > OUTRO_DURATION - FADE_OUT:
+        img = sand.copy()
+        dy = card_dy(t)
+        kit._composite_clipped(img, card, 0, dy)
+        b, x, y = poses[wave_pose(t)]
+        kit._composite_clipped(img, b, x, y + dy)
+        out = np.array(img.convert("RGB"))
+        # fade to the sand background at the end, so the clip's end is clean
+        if t > OUTRO_DURATION - FADE_OUT:
             k = max(0.0, (OUTRO_DURATION - t) / FADE_OUT)
-        if k >= 0.999:
-            return still
-        return (bg + (still.astype(np.float32) - bg) * k).astype(np.uint8)
+            out = (bg + (out.astype(np.float32) - bg) * k).astype(np.uint8)
+        return out
 
     return frame_at
 

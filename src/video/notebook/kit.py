@@ -116,6 +116,8 @@ def paint(layer: Image.Image, box: Sequence[float], painter: Painter, key) -> No
 
 def _composite_clipped(layer: Image.Image, img: Image.Image, ox: int, oy: int) -> None:
     cx, cy = max(0, -ox), max(0, -oy)
+    if cx >= img.size[0] or cy >= img.size[1] or ox >= layer.size[0] or oy >= layer.size[1]:
+        return                                           # wholly outside: nothing to draw
     layer.alpha_composite(img.crop((cx, cy, img.size[0], img.size[1])), (ox + cx, oy + cy))
 
 
@@ -321,6 +323,8 @@ def arrow(img: Image.Image, x: float, y: float, length: float, c: Colour) -> Non
 #: Degrees BELOW horizontal: tip upper-left, body trailing down-right (rows fill top to
 #: bottom, so the body lies over rows not yet written).
 PENCIL_ANGLE = 38
+#: Tip to eraser end (STEP 77 §3/§4: 200 px; it was 278 and ran off the frame's right edge).
+PENCIL_LENGTH = 200
 
 
 @lru_cache(maxsize=1)
@@ -329,10 +333,10 @@ def pencil() -> Tuple[Image.Image, Tuple[int, int]]:
     drawn horizontally with the tip there, then rotated about it at SS×)."""
     ink, yellow = colour("ink"), colour("brand_yellow")
     wood, pink, metal = (236, 196, 140, 255), (232, 128, 140, 255), (178, 174, 166, 255)
-    size = 560
-    k = SS
-    c = size * k // 2
-    big = Image.new("RGBA", (size * k, size * k), (0, 0, 0, 0))
+    size = 2 * PENCIL_LENGTH
+    k = SS * PENCIL_LENGTH / 278                         # proportions of the 278 px original
+    c = size * SS // 2
+    big = Image.new("RGBA", (size * SS, size * SS), (0, 0, 0, 0))
     d = ImageDraw.Draw(big, "RGBA")
     h = 40 * k
     cone, body, ferrule, eraser = 54 * k, 170 * k, 24 * k, 30 * k
@@ -340,15 +344,15 @@ def pencil() -> Tuple[Image.Image, Tuple[int, int]]:
     d.polygon([(x, c), (x + cone, c - h / 2), (x + cone, c + h / 2)], fill=wood)
     d.polygon([(x, c), (x + 17 * k, c - h / 2 * 17 / 54), (x + 17 * k, c + h / 2 * 17 / 54)], fill=ink)
     x += cone
-    d.rectangle([x, c - h / 2, x + body, c + h / 2], fill=yellow, outline=ink, width=4 * k)
-    d.line([(x, c), (x + body, c)], fill=(214, 182, 80, 255), width=3 * k)
+    d.rectangle([x, c - h / 2, x + body, c + h / 2], fill=yellow, outline=ink, width=round(4 * k))
+    d.line([(x, c), (x + body, c)], fill=(214, 182, 80, 255), width=round(3 * k))
     x += body
-    d.rectangle([x, c - h / 2, x + ferrule, c + h / 2], fill=metal, outline=ink, width=4 * k)
+    d.rectangle([x, c - h / 2, x + ferrule, c + h / 2], fill=metal, outline=ink, width=round(4 * k))
     x += ferrule
     d.rounded_rectangle([x - 2 * k, c - h / 2, x + eraser, c + h / 2], radius=10 * k, fill=pink,
-                        outline=ink, width=4 * k)
-    d.line([(c, c), (c + cone, c - h / 2)], fill=ink, width=4 * k)
-    d.line([(c, c), (c + cone, c + h / 2)], fill=ink, width=4 * k)
+                        outline=ink, width=round(4 * k))
+    d.line([(c, c), (c + cone, c - h / 2)], fill=ink, width=round(4 * k))
+    d.line([(c, c), (c + cone, c + h / 2)], fill=ink, width=round(4 * k))
     big = big.rotate(-PENCIL_ANGLE, resample=Image.BICUBIC, center=(c, c))
     return big.resize((size, size), Image.LANCZOS), (size // 2, size // 2)
 

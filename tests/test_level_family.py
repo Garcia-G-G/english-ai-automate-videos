@@ -45,15 +45,16 @@ def _hdys_timeline(data):
 #: sha256[:16] of raw frames over a flat base. First pinned before the level modes (3c5ab68);
 #: RE-PINNED at STEP 77 §1, when every mark started coming from the supersampled notebook kit
 #: (the frames changed on purpose: anti-aliased edges; stills reviewed in _audit/stills/STEP77/), and
-#: again at §2 (page tilted by cv2 once per state, the pencil drawn unrotated after the tilt).
+#: again at §2 (page tilted by cv2 once per state, the pencil drawn unrotated after the tilt),
+#: and at §3 (motion: rise, cascade, hook, swipe, stroke ticks, feather, 200 px pencil, CTA).
 HDYS_PIN = {
-    0.0: "9d61e845081ca805",
-    4.7: "e786ef307ff08db0",
-    15.5: "877d184792170bd0",
-    25.9: "d8d40bc2f423ac26",
-    50.2: "006fc0b3481f98c5",
-    53.6: "efe57d9e56452f3e",
-    63.7: "b0743ecdf48e6a29",
+    0.0: "38a36cc013070f75",
+    4.7: "4c0f682443d3f606",
+    15.5: "4061f78307443edf",
+    25.9: "841eb7d5d85e5334",
+    50.2: "b55dad4ed5eeeddf",
+    53.6: "3c898e316c3fd650",
+    63.7: "04b15d530f3cb48d",
 }
 
 
@@ -190,7 +191,9 @@ def test_the_pencil_waits_off_the_prompts_then_writes_the_answer():
     assert level_pencil_position(think["end"] - PENCIL_MOVE - 0.01, tl, items, "spanish", centres, size)[0] \
         == pytest.approx(PENCIL_WAIT_X)
     ans = data["segment_times"]["answer_2"]
-    assert level_pencil_position(ans["start"], tl, items, "spanish", centres, size)[0] == pytest.approx(LINE_X)
+    # ±WOBBLE: the pencil's hand while it writes (STEP 77 §3)
+    assert level_pencil_position(ans["start"], tl, items, "spanish", centres, size)[0] == \
+        pytest.approx(LINE_X, abs=2.0)
     assert level_pencil_position(ans["end"], tl, items, "spanish", centres, size)[0] == \
         pytest.approx(LINE_X + fit_line(items[1]["spanish"], size)[2])
 
