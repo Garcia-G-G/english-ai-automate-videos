@@ -6,6 +6,7 @@ Optimized for sequential reads (one open cv2.VideoCapture at a time).
 """
 
 import logging
+import math
 import random
 import shutil
 import tempfile
@@ -197,43 +198,32 @@ class ClipLibraryBackground:
         self._mark = mark_profile(strength=self.mark_scrim) if apply_mark else None
 
         # Sequential-read state
-        self._cap = None
-        self._cap_path = None
-        self._cap_frame_idx = -1  # index of the NEXT frame cap.read() returns
-        self._last_frame = None
+        # One decoder per clip in use: a crossfade reads two at once (STEP 77 §6).
+        # path -> [capture, index of the NEXT frame read() returns, last frame]
+        self._caps = {}
+        # STEP 77 §6: one grade for the whole set. Behind the page each softened clip is pulled
+        # toward the set's median colour, so a cut does not jump in brightness or tint.
+        if self.softened:
+            self._grade_clips()
 
     def _soft_plan(self) -> dict:
-        """No band behind an opaque page; the mark's local scrim is still solved, over the
-        softened clips (a quarter-res decode is cheap), against the same 3:1 floor."""
-        from clip_contrast import (FLOOR, MARK_BOX, MARK_COLOR, _contrast_at, measure_zone_patch,
-                                   sample_times, solve_strength)
-        x0, y0, x1, y1 = MARK_BOX
-        pixels, untreated = [], []
-        for clip in self._clips:
-            wanted = {int(t * clip["fps"]) for t in sample_times(clip["duration"])}
-            cap = cv2.VideoCapture(clip["path"])
-            index = 0
-            while wanted:                                # sequential: no seek per sample
-                ok, frame = cap.read()
-                if not ok:
-                    break
-                if index in wanted:
-                    wanted.discard(index)
-                    rgb = cv2.cvtColor(self._fit(frame), cv2.COLOR_BGR2RGB)
-                    m = measure_zone_patch(rgb[y0:y1, x0:x1], text_color=MARK_COLOR)
-                    pixels.append(m["p95_rgb"])
-                    untreated.append(m["contrast_worst"])
-                index += 1
-            cap.release()
-        strength = solve_strength(pixels, FLOOR, MARK_COLOR) if pixels else 0.0
-        achieved = _contrast_at(pixels, strength, MARK_COLOR) if pixels else None
-        return {"strength": 0.0, "mark_strength": round(float(strength), 3),
+        """No band behind an opaque page, and no watermark scrim either: since STEP 77 §4 the
+        opaque-page (notebook) types draw no watermark on the frame — the brand is on the
+        page's footer — so there is nothing down there for a scrim to make readable."""
+        return {"strength": 0.0, "mark_strength": 0.0,
                 "worst_contrast": None, "worst_clip": None, "worst_at": None,
                 "clips": [c["path"] for c in self._clips], "interval": 0.5,
-                "mark_rect": None, "mark_worst_contrast": round(min(untreated), 2) if untreated else None,
-                "mark_treated_contrast": round(achieved, 2) if achieved else None,
-                "mark_band_credit": 1.0, "mark_meets_floor": achieved is None or achieved >= FLOOR,
-                "skipped": "opaque page: softened, no band"}
+                "mark_rect": None, "mark_worst_contrast": None, "mark_treated_contrast": None,
+                "mark_band_credit": 1.0, "mark_meets_floor": True,
+                "skipped": "opaque page: softened, no band, no watermark (STEP 77 §4)"}
+
+    def _cut_near(self, t: float):
+        """(cut time, entry before, entry after) when t is within CROSSFADE/2 of a cut."""
+        for k in range(1, len(self._playlist)):
+            start = self._playlist[k]["start"]
+            if abs(t - start) < CROSSFADE / 2:
+                return start, self._playlist[k - 1], self._playlist[k]
+        return None
 
     def _entry_for(self, t: float):
         """Find playlist entry and local time for global time t."""
@@ -244,42 +234,73 @@ class ClipLibraryBackground:
                 return entry["clip"], local_t
         return self._playlist[0]["clip"], 0.0
 
-    def _read_frame(self, clip: dict, frame_idx: int) -> np.ndarray:
-        """Read a frame, keeping the capture open for sequential access."""
-        frame_idx = max(0, min(frame_idx, clip["frames"] - 1))
+    def _grade_clips(self) -> None:
+        """clip["gain"]: per-channel gains (BGR) that bring the clip's mean colour to the set's
+        median, within GRADE_LIMITS. Measured on a few frames of the quarter-res copies."""
+        means = []
+        for clip in self._clips:
+            cap = cv2.VideoCapture(clip["path"])
+            got = []
+            for k in range(GRADE_SAMPLES):
+                cap.set(cv2.CAP_PROP_POS_FRAMES, int(clip["frames"] * (k + 0.5) / GRADE_SAMPLES))
+                ok, frame = cap.read()
+                if ok:
+                    got.append(frame.reshape(-1, 3).mean(axis=0))
+            cap.release()
+            means.append(np.mean(got, axis=0) if got else None)
+        known = [m for m in means if m is not None]
+        if not known:
+            return
+        target = np.median(known, axis=0)
+        for clip, m in zip(self._clips, means):
+            if m is not None:
+                clip["gain"] = np.clip(target / np.maximum(m, 1.0), *GRADE_LIMITS).astype(np.float32)
 
-        if self._cap_path != clip["path"]:
-            if self._cap is not None:
-                self._cap.release()
-            self._cap = cv2.VideoCapture(clip["path"])
-            self._cap_path = clip["path"]
-            self._cap_frame_idx = 0
+    def _read_frame(self, clip: dict, frame_idx: int) -> np.ndarray:
+        """Read a frame, keeping one capture per clip open for sequential access."""
+        frame_idx = max(0, min(frame_idx, clip["frames"] - 1))
+        state = self._caps.get(clip["path"])
+        if state is None:
+            if len(self._caps) >= 2:                     # the outgoing clip of an old crossfade
+                old = next(iter(self._caps))
+                self._caps.pop(old)[0].release()
+            state = self._caps[clip["path"]] = [cv2.VideoCapture(clip["path"]), 0, None]
+        cap, next_idx, last = state
 
         # Same frame as last time — reuse it
-        if frame_idx == self._cap_frame_idx - 1 and self._last_frame is not None:
-            return self._last_frame
+        if frame_idx == next_idx - 1 and last is not None:
+            return last
 
         # Backwards or a large forward jump — seek directly
-        if frame_idx < self._cap_frame_idx or frame_idx - self._cap_frame_idx > 10:
-            self._cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
-            self._cap_frame_idx = frame_idx
+        if frame_idx < next_idx or frame_idx - next_idx > 10:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
+            next_idx = frame_idx
 
         # Advance sequentially to the target frame
         frame = None
-        while self._cap_frame_idx <= frame_idx:
-            ok, frame = self._cap.read()
+        while next_idx <= frame_idx:
+            ok, frame = cap.read()
             if not ok:
                 break
-            self._cap_frame_idx += 1
+            next_idx += 1
+        state[1] = next_idx
 
         if frame is None:
             # Decode hiccup — fall back to last good frame or black
-            if self._last_frame is not None:
-                return self._last_frame
+            if last is not None:
+                return last
             return np.zeros((self.height, self.width, 3), dtype=np.uint8)
 
-        self._last_frame = frame
+        if "gain" in clip:                               # on the quarter-res frame: cheap
+            frame = np.clip(frame.astype(np.float32) * clip["gain"], 0, 255).astype(np.uint8)
+        state[2] = frame
         return frame
+
+    def release_captures(self) -> None:
+        """Close every decoder (before a fork: a child must open its own)."""
+        for cap, _i, _f in self._caps.values():
+            cap.release()
+        self._caps = {}
 
     def _fit(self, frame: np.ndarray) -> np.ndarray:
         """Scale + center-crop a BGR frame to (width, height), keeping aspect."""
@@ -294,11 +315,23 @@ class ClipLibraryBackground:
             frame = frame[y0:y0 + self.height, x0:x0 + self.width]
         return frame
 
+    def _clip_frame(self, clip: dict, local_t: float) -> np.ndarray:
+        return self._read_frame(clip, frame_index(local_t, clip["fps"]))
+
     def get_frame(self, t: float) -> np.ndarray:
-        """Return the RGB uint8 background frame (height, width, 3) at time t."""
+        """Return the RGB uint8 background frame (height, width, 3) at time t. Across a cut the
+        two clips crossfade over CROSSFADE seconds centred on it (STEP 77 §6)."""
         clip, local_t = self._entry_for(t)
-        frame_idx = int(local_t * clip["fps"])
-        frame = self._read_frame(clip, frame_idx)
+        frame = self._clip_frame(clip, local_t)
+        cut = self._cut_near(t)
+        if cut is not None:
+            start, before, after = cut
+            w = (t - (start - CROSSFADE / 2)) / CROSSFADE      # 0 → 1 across the window
+            a = self._clip_frame(before["clip"], min(t - before["start"], before["clip"]["duration"] - 1e-3))
+            b = self._clip_frame(after["clip"], max(0.0, t - start))
+            if a.shape != b.shape:
+                a, b = self._fit(a), self._fit(b)
+            frame = cv2.addWeighted(a, 1.0 - w, b, w, 0.0)
         frame = self._fit(frame)
 
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -331,13 +364,24 @@ class ClipLibraryBackground:
 
     def close(self):
         """Release the open video capture and the softened copies."""
-        if self._cap is not None:
-            self._cap.release()
-            self._cap = None
-            self._cap_path = None
+        self.release_captures()
         if self._soft_dir:
             shutil.rmtree(self._soft_dir, ignore_errors=True)
             self._soft_dir = None
+
+
+#: STEP 77 §6: cuts between clips crossfade over this many seconds.
+CROSSFADE = 0.5
+#: One grade: samples per clip, and how far a clip's colour may be pulled.
+GRADE_SAMPLES = 5
+GRADE_LIMITS = (0.8, 1.25)
+
+
+def frame_index(local_t: float, fps: float) -> int:
+    """The source frame on screen at local_t: floor of the timestamp, with a hair of slack.
+    int(t * fps) took 0.1 * 30 = 2.9999… as frame 2 and showed it twice (STEP 77 §6), and
+    29.97 / 59.94 clips need their real rate, not a rounded one."""
+    return int(math.floor(local_t * fps + 1e-6))
 
 
 #: Quarter resolution: the blur happens there and the upscale softens it further.

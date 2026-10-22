@@ -130,10 +130,8 @@ def before_fork() -> None:
     descriptor and decoder would be read by every child at once. The clip library itself —
     softened copies, measured scrims — is kept, so the children inherit it instead of each
     building its own; each opens its own capture on its first frame."""
-    if _clip_bg is not None and getattr(_clip_bg, "_cap", None) is not None:
-        _clip_bg._cap.release()
-        _clip_bg._cap, _clip_bg._cap_path, _clip_bg._cap_frame_idx = None, None, -1
-        _clip_bg._last_frame = None
+    if _clip_bg is not None:
+        _clip_bg.release_captures()
 
 
 def gradient(w: int, h: int, t: float) -> np.ndarray:

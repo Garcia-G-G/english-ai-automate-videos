@@ -901,9 +901,13 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         # the duration band and makes the playlist loop.
         clips_dir = CLIPS_DIR / unique_name
         tts_duration = None
+        footage_themes = []
         try:
             with open(json_path, encoding="utf-8") as _f:
-                tts_duration = float(json.load(_f).get("duration") or 0) or None
+                _artifact = json.load(_f)
+            tts_duration = float(_artifact.get("duration") or 0) or None
+            from topic_clips import footage_themes as _themes
+            footage_themes = _themes(_artifact)            # STEP 77 §6: the theme before the category
         except Exception:                                       # noqa: BLE001
             # A missing duration costs a shorter playlist, never the video.
             logger.warning("background: could not read the duration from %s; "
@@ -924,6 +928,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             dest_dir=clips_dir,
             duration=tts_duration,
             on_record=_record_background,
+            themes=footage_themes,
         )
         update_job(job_id, current_step=f"Rendering video ({resolved_background})...")
         _stage("clips")

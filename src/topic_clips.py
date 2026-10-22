@@ -694,8 +694,23 @@ def _axis_pick(seq, seed_text: str, salt: str):
     return seq[int.from_bytes(h[:4], "big") % len(seq)]
 
 
-def build_queries(topic: str, category: str, count: int = 3) -> List[str]:
-    """`count` DISTINCT search queries for one video.
+def footage_themes(script: Dict) -> List[str]:
+    """STEP 77 §4/§6: queries from the script's own theme, asked BEFORE the category's
+    fallbacks. A how_do_you_say page names its objects in English (pillow, blanket, lamp…):
+    those are the theme on screen. Other types carry no English, visual theme: none."""
+    if (script or {}).get("type") != "how_do_you_say":
+        return []
+    words = [str(it.get("english") or "").strip() for it in script.get("items") or []]
+    return [f"{w} close up" for w in words if w][:THEME_QUERIES]
+
+
+#: At most this many theme queries per video; the category fills the rest.
+THEME_QUERIES = 4
+
+
+def build_queries(topic: str, category: str, count: int = 3, themes: List[str] = ()) -> List[str]:
+    """`count` DISTINCT search queries for one video: the script's theme first (footage_themes),
+    then the category's subjects.
 
     Distinct is the whole point and is enforced, not hoped for: the subject
     walks through the category's list from a topic-seeded offset, so two
@@ -716,8 +731,8 @@ def build_queries(topic: str, category: str, count: int = 3) -> List[str]:
         hashlib.sha256(f"subject:{slug}".encode("utf-8")).digest()[:4], "big")
     count = max(1, min(count, len(subjects)))
 
-    queries = []
-    for i in range(count):
+    queries = list(dict.fromkeys(themes))[:count]
+    for i in range(count - len(queries)):
         subject = subjects[(offset + i) % len(subjects)]
         motion = _axis_pick(MOTION, f"{slug}:{i}", "motion")
         queries.append(f"{motion} {subject}")
@@ -891,7 +906,8 @@ def _place(source: Path, out_dir: Path) -> Path:
 def fetch_for_topic(topic: str, category: str = None, *,
                     duration: float = 30.0,
                     out_dir: Path = None,
-                    key: str = None) -> Optional[Dict]:
+                    key: str = None,
+                    themes: List[str] = ()) -> Optional[Dict]:
     """Fetch this video's footage into ITS OWN directory. Returns a dict.
 
     `out_dir` is the artifact's own clips directory, not a global one — the
@@ -910,7 +926,7 @@ def fetch_for_topic(topic: str, category: str = None, *,
     out_dir = Path(out_dir)
 
     want = clips_needed(duration)
-    queries = build_queries(topic, category, count=want)
+    queries = build_queries(topic, category, count=want, themes=themes)
     logger.info("clips: %r (%s) -> %d queries for %.1fs",
                 topic, category, len(queries), duration)
 

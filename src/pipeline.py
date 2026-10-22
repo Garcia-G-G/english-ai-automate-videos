@@ -136,7 +136,7 @@ def resolve_background(profile: Dict = None, background: str = None, *,
                        topic: str = None, category: str = None,
                        entry: Dict = None,
                        dest_dir=None, duration: float = None,
-                       on_record=None) -> str:
+                       on_record=None, themes: List[str] = ()) -> str:
     """THE place a background is decided. Both entry points call this.
 
     Returns "clips:<dir>" — the ONLY shape there is — or raises
@@ -241,7 +241,7 @@ def resolve_background(profile: Dict = None, background: str = None, *,
     # ── 3. this video's own footage ──
     if topic and dest_dir:
         resolved, payload = _clip_background(topic, category, dest_dir,
-                                             duration)
+                                             duration, themes)
         if resolved:
             return decided(resolved, 3, "pexels", payload)
         declined("pexels", "no usable clip for any query")
@@ -435,7 +435,7 @@ def _cache_background(topic: str, category: str = None, dest_dir=None,
 
 
 def _clip_background(topic: str, category: str = None, dest_dir=None,
-                     duration: float = None):
+                     duration: float = None, themes: List[str] = ()):
     """Fetch this video's footage into `dest_dir`. Returns (value, payload).
 
     (None, None) means "fall through". Nothing in here raises: a background
@@ -460,7 +460,7 @@ def _clip_background(topic: str, category: str = None, dest_dir=None,
 
     try:
         result = fetch_for_topic(topic, category, duration=duration or 30.0,
-                                 out_dir=Path(dest_dir))
+                                 out_dir=Path(dest_dir), themes=themes)
     except Exception:                                       # noqa: BLE001
         # UnknownCategory lands here too. It is a real defect and it is
         # logged as one, but it must not cost the video its render.
