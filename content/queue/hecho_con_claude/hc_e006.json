@@ -1,0 +1,43 @@
+{
+  "id": "hc_e006",
+  "style": "escena",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«I have a reserve»: en el hotel no te entienden",
+  "hook_text": "ESCENA — RECEPCIÓN DE UN HOTEL EN MIAMI",
+  "scene": {
+    "location": "Recepción de un hotel en Miami",
+    "take1": "Hello, I have a reserve.",
+    "take2": "Hi, I have a reservation under García.",
+    "note": "Reserva = reservation (EE. UU.) o booking (Reino Unido). Reserve es otra cosa."
+  },
+  "correction": {
+    "wrong": "I have a reserve",
+    "right": "I have a reservation / a booking",
+    "rule": "Reserva = reservation / booking"
+  },
+  "voice": [
+    "Escena: recepción de un hotel en Miami. Toma uno: [[Hello, I have a reserve]].",
+    "¡Corten! [[Reserve]] como sustantivo es una reserva natural o una provisión, no la del hotel.",
+    "Toma dos: [[Hi, I have a reservation under García]]. Lo de [[under]] es «a nombre de».",
+    "En Reino Unido dirán [[booking]]: [[I have a booking]].",
+    "Y para reservar: [[I'd like to book a room]].",
+    "Reto: di que tienes una reserva para dos noches. Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Tengo una reserva para dos noches»",
+    "answer": "I have a reservation for two nights."
+  },
+  "caption": "Reserva de hotel en inglés: «reservation» o «booking», no «reserve». Y «under + nombre» es «a nombre de».",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 75
+}

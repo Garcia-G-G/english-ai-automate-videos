@@ -1,0 +1,46 @@
+{
+  "id": "hc_p006",
+  "style": "poster",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«Very much people»: así no se dice «mucha gente»",
+  "hook_text": "VERY MUCH PEOPLE → A LOT OF PEOPLE",
+  "poster": {
+    "error_no": "021",
+    "big_wrong": "VERY MUCH PEOPLE",
+    "big_right": "A LOT OF PEOPLE",
+    "examples": [
+      "There are a lot of people. — Hay mucha gente.",
+      "Many people think so. — Mucha gente lo piensa."
+    ]
+  },
+  "correction": {
+    "wrong": "VERY MUCH PEOPLE",
+    "right": "A LOT OF PEOPLE",
+    "rule": "Mucho/a con contables: many / a lot of"
+  },
+  "voice": [
+    "Traducimos «muchísima gente» como [[very much people]]. No existe.",
+    "La forma fácil que vale para todo: [[a lot of]]: [[a lot of people]], [[a lot of money]].",
+    "Con cosas que se cuentan, [[many]]: [[many people]], [[many books]].",
+    "Con cosas que no se cuentan, [[much]], sobre todo en negativas y preguntas: [[not much time]].",
+    "Y [[very much]] va al final: [[Thank you very much]].",
+    "Reto: ¿cómo dirías «no tengo mucho tiempo»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«No tengo mucho tiempo»",
+    "answer": "I don't have much time."
+  },
+  "caption": "«Mucha gente» es «a lot of people» o «many people», nunca «very much people». Much, many y a lot of.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 72
+}

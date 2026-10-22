@@ -90,12 +90,16 @@ def _load(path: Path):
         return exc
 
 
+#: «Hecho con Claude» (STEP 78) has its own scripts, schema and picker (src/series.py).
+SERIES_DIR = QUEUE_DIR / "hecho_con_claude"
+
+
 def queued_scripts():
     """Every queued script, name order, excluding the _done shelf."""
     if not QUEUE_DIR.exists():
         return []
     return sorted(p for p in QUEUE_DIR.rglob("*.json")
-                  if DONE_DIR not in p.parents)
+                  if DONE_DIR not in p.parents and SERIES_DIR not in p.parents)
 
 
 #: (fingerprint -> problems). The audit reads every queued script, validates

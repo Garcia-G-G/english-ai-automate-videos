@@ -1,0 +1,46 @@
+{
+  "id": "hc_p007",
+  "style": "poster",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«Is raining»: el sujeto invisible",
+  "hook_text": "IS RAINING → IT'S RAINING",
+  "poster": {
+    "error_no": "022",
+    "big_wrong": "IS RAINING",
+    "big_right": "IT'S RAINING",
+    "examples": [
+      "It's raining. — Está lloviendo.",
+      "It's late. — Es tarde."
+    ]
+  },
+  "correction": {
+    "wrong": "IS RAINING",
+    "right": "IT'S RAINING",
+    "rule": "En inglés siempre hay sujeto"
+  },
+  "voice": [
+    "En español decimos «está lloviendo» sin sujeto. En inglés eso no se puede.",
+    "Toda frase necesita sujeto, aunque no signifique nada: [[It's raining]].",
+    "Igual con la hora y el tiempo: [[It's late]], [[It's cold]], [[It's five o'clock]].",
+    "Y con «es importante»: [[It's important]], nunca [[Is important]].",
+    "Para hay, [[there is]] o [[there are]].",
+    "Reto: ¿cómo dirías «es muy temprano»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Es muy temprano»",
+    "answer": "It's very early."
+  },
+  "caption": "En inglés siempre hay sujeto: «It's raining», «It's late». El «it» que los hispanohablantes olvidamos.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 62
+}

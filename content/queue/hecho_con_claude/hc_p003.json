@@ -1,0 +1,46 @@
+{
+  "id": "hc_p003",
+  "style": "poster",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«Informations»: la palabra que no tiene plural",
+  "hook_text": "INFORMATIONS → INFORMATION",
+  "poster": {
+    "error_no": "018",
+    "big_wrong": "INFORMATIONS",
+    "big_right": "INFORMATION",
+    "examples": [
+      "I need some information. — Necesito información.",
+      "Two pieces of information. — Dos datos."
+    ]
+  },
+  "correction": {
+    "wrong": "INFORMATIONS",
+    "right": "INFORMATION",
+    "rule": "Incontable: sin -s"
+  },
+  "voice": [
+    "En español decimos «las informaciones». En inglés, [[information]] no tiene plural.",
+    "Nunca [[informations]]. Es incontable, como el agua: [[some information]], [[a lot of information]].",
+    "Si necesitas contar, usa [[a piece of information]], «un dato».",
+    "Pasa lo mismo con [[advice]], [[furniture]] y [[news]]: [[The news is good]].",
+    "Truco: si no puedes poner un número delante, no lleva -s.",
+    "Reto: ¿cómo dirías «me dio muchos consejos»? Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Me dio muchos consejos»",
+    "answer": "He gave me a lot of advice."
+  },
+  "caption": "Information no tiene plural: «some information», nunca «informations». Igual que advice, news y furniture.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 68
+}

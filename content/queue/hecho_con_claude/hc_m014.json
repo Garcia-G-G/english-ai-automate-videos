@@ -1,0 +1,55 @@
+{
+  "id": "hc_m014",
+  "style": "mensajes",
+  "level": "medio",
+  "angle": "calle",
+  "title": "«We finished the coffee» vs «we ran out of coffee»",
+  "hook_text": "Malas noticias en el chat de casa…",
+  "chat": {
+    "contact": "Piso compartido 🏠",
+    "messages": [
+      [
+        "me",
+        "Guys, we finished the coffee ☕",
+        "error"
+      ],
+      [
+        "them",
+        "congrats? you drank it all? 😂"
+      ],
+      [
+        "them",
+        "oh, you mean we RAN OUT of coffee 😭"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "We finished the coffee",
+    "right": "We've run out of coffee",
+    "rule": "Quedarse sin algo = run out of"
+  },
+  "voice": [
+    "Escribí en el chat de casa [[We finished the coffee]] para decir que no quedaba café.",
+    "Se entiende, pero suena a «nos terminamos el café», como si fuera un logro.",
+    "Para decir que se acabó algo se usa el phrasal verb [[run out of]]: [[We've run out of coffee]].",
+    "Funciona con todo: [[I'm running out of time]], «me estoy quedando sin tiempo».",
+    "Y [[My phone ran out of battery]], «a mi móvil se le acabó la batería».",
+    "Reto: ¿cómo dirías «nos quedamos sin leche»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Nos quedamos sin leche»",
+    "answer": "We've run out of milk. / We ran out of milk."
+  },
+  "caption": "Quedarse sin algo en inglés: «run out of». We've run out of coffee, I'm running out of time.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 87
+}

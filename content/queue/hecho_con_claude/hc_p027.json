@@ -1,0 +1,46 @@
+{
+  "id": "hc_p027",
+  "style": "poster",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«Make up for»: compensar",
+  "hook_text": "COMPENSATE (siempre) → MAKE UP FOR",
+  "poster": {
+    "error_no": "042",
+    "big_wrong": "COMPENSATE (siempre)",
+    "big_right": "MAKE UP FOR",
+    "examples": [
+      "Let me make it up to you. — Déjame compensártelo.",
+      "Nothing can make up for that. — Nada puede compensar eso."
+    ]
+  },
+  "correction": {
+    "wrong": "COMPENSATE (siempre)",
+    "right": "MAKE UP FOR",
+    "rule": "Phrasal verb de compensar"
+  },
+  "voice": [
+    "Decimos [[compensate]], que existe, pero en conversación suena técnico.",
+    "Lo natural es [[make up for]]: [[I'll make up for lost time]], «recuperaré el tiempo perdido».",
+    "Y con una persona: [[Let me make it up to you]], «déjame compensártelo».",
+    "Muy útil después de fallarle a alguien.",
+    "Ojo: [[make up]] solo puede ser inventar o reconciliarse. Con [[for]] es compensar.",
+    "Reto: ¿cómo dirías «te lo compenso con una cena»? Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Te lo compenso con una cena»",
+    "answer": "I'll make it up to you with dinner."
+  },
+  "caption": "«Make up for» y «make it up to you»: cómo decir «compensar» en inglés natural.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 71
+}

@@ -1,0 +1,47 @@
+{
+  "id": "hc_c021",
+  "style": "comic",
+  "level": "dificil",
+  "angle": "reto",
+  "title": "RETO: «es pan comido»",
+  "hook_text": "¿Pan, pastel o galleta?",
+  "quiz": {
+    "prompt": "¿Cómo dirías «es pan comido»?",
+    "options": [
+      "It's eaten bread",
+      "It's a piece of cake",
+      "It's a cookie"
+    ],
+    "answer": 1,
+    "after": "A piece of cake = facilísimo."
+  },
+  "correction": {
+    "wrong": "It's a cookie",
+    "right": "It's a piece of cake",
+    "rule": "Idiom"
+  },
+  "voice": [
+    "¿Pan, pastel o galleta? ¿Cómo dirías «es pan comido»?",
+    "¿[[It's eaten bread]], [[It's a piece of cake]] o [[It's a cookie]]?",
+    "¡La B! [[It's a piece of cake]]: un trozo de pastel.",
+    "También: [[It's a breeze]] o [[Easy peasy]], más infantil.",
+    "Y lo contrario: [[It's no walk in the park]], «no es ningún paseo».",
+    "¿El inglés es pan comido para ti? Contesta en inglés."
+  ],
+  "challenge": {
+    "prompt": "«El examen fue pan comido»",
+    "answer": "The exam was a piece of cake."
+  },
+  "caption": "«Es pan comido» es «it's a piece of cake». Idioms en inglés en un reto de 30 segundos.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 64
+}

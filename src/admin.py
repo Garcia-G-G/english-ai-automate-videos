@@ -1120,6 +1120,27 @@ _WORKERS: list = _ds.WORKERS
 HEARTBEAT_SEC = 10
 
 
+def start_series_generation(style: Optional[str] = None, level: Optional[str] = None) -> str:
+    """STEP 78 §7: one «Hecho con Claude» Short in the background (series.render_one), tracked
+    in the same job ledger as every other video."""
+    job_id = create_job("hecho_con_claude", style, level)
+
+    def _worker():
+        log_path = attach_run_log(f"job-{job_id}")
+        update_job(job_id, log_path=str(log_path))
+        try:
+            result = series.render_one(style, level, progress=lambda msg: update_job(job_id, current_step=msg))
+            ok = result["gate"]["gate"] == "PASS"
+            complete_job(job_id, ok, result["video"],
+                         None if ok else "quality gate: " + ", ".join(result["gate"]["flags"]))
+        except Exception as exc:                            # noqa: BLE001 — the job row says why
+            logger.exception("series job %s failed", job_id)
+            complete_job(job_id, False, None, str(exc))
+
+    threading.Thread(target=_worker, daemon=True).start()
+    return job_id
+
+
 def start_generation(video_type: str, category: str = None, topic_name: str = None,
                      **kwargs) -> str:
     """Queue one video and return its job id immediately.
@@ -3000,7 +3021,11 @@ elif page == "Generate":
         else:
             st.info("No videos generated yet.")
 
-        if generate_btn:
+        if generate_btn and is_series:
+            job_id = start_series_generation(series_style, series_level)
+            st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
+            st.rerun()
+        elif generate_btn:
             # Queued, not awaited: the outcome arrives in the job list above,
             # which this page already renders from the ledger.
             try:

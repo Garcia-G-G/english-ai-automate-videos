@@ -1,0 +1,55 @@
+{
+  "id": "hc_m004",
+  "style": "mensajes",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«I'm boring»: lo que de verdad le dijiste",
+  "hook_text": "Le dije que me aburría… o eso creía",
+  "chat": {
+    "contact": "Emma · Londres",
+    "messages": [
+      [
+        "them",
+        "How's the weekend going?"
+      ],
+      [
+        "me",
+        "I'm so boring at home 😩",
+        "error"
+      ],
+      [
+        "them",
+        "aww you're not boring! 😂"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I'm boring (= estoy aburrido)",
+    "right": "I'm bored",
+    "rule": "-ed = cómo te sientes · -ing = cómo eres o cómo es algo"
+  },
+  "voice": [
+    "Le dije a mi amiga [[I'm so boring]] para decir que me aburría. Y me contestó que no soy aburrido.",
+    "Porque [[I'm boring]] significa «soy aburrido», o sea, que aburro a los demás.",
+    "Para decir cómo te sientes se usa la forma en -ed: [[I'm bored]], «estoy aburrido».",
+    "Y la forma en -ing describe a la persona o la cosa: [[This movie is boring]], «esta película es aburrida».",
+    "Pasa lo mismo con [[tired]] y [[tiring]]: [[I'm tired]], «estoy cansado».",
+    "Reto: ¿cómo dirías «estoy emocionado»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Estoy emocionado»",
+    "answer": "I'm excited."
+  },
+  "caption": "«I'm boring» es «soy aburrido»; «estoy aburrido» es «I'm bored». La regla de -ed y -ing explicada con un chat real.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 87
+}

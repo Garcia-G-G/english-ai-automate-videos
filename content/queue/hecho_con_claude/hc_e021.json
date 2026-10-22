@@ -1,0 +1,43 @@
+{
+  "id": "hc_e021",
+  "style": "escena",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«I invite you»: así no se paga la cuenta",
+  "hook_text": "ESCENA — BAR EN DUBLÍN, LLEGA LA CUENTA",
+  "scene": {
+    "location": "Bar en Dublín, llega la cuenta",
+    "take1": "Don't worry, I invite you.",
+    "take2": "Don't worry, it's on me.",
+    "note": "Invitar (pagar) = it's on me / my treat."
+  },
+  "correction": {
+    "wrong": "I invite you (pagar)",
+    "right": "It's on me / My treat",
+    "rule": "Invite = invitar a un evento"
+  },
+  "voice": [
+    "Escena: bar en Dublín, llega la cuenta. Toma uno: [[Don't worry, I invite you]].",
+    "¡Corten! [[Invite]] es invitar a un evento, no pagar la cuenta.",
+    "Toma dos: [[Don't worry, it's on me]]. «Invito yo».",
+    "Otras muy nativas: [[My treat]] o [[I've got this]].",
+    "Y si pagáis a medias: [[Let's split the bill]].",
+    "Reto: di «esta ronda la pago yo». Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Esta ronda la pago yo»",
+    "answer": "This round's on me."
+  },
+  "caption": "Para invitar a algo en un bar: «It's on me» o «My treat», no «I invite you». Inglés de la calle.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 63
+}

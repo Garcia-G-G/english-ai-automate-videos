@@ -1,0 +1,43 @@
+{
+  "id": "hc_e024",
+  "style": "escena",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«I'll get back to you»: la respuesta profesional",
+  "hook_text": "ESCENA — LLAMADA CON UN CLIENTE",
+  "scene": {
+    "location": "Llamada con un cliente",
+    "take1": "I don't know now, I return you the answer later.",
+    "take2": "Let me check and I'll get back to you.",
+    "note": "Get back to someone = responder más tarde."
+  },
+  "correction": {
+    "wrong": "I return you the answer",
+    "right": "I'll get back to you",
+    "rule": "Phrasal verb profesional"
+  },
+  "voice": [
+    "Escena: llamada con un cliente. Toma uno: [[I don't know now, I return you the answer later]].",
+    "¡Corten! Traducción literal de «te devuelvo la respuesta». No suena profesional.",
+    "Toma dos: [[Let me check and I'll get back to you]].",
+    "[[Get back to someone]] es «responderle más tarde».",
+    "Y con plazo: [[I'll get back to you by Friday]].",
+    "Reto: di «lo reviso y te escribo mañana». Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Lo reviso y te escribo mañana»",
+    "answer": "I'll look into it and get back to you tomorrow."
+  },
+  "caption": "«I'll get back to you» = «te respondo más tarde». La frase profesional que necesitas en llamadas en inglés.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 68
+}

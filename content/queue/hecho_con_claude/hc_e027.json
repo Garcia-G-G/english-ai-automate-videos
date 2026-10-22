@@ -1,0 +1,43 @@
+{
+  "id": "hc_e027",
+  "style": "escena",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«My phone finished the battery»: el móvil que se murió",
+  "hook_text": "ESCENA — ESTACIÓN DE TREN, SIN BATERÍA",
+  "scene": {
+    "location": "Estación de tren, sin batería",
+    "take1": "Sorry, my phone finished the battery.",
+    "take2": "Sorry, my phone died.",
+    "note": "El móvil se queda sin batería = my phone died."
+  },
+  "correction": {
+    "wrong": "my phone finished the battery",
+    "right": "my phone died",
+    "rule": "Expresión natural"
+  },
+  "voice": [
+    "Escena: estación de tren. Llegas tarde y te disculpas. Toma uno: [[Sorry, my phone finished the battery]].",
+    "¡Corten! Literalmente, «mi móvil terminó la batería». Nadie lo dice así.",
+    "Toma dos: [[Sorry, my phone died]]. En inglés el móvil se muere.",
+    "También: [[My phone is dead]] o [[My battery ran out]].",
+    "Y si está a punto: [[My phone is about to die]].",
+    "Reto: ¿cómo dirías «me queda un cinco por ciento de batería»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Me queda un 5 % de batería»",
+    "answer": "I'm on five percent. / My phone is at five percent."
+  },
+  "caption": "«My phone died» es «me quedé sin batería». Cómo hablar del móvil en inglés de forma natural.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 75
+}

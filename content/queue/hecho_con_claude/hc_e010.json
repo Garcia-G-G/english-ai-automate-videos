@@ -1,0 +1,43 @@
+{
+  "id": "hc_e010",
+  "style": "escena",
+  "level": "principiante",
+  "angle": "calle",
+  "title": "En la cafetería: cómo piden los nativos",
+  "hook_text": "ESCENA — CAFETERÍA EN CHICAGO",
+  "scene": {
+    "location": "Cafetería en Chicago",
+    "take1": "Give me a coffee.",
+    "take2": "Can I get a coffee, please?",
+    "note": "«Can I get…?» es la fórmula de cafetería en EE. UU."
+  },
+  "correction": {
+    "wrong": "Give me a coffee",
+    "right": "Can I get a coffee, please?",
+    "rule": "Pedir en cafetería: Can I get… / I'll have…"
+  },
+  "voice": [
+    "Escena: cafetería en Chicago. Toma uno: [[Give me a coffee]].",
+    "¡Corten! En español «dame un café» es normal; en inglés suena seco, casi grosero.",
+    "Toma dos: [[Can I get a coffee, please?]] Así piden los nativos en Estados Unidos.",
+    "Otra muy común: [[I'll have a latte]], «tomaré un latte».",
+    "Y si te preguntan [[For here or to go?]], es «¿para tomar aquí o para llevar?».",
+    "Reto: pide un té para llevar. Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "Pide un té para llevar",
+    "answer": "Can I get a tea to go, please?"
+  },
+  "caption": "Cómo pedir en una cafetería en inglés: «Can I get a coffee, please?» y «for here or to go?».",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 74
+}

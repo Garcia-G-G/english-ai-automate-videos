@@ -1,0 +1,46 @@
+{
+  "id": "hc_p014",
+  "style": "poster",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«She said me»: say o tell",
+  "hook_text": "SHE SAID ME → SHE TOLD ME",
+  "poster": {
+    "error_no": "029",
+    "big_wrong": "SHE SAID ME",
+    "big_right": "SHE TOLD ME",
+    "examples": [
+      "She told me the truth. — Me dijo la verdad.",
+      "She said that it was late. — Dijo que era tarde."
+    ]
+  },
+  "correction": {
+    "wrong": "SHE SAID ME",
+    "right": "SHE TOLD ME",
+    "rule": "Tell + persona · Say + lo dicho"
+  },
+  "voice": [
+    "Decimos «me dijo», así que sale [[she said me]]. Pero [[say]] no va directo con la persona.",
+    "Con persona, [[tell]]: [[She told me the truth]].",
+    "Sin persona, [[say]]: [[She said it was late]].",
+    "Y si quieres poner la persona con [[say]], necesita [[to]]: [[She said to me]].",
+    "Truco: [[tell]] siempre dice a quién; [[say]], qué.",
+    "Reto: corrige [[He said me a secret]]. Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "Corrige: «He said me a secret»",
+    "answer": "He told me a secret."
+  },
+  "caption": "Se dice «she told me», no «she said me». Say vs tell: la diferencia en un póster.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 64
+}

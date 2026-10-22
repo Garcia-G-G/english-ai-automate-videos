@@ -1,0 +1,58 @@
+{
+  "id": "hc_m003",
+  "style": "mensajes",
+  "angle": "historia",
+  "title": "Le dije «congratulations» y no estaba embarazada",
+  "hook_text": "La felicité… y no era eso 🙈",
+  "chat": {
+    "contact": "Sarah · Toronto",
+    "messages": [
+      [
+        "them",
+        "I fell in front of my boss today…"
+      ],
+      [
+        "them",
+        "I'm so embarrassed 😳"
+      ],
+      [
+        "me",
+        "OMG congratulations!! 👶",
+        "error"
+      ],
+      [
+        "them",
+        "?? I'm not pregnant 💀"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "embarrassed = embarazada",
+    "right": "embarrassed = avergonzada",
+    "rule": "Embarazada en inglés es «pregnant»"
+  },
+  "voice": [
+    "Mi amiga me contó que se cayó delante de su jefe y escribió [[I'm so embarrassed]]. Y yo la felicité.",
+    "Porque leí «embarazada». Pero [[embarrassed]] significa «avergonzada», «qué vergüenza».",
+    "Embarazada, en inglés, es [[pregnant]]. Si confundes las dos, la conversación se pone muy rara.",
+    "Así que [[I'm so embarrassed]] es «qué vergüenza», y [[She's pregnant]] es «está embarazada».",
+    "Reto: ¿cómo dirías «me da vergüenza hablar en inglés»? Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Me da vergüenza hablar en inglés»",
+    "answer": "I'm embarrassed to speak English. / Speaking English embarrasses me."
+  },
+  "caption": "Embarrassed NO es embarazada. El falso amigo que más vergüenza da (literal). Guárdalo y compártelo con quien lo necesite.",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "medio",
+  "level_label": "Medio · B1–B2",
+  "voice_words": 71
+}

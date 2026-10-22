@@ -1,0 +1,47 @@
+{
+  "id": "hc_c023",
+  "style": "comic",
+  "level": "dificil",
+  "angle": "reto",
+  "title": "RETO: «me estás tomando el pelo»",
+  "hook_text": "Pista: es una pierna",
+  "quiz": {
+    "prompt": "¿Cómo dirías «me estás tomando el pelo»?",
+    "options": [
+      "You're taking my hair",
+      "You're pulling my leg",
+      "You're touching my hair"
+    ],
+    "answer": 1,
+    "after": "Pull someone's leg = tomar el pelo."
+  },
+  "correction": {
+    "wrong": "You're touching my hair",
+    "right": "You're pulling my leg",
+    "rule": "Idiom"
+  },
+  "voice": [
+    "Pista: es una pierna. ¿Cómo dirías «me estás tomando el pelo»?",
+    "¿[[You're taking my hair]], [[You're pulling my leg]] o [[You're touching my hair]]?",
+    "¡La B! [[You're pulling my leg]].",
+    "En la calle también: [[Are you kidding me?]] o [[No way!]]",
+    "Y para confesar la broma: [[I'm just messing with you]].",
+    "Reto extra: «era broma». Escríbelo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«Era broma»",
+    "answer": "I was just kidding. / I'm just messing with you."
+  },
+  "caption": "«Tomar el pelo» es «pull someone's leg». Idioms en inglés con pista incluida.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 59
+}

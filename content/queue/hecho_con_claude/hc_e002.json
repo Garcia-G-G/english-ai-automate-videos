@@ -1,0 +1,42 @@
+{
+  "id": "hc_e002",
+  "style": "escena",
+  "angle": "calle",
+  "title": "«Spill the tea»: no es derramar el té",
+  "hook_text": "ESCENA 02 — OFICINA, LUNES 9:00",
+  "scene": {
+    "location": "Oficina, lunes por la mañana",
+    "take1": "(alguien derrama el té de verdad)",
+    "take2": "Okay, spill the tea. What happened at the party?",
+    "note": "«Spill the tea» = cuéntame el chisme. Viene del argot de la comunidad drag de EE. UU.; «tea» = el cotilleo."
+  },
+  "correction": {
+    "wrong": "Spill the tea = derrama el té",
+    "right": "Spill the tea = suelta el chisme",
+    "rule": "En argot, «tea» es el cotilleo"
+  },
+  "voice": [
+    "Escena dos. Oficina, lunes. Tu compañera llega y te dice: [[Spill the tea]].",
+    "¡Corten! Nadie quiere que derrames el té. En argot, [[tea]] es el chisme.",
+    "Toma dos: [[Okay, spill the tea. What happened at the party?]] Es decir: «venga, suéltalo, ¿qué pasó en la fiesta?».",
+    "La oirás muchísimo en series y en redes. Úsala con amigos, no con tu jefe.",
+    "Reto: ¿cómo dirías «no tengo chisme hoy»? Pista: usa [[tea]]. Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Hoy no tengo chisme»",
+    "answer": "I've got no tea today. / No tea today."
+  },
+  "caption": "«Spill the tea» significa «cuéntame el chisme». Inglés de la calle que oyes en series y TikTok, explicado en 40 segundos.",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "dificil",
+  "level_label": "Difícil · C1",
+  "voice_words": 74
+}
