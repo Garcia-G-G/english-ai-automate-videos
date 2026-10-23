@@ -40,27 +40,36 @@ def test_every_theme_has_a_page_that_passes_the_contrast_rules(name):
     assert p["page"] != p["bg"], "the page must stand off the ground"
 
 
-def test_the_sticky_note_reads_ink_and_english_blue_on_yellow():
-    c = BRAND["color"]
-    assert TH.contrast(c["ink"], c["brand_yellow"]) >= 4.5
-    assert TH.contrast(c["english_blue"], c["brand_yellow"]) >= 3.0
+FRAME_W, FRAME_H, PX = 16 / 9 * 8, 8.0, 8 / 1080
 
 
-def test_the_note_wraps_to_two_lines_and_sits_bottom_right():
+def test_the_page_is_centred_82_percent_wide_inside_title_safe():
+    """STEP 79 §2: even margins, about 82 % of the frame, inside the 90 % title-safe area."""
+    left, right = _const("PAGE_L"), _const("PAGE_R")
+    assert left == -right
+    assert 0.80 <= (right - left) / FRAME_W <= 0.84 and right <= 0.45 * FRAME_W
+
+
+def test_the_captions_are_a_two_line_band_under_the_page_not_a_sticky():
+    """STEP 79 §2 replaces STEP 63's turned sticky note, which covered the page's corner."""
     assert _const("CAP_LINES") == 2
-    assert "CAPTION_Y" not in SOURCE, "the full-width caption band is gone"
-    assert "NOTE_YELLOW" in SOURCE and "rotate(NOTE_ROT" in SOURCE
+    assert "NOTE_ROT" not in SOURCE and "NOTE_YELLOW" not in SOURCE
+    assert _const("PAGE_BOTTOM") - 0.1 > _const("BAND_TOP") > _const("BAND_BOTTOM") >= -0.45 * FRAME_H
+    body = SOURCE[SOURCE.index("def mount_captions"):SOURCE.index("def _word_times")]
+    assert "L.caption_chunks" in SOURCE and "BAND_TOP + BAND_BOTTOM" in body
 
 
-def test_the_stage_is_inside_the_page_and_above_the_note():
+def test_the_stage_is_inside_the_page_and_the_header_row_above_it_in_title_safe():
     assert _const("PAGE_L") < -_const("STAGE_W") / 2 and _const("STAGE_W") / 2 < _const("PAGE_R")
-    assert _const("STAGE_TOP") < _const("PAGE_TITLE_Y") < _const("PAGE_TOP") < _const("BAR_Y")
+    assert _const("STAGE_TOP") < _const("PAGE_TITLE_Y") < _const("PAGE_TOP") < _const("BAR_Y") <= 0.45 * FRAME_H
     assert _const("PAGE_BOTTOM") < _const("STAGE_BOTTOM")
 
 
-def test_the_site_badge_is_small_and_above_the_page():
+def test_the_header_row_is_aligned_to_the_page_edges():
+    """Title at the page's left edge, the site badge at its right, the progress between them."""
     assert _const("SITE_PX") <= 28
-    assert _const("PAGE_TOP") < _const("SITE_Y") < _const("BAR_Y")
+    assert "SITE_Y = 24, BAR_Y" in SOURCE.replace("SITE_PX, ", "")
+    assert "PAGE_R - pill.width / 2" in SOURCE and "PAGE_L + title.width / 2" in SOURCE
     assert "self.badge = self.pin(site_badge())" in SOURCE
 
 
@@ -83,52 +92,10 @@ def test_the_page_title_swap_costs_no_time():
     assert "add_updater" in body and "self.play" not in body
 
 
-def test_the_note_is_drawn_over_whatever_a_beat_adds_after_it():
-    """The table's highlighter is added mid-beat, after the note: without a z-index it covered
-    the note's top edge (first 1080p render, 2026-10-19)."""
+def test_the_caption_band_is_drawn_over_whatever_a_beat_adds_after_it():
+    """The table's highlighter is added mid-beat, after the captions: they keep a z-index."""
     body = SOURCE[SOURCE.index("def mount_captions"):SOURCE.index("def _word_times")]
     assert "group.set_z_index(" in body
-
-
-FRAME_W, FRAME_H, PX = 16 / 9 * 8, 8.0, 8 / 1080
-
-
-def _turned_note_box(w, h):
-    """The note as mount_captions places it: the rectangle and its shadow turned NOTE_ROT
-    about the rectangle's centre, then shifted so the box's right and bottom edges sit on
-    NOTE_MARGIN. Returns (left, bottom, right, top)."""
-    t, s = math.radians(_const("NOTE_ROT")), _const("NOTE_SHADOW")
-    pts = [(x * math.cos(t) - y * math.sin(t), x * math.sin(t) + y * math.cos(t))
-           for sx in (-1, 1) for sy in (-1, 1) for d in (0, s)
-           for x, y in [(sx * w / 2 + d, sy * h / 2 - d)]]
-    m = _const("NOTE_MARGIN")
-    dx = FRAME_W / 2 - m - max(p[0] for p in pts)
-    dy = -FRAME_H / 2 + m - min(p[1] for p in pts)
-    return (min(p[0] for p in pts) + dx, min(p[1] for p in pts) + dy,
-            max(p[0] for p in pts) + dx, max(p[1] for p in pts) + dy)
-
-
-@pytest.mark.parametrize("lines", [1, 2])
-def test_the_turned_note_and_its_shadow_stay_inside_the_frame(lines):
-    """STEP 69 §1: placed from the unturned rectangle, a wide note's low corner and shadow ran
-    to about -4.05 under a -4.0 frame edge. The widest note any lesson can show (a line is
-    scaled to CAP_LINE_W, make-vs-do's widest included) with 1 and 2 lines keeps 0.15 to
-    every edge, and its top stays under the stage."""
-    pad, m = _const("NOTE_PAD"), _const("NOTE_MARGIN")
-    assert m >= 0.15
-    w = _const("CAP_LINE_W") + 2 * pad
-    h = lines * _const("CAPTION_PX") * 1.45 * PX + (lines - 1) * 0.16 + 2 * pad   # "Hg": cap + descender
-    left, bottom, right, top = _turned_note_box(w, h)
-    assert left >= -FRAME_W / 2 + m and right <= FRAME_W / 2 - m + 1e-9
-    assert bottom >= -FRAME_H / 2 + m - 1e-9 and top <= FRAME_H / 2 - m
-    assert top <= _const("STAGE_BOTTOM"), "the note must not cover the stage's last row"
-
-
-def test_the_scene_places_the_note_from_its_turned_box():
-    body = SOURCE[SOURCE.index("def mount_captions"):SOURCE.index("def _word_times")]
-    turn, place = body.index("group.rotate(NOTE_ROT"), body.index("group.get_right()")
-    assert turn < place, "measure the box after the turn, shadow included"
-    assert "group.get_bottom()" in body and "NOTE_MARGIN" in body
 
 
 # ── STEP 69 §2: English in a table's first column is blue, by the script's own markup ──

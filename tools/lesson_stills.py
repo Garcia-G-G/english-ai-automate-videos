@@ -69,26 +69,29 @@ def sheet(folder: Path, data: dict, target: Path) -> None:
         font = ImageFont.truetype(str(ROOT / "assets" / "fonts" / "Inter-Bold.ttf"), 16)
     except OSError:
         font = ImageFont.load_default()
+    problem_list = [(s["id"], p) for s in stills for p in s.get("problems", [])]
     for k, s in enumerate(stills):
         x, y = (k % COLS) * THUMB[0], (k // COLS) * (THUMB[1] + label_h)
         img.paste(Image.open(folder / s["file"]).convert("RGB").resize(THUMB), (x, y + label_h))
         tag = f"{s['n']:02d} {s['id']} · {s['type']} · {s['t']:.0f} s" + (" · estimado" if s["estimated"] else "")
         d.text((x + 6, y + 4), tag, fill=(180, 40, 30) if s["estimated"] else (30, 30, 30), font=font)
     img.save(target)
+    (folder / "problems.txt").write_text("".join(f"{b} {p}\n" for b, p in problem_list), encoding="utf-8")
 
 
 def write_index(out: Path, results: list) -> None:
-    lines = ["# STEP 79 §1 — lesson stills, the «before»", "",
+    lines = [f"# Lesson stills — {out.name}", "",
              "One still per beat at its midpoint (`tools/lesson_stills.py`, Manim `--dry_run`, 1280×720).",
              "Recorded timings where the beat's audio is cached and matches its narration; estimated",
              "(0.434 s per word plus its pauses) otherwise. No TTS, nothing encoded.", "",
-             "| lesson | voiced | beats | estimated beats | duration | stills time | sheet |",
-             "|---|---|---|---|---|---|---|"]
+             "| lesson | voiced | beats | estimated beats | layout problems | duration | stills time | sheet |",
+             "|---|---|---|---|---|---|---|---|"]
     for r in results:
         if "error" in r:
-            lines.append(f"| {r['lesson']} | | | | | {r['seconds']} s | ERROR: {r['error']} |")
+            lines.append(f"| {r['lesson']} | | | | | | {r['seconds']} s | ERROR: {r['error']} |")
             continue
-        lines.append(f"| {r['lesson']} | {'yes' if r['voiced'] else 'no'} | {len(r['stills'])} | {len(r['estimated'])} | "
+        problems = sum(len(s.get("problems", [])) for s in r["stills"])
+        lines.append(f"| {r['lesson']} | {'yes' if r['voiced'] else 'no'} | {len(r['stills'])} | {len(r['estimated'])} | {problems} | "
                      f"{r['duration']:.0f} s | {r['seconds']} s | [{r['lesson']}.png]({r['lesson']}.png) |")
     (out / "index.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 

@@ -132,17 +132,158 @@ def tokens(narration: str) -> list:
     [{text, en, offset}]. English is what sat inside [[ ]]; offsets are what the word
     timings (voices.word_boundaries) are expressed in."""
     marked = EN_SPAN.sub(lambda m: "\x01" + m.group(1) + "\x02", PAUSE.sub(" ", narration))
-    out, in_en, offset = [], False, 0
+    out, in_en, offset, span = [], False, 0, -1
     for raw in marked.split():
         starts_en, ends_en = raw.startswith("\x01"), "\x02" in raw
         if starts_en:
             in_en = True
+            span += 1
         clean = raw.replace("\x01", "").replace("\x02", "")
         if clean:
-            out.append({"text": clean, "en": in_en, "offset": offset})
+            out.append({"text": clean, "en": in_en, "offset": offset, "span": span if in_en else None})
             offset += len(clean) + 1
         if ends_en:
             in_en = False
+    return out
+
+
+# ── Captions by phrase (STEP 79 §2) ───────────────────────────────────────────
+
+SENTENCE_END = ".?!…"
+CLAUSE_END = ",;:—"
+#: A clause with no punctuation is cut before one of these when it must be cut.
+CONJUNCTIONS = set("y o u e pero que porque cuando donde si aunque mientras como and or but because when "
+                   "if so that while".split())
+
+
+def _joined(a: dict, b: dict) -> bool:
+    """Two neighbouring tokens of one [[English]] span: never cut between them."""
+    return a.get("span") is not None and a.get("span") == b.get("span")
+
+
+def _layout(chunk: list, width, line_w: float, max_lines: int):
+    """The best 1..max_lines lines for `chunk` (lists of tokens), or None when it cannot fit.
+    Never a lone word on a line of a longer chunk; a break inside an English span only if
+    nothing else fits; then the most even lines."""
+    if width(chunk) <= line_w:
+        return [chunk]
+    if max_lines < 2:
+        return None
+    best, best_key = None, None
+    for k in range(1, len(chunk)):
+        a, b = chunk[:k], chunk[k:]
+        if len(a) < 2 or len(b) < 2:
+            continue
+        rest = _layout(b, width, line_w, max_lines - 1)
+        if width(a) > line_w or rest is None:
+            continue
+        key = (_joined(chunk[k - 1], chunk[k]), abs(width(a) - width(rest[0])))
+        if best_key is None or key < best_key:
+            best, best_key = [a, *rest], key
+    return best
+
+
+def _cuts(seq: list, ends: str) -> list:
+    """Split after tokens ending in one of `ends`, never inside an English span."""
+    out, cur = [], []
+    for i, w in enumerate(seq):
+        cur.append(w)
+        nxt = seq[i + 1] if i + 1 < len(seq) else None
+        if w["text"][-1] in ends and (nxt is None or not _joined(w, nxt)):
+            out.append(cur)
+            cur = []
+    if cur:
+        out.append(cur)
+    return out
+
+
+def _halve(seq: list, times) -> list:
+    """Split a clause too long for the band at its most natural place: the longest pause between
+    two words (from the word times), never inside an English span, never leaving one word."""
+    options = [k for k in range(2, len(seq) - 1) if not _joined(seq[k - 1], seq[k])] or list(range(1, len(seq)))
+
+    def score(k):
+        gap = times[seq[k]["index"]] - times[seq[k - 1]["index"]] if times is not None else 0.0
+        joins = seq[k]["text"].strip("¿¡\"«").casefold() in CONJUNCTIONS     # the voice breathes before them
+        return (round(gap + (0.15 if joins else 0.0), 2), -abs(k - len(seq) / 2))
+    k = max(options, key=score)
+    return [seq[:k], seq[k:]]
+
+
+def caption_chunks(words: list, width, line_w: float, times=None, max_lines: int = 2) -> list:
+    """The caption band's pages: [[line, ...], ...], a line being a list of tokens (tokens()).
+
+    Sentences first; a sentence too long for `max_lines` lines is cut at its clauses (, ; : —)
+    and the clauses are put back together while they fit; a clause still too long is cut at
+    its longest pause (`times[i]`: seconds of token i). Never inside an [[English]] span, never
+    a lone word on a line, and a one-word page joins its neighbour when they fit together.
+    `width(tokens)` is the measured width of those tokens as one line."""
+    for i, w in enumerate(words):
+        w.setdefault("index", i)
+
+    def fits(seq):
+        return _layout(seq, width, line_w, max_lines) is not None
+
+    def pieces(seq):
+        if fits(seq):
+            return [seq]
+        if len(seq) < 2:
+            return [seq]
+        clauses = _cuts(seq, CLAUSE_END)
+        if len(clauses) > 1:
+            out = []
+            for clause in clauses:
+                if out and fits(out[-1] + clause):
+                    out[-1] = out[-1] + clause
+                else:
+                    out.append(clause)
+            return [p for part in out for p in (pieces(part) if not fits(part) else [part])]
+        a, b = _halve(seq, times)
+        return pieces(a) + pieces(b)
+
+    chunks = [p for sentence in _cuts(words, SENTENCE_END) for p in pieces(sentence)]
+    merged = []
+    for chunk in chunks:                                  # a one-word page joins its neighbour
+        if merged and (len(chunk) == 1 or len(merged[-1]) == 1) and fits(merged[-1] + chunk):
+            merged[-1] = merged[-1] + chunk
+        else:
+            merged.append(chunk)
+    return [_layout(c, width, line_w, max_lines) or [c] for c in merged]
+
+
+# ── English in the page's own text (STEP 79 §2) ───────────────────────────────
+
+_WORD = re.compile(r"[A-Za-zÁÉÍÓÚÜÑáéíóúüñ']+")
+#: Words Spanish and English share often enough that they never decide a run is English.
+_SHARED = set("a al de del el la las los lo le les en y o u e que no se un una uno es son con por para me "
+              "mi mis tu tus te su sus si sí ya muy más mas pero como ni".split())
+
+
+def english_vocab(lesson: dict) -> set:
+    """Every word the lesson's narrations mark as English ([[ ]]), folded."""
+    return {w.casefold() for b in lesson["beats"] for span in EN_SPAN.findall(b.get("narration", ""))
+            for w in _WORD.findall(span)}
+
+
+def english_runs(text: str, vocab: set) -> list:
+    """[(start, end)] of the English in a page text (a list item, a tip): runs of words from
+    the lesson's English, cut at punctuation, Spanish-shared words trimmed off the edges, and
+    only when one word is not also Spanish. «Make coffee, make dinner» → two runs."""
+    out = []
+    for part in re.finditer(r"[^,;:.()→·¿?¡!\"«»]+", text):
+        toks = [(m.group(), part.start() + m.start(), part.start() + m.end()) for m in _WORD.finditer(part.group())]
+        run = []
+        for t in toks + [None]:
+            if t is not None and t[0].casefold() in vocab:
+                run.append(t)
+                continue
+            while run and run[0][0].casefold() in _SHARED and len(run) > 1:
+                run.pop(0)
+            while run and run[-1][0].casefold() in _SHARED and len(run) > 1:
+                run.pop()
+            if run and any(w.casefold() not in _SHARED for w, _a, _b in run):
+                out.append((run[0][1], run[-1][2]))
+            run = []
     return out
 
 
@@ -702,3 +843,25 @@ def _validate_fields(where: str, kind: str, beat: dict) -> list:
         if beat.get("gloss"):
             short(beat["gloss"], "line", "gloss")
     return p
+
+
+# ── The collision checker (STEP 79 §2) ─────────────────────────────────────────
+
+def layout_problems(boxes: list, areas: dict, slack: float = 0.02) -> list:
+    """What is wrong with one frame's text boxes ({kind, text, box: [x0, y0, x1, y1]}): a box
+    outside the area its kind allows (`areas[kind]`), or two boxes overlapping by more than
+    `slack` in both directions."""
+    out = []
+    for b in boxes:
+        x0, y0, x1, y1 = b["box"]
+        ax0, ay0, ax1, ay1 = areas[b["kind"]]
+        if x0 < ax0 - slack or y0 < ay0 - slack or x1 > ax1 + slack or y1 > ay1 + slack:
+            out.append(f"outside {b['kind']}: «{b['text']}»")
+    texts = [b for b in boxes if b["kind"] != "paper"]       # the page is a ground, not a text
+    for i, a in enumerate(texts):
+        for b in texts[i + 1:]:
+            ax0, ay0, ax1, ay1 = a["box"]
+            bx0, by0, bx1, by1 = b["box"]
+            if min(ax1, bx1) - max(ax0, bx0) > slack and min(ay1, by1) - max(ay0, by0) > slack:
+                out.append(f"overlap: «{a['text']}» / «{b['text']}»")
+    return out

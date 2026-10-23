@@ -83,30 +83,39 @@ BAR_PX, TAG_PX, SMALL_PX = 26, 32, 36
 
 FRAME_W, FRAME_H = config.frame_width, config.frame_height
 BAR_W = 0.8 * FRAME_W                              # the top bar spans ~80 % of the width, centred
-BAR_Y = 3.62
+BAR_Y = 3.33                                       # STEP 79 §2: the header row, inside title-safe (|y| ≤ 3.6)
 # The notebook page (STEP 63, design E): every beat sits on it, the top bar and the site badge
 # above it, the sticky note over its bottom-right corner. Rings down the left edge.
-PAGE_L, PAGE_R, PAGE_TOP, PAGE_BOTTOM = -5.85, 5.85, 3.02, -2.78
+# STEP 79 §2: centred, 82 % of the width (title-safe is 90 %), and short enough to leave the
+# caption band under it on the sand.
+PAGE_L, PAGE_R, PAGE_TOP, PAGE_BOTTOM = -5.85, 5.85, 3.02, -2.2
 PAGE_MID = (PAGE_TOP + PAGE_BOTTOM) / 2
 PAGE_RINGS = 13
 PAGE_TITLE_PX, PAGE_TITLE_Y = 46, 2.52             # the part's name, Fredoka on the yellow marker
 STAGE_W = 10.2                                     # the page's writing width, clear of the rings
-STAGE_TOP, STAGE_BOTTOM = 2.02, -2.0               # under the page title, above a 2-line turned sticky note
+STAGE_TOP, STAGE_BOTTOM = 2.02, -1.95              # under the page title, inside the page
 STAGE_MID = (STAGE_TOP + STAGE_BOTTOM) / 2
-# The caption is a yellow sticky note, bottom right, slightly turned: measured, 2 lines at most.
-# It is placed from its turned box, shadow included, NOTE_MARGIN inside the frame (STEP 69).
-NOTE_MARGIN, NOTE_PAD, NOTE_ROT, NOTE_SHADOW = 0.15, 0.22, -2.0, 0.07
-CAP_LINE_W, CAP_LINES = 6.0, 2
+CAP_LINES = 2
+# STEP 79 §2: the captions are a band under the page, on the sand: up to 2 lines, centred, as
+# wide as the page, chunked by phrase (lesson.caption_chunks).
+BAND_TOP, BAND_BOTTOM, BAND_W, BAND_LINE_GAP = -2.38, -3.6, (PAGE_R - PAGE_L) - 0.4, 0.2
+HEADER_BOTTOM = PAGE_TOP                            # the header row lives between this and the top
+# Where each kind of text may be (STEP 79 §2; lesson.layout_problems): the header row above the
+# page, the caption band under it, everything else inside the page (clear of the rings).
+AREAS = {"header": (PAGE_L - 0.05, HEADER_BOTTOM, PAGE_R + 0.05, 3.6),
+         "caption": (-BAND_W / 2 - 0.05, BAND_BOTTOM, BAND_W / 2 + 0.05, BAND_TOP + 0.05),
+         "page": (PAGE_L + 0.4, PAGE_BOTTOM + 0.05, PAGE_R - 0.08, PAGE_TOP - 0.05),
+         "paper": (-FRAME_W / 2, BAND_TOP, FRAME_W / 2, HEADER_BOTTOM + 0.12)}   # the page itself: off the band and the header row
 # The end card's logo (brand v3, 1871×600 with a transparent margin): drawn from its inked
 # pixels, LOGO_W wide (the whole PNG ~4.7) and centred at LOGO_Y, over the title at END_TITLE_Y
 # (STEP 71, mock_cierre_leccion.png). The two end-screen frames below do not move.
 LOGO_W, LOGO_Y, END_TITLE_Y = 4.4, 2.7, 1.35
-SITE_PX, SITE_Y = 24, 3.32                         # the «learningroutes.com» badge under the dashes
-INK, NOTE_YELLOW, NOTE_BLUE = BRAND["color"]["ink"], BRAND["color"]["brand_yellow"], BRAND["color"]["english_blue"]
+SITE_PX, SITE_Y = 24, BAR_Y                        # the «learningroutes.com» badge, right end of the header row
+INK, NOTE_BLUE = BRAND["color"]["ink"], BRAND["color"]["english_blue"]
 PX_PER_UNIT = config.pixel_height / FRAME_H
 CHIP_H = 2.0 * CHIP_PX * PX
 END_SCREEN_S = L.END_SCREEN_S
-PUSH = 1.06                                        # camera focus: how far in, and how fast
+PUSH = 1.03                                        # camera focus: how far in (STEP 79: ≤ 3 %, the page stays clear of the header row and the band)
 PUSH_S = 0.6
 
 config.background_color = BG
@@ -150,8 +159,15 @@ def wrap(s, px, max_w, font=DISPLAY, weight=None):
     return lines or [s]
 
 
-def para(s, px, max_w, color=TEXT, font=DISPLAY, weight=None, align="center", buff=None):
-    lines = VGroup(*[text(line, px, color, font, weight) for line in wrap(s, px, max_w, font, weight)])
+def para(s, px, max_w, color=TEXT, font=DISPLAY, weight=None, align="center", buff=None, english=None):
+    """Wrapped lines; with `english` (the lesson's English vocabulary) the English in them is
+    blue, as everywhere else (STEP 79 §2)."""
+    lines = VGroup()
+    for line in wrap(s, px, max_w, font, weight):
+        mobj = text(line, px, color, font, weight)
+        for a, b in (L.english_runs(line, english) if english else []):
+            mobj[a:b].set_color(BLUE)                   # ligatures off: glyph n is character n
+        lines.add(mobj)
     edge = {"center": ORIGIN, "left": LEFT}[align]
     return lines.arrange(DOWN, buff=buff if buff is not None else 0.55 * px * PX, aligned_edge=edge)
 
@@ -354,7 +370,7 @@ def brand_logo():
 def site_badge():
     """«learningroutes.com» in the brand-v2 blue pill, small, top right under the dashes."""
     pill = card(text(SITE, SITE_PX, PAPER), NOTE_BLUE, pad=0.1, stroke=INK, radius=0.1, stroke_width=3)
-    return pill.move_to([BAR_W / 2 - pill.width / 2, SITE_Y, 0])
+    return pill.move_to([PAGE_R - pill.width / 2, SITE_Y, 0])                # aligned to the page's right edge
 
 
 def part_name(name):
@@ -401,6 +417,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.cues = []             # every cue: its bookmark time and when its animation really started
         self.captions_on = os.environ.get("CAPTIONS", "1") != "0"
         self.timeline = []         # [{id, type, text?, start}] — chapters and the WP-38 poster read it
+        self.vocab = L.english_vocab(self.lesson)       # STEP 79 §2: English in the page text is blue
         self.parts = self.chapter_plan()
         self.clock = None          # (start, duration) of the beat playing, for the progress bar
         self.beat_index = 0
@@ -462,6 +479,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         if caption is not None:
             caption.clear_updaters()
             self.remove(caption)
+            self.caption = None
         # A breath between beats: longer after a section card, so the ear resets with the eye.
         self.wait(0.6 if kind == "heading" else 0.35)
 
@@ -500,11 +518,42 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                 path = self.stills_out / f"{n + 1:02d}_{beat['id']}_{beat['type']}.png"
                 from PIL import Image
                 Image.fromarray(frame).convert("RGB").save(path)
+                boxes = self.text_boxes()
                 self.stills.append({"n": n + 1, "id": beat["id"], "type": beat["type"], "t": round(t, 2),
-                                    "file": path.name, "estimated": beat["id"] in self.service.estimated})
+                                    "file": path.name, "estimated": beat["id"] in self.service.estimated,
+                                    "boxes": boxes, "problems": L.layout_problems(boxes, self.areas(boxes))})
 
         self.compile_animation_data = compile_animation_data
         renderer.add_frame = add_frame_and_capture
+
+    def text_boxes(self):
+        """Every visible text on screen as {kind, text, box} in frame units as the viewer sees
+        them (the camera push undone): kind is header (top bar, badge), caption (the band) or page."""
+        frame = self.camera.frame
+        k, c = FRAME_W / frame.width, frame.get_center()
+        ids = lambda mobj: {id(m) for m in mobj.get_family()} if mobj is not None else set()
+        header, caption = ids(self.hud) | ids(self.badge), ids(getattr(self, "caption", None))
+        out = []
+        for mobj in self.mobjects:
+            for m in mobj.get_family():
+                if not isinstance(m, Text) or not m.submobjects:
+                    continue
+                if max(x.get_fill_opacity() for x in m.submobjects) < 0.05 or m.width < 1e-3:
+                    continue
+                x0, x1 = (m.get_left()[0] - c[0]) * k, (m.get_right()[0] - c[0]) * k
+                y0, y1 = (m.get_bottom()[1] - c[1]) * k, (m.get_top()[1] - c[1]) * k
+                kind = "header" if id(m) in header else "caption" if id(m) in caption else "page"
+                out.append({"kind": kind, "text": getattr(m, "original_text", m.text)[:40], "box": [round(v, 3) for v in (x0, y0, x1, y1)]})
+        paper = self.page[1]                                  # the page as the viewer sees it, the push included
+        out.append({"kind": "paper", "text": "page", "box": [round(v, 3) for v in (
+            (paper.get_left()[0] - c[0]) * k, (paper.get_bottom()[1] - c[1]) * k,
+            (paper.get_right()[0] - c[0]) * k, (paper.get_top()[1] - c[1]) * k)]})
+        return out
+
+    def areas(self, boxes):
+        """AREAS, the page's own taken from where the page really is in this frame."""
+        x0, y0, x1, y1 = next(b["box"] for b in boxes if b["kind"] == "paper")
+        return {**AREAS, "page": (x0 + 0.4, y0 + 0.05, x1 - 0.08, y1 - 0.05)}
 
     def write_stills_index(self):
         (self.stills_out / "stills.json").write_text(json.dumps(
@@ -531,7 +580,9 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         frame = self.camera.frame
         w, h = FRAME_W / PUSH, FRAME_H / PUSH
         dx, dy = (FRAME_W - w) / 2, (FRAME_H - h) / 2
-        target = [max(-dx, min(dx, point[0])), max(-dy, min(dy, point[1])), 0]
+        # STEP 79 §2: sideways only — the page fills the height between the header row and the
+        # caption band, so a vertical move would push it into one of them
+        target = [max(-dx, min(dx, point[0])), 0, 0]
         self.pushed = True
         self.sfx("whoosh", delay)
         return frame.animate(run_time=PUSH_S, rate_func=smooth).set(width=w).move_to(target)
@@ -558,19 +609,18 @@ class Lesson(VoiceoverScene, MovingCameraScene):
     # ── karaoke captions ──────────────────────────────────────────────────────
 
     def mount_captions(self, beat, tracker):
-        """The narration on a yellow sticky note at the bottom right, sentence by sentence,
-        each word lighting up when it is spoken. Times come from the recorded word boundaries
-        (ElevenLabs alignment) so the highlight lands on the spoken word; English (what sat in
-        [[ ]]) is blue and bold, Spanish ink. The note is as wide as the beat's widest line and
-        holds 2 lines; it is turned NOTE_ROT degrees with an ink shadow (STEP 63).
-        One Text per line (true baseline and kerning); words are coloured by glyph slice
-        (ligatures off: glyph n is character n)."""
+        """The narration as a caption band under the page, on the sand (STEP 79 §2): up to 2
+        centred lines, chunked by phrase from the word times (lesson.caption_chunks: sentences,
+        then clauses, then the longest pause; never inside an English span, never a lone word),
+        each word lighting up when it is spoken. English (what sat in [[ ]]) is blue and bold,
+        Spanish ink. One Text per line (true baseline and kerning); words are coloured by glyph
+        slice (ligatures off: glyph n is character n)."""
         words = L.tokens(beat["narration"])
         if not words:
             return None
         times = self._word_times(words, tracker)
-        pages = self._caption_pages(words)          # [[line, line], ...]; line = [word, ...]
-        dim, en_dim = mix(NOTE_YELLOW, INK, 0.5), mix(NOTE_YELLOW, NOTE_BLUE, 0.5)   # not said yet
+        pages = self._caption_pages(words, times)    # [[line, line], ...]; line = [word, ...]
+        dim, en_dim = mix(BG, TEXT, 0.45), mix(BG, BLUE, 0.5)          # not said yet
         group, page_starts, lit_map = VGroup(), [], []
         for page in pages:
             line_mobjs = VGroup()
@@ -587,47 +637,35 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                 for w in line:
                     if w["en"]:
                         mobj[w["glyphs"][0]:w["glyphs"][1]].set_color(en_dim)
-                if mobj.width > CAP_LINE_W:                       # measured layout makes this rare
-                    mobj.scale_to_fit_width(CAP_LINE_W)
+                if mobj.width > BAND_W:                           # measured layout makes this rare
+                    mobj.scale_to_fit_width(BAND_W)
                 line_mobjs.add(mobj)
                 page_words += [(w, mobj) for w in line]
-            line_mobjs.arrange(DOWN, buff=0.16, aligned_edge=LEFT)
+            line_mobjs.arrange(DOWN, buff=BAND_LINE_GAP).move_to([0, (BAND_TOP + BAND_BOTTOM) / 2, 0])
             line_mobjs.set_opacity(0)
             group.add(line_mobjs)
             page_starts.append(tracker.start_t + times[page[0][0]["index"]])
             lit_map.append(page_words)
-        two = VGroup(*[text("Hg", CAPTION_PX, INK, BODY, NORMAL) for _ in range(CAP_LINES)]).arrange(DOWN, buff=0.16)
-        w = max(p.width for p in group) + 2 * NOTE_PAD
-        h = max([two.height] + [p.height for p in group]) + 2 * NOTE_PAD
-        note = Rectangle(width=w, height=h, fill_color=NOTE_YELLOW, fill_opacity=1, stroke_color=INK, stroke_width=3)
-        shadow = note.copy().set_fill(INK).set_stroke(width=0).shift([NOTE_SHADOW, -NOTE_SHADOW, 0])
-        for p in group:
-            p.move_to(note).align_to(note, LEFT).shift(RIGHT * NOTE_PAD)
-        group.add_to_back(shadow, note)
-        group.rotate(NOTE_ROT * PI / 180, about_point=note.get_center())
-        # the turned corners and the shadow set the box: its right and bottom edges sit on the margin
-        group.shift([FRAME_W / 2 - NOTE_MARGIN - group.get_right()[0],
-                     -FRAME_H / 2 + NOTE_MARGIN - group.get_bottom()[1], 0])
-        assert group.get_left()[0] >= -FRAME_W / 2 + NOTE_MARGIN and group.get_top()[1] <= STAGE_BOTTOM, group.get_top()
         state = {"page": -1, "lit": set()}
 
         def tick(mobj, dt):
             now = float(self.renderer.time)
             active = max((i for i, t0 in enumerate(page_starts) if t0 <= now + 1e-3), default=0)
             if active != state["page"]:
-                for i, page_group in enumerate(mobj[2:]):
+                for i, page_group in enumerate(mobj):
                     page_group.set_opacity(1 if i == active else 0)
                 state["page"] = active
             for w, line_mobj in lit_map[active]:
                 if w["index"] not in state["lit"] and tracker.start_t + times[w["index"]] <= now + 1e-3:
                     a, b = w["glyphs"]
-                    line_mobj[a:b].set_color(NOTE_BLUE if w["en"] else INK)
+                    line_mobj[a:b].set_color(BLUE if w["en"] else TEXT)
                     state["lit"].add(w["index"])
 
         group.add_updater(tick)
-        group.set_z_index(10)                           # over anything a beat adds after it (the table's highlighter)
+        group.set_z_index(10)
         self.pin(group)
         self.add(group)
+        self.caption = group
         return group
 
     def _word_times(self, words, tracker):
@@ -653,34 +691,16 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                     times[i] = after[0][1]
         return times
 
-    def _caption_pages(self, words):
-        """Sentences → lines (greedy, on measured word widths) → pages of CAP_LINES lines."""
+    def _caption_pages(self, words, times=None):
+        """Pages of up to CAP_LINES lines that fit the band (lesson.caption_chunks), measured in
+        the caption's own face."""
         space = measure("a a", CAPTION_PX, BODY, NORMAL) - 2 * measure("a", CAPTION_PX, BODY, NORMAL)
-        for i, w in enumerate(words):
-            w["index"] = i
-        sentences, current = [], []
-        for w in words:
-            current.append(w)
-            if w["text"][-1] in ".?!…":
-                sentences.append(current)
-                current = []
-        if current:
-            sentences.append(current)
-        pages = []
-        for sentence in sentences:
-            lines, line, width = [], [], 0.0
-            for w in sentence:
-                w_width = measure(w["text"], CAPTION_PX, BODY, BOLD if w["en"] else NORMAL)
-                if line and width + space + w_width > CAP_LINE_W:
-                    lines.append(line)
-                    line, width = [], 0.0
-                width += (space if line else 0) + w_width
-                line.append(w)
-            if line:
-                lines.append(line)
-            for k in range(0, len(lines), CAP_LINES):
-                pages.append(lines[k:k + CAP_LINES])
-        return pages
+
+        def width(tokens):
+            return (sum(measure(w["text"], CAPTION_PX, BODY, BOLD if w["en"] else NORMAL) for w in tokens)
+                    + space * (len(tokens) - 1))
+
+        return L.caption_chunks(words, width, BAND_W, times, CAP_LINES)
 
     # ── the notebook page, its title and the site badge (STEP 63) ─────────────
 
@@ -738,16 +758,17 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         if self.hud is not None or not self.hud_ready:
             return
         title = text(self.lesson["title"], BAR_PX, MUTED, BODY, BOLD)
-        fit(title, 5.6)
-        title.move_to([-BAR_W / 2 + title.width / 2, BAR_Y, 0])
-        x0, x1, gap, h = 0.4, BAR_W / 2, 0.1, 0.075
+        fit(title, 5.0)
+        title.move_to([PAGE_L + title.width / 2, BAR_Y, 0])                   # the page's left edge
+        # the progress runs between the title and the site badge, on the same row
+        x0, x1, gap, h = max(title.get_right()[0] + 0.5, -0.6), self.badge.get_left()[0] - 0.4, 0.1, 0.075
         n = len(self.parts)
         seg_w = (x1 - x0 - gap * (n - 1)) / n
         tracks, fills = VGroup(), VGroup()
         for k in range(n):
             left = x0 + k * (seg_w + gap)
             tracks.add(RoundedRectangle(corner_radius=h / 2, width=seg_w, height=h, stroke_width=0,
-                                        fill_color=LINE_C, fill_opacity=1).move_to([left + seg_w / 2, BAR_Y + 0.08, 0]))
+                                        fill_color=LINE_C, fill_opacity=1).move_to([left + seg_w / 2, BAR_Y, 0]))
             fills.add(Rectangle(width=seg_w, height=h, stroke_width=0, fill_color=ACCENT_LINE, fill_opacity=1)
                       .move_to(tracks[k]))
         state = {"frac": [None] * n}
@@ -867,6 +888,10 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             gloss = None
             if beat.get("gloss"):
                 gloss = para(beat["gloss"], GLOSS_PX, STAGE_W, SOFT, BODY).next_to(chips, DOWN, buff=0.75)
+            block = VGroup(chips, *([gloss] if gloss else []))
+            room = STAGE_TOP - STAGE_BOTTOM - 0.15
+            if block.height > room:                       # STEP 79 §2: three rows and a gloss stay on the page
+                block.scale(room / block.height)
             centre_on(chips, *([gloss] if gloss else []))
             self.sentence = {"chips": chips, "words": words, "tags": {}, "colors": {}}
             self.keep(chips)
@@ -944,16 +969,25 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         bubble_w = 0.66 * STAGE_W
         column = VGroup()
         y = STAGE_TOP - 0.1
-        for n, line in enumerate(lines):
-            left = n % 2 == 0
-            en = para(line["en"], DIALOG_EN_PX, bubble_w - 0.6, TEXT, DISPLAY, align="left")
+        room = STAGE_TOP - STAGE_BOTTOM - 0.5               # a bubble and its speaker tag fit the page
+
+        def bubble_of(line, left, w):
+            en = para(line["en"], DIALOG_EN_PX, w - 0.6, TEXT, DISPLAY, align="left")
             parts = VGroup(en)
             if line.get("es"):
-                es = para(line["es"], DIALOG_ES_PX, bubble_w - 0.6, SOFT, BODY, align="left")
+                es = para(line["es"], DIALOG_ES_PX, w - 0.6, SOFT, BODY, align="left")
                 es.next_to(en, DOWN, buff=0.16, aligned_edge=LEFT)
                 parts.add(es)
-            bubble = card(parts, SURFACE if left else mix(BG, BLUE, 0.16), pad=0.28,
-                          stroke=LINE_C if left else mix(BG, BLUE, 0.45))
+            return card(parts, SURFACE if left else mix(BG, BLUE, 0.16), pad=0.28,
+                        stroke=LINE_C if left else mix(BG, BLUE, 0.45))
+
+        for n, line in enumerate(lines):
+            left = n % 2 == 0
+            bubble = bubble_of(line, left, bubble_w)
+            if bubble.height > room:                         # STEP 79 §2: wider first, smaller only if it must
+                bubble = bubble_of(line, left, 0.9 * STAGE_W)
+                if bubble.height > room:
+                    bubble.scale(room / bubble.height)
             speaker = text(str(line.get("speaker", "A" if left else "B")).upper(), TAG_PX, MUTED, BODY, BOLD)
             x_edge = -STAGE_W / 2 if left else STAGE_W / 2
             bubble.move_to([x_edge + (bubble.width / 2 if left else -bubble.width / 2), 0, 0])
@@ -968,17 +1002,16 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             anims, leaving = [FadeIn(unit, shift=(RIGHT if left else LEFT) * 0.25)], []
             if overflow > 0:
                 unit.shift(UP * overflow)
-                for u in column:
-                    if u.get_bottom()[1] + overflow > STAGE_TOP:
-                        leaving.append(u)
-                        anims.append(u.animate.shift(UP * overflow).set_opacity(0))
-                    else:
-                        anims.append(u.animate.shift(UP * overflow))
+                # STEP 79 §2: what would leave the page fades out where it is first, then the rest
+                # scrolls up; nothing ever crosses the page top into the header row
+                leaving = [u for u in column if u.get_top()[1] + overflow > STAGE_TOP]
+                if leaving:
+                    self.play(*[FadeOut(u) for u in leaving], run_time=0.15)
+                    for u in leaving:
+                        column.remove(u)
+                        self.stage.remove(u)
+                anims += [u.animate.shift(UP * overflow) for u in column]
             self.play(*anims, run_time=self.run_until(0.45, later))
-            for u in leaving:
-                column.remove(u)
-                self.stage.remove(u)
-                self.remove(u)
             column.add(unit)
             self.keep(unit)
 
@@ -1051,7 +1084,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         items = beat["items"]
         group = VGroup()
         for item in items:
-            label = para(item, BODY_PX, STAGE_W - 1.0, TEXT, BODY, align="left")
+            label = para(item, BODY_PX, STAGE_W - 1.0, TEXT, BODY, align="left", english=self.vocab)
             bullet = check_mark(ORIGIN, 0.24) if checks else Dot(radius=0.11, color=ACCENT_LINE)
             bullet.next_to(label[0], LEFT, buff=0.4)
             group.add(VGroup(bullet, label))
@@ -1077,7 +1110,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
 
     def beat_tip(self, beat, tracker, marks):
         self.show_bar()
-        body = para(beat["text"], BODY_PX + 2, STAGE_W - 1.4, TEXT, BODY, align="left")
+        body = para(beat["text"], BODY_PX + 2, STAGE_W - 1.4, TEXT, BODY, align="left", english=self.vocab)
         label = card(text("TIP", TAG_PX, ink(YELLOW), BODY, BOLD), YELLOW, pad=0.14, stroke=YELLOW, radius=0.12)
         inner = VGroup(label, body).arrange(DOWN, buff=0.4, aligned_edge=LEFT)
         box = card(inner, mix(BG, YELLOW, 0.10 if P["dark"] else 0.22), pad=0.55, stroke=ACCENT_LINE, stroke_width=3)
