@@ -46,9 +46,9 @@ def test_mensajes_examples_are_the_phrases_after_the_card_but_not_the_right_form
 def test_each_example_card_enters_on_its_phrase_and_stays_in_the_safe_area():
     s = _draft("hc_m001")
     tl = R.estimated_timeline(s)
-    lay = mensajes.layout(s)
+    plan = mensajes.scroll_plan(s, tl)              # STEP 79 §0: the stack sits under the scrolled rule
     text, at, _ok = mensajes.examples(s, tl)[0]
-    box = (K.W / 2 - mensajes.EX_W / 2, lay["stack_top"], K.W / 2 + mensajes.EX_W / 2, lay["stack_top"] + mensajes.EX_H)
+    box = (K.W / 2 - mensajes.EX_W / 2, plan["stack_top"], K.W / 2 + mensajes.EX_W / 2, plan["stack_top"] + mensajes.EX_H)
     before = _region(_rgb(mensajes.frame(at - 0.1, s, tl)), box)
     after = _region(_rgb(mensajes.frame(at + 0.6, s, tl)), box)
     assert np.abs(after - before).mean() > 20, text
@@ -56,13 +56,17 @@ def test_each_example_card_enters_on_its_phrase_and_stays_in_the_safe_area():
 
 
 @pytest.mark.parametrize("sid", [p.stem for p in sorted(DRAFTS.glob("hc_m*.json"))])
-def test_every_mensajes_stack_has_room_for_at_least_three_cards(sid):
-    assert mensajes.layout(_draft(sid))["slots"] >= 3
+def test_every_mensajes_stack_has_room_for_its_examples_or_at_least_two(sid):
+    """STEP 79 §0: the chat scrolls only as far as the error bubble allows; past the slots the
+    oldest card fades (78b)."""
+    s = _draft(sid)
+    tl = R.estimated_timeline(s)
+    assert mensajes.scroll_plan(s, tl)["slots"] >= min(len(mensajes.examples(s, tl)), 2)
 
 
 def test_past_its_slots_the_oldest_card_leaves():
     s = _draft("hc_m001")
-    lay = dict(mensajes.layout(s), slots=2)
+    lay = dict(mensajes.scroll_plan(s, R.estimated_timeline(s)), slots=2)
     from PIL import Image
     shown = [("One a", 1.0, True), ("Two b", 2.0, True), ("Three c", 3.0, True)]
     img = Image.new("RGBA", (K.W, K.H), (0, 0, 0, 255))
