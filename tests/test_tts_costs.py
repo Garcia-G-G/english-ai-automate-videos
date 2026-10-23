@@ -35,6 +35,14 @@ class Flaky:
         return iter([b"ID3fake-audio"])
 
 
+@pytest.fixture(autouse=True)
+def _fake_client_may_be_asked(monkeypatch):
+    """Every client in this file is a fake that never reaches ElevenLabs, so the STEP 79 §00
+    lock (which refuses before any request) is opened for it here, and only here."""
+    import voice_lock
+    monkeypatch.setattr(voice_lock, "locked", lambda: False)
+
+
 @pytest.fixture
 def tracker(monkeypatch):
     sleeps = []

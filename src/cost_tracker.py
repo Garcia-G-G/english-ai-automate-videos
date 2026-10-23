@@ -88,7 +88,10 @@ def per_video_tts_usd() -> float:
 
 
 def check_tts_budget(characters: int, model: str) -> None:
-    """Refuse the next TTS call if it would take the current video over its budget."""
+    """Refuse the next TTS call if voice is locked (STEP 79 §00) or if it would take the current
+    video over its budget. Every ElevenLabs generation calls this just before its request."""
+    import voice_lock
+    voice_lock.check(f"una petición de {characters} caracteres a ElevenLabs ({model})")
     tracker = get_tracker()
     spent = sum(e["cost_usd"] for e in tracker.entries if e.get("api_type") == "elevenlabs_tts")
     upcoming = characters * tts_price_per_1k(model) / 1000

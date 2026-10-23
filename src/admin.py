@@ -56,6 +56,7 @@ from script_generator import (
 # reachable from the CLI until STEP 79).
 from video_types import PANEL_TYPES  # noqa: E402
 import series  # noqa: E402
+import voice_credits  # noqa: E402
 
 # Shared pipeline — the SAME TTS dispatch, merge and renderer the CLI uses.
 import pipeline
@@ -1129,7 +1130,11 @@ def start_series_generation(style: Optional[str] = None, level: Optional[str] = 
         log_path = attach_run_log(f"job-{job_id}")
         update_job(job_id, log_path=str(log_path))
         try:
-            result = series.render_one(style, level, progress=lambda msg: update_job(job_id, current_step=msg))
+            # STEP 79 §00: the series click may voice one script, within the plan.
+            picked = series.pick(style, level)
+            chars = voice_credits.script_chars(picked[1] if picked else None) or voice_credits.cap_chars()
+            with voice_credits.panel_voice(chars, note=lambda m: update_job(job_id, current_step=m)):
+                result = series.render_one(style, level, progress=lambda msg: update_job(job_id, current_step=msg))
             ok = result["gate"] == "PASS"
             complete_job(job_id, ok, result["video"],
                          None if ok else "quality gate: " + ", ".join(result["blocking_flags"]))
@@ -1173,9 +1178,13 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
         log_path = attach_run_log(f"job-{job_id}")
         update_job(job_id, log_path=str(log_path))
         try:
-            with _RENDER_LOCK:
+            # STEP 79 §00: this click is the only thing that may spend voice, within the plan.
+            chars = voice_credits.script_chars(kwargs.get("script_data")) or voice_credits.cap_chars()
+            with voice_credits.panel_voice(chars, note=lambda m: update_job(job_id, current_step=m)), _RENDER_LOCK:
                 run_pipeline_with_tracking(job_id, video_type, category,
                                            topic_name, **kwargs)
+        except voice_credits.VoiceRefused as refused:
+            complete_job(job_id, success=False, error=str(refused))
         except Exception:                                   # noqa: BLE001
             # run_pipeline_with_tracking handles its own errors; this is the
             # last resort so a worker cannot die leaving the row active.
@@ -2403,6 +2412,9 @@ _STARTED_AT = _ds.once("started_at", lambda: datetime.now().strftime("%H:%M"))
 
 st.sidebar.markdown('<div class="eu-brand">English <mark>Unlimited</mark></div>'
                     f'<div class="eu-ver">versión {_RUNNING_VERSION} · abierto a las {_STARTED_AT}</div>',
+                    unsafe_allow_html=True)
+# STEP 79 §00: what is left on the ElevenLabs plan (a free read, cached a minute).
+st.sidebar.markdown(f'<div class="eu-ver">{voice_credits.header_text(voice_credits.remaining())}</div>',
                     unsafe_allow_html=True)
 
 #: Page key -> (label on screen, Material icon). Keys are what ?page= and the

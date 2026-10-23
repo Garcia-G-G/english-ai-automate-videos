@@ -103,6 +103,15 @@ def alignment_to_words(alignment: dict) -> list:
     return words
 
 
+def _voice_lock():
+    """src/voice_lock.py (STEP 79 §00), stdlib only, so this venv can import it."""
+    src = str(Path(__file__).resolve().parents[2] / "src")
+    if src not in sys.path:
+        sys.path.insert(0, src)
+    import voice_lock
+    return voice_lock
+
+
 def eleven_segment(api_key: str, voice_id: str, text: str, lang: str, model: str, settings: dict,
                    previous_text: str = "", next_text: str = "", previous_request_ids: list = (),
                    on_body=None) -> tuple:
@@ -126,6 +135,7 @@ def eleven_segment(api_key: str, voice_id: str, text: str, lang: str, model: str
     if on_body is not None:
         on_body(body)                                          # --keep-raw: what was asked (the key is a header)
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/with-timestamps?output_format=mp3_44100_128"
+    _voice_lock().check(f"una petición de {len(text)} caracteres a ElevenLabs ({model})")
     for attempt in range(2):
         request = urllib.request.Request(url, data=json.dumps(body).encode(), method="POST",
                                          headers={"xi-api-key": api_key, "Content-Type": "application/json",

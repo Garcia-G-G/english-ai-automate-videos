@@ -14,6 +14,7 @@ Keys (ELEVENLABS_API_KEY, OPENAI_API_KEY) come from the repo's .env or the studi
 .env written by the panel below; they are never displayed or sent anywhere else.
 Every function under the Streamlit surface is plain and tested without a browser.
 """
+import contextlib
 import json
 import os
 import re
@@ -240,7 +241,9 @@ def render_timeout(lesson_id: str, voice: str, studio_dir: Path = STUDIO_DIR) ->
 
 
 def start_job(kind: str, argv: list, env: dict, cwd: Path, on_success=None, studio_dir: Path = STUDIO_DIR,
-              timeout: Optional[float] = None) -> str:
+              timeout: Optional[float] = None, voice_chars: int = 0) -> str:
+    """Run argv in the background. `voice_chars` > 0: the panel's own voicing click (STEP 79 §00);
+    the subprocess gets a voice grant for its lifetime, within the plan. Otherwise it is locked."""
     job_id = f"{kind}-{datetime.now().strftime('%H%M%S')}"
     folder = jobs_dir(studio_dir)
     status_path, log_path = folder / f"{job_id}.json", folder / f"{job_id}.log"
@@ -254,12 +257,23 @@ def start_job(kind: str, argv: list, env: dict, cwd: Path, on_success=None, stud
         import proc
         limit = timeout or JOB_TIMEOUTS.get(kind, JOB_TIMEOUTS["lote"])
         result = {}
+        import voice_credits
+        import voice_lock
         try:
             with log_path.open("w", encoding="utf-8") as log:
                 log.write("$ " + " ".join(argv) + "\n\n")
                 log.flush()
-                code = proc.run(argv, cwd=str(cwd), env={**os.environ, **env}, stdout=log,
-                                stderr=subprocess.STDOUT, timeout=limit).returncode
+                if voice_chars > 0:
+                    grant = voice_credits.panel_voice(voice_chars, note=lambda m: log.write(m + "\n"))
+                else:
+                    grant = contextlib.nullcontext(None)
+                with grant as token:
+                    extra = voice_lock.grant_env(token) if token else {}
+                    code = proc.run(argv, cwd=str(cwd), env={**os.environ, **env, **extra}, stdout=log,
+                                    stderr=subprocess.STDOUT, timeout=limit).returncode
+        except voice_credits.VoiceRefused as refused:
+            log_path.write_text(f"{refused}\n", encoding="utf-8")
+            code, result = -4, {"error": str(refused)}
         except proc.CommandTimeout:
             with log_path.open("a", encoding="utf-8") as log:
                 log.write(f"\n\nTIMEOUT: stopped after {limit:.0f} s\n")
@@ -748,7 +762,9 @@ def render() -> None:                                  # pragma: no cover — UI
                      else f"Audio de {voice_slug} al día")
             if st.button(label, disabled=not todo or bool(problems) or changed, type="primary",
                          help="Guarda la narración primero" if changed else None):
-                st.session_state.ms_job = start_job("audio", audio_command(lesson_id, voice_slug, voice_id, tts_model, force), {}, STUDIO_DIR)
+                chars = sum(len(L.spoken_text(b["narration"])) for b in lesson["beats"] if b["id"] in todo)
+                st.session_state.ms_job = start_job("audio", audio_command(lesson_id, voice_slug, voice_id, tts_model, force), {},
+                                                    STUDIO_DIR, voice_chars=max(1, chars))
                 st.rerun()
         if ready:
             st.caption("Voces con audio para esta lección: " + ", ".join(
@@ -794,7 +810,8 @@ def render() -> None:                                  # pragma: no cover — UI
                 st.caption(f"{len(picked)} lección(es) · ≈ {sum(s['minutes'] for s in summaries if s['id'] in picked):.0f} min de vídeo · "
                            f"audio ≈ ${total_chars / 1000 * PRICE_PER_1K_CHARS:.2f} como máximo (lo ya generado no se repite)")
                 if st.button("Lanzar lote", disabled=not picked or not voice_slug):
-                    st.session_state.ms_job = start_job("lote", batch_command(picked, voice_slug, voice_id, bq, tts_model), {}, STUDIO_DIR)
+                    st.session_state.ms_job = start_job("lote", batch_command(picked, voice_slug, voice_id, bq, tts_model), {},
+                                                        STUDIO_DIR, voice_chars=max(1, total_chars))
                     st.rerun()
 
         # ── 5. Publish into a Learning Routes step ────────────────────────────────

@@ -19,6 +19,14 @@ SCRIPT = {"type": "educational",
           "full_script": "Hola a todos, hoy aprendemos algo. [[I have a car.]] Y yo tengo uno, claro que sí."}
 
 
+@pytest.fixture(autouse=True)
+def _fake_client_may_be_asked(monkeypatch):
+    """Every client in this file is a fake that never reaches ElevenLabs, so the STEP 79 §00
+    lock (which refuses before any request) is opened for it here, and only here."""
+    import voice_lock
+    monkeypatch.setattr(voice_lock, "locked", lambda: False)
+
+
 def _mp3_bytes(tmp_path, seconds=1.2):
     path = tmp_path / "tone.mp3"
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
