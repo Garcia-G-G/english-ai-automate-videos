@@ -103,6 +103,21 @@ def alignment_to_words(alignment: dict) -> list:
     return words
 
 
+#: What the next ElevenLabs request is for (STEP 79 §1): main() sets it per beat and take; a probe
+#: that calls eleven_segment directly is logged as one.
+COST_CONTEXT = {"lesson": None, "beat": None, "reason": "probe"}
+
+
+def log_spend(characters: int, model: str) -> None:
+    """One row in output/costs/ per paid request, the Shorts' format: no voice spend unlogged."""
+    from cost_tracker import CostTracker
+    tracker = CostTracker(video_id=f"lesson_{COST_CONTEXT['lesson'] or 'probe'}")
+    tracker.log_elevenlabs_tts(characters, model, label="lesson_segment",
+                               extra={"lesson": COST_CONTEXT["lesson"], "beat": COST_CONTEXT["beat"],
+                                      "reason": COST_CONTEXT["reason"]})
+    tracker.save()
+
+
 def _voice_lock():
     """src/voice_lock.py (STEP 79 §00), stdlib only, so this venv can import it."""
     src = str(Path(__file__).resolve().parents[2] / "src")
@@ -144,6 +159,7 @@ def eleven_segment(api_key: str, voice_id: str, text: str, lang: str, model: str
             with urllib.request.urlopen(request, timeout=180) as response:
                 result = json.load(response)
                 request_id = response.headers.get("request-id", "")
+            log_spend(len(text), model)                     # answered: billed
             break
         except urllib.error.HTTPError as error:
             detail = error.read()[:400].decode("utf-8", "replace")
@@ -432,7 +448,9 @@ def main() -> int:
         raw_dir = out / "_raw"
         if args.keep_raw:
             raw_dir.mkdir(exist_ok=True)
+        COST_CONTEXT.update(lesson=lesson["id"], beat=None, reason="beat")
         for beat in beats:
+            COST_CONTEXT.update(beat=beat["id"], reason="beat")
             spoken, pause_list = L.spoken_text(beat["narration"]), L.pauses(beat["narration"])
             mp3, words_path = out / f"{beat['id']}.mp3", out / f"{beat['id']}.words.json"
             old = previous.get(beat["id"])
@@ -487,6 +505,7 @@ def main() -> int:
                                                  "speed": body["voice_settings"].get("speed", 1.0)})
                             takes = []
                             for attempt in range(1 + (0 if args.no_onset_gate else ONSET_RETRIES)):
+                                COST_CONTEXT["reason"] = "beat" if attempt == 0 else "onset_retake"
                                 audio, words, rid = eleven_segment(api_key, voice_id, seg["text"], seg["lang"], model,
                                                                    lang_settings, previous_text=before, next_text=after,
                                                                    previous_request_ids=context_ids,

@@ -37,7 +37,7 @@ from manim_voiceover import VoiceoverScene
 import lesson as L
 import sfx as S
 import theme as TH
-from voices import PrerecordedService
+from voices import PrerecordedService, StillsService
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
@@ -377,9 +377,18 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         problems = L.validate(self.lesson)
         if problems:
             raise SystemExit("lesson.json is not renderable:\n  " + "\n  ".join(problems))
-        voice_dir = HERE / os.environ["VOICE_DIR"]
-        self.set_speech_service(PrerecordedService(voice_dir))
-        manifest = json.loads((voice_dir / "manifest.json").read_text(encoding="utf-8"))
+        voice_dir = HERE / os.environ["VOICE_DIR"] if os.environ.get("VOICE_DIR") else None
+        self.stills_out = Path(os.environ["STILLS_OUT"]) if os.environ.get("STILLS") == "1" else None
+        if self.stills_out is not None:
+            # STEP 79 §1: one still per beat, at its midpoint; cached timings, estimated otherwise;
+            # no TTS, nothing encoded.
+            self.service = StillsService(voice_dir, lesson=self.lesson)
+            self.set_speech_service(self.service)
+            self.arm_stills()
+        else:
+            self.set_speech_service(PrerecordedService(voice_dir))
+        manifest_path = voice_dir / "manifest.json" if voice_dir else None
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path and manifest_path.exists() else {"beats": []}
         self.word_files = {b["id"]: voice_dir / b["words"] for b in manifest["beats"]}
 
         self.hud = None            # the top bar (lesson title + chapter progress), once the title card has played
@@ -403,6 +412,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.end_screen()
         self.write_timeline()
         self.report_sync()
+        if self.stills_out is not None:
+            self.write_stills_index()
 
     def report_sync(self):
         report = L.sync_report(self.cues)
@@ -442,6 +453,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         with self.voiceover(text=narration, beat_id=beat["id"]) as tracker:
             self.beat_id = beat["id"]
             self.clock = (tracker.start_t, tracker.duration)
+            if self.stills_out is not None:
+                self.captures.append((tracker.start_t + tracker.duration / 2, beat))
             self.speech = self._speech(beat["id"], tracker.start_t)
             caption = self.mount_captions(beat, tracker) if self.captions_on and kind != "title" else None
             getattr(self, f"beat_{kind}")(beat, tracker, marks)
@@ -457,6 +470,46 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         if not path or not path.exists():
             return []
         return [(start + w["start"], start + w["end"]) for w in json.loads(path.read_text(encoding="utf-8"))]
+
+    # ── stills mode (STEP 79 §1) ──────────────────────────────────────────────
+
+    def arm_stills(self):
+        """Draw only the animations that hold a beat's midpoint; every other one is skipped
+        (Manim jumps it to its end state and moves the clock on, drawing nothing). The frame at
+        each midpoint is saved as <nn>_<beat>_<type>.png."""
+        self.captures, self.stills = [], []
+        self.stills_out.mkdir(parents=True, exist_ok=True)
+        renderer, compile_data = self.renderer, self.compile_animation_data
+
+        def compile_animation_data(*args, **kwargs):
+            out = compile_data(*args, **kwargs)
+            t0 = float(renderer.time)
+            t1 = t0 + float(getattr(self, "duration", 0) or 0)
+            renderer.skip_animations = not any(t0 - 1e-6 <= t <= t1 + 1e-6 for t, _b in self.captures)
+            return out
+
+        add_frame = renderer.add_frame
+
+        def add_frame_and_capture(frame, num_frames=1):
+            add_frame(frame, num_frames)
+            now = float(renderer.time)
+            for item in [c for c in self.captures if c[0] <= now + 1e-6]:
+                self.captures.remove(item)
+                t, beat = item
+                n = next(i for i, b in enumerate(self.lesson["beats"]) if b is beat)
+                path = self.stills_out / f"{n + 1:02d}_{beat['id']}_{beat['type']}.png"
+                from PIL import Image
+                Image.fromarray(frame).convert("RGB").save(path)
+                self.stills.append({"n": n + 1, "id": beat["id"], "type": beat["type"], "t": round(t, 2),
+                                    "file": path.name, "estimated": beat["id"] in self.service.estimated})
+
+        self.compile_animation_data = compile_animation_data
+        renderer.add_frame = add_frame_and_capture
+
+    def write_stills_index(self):
+        (self.stills_out / "stills.json").write_text(json.dumps(
+            {"lesson": self.lesson["id"], "duration": round(float(self.renderer.time), 2), "stills": self.stills,
+             "estimated": self.service.estimated}, ensure_ascii=False, indent=1), encoding="utf-8")
 
     # ── sound effects ─────────────────────────────────────────────────────────
 

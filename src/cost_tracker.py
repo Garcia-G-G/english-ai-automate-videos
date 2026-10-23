@@ -182,12 +182,12 @@ class CostTracker:
         return cost
 
     def log_elevenlabs_tts(self, characters: int, model: str = "eleven_v3",
-                           label: str = "tts"):
-        """Log an ElevenLabs TTS API call."""
+                           label: str = "tts", extra: dict = None):
+        """Log an ElevenLabs TTS API call (`extra`: e.g. the lesson studio's lesson, beat, reason)."""
         pricing = PRICING.get(model, PRICING["eleven_v3"])
         cost = characters * pricing["per_1m_chars"] / 1_000_000
         self._add_entry("elevenlabs_tts", model, cost, label, {
-            "characters": characters,
+            "characters": characters, **(extra or {}),
         })
         return cost
 
