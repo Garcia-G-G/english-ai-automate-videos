@@ -14,7 +14,7 @@ The long lessons are the Manim pipeline in `experiments/manim_voiceover_poc/`, d
 
 third-person-s has 31 audio files but an old render. All 22 already carry `[[ ]]` English marks.
 
-**This STEP spends $0 on voice.** It re-renders only from cached audio. Voicing the 12 unvoiced
+**This STEP spends $0 on voice, and §00 makes that impossible to break.** It re-renders only from cached audio. Voicing the 12 unvoiced
 lessons costs about $1.10 each (about 5,000 characters at $0.22 per 1k). That is Garcia's budget
 call and is not part of this STEP.
 
@@ -25,6 +25,46 @@ Same rules as always:
 - Proofs go to `_audit/stills/STEP79/`. Claude reviews them.
 
 ---
+
+## §00 — FIRST: an ElevenLabs lock, so no STEP or test spends voice again
+
+Garcia's order: no more test spending. The ElevenLabs credits are running out. From this STEP on, only
+real production voices; proofs and tests never do.
+
+1. **Code can't spend voice.** Add `ELEVENLABS_LOCK` to the TTS path, read from the env and from
+   `config.yaml` (`costs.tts_lock`).
+   - When it is on, any TTS request that would reach ElevenLabs raises before the request is sent.
+   - It is ON by default for:
+     - the CLI;
+     - pytest;
+     - stills mode;
+     - every tool under `tools/`;
+     - the Manim studio's batch and audio commands when they are not launched from the panel.
+   - The only path that can turn it off is the panel's own «Crear video» / lesson-voicing action,
+     clicked by Garcia.
+   - Tests: the lock fires in each of those entry points, and with the lock on, a cache hit still
+     renders.
+2. **The panel shows what's left.** Read the account's remaining characters from ElevenLabs'
+   subscription endpoint, which is free and needs no generation. Show it in the panel header as
+   «Voz: N caracteres restantes».
+   - Before a render, estimate the characters it needs from the script.
+   - Refuse with a clear Spanish message if the render needs more than remains, or if it would
+     leave less than 5 % of the plan.
+   - If the endpoint can't be reached, say so and allow only cached renders.
+3. **Proofs from cache only.** Every proof in this STEP and in any later STEP comes from cached
+   audio. If a proof needs audio that isn't cached, skip it and list it in the report. Do not
+   voice it.
+4. **Report the real spend.** Report the characters used on ElevenLabs since 1 October, from the
+   cost logs in `output/costs/` and from the lesson studio's own log if it keeps one, split by:
+   - Shorts;
+   - series;
+   - lessons;
+   - tests/STEPs;
+   - unknown.
+
+   Report it as numbers only; change nothing.
+
+Run the full suite, commit, push, then continue with §0.
 
 ## §0 — One leftover from the series review (78b)
 
