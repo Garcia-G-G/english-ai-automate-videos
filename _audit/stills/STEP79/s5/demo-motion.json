@@ -1,0 +1,28 @@
+{
+ "lesson": "demo-motion",
+ "mp4": "experiments/manim_voiceover_poc/renders/demo-motion/20261023-200511_english-teacher_1080p30_sand.mp4",
+ "duration_s": 135.97,
+ "render_s": 107.6,
+ "render_and_encode_s": 168.7,
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "checks": {
+   "sync": [],
+   "lufs": -14.0,
+   "still": {
+    "seconds": 0.27,
+    "from": 26.57
+   }
+  }
+ },
+ "final_encode": {
+  "loudnorm": "linear",
+  "output_i": "-13.97",
+  "output_tp": "-2.43",
+  "bytes": 12106337
+ },
+ "max_cue_lag": 0.033,
+ "chapters": "",
+ "thumbnail": "demo-motion/20261023-200511_english-teacher_1080p30_sand.thumb.jpg"
+}

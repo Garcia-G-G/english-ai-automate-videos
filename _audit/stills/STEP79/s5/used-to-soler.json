@@ -1,0 +1,28 @@
+{
+ "lesson": "used-to-soler",
+ "mp4": "experiments/manim_voiceover_poc/renders/used-to-soler/20261023-215459_english-teacher_1080p30_sand.mp4",
+ "duration_s": 507.7,
+ "render_s": 539.8,
+ "render_and_encode_s": 797.1,
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "checks": {
+   "sync": [],
+   "lufs": -14.0,
+   "still": {
+    "seconds": 0.3,
+    "from": 391.83
+   }
+  }
+ },
+ "final_encode": {
+  "loudnorm": "linear",
+  "output_i": "-13.95",
+  "output_tp": "-2.44",
+  "bytes": 51887954
+ },
+ "max_cue_lag": 0.098,
+ "chapters": "00:00 Intro\n00:27 Parte 1 · El problema\n01:38 Parte 2 · Used to: lo que ya no haces\n02:40 Parte 3 · Preguntas y negativas\n03:27 Parte 4 · Be used to: otra cosa distinta\n04:30 Parte 5 · En una conversación real\n05:04 Parte 6 · El error más común\n05:33 Parte 7 · Hablar de tu infancia\n06:35 Parte 8 · Practica\n07:34 Parte 9 · Resumen\n",
+ "thumbnail": "used-to-soler/20261023-215459_english-teacher_1080p30_sand.thumb.jpg"
+}

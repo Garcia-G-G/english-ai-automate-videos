@@ -1,0 +1,28 @@
+{
+ "lesson": "can-could-pedir",
+ "mp4": "experiments/manim_voiceover_poc/renders/can-could-pedir/20261023-202508_english-teacher_1080p30_sand.mp4",
+ "duration_s": 394.9,
+ "render_s": 453.9,
+ "render_and_encode_s": 644.7,
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "checks": {
+   "sync": [],
+   "lufs": -14.0,
+   "still": {
+    "seconds": 0.3,
+    "from": 373.63
+   }
+  }
+ },
+ "final_encode": {
+  "loudnorm": "linear",
+  "output_i": "-13.97",
+  "output_tp": "-2.48",
+  "bytes": 40120586
+ },
+ "max_cue_lag": 0.1,
+ "chapters": "00:00 Intro\n00:11 Parte 1 · El error de estructura\n01:02 Parte 2 · Los tres trabajos de can\n01:50 Parte 3 · Could no siempre es pasado\n02:32 Parte 4 · La escalera de la cortesía\n03:14 Parte 5 · En una conversación real\n03:43 Parte 6 · Pedir favores en el trabajo\n04:51 Parte 7 · Practica\n05:44 Parte 8 · Resumen\n",
+ "thumbnail": "can-could-pedir/20261023-202508_english-teacher_1080p30_sand.thumb.jpg"
+}

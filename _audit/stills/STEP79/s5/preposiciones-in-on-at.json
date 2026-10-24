@@ -1,0 +1,28 @@
+{
+ "lesson": "preposiciones-in-on-at",
+ "mp4": "experiments/manim_voiceover_poc/renders/preposiciones-in-on-at/20261023-205943_english-teacher_1080p30_sand.mp4",
+ "duration_s": 466.7,
+ "render_s": 500.0,
+ "render_and_encode_s": 741.1,
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "checks": {
+   "sync": [],
+   "lufs": -14.0,
+   "still": {
+    "seconds": 0.27,
+    "from": 17.43
+   }
+  }
+ },
+ "final_encode": {
+  "loudnorm": "linear",
+  "output_i": "-13.96",
+  "output_tp": "-2.40",
+  "bytes": 47166818
+ },
+ "max_cue_lag": 0.065,
+ "chapters": "00:00 Intro\n00:28 Parte 1 · La imagen que lo ordena todo\n01:55 Parte 2 · El tiempo funciona igual\n02:58 Parte 3 · Los que hay que saberse\n03:44 Parte 4 · El error más repetido\n04:40 Parte 5 · En una conversación real\n05:11 Parte 6 · Quedar con alguien\n05:58 Parte 7 · Practica\n06:50 Parte 8 · Resumen\n",
+ "thumbnail": "preposiciones-in-on-at/20261023-205943_english-teacher_1080p30_sand.thumb.jpg"
+}
