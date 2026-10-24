@@ -136,7 +136,7 @@ def test_the_poster_comes_from_the_title_wherever_it_is():
     timeline = {"beats": [{"id": "b01", "type": "transform", "start": 0.0},
                           {"id": "b02", "type": "title", "start": 11.2}]}
     assert R.poster_time(timeline, 120.0) == pytest.approx(13.7)
-    assert R.chapters_text(timeline) == "0:00 Introducción\n"
+    assert R.chapters_text(timeline) == ""                 # STEP 79 §4: under 3 chapters, none at all
 
 
 # ── brand: one source for the Shorts and the lessons ───────────────────────────

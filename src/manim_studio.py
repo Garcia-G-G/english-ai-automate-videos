@@ -339,7 +339,7 @@ def youtube_metadata(lesson: dict, render_row: dict, studio_dir: Path = STUDIO_D
     bullets = [h for h in headings if h and h.lower() not in YT_GENERIC_HEADINGS][:5]
     chapters_path = studio_dir / "renders" / render_row["chapters"] if render_row.get("chapters") else None
     chapters = chapters_path.read_text(encoding="utf-8").strip() if chapters_path and chapters_path.exists() else ""
-    if chapters and not chapters.startswith("0:00"):
+    if chapters and not chapters.startswith(("00:00", "0:00")):
         chapters = ""                                  # YouTube ignores a list that does not start at 0:00
     specific = lesson.get("hashtags") or ["#" + "".join(w.capitalize() for w in lesson["id"].split("-"))]
     hashtags = list(dict.fromkeys(list(YT_HASHTAGS) + [h if h.startswith("#") else "#" + h for h in specific]))[:5]
@@ -574,8 +574,10 @@ def _upload_lesson(youtube, video, artifact, render_row, meta, privacy, on_progr
                        session_uri=result.session_uri, upload_id=result.upload_id,
                        detail=f"published but record failed: {exc}")
         notes.append(f"UPLOADED BUT NOT RECORDED — note the id {result.upload_id}: {exc}")
-    poster = studio_dir / "renders" / render_row["poster"] if render_row.get("poster") else None
-    notes.append(youtube.set_thumbnail(result.upload_id, str(poster))[1] if poster and poster.exists() else "no poster beside the render")
+    # STEP 79 §4: the lesson's own thumbnail (wrong → right, Bubi), else the poster frame
+    picture = next((studio_dir / "renders" / render_row[k] for k in ("thumbnail", "poster")
+                    if render_row.get(k) and (studio_dir / "renders" / render_row[k]).exists()), None)
+    notes.append(youtube.set_thumbnail(result.upload_id, str(picture))[1] if picture else "no thumbnail beside the render")
     srt = video.with_suffix(".srt")
     notes.append(youtube.upload_captions(result.upload_id, str(srt))[1] if srt.exists() else "no .srt beside the render")
     return {"ok": True, "refused": None, "url": result.url, "upload_id": result.upload_id, "notes": notes}

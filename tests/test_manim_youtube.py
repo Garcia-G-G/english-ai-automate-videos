@@ -18,7 +18,7 @@ import uploader  # noqa: E402
 if M.STUDIO_IMPORT_ERROR:
     pytest.skip(f"Manim studio tree missing: {M.STUDIO_IMPORT_ERROR}", allow_module_level=True)
 
-CHAPTERS = "0:00 Introducción\n0:24 Parte 1 · El problema\n1:18 Parte 2 · Make crea\n6:50 Parte 9 · Resumen\n"
+CHAPTERS = "00:00 Intro\n00:24 Parte 1 · El problema\n01:18 Parte 2 · Make crea\n06:50 Parte 9 · Resumen\n"
 
 
 def _lesson(**extra):
@@ -43,7 +43,7 @@ def test_the_metadata_comes_from_the_lesson(tmp_path):
     d = meta["description"]
     assert d.startswith("Hoy dos verbos. En inglés se parten en make y do.")          # 2 sentences, no «Hola»
     assert "• El problema\n• Make crea" in d and "• Resumen" not in d
-    chapters = d[d.index("0:00"):].split("\n\n")[0]
+    chapters = d[d.index("00:00"):].split("\n\n")[0]
     assert chapters == CHAPTERS.strip()                                                   # as written, 0:00 first
     assert M.YT_CTA in d and len(meta["tags"]) <= 15
 
@@ -151,7 +151,7 @@ def test_a_render_is_uploaded_once_then_refused(monkeypatch, tmp_path):
     meta = {"title": "T", "description": "D", "tags": ["a"], "hashtags": []}
     out = M.upload_to_youtube(row, meta, privacy="unlisted", studio_dir=tmp_path, manager=manager)
     assert out["ok"] and out["url"].endswith("vid123")
-    assert out["notes"] == ["no poster beside the render", "captions uploaded (es)"]
+    assert out["notes"] == ["no thumbnail beside the render", "captions uploaded (es)"]
     assert json.loads((tmp_path / "renders" / "l" / "r.youtube.json").read_text()) == meta
     assert M.youtube_publication(row)["upload_id"] == "vid123"
     before = len(sent["post"])

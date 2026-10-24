@@ -333,5 +333,9 @@
       "narration": "Tu mañana entera, en una frase: [[I wake up, get up, turn off the alarm and get dressed]]. Me despierto, me levanto, apago la alarma y me visto. Dila mañana en voz alta mientras lo haces. Hasta la próxima."
     }
   ],
-  "english_speed": 0.92
+  "english_speed": 0.92,
+  "thumbnail": {
+    "wrong": "I wake up me at seven.",
+    "right": "I wake up at seven."
+  }
 }

@@ -241,7 +241,7 @@ def test_render_outputs_chapters_poster_time_and_1080p30_flags(tmp_path):
     assert argv[1:5] == ["-r", "1920,1080", "--fps", "30"] and R.QUALITIES["f"][0] == "1080p30"
     timeline = {"beats": [{"id": "b01", "type": "title", "start": 0.0}, {"id": "b02", "type": "heading", "text": "Parte 1 · El problema", "start": 12.7},
                           {"id": "b03", "type": "heading", "text": "Muy pronto", "start": 4.0}, {"id": "b04", "type": "heading", "text": "Resumen", "start": 347.67}]}
-    assert R.chapters_text(timeline) == "0:00 Introducción\n0:12 Parte 1 · El problema\n5:47 Resumen\n"
+    assert R.chapters_text(timeline) == "00:00 Intro\n00:12 Parte 1 · El problema\n05:47 Resumen\n"
     assert R.poster_time(timeline, 380.0) == 2.5 and R.poster_time({}, 100.0) == 5.0
 
 

@@ -63,14 +63,44 @@ def timeline_path(lesson_id: str, studio_dir: Path = HERE) -> Path:
     return studio_dir / "media" / "timeline" / f"{lesson_id}.json"
 
 
-def chapters_text(timeline: dict) -> str:
-    """YouTube-style chapters from the section cards: `m:ss Title`, first line at 0:00."""
-    lines = ["0:00 Introducción"]
+#: YouTube's chapter rules: the first at 00:00, at least three, each at least ten seconds long.
+CHAPTER_MIN_S, CHAPTERS_MIN = 10, 3
+
+
+def _stamp(seconds: float) -> str:
+    s = int(seconds)
+    return f"{s // 3600}:{s % 3600 // 60:02d}:{s % 60:02d}" if s >= 3600 else f"{s // 60:02d}:{s % 60:02d}"
+
+
+def chapters_text(timeline: dict, duration: Optional[float] = None) -> str:
+    """YouTube chapters from the section cards (STEP 79 §4): `00:00 Intro` first, then each
+    heading at its start in the render's timeline. A heading closer than CHAPTER_MIN_S to the
+    previous chapter, or to the end, is left out; with fewer than CHAPTERS_MIN chapters the list
+    is empty (YouTube would ignore it)."""
+    end = duration or timeline.get("duration")
+    chapters = [(0.0, "Intro")]
     for beat in timeline.get("beats", []):
-        if beat.get("type") == "heading" and beat.get("text") and beat.get("start", 0) >= 10:
-            start = int(beat["start"])
-            lines.append(f"{start // 60}:{start % 60:02d} {beat['text']}")
-    return "\n".join(lines) + "\n"
+        if beat.get("type") != "heading" or not beat.get("text"):
+            continue
+        start = float(beat.get("start", 0))
+        if start - chapters[-1][0] < CHAPTER_MIN_S or (end is not None and end - start < CHAPTER_MIN_S):
+            continue
+        chapters.append((start, beat["text"]))
+    if len(chapters) < CHAPTERS_MIN:
+        return ""
+    return "".join(f"{_stamp(t)} {name}\n" for t, name in chapters)
+
+
+def thumbnail_for(lesson_id: str, target: Path, studio_dir: Path = HERE) -> Optional[str]:
+    """STEP 79 §4: the lesson's 1280×720 thumbnail next to the render (thumbnail.make), as a path
+    under renders/, or None when the lesson has no wrong → right to show."""
+    path = studio_dir / "lessons" / f"{lesson_id}.json"
+    if not path.exists():
+        return None
+    lesson = _lesson_module().load(path)                   # puts the studio on sys.path too
+    import thumbnail
+    made = thumbnail.make(lesson, target.with_suffix(".thumb.jpg"))
+    return f"{lesson_id}/{made.name}" if made else None
 
 
 def poster_time(timeline: dict, duration: Optional[float]) -> float:
@@ -156,14 +186,18 @@ def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds
     if tl_src.exists():
         timeline = json.loads(tl_src.read_text(encoding="utf-8"))
         shutil.copyfile(tl_src, target.with_suffix(".timeline.json"))
-        target.with_suffix(".chapters.txt").write_text(chapters_text(timeline), encoding="utf-8")
+        chapters = chapters_text(timeline, duration)
+        if chapters:
+            target.with_suffix(".chapters.txt").write_text(chapters, encoding="utf-8")
     poster = target.with_suffix(".jpg")
     has_poster = make_poster(target, poster_time(timeline, duration), poster)
     row = {"at": now.isoformat(timespec="seconds"), "lesson": lesson_id, "file": f"{lesson_id}/{target.name}",
            "voice": voice, "quality": QUALITIES[quality][0], "bytes": target.stat().st_size,
            "duration_s": duration, "render_seconds": round(seconds, 1),
            "poster": f"{lesson_id}/{poster.name}" if has_poster else None,
-           "chapters": f"{lesson_id}/{target.with_suffix('.chapters.txt').name}" if timeline else None,
+           "chapters": (f"{lesson_id}/{target.with_suffix('.chapters.txt').name}"
+                        if target.with_suffix(".chapters.txt").exists() else None),
+           "thumbnail": thumbnail_for(lesson_id, target, studio_dir),
            "theme": timeline.get("theme"), "sfx": timeline.get("sfx"),
            "max_cue_lag": (timeline.get("sync") or {}).get("max_lag"),
            "final_encode": encode,

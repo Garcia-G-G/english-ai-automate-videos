@@ -400,5 +400,9 @@
       "gloss": "Repasemos esto otra vez mañana.",
       "narration": "Y me despido con uno de ellos: [[Let's go over this again tomorrow]]. Repasemos esto mañana. Porque estos se aprenden repitiéndolos. Nos vemos."
     }
-  ]
+  ],
+  "thumbnail": {
+    "wrong": "I called off it.",
+    "right": "I called it off."
+  }
 }
