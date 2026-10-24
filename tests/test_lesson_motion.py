@@ -212,7 +212,7 @@ def test_a_render_carries_the_theme_and_can_drop_the_effects():
 def test_effects_sit_22_db_under_the_voice(name):
     x = SFX.render(name)
     assert SFX.rms_db(x) == pytest.approx(SFX.VOICE_RMS_DB - SFX.UNDER_DB - (4 if name == "tick" else 0), abs=0.01)
-    assert len(x) == {"pop": 0.030, "whoosh": 0.250, "tick": 0.008}[name] * SFX.RATE // 1
+    assert len(x) == {"pop": 0.030, "whoosh": 0.250, "tick": 0.008, "page": 0.550}[name] * SFX.RATE // 1
 
 
 # ── syllables ──────────────────────────────────────────────────────────────────

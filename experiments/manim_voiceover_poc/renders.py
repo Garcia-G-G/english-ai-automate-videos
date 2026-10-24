@@ -167,10 +167,50 @@ def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds
            "theme": timeline.get("theme"), "sfx": timeline.get("sfx"),
            "max_cue_lag": (timeline.get("sync") or {}).get("max_lag"),
            "final_encode": encode,
+           "gate": lesson_gate(target, timeline),
            **render_features(lesson_id, timeline, studio_dir)}
     with (studio_dir / "renders" / "ledger.jsonl").open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(row, ensure_ascii=False) + "\n")
     return row
+
+
+#: STEP 79 §3: no stretch longer than this without motion (Bubi's breath and the slow push count).
+STILL_MAX_S = 5.0
+LUFS_TARGET, LUFS_TOLERANCE = -14.0, 1.0
+
+
+def lesson_gate(mp4: Path, timeline: dict) -> dict:
+    """The lesson's gate on a registered render (STEP 79 §3, §5): the sync report, −14 LUFS ± 1
+    and no still stretch over STILL_MAX_S. {gate: PASS | REJECT, flags, checks}. The collision
+    checker runs on the stills (tools/lesson_stills.py), not on the video."""
+    src_dir = str(HERE.parents[1] / "src")
+    if src_dir not in sys.path:
+        sys.path.insert(0, src_dir)
+    import loudness
+    import stillness
+    flags, checks = [], {}
+    sync = sync_problems(timeline)
+    checks["sync"] = sync
+    flags += [f"sync: {line}" for line in sync]
+    try:
+        level = loudness.measure(mp4)
+        checks["lufs"] = round(float(level["I"]), 1)
+        if abs(level["I"] - LUFS_TARGET) > LUFS_TOLERANCE:
+            flags.append(f"loudness: {level['I']:.1f} LUFS")
+    except Exception as error:                              # noqa: BLE001 — unmeasured is a flag, not a pass
+        flags.append(f"loudness: not measured ({error})")
+    out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height,r_frame_rate",
+                          "-of", "csv=p=0", str(mp4)], capture_output=True, text=True, timeout=60).stdout.strip().split(",")
+    try:
+        width, height, rate = int(out[0]), int(out[1]), out[2].split("/")
+    except (IndexError, ValueError):
+        flags.append("still: the video could not be read")    # unmeasured is a flag, not a pass
+    else:
+        still = stillness.longest_still(mp4, float(rate[0]) / float(rate[1] if len(rate) > 1 else 1), (width, height))
+        checks["still"] = still
+        if still["seconds"] > STILL_MAX_S:
+            flags.append(f"still: {still['seconds']} s from {still['from']} s")
+    return {"gate": "REJECT" if flags else "PASS", "flags": flags, "checks": checks}
 
 
 def sync_problems(timeline: dict, limit: float = None) -> list:

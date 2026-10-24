@@ -25,32 +25,13 @@ from . import beats as B
 from . import series_kit as K
 
 HEARD_WINDOW = 1.5
-STILL_DIFF = 0.003          # grey levels, mean over the frame: above x264's static repeat (0.000)
 STILL_MAX_S = 4.0
 
 
 def longest_still(mp4: Path, fps: float = 30.0) -> Dict:
-    """The longest run of consecutive frames that do not move, in seconds, and where it starts."""
-    proc = subprocess.Popen(["ffmpeg", "-v", "error", "-i", str(mp4), "-f", "rawvideo", "-pix_fmt", "gray", "-"],
-                            stdout=subprocess.PIPE)
-    n = K.W * K.H
-    prev, run, best, best_end, k = None, 0, 0, 0, 0
-    try:
-        while True:
-            buf = proc.stdout.read(n)
-            if len(buf) < n:
-                break
-            frame = np.frombuffer(buf, np.uint8).astype(np.int16)
-            if prev is not None:
-                run = run + 1 if float(np.abs(frame - prev).mean()) < STILL_DIFF else 0
-                if run > best:
-                    best, best_end = run, k
-            prev, k = frame, k + 1
-    finally:
-        proc.stdout.close()
-        proc.wait()
-    seconds = (best + 1) / fps if best else 0.0
-    return {"seconds": round(seconds, 2), "from": round((best_end - best) / fps, 2) if best else None}
+    """The longest run of consecutive frames that do not move (src/stillness.py), at the Shorts' size."""
+    import stillness
+    return stillness.longest_still(mp4, fps, (K.W, K.H))
 
 
 #: Whisper writes what it hears, not what the script spells (STEP 78b §2, hc_c010 from the panel:

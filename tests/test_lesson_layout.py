@@ -122,7 +122,9 @@ def test_a_drawn_lesson_with_dialogue_list_table_and_quiz_has_no_collision(tmp_p
                          cwd=str(STUDIO), env=env, capture_output=True, text=True, timeout=900)
     assert run.returncode == 0, run.stdout[-2000:] + run.stderr[-2000:]
     stills = json.loads((tmp_path / "out" / "stills.json").read_text(encoding="utf-8"))["stills"]
+    assert [s["id"] for s in stills][-1] == "end"                       # the end card has its still too
+    stills = [s for s in stills if s["id"] != "end"]
     assert len(stills) == len(keep)
     assert {s["id"]: s["problems"] for s in stills if s["problems"]} == {}
     kinds = {b["kind"] for s in stills for b in s["boxes"]}
-    assert {"header", "caption", "page", "paper"} <= kinds
+    assert {"header", "caption", "page", "paper", "bubi"} <= kinds

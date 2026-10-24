@@ -36,14 +36,14 @@ def mini(tmp_path_factory):
 def test_one_still_per_beat_at_its_midpoint_with_nothing_encoded(mini):
     assert mini["run"].returncode == 0, mini["run"].stdout[-2000:] + mini["run"].stderr[-2000:]
     index = json.loads((mini["out"] / "stills.json").read_text(encoding="utf-8"))
-    assert [s["id"] for s in index["stills"]] == ["b02", "b03"]
+    assert [s["id"] for s in index["stills"]] == ["b02", "b03", "end"]      # STEP 79 §3: the end card too
     assert all((mini["out"] / s["file"]).exists() for s in index["stills"])
     assert not list(mini["tmp"].rglob("*.mp4")) and not list((STUDIO / "media" / "videos").rglob("stills-mini*"))
 
 
 def test_with_no_audio_every_beat_is_estimated_from_the_fitted_rate(mini):
     index = json.loads((mini["out"] / "stills.json").read_text(encoding="utf-8"))
-    assert index["estimated"] == ["b02", "b03"] and all(s["estimated"] for s in index["stills"])
+    assert index["estimated"] == ["b02", "b03"] and all(s["estimated"] for s in index["stills"] if s["id"] != "end")
     timeline = json.loads((mini["tmp"] / "timeline.json").read_text(encoding="utf-8"))
     starts = {b["id"]: b["start"] for b in timeline["beats"]}
     b03 = next(s for s in index["stills"] if s["id"] == "b03")

@@ -19,7 +19,7 @@ RATE = 44_100
 VOICE_RMS_DB = -20.0
 UNDER_DB = 22.0
 DUCK_DB = 6.0
-NAMES = ("pop", "whoosh", "tick")
+NAMES = ("pop", "whoosh", "tick", "page")
 
 
 def pop() -> np.ndarray:
@@ -48,6 +48,21 @@ def tick() -> np.ndarray:
     return np.sin(2 * np.pi * 2000 * t) * np.exp(-t / 0.0015)
 
 
+def page() -> np.ndarray:
+    """A page turning (STEP 79 §3): a soft swish of band-passed noise with a few paper crackles."""
+    n = int(0.55 * RATE)
+    rng = np.random.default_rng(23)
+    noise = rng.standard_normal(n)
+    smooth = np.convolve(noise, np.ones(6) / 6, mode="same") - np.convolve(noise, np.ones(60) / 60, mode="same")
+    t = np.arange(n) / n
+    swish = smooth * np.sin(np.pi * t) ** 1.5
+    crackle = np.zeros(n)
+    for at in rng.uniform(0.15, 0.85, 7):
+        k = int(at * n)
+        crackle[k:k + 90] += rng.standard_normal(min(90, n - k)) * np.exp(-np.arange(min(90, n - k)) / 18)
+    return swish + 0.6 * crackle
+
+
 def level_db(name: str) -> float:
     return VOICE_RMS_DB - UNDER_DB - (4.0 if name == "tick" else 0.0)
 
@@ -57,7 +72,7 @@ def rms_db(x: np.ndarray) -> float:
 
 
 def render(name: str) -> np.ndarray:
-    x = {"pop": pop, "whoosh": whoosh, "tick": tick}[name]()
+    x = {"pop": pop, "whoosh": whoosh, "tick": tick, "page": page}[name]()
     return x * 10 ** ((level_db(name) - rms_db(x)) / 20)
 
 

@@ -105,7 +105,8 @@ HEADER_BOTTOM = PAGE_TOP                            # the header row lives betwe
 AREAS = {"header": (PAGE_L - 0.05, HEADER_BOTTOM, PAGE_R + 0.05, 3.6),
          "caption": (-BAND_W / 2 - 0.05, BAND_BOTTOM, BAND_W / 2 + 0.05, BAND_TOP + 0.05),
          "page": (PAGE_L + 0.4, PAGE_BOTTOM + 0.05, PAGE_R - 0.08, PAGE_TOP - 0.05),
-         "paper": (-FRAME_W / 2, BAND_TOP, FRAME_W / 2, HEADER_BOTTOM + 0.12)}   # the page itself: off the band and the header row
+         "paper": (-FRAME_W / 2, BAND_TOP, FRAME_W / 2, HEADER_BOTTOM + 0.12),
+         "bubi": (-FRAME_W / 2, -FRAME_H / 2, FRAME_W / 2, FRAME_H / 2)}   # in frame (title-safe is for text)   # the page itself: off the band and the header row
 # The end card's logo (brand v3, 1871×600 with a transparent margin): drawn from its inked
 # pixels, LOGO_W wide (the whole PNG ~4.7) and centred at LOGO_Y, over the title at END_TITLE_Y
 # (STEP 71, mock_cierre_leccion.png). The two end-screen frames below do not move.
@@ -367,6 +368,29 @@ def brand_logo():
     return ImageMobject(np.array(img)).scale_to_fit_width(LOGO_W).move_to([0, LOGO_Y, 0])
 
 
+# ── Bubi on the page (STEP 79 §3) ────────────────────────────────────────────────
+# Small, on the page's lower-left corner, half over the rings, clear of the stage and the band.
+# The v3 poses: «hola» (simbolo_512, waving), and the expressions tools/extract_bubi_expressions.py
+# cut out of the brand guide. There is no pointing pose: the tip uses «bien hecho» leaning in.
+BUBI_H, BUBI_MAX_W = 0.95, 1.0                            # an arms-up pose is wider: it is fitted to both
+BUBI_ANCHOR = (PAGE_L + 0.1, PAGE_BOTTOM - 0.06)          # bottom centre
+BUBI_POSES = {"hola": "simbolo_512.png", "wow": "expresiones/wow.png",
+              "lo_lograste": "expresiones/lo_lograste.png", "bien_hecho": "expresiones/bien_hecho.png"}
+#: cue -> (pose, motion, seconds the pose holds before he goes back to «hola»; None: until the next cue)
+BUBI_CUES = {"wave": ("hola", "wave", 2.0), "think": ("wow", "think", None), "celebrate": ("lo_lograste", "jump", 2.2),
+             "point": ("bien_hecho", "lean", 2.2), "nod": ("bien_hecho", "nod", 2.2)}
+BREATH = 0.02                                              # a slow 2 % scale, all the time
+BREATH_S = 2.6
+
+
+def bubi_sprite(pose):
+    import numpy as np
+    from PIL import Image
+    img = Image.open(BRAND_DIR / BUBI_POSES[pose]).convert("RGBA")
+    img = img.crop(img.getchannel("A").getbbox())
+    return ImageMobject(np.array(img)).scale_to_fit_height(BUBI_H)
+
+
 def site_badge():
     """«learningroutes.com» in the brand-v2 blue pill, small, top right under the dashes."""
     pill = card(text(SITE, SITE_PX, PAPER), NOTE_BLUE, pad=0.1, stroke=INK, radius=0.1, stroke_width=3)
@@ -514,14 +538,14 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             for item in [c for c in self.captures if c[0] <= now + 1e-6]:
                 self.captures.remove(item)
                 t, beat = item
-                n = next(i for i, b in enumerate(self.lesson["beats"]) if b is beat)
+                n = next((i for i, b in enumerate(self.lesson["beats"]) if b is beat), len(self.lesson["beats"]))
                 path = self.stills_out / f"{n + 1:02d}_{beat['id']}_{beat['type']}.png"
                 from PIL import Image
                 Image.fromarray(frame).convert("RGB").save(path)
-                boxes = self.text_boxes()
+                boxes = self.text_boxes() if beat["type"] != "end_screen" else []
                 self.stills.append({"n": n + 1, "id": beat["id"], "type": beat["type"], "t": round(t, 2),
                                     "file": path.name, "estimated": beat["id"] in self.service.estimated,
-                                    "boxes": boxes, "problems": L.layout_problems(boxes, self.areas(boxes))})
+                                    "boxes": boxes, "problems": L.layout_problems(boxes, self.areas(boxes)) if boxes else []})
 
         self.compile_animation_data = compile_animation_data
         renderer.add_frame = add_frame_and_capture
@@ -544,6 +568,11 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                 y0, y1 = (m.get_bottom()[1] - c[1]) * k, (m.get_top()[1] - c[1]) * k
                 kind = "header" if id(m) in header else "caption" if id(m) in caption else "page"
                 out.append({"kind": kind, "text": getattr(m, "original_text", m.text)[:40], "box": [round(v, 3) for v in (x0, y0, x1, y1)]})
+        if getattr(self, "bubi", None) is not None:          # Bubi must not cover any text either
+            sprite = self.bubi_sprites[self.bubi_state.get("pose", "hola")]
+            out.append({"kind": "bubi", "text": "Bubi", "box": [round(v, 3) for v in (
+                (sprite.get_left()[0] - c[0]) * k, (sprite.get_bottom()[1] - c[1]) * k,
+                (sprite.get_right()[0] - c[0]) * k, (sprite.get_top()[1] - c[1]) * k)]})
         paper = self.page[1]                                  # the page as the viewer sees it, the push included
         out.append({"kind": "paper", "text": "page", "box": [round(v, 3) for v in (
             (paper.get_left()[0] - c[0]) * k, (paper.get_bottom()[1] - c[1]) * k,
@@ -740,6 +769,62 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         self.add(titles)
         self.badge = self.pin(site_badge())
         self.add(self.badge)
+        self.mount_bubi()
+
+    def mount_bubi(self):
+        """Bubi on the page's lower-left corner (STEP 79 §3): one sprite per pose, the active one
+        shown; he breathes between cues and moves on a cue (bubi_cue). An updater on the clock,
+        so he costs the lesson no time."""
+        sprites = {name: bubi_sprite(name) for name in BUBI_POSES}
+        dots = VGroup(*[Dot(radius=r, color=MUTED) for r in (0.04, 0.06, 0.085)])
+        group = Group(*sprites.values(), dots)
+        state = {"angle": 0.0}
+        self.bubi_state = {"cue": None, "since": 0.0}
+
+        def update(mobj, dt=0):
+            now = float(self.renderer.time)
+            cue, since = self.bubi_state["cue"], self.bubi_state["since"]
+            pose, motion, hold = BUBI_CUES[cue] if cue else ("hola", None, None)
+            age = now - since
+            if hold is not None and age > hold:
+                pose, motion = "hola", None
+            breath = 1.0 + BREATH * math.sin(2 * math.pi * now / BREATH_S)
+            dx = dy = angle = 0.0
+            if motion == "wave":
+                angle = 0.16 * math.sin(2 * math.pi * 2.2 * age) * max(0.0, 1 - age / 1.6)
+            elif motion == "jump" and age < 0.9:
+                dy = 0.3 * abs(math.sin(math.pi * age / 0.45))
+            elif motion == "lean" and age < 1.2:
+                dx, angle = 0.12 * math.sin(math.pi * age / 1.2), -0.1 * math.sin(math.pi * age / 1.2)
+            elif motion == "nod" and age < 1.5:
+                dy, angle = -0.05 * abs(math.sin(2 * math.pi * age / 0.75)), 0.05 * math.sin(2 * math.pi * age / 0.75)
+            elif motion == "think":
+                angle = 0.06 * math.sin(2 * math.pi * age / 2.0)
+            x, y = BUBI_ANCHOR
+            self.bubi_state["pose"] = pose
+            for name, sprite in sprites.items():
+                sprite.set_opacity(1.0 if name == pose else 0.0)
+                sprite.rotate(-state["angle"])
+                sprite.scale_to_fit_height(BUBI_H * breath)
+                if sprite.width > BUBI_MAX_W * breath:
+                    sprite.scale_to_fit_width(BUBI_MAX_W * breath)
+                sprite.rotate(angle)
+                sprite.move_to([x + dx, y + dy + sprite.height / 2, 0])
+            state["angle"] = angle
+            for k, dot in enumerate(dots):                # «thinking»: three dots, one by one, over his head
+                dot.move_to([x + 0.38 + 0.2 * k, y + BUBI_H + 0.12 + 0.1 * k, 0])
+                dot.set_opacity(1.0 if motion == "think" and age > 0.3 * (k + 1) else 0.0)
+
+        group.add_updater(update)
+        update(group)
+        group.set_z_index(5)                               # over the turning sheet, under the captions
+        self.bubi, self.bubi_sprites = group, sprites
+        self.add(group)
+
+    def bubi_cue(self, cue):
+        """Bubi reacts now (STEP 79 §3): wave, think, celebrate, point, nod."""
+        if getattr(self, "bubi", None) is not None:
+            self.bubi_state.update(cue=cue, since=float(self.renderer.time))
 
     # ── the top bar: lesson title and chapter progress ────────────────────────
 
@@ -862,6 +947,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         centre_on(group, y=PAGE_MID)
         if self.hud is not None:
             self.hud.set_opacity(0)
+        self.bubi_cue("wave")
         self.play(*anims, run_time=min(1.6, tracker.duration * 0.5))
         self.safe_wait(tracker.get_remaining_duration() - 0.9)
         self.play(FadeOut(group), run_time=0.5)
@@ -874,11 +960,26 @@ class Lesson(VoiceoverScene, MovingCameraScene):
 
     def beat_heading(self, beat, tracker, marks):
         self.show_bar()
+        if re.match(r"\s*Parte\s+\d", beat.get("text", "")):
+            self.turn_page()
         heading = fit(para(beat["text"], HEADING_PX, STAGE_W), STAGE_W, 3.0)
         rule = Line(LEFT * 1.4, RIGHT * 1.4, color=YELLOW, stroke_width=10).next_to(heading, DOWN, buff=0.45)
         centre_on(heading, rule, y=PAGE_MID)
         self.keep(heading, rule)
         self.play(FadeIn(heading, shift=UP * 0.2), Create(rule), run_time=min(1.0, tracker.duration * 0.5))
+
+    def turn_page(self):
+        """A new «Parte N» turns the page (STEP 79 §3): a sheet the colour of the page lifts off
+        its right edge and folds over to the rings in 0.6 s, its underside a shade darker, with a
+        paper sound 22 dB under the voice."""
+        paper = self.page[1]
+        sheet = paper.copy().set_stroke(width=3)
+        sheet.set_z_index(1)
+        self.add(sheet)
+        self.sfx("page")
+        self.play(sheet.animate.stretch(0.03, 0, about_edge=LEFT).set_fill(mix(P["page"], P["page_line"], 0.18)),
+                  run_time=0.6, rate_func=smooth)
+        self.remove(sheet)
 
     def beat_sentence(self, beat, tracker, marks):
         self.show_bar()
@@ -930,8 +1031,14 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             self.at(tracker, marks, L.cue_key(word), 0.55 if kind == "fix" else 0.15 + 0.6 * (k + 1) / n_cues, word=word)
             if kind == "hl":
                 self.sentence["colors"][i] = ROLE[value]
+                # STEP 79 §3: the pencil circles the highlighted chip, stroke by stroke (red: the wrong
+                # word), unless a tag will sit under it
+                circled = [] if word in (beat.get("tags") or {}) else [hand_circle(chips[i], ROLE[value], 0.05, 0.1)]
+                if circled:
+                    self.keep(*circled)
                 self.play(chips[i][0].animate.set_fill(ROLE[value]).set_stroke(ROLE[value]),
-                          chips[i][1].animate.set_color(ink(ROLE[value])), run_time=self.run_until(0.35, nxt(k)))
+                          chips[i][1].animate.set_color(ink(ROLE[value])), *[Create(c) for c in circled],
+                          run_time=self.run_until(0.35, nxt(k)))
             elif kind == "tag":
                 role = ROLE_WORDS.get(value.lower().strip()) or self.sentence["colors"].get(i, MUTED)
                 if role == YELLOW and not P["dark"]:
@@ -956,8 +1063,15 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             else:
                 anims.append(c.animate.shift(layout[k][0].get_center() - c[0].get_center()))
         run = self.run_until(0.6, next_cue, floor=0.3)
+        # STEP 79 §3: the pencil strikes the wrong chip first, then ticks the right one
+        cross = strike(chips[i])
+        self.play(Create(cross), run_time=min(0.35, max(0.15, run * 0.4)))
+        self.remove(cross)
         self.sfx("pop", run - 0.05)
         self.play(AnimationGroup(*anims, run_time=run), self.push(layout[i].get_center()))
+        tick = check_mark(chips[i].get_corner(UP + RIGHT) + [0.05, 0.05, 0], r=0.2)
+        self.keep(tick)
+        self.play(Create(tick), run_time=0.3)
         words[:] = fixed
         self.sentence["colors"][i] = GREEN
 
@@ -1106,6 +1220,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             self.play(FadeIn(row, shift=RIGHT * 0.2), run_time=self.run_until(0.3, later))
 
     def beat_recap(self, beat, tracker, marks):
+        self.bubi_cue("nod")
         self.beat_list(beat, tracker, marks, checks=True)
 
     def beat_tip(self, beat, tracker, marks):
@@ -1116,6 +1231,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         box = card(inner, mix(BG, YELLOW, 0.10 if P["dark"] else 0.22), pad=0.55, stroke=ACCENT_LINE, stroke_width=3)
         fit(box, STAGE_W, STAGE_TOP - STAGE_BOTTOM).move_to([0, STAGE_MID, 0])
         self.keep(box)
+        self.bubi_cue("point")
         self.play(FadeIn(box, scale=0.95), run_time=min(0.6, tracker.duration * 0.3))
 
     def beat_quiz(self, beat, tracker, marks):
@@ -1159,6 +1275,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             ponder.move_to([STAGE_W / 2 - ponder.width / 2 if need > 0 else options.get_right()[0] + 0.5 + ponder.width / 2,
                             options.get_center()[1], 0])
             arc.move_to(track)
+            self.bubi_cue("think")                           # «Pausa y piénsalo»
             self.play(*slide, FadeIn(track), FadeIn(pill, shift=LEFT * 0.2), run_time=0.3)
             self.play(Create(arc), run_time=max(0.5, secs - 0.5), rate_func=lambda t: t)
             back = [options.animate.shift(RIGHT * need)] if need > 0 else []
@@ -1181,6 +1298,7 @@ class Lesson(VoiceoverScene, MovingCameraScene):
                 anims += [Create(strikes), opt[1][1].animate.set_color(MUTED)]
         mark = check_mark(options[answer].get_right() + RIGHT * 0.55)
         self.keep(mark)
+        self.bubi_cue("celebrate")
         self.play(*anims, Create(mark), run_time=0.5)
 
     # ── grammar in motion ─────────────────────────────────────────────────────
@@ -1516,7 +1634,10 @@ class Lesson(VoiceoverScene, MovingCameraScene):
         # the page, its title and the badge leave with the top bar: the end card has its own site
         self.page_titles.clear_updaters()
         self.play(*([FadeOut(self.hud)] if self.hud is not None else []), FadeOut(self.page), FadeOut(self.page_titles),
-                  FadeOut(self.badge), run_time=0.3)
+                  FadeOut(self.badge), FadeOut(self.bubi), run_time=0.3)
+        self.bubi.clear_updaters()
+        self.remove(self.bubi)
+        self.bubi = None
         if self.hud is not None:
             self.hud.clear_updaters()
             self.remove(self.hud)
@@ -1550,5 +1671,12 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             mark.z_index = -1
             extra.append(FadeIn(mark))
         self.play(*head, *extra, FadeIn(title, shift=UP * 0.2), FadeIn(site), Create(frames), run_time=0.9)
+        # STEP 79 §3: the card is never still for 5 s — the logo breathes, 1 %, slowly
+        base = {"h": logo.height, "c": logo.get_center()}
+        logo.add_updater(lambda m, dt=0: m.scale_to_fit_height(
+            base["h"] * (1 + 0.01 * math.sin(2 * math.pi * float(self.renderer.time) / BREATH_S))).move_to(base["c"]))
+        if self.stills_out is not None:
+            self.captures.append((float(self.renderer.time) + END_SCREEN_S / 2, {"id": "end", "type": "end_screen"}))
         self.wait(END_SCREEN_S - (float(self.renderer.time) - start))
+        logo.clear_updaters()
 
