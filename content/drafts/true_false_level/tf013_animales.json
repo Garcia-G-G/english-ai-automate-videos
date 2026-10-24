@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "ANIMALES: ¿verdadero o falso? 🐾",
+  "video_description": "Animales en inglés y sus expresiones: ¿verdadero o falso? 🐾",
+  "title": "¿Verdadero o falso?",
+  "theme": "animales y sus expresiones",
+  "intro": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto.",
+  "items": [
+    {
+      "statement": "«Horse» es caballo.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Sheep» es oveja.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Owl» es águila.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es búho"
+    },
+    {
+      "statement": "«Snail» es serpiente.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es caracol"
+    },
+    {
+      "statement": "«Bat» puede ser murciélago.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«It's raining cats and dogs» es que llueve muchísimo.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Let the cat out of the bag» es liberar un gato.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es irse de la lengua"
+    },
+    {
+      "statement": "«The elephant in the room» es un problema evidente que nadie menciona.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Hold your horses» significa date prisa.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es espera, frena"
+    },
+    {
+      "statement": "«A dark horse» es alguien que sorprende sin que nadie lo esperara.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf013",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

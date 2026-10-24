@@ -1,0 +1,95 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Verdadero o falso? 10 FALSOS AMIGOS del inglés 🤔",
+  "video_description": "Diez palabras que parecen español y no lo son. ¿Cuántas aciertas? 🧠",
+  "title": "¿Verdadero o falso?",
+  "theme": "falsos amigos",
+  "intro": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta.",
+  "items": [
+    {
+      "statement": "«Carpet» significa carpeta.",
+      "truth": false,
+      "correction": "es alfombra",
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Exit» significa salida.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Library» es biblioteca.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Embarrassed» es embarazada.",
+      "truth": false,
+      "correction": "es avergonzada",
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Actually» es actualmente.",
+      "truth": false,
+      "correction": "es en realidad",
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Fabric» significa tela.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Sensible» significa sensible.",
+      "truth": false,
+      "correction": "es sensato",
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Realize» es darse cuenta.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Eventually» es eventualmente.",
+      "truth": false,
+      "correction": "es al final",
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Constipated» es resfriado.",
+      "truth": false,
+      "correction": "es estreñido",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si acertaste hasta la tres, eres nivel básico. Hasta la siete, intermedio. Y las diez, experto.",
+  "outro": "[excited] ¿Cuántas acertaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#FalsosAmigos",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "tf001",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Carpet",
+    "Exit",
+    "Library",
+    "Embarrassed",
+    "Actually",
+    "Fabric",
+    "Sensible",
+    "Realize",
+    "Eventually",
+    "Constipated"
+  ],
+  "full_script": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta. Falso: es alfombra. Verdadero. Verdadero. Ahora, nivel intermedio. Falso: es avergonzada. Falso: es en realidad. Verdadero. Falso: es sensato. Y ahora, nivel experto. Verdadero. Falso: es al final. Falso: es estreñido. Si acertaste hasta la tres, eres nivel básico. Hasta la siete, intermedio. Y las diez, experto. [excited] ¿Cuántas acertaste? Dímelo en los comentarios."
+}

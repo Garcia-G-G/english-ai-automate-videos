@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "FALSOS AMIGOS: ¿sabes completar estas 10 frases? 🎭",
+  "video_description": "Palabras que parecen español y no lo son, en diez frases. 🎭",
+  "title": "Completa la frase",
+  "theme": "falsos amigos",
+  "intro": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto.",
+  "items": [
+    {
+      "sentence": "I bought this book at the ____.",
+      "answer": "bookstore",
+      "translation": "Compré este libro en la librería.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'm studying at the ____.",
+      "answer": "library",
+      "translation": "Estoy estudiando en la biblioteca.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The ____ is on the left.",
+      "answer": "exit",
+      "translation": "La salida está a la izquierda.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I ____ the meeting yesterday.",
+      "answer": "attended",
+      "translation": "Ayer asistí a la reunión.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "____, I'm from Chile, not Peru.",
+      "answer": "Actually",
+      "translation": "En realidad soy de Chile, no de Perú.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I ____ I'd left my phone at home.",
+      "answer": "realized",
+      "translation": "Me di cuenta de que me había dejado el móvil en casa.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She cries at every film; she's very ____.",
+      "answer": "sensitive",
+      "translation": "Llora con cada película; es muy sensible.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He works in a car ____.",
+      "answer": "factory",
+      "translation": "Trabaja en una fábrica de coches.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "This bread has no ____.",
+      "answer": "preservatives",
+      "translation": "Este pan no tiene conservantes.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She has a brilliant ____ in law.",
+      "answer": "career",
+      "translation": "Tiene una trayectoria brillante en el derecho.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#FalsosAmigos",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc038",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

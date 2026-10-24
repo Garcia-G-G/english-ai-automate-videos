@@ -1,0 +1,438 @@
+{
+ "id": "hc_p011",
+ "style": "poster",
+ "level": "medio",
+ "duration": 34.065,
+ "voice_seconds": 30.065,
+ "tts_usd": 0.0768,
+ "outro_variant": "aprende-ingles",
+ "timeline": {
+  "beats": [
+   {
+    "i": 0,
+    "text": "Si dices [[I'm studying a career in law]], un nativo no lo entiende bien.",
+    "start": 0.0,
+    "end": 5.23,
+    "english": [
+     {
+      "text": "I'm studying a career in law",
+      "start": 1.01,
+      "end": 3.01
+     }
+    ],
+    "words": [
+     {
+      "word": "Si",
+      "start": 0.0,
+      "end": 0.16
+     },
+     {
+      "word": "dices",
+      "start": 0.24,
+      "end": 0.96
+     },
+     {
+      "word": "I'm",
+      "start": 1.01,
+      "end": 1.25
+     },
+     {
+      "word": "studying",
+      "start": 1.303,
+      "end": 1.73
+     },
+     {
+      "word": "a",
+      "start": 1.77,
+      "end": 1.81
+     },
+     {
+      "word": "career",
+      "start": 1.867,
+      "end": 2.21
+     },
+     {
+      "word": "in",
+      "start": 2.29,
+      "end": 2.45
+     },
+     {
+      "word": "law,",
+      "start": 2.55,
+      "end": 3.01
+     },
+     {
+      "word": "un",
+      "start": 3.15,
+      "end": 3.23
+     },
+     {
+      "word": "nativo",
+      "start": 3.31,
+      "end": 3.79
+     },
+     {
+      "word": "no",
+      "start": 3.923,
+      "end": 4.19
+     },
+     {
+      "word": "lo",
+      "start": 4.217,
+      "end": 4.27
+     },
+     {
+      "word": "entiende",
+      "start": 4.33,
+      "end": 4.75
+     },
+     {
+      "word": "bien.",
+      "start": 4.814,
+      "end": 5.23
+     }
+    ]
+   },
+   {
+    "i": 1,
+    "text": "[[Career]] es tu trayectoria profesional: [[She has a great career]].",
+    "start": 5.53,
+    "end": 10.383,
+    "english": [
+     {
+      "text": "Career",
+      "start": 5.53,
+      "end": 6.213
+     },
+     {
+      "text": "She has a great career",
+      "start": 8.463,
+      "end": 10.383
+     }
+    ],
+    "words": [
+     {
+      "word": "Career",
+      "start": 5.53,
+      "end": 6.213
+     },
+     {
+      "word": "es",
+      "start": 6.263,
+      "end": 6.503
+     },
+     {
+      "word": "tu",
+      "start": 6.556,
+      "end": 6.663
+     },
+     {
+      "word": "trayectoria",
+      "start": 6.711,
+      "end": 7.383
+     },
+     {
+      "word": "profesional:",
+      "start": 7.443,
+      "end": 8.263
+     },
+     {
+      "word": "She",
+      "start": 8.463,
+      "end": 8.703
+     },
+     {
+      "word": "has",
+      "start": 8.783,
+      "end": 9.023
+     },
+     {
+      "word": "a",
+      "start": 9.103,
+      "end": 9.183
+     },
+     {
+      "word": "great",
+      "start": 9.263,
+      "end": 9.663
+     },
+     {
+      "word": "career.",
+      "start": 9.743,
+      "end": 10.383
+     }
+    ]
+   },
+   {
+    "i": 2,
+    "text": "La carrera universitaria es [[degree]]: [[I'm doing a degree in law]].",
+    "start": 10.683,
+    "end": 15.858,
+    "english": [
+     {
+      "text": "degree",
+      "start": 13.053,
+      "end": 13.738
+     },
+     {
+      "text": "I'm doing a degree in law",
+      "start": 13.938,
+      "end": 15.858
+     }
+    ],
+    "words": [
+     {
+      "word": "La",
+      "start": 10.683,
+      "end": 10.843
+     },
+     {
+      "word": "carrera",
+      "start": 10.893,
+      "end": 11.243
+     },
+     {
+      "word": "universitaria",
+      "start": 11.303,
+      "end": 12.203
+     },
+     {
+      "word": "es",
+      "start": 12.416,
+      "end": 13.003
+     },
+     {
+      "word": "degree:",
+      "start": 13.053,
+      "end": 13.738
+     },
+     {
+      "word": "I'm",
+      "start": 13.938,
+      "end": 14.098
+     },
+     {
+      "word": "doing",
+      "start": 14.165,
+      "end": 14.498
+     },
+     {
+      "word": "a",
+      "start": 14.538,
+      "end": 14.578
+     },
+     {
+      "word": "degree",
+      "start": 14.647,
+      "end": 15.058
+     },
+     {
+      "word": "in",
+      "start": 15.138,
+      "end": 15.298
+     },
+     {
+      "word": "law.",
+      "start": 15.398,
+      "end": 15.858
+     }
+    ]
+   },
+   {
+    "i": 3,
+    "text": "Y estudiar algo en la universidad: [[I'm majoring in law]], en Estados Unidos.",
+    "start": 16.158,
+    "end": 21.457,
+    "english": [
+     {
+      "text": "I'm majoring in law",
+      "start": 18.598,
+      "end": 19.957
+     }
+    ],
+    "words": [
+     {
+      "word": "Y",
+      "start": 16.158,
+      "end": 16.238
+     },
+     {
+      "word": "estudiar",
+      "start": 16.305,
+      "end": 16.878
+     },
+     {
+      "word": "algo",
+      "start": 16.942,
+      "end": 17.198
+     },
+     {
+      "word": "en",
+      "start": 17.278,
+      "end": 17.438
+     },
+     {
+      "word": "la",
+      "start": 17.465,
+      "end": 17.518
+     },
+     {
+      "word": "universidad:",
+      "start": 17.578,
+      "end": 18.398
+     },
+     {
+      "word": "I'm",
+      "start": 18.598,
+      "end": 18.758
+     },
+     {
+      "word": "majoring",
+      "start": 18.825,
+      "end": 19.238
+     },
+     {
+      "word": "in",
+      "start": 19.291,
+      "end": 19.398
+     },
+     {
+      "word": "law,",
+      "start": 19.478,
+      "end": 19.957
+     },
+     {
+      "word": "en",
+      "start": 20.097,
+      "end": 20.257
+     },
+     {
+      "word": "Estados",
+      "start": 20.317,
+      "end": 20.737
+     },
+     {
+      "word": "Unidos.",
+      "start": 20.828,
+      "end": 21.457
+     }
+    ]
+   },
+   {
+    "i": 4,
+    "text": "La carrera de correr es [[race]].",
+    "start": 21.617,
+    "end": 24.307,
+    "english": [
+     {
+      "text": "race",
+      "start": 23.827,
+      "end": 24.307
+     }
+    ],
+    "words": [
+     {
+      "word": "La",
+      "start": 21.617,
+      "end": 21.937
+     },
+     {
+      "word": "carrera",
+      "start": 21.997,
+      "end": 22.417
+     },
+     {
+      "word": "de",
+      "start": 22.444,
+      "end": 22.497
+     },
+     {
+      "word": "correr",
+      "start": 22.557,
+      "end": 23.057
+     },
+     {
+      "word": "es",
+      "start": 23.27,
+      "end": 23.777
+     },
+     {
+      "word": "race.",
+      "start": 23.827,
+      "end": 24.307
+     }
+    ]
+   },
+   {
+    "i": 5,
+    "text": "Reto: ¿cómo dirías «terminé la carrera en 2022»? Te leo abajo.",
+    "start": 24.705,
+    "end": 30.065,
+    "english": [],
+    "words": [
+     {
+      "word": "Reto:",
+      "start": 24.705,
+      "end": 25.105
+     },
+     {
+      "word": "¿cómo",
+      "start": 25.225,
+      "end": 25.585
+     },
+     {
+      "word": "dirías",
+      "start": 25.625,
+      "end": 26.065
+     },
+     {
+      "word": "«terminé",
+      "start": 26.145,
+      "end": 26.785
+     },
+     {
+      "word": "la",
+      "start": 26.812,
+      "end": 26.865
+     },
+     {
+      "word": "carrera",
+      "start": 26.935,
+      "end": 27.425
+     },
+     {
+      "word": "en",
+      "start": 27.532,
+      "end": 27.745
+     },
+     {
+      "word": "2022»?",
+      "start": 27.825,
+      "end": 28.785
+     },
+     {
+      "word": "Te",
+      "start": 28.918,
+      "end": 29.185
+     },
+     {
+      "word": "leo",
+      "start": 29.245,
+      "end": 29.425
+     },
+     {
+      "word": "abajo.",
+      "start": 29.478,
+      "end": 30.065
+     }
+    ]
+   }
+  ],
+  "duration": 30.065,
+  "countdown": null,
+  "tts_calls": 14,
+  "tts_usd": 0.0768,
+  "audio": "output/rendering/step78b_work/hc_p011.voice.wav"
+ },
+ "silent": false
+}

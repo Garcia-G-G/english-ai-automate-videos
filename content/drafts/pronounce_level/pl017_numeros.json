@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "NÚMEROS en inglés: del fácil al imposible 🔢",
+  "video_description": "Números en inglés, del uno a las trampas con TH. 🧮",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los números",
+  "intro": "[curious] Números en inglés, de fácil a imposible. Di cada uno en voz alta.",
+  "items": [
+    {
+      "english": "one",
+      "respelling": "UAN",
+      "ipa": "ˈwʌn",
+      "trap": "Suena «uan», como si fuera W"
+    },
+    {
+      "english": "two",
+      "respelling": "TUU",
+      "ipa": "ˈtuː",
+      "trap": "La W no suena: TUU"
+    },
+    {
+      "english": "ten",
+      "respelling": "TEN",
+      "ipa": "ˈtɛn",
+      "trap": "La T sale con un soplo de aire"
+    },
+    {
+      "english": "three",
+      "respelling": "THRII",
+      "ipa": "ˈθriː",
+      "trap": "TH con la lengua entre los dientes"
+    },
+    {
+      "english": "eight",
+      "respelling": "EIT",
+      "ipa": "ˈeɪt",
+      "trap": "GH muda: suena «eit»"
+    },
+    {
+      "english": "thirteen",
+      "respelling": "ther-TIIN",
+      "ipa": "θɚˈtiːn",
+      "trap": "Acento al final: ther-TIIN"
+    },
+    {
+      "english": "thirty",
+      "respelling": "THER-di",
+      "ipa": "ˈθɝɾi",
+      "trap": "Acento delante y la T como D"
+    },
+    {
+      "english": "thousand",
+      "respelling": "THAU-zend",
+      "ipa": "ˈθaʊzənd",
+      "trap": "TH inicial y la S suena Z"
+    },
+    {
+      "english": "fifth",
+      "respelling": "FIFTH",
+      "ipa": "ˈfɪfθ",
+      "trap": "F y TH seguidas al final"
+    },
+    {
+      "english": "twelfth",
+      "respelling": "TUELFTH",
+      "ipa": "ˈtwɛlfθ",
+      "trap": "Cuatro consonantes al final: LFTH"
+    }
+  ],
+  "verdict": "Si la tres fue tu límite, eres básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, experto.",
+  "outro": "[warm] Cuéntame en los comentarios cuál vas a practicar hoy.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#NúmerosEnInglés",
+    "#AprenderInglés",
+    "#InglésOnline",
+    "#InglésAmericano"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl017",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

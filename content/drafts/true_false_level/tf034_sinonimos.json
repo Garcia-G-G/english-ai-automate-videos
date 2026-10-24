@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "10 frases sobre SINÓNIMOS: ¿V o F? 🟰",
+  "video_description": "¿Significan lo mismo? Sinónimos en inglés. 🟰",
+  "title": "¿Verdadero o falso?",
+  "theme": "sinónimos",
+  "intro": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total.",
+  "items": [
+    {
+      "statement": "«Big» y «large» son sinónimos.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Happy» y «sad» son sinónimos.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "son opuestos"
+    },
+    {
+      "statement": "«Start» y «begin» son sinónimos.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Quick» y «fast» son sinónimos.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Buy» y «sell» son sinónimos.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "son opuestos"
+    },
+    {
+      "statement": "«Smart» y «clever» son sinónimos.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Angry» y «furious» significan lo mismo con la misma fuerza.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "furious es más fuerte"
+    },
+    {
+      "statement": "«Purchase» es una forma formal de «buy».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Tired» y «exhausted» significan exactamente lo mismo.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "exhausted es mucho más"
+    },
+    {
+      "statement": "«Assist» puede ser una forma formal de «help».",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf034",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

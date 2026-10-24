@@ -1,0 +1,94 @@
+{
+  "type": "true_false_level",
+  "video_title": "PRONUNCIACIÓN: ¿verdadero o falso? 🗣️",
+  "video_description": "Diez trampas de pronunciación: ¿verdadero o falso? 🗣️",
+  "title": "¿Verdadero o falso?",
+  "theme": "pronunciación",
+  "intro": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto.",
+  "items": [
+    {
+      "statement": "En «knife», la K no se pronuncia.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Island» se pronuncia con S.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "la S es muda"
+    },
+    {
+      "statement": "En «hour», la H no suena.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Walk» y «work» suenan igual.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "tienen vocales distintas"
+    },
+    {
+      "statement": "En «comfortable» se oyen tres sílabas.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Recipe» tiene dos sílabas.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "tiene tres: RE-si-pi"
+    },
+    {
+      "statement": "«Choir» se pronuncia como «quire».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "En «salmon», la L se pronuncia.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "la L es muda"
+    },
+    {
+      "statement": "«Colonel» se pronuncia como «kernel».",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Wednesday» tiene tres sílabas al hablar.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "se dice con dos: UENZ-dei"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf003",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "knife",
+    "Island",
+    "hour",
+    "Walk",
+    "comfortable",
+    "Recipe",
+    "Choir",
+    "salmon",
+    "Colonel",
+    "Wednesday"
+  ],
+  "full_script": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto. Verdadero. Falso: la S es muda. Verdadero. Ahora, nivel intermedio. Falso: tienen vocales distintas. Verdadero. Falso: tiene tres: RE-si-pi. Verdadero. Y ahora, nivel experto. Falso: la L es muda. Verdadero. Falso: se dice con dos: UENZ-dei. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

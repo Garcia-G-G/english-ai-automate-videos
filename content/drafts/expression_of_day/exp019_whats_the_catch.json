@@ -1,0 +1,43 @@
+{
+  "type": "expression_of_day",
+  "video_title": "WHAT'S THE CATCH?: cuando algo es demasiado bueno 🤨",
+  "video_description": "La pregunta que te salva de una oferta trampa. 🎣",
+  "level": "B1",
+  "intro": "[cheerful] La expresión de hoy la vas a oír esta misma semana.",
+  "expression": "what's the catch?",
+  "literal": "¿cuál es la pesca?",
+  "meaning": "¿dónde está la trampa?",
+  "register": "informal",
+  "examples": [
+    {
+      "en": "A free phone? What's the catch?",
+      "es": "¿Un móvil gratis? ¿Dónde está la trampa?"
+    },
+    {
+      "en": "The catch is you sign for two years.",
+      "es": "La trampa es que firmas por dos años."
+    }
+  ],
+  "equivalent_es": "¿dónde está la trampa?",
+  "tip": "Catch sola también funciona: the catch is… La trampa es que…",
+  "outro": "[excited] Úsala hoy en una frase. Escríbela en los comentarios.",
+  "translations": {
+    "what's the catch?": "¿dónde está la trampa?",
+    "A free phone? What's the catch?": "¿Un móvil gratis? ¿Dónde está la trampa?",
+    "The catch is you sign for two years.": "La trampa es que firmas por dos años."
+  },
+  "hashtags": [
+    "#ExpresiónDelDía",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Idioms"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp019",
+    "video_type": "expression_of_day",
+    "model": "manual",
+    "draft": true
+  }
+}

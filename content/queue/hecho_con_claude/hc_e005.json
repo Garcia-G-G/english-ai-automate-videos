@@ -1,0 +1,43 @@
+{
+  "id": "hc_e005",
+  "style": "escena",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«How much is cost?»: el error de cada tienda",
+  "hook_text": "ESCENA — TIENDA DE ROPA EN LONDRES",
+  "scene": {
+    "location": "Tienda de ropa en Londres",
+    "take1": "How much is cost this?",
+    "take2": "How much is this? / How much does this cost?",
+    "note": "Dos formas correctas; no se mezclan."
+  },
+  "correction": {
+    "wrong": "How much is cost?",
+    "right": "How much is it? / How much does it cost?",
+    "rule": "O «is», o «does… cost»"
+  },
+  "voice": [
+    "Escena: tienda de ropa en Londres. Toma uno: [[How much is cost this?]]",
+    "¡Corten! Estás mezclando dos preguntas que están bien por separado.",
+    "Toma dos, la corta: [[How much is this?]] O la larga: [[How much does this cost?]]",
+    "Con plural: [[How much are these?]], «¿cuánto cuestan estos?».",
+    "Y si es caro, un nativo diría: [[That's a bit pricey]].",
+    "Reto: pregunta cuánto cuestan unos zapatos. Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«¿Cuánto cuestan estos zapatos?»",
+    "answer": "How much are these shoes? / How much do these shoes cost?"
+  },
+  "caption": "Se dice «How much is this?» o «How much does it cost?». Nunca «How much is cost». Escena en una tienda.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 68
+}

@@ -1,10 +1,18 @@
 """Quiz video frame generator — question, options, countdown, answer reveal."""
 
 import math
+import re
 import logging
 from typing import List, Dict, Tuple, Optional
 
 import numpy as np
+
+# The words the fallback below listens for, defined beside the lines that
+# contain them rather than typed out here a second time.
+from narration_phrases import KEYWORDS as _NARRATION_KEYWORDS
+
+_THINK_WORDS = _NARRATION_KEYWORDS["think"]
+_ANSWER_WORDS = _NARRATION_KEYWORDS["answer"]
 from PIL import Image, ImageDraw
 
 from animations.easing import (
@@ -27,6 +35,8 @@ from config.layout import (
     TIMER_BAR_WIDTH, TIMER_BAR_HEIGHT, TIMER_BAR_Y, TIMER_BAR_X,
 )
 from config.colors import COUNTDOWN_COLORS, DIFFICULTY_COLORS
+from .brand import watermark_top
+from .motion import entrance, idle_dy, scene_cuts
 from .utils import (
     strip_display_quotes,
     font, line_break, draw_text_solid, draw_text_centered,
@@ -37,6 +47,7 @@ from .utils import (
     create_base_frame, finalize_frame,
     seg_start as _seg_start, seg_end as _seg_end,
     log_segment_timestamps, resolve_countdown_number,
+    font_line_height,
 )
 
 logger = logging.getLogger(__name__)
@@ -95,7 +106,7 @@ def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
     answer_boundary = 999.0
     for i, w in enumerate(words):
         if w['word'].lower() == 'la' and i + 1 < len(words):
-            if words[i + 1]['word'].lower() in ['respuesta', 'answer']:
+            if words[i + 1]['word'].lower() in _ANSWER_WORDS:
                 answer_boundary = w['start']
                 break
         if w['word'].lower() in ['correcta', 'correct']:
@@ -122,7 +133,7 @@ def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
 
     piensa_time = answer_boundary
     for i, w in enumerate(words):
-        if w['word'].lower() in ['piensa', 'piensalo', 'think']:
+        if w['word'].lower() in _THINK_WORDS:
             piensa_time = w['start']
             break
 
@@ -195,7 +206,12 @@ def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
 
     for i, w in enumerate(words):
         word_lower = w['word'].lower()
-        if word_lower in ['piensalo', 'piensa', 'think', 'bien']:
+        # FROM narration_phrases, not typed here. The think line is chosen
+        # from a pool now, and this list had only the UNACCENTED
+        # "piensalo" -- so "Piénsalo un segundo." would have been invisible
+        # to this scan, leaving think_start at 0 and the countdown starting
+        # from a guess. One list, so a new pool entry cannot desync it.
+        if word_lower in _THINK_WORDS:
             if w['start'] > timestamps['option_d']:
                 timestamps['think_start'] = w['start']
                 break
@@ -219,7 +235,7 @@ def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
 
         if word_lower == 'la' and i + 1 < len(words):
             next_word = words[i + 1]['word'].lower()
-            if next_word in ['respuesta', 'answer']:
+            if next_word in _ANSWER_WORDS:
                 timestamps['answer_start'] = w['start']
                 for j in range(i + 3, min(i + 12, len(words))):
                     if words[j]['word'].lower() in ['significa', 'means', 'es', 'como']:
@@ -306,7 +322,7 @@ def draw_quiz_question_box(
         question, 52, 40, max_width, max_height - box_padding * 2
     )
 
-    line_height = int(font_size * 1.4)
+    line_height = font_line_height(ef)
     box_height = len(lines) * line_height + box_padding * 2
 
     # White rounded card with shadow
@@ -586,12 +602,21 @@ def resolve_quiz_timestamps(data: Dict, duration: float) -> Dict:
     return data
 
 
-def create_frame_quiz(
+def _create_frame_quiz_item(
     t: float,
     data: Dict,
-    duration: float
+    duration: float,
+    presentation=None,
 ) -> np.ndarray:
-    """Create frame for quiz video using EXACT segment timestamps."""
+    """One item's frame, from a view whose segment keys are BARE.
+
+    Unchanged from when this was `create_frame_quiz` itself and a quiz was
+    one question. Everything about multi-item lives in the dispatcher below,
+    so none of the drawing here had to learn about items.
+    """
+    if presentation is None:
+        from studio.renderer_presentation import resolve_presentation
+        presentation = resolve_presentation("es")
     frame, draw = create_base_frame(t)
 
     # No defaults on these four. They are load-bearing for correctness and
@@ -626,6 +651,13 @@ def create_frame_quiz(
 
     question_visible = t >= 0
 
+    # When this item's question arrives, for its entrance. Item 1 starts at
+    # the top of the video; item 2+ at its own question, which is also when
+    # quiz_item_at switches to this view.
+    q_start = _seg_start(st, 'question', 0.0)
+    if q_start < 1.0:
+        q_start = 0.0
+
     # Bug A2 fix: Visual appears VISUAL_ANTICIPATION seconds BEFORE audio
     show_option_a = t >= _seg_start(st, 'option_a', 999) - VISUAL_ANTICIPATION
     show_option_b = t >= _seg_start(st, 'option_b', 999) - VISUAL_ANTICIPATION
@@ -656,7 +688,7 @@ def create_frame_quiz(
     question_y = QUESTION_ZONE_TOP
     if question_number and question_visible:
         q_num_alpha = get_alpha(t, 0, 0.3)
-        qn_text = f"Pregunta {question_number}"
+        qn_text = presentation.question_number.format(number=question_number)
         qnf = font(32)
         bbox = draw.textbbox((0, 0), qn_text, font=qnf)
         qnw = bbox[2] - bbox[0]
@@ -683,7 +715,13 @@ def create_frame_quiz(
         max_question_height = QUESTION_ZONE_BOTTOM - question_y - 20
 
         accent = DIFFICULTY_COLORS.get(difficulty) if difficulty else None
-        draw_quiz_question_box(frame, draw, clean_question, question_y, q_alpha, max_question_height, accent)
+        # Rises into place, then floats. max_question_height stays computed
+        # at the RESTING y above, so the motion can never change the font
+        # size the box was fitted with.
+        _, q_rise = entrance(t, q_start)
+        q_dy = int(round(q_rise + idle_dy(t, q_start + 0.42)))
+        draw_quiz_question_box(frame, draw, clean_question, question_y + q_dy,
+                               q_alpha, max_question_height, accent)
         draw = ImageDraw.Draw(frame, 'RGBA')
 
     # ── 4. Options (individual rounded cards with stagger) ──────
@@ -715,6 +753,19 @@ def create_frame_quiz(
         # utils.strip_display_quotes.
         opt_text = strip_display_quotes(options[letter])
         y_pos = opt_start_y + i * (opt_card_h + opt_gap)
+
+        # Rises in on its own audio (with the existing slide), then floats
+        # out of step with its neighbours (phase per card), so the stack
+        # never moves as one block. Motion only when the option has real
+        # timing -- 999 is "no segment".
+        #
+        # NO SCALE here, unlike the other entrances: draw_quiz_option_card
+        # truncates the text to the SCALED card width, so a card arriving
+        # at 90% would flash "..." on a long option.
+        if start_time < 999:
+            _, rise = entrance(t, start_time, rise=24)
+            y_pos += int(round(rise + idle_dy(t, start_time + 0.42,
+                                              phase=0.23 * i)))
 
         # Stagger: each option appears STAGGER seconds after the previous
         stagger_time = start_time
@@ -757,7 +808,7 @@ def create_frame_quiz(
         think_y = COUNTDOWN_ZONE_TOP
 
         tf = font(48)
-        think_text = "¡Piensa bien!"
+        think_text = presentation.thinking
         bbox = draw.textbbox((0, 0), think_text, font=tf)
         tw = bbox[2] - bbox[0]
         tx = (VIDEO_WIDTH - tw) // 2
@@ -813,8 +864,13 @@ def create_frame_quiz(
         reveal_alpha = get_alpha(t, answer_time, 0.3)
         reveal_y = COUNTDOWN_ZONE_TOP + 20
 
-        rf = font(48)
-        reveal_text = f"Respuesta: {correct}"
+        # Pops, like the countdown numbers before it: the reveal is the
+        # moment the whole video builds to, and it used to just fade in.
+        # Before answer_time (the VISUAL_ANTICIPATION lead) it holds the pop's
+        # starting size rather than vanishing.
+        reveal_pop = tiktok_pop_scale(t, answer_time) or 0.85
+        rf = font(max(1, int(round(48 * reveal_pop))))
+        reveal_text = presentation.answer.format(answer=correct)
         bbox = draw.textbbox((0, 0), reveal_text, font=rf)
         tw = bbox[2] - bbox[0]
         tx = (VIDEO_WIDTH - tw) // 2
@@ -831,18 +887,44 @@ def create_frame_quiz(
         slide_progress = min(1.0, max(0.0, slide_elapsed / 0.4))
         slide_offset = int(60 * (1.0 - ease_out_cubic(slide_progress)))
 
-        exp_y_base = COUNTDOWN_ZONE_TOP + 10
-        exp_y = exp_y_base + slide_offset
+
+        # ── THE EXPLANATION CARD'S BUDGET ────────────────────────────
+        #
+        # TWO THINGS WERE WRONG, and the watermark fix only addressed one.
+        #
+        #  a. ANCHOR. exp_y derived from COUNTDOWN_ZONE_TOP — where the
+        #     countdown lives, not where an explanation has room. That put
+        #     the card 109px above the floor it budgets against, leaving
+        #     53px: one 28px line is 35px tall, so the card had room for one
+        #     line and was handed five. Every render logged
+        #     "122px too TALL for 53px" and drew it anyway, 122px past the
+        #     watermark. The countdown has finished by the time this card
+        #     appears; the options have not, so the options zone is where
+        #     the room actually starts.
+        #
+        #  b. SLIDE. slide_offset fed the budget, so during the 0.4s
+        #     entrance max_exp_h was 53 - 60 = -7px. The same defect
+        #     educational._card_floor() removed for its bounce and that
+        #     quiz's own explanation card had for its slide. The budget is
+        #     computed at the RESTING position; the slide displaces the
+        #     drawn card afterwards and is clamped so it cannot cross the
+        #     floor.
         exp_padding = 28
+        exp_y_base = OPTIONS_ZONE_BOTTOM + 10
         max_exp_w = CARD_WIDTH - exp_padding * 2
-        max_exp_h = SAFE_AREA_BOTTOM - exp_y - exp_padding * 2
+        max_exp_h = watermark_top() - exp_y_base - exp_padding * 2
 
         clean_exp = strip_display_quotes(explanation).strip()
         ef, exp_font_size, exp_lines, exp_text_h = fit_text_font(
             clean_exp, 42, 28, max_exp_w, max_exp_h
         )
-        exp_line_h = int(exp_font_size * 1.4)
+        exp_line_h = font_line_height(ef)
         exp_height = len(exp_lines) * exp_line_h + exp_padding * 2
+        # The slide displaces a settled card and never crosses the floor.
+        exp_y = min(exp_y_base + slide_offset, watermark_top() - exp_height)
+        # Idle float AFTER the clamp: idle_dy is never positive, so it can
+        # only lift the card off the floor, never push it through.
+        exp_y += int(round(idle_dy(t, explanation_time + 0.4, phase=0.5)))
 
         # Light card background
         card_alpha = int(240 * (exp_alpha / 255))
@@ -895,4 +977,127 @@ def create_frame_quiz(
         except Exception:
             pass
 
-    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []),
+                          scene_cuts=scene_cuts(st))
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# MULTI-ITEM: THE PAYLOAD THAT WAS ALWAYS THERE
+#
+# `QuizScript.questions` is a List[QuizItem] the schema itself labels DEAD
+# PAYLOAD: the prompt demands three, GPT writes three, and nothing has ever
+# read index 1 or 2. This is what reads them.
+#
+# WHY THIS IS A DISPATCHER AND NOT A LOOP INSIDE THE RENDERER. A quiz frame
+# at time t shows exactly ONE item — items are sequential in time, not
+# stacked in space. So the frame function never needed to know about items;
+# it needed to be handed the right one. `_create_frame_quiz_item` is the old
+# `create_frame_quiz`, byte for byte, and every coordinate, zone and easing
+# curve it was tuned with still applies.
+#
+# WHY PREFIXED KEYS AND NOT A LIST, which the brief left to this call:
+#
+#   · `add_segment(seg_id: str, ...)` in the TTS takes a flat string id, and
+#     segment_times is a flat dict everywhere it is written, stored and read.
+#     A prefix needs no change to the assembly, the ffmpeg concat, or the
+#     shape stored in the audio json.
+#   · ITEM 1 KEEPS ITS BARE NAMES. That is the whole reason to prefer this:
+#     every audio json already on disk stays valid, the
+#     `required = {'option_a','answer'}` probe in resolve_quiz_timestamps
+#     still passes, and the keyword fallback still builds a legal one-item
+#     quiz. A list would have invalidated every stored artifact and the probe
+#     with it — a migration, to express something a prefix expresses for free.
+#   · The renderer never sees a prefix anyway: `quiz_item_views` projects
+#     `i2_option_a` back to `option_a` before drawing. The prefix is a wire
+#     format, not a rendering concept.
+#
+# Times inside a projected view stay ABSOLUTE. The TTS emits absolute
+# timestamps for every segment and the frame function already compares them
+# against the absolute `t`; re-basing them per item would be work that buys
+# nothing and a new class of off-by-one.
+# ═══════════════════════════════════════════════════════════════════════
+
+#: `i2_option_a` -> (2, 'option_a'), from the one module that parses these.
+#: It was a private copy here; the QA gate then wrote its own name-based
+#: rule that could not see a prefix, and rejected a correct artifact.
+from segment_ids import split_item as _split_item
+
+
+def quiz_item_views(data: Dict) -> List[Dict]:
+    """One self-contained view per item, in time order.
+
+    Each view looks exactly like a single-item quiz: root-level question /
+    options / correct / explanation, and a `segment_times` keyed with BARE
+    names. `_create_frame_quiz_item` cannot tell it is one of three.
+    """
+    st = data.get('segment_times', {}) or {}
+
+    grouped: Dict[int, Dict] = {}
+    for key, value in st.items():
+        index, name = _split_item(key)
+        grouped.setdefault(index, {})[name] = value
+
+    # The authored items. questions[0] is required by the schema's own
+    # validator to match the root-level fields, so the root is item 1 and
+    # `questions` supplies 2..n — reading questions[0] as well would render
+    # the first item twice.
+    authored = data.get('questions') or []
+
+    views = []
+    for index in sorted(grouped):
+        item = data if index == 1 else (
+            authored[index - 1] if index - 1 < len(authored) else None)
+        if item is None:
+            # Audio exists for an item the script does not carry. Skipping is
+            # right: drawing a blank card for several seconds is worse than
+            # the item not being there, and the guard flags the mismatch.
+            logger.warning("quiz: segment_times has item %d but the script "
+                           "carries %d question(s) — item skipped",
+                           index, len(authored))
+            continue
+        views.append({
+            **data,
+            'question': item.get('question', data.get('question')),
+            'options': item.get('options', data.get('options')),
+            'correct': item.get('correct', data.get('correct')),
+            'explanation': item.get('explanation', data.get('explanation')),
+            'segment_times': grouped[index],
+        })
+    return views
+
+
+def quiz_item_at(views: List[Dict], t: float) -> Optional[Dict]:
+    """The view whose window contains `t`.
+
+    An item owns the span from its own `question` to the NEXT item's
+    `question`, so the trailing explanation of item 2 stays on screen until
+    item 3 actually starts speaking. The last item owns everything after it.
+    """
+    if not views:
+        return None
+    starts = [_seg_start(v['segment_times'], 'question', 0.0) for v in views]
+    current = views[0]
+    for view, start in zip(views, starts):
+        if t >= start:
+            current = view
+    return current
+
+
+def create_frame_quiz(
+    t: float,
+    data: Dict,
+    duration: float,
+    presentation=None,
+) -> np.ndarray:
+    """Create frame for quiz video, for however many items it carries.
+
+    A one-item script takes the same path it always did: `quiz_item_views`
+    returns a single view whose segment_times is the original dict, and this
+    is `_create_frame_quiz_item` with one extra function call in front.
+    """
+    views = quiz_item_views(data)
+    if len(views) <= 1:
+        return _create_frame_quiz_item(t, data, duration,
+                                       presentation=presentation)
+    return _create_frame_quiz_item(t, quiz_item_at(views, t), duration,
+                                   presentation=presentation)

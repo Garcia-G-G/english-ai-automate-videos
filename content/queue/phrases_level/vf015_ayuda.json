@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases pedir ayuda en inglés 🆘",
+  "video_description": "Diez frases para pedir ayuda con educación. 🆘",
+  "title": "¿Cómo se dice?",
+  "theme": "pedir ayuda",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "¿Me ayudas?",
+      "english": "Can you help me?"
+    },
+    {
+      "spanish": "¿Me echas una mano?",
+      "english": "Can you give me a hand?"
+    },
+    {
+      "spanish": "¿Te importa...?",
+      "english": "Do you mind...?"
+    },
+    {
+      "spanish": "Necesito un favor.",
+      "english": "I need a favor."
+    },
+    {
+      "spanish": "¿Me lo explicas otra vez?",
+      "english": "Can you explain it again?"
+    },
+    {
+      "spanish": "No lo entiendo.",
+      "english": "I don't get it."
+    },
+    {
+      "spanish": "¿Me lo apuntas?",
+      "english": "Could you write it down for me?"
+    },
+    {
+      "spanish": "¿Más despacio, por favor?",
+      "english": "Could you slow down, please?"
+    },
+    {
+      "spanish": "Estoy perdido.",
+      "english": "I'm lost."
+    },
+    {
+      "spanish": "Gracias por la ayuda.",
+      "english": "Thanks for your help."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#FrasesÚtiles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf015",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Can you help me?": "¿Me ayudas?",
+    "Can you give me a hand?": "¿Me echas una mano?",
+    "Do you mind...?": "¿Te importa...?",
+    "I need a favor.": "Necesito un favor.",
+    "Can you explain it again?": "¿Me lo explicas otra vez?",
+    "I don't get it.": "No lo entiendo.",
+    "Could you write it down for me?": "¿Me lo apuntas?",
+    "Could you slow down, please?": "¿Más despacio, por favor?",
+    "I'm lost.": "Estoy perdido.",
+    "Thanks for your help.": "Gracias por la ayuda."
+  },
+  "english_phrases": [
+    "Can you help me?",
+    "Can you give me a hand?",
+    "Do you mind...?",
+    "I need a favor.",
+    "Can you explain it again?",
+    "I don't get it.",
+    "Could you write it down for me?",
+    "Could you slow down, please?",
+    "I'm lost.",
+    "Thanks for your help."
+  ],
+  "full_script": "[cheerful] Lee la frase en español y dila en inglés en voz alta. Can you help me? Can you give me a hand? Do you mind...? I need a favor. Can you explain it again? I don't get it. Could you write it down for me? Could you slow down, please? I'm lost. Thanks for your help. [cheerful] Escribe en los comentarios la que más te gustó."
+}

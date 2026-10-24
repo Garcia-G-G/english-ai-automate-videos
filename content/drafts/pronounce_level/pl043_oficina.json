@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La OFICINA en inglés: test de pronunciación 💼",
+  "video_description": "Vocabulario de oficina en inglés para pronunciar sin errores. 📎",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la oficina",
+  "intro": "[happy] Vocabulario de oficina. Lee cada palabra en voz alta y escucha la respuesta.",
+  "items": [
+    {
+      "english": "desk",
+      "respelling": "DESK",
+      "ipa": "ˈdɛsk",
+      "trap": "SK final: no añadas «e»"
+    },
+    {
+      "english": "boss",
+      "respelling": "BOS",
+      "ipa": "ˈbɔs",
+      "trap": "Una sílaba y O abierta: BOS"
+    },
+    {
+      "english": "email",
+      "respelling": "II-meil",
+      "ipa": "ˈiːmeɪl",
+      "trap": "Se dice II-meil, no «e-mail»"
+    },
+    {
+      "english": "meeting",
+      "respelling": "MII-ting",
+      "ipa": "ˈmiːtɪŋ",
+      "trap": "EE larga: MII-ting"
+    },
+    {
+      "english": "stapler",
+      "respelling": "STEI-pler",
+      "ipa": "ˈsteɪplɚ",
+      "trap": "Sin «es-» y A = «ei»"
+    },
+    {
+      "english": "calendar",
+      "respelling": "KA-len-der",
+      "ipa": "ˈkæləndɚ",
+      "trap": "Acento en KA, no en DAR"
+    },
+    {
+      "english": "envelope",
+      "respelling": "EN-ve-loup",
+      "ipa": "ˈɛnvəloʊp",
+      "trap": "Acento en EN y E final muda"
+    },
+    {
+      "english": "colleague",
+      "respelling": "KA-liig",
+      "ipa": "ˈkɑliːg",
+      "trap": "Dos sílabas: KA-liig"
+    },
+    {
+      "english": "photocopier",
+      "respelling": "FOU-te-ka-pi-er",
+      "ipa": "ˈfoʊtəkɑpiɚ",
+      "trap": "Cinco sílabas, acento en FOU"
+    },
+    {
+      "english": "stationery",
+      "respelling": "STEI-she-ne-ri",
+      "ipa": "ˈsteɪʃənɛri",
+      "trap": "Cuatro sílabas, acento en STEI"
+    }
+  ],
+  "verdict": "Si acertaste hasta la tres, vas por el nivel básico. Hasta la siete, intermedio. ¿Las diez? Experto.",
+  "outro": "[excited] Comenta tu número y vuelve mañana a por más palabras.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésDeOficina",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl043",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

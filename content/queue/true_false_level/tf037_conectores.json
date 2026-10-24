@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Verdadero o falso? CONECTORES 🧵",
+  "video_description": "Conectores en inglés: ¿verdadero o falso? 🧵",
+  "title": "¿Verdadero o falso?",
+  "theme": "conectores",
+  "intro": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta.",
+  "items": [
+    {
+      "statement": "«But» significa pero.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Because» significa porque.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«So» puede significar así que.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Although» significa por eso.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es aunque"
+    },
+    {
+      "statement": "«However» significa sin embargo.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Meanwhile» significa nunca.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es mientras tanto"
+    },
+    {
+      "statement": "«Therefore» significa por lo tanto.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Whereas» significa por todas partes.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es mientras que"
+    },
+    {
+      "statement": "«Nevertheless» significa sin embargo.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Hence» significa por consiguiente.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#Conectores",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf037",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "But",
+    "Because",
+    "So",
+    "Although",
+    "However",
+    "Meanwhile",
+    "Therefore",
+    "Whereas",
+    "Nevertheless",
+    "Hence"
+  ],
+  "full_script": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta. Verdadero. Verdadero. Verdadero. Ahora, nivel intermedio. Falso: es aunque. Verdadero. Falso: es mientras tanto. Verdadero. Y ahora, nivel experto. Falso: es mientras que. Verdadero. Verdadero. Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

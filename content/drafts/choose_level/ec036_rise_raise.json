@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "RISE o RAISE: el test de 10 frases 📈",
+  "video_description": "Subir solo o subir algo: rise y raise en diez frases. 📈",
+  "title": "Elige la correcta",
+  "theme": "rise o raise",
+  "intro": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo.",
+  "items": [
+    {
+      "sentence": "The sun ____ in the east.",
+      "options": [
+        "rises",
+        "raises"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ your hand if you know.",
+      "options": [
+        "Rise",
+        "Raise"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Prices are ____.",
+      "options": [
+        "raising",
+        "rising"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "They ____ the price of bread.",
+      "options": [
+        "raised",
+        "rose"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She was ____ by her grandparents.",
+      "options": [
+        "risen",
+        "raised"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The river ____ after the storm.",
+      "options": [
+        "rose",
+        "raised"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Don't ____ your voice at me.",
+      "options": [
+        "raise",
+        "rise"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I asked my boss for a ____.",
+      "options": [
+        "rise",
+        "raise"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She ____ to the challenge.",
+      "options": [
+        "rose",
+        "raised"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "That ____ an interesting question.",
+      "options": [
+        "rises",
+        "raises"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#RiseVsRaise",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec036",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

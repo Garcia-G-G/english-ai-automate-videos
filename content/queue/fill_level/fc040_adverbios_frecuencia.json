@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "¿Completas las 10? ALWAYS, OFTEN, NEVER 🔁",
+  "video_description": "Siempre, a menudo, casi nunca: los adverbios de frecuencia. 🔁",
+  "title": "Completa la frase",
+  "theme": "adverbios de frecuencia",
+  "intro": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo.",
+  "items": [
+    {
+      "sentence": "I ____ drink coffee in the morning. Every day!",
+      "answer": "always",
+      "translation": "Siempre tomo café por la mañana. ¡Todos los días!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ eats meat. She's vegetarian.",
+      "answer": "never",
+      "translation": "Nunca come carne. Es vegetariana.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I ____ go to the cinema, about once a month.",
+      "answer": "sometimes",
+      "translation": "A veces voy al cine, más o menos una vez al mes.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "How ____ do you exercise?",
+      "answer": "often",
+      "translation": "¿Con qué frecuencia haces ejercicio?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I ____ ever see him now.",
+      "answer": "hardly",
+      "translation": "Ya casi nunca lo veo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "We go there once in a ____.",
+      "answer": "while",
+      "translation": "Vamos de vez en cuando.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She's ____ late. It's so annoying.",
+      "answer": "always",
+      "translation": "Siempre llega tarde. Qué pesada.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I ____ ever eat fast food.",
+      "answer": "rarely",
+      "translation": "Casi nunca como comida rápida.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I see them every ____ and then.",
+      "answer": "now",
+      "translation": "Los veo de vez en cuando.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ do I get the chance to relax.",
+      "answer": "Seldom",
+      "translation": "Pocas veces tengo ocasión de relajarme.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc040",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I always drink coffee in the morning. Every day!": "Siempre tomo café por la mañana. ¡Todos los días!",
+    "She never eats meat. She's vegetarian.": "Nunca come carne. Es vegetariana.",
+    "I sometimes go to the cinema, about once a month.": "A veces voy al cine, más o menos una vez al mes.",
+    "How often do you exercise?": "¿Con qué frecuencia haces ejercicio?",
+    "I hardly ever see him now.": "Ya casi nunca lo veo.",
+    "We go there once in a while.": "Vamos de vez en cuando.",
+    "She's always late. It's so annoying.": "Siempre llega tarde. Qué pesada.",
+    "I rarely ever eat fast food.": "Casi nunca como comida rápida.",
+    "I see them every now and then.": "Los veo de vez en cuando.",
+    "Seldom do I get the chance to relax.": "Pocas veces tengo ocasión de relajarme."
+  },
+  "english_phrases": [
+    "I always drink coffee in the morning. Every day!",
+    "She never eats meat. She's vegetarian.",
+    "I sometimes go to the cinema, about once a month.",
+    "How often do you exercise?",
+    "I hardly ever see him now.",
+    "We go there once in a while.",
+    "She's always late. It's so annoying.",
+    "I rarely ever eat fast food.",
+    "I see them every now and then.",
+    "Seldom do I get the chance to relax."
+  ],
+  "full_script": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo. I always drink coffee in the morning. Every day! She never eats meat. She's vegetarian. I sometimes go to the cinema, about once a month. Ahora, nivel intermedio. How often do you exercise? I hardly ever see him now. We go there once in a while. She's always late. It's so annoying. Y ahora, nivel experto. I rarely ever eat fast food. I see them every now and then. Seldom do I get the chance to relax. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

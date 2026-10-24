@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "«¿DÓNDE FACTURO?» y 9 frases más en inglés ✈️",
+  "video_description": "Diez frases para moverte por el aeropuerto con calma. 🧳",
+  "title": "¿Cómo se dice?",
+  "theme": "en el aeropuerto",
+  "intro": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo?",
+  "items": [
+    {
+      "spanish": "¿Dónde facturo?",
+      "english": "Where do I check in?"
+    },
+    {
+      "spanish": "Solo llevo equipaje de mano.",
+      "english": "I only have a carry-on."
+    },
+    {
+      "spanish": "¿Puedo tener ventanilla?",
+      "english": "Can I get a window seat?"
+    },
+    {
+      "spanish": "¿Cuál es la puerta de embarque?",
+      "english": "What's the boarding gate?"
+    },
+    {
+      "spanish": "El vuelo tiene retraso.",
+      "english": "The flight is delayed."
+    },
+    {
+      "spanish": "He perdido mi vuelo.",
+      "english": "I missed my flight."
+    },
+    {
+      "spanish": "¿A qué hora embarcamos?",
+      "english": "What time do we board?"
+    },
+    {
+      "spanish": "Mi maleta no ha llegado.",
+      "english": "My suitcase didn't arrive."
+    },
+    {
+      "spanish": "Estoy aquí de vacaciones.",
+      "english": "I'm here on vacation."
+    },
+    {
+      "spanish": "No tengo nada que declarar.",
+      "english": "I have nothing to declare."
+    }
+  ],
+  "outro": "[happy] Guarda el vídeo y repítelas mañana.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf003",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

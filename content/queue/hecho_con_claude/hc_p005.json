@@ -1,0 +1,46 @@
+{
+  "id": "hc_p005",
+  "style": "poster",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«I'm student»: falta una palabra",
+  "hook_text": "¿Tú también dices «I'M STUDENT»?",
+  "poster": {
+    "error_no": "020",
+    "big_wrong": "I'M STUDENT",
+    "big_right": "I'M A STUDENT",
+    "examples": [
+      "I'm a student. — Soy estudiante.",
+      "She's an engineer. — Es ingeniera."
+    ]
+  },
+  "correction": {
+    "wrong": "I'M STUDENT",
+    "right": "I'M A STUDENT",
+    "rule": "Profesiones con a / an"
+  },
+  "voice": [
+    "En español decimos «soy estudiante», sin artículo. En inglés hace falta.",
+    "Se dice [[I'm a student]], [[She's a doctor]], [[He's an engineer]].",
+    "Si empieza por sonido de vocal, [[an]]: [[an architect]], [[an English teacher]].",
+    "En plural desaparece: [[We're students]].",
+    "Y cuidado: [[a university]] lleva [[a]] porque suena «iu».",
+    "Reto: di tu profesión en inglés con su artículo. Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "Di tu profesión en inglés",
+    "answer": "I'm a nurse. / I'm an accountant."
+  },
+  "caption": "Se dice «I'm a student», no «I'm student». Profesiones en inglés siempre con a o an.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 61
+}

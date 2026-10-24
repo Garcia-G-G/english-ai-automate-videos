@@ -1,0 +1,93 @@
+{
+  "type": "true_false_level",
+  "video_title": "10 frases sobre DEPORTES: ¿V o F? ⚽",
+  "video_description": "Deportes en inglés: ¿verdadero o falso? ⚽",
+  "title": "¿Verdadero o falso?",
+  "theme": "los deportes",
+  "intro": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total.",
+  "items": [
+    {
+      "statement": "«Swimming» es natación.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Running» es correr.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Goal» puede ser gol.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Referee» es el portero.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es el árbitro"
+    },
+    {
+      "statement": "«Tie» en deportes es un empate.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Coach» es un coche.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es el entrenador"
+    },
+    {
+      "statement": "«Jump the gun» es adelantarse antes de tiempo.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Ballpark figure» es una cifra exacta.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es una cifra aproximada"
+    },
+    {
+      "statement": "«Level playing field» son condiciones justas para todos.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Throw in the towel» es ganar el partido.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es rendirse"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf024",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Swimming",
+    "Running",
+    "Goal",
+    "Referee",
+    "Tie",
+    "Coach",
+    "Jump the gun",
+    "Ballpark figure",
+    "Level playing field",
+    "Throw in the towel"
+  ],
+  "full_script": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total. Verdadero. Verdadero. Verdadero. Ahora, nivel intermedio. Falso: es el árbitro. Verdadero. Falso: es el entrenador. Verdadero. Y ahora, nivel experto. Falso: es una cifra aproximada. Verdadero. Falso: es rendirse. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

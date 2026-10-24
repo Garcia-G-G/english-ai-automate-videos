@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La NATURALEZA en inglés: ¿pronuncias bien estas 10? 🌿",
+  "video_description": "Árboles, ríos, glaciares… diez palabras de la naturaleza, de fácil a experto. 🏔️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la naturaleza",
+  "intro": "[calm] Diez palabras de la naturaleza. Dilas en voz alta antes de que yo las pronuncie.",
+  "items": [
+    {
+      "english": "tree",
+      "respelling": "TRII",
+      "ipa": "ˈtriː",
+      "trap": "TR juntas y una «i» larga"
+    },
+    {
+      "english": "river",
+      "respelling": "RI-ver",
+      "ipa": "ˈrɪvɚ",
+      "trap": "La V suena con labio y dientes"
+    },
+    {
+      "english": "flower",
+      "respelling": "FLAU-er",
+      "ipa": "ˈflaʊɚ",
+      "trap": "OW suena «au»: FLAU-er"
+    },
+    {
+      "english": "mountain",
+      "respelling": "MAUN-ten",
+      "ipa": "ˈmaʊntən",
+      "trap": "Termina en «ten», no en «tein»"
+    },
+    {
+      "english": "island",
+      "respelling": "AI-land",
+      "ipa": "ˈaɪlənd",
+      "trap": "La S no suena: AI-land"
+    },
+    {
+      "english": "desert",
+      "respelling": "DE-zert",
+      "ipa": "ˈdɛzɚt",
+      "trap": "Acento en DE-; «dessert» va al revés"
+    },
+    {
+      "english": "meadow",
+      "respelling": "ME-dou",
+      "ipa": "ˈmɛdoʊ",
+      "trap": "EA suena «e»: ME-dou"
+    },
+    {
+      "english": "wilderness",
+      "respelling": "UIL-der-nas",
+      "ipa": "ˈwɪldɚnəs",
+      "trap": "Suena UIL, no UAIL como «wild»"
+    },
+    {
+      "english": "glacier",
+      "respelling": "GLEI-sher",
+      "ipa": "ˈɡleɪʃɚ",
+      "trap": "CI suena «sh»: GLEI-sher"
+    },
+    {
+      "english": "foliage",
+      "respelling": "FOU-li-idch",
+      "ipa": "ˈfoʊliɪdʒ",
+      "trap": "Tres sílabas: FOU-li-idch"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, nivel básico. Hasta la siete, intermedio. Y si dominaste las diez, experto.",
+  "outro": "[warm] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#InglésFácil",
+    "#Naturaleza"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl071",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

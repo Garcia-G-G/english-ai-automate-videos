@@ -1,0 +1,87 @@
+{
+  "type": "vocabulary",
+  "video_title": "Inglés para el médico y la farmacia 💊",
+  "video_description": "Diez frases para explicar qué te pasa cuando estás fuera. 🩺",
+  "title": "Vocabulario: médico y farmacia",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "me duele la garganta",
+      "english": "I have a sore throat"
+    },
+    {
+      "spanish": "tengo fiebre",
+      "english": "I have a fever"
+    },
+    {
+      "spanish": "tengo tos",
+      "english": "I have a cough"
+    },
+    {
+      "spanish": "estoy mareado",
+      "english": "I feel dizzy"
+    },
+    {
+      "spanish": "soy alérgico a",
+      "english": "I'm allergic to"
+    },
+    {
+      "spanish": "pedir cita",
+      "english": "make an appointment"
+    },
+    {
+      "spanish": "¿necesito receta?",
+      "english": "do I need a prescription?"
+    },
+    {
+      "spanish": "un analgésico",
+      "english": "a painkiller"
+    },
+    {
+      "spanish": "tres veces al día",
+      "english": "three times a day"
+    },
+    {
+      "spanish": "en ayunas",
+      "english": "on an empty stomach"
+    }
+  ],
+  "full_script": "[excited] Te pones malo de viaje y tienes que explicarlo en inglés. Me duele la garganta, I have a sore throat. Tengo fiebre, I have a fever. Tengo tos, I have a cough. Estoy mareado, I feel dizzy. Soy alérgico a, I'm allergic to. Pedir cita, make an appointment. ¿necesito receta?, do I need a prescription?. Un analgésico, a painkiller. Tres veces al día, three times a day. En ayunas, on an empty stomach. Guárdalas antes de viajar. Ojalá no las necesites.",
+  "translations": {
+    "I have a sore throat": "me duele la garganta",
+    "I have a fever": "tengo fiebre",
+    "I have a cough": "tengo tos",
+    "I feel dizzy": "estoy mareado",
+    "I'm allergic to": "soy alérgico a",
+    "make an appointment": "pedir cita",
+    "do I need a prescription?": "¿necesito receta?",
+    "a painkiller": "un analgésico",
+    "three times a day": "tres veces al día",
+    "on an empty stomach": "en ayunas"
+  },
+  "english_phrases": [
+    "I have a sore throat",
+    "I have a fever",
+    "I have a cough",
+    "I feel dizzy",
+    "I'm allergic to",
+    "make an appointment",
+    "do I need a prescription?",
+    "a painkiller",
+    "three times a day",
+    "on an empty stomach"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr020",
+    "video_type": "vocabulary",
+    "model": "manual"
+  }
+}

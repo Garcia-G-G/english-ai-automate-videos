@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "¿Pronuncias bien estas palabras del ESPACIO? 🚀",
+  "video_description": "Sun, galaxy, meteor… ¿Hasta qué palabra del espacio llegas? 🌌",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el espacio",
+  "intro": "[excited] Despegamos: diez palabras del espacio. Pronúncialas antes de escucharme.",
+  "items": [
+    {
+      "english": "sun",
+      "respelling": "SAN",
+      "ipa": "ˈsʌn",
+      "trap": "La U suena «a»: SAN"
+    },
+    {
+      "english": "star",
+      "respelling": "STAR",
+      "ipa": "ˈstɑr",
+      "trap": "Sin «e» delante: STAR"
+    },
+    {
+      "english": "planet",
+      "respelling": "PLA-nit",
+      "ipa": "ˈplænɪt",
+      "trap": "Termina en «nit»: PLA-nit"
+    },
+    {
+      "english": "rocket",
+      "respelling": "RA-kit",
+      "ipa": "ˈrɑkɪt",
+      "trap": "La O suena «a»: RA-kit"
+    },
+    {
+      "english": "orbit",
+      "respelling": "OR-bit",
+      "ipa": "ˈɔrbɪt",
+      "trap": "Acento en OR-: OR-bit"
+    },
+    {
+      "english": "galaxy",
+      "respelling": "GA-lak-si",
+      "ipa": "ˈɡæləksi",
+      "trap": "Acento en GA-: GA-lak-si"
+    },
+    {
+      "english": "universe",
+      "respelling": "IUU-na-vers",
+      "ipa": "ˈjuːnəvɝs",
+      "trap": "Acento en IUU: IUU-na-vers"
+    },
+    {
+      "english": "asteroid",
+      "respelling": "AS-ta-roid",
+      "ipa": "ˈæstərɔɪd",
+      "trap": "Acento en AS- y final «roid»"
+    },
+    {
+      "english": "meteor",
+      "respelling": "MII-ti-er",
+      "ipa": "ˈmiːtiɚ",
+      "trap": "Tres sílabas: MII-ti-er"
+    },
+    {
+      "english": "extraterrestrial",
+      "respelling": "ek-stra-ta-RES-tri-al",
+      "ipa": "ɛkstrətəˈrɛstriəl",
+      "trap": "Seis sílabas, acento en RES"
+    }
+  ],
+  "verdict": "Hasta la tres, nivel básico. Hasta la siete, intermedio. Y si llegaste a la diez, eres experto.",
+  "outro": "[excited] ¿Llegaste a la diez? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#ElEspacio",
+    "#InglésOnline",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl077",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

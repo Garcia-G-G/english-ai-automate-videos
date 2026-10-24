@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases animar a alguien en inglés 💪",
+  "video_description": "Diez frases para animar a alguien en inglés. 💪",
+  "title": "¿Cómo se dice?",
+  "theme": "animar a alguien",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "¡Tú puedes!",
+      "english": "You can do it!"
+    },
+    {
+      "spanish": "¡Ánimo!",
+      "english": "Hang in there!"
+    },
+    {
+      "spanish": "No te rindas.",
+      "english": "Don't give up."
+    },
+    {
+      "spanish": "Todo va a salir bien.",
+      "english": "Everything's going to be OK."
+    },
+    {
+      "spanish": "Estoy orgulloso de ti.",
+      "english": "I'm proud of you."
+    },
+    {
+      "spanish": "Lo hiciste genial.",
+      "english": "You did great."
+    },
+    {
+      "spanish": "No te preocupes.",
+      "english": "Don't worry about it."
+    },
+    {
+      "spanish": "Aquí estoy para lo que necesites.",
+      "english": "I'm here if you need anything."
+    },
+    {
+      "spanish": "Sigue así.",
+      "english": "Keep it up."
+    },
+    {
+      "spanish": "Lo peor ya pasó.",
+      "english": "The worst is over."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf020",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "You can do it!": "¡Tú puedes!",
+    "Hang in there!": "¡Ánimo!",
+    "Don't give up.": "No te rindas.",
+    "Everything's going to be OK.": "Todo va a salir bien.",
+    "I'm proud of you.": "Estoy orgulloso de ti.",
+    "You did great.": "Lo hiciste genial.",
+    "Don't worry about it.": "No te preocupes.",
+    "I'm here if you need anything.": "Aquí estoy para lo que necesites.",
+    "Keep it up.": "Sigue así.",
+    "The worst is over.": "Lo peor ya pasó."
+  },
+  "english_phrases": [
+    "You can do it!",
+    "Hang in there!",
+    "Don't give up.",
+    "Everything's going to be OK.",
+    "I'm proud of you.",
+    "You did great.",
+    "Don't worry about it.",
+    "I'm here if you need anything.",
+    "Keep it up.",
+    "The worst is over."
+  ],
+  "full_script": "[cheerful] Lee la frase en español y dila en inglés en voz alta. You can do it! Hang in there! Don't give up. Everything's going to be OK. I'm proud of you. You did great. Don't worry about it. I'm here if you need anything. Keep it up. The worst is over. [cheerful] Escribe en los comentarios la que más te gustó."
+}

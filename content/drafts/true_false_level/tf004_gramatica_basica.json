@@ -1,0 +1,81 @@
+{
+  "type": "true_false_level",
+  "video_title": "10 frases sobre GRAMÁTICA: ¿V o F? 📘",
+  "video_description": "Diez reglas de gramática básica: ¿cuáles son verdad? 📘",
+  "title": "¿Verdadero o falso?",
+  "theme": "gramática básica",
+  "intro": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total.",
+  "items": [
+    {
+      "statement": "«I am 25 years» es correcto.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "se dice I'm 25 years old"
+    },
+    {
+      "statement": "Con «he» y «she», el verbo lleva -s en presente.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«People» es plural.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Informations» es correcto.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "information no tiene plural"
+    },
+    {
+      "statement": "«Did you went?» es correcto.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es Did you go?"
+    },
+    {
+      "statement": "«Children» es el plural de «child».",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Much» se usa con cosas contables.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "con contables se usa many"
+    },
+    {
+      "statement": "«Have you ever been to Japan?» es correcto.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«I have seen him yesterday» es correcto.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "con yesterday va I saw him"
+    },
+    {
+      "statement": "«If I were you» es correcto.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#GramáticaInglesa",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf004",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

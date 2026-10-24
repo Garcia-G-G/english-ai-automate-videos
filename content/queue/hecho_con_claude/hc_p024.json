@@ -1,0 +1,46 @@
+{
+  "id": "hc_p024",
+  "style": "poster",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«Supposed to»: se supone que",
+  "hook_text": "Casi todos lo dicen mal: «IT SUPPOSES THAT»",
+  "poster": {
+    "error_no": "039",
+    "big_wrong": "IT SUPPOSES THAT",
+    "big_right": "IT'S SUPPOSED TO",
+    "examples": [
+      "The train was supposed to arrive at six. — Se suponía que el tren llegaba a las seis.",
+      "You're not supposed to park here. — Aquí no se puede aparcar."
+    ]
+  },
+  "correction": {
+    "wrong": "IT SUPPOSES THAT",
+    "right": "IT'S SUPPOSED TO",
+    "rule": "Be supposed to + verbo"
+  },
+  "voice": [
+    "Traducimos «se supone que» como [[it supposes that]]. No funciona.",
+    "Se dice [[be supposed to]]: [[The train is supposed to arrive at six]].",
+    "En pasado, plan que no se cumplió: [[I was supposed to call her]], «se suponía que la llamaba».",
+    "En negativo, prohibición suave: [[You're not supposed to park here]].",
+    "Ojo a la pronunciación: suena más o menos «sepóus tu».",
+    "Reto: ¿cómo dirías «se suponía que era fácil»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Se suponía que era fácil»",
+    "answer": "It was supposed to be easy."
+  },
+  "caption": "«Se supone que» es «be supposed to». Una de las estructuras más útiles del inglés avanzado.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 71
+}

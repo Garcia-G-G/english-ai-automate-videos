@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La X en inglés suena de 4 formas: ¿las conoces? 🎹",
+  "video_description": "Taxi, exam, xylophone: la X cambia de sonido según la palabra. ¿Lo sabías? 🔤",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con X",
+  "intro": "[surprised] La X no siempre suena igual. Di cada palabra antes que yo, de fácil a experto.",
+  "items": [
+    {
+      "english": "box",
+      "respelling": "BAKS",
+      "ipa": "ˈbɑks",
+      "trap": "La O suena «a»: BAKS"
+    },
+    {
+      "english": "taxi",
+      "respelling": "TAK-si",
+      "ipa": "ˈtæksi",
+      "trap": "Acento en TAK: TAK-si"
+    },
+    {
+      "english": "next",
+      "respelling": "NEKST",
+      "ipa": "ˈnɛkst",
+      "trap": "Final «kst» sin vocal extra"
+    },
+    {
+      "english": "exam",
+      "respelling": "ig-ZAM",
+      "ipa": "ɪɡˈzæm",
+      "trap": "La X suena «gz»: ig-ZAM"
+    },
+    {
+      "english": "exercise",
+      "respelling": "EK-ser-saiz",
+      "ipa": "ˈɛksɚsaɪz",
+      "trap": "Acento en EK- y final «saiz»"
+    },
+    {
+      "english": "luxury",
+      "respelling": "LAK-sha-ri",
+      "ipa": "ˈlʌkʃəri",
+      "trap": "La X suena «ksh»: LAK-sha-ri"
+    },
+    {
+      "english": "xylophone",
+      "respelling": "ZAI-la-foun",
+      "ipa": "ˈzaɪləfoʊn",
+      "trap": "La X inicial suena «z»"
+    },
+    {
+      "english": "exhibit",
+      "respelling": "ig-ZI-bit",
+      "ipa": "ɪɡˈzɪbɪt",
+      "trap": "La H no suena: ig-ZI-bit"
+    },
+    {
+      "english": "luxurious",
+      "respelling": "lag-ZHU-ri-as",
+      "ipa": "lʌɡˈʒʊriəs",
+      "trap": "Aquí la X suena «gzh»"
+    },
+    {
+      "english": "sixth",
+      "respelling": "SIKSTH",
+      "ipa": "ˈsɪksθ",
+      "trap": "Final «ksth»: no te comas la TH"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. Si llegaste a la siete, intermedio. Las diez, nivel experto.",
+  "outro": "[curious] ¿Conocías la X de «xylophone»? Dime tu número abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#TestDeInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl063",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

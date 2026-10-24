@@ -28,11 +28,13 @@ from elevenlabs import ElevenLabs
 from elevenlabs.types import VoiceSettings
 
 from tts_common import (
+    Timeline,
     get_audio_duration, generate_silence, measure_speech_end,
     extract_english_words_from_script,
     PAUSE_AFTER_QUESTION, PAUSE_AFTER_OPTION, PAUSE_AFTER_THINK,
     PAUSE_AFTER_ANSWER, PAUSE_AFTER_EXPLANATION,
     PAUSE_LETTER_TO_WORD, PAUSE_BETWEEN_OPTIONS, trim_clip_silence,
+    repair_truncated_tail,
 )
 from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
@@ -54,19 +56,37 @@ VOICES = {
     "sam": "yoZ06aMxZJJ28mfd3POQ",          # Male, raspy
     "nicole": "piTKgcLEGmPE4e6mEKli",       # Female, whisper
     "matilda": "XrExE9yKIg1WjnnlVkGX",      # Female, warm
-    "english-teacher": "ZOgeDYxfyev5qgOXq2lN",  # Custom, bilingual teacher
 }
 
-# Default voice (english-teacher - custom bilingual educational voice)
-# VIDEO_PROFILE_VOICE_ID (set by src/profiles.py) takes precedence — load_dotenv
-# above uses override=True, so .env would clobber a plain ELEVENLABS_VOICE_ID.
+# The channel's voice. It lives in .env and ONLY there: the repository is not
+# the place for an account's voice id, and a hardcoded fallback would silently
+# keep working if .env lost it. VIDEO_PROFILE_VOICE_ID (set by src/profiles.py)
+# takes precedence. May be None here; _elevenlabs_with_retry refuses to call the
+# API without one, with a message that says where to set it.
 DEFAULT_VOICE_ID = (os.getenv("VIDEO_PROFILE_VOICE_ID")
-                    or os.getenv("ELEVENLABS_VOICE_ID", "ZOgeDYxfyev5qgOXq2lN"))
+                    or os.getenv("ELEVENLABS_VOICE_ID"))
 
 # Model — eleven_v3: best quality, 74 languages, emotional control via text cues
 # NOTE: v3 does NOT support SSML <break> tags — use "..." or narrative text for pauses
 MODEL_ID = (os.getenv("VIDEO_PROFILE_TTS_MODEL")
             or os.getenv("ELEVENLABS_MODEL", "eleven_v3"))
+
+# WHETHER THE TAGS SURVIVE, decided once, from the model that will actually
+# receive the text. The four types in this module (quiz, true_false,
+# fill_blank, vocabulary) run on MODEL_ID; educational and pronunciation go
+# through tts_bilingual on turbo v2.5, which does not interpret tags and
+# therefore keeps stripping them. Asking the model rather than the type
+# means an ELEVENLABS_MODEL override cannot silently start sending stage
+# directions to something that will read them out loud.
+from audio_tags import honours_tags  # noqa: E402
+_KEEP_TAGS = honours_tags(MODEL_ID)
+
+# THE LINES NO SCRIPT WROTE. "Escucha las opciones." / "¡Piensa bien!" /
+# "Correcto. La respuesta es A, its." were string literals here: identical
+# in every video ever made, and a multi-item quiz says the answer line three
+# times in sixty seconds. narration_phrases picks from a pool per script and
+# per item, deterministically -- see that module for why it is not random.
+from narration_phrases import pick, topic_id_of  # noqa: E402
 
 # ============== VOICE SETTINGS ==============
 # Stability 0.50: expressive enough to sound human, stable enough to avoid
@@ -117,11 +137,18 @@ def add_natural_pauses(text: str, segment_type: str = 'default') -> str:
         return text
 
     # --- 1. Pause before answer reveal ---
+    #
+    # MATCHED ON narration_phrases.REVEAL_CUE, not on a literal typed here.
+    # The answer line is no longer one fixed string -- it comes from a pool
+    # -- and a pool entry whose wording drifted past this replace() would
+    # have lost its pre-reveal beat silently, with nothing to notice it but
+    # the ear. "La respuesta" is the part every entry shares; for the legacy
+    # "Correcto. La respuesta es B" the output is byte-identical to what
+    # this produced before.
     if segment_type == 'answer':
-        text = text.replace(
-            'La respuesta es',
-            '... La respuesta es'
-        )
+        from narration_phrases import REVEAL_CUE
+        if '...' not in text:
+            text = text.replace(REVEAL_CUE, '... ' + REVEAL_CUE, 1)
         text = text.replace('Correcto.', 'Correcto...')
 
     # --- 2. Pause between sentences in explanations ---
@@ -160,7 +187,7 @@ def add_natural_pauses(text: str, segment_type: str = 'default') -> str:
     return text.strip()
 
 
-def enhance_bilingual_text(text: str, english_words: set) -> str:
+def enhance_bilingual_text(text: str, english_words: set, model: str = None) -> str:
     """
     Enhance text for correct bilingual pronunciation.
 
@@ -177,6 +204,10 @@ def enhance_bilingual_text(text: str, english_words: set) -> str:
         Enhanced text optimized for bilingual TTS
     """
     if not english_words or not text:
+        return text
+    # STEP 76 §5: eleven_v3 says «schedule» and «through» right; the respellings below made
+    # it read them oddly. The table stays for the older models that needed it.
+    if (model or MODEL_ID) == "eleven_v3":
         return text
 
     # Phonetic spelling hints for words the Spanish model commonly
@@ -222,6 +253,15 @@ def get_client() -> ElevenLabs:
             timeout=httpx.Timeout(connect=10.0, read=120.0, write=30.0, pool=10.0),
         ),
     )
+
+
+def _is_audio_tag(token: str) -> bool:
+    """Whether this token is an ElevenLabs audio tag. See src/audio_tags.py."""
+    try:
+        from audio_tags import is_tag
+    except ImportError:                                     # noqa: BLE001
+        return False
+    return is_tag(token)
 
 
 def estimate_word_timestamps(text: str, duration: float, english_phrases: list = None) -> tuple:
@@ -304,6 +344,17 @@ def estimate_word_timestamps(text: str, duration: float, english_phrases: list =
             if stripped in ('...', '..', '') or set(stripped) == {'.'}:
                 continue
 
+            # AN AUDIO TAG IS A DIRECTION, NOT A WORD. eleven_v3 reads
+            # "[excited]" as delivery and does not speak it -- but this list is
+            # built by SPLITTING THE INPUT TEXT, not from the alignment the API
+            # returns, so without this the tag becomes a word and the renderer
+            # draws "[excited]" on the video. The "..." filter three lines up is
+            # the same problem, solved once and never extended.
+            # The tag keeps its share of sent_chars, so the words around it
+            # absorb its time -- right for [laughs], harmless for [excited].
+            if _is_audio_tag(raw_word):
+                continue
+
             word_dur = ((len(raw_word) + 1) / sent_chars) * sent_duration
             word_dur = max(0.08, word_dur)  # minimum 80ms per word
 
@@ -333,18 +384,25 @@ def estimate_word_timestamps(text: str, duration: float, english_phrases: list =
     return words, segments
 
 
-def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, **kwargs) -> None:
-    """Call ElevenLabs TTS API with exponential backoff retry."""
+def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, take: int = 0, **kwargs) -> None:
+    """Call ElevenLabs TTS API with exponential backoff retry; a cached identical request
+    (tts_cache, `take` included) is copied instead of asked again."""
     import time as _time
 
-    # Track cost
-    try:
-        from cost_tracker import get_tracker
-        text = kwargs.get('text', '')
-        model_id = kwargs.get('model_id', 'eleven_v3')
-        get_tracker().log_elevenlabs_tts(characters=len(text), model=model_id, label="tts_segment")
-    except Exception:
-        pass
+    # Every ElevenLabs call in this module passes through here, so this is the
+    # one place a missing voice id is caught -- not six call sites.
+    if not kwargs.get("voice_id"):
+        raise RuntimeError("ELEVENLABS_VOICE_ID no está configurado. Ponlo en .env (el ID de la voz del canal); ya no hay voz por defecto en el código.")
+
+    import tts_cache
+    cache_key = tts_cache.key({**kwargs, "endpoint": "convert"}, take)
+    if tts_cache.restore(cache_key, output_path) is not None:
+        return
+
+    from cost_tracker import check_tts_budget, get_tracker
+    text = kwargs.get('text', '')
+    model_id = kwargs.get('model_id', 'eleven_v3')
+    check_tts_budget(len(text), model_id)
 
     for attempt in range(max_retries):
         try:
@@ -352,13 +410,43 @@ def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, **kwa
             with open(output_path, 'wb') as f:
                 for chunk in audio_generator:
                     f.write(chunk)
-            return
         except Exception as e:
-            if attempt == max_retries - 1:
+            wait = retry_wait(e, attempt)
+            if wait is None or attempt == max_retries - 1:
                 raise
-            wait = 2 ** attempt
-            logger.warning("ElevenLabs attempt %d failed (%s), retrying in %ds...", attempt + 1, e, wait)
+            logger.warning("ElevenLabs attempt %d failed (%s), retrying in %.1fs...", attempt + 1, e, wait)
             _time.sleep(wait)
+            continue
+        # Cost once, for the attempt that came back 2xx (STEP 76 §5): a refused or
+        # timed-out request is not billed, and logging before the call counted retries.
+        get_tracker().log_elevenlabs_tts(characters=len(text), model=model_id, label="tts_segment")
+        tts_cache.store(cache_key, output_path, {**kwargs, "endpoint": "convert"})
+        return
+
+
+def retry_wait(exc: Exception, attempt: int):
+    """Seconds to wait before re-asking, or None when the error is not worth a retry.
+
+    Only rate limits (429), server errors (5xx) and timeouts are retried (STEP 76 §5); a
+    401/400/422 fails the same way every time, and retrying it only spends the wait.
+    Retry-After is honoured when the server sends it (capped at 60 s)."""
+    status = getattr(exc, "status_code", None)
+    if status == 429 or (isinstance(status, int) and 500 <= status < 600):
+        headers = getattr(exc, "headers", None) or {}
+        after = headers.get("retry-after") or headers.get("Retry-After")
+        try:
+            return min(60.0, max(0.0, float(after)))
+        except (TypeError, ValueError):
+            return float(2 ** attempt)
+    try:
+        import httpx
+        if isinstance(exc, httpx.TimeoutException):
+            return float(2 ** attempt)
+    except ImportError:
+        pass
+    if isinstance(exc, TimeoutError):
+        return float(2 ** attempt)
+    return None
 
 
 def generate_segment_audio(
@@ -373,6 +461,7 @@ def generate_segment_audio(
     segment_type: str = 'default',
     english_words: set = None,
     humanize: bool = True,
+    take: int = 0,
 ) -> float:
     """
     Generate a single audio segment using ElevenLabs TTS.
@@ -395,6 +484,7 @@ def generate_segment_audio(
         segment_type: Type of segment for context-aware enhancements
         english_words: Set of English words for bilingual pronunciation
         humanize: Whether to add natural pauses and breathing (default True)
+        take: Which take of this request (the onset gate's re-asks); part of the cache key
 
     Returns:
         Duration in seconds
@@ -412,7 +502,7 @@ def generate_segment_audio(
 
     # Enhance bilingual pronunciation
     if english_words:
-        text = enhance_bilingual_text(text, english_words)
+        text = enhance_bilingual_text(text, english_words, MODEL_ID)
 
     logger.debug("TTS [%s] speed=%.2f text='%s'", segment_type, speed, text[:80])
 
@@ -421,6 +511,7 @@ def generate_segment_audio(
 
     _elevenlabs_with_retry(
         client, output_path,
+        take=take,
         voice_id=voice_id,
         text=text,
         model_id=MODEL_ID,
@@ -434,6 +525,20 @@ def generate_segment_audio(
         output_format="mp3_44100_128",
     )
 
+    # THE CODE-SWITCH TRUNCATION, REPAIRED BEFORE ANYONE MEASURES THE CLIP.
+    #
+    # Any clip containing a language transition comes back from ElevenLabs cut
+    # at the instant the voice stops — measured 6/6 on "el libro... the book."
+    # against 0/6 on either language alone. repair_truncated_tail gives it its
+    # decay back and is a no-op on a healthy clip.
+    #
+    # HERE, and not at the call sites, because every caller measures what this
+    # function returns: add_audio derives running_time from the duration, so
+    # the pad has to exist before that read or every later segment start
+    # drifts by TAIL_PAD. Returning the post-repair duration is the whole
+    # point — see tts_common for the measured constants and the residual.
+    repair_truncated_tail(output_path)
+
     duration = get_audio_duration(output_path)
     if duration <= 0:
         raise RuntimeError(f"ElevenLabs TTS produced zero-length audio for: {text[:60]}")
@@ -443,6 +548,7 @@ def generate_segment_audio(
 def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
                        stability, similarity_boost, english_words,
                        add_audio, add_silence, add_segment, seg_ids,
+                       transition_id='transition',
                        label_text=lambda lab: f"Opción {lab},"):
     """Speak an options block as one TTS call PER PART, measuring every clip.
 
@@ -494,7 +600,10 @@ def emit_split_options(*, labels, words, transition_text, temp_dir, voice_id,
     )
     _trim(trans_path)
     t_start, _t_end, _d, t_end_speech = add_audio(trans_path)
-    add_segment('transition', transition_text, t_start, t_end_speech)
+    # NOT the literal 'transition'. A multi-item quiz calls this once per
+    # item, and a hardcoded id meant items 2 and 3 silently overwrote item
+    # 1's entry in the flat segment_times dict -- one key, three writers.
+    add_segment(transition_id, transition_text, t_start, t_end_speech)
     add_silence(PAUSE_BETWEEN_OPTIONS)
 
     for i, (lab, word) in enumerate(zip(labels, words)):
@@ -563,13 +672,13 @@ def generate_quiz_audio_segmented(
     # identical duration and a 1.3 dB mean-level difference, which
     # is inside run-to-run variance. This is 'do not discard input',
     # not 'this demonstrably sounds better'.
-    question = clean_for_tts(script.get('question', ''))
+    question = clean_for_tts(script.get('question', ''), keep_tags=_KEEP_TAGS)
     options = script.get('options', {})
     correct = script.get('correct', 'A')
-    explanation = clean_for_tts(script.get('explanation', ''))
+    explanation = clean_for_tts(script.get('explanation', ''), keep_tags=_KEEP_TAGS)
 
     # Get correct answer text
-    correct_text = clean_for_tts(options.get(correct, '').strip("'\""))
+    correct_text = clean_for_tts(options.get(correct, '').strip("'\""), keep_tags=_KEEP_TAGS)
 
     # Extract English words
     english_words = extract_english_words_from_script(script)
@@ -578,34 +687,9 @@ def generate_quiz_audio_segmented(
     # Create temp directory for assembly
     with tempfile.TemporaryDirectory() as temp_dir:
         segments = []
-        audio_files = []
-        running_time = 0.0
-
-        def add_audio(path: str, duration: float = None):
-            """Add audio file to sequence.
-
-            Returns (start, file_end, duration, speech_end). `speech_end` is
-            where the VOICE stops; `file_end` is where the CLIP stops, and the
-            two differ by the trailing silence every TTS model leaves behind.
-            Segments must be recorded against speech_end — see
-            tts_common.measure_speech_end. The audio itself is untouched.
-            """
-            nonlocal running_time
-            if duration is None:
-                duration = get_audio_duration(path)
-            audio_files.append(path)
-            start = running_time
-            speech_end = start + measure_speech_end(path)
-            running_time += duration
-            return start, running_time, duration, speech_end
-
-        def add_silence(duration: float):
-            """Add silence to sequence."""
-            nonlocal running_time
-            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(duration, silence_path)
-            audio_files.append(silence_path)
-            running_time += duration
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
 
         def add_segment(seg_id: str, text: str, start: float, end: float):
             """Record segment metadata."""
@@ -629,137 +713,209 @@ def generate_quiz_audio_segmented(
         logger.info("Global speed: %.2f", GLOBAL_SPEED)
         logger.info("English words: %s", english_words)
 
-        # ============================================================
-        # 1. QUESTION
-        # ============================================================
-        logger.info("[1] QUESTION")
-        q_path = os.path.join(temp_dir, "question.mp3")
-        generate_segment_audio(
-            text=question,
-            output_path=q_path,
-            voice_id=voice_id,
-            stability=stability,
-            similarity_boost=similarity_boost,
-            segment_type='question',
-            english_words=english_words,
-        )
-        q_start, q_end, _, q_end_speech = add_audio(q_path)
-        add_segment('question', question, q_start, q_end_speech)
-        add_silence(PAUSE_AFTER_QUESTION)
+        def emit_item(item: dict, prefix: str, index: int):
+            """Every segment for ONE quiz item, ids carrying `prefix`.
 
-        # ============================================================
-        # 2-3. TRANSITION + OPTIONS — one TTS call per part, every
-        #      boundary MEASURED
-        # ============================================================
-        #
-        # This used to be a single TTS call carrying the transition line and
-        # all four options, whose boundaries were then invented:
-        #
-        #     transition_duration = 1.5              # a guess at "Escucha
-        #                                            #  las opciones."
-        #     per_option = options_duration / 4      # assumes four equal
-        #                                            #  options
-        #
-        # Both are wrong, and the QA gate measured how wrong. On
-        # quiz/cool_20260416_084217 every NON-option boundary in the same file
-        # landed within 0.12 s of the waveform, while the four option starts
-        # drifted +0.51, -0.70, -0.56, -0.50 s — so option cards B, C and D
-        # appeared roughly half a second after the voice had already spoken
-        # them. Options are not equal length; "fábrica" and "textura" do not
-        # take the same time to say.
-        #
-        # The fix is not better arithmetic, it is measurement. Every other
-        # segment in this function already does it correctly — `think` calls
-        # add_audio() and records what it returns. Options now do the same.
-        #
-        # Splitting also resolves the 'afabric' defect. Letter and word are
-        # separate clips with spliced silence between them, so the model can
-        # no longer elide "Opción A, fábrica" into "Opción afábrica" — there
-        # is no single utterance for it to elide within.
-        logger.info("[2-3] OPTIONS (split: letter | silence | word)")
+            The body that used to sit inline when a quiz was one question,
+            unchanged apart from the prefix and per-item temp paths. Item 1
+            passes prefix="" and produces exactly the ids it always did.
 
-        emit_split_options(
-            labels=['A', 'B', 'C', 'D'],
-            words=[options.get(L, '').strip("'\"") for L in ['A', 'B', 'C', 'D']],
-            transition_text="Escucha las opciones.",
-            temp_dir=temp_dir, voice_id=voice_id,
-            stability=stability, similarity_boost=similarity_boost,
-            english_words=english_words,
-            add_audio=add_audio, add_silence=add_silence, add_segment=add_segment,
-            seg_ids=['option_a', 'option_b', 'option_c', 'option_d'],
-        )
+            `english_words` stays SCRIPT-level on purpose:
+            extract_english_words_from_script reads `english_phrases`, which
+            is a root-level field describing the whole script, and a
+            QuizItem does not carry one. Recomputing it per item would hand
+            items 2..n an empty list and lose every pronunciation hint.
+            """
+            question = clean_for_tts(item.get('question', ''), keep_tags=_KEEP_TAGS)
+            options = item.get('options', {}) or {}
+            correct = item.get('correct', 'A')
+            explanation = clean_for_tts(item.get('explanation', '') or '', keep_tags=_KEEP_TAGS)
+            correct_text = clean_for_tts(options.get(correct, '').strip("'\""), keep_tags=_KEEP_TAGS)
 
-        add_silence(PAUSE_AFTER_OPTION)
+            item_temp_dir = os.path.join(temp_dir, prefix or "i1_")
+            os.makedirs(item_temp_dir, exist_ok=True)
 
-        # ============================================================
-        # 4. THINK (always generated dynamically for voice consistency)
-        # ============================================================
-        logger.info("[4] THINK")
-        think_gen_path = os.path.join(temp_dir, "think.mp3")
-        generate_segment_audio(
-            "¡Piensa bien!", think_gen_path, voice_id,
-            segment_type='think',
-        )
-        think_start, think_end, _, think_end_speech = add_audio(think_gen_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
-        add_silence(PAUSE_AFTER_THINK)
-
-        # ============================================================
-        # 5. COUNTDOWN (VISUAL ONLY - audio is silent)
-        # The countdown numbers appear on screen during this silence.
-        # Total silence: ~7s (1.5s pre + 3 x 1.5s intervals + 1.0s before answer)
-        # ============================================================
-        logger.info("[5] COUNTDOWN (visual only, audio silence)")
-        countdown_interval = 1.5  # 1.5 seconds per number for full visual display
-        for num in ['3', '2', '1']:
-            cd_start = running_time
-            add_silence(countdown_interval)
-            cd_end = running_time
-            add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
-            logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
-
-        # Dramatic pause before answer reveal - ensures "1" fully displays
-        add_silence(1.0)
-
-        # ============================================================
-        # 6. ANSWER (with emphasis and natural delivery)
-        # ============================================================
-        logger.info("[6] ANSWER")
-        answer_start = running_time
-        full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
-        logger.debug("Answer: '%s'", full_answer_text)
-
-        ans_path = os.path.join(temp_dir, "answer.mp3")
-        generate_segment_audio(
-            full_answer_text, ans_path, voice_id,
-            segment_type='answer',
-            english_words=english_words,
-        )
-        _, _, _, answer_end_speech = add_audio(ans_path)
-
-        add_segment('answer', full_answer_text, answer_start, answer_end_speech)
-        add_silence(PAUSE_AFTER_ANSWER)
-
-        # ============================================================
-        # 7. EXPLANATION (conversational, warm delivery)
-        # ============================================================
-        if explanation.strip():
-            logger.info("[7] EXPLANATION")
-            exp_path = os.path.join(temp_dir, "explanation.mp3")
+            # ============================================================
+            # 1. QUESTION
+            # ============================================================
+            logger.info("[1] QUESTION")
+            q_path = os.path.join(temp_dir, prefix + "question.mp3")
             generate_segment_audio(
-                text=explanation,
-                output_path=exp_path,
+                text=question,
+                output_path=q_path,
                 voice_id=voice_id,
                 stability=stability,
                 similarity_boost=similarity_boost,
-                segment_type='explanation',
+                segment_type='question',
                 english_words=english_words,
             )
-            exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
-            add_segment('explanation', explanation, exp_start, exp_end_speech)
-            add_silence(PAUSE_AFTER_EXPLANATION)
+            q_start, q_end, _, q_end_speech = add_audio(q_path)
+            add_segment(prefix + 'question', question, q_start, q_end_speech)
+            add_silence(PAUSE_AFTER_QUESTION)
 
-        total_duration = running_time
+            # ============================================================
+            # 2-3. TRANSITION + OPTIONS — one TTS call per part, every
+            #      boundary MEASURED
+            # ============================================================
+            #
+            # This used to be a single TTS call carrying the transition line and
+            # all four options, whose boundaries were then invented:
+            #
+            #     transition_duration = 1.5              # a guess at "Escucha
+            #                                            #  las opciones."
+            #     per_option = options_duration / 4      # assumes four equal
+            #                                            #  options
+            #
+            # Both are wrong, and the QA gate measured how wrong. On
+            # quiz/cool_20260416_084217 every NON-option boundary in the same file
+            # landed within 0.12 s of the waveform, while the four option starts
+            # drifted +0.51, -0.70, -0.56, -0.50 s — so option cards B, C and D
+            # appeared roughly half a second after the voice had already spoken
+            # them. Options are not equal length; "fábrica" and "textura" do not
+            # take the same time to say.
+            #
+            # The fix is not better arithmetic, it is measurement. Every other
+            # segment in this function already does it correctly — `think` calls
+            # add_audio() and records what it returns. Options now do the same.
+            #
+            # Splitting also resolves the 'afabric' defect. Letter and word are
+            # separate clips with spliced silence between them, so the model can
+            # no longer elide "Opción A, fábrica" into "Opción afábrica" — there
+            # is no single utterance for it to elide within.
+            logger.info("[2-3] OPTIONS (split: letter | silence | word)")
+
+            emit_split_options(
+                labels=['A', 'B', 'C', 'D'],
+                words=[options.get(L, '').strip("'\"") for L in ['A', 'B', 'C', 'D']],
+                transition_text=pick("quiz.transition", _topic_id, index),
+                temp_dir=item_temp_dir, voice_id=voice_id,
+                stability=stability, similarity_boost=similarity_boost,
+                english_words=english_words,
+                add_audio=add_audio, add_silence=add_silence, add_segment=add_segment,
+                seg_ids=[prefix + s for s in ('option_a', 'option_b',
+                                              'option_c', 'option_d')],
+                transition_id=prefix + 'transition',
+            )
+
+            add_silence(PAUSE_AFTER_OPTION)
+
+            # ============================================================
+            # 4. THINK (always generated dynamically for voice consistency)
+            # ============================================================
+            logger.info("[4] THINK")
+            think_gen_path = os.path.join(temp_dir, prefix + "think.mp3")
+            think_text = pick("quiz.think", _topic_id, index)
+            generate_segment_audio(
+                think_text, think_gen_path, voice_id,
+                segment_type='think',
+            )
+            think_start, think_end, _, think_end_speech = add_audio(think_gen_path)
+            add_segment(prefix + 'think', think_text, think_start, think_end_speech)
+            add_silence(PAUSE_AFTER_THINK)
+
+            # ============================================================
+            # 5. COUNTDOWN (VISUAL ONLY - audio is silent)
+            # The countdown numbers appear on screen during this silence.
+            # Total silence: ~7s (1.5s pre + 3 x 1.5s intervals + 1.0s before answer)
+            # ============================================================
+            logger.info("[5] COUNTDOWN (visual only, audio silence)")
+            countdown_interval = 1.5  # 1.5 seconds per number for full visual display
+            for num in ['3', '2', '1']:
+                cd_start = timeline.time
+                add_silence(countdown_interval)
+                cd_end = timeline.time
+                add_segment(f'{prefix}countdown_{num}', f'[{num}]', cd_start, cd_end)
+                logger.info("  [%scountdown_%s] %.2fs - %.2fs (silent)", prefix, num, cd_start, cd_end)
+
+            # Dramatic pause before answer reveal - ensures "1" fully displays
+            add_silence(1.0)
+
+            # ============================================================
+            # 6. ANSWER (with emphasis and natural delivery)
+            # ============================================================
+            logger.info("[6] ANSWER")
+            answer_start = timeline.time
+            full_answer_text = pick("quiz.answer", _topic_id, index,
+                                    L=correct, text=correct_text)
+            logger.debug("Answer: '%s'", full_answer_text)
+
+            ans_path = os.path.join(temp_dir, prefix + "answer.mp3")
+            generate_segment_audio(
+                full_answer_text, ans_path, voice_id,
+                segment_type='answer',
+                english_words=english_words,
+            )
+            _, _, _, answer_end_speech = add_audio(ans_path)
+
+            add_segment(prefix + 'answer', full_answer_text, answer_start, answer_end_speech)
+
+            # REPEAT THE CORRECT ENGLISH, with a real pause first.
+            #
+            # The reveal is the one moment the learner knows which phrase is
+            # worth remembering, so it is the one moment repeating it teaches
+            # something. Declared as its own speech segment with spliced
+            # silence before it — not a longer countdown, not dead air.
+            for take in range(2, _takes('quiz') + 1):
+                add_silence(_repeat_pause())
+                rep_text = f"{correct_text}."
+                rep_path = os.path.join(temp_dir, f"{prefix}answer_take{take}.mp3")
+                generate_segment_audio(
+                    rep_text, rep_path, voice_id,
+                    segment_type='answer',
+                    english_words=english_words,
+                )
+                rep_start, _, _, rep_end_speech = add_audio(rep_path)
+                add_segment(f'{prefix}repeat_answer_take{take}', rep_text,
+                            rep_start, rep_end_speech)
+            add_silence(PAUSE_AFTER_ANSWER)
+
+            # ============================================================
+            # 7. EXPLANATION (conversational, warm delivery)
+            # ============================================================
+            if explanation.strip():
+                logger.info("[7] EXPLANATION")
+                exp_path = os.path.join(temp_dir, prefix + "explanation.mp3")
+                generate_segment_audio(
+                    text=explanation,
+                    output_path=exp_path,
+                    voice_id=voice_id,
+                    stability=stability,
+                    similarity_boost=similarity_boost,
+                    segment_type='explanation',
+                    english_words=english_words,
+                )
+                exp_start, exp_end, _, exp_end_speech = add_audio(exp_path)
+                add_segment(prefix + 'explanation', explanation, exp_start, exp_end_speech)
+                add_silence(PAUSE_AFTER_EXPLANATION)
+
+        # ============================================================
+        # THE ITEMS. `questions` has been DEAD PAYLOAD since the schema was
+        # written: the prompt demands three, GPT writes three, they are paid
+        # for, and only the root-level one was ever spoken or drawn.
+        #
+        # questions[0] MIRRORS the root fields — QuizScript.lint() rejects a
+        # script where it does not — so the root is item 1 and questions[1:]
+        # supplies the rest.
+        #
+        # PREFIXED IDS, NOT A LIST: add_segment takes a flat string id and
+        # segment_times is a flat dict everywhere it is written, stored and
+        # read. Item 1 keeps its BARE names, so every audio json already on
+        # disk stays valid and the `{'option_a','answer'}` probe in
+        # resolve_quiz_timestamps still passes.
+        # ============================================================
+        _topic_id = topic_id_of(script)
+        from tts_common import items_to_speak
+        items = items_to_speak(script, 'quiz')
+        logger.info("QUIZ: %d item(s) (config items_spoken caps this)",
+                    len(items))
+
+        for _index, _item in enumerate(items, 1):
+            if _index > 1:
+                add_silence(PAUSE_AFTER_EXPLANATION)
+            emit_item(_item, "" if _index == 1 else f"i{_index}_", _index)
+
+
+        total_duration = timeline.time
         logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
         logger.info("=" * 60)
@@ -767,24 +923,7 @@ def generate_quiz_audio_segmented(
         # ============================================================
         # CONCATENATE
         # ============================================================
-        logger.info("Concatenating audio files...")
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            for audio_file in audio_files:
-                f.write(f"file '{audio_file}'\n")
-
-        # Concatenate with re-encoding to ensure compatibility
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-acodec', 'libmp3lame', '-q:a', '2',
-            '-ar', '44100', '-ac', '1',
-            output_path
-        ]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        if result.returncode != 0:
-            logger.error("FFmpeg error: %s", result.stderr)
-            raise RuntimeError(f"FFmpeg concatenation failed: {result.stderr}")
+        timeline.finalize(output_path)
 
         logger.info("Audio saved: %s", output_path)
 
@@ -813,6 +952,10 @@ def generate_quiz_audio_segmented(
             'options': options,
             'correct': correct,
             'explanation': explanation,
+            # WITHOUT THIS the prefixed segments above are unreachable:
+            # quiz_item_views reads `questions` for items 2..n, and this
+            # dict — not the source script — is the json the renderer loads.
+            'questions': script.get('questions') or [],
             'full_script': script.get('full_script', ''),
             'translations': script.get('translations', {}),
             'hashtags': script.get('hashtags', []),
@@ -862,7 +1005,7 @@ def generate_fill_blank_audio_segmented(
     explanation = script.get('explanation', '')
     translation = script.get('translation', '')
 
-    clean_sentence = clean_for_tts(sentence)
+    clean_sentence = clean_for_tts(sentence, keep_tags=_KEEP_TAGS)
     english_words = extract_english_words_from_script(script)
 
     temp_dir = tempfile.mkdtemp(prefix="el_fb_segments_")
@@ -873,27 +1016,9 @@ def generate_fill_blank_audio_segmented(
         logger.info("=" * 60)
 
         segments = []
-        audio_files = []
-        running_time = 0.0
-
-        def add_audio(path: str, duration: float = None):
-            nonlocal running_time
-            if duration is None:
-                duration = get_audio_duration(path)
-            audio_files.append(path)
-            start = running_time
-            # speech_end: where the VOICE stops, vs running_time where the
-            # CLIP stops. Segments must be recorded against the former.
-            speech_end = start + measure_speech_end(path)
-            running_time += duration
-            return start, running_time, duration, speech_end
-
-        def add_silence(dur: float):
-            nonlocal running_time
-            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(dur, silence_path)
-            audio_files.append(silence_path)
-            running_time += dur
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
 
         def add_segment(seg_id: str, text: str, start: float, end: float):
             segment = {
@@ -936,10 +1061,13 @@ def generate_fill_blank_audio_segmented(
         opt_labels = [str(i + 1) for i in range(len(opt_words))]
         opt_seg_ids = [f"option_{i + 1}" for i in range(len(opt_words))]
 
-        block_start = running_time
+        _topic_id = topic_id_of(script)
+        _fb_transition = pick("fill_blank.transition", _topic_id)
+
+        block_start = timeline.time
         option_spans = emit_split_options(
             labels=opt_labels, words=opt_words,
-            transition_text="Aquí van las opciones.",
+            transition_text=_fb_transition,
             temp_dir=temp_dir, voice_id=voice_id,
             stability=stability, similarity_boost=similarity_boost,
             english_words=english_words,
@@ -950,7 +1078,7 @@ def generate_fill_blank_audio_segmented(
         # Keep the whole-block `options` segment as well. The renderer and the
         # QA gate both read it, and dropping it would break them for the sake
         # of a rename; the per-option spans are additive.
-        add_segment('options', "Aquí van las opciones. " +
+        add_segment('options', _fb_transition + " " +
                     " ".join(f"Opción {l}, {w}." for l, w in zip(opt_labels, opt_words)),
                     block_start, option_spans[-1]['end'] if option_spans else block_start)
         add_silence(PAUSE_AFTER_OPTION)
@@ -958,20 +1086,21 @@ def generate_fill_blank_audio_segmented(
         # 3. THINK
         logger.info("[3] THINK")
         think_path = os.path.join(temp_dir, "think.mp3")
+        _fb_think = pick("fill_blank.think", _topic_id)
         generate_segment_audio(
-            "¡Piensa bien!", think_path, voice_id, segment_type='think',
+            _fb_think, think_path, voice_id, segment_type='think',
         )
         think_start, think_end, _, think_end_speech = add_audio(think_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
+        add_segment('think', _fb_think, think_start, think_end_speech)
         add_silence(PAUSE_AFTER_THINK)
 
         # 4. COUNTDOWN (VISUAL ONLY - silent)
         logger.info("[4] COUNTDOWN (visual only, audio silence)")
         countdown_interval = 1.5
         for num in ['3', '2', '1']:
-            cd_start = running_time
+            cd_start = timeline.time
             add_silence(countdown_interval)
-            cd_end = running_time
+            cd_end = timeline.time
             add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
             logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
 
@@ -980,7 +1109,7 @@ def generate_fill_blank_audio_segmented(
 
         # 5. ANSWER
         logger.info("[5] ANSWER")
-        answer_text = f"La respuesta correcta es '{correct}'."
+        answer_text = pick("fill_blank.answer", _topic_id, text=correct)
         ans_path = os.path.join(temp_dir, "answer.mp3")
         generate_segment_audio(
             text=answer_text, output_path=ans_path, voice_id=voice_id,
@@ -989,12 +1118,27 @@ def generate_fill_blank_audio_segmented(
         )
         ans_start, ans_end, _, ans_end_speech = add_audio(ans_path)
         add_segment('answer', answer_text, ans_start, ans_end_speech)
+
+        # Same repetition as quiz, same reason: the reveal is when the
+        # learner knows which phrase to keep.
+        for take in range(2, _takes('fill_blank') + 1):
+            add_silence(_repeat_pause())
+            rep_text = f"{correct}."
+            rep_path = os.path.join(temp_dir, f"answer_take{take}.mp3")
+            generate_segment_audio(
+                text=rep_text, output_path=rep_path, voice_id=voice_id,
+                stability=stability, similarity_boost=similarity_boost,
+                segment_type='answer', english_words=english_words,
+            )
+            rep_start, _, _, rep_end_speech = add_audio(rep_path)
+            add_segment(f'repeat_answer_take{take}', rep_text,
+                        rep_start, rep_end_speech)
         add_silence(PAUSE_AFTER_ANSWER)
 
         # 6. EXPLANATION
         if explanation.strip():
             logger.info("[6] EXPLANATION")
-            clean_explanation = clean_for_tts(explanation)
+            clean_explanation = clean_for_tts(explanation, keep_tags=_KEEP_TAGS)
             exp_path = os.path.join(temp_dir, "explanation.mp3")
             generate_segment_audio(
                 text=clean_explanation, output_path=exp_path, voice_id=voice_id,
@@ -1005,31 +1149,13 @@ def generate_fill_blank_audio_segmented(
             add_segment('explanation', clean_explanation, exp_start, exp_end_speech)
             add_silence(PAUSE_AFTER_EXPLANATION)
 
-        total_duration = running_time
+        total_duration = timeline.time
         logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
         logger.info("=" * 60)
 
         # Concatenate
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            for audio_file in audio_files:
-                f.write(f"file '{audio_file}'\n")
-
-        output_dir = os.path.dirname(output_path)
-        if output_dir:
-            os.makedirs(output_dir, exist_ok=True)
-
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-acodec', 'libmp3lame', '-q:a', '2',
-            '-ar', '44100', '-ac', '1',
-            output_path
-        ]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        if result.returncode != 0:
-            raise RuntimeError(f"FFmpeg concat failed: {result.stderr[:500]}")
+        timeline.finalize(output_path)
 
         logger.info("Audio saved: %s", output_path)
 
@@ -1109,7 +1235,7 @@ def generate_true_false_audio_segmented(
 
     # Strip "¿Verdadero o falso?" from statement to avoid reading it twice
     stripped = re.sub(r'\s*¿?\s*[Vv]erdadero\s+o\s+[Ff]also\s*\??\s*$', '', statement)
-    clean_statement = clean_for_tts(stripped.strip())
+    clean_statement = clean_for_tts(stripped.strip(), keep_tags=_KEEP_TAGS)
     # ¿ kept — see the note on the quiz question above.
     clean_statement = clean_statement.strip()
     answer_word = "Verdadero" if correct else "Falso"
@@ -1124,27 +1250,9 @@ def generate_true_false_audio_segmented(
         logger.info("=" * 60)
 
         segments = []
-        audio_files = []
-        running_time = 0.0
-
-        def add_audio(path: str, duration: float = None):
-            nonlocal running_time
-            if duration is None:
-                duration = get_audio_duration(path)
-            audio_files.append(path)
-            start = running_time
-            # speech_end: where the VOICE stops, vs running_time where the
-            # CLIP stops. Segments must be recorded against the former.
-            speech_end = start + measure_speech_end(path)
-            running_time += duration
-            return start, running_time, duration, speech_end
-
-        def add_silence(dur: float):
-            nonlocal running_time
-            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(dur, silence_path)
-            audio_files.append(silence_path)
-            running_time += dur
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
 
         def add_segment(seg_id: str, text: str, start: float, end: float):
             segment = {
@@ -1186,20 +1294,21 @@ def generate_true_false_audio_segmented(
         # 3. THINK
         logger.info("[3] THINK")
         think_path = os.path.join(temp_dir, "think.mp3")
+        _tf_think = pick("true_false.think", topic_id_of(script))
         generate_segment_audio(
-            "¡Piensa bien!", think_path, voice_id, segment_type='think',
+            _tf_think, think_path, voice_id, segment_type='think',
         )
         think_start, think_end, _, think_end_speech = add_audio(think_path)
-        add_segment('think', '¡Piensa bien!', think_start, think_end_speech)
+        add_segment('think', _tf_think, think_start, think_end_speech)
         add_silence(PAUSE_AFTER_THINK)
 
         # 4. COUNTDOWN (VISUAL ONLY - silent)
         logger.info("[4] COUNTDOWN (visual only, audio silence)")
         countdown_interval = 1.5
         for num in ['3', '2', '1']:
-            cd_start = running_time
+            cd_start = timeline.time
             add_silence(countdown_interval)
-            cd_end = running_time
+            cd_end = timeline.time
             add_segment(f'countdown_{num}', f'[{num}]', cd_start, cd_end)
             logger.info("  [countdown_%s] %.2fs - %.2fs (silent)", num, cd_start, cd_end)
 
@@ -1208,7 +1317,8 @@ def generate_true_false_audio_segmented(
 
         # 5. ANSWER
         logger.info("[5] ANSWER")
-        answer_text = f"¡Correcto! La respuesta es {answer_word}."
+        answer_text = pick("true_false.answer", topic_id_of(script),
+                           text=answer_word)
         ans_path = os.path.join(temp_dir, "answer.mp3")
         generate_segment_audio(
             text=answer_text, output_path=ans_path, voice_id=voice_id,
@@ -1222,7 +1332,7 @@ def generate_true_false_audio_segmented(
         # 6. EXPLANATION
         if explanation.strip():
             logger.info("[6] EXPLANATION")
-            clean_explanation = clean_for_tts(explanation)
+            clean_explanation = clean_for_tts(explanation, keep_tags=_KEEP_TAGS)
             exp_path = os.path.join(temp_dir, "explanation.mp3")
             generate_segment_audio(
                 text=clean_explanation, output_path=exp_path, voice_id=voice_id,
@@ -1233,31 +1343,13 @@ def generate_true_false_audio_segmented(
             add_segment('explanation', clean_explanation, exp_start, exp_end_speech)
             add_silence(PAUSE_AFTER_EXPLANATION)
 
-        total_duration = running_time
+        total_duration = timeline.time
         logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
         logger.info("=" * 60)
 
         # Concatenate
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            for audio_file in audio_files:
-                f.write(f"file '{audio_file}'\n")
-
-        output_dir = os.path.dirname(output_path)
-        if output_dir:
-            os.makedirs(output_dir, exist_ok=True)
-
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-acodec', 'libmp3lame', '-q:a', '2',
-            '-ar', '44100', '-ac', '1',
-            output_path
-        ]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        if result.returncode != 0:
-            raise RuntimeError(f"FFmpeg concat failed: {result.stderr[:500]}")
+        timeline.finalize(output_path)
 
         logger.info("Audio saved: %s", output_path)
 
@@ -1309,6 +1401,20 @@ def generate_true_false_audio_segmented(
             pass
 
 
+def _takes(video_type: str) -> int:
+    """How many times the English is spoken, from config.yaml."""
+    from duration_spec import takes
+
+    return takes(video_type)
+
+
+def _repeat_pause() -> float:
+    """Seconds of REAL silence between takes, from config.yaml."""
+    from duration_spec import repetition_pause
+
+    return repetition_pause()
+
+
 def generate_vocabulary_audio_segmented(
     script: dict,
     output_path: str,
@@ -1343,27 +1449,9 @@ def generate_vocabulary_audio_segmented(
         logger.info("=" * 60)
 
         segments = []
-        audio_files = []
-        running_time = 0.0
-
-        def add_audio(path: str, duration: float = None):
-            nonlocal running_time
-            if duration is None:
-                duration = get_audio_duration(path)
-            audio_files.append(path)
-            start = running_time
-            # speech_end: where the VOICE stops, vs running_time where the
-            # CLIP stops. Segments must be recorded against the former.
-            speech_end = start + measure_speech_end(path)
-            running_time += duration
-            return start, running_time, duration, speech_end
-
-        def add_silence(dur: float):
-            nonlocal running_time
-            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(dur, silence_path)
-            audio_files.append(silence_path)
-            running_time += dur
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
 
         def add_segment(seg_id: str, text: str, start: float, end: float):
             segment = {
@@ -1379,7 +1467,7 @@ def generate_vocabulary_audio_segmented(
 
         # 1. TITLE
         logger.info("[1] TITLE")
-        clean_title = clean_for_tts(title)
+        clean_title = clean_for_tts(title, keep_tags=_KEEP_TAGS)
         t_path = os.path.join(temp_dir, "title.mp3")
         generate_segment_audio(
             text=clean_title, output_path=t_path, voice_id=voice_id,
@@ -1396,8 +1484,15 @@ def generate_vocabulary_audio_segmented(
             english = pair.get('english', '')
             logger.info("[%d] PAIR: %s → %s", i + 2, spanish, english)
 
-            # Speak: "spanish, english."
-            pair_text = clean_for_tts(f"{spanish}... {english}.")
+            # Speak: "spanish, english." then REPEAT the English alone.
+            #
+            # "Repeat after me", which is what language teaching actually
+            # does, and the reason vocabulary needed it is arithmetic: the
+            # card holds at most VOCAB_MAX_ROWS=12 pairs, and 12 pairs of
+            # content alone reach roughly 38s against a 50s floor. Content
+            # could not get there on its own, so the extra take is doing
+            # pedagogical work AND duration work rather than padding.
+            pair_text = clean_for_tts(f"{spanish}... {english}.", keep_tags=_KEEP_TAGS)
             p_path = os.path.join(temp_dir, f"pair_{i}.mp3")
             generate_segment_audio(
                 text=pair_text, output_path=p_path, voice_id=voice_id,
@@ -1406,33 +1501,32 @@ def generate_vocabulary_audio_segmented(
             )
             p_start, p_end, _, p_end_speech = add_audio(p_path)
             add_segment(f'pair_{i}', pair_text, p_start, p_end_speech)
+
+            for take in range(2, _takes('vocabulary') + 1):
+                # A REAL pause first — this is where the learner says it
+                # back. Declared as silence between two speech segments, so
+                # the gate matches each take to a speech boundary and never
+                # sees speech inside a declared-silent span.
+                add_silence(_repeat_pause())
+                r_text = clean_for_tts(f"{english}.", keep_tags=_KEEP_TAGS)
+                r_path = os.path.join(temp_dir, f"pair_{i}_take{take}.mp3")
+                generate_segment_audio(
+                    text=r_text, output_path=r_path, voice_id=voice_id,
+                    stability=stability, similarity_boost=similarity_boost,
+                    segment_type='options', english_words=english_words,
+                )
+                r_start, r_end, _, r_end_speech = add_audio(r_path)
+                add_segment(f'repeat_{i}_take{take}', r_text, r_start, r_end_speech)
+
             add_silence(0.5)  # Pause between pairs
 
-        total_duration = running_time
+        total_duration = timeline.time
         logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
         logger.info("=" * 60)
 
         # Concatenate
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            for audio_file in audio_files:
-                f.write(f"file '{audio_file}'\n")
-
-        output_dir = os.path.dirname(output_path)
-        if output_dir:
-            os.makedirs(output_dir, exist_ok=True)
-
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-acodec', 'libmp3lame', '-q:a', '2',
-            '-ar', '44100', '-ac', '1',
-            output_path
-        ]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        if result.returncode != 0:
-            raise RuntimeError(f"FFmpeg concat failed: {result.stderr[:500]}")
+        timeline.finalize(output_path)
 
         logger.info("Audio saved: %s", output_path)
 
@@ -1483,6 +1577,484 @@ def generate_vocabulary_audio_segmented(
             shutil.rmtree(temp_dir)
         except:
             pass
+
+
+#: The viewer's turn: seconds of silence between the Spanish word and the
+#: English one. The brief's number, and the whole point of the format.
+HDYS_THINK_S = 1.8
+#: Air after the English takes, before the next row lights up.
+HDYS_ITEM_GAP_S = 0.4
+HDYS_AFTER_INTRO_S = 0.6
+HDYS_BEFORE_RECAP_S = 0.5
+HDYS_AFTER_RECAP_S = 0.6
+
+
+def generate_how_do_you_say_audio_segmented(
+    script: dict,
+    output_path: str,
+    voice_id: str = None,
+    stability: float = DEFAULT_STABILITY,
+    similarity_boost: float = DEFAULT_SIMILARITY,
+) -> dict:
+    """
+    Generate "¿Cómo se dice…?" audio using ElevenLabs TTS.
+
+    Segments, each with measured boundaries in segment_times:
+        intro
+        es_i     "Familia."              spoken
+        think_i  HDYS_THINK_S            generated silence, NO API call
+        en_i     "Family. Family."       spoken, ONE call; `reveal_end` is
+                                         where the first take ends, measured
+        recap
+        outro
+
+    ONE VOICE for both languages, exactly as vocabulary does: eleven_v3
+    code-switches on its own, so no second voice is needed.
+
+    THE SHORT CLIPS ARE REPAIRED AT BOTH EDGES. es_i and en_i are a word or
+    two each, sitting between silences -- the exact shape that produced the
+    chopped-audio bug. generate_segment_audio already rebuilds a truncated
+    tail; trim_clip_silence then trims to speech and shapes the onset onto
+    room tone. tools/audio_seams checks the result on the first render.
+    """
+    import shutil
+    from tts_common import clamp_take_gap, clean_for_tts, measure_first_take_end
+
+    voice_id = voice_id or DEFAULT_VOICE_ID
+    items = script['items']
+    english_words = extract_english_words_from_script(script)
+
+    temp_dir = tempfile.mkdtemp(prefix="el_hdys_segments_")
+
+    try:
+        logger.info("=" * 60)
+        logger.info("ELEVENLABS TTS - HOW DO YOU SAY AUDIO")
+        logger.info("=" * 60)
+
+        segments = []
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
+
+        def add_segment(seg_id: str, text: str, start: float, end: float, **extra):
+            segment = {
+                'id': seg_id,
+                'text': text,
+                'start': round(start, 3),
+                'end': round(end, 3),
+                'duration': round(end - start, 3),
+            }
+            segment.update({k: round(v, 3) for k, v in extra.items()})
+            segments.append(segment)
+            logger.info("  [%s] %.2f-%.2f %s", seg_id, start, end, text[:60])
+            return segment
+
+        def speak(seg_id: str, text: str, segment_type: str, trim: bool):
+            path = os.path.join(temp_dir, f"{seg_id}.mp3")
+            generate_segment_audio(
+                text=text, output_path=path, voice_id=voice_id,
+                stability=stability, similarity_boost=similarity_boost,
+                segment_type=segment_type, english_words=english_words,
+            )
+            if trim:
+                r = trim_clip_silence(path)
+                if not r["trimmed"] and r["reason"]:
+                    logger.debug("no trim on %s: %s", seg_id, r["reason"])
+            return path
+
+        # 1. INTRO
+        intro_text = clean_for_tts(script['intro'], keep_tags=_KEEP_TAGS)
+        path = speak('intro', intro_text, 'question', trim=False)
+        start, _file_end, _dur, end = add_audio(path)
+        add_segment('intro', intro_text, start, end)
+        add_silence(HDYS_AFTER_INTRO_S)
+
+        # 2. ITEMS. 1-based ids, so "item 5" in a review is es_5.
+        for i, item in enumerate(items, start=1):
+            spanish, english = item['spanish'], item['english']
+            logger.info("[item %d] %s -> %s", i, spanish, english)
+
+            es_text = clean_for_tts(f"{spanish}.", keep_tags=_KEEP_TAGS)
+            path = speak(f'es_{i}', es_text, 'options', trim=True)
+            start, _file_end, _dur, end = add_audio(path)
+            add_segment(f'es_{i}', es_text, start, end)
+
+            # The pause is DECLARED, as a silent segment, so the QA gate
+            # checks it holds no speech instead of calling it dead air.
+            start, end = add_silence(HDYS_THINK_S)
+            add_segment(f'think_{i}', '[silence]', start, end)
+
+            en_text = clean_for_tts(f"{english}. {english}.", keep_tags=_KEEP_TAGS)
+            path = speak(f'en_{i}', en_text, 'english_word', trim=True)
+            gap = clamp_take_gap(path)
+            if gap["clamped"]:
+                logger.info("en_%d: pause between takes %.2fs -> %.2fs",
+                            i, gap["gap_before"], gap["gap_after"])
+            first = measure_first_take_end(path)
+            start, _file_end, _dur, end = add_audio(path)
+            if first is None:
+                # No pause found between the takes. Half the spoken span is
+                # the honest stand-in, and it is said out loud.
+                logger.warning("en_%d: no pause between the two takes of %r; "
+                               "reveal runs over the first half", i, english)
+                first = (end - start) / 2
+            add_segment(f'en_{i}', en_text, start, end,
+                        reveal_end=min(end, start + first))
+
+            add_silence(HDYS_ITEM_GAP_S)
+
+        # 3. RECAP
+        add_silence(HDYS_BEFORE_RECAP_S)
+        recap_text = clean_for_tts(script['recap'], keep_tags=_KEEP_TAGS)
+        path = speak('recap', recap_text, 'explanation', trim=False)
+        start, _file_end, _dur, end = add_audio(path)
+        add_segment('recap', recap_text, start, end)
+        add_silence(HDYS_AFTER_RECAP_S)
+
+        # 4. OUTRO
+        outro_text = clean_for_tts(script['outro'], keep_tags=_KEEP_TAGS)
+        path = speak('outro', outro_text, 'question', trim=False)
+        start, _file_end, _dur, end = add_audio(path)
+        add_segment('outro', outro_text, start, end)
+
+        total_duration = timeline.time
+        logger.info("Total duration: %.2fs", total_duration)
+
+        timeline.finalize(output_path)
+        logger.info("Audio saved: %s", output_path)
+
+        segment_times = {}
+        for seg in segments:
+            entry = {k: seg[k] for k in ('start', 'end', 'duration')}
+            if 'reveal_end' in seg:
+                entry['reveal_end'] = seg['reveal_end']
+            segment_times[seg['id']] = entry
+
+        result_data = {
+            'duration': round(total_duration, 3),
+            'segments': segments,
+            'segment_times': segment_times,
+            'tts_model_id': MODEL_ID,
+            'type': 'how_do_you_say',
+            'title': script.get('title', ''),
+            'theme': script.get('theme', ''),
+            'level': script.get('level'),
+            'intro': script.get('intro', ''),
+            'items': items,
+            'recap': script.get('recap', ''),
+            'outro': script.get('outro', ''),
+            'full_script': script.get('full_script', ''),
+            'translations': script.get('translations', {}),
+            'english_phrases': script.get('english_phrases', []),
+            'hashtags': script.get('hashtags', []),
+            'words': [],
+            '_meta': script.get('_meta', {}),
+        }
+
+        import json
+        json_path = output_path.replace('.mp3', '.json')
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(result_data, f, ensure_ascii=False, indent=2)
+        logger.info("Timestamps saved: %s", json_path)
+
+        return result_data
+
+    finally:
+        try:
+            shutil.rmtree(temp_dir)
+        except Exception:                                   # noqa: BLE001
+            pass
+
+
+# ── The level family (STEP 58): level_test, say_it_level ────────────
+
+#: What each mode says, in which language, and the viewer's pause. say_it_level's
+#: Spanish is read off the page, not spoken: with it spoken sy001 measured 82.2 s
+#: of audio (2026-10-15), over the 80 s ceiling -- STEP 49 §5 lever 3, which asks
+#: for a think of at least 3.0 s in exchange.
+#:
+#: STEP 60 §2 (owner, 2026-10-16): level_test thinks 4.0 s, not 1.7 s; say_it_level
+#: scales its pause by the Spanish sentence's length, (most characters, seconds),
+#: so a long sentence gets 5 s without adding 20 s to every video.
+#:
+#: STEP 62 §0: a plan with a `think_floor` shrinks all its pauses by one fraction when
+#: the script is predicted over the type's reject ceiling, never under the floor.
+#: `s_per_char` is speech seconds per spoken character, measured on the approved
+#: renders lv001_cocina_think4 (0.0900) and sy001_restaurante_step60 (0.0696).
+LEVEL_PLANS = {
+    "level_test":   {"prompt": ("english", "en"), "answer": ("spanish", "es"),
+                     "think": 4.0, "speak_prompt": True,
+                     "think_floor": 3.0, "s_per_char": 0.090},
+    "say_it_level": {"prompt": ("spanish", "es"), "answer": ("english", "en"),
+                     "think": 3.0, "think_by_length": ((20, 3.0), (27, 4.0), (None, 5.0)),
+                     "speak_prompt": False,
+                     "think_floor": 2.5, "s_per_char": 0.070},
+    # STEP 61: the statement is read off the page; the 4.0 s pause is reading plus
+    # deciding. The answer is pure Spanish («Verdadero.» / «Falso: es alfombra.»),
+    # so it carries no English onset risk.
+    "true_false_level": {"prompt": ("statement", "es"), "answer": ("answer", "es"),
+                         "think": 4.0, "speak_prompt": False},
+    # STEP 62: the sentence is read off the page with its blank; answer_i is the whole
+    # sentence with the blank filled, one English clip through the onset gate.
+    "fill_level": {"prompt": ("sentence", "en"), "answer": ("filled", "en"),
+                   "think": 3.0, "speak_prompt": False},
+    # STEP 62 §2: the same, the blank filled with the right one of the two options.
+    "choose_level": {"prompt": ("sentence", "en"), "answer": ("filled", "en"),
+                     "think": 3.0, "speak_prompt": False},
+    # STEP 62 §3: how_do_you_say with sentences. The Spanish is read off the page;
+    # no tiers and no verdict, so no tier lines and no verdict clip.
+    "phrases_level": {"prompt": ("spanish", "es"), "answer": ("english", "en"),
+                      "think": 2.5, "speak_prompt": False, "tiers": False},
+}
+
+
+def level_tier_lines(plan: dict) -> dict:
+    """The tier lines this plan speaks: LEVEL_TIER_LINES, or none for a plan without tiers."""
+    return LEVEL_TIER_LINES if plan.get("tiers", True) else {}
+
+
+def level_think(plan: dict, prompt: str) -> float:
+    """Seconds of silence after one prompt: the plan's flat think, or its length table."""
+    for most, seconds in plan.get("think_by_length", ()):
+        if most is None or len(prompt) <= most:
+            return seconds
+    return plan["think"]
+
+
+#: The blank in a fill_level / choose_level sentence: exactly one per sentence.
+LEVEL_BLANK = "____"
+
+
+def level_answer(item: dict, field: str) -> str:
+    """The text an answer_i says: the field itself, true_false_level's verdict line, or
+    the sentence with its blank filled (fill_level's answer, choose_level's right option)."""
+    if field == "filled":
+        word = item["answer"] if isinstance(item["answer"], str) else item["options"][item["answer"]]
+        return item["sentence"].replace(LEVEL_BLANK, word)
+    if field != "answer":
+        return item[field]
+    return "Verdadero." if item["truth"] else f"Falso: {item['correction']}."
+#: The tier lines, fixed by the format: recorded once per voice and model, then cached.
+LEVEL_TIER_LINES = {4: "Ahora, nivel intermedio.", 8: "Y ahora, nivel experto."}
+LEVEL_TIER_CACHE = Path(__file__).resolve().parent.parent / "output" / "cache" / "level_tiers"
+LEVEL_ITEM_GAP_S = 0.4
+LEVEL_AFTER_INTRO_S = 0.5
+LEVEL_AROUND_TIER_S = 0.3
+LEVEL_BEFORE_VERDICT_S = 0.5
+LEVEL_AFTER_VERDICT_S = 0.5
+
+
+def level_spoken(script: dict) -> list:
+    """Every text a level script says, as the generator sends it (tags still in)."""
+    plan = LEVEL_PLANS[script["type"]]
+    items = script.get("items") or []
+    lines = [level_answer(item, plan["answer"][0]) for item in items]
+    if plan["speak_prompt"]:
+        lines += [item[plan["prompt"][0]] for item in items]
+    # the generator closes every item line with a full stop, and it is spoken time
+    return ([script.get("intro"), script.get("verdict"), script.get("outro"), *level_tier_lines(plan).values()]
+            + [t if t.endswith((".", "?", "!")) else f"{t}." for t in lines])
+
+
+def level_predict(script: dict, thinks: list) -> float:
+    """Video seconds: speech at the plan's measured rate, the fixed gaps, the thinks, the outro card."""
+    import duration_spec
+    from audio_tags import strip_tags
+    plan = LEVEL_PLANS[script["type"]]
+    chars = sum(len(strip_tags(t or "").strip()) for t in level_spoken(script))
+    gaps = (LEVEL_AFTER_INTRO_S + len(script["items"]) * LEVEL_ITEM_GAP_S
+            + len(level_tier_lines(plan)) * LEVEL_AROUND_TIER_S
+            + (LEVEL_BEFORE_VERDICT_S + LEVEL_AFTER_VERDICT_S if plan.get("tiers", True) else 0.0))
+    return chars * plan["s_per_char"] + gaps + sum(thinks) + duration_spec.outro_seconds()
+
+
+def level_thinks(script: dict) -> list:
+    """Each row's pause: the plan's, shrunk by one fraction to fit the ceiling, floored (STEP 62 §0)."""
+    import math
+    import duration_spec
+    plan = LEVEL_PLANS[script["type"]]
+    thinks = [level_think(plan, item[plan["prompt"][0]]) for item in script["items"]]
+    if "think_floor" not in plan:
+        return thinks
+    over = level_predict(script, thinks) - duration_spec.reject_window(script["type"])["max_seconds"]
+    if over <= 0:
+        return thinks
+    fraction = 1 - over / sum(thinks)
+    # rounded down to 10 ms, so rounding never puts a script back over
+    return [max(plan["think_floor"], math.floor(t * fraction * 100) / 100) for t in thinks]
+
+
+#: The onset gate lives in src/stitch.py (STEP 76 §2), shared with tts_bilingual and the
+#: lessons. Names kept here: the level path and its tests use them.
+import stitch as _stitch  # noqa: E402
+from stitch import ONSET_START_DB, onset_values as _onset_values  # noqa: E402,F401
+
+LEVEL_ONSET_RETRIES = _stitch.ONSET_RETRIES
+
+
+def onset_start_limit(model: str = None) -> float:
+    return _stitch.onset_start_limit(model or MODEL_ID)
+
+
+def onset_clean(values: dict, model: str = None) -> bool:
+    return _stitch.onset_clean(values, model or MODEL_ID)
+
+
+def cleanest_take(takes: list) -> int:
+    return _stitch.cleanest_take(takes, MODEL_ID)
+
+
+def _spoken_spanish(text: str) -> str:
+    """«Nevera / refrigerador» is read «Nevera o refrigerador»."""
+    return text.replace(" / ", " o ")
+
+
+def generate_level_audio_segmented(
+    script: dict,
+    output_path: str,
+    voice_id: str = None,
+    stability: float = DEFAULT_STABILITY,
+    similarity_boost: float = DEFAULT_SIMILARITY,
+) -> dict:
+    """
+    Audio for level_test, say_it_level and true_false_level, one plan per mode (LEVEL_PLANS).
+
+    Segments, each with measured boundaries in segment_times:
+        intro
+        tier_4, tier_8   fixed lines, cached per voice (no per-video cost)
+        prompt_i         the row's prompt, spoken (unless the plan says not)
+        think_i          generated silence, NO API call, declared '[silence]'
+        answer_i         the answer, spoken once; the renderer writes it in over it
+        verdict
+        outro
+
+    Every clip is requested on its own, with no previous/next text: the onset
+    stutters of the Manim lessons came from context across a language switch.
+    Every English clip is checked by the onset gate and re-asked when dirty.
+    Every clip is trimmed to its speech (≤ 0.1 s kept at either end).
+    """
+    import hashlib
+    import json
+    import shutil
+    from tts_common import clean_for_tts, trim_clip_silence
+
+    plan = LEVEL_PLANS[script["type"]]
+    voice_id = voice_id or DEFAULT_VOICE_ID
+    items = script["items"]
+    english_words = extract_english_words_from_script(script)
+    temp_dir = tempfile.mkdtemp(prefix="el_level_segments_")
+    characters = 0
+    retakes = 0
+
+    try:
+        segments = []
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
+
+        def add_segment(seg_id: str, text: str, start: float, end: float):
+            segments.append({"id": seg_id, "text": text, "start": round(start, 3),
+                             "end": round(end, 3), "duration": round(end - start, 3)})
+            logger.info("  [%s] %.2f-%.2f %s", seg_id, start, end, text[:60])
+
+        def request(text: str, path: str, segment_type: str, take: int = 0):
+            nonlocal characters
+            characters += len(text)
+            generate_segment_audio(text=text, output_path=path, voice_id=voice_id,
+                                   stability=stability, similarity_boost=similarity_boost,
+                                   segment_type=segment_type, english_words=english_words, take=take)
+
+        def speak(seg_id: str, text: str, lang: str, segment_type: str) -> str:
+            nonlocal retakes
+            path = os.path.join(temp_dir, f"{seg_id}.mp3")
+            # Every clip is gated, Spanish too (STEP 76 §3): a cut-in start is as audible there.
+            if True:
+                takes, files = [], []
+                for take in range(1 + LEVEL_ONSET_RETRIES):
+                    files.append(os.path.join(temp_dir, f"{seg_id}.take{take}.mp3"))
+                    request(text, files[-1], segment_type, take)
+                    takes.append(_onset_values(files[-1]))
+                    logger.info("%s take %d: start %s dB, fragment %s, doubled %s", seg_id, take,
+                                takes[-1]["start_db"], takes[-1]["fragment"], takes[-1]["doubled_onset"])
+                    if onset_clean(takes[-1]):
+                        break
+                    if take < LEVEL_ONSET_RETRIES:
+                        retakes += 1
+                kept = cleanest_take(takes)
+                if len(takes) > 1:
+                    logger.info("%s: kept take %d of %d", seg_id, kept, len(takes))
+                shutil.copy(files[kept], path)
+            trim_clip_silence(path)
+            return path
+
+        def say(seg_id: str, text: str, lang: str, segment_type: str):
+            start, _file_end, _dur, end = add_audio(speak(seg_id, text, lang, segment_type))
+            add_segment(seg_id, text, start, end)
+
+        def tier_clip(n: int) -> str:
+            text = LEVEL_TIER_LINES[n]
+            # The trim is in the key: a clip trimmed the old way is asked again (STEP 60 §1).
+            from tts_common import LEAD_FADE_S, TRIM_LEAD_PAD
+            key = hashlib.sha1(f"{voice_id}|{MODEL_ID}|{text}|{TRIM_LEAD_PAD}|{LEAD_FADE_S}".encode()).hexdigest()[:16]
+            cached = LEVEL_TIER_CACHE / f"{key}.mp3"
+            if not cached.exists():
+                LEVEL_TIER_CACHE.mkdir(parents=True, exist_ok=True)
+                shutil.copy(speak(f"tier_{n}", text, "es", "default"), cached)
+            return str(cached)
+
+        say("intro", clean_for_tts(script["intro"], keep_tags=_KEEP_TAGS), "es", "question")
+        add_silence(LEVEL_AFTER_INTRO_S)
+
+        prompt_field, prompt_lang = plan["prompt"]
+        answer_field, answer_lang = plan["answer"]
+        thinks = level_thinks(script)
+        for i, item in enumerate(items, start=1):
+            if i in level_tier_lines(plan):
+                start, _file_end, _dur, end = add_audio(tier_clip(i))
+                add_segment(f"tier_{i}", LEVEL_TIER_LINES[i], start, end)
+                add_silence(LEVEL_AROUND_TIER_S)
+            prompt = item[prompt_field]
+            if plan["speak_prompt"]:
+                text = prompt if prompt_lang == "en" else _spoken_spanish(prompt)
+                say(f"prompt_{i}", clean_for_tts(text if text.endswith((".", "?", "!")) else f"{text}.",
+                                                 keep_tags=_KEEP_TAGS),
+                    prompt_lang, "default")
+            start, end = add_silence(thinks[i - 1])
+            add_segment(f"think_{i}", "[silence]", start, end)
+            answer = level_answer(item, answer_field)
+            text = answer if answer_lang == "en" else _spoken_spanish(answer)
+            say(f"answer_{i}", clean_for_tts(text if text.endswith((".", "?", "!")) else f"{text}.",
+                                             keep_tags=_KEEP_TAGS),
+                answer_lang, "default")
+            add_silence(LEVEL_ITEM_GAP_S)
+
+        if plan.get("tiers", True):
+            add_silence(LEVEL_BEFORE_VERDICT_S)
+            say("verdict", clean_for_tts(script["verdict"], keep_tags=_KEEP_TAGS), "es", "default")
+            add_silence(LEVEL_AFTER_VERDICT_S)
+        say("outro", clean_for_tts(script["outro"], keep_tags=_KEEP_TAGS), "es", "question")
+
+        timeline.finalize(output_path)
+
+        result_data = {
+            "duration": round(timeline.time, 3),
+            "segments": segments,
+            "segment_times": {s["id"]: {k: s[k] for k in ("start", "end", "duration")} for s in segments},
+            "tts_model_id": MODEL_ID,
+            "characters": characters,
+            "onset_retakes": retakes,
+            "words": [],
+            **{k: script.get(k, d) for k, d in (
+                ("type", ""), ("title", ""), ("theme", ""), ("intro", ""), ("items", []),
+                ("verdict", ""), ("outro", ""), ("full_script", ""), ("translations", {}),
+                ("english_phrases", []), ("hashtags", []), ("_meta", {}))},
+        }
+        with open(output_path.replace(".mp3", ".json"), "w", encoding="utf-8") as f:
+            json.dump(result_data, f, ensure_ascii=False, indent=2)
+        logger.info("Level audio: %.2fs, %d characters, %d onset re-asks", timeline.time, characters, retakes)
+        return result_data
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
 
 
 def list_voices() -> None:

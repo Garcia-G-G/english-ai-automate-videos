@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¡FELIZ CUMPLEAÑOS!»? 10 frases 🎉",
+  "video_description": "Diez frases para felicitar en inglés. 🎉",
+  "title": "¿Cómo se dice?",
+  "theme": "en celebraciones",
+  "intro": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo.",
+  "items": [
+    {
+      "spanish": "¡Feliz cumpleaños!",
+      "english": "Happy birthday!"
+    },
+    {
+      "spanish": "¡Felicidades!",
+      "english": "Congratulations!"
+    },
+    {
+      "spanish": "¡Feliz Navidad!",
+      "english": "Merry Christmas!"
+    },
+    {
+      "spanish": "¡Feliz Año Nuevo!",
+      "english": "Happy New Year!"
+    },
+    {
+      "spanish": "¡Salud!",
+      "english": "Cheers!"
+    },
+    {
+      "spanish": "¡Que lo pases genial!",
+      "english": "Have a great time!"
+    },
+    {
+      "spanish": "Gracias por venir.",
+      "english": "Thanks for coming."
+    },
+    {
+      "spanish": "Te he traído algo.",
+      "english": "I got you something."
+    },
+    {
+      "spanish": "Pide un deseo.",
+      "english": "Make a wish."
+    },
+    {
+      "spanish": "¡Que cumplas muchos más!",
+      "english": "Many happy returns!"
+    }
+  ],
+  "outro": "[excited] Compártelo con alguien que las necesite.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf031",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Happy birthday!": "¡Feliz cumpleaños!",
+    "Congratulations!": "¡Felicidades!",
+    "Merry Christmas!": "¡Feliz Navidad!",
+    "Happy New Year!": "¡Feliz Año Nuevo!",
+    "Cheers!": "¡Salud!",
+    "Have a great time!": "¡Que lo pases genial!",
+    "Thanks for coming.": "Gracias por venir.",
+    "I got you something.": "Te he traído algo.",
+    "Make a wish.": "Pide un deseo.",
+    "Many happy returns!": "¡Que cumplas muchos más!"
+  },
+  "english_phrases": [
+    "Happy birthday!",
+    "Congratulations!",
+    "Merry Christmas!",
+    "Happy New Year!",
+    "Cheers!",
+    "Have a great time!",
+    "Thanks for coming.",
+    "I got you something.",
+    "Make a wish.",
+    "Many happy returns!"
+  ],
+  "full_script": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo. Happy birthday! Congratulations! Merry Christmas! Happy New Year! Cheers! Have a great time! Thanks for coming. I got you something. Make a wish. Many happy returns! [excited] Compártelo con alguien que las necesite."
+}

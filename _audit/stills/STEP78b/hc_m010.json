@@ -1,0 +1,462 @@
+{
+ "id": "hc_m010",
+ "style": "mensajes",
+ "level": "principiante",
+ "duration": 36.696,
+ "voice_seconds": 32.696,
+ "tts_usd": 0.0834,
+ "outro_variant": "sigue-aprendiendo",
+ "timeline": {
+  "beats": [
+   {
+    "i": 0,
+    "text": "Le dije a un compañero que me había dejado la [[carpet]] en la oficina. Pensó que llevo una alfombra al trabajo.",
+    "start": 0.0,
+    "end": 7.346,
+    "english": [
+     {
+      "text": "carpet",
+      "start": 3.09,
+      "end": 3.65
+     }
+    ],
+    "words": [
+     {
+      "word": "Le",
+      "start": 0.0,
+      "end": 0.16
+     },
+     {
+      "word": "dije",
+      "start": 0.213,
+      "end": 0.48
+     },
+     {
+      "word": "a",
+      "start": 0.52,
+      "end": 0.56
+     },
+     {
+      "word": "un",
+      "start": 0.587,
+      "end": 0.64
+     },
+     {
+      "word": "compañero",
+      "start": 0.709,
+      "end": 1.28
+     },
+     {
+      "word": "que",
+      "start": 1.32,
+      "end": 1.44
+     },
+     {
+      "word": "me",
+      "start": 1.493,
+      "end": 1.6
+     },
+     {
+      "word": "había",
+      "start": 1.667,
+      "end": 2.0
+     },
+     {
+      "word": "dejado",
+      "start": 2.06,
+      "end": 2.56
+     },
+     {
+      "word": "la",
+      "start": 2.693,
+      "end": 3.04
+     },
+     {
+      "word": "carpet",
+      "start": 3.09,
+      "end": 3.65
+     },
+     {
+      "word": "en",
+      "start": 3.826,
+      "end": 3.986
+     },
+     {
+      "word": "la",
+      "start": 4.013,
+      "end": 4.066
+     },
+     {
+      "word": "oficina.",
+      "start": 4.119,
+      "end": 4.786
+     },
+     {
+      "word": "Pensó",
+      "start": 4.914,
+      "end": 5.506
+     },
+     {
+      "word": "que",
+      "start": 5.566,
+      "end": 5.746
+     },
+     {
+      "word": "llevo",
+      "start": 5.786,
+      "end": 6.066
+     },
+     {
+      "word": "una",
+      "start": 6.086,
+      "end": 6.146
+     },
+     {
+      "word": "alfombra",
+      "start": 6.206,
+      "end": 6.626
+     },
+     {
+      "word": "al",
+      "start": 6.653,
+      "end": 6.706
+     },
+     {
+      "word": "trabajo.",
+      "start": 6.776,
+      "end": 7.346
+     }
+    ]
+   },
+   {
+    "i": 1,
+    "text": "Porque [[carpet]] es alfombra, la que cubre el suelo.",
+    "start": 7.466,
+    "end": 11.892,
+    "english": [
+     {
+      "text": "carpet",
+      "start": 8.196,
+      "end": 8.756
+     }
+    ],
+    "words": [
+     {
+      "word": "Porque",
+      "start": 7.466,
+      "end": 8.146
+     },
+     {
+      "word": "carpet",
+      "start": 8.196,
+      "end": 8.756
+     },
+     {
+      "word": "es",
+      "start": 8.932,
+      "end": 9.172
+     },
+     {
+      "word": "alfombra,",
+      "start": 9.312,
+      "end": 10.452
+     },
+     {
+      "word": "la",
+      "start": 10.505,
+      "end": 10.612
+     },
+     {
+      "word": "que",
+      "start": 10.652,
+      "end": 10.772
+     },
+     {
+      "word": "cubre",
+      "start": 10.872,
+      "end": 11.252
+     },
+     {
+      "word": "el",
+      "start": 11.279,
+      "end": 11.332
+     },
+     {
+      "word": "suelo.",
+      "start": 11.385,
+      "end": 11.892
+     }
+    ]
+   },
+   {
+    "i": 2,
+    "text": "La carpeta de papeles es [[folder]]: [[I left my folder at the office]].",
+    "start": 12.079,
+    "end": 17.635,
+    "english": [
+     {
+      "text": "folder",
+      "start": 14.662,
+      "end": 15.222
+     },
+     {
+      "text": "I left my folder at the office",
+      "start": 15.555,
+      "end": 17.635
+     }
+    ],
+    "words": [
+     {
+      "word": "La",
+      "start": 12.079,
+      "end": 12.452
+     },
+     {
+      "word": "carpeta",
+      "start": 12.532,
+      "end": 13.092
+     },
+     {
+      "word": "de",
+      "start": 13.119,
+      "end": 13.172
+     },
+     {
+      "word": "papeles",
+      "start": 13.212,
+      "end": 13.892
+     },
+     {
+      "word": "es",
+      "start": 14.079,
+      "end": 14.612
+     },
+     {
+      "word": "folder:",
+      "start": 14.662,
+      "end": 15.222
+     },
+     {
+      "word": "I",
+      "start": 15.555,
+      "end": 15.715
+     },
+     {
+      "word": "left",
+      "start": 15.779,
+      "end": 16.035
+     },
+     {
+      "word": "my",
+      "start": 16.115,
+      "end": 16.275
+     },
+     {
+      "word": "folder",
+      "start": 16.332,
+      "end": 16.675
+     },
+     {
+      "word": "at",
+      "start": 16.728,
+      "end": 16.835
+     },
+     {
+      "word": "the",
+      "start": 16.855,
+      "end": 16.915
+     },
+     {
+      "word": "office.",
+      "start": 17.006,
+      "end": 17.635
+     }
+    ]
+   },
+   {
+    "i": 3,
+    "text": "Y la carpeta del ordenador también es [[folder]].",
+    "start": 17.935,
+    "end": 21.505,
+    "english": [
+     {
+      "text": "folder",
+      "start": 20.785,
+      "end": 21.505
+     }
+    ],
+    "words": [
+     {
+      "word": "Y",
+      "start": 17.935,
+      "end": 18.015
+     },
+     {
+      "word": "la",
+      "start": 18.068,
+      "end": 18.175
+     },
+     {
+      "word": "carpeta",
+      "start": 18.239,
+      "end": 18.735
+     },
+     {
+      "word": "del",
+      "start": 18.775,
+      "end": 18.895
+     },
+     {
+      "word": "ordenador",
+      "start": 18.948,
+      "end": 19.535
+     },
+     {
+      "word": "también",
+      "start": 19.635,
+      "end": 20.335
+     },
+     {
+      "word": "es",
+      "start": 20.442,
+      "end": 20.735
+     },
+     {
+      "word": "folder.",
+      "start": 20.785,
+      "end": 21.505
+     }
+    ]
+   },
+   {
+    "i": 4,
+    "text": "Es un falso amigo: se parece al español pero significa otra cosa.",
+    "start": 21.851,
+    "end": 27.096,
+    "english": [],
+    "words": [
+     {
+      "word": "Es",
+      "start": 21.851,
+      "end": 22.056
+     },
+     {
+      "word": "un",
+      "start": 22.136,
+      "end": 22.296
+     },
+     {
+      "word": "falso",
+      "start": 22.376,
+      "end": 22.776
+     },
+     {
+      "word": "amigo:",
+      "start": 22.856,
+      "end": 23.736
+     },
+     {
+      "word": "se",
+      "start": 23.789,
+      "end": 23.896
+     },
+     {
+      "word": "parece",
+      "start": 23.953,
+      "end": 24.296
+     },
+     {
+      "word": "al",
+      "start": 24.323,
+      "end": 24.376
+     },
+     {
+      "word": "español",
+      "start": 24.446,
+      "end": 24.936
+     },
+     {
+      "word": "pero",
+      "start": 25.0,
+      "end": 25.256
+     },
+     {
+      "word": "significa",
+      "start": 25.328,
+      "end": 25.976
+     },
+     {
+      "word": "otra",
+      "start": 26.088,
+      "end": 26.536
+     },
+     {
+      "word": "cosa.",
+      "start": 26.616,
+      "end": 27.096
+     }
+    ]
+   },
+   {
+    "i": 5,
+    "text": "Reto: ¿cómo dirías «la alfombra es roja»? Escríbelo abajo.",
+    "start": 27.256,
+    "end": 32.696,
+    "english": [],
+    "words": [
+     {
+      "word": "Reto:",
+      "start": 27.256,
+      "end": 28.096
+     },
+     {
+      "word": "¿cómo",
+      "start": 28.196,
+      "end": 28.536
+     },
+     {
+      "word": "dirías",
+      "start": 28.576,
+      "end": 29.176
+     },
+     {
+      "word": "«la",
+      "start": 29.256,
+      "end": 29.416
+     },
+     {
+      "word": "alfombra",
+      "start": 29.496,
+      "end": 30.056
+     },
+     {
+      "word": "es",
+      "start": 30.216,
+      "end": 30.536
+     },
+     {
+      "word": "roja»?",
+      "start": 30.669,
+      "end": 31.496
+     },
+     {
+      "word": "Escríbelo",
+      "start": 31.576,
+      "end": 32.136
+     },
+     {
+      "word": "abajo.",
+      "start": 32.189,
+      "end": 32.696
+     }
+    ]
+   }
+  ],
+  "duration": 32.696,
+  "countdown": null,
+  "tts_calls": 10,
+  "tts_usd": 0.0834,
+  "audio": "output/rendering/step78b_work/hc_m010.voice.wav"
+ },
+ "silent": false
+}

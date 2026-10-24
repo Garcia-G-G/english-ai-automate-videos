@@ -6,6 +6,7 @@ with platform-specific formatting for TikTok, YouTube, and Instagram.
 """
 
 import json
+from audio_tags import unmark
 import logging
 import os
 import random
@@ -18,6 +19,7 @@ PLATFORM_LIMITS = {
     "tiktok": {"title": 150, "description": 2200},
     "youtube": {"title": 100, "description": 5000},
     "instagram": {"title": 0, "description": 2200},
+    "facebook": {"title": 0, "description": 2200},
 }
 
 # Fallback title templates by video type
@@ -52,6 +54,18 @@ TITLE_TEMPLATES = {
         "Palabras en inglés que NECESITAS saber 🔥",
         "{title} — aprende en 30 segundos ⚡",
     ],
+    # ONE template, the brief's. {theme} is the theme without its article,
+    # upper-cased ("la familia" -> FAMILIA); {emoji} is the first row's.
+    "how_do_you_say": [
+        "¿Cómo se dice {theme} en inglés? {emoji}",
+    ],
+    # Only when a script has no video_title of its own; every queued one does.
+    "level_test": ["¿Qué nivel de inglés tienes? 10 palabras, de fácil a experto 🎯"],
+    "say_it_level": ["Dilo en inglés: 10 frases, de fácil a experto 🗣️"],
+    "true_false_level": ["¿Verdadero o falso? 10 frases para probar tu inglés 🤔"],
+    "fill_level": ["Completa la frase: 10 frases, de fácil a experto 📝"],
+    "choose_level": ["Elige la correcta: 10 frases, de fácil a experto 🤔"],
+    "phrases_level": ["¿Cómo se dice en inglés? 10 frases del día a día 💬"],
 }
 
 # ── Hashtag strategy ────────────────────────────────────────────────
@@ -95,6 +109,20 @@ TYPE_HASHTAGS = {
     "fill_blank": ["#FillInTheBlank", "#CompletaLaFrase", "#PracticaIngles"],
     "pronunciation": ["#Pronunciation", "#SpeakEnglish", "#PronunciacionIngles"],
     "vocabulary": ["#Vocabulary", "#EnglishWords", "#VocabularioIngles"],
+    "how_do_you_say": ["#InglésParaPrincipiantes", "#VocabularioEnInglés",
+                       "#AprenderInglés", "#InglésFácil", "#HowDoYouSay"],
+    "level_test": ["#NivelDeInglés", "#AprenderInglés", "#VocabularioEnInglés",
+                   "#TestDeInglés", "#InglésFácil"],
+    "say_it_level": ["#DiloEnInglés", "#AprenderInglés", "#FrasesEnInglés",
+                     "#InglésFácil", "#InglésParaViajar"],
+    "true_false_level": ["#VerdaderoOFalso", "#FalsosAmigos", "#AprenderInglés",
+                         "#InglésFácil", "#VocabularioEnInglés"],
+    "fill_level": ["#CompletaLaFrase", "#GramáticaInglesa", "#AprenderInglés",
+                   "#InglésFácil", "#PracticaInglés"],
+    "choose_level": ["#ElegirLaCorrecta", "#GramáticaInglesa", "#AprenderInglés",
+                     "#InglésFácil", "#ErroresEnInglés"],
+    "phrases_level": ["#CómoSeDice", "#FrasesEnInglés", "#AprenderInglés",
+                      "#InglésFácil", "#InglésParaPrincipiantes"],
 }
 
 #: Audience/intent tags. Spanish-first, because the audience searches in
@@ -104,6 +132,18 @@ NICHE_HASHTAGS = [
     "#IdiomasEnCasa", "#EstudiaIngles", "#InglesDiario", "#EnglishPractice",
     "#HablarIngles", "#InglesRapido", "#EnglishLearning",
 ]
+
+
+#: The site the channel promotes (STEP 61): one plain line after the body, before the hashtags.
+SITE_LINE = "Más lecciones en https://learningroutes.com"
+
+
+def with_site_line(description: str) -> str:
+    """The body, then SITE_LINE once. Idempotent, so a description that has it keeps one."""
+    body = (description or "").rstrip()
+    if SITE_LINE in body:
+        return body
+    return f"{body}\n\n{SITE_LINE}" if body else SITE_LINE
 
 
 def generate_metadata(script_data: dict, video_type: str, category: str = "") -> dict:
@@ -129,7 +169,7 @@ def generate_metadata(script_data: dict, video_type: str, category: str = "") ->
 
     return {
         "title": title[:150],
-        "description": description,
+        "description": with_site_line(description),
         "hashtags": hashtags,
     }
 
@@ -187,7 +227,7 @@ def adapt_for_platform(metadata: dict, platform: str) -> dict:
         yt_desc = compose_description(description, tags)
         return {"title": yt_title, "description": yt_desc[:5000], "hashtags": tags}
 
-    elif platform == "instagram":
+    elif platform in ("instagram", "facebook"):
         # No title field; the caption is everything. Keyword-first, because
         # Instagram now indexes caption text more heavily than tags.
         ig_caption = compose_description(f"{title}\n\n{description}", tags)
@@ -252,7 +292,7 @@ def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -
     )
 
     hook = script_data.get("hook") or script_data.get("question") or script_data.get("statement") or ""
-    full_script_preview = (script_data.get("full_script") or "")[:200]
+    full_script_preview = unmark(script_data.get("full_script") or "")[:200]
 
     prompt = f"""Generate an optimized title and description for a {platform} video about learning English (for Spanish speakers).
 
@@ -318,6 +358,9 @@ def _build_fallback_title(script_data: dict, video_type: str) -> str:
     templates = TITLE_TEMPLATES.get(video_type, TITLE_TEMPLATES["educational"])
     template = random.choice(templates)
 
+    if video_type == "how_do_you_say":
+        return how_do_you_say_title(script_data)
+
     word = (script_data.get("word") or
             (script_data.get("english_phrases", [""])[0] if script_data.get("english_phrases") else "") or "")
     title_field = script_data.get("title", "")
@@ -331,6 +374,24 @@ def _build_fallback_title(script_data: dict, video_type: str) -> str:
                     script_data.get("title") or
                     "Aprende inglés hoy 🦊")
         return fallback[:80]
+
+
+_ARTICLES = ("el ", "la ", "los ", "las ")
+
+
+def how_do_you_say_title(script_data: dict) -> str:
+    """`¿Cómo se dice FAMILIA en inglés? 👪`, from the script's own theme."""
+    theme = (script_data.get("theme") or "").strip()
+    bare = theme
+    for article in _ARTICLES:
+        if bare.lower().startswith(article):
+            bare = bare[len(article):]
+            break
+    bare = bare.split(" (")[0]
+    items = script_data.get("items") or []
+    emoji = items[0].get("emoji", "") if items else ""
+    return TITLE_TEMPLATES["how_do_you_say"][0].format(
+        theme=bare.upper(), emoji=emoji).strip()
 
 
 def _build_fallback_description(script_data: dict, video_type: str, title: str) -> str:
@@ -360,7 +421,7 @@ def _build_fallback_description(script_data: dict, video_type: str, title: str) 
 
     # If we still have nothing meaningful, use script preview
     if not parts:
-        script_preview = (script_data.get("full_script") or "")[:150]
+        script_preview = unmark(script_data.get("full_script") or "")[:150]
         if script_preview:
             parts.append(script_preview)
         parts.append("Sígueme para más tips de inglés 🦊")

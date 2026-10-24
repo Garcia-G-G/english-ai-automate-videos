@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «TE ECHO DE MENOS» en inglés? ❤️",
+  "video_description": "Diez frases de cariño en inglés. 💌",
+  "title": "¿Cómo se dice?",
+  "theme": "en pareja",
+  "intro": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Te quiero.",
+      "english": "I love you."
+    },
+    {
+      "spanish": "Te echo de menos.",
+      "english": "I miss you."
+    },
+    {
+      "spanish": "Me gustas.",
+      "english": "I like you."
+    },
+    {
+      "spanish": "¿Quieres salir conmigo?",
+      "english": "Do you want to go out with me?"
+    },
+    {
+      "spanish": "Estoy loco por ti.",
+      "english": "I'm crazy about you."
+    },
+    {
+      "spanish": "Eres lo mejor que me ha pasado.",
+      "english": "You're the best thing that's happened to me."
+    },
+    {
+      "spanish": "Pienso en ti.",
+      "english": "I'm thinking about you."
+    },
+    {
+      "spanish": "Tenemos que hablar.",
+      "english": "We need to talk."
+    },
+    {
+      "spanish": "Lo dejamos.",
+      "english": "We broke up."
+    },
+    {
+      "spanish": "Estamos juntos.",
+      "english": "We're together."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf032",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I love you.": "Te quiero.",
+    "I miss you.": "Te echo de menos.",
+    "I like you.": "Me gustas.",
+    "Do you want to go out with me?": "¿Quieres salir conmigo?",
+    "I'm crazy about you.": "Estoy loco por ti.",
+    "You're the best thing that's happened to me.": "Eres lo mejor que me ha pasado.",
+    "I'm thinking about you.": "Pienso en ti.",
+    "We need to talk.": "Tenemos que hablar.",
+    "We broke up.": "Lo dejamos.",
+    "We're together.": "Estamos juntos."
+  },
+  "english_phrases": [
+    "I love you.",
+    "I miss you.",
+    "I like you.",
+    "Do you want to go out with me?",
+    "I'm crazy about you.",
+    "You're the best thing that's happened to me.",
+    "I'm thinking about you.",
+    "We need to talk.",
+    "We broke up.",
+    "We're together."
+  ],
+  "full_script": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo. I love you. I miss you. I like you. Do you want to go out with me? I'm crazy about you. You're the best thing that's happened to me. I'm thinking about you. We need to talk. We broke up. We're together. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

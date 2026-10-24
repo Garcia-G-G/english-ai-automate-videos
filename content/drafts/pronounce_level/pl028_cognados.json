@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "COGNADOS TRAICIONEROS: parecen español y no lo son ⚠️",
+  "video_description": "Palabras que se escriben como en español pero suenan muy distinto. 🏨",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "cognados traicioneros (se escriben como en español)",
+  "intro": "[curious] Se escriben como en español, pero no suenan igual. Dilas en voz alta.",
+  "items": [
+    {
+      "english": "hotel",
+      "respelling": "jou-TEL",
+      "ipa": "hoʊˈtɛl",
+      "trap": "La H suena y la O es «ou»"
+    },
+    {
+      "english": "animal",
+      "respelling": "A-ne-mel",
+      "ipa": "ˈænəməl",
+      "trap": "Acento en A, no en MAL"
+    },
+    {
+      "english": "normal",
+      "respelling": "NOR-mel",
+      "ipa": "ˈnɔrməl",
+      "trap": "Acento en NOR, no en MAL"
+    },
+    {
+      "english": "final",
+      "respelling": "FAI-nel",
+      "ipa": "ˈfaɪnəl",
+      "trap": "La I suena «ai»: FAI-nel"
+    },
+    {
+      "english": "radio",
+      "respelling": "REI-di-ou",
+      "ipa": "ˈreɪdioʊ",
+      "trap": "La A suena «ei»: REI-di-ou"
+    },
+    {
+      "english": "hospital",
+      "respelling": "JAS-pi-tel",
+      "ipa": "ˈhɑspɪtəl",
+      "trap": "Acento en JAS, no en TAL"
+    },
+    {
+      "english": "natural",
+      "respelling": "NA-cher-el",
+      "ipa": "ˈnætʃɚəl",
+      "trap": "La T suena «ch»: NA-cher-el"
+    },
+    {
+      "english": "chocolate",
+      "respelling": "CHOK-let",
+      "ipa": "ˈtʃɔklət",
+      "trap": "Dos sílabas: CHOK-let"
+    },
+    {
+      "english": "cereal",
+      "respelling": "SI-ri-el",
+      "ipa": "ˈsɪriəl",
+      "trap": "Acento en SI y la E suena «i»"
+    },
+    {
+      "english": "series",
+      "respelling": "SI-riiz",
+      "ipa": "ˈsɪriːz",
+      "trap": "Dos sílabas: SI-riiz"
+    }
+  ],
+  "verdict": "¿Llegaste a la tres? Eres básico. ¿A la siete? Intermedio. Si sacaste las diez, nivel experto.",
+  "outro": "[curious] ¿Cuál te costó más? Escríbela en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#Cognados",
+    "#AprenderInglés",
+    "#InglésParaHispanos",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl028",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

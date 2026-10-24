@@ -1,0 +1,43 @@
+{
+  "id": "hc_e025",
+  "style": "escena",
+  "level": "dificil",
+  "angle": "historia",
+  "title": "«I'm broken»: no estás roto, estás sin dinero",
+  "hook_text": "ESCENA — FIN DE MES, PISO COMPARTIDO",
+  "scene": {
+    "location": "Fin de mes, piso compartido",
+    "take1": "I can't go out, I'm broken.",
+    "take2": "I can't go out, I'm broke.",
+    "note": "Broke = sin dinero. Broken = roto."
+  },
+  "correction": {
+    "wrong": "I'm broken",
+    "right": "I'm broke",
+    "rule": "Una letra lo cambia todo"
+  },
+  "voice": [
+    "Escena: fin de mes, piso compartido. Toma uno: [[I can't go out, I'm broken]].",
+    "¡Corten! [[Broken]] es roto. Tus amigos pensarán que estás destrozado.",
+    "Toma dos: [[I can't go out, I'm broke]]. Sin la n: estoy sin dinero, pelado.",
+    "Más intenso todavía: [[I'm totally broke]].",
+    "Y [[broken]] para cosas: [[My phone is broken]].",
+    "Reto: ¿cómo dirías «estoy sin dinero hasta el viernes»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Estoy sin dinero hasta el viernes»",
+    "answer": "I'm broke until Friday."
+  },
+  "caption": "«I'm broke» es estar sin dinero; «broken» es roto. Una letra que cambia todo, en una escena real.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 65
+}

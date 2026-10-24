@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las PARTES DE LA CASA en inglés? 🏡",
+  "video_description": "Del techo al sótano: diez partes de una casa. 🔑",
+  "title": "¿Cómo se dice…?",
+  "theme": "las partes de la casa",
+  "level": "A2",
+  "intro": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo.",
+  "items": [
+    {
+      "emoji": "🏠",
+      "spanish": "Techo",
+      "english": "roof"
+    },
+    {
+      "emoji": "🧱",
+      "spanish": "Pared",
+      "english": "wall"
+    },
+    {
+      "emoji": "🟫",
+      "spanish": "Piso",
+      "english": "floor"
+    },
+    {
+      "emoji": "🚗",
+      "spanish": "Garaje",
+      "english": "garage"
+    },
+    {
+      "emoji": "🌳",
+      "spanish": "Patio",
+      "english": "yard"
+    },
+    {
+      "emoji": "🌇",
+      "spanish": "Balcón",
+      "english": "balcony"
+    },
+    {
+      "emoji": "📦",
+      "spanish": "Ático",
+      "english": "attic"
+    },
+    {
+      "emoji": "🕯️",
+      "spanish": "Sótano",
+      "english": "basement"
+    },
+    {
+      "emoji": "🚶",
+      "spanish": "Pasillo",
+      "english": "hallway"
+    },
+    {
+      "emoji": "🔔",
+      "spanish": "Timbre",
+      "english": "doorbell"
+    }
+  ],
+  "recap": "Repite conmigo las diez: roof, wall, floor, garage, yard, balcony, attic, basement, hallway, doorbell.",
+  "outro": "[excited] ¿Las diez? Demuéstralo en los comentarios.",
+  "translations": {
+    "roof": "Techo",
+    "wall": "Pared",
+    "floor": "Piso",
+    "garage": "Garaje",
+    "yard": "Patio",
+    "balcony": "Balcón",
+    "attic": "Ático",
+    "basement": "Sótano",
+    "hallway": "Pasillo",
+    "doorbell": "Timbre"
+  },
+  "english_phrases": [
+    "roof",
+    "wall",
+    "floor",
+    "garage",
+    "yard",
+    "balcony",
+    "attic",
+    "basement",
+    "hallway",
+    "doorbell"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv055",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo. Techo... roof. roof. Pared... wall. wall. Piso... floor. floor. Garaje... garage. garage. Patio... yard. yard. Balcón... balcony. balcony. Ático... attic. attic. Sótano... basement. basement. Pasillo... hallway. hallway. Timbre... doorbell. doorbell. Repite conmigo las diez: roof, wall, floor, garage, yard, balcony, attic, basement, hallway, doorbell. [excited] ¿Las diez? Demuéstralo en los comentarios."
+}

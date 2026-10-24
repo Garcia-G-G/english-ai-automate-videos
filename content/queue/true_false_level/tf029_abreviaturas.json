@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "10 frases sobre ABREVIATURAS de chat: ¿V o F? 📱",
+  "video_description": "BRB, TBH, IDK: abreviaturas de chat, ¿verdadero o falso? 📱",
+  "title": "¿Verdadero o falso?",
+  "theme": "abreviaturas de chat",
+  "intro": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total.",
+  "items": [
+    {
+      "statement": "«BRB» significa «ahora vuelvo».",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«IDK» significa «no lo sé».",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«TY» significa «te quiero».",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es gracias"
+    },
+    {
+      "statement": "«BTW» significa «por cierto».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«ASAP» significa «lo antes posible».",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«TBH» significa «hasta luego».",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es la verdad, sinceramente"
+    },
+    {
+      "statement": "«FYI» significa «para tu información».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«IMO» significa «en mi opinión».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«NVM» significa «nos vemos mañana».",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es olvídalo"
+    },
+    {
+      "statement": "«TL;DR» significa «muy largo, no lo leí».",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#SlangEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf029",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "BRB",
+    "IDK",
+    "TY",
+    "BTW",
+    "ASAP",
+    "TBH",
+    "FYI",
+    "IMO",
+    "NVM",
+    "TL;DR"
+  ],
+  "full_script": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total. Verdadero. Verdadero. Falso: es gracias. Ahora, nivel intermedio. Verdadero. Verdadero. Falso: es la verdad, sinceramente. Verdadero. Y ahora, nivel experto. Verdadero. Falso: es olvídalo. Verdadero. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

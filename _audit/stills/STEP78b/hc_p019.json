@@ -1,0 +1,433 @@
+{
+ "id": "hc_p019",
+ "style": "poster",
+ "level": "dificil",
+ "duration": 34.017,
+ "voice_seconds": 30.017,
+ "tts_usd": 0,
+ "outro_variant": "aprende-ingles",
+ "timeline": {
+  "beats": [
+   {
+    "i": 0,
+    "text": "Error de nivel alto: [[despite of]]. Mezcla dos expresiones correctas.",
+    "start": 0.0,
+    "end": 5.45,
+    "english": [
+     {
+      "text": "despite of",
+      "start": 1.79,
+      "end": 2.83
+     }
+    ],
+    "words": [
+     {
+      "word": "Error",
+      "start": 0.0,
+      "end": 0.4
+     },
+     {
+      "word": "de",
+      "start": 0.427,
+      "end": 0.48
+     },
+     {
+      "word": "nivel",
+      "start": 0.547,
+      "end": 0.88
+     },
+     {
+      "word": "alto:",
+      "start": 0.976,
+      "end": 1.59
+     },
+     {
+      "word": "despite",
+      "start": 1.79,
+      "end": 2.35
+     },
+     {
+      "word": "of.",
+      "start": 2.483,
+      "end": 2.83
+     },
+     {
+      "word": "Mezcla",
+      "start": 3.13,
+      "end": 3.61
+     },
+     {
+      "word": "dos",
+      "start": 3.71,
+      "end": 4.01
+     },
+     {
+      "word": "expresiones",
+      "start": 4.067,
+      "end": 4.73
+     },
+     {
+      "word": "correctas.",
+      "start": 4.78,
+      "end": 5.45
+     }
+    ]
+   },
+   {
+    "i": 1,
+    "text": "O [[despite]], solo: [[Despite the rain, we went out]].",
+    "start": 5.69,
+    "end": 9.903,
+    "english": [
+     {
+      "text": "despite",
+      "start": 6.14,
+      "end": 6.978
+     },
+     {
+      "text": "Despite the rain, we went out",
+      "start": 7.903,
+      "end": 9.903
+     }
+    ],
+    "words": [
+     {
+      "word": "O",
+      "start": 5.69,
+      "end": 6.09
+     },
+     {
+      "word": "despite,",
+      "start": 6.14,
+      "end": 6.978
+     },
+     {
+      "word": "solo:",
+      "start": 7.118,
+      "end": 7.598
+     },
+     {
+      "word": "Despite",
+      "start": 7.903,
+      "end": 8.383
+     },
+     {
+      "word": "the",
+      "start": 8.403,
+      "end": 8.463
+     },
+     {
+      "word": "rain,",
+      "start": 8.543,
+      "end": 9.023
+     },
+     {
+      "word": "we",
+      "start": 9.076,
+      "end": 9.183
+     },
+     {
+      "word": "went",
+      "start": 9.231,
+      "end": 9.423
+     },
+     {
+      "word": "out.",
+      "start": 9.523,
+      "end": 9.903
+     }
+    ]
+   },
+   {
+    "i": 2,
+    "text": "O [[in spite of]], con [[of]]: [[In spite of the rain]].",
+    "start": 10.203,
+    "end": 15.237,
+    "english": [
+     {
+      "text": "in spite of",
+      "start": 10.857,
+      "end": 12.057
+     },
+     {
+      "text": "of",
+      "start": 11.63,
+      "end": 12.057
+     },
+     {
+      "text": "In spite of the rain",
+      "start": 13.637,
+      "end": 15.237
+     }
+    ],
+    "words": [
+     {
+      "word": "O",
+      "start": 10.203,
+      "end": 10.683
+     },
+     {
+      "word": "in",
+      "start": 10.857,
+      "end": 11.017
+     },
+     {
+      "word": "spite",
+      "start": 11.097,
+      "end": 11.497
+     },
+     {
+      "word": "of,",
+      "start": 11.63,
+      "end": 12.057
+     },
+     {
+      "word": "con",
+      "start": 12.197,
+      "end": 12.84
+     },
+     {
+      "word": "of:",
+      "start": 12.89,
+      "end": 13.437
+     },
+     {
+      "word": "In",
+      "start": 13.637,
+      "end": 13.797
+     },
+     {
+      "word": "spite",
+      "start": 13.877,
+      "end": 14.277
+     },
+     {
+      "word": "of",
+      "start": 14.357,
+      "end": 14.517
+     },
+     {
+      "word": "the",
+      "start": 14.537,
+      "end": 14.597
+     },
+     {
+      "word": "rain.",
+      "start": 14.693,
+      "end": 15.237
+     }
+    ]
+   },
+   {
+    "i": 3,
+    "text": "Con verbo, -ing: [[Despite being tired, she came]].",
+    "start": 15.537,
+    "end": 19.657,
+    "english": [
+     {
+      "text": "Despite being tired, she came",
+      "start": 17.337,
+      "end": 19.657
+     }
+    ],
+    "words": [
+     {
+      "word": "Con",
+      "start": 15.537,
+      "end": 15.697
+     },
+     {
+      "word": "verbo,",
+      "start": 15.737,
+      "end": 16.217
+     },
+     {
+      "word": "-ing:",
+      "start": 16.277,
+      "end": 17.137
+     },
+     {
+      "word": "Despite",
+      "start": 17.337,
+      "end": 17.817
+     },
+     {
+      "word": "being",
+      "start": 17.857,
+      "end": 18.057
+     },
+     {
+      "word": "tired,",
+      "start": 18.15,
+      "end": 18.857
+     },
+     {
+      "word": "she",
+      "start": 18.897,
+      "end": 19.017
+     },
+     {
+      "word": "came.",
+      "start": 19.129,
+      "end": 19.657
+     }
+    ]
+   },
+   {
+    "i": 4,
+    "text": "Y con frase completa, [[although]]: [[Although it was raining, we went out]].",
+    "start": 19.957,
+    "end": 24.677,
+    "english": [
+     {
+      "text": "although",
+      "start": 21.537,
+      "end": 22.097
+     },
+     {
+      "text": "Although it was raining, we went out",
+      "start": 22.437,
+      "end": 24.677
+     }
+    ],
+    "words": [
+     {
+      "word": "Y",
+      "start": 19.957,
+      "end": 20.037
+     },
+     {
+      "word": "con",
+      "start": 20.097,
+      "end": 20.277
+     },
+     {
+      "word": "frase",
+      "start": 20.344,
+      "end": 20.677
+     },
+     {
+      "word": "completa,",
+      "start": 20.739,
+      "end": 21.397
+     },
+     {
+      "word": "although:",
+      "start": 21.537,
+      "end": 22.097
+     },
+     {
+      "word": "Although",
+      "start": 22.437,
+      "end": 22.837
+     },
+     {
+      "word": "it",
+      "start": 22.864,
+      "end": 22.917
+     },
+     {
+      "word": "was",
+      "start": 22.957,
+      "end": 23.077
+     },
+     {
+      "word": "raining,",
+      "start": 23.127,
+      "end": 23.717
+     },
+     {
+      "word": "we",
+      "start": 23.77,
+      "end": 23.877
+     },
+     {
+      "word": "went",
+      "start": 23.925,
+      "end": 24.117
+     },
+     {
+      "word": "out.",
+      "start": 24.237,
+      "end": 24.677
+     }
+    ]
+   },
+   {
+    "i": 5,
+    "text": "Reto: di «a pesar del tráfico, llegué a tiempo». Te leo abajo.",
+    "start": 24.977,
+    "end": 30.017,
+    "english": [],
+    "words": [
+     {
+      "word": "Reto:",
+      "start": 24.977,
+      "end": 25.617
+     },
+     {
+      "word": "di",
+      "start": 25.697,
+      "end": 25.857
+     },
+     {
+      "word": "«a",
+      "start": 26.057,
+      "end": 26.337
+     },
+     {
+      "word": "pesar",
+      "start": 26.417,
+      "end": 26.737
+     },
+     {
+      "word": "del",
+      "start": 26.777,
+      "end": 26.897
+     },
+     {
+      "word": "tráfico,",
+      "start": 26.95,
+      "end": 27.537
+     },
+     {
+      "word": "llegué",
+      "start": 27.601,
+      "end": 27.937
+     },
+     {
+      "word": "a",
+      "start": 27.977,
+      "end": 28.017
+     },
+     {
+      "word": "tiempo».",
+      "start": 28.097,
+      "end": 28.857
+     },
+     {
+      "word": "Te",
+      "start": 28.95,
+      "end": 29.137
+     },
+     {
+      "word": "leo",
+      "start": 29.197,
+      "end": 29.377
+     },
+     {
+      "word": "abajo.",
+      "start": 29.43,
+      "end": 30.017
+     }
+    ]
+   }
+  ],
+  "duration": 30.017,
+  "countdown": null,
+  "tts_calls": 17,
+  "tts_usd": 0,
+  "audio": "output/rendering/step78b_work/hc_p019.voice.wav"
+ },
+ "silent": false
+}

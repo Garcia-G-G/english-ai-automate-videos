@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «ESTOY EN FORMA» en inglés? 🏋️",
+  "video_description": "Diez frases para el gimnasio y el deporte. 🏋️",
+  "title": "¿Cómo se dice?",
+  "theme": "en el gimnasio",
+  "intro": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Voy al gimnasio.",
+      "english": "I'm going to the gym."
+    },
+    {
+      "spanish": "Estoy en forma.",
+      "english": "I'm in shape."
+    },
+    {
+      "spanish": "Hago ejercicio tres veces por semana.",
+      "english": "I work out three times a week."
+    },
+    {
+      "spanish": "¿Estás usando esto?",
+      "english": "Are you using this?"
+    },
+    {
+      "spanish": "¿Me cambias el turno?",
+      "english": "Can we swap?"
+    },
+    {
+      "spanish": "Estoy sin aliento.",
+      "english": "I'm out of breath."
+    },
+    {
+      "spanish": "Tengo agujetas.",
+      "english": "I'm sore."
+    },
+    {
+      "spanish": "Hoy toca pierna.",
+      "english": "It's leg day."
+    },
+    {
+      "spanish": "Me he lesionado la rodilla.",
+      "english": "I hurt my knee."
+    },
+    {
+      "spanish": "Necesito estirar.",
+      "english": "I need to stretch."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf027",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm going to the gym.": "Voy al gimnasio.",
+    "I'm in shape.": "Estoy en forma.",
+    "I work out three times a week.": "Hago ejercicio tres veces por semana.",
+    "Are you using this?": "¿Estás usando esto?",
+    "Can we swap?": "¿Me cambias el turno?",
+    "I'm out of breath.": "Estoy sin aliento.",
+    "I'm sore.": "Tengo agujetas.",
+    "It's leg day.": "Hoy toca pierna.",
+    "I hurt my knee.": "Me he lesionado la rodilla.",
+    "I need to stretch.": "Necesito estirar."
+  },
+  "english_phrases": [
+    "I'm going to the gym.",
+    "I'm in shape.",
+    "I work out three times a week.",
+    "Are you using this?",
+    "Can we swap?",
+    "I'm out of breath.",
+    "I'm sore.",
+    "It's leg day.",
+    "I hurt my knee.",
+    "I need to stretch."
+  ],
+  "full_script": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo. I'm going to the gym. I'm in shape. I work out three times a week. Are you using this? Can we swap? I'm out of breath. I'm sore. It's leg day. I hurt my knee. I need to stretch. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

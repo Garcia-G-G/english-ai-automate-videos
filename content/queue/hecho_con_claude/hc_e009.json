@@ -1,0 +1,43 @@
+{
+  "id": "hc_e009",
+  "style": "escena",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«Where is the near station?»: casi bien",
+  "hook_text": "ESCENA — CALLE DE NUEVA YORK, CON EL MAPA EN LA MANO",
+  "scene": {
+    "location": "Calle de Nueva York, con el mapa en la mano",
+    "take1": "Excuse me, where is the near station?",
+    "take2": "Excuse me, where's the nearest station?",
+    "note": "La más cercana = the nearest."
+  },
+  "correction": {
+    "wrong": "the near station",
+    "right": "the nearest station",
+    "rule": "Superlativo: near → nearest"
+  },
+  "voice": [
+    "Escena: calle de Nueva York, perdido. Toma uno: [[Excuse me, where is the near station?]]",
+    "¡Corten! Quieres decir «la estación más cercana», y eso es un superlativo.",
+    "Toma dos: [[Excuse me, where's the nearest station?]]",
+    "Igual: [[the nearest pharmacy]], [[the closest bathroom]].",
+    "Y para preguntar si está lejos: [[Is it far from here?]]",
+    "Reto: pregunta dónde está el supermercado más cercano. Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«¿Dónde está el supermercado más cercano?»",
+    "answer": "Where's the nearest supermarket?"
+  },
+  "caption": "Pedir direcciones en inglés: «Where's the nearest station?», no «the near station». Escena en Nueva York.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 65
+}

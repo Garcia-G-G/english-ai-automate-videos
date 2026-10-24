@@ -1,0 +1,84 @@
+{
+  "type": "conjugation_map",
+  "video_title": "El verbo TO BE en 1 minuto 🔵",
+  "video_description": "Ser y estar en inglés, con todas las personas. 🗺️",
+  "level": "A1",
+  "verb": "be",
+  "verb_es": "ser o estar",
+  "tense": "presente",
+  "intro": "[cheerful] El verbo be, ser o estar, en un solo mapa. Repite conmigo.",
+  "rows": [
+    {
+      "pronoun": "I",
+      "form": "am"
+    },
+    {
+      "pronoun": "You",
+      "form": "are"
+    },
+    {
+      "pronoun": "He",
+      "form": "is"
+    },
+    {
+      "pronoun": "She",
+      "form": "is"
+    },
+    {
+      "pronoun": "It",
+      "form": "is"
+    },
+    {
+      "pronoun": "We",
+      "form": "are"
+    },
+    {
+      "pronoun": "They",
+      "form": "are"
+    }
+  ],
+  "highlight": [
+    "am",
+    "is"
+  ],
+  "examples": [
+    {
+      "en": "I am happy.",
+      "es": "Estoy contento."
+    },
+    {
+      "en": "They are here.",
+      "es": "Están aquí."
+    }
+  ],
+  "negative": {
+    "en": "She isn't at home.",
+    "es": "No está en casa."
+  },
+  "question": {
+    "en": "Are you ready?",
+    "es": "¿Estás listo?"
+  },
+  "tip": "Con I, siempre am. Con he, she e it, siempre is. Con todos los demás, are.",
+  "outro": "[excited] Guárdalo y repásalo mañana. Dos minutos y ya es tuyo.",
+  "translations": {
+    "I am happy.": "Estoy contento.",
+    "They are here.": "Están aquí.",
+    "She isn't at home.": "No está en casa.",
+    "Are you ready?": "¿Estás listo?"
+  },
+  "hashtags": [
+    "#VerbosEnInglés",
+    "#InglésParaPrincipiantes",
+    "#AprenderInglés",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "verb_maps",
+    "topic_id": "vm001",
+    "video_type": "conjugation_map",
+    "model": "manual",
+    "draft": true
+  }
+}

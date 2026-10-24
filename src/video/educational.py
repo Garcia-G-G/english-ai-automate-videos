@@ -15,13 +15,16 @@ from .constants import (
     ENGLISH_WORD_COLOR, ENGLISH_WORD_SCALE,
     ENGLISH_GLOW_RADIUS, GROUP_TRANSITION, EMPHASIS,
     SIZE_MAIN_SPANISH, SIZE_ENGLISH_WORD, SIZE_TRANSLATION,
-    SAFE_AREA_TOP, SAFE_AREA_BOTTOM,
+    SAFE_AREA_TOP, SAFE_AREA_BOTTOM, SAFE_AREA_HEIGHT,
 )
+from .brand import watermark_top
+from .motion import idle_dy, spaced_cuts
 from .utils import (
     font, line_break, draw_text_with_glow, draw_text_solid,
     draw_rounded_card, slide_in_x,
     get_word_animation_state, fit_text_font,
     create_base_frame, finalize_frame,
+    font_line_height,
 )
 from .v2 import timing_engine as TE
 from config.layout import CARD_MARGIN_X, CARD_PADDING, CARD_RADIUS, CARD_WIDTH
@@ -31,6 +34,11 @@ from config.colors import CARD_COLORS
 _SPANISH_ACTIVE = (0, 120, 200)      # dark blue — pops on cream
 _SPANISH_UPCOMING = (60, 70, 90)     # dark grey — readable on cream
 _SPANISH_PAST = (130, 140, 160)      # medium grey — subtle on cream
+
+# Alpha for a word the narrator has not reached yet, out of
+# 255. Low enough to read as "coming up" rather than as content, high enough
+# that the card looks occupied.
+_UPCOMING_ALPHA = 110
 
 # ── Translation styling (inside dark glassmorphism card) ─────────
 _TRANS_SIZE = 48
@@ -48,6 +56,15 @@ def add_sentence_boundaries(words: List[Dict], full_script: str = None) -> List[
     if full_script:
         # Split on sentence-ending punctuation followed by whitespace,
         # OR on whitespace before sentence-starting punctuation ¿¡
+        # TAGS OUT BEFORE SPLITTING. An audio tag is not punctuation, so it
+        # rides inside a sentence and lands in the text this function matches
+        # against -- the same string the word builder has already dropped it
+        # from. That is exactly how two halves of one pipeline drift apart.
+        try:
+            from audio_tags import strip_tags
+            full_script = strip_tags(full_script)
+        except ImportError:                                 # noqa: BLE001
+            pass
         sentences = re.split(r'(?<=[.!?])\s+|\s+(?=[¿¡])', full_script.strip())
         # Clean up: remove empty strings and strip whitespace
         sentences = [s.strip() for s in sentences if s.strip()]
@@ -127,7 +144,41 @@ def create_frame_educational(
         elif g['start'] <= t <= g['end']:
             _render_group_tiktok(t, g, draw, frame, translations, alpha=1.0)
 
-    return finalize_frame(frame, draw, t, duration, words=data.get('words', []))
+    return finalize_frame(frame, draw, t, duration, words=data.get('words', []),
+                          scene_cuts=english_cuts(groups))
+
+
+def english_cuts(groups: List[Dict]) -> List[float]:
+    """Transition times for an educational video: where English takes over.
+
+    Educational has no sections to cut between -- its segments are
+    sentences, and a punch every two seconds would read as a glitch. The
+    moment that matters is the English line arriving, which is what the
+    video exists to teach, so that is where the transition fires: once per
+    run of English groups, at its first group's display start.
+    """
+    starts = []
+    previous_english = False
+    for g in groups or ():
+        english = bool(g.get('english'))
+        if english and not previous_english:
+            starts.append(float(g.get('display_start', g.get('start', 0.0))))
+        previous_english = english
+    return spaced_cuts(starts)
+
+
+def _card_floor() -> int:
+    """The lowest row any educational card may occupy.
+
+    watermark_top(), not SAFE_AREA_BOTTOM. The mark sits just inside that
+    floor, so a card budgeted to the floor and the mark budgeted to the
+    floor land on top of each other — which is what happened to the quiz
+    explanation card and was fixed there and not here.
+
+    One function so the budget, the centring and the clamp cannot drift
+    apart, the way _text_left_edge decides vocabulary's column origin.
+    """
+    return watermark_top()
 
 
 def _lookup_translation(en_clean: str, translations: Dict, words: List[Dict] = None) -> str:
@@ -199,17 +250,30 @@ def _render_group_tiktok(
     is_fading_out = d_end is not None and fade_out > 0 and t > d_end - fade_out
     slide_out_x = int(-300 * (1.0 - alpha)) if is_fading_out else 0
 
-    # Dynamic font size — shrink for long text, max 2 lines
-    max_w = CARD_WIDTH - CARD_PADDING * 2 - 40
-    max_h = int(SIZE_MAIN_SPANISH * 1.4 * 2.2)
-    _, base_size, lines, _ = fit_text_font(text, SIZE_MAIN_SPANISH, 42, max_w, max_h)
-    base_size = max(42, min(SIZE_MAIN_SPANISH, base_size))
+    # ── THE FLOOR ────────────────────────────────────────────────────
+    # ONE value for the whole vertical calculation: the budget below, the
+    # centring and the clamp all measure to _card_floor(). They used to
+    # measure to three different things, and the disagreement was the bug.
+    floor = _card_floor()
 
-    f = font(base_size)
-    line_h = int(base_size * 1.4)
-    text_h = len(lines) * line_h
+    # A BUDGET, not a line count. This was
+    # `int(font_line_height(font(SIZE_MAIN_SPANISH)) * 2.2)` — 242px, two
+    # lines — while the room between SAFE_AREA_TOP and the watermark is
+    # 1271px. fit_text_font was handed a fifth of the space it had, which is
+    # why its overflow path was reachable from here at all, and why a
+    # sentence longer than two lines could not be put on one card.
+    max_w = CARD_WIDTH - CARD_PADDING * 2 - 40
 
     # ── Detect English content + translation for second card ──
+    #
+    # MEASURED BEFORE THE MAIN FIT, because it eats the same room. The main
+    # card used to be fitted to the WHOLE space between SAFE_AREA_TOP and
+    # the floor and the English card was then stacked underneath it, so
+    # `total_h` could exceed the room the fit had been told it had. With the
+    # word ceiling at 40 a group can genuinely fill that budget on a sidecar
+    # with no declared sentences, and the clamp below then pushes the pair
+    # up past SAFE_AREA_TOP into the platform's own UI rail. Reserving the
+    # second card's height here is what makes the budget the real one.
     has_en_words = any(w.get('is_english', False) for w in words) if words else is_en
     en_display_text = ""
     trans_text = ""
@@ -232,9 +296,6 @@ def _render_group_tiktok(
     # (prevents showing Spanish words on the English highlight card)
     show_en_card = bool(en_display_text and trans_text)
 
-    # ── Main card height (text only — no translation) ──
-    main_card_h = text_h + CARD_PADDING * 2
-
     # ── English card dimensions ──
     _EN_CARD_W = CARD_WIDTH - 120
     _EN_CARD_PAD = 30
@@ -255,6 +316,20 @@ def _render_group_tiktok(
 
         en_card_h = en_text_h + trans_h + _EN_CARD_PAD * 2
 
+    # ── Main card: fitted to what is left after the English card ──
+    reserved = (_EN_CARD_GAP + en_card_h) if en_card_h > 0 else 0
+    max_h = max(font_line_height(font(42)),
+                floor - SAFE_AREA_TOP - CARD_PADDING * 2 - reserved)
+    _, base_size, lines, _ = fit_text_font(text, SIZE_MAIN_SPANISH, 42, max_w, max_h)
+    base_size = max(42, min(SIZE_MAIN_SPANISH, base_size))
+
+    f = font(base_size)
+    line_h = font_line_height(f)
+    text_h = len(lines) * line_h
+
+    # ── Main card height (text only — no translation) ──
+    main_card_h = text_h + CARD_PADDING * 2
+
     # ── Total height for centering both cards ──
     total_h = main_card_h
     if en_card_h > 0:
@@ -269,12 +344,44 @@ def _render_group_tiktok(
         eased = ease_out_back(progress)
         bounce_offset_y = int(30 * (1 - eased))
 
-    # Vertical centering with clamping
-    safe_h = SAFE_AREA_BOTTOM - SAFE_AREA_TOP
-    card_y = SAFE_AREA_TOP + (safe_h - total_h) // 2 + bounce_offset_y
+    # ── Vertical placement ───────────────────────────────────────────
+    #
+    # THREE THINGS WERE WRONG HERE, and fixing only the clamp leaves the
+    # worst of them alive.
+    #
+    #  a. The clamp aimed at SAFE_AREA_BOTTOM (1632) while the watermark
+    #     starts at 1559, so a clamped card was placed 73px INTO the mark.
+    #     quiz.py:847 and true_false.py:601 were fixed for exactly this;
+    #     this renderer never was.
+    #
+    #  b. THE CLAMP IS NOT THE FIRST THING THAT COLLIDES. Centring alone
+    #     put the card on the mark at total_h > 1199, and the clamp did not
+    #     run until 1345 — a 146px band in which the card sat on the
+    #     watermark and the clamp never executed. Centring inside the SAME
+    #     floor removes that band by construction rather than by a second
+    #     guard.
+    #
+    #  c. bounce_offset_y was added BEFORE the clamp, so an animation
+    #     displacement fed the layout budget and moved both thresholds down
+    #     60px. That is quiz.py's slide_offset defect in another skin. The
+    #     resting position is settled first and the bounce is applied to it
+    #     afterwards, bounded so it can never cross the floor.
+    card_y = SAFE_AREA_TOP + (floor - SAFE_AREA_TOP - total_h) // 2
     card_y = max(SAFE_AREA_TOP, card_y)
-    if card_y + total_h > SAFE_AREA_BOTTOM:
-        card_y = SAFE_AREA_BOTTOM - total_h
+    if card_y + total_h > floor:
+        card_y = floor - total_h
+
+    # The bounce is a displacement of a settled position, never an input to
+    # it. Downward only, so the floor is the only edge it can reach.
+    if bounce_offset_y:
+        card_y = min(card_y + bounce_offset_y, floor - total_h)
+
+    # Then it floats while it is read. idle_dy only lifts, so the floor is
+    # safe; the lift is capped at SAFE_AREA_TOP so a tall card already
+    # pinned to the top of the safe area is never pushed into the UI rail.
+    if not is_fading_out:
+        lift = idle_dy(t, start + _BOUNCE_DURATION)
+        card_y += int(round(max(lift, min(0, SAFE_AREA_TOP - card_y))))
 
     if words:
         # ── Cream card for karaoke groups ──
@@ -460,7 +567,7 @@ def _render_spanish_karaoke(
     full_text = ' '.join(word_texts)
 
     lines = line_break(full_text, f, text_max_w)
-    line_h = int(base_size * 1.4)
+    line_h = font_line_height(f)
 
     word_idx = 0
     cur_y = base_y
@@ -495,6 +602,14 @@ def _render_spanish_karaoke(
 
             word_alpha = int(state['alpha'] * group_alpha / 255)
 
+            # A word the narrator has not reached is drawn dimmed rather than
+            # not at all. The card is sized for the whole phrase from its first
+            # frame, so without this the opening seconds of every phrase show
+            # one or two words in a mostly empty card — measured at a median
+            # 70% of the card carrying no ink.
+            if state['alpha'] <= 0 and t < word_start:
+                word_alpha = int(_UPCOMING_ALPHA * group_alpha / 255)
+
             if word_alpha > 0:
                 if is_english_word:
                     word_color = ENGLISH_WORD_COLOR
@@ -523,13 +638,38 @@ def _render_spanish_karaoke(
                     scaled_size = int(word_font_size * state['scale'])
                     wf = font(max(10, scaled_size))
 
-                offset_x = state['offset_x']
+                # NAMED anim_offset_x, not offset_x. The parameter of the
+                # same name carries the CARD's horizontal offset and is read
+                # again for the next line's start_x; rebinding it here left
+                # every line after the first positioned by whatever the last
+                # word of the previous line happened to be animating.
+                anim_offset_x = state['offset_x']
                 offset_y = state['offset_y']
+
+                # THE POP MUST NOT PUSH THE NEXT WORD.
+                #
+                # The active word is drawn with a font scaled up to 1.08,
+                # but the cursor below advances using the BASE font, so a
+                # popping word overflows its own slot and collides with the
+                # word after it: "He didn'tshow up to the meeting" in
+                # art_20260903_175853. The apostrophe was a coincidence —
+                # didn't simply happened to be the word popping.
+                #
+                # Advancing by the scaled width instead would reflow the
+                # line on every frame and break the centring that
+                # line_break measured with the base font. So the enlarged
+                # glyphs are CENTRED on the base-font slot: the emphasis
+                # still reads, the layout never moves.
+                grow = 0
+                if wf is not f:
+                    base_w = draw.textbbox((0, 0), display_word, font=f)[2]
+                    scaled_w = draw.textbbox((0, 0), display_word, font=wf)[2]
+                    grow = (scaled_w - base_w) // 2
 
                 if use_glow and not is_fading_out:
                     draw_text_with_glow(
                         draw, frame, display_word,
-                        wx + offset_x, cur_y + offset_y,
+                        wx + anim_offset_x - grow, cur_y + offset_y,
                         wf, word_color, word_alpha,
                         outline=5, glow=True,
                         glow_color=ENGLISH_WORD_COLOR
@@ -537,7 +677,7 @@ def _render_spanish_karaoke(
                 else:
                     draw_text_solid(
                         draw, display_word,
-                        wx + offset_x, cur_y + offset_y,
+                        wx + anim_offset_x - grow, cur_y + offset_y,
                         wf, word_color, word_alpha,
                         outline=outline
                     )
@@ -717,7 +857,7 @@ def _render_text_simple(
     f = font(fsize)
 
     lines = line_break(text, f, TEXT_AREA_WIDTH - 60)
-    line_h = int(fsize * 1.4)
+    line_h = font_line_height(f)
     cur_y = base_y
 
     color = ENGLISH_WORD_COLOR if is_english else _SPANISH_ACTIVE

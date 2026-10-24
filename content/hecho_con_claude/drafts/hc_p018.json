@@ -1,0 +1,46 @@
+{
+  "id": "hc_p018",
+  "style": "poster",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«Parents» no es parientes",
+  "hook_text": "«PARENTS = PARIENTES»: ¿bien o mal?",
+  "poster": {
+    "error_no": "033",
+    "big_wrong": "PARENTS = PARIENTES",
+    "big_right": "RELATIVES = PARIENTES",
+    "examples": [
+      "My parents live in Lima. — Mis padres viven en Lima.",
+      "All my relatives came. — Vinieron todos mis parientes."
+    ]
+  },
+  "correction": {
+    "wrong": "PARENTS = PARIENTES",
+    "right": "RELATIVES = PARIENTES",
+    "rule": "Falso amigo"
+  },
+  "voice": [
+    "[[Parents]] parece «parientes», pero son solo tus padres: madre y padre.",
+    "Los parientes, la familia en general, son [[relatives]].",
+    "[[All my relatives came to the wedding]].",
+    "Y familia política: [[in-laws]], [[mother-in-law]].",
+    "Así: [[My parents]] son dos personas; [[my relatives]] pueden ser cincuenta.",
+    "Reto: ¿cómo dirías «tengo parientes en México»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Tengo parientes en México»",
+    "answer": "I have relatives in Mexico."
+  },
+  "caption": "Parents no son parientes, son padres. Parientes es «relatives». Falso amigo del inglés.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 51
+}

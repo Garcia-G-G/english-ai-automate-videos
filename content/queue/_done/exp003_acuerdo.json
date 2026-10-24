@@ -1,0 +1,99 @@
+{
+  "type": "vocabulary",
+  "title": "Vocabulario: estar de acuerdo",
+  "difficulty": "fácil",
+  "video_title": "Deja de decir 'yes' a todo 👍",
+  "video_description": "Deja de repetir 'yes' y suena natural desde hoy. ✨",
+  "pairs": [
+    {
+      "spanish": "me apunto",
+      "english": "I'm down"
+    },
+    {
+      "spanish": "claro que sí",
+      "english": "absolutely"
+    },
+    {
+      "spanish": "trato hecho",
+      "english": "deal"
+    },
+    {
+      "spanish": "me parece bien",
+      "english": "works for me"
+    },
+    {
+      "spanish": "totalmente",
+      "english": "totally"
+    },
+    {
+      "spanish": "buena idea",
+      "english": "sounds good"
+    },
+    {
+      "spanish": "cuenta conmigo",
+      "english": "count me in"
+    },
+    {
+      "spanish": "vale",
+      "english": "sure thing"
+    },
+    {
+      "spanish": "por supuesto",
+      "english": "of course"
+    },
+    {
+      "spanish": "hecho",
+      "english": "done"
+    },
+    {
+      "spanish": "perfecto",
+      "english": "perfect"
+    },
+    {
+      "spanish": "ya está",
+      "english": "that works"
+    }
+  ],
+  "full_script": "[cheerful] Te proponen un plan y respondes yes. Te proponen otro y respondes yes otra vez. Suenas a traductor automático. Mira lo que dice la gente de verdad. Me apunto, I'm down. Claro que sí, absolutely. Trato hecho, deal. Me parece bien, works for me. Totalmente, totally. Buena idea, sounds good. Cuenta conmigo, count me in. Vale, sure thing. Por supuesto, of course. Hecho, done. Perfecto, perfect. Ya está, that works. Entre amigos valen todas. En el trabajo tira de absolutely y sounds good, que son las que no desentonan.",
+  "translations": {
+    "I'm down": "me apunto",
+    "absolutely": "claro que sí",
+    "deal": "trato hecho",
+    "works for me": "me parece bien",
+    "totally": "totalmente",
+    "sounds good": "buena idea",
+    "count me in": "cuenta conmigo",
+    "sure thing": "vale",
+    "of course": "por supuesto",
+    "done": "hecho",
+    "perfect": "perfecto",
+    "that works": "ya está"
+  },
+  "english_phrases": [
+    "I'm down",
+    "absolutely",
+    "deal",
+    "works for me",
+    "totally",
+    "sounds good",
+    "count me in",
+    "sure thing",
+    "of course",
+    "done",
+    "perfect",
+    "that works"
+  ],
+  "hashtags": [
+    "#AprenderInglés",
+    "#Vocabulario",
+    "#InglésReal",
+    "#EnglishTips",
+    "#Conversación"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp003",
+    "video_type": "vocabulary",
+    "model": "manual"
+  }
+}

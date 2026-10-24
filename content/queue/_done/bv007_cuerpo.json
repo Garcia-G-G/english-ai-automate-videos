@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las partes del CUERPO en inglés? 🦶",
+  "video_description": "Diez palabras del cuerpo, útiles hasta en el médico. 🩺",
+  "title": "¿Cómo se dice…?",
+  "theme": "el cuerpo",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "👁️",
+      "spanish": "Ojo",
+      "english": "eye"
+    },
+    {
+      "emoji": "👂",
+      "spanish": "Oreja",
+      "english": "ear"
+    },
+    {
+      "emoji": "👃",
+      "spanish": "Nariz",
+      "english": "nose"
+    },
+    {
+      "emoji": "👄",
+      "spanish": "Boca",
+      "english": "mouth"
+    },
+    {
+      "emoji": "🦷",
+      "spanish": "Diente",
+      "english": "tooth"
+    },
+    {
+      "emoji": "✋",
+      "spanish": "Mano",
+      "english": "hand"
+    },
+    {
+      "emoji": "💪",
+      "spanish": "Brazo",
+      "english": "arm"
+    },
+    {
+      "emoji": "🦵",
+      "spanish": "Pierna",
+      "english": "leg"
+    },
+    {
+      "emoji": "🦶",
+      "spanish": "Pie",
+      "english": "foot"
+    },
+    {
+      "emoji": "🧠",
+      "spanish": "Cerebro",
+      "english": "brain"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: eye, ear, nose, mouth, tooth, hand, arm, leg, foot, brain.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "eye": "Ojo",
+    "ear": "Oreja",
+    "nose": "Nariz",
+    "mouth": "Boca",
+    "tooth": "Diente",
+    "hand": "Mano",
+    "arm": "Brazo",
+    "leg": "Pierna",
+    "foot": "Pie",
+    "brain": "Cerebro"
+  },
+  "english_phrases": [
+    "eye",
+    "ear",
+    "nose",
+    "mouth",
+    "tooth",
+    "hand",
+    "arm",
+    "leg",
+    "foot",
+    "brain"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv007",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Ojo... eye. eye. Oreja... ear. ear. Nariz... nose. nose. Boca... mouth. mouth. Diente... tooth. tooth. Mano... hand. hand. Brazo... arm. arm. Pierna... leg. leg. Pie... foot. foot. Cerebro... brain. brain. Ahora, todas conmigo: eye, ear, nose, mouth, tooth, hand, arm, leg, foot, brain. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "«¿QUEDAMOS?» y 9 frases más en inglés 📅",
+  "video_description": "Diez frases para hacer planes con amigos. 📅",
+  "title": "¿Cómo se dice?",
+  "theme": "quedar con amigos",
+  "intro": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo?",
+  "items": [
+    {
+      "spanish": "¿Quedamos?",
+      "english": "Want to meet up?"
+    },
+    {
+      "spanish": "¿Qué haces esta noche?",
+      "english": "What are you up to tonight?"
+    },
+    {
+      "spanish": "¿Te apetece un café?",
+      "english": "Do you feel like a coffee?"
+    },
+    {
+      "spanish": "¿A qué hora te viene bien?",
+      "english": "What time works for you?"
+    },
+    {
+      "spanish": "Me viene genial.",
+      "english": "That works for me."
+    },
+    {
+      "spanish": "¿Dónde quedamos?",
+      "english": "Where should we meet?"
+    },
+    {
+      "spanish": "Llego en cinco minutos.",
+      "english": "I'll be there in five minutes."
+    },
+    {
+      "spanish": "Lo dejamos para otro día.",
+      "english": "Let's make it another day."
+    },
+    {
+      "spanish": "Me ha surgido algo.",
+      "english": "Something came up."
+    },
+    {
+      "spanish": "Avísame cuando llegues.",
+      "english": "Let me know when you get there."
+    }
+  ],
+  "outro": "[happy] Guarda el vídeo y repítelas mañana.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf018",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

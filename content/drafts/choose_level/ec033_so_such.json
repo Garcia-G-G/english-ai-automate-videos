@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "SO o SUCH: ¿cuál va en cada frase? ✨",
+  "video_description": "So o such para intensificar: diez frases de fácil a experto. ✨",
+  "title": "Elige la correcta",
+  "theme": "so o such",
+  "intro": "[cheerful] Diez frases, dos opciones. Di la correcta antes que yo.",
+  "items": [
+    {
+      "sentence": "You're ____ kind!",
+      "options": [
+        "so",
+        "such"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "It's ____ a nice day!",
+      "options": [
+        "so",
+        "such"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'm ____ tired.",
+      "options": [
+        "such",
+        "so"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She's ____ a good friend.",
+      "options": [
+        "such",
+        "so"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "They were ____ happy to see us.",
+      "options": [
+        "such",
+        "so"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It was ____ an easy test.",
+      "options": [
+        "such",
+        "so"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I've never seen ____ beautiful sunsets.",
+      "options": [
+        "such",
+        "so"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "There were ____ many people!",
+      "options": [
+        "such",
+        "so"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It was ____ a mess that we left.",
+      "options": [
+        "such",
+        "so"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ is life.",
+      "options": [
+        "So",
+        "Such"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#SoVsSuch",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec033",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Pronombres y palabras de FUNCIÓN: ¿las dices bien? 🔗",
+  "video_description": "The, of, whom: las palabras más cortas y frecuentes también se pronuncian mal. 🧐",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los pronombres y palabras de función",
+  "intro": "[thoughtful] Las palabras más pequeñas también engañan. Lee cada una en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "the",
+      "respelling": "DHA",
+      "ipa": "ðə",
+      "trap": "TH sonora, con la lengua entre los dientes"
+    },
+    {
+      "english": "was",
+      "respelling": "UAZ",
+      "ipa": "ˈwʌz",
+      "trap": "Empieza con «u» y la S suena «z»"
+    },
+    {
+      "english": "from",
+      "respelling": "FRAM",
+      "ipa": "ˈfrʌm",
+      "trap": "La O suena «a»: FRAM"
+    },
+    {
+      "english": "of",
+      "respelling": "AV",
+      "ipa": "ˈʌv",
+      "trap": "La F suena «v»: AV"
+    },
+    {
+      "english": "these",
+      "respelling": "DHIIZ",
+      "ipa": "ˈðiːz",
+      "trap": "TH sonora y la S suena «z»"
+    },
+    {
+      "english": "our",
+      "respelling": "AU-er",
+      "ipa": "ˈaʊɚ",
+      "trap": "Suena igual que «hour»"
+    },
+    {
+      "english": "whom",
+      "respelling": "JUUM",
+      "ipa": "ˈhuːm",
+      "trap": "La W no suena: JUUM"
+    },
+    {
+      "english": "thus",
+      "respelling": "DHAS",
+      "ipa": "ˈðʌs",
+      "trap": "TH sonora: DHAS, no TAS"
+    },
+    {
+      "english": "themselves",
+      "respelling": "dhem-SELVZ",
+      "ipa": "ðəmˈsɛlvz",
+      "trap": "Acento en SELVZ y final «lvz»"
+    },
+    {
+      "english": "whereas",
+      "respelling": "uer-AZ",
+      "ipa": "wɛrˈæz",
+      "trap": "Acento al final: uer-AZ"
+    }
+  ],
+  "verdict": "Si llegaste hasta la tres, nivel básico; hasta la siete, intermedio; y con las diez, experto.",
+  "outro": "[thoughtful] ¿Cuál decías mal sin saberlo? Cuéntamelo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#GramáticaInglesa",
+    "#AprenderInglés",
+    "#InglésParaHispanohablantes",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl099",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

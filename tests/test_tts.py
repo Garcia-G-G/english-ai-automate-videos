@@ -11,15 +11,26 @@ import sys
 import tempfile
 import unittest
 
+import pytest
+
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from tts import text_to_speech, list_voices, RECOMMENDED_VOICES, DEFAULT_VOICE, DEFAULT_RATE
 
+# Edge TTS is a web service: these fail on any machine without it (STEP 60 §3).
+_skip_offline = pytest.mark.skipif(os.environ.get("RUN_NETWORK_TESTS") != "1",
+                                   reason="needs the network; set RUN_NETWORK_TESTS=1")
+
+
+def network(test):
+    return pytest.mark.network(_skip_offline(test))
+
 
 class TestTTS(unittest.TestCase):
     """Test cases for the TTS module."""
 
+    @network
     def test_text_to_speech_spanish(self):
         """Test TTS with Spanish content teaching English."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -43,6 +54,7 @@ class TestTTS(unittest.TestCase):
             self.assertIsInstance(timestamps["words"], list)
             self.assertGreater(len(timestamps["words"]), 0)
 
+    @network
     def test_word_timestamps_structure(self):
         """Test that word timestamps have correct structure."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -58,6 +70,7 @@ class TestTTS(unittest.TestCase):
                 self.assertIn("end", word)
                 self.assertGreaterEqual(word["end"], word["start"])
 
+    @network
     def test_rate_adjustment(self):
         """Test that rate adjustment works."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -71,12 +84,14 @@ class TestTTS(unittest.TestCase):
             # Faster rate should have shorter duration
             self.assertLess(ts_fast["duration"], ts_slow["duration"])
 
+    @network
     def test_list_voices(self):
         """Test listing available voices."""
         voices = asyncio.run(list_voices())
         self.assertIsInstance(voices, list)
         self.assertGreater(len(voices), 0)
 
+    @network
     def test_list_spanish_voices(self):
         """Test listing Spanish voices."""
         voices = asyncio.run(list_voices("es"))
@@ -89,6 +104,7 @@ class TestTTS(unittest.TestCase):
         """Test that default voice is Spanish (for Spanish content)."""
         self.assertTrue(DEFAULT_VOICE.startswith("es-"))
 
+    @network
     def test_recommended_voices_exist(self):
         """Test that recommended voices are valid."""
         all_voices = asyncio.run(list_voices())
@@ -104,6 +120,7 @@ class TestTTS(unittest.TestCase):
 class TestFalseFriendsContent(unittest.TestCase):
     """Test with real false friends content."""
 
+    @network
     def test_embarrassed_example(self):
         """Test the embarrassed/embarazada example."""
         text = """¿Sabías que 'embarrassed' NO significa 'embarazada'?

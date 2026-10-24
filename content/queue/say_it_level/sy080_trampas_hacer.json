@@ -1,0 +1,115 @@
+{
+  "type": "say_it_level",
+  "video_title": "«HACER» en inglés: ¿make, do… o ninguno? Test de 10 🤯",
+  "video_description": "Hacer una foto, hacer cola, hacer caso: diez trampas con hacer en inglés. 🤯",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «hacer»",
+  "intro": "[curious] Diez frases con «hacer». A veces es make, a veces do… y a veces ninguno. ¡Dilas!",
+  "items": [
+    {
+      "spanish": "Estoy haciendo la cena.",
+      "english": "I'm making dinner.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Qué haces?",
+      "english": "What are you doing?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Hago deporte los fines de semana.",
+      "english": "I play sports on weekends.",
+      "cefr": "A2",
+      "alt": "I do sport at the weekend."
+    },
+    {
+      "spanish": "¿Puedo hacer una pregunta?",
+      "english": "Can I ask a question?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Nos haces una foto?",
+      "english": "Could you take a picture of us?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Tengo que hacer la maleta.",
+      "english": "I have to pack.",
+      "cefr": "B1",
+      "alt": "I need to pack my suitcase."
+    },
+    {
+      "spanish": "Hicimos cola durante una hora.",
+      "english": "We waited in line for an hour.",
+      "cefr": "B2",
+      "alt": "We queued for an hour."
+    },
+    {
+      "spanish": "No me hace caso.",
+      "english": "He doesn't listen to me.",
+      "cefr": "B2",
+      "alt": "He doesn't pay attention to me.",
+      "tip": "«Hacer caso» es listen o pay attention, sin make"
+    },
+    {
+      "spanish": "No hace falta.",
+      "english": "There's no need.",
+      "cefr": "B2",
+      "alt": "You don't have to.",
+      "tip": "«No hace falta» es There's no need, no «doesn't make»"
+    },
+    {
+      "spanish": "Me hace mucha ilusión.",
+      "english": "I'm really excited about it.",
+      "cefr": "C1",
+      "alt": "I'm really looking forward to it.",
+      "tip": "«Hacer ilusión» no existe en inglés: be excited about"
+    }
+  ],
+  "verdict": "Hasta la tres, básico. Hasta la siete, intermedio. Y si hiciste las diez, has hecho historia: experto.",
+  "outro": "[cheerful] ¿Cuántas hiciste bien? Escribe tu número y te leo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#TrucosDeInglés",
+    "#MakeOrDo"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy080",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm making dinner.": "Estoy haciendo la cena.",
+    "What are you doing?": "¿Qué haces?",
+    "I play sports on weekends.": "Hago deporte los fines de semana.",
+    "Can I ask a question?": "¿Puedo hacer una pregunta?",
+    "Could you take a picture of us?": "¿Nos haces una foto?",
+    "I have to pack.": "Tengo que hacer la maleta.",
+    "We waited in line for an hour.": "Hicimos cola durante una hora.",
+    "He doesn't listen to me.": "No me hace caso.",
+    "There's no need.": "No hace falta.",
+    "I'm really excited about it.": "Me hace mucha ilusión."
+  },
+  "english_phrases": [
+    "I'm making dinner.",
+    "What are you doing?",
+    "I play sports on weekends.",
+    "Can I ask a question?",
+    "Could you take a picture of us?",
+    "I have to pack.",
+    "We waited in line for an hour.",
+    "He doesn't listen to me.",
+    "There's no need.",
+    "I'm really excited about it.",
+    "I do sport at the weekend.",
+    "I need to pack my suitcase.",
+    "We queued for an hour.",
+    "He doesn't pay attention to me.",
+    "You don't have to.",
+    "I'm really looking forward to it."
+  ],
+  "full_script": "[curious] Diez frases con «hacer». A veces es make, a veces do… y a veces ninguno. ¡Dilas! I'm making dinner. What are you doing? I play sports on weekends. Ahora, nivel intermedio. Can I ask a question? Could you take a picture of us? I have to pack. We waited in line for an hour. Y ahora, nivel experto. He doesn't listen to me. There's no need. I'm really excited about it. Hasta la tres, básico. Hasta la siete, intermedio. Y si hiciste las diez, has hecho historia: experto. [cheerful] ¿Cuántas hiciste bien? Escribe tu número y te leo."
+}

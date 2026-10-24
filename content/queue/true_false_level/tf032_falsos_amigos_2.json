@@ -1,0 +1,95 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Verdadero o falso? FALSOS AMIGOS 2 🎭",
+  "video_description": "Más falsos amigos: ¿verdadero o falso? 🎭",
+  "title": "¿Verdadero o falso?",
+  "theme": "falsos amigos (segunda parte)",
+  "intro": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta.",
+  "items": [
+    {
+      "statement": "«Library» es librería.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es biblioteca"
+    },
+    {
+      "statement": "«Dinner» es cena.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Carpet» es carpeta.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es alfombra"
+    },
+    {
+      "statement": "«Embarrassed» es embarazada.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es avergonzada"
+    },
+    {
+      "statement": "«Large» significa grande.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Exit» es éxito.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es salida"
+    },
+    {
+      "statement": "«Realize» es darse cuenta.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Molest» es molestar.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es abusar de alguien"
+    },
+    {
+      "statement": "«Eventually» significa al final.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Lecture» es lectura.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es clase o conferencia"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#FalsosAmigos",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "tf032",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Library",
+    "Dinner",
+    "Carpet",
+    "Embarrassed",
+    "Large",
+    "Exit",
+    "Realize",
+    "Molest",
+    "Eventually",
+    "Lecture"
+  ],
+  "full_script": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta. Falso: es biblioteca. Verdadero. Falso: es alfombra. Ahora, nivel intermedio. Falso: es avergonzada. Verdadero. Falso: es salida. Verdadero. Y ahora, nivel experto. Falso: es abusar de alguien. Verdadero. Falso: es clase o conferencia. Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

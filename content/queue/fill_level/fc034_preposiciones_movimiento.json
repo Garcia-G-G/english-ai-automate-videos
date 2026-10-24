@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "10 frases con hueco: INTO, ACROSS, THROUGH 🏞️",
+  "video_description": "Into, across, through, along: el movimiento en diez frases. 🏞️",
+  "title": "Completa la frase",
+  "theme": "preposiciones de movimiento",
+  "intro": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido.",
+  "items": [
+    {
+      "sentence": "Come ____ the kitchen.",
+      "answer": "into",
+      "translation": "Ven a la cocina.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Get ____ of my car!",
+      "answer": "out",
+      "translation": "¡Sal de mi coche!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Walk ____ the bridge.",
+      "answer": "across",
+      "translation": "Cruza el puente.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "The cat jumped ____ the table.",
+      "answer": "onto",
+      "translation": "El gato saltó a la mesa.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We walked ____ the river.",
+      "answer": "along",
+      "translation": "Caminamos por la orilla del río.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The train went ____ a tunnel.",
+      "answer": "through",
+      "translation": "El tren pasó por un túnel.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He ran ____ the stairs.",
+      "answer": "up",
+      "translation": "Subió las escaleras corriendo.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She walked ____ me without saying hi.",
+      "answer": "past",
+      "translation": "Pasó a mi lado sin saludar.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The plane flew ____ the clouds.",
+      "answer": "above",
+      "translation": "El avión volaba por encima de las nubes.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Keep ____ from the edge!",
+      "answer": "away",
+      "translation": "¡Aléjate del borde!",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Preposiciones",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc034",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Come into the kitchen.": "Ven a la cocina.",
+    "Get out of my car!": "¡Sal de mi coche!",
+    "Walk across the bridge.": "Cruza el puente.",
+    "The cat jumped onto the table.": "El gato saltó a la mesa.",
+    "We walked along the river.": "Caminamos por la orilla del río.",
+    "The train went through a tunnel.": "El tren pasó por un túnel.",
+    "He ran up the stairs.": "Subió las escaleras corriendo.",
+    "She walked past me without saying hi.": "Pasó a mi lado sin saludar.",
+    "The plane flew above the clouds.": "El avión volaba por encima de las nubes.",
+    "Keep away from the edge!": "¡Aléjate del borde!"
+  },
+  "english_phrases": [
+    "Come into the kitchen.",
+    "Get out of my car!",
+    "Walk across the bridge.",
+    "The cat jumped onto the table.",
+    "We walked along the river.",
+    "The train went through a tunnel.",
+    "He ran up the stairs.",
+    "She walked past me without saying hi.",
+    "The plane flew above the clouds.",
+    "Keep away from the edge!"
+  ],
+  "full_script": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido. Come into the kitchen. Get out of my car! Walk across the bridge. Ahora, nivel intermedio. The cat jumped onto the table. We walked along the river. The train went through a tunnel. He ran up the stairs. Y ahora, nivel experto. She walked past me without saying hi. The plane flew above the clouds. Keep away from the edge! Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

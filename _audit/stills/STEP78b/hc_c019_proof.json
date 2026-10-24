@@ -1,0 +1,33 @@
+{
+ "id": "hc_c019",
+ "style": "comic",
+ "level": "dificil",
+ "duration": 32.877,
+ "voice_seconds": 28.877,
+ "tts_usd": 0.0933,
+ "outro_variant": "sigue-aprendiendo",
+ "silent": false,
+ "cpu_s": 113.4,
+ "wall_s": 53.1,
+ "load": [
+  5.0,
+  13.5
+ ],
+ "measure": {
+  "LUFS I": -14.0,
+  "true peak dBTP": -2.5,
+  "duration s": 32.87,
+  "colour": "bt709/bt709/bt709/tv",
+  "median kf gap s": 2.0
+ },
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "still": {
+   "seconds": 1.33,
+   "from": 31.2
+  },
+  "english_missing": []
+ },
+ "tts_note": "voiced on the first render; this re-render (stamp moved) used the cache"
+}

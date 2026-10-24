@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "«SE HA COLGADO» y 9 frases más en inglés 🖥️",
+  "video_description": "Diez frases para cuando la tecnología te falla. 🖥️",
+  "title": "¿Cómo se dice?",
+  "theme": "cuando falla la tecnología",
+  "intro": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo?",
+  "items": [
+    {
+      "spanish": "No tengo cobertura.",
+      "english": "I have no signal."
+    },
+    {
+      "spanish": "Me he quedado sin batería.",
+      "english": "My phone died."
+    },
+    {
+      "spanish": "Se ha colgado.",
+      "english": "It froze."
+    },
+    {
+      "spanish": "Prueba a reiniciarlo.",
+      "english": "Try restarting it."
+    },
+    {
+      "spanish": "No me carga la página.",
+      "english": "The page won't load."
+    },
+    {
+      "spanish": "He olvidado la contraseña.",
+      "english": "I forgot my password."
+    },
+    {
+      "spanish": "No me llega el código.",
+      "english": "I'm not getting the code."
+    },
+    {
+      "spanish": "Se ha borrado todo.",
+      "english": "Everything got deleted."
+    },
+    {
+      "spanish": "Tengo que actualizarlo.",
+      "english": "I need to update it."
+    },
+    {
+      "spanish": "¿Lo has guardado?",
+      "english": "Did you save it?"
+    }
+  ],
+  "outro": "[happy] Guarda el vídeo y repítelas mañana.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf028",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

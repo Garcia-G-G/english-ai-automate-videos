@@ -1,0 +1,55 @@
+{
+  "id": "hc_m009",
+  "style": "mensajes",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«Make a photo»: el verbo equivocado",
+  "hook_text": "Le pedí una foto así…",
+  "chat": {
+    "contact": "Mason · Boston",
+    "messages": [
+      [
+        "me",
+        "Can you make me a photo here? 📸",
+        "error"
+      ],
+      [
+        "them",
+        "make? like… draw it? 🎨"
+      ],
+      [
+        "them",
+        "ahh TAKE a photo, sure!"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "Make a photo",
+    "right": "Take a photo",
+    "rule": "Las fotos se toman: take a photo / take a picture"
+  },
+  "voice": [
+    "En un viaje le pedí a un amigo: [[Can you make me a photo here?]] Y me preguntó si quería un dibujo.",
+    "Porque en inglés las fotos no se hacen, se toman: [[take a photo]] o [[take a picture]].",
+    "Así que: [[Can you take a photo of me?]], «¿me haces una foto?».",
+    "Y si es un selfie, también: [[Let's take a selfie]].",
+    "[[Make]] se usa cuando creas algo, como [[make a cake]] o [[make a video]].",
+    "Reto: ¿cómo pedirías «¿nos haces una foto?». Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«¿Nos haces una foto?»",
+    "answer": "Can you take a photo of us?"
+  },
+  "caption": "Se dice «take a photo», no «make a photo». El verbo que todos los hispanohablantes cambiamos.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 86
+}

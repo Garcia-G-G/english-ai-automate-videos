@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «¡TOTALMENTE!» en inglés? 🤝",
+  "video_description": "Diez frases para estar de acuerdo, o no. 🤝",
+  "title": "¿Cómo se dice?",
+  "theme": "estar de acuerdo o no",
+  "intro": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan.",
+  "items": [
+    {
+      "spanish": "Estoy de acuerdo.",
+      "english": "I agree."
+    },
+    {
+      "spanish": "¡Totalmente!",
+      "english": "Absolutely!"
+    },
+    {
+      "spanish": "Yo también.",
+      "english": "Me too."
+    },
+    {
+      "spanish": "Yo tampoco.",
+      "english": "Me neither."
+    },
+    {
+      "spanish": "No estoy de acuerdo.",
+      "english": "I disagree."
+    },
+    {
+      "spanish": "Tienes razón.",
+      "english": "You're right."
+    },
+    {
+      "spanish": "Ni de broma.",
+      "english": "No way."
+    },
+    {
+      "spanish": "Eso es justo lo que pienso.",
+      "english": "That's exactly what I think."
+    },
+    {
+      "spanish": "Visto así, sí.",
+      "english": "When you put it that way, yes."
+    },
+    {
+      "spanish": "Estamos de acuerdo en no estar de acuerdo.",
+      "english": "Let's agree to disagree."
+    }
+  ],
+  "outro": "[curious] ¿Cuál no conocías? Cuéntamelo abajo.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#ConversaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf014",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I agree.": "Estoy de acuerdo.",
+    "Absolutely!": "¡Totalmente!",
+    "Me too.": "Yo también.",
+    "Me neither.": "Yo tampoco.",
+    "I disagree.": "No estoy de acuerdo.",
+    "You're right.": "Tienes razón.",
+    "No way.": "Ni de broma.",
+    "That's exactly what I think.": "Eso es justo lo que pienso.",
+    "When you put it that way, yes.": "Visto así, sí.",
+    "Let's agree to disagree.": "Estamos de acuerdo en no estar de acuerdo."
+  },
+  "english_phrases": [
+    "I agree.",
+    "Absolutely!",
+    "Me too.",
+    "Me neither.",
+    "I disagree.",
+    "You're right.",
+    "No way.",
+    "That's exactly what I think.",
+    "When you put it that way, yes.",
+    "Let's agree to disagree."
+  ],
+  "full_script": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan. I agree. Absolutely! Me too. Me neither. I disagree. You're right. No way. That's exactly what I think. When you put it that way, yes. Let's agree to disagree. [curious] ¿Cuál no conocías? Cuéntamelo abajo."
+}

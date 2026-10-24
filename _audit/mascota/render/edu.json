@@ -1,0 +1,674 @@
+{
+ "hook": "¡Cuidado! 'Actually' NO significa actualmente",
+ "full_script": "¡Cuidado! 'Actually' NO significa actualmente. Este es uno de los errores más comunes. En inglés, 'actually' significa 'en realidad' o 'de hecho'. Por ejemplo: 'Actually, I don't like coffee'. Si quieres decir actualmente, la palabra correcta es 'currently'. Por ejemplo: 'I'm currently working from home'. Recuerda: 'actually' es para corregir o aclarar algo. ¿Tú también confundías estas palabras? ¡Sígueme para más tips!",
+ "english_phrases": [
+  "actually",
+  "Actually, I don't like coffee",
+  "currently",
+  "I'm currently working from home"
+ ],
+ "translations": {
+  "actually": "en realidad",
+  "currently": "actualmente",
+  "actually, i don't like coffee": "En realidad, no me gusta el café",
+  "i'm currently working from home": "Actualmente estoy trabajando desde casa"
+ },
+ "tip": "Actually es para corregir o aclarar, currently es para el presente",
+ "cta": "¿Tú también confundías estas palabras? ¡Sígueme para más tips!",
+ "hashtags": [
+  "#AprendeIngles",
+  "#FalseFriends",
+  "#Actually",
+  "#InglesBasico"
+ ],
+ "_meta": {
+  "category": "false_friends",
+  "topic_id": "ff001"
+ },
+ "duration": 28.234,
+ "words": [
+  {
+   "word": "¡Cuidado!",
+   "start": 0.0,
+   "end": 0.65,
+   "is_english": false,
+   "segment_id": 0,
+   "segment_end": true
+  },
+  {
+   "word": "Actually",
+   "start": 0.83,
+   "end": 1.712,
+   "is_english": true,
+   "segment_id": 1,
+   "segment_end": false
+  },
+  {
+   "word": "NO",
+   "start": 1.743,
+   "end": 2.022,
+   "is_english": false,
+   "segment_id": 1,
+   "segment_end": false
+  },
+  {
+   "word": "significa",
+   "start": 2.08,
+   "end": 2.602,
+   "is_english": false,
+   "segment_id": 1,
+   "segment_end": false
+  },
+  {
+   "word": "actualmente.",
+   "start": 2.625,
+   "end": 3.45,
+   "is_english": false,
+   "segment_id": 1,
+   "segment_end": true
+  },
+  {
+   "word": "Este",
+   "start": 3.693,
+   "end": 4.053,
+   "is_english": false,
+   "segment_id": 2,
+   "segment_end": false
+  },
+  {
+   "word": "es",
+   "start": 4.088,
+   "end": 4.169,
+   "is_english": false,
+   "segment_id": 2,
+   "segment_end": false
+  },
+  {
+   "word": "uno",
+   "start": 4.251,
+   "end": 4.39,
+   "is_english": false,
+   "segment_id": 2,
+   "segment_end": false
+  },
+  {
+   "word": "de",
+   "start": 4.425,
+   "end": 4.471,
+   "is_english": false,
+   "segment_id": 2,
+   "segment_end": false
+  },
+  {
+   "word": "los",
+   "start": 4.518,
+   "end": 4.645,
+   "is_english": false,
+   "segment_id": 2,
+   "segment_end": false
+  },
+  {
+   "word": "errores",
+   "start": 4.692,
+   "end": 5.029,
+   "is_english": false,
+   "segment_id": 2,
+   "segment_end": false
+  },
+  {
+   "word": "más",
+   "start": 5.075,
+   "end": 5.226,
+   "is_english": false,
+   "segment_id": 2,
+   "segment_end": false
+  },
+  {
+   "word": "comunes.",
+   "start": 5.284,
+   "end": 5.853,
+   "is_english": false,
+   "segment_id": 2,
+   "segment_end": true
+  },
+  {
+   "word": "En",
+   "start": 5.899,
+   "end": 6.039,
+   "is_english": false,
+   "segment_id": 3,
+   "segment_end": false
+  },
+  {
+   "word": "inglés,",
+   "start": 6.097,
+   "end": 6.898,
+   "is_english": false,
+   "segment_id": 3,
+   "segment_end": false
+  },
+  {
+   "word": "actually",
+   "start": 6.977,
+   "end": 7.627,
+   "is_english": true,
+   "segment_id": 3,
+   "segment_end": false
+  },
+  {
+   "word": "significa",
+   "start": 7.658,
+   "end": 8.238,
+   "is_english": false,
+   "segment_id": 3,
+   "segment_end": false
+  },
+  {
+   "word": "en",
+   "start": 8.262,
+   "end": 8.32,
+   "is_english": false,
+   "segment_id": 3,
+   "segment_end": false
+  },
+  {
+   "word": "realidad",
+   "start": 8.389,
+   "end": 8.877,
+   "is_english": false,
+   "segment_id": 3,
+   "segment_end": false
+  },
+  {
+   "word": "o",
+   "start": 8.958,
+   "end": 9.074,
+   "is_english": false,
+   "segment_id": 3,
+   "segment_end": false
+  },
+  {
+   "word": "de",
+   "start": 9.132,
+   "end": 9.225,
+   "is_english": false,
+   "segment_id": 3,
+   "segment_end": false
+  },
+  {
+   "word": "hecho.",
+   "start": 9.272,
+   "end": 9.678,
+   "is_english": false,
+   "segment_id": 3,
+   "segment_end": true
+  },
+  {
+   "word": "Por",
+   "start": 9.887,
+   "end": 10.061,
+   "is_english": false,
+   "segment_id": 4,
+   "segment_end": false
+  },
+  {
+   "word": "ejemplo:",
+   "start": 10.096,
+   "end": 10.63,
+   "is_english": false,
+   "segment_id": 4,
+   "segment_end": false
+  },
+  {
+   "word": "Actually,",
+   "start": 10.71,
+   "end": 11.395,
+   "is_english": true,
+   "segment_id": 4,
+   "segment_end": false
+  },
+  {
+   "word": "I",
+   "start": 11.523,
+   "end": 11.604,
+   "is_english": true,
+   "segment_id": 4,
+   "segment_end": false
+  },
+  {
+   "word": "don't",
+   "start": 11.708,
+   "end": 11.894,
+   "is_english": true,
+   "segment_id": 4,
+   "segment_end": false
+  },
+  {
+   "word": "like",
+   "start": 11.941,
+   "end": 12.126,
+   "is_english": true,
+   "segment_id": 4,
+   "segment_end": false
+  },
+  {
+   "word": "coffee.",
+   "start": 12.173,
+   "end": 12.893,
+   "is_english": true,
+   "segment_id": 4,
+   "segment_end": true
+  },
+  {
+   "word": "Si",
+   "start": 13.072,
+   "end": 13.223,
+   "is_english": false,
+   "segment_id": 5,
+   "segment_end": false
+  },
+  {
+   "word": "quieres",
+   "start": 13.281,
+   "end": 13.536,
+   "is_english": false,
+   "segment_id": 5,
+   "segment_end": false
+  },
+  {
+   "word": "decir",
+   "start": 13.571,
+   "end": 13.803,
+   "is_english": false,
+   "segment_id": 5,
+   "segment_end": false
+  },
+  {
+   "word": "actualmente,",
+   "start": 13.838,
+   "end": 14.396,
+   "is_english": false,
+   "segment_id": 5,
+   "segment_end": false
+  },
+  {
+   "word": "la",
+   "start": 14.43,
+   "end": 14.512,
+   "is_english": false,
+   "segment_id": 5,
+   "segment_end": false
+  },
+  {
+   "word": "palabra",
+   "start": 14.558,
+   "end": 14.895,
+   "is_english": false,
+   "segment_id": 5,
+   "segment_end": false
+  },
+  {
+   "word": "correcta",
+   "start": 14.941,
+   "end": 15.394,
+   "is_english": false,
+   "segment_id": 5,
+   "segment_end": false
+  },
+  {
+   "word": "es",
+   "start": 15.487,
+   "end": 15.812,
+   "is_english": false,
+   "segment_id": 5,
+   "segment_end": false
+  },
+  {
+   "word": "currently.",
+   "start": 15.842,
+   "end": 16.771,
+   "is_english": true,
+   "segment_id": 5,
+   "segment_end": true
+  },
+  {
+   "word": "Por",
+   "start": 16.951,
+   "end": 17.137,
+   "is_english": false,
+   "segment_id": 6,
+   "segment_end": false
+  },
+  {
+   "word": "ejemplo:",
+   "start": 17.183,
+   "end": 17.926,
+   "is_english": false,
+   "segment_id": 6,
+   "segment_end": false
+  },
+  {
+   "word": "I'm",
+   "start": 18.006,
+   "end": 18.227,
+   "is_english": true,
+   "segment_id": 6,
+   "segment_end": false
+  },
+  {
+   "word": "currently",
+   "start": 18.308,
+   "end": 18.737,
+   "is_english": true,
+   "segment_id": 6,
+   "segment_end": false
+  },
+  {
+   "word": "working",
+   "start": 18.784,
+   "end": 19.074,
+   "is_english": true,
+   "segment_id": 6,
+   "segment_end": false
+  },
+  {
+   "word": "from",
+   "start": 19.109,
+   "end": 19.248,
+   "is_english": true,
+   "segment_id": 6,
+   "segment_end": false
+  },
+  {
+   "word": "home.",
+   "start": 19.341,
+   "end": 20.282,
+   "is_english": true,
+   "segment_id": 6,
+   "segment_end": true
+  },
+  {
+   "word": "Recuerda:",
+   "start": 20.462,
+   "end": 21.205,
+   "is_english": false,
+   "segment_id": 7,
+   "segment_end": false
+  },
+  {
+   "word": "actually",
+   "start": 21.285,
+   "end": 21.935,
+   "is_english": true,
+   "segment_id": 7,
+   "segment_end": false
+  },
+  {
+   "word": "es",
+   "start": 21.965,
+   "end": 22.162,
+   "is_english": false,
+   "segment_id": 7,
+   "segment_end": false
+  },
+  {
+   "word": "para",
+   "start": 22.22,
+   "end": 22.383,
+   "is_english": false,
+   "segment_id": 7,
+   "segment_end": false
+  },
+  {
+   "word": "corregir",
+   "start": 22.441,
+   "end": 22.963,
+   "is_english": false,
+   "segment_id": 7,
+   "segment_end": false
+  },
+  {
+   "word": "o",
+   "start": 23.138,
+   "end": 23.23,
+   "is_english": false,
+   "segment_id": 7,
+   "segment_end": false
+  },
+  {
+   "word": "aclarar",
+   "start": 23.277,
+   "end": 23.625,
+   "is_english": false,
+   "segment_id": 7,
+   "segment_end": false
+  },
+  {
+   "word": "algo.",
+   "start": 23.683,
+   "end": 24.101,
+   "is_english": false,
+   "segment_id": 7,
+   "segment_end": true
+  },
+  {
+   "word": "¿Tú",
+   "start": 24.426,
+   "end": 24.659,
+   "is_english": false,
+   "segment_id": 8,
+   "segment_end": false
+  },
+  {
+   "word": "también",
+   "start": 24.705,
+   "end": 25.018,
+   "is_english": false,
+   "segment_id": 8,
+   "segment_end": false
+  },
+  {
+   "word": "confundías",
+   "start": 25.065,
+   "end": 25.564,
+   "is_english": false,
+   "segment_id": 8,
+   "segment_end": false
+  },
+  {
+   "word": "estas",
+   "start": 25.622,
+   "end": 25.808,
+   "is_english": false,
+   "segment_id": 8,
+   "segment_end": false
+  },
+  {
+   "word": "palabras?",
+   "start": 25.854,
+   "end": 26.47,
+   "is_english": false,
+   "segment_id": 8,
+   "segment_end": true
+  },
+  {
+   "word": "¡Sígueme",
+   "start": 26.516,
+   "end": 27.073,
+   "is_english": false,
+   "segment_id": 9,
+   "segment_end": false
+  },
+  {
+   "word": "para",
+   "start": 27.108,
+   "end": 27.271,
+   "is_english": false,
+   "segment_id": 9,
+   "segment_end": false
+  },
+  {
+   "word": "más",
+   "start": 27.317,
+   "end": 27.468,
+   "is_english": false,
+   "segment_id": 9,
+   "segment_end": false
+  },
+  {
+   "word": "tips!",
+   "start": 27.526,
+   "end": 28.234,
+   "is_english": false,
+   "segment_id": 9,
+   "segment_end": true
+  }
+ ],
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 0.65,
+   "text": "¡Cuidado!"
+  },
+  {
+   "start": 0.83,
+   "end": 3.45,
+   "text": "Actually NO significa actualmente."
+  },
+  {
+   "start": 3.693,
+   "end": 5.853,
+   "text": "Este es uno de los errores más comunes."
+  },
+  {
+   "start": 5.899,
+   "end": 9.678,
+   "text": "En inglés, actually significa en realidad o de hecho."
+  },
+  {
+   "start": 9.887,
+   "end": 12.893,
+   "text": "Por ejemplo: Actually, I don't like coffee."
+  },
+  {
+   "start": 13.072,
+   "end": 16.771,
+   "text": "Si quieres decir actualmente, la palabra correcta es currently."
+  },
+  {
+   "start": 16.951,
+   "end": 20.282,
+   "text": "Por ejemplo: I'm currently working from home."
+  },
+  {
+   "start": 20.462,
+   "end": 24.101,
+   "text": "Recuerda: actually es para corregir o aclarar algo."
+  },
+  {
+   "start": 24.426,
+   "end": 26.47,
+   "text": "¿Tú también confundías estas palabras?"
+  },
+  {
+   "start": 26.516,
+   "end": 28.234,
+   "text": "¡Sígueme para más tips!"
+  }
+ ],
+ "tts_model_id": "eleven_turbo_v2_5",
+ "tts_calls": [
+  {
+   "index": 0,
+   "lang": "es",
+   "text": "¡Cuidado!",
+   "speed": 1.0,
+   "pause_after": 0.18
+  },
+  {
+   "index": 1,
+   "lang": "en",
+   "text": "Actually",
+   "speed": 0.92,
+   "pause_after": 0.03
+  },
+  {
+   "index": 2,
+   "lang": "es",
+   "text": "NO significa actualmente. Este es uno de los errores más comunes. En inglés,",
+   "speed": 1.0,
+   "pause_after": 0.08
+  },
+  {
+   "index": 3,
+   "lang": "en",
+   "text": "actually",
+   "speed": 0.92,
+   "pause_after": 0.03
+  },
+  {
+   "index": 4,
+   "lang": "es",
+   "text": "significa en realidad o de hecho. Por ejemplo:",
+   "speed": 1.0,
+   "pause_after": 0.08
+  },
+  {
+   "index": 5,
+   "lang": "en",
+   "text": "Actually, I don't like coffee.",
+   "speed": 0.92,
+   "pause_after": 0.18
+  },
+  {
+   "index": 6,
+   "lang": "es",
+   "text": "Si quieres decir actualmente, la palabra correcta es",
+   "speed": 1.0,
+   "pause_after": 0.03
+  },
+  {
+   "index": 7,
+   "lang": "en",
+   "text": "currently.",
+   "speed": 0.92,
+   "pause_after": 0.18
+  },
+  {
+   "index": 8,
+   "lang": "es",
+   "text": "Por ejemplo:",
+   "speed": 1.0,
+   "pause_after": 0.08
+  },
+  {
+   "index": 9,
+   "lang": "en",
+   "text": "I'm currently working from home.",
+   "speed": 0.92,
+   "pause_after": 0.18
+  },
+  {
+   "index": 10,
+   "lang": "es",
+   "text": "Recuerda:",
+   "speed": 1.0,
+   "pause_after": 0.08
+  },
+  {
+   "index": 11,
+   "lang": "en",
+   "text": "actually",
+   "speed": 0.92,
+   "pause_after": 0.03
+  },
+  {
+   "index": 12,
+   "lang": "es",
+   "text": "es para corregir o aclarar algo. ¿Tú también confundías estas palabras? ¡Sígueme para más tips!",
+   "speed": 1.0,
+   "pause_after": 0.18
+  }
+ ],
+ "type": "educational"
+}

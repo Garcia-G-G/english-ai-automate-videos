@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "¿Completas las 10? SO DO I o NEITHER DO I 🤝",
+  "video_description": "Yo también y yo tampoco en inglés, en diez frases. 🤝",
+  "title": "Completa la frase",
+  "theme": "so do I y neither do I",
+  "intro": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo.",
+  "items": [
+    {
+      "sentence": "I love pizza. — So ____ I.",
+      "answer": "do",
+      "translation": "Me encanta la pizza. — A mí también.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'm hungry. — So ____ I.",
+      "answer": "am",
+      "translation": "Tengo hambre. — Yo también.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I don't like it. — ____ do I.",
+      "answer": "Neither",
+      "translation": "No me gusta. — A mí tampoco.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I can swim. — So ____ I.",
+      "answer": "can",
+      "translation": "Sé nadar. — Yo también.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I went to the party. — So ____ I.",
+      "answer": "did",
+      "translation": "Fui a la fiesta. — Yo también.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I haven't seen it. — Neither ____ I.",
+      "answer": "have",
+      "translation": "No la he visto. — Yo tampoco.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'm not tired. — ____ am I.",
+      "answer": "Neither",
+      "translation": "No estoy cansado. — Yo tampoco.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She'll come. — So ____ he.",
+      "answer": "will",
+      "translation": "Ella vendrá. — Él también.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'd never do that. — Nor ____ I.",
+      "answer": "would",
+      "translation": "Yo nunca haría eso. — Ni yo.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I love it. — Me ____!",
+      "answer": "too",
+      "translation": "Me encanta. — ¡A mí también!",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc030",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I love pizza. — So do I.": "Me encanta la pizza. — A mí también.",
+    "I'm hungry. — So am I.": "Tengo hambre. — Yo también.",
+    "I don't like it. — Neither do I.": "No me gusta. — A mí tampoco.",
+    "I can swim. — So can I.": "Sé nadar. — Yo también.",
+    "I went to the party. — So did I.": "Fui a la fiesta. — Yo también.",
+    "I haven't seen it. — Neither have I.": "No la he visto. — Yo tampoco.",
+    "I'm not tired. — Neither am I.": "No estoy cansado. — Yo tampoco.",
+    "She'll come. — So will he.": "Ella vendrá. — Él también.",
+    "I'd never do that. — Nor would I.": "Yo nunca haría eso. — Ni yo.",
+    "I love it. — Me too!": "Me encanta. — ¡A mí también!"
+  },
+  "english_phrases": [
+    "I love pizza. — So do I.",
+    "I'm hungry. — So am I.",
+    "I don't like it. — Neither do I.",
+    "I can swim. — So can I.",
+    "I went to the party. — So did I.",
+    "I haven't seen it. — Neither have I.",
+    "I'm not tired. — Neither am I.",
+    "She'll come. — So will he.",
+    "I'd never do that. — Nor would I.",
+    "I love it. — Me too!"
+  ],
+  "full_script": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo. I love pizza. — So do I. I'm hungry. — So am I. I don't like it. — Neither do I. Ahora, nivel intermedio. I can swim. — So can I. I went to the party. — So did I. I haven't seen it. — Neither have I. I'm not tired. — Neither am I. Y ahora, nivel experto. She'll come. — So will he. I'd never do that. — Nor would I. I love it. — Me too! Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

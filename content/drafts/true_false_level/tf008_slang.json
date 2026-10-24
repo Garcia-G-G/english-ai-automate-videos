@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "SLANG: ¿verdadero o falso? 😎",
+  "video_description": "Diez palabras de argot: ¿sabes lo que significan? 😎",
+  "title": "¿Verdadero o falso?",
+  "theme": "slang en inglés",
+  "intro": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto.",
+  "items": [
+    {
+      "statement": "«Cool» puede significar genial.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Bro» significa hermano o amigo.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«LOL» significa «me muero de risa».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Chill» como verbo significa calentar.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es relajarse"
+    },
+    {
+      "statement": "«Broke» significa sin dinero.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Ghost someone» es ver un fantasma.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es desaparecer sin explicación"
+    },
+    {
+      "statement": "«Lowkey» significa en voz alta.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es un poco, en secreto"
+    },
+    {
+      "statement": "«Spill the tea» es contar el chisme.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«No cap» significa sin gorra.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es en serio, sin mentir"
+    },
+    {
+      "statement": "«Salty» puede significar resentido.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#SlangEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf008",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -21,7 +21,9 @@ import logging
 import os
 import random
 import re
+import shutil
 import subprocess
+import proc
 import tempfile
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -31,7 +33,6 @@ from PIL import Image, ImageDraw
 
 from .compositor import render_video_ffmpeg
 from .constants import FPS, VIDEO_HEIGHT, VIDEO_WIDTH
-from .utils import instrument_serif_italic, manrope
 
 logger = logging.getLogger(__name__)
 
@@ -41,17 +42,28 @@ OUTRO_DIR = ROOT / "assets" / "outro"
 
 OUTRO_DURATION = 4.0
 
-#: Learning Routes brand background.
-BG_COLOR = (15, 14, 13)            # #0F0E0D
-HEADING_COLOR = (247, 245, 240)
-URL_COLOR = (255, 255, 255)
-ACCENT_COLOR = (198, 168, 106)     # warm rule under the URL
+#: STEP 62 §4: the brand sticker card on sand. Colours and faces come from brand.json.
+#: STEP 71 (brand v3, mock_cierre_short.png): Bubi waving stands on the card's top edge.
+SYMBOL = ROOT / "assets" / "branding" / "english-unlimited" / "simbolo_512.png"
+CARD_W, CARD_H = 900, 520
+CARD_RADIUS = 30
+CARD_OUTLINE = 7
+CARD_DY = 60                       # the card's centre sits this far below the frame's
+SYMBOL_PX = 440                    # Bubi's drawn width (his visible pixels, arm and badge included)
+SYMBOL_OVERLAP = 70                # how far his body comes down over the card's top edge
+LEAD_SIZE = 64                     # «Aprende inglés en», Fredoka medium, ink
+URL_SIZE = 96                      # learningroutes.com, Fredoka bold, English blue
+SUB_SIZE = 40                      # the site's line, Fredoka medium, muted
+MARKER_H = 30                      # the yellow stroke under the URL's lower half
 
-HEADING_SIZE = 76                  # Instrument Serif italic, the LR heading face
-URL_SIZE = 62                      # Manrope, the LR body face
-
-FADE_IN = 0.35
 FADE_OUT = 0.35
+#: STEP 77 §3: the card comes up from below with an overshoot as the page leaves the Short,
+#: and Bubi waves: two poses, tilted either way about his feet, swapped every WAVE_STEP.
+ENTER = 0.5
+ENTER_FROM = 520
+WAVE_STEP = 0.2
+WAVE_SWINGS = 6
+WAVE_DEG = 6.0
 
 
 # ── copy ─────────────────────────────────────────────────────────────
@@ -80,47 +92,102 @@ def select_variant(seed: Optional[str] = None) -> Dict:
 
 # ── frames ───────────────────────────────────────────────────────────
 
+def _brand_colour(name: str) -> Tuple[int, int, int]:
+    from .how_do_you_say import brand
+    value = brand()["color"].get(name) or brand()["manim"]["themes"]["sand"][name]
+    return tuple(int(value[i:i + 2], 16) for i in (1, 3, 5))
+
+
+def _sand() -> Tuple[int, int, int]:
+    from .how_do_you_say import brand
+    value = brand()["manim"]["themes"]["sand"]["bg"]
+    return tuple(int(value[i:i + 2], 16) for i in (1, 3, 5))
+
+
+def outro_still(variant: Dict) -> Image.Image:
+    """The card at rest: «line_1» in ink, line_2 big in English blue over a yellow marker
+    stroke, outro.json's `line_3` small and muted, the symbol on the top edge."""
+    card, bubi, at = outro_layers(variant)
+    img = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (*_sand(), 255))
+    img.alpha_composite(card)
+    img.alpha_composite(bubi, at)
+    return img.convert("RGB")
+
+
+def outro_layers(variant: Dict) -> Tuple[Image.Image, Image.Image, Tuple[int, int]]:
+    """(the card and its text on a transparent frame, Bubi, where Bubi stands)."""
+    from .how_do_you_say import fredoka
+    ink, blue, yellow = _brand_colour("ink"), _brand_colour("english_blue"), _brand_colour("brand_yellow")
+    from .notebook import kit
+    muted = _brand_colour("secondary_text")
+    x0, y0 = (VIDEO_WIDTH - CARD_W) // 2, (VIDEO_HEIGHT - CARD_H) // 2 + CARD_DY
+    # The notebook kit's card, in the page's one paper colour (STEP 77 §1).
+    img = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (0, 0, 0, 0))
+    kit.page(img, x0, y0, CARD_W, CARD_H, CARD_RADIUS, CARD_OUTLINE, (8, 8), fill=kit.PAPER)
+    draw = ImageDraw.Draw(img)
+
+    def centred(text, font, cy, fill):
+        box = draw.textbbox((0, 0), text, font=font)
+        draw.text(((VIDEO_WIDTH - (box[2] - box[0])) // 2 - box[0], cy - (box[1] + box[3]) // 2),
+                  text, font=font, fill=fill)
+        return box
+
+    lead = fredoka(LEAD_SIZE, "display_medium")
+    url = fredoka(URL_SIZE)
+    while draw.textlength(variant["line_2"], font=url) > CARD_W - 140:
+        url = fredoka(url.size - 4)
+    centred(variant["line_1"], lead, y0 + 150, ink)
+    ucy = y0 + 290
+    w = draw.textlength(variant["line_2"], font=url)
+    draw.rounded_rectangle([(VIDEO_WIDTH - w) // 2 - 8, ucy + 2, (VIDEO_WIDTH + w) // 2 + 8, ucy + 2 + MARKER_H],
+                           radius=MARKER_H // 2, fill=yellow)
+    centred(variant["line_2"], url, ucy, blue)
+    sub = load_variants().get("line_3")
+    if sub:
+        centred(sub, fredoka(SUB_SIZE, "display_medium"), y0 + 425, muted)
+    symbol = Image.open(SYMBOL).convert("RGBA")
+    symbol = symbol.crop(symbol.getchannel("A").getbbox())          # his pixels, not the canvas
+    symbol = symbol.resize((SYMBOL_PX, round(symbol.height * SYMBOL_PX / symbol.width)), Image.LANCZOS)
+    return img, symbol, ((VIDEO_WIDTH - SYMBOL_PX) // 2, y0 + SYMBOL_OVERLAP - symbol.height)
+
+
+def wave_pose(t: float) -> int:
+    """Bubi's pose at t: 0 at rest, +1 / -1 while he waves (after the card lands)."""
+    k = int((t - ENTER) // WAVE_STEP)
+    if t < ENTER or k >= WAVE_SWINGS:
+        return 0
+    return 1 if k % 2 == 0 else -1
+
+
+def card_dy(t: float) -> int:
+    from .motion import ease_out_back
+    return int(round(ENTER_FROM * (1.0 - ease_out_back(t / ENTER)))) if t < ENTER else 0
+
+
 def _make_frame_fn(variant: Dict):
-    heading = instrument_serif_italic(HEADING_SIZE)
-    url_font = manrope(URL_SIZE, "Bold")
-
-    base = Image.new("RGB", (VIDEO_WIDTH, VIDEO_HEIGHT), BG_COLOR)
-    draw = ImageDraw.Draw(base)
-
-    l1, l2 = variant["line_1"], variant["line_2"]
-    b1 = draw.textbbox((0, 0), l1, font=heading)
-    b2 = draw.textbbox((0, 0), l2, font=url_font)
-
-    total_h = (b1[3] - b1[1]) + 46 + (b2[3] - b2[1])
-    y = VIDEO_HEIGHT // 2 - total_h // 2 - 40
-
-    draw.text(((VIDEO_WIDTH - (b1[2] - b1[0])) // 2 - b1[0], y - b1[1]),
-              l1, font=heading, fill=HEADING_COLOR)
-
-    y2 = y + (b1[3] - b1[1]) + 46
-    draw.text(((VIDEO_WIDTH - (b2[2] - b2[0])) // 2 - b2[0], y2 - b2[1]),
-              l2, font=url_font, fill=URL_COLOR)
-
-    rule_w = int((b2[2] - b2[0]) * 0.42)
-    rule_y = y2 + (b2[3] - b2[1]) + 34
-    draw.rounded_rectangle(
-        [(VIDEO_WIDTH - rule_w) // 2, rule_y, (VIDEO_WIDTH + rule_w) // 2, rule_y + 5],
-        radius=3, fill=ACCENT_COLOR)
-
-    still = np.array(base, dtype=np.uint8)
-    bg = np.array(BG_COLOR, dtype=np.float32)
+    from .notebook import kit
+    card, bubi, (bx, by) = outro_layers(variant)
+    # a pose tilts him about his feet; the canvas grows so the tilt never clips him
+    poses = {0: (bubi, bx, by)}
+    for sign in (1, -1):
+        r = bubi.rotate(sign * WAVE_DEG, resample=Image.BICUBIC, expand=True,
+                        center=(bubi.width / 2, bubi.height))
+        poses[sign] = (r, bx - (r.width - bubi.width) // 2, by - (r.height - bubi.height))
+    sand = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (*_sand(), 255))
+    bg = np.array(_sand(), dtype=np.float32)
 
     def frame_at(t: float) -> np.ndarray:
-        # Fade from and to the brand background rather than to black, so the
-        # join with the main video and the end of the clip are both clean.
-        k = 1.0
-        if t < FADE_IN:
-            k = t / FADE_IN
-        elif t > OUTRO_DURATION - FADE_OUT:
+        img = sand.copy()
+        dy = card_dy(t)
+        kit._composite_clipped(img, card, 0, dy)
+        b, x, y = poses[wave_pose(t)]
+        kit._composite_clipped(img, b, x, y + dy)
+        out = np.array(img.convert("RGB"))
+        # fade to the sand background at the end, so the clip's end is clean
+        if t > OUTRO_DURATION - FADE_OUT:
             k = max(0.0, (OUTRO_DURATION - t) / FADE_OUT)
-        if k >= 0.999:
-            return still
-        return (bg + (still.astype(np.float32) - bg) * k).astype(np.uint8)
+            out = (bg + (out.astype(np.float32) - bg) * k).astype(np.uint8)
+        return out
 
     return frame_at
 
@@ -161,29 +228,51 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
     OUTRO_DIR.mkdir(parents=True, exist_ok=True)
 
     with tempfile.TemporaryDirectory() as tmp:
-        voice = Path(tmp) / "outro_voice.mp3"
-        _synthesize(variant, voice)
+        voice = Path(tmp) / "outro_voice.m4a"
+        if path.exists():
+            # A redraw (force=True) keeps the voice the clip already has: the same
+            # `spoken`, $0 (STEP 62 §4). Only a missing clip asks the TTS. After editing
+            # a variant's `spoken`, delete assets/outro/<id>.mp4 to get the new voice
+            # (one TTS call); force=True alone keeps the old one.
+            proc.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(path), "-vn", "-c:a", "copy",
+                            str(voice)], check=True, capture_output=True, timeout=proc.FFMPEG)
+            logger.info("outro: redraw of %s keeps its voice, no TTS", variant["id"])
+        else:
+            voice = voice.with_suffix(".mp3")
+            _synthesize(variant, voice)
+
+        # STEP 75 §5: the outro speaks at the narration's −14 LUFS, so the seam has no jump.
+        import loudness
+        level = Path(tmp) / "outro_voice.wav"
+        loudness.loudnorm_two_pass(voice, level)
 
         # Pad the voice to the full clip length so the audio stream is exactly
         # as long as the video. A short audio stream under -shortest would
         # truncate the video instead.
-        padded = Path(tmp) / "outro_audio.mp3"
-        subprocess.run(
-            ["ffmpeg", "-y", "-loglevel", "error", "-i", str(voice),
+        padded = Path(tmp) / "outro_audio.wav"
+        proc.run(
+            ["ffmpeg", "-y", "-loglevel", "error", "-i", str(level),
              "-af", f"apad=whole_dur={OUTRO_DURATION}",
              "-t", str(OUTRO_DURATION), str(padded)],
-            check=True, capture_output=True,
+            check=True, capture_output=True, timeout=proc.FFMPEG
         )
 
+        # Rendered in tmp and moved in only when complete: a cut render must never
+        # become a cached clip, since a cache hit is never checked again (STEP 73 §0).
+        rendered = Path(tmp) / "outro_new.mp4"
         render_video_ffmpeg(
             frame_generator=_make_frame_fn(variant),
             audio_path=str(padded),
-            output_path=str(path),
+            output_path=str(rendered),
             duration=OUTRO_DURATION,
             fps=FPS,
             width=VIDEO_WIDTH,
             height=VIDEO_HEIGHT,
         )
+        # tmp may be another volume: copy next to the clip first, then an atomic rename.
+        part = path.with_name(f".{path.name}.part")
+        shutil.move(str(rendered), str(part))
+        os.replace(part, path)
 
     logger.info("outro rendered once -> %s", path)
     return path
@@ -193,11 +282,11 @@ def ensure_outro(variant: Dict, force: bool = False) -> Path:
 
 def _probe_params(path: str) -> Dict:
     """Codec/format parameters that must match for `-c copy` to be legal."""
-    out = subprocess.run(
+    out = proc.run(
         ["ffprobe", "-v", "error", "-show_entries",
          "stream=codec_name,width,height,r_frame_rate,pix_fmt,sample_rate,channels",
          "-of", "json", str(path)],
-        capture_output=True, text=True, check=True,
+        capture_output=True, text=True, check=True, timeout=proc.FFPROBE
     )
     streams = json.loads(out.stdout).get("streams", [])
     params = {}
@@ -236,10 +325,10 @@ def append_outro(video_path: str, variant: Dict,
         list_path = fh.name
 
     try:
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0",
-             "-i", list_path, "-c", "copy", output_path],
-            check=True, capture_output=True,
+             "-i", list_path, "-c", "copy", "-movflags", "+faststart", output_path],
+            check=True, capture_output=True, timeout=proc.FFMPEG
         )
     finally:
         os.unlink(list_path)

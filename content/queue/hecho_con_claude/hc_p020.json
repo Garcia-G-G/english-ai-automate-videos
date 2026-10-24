@@ -1,0 +1,46 @@
+{
+  "id": "hc_p020",
+  "style": "poster",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«Few» y «a few» no son lo mismo",
+  "hook_text": "Casi todos lo dicen mal: «FEW = A FEW»",
+  "poster": {
+    "error_no": "035",
+    "big_wrong": "FEW = A FEW",
+    "big_right": "FEW ≠ A FEW",
+    "examples": [
+      "I have a few friends here. — Tengo algunos amigos aquí.",
+      "I have few friends here. — Tengo pocos amigos aquí."
+    ]
+  },
+  "correction": {
+    "wrong": "FEW = A FEW",
+    "right": "FEW ≠ A FEW",
+    "rule": "El artículo cambia el sentido"
+  },
+  "voice": [
+    "Una sola letra cambia el mensaje: [[few]] y [[a few]].",
+    "[[A few]] es positivo: «algunos», suficientes. [[I have a few friends here]].",
+    "[[Few]] solo es negativo: «pocos», casi ninguno. [[I have few friends here]].",
+    "Lo mismo con [[little]] y [[a little]]: [[a little time]], «un poco de tiempo»; [[little time]], «poco tiempo».",
+    "Truco: con [[a]], el vaso está medio lleno.",
+    "Reto: ¿cómo dirías «hablo un poco de francés»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Hablo un poco de francés»",
+    "answer": "I speak a little French."
+  },
+  "caption": "Few vs a few y little vs a little: el artículo cambia el sentido. Inglés avanzado en un póster.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 70
+}

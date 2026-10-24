@@ -1,0 +1,23 @@
+{
+ "id": "hc_p019",
+ "style": "poster",
+ "level": "dificil",
+ "duration": 34.017,
+ "voice_seconds": 30.017,
+ "tts_usd": 0.0719,
+ "outro_variant": "aprende-ingles",
+ "silent": false,
+ "cpu_s": 81.8,
+ "wall_s": 54.3,
+ "load": [
+  6.4,
+  8.7
+ ],
+ "measure": {
+  "LUFS I": -14.3,
+  "true peak dBTP": -2.4,
+  "duration s": 34.0,
+  "colour": "bt709/bt709/bt709/tv",
+  "median kf gap s": 2.0
+ }
+}

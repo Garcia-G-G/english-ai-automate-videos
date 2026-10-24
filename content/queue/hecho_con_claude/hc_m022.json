@@ -1,0 +1,59 @@
+{
+  "id": "hc_m022",
+  "style": "mensajes",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«Can I take a rain check?»: aplazar un plan",
+  "hook_text": "Me cancelaron… y no lo entendí",
+  "chat": {
+    "contact": "Lucas · Chicago",
+    "messages": [
+      [
+        "me",
+        "Dinner tonight? 🍝"
+      ],
+      [
+        "them",
+        "Ugh, can I take a rain check?"
+      ],
+      [
+        "me",
+        "a check for the rain? ☔",
+        "error"
+      ],
+      [
+        "them",
+        "lol it means another day!"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "rain check = un cheque de lluvia",
+    "right": "rain check = dejarlo para otro día",
+    "rule": "Aplazar un plan, amablemente"
+  },
+  "voice": [
+    "Invité a un amigo a cenar y me contestó [[Can I take a rain check?]] Y yo pensé en la lluvia.",
+    "[[Take a rain check]] significa dejar un plan para otro día, pero con intención de hacerlo.",
+    "Viene del béisbol: si llovía, te daban un ticket para volver otro día.",
+    "Así que es más amable que [[I can't]]: dice «no hoy, pero sí más adelante».",
+    "Y para aceptarlo: [[Sure, rain check!]]",
+    "Reto: aplaza un café con esta expresión. Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "Aplaza un café para otro día",
+    "answer": "Can I take a rain check on coffee?"
+  },
+  "caption": "«Rain check» significa dejar un plan para otro día. Expresión nativa explicada con un chat.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 81
+}

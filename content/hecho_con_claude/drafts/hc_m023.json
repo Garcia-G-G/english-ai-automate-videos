@@ -1,0 +1,55 @@
+{
+  "id": "hc_m023",
+  "style": "mensajes",
+  "level": "dificil",
+  "angle": "historia",
+  "title": "«I hardly work»: mi peor mensaje a un amigo",
+  "hook_text": "Quise decir que trabajo mucho…",
+  "chat": {
+    "contact": "Ben · Londres",
+    "messages": [
+      [
+        "them",
+        "How's the new job going?"
+      ],
+      [
+        "me",
+        "Great! I hardly work 💪",
+        "error"
+      ],
+      [
+        "them",
+        "lucky you 😂 can I work there?"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I hardly work (= casi no trabajo)",
+    "right": "I work hard",
+    "rule": "Hard = duro · Hardly = casi nada"
+  },
+  "voice": [
+    "Mi amigo me preguntó por el trabajo nuevo y le dije [[I hardly work]]. Quería decir que trabajo mucho.",
+    "Pero [[hardly]] no es «duramente». Significa «casi no», «apenas».",
+    "[[I hardly work]] es «casi no trabajo». Justo lo contrario.",
+    "Para decir que trabajas mucho: [[I work hard]], sin -ly.",
+    "Más ejemplos de [[hardly]]: [[I hardly sleep]], [[I can hardly hear you]].",
+    "Reto: ¿cómo dirías «apenas lo conozco»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Apenas lo conozco»",
+    "answer": "I hardly know him."
+  },
+  "caption": "«I hardly work» significa «casi no trabajo». Hard vs hardly: el error que dice lo contrario.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 69
+}

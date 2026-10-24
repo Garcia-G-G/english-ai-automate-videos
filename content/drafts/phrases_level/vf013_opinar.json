@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "«EN MI OPINIÓN» y 9 frases más en inglés 💭",
+  "video_description": "Diez frases para opinar sin sonar robótico. 💭",
+  "title": "¿Cómo se dice?",
+  "theme": "dar tu opinión",
+  "intro": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo?",
+  "items": [
+    {
+      "spanish": "Creo que sí.",
+      "english": "I think so."
+    },
+    {
+      "spanish": "Creo que no.",
+      "english": "I don't think so."
+    },
+    {
+      "spanish": "En mi opinión...",
+      "english": "In my opinion..."
+    },
+    {
+      "spanish": "Para mí...",
+      "english": "If you ask me..."
+    },
+    {
+      "spanish": "Depende.",
+      "english": "It depends."
+    },
+    {
+      "spanish": "No estoy seguro.",
+      "english": "I'm not sure."
+    },
+    {
+      "spanish": "Yo lo veo de otra forma.",
+      "english": "I see it differently."
+    },
+    {
+      "spanish": "Tienes parte de razón.",
+      "english": "You have a point."
+    },
+    {
+      "spanish": "Lo que quiero decir es...",
+      "english": "What I mean is..."
+    },
+    {
+      "spanish": "Ni lo uno ni lo otro.",
+      "english": "Neither, really."
+    }
+  ],
+  "outro": "[happy] Guarda el vídeo y repítelas mañana.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#ConversaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf013",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

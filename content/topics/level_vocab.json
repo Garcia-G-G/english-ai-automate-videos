@@ -1,0 +1,1402 @@
+[
+  {
+    "id": "lv001",
+    "topic": "cocina",
+    "spanish": "la cocina",
+    "theme": "la cocina",
+    "meaning": "Ten English words or expressions about la cocina, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv002",
+    "topic": "casa",
+    "spanish": "la casa",
+    "theme": "la casa",
+    "meaning": "Ten English words or expressions about la casa, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv003",
+    "topic": "cuerpo",
+    "spanish": "el cuerpo",
+    "theme": "el cuerpo",
+    "meaning": "Ten English words or expressions about el cuerpo, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv004",
+    "topic": "ropa",
+    "spanish": "la ropa",
+    "theme": "la ropa",
+    "meaning": "Ten English words or expressions about la ropa, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv005",
+    "topic": "trabajo",
+    "spanish": "el trabajo",
+    "theme": "el trabajo",
+    "meaning": "Ten English words or expressions about el trabajo, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv006",
+    "topic": "viajes",
+    "spanish": "los viajes",
+    "theme": "los viajes",
+    "meaning": "Ten English words or expressions about los viajes, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv007",
+    "topic": "aeropuerto",
+    "spanish": "el aeropuerto",
+    "theme": "el aeropuerto",
+    "meaning": "Ten English words or expressions about el aeropuerto, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv008",
+    "topic": "hotel",
+    "spanish": "el hotel",
+    "theme": "el hotel",
+    "meaning": "Ten English words or expressions about el hotel, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv009",
+    "topic": "restaurante",
+    "spanish": "el restaurante",
+    "theme": "el restaurante",
+    "meaning": "Ten English words or expressions about el restaurante, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv010",
+    "topic": "supermercado",
+    "spanish": "el supermercado",
+    "theme": "el supermercado",
+    "meaning": "Ten English words or expressions about el supermercado, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv011",
+    "topic": "dinero",
+    "spanish": "el dinero",
+    "theme": "el dinero",
+    "meaning": "Ten English words or expressions about el dinero, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv012",
+    "topic": "banco",
+    "spanish": "el banco",
+    "theme": "el banco",
+    "meaning": "Ten English words or expressions about el banco, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv013",
+    "topic": "salud",
+    "spanish": "la salud",
+    "theme": "la salud",
+    "meaning": "Ten English words or expressions about la salud, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv014",
+    "topic": "medico",
+    "spanish": "en el médico",
+    "theme": "en el médico",
+    "meaning": "Ten English words or expressions about en el médico, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv015",
+    "topic": "emociones",
+    "spanish": "las emociones",
+    "theme": "las emociones",
+    "meaning": "Ten English words or expressions about las emociones, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv016",
+    "topic": "personalidad",
+    "spanish": "la personalidad",
+    "theme": "la personalidad",
+    "meaning": "Ten English words or expressions about la personalidad, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv017",
+    "topic": "clima",
+    "spanish": "el clima",
+    "theme": "el clima",
+    "meaning": "Ten English words or expressions about el clima, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv018",
+    "topic": "naturaleza",
+    "spanish": "la naturaleza",
+    "theme": "la naturaleza",
+    "meaning": "Ten English words or expressions about la naturaleza, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv019",
+    "topic": "animales",
+    "spanish": "los animales",
+    "theme": "los animales",
+    "meaning": "Ten English words or expressions about los animales, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv020",
+    "topic": "mar_playa",
+    "spanish": "el mar y la playa",
+    "theme": "el mar y la playa",
+    "meaning": "Ten English words or expressions about el mar y la playa, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv021",
+    "topic": "ciudad",
+    "spanish": "la ciudad",
+    "theme": "la ciudad",
+    "meaning": "Ten English words or expressions about la ciudad, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv022",
+    "topic": "transporte",
+    "spanish": "el transporte",
+    "theme": "el transporte",
+    "meaning": "Ten English words or expressions about el transporte, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv023",
+    "topic": "coche",
+    "spanish": "el coche",
+    "theme": "el coche",
+    "meaning": "Ten English words or expressions about el coche, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv024",
+    "topic": "tecnologia",
+    "spanish": "la tecnología",
+    "theme": "la tecnología",
+    "meaning": "Ten English words or expressions about la tecnología, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv025",
+    "topic": "internet_redes",
+    "spanish": "internet y las redes sociales",
+    "theme": "internet y las redes sociales",
+    "meaning": "Ten English words or expressions about internet y las redes sociales, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv026",
+    "topic": "oficina",
+    "spanish": "la oficina",
+    "theme": "la oficina",
+    "meaning": "Ten English words or expressions about la oficina, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv027",
+    "topic": "reuniones",
+    "spanish": "las reuniones de trabajo",
+    "theme": "las reuniones de trabajo",
+    "meaning": "Ten English words or expressions about las reuniones de trabajo, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv028",
+    "topic": "colegio",
+    "spanish": "el colegio",
+    "theme": "el colegio",
+    "meaning": "Ten English words or expressions about el colegio, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv029",
+    "topic": "universidad",
+    "spanish": "la universidad",
+    "theme": "la universidad",
+    "meaning": "Ten English words or expressions about la universidad, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv030",
+    "topic": "deportes",
+    "spanish": "los deportes",
+    "theme": "los deportes",
+    "meaning": "Ten English words or expressions about los deportes, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv031",
+    "topic": "futbol",
+    "spanish": "el fútbol",
+    "theme": "el fútbol",
+    "meaning": "Ten English words or expressions about el fútbol, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv032",
+    "topic": "gimnasio",
+    "spanish": "el gimnasio",
+    "theme": "el gimnasio",
+    "meaning": "Ten English words or expressions about el gimnasio, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv033",
+    "topic": "musica",
+    "spanish": "la música",
+    "theme": "la música",
+    "meaning": "Ten English words or expressions about la música, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv034",
+    "topic": "cine_series",
+    "spanish": "el cine y las series",
+    "theme": "el cine y las series",
+    "meaning": "Ten English words or expressions about el cine y las series, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv035",
+    "topic": "libros_lectura",
+    "spanish": "los libros y la lectura",
+    "theme": "los libros y la lectura",
+    "meaning": "Ten English words or expressions about los libros y la lectura, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv036",
+    "topic": "arte",
+    "spanish": "el arte",
+    "theme": "el arte",
+    "meaning": "Ten English words or expressions about el arte, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv037",
+    "topic": "familia",
+    "spanish": "la familia",
+    "theme": "la familia",
+    "meaning": "Ten English words or expressions about la familia, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv038",
+    "topic": "relaciones_amor",
+    "spanish": "las relaciones y el amor",
+    "theme": "las relaciones y el amor",
+    "meaning": "Ten English words or expressions about las relaciones y el amor, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv039",
+    "topic": "fiestas",
+    "spanish": "las fiestas y celebraciones",
+    "theme": "las fiestas y celebraciones",
+    "meaning": "Ten English words or expressions about las fiestas y celebraciones, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv040",
+    "topic": "tiempo_libre",
+    "spanish": "el tiempo libre",
+    "theme": "el tiempo libre",
+    "meaning": "Ten English words or expressions about el tiempo libre, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv041",
+    "topic": "hobbies",
+    "spanish": "los hobbies",
+    "theme": "los hobbies",
+    "meaning": "Ten English words or expressions about los hobbies, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv042",
+    "topic": "jardin",
+    "spanish": "el jardín",
+    "theme": "el jardín",
+    "meaning": "Ten English words or expressions about el jardín, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv043",
+    "topic": "herramientas",
+    "spanish": "las herramientas",
+    "theme": "las herramientas",
+    "meaning": "Ten English words or expressions about las herramientas, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv044",
+    "topic": "limpieza",
+    "spanish": "la limpieza de casa",
+    "theme": "la limpieza de casa",
+    "meaning": "Ten English words or expressions about la limpieza de casa, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv045",
+    "topic": "bano",
+    "spanish": "el baño",
+    "theme": "el baño",
+    "meaning": "Ten English words or expressions about el baño, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv046",
+    "topic": "dormitorio",
+    "spanish": "el dormitorio",
+    "theme": "el dormitorio",
+    "meaning": "Ten English words or expressions about el dormitorio, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv047",
+    "topic": "muebles",
+    "spanish": "los muebles",
+    "theme": "los muebles",
+    "meaning": "Ten English words or expressions about los muebles, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv048",
+    "topic": "comida_rapida",
+    "spanish": "la comida rápida",
+    "theme": "la comida rápida",
+    "meaning": "Ten English words or expressions about la comida rápida, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv049",
+    "topic": "frutas",
+    "spanish": "las frutas",
+    "theme": "las frutas",
+    "meaning": "Ten English words or expressions about las frutas, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv050",
+    "topic": "verduras",
+    "spanish": "las verduras",
+    "theme": "las verduras",
+    "meaning": "Ten English words or expressions about las verduras, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv051",
+    "topic": "carne_pescado",
+    "spanish": "la carne y el pescado",
+    "theme": "la carne y el pescado",
+    "meaning": "Ten English words or expressions about la carne y el pescado, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv052",
+    "topic": "bebidas",
+    "spanish": "las bebidas",
+    "theme": "las bebidas",
+    "meaning": "Ten English words or expressions about las bebidas, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv053",
+    "topic": "desayuno",
+    "spanish": "el desayuno",
+    "theme": "el desayuno",
+    "meaning": "Ten English words or expressions about el desayuno, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv054",
+    "topic": "postres",
+    "spanish": "los postres",
+    "theme": "los postres",
+    "meaning": "Ten English words or expressions about los postres, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv055",
+    "topic": "verbos_cocinar",
+    "spanish": "verbos de cocinar",
+    "theme": "verbos de cocinar",
+    "meaning": "Ten English words or expressions about verbos de cocinar, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv056",
+    "topic": "ley_justicia",
+    "spanish": "la ley y la justicia",
+    "theme": "la ley y la justicia",
+    "meaning": "Ten English words or expressions about la ley y la justicia, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv057",
+    "topic": "politica",
+    "spanish": "la política",
+    "theme": "la política",
+    "meaning": "Ten English words or expressions about la política, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv058",
+    "topic": "noticias",
+    "spanish": "las noticias",
+    "theme": "las noticias",
+    "meaning": "Ten English words or expressions about las noticias, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv059",
+    "topic": "ciencia",
+    "spanish": "la ciencia",
+    "theme": "la ciencia",
+    "meaning": "Ten English words or expressions about la ciencia, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv060",
+    "topic": "espacio",
+    "spanish": "el espacio",
+    "theme": "el espacio",
+    "meaning": "Ten English words or expressions about el espacio, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv061",
+    "topic": "geografia",
+    "spanish": "la geografía",
+    "theme": "la geografía",
+    "meaning": "Ten English words or expressions about la geografía, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv062",
+    "topic": "organos_cuerpo",
+    "spanish": "los órganos del cuerpo",
+    "theme": "los órganos del cuerpo",
+    "meaning": "Ten English words or expressions about los órganos del cuerpo, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv063",
+    "topic": "sentidos",
+    "spanish": "los sentidos",
+    "theme": "los sentidos",
+    "meaning": "Ten English words or expressions about los sentidos, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv064",
+    "topic": "defectos_caracter",
+    "spanish": "defectos de carácter",
+    "theme": "defectos de carácter",
+    "meaning": "Ten English words or expressions about defectos de carácter, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv065",
+    "topic": "aspecto_fisico",
+    "spanish": "el aspecto físico",
+    "theme": "el aspecto físico",
+    "meaning": "Ten English words or expressions about el aspecto físico, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv066",
+    "topic": "pelo_belleza",
+    "spanish": "el pelo y la belleza",
+    "theme": "el pelo y la belleza",
+    "meaning": "Ten English words or expressions about el pelo y la belleza, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv067",
+    "topic": "moda",
+    "spanish": "la moda",
+    "theme": "la moda",
+    "meaning": "Ten English words or expressions about la moda, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv068",
+    "topic": "compras",
+    "spanish": "de compras",
+    "theme": "de compras",
+    "meaning": "Ten English words or expressions about de compras, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv069",
+    "topic": "telefono_mensajes",
+    "spanish": "el teléfono y los mensajes",
+    "theme": "el teléfono y los mensajes",
+    "meaning": "Ten English words or expressions about el teléfono y los mensajes, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv070",
+    "topic": "tramites_papeleo",
+    "spanish": "los trámites y el papeleo",
+    "theme": "los trámites y el papeleo",
+    "meaning": "Ten English words or expressions about los trámites y el papeleo, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv071",
+    "topic": "arreglos_casa",
+    "spanish": "arreglos en casa",
+    "theme": "arreglos en casa",
+    "meaning": "Ten English words or expressions about arreglos en casa, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv072",
+    "topic": "horas_fechas",
+    "spanish": "las horas y las fechas",
+    "theme": "las horas y las fechas",
+    "meaning": "Ten English words or expressions about las horas y las fechas, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv073",
+    "topic": "tamano_forma",
+    "spanish": "adjetivos de tamaño y forma",
+    "theme": "adjetivos de tamaño y forma",
+    "meaning": "Ten English words or expressions about adjetivos de tamaño y forma, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv074",
+    "topic": "adjetivos_opinar",
+    "spanish": "adjetivos para opinar",
+    "theme": "adjetivos para opinar",
+    "meaning": "Ten English words or expressions about adjetivos para opinar, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv075",
+    "topic": "phrasal_get",
+    "spanish": "phrasal verbs con GET",
+    "theme": "phrasal verbs con GET",
+    "meaning": "Ten English words or expressions about phrasal verbs con GET, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv076",
+    "topic": "phrasal_take",
+    "spanish": "phrasal verbs con TAKE",
+    "theme": "phrasal verbs con TAKE",
+    "meaning": "Ten English words or expressions about phrasal verbs con TAKE, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv077",
+    "topic": "phrasal_put",
+    "spanish": "phrasal verbs con PUT",
+    "theme": "phrasal verbs con PUT",
+    "meaning": "Ten English words or expressions about phrasal verbs con PUT, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv078",
+    "topic": "phrasal_go",
+    "spanish": "phrasal verbs con GO",
+    "theme": "phrasal verbs con GO",
+    "meaning": "Ten English words or expressions about phrasal verbs con GO, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv079",
+    "topic": "phrasal_look",
+    "spanish": "phrasal verbs con LOOK",
+    "theme": "phrasal verbs con LOOK",
+    "meaning": "Ten English words or expressions about phrasal verbs con LOOK, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv080",
+    "topic": "phrasal_come",
+    "spanish": "phrasal verbs con COME",
+    "theme": "phrasal verbs con COME",
+    "meaning": "Ten English words or expressions about phrasal verbs con COME, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv081",
+    "topic": "expresiones_dia",
+    "spanish": "expresiones del día a día",
+    "theme": "expresiones del día a día",
+    "meaning": "Ten English words or expressions about expresiones del día a día, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv082",
+    "topic": "modismos_trabajo",
+    "spanish": "modismos del trabajo",
+    "theme": "modismos del trabajo",
+    "meaning": "Ten English words or expressions about modismos del trabajo, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv083",
+    "topic": "modismos_animales",
+    "spanish": "modismos con animales",
+    "theme": "modismos con animales",
+    "meaning": "Ten English words or expressions about modismos con animales, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv084",
+    "topic": "modismos_comida",
+    "spanish": "modismos con comida",
+    "theme": "modismos con comida",
+    "meaning": "Ten English words or expressions about modismos con comida, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv085",
+    "topic": "modismos_cuerpo",
+    "spanish": "modismos con partes del cuerpo",
+    "theme": "modismos con partes del cuerpo",
+    "meaning": "Ten English words or expressions about modismos con partes del cuerpo, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv086",
+    "topic": "slang_internet",
+    "spanish": "slang de internet",
+    "theme": "slang de internet",
+    "meaning": "Ten English words or expressions about slang de internet, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv087",
+    "topic": "conectores",
+    "spanish": "los conectores (however, therefore…)",
+    "theme": "los conectores (however, therefore…)",
+    "meaning": "Ten English words or expressions about los conectores (however, therefore…), easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv088",
+    "topic": "debatir_opinar",
+    "spanish": "palabras para debatir y opinar",
+    "theme": "palabras para debatir y opinar",
+    "meaning": "Ten English words or expressions about palabras para debatir y opinar, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv089",
+    "topic": "verbos_movimiento",
+    "spanish": "verbos de movimiento",
+    "theme": "verbos de movimiento",
+    "meaning": "Ten English words or expressions about verbos de movimiento, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv090",
+    "topic": "verbos_hablar",
+    "spanish": "verbos de hablar",
+    "theme": "verbos de hablar",
+    "meaning": "Ten English words or expressions about verbos de hablar, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv091",
+    "topic": "verbos_mirar",
+    "spanish": "verbos de mirar",
+    "theme": "verbos de mirar",
+    "meaning": "Ten English words or expressions about verbos de mirar, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv092",
+    "topic": "sonidos_ruidos",
+    "spanish": "sonidos y ruidos",
+    "theme": "sonidos y ruidos",
+    "meaning": "Ten English words or expressions about sonidos y ruidos, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv093",
+    "topic": "desastres_naturales",
+    "spanish": "desastres naturales",
+    "theme": "desastres naturales",
+    "meaning": "Ten English words or expressions about desastres naturales, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv094",
+    "topic": "crimen",
+    "spanish": "el crimen",
+    "theme": "el crimen",
+    "meaning": "Ten English words or expressions about el crimen, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv095",
+    "topic": "urgencias_hospital",
+    "spanish": "urgencias y hospital",
+    "theme": "urgencias y hospital",
+    "meaning": "Ten English words or expressions about urgencias y hospital, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv096",
+    "topic": "economia",
+    "spanish": "la economía",
+    "theme": "la economía",
+    "meaning": "Ten English words or expressions about la economía, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv097",
+    "topic": "granja_campo",
+    "spanish": "la granja y el campo",
+    "theme": "la granja y el campo",
+    "meaning": "Ten English words or expressions about la granja y el campo, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv098",
+    "topic": "tiempo_adverbios",
+    "spanish": "el tiempo (ayer, pronto, a menudo…)",
+    "theme": "el tiempo (ayer, pronto, a menudo…)",
+    "meaning": "Ten English words or expressions about el tiempo (ayer, pronto, a menudo…), easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv099",
+    "topic": "insectos_bichos",
+    "spanish": "los insectos y bichos",
+    "theme": "los insectos y bichos",
+    "meaning": "Ten English words or expressions about los insectos y bichos, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  },
+  {
+    "id": "lv100",
+    "topic": "medio_ambiente",
+    "spanish": "el medio ambiente",
+    "theme": "el medio ambiente",
+    "meaning": "Ten English words or expressions about el medio ambiente, easy to expert: say what they mean",
+    "category": "level_vocab",
+    "difficulty": "mixed",
+    "level": "A1-C2",
+    "tags": [
+      "level_test",
+      "level_family"
+    ]
+  }
+]

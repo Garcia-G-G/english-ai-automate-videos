@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "¿Entiendes estas EXPRESIONES DEL DÍA A DÍA en inglés? 🗣️",
+  "video_description": "De «see you later» a «beats me»: 10 expresiones del día a día en inglés, de fácil a experto 😎",
+  "title": "¿Qué nivel tienes?",
+  "theme": "expresiones del día a día",
+  "intro": "[cheerful] Diez expresiones que los nativos usan cada día. Di qué significan antes que yo.",
+  "items": [
+    {
+      "english": "see you later",
+      "spanish": "Hasta luego",
+      "cefr": "A1"
+    },
+    {
+      "english": "no problem",
+      "spanish": "No hay problema",
+      "cefr": "A1"
+    },
+    {
+      "english": "excuse me",
+      "spanish": "Disculpe",
+      "cefr": "A1"
+    },
+    {
+      "english": "never mind",
+      "spanish": "No importa",
+      "cefr": "A2"
+    },
+    {
+      "english": "I'm starving",
+      "spanish": "Me muero de hambre",
+      "cefr": "B1"
+    },
+    {
+      "english": "no worries",
+      "spanish": "Tranquilo, no pasa nada",
+      "cefr": "B1"
+    },
+    {
+      "english": "fair enough",
+      "spanish": "Me parece razonable",
+      "cefr": "B2"
+    },
+    {
+      "english": "it's up to you",
+      "spanish": "Tú decides",
+      "cefr": "B2"
+    },
+    {
+      "english": "suit yourself",
+      "spanish": "Como quieras",
+      "cefr": "C1"
+    },
+    {
+      "english": "beats me",
+      "spanish": "Ni idea",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si entendiste las diez, eres experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Tú decides: cuéntamelo en comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#ExpresionesEnInglés",
+    "#InglésDiario",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv081",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "see you later": "Hasta luego",
+    "no problem": "No hay problema",
+    "excuse me": "Disculpe",
+    "never mind": "No importa",
+    "I'm starving": "Me muero de hambre",
+    "no worries": "Tranquilo, no pasa nada",
+    "fair enough": "Me parece razonable",
+    "it's up to you": "Tú decides",
+    "suit yourself": "Como quieras",
+    "beats me": "Ni idea"
+  },
+  "english_phrases": [
+    "see you later",
+    "no problem",
+    "excuse me",
+    "never mind",
+    "I'm starving",
+    "no worries",
+    "fair enough",
+    "it's up to you",
+    "suit yourself",
+    "beats me"
+  ],
+  "full_script": "[cheerful] Diez expresiones que los nativos usan cada día. Di qué significan antes que yo. see you later Hasta luego no problem No hay problema excuse me Disculpe Ahora, nivel intermedio. never mind No importa I'm starving Me muero de hambre no worries Tranquilo, no pasa nada fair enough Me parece razonable Y ahora, nivel experto. it's up to you Tú decides suit yourself Como quieras beats me Ni idea Si llegaste a la tres, básico. A la siete, intermedio. Y si entendiste las diez, eres experto. [happy] ¿Hasta qué número llegaste? Tú decides: cuéntamelo en comentarios."
+}

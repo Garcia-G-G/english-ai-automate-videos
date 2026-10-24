@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las FORMAS en inglés? 🔺",
+  "video_description": "Diez formas geométricas que ves en todas partes. 🔷",
+  "title": "¿Cómo se dice…?",
+  "theme": "las formas",
+  "level": "A1",
+  "intro": "[excited] Te enseño diez palabras. Dilas tú antes que yo.",
+  "items": [
+    {
+      "emoji": "⚪",
+      "spanish": "Círculo",
+      "english": "circle"
+    },
+    {
+      "emoji": "🟥",
+      "spanish": "Cuadrado",
+      "english": "square"
+    },
+    {
+      "emoji": "🔺",
+      "spanish": "Triángulo",
+      "english": "triangle"
+    },
+    {
+      "emoji": "🟦",
+      "spanish": "Rectángulo",
+      "english": "rectangle"
+    },
+    {
+      "emoji": "❤️",
+      "spanish": "Corazón",
+      "english": "heart"
+    },
+    {
+      "emoji": "♦️",
+      "spanish": "Rombo",
+      "english": "diamond"
+    },
+    {
+      "emoji": "🥚",
+      "spanish": "Óvalo",
+      "english": "oval"
+    },
+    {
+      "emoji": "➖",
+      "spanish": "Línea",
+      "english": "line"
+    },
+    {
+      "emoji": "⚫",
+      "spanish": "Punto",
+      "english": "dot"
+    },
+    {
+      "emoji": "➡️",
+      "spanish": "Flecha",
+      "english": "arrow"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: circle, square, triangle, rectangle, heart, diamond, oval, line, dot, arrow.",
+  "outro": "[happy] Guárdalo para repasar y dime cuántas sabías.",
+  "translations": {
+    "circle": "Círculo",
+    "square": "Cuadrado",
+    "triangle": "Triángulo",
+    "rectangle": "Rectángulo",
+    "heart": "Corazón",
+    "diamond": "Rombo",
+    "oval": "Óvalo",
+    "line": "Línea",
+    "dot": "Punto",
+    "arrow": "Flecha"
+  },
+  "english_phrases": [
+    "circle",
+    "square",
+    "triangle",
+    "rectangle",
+    "heart",
+    "diamond",
+    "oval",
+    "line",
+    "dot",
+    "arrow"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv054",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Te enseño diez palabras. Dilas tú antes que yo. Círculo... circle. circle. Cuadrado... square. square. Triángulo... triangle. triangle. Rectángulo... rectangle. rectangle. Corazón... heart. heart. Rombo... diamond. diamond. Óvalo... oval. oval. Línea... line. line. Punto... dot. dot. Flecha... arrow. arrow. Ahora, todas conmigo: circle, square, triangle, rectangle, heart, diamond, oval, line, dot, arrow. [happy] Guárdalo para repasar y dime cuántas sabías."
+}

@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases pedir ayuda en inglés 🆘",
+  "video_description": "Diez frases para pedir ayuda con educación. 🆘",
+  "title": "¿Cómo se dice?",
+  "theme": "pedir ayuda",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "¿Me ayudas?",
+      "english": "Can you help me?"
+    },
+    {
+      "spanish": "¿Me echas una mano?",
+      "english": "Can you give me a hand?"
+    },
+    {
+      "spanish": "¿Te importa...?",
+      "english": "Do you mind...?"
+    },
+    {
+      "spanish": "Necesito un favor.",
+      "english": "I need a favor."
+    },
+    {
+      "spanish": "¿Me lo explicas otra vez?",
+      "english": "Can you explain it again?"
+    },
+    {
+      "spanish": "No lo entiendo.",
+      "english": "I don't get it."
+    },
+    {
+      "spanish": "¿Me lo apuntas?",
+      "english": "Could you write it down for me?"
+    },
+    {
+      "spanish": "¿Más despacio, por favor?",
+      "english": "Could you slow down, please?"
+    },
+    {
+      "spanish": "Estoy perdido.",
+      "english": "I'm lost."
+    },
+    {
+      "spanish": "Gracias por la ayuda.",
+      "english": "Thanks for your help."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#FrasesÚtiles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf015",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

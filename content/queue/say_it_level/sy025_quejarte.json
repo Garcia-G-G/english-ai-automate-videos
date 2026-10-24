@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Sabes QUEJARTE en inglés? Test de 10 frases 😤",
+  "video_description": "Facturas mal, esperas eternas y productos rotos: aprende a quejarte en inglés con educación. 😤",
+  "title": "Dilo en inglés",
+  "theme": "quejarte",
+  "intro": "[serious] Algo ha salido mal y te toca quejarte. Di cada frase en inglés antes de que la diga yo.",
+  "items": [
+    {
+      "spanish": "Esto está frío.",
+      "english": "This is cold.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Esto no funciona.",
+      "english": "This doesn't work.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Hay un error en la cuenta.",
+      "english": "There's a mistake on the bill.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Quiero hablar con el encargado.",
+      "english": "I'd like to speak to the manager.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "No es lo que pedí.",
+      "english": "This isn't what I ordered.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Esto no es aceptable.",
+      "english": "This isn't acceptable.",
+      "cefr": "B1",
+      "alt": "This is unacceptable."
+    },
+    {
+      "spanish": "Me dijeron que llegaría ayer.",
+      "english": "They said it'd arrive yesterday.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Llevo una hora esperando.",
+      "english": "I've been waiting for an hour.",
+      "cefr": "B1",
+      "tip": "«Llevo + tiempo + -ando»: I've been + -ing + for"
+    },
+    {
+      "spanish": "Estoy harto de llamar.",
+      "english": "I'm sick of calling.",
+      "cefr": "B2",
+      "alt": "I'm tired of calling.",
+      "tip": "«Estar harto de» es be sick of + -ing"
+    },
+    {
+      "spanish": "Esto es una tomadura de pelo.",
+      "english": "This is a joke.",
+      "cefr": "B2",
+      "alt": "This is ridiculous.",
+      "tip": "«Tomadura de pelo» se dice This is a joke"
+    }
+  ],
+  "verdict": "Con tres eres básico. Con siete, intermedio. Y si llegaste a la diez, eres experto en reclamaciones.",
+  "outro": "[excited] ¿De qué te quejarías tú? Dímelo en los comentarios con tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésÚtil",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy025",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "This is cold.": "Esto está frío.",
+    "This doesn't work.": "Esto no funciona.",
+    "There's a mistake on the bill.": "Hay un error en la cuenta.",
+    "I'd like to speak to the manager.": "Quiero hablar con el encargado.",
+    "This isn't what I ordered.": "No es lo que pedí.",
+    "This isn't acceptable.": "Esto no es aceptable.",
+    "They said it'd arrive yesterday.": "Me dijeron que llegaría ayer.",
+    "I've been waiting for an hour.": "Llevo una hora esperando.",
+    "I'm sick of calling.": "Estoy harto de llamar.",
+    "This is a joke.": "Esto es una tomadura de pelo."
+  },
+  "english_phrases": [
+    "This is cold.",
+    "This doesn't work.",
+    "There's a mistake on the bill.",
+    "I'd like to speak to the manager.",
+    "This isn't what I ordered.",
+    "This isn't acceptable.",
+    "They said it'd arrive yesterday.",
+    "I've been waiting for an hour.",
+    "I'm sick of calling.",
+    "This is a joke.",
+    "This is unacceptable.",
+    "I'm tired of calling.",
+    "This is ridiculous."
+  ],
+  "full_script": "[serious] Algo ha salido mal y te toca quejarte. Di cada frase en inglés antes de que la diga yo. This is cold. This doesn't work. There's a mistake on the bill. Ahora, nivel intermedio. I'd like to speak to the manager. This isn't what I ordered. This isn't acceptable. They said it'd arrive yesterday. Y ahora, nivel experto. I've been waiting for an hour. I'm sick of calling. This is a joke. Con tres eres básico. Con siete, intermedio. Y si llegaste a la diez, eres experto en reclamaciones. [excited] ¿De qué te quejarías tú? Dímelo en los comentarios con tu número."
+}

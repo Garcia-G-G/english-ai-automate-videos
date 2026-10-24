@@ -1,0 +1,32 @@
+{
+ "id": "hc_p019",
+ "style": "poster",
+ "level": "dificil",
+ "duration": 34.017,
+ "voice_seconds": 30.017,
+ "tts_usd": 0,
+ "outro_variant": "aprende-ingles",
+ "silent": false,
+ "cpu_s": 233.3,
+ "wall_s": 78.6,
+ "load": [
+  17.6,
+  23.1
+ ],
+ "measure": {
+  "LUFS I": -14.3,
+  "true peak dBTP": -2.4,
+  "duration s": 34.0,
+  "colour": "bt709/bt709/bt709/tv",
+  "median kf gap s": 2.0
+ },
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "still": {
+   "seconds": 1.37,
+   "from": 32.33
+  },
+  "english_missing": []
+ }
+}

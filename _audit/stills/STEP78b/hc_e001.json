@@ -1,0 +1,473 @@
+{
+ "id": "hc_e001",
+ "style": "escena",
+ "level": "principiante",
+ "duration": 37.022,
+ "voice_seconds": 33.022,
+ "tts_usd": 0.1065,
+ "outro_variant": "aprende-ingles",
+ "timeline": {
+  "beats": [
+   {
+    "i": 0,
+    "text": "Escena uno. Restaurante en Nueva York. Toma uno: [[Give me the account, please]].",
+    "start": 0.0,
+    "end": 5.742,
+    "english": [
+     {
+      "text": "Give me the account, please",
+      "start": 4.222,
+      "end": 5.742
+     }
+    ],
+    "words": [
+     {
+      "word": "Escena",
+      "start": 0.0,
+      "end": 0.48
+     },
+     {
+      "word": "uno.",
+      "start": 0.58,
+      "end": 0.96
+     },
+     {
+      "word": "Restaurante",
+      "start": 1.088,
+      "end": 2.08
+     },
+     {
+      "word": "en",
+      "start": 2.107,
+      "end": 2.16
+     },
+     {
+      "word": "Nueva",
+      "start": 2.2,
+      "end": 2.48
+     },
+     {
+      "word": "York.",
+      "start": 2.544,
+      "end": 2.88
+     },
+     {
+      "word": "Toma",
+      "start": 3.04,
+      "end": 3.44
+     },
+     {
+      "word": "uno:",
+      "start": 3.52,
+      "end": 4.022
+     },
+     {
+      "word": "Give",
+      "start": 4.222,
+      "end": 4.382
+     },
+     {
+      "word": "me",
+      "start": 4.435,
+      "end": 4.542
+     },
+     {
+      "word": "the",
+      "start": 4.562,
+      "end": 4.622
+     },
+     {
+      "word": "account,",
+      "start": 4.682,
+      "end": 5.342
+     },
+     {
+      "word": "please.",
+      "start": 5.376,
+      "end": 5.742
+     }
+    ]
+   },
+   {
+    "i": 1,
+    "text": "¡Corten! [[Account]] es una cuenta de banco o de Instagram, no la del restaurante.",
+    "start": 6.042,
+    "end": 11.933,
+    "english": [
+     {
+      "text": "Account",
+      "start": 7.323,
+      "end": 7.963
+     }
+    ],
+    "words": [
+     {
+      "word": "¡Corten!",
+      "start": 6.042,
+      "end": 6.872
+     },
+     {
+      "word": "Account",
+      "start": 7.323,
+      "end": 7.963
+     },
+     {
+      "word": "es",
+      "start": 8.013,
+      "end": 8.093
+     },
+     {
+      "word": "una",
+      "start": 8.133,
+      "end": 8.253
+     },
+     {
+      "word": "cuenta",
+      "start": 8.31,
+      "end": 8.653
+     },
+     {
+      "word": "de",
+      "start": 8.68,
+      "end": 8.733
+     },
+     {
+      "word": "banco",
+      "start": 8.8,
+      "end": 9.133
+     },
+     {
+      "word": "o",
+      "start": 9.253,
+      "end": 9.373
+     },
+     {
+      "word": "de",
+      "start": 9.4,
+      "end": 9.453
+     },
+     {
+      "word": "Instagram,",
+      "start": 9.517,
+      "end": 10.413
+     },
+     {
+      "word": "no",
+      "start": 10.52,
+      "end": 10.733
+     },
+     {
+      "word": "la",
+      "start": 10.76,
+      "end": 10.813
+     },
+     {
+      "word": "del",
+      "start": 10.873,
+      "end": 11.053
+     },
+     {
+      "word": "restaurante.",
+      "start": 11.103,
+      "end": 11.933
+     }
+    ]
+   },
+   {
+    "i": 2,
+    "text": "Toma dos: [[Could we get the check, please?]] En Estados Unidos se dice [[the check]]. En Reino Unido, [[the bill]].",
+    "start": 12.173,
+    "end": 20.392,
+    "english": [
+     {
+      "text": "Could we get the check, please?",
+      "start": 13.683,
+      "end": 15.123
+     },
+     {
+      "text": "the check",
+      "start": 14.183,
+      "end": 14.763
+     },
+     {
+      "text": "the bill",
+      "start": 19.752,
+      "end": 20.392
+     }
+    ],
+    "words": [
+     {
+      "word": "Toma",
+      "start": 12.173,
+      "end": 12.653
+     },
+     {
+      "word": "dos:",
+      "start": 12.793,
+      "end": 13.483
+     },
+     {
+      "word": "Could",
+      "start": 13.683,
+      "end": 13.763
+     },
+     {
+      "word": "we",
+      "start": 13.816,
+      "end": 13.923
+     },
+     {
+      "word": "get",
+      "start": 13.983,
+      "end": 14.163
+     },
+     {
+      "word": "the",
+      "start": 14.183,
+      "end": 14.243
+     },
+     {
+      "word": "check,",
+      "start": 14.296,
+      "end": 14.763
+     },
+     {
+      "word": "please?",
+      "start": 14.792,
+      "end": 15.123
+     },
+     {
+      "word": "En",
+      "start": 15.423,
+      "end": 15.583
+     },
+     {
+      "word": "Estados",
+      "start": 15.643,
+      "end": 16.063
+     },
+     {
+      "word": "Unidos",
+      "start": 16.12,
+      "end": 16.463
+     },
+     {
+      "word": "se",
+      "start": 16.543,
+      "end": 16.703
+     },
+     {
+      "word": "dice",
+      "start": 16.799,
+      "end": 17.343
+     },
+     {
+      "word": "the",
+      "start": 17.393,
+      "end": 17.473
+     },
+     {
+      "word": "check.",
+      "start": 17.566,
+      "end": 18.113
+     },
+     {
+      "word": "En",
+      "start": 18.52,
+      "end": 18.68
+     },
+     {
+      "word": "Reino",
+      "start": 18.733,
+      "end": 18.92
+     },
+     {
+      "word": "Unido,",
+      "start": 18.973,
+      "end": 19.612
+     },
+     {
+      "word": "the",
+      "start": 19.752,
+      "end": 19.912
+     },
+     {
+      "word": "bill.",
+      "start": 19.992,
+      "end": 20.392
+     }
+    ]
+   },
+   {
+    "i": 3,
+    "text": "Y fíjate en [[Could we get]]: es mucho más amable que [[Give me]], que suena a orden.",
+    "start": 20.822,
+    "end": 27.102,
+    "english": [
+     {
+      "text": "Could we get",
+      "start": 22.072,
+      "end": 22.952
+     },
+     {
+      "text": "Give me",
+      "start": 25.042,
+      "end": 25.442
+     }
+    ],
+    "words": [
+     {
+      "word": "Y",
+      "start": 20.822,
+      "end": 20.902
+     },
+     {
+      "word": "fíjate",
+      "start": 21.022,
+      "end": 21.542
+     },
+     {
+      "word": "en",
+      "start": 21.675,
+      "end": 22.022
+     },
+     {
+      "word": "Could",
+      "start": 22.072,
+      "end": 22.232
+     },
+     {
+      "word": "we",
+      "start": 22.312,
+      "end": 22.472
+     },
+     {
+      "word": "get:",
+      "start": 22.552,
+      "end": 22.952
+     },
+     {
+      "word": "es",
+      "start": 23.152,
+      "end": 23.312
+     },
+     {
+      "word": "mucho",
+      "start": 23.392,
+      "end": 23.792
+     },
+     {
+      "word": "más",
+      "start": 23.872,
+      "end": 24.112
+     },
+     {
+      "word": "amable",
+      "start": 24.165,
+      "end": 24.592
+     },
+     {
+      "word": "que",
+      "start": 24.672,
+      "end": 24.992
+     },
+     {
+      "word": "Give",
+      "start": 25.042,
+      "end": 25.202
+     },
+     {
+      "word": "me,",
+      "start": 25.255,
+      "end": 25.442
+     },
+     {
+      "word": "que",
+      "start": 25.582,
+      "end": 25.742
+     },
+     {
+      "word": "suena",
+      "start": 25.795,
+      "end": 26.222
+     },
+     {
+      "word": "a",
+      "start": 26.382,
+      "end": 26.542
+     },
+     {
+      "word": "orden.",
+      "start": 26.622,
+      "end": 27.102
+     }
+    ]
+   },
+   {
+    "i": 4,
+    "text": "Reto: ¿cómo pedirías «otra servilleta, por favor»? Escríbelo en comentarios.",
+    "start": 27.262,
+    "end": 33.022,
+    "english": [],
+    "words": [
+     {
+      "word": "Reto:",
+      "start": 27.262,
+      "end": 27.902
+     },
+     {
+      "word": "¿cómo",
+      "start": 28.062,
+      "end": 28.382
+     },
+     {
+      "word": "pedirías",
+      "start": 28.442,
+      "end": 29.182
+     },
+     {
+      "word": "«otra",
+      "start": 29.302,
+      "end": 29.662
+     },
+     {
+      "word": "servilleta,",
+      "start": 29.71,
+      "end": 30.382
+     },
+     {
+      "word": "por",
+      "start": 30.402,
+      "end": 30.462
+     },
+     {
+      "word": "favor»?",
+      "start": 30.529,
+      "end": 31.222
+     },
+     {
+      "word": "Escríbelo",
+      "start": 31.292,
+      "end": 31.862
+     },
+     {
+      "word": "en",
+      "start": 31.875,
+      "end": 31.902
+     },
+     {
+      "word": "comentarios.",
+      "start": 31.982,
+      "end": 33.022
+     }
+    ]
+   }
+  ],
+  "duration": 33.022,
+  "countdown": null,
+  "tts_calls": 15,
+  "tts_usd": 0.1065,
+  "audio": "output/rendering/step78b_work/hc_e001.voice.wav"
+ },
+ "silent": false
+}

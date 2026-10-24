@@ -1,0 +1,32 @@
+{
+ "id": "hc_e001",
+ "style": "escena",
+ "level": "principiante",
+ "duration": 37.022,
+ "voice_seconds": 33.022,
+ "tts_usd": 0.1065,
+ "outro_variant": "aprende-ingles",
+ "silent": false,
+ "cpu_s": 283.5,
+ "wall_s": 92.4,
+ "load": [
+  14.2,
+  16.7
+ ],
+ "measure": {
+  "LUFS I": -14.1,
+  "true peak dBTP": -2.3,
+  "duration s": 37.0,
+  "colour": "bt709/bt709/bt709/tv",
+  "median kf gap s": 2.0
+ },
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "still": {
+   "seconds": 1.37,
+   "from": 35.33
+  },
+  "english_missing": []
+ }
+}

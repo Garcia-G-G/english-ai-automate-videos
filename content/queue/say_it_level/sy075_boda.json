@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "Frases para UNA BODA en inglés: de básico a experto 💍",
+  "video_description": "Brindis, novios y padrinos: ¿sabes decir estas diez frases de boda en inglés? 💍",
+  "title": "Dilo en inglés",
+  "theme": "en una boda",
+  "intro": "[warm] Estás invitado a una boda. Di cada frase en inglés antes de que yo la diga.",
+  "items": [
+    {
+      "spanish": "Es una boda preciosa.",
+      "english": "It's a beautiful wedding.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "La novia está guapísima.",
+      "english": "The bride looks stunning.",
+      "cefr": "A2",
+      "alt": "The bride looks beautiful."
+    },
+    {
+      "spanish": "¿Bailamos?",
+      "english": "Shall we dance?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Dónde nos sentamos?",
+      "english": "Where are we sitting?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Me han invitado a la boda.",
+      "english": "I've been invited to the wedding.",
+      "cefr": "B1",
+      "alt": "I got invited to the wedding."
+    },
+    {
+      "spanish": "¿De qué conoces a los novios?",
+      "english": "How do you know the bride and groom?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Quiero proponer un brindis.",
+      "english": "I'd like to propose a toast.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Se casan en mayo.",
+      "english": "They're getting married in May.",
+      "cefr": "B2",
+      "tip": "«Casarse» es get married, no «marry themselves»"
+    },
+    {
+      "spanish": "Mi hermano es el padrino.",
+      "english": "My brother is the best man.",
+      "cefr": "B2",
+      "tip": "El padrino de boda es best man; godfather es de bautizo"
+    },
+    {
+      "spanish": "Se me saltaron las lágrimas.",
+      "english": "I teared up.",
+      "cefr": "C1",
+      "alt": "It brought tears to my eyes.",
+      "tip": "«Saltarse las lágrimas» es tear up, un phrasal verb"
+    }
+  ],
+  "verdict": "Con tres, básico. Con siete, intermedio. Y si dijiste las diez, ya puedes dar el brindis: experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? ¿Y cuál es la mejor boda a la que has ido?",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésConversacional",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Boda"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy075",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "It's a beautiful wedding.": "Es una boda preciosa.",
+    "The bride looks stunning.": "La novia está guapísima.",
+    "Shall we dance?": "¿Bailamos?",
+    "Where are we sitting?": "¿Dónde nos sentamos?",
+    "I've been invited to the wedding.": "Me han invitado a la boda.",
+    "How do you know the bride and groom?": "¿De qué conoces a los novios?",
+    "I'd like to propose a toast.": "Quiero proponer un brindis.",
+    "They're getting married in May.": "Se casan en mayo.",
+    "My brother is the best man.": "Mi hermano es el padrino.",
+    "I teared up.": "Se me saltaron las lágrimas."
+  },
+  "english_phrases": [
+    "It's a beautiful wedding.",
+    "The bride looks stunning.",
+    "Shall we dance?",
+    "Where are we sitting?",
+    "I've been invited to the wedding.",
+    "How do you know the bride and groom?",
+    "I'd like to propose a toast.",
+    "They're getting married in May.",
+    "My brother is the best man.",
+    "I teared up.",
+    "The bride looks beautiful.",
+    "I got invited to the wedding.",
+    "It brought tears to my eyes."
+  ],
+  "full_script": "[warm] Estás invitado a una boda. Di cada frase en inglés antes de que yo la diga. It's a beautiful wedding. The bride looks stunning. Shall we dance? Ahora, nivel intermedio. Where are we sitting? I've been invited to the wedding. How do you know the bride and groom? I'd like to propose a toast. Y ahora, nivel experto. They're getting married in May. My brother is the best man. I teared up. Con tres, básico. Con siete, intermedio. Y si dijiste las diez, ya puedes dar el brindis: experto. [cheerful] ¿Hasta qué número llegaste? ¿Y cuál es la mejor boda a la que has ido?"
+}

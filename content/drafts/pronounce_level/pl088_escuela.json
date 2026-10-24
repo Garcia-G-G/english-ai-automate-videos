@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La ESCUELA en inglés: ¿pronuncias bien estas 10? ✏️",
+  "video_description": "Teacher, essay, vocabulary: palabras del cole que cuesta pronunciar. 🎒",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la escuela",
+  "intro": "[warm] Volvemos al cole. Lee cada palabra en voz alta y luego compara conmigo.",
+  "items": [
+    {
+      "english": "teacher",
+      "respelling": "TII-cher",
+      "ipa": "ˈtiːtʃɚ",
+      "trap": "EA suena «ii»: TII-cher"
+    },
+    {
+      "english": "pencil",
+      "respelling": "PEN-sal",
+      "ipa": "ˈpɛnsəl",
+      "trap": "Acento en PEN-: PEN-sal"
+    },
+    {
+      "english": "homework",
+      "respelling": "JOUM-uerk",
+      "ipa": "ˈhoʊmwɝk",
+      "trap": "OR suena «er»: JOUM-uerk"
+    },
+    {
+      "english": "ruler",
+      "respelling": "RUU-ler",
+      "ipa": "ˈruːlɚ",
+      "trap": "Dos R inglesas: RUU-ler"
+    },
+    {
+      "english": "eraser",
+      "respelling": "i-REI-ser",
+      "ipa": "ɪˈreɪsɚ",
+      "trap": "Acento en REI: i-REI-ser"
+    },
+    {
+      "english": "essay",
+      "respelling": "E-sei",
+      "ipa": "ˈɛseɪ",
+      "trap": "Acento en E-: E-sei"
+    },
+    {
+      "english": "semester",
+      "respelling": "se-MES-ter",
+      "ipa": "səˈmɛstɚ",
+      "trap": "Acento en MES: se-MES-ter"
+    },
+    {
+      "english": "graduate",
+      "respelling": "GRA-yu-at",
+      "ipa": "ˈɡrædʒuət",
+      "trap": "DU suena «yu»: GRA-yu-at"
+    },
+    {
+      "english": "curriculum",
+      "respelling": "ka-RI-kia-lam",
+      "ipa": "kəˈrɪkjələm",
+      "trap": "Acento en RI: ka-RI-kia-lam"
+    },
+    {
+      "english": "vocabulary",
+      "respelling": "vou-KA-bia-le-ri",
+      "ipa": "voʊˈkæbjəlɛri",
+      "trap": "Cinco sílabas, acento en KA"
+    }
+  ],
+  "verdict": "Si aprobaste hasta la tres, básico. Hasta la siete, intermedio. Y con las diez, sobresaliente: experto.",
+  "outro": "[warm] ¿Hasta qué número llegaste? Cuéntamelo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésEnElCole",
+    "#InglésFácil",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl088",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras del COCHE en inglés que te van a costar 🚗",
+  "video_description": "Engine, vehicle, chassis: vocabulario del coche, de fácil a experto. 🔑",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el coche",
+  "intro": "[excited] Arrancamos con el vocabulario del coche. Pronuncia cada palabra antes que yo.",
+  "items": [
+    {
+      "english": "car",
+      "respelling": "KAR",
+      "ipa": "ˈkɑr",
+      "trap": "La R final no vibra"
+    },
+    {
+      "english": "wheel",
+      "respelling": "UIIL",
+      "ipa": "ˈwiːl",
+      "trap": "WH suena «u»: UIIL"
+    },
+    {
+      "english": "brake",
+      "respelling": "BREIK",
+      "ipa": "ˈbreɪk",
+      "trap": "La E final no suena"
+    },
+    {
+      "english": "engine",
+      "respelling": "EN-yin",
+      "ipa": "ˈɛndʒɪn",
+      "trap": "La G suena «y»: EN-yin"
+    },
+    {
+      "english": "mirror",
+      "respelling": "MI-rer",
+      "ipa": "ˈmɪrɚ",
+      "trap": "Dos sílabas con R inglesa: MI-rer"
+    },
+    {
+      "english": "windshield",
+      "respelling": "UIND-shiild",
+      "ipa": "ˈwɪndʃiːld",
+      "trap": "IE suena «ii»: UIND-shiild"
+    },
+    {
+      "english": "vehicle",
+      "respelling": "VII-a-kal",
+      "ipa": "ˈviːəkəl",
+      "trap": "La H no suena: VII-a-kal"
+    },
+    {
+      "english": "mileage",
+      "respelling": "MAI-lidch",
+      "ipa": "ˈmaɪlɪdʒ",
+      "trap": "Dos sílabas: MAI-lidch"
+    },
+    {
+      "english": "speedometer",
+      "respelling": "spi-DA-me-ter",
+      "ipa": "spɪˈdɑmətɚ",
+      "trap": "Acento en DA: spi-DA-me-ter"
+    },
+    {
+      "english": "chassis",
+      "respelling": "CHA-si",
+      "ipa": "ˈtʃæsi",
+      "trap": "La S final no suena: CHA-si"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez sin fallo: experto al volante.",
+  "outro": "[excited] ¿Cuántas dijiste bien? Escríbelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésOnline",
+    "#VocabularioEnInglés",
+    "#Coches"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl087",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

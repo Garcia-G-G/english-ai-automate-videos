@@ -1,0 +1,55 @@
+{
+  "id": "hc_m015",
+  "style": "mensajes",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«I live here since 2020»: el tiempo verbal que falla",
+  "hook_text": "Me preguntó cuánto llevo en la ciudad…",
+  "chat": {
+    "contact": "Grace · San Francisco",
+    "messages": [
+      [
+        "them",
+        "How long have you lived in the city?"
+      ],
+      [
+        "me",
+        "I live here since 2020",
+        "error"
+      ],
+      [
+        "them",
+        "oh nice! (you mean you've lived here 😉)"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I live here since 2020",
+    "right": "I've lived here since 2020",
+    "rule": "Desde un momento hasta ahora: present perfect + since"
+  },
+  "voice": [
+    "Mi amiga me preguntó cuánto tiempo llevo en la ciudad y contesté [[I live here since 2020]].",
+    "En español usamos el presente: vivo aquí desde 2020. En inglés, si empezó en el pasado y sigue, va el present perfect.",
+    "[[I've lived here since 2020]] o, para remarcar que sigue, [[I've been living here since 2020]].",
+    "Con un momento concreto va [[since]]; con una cantidad de tiempo va [[for]]: [[for five years]].",
+    "Así que: [[I've worked here for two years]].",
+    "Reto: ¿cómo dirías «estudio inglés desde enero»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Estudio inglés desde enero»",
+    "answer": "I've been studying English since January."
+  },
+  "caption": "«Vivo aquí desde 2020» es «I've lived here since 2020». Present perfect con since y for, en un chat.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 89
+}

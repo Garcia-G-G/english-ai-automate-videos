@@ -1,0 +1,47 @@
+{
+  "id": "hc_c009",
+  "style": "comic",
+  "level": "principiante",
+  "angle": "reto",
+  "title": "RETO: «te echo de menos»",
+  "hook_text": "El de las películas románticas",
+  "quiz": {
+    "prompt": "¿Cómo dirías «te echo de menos»?",
+    "options": [
+      "I throw you of less",
+      "I miss you",
+      "I lose you"
+    ],
+    "answer": 1,
+    "after": "Echar de menos = miss."
+  },
+  "correction": {
+    "wrong": "I lose you",
+    "right": "I miss you",
+    "rule": "Miss someone"
+  },
+  "voice": [
+    "El de las películas románticas. ¿Cómo dirías «te echo de menos»?",
+    "¿[[I throw you of less]], [[I miss you]] o [[I lose you]]?",
+    "¡La B! [[I miss you]]. Y la A te hizo reír, lo sé.",
+    "Con más intensidad: [[I miss you so much]].",
+    "Y para lugares también: [[I miss Mexico]], «extraño México».",
+    "¿A quién echas de menos? Escríbelo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«Echo de menos a mi familia»",
+    "answer": "I miss my family."
+  },
+  "caption": "«Te echo de menos» es «I miss you». Reto de inglés con un toque romántico.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 62
+}

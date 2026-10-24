@@ -1,0 +1,61 @@
+{
+  "type": "ladder",
+  "video_title": "Escalera: presenta tu trabajo en inglés 💼",
+  "video_description": "Cinco escalones para la pregunta what do you do? 🪜",
+  "level": "A2",
+  "theme": "el trabajo",
+  "intro": "[cheerful] Empezamos con una palabra. Subimos escalón a escalón. Repite cada frase en voz alta.",
+  "steps": [
+    {
+      "en": "I work.",
+      "es": "Trabajo.",
+      "added": "work"
+    },
+    {
+      "en": "I work in an office.",
+      "es": "Trabajo en una oficina.",
+      "added": "in an office"
+    },
+    {
+      "en": "I work in an office in Madrid.",
+      "es": "Trabajo en una oficina en Madrid.",
+      "added": "in Madrid"
+    },
+    {
+      "en": "I work in a big office in Madrid.",
+      "es": "Trabajo en una oficina grande en Madrid.",
+      "added": "big"
+    },
+    {
+      "en": "I work in a big office in Madrid from Monday to Friday.",
+      "es": "Trabajo en una oficina grande en Madrid de lunes a viernes.",
+      "added": "from Monday to Friday"
+    }
+  ],
+  "challenge": {
+    "es": "Estudio en una escuela pequeña en Lima de lunes a jueves.",
+    "en": "I study at a small school in Lima from Monday to Thursday."
+  },
+  "outro": "[excited] ¿Te salió el reto? Escríbelo en los comentarios.",
+  "translations": {
+    "I work.": "Trabajo.",
+    "I work in an office.": "Trabajo en una oficina.",
+    "I work in an office in Madrid.": "Trabajo en una oficina en Madrid.",
+    "I work in a big office in Madrid.": "Trabajo en una oficina grande en Madrid.",
+    "I work in a big office in Madrid from Monday to Friday.": "Trabajo en una oficina grande en Madrid de lunes a viernes."
+  },
+  "hashtags": [
+    "#Escalera",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "ladders",
+    "topic_id": "la003",
+    "video_type": "ladder",
+    "model": "manual",
+    "draft": true
+  }
+}

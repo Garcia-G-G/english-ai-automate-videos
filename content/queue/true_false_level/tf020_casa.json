@@ -1,0 +1,93 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes cuáles son verdad? la CASA 🏠",
+  "video_description": "Partes de la casa en inglés: ¿verdadero o falso? 🏠",
+  "title": "¿Verdadero o falso?",
+  "theme": "vocabulario de la casa",
+  "intro": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad?",
+  "items": [
+    {
+      "statement": "«Kitchen» es cocina.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Bedroom» es baño.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es dormitorio"
+    },
+    {
+      "statement": "«Roof» es tejado.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Stairs» son escaleras.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Ceiling» es el suelo.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es el techo"
+    },
+    {
+      "statement": "«Sink» puede ser el fregadero.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Attic» es el sótano.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es el desván"
+    },
+    {
+      "statement": "«Doorbell» es el timbre.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Landlord» es el señor de la tierra.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es el casero"
+    },
+    {
+      "statement": "«Faucet» en EE. UU. es el grifo.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf020",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Kitchen",
+    "Bedroom",
+    "Roof",
+    "Stairs",
+    "Ceiling",
+    "Sink",
+    "Attic",
+    "Doorbell",
+    "Landlord",
+    "Faucet"
+  ],
+  "full_script": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad? Verdadero. Falso: es dormitorio. Verdadero. Ahora, nivel intermedio. Verdadero. Falso: es el techo. Verdadero. Falso: es el desván. Y ahora, nivel experto. Verdadero. Falso: es el casero. Verdadero. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [happy] ¿Cuántas acertaste? Déjame tu número abajo."
+}

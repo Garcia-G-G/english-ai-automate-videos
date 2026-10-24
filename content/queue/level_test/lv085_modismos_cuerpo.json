@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Pon a prueba tu inglés: modismos con PARTES DEL CUERPO 🦵",
+  "video_description": "Echar una mano, costar un ojo de la cara… ¿sabes estos modismos con el cuerpo en inglés? 👀",
+  "title": "¿Qué nivel tienes?",
+  "theme": "modismos con partes del cuerpo",
+  "intro": "[curious] Diez modismos con partes del cuerpo, de fácil a experto. Dime qué significan.",
+  "items": [
+    {
+      "english": "give me a hand",
+      "spanish": "Échame una mano",
+      "cefr": "A2"
+    },
+    {
+      "english": "by heart",
+      "spanish": "De memoria",
+      "cefr": "A2"
+    },
+    {
+      "english": "keep an eye on",
+      "spanish": "Vigilar",
+      "cefr": "A2"
+    },
+    {
+      "english": "my lips are sealed",
+      "spanish": "Soy una tumba",
+      "cefr": "B1"
+    },
+    {
+      "english": "cost an arm and a leg",
+      "spanish": "Costar un ojo de la cara",
+      "cefr": "B2"
+    },
+    {
+      "english": "pull someone's leg",
+      "spanish": "Tomar el pelo",
+      "cefr": "B2"
+    },
+    {
+      "english": "get cold feet",
+      "spanish": "Echarse para atrás",
+      "cefr": "B2"
+    },
+    {
+      "english": "turn a blind eye",
+      "spanish": "Hacer la vista gorda",
+      "cefr": "B2"
+    },
+    {
+      "english": "a pain in the neck",
+      "spanish": "Un pesado, un fastidio",
+      "cefr": "C1"
+    },
+    {
+      "english": "by the skin of my teeth",
+      "spanish": "Por los pelos",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Te leo, soy todo oídos.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#ModismosEnInglés",
+    "#ExpresionesEnInglés",
+    "#AprenderInglés",
+    "#InglésAvanzado"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv085",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "give me a hand": "Échame una mano",
+    "by heart": "De memoria",
+    "keep an eye on": "Vigilar",
+    "my lips are sealed": "Soy una tumba",
+    "cost an arm and a leg": "Costar un ojo de la cara",
+    "pull someone's leg": "Tomar el pelo",
+    "get cold feet": "Echarse para atrás",
+    "turn a blind eye": "Hacer la vista gorda",
+    "a pain in the neck": "Un pesado, un fastidio",
+    "by the skin of my teeth": "Por los pelos"
+  },
+  "english_phrases": [
+    "give me a hand",
+    "by heart",
+    "keep an eye on",
+    "my lips are sealed",
+    "cost an arm and a leg",
+    "pull someone's leg",
+    "get cold feet",
+    "turn a blind eye",
+    "a pain in the neck",
+    "by the skin of my teeth"
+  ],
+  "full_script": "[curious] Diez modismos con partes del cuerpo, de fácil a experto. Dime qué significan. give me a hand Échame una mano by heart De memoria keep an eye on Vigilar Ahora, nivel intermedio. my lips are sealed Soy una tumba cost an arm and a leg Costar un ojo de la cara pull someone's leg Tomar el pelo get cold feet Echarse para atrás Y ahora, nivel experto. turn a blind eye Hacer la vista gorda a pain in the neck Un pesado, un fastidio by the skin of my teeth Por los pelos Si llegaste a la tres, básico. A la siete, intermedio. Y si sabías las diez, eres experto. [cheerful] ¿Hasta qué número llegaste? Te leo, soy todo oídos."
+}

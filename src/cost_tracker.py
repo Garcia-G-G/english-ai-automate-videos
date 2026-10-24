@@ -15,6 +15,10 @@ Usage:
     tracker.log_image(count=1)
     tracker.print_summary()
     tracker.save()
+
+Reports:
+    python3 src/cost_tracker.py               # daily, last 7 days
+    python3 src/cost_tracker.py --videos 30   # per video, OpenAI vs ElevenLabs
 """
 
 import json
@@ -49,11 +53,68 @@ PRICING = {
     # gone with the model (retired from the API 2026-05-12), along with the
     # $0.080 figure that under-reported hd calls by a third.
     # ElevenLabs TTS (Starter plan ~$5/30k chars, Creator ~$22/100k chars)
-    # Using Creator plan rate: $0.22 per 1k chars = $220 per 1M chars
+    # Using Creator plan rate: $0.22 per 1k chars = $220 per 1M chars.
+    # ONE TABLE for Shorts and lessons (STEP 76 §5; gen_audio and manim_studio read it).
+    # A full-credit model (v3, v4, multilingual) costs 1 credit per character, turbo and
+    # flash half. shortcut: v4 and flash follow that rule, not an invoice; check them
+    # against the first ElevenLabs statement that carries them.
     "eleven_v3": {"per_1m_chars": 220.00},
+    "eleven_v4": {"per_1m_chars": 220.00},
     "eleven_multilingual_v2": {"per_1m_chars": 220.00},
     "eleven_turbo_v2_5": {"per_1m_chars": 110.00},
+    "eleven_flash_v2_5": {"per_1m_chars": 110.00},
 }
+
+#: Per-video TTS budget when config.yaml sets none (costs.per_video_tts_usd).
+DEFAULT_PER_VIDEO_TTS_USD = 0.25
+
+
+class TTSBudgetExceeded(RuntimeError):
+    """The next TTS call would take this video over its budget; nothing was asked."""
+
+
+def tts_price_per_1k(model: str) -> float:
+    """Dollars per 1,000 characters for an ElevenLabs model (the v3 rate for an unknown one)."""
+    return PRICING.get(model, PRICING["eleven_v3"])["per_1m_chars"] / 1000
+
+
+def per_video_tts_usd() -> float:
+    try:
+        import yaml
+        cfg = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8")) or {}
+        return float((cfg.get("costs") or {}).get("per_video_tts_usd", DEFAULT_PER_VIDEO_TTS_USD))
+    except (OSError, ValueError, TypeError):
+        return DEFAULT_PER_VIDEO_TTS_USD
+
+
+def check_tts_budget(characters: int, model: str) -> None:
+    """Refuse the next TTS call if voice is locked (STEP 79 §00) or if it would take the current
+    video over its budget. Every ElevenLabs generation calls this just before its request."""
+    import voice_lock
+    voice_lock.check(f"una petición de {characters} caracteres a ElevenLabs ({model})")
+    tracker = get_tracker()
+    spent = sum(e["cost_usd"] for e in tracker.entries if e.get("api_type") == "elevenlabs_tts")
+    upcoming = characters * tts_price_per_1k(model) / 1000
+    limit = per_video_tts_usd()
+    if spent + upcoming > limit:
+        raise TTSBudgetExceeded(
+            f"Presupuesto de voz superado: este vídeo lleva ${spent:.3f} en TTS y la siguiente "
+            f"llamada costaría ${upcoming:.3f}; el tope es ${limit:.2f} por vídeo "
+            f"(config.yaml costs.per_video_tts_usd). No se pidió nada más.")
+
+
+def provider_of(api_type: str) -> str:
+    """Which bill a ledger row lands on: "openai" or "elevenlabs".
+
+    "dalle3" is retired but still appears in cost logs already on disk, so
+    it stays here to keep those reading correctly.
+    """
+    api_type = api_type or ""
+    if api_type.startswith("openai") or api_type == "dalle3":
+        return "openai"
+    if api_type.startswith("elevenlabs"):
+        return "elevenlabs"
+    return "other"
 
 
 class CostTracker:
@@ -62,6 +123,10 @@ class CostTracker:
     def __init__(self, video_id: str = None):
         self.video_id = video_id or f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         self.entries = []
+        # How many entries are already on disk. save() appends only the rest,
+        # so a run that saves on success AND in its failure path cannot
+        # write the same call twice.
+        self._saved = 0
         self._start_time = time.time()
         COSTS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -117,12 +182,12 @@ class CostTracker:
         return cost
 
     def log_elevenlabs_tts(self, characters: int, model: str = "eleven_v3",
-                           label: str = "tts"):
-        """Log an ElevenLabs TTS API call."""
+                           label: str = "tts", extra: dict = None):
+        """Log an ElevenLabs TTS API call (`extra`: e.g. the lesson studio's lesson, beat, reason)."""
         pricing = PRICING.get(model, PRICING["eleven_v3"])
         cost = characters * pricing["per_1m_chars"] / 1_000_000
         self._add_entry("elevenlabs_tts", model, cost, label, {
-            "characters": characters,
+            "characters": characters, **(extra or {}),
         })
         return cost
 
@@ -140,6 +205,31 @@ class CostTracker:
         self.entries.append(entry)
         logger.info("[$%.4f] %s (%s) — %s", cost, api_type, model, label)
 
+    def rename(self, video_id: str) -> None:
+        """Give this run its final name, including the calls already logged.
+
+        THE SCRIPT WAS PAID FOR BEFORE THE VIDEO HAD A NAME. The dashboard
+        door calls GPT for the script, and only then builds the artifact
+        name the ledger is keyed on. Resetting the tracker at that point left
+        the script's cost on the PREVIOUS video's tracker -- usually one that
+        had already been saved, so the cost was never written at all: 17
+        openai_chat rows across 123 videos. Opening the tracker at job start
+        and renaming it here keeps every call of the run under one id.
+        """
+        self.video_id = video_id
+        for e in self.entries:
+            e["video_id"] = video_id
+
+    def summary(self) -> dict:
+        """This run's spend, split the way the per-video report splits it."""
+        by_provider = self.cost_by_provider
+        return {
+            "total_usd": round(self.total_cost, 6),
+            "openai_usd": round(by_provider.get("openai", 0.0), 6),
+            "elevenlabs_usd": round(by_provider.get("elevenlabs", 0.0), 6),
+            "calls": len(self.entries),
+        }
+
     @property
     def total_cost(self) -> float:
         return sum(e["cost_usd"] for e in self.entries)
@@ -148,9 +238,7 @@ class CostTracker:
     def cost_by_provider(self) -> dict:
         costs = {}
         for e in self.entries:
-            # "dalle3" is retired but still appears in cost logs already on
-            # disk, so it stays here to keep those reading correctly.
-            provider = "openai" if e["api_type"].startswith("openai") or e["api_type"] == "dalle3" else "elevenlabs"
+            provider = provider_of(e["api_type"])
             costs[provider] = costs.get(provider, 0) + e["cost_usd"]
         return costs
 
@@ -182,19 +270,25 @@ class CostTracker:
         print(f"{'='*50}\n")
 
     def save(self) -> Path:
-        """Save cost entries to a JSON log file."""
-        if not self.entries:
+        """Append the entries not yet on disk to today's JSONL log.
+
+        Safe to call more than once: only calls logged since the last save
+        are written.
+        """
+        new = self.entries[self._saved:]
+        if not new:
             return None
 
         today = date.today().isoformat()
         log_path = COSTS_DIR / f"costs_{today}.jsonl"
 
         with open(log_path, 'a', encoding='utf-8') as f:
-            for entry in self.entries:
+            for entry in new:
                 f.write(json.dumps(entry, ensure_ascii=False) + '\n')
+        self._saved = len(self.entries)
 
         logger.info("Cost log saved: %s (%d entries, $%.4f)",
-                     log_path.name, len(self.entries), self.total_cost)
+                     log_path.name, len(new), sum(e["cost_usd"] for e in new))
         return log_path
 
 
@@ -287,5 +381,144 @@ def print_report(days: int = 7):
     print(f"{'='*55}\n")
 
 
+# ============================================================
+# PER VIDEO
+# ============================================================
+
+def per_video_costs(costs_dir: Path = None) -> list:
+    """Every video in the ledger with what it cost, newest first.
+
+    One row per `video_id`, which is the artifact name (admin writes it into
+    the video's .json as `artifact`), split by provider because the two
+    bills are paid separately and move for different reasons: OpenAI with
+    scripts and images, ElevenLabs with narration length.
+
+    `session_*` ids are calls made outside any video (a CLI session, a
+    tracker nobody named). They are kept, not dropped, so the per-video
+    total still reconciles with the daily one.
+    """
+    cdir = Path(costs_dir) if costs_dir else COSTS_DIR
+    if not cdir.is_dir():
+        return []
+    # Memoised on every log's (name, mtime, size): the dashboard's Inicio page
+    # calls this on every click and it re-read all ~30 daily logs each time
+    # (0.2 s, 2026-10-13). Any new cost line changes a stamp and recomputes.
+    files = sorted(cdir.glob("costs_*.jsonl"))
+    try:
+        stamp = (str(cdir), tuple((f.name, f.stat().st_mtime_ns, f.stat().st_size)
+                                  for f in files))
+    except OSError:
+        stamp = None
+    if stamp is not None and _PER_VIDEO_MEMO.get("stamp") == stamp:
+        import copy
+        return copy.deepcopy(_PER_VIDEO_MEMO["rows"])
+    rows = _per_video_costs_uncached(files)
+    if stamp is not None:
+        import copy
+        _PER_VIDEO_MEMO.update(stamp=stamp, rows=copy.deepcopy(rows))
+    return rows
+
+
+_PER_VIDEO_MEMO: dict = {}
+
+
+def _per_video_costs_uncached(files: list) -> list:
+    videos = {}
+    for log_file in files:
+        with open(log_file, "r", encoding="utf-8") as f:
+            for line in f:
+                if not line.strip():
+                    continue
+                try:
+                    e = json.loads(line)
+                    cost = float(e.get("cost_usd") or 0)
+                except (json.JSONDecodeError, TypeError, ValueError):
+                    continue
+                vid = e.get("video_id") or "unknown"
+                row = videos.setdefault(vid, {
+                    "video_id": vid, "openai_usd": 0.0, "elevenlabs_usd": 0.0,
+                    "other_usd": 0.0, "total_usd": 0.0, "calls": 0,
+                    "by_type": {}, "first_at": None, "last_at": None,
+                })
+                row[f"{provider_of(e.get('api_type'))}_usd"] += cost
+                row["total_usd"] += cost
+                row["calls"] += 1
+                api_type = e.get("api_type", "unknown")
+                row["by_type"][api_type] = row["by_type"].get(api_type, 0.0) + cost
+                ts = e.get("timestamp")
+                if ts:
+                    row["first_at"] = min(filter(None, (row["first_at"], ts)))
+                    row["last_at"] = max(filter(None, (row["last_at"], ts)))
+
+    rows = list(videos.values())
+    for row in rows:
+        for key in ("openai_usd", "elevenlabs_usd", "other_usd", "total_usd"):
+            row[key] = round(row[key], 6)
+        row["by_type"] = {k: round(v, 6) for k, v in row["by_type"].items()}
+    rows.sort(key=lambda r: r["last_at"] or "", reverse=True)
+    return rows
+
+
+def video_cost_stats(rows: list) -> dict:
+    """Average and median per video, over real videos only.
+
+    `session_*` rows are excluded here (not from per_video_costs): they are
+    not videos, and one long CLI session would skew "what does a video cost".
+    An outlier is a video over twice the median -- derived from the ledger,
+    not a budget someone chose.
+    """
+    import statistics
+    real = [r for r in rows if not r["video_id"].startswith("session_")]
+    if not real:
+        return {"videos": 0, "mean_usd": 0.0, "median_usd": 0.0,
+                "openai_mean_usd": 0.0, "elevenlabs_mean_usd": 0.0,
+                "outliers": []}
+    totals = [r["total_usd"] for r in real]
+    median = statistics.median(totals)
+    return {
+        "videos": len(real),
+        "mean_usd": round(statistics.mean(totals), 4),
+        "median_usd": round(median, 4),
+        "openai_mean_usd": round(statistics.mean(r["openai_usd"] for r in real), 4),
+        "elevenlabs_mean_usd": round(statistics.mean(r["elevenlabs_usd"] for r in real), 4),
+        "outliers": [r["video_id"] for r in real
+                     if median and r["total_usd"] > 2 * median],
+    }
+
+
+def print_video_report(limit: int = 20, costs_dir: Path = None):
+    """Print what the last `limit` videos cost, split by provider."""
+    rows = per_video_costs(costs_dir)
+    stats = video_cost_stats(rows)
+    outliers = set(stats["outliers"])
+
+    print(f"\n{'='*86}")
+    print(f"  COST PER VIDEO — last {min(limit, len(rows))} of {len(rows)}")
+    print(f"{'='*86}")
+    print(f"  {'video':44} {'OpenAI':>9} {'ElevenLabs':>11} {'total':>9} {'calls':>6}")
+    for r in rows[:limit]:
+        flag = " ⚠" if r["video_id"] in outliers else ""
+        print(f"  {r['video_id'][:44]:44} ${r['openai_usd']:>8.4f} "
+              f"${r['elevenlabs_usd']:>10.4f} ${r['total_usd']:>8.4f} "
+              f"{r['calls']:>6}{flag}")
+    print()
+    print(f"  {stats['videos']} videos · mean ${stats['mean_usd']:.4f} "
+          f"(OpenAI ${stats['openai_mean_usd']:.4f} + ElevenLabs "
+          f"${stats['elevenlabs_mean_usd']:.4f}) · median ${stats['median_usd']:.4f}")
+    if outliers:
+        print(f"  ⚠ {len(outliers)} over twice the median")
+    print(f"{'='*86}\n")
+
+
 if __name__ == "__main__":
-    print_report()
+    import argparse
+    parser = argparse.ArgumentParser(description="API cost reports")
+    parser.add_argument("--videos", type=int, nargs="?", const=20, default=None,
+                        metavar="N", help="cost per video, last N (default 20)")
+    parser.add_argument("--days", type=int, default=7,
+                        help="days in the daily report (default 7)")
+    args = parser.parse_args()
+    if args.videos is not None:
+        print_video_report(args.videos)
+    else:
+        print_report(args.days)

@@ -6,6 +6,7 @@ for masking, status reporting, and safe .env file updates.
 
 import os
 import re
+import tempfile
 from pathlib import Path
 from typing import Optional
 
@@ -23,22 +24,12 @@ _KEY_DEFINITIONS = {
         "pattern": r"^sk-.{20,}$",
         "description": "OpenAI API key (must start with 'sk-')",
     },
-    # STALE PATTERN — DO NOT WIRE THIS UP WITHOUT FIXING IT FIRST.
-    #
-    # The live key in .env is 64 characters. This regex demands exactly 32, so
-    # it would REJECT a working key. ElevenLabs widened the format at some
-    # point and nothing here followed, because nothing imports this module.
-    #
-    # This file is now HALF-WIRED, which is the trap: voice_id_pattern() /
-    # is_valid_voice_id() below are live and enforced by profiles.py, while
-    # this entry sits next to them unused and wrong. Anyone wiring up
-    # validate_all_keys() next will reasonably assume the neighbouring
-    # patterns are as trustworthy as the one that already works. They are not.
-    # Verify each pattern against a real key before enabling it.
+    # ElevenLabs keys are now «sk_» + 48 hex (51 chars, checked against the live key
+    # 2026-10-20, STEP 75 §3); the old 32-hex form still parses.
     "ELEVENLABS_API_KEY": {
         "required": False,
-        "pattern": r"^[a-f0-9]{32}$",
-        "description": "ElevenLabs API key (32-char hex string)",
+        "pattern": r"^(sk_[a-f0-9]{48}|[a-f0-9]{32})$",
+        "description": "ElevenLabs API key (sk_ + 48 hex)",
     },
     "ELEVENLABS_VOICE_ID": {
         "required": False,
@@ -65,15 +56,25 @@ _KEY_DEFINITIONS = {
         "pattern": r"^.{10,}$",
         "description": "YouTube/Google OAuth client secret",
     },
-    "INSTAGRAM_ACCESS_TOKEN": {
+    "IG_USER_ID": {
+        "required": False,
+        "pattern": r"^\d{5,}$",
+        "description": "Instagram account ID (optional; the Page's linked account is used)",
+    },
+    "FB_PAGE_ID": {
+        "required": False,
+        "pattern": r"^\d{5,}$",
+        "description": "Facebook Page ID (numeric)",
+    },
+    "FB_PAGE_TOKEN": {
         "required": False,
         "pattern": r"^.{20,}$",
-        "description": "Instagram/Meta access token",
+        "description": "Facebook long-lived Page access token",
     },
-    "INSTAGRAM_BUSINESS_ACCOUNT_ID": {
+    "BREVO_API_KEY": {
         "required": False,
-        "pattern": r"^\d{10,}$",
-        "description": "Instagram business account ID (numeric)",
+        "pattern": r"^xkeysib-.{20,}$",
+        "description": "Brevo API key (transactional email)",
     },
     "TTS_PROVIDER": {
         "required": False,
@@ -179,18 +180,25 @@ def validate_all_keys() -> dict:
     return result
 
 
-def save_env_key(key_name: str, value: str) -> None:
+def save_env_key(key_name: str, value: str, env_path: Optional[Path] = None) -> None:
     """Safely update or add a key in the .env file.
 
-    Preserves existing comments and file structure. Creates the
-    .env file if it does not exist. Never logs the full key value.
+    The value is checked against the key's pattern and may not contain a line break
+    (one would add a second, unvalidated key). The file is written to a temp file and
+    renamed over .env, so a crash mid-write cannot truncate it (STEP 75 §3).
+    Preserves comments and every other line. Never logs the full key value.
     """
     if key_name not in _KEY_DEFINITIONS:
         raise ValueError(f"Unknown key: {key_name}")
+    value = (value or "").strip()
+    if any(c in value for c in "\r\n\0"):
+        raise ValueError(f"{key_name}: a value cannot contain a line break")
+    status = _validate_key(key_name, value)
+    if not status["set"] or not status["valid"]:
+        raise ValueError(f"{key_name}: {status['error'] or 'empty value'} — {status['description']}")
 
-    lines = []
-    if _ENV_PATH.exists():
-        lines = _ENV_PATH.read_text().splitlines(keepends=True)
+    path = Path(env_path) if env_path else _ENV_PATH
+    lines = path.read_text().splitlines(keepends=True) if path.exists() else []
 
     # Try to find and replace an existing definition
     pattern = re.compile(rf"^{re.escape(key_name)}\s*=")
@@ -207,10 +215,19 @@ def save_env_key(key_name: str, value: str) -> None:
             lines[-1] += "\n"
         lines.append(f"{key_name}={value}\n")
 
-    _ENV_PATH.write_text("".join(lines))
+    fd, tmp = tempfile.mkstemp(dir=str(path.parent), prefix=".env.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w") as fh:
+            fh.write("".join(lines))
+        os.chmod(tmp, path.stat().st_mode & 0o777 if path.exists() else 0o600)
+        os.replace(tmp, path)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.unlink(tmp)
+        raise
 
     # Update the current process environment
     os.environ[key_name] = value
 
     # Log with masked value only
-    print(f"Saved {key_name}={mask_key(value)} to {_ENV_PATH.name}")
+    print(f"Saved {key_name}={mask_key(value)} to {path.name}")

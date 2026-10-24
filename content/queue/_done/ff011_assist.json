@@ -1,0 +1,45 @@
+{
+  "type": "true_false",
+  "video_title": "'ASSIST' no es asistir 🤝 ¿Verdadero o falso?",
+  "video_description": "El falso amigo que se cuela en cada reunión. 📅",
+  "statement": "'Assist' significa asistir a una reunión.",
+  "correct": false,
+  "explanation": "[excited] Falso. Assist es ayudar. Asistir a una reunión es attend a meeting. Si dices I'll assist the meeting, suena a que vas a echar una mano.",
+  "full_script": "[excited] ¡Verdadero o falso! Afirmación número uno. 'Assist' significa asistir a una reunión..... [thoughtful] Piensa bien... Tres... dos... uno... [excited] Falso. Assist es ayudar. Asistir a una reunión es attend a meeting. Si dices I'll assist the meeting, suena a que vas a echar una mano. Afirmación número dos. Para decir 'asistí a clase' dices 'I attended class'..... [thoughtful] Piensa bien... Tres... dos... uno... [excited] Verdadero. Attend es asistir, estar presente. I attended class, I attended the wedding.",
+  "translations": {
+    "assist": "ayudar",
+    "attend a meeting": "asistir a una reunión",
+    "I attended class": "asistí a clase",
+    "attendee": "asistente"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Quiz"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff011",
+    "video_type": "true_false",
+    "model": "manual"
+  },
+  "statements": [
+    {
+      "statement": "'Assist' significa asistir a una reunión.",
+      "correct": false,
+      "explanation": "[excited] Falso. Assist es ayudar. Asistir a una reunión es attend a meeting. Si dices I'll assist the meeting, suena a que vas a echar una mano."
+    },
+    {
+      "statement": "Para decir 'asistí a clase' dices 'I attended class'.",
+      "correct": true,
+      "explanation": "[excited] Verdadero. Attend es asistir, estar presente. I attended class, I attended the wedding."
+    },
+    {
+      "statement": "Un 'assistant' es alguien que asiste a un evento.",
+      "correct": false,
+      "explanation": "[excited] Falso. Un assistant es un ayudante. Quien asiste a un evento es un attendee."
+    }
+  ]
+}

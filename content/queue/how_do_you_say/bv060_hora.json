@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la HORA en inglés? 🕒",
+  "video_description": "Diez palabras para hablar de la hora, y una trampa. ⏱️",
+  "title": "¿Cómo se dice…?",
+  "theme": "la hora",
+  "level": "A1",
+  "intro": "[warm] Vamos con diez palabras. Tú primero, luego yo.",
+  "items": [
+    {
+      "emoji": "🕐",
+      "spanish": "Hora",
+      "english": "hour"
+    },
+    {
+      "emoji": "⏱️",
+      "spanish": "Minuto",
+      "english": "minute"
+    },
+    {
+      "emoji": "⏲️",
+      "spanish": "Segundo",
+      "english": "second"
+    },
+    {
+      "emoji": "🌅",
+      "spanish": "Mañana",
+      "english": "morning"
+    },
+    {
+      "emoji": "🌇",
+      "spanish": "Tarde",
+      "english": "afternoon"
+    },
+    {
+      "emoji": "🌙",
+      "spanish": "Noche",
+      "english": "night"
+    },
+    {
+      "emoji": "🕛",
+      "spanish": "Mediodía",
+      "english": "noon"
+    },
+    {
+      "emoji": "🌃",
+      "spanish": "Medianoche",
+      "english": "midnight"
+    },
+    {
+      "emoji": "📅",
+      "spanish": "Semana",
+      "english": "week"
+    },
+    {
+      "emoji": "🗓️",
+      "spanish": "Año",
+      "english": "year"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: hour, minute, second, morning, afternoon, night, noon, midnight, week, year.",
+  "outro": "[happy] Guárdalo para repasar y dime cuántas sabías.",
+  "translations": {
+    "hour": "Hora",
+    "minute": "Minuto",
+    "second": "Segundo",
+    "morning": "Mañana",
+    "afternoon": "Tarde",
+    "night": "Noche",
+    "noon": "Mediodía",
+    "midnight": "Medianoche",
+    "week": "Semana",
+    "year": "Año"
+  },
+  "english_phrases": [
+    "hour",
+    "minute",
+    "second",
+    "morning",
+    "afternoon",
+    "night",
+    "noon",
+    "midnight",
+    "week",
+    "year"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv060",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[warm] Vamos con diez palabras. Tú primero, luego yo. Hora... hour. hour. Minuto... minute. minute. Segundo... second. second. Mañana... morning. morning. Tarde... afternoon. afternoon. Noche... night. night. Mediodía... noon. noon. Medianoche... midnight. midnight. Semana... week. week. Año... year. year. Ahora, todas conmigo: hour, minute, second, morning, afternoon, night, noon, midnight, week, year. [happy] Guárdalo para repasar y dime cuántas sabías."
+}

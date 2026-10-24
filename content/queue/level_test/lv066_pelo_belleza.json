@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "EL PELO Y LA BELLEZA en inglés: ¿hasta qué número llegas? 💇",
+  "video_description": "Del maquillaje a las puntas abiertas: test de inglés con 10 palabras de belleza 💄",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el pelo y la belleza",
+  "intro": "[cheerful] Pelo y belleza en inglés: diez palabras, de fácil a experto. Dime qué significan.",
+  "items": [
+    {
+      "english": "hair",
+      "spanish": "Pelo",
+      "cefr": "A1"
+    },
+    {
+      "english": "makeup",
+      "spanish": "Maquillaje",
+      "cefr": "A2"
+    },
+    {
+      "english": "haircut",
+      "spanish": "Corte de pelo",
+      "cefr": "A2"
+    },
+    {
+      "english": "curly",
+      "spanish": "Rizado",
+      "cefr": "A2"
+    },
+    {
+      "english": "lipstick",
+      "spanish": "Pintalabios / labial",
+      "cefr": "B1"
+    },
+    {
+      "english": "nail polish",
+      "spanish": "Esmalte de uñas",
+      "cefr": "B1"
+    },
+    {
+      "english": "ponytail",
+      "spanish": "Coleta",
+      "cefr": "B2"
+    },
+    {
+      "english": "bangs",
+      "spanish": "Flequillo",
+      "cefr": "B2"
+    },
+    {
+      "english": "highlights",
+      "spanish": "Mechas / reflejos",
+      "cefr": "C1"
+    },
+    {
+      "english": "split ends",
+      "spanish": "Puntas abiertas",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, nivel básico. A la siete, intermedio. Y si clavaste las diez, experto.",
+  "outro": "[excited] ¿Cuántas sacaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#BellezaEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv066",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "hair": "Pelo",
+    "makeup": "Maquillaje",
+    "haircut": "Corte de pelo",
+    "curly": "Rizado",
+    "lipstick": "Pintalabios / labial",
+    "nail polish": "Esmalte de uñas",
+    "ponytail": "Coleta",
+    "bangs": "Flequillo",
+    "highlights": "Mechas / reflejos",
+    "split ends": "Puntas abiertas"
+  },
+  "english_phrases": [
+    "hair",
+    "makeup",
+    "haircut",
+    "curly",
+    "lipstick",
+    "nail polish",
+    "ponytail",
+    "bangs",
+    "highlights",
+    "split ends"
+  ],
+  "full_script": "[cheerful] Pelo y belleza en inglés: diez palabras, de fácil a experto. Dime qué significan. hair Pelo makeup Maquillaje haircut Corte de pelo Ahora, nivel intermedio. curly Rizado lipstick Pintalabios / labial nail polish Esmalte de uñas ponytail Coleta Y ahora, nivel experto. bangs Flequillo highlights Mechas / reflejos split ends Puntas abiertas Si llegaste a la tres, nivel básico. A la siete, intermedio. Y si clavaste las diez, experto. [excited] ¿Cuántas sacaste? Dímelo en los comentarios."
+}

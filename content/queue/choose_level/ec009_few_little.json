@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "10 frases con A FEW o A LITTLE. ¿Aciertas todas? 🤏",
+  "video_description": "A few y a little: contables o incontables. Diez frases para practicar. 🤏",
+  "title": "Elige la correcta",
+  "theme": "a few o a little",
+  "intro": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos.",
+  "items": [
+    {
+      "sentence": "I have ____ friends in London.",
+      "options": [
+        "a few",
+        "a little"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Can I have ____ milk, please?",
+      "options": [
+        "a few",
+        "a little"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Wait ____ minutes.",
+      "options": [
+        "a little",
+        "a few"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I speak ____ French.",
+      "options": [
+        "a little",
+        "a few"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "There's ____ cake left.",
+      "options": [
+        "a few",
+        "a little"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'll be back in ____ days.",
+      "options": [
+        "a few",
+        "a little"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "We have very ____ time left.",
+      "options": [
+        "little",
+        "few"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Very ____ people know the truth.",
+      "options": [
+        "little",
+        "few"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Little by ____, things got better.",
+      "options": [
+        "little",
+        "few"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She's one of the ____ who passed.",
+      "options": [
+        "little",
+        "few"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#FewVsLittle",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec009",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "I have a few friends in London.",
+    "Can I have a little milk, please?",
+    "Wait a few minutes.",
+    "I speak a little French.",
+    "There's a little cake left.",
+    "I'll be back in a few days.",
+    "We have very little time left.",
+    "Very few people know the truth.",
+    "Little by little, things got better.",
+    "She's one of the few who passed."
+  ],
+  "full_script": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos. I have a few friends in London. Can I have a little milk, please? Wait a few minutes. Ahora, nivel intermedio. I speak a little French. There's a little cake left. I'll be back in a few days. We have very little time left. Y ahora, nivel experto. Very few people know the truth. Little by little, things got better. She's one of the few who passed. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

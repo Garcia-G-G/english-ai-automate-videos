@@ -25,6 +25,8 @@ class ElevenLabsTTSProvider(TTSProvider):
             generate_fill_blank_audio_segmented,
             generate_true_false_audio_segmented,
             generate_vocabulary_audio_segmented,
+            generate_how_do_you_say_audio_segmented,
+            generate_level_audio_segmented,
             generate_segment_audio,
         )
         from tts_common import extract_english_words_from_script
@@ -48,6 +50,15 @@ class ElevenLabsTTSProvider(TTSProvider):
             result = generate_vocabulary_audio_segmented(
                 script=script_data, output_path=output_path, voice_id=voice_id,
             )
+        elif video_type == 'how_do_you_say':
+            result = generate_how_do_you_say_audio_segmented(
+                script=script_data, output_path=output_path, voice_id=voice_id,
+            )
+        elif video_type in ('level_test', 'say_it_level', 'true_false_level', 'fill_level',
+                        'choose_level', 'phrases_level'):
+            result = generate_level_audio_segmented(
+                script=script_data, output_path=output_path, voice_id=voice_id,
+            )
         else:
             # educational, pronunciation — segment-based bilingual TTS.
             # Each ES/EN segment is generated with an explicit language_code
@@ -61,17 +72,20 @@ class ElevenLabsTTSProvider(TTSProvider):
             use_bilingual = _os.getenv(
                 "ELEVENLABS_BILINGUAL", "1").strip() not in ("0", "false")
             if use_bilingual:
+                # NO SILENT FALLBACK (STEP 76 §5). A failed bilingual run used to drop to the
+                # single-call path and a paid OpenAI Whisper pass, so one video could be paid
+                # for twice and come out with the gringo accent the bilingual path exists to
+                # avoid, with only a warning in the log. A failure is now the job's failure.
+                from tts_bilingual import generate_bilingual_narration
                 try:
-                    from tts_bilingual import generate_bilingual_narration
                     result = generate_bilingual_narration(
                         script_data, output_path, voice_id=voice_id)
-                    self.copy_script_metadata(script_data, result)
-                    self.save_json(output_path, result)
-                    return result
                 except Exception as e:
-                    logger.warning(
-                        "Bilingual segment TTS failed (%s) — falling back to "
-                        "legacy single-call path", e)
+                    from pipeline import TTSError
+                    raise TTSError(f"bilingual TTS failed: {e}") from e
+                self.copy_script_metadata(script_data, result)
+                self.save_json(output_path, result)
+                return result
 
             from tts_common import clean_for_tts
             tts_text = clean_for_tts(text)
@@ -85,25 +99,16 @@ class ElevenLabsTTSProvider(TTSProvider):
             )
             english_phrases = script_data.get('english_phrases', [])
 
-            # --- Get REAL word timestamps from Whisper ---
-            whisper_words = []
-            try:
-                from tts_openai import extract_timestamps_whisper
-                logger.info("Extracting real word timestamps with Whisper...")
-                whisper_result = extract_timestamps_whisper(
-                    output_path,
-                    original_text=text,
-                    explicit_english=english_phrases,
-                )
-                whisper_words = whisper_result.get('words', [])
-                whisper_duration = whisper_result.get('duration', duration)
-                if whisper_words:
-                    duration = whisper_duration
-                    logger.info("Whisper: got %d real word timestamps", len(whisper_words))
-                else:
-                    logger.warning("Whisper returned no words, falling back to estimation")
-            except Exception as e:
-                logger.warning("Whisper failed (%s), falling back to character estimation", e)
+            # --- Real word timestamps: asr_timings, the one transcriber (STEP 76 §5) ---
+            # It runs local Whisper first and records which backend ran; this used to call
+            # OpenAI's whisper-1 directly, a paid call the run never reported.
+            from asr_timings import fit_to_clip, transcribe_words
+            whisper_words = transcribe_words(output_path, language="es") or []
+            if whisper_words:
+                whisper_words = fit_to_clip(whisper_words, duration)
+                logger.info("asr_timings: got %d word timestamps", len(whisper_words))
+            else:
+                logger.warning("asr_timings returned no words, falling back to estimation")
 
             if whisper_words:
                 from video.educational import add_sentence_boundaries

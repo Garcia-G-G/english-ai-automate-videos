@@ -32,6 +32,7 @@ import uploader as U  # noqa: E402
 UPLOAD = "https://www.googleapis.com/auth/youtube.upload"
 READONLY = "https://www.googleapis.com/auth/youtube.readonly"
 ANALYTICS = "https://www.googleapis.com/auth/yt-analytics.readonly"
+FORCE_SSL = "https://www.googleapis.com/auth/youtube.force-ssl"   # captions, STEP 56
 
 
 def _uploader(scope: str, monkeypatch, expires_in=3600, refresh="r"):
@@ -56,13 +57,13 @@ def test_a_narrow_token_reports_the_missing_scopes(monkeypatch):
 
 
 def test_a_complete_token_reports_nothing_missing(monkeypatch):
-    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS}", monkeypatch)
+    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS} {FORCE_SSL}", monkeypatch)
 
     assert yt._missing_scopes() == []
 
 
 def test_scope_order_does_not_matter(monkeypatch):
-    yt = _uploader(f"{ANALYTICS} {UPLOAD} {READONLY}", monkeypatch)
+    yt = _uploader(f"{ANALYTICS} {FORCE_SSL} {UPLOAD} {READONLY}", monkeypatch)
 
     assert yt._missing_scopes() == []
 
@@ -75,7 +76,7 @@ def test_a_token_with_no_scope_field_satisfies_nothing(monkeypatch):
     monkeypatch.setattr(U, "_load_token", lambda p: {
         "access_token": "tok", "expires_at": time.time() + 3600})
 
-    assert U.YouTubeUploader()._missing_scopes() == list(U.YOUTUBE_SCOPES)
+    assert U.YouTubeUploader()._missing_scopes() == list(U.YOUTUBE_REQUIRED_SCOPES)
 
 
 # ── today's failure, reproduced ──────────────────────────────────────
@@ -108,7 +109,7 @@ def test_refresh_is_skipped_when_a_scope_is_missing(monkeypatch):
 
 def test_a_complete_token_is_still_reused(monkeypatch):
     """The check must not force re-consent on every run."""
-    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS}", monkeypatch)
+    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS} {FORCE_SSL}", monkeypatch)
     monkeypatch.setattr(U, "run_loopback_auth",
                         lambda build, timeout=None: pytest.fail(
                             "re-consented despite a complete, valid token"))
@@ -119,7 +120,7 @@ def test_a_complete_token_is_still_reused(monkeypatch):
 def test_a_complete_but_expired_token_still_refreshes(monkeypatch):
     """Expiry and scope are independent: an expired token with the right
     scopes should refresh, not re-consent."""
-    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS}", monkeypatch, expires_in=-10)
+    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS} {FORCE_SSL}", monkeypatch, expires_in=-10)
     monkeypatch.setattr(yt, "_refresh_token", lambda: True)
     monkeypatch.setattr(U, "run_loopback_auth",
                         lambda build, timeout=None: pytest.fail(
@@ -146,11 +147,47 @@ def test_status_surfaces_a_narrow_token_without_an_api_call(monkeypatch, tmp_pat
 
 
 def test_the_scope_list_the_code_requires_is_the_one_it_asks_for():
-    """The authorize URL is built from YOUTUBE_SCOPES, and _missing_scopes
-    checks against the same constant, so they cannot drift."""
-    assert UPLOAD in U.YOUTUBE_SCOPES
-    assert READONLY in U.YOUTUBE_SCOPES
-    assert ANALYTICS in U.YOUTUBE_SCOPES
+    """The authorize URL asks for required + optional; _missing_scopes checks the required
+    set by default, so the two cannot drift."""
+    assert U.YOUTUBE_REQUIRED_SCOPES == [UPLOAD, READONLY, ANALYTICS]
+    assert U.YOUTUBE_OPTIONAL_SCOPES == [FORCE_SSL]
+    assert U.YOUTUBE_SCOPES == [UPLOAD, READONLY, ANALYTICS, FORCE_SSL]
+
+
+# ── STEP 61 Part A: captions are optional ────────────────────────────
+
+def test_a_token_without_force_ssl_is_reused_without_the_browser(monkeypatch):
+    """The owner's token (upload, readonly, analytics) must not force a new consent:
+    the Shorts never needed captions."""
+    yt = _uploader(f"{UPLOAD} {READONLY} {ANALYTICS}", monkeypatch)
+    monkeypatch.setattr(U, "run_loopback_auth",
+                        lambda build, timeout=None: pytest.fail("opened the browser for an optional scope"))
+
+    assert yt._missing_scopes() == []
+    assert yt._missing_scopes(U.YOUTUBE_OPTIONAL_SCOPES) == [FORCE_SSL]
+    assert yt.authenticate() is True
+
+
+def test_a_token_with_no_scopes_still_forces_consent(monkeypatch):
+    yt = _uploader("", monkeypatch)
+    asked = []
+    monkeypatch.setattr(U, "run_loopback_auth",
+                        lambda build, timeout=None: asked.append(build("http://127.0.0.1:1/", "s")) or {"error": "stub"})
+
+    assert yt.authenticate() is False
+    assert asked, "a token with no scopes was reused"
+
+
+def test_a_fresh_consent_asks_for_required_and_optional_in_one_screen(monkeypatch):
+    from urllib.parse import parse_qs, urlparse
+    yt = _uploader("", monkeypatch)
+    asked = []
+    monkeypatch.setattr(U, "run_loopback_auth",
+                        lambda build, timeout=None: asked.append(build("http://127.0.0.1:1/", "s")) or {"error": "stub"})
+    yt.authenticate()
+
+    scope = parse_qs(urlparse(asked[0]).query)["scope"][0].split()
+    assert scope == [UPLOAD, READONLY, ANALYTICS, FORCE_SSL]
 
 
 if __name__ == "__main__":

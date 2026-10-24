@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la FRUTA en inglés? 🍓",
+  "video_description": "Diez frutas para el mercado o el desayuno. 🍉",
+  "title": "¿Cómo se dice…?",
+  "theme": "la fruta",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🍌",
+      "spanish": "Plátano",
+      "english": "banana"
+    },
+    {
+      "emoji": "🍓",
+      "spanish": "Fresa",
+      "english": "strawberry"
+    },
+    {
+      "emoji": "🍇",
+      "spanish": "Uva",
+      "english": "grape"
+    },
+    {
+      "emoji": "🍊",
+      "spanish": "Naranja",
+      "english": "orange"
+    },
+    {
+      "emoji": "🍋",
+      "spanish": "Limón",
+      "english": "lemon"
+    },
+    {
+      "emoji": "🍍",
+      "spanish": "Piña",
+      "english": "pineapple"
+    },
+    {
+      "emoji": "🍉",
+      "spanish": "Sandía",
+      "english": "watermelon"
+    },
+    {
+      "emoji": "🍐",
+      "spanish": "Pera",
+      "english": "pear"
+    },
+    {
+      "emoji": "🍑",
+      "spanish": "Melocotón",
+      "english": "peach"
+    },
+    {
+      "emoji": "🍒",
+      "spanish": "Cereza",
+      "english": "cherry"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: banana, strawberry, grape, orange, lemon, pineapple, watermelon, pear, peach, cherry.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "banana": "Plátano",
+    "strawberry": "Fresa",
+    "grape": "Uva",
+    "orange": "Naranja",
+    "lemon": "Limón",
+    "pineapple": "Piña",
+    "watermelon": "Sandía",
+    "pear": "Pera",
+    "peach": "Melocotón",
+    "cherry": "Cereza"
+  },
+  "english_phrases": [
+    "banana",
+    "strawberry",
+    "grape",
+    "orange",
+    "lemon",
+    "pineapple",
+    "watermelon",
+    "pear",
+    "peach",
+    "cherry"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv018",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Plátano... banana. banana. Fresa... strawberry. strawberry. Uva... grape. grape. Naranja... orange. orange. Limón... lemon. lemon. Piña... pineapple. pineapple. Sandía... watermelon. watermelon. Pera... pear. pear. Melocotón... peach. peach. Cereza... cherry. cherry. Ahora, todas conmigo: banana, strawberry, grape, orange, lemon, pineapple, watermelon, pear, peach, cherry. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

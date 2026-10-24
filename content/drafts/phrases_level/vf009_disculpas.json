@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «PERDONA EL RETRASO» en inglés? 🙏",
+  "video_description": "Diez maneras de pedir perdón como un nativo. 🙏",
+  "title": "¿Cómo se dice?",
+  "theme": "pedir perdón",
+  "intro": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan.",
+  "items": [
+    {
+      "spanish": "Perdón.",
+      "english": "Sorry."
+    },
+    {
+      "spanish": "Lo siento mucho.",
+      "english": "I'm really sorry."
+    },
+    {
+      "spanish": "Perdona el retraso.",
+      "english": "Sorry I'm late."
+    },
+    {
+      "spanish": "No era mi intención.",
+      "english": "I didn't mean to."
+    },
+    {
+      "spanish": "Fue culpa mía.",
+      "english": "It was my fault."
+    },
+    {
+      "spanish": "Perdona que te moleste.",
+      "english": "Sorry to bother you."
+    },
+    {
+      "spanish": "Perdona, ¿qué has dicho?",
+      "english": "Sorry, what did you say?"
+    },
+    {
+      "spanish": "No volverá a pasar.",
+      "english": "It won't happen again."
+    },
+    {
+      "spanish": "Te debo una disculpa.",
+      "english": "I owe you an apology."
+    },
+    {
+      "spanish": "Siento las molestias.",
+      "english": "Sorry for the inconvenience."
+    }
+  ],
+  "outro": "[curious] ¿Cuál no conocías? Cuéntamelo abajo.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#FrasesÚtiles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf009",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

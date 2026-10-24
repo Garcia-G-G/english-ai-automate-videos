@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases en la cocina en inglés 🍳",
+  "video_description": "Diez frases para cocinar en inglés. 🍳",
+  "title": "¿Cómo se dice?",
+  "theme": "en la cocina",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "Tengo hambre.",
+      "english": "I'm hungry."
+    },
+    {
+      "spanish": "Huele muy bien.",
+      "english": "It smells great."
+    },
+    {
+      "spanish": "Pela las patatas.",
+      "english": "Peel the potatoes."
+    },
+    {
+      "spanish": "Corta la cebolla.",
+      "english": "Chop the onion."
+    },
+    {
+      "spanish": "Precalienta el horno.",
+      "english": "Preheat the oven."
+    },
+    {
+      "spanish": "¿Le falta sal?",
+      "english": "Does it need more salt?"
+    },
+    {
+      "spanish": "Remuévelo de vez en cuando.",
+      "english": "Stir it every now and then."
+    },
+    {
+      "spanish": "Se me ha quemado.",
+      "english": "I burned it."
+    },
+    {
+      "spanish": "Está listo para comer.",
+      "english": "It's ready to eat."
+    },
+    {
+      "spanish": "¡Qué aproveche!",
+      "english": "Enjoy your meal!"
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf025",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm hungry.": "Tengo hambre.",
+    "It smells great.": "Huele muy bien.",
+    "Peel the potatoes.": "Pela las patatas.",
+    "Chop the onion.": "Corta la cebolla.",
+    "Preheat the oven.": "Precalienta el horno.",
+    "Does it need more salt?": "¿Le falta sal?",
+    "Stir it every now and then.": "Remuévelo de vez en cuando.",
+    "I burned it.": "Se me ha quemado.",
+    "It's ready to eat.": "Está listo para comer.",
+    "Enjoy your meal!": "¡Qué aproveche!"
+  },
+  "english_phrases": [
+    "I'm hungry.",
+    "It smells great.",
+    "Peel the potatoes.",
+    "Chop the onion.",
+    "Preheat the oven.",
+    "Does it need more salt?",
+    "Stir it every now and then.",
+    "I burned it.",
+    "It's ready to eat.",
+    "Enjoy your meal!"
+  ],
+  "full_script": "[cheerful] Lee la frase en español y dila en inglés en voz alta. I'm hungry. It smells great. Peel the potatoes. Chop the onion. Preheat the oven. Does it need more salt? Stir it every now and then. I burned it. It's ready to eat. Enjoy your meal! [cheerful] Escribe en los comentarios la que más te gustó."
+}

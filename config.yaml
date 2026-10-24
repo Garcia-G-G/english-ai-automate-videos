@@ -3,59 +3,19 @@
 
 # Video Generation Settings
 video:
-  # Background mode: "random" picks from enabled list, "fixed" uses default_background
-  background_mode: "random"
+  # NO BACKGROUND SETTINGS. background_mode, default_background and
+  # enabled_backgrounds lived here and every one of them named a flat colour
+  # field: the enabled rotation expanded to 76 presets, 69 static gradients
+  # and 7 animated ones, with no footage in it at all.
+  #
+  # Backgrounds are Pexels footage now — this video's own clips, or the
+  # local cache, or the render fails. There is nothing to configure, which
+  # is the point: each of the last three packages left one more way for a
+  # colour field to reach the screen.
+  #
+  # profiles.<name>.video.background_mode: "clips" is a DIFFERENT key and it
+  # survives — it names a directory of footage.
 
-  # Used when background_mode is "fixed"
-  default_background: "static_midnight"
-
-  # Backgrounds available for random selection.
-  #
-  # Gradients, not photographs. Every entry here clears 4.5:1 contrast
-  # against the yellow headline in the band the headline occupies, measured
-  # on the bare background before the 6px outline is drawn, and measured
-  # across the whole colour cycle for the animated ones rather than at a
-  # single instant. The floor of this set is 4.65:1 (static_purple).
-  #
-  # Re-measure after any edit here:
-  #   python3 tools/background_contact_sheet.py --enabled
-  #
-  # The 11 photo_* presets remain defined in src/backgrounds.py and are
-  # deliberately absent: six of them measured between 2.08:1 and 3.69:1,
-  # because a sunset or a cloudscape puts its brightest region exactly
-  # where the headline goes. The energetic and particle families are absent
-  # for the opposite reason — they render very nearly black.
-  #
-  # Dropped from this list for failing the gate, worst-case:
-  #   static_rosegold 3.14:1   static_candy 3.63:1   static_cotton 4.25:1
-  enabled_backgrounds:
-    # static_gradient — rendered once, identical every frame
-    - static_sunset
-    - static_ocean
-    - static_purple
-    - static_neon
-    - static_emerald
-    - static_midnight
-    - static_fire
-    - static_galaxy
-    - static_teal
-    # animated_gradient — slow colour cycle
-    - purple_vibes
-    - blue_calm
-    - warm_sunset
-    - deep_space
-    - ocean_depth
-    - midnight_blue
-    - sunset_glow
-    # Every palette in assets/palettes.json — sampled from a seed and put
-    # through three gates: 4.5:1 worst-case contrast, a CIELAB distance of 12
-    # from every other palette, and hue discipline (no complementary blends,
-    # nothing in the olive band, a chroma floor read off static_teal).
-    # Regenerate with `python3 -m palettes`; this line needs no edit when the
-    # count changes, which is the point of it not being a list of names.
-    - generated:*
-
-  # Video dimensions (TikTok vertical format)
   width: 1080
   height: 1920
   fps: 30
@@ -64,6 +24,379 @@ video:
   animation_style: "clean_pop"
 
 # Audio/TTS Settings
+# ─────────────────────────────────────────────────────────────────────
+# DURATION — the specification every video is measured against.
+#
+# Every video must land between 50 s and 80 s. Both edges: one educational
+# already measured 86.0 s, and the median educational measured 45.9 s, so
+# this is a BAND and not a floor. Before this block existed nothing in the
+# pipeline aimed at a duration at all — it was whatever the script model
+# happened to write, plus whatever fixed structure the type adds, and 27 of
+# 138 measured videos (20%) landed in range.
+#
+# THE MODEL
+#
+#     video = speech + declared_silence + outro
+#     target_words = (target_seconds - overhead) x rate
+#     overhead     = declared_silence + outro
+#
+# `rate` and `silence` below are MEASURED, from 138 PAIRED artifacts — one
+# narration sidecar and one rendered mp4 that are the same video. Unpaired
+# arithmetic (one group's audio mean against another group's video mean) is
+# what produced the earlier overhead estimate of ~20.8 s for educational,
+# against the 9.5 s measured here.
+#
+# TWO TRAPS, both found by measuring:
+#
+#   · `rate` is words of SPEECH per second of SPEECH, counted from the
+#     narration's `segments` — NOT from `full_script`. On quiz those differ
+#     enormously: full_script carries 140 words where the segments carry 53.
+#     A word target aimed at full_script would mean nothing for quiz.
+#   · `silence` is the declared silence INSIDE the narration (countdowns,
+#     think-pauses, the gaps between repeats). It never appears in
+#     video-minus-narration, which is why it was invisible before.
+#
+# Re-measure after any change to pacing, voice or model:
+#   python3 tools/measure_duration_spec.py
+duration:
+  band:
+    min_seconds: 50.0
+    max_seconds: 80.0
+    # What the generator aims at. Centred, so a model that misses by ±20%
+    # still lands inside the band rather than on its edge.
+    target_seconds: 65.0
+
+  # Appended after render, every video, all three variants exactly 4.000 s.
+  outro_seconds: 4.0
+
+  # rate: words/second of speech · silence: seconds declared inside narration
+  # n: paired artifacts the figures come from
+  # RATES CORRECTED for the umbrella double-count. quiz and fill_blank
+  # append an "options" segment that deliberately spans option_1..4, so
+  # summing every segment counted those words and their seconds twice.
+  # Excluding any span that contains another moved quiz 1.95 -> 2.07 and
+  # fill_blank 2.04 -> 1.90. true_false and vocabulary emit no umbrella and
+  # are unchanged. Leaving the old figures would have been preserving a
+  # known error on purpose.
+  #
+  # fixed_words: the SPOKEN words that are not the explanation — question,
+  # options, countdown, answer reveal. Measured per artifact as
+  # (total spoken - explanation), so the per-item budget is derived rather
+  # than apportioned by guesswork.
+  #
+  # items_spoken: how many of the authored items are actually synthesised.
+  # ONE, for all three multi-item types. The prompt demands three and GPT
+  # writes three; only the root-level question/options/correct/explanation
+  # is ever read (script_schema.py calls `questions` DEAD PAYLOAD). The
+  # per-item budget therefore sizes the item that ships, not the ones that
+  # are paid for and discarded.
+  types:
+    # MEASURED, not calculated. tools/duration_calibrate.py fits these over
+    # every (script, audio) pair on disk -- 224 of them -- against the text the
+    # generator ACTUALLY speaks. full_script is not the narration for quiz,
+    # true_false, fill_blank or vocabulary: their audio is built from the
+    # structured fields and full_script is copied to metadata untouched. The
+    # old numbers measured a string nobody says, which is how a script sat
+    # inside the band and produced a thirty-second video.
+    #
+    # `silence` is the fitted intercept: fixed pauses plus, for quiz, the
+    # seven-second countdown that is SILENT by design. No wording reaches it.
+    #
+    # pronunciation WAS the indicative one: 12 samples, a median of 38
+    # spoken words against a queue that writes ~104, and an intercept that
+    # came out negative -- a fitting artifact at that range, not physics.
+    # It is measurable now. 36e2fe2 made the artifact tree visible to the
+    # calibrator and doubled the sample to 24, and the intercept came back
+    # positive:
+    #
+    #     was   rate 1.54  silence 0.0   median |error| 5.2s, max 27.8s
+    #     now   rate 2.02  silence 1.8   median |error| 2.2s, max 12.0s
+    #
+    # The case that exposed it: pr002 (bit_vs_beat), 107 spoken words, real
+    # video 57.5s. The old numbers predicted 73.5s -- a 31% error in the
+    # figure the guard uses to aim the generator, which is how a correct
+    # video gets called too short. The new ones predict 58.8s.
+    #
+    # STILL A SPREAD. cat_vs_cut is +12.0s out, so pronunciation is the
+    # loosest fit of the six and 24 samples is not many. Better than a
+    # known 31% error, not yet good.
+    educational:   {rate: 2.26, silence: 0.8, n: 45}
+    pronunciation: {rate: 2.02, silence: 1.8, n: 24}
+    vocabulary:    {rate: 1.18, silence: 6.4, n: 6}
+    true_false:    {rate: 1.80, silence: 9.0, n: 16, fixed_words: 18, items_spoken: 1}
+    fill_blank:    {rate: 4.44, silence: 28.6, n: 23, fixed_words: 40, items_spoken: 1}
+    # TWO, by the owner's ear, not by arithmetic. He listened to a 1-item
+    # cut (43.5s) and a 3-item cut (123.9s) and picked two. The reason is
+    # not length in the abstract: it is hearing "piensa bien, tres, dos,
+    # uno" three times in two minutes, which is where a viewer leaves. The
+    # third authored item is not wasted -- it seeds another video.
+    #
+    # `rate` and `silence` below are still the 1-item fit (n=56, all of it
+    # from the pre-artifact tree) and are therefore WRONG for a 2-item
+    # quiz. They are left alone deliberately: they get re-fitted over a
+    # batch of 2-item renders, and quiz's own duration band comes from that
+    # measurement. Setting either from a round number first is how a
+    # guessed value ends up inside a guard.
+    # RE-FITTED OVER 2-ITEM RENDERS, which is the only population this
+    # number now describes. Pooling them with the 89 one-item quizzes on
+    # disk gave rate 1.43 / overhead 11.2s -- a single line drawn through
+    # two different formats, fitting neither. Separated:
+    #
+    #     1-item  n=89   rate 2.88   overhead 22.1s
+    #     2-item  n= 4   rate 1.34   overhead 35.1s
+    #
+    # 35.1 - 22.1 = 13.0s per extra item, which lands within 0.2s of the
+    # 13.2s measured independently by instrumenting generate_silence
+    # (e6b205a). Two unrelated methods, the same number.
+    #
+    # n is 4, not 93, and that is the honest count: four
+    # renders is thin for a guard, and saying 93 would borrow confidence
+    # from samples of a different format.
+    quiz:
+      rate: 1.34
+      # 35.1 IS THE FITTED OVERHEAD ITSELF, not the overhead minus the
+      # outro. The fit is over NARRATION seconds, word_target subtracts
+      # `silence + outro` from a VIDEO duration, and video = narration +
+      # outro -- so the outro cancels and `silence` must carry the whole
+      # audio overhead. Subtracting it twice put word_target 5 words high.
+      # The check: at the measured median this returns 62.0 words, and the
+      # four renders' median is 62.
+      silence: 35.1
+      n: 4
+      # RE-MEASURED FOR TWO ITEMS, under the same definition the rate was
+      # fitted with: spoken script words minus the explanation. The 36 here
+      # before was measured on 1-item videos AND counted the generated
+      # boilerplate ("Opción A,", "Escucha las opciones", the answer
+      # reveal) that `rate` does not see. Two different definitions that
+      # happened to land on almost the same number, which is exactly why
+      # nothing noticed. Measured the consistent way: 1-item median 14,
+      # 2-item median 35.
+      fixed_words: 35
+      items_spoken: 2
+      # ITS OWN BAND, because one window cannot describe six formats. A
+      # 2-item quiz runs past the global 80s ceiling by design now, and
+      # raising THAT would stop the guard catching a runaway educational
+      # or vocabulary video.
+      #
+      # DERIVED, and the ratio is applied to the part that can actually
+      # move. The global band's ratios (50/65 and 80/65 of target) exist so
+      # "a model that misses by +/-20% still lands inside" -- but what a
+      # model can miss on is the WORDS IT WRITES. It cannot miss on the
+      # countdown, the think pause, the gaps or the outro: those are the
+      # same length whatever the script says, and on quiz they are 39.1 of
+      # 85.3 seconds, 46% of the runtime.
+      #
+      # Spreading +/-23% across the whole 85.3s would hand the model an
+      # 18.8s allowance on a part that is only 46.2s long -- a +/-41%
+      # tolerance on words, dressed up as +/-23%. Applied to the variable
+      # part alone it is +/-10.7s, which is the +/-23% the ratio means.
+      #
+      # THE GENERAL RULE, and quiz is just the first type to make it
+      # visible: a tolerance ratio belongs to the part of a measurement
+      # that can move. Vocabulary, with its repeat pauses, is next.
+      #
+      # Anchored on the measured median VIDEO duration of the four 2-item
+      # renders. The band judges video (project() = narration + outro, and
+      # the pipeline rejected id016 at 93.4s = 89.4 narration + 4.0), so
+      # these are video seconds; an audio-anchored band would sit 4s low.
+      #
+      #   the four renders   76.9  79.0  91.7  93.4   all inside
+      #   the 1-item cut     47.5                      rejected
+      #   the 3-item cut    127.9                      rejected
+      min_seconds: 74.7
+      max_seconds: 96.0
+      target_seconds: 85.3
+      # THE BAND ABOVE AIMS; THESE REJECT. The band is derived
+      # symmetrically from a median, which is right for telling the
+      # generator how long to write and wrong for refusing a video: it sits
+      # 2.2s under the shortest good render and 2.6s over the longest, from
+      # four samples with a +/-10% spread of their own. The fifth good
+      # render would fall out on ordinary luck, and a false reject stops
+      # production.
+      #
+      # A rejection threshold is derived from what it has to CATCH. Here
+      # that is one thing: a quiz that spoke the wrong number of items. Each
+      # edge is the midpoint between the nearest wrong format and the
+      # nearest good render:
+      #
+      #   floor     (47.5 1-item  +  76.9 shortest 2-item) / 2 =  62.2
+      #   ceiling   (93.4 longest 2-item  +  127.9 3-item) / 2 = 110.7
+      #
+      # 14.7s of room under the shortest render, 17.2s over the longest, and
+      # each wrong format out by the same margin -- that is what a midpoint
+      # means. NOT the length we
+      # want -- that is target_seconds. Re-derive both when a render
+      # outside 76.9-93.4 lands, or when the 1- or 3-item figures move.
+      reject_min_seconds: 62.2
+      reject_max_seconds: 110.7
+
+    # STEP 61: ten statements, 4.0 s to read and decide each, read off the page.
+    # Estimated ~79 s with the outro before the first render; reject_max as
+    # STEP 61 sets it. Re-derive from renders once tf001 and its siblings land.
+    true_false_level:
+      min_seconds: 65.0
+      max_seconds: 88.0
+      target_seconds: 79.0
+      reject_max_seconds: 95.0
+
+    # STEP 60 §2: the owner chose more thinking time over the 80 s ceiling
+    # (STEP 49 §5 lever 4). level_test thinks 4.0 s per word (lv001 ~91 s);
+    # say_it_level 3/4/5 s by sentence length (sy001 ~87 s).
+    level_test:
+      reject_max_seconds: 95.0
+    say_it_level:
+      reject_max_seconds: 95.0
+
+    # STEP 62: the new notebook modes, each band centred on its first render
+    # (2026-10-16): fc001 73.2 s, ec001 75.7 s, vf001 52.0 s, +-15 %. Ten rows
+    # with 3.0 s thinks; phrases_level has no tiers or verdict, so it is shorter.
+    fill_level:
+      min_seconds: 62.0
+      max_seconds: 84.0
+      target_seconds: 73.0
+      reject_max_seconds: 95.0
+    choose_level:
+      min_seconds: 64.0
+      max_seconds: 87.0
+      target_seconds: 76.0
+      reject_max_seconds: 95.0
+    phrases_level:
+      min_seconds: 44.0
+      max_seconds: 60.0
+      target_seconds: 52.0
+      reject_max_seconds: 85.0
+
+    # STEP 76 §0: how_do_you_say, centred on its four approved renders with the outro
+    # (72.7, 74.6, 75.2, 82.8 s). Aims at 76 s inside 66-86 s; rejects under 55 s (a page
+    # that lost most of its ten words) or over 95 s (a stalled reveal), so a finished page
+    # is never refused for being a few seconds long.
+    how_do_you_say:
+      min_seconds: 66.0
+      max_seconds: 86.0
+      target_seconds: 76.0
+      reject_min_seconds: 55.0
+      reject_max_seconds: 95.0
+
+
+  # ── REPETITION ────────────────────────────────────────────────────
+  # "Repeat after me" — the English phrase said more than once with a real
+  # pause between takes. This is the pedagogy language teaching actually
+  # uses, and it is NOT padding: no longer countdowns, no dead air, no
+  # looped clips. The owner's judgement is that current pacing is good, so
+  # the pause is generous enough to be usable and short enough not to drag.
+  #
+  # WHY IT DOES NOT TRIP THE QA GATE. Each take is its own DECLARED speech
+  # segment and each pause is real spliced silence between segments. The
+  # gate's speech_in_declared_silence check only treats ids prefixed
+  # "countdown_" as declared-silent (qa_gate.SILENT_SEGMENT_PREFIXES), so a
+  # "repeat_*" segment is matched against a speech boundary like any other
+  # line. The declaration and the waveform agree by construction.
+  repetition:
+    # Seconds of real silence between takes. Long enough for a learner to
+    # actually say the phrase back, which is the point of the pause.
+    pause_seconds: 0.9
+    # How many times the English is spoken, INCLUDING the first.
+    takes:
+      pronunciation: 3   # hearing it repeatedly IS the lesson here
+      vocabulary: 2
+      quiz: 2
+      fill_blank: 2
+
+# ─────────────────────────────────────────────────────────────────────
+# WHICH CATEGORIES EACH VIDEO TYPE MAY DRAW FROM.
+#
+# Video type and topic category used to be INDEPENDENT DRAWS.
+# legacy_pipeline's author resolved video_type from the request or the
+# profile, then called _random_topic() without consulting it, so any
+# pairing was possible and 43 of 221 rendered artifacts (19%) got one that
+# did not suit the type.
+#
+# The pronunciation column was the whole story: 0 of 20 pronunciation
+# videos ever drew from content/topics/pronunciation.json. That file holds
+# 56 minimal pairs and stress shifts — ship/sheep, bit/beat, REcord the
+# noun, water British vs American — and the type built for it had never
+# used it once. It was drawing "Asking for Help" from social and "Double
+# negatives (grammatical error)" from spanish_specific instead: phrases
+# that cannot be pronounced as a word.
+#
+# THIS LIST INTERSECTS with the audience profile's own `categories`. It
+# does not replace it — the kids gating stays where it is, and this adds
+# the type axis that was missing. An empty intersection RAISES; see
+# type_categories.resolve, and the note under `children` below.
+type_categories:
+  # The type teaches how a word SOUNDS. Only one file holds words chosen
+  # for how they sound.
+  pronunciation:
+    - pronunciation
+
+  # Needs a SET of related terms to fill 10-12 card rows. Topical
+  # categories are sets by nature; idioms/phrasal_verbs/slang are lists of
+  # expressions and work as well. Deliberately excluded: pronunciation
+  # (single words), false_friends and confusing_words (pairs, which belong
+  # to quiz), grammar (rules are not word pairs).
+  vocabulary:
+    [business, work_office, travel, food_restaurant, technology, social,
+     everyday_expressions, cultural, kids_animals, kids_colors, kids_numbers,
+     idioms, phrasal_verbs, slang]
+
+  # Needs a right answer with tempting distractors, which nearly everything
+  # supports — its measured mismatch was 1 in 72. Only sound cannot be
+  # quizzed on a silent card.
+  quiz:
+    [business, common_mistakes, confusing_words, cultural, everyday_expressions,
+     false_friends, food_restaurant, grammar, idioms, kids_animals, kids_colors,
+     kids_numbers, phrasal_verbs, slang, social, spanish_specific, technology,
+     travel, work_office]
+
+  # Needs a statement with a crisp truth value. False friends and common
+  # mistakes are ideal: "'Actually' means 'actualmente' — false". Topical
+  # categories are excluded because "the bill means la cuenta, true"
+  # teaches nothing. The tightest list here, and the least confident one.
+  true_false:
+    [false_friends, confusing_words, common_mistakes, idioms, phrasal_verbs,
+     slang, spanish_specific, grammar, cultural]
+
+  # Needs a sentence with ONE removable slot. Excluded: false_friends (the
+  # pair is the lesson, not the slot) and idioms (removing a word from an
+  # idiom usually destroys it — 3 of the measured mismatches).
+  fill_blank:
+    [phrasal_verbs, grammar, confusing_words, common_mistakes, spanish_specific,
+     business, work_office, travel, food_restaurant, technology, social,
+     everyday_expressions, cultural, kids_animals, kids_colors, kids_numbers]
+
+  # A1 basic vocabulary, a notebook of ten words. basic_vocab is mapped to
+  # THIS type only, so no existing type starts drawing A1 topics.
+  how_do_you_say:
+    - basic_vocab
+
+  # The level family (STEP 58), two modes of the same notebook. Each category
+  # feeds its type only.
+  level_test:
+    - level_vocab
+  say_it_level:
+    - say_it
+  # STEP 61: the notebook cascade of ten statements. false_friends feeds the
+  # single-statement true_false too; both types read it.
+  true_false_level:
+    - false_friends
+  # STEP 62: the notebook modes that replace fill_blank, quiz and vocabulary.
+  # These categories feed the old types too; both read them.
+  fill_level:
+    [grammar, common_mistakes, confusing_words]
+  choose_level:
+    [grammar, common_mistakes, confusing_words]
+  phrases_level:
+    [everyday_expressions, social, travel]
+
+  # A general explainer handles any content. Excludes pronunciation only
+  # because text karaoke cannot convey sound.
+  educational:
+    [business, common_mistakes, confusing_words, cultural, everyday_expressions,
+     false_friends, food_restaurant, grammar, idioms, kids_animals, kids_colors,
+     kids_numbers, phrasal_verbs, slang, social, spanish_specific, technology,
+     travel, work_office]
+
+
 audio:
   # Provider: elevenlabs (primary), openai (fallback)
   provider: "elevenlabs"
@@ -108,9 +441,10 @@ character:
 upload:
   # Platforms to upload to (requires API keys in .env)
   platforms:
-    - tiktok
+    # - tiktok   # STEP 73: uploaded by hand (Subir → «Preparar para TikTok») until the API can post
     - youtube
-    # - instagram  # Requires public video URL hosting (S3/CloudFlare)
+    # - instagram  # Reels through the Page: FB_PAGE_ID/FB_PAGE_TOKEN (see meta_publish below)
+    # - facebook   # Page Reels via FB_PAGE_ID/FB_PAGE_TOKEN
 
   # Default hashtags per video type
   hashtags:
@@ -120,26 +454,55 @@ upload:
     fill_blank: "#FillInTheBlank #EnglishPractice #LearnEnglish"
     pronunciation: "#Pronunciation #EnglishTips #SpeakEnglish"
     vocabulary: "#Vocabulary #EnglishWords #LearnEnglish"
+    how_do_you_say: "#InglésParaPrincipiantes #VocabularioEnInglés #AprenderInglés #InglésFácil #HowDoYouSay"
+    level_test: "#NivelDeInglés #AprenderInglés #VocabularioEnInglés #TestDeInglés #InglésFácil"
+    say_it_level: "#DiloEnInglés #AprenderInglés #FrasesEnInglés #InglésFácil #InglésParaViajar"
+    true_false_level: "#VerdaderoOFalso #FalsosAmigos #AprenderInglés #InglésFácil #VocabularioEnInglés"
+    fill_level: "#CompletaLaFrase #GramáticaInglesa #AprenderInglés #InglésFácil #PracticaInglés"
+    choose_level: "#ElegirLaCorrecta #GramáticaInglesa #AprenderInglés #InglésFácil #ErroresEnInglés"
+    phrases_level: "#CómoSeDice #FrasesEnInglés #AprenderInglés #InglésFácil #InglésParaPrincipiantes"
 
 # Content Generation
 content:
   # Default video type: educational, quiz, true_false, fill_blank, pronunciation
   default_type: "educational"
 
-# Active profile: adults | kids
+# API spend
+costs:
+  # Month-to-date spend is printed on Inicio against this number. It is a
+  # DISPLAY ceiling, not an enforced one — nothing refuses to render when the
+  # month crosses it; the point is that the operator sees it coming instead of
+  # discovering it on a statement. Remove the key and Inicio says "sin techo"
+  # rather than inventing a limit nobody set.
+  #
+  # PLACEHOLDER: 25.00 is a round number, not a decision. August 2026 came to
+  # $3.33 across 6 render days, so this is roughly 7x current usage. Set it to
+  # whatever the real budget is.
+  monthly_ceiling_usd: 25.00
+
+  # STEP 76 §5: an ENFORCED per-video cap on ElevenLabs TTS. Before every call the job's
+  # spend plus that call's price is checked against it; crossing it stops the job with a
+  # Spanish message and asks nothing more. Measured 2026-10-20 over 176 videos: median
+  # $0.073, p90 $0.137, max $0.453. STEP 77 §0: 0.30 is Garcia's per-Short budget (0.25
+  # would have stopped sy001 at $0.30 and gr004 at $0.28).
+  per_video_tts_usd: 0.30
+
+  # STEP 79 §00: the ElevenLabs lock (src/voice_lock.py). Voice is ALWAYS locked except inside
+  # the panel's own «Crear video» / «Generar audio» click, within the plan (the panel refuses a
+  # render that needs more characters than remain or would leave under 5 % of the plan).
+  # true = emergency stop: the panel cannot voice either. false never unlocks anything else.
+  tts_lock: false
+
+# Active profile: adults | children
 profile: "adults"
 
 profiles:
-  adults:
+  adults: {}
     # hereda todo del config base (comportamiento actual)
-  kids:
+  children:
     audio:
-      # KNOWN ISSUE: this placeholder is NOT validated anywhere. Confirmed by
-      # dry-run with profile: kids — it resolves straight through to
-      # voice_id=KIDS_VOICE_ID_PENDIENTE and would be sent to the ElevenLabs
-      # API verbatim, failing at call time rather than at config load.
-      # Replace with a real voice id before using the kids profile.
-      voice_id: "KIDS_VOICE_ID_PENDIENTE"   # se reemplaza al elegir voz
+      # Set CHILDREN_ELEVENLABS_VOICE_ID or configure a valid voice here.
+      voice_id: "default"
       model: "eleven_v3"
       stability: 0.55
       style: 0.30
@@ -150,3 +513,98 @@ profiles:
       animation_style: "clean_pop"
     content:
       categories: ["kids_colors", "kids_numbers", "kids_animals"]
+
+workspaces:
+  youtube_es_en:
+    profile_schema_version: 1
+    workspace_id: "youtube_es_en"
+    market: "youtube"
+    native_language: "es"
+    learning_language: "en"
+    audio:
+      narration_lang: "es"
+      learning_lang: "en"
+      english_accent: "en-US"
+      segment_model: "eleven_turbo_v2_5"
+      voice_preference: "female"
+    subtitles:
+      bilingual: true
+      primary_language: "es"
+      learning_language: "en"
+      script: "latin"
+    metadata:
+      title_language: "es"
+      cover_language: "es"
+      hashtag_seed: ["AprendeIngles", "EnglishTips", "InglesReal"]
+    editorial:
+      explanation_language: "es"
+      adaptation: "spanish_locale"
+      translation_policy: "never_literal"
+    publication:
+      manual: true
+      automatic_publishing: false
+      initial_visibility: "private"
+
+  bilibili_zh_hans_en:
+    profile_schema_version: 1
+    workspace_id: "bilibili_zh_hans_en"
+    market: "bilibili"
+    native_language: "zh-Hans"
+    learning_language: "en"
+    audio:
+      narration_lang: "zh"
+      learning_lang: "en"
+      english_accent: "en-US"
+      segment_model: "eleven_turbo_v2_5"
+      voice_preference: "female"
+    subtitles:
+      bilingual: true
+      primary_language: "zh-Hans"
+      learning_language: "en"
+      script: "simplified_chinese"
+    metadata:
+      title_language: "zh-Hans"
+      cover_language: "zh-Hans"
+      hashtag_seed: ["英语学习", "实用英语", "英语表达"]
+    editorial:
+      explanation_language: "zh-Hans"
+      adaptation: "mandarin_cultural"
+      translation_policy: "never_mechanical_spanish_translation"
+    publication:
+      manual: true
+      automatic_publishing: false
+      initial_status: "draft"
+
+voices:
+  profile_schema_version: 1
+  matrix:
+    youtube_es_en:
+      adults:
+        locale: "es"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "warm", "confident"]
+      children:
+        locale: "es"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "clear", "expressive", "not_infantilized"]
+    bilibili_zh_hans_en:
+      adults:
+        locale: "zh-Hans"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "warm", "confident"]
+      children:
+        locale: "zh-Hans"
+        provider: "elevenlabs"
+        voice_id: "default"
+        traits: ["female", "natural", "clear", "expressive", "not_infantilized"]
+
+# Instagram + Facebook Reels publisher (tools/meta_publish.py, README "Meta Reels").
+# One approved video per slot goes to every platform below. Run `tick` from
+# cron/launchd every few minutes, or `loop` in a terminal.
+meta_publish:
+  platforms: [instagram, facebook]
+  slots: ["10:00", "19:00"]          # local time
+  auto_enqueue_on_approve: false     # true: approving in the dashboard queues the video

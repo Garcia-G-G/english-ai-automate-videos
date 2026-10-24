@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "El AMOR y las RELACIONES en inglés: test de nivel 💕",
+  "video_description": "Descubre si tu vocabulario de relaciones y amor en inglés es básico, intermedio o experto. 💕",
+  "title": "¿Qué nivel tienes?",
+  "theme": "las relaciones y el amor",
+  "intro": "[curious] Te enseño una palabra de relaciones y amor y tú dices qué significa. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "english": "kiss",
+      "spanish": "Beso",
+      "cefr": "A1"
+    },
+    {
+      "english": "boyfriend",
+      "spanish": "Novio",
+      "cefr": "A1"
+    },
+    {
+      "english": "go on a date",
+      "spanish": "Tener una cita",
+      "cefr": "A2"
+    },
+    {
+      "english": "married",
+      "spanish": "Casado",
+      "cefr": "A2"
+    },
+    {
+      "english": "fall in love",
+      "spanish": "Enamorarse",
+      "cefr": "B1"
+    },
+    {
+      "english": "break up",
+      "spanish": "Romper / cortar",
+      "cefr": "B1"
+    },
+    {
+      "english": "get engaged",
+      "spanish": "Comprometerse",
+      "cefr": "B2"
+    },
+    {
+      "english": "heartbroken",
+      "spanish": "Con el corazón roto",
+      "cefr": "B2"
+    },
+    {
+      "english": "soulmate",
+      "spanish": "Alma gemela",
+      "cefr": "C1"
+    },
+    {
+      "english": "settle down",
+      "spanish": "Sentar cabeza",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si sabías hasta la tres, nivel básico. Si llegaste a la siete, intermedio. Y si acertaste las diez, ¡experto!",
+  "outro": "[cheerful] ¿Hasta dónde llegaste? Escríbelo abajo y comparte el reto.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésParaHispanos",
+    "#ClasesDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv038",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "kiss": "Beso",
+    "boyfriend": "Novio",
+    "go on a date": "Tener una cita",
+    "married": "Casado",
+    "fall in love": "Enamorarse",
+    "break up": "Romper / cortar",
+    "get engaged": "Comprometerse",
+    "heartbroken": "Con el corazón roto",
+    "soulmate": "Alma gemela",
+    "settle down": "Sentar cabeza"
+  },
+  "english_phrases": [
+    "kiss",
+    "boyfriend",
+    "go on a date",
+    "married",
+    "fall in love",
+    "break up",
+    "get engaged",
+    "heartbroken",
+    "soulmate",
+    "settle down"
+  ],
+  "full_script": "[curious] Te enseño una palabra de relaciones y amor y tú dices qué significa. ¿Hasta dónde llegas? kiss Beso boyfriend Novio go on a date Tener una cita Ahora, nivel intermedio. married Casado fall in love Enamorarse break up Romper / cortar get engaged Comprometerse Y ahora, nivel experto. heartbroken Con el corazón roto soulmate Alma gemela settle down Sentar cabeza Si sabías hasta la tres, nivel básico. Si llegaste a la siete, intermedio. Y si acertaste las diez, ¡experto! [cheerful] ¿Hasta dónde llegaste? Escríbelo abajo y comparte el reto."
+}

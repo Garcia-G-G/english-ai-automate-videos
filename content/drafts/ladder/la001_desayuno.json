@@ -1,0 +1,61 @@
+{
+  "type": "ladder",
+  "video_title": "Escalera: de I EAT a una frase completa 🪜",
+  "video_description": "Cinco escalones para hablar de tu rutina. ☕",
+  "level": "A2",
+  "theme": "la rutina",
+  "intro": "[cheerful] Empezamos con una palabra. Subimos escalón a escalón. Repite cada frase en voz alta.",
+  "steps": [
+    {
+      "en": "I eat.",
+      "es": "Como.",
+      "added": "eat"
+    },
+    {
+      "en": "I eat breakfast.",
+      "es": "Desayuno.",
+      "added": "breakfast"
+    },
+    {
+      "en": "I eat breakfast at home.",
+      "es": "Desayuno en casa.",
+      "added": "at home"
+    },
+    {
+      "en": "I eat breakfast at home every day.",
+      "es": "Desayuno en casa todos los días.",
+      "added": "every day"
+    },
+    {
+      "en": "I eat breakfast at home every day with my kids.",
+      "es": "Desayuno en casa todos los días con mis hijos.",
+      "added": "with my kids"
+    }
+  ],
+  "challenge": {
+    "es": "Ceno en casa todos los días con mi familia.",
+    "en": "I eat dinner at home every day with my family."
+  },
+  "outro": "[excited] ¿Te salió el reto? Escríbelo en los comentarios.",
+  "translations": {
+    "I eat.": "Como.",
+    "I eat breakfast.": "Desayuno.",
+    "I eat breakfast at home.": "Desayuno en casa.",
+    "I eat breakfast at home every day.": "Desayuno en casa todos los días.",
+    "I eat breakfast at home every day with my kids.": "Desayuno en casa todos los días con mis hijos."
+  },
+  "hashtags": [
+    "#Escalera",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "ladders",
+    "topic_id": "la001",
+    "video_type": "ladder",
+    "model": "manual",
+    "draft": true
+  }
+}

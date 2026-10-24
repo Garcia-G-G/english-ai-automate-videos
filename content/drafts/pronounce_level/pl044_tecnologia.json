@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "TECNOLOGÍA en inglés: 10 palabras que dices mal 💻",
+  "video_description": "Diez palabras de tecnología que casi todos pronuncian mal. 📱",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la tecnología",
+  "intro": "[excited] Diez palabras de tecnología que usas a diario. ¿Las dices bien? Pruébalo.",
+  "items": [
+    {
+      "english": "screen",
+      "respelling": "SKRIIN",
+      "ipa": "ˈskriːn",
+      "trap": "Sin «es-» y EE larga"
+    },
+    {
+      "english": "internet",
+      "respelling": "IN-ter-net",
+      "ipa": "ˈɪntɚnɛt",
+      "trap": "Acento en IN: IN-ter-net"
+    },
+    {
+      "english": "laptop",
+      "respelling": "LAP-tap",
+      "ipa": "ˈlæptɑp",
+      "trap": "La O suena «a»: LAP-tap"
+    },
+    {
+      "english": "password",
+      "respelling": "PAS-uerd",
+      "ipa": "ˈpæswɚd",
+      "trap": "WORD suena «uerd»"
+    },
+    {
+      "english": "browser",
+      "respelling": "BRAU-zer",
+      "ipa": "ˈbraʊzɚ",
+      "trap": "OW = «au» y la S = Z"
+    },
+    {
+      "english": "data",
+      "respelling": "DEI-ta",
+      "ipa": "ˈdeɪtə",
+      "trap": "La A suena «ei»: DEI-ta"
+    },
+    {
+      "english": "software",
+      "respelling": "SOFT-uer",
+      "ipa": "ˈsɔftwɛr",
+      "trap": "WARE suena «uer»"
+    },
+    {
+      "english": "router",
+      "respelling": "RAU-der",
+      "ipa": "ˈraʊɾɚ",
+      "trap": "En EE. UU. se dice RAU-der"
+    },
+    {
+      "english": "algorithm",
+      "respelling": "AL-ge-ri-dhem",
+      "ipa": "ˈælgərɪðəm",
+      "trap": "TH suave al final: -ri-dhem"
+    },
+    {
+      "english": "cache",
+      "respelling": "KASH",
+      "ipa": "ˈkæʃ",
+      "trap": "Se dice KASH, como «cash»"
+    }
+  ],
+  "verdict": "Las tres primeras bien: nivel básico. Hasta la siete: intermedio. Las diez correctas: experto de verdad.",
+  "outro": "[thoughtful] ¿Qué palabra vas a repasar? Dímelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#TecnologíaEnInglés",
+    "#AprenderInglés",
+    "#ClasesDeInglés",
+    "#HablarInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl044",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

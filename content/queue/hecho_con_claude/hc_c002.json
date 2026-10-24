@@ -1,0 +1,46 @@
+{
+  "id": "hc_c002",
+  "style": "comic",
+  "angle": "reto",
+  "title": "RETO: «tengo razón» en inglés (casi todos fallan)",
+  "hook_text": "Casi todos fallan este 👀",
+  "quiz": {
+    "prompt": "¿Cómo dirías «tengo razón»?",
+    "options": [
+      "I have reason",
+      "I'm right",
+      "I have right"
+    ],
+    "answer": 1,
+    "after": "Tener razón = to be right. «You're right» = tienes razón."
+  },
+  "correction": {
+    "wrong": "I have reason",
+    "right": "I'm right",
+    "rule": "Tener razón = to be right"
+  },
+  "voice": [
+    "Casi todos fallan este. ¿Cómo se dice «tengo razón»? ¿[[I have reason]], [[I'm right]] o [[I have right]]?",
+    "Tres, dos, uno…",
+    "¡La B! [[I'm right]]. Otra vez el inglés usa [[to be]] donde nosotros usamos «tener».",
+    "Y para dar la razón a alguien: [[You're right]], «tienes razón». Y si te equivocaste: [[I was wrong]], «me equivoqué».",
+    "Reto extra: ¿cómo dirías «ella tenía razón»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Ella tenía razón»",
+    "answer": "She was right."
+  },
+  "caption": "«Tengo razón» en inglés es «I'm right», no «I have reason». Reto de 30 segundos: ¿lo sabías?",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "principiante",
+  "level_label": "Principiante · A1–A2",
+  "voice_words": 66
+}

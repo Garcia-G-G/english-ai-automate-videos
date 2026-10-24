@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "«¿ESTÁN INCLUIDOS LOS GASTOS?» y 9 frases más en inglés 🔑",
+  "video_description": "Diez frases para alquilar un piso en inglés. 🔑",
+  "title": "¿Cómo se dice?",
+  "theme": "al alquilar un piso",
+  "intro": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo?",
+  "items": [
+    {
+      "spanish": "Busco piso.",
+      "english": "I'm looking for an apartment."
+    },
+    {
+      "spanish": "¿Cuánto es el alquiler?",
+      "english": "How much is the rent?"
+    },
+    {
+      "spanish": "¿Puedo verlo?",
+      "english": "Can I see it?"
+    },
+    {
+      "spanish": "¿Está amueblado?",
+      "english": "Is it furnished?"
+    },
+    {
+      "spanish": "¿Están incluidos los gastos?",
+      "english": "Are utilities included?"
+    },
+    {
+      "spanish": "¿Se admiten mascotas?",
+      "english": "Are pets allowed?"
+    },
+    {
+      "spanish": "¿Cuánto es la fianza?",
+      "english": "How much is the deposit?"
+    },
+    {
+      "spanish": "¿Cuándo puedo mudarme?",
+      "english": "When can I move in?"
+    },
+    {
+      "spanish": "La caldera no funciona.",
+      "english": "The boiler isn't working."
+    },
+    {
+      "spanish": "Me mudo el mes que viene.",
+      "english": "I'm moving out next month."
+    }
+  ],
+  "outro": "[happy] Guarda el vídeo y repítelas mañana.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésÚtil",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf038",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm looking for an apartment.": "Busco piso.",
+    "How much is the rent?": "¿Cuánto es el alquiler?",
+    "Can I see it?": "¿Puedo verlo?",
+    "Is it furnished?": "¿Está amueblado?",
+    "Are utilities included?": "¿Están incluidos los gastos?",
+    "Are pets allowed?": "¿Se admiten mascotas?",
+    "How much is the deposit?": "¿Cuánto es la fianza?",
+    "When can I move in?": "¿Cuándo puedo mudarme?",
+    "The boiler isn't working.": "La caldera no funciona.",
+    "I'm moving out next month.": "Me mudo el mes que viene."
+  },
+  "english_phrases": [
+    "I'm looking for an apartment.",
+    "How much is the rent?",
+    "Can I see it?",
+    "Is it furnished?",
+    "Are utilities included?",
+    "Are pets allowed?",
+    "How much is the deposit?",
+    "When can I move in?",
+    "The boiler isn't working.",
+    "I'm moving out next month."
+  ],
+  "full_script": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo? I'm looking for an apartment. How much is the rent? Can I see it? Is it furnished? Are utilities included? Are pets allowed? How much is the deposit? When can I move in? The boiler isn't working. I'm moving out next month. [happy] Guarda el vídeo y repítelas mañana."
+}

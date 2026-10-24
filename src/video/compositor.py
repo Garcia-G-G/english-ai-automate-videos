@@ -9,7 +9,6 @@ FFmpeg handle muxing/encoding in a single pass.
 
 import logging
 import os
-import platform
 import subprocess
 import time as _time
 from typing import Callable, Optional
@@ -17,6 +16,17 @@ from typing import Callable, Optional
 import numpy as np
 
 logger = logging.getLogger(__name__)
+
+
+#: STEP 75 §4: one software encode. VideoToolbox at -q:v 65 gave 2.7 Mb/s, no B-frames
+#: and a keyframe every 0.4 s on a mostly still card; colour went out untagged, so
+#: players guessed BT.601 and shifted the brand colours.
+X264_PARAMS = ["-g", "60", "-bf", "3", "-profile:v", "high"]
+# setparams too: on ffmpeg 9 the frames' own (unset) primaries/trc win over -color_primaries
+# and -color_trc, so without it the file says bt709/unknown/unknown.
+BT709_FILTER = ("scale=out_color_matrix=bt709:out_range=tv:flags=lanczos+accurate_rnd+full_chroma_int,"
+                "setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv")
+BT709_TAGS = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv"]
 
 
 def render_video_ffmpeg(
@@ -27,12 +37,12 @@ def render_video_ffmpeg(
     fps: int = 30,
     width: int = 1080,
     height: int = 1920,
-    crf: int = 18,
+    crf: int = 17,
     preset: str = "medium",
-    use_hardware: bool = True,
     progress_callback: Optional[Callable[[float], None]] = None,
+    workers: int = 1,
 ) -> str:
-    """Render video by piping PIL frames to FFmpeg.
+    """Render video by piping PIL frames to FFmpeg (libx264, BT.709).
 
     Args:
         frame_generator: ``f(t: float) -> np.ndarray`` returning an
@@ -42,21 +52,22 @@ def render_video_ffmpeg(
         duration: Video duration in seconds.
         fps: Frames per second.
         width, height: Expected frame dimensions.
-        crf: FFmpeg CRF quality (lower = better, 18 ≈ visually
-            lossless for libx264).
-        preset: FFmpeg encoding preset (``ultrafast`` … ``veryslow``).
-            Ignored when hardware encoding is active.
-        use_hardware: Attempt macOS VideoToolbox hardware encoding
-            before falling back to libx264.
+        crf: libx264 CRF (17: transparent for flat cards and text).
+        preset: libx264 preset. medium (STEP 77 §2b): at a fixed CRF the preset trades file
+            size for encoder CPU, not colour; −20 % CPU for +3 % size against slow.
+            ``ultrafast`` only for --fast drafts.
         progress_callback: Called with a float in ``[0, 1]`` once per
             second of rendered video.
+        workers: Processes that render frames (STEP 77 §2). Above 1 the
+            frame_generator runs in forked processes over contiguous chunks
+            of frames, written to ffmpeg in order; it must be a pure
+            function of t, as every renderer here already is.
 
     Returns:
         *output_path* on success.
 
     Raises:
-        RuntimeError: If FFmpeg exits with a non-zero code and no
-            fallback is available.
+        RuntimeError: If FFmpeg exits non-zero or closes its input early.
     """
     total_frames = int(duration * fps)
     if total_frames <= 0:
@@ -64,32 +75,88 @@ def render_video_ffmpeg(
 
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
 
-    # Decide codec
-    is_mac = platform.system() == "Darwin"
-    try_hw = use_hardware and is_mac
-
-    if try_hw:
-        try:
-            return _encode(
-                frame_generator, audio_path, output_path,
-                total_frames, fps, width, height,
-                codec="h264_videotoolbox",
-                extra_params=["-q:v", "65"],
-                progress_callback=progress_callback,
-            )
-        except RuntimeError:
-            logger.warning(
-                "Hardware encoding (VideoToolbox) failed, "
-                "falling back to libx264"
-            )
-
     return _encode(
         frame_generator, audio_path, output_path,
         total_frames, fps, width, height,
         codec="libx264",
-        extra_params=["-crf", str(crf), "-preset", preset],
+        extra_params=["-crf", str(crf), "-preset", preset, *X264_PARAMS],
         progress_callback=progress_callback,
+        workers=workers,
     )
+
+
+# ── frames, in one process or several (STEP 77 §2) ──────────────────
+
+_POOL_GENERATOR: Optional[Callable[[float], np.ndarray]] = None
+
+
+def _pool_frame(args) -> np.ndarray:
+    index, fps = args
+    frame = _POOL_GENERATOR(index / fps)
+    if frame.dtype != np.uint8:
+        frame = np.clip(frame, 0, 255).astype(np.uint8)
+    return np.ascontiguousarray(frame)
+
+
+def frames(frame_generator: Callable[[float], np.ndarray], total_frames: int, fps: int,
+           workers: int = 1):
+    """Every frame in order. With workers > 1, forked processes render contiguous chunks
+    (each keeps its own caches and reads the footage forward); a semaphore holds back the
+    task feed so finished frames never pile up faster than ffmpeg takes them."""
+    import multiprocessing
+    import threading
+    if workers <= 1 or "fork" not in multiprocessing.get_all_start_methods():
+        for i in range(total_frames):
+            yield frame_generator(i / fps)
+        return
+    global _POOL_GENERATOR
+    _POOL_GENERATOR = frame_generator
+    # Warm up once here so the children inherit the background (softened clips, scrims), the
+    # static pages and the font caches instead of each building them: that setup cost every
+    # worker more than its frames did (~0.5 CPU-s per frame with 6 workers, 0.04 without).
+    frame_generator(0.0)
+    from .backgrounds import before_fork
+    before_fork()
+    try:
+        import cv2
+        cv2.setNumThreads(1)                     # six processes already; no thread pool per process
+    except ImportError:
+        pass
+    chunk = max(1, min(60, total_frames // (workers * 6)))
+    ahead = threading.Semaphore(workers * chunk * 2)
+    stop = threading.Event()
+
+    def tasks():
+        for i in range(total_frames):
+            ahead.acquire()
+            if stop.is_set():                    # the render ended early: feed nothing more
+                return
+            yield (i, fps)
+
+    logger.info("Rendering frames in %d processes, chunks of %d", workers, chunk)
+    pool = multiprocessing.get_context("fork").Pool(workers)
+    try:
+        for frame in pool.imap(_pool_frame, tasks(), chunksize=chunk):
+            ahead.release()
+            yield frame
+        pool.close()
+    finally:
+        # A failed frame (or a dead ffmpeg) ends the render: unblock the task feed first, or
+        # terminate() waits forever on the thread parked in ahead.acquire().
+        stop.set()
+        for _ in range(workers * chunk * 2 + 1):
+            ahead.release()
+        pool.terminate()
+        pool.join()
+
+
+def render_workers() -> int:
+    """Processes for a render: VIDEO_RENDER_WORKERS, else the cores minus two for ffmpeg and
+    the panel, at most 6."""
+    env = os.environ.get("VIDEO_RENDER_WORKERS")
+    if env:
+        return max(1, int(env))
+    return max(1, min(6, (os.cpu_count() or 2) - 2))
 
 
 def _encode(
@@ -103,6 +170,7 @@ def _encode(
     codec: str,
     extra_params: list,
     progress_callback: Optional[Callable[[float], None]],
+    workers: int = 1,
 ) -> str:
     """Run the actual FFmpeg pipe encode."""
 
@@ -121,15 +189,19 @@ def _encode(
         # --- audio file ---
         "-i", audio_path,
         # --- video codec ---
+        "-vf", BT709_FILTER,
         "-c:v", codec,
         *extra_params,
         "-pix_fmt", "yuv420p",
+        *BT709_TAGS,
         # --- audio codec ---
         "-c:a", "aac",
         "-b:a", "192k",
         # --- general ---
+        "-movflags", "+faststart",
         "-shortest",
-        "-threads", "4",
+        # No thread cap (was 4): x264 slow at 1080x1920 encodes 54 fps with 4, 60 with its own
+        # count, and the encoder is a render's longest stage once frames come from a pool (STEP 77 §2).
         output_path,
     ]
 
@@ -146,10 +218,7 @@ def _encode(
     t_last = t_start
 
     try:
-        for frame_num in range(total_frames):
-            t = frame_num / fps
-
-            frame_rgb = frame_generator(t)
+        for frame_num, frame_rgb in enumerate(frames(frame_generator, total_frames, fps, workers)):
 
             # Progress every 100 frames. A timeout that shows these lines
             # advancing was slow; one that shows them stop dead was stalled.
@@ -178,7 +247,17 @@ def _encode(
             if not frame_rgb.flags["C_CONTIGUOUS"]:
                 frame_rgb = np.ascontiguousarray(frame_rgb)
 
-            process.stdin.write(frame_rgb.tobytes())
+            try:
+                process.stdin.write(frame_rgb.tobytes())
+            except BrokenPipeError:
+                # ffmpeg died mid-encode; its own words say why, the pipe does not.
+                process.kill()
+                err_tail = process.stderr.read().decode(errors="replace")[-800:]
+                process.wait()
+                logger.error("FFmpeg closed its input at frame %d (rc=%s): …%s",
+                             frame_num, process.returncode, err_tail)
+                raise RuntimeError(f"FFmpeg stopped reading frames at {frame_num}/{total_frames} "
+                                   f"(rc={process.returncode}): {err_tail.strip()[-300:]}") from None
 
             if progress_callback and frame_num % fps == 0:
                 progress_callback(frame_num / total_frames)

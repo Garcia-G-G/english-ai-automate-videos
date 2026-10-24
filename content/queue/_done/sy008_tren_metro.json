@@ -1,0 +1,117 @@
+{
+  "type": "say_it_level",
+  "video_title": "TREN y METRO en inglés: ¿cuántas frases sabes? 🚇",
+  "video_description": "Billetes, transbordos y paradas: diez frases para moverte en tren y metro en inglés. 🚇",
+  "title": "Dilo en inglés",
+  "theme": "en el tren y el metro",
+  "intro": "[happy] Próxima parada: el inglés. Lee la frase y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Un billete de ida, por favor.",
+      "english": "A one-way ticket, please.",
+      "cefr": "A1",
+      "alt": "A single, please."
+    },
+    {
+      "spanish": "¿Cuándo sale el próximo tren?",
+      "english": "When's the next train?",
+      "cefr": "A1",
+      "alt": "When does the next train leave?"
+    },
+    {
+      "spanish": "¿Qué línea va al centro?",
+      "english": "Which line goes downtown?",
+      "cefr": "A2",
+      "alt": "Which line goes to the city center?"
+    },
+    {
+      "spanish": "¿Dónde tengo que hacer transbordo?",
+      "english": "Where do I change trains?",
+      "cefr": "A2",
+      "alt": "Where do I transfer?"
+    },
+    {
+      "spanish": "El tren va veinte minutos tarde.",
+      "english": "The train is twenty minutes late.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Nos hemos pasado la parada.",
+      "english": "We've gone past our stop.",
+      "cefr": "B1",
+      "alt": "We missed our stop."
+    },
+    {
+      "spanish": "El metro cierra a medianoche.",
+      "english": "The subway closes at midnight.",
+      "cefr": "B1",
+      "alt": "The metro closes at midnight."
+    },
+    {
+      "spanish": "¿Está ocupado este asiento?",
+      "english": "Is this seat taken?",
+      "cefr": "B1",
+      "tip": "Lo natural es taken, no «busy»"
+    },
+    {
+      "spanish": "Me he equivocado de tren.",
+      "english": "I got on the wrong train.",
+      "cefr": "B2",
+      "alt": "I took the wrong train.",
+      "tip": "«Equivocarse de» algo se dice con the wrong..."
+    },
+    {
+      "spanish": "¿Me bajo en la próxima?",
+      "english": "Do I get off at the next stop?",
+      "cefr": "B2",
+      "tip": "«Bajarse» del tren o del bus es get off"
+    }
+  ],
+  "verdict": "¿Te bajaste en la tres? Básico. ¿En la siete? Intermedio. ¿Llegaste a la diez? Experto.",
+  "outro": "[excited] ¿En qué estación te bajaste? Escribe tu número abajo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy008",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "A one-way ticket, please.": "Un billete de ida, por favor.",
+    "When's the next train?": "¿Cuándo sale el próximo tren?",
+    "Which line goes downtown?": "¿Qué línea va al centro?",
+    "Where do I change trains?": "¿Dónde tengo que hacer transbordo?",
+    "The train is twenty minutes late.": "El tren va veinte minutos tarde.",
+    "We've gone past our stop.": "Nos hemos pasado la parada.",
+    "The subway closes at midnight.": "El metro cierra a medianoche.",
+    "Is this seat taken?": "¿Está ocupado este asiento?",
+    "I got on the wrong train.": "Me he equivocado de tren.",
+    "Do I get off at the next stop?": "¿Me bajo en la próxima?"
+  },
+  "english_phrases": [
+    "A one-way ticket, please.",
+    "When's the next train?",
+    "Which line goes downtown?",
+    "Where do I change trains?",
+    "The train is twenty minutes late.",
+    "We've gone past our stop.",
+    "The subway closes at midnight.",
+    "Is this seat taken?",
+    "I got on the wrong train.",
+    "Do I get off at the next stop?",
+    "A single, please.",
+    "When does the next train leave?",
+    "Which line goes to the city center?",
+    "Where do I transfer?",
+    "We missed our stop.",
+    "The metro closes at midnight.",
+    "I took the wrong train."
+  ],
+  "full_script": "[happy] Próxima parada: el inglés. Lee la frase y dila en inglés antes que yo. A one-way ticket, please. When's the next train? Which line goes downtown? Ahora, nivel intermedio. Where do I change trains? The train is twenty minutes late. We've gone past our stop. The subway closes at midnight. Y ahora, nivel experto. Is this seat taken? I got on the wrong train. Do I get off at the next stop? ¿Te bajaste en la tres? Básico. ¿En la siete? Intermedio. ¿Llegaste a la diez? Experto. [excited] ¿En qué estación te bajaste? Escribe tu número abajo."
+}

@@ -17,15 +17,9 @@ from typing import Tuple, Dict
 
 # ============== CORE EASING FUNCTIONS ==============
 
-def ease_out_back(t: float) -> float:
-    """Ease out with slight overshoot - great for pop-in effects."""
-    c = 1.70158
-    return 1 + (c + 1) * pow(t - 1, 3) + c * pow(t - 1, 2)
-
-
-def ease_out_cubic(t: float) -> float:
-    """Smooth deceleration curve."""
-    return 1 - pow(1 - t, 3)
+# ease_out_back and ease_out_cubic live in video/motion.py, the one easing module (STEP 77 §1);
+# re-exported here for the renderers that import them from this module.
+from video.motion import ease_out_back, ease_out_cubic  # noqa: E402,F401
 
 
 def ease_out_quad(t: float) -> float:

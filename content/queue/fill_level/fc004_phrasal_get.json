@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "10 frases con hueco: PHRASAL VERBS con GET 🧩",
+  "video_description": "Get up, get over, get by: diez phrasal verbs con get. 🧩",
+  "title": "Completa la frase",
+  "theme": "phrasal verbs con GET",
+  "intro": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido.",
+  "items": [
+    {
+      "sentence": "I get ____ at seven every day.",
+      "answer": "up",
+      "translation": "Me levanto a las siete cada día.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Get ____ the car, we're late!",
+      "answer": "in",
+      "translation": "¡Sube al coche, llegamos tarde!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We got ____ the bus at the last stop.",
+      "answer": "off",
+      "translation": "Bajamos del autobús en la última parada.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "How do you get ____ with your boss?",
+      "answer": "along",
+      "translation": "¿Qué tal te llevas con tu jefe?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I can't wait to get ____ home.",
+      "answer": "back",
+      "translation": "Tengo ganas de volver a casa.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It took me months to get ____ the flu.",
+      "answer": "over",
+      "translation": "Tardé meses en recuperarme de la gripe.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Let's get ____ to business.",
+      "answer": "down",
+      "translation": "Vamos al grano.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I get ____ with very little money.",
+      "answer": "by",
+      "translation": "Me las arreglo con muy poco dinero.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Don't let it get you ____.",
+      "answer": "down",
+      "translation": "No dejes que te desanime.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "What are you getting ____?",
+      "answer": "at",
+      "translation": "¿Qué insinúas?",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc004",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I get up at seven every day.": "Me levanto a las siete cada día.",
+    "Get in the car, we're late!": "¡Sube al coche, llegamos tarde!",
+    "We got off the bus at the last stop.": "Bajamos del autobús en la última parada.",
+    "How do you get along with your boss?": "¿Qué tal te llevas con tu jefe?",
+    "I can't wait to get back home.": "Tengo ganas de volver a casa.",
+    "It took me months to get over the flu.": "Tardé meses en recuperarme de la gripe.",
+    "Let's get down to business.": "Vamos al grano.",
+    "I get by with very little money.": "Me las arreglo con muy poco dinero.",
+    "Don't let it get you down.": "No dejes que te desanime.",
+    "What are you getting at?": "¿Qué insinúas?"
+  },
+  "english_phrases": [
+    "I get up at seven every day.",
+    "Get in the car, we're late!",
+    "We got off the bus at the last stop.",
+    "How do you get along with your boss?",
+    "I can't wait to get back home.",
+    "It took me months to get over the flu.",
+    "Let's get down to business.",
+    "I get by with very little money.",
+    "Don't let it get you down.",
+    "What are you getting at?"
+  ],
+  "full_script": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido. I get up at seven every day. Get in the car, we're late! We got off the bus at the last stop. Ahora, nivel intermedio. How do you get along with your boss? I can't wait to get back home. It took me months to get over the flu. Let's get down to business. Y ahora, nivel experto. I get by with very little money. Don't let it get you down. What are you getting at? Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

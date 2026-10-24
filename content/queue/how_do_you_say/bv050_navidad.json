@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la NAVIDAD en inglés? 🎄",
+  "video_description": "Diez palabras de Navidad, del regalo al reno. 🎁",
+  "title": "¿Cómo se dice…?",
+  "theme": "la Navidad",
+  "level": "A1",
+  "intro": "[curious] Lee cada palabra y piensa cómo se dice en inglés.",
+  "items": [
+    {
+      "emoji": "🎁",
+      "spanish": "Regalo",
+      "english": "gift"
+    },
+    {
+      "emoji": "🕯️",
+      "spanish": "Vela",
+      "english": "candle"
+    },
+    {
+      "emoji": "🦌",
+      "spanish": "Reno",
+      "english": "reindeer"
+    },
+    {
+      "emoji": "🔔",
+      "spanish": "Campana",
+      "english": "bell"
+    },
+    {
+      "emoji": "🧦",
+      "spanish": "Calcetín",
+      "english": "stocking"
+    },
+    {
+      "emoji": "🎅",
+      "spanish": "Papá Noel",
+      "english": "Santa Claus"
+    },
+    {
+      "emoji": "🛷",
+      "spanish": "Trineo",
+      "english": "sleigh"
+    },
+    {
+      "emoji": "🧝",
+      "spanish": "Duende",
+      "english": "elf"
+    },
+    {
+      "emoji": "🎄",
+      "spanish": "Adorno",
+      "english": "ornament"
+    },
+    {
+      "emoji": "🌿",
+      "spanish": "Corona",
+      "english": "wreath"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: gift, candle, reindeer, bell, stocking, Santa Claus, sleigh, elf, ornament, wreath.",
+  "outro": "[cheerful] Comenta tu número del uno al diez. Sin trampas.",
+  "translations": {
+    "gift": "Regalo",
+    "candle": "Vela",
+    "reindeer": "Reno",
+    "bell": "Campana",
+    "stocking": "Calcetín",
+    "Santa Claus": "Papá Noel",
+    "sleigh": "Trineo",
+    "elf": "Duende",
+    "ornament": "Adorno",
+    "wreath": "Corona"
+  },
+  "english_phrases": [
+    "gift",
+    "candle",
+    "reindeer",
+    "bell",
+    "stocking",
+    "Santa Claus",
+    "sleigh",
+    "elf",
+    "ornament",
+    "wreath"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv050",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] Lee cada palabra y piensa cómo se dice en inglés. Regalo... gift. gift. Vela... candle. candle. Reno... reindeer. reindeer. Campana... bell. bell. Calcetín... stocking. stocking. Papá Noel... Santa Claus. Santa Claus. Trineo... sleigh. sleigh. Duende... elf. elf. Adorno... ornament. ornament. Corona... wreath. wreath. Otra vez, todas seguidas: gift, candle, reindeer, bell, stocking, Santa Claus, sleigh, elf, ornament, wreath. [cheerful] Comenta tu número del uno al diez. Sin trampas."
+}

@@ -1,0 +1,47 @@
+{
+  "id": "hc_c007",
+  "style": "comic",
+  "level": "principiante",
+  "angle": "reto",
+  "title": "RETO: «tengo sueño» en inglés",
+  "hook_text": "¿Lo sabes sin pensar?",
+  "quiz": {
+    "prompt": "¿Cómo dirías «tengo sueño»?",
+    "options": [
+      "I have dream",
+      "I'm sleepy",
+      "I have sleep"
+    ],
+    "answer": 1,
+    "after": "Tener sueño = be sleepy. Dream es soñar."
+  },
+  "correction": {
+    "wrong": "I have sleep",
+    "right": "I'm sleepy",
+    "rule": "Be sleepy / be tired"
+  },
+  "voice": [
+    "Reto. ¿Cómo dirías «tengo sueño»? ¿[[I have dream]], [[I'm sleepy]] o [[I have sleep]]?",
+    "Tres segundos…",
+    "¡La B! [[I'm sleepy]]. Y si es cansancio en general: [[I'm tired]].",
+    "Ojo: [[dream]] es el sueño que tienes dormido: [[I had a weird dream]].",
+    "Y quedarse dormido es [[fall asleep]].",
+    "¿Tienes sueño ahora? Contéstalo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«Tengo sueño, me voy a dormir»",
+    "answer": "I'm sleepy, I'm going to bed."
+  },
+  "caption": "«Tengo sueño» es «I'm sleepy», no «I have sleep». Reto de inglés en 30 segundos.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 54
+}

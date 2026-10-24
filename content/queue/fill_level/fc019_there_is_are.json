@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "10 frases con hueco: THERE IS o THERE ARE 🏙️",
+  "video_description": "Hay, había, habrá: there is y there are en diez frases. 🏙️",
+  "title": "Completa la frase",
+  "theme": "there is y there are",
+  "intro": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido.",
+  "items": [
+    {
+      "sentence": "There ____ a cat on the roof.",
+      "answer": "is",
+      "translation": "Hay un gato en el tejado.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "There ____ three people in the room.",
+      "answer": "are",
+      "translation": "Hay tres personas en la habitación.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ there a bank near here?",
+      "answer": "Is",
+      "translation": "¿Hay un banco cerca de aquí?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "There ____ a party last night.",
+      "answer": "was",
+      "translation": "Anoche hubo una fiesta.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "There ____ many people at the concert.",
+      "answer": "were",
+      "translation": "Había mucha gente en el concierto.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "There ____ be a meeting tomorrow.",
+      "answer": "will",
+      "translation": "Mañana habrá una reunión.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "There ____ been an accident.",
+      "answer": "has",
+      "translation": "Ha habido un accidente.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "There's no point ____ arguing.",
+      "answer": "in",
+      "translation": "No tiene sentido discutir.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "There ____ to be a cinema here.",
+      "answer": "used",
+      "translation": "Aquí antes había un cine.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "There's bound ____ be traffic.",
+      "answer": "to",
+      "translation": "Seguro que hay tráfico.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#ThereIsThereAre",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc019",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "There is a cat on the roof.": "Hay un gato en el tejado.",
+    "There are three people in the room.": "Hay tres personas en la habitación.",
+    "Is there a bank near here?": "¿Hay un banco cerca de aquí?",
+    "There was a party last night.": "Anoche hubo una fiesta.",
+    "There were many people at the concert.": "Había mucha gente en el concierto.",
+    "There will be a meeting tomorrow.": "Mañana habrá una reunión.",
+    "There has been an accident.": "Ha habido un accidente.",
+    "There's no point in arguing.": "No tiene sentido discutir.",
+    "There used to be a cinema here.": "Aquí antes había un cine.",
+    "There's bound to be traffic.": "Seguro que hay tráfico."
+  },
+  "english_phrases": [
+    "There is a cat on the roof.",
+    "There are three people in the room.",
+    "Is there a bank near here?",
+    "There was a party last night.",
+    "There were many people at the concert.",
+    "There will be a meeting tomorrow.",
+    "There has been an accident.",
+    "There's no point in arguing.",
+    "There used to be a cinema here.",
+    "There's bound to be traffic."
+  ],
+  "full_script": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido. There is a cat on the roof. There are three people in the room. Is there a bank near here? Ahora, nivel intermedio. There was a party last night. There were many people at the concert. There will be a meeting tomorrow. There has been an accident. Y ahora, nivel experto. There's no point in arguing. There used to be a cinema here. There's bound to be traffic. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

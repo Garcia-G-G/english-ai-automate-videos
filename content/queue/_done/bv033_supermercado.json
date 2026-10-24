@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el SUPERMERCADO en inglés? 🛒",
+  "video_description": "Diez palabras para hacer la compra en inglés. 🛍️",
+  "title": "¿Cómo se dice…?",
+  "theme": "el supermercado",
+  "level": "A1",
+  "intro": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo.",
+  "items": [
+    {
+      "emoji": "🛒",
+      "spanish": "Carrito",
+      "english": "cart"
+    },
+    {
+      "emoji": "💁",
+      "spanish": "Cajero",
+      "english": "cashier"
+    },
+    {
+      "emoji": "🛍️",
+      "spanish": "Bolsa",
+      "english": "bag"
+    },
+    {
+      "emoji": "🚶",
+      "spanish": "Pasillo",
+      "english": "aisle"
+    },
+    {
+      "emoji": "🏷️",
+      "spanish": "Oferta",
+      "english": "sale"
+    },
+    {
+      "emoji": "💲",
+      "spanish": "Precio",
+      "english": "price"
+    },
+    {
+      "emoji": "🧾",
+      "spanish": "Recibo",
+      "english": "receipt"
+    },
+    {
+      "emoji": "🥩",
+      "spanish": "Carne",
+      "english": "meat"
+    },
+    {
+      "emoji": "🧊",
+      "spanish": "Congelados",
+      "english": "frozen food"
+    },
+    {
+      "emoji": "🧀",
+      "spanish": "Lácteos",
+      "english": "dairy"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: cart, cashier, bag, aisle, sale, price, receipt, meat, frozen food, dairy.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "cart": "Carrito",
+    "cashier": "Cajero",
+    "bag": "Bolsa",
+    "aisle": "Pasillo",
+    "sale": "Oferta",
+    "price": "Precio",
+    "receipt": "Recibo",
+    "meat": "Carne",
+    "frozen food": "Congelados",
+    "dairy": "Lácteos"
+  },
+  "english_phrases": [
+    "cart",
+    "cashier",
+    "bag",
+    "aisle",
+    "sale",
+    "price",
+    "receipt",
+    "meat",
+    "frozen food",
+    "dairy"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv033",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[happy] Diez palabras en un minuto. Dilas en voz alta conmigo. Carrito... cart. cart. Cajero... cashier. cashier. Bolsa... bag. bag. Pasillo... aisle. aisle. Oferta... sale. sale. Precio... price. price. Recibo... receipt. receipt. Carne... meat. meat. Congelados... frozen food. frozen food. Lácteos... dairy. dairy. Ahora, todas conmigo: cart, cashier, bag, aisle, sale, price, receipt, meat, frozen food, dairy. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

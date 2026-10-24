@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los DÍAS DE LA SEMANA en inglés? 📅",
+  "video_description": "Los siete días, el fin de semana, hoy y ayer. Siempre con mayúscula en inglés. 🗓️",
+  "title": "¿Cómo se dice…?",
+  "theme": "los días de la semana",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "☕",
+      "spanish": "Lunes",
+      "english": "Monday"
+    },
+    {
+      "emoji": "💼",
+      "spanish": "Martes",
+      "english": "Tuesday"
+    },
+    {
+      "emoji": "🏋️",
+      "spanish": "Miércoles",
+      "english": "Wednesday"
+    },
+    {
+      "emoji": "📚",
+      "spanish": "Jueves",
+      "english": "Thursday"
+    },
+    {
+      "emoji": "🎉",
+      "spanish": "Viernes",
+      "english": "Friday"
+    },
+    {
+      "emoji": "🛍️",
+      "spanish": "Sábado",
+      "english": "Saturday"
+    },
+    {
+      "emoji": "😴",
+      "spanish": "Domingo",
+      "english": "Sunday"
+    },
+    {
+      "emoji": "🏖️",
+      "spanish": "Fin de semana",
+      "english": "weekend"
+    },
+    {
+      "emoji": "📍",
+      "spanish": "Hoy",
+      "english": "today"
+    },
+    {
+      "emoji": "⏮️",
+      "spanish": "Ayer",
+      "english": "yesterday"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, weekend, today, yesterday.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "Monday": "Lunes",
+    "Tuesday": "Martes",
+    "Wednesday": "Miércoles",
+    "Thursday": "Jueves",
+    "Friday": "Viernes",
+    "Saturday": "Sábado",
+    "Sunday": "Domingo",
+    "weekend": "Fin de semana",
+    "today": "Hoy",
+    "yesterday": "Ayer"
+  },
+  "english_phrases": [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+    "weekend",
+    "today",
+    "yesterday"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv014",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Lunes... Monday. Monday. Martes... Tuesday. Tuesday. Miércoles... Wednesday. Wednesday. Jueves... Thursday. Thursday. Viernes... Friday. Friday. Sábado... Saturday. Saturday. Domingo... Sunday. Sunday. Fin de semana... weekend. weekend. Hoy... today. today. Ayer... yesterday. yesterday. Ahora, todas conmigo: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, weekend, today, yesterday. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

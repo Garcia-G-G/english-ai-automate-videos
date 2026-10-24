@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "MUCH o MANY: ¿cuál va en cada frase? 🔢",
+  "video_description": "Much con lo que no se cuenta, many con lo que sí. ¿Lo dominas? 🔢",
+  "title": "Elige la correcta",
+  "theme": "much o many",
+  "intro": "[cheerful] Diez frases, dos opciones. Di la correcta antes que yo.",
+  "items": [
+    {
+      "sentence": "How ____ brothers do you have?",
+      "options": [
+        "many",
+        "much"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "How ____ is this shirt?",
+      "options": [
+        "many",
+        "much"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I don't have ____ time.",
+      "options": [
+        "many",
+        "much"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "There aren't ____ people here today.",
+      "options": [
+        "many",
+        "much"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Thank you very ____.",
+      "options": [
+        "many",
+        "much"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "How ____ money do you need?",
+      "options": [
+        "much",
+        "many"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Too ____ cooks spoil the broth.",
+      "options": [
+        "many",
+        "much"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I didn't get ____ sleep last night.",
+      "options": [
+        "many",
+        "much"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He's not ____ of a talker.",
+      "options": [
+        "much",
+        "many"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ a time I've wished I'd stayed.",
+      "options": [
+        "Much",
+        "Many"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#MuchVsMany",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec008",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

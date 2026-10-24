@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "CONECTORES: ¿sabes completar estas 10 frases? 🧵",
+  "video_description": "Because, although, however: conectores en diez frases. 🧵",
+  "title": "Completa la frase",
+  "theme": "los conectores",
+  "intro": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto.",
+  "items": [
+    {
+      "sentence": "I'm tired ____ I didn't sleep.",
+      "answer": "because",
+      "translation": "Estoy cansado porque no dormí.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I like it, ____ it's expensive.",
+      "answer": "but",
+      "translation": "Me gusta, pero es caro.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "It was raining, ____ we stayed in.",
+      "answer": "so",
+      "translation": "Llovía, así que nos quedamos en casa.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "____ it was late, we kept working.",
+      "answer": "Although",
+      "translation": "Aunque era tarde, seguimos trabajando.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'll wait ____ you finish.",
+      "answer": "until",
+      "translation": "Esperaré hasta que termines.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She went out ____ the rain.",
+      "answer": "despite",
+      "translation": "Salió a pesar de la lluvia.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It's cheap. ____, it's not very good.",
+      "answer": "However",
+      "translation": "Es barato. Sin embargo, no es muy bueno.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Take a coat in ____ it gets cold.",
+      "answer": "case",
+      "translation": "Llévate un abrigo por si hace frío.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He's rich, ____ his brother is poor.",
+      "answer": "whereas",
+      "translation": "Él es rico, mientras que su hermano es pobre.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She studied hard; ____, she passed.",
+      "answer": "therefore",
+      "translation": "Estudió mucho; por lo tanto, aprobó.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Conectores",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc028",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

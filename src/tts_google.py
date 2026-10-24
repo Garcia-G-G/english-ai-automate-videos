@@ -26,6 +26,7 @@ from dotenv import load_dotenv
 from google.cloud import texttospeech
 
 from tts_common import (
+    Timeline,
     get_audio_duration, generate_silence, measure_speech_end,
     extract_english_words_from_script, SPANISH_FILTER,
     ASSETS_DIR, SPANISH_DIR, WORDS_DIR,
@@ -210,34 +211,9 @@ def generate_quiz_audio_segmented(
     # Create temp directory for assembly
     with tempfile.TemporaryDirectory() as temp_dir:
         segments = []
-        audio_files = []
-        running_time = 0.0
-
-        def add_audio(path: str, duration: float = None):
-            """Add audio file to sequence.
-
-            Returns (start, file_end, duration, speech_end). `speech_end` is
-            where the VOICE stops; `file_end` is where the CLIP stops, and the
-            two differ by the trailing silence every TTS model leaves behind.
-            Segments must be recorded against speech_end — see
-            tts_common.measure_speech_end. The audio itself is untouched.
-            """
-            nonlocal running_time
-            if duration is None:
-                duration = get_audio_duration(path)
-            audio_files.append(path)
-            start = running_time
-            speech_end = start + measure_speech_end(path)
-            running_time += duration
-            return start, running_time, duration, speech_end
-
-        def add_silence(duration: float):
-            """Add silence to sequence."""
-            nonlocal running_time
-            silence_path = os.path.join(temp_dir, f"silence_{len(audio_files)}.mp3")
-            generate_silence(duration, silence_path, sample_rate=24000)
-            audio_files.append(silence_path)
-            running_time += duration
+        # STEP 76 §6: one PCM timeline (tts_common.Timeline), not a closure pair and a concat.
+        timeline = Timeline(temp_dir, sample_rate=24000)
+        add_audio, add_silence = timeline.add_audio, timeline.add_silence
 
         def add_segment(seg_id: str, text: str, start: float, end: float):
             """Record segment metadata."""
@@ -354,7 +330,7 @@ def generate_quiz_audio_segmented(
         # 6. ANSWER
         # ============================================================
         logger.info("[6] ANSWER")
-        answer_start = running_time
+        answer_start = timeline.time
         full_answer_text = f"Correcto. La respuesta es {correct}, {correct_text}."
         logger.debug("Answer: '%s'", full_answer_text)
 
@@ -382,7 +358,7 @@ def generate_quiz_audio_segmented(
             add_segment('explanation', explanation, exp_start, exp_end_speech)
             add_silence(PAUSE_AFTER_EXPLANATION)
 
-        total_duration = running_time
+        total_duration = timeline.time
         logger.info("=" * 60)
         logger.info("Total duration: %.2fs", total_duration)
         logger.info("=" * 60)
@@ -390,24 +366,7 @@ def generate_quiz_audio_segmented(
         # ============================================================
         # CONCATENATE
         # ============================================================
-        logger.info("Concatenating audio files...")
-        concat_list_path = os.path.join(temp_dir, "concat.txt")
-        with open(concat_list_path, 'w') as f:
-            for audio_file in audio_files:
-                f.write(f"file '{audio_file}'\n")
-
-        # Concatenate with re-encoding to ensure compatibility
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', concat_list_path,
-            '-acodec', 'libmp3lame', '-q:a', '2',
-            '-ar', '24000', '-ac', '1',
-            output_path
-        ]
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        if result.returncode != 0:
-            logger.error("FFmpeg error: %s", result.stderr)
-            raise RuntimeError(f"FFmpeg concatenation failed: {result.stderr}")
+        timeline.finalize(output_path)
 
         logger.info("Audio saved: %s", output_path)
 

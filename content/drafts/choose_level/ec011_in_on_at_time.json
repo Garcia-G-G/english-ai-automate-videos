@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "IN, ON o AT: el test de 10 frases 📅",
+  "video_description": "Las preposiciones de tiempo que todos confundimos, en diez frases. 📅",
+  "title": "Elige la correcta",
+  "theme": "in, on o at (tiempo)",
+  "intro": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo.",
+  "items": [
+    {
+      "sentence": "My birthday is ____ May.",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "See you ____ Friday!",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The class starts ____ nine.",
+      "options": [
+        "on",
+        "at"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I was born ____ 1995.",
+      "options": [
+        "in",
+        "at"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We met ____ New Year's Eve.",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I can't sleep ____ night.",
+      "options": [
+        "at",
+        "in"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'll call you ____ the morning.",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The shop is closed ____ weekends in the US.",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "We arrived just ____ time for dinner.",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "The train left right ____ time.",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#Preposiciones",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec011",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

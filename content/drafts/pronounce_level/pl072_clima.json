@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras del CLIMA que casi nadie pronuncia bien ⛈️",
+  "video_description": "Rain, thunder, Fahrenheit: ¿cómo se pronuncia el tiempo que hace en inglés? 🌧️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el clima",
+  "intro": "[cheerful] Hablemos del clima. Lee cada palabra en voz alta y luego escucha cómo suena.",
+  "items": [
+    {
+      "english": "rain",
+      "respelling": "REIN",
+      "ipa": "ˈreɪn",
+      "trap": "AI suena «ei»: REIN"
+    },
+    {
+      "english": "snow",
+      "respelling": "SNOU",
+      "ipa": "ˈsnoʊ",
+      "trap": "Sin «e» delante: SNOU"
+    },
+    {
+      "english": "cloud",
+      "respelling": "KLAUD",
+      "ipa": "ˈklaʊd",
+      "trap": "OU suena «au»: KLAUD"
+    },
+    {
+      "english": "weather",
+      "respelling": "UE-dher",
+      "ipa": "ˈwɛðɚ",
+      "trap": "TH sonora: UE-dher"
+    },
+    {
+      "english": "freezing",
+      "respelling": "FRII-zing",
+      "ipa": "ˈfriːzɪŋ",
+      "trap": "La Z zumba: no es una «s»"
+    },
+    {
+      "english": "humid",
+      "respelling": "JIUU-mid",
+      "ipa": "ˈhjuːmɪd",
+      "trap": "La H suena y la U es «iuu»"
+    },
+    {
+      "english": "thunder",
+      "respelling": "THAN-der",
+      "ipa": "ˈθʌndɚ",
+      "trap": "TH sorda y la U suena «a»"
+    },
+    {
+      "english": "lightning",
+      "respelling": "LAIT-ning",
+      "ipa": "ˈlaɪtnɪŋ",
+      "trap": "Dos sílabas: LAIT-ning"
+    },
+    {
+      "english": "thermometer",
+      "respelling": "ther-MA-me-ter",
+      "ipa": "θɚˈmɑmətɚ",
+      "trap": "Acento en MA: ther-MA-me-ter"
+    },
+    {
+      "english": "Fahrenheit",
+      "respelling": "FE-ren-jait",
+      "ipa": "ˈfɛrənhaɪt",
+      "trap": "Acento en FE- y EI suena «ai»"
+    }
+  ],
+  "verdict": "La tres es nivel básico, la siete intermedio y la diez experto. ¿Cuál es tu nivel?",
+  "outro": "[cheerful] ¿Cuál te costó más? Escríbelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#ElClimaEnInglés",
+    "#InglésOnline",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl072",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿ME TRAE LA CUENTA?» en inglés? 🍽️",
+  "video_description": "Diez frases para pedir en un restaurante sin trabarte. 🍝",
+  "title": "¿Cómo se dice?",
+  "theme": "en un restaurante",
+  "intro": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Una mesa para dos, por favor.",
+      "english": "A table for two, please."
+    },
+    {
+      "spanish": "¿Me trae la carta?",
+      "english": "Could I see the menu?"
+    },
+    {
+      "spanish": "¿Qué me recomienda?",
+      "english": "What do you recommend?"
+    },
+    {
+      "spanish": "Para mí, el pollo.",
+      "english": "I'll have the chicken."
+    },
+    {
+      "spanish": "Sin cebolla, por favor.",
+      "english": "No onions, please."
+    },
+    {
+      "spanish": "¿Me trae más agua?",
+      "english": "Could I get some more water?"
+    },
+    {
+      "spanish": "Esto no es lo que pedí.",
+      "english": "This isn't what I ordered."
+    },
+    {
+      "spanish": "Estaba buenísimo.",
+      "english": "It was delicious."
+    },
+    {
+      "spanish": "¿Me trae la cuenta?",
+      "english": "Could I have the check, please?"
+    },
+    {
+      "spanish": "¿Puedo pagar con tarjeta?",
+      "english": "Can I pay by card?"
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf002",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

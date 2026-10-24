@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el RESTAURANTE en inglés? 🍽️",
+  "video_description": "Diez palabras para comer fuera sin señalar la carta. 🧾",
+  "title": "¿Cómo se dice…?",
+  "theme": "el restaurante",
+  "level": "A1",
+  "intro": "[cheerful] Mira la lista y adivina antes de que salga la respuesta.",
+  "items": [
+    {
+      "emoji": "📋",
+      "spanish": "Menú",
+      "english": "menu"
+    },
+    {
+      "emoji": "🤵",
+      "spanish": "Mesero",
+      "english": "waiter"
+    },
+    {
+      "emoji": "🧾",
+      "spanish": "Cuenta",
+      "english": "check"
+    },
+    {
+      "emoji": "💵",
+      "spanish": "Propina",
+      "english": "tip"
+    },
+    {
+      "emoji": "🧻",
+      "spanish": "Servilleta",
+      "english": "napkin"
+    },
+    {
+      "emoji": "🍲",
+      "spanish": "Sopa",
+      "english": "soup"
+    },
+    {
+      "emoji": "🧂",
+      "spanish": "Sal",
+      "english": "salt"
+    },
+    {
+      "emoji": "🍨",
+      "spanish": "Postre",
+      "english": "dessert"
+    },
+    {
+      "emoji": "🥟",
+      "spanish": "Entrada",
+      "english": "appetizer"
+    },
+    {
+      "emoji": "🍖",
+      "spanish": "Plato principal",
+      "english": "main course"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: menu, waiter, check, tip, napkin, soup, salt, dessert, appetizer, main course.",
+  "outro": "[cheerful] Comenta tu número del uno al diez. Sin trampas.",
+  "translations": {
+    "menu": "Menú",
+    "waiter": "Mesero",
+    "check": "Cuenta",
+    "tip": "Propina",
+    "napkin": "Servilleta",
+    "soup": "Sopa",
+    "salt": "Sal",
+    "dessert": "Postre",
+    "appetizer": "Entrada",
+    "main course": "Plato principal"
+  },
+  "english_phrases": [
+    "menu",
+    "waiter",
+    "check",
+    "tip",
+    "napkin",
+    "soup",
+    "salt",
+    "dessert",
+    "appetizer",
+    "main course"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv032",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Mira la lista y adivina antes de que salga la respuesta. Menú... menu. menu. Mesero... waiter. waiter. Cuenta... check. check. Propina... tip. tip. Servilleta... napkin. napkin. Sopa... soup. soup. Sal... salt. salt. Postre... dessert. dessert. Entrada... appetizer. appetizer. Plato principal... main course. main course. Otra vez, todas seguidas: menu, waiter, check, tip, napkin, soup, salt, dessert, appetizer, main course. [cheerful] Comenta tu número del uno al diez. Sin trampas."
+}
