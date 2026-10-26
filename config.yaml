@@ -624,3 +624,27 @@ meta_publish:
   platforms: [instagram, facebook]
   slots: ["10:00", "19:00"]          # local time
   auto_enqueue_on_approve: false     # true: approving in the dashboard queues the video
+
+# STEP 80 §2: the queue ordered by what works (src/queue_priority.py). A type's score is the median
+# views of its videos older than 3 days (Rendimiento → «Actualizar estadísticas»); until a type has
+# 3 such videos, its prior below stands in (Claude's reading of the channel, 26 Oct 2026).
+queue_priority:
+  prior_views:
+    how_do_you_say: 1150      # the top 16 Shorts, 1.0K–1.3K each
+    pronunciation: 950        # V/B pronunciation 951
+    phrases_level: 650        # «¿ME TRAE LA CUENTA?» 647 in a few days
+    hecho_con_claude: 600     # error hooks («¡No digas…!» 994); the series is new
+    level_test: 300
+    say_it_level: 300
+    choose_level: 150         # grammar formats: 85–450, median ≈ 150
+    fill_level: 150
+    true_false_level: 150
+    true_false: 150
+    fill_blank: 150
+    vocabulary: 150
+    educational: 150
+  default_prior: 100
+  # A basic A1 category in the topic multiplies its priority by 1.5
+  a1_categories: [casa, comida, animales, cuerpo, colores, fruta, bebidas, dias, cocina, escuela, ropa,
+                  verbos, postres, deportes, verduras, numeros, meses, familia, cara, profesiones, bano]
+

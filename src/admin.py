@@ -465,6 +465,32 @@ def move_to_cut(paths, reason: str, name: str) -> Optional[Path]:
     return dest
 
 
+def queue_order(paths: list) -> list:
+    """The queued scripts in priority order (queue_priority); the file order when it cannot rank."""
+    try:
+        import queue_priority
+        return [p for p, _score, _why in queue_priority.ranked(list(paths))]
+    except Exception:                                       # noqa: BLE001 — never block the queue
+        logger.warning("queue: priority unavailable, file order", exc_info=True)
+        return list(paths)
+
+
+def next_best() -> Optional[tuple]:
+    """(path, script, why) — what «Producir el siguiente mejor» would make now, or None."""
+    picked = queue_pick()
+    if not picked:
+        return None
+    path, data = picked
+    try:
+        import channel_stats
+        import queue_priority
+        cfg = queue_priority.settings()
+        _p, why = queue_priority.priority(data, queue_priority.type_scores(channel_stats.latest(), cfg), cfg)
+    except Exception:                                       # noqa: BLE001
+        why = "orden de la cola"
+    return path, data, why
+
+
 def queue_pick(video_type: str = None):
     """The next SAFE queued script for this type, or None.
 
@@ -481,7 +507,8 @@ def queue_pick(video_type: str = None):
 
     try:
         bad = _queue_bad(queue_guard, fresh=True)
-        for path in queue_guard.queued_scripts():
+        # STEP 80 §2: best first — the type's measured views, an A1 category boost
+        for path in queue_order(queue_guard.queued_scripts()):
             if path.relative_to(ROOT) in bad:
                 continue
             with open(path, encoding="utf-8") as handle:
@@ -2521,6 +2548,7 @@ NAV_LABELS = {
     "Review": ("Revisar", ":material/task_alt:"),
     "Upload": ("Subir", ":material/upload:"),
     "Library": ("Biblioteca", ":material/video_library:"),
+    "Performance": ("Rendimiento", ":material/insights:"),
     "Topics": ("Temas", ":material/psychology:"),
     "Manim": ("Lecciones", ":material/school:"),
     "Scheduler": ("Programar", ":material/schedule:"),
@@ -2546,6 +2574,7 @@ main_pages = {
     "Review": "✅",
     "Upload": "📤",
     "Library": "📚",
+    "Performance": "📈",
 }
 
 tool_pages = {
@@ -2627,6 +2656,20 @@ if page == "Dashboard":
         "Cada bloque nombra artefactos concretos y la acción que los mueve. "
         "Si algo no se puede accionar, no está aquí."
     )
+
+    # STEP 80 §2: the main action — the best queued script, and why it is next
+    _best = next_best()
+    if _best:
+        _bp, _bd, _why = _best
+        st.markdown(f"**Siguiente mejor:** `{_bp.name}` — {_why}")
+        if st.button("🚀 Producir el siguiente mejor", type="primary", key="produce_next_best"):
+            try:
+                st.session_state.last_job = start_generation(_bd.get("type"), use_queue=True)
+                st.success(f"En marcha: {_bp.name}")
+            except AlreadyRendering as busy:
+                st.warning(str(busy))
+    else:
+        st.info("La cola no tiene ningún guion listo para producir.")
 
     import thumbnails
     from thumbnails import ensure_thumbnail
@@ -4246,6 +4289,49 @@ elif page == "Manim":
 
 
 # ============== LOGS PAGE ==============
+elif page == "Performance":
+    st.markdown("## Rendimiento")
+    st.caption("Lo que hicieron los vídeos publicados en YouTube (lectura gratuita con el token del canal). "
+               "Un vídeo de menos de 3 días todavía no se juzga.")
+    import channel_stats
+    if st.button("🔄 Actualizar estadísticas", type="primary"):
+        try:
+            with st.spinner("Leyendo YouTube…"):
+                path = channel_stats.refresh()
+            st.success(f"Guardado en {path.relative_to(ROOT)}")
+        except Exception as e:                              # noqa: BLE001 — shown, not raised
+            st.error(f"No se pudieron leer las estadísticas: {e}")
+    snap = channel_stats.latest()
+    if not snap:
+        st.info("Todavía no hay estadísticas: pulsa «Actualizar estadísticas».")
+    else:
+        s = channel_stats.summary(snap["videos"])
+        st.caption(f"Leídas {snap['read_at']} · {len(snap['videos'])} vídeos · Facebook: "
+                   f"{(snap.get('facebook') or {}).get('note', '—') if isinstance(snap.get('facebook'), dict) else snap.get('facebook')}")
+        st.markdown("### Por formato")
+        st.dataframe([{"formato": f["type"], "vídeos": f["count"], "mediana": f["median"], "media": f["mean"],
+                       "de +3 días": f["mature_count"], "mediana +3 días": f["mature_median"]} for f in s["formats"]],
+                     hide_index=True)
+        cols = st.columns(2)
+        _row = lambda v: {"vistas": v["views"], "días publicado": v.get("days"), "formato": v["type"], "título": v["title"]}
+        with cols[0]:
+            st.markdown("### Top 10")
+            st.dataframe([_row(v) for v in s["top"]], hide_index=True)
+        with cols[1]:
+            st.markdown("### Los 10 de abajo")
+            st.dataframe([_row(v) for v in s["bottom"]], hide_index=True)
+        st.markdown("### Por categoría")
+        st.dataframe([{"categoría": c["category"], "vídeos": c["count"], "mediana": c["median"]} for c in s["categories"]],
+                     hide_index=True)
+    st.markdown("### Prioridad de la cola")
+    try:
+        import queue_priority
+        _ranked = queue_priority.ranked(list(_queue_guard().queued_scripts()), snap)
+        st.dataframe([{"guion": p.name, "prioridad": round(pr), "por qué": why} for p, pr, why in _ranked[:25]],
+                     hide_index=True)
+    except Exception as e:                                  # noqa: BLE001
+        st.caption(f"Prioridad no disponible: {e}")
+
 elif page == "Logs":
     st.markdown("## Registros")
 
