@@ -697,7 +697,7 @@ def render() -> None:                                  # pragma: no cover — UI
         problems, notes = L.validate(lesson), L.warnings(lesson)
         st.caption(f"`lessons/{path.name}` · {L.character_count(lesson)} caracteres de narración · "
                    f"{sum(1 for b in lesson['beats'] for x in L.segments(b['narration']) if 'text' in x)} segmentos de voz · "
-                   f"≈ ${estimate_cost_usd(lesson):.2f} por voz")
+                   f"≈ \\${estimate_cost_usd(lesson):.2f} por voz")
         with st.expander(f"Editar narración ({len(lesson['beats'])} golpes)", expanded=bool(problems)):
             st.caption("Edita solo la narración; el inglés va entre [[ ]]. Las palabras que la animación espera deben "
                        "decirse en la frase. Para cambiar la estructura (tipos, tablas, diálogos) edita el JSON abajo.")
@@ -760,7 +760,7 @@ def render() -> None:                                  # pragma: no cover — UI
                                 help="Para oír un cambio del generador de audio, no del texto: rehace la voz completa de esta lección.")
             todo = [b["id"] for b in lesson["beats"]] if force else stale
             cost = round(sum(len(L.spoken_text(b["narration"])) for b in lesson["beats"] if b["id"] in todo) / 1000 * PRICE_PER_1K_CHARS, 3)
-            label = (f"Generar audio · {voice_slug} · {len(todo)} de {len(lesson['beats'])} golpes (≈ ${cost:.2f})" if todo
+            label = (f"Generar audio · {voice_slug} · {len(todo)} de {len(lesson['beats'])} golpes (≈ \\${cost:.2f})" if todo
                      else f"Audio de {voice_slug} al día")
             if st.button(label, disabled=not todo or bool(problems) or changed, type="primary",
                          help="Guarda la narración primero" if changed else None):
@@ -810,7 +810,7 @@ def render() -> None:                                  # pragma: no cover — UI
                                   index=list(R.QUALITIES).index(R.DEFAULT_QUALITY), key="bq")
                 total_chars = sum(s["chars"] for s in summaries if s["id"] in picked)
                 st.caption(f"{len(picked)} lección(es) · ≈ {sum(s['minutes'] for s in summaries if s['id'] in picked):.0f} min de vídeo · "
-                           f"audio ≈ ${total_chars / 1000 * PRICE_PER_1K_CHARS:.2f} como máximo (lo ya generado no se repite)")
+                           f"audio ≈ \\${total_chars / 1000 * PRICE_PER_1K_CHARS:.2f} como máximo (lo ya generado no se repite)")
                 if st.button("Lanzar lote", disabled=not picked or not voice_slug):
                     st.session_state.ms_job = start_job("lote", batch_command(picked, voice_slug, voice_id, bq, tts_model), {},
                                                         STUDIO_DIR, voice_chars=max(1, total_chars))
@@ -920,7 +920,7 @@ def _review_tab(st, board: dict) -> None:             # pragma: no cover — UI
     for row, _ in board["por_revisar"]:
         lesson = lesson_of(row)
         model = voice_model(row)
-        cost = f" · ≈${estimate_cost_usd(lesson):.2f}" if lesson else ""
+        cost = f" · ≈\\${estimate_cost_usd(lesson):.2f}" if lesson else ""
         with st.expander(f"{row['lesson']} · {row['at'][:10]} · {_mins(row)} · voz {model or row.get('voice')}"
                          f"{' · ' + str(row['speed']) + '×' if row.get('speed') else ''}{cost}"):
             _lazy_video(st, STUDIO_DIR / "renders" / row["file"], key=f"rev_{row['file']}")

@@ -1561,6 +1561,14 @@ def script_for_upload(video: dict) -> dict:
     script = (video.get("meta") or {}).get("script_data")
     if script:
         return script
+    # STEP 80 §0: a series video's sidecar names its script; without it the upload saw {} and
+    # hc_c010 went out as «¿Sabías que '' NO significa lo que crees?»
+    script_id = (video.get("meta") or {}).get("script_id")
+    if video.get("type") == "hecho_con_claude" and script_id:
+        try:
+            return series.load(series.DRAFTS_DIR / f"{script_id}.json")
+        except (OSError, ValueError):
+            logger.warning("script_for_upload: no series script %s", script_id)
     for path in (AUDIO_DIR / video["type"] / f"{video['name']}.json", find_script_for(video["path"])):
         try:
             if path and Path(path).is_file():
@@ -2637,13 +2645,14 @@ if page == "Dashboard":
     # ── Money, one line ──────────────────────────────────────────────────
     cost = cost_snapshot()
     if cost["ceiling_usd"]:
-        ceiling_txt = (f'de un techo de ${cost["ceiling_usd"]:.2f} '
+        ceiling_txt = (f'de un techo de &#36;{cost["ceiling_usd"]:.2f} '
                        f'({cost["pct_of_ceiling"]:.0f}%)')
     else:
         ceiling_txt = "sin techo configurado en config.yaml (costs.monthly_ceiling_usd)"
     st.markdown(
-        f'<div class="cost-line">💸 Hoy <strong>${cost["today_usd"]:.4f}</strong>'
-        f' · {cost["month"]} acumulado <strong>${cost["month_usd"]:.2f}</strong>'
+        # STEP 80 §0: «$» as an entity — two of them on a line rendered as LaTeX math
+        f'<div class="cost-line">💸 Hoy <strong>&#36;{cost["today_usd"]:.4f}</strong>'
+        f' · {cost["month"]} acumulado <strong>&#36;{cost["month_usd"]:.2f}</strong>'
         f' {ceiling_txt}</div>', unsafe_allow_html=True)
 
     # ── Money, per video ─────────────────────────────────────────────────
@@ -2655,10 +2664,10 @@ if page == "Dashboard":
         _stats = video_cost_stats(_video_costs)
         _outliers = set(_stats["outliers"])
         with st.expander(
-                f"💸 Costo por video — media ${_stats['mean_usd']:.4f} "
-                f"(OpenAI ${_stats['openai_mean_usd']:.4f} · ElevenLabs "
-                f"${_stats['elevenlabs_mean_usd']:.4f}) · mediana "
-                f"${_stats['median_usd']:.4f} · {_stats['videos']} videos"):
+                f"💸 Costo por video — media \\${_stats['mean_usd']:.4f} "
+                f"(OpenAI \\${_stats['openai_mean_usd']:.4f} · ElevenLabs "
+                f"\\${_stats['elevenlabs_mean_usd']:.4f}) · mediana "
+                f"\\${_stats['median_usd']:.4f} · {_stats['videos']} videos"):
             st.dataframe(
                 [{"video": r["video_id"],
                   "fecha": (r["last_at"] or "")[:16].replace("T", " "),
@@ -3922,7 +3931,7 @@ elif page == "Scheduler":
         # STEP 75 §3: these are paid jobs. Say how many and roughly what they cost, ask,
         # and go through the batch queue (one at a time, survives a restart).
         _est = batch_estimate_usd(videos_per_batch)
-        _cost = f"≈ ${_est:.2f}" if _est is not None else "coste desconocido (sin historial)"
+        _cost = f"≈ \\${_est:.2f}" if _est is not None else "coste desconocido (sin historial)"
         st.caption(f"{videos_per_batch} vídeo(s) · {_cost} según la media de output/costs.")
         _ok = st.checkbox(f"Sí, generar {videos_per_batch} vídeo(s) ({_cost})", key="batch_now_confirm",
                           disabled=not selected_types)

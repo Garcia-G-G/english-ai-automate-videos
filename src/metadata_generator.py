@@ -8,6 +8,7 @@ with platform-specific formatting for TikTok, YouTube, and Instagram.
 import json
 from audio_tags import unmark
 import logging
+import re
 import os
 import random
 from typing import Dict, List, Optional
@@ -66,6 +67,9 @@ TITLE_TEMPLATES = {
     "fill_level": ["Completa la frase: 10 frases, de fácil a experto 📝"],
     "choose_level": ["Elige la correcta: 10 frases, de fácil a experto 🤔"],
     "phrases_level": ["¿Cómo se dice en inglés? 10 frases del día a día 💬"],
+    # «Hecho con Claude»: its scripts carry their own title and caption (STEP 80 §0: without
+    # them it fell to «educational» and went up as «¿Sabías que '' NO significa…»)
+    "hecho_con_claude": ["El error de inglés que delata a un hispanohablante 😬"],
 }
 
 # ── Hashtag strategy ────────────────────────────────────────────────
@@ -146,6 +150,23 @@ def with_site_line(description: str) -> str:
     return f"{body}\n\n{SITE_LINE}" if body else SITE_LINE
 
 
+#: STEP 80 §0: what a title or a description may never carry — empty quotes ('' "" «» ‘’ “”),
+#: a template field left unfilled ({…}) or the script's English marking ([[ ]]).
+_EMPTY_QUOTES = re.compile(r"''|\"\s*\"|«\s*»|‘\s*’|“\s*”|'\s+'")
+_LEFTOVERS = re.compile(r"\{[^}]*\}|\[\[|\]\]")
+
+
+def metadata_problems(text: str) -> List[str]:
+    """Why a title or description must not be published as it is ([] when it may)."""
+    text = text or ""
+    out = []
+    if _EMPTY_QUOTES.search(text):
+        out.append("empty quotes")
+    if _LEFTOVERS.search(text):
+        out.append("unfilled {} or [[ ]]")
+    return out
+
+
 def generate_metadata(script_data: dict, video_type: str, category: str = "") -> dict:
     """Extract or generate video metadata from script data.
 
@@ -155,15 +176,24 @@ def generate_metadata(script_data: dict, video_type: str, category: str = "") ->
     title = script_data.get("video_title", "")
     description = script_data.get("video_description", "")
     hashtags = script_data.get("hashtags", [])
+    if video_type == "hecho_con_claude":                  # the series' own fields (STEP 78 §1)
+        title = title or script_data.get("title", "")
+        description = description or script_data.get("caption", "")
 
     if isinstance(hashtags, str):
         hashtags = [h.strip() for h in hashtags.split() if h.strip()]
 
-    if not title:
+    if not title or metadata_problems(title):
+        if title:
+            logger.warning("metadata: title %r refused (%s); using the template", title, metadata_problems(title))
         title = _build_fallback_title(script_data, video_type)
+        if metadata_problems(title):                      # the last resort never fails the guard
+            title = "Aprende inglés hoy 🦊"
 
-    if not description:
+    if not description or metadata_problems(description):
         description = _build_fallback_description(script_data, video_type, title)
+        if metadata_problems(description):
+            description = "Sígueme para más tips de inglés 🦊"
 
     hashtags = _ensure_hashtags(hashtags, video_type, category)
 
@@ -345,6 +375,10 @@ Return JSON only:
             hashtags = [h.strip().lstrip("#") for h in hashtags.split()]
         result["hashtags"] = [h.lstrip("#") for h in hashtags]
 
+        # STEP 80 §0: a generated title or description with empty quotes or a leftover {} is refused
+        if metadata_problems(result.get("title", "")) or metadata_problems(result.get("description", "")):
+            raise ValueError(f"generated metadata refused: {metadata_problems(result.get('title', ''))}"
+                             f" {metadata_problems(result.get('description', ''))}")
         return result
 
     except Exception as e:
@@ -354,19 +388,24 @@ Return JSON only:
 
 
 def _build_fallback_title(script_data: dict, video_type: str) -> str:
-    """Build title from script content using proven templates."""
-    templates = TITLE_TEMPLATES.get(video_type, TITLE_TEMPLATES["educational"])
-    template = random.choice(templates)
+    """Build title from script content using proven templates.
 
+    STEP 80 §0: a template is only used when every field it names has a value. «¿Sabías que
+    '{word}' NO significa…» with no word went live as «¿Sabías que '' NO significa…»."""
     if video_type == "how_do_you_say":
         return how_do_you_say_title(script_data)
 
     word = (script_data.get("word") or
             (script_data.get("english_phrases", [""])[0] if script_data.get("english_phrases") else "") or "")
-    title_field = script_data.get("title", "")
-
+    word = str(word).strip()
+    title_field = str(script_data.get("title", "") or "").strip()
+    values = {"word": word, "title": title_field}
+    templates = [t for t in TITLE_TEMPLATES.get(video_type, TITLE_TEMPLATES["educational"])
+                 if all(values.get(name) for name in re.findall(r"\{(\w+)\}", t))]
     try:
-        return template.format(word=word, title=title_field)
+        if not templates:
+            raise KeyError("no template can be filled")
+        return random.choice(templates).format(**values)
     except (KeyError, IndexError):
         fallback = (script_data.get("hook") or
                     script_data.get("question") or
