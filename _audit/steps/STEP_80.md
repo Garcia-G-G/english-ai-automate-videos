@@ -27,8 +27,8 @@
 
    Grammar types (choose, fill, true_false_level) drop to the back of the queue. Keep them; don't
    delete them.
-2. **Lessons are parked.** Commit STEP 79 §0 (mensajes), then stop STEP 79. §1–§5 stay written,
-   to be resumed only if long-form numbers change.
+2. **Lessons are done for now.** STEP 79 is complete (9daf122 … 564dc47). No more lesson work
+   until the long-form numbers improve. The 8 re-rendered lessons can be published as they are.
 3. **Never break frame 1.** The full list visible on frame 1 is the trait the winners share. No
    new feature may cover it or delay it.
 
