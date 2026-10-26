@@ -48,6 +48,43 @@
   - stop on failure;
   - no attribution lines.
 
+## §00 — De-esser on every narration (Garcia: "si o si, las s me rompen el oído")
+
+Claude measured this on the device with a cached eleven_v3 narration (13.5 s, «Le escribí esto a mi
+amigo de Nueva York…»), using the ffmpeg 4.4 filters already installed.
+
+| method | HF 5–10 kHz on sibilant frames | HF on non-sibilant frames | body 100 Hz–4 kHz |
+|---|---|---|---|
+| ffmpeg `deesser` (i=0.6) | −14.9 dB | −3.1 dB | −0.85 dB (dulls the voice) |
+| **split-band, 5.5 kHz, thr −28 dBFS, ratio 4** | **−8.7 dB** | **−0.4 dB** | **0.00 dB** |
+
+The split-band chain is the one to use. Apply it to the **voice only**: the stitched narration of
+Shorts, the series and lessons, before mixing SFX and before the final two-pass loudnorm. Apply it
+once, in one function, used by every path:
+
+```
+[voice]acrossover=split=5500:order=4th[lo][hi];
+[hi]acompressor=threshold=T:ratio=4:attack=1:release=60:knee=3:makeup=1[hic];
+[lo][hic]amix=inputs=2:normalize=0
+```
+
+`T` is relative, so TTS level doesn't matter: `T = (integrated LUFS of that narration) − 12 dB`. On
+the test file that is −16.1 LUFS → −28 dBFS.
+
+Rules:
+- One setting in `config.yaml`: `audio.deesser: {enabled: true, split_hz: 5500, below_lufs_db: 12, ratio: 4}`.
+- It runs on cached audio too, so every re-render gets it for $0.
+- Add a measure to the quality gate, with the band math above: HF reduction on sibilant frames
+  ≥ 5 dB and ≤ 12 dB, non-sibilant frames ≤ 1.0 dB, body ≤ 0.3 dB, measured voice-only before the
+  mix. Put the numbers in each sidecar.
+- Tests: synthetic signal (a voiced tone plus "s" bursts of noise at 6–9 kHz). The bursts drop
+  ≥ 5 dB, the tone is unchanged within 0.3 dB, and every path (Shorts, series, lessons) calls the
+  same function.
+- Then **re-render from cache ($0) the 6 series videos waiting in `output/pending/`**, so Garcia
+  doesn't publish them with the harsh s. Same files, same gate.
+- Before/after sample for Garcia's ear (optional, $0): `_audit/incoming/deesser_antes_y_despues.mp3`
+  (original, 1 s of silence, de-essed).
+
 ## §0 — Two visible bugs
 
 1. **Titles with empty quotes are live on YouTube:**
