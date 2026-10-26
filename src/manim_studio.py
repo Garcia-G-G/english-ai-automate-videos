@@ -249,7 +249,10 @@ def start_job(kind: str, argv: list, env: dict, cwd: Path, on_success=None, stud
     status_path, log_path = folder / f"{job_id}.json", folder / f"{job_id}.log"
 
     def write(**fields):
-        status_path.write_text(json.dumps({"id": job_id, "kind": kind, "argv": argv, **fields}, ensure_ascii=False))
+        # atomic: the page (and a test) read this file while the job thread rewrites it
+        tmp = status_path.with_suffix(".json.part")
+        tmp.write_text(json.dumps({"id": job_id, "kind": kind, "argv": argv, **fields}, ensure_ascii=False))
+        os.replace(tmp, status_path)
 
     def run():
         started = time.time()

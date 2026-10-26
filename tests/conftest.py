@@ -167,3 +167,16 @@ def queue_sandbox(tmp_path):
     reaching for content/queue/.
     """
     return tmp_path / "_output" / "queue"
+
+
+@pytest.fixture(autouse=True)
+def _voice_provider_is_elevenlabs_in_tests(monkeypatch):
+    """STEP 80 §1: config.yaml routes voice through OpenRouter. A test of the ElevenLabs path
+    must not depend on that switch, so in tests the provider is ElevenLabs unless the test sets
+    tts_openrouter._settings itself (tests/test_openrouter_tts.py does)."""
+    try:
+        import tts_openrouter
+    except ImportError:
+        return
+    real = tts_openrouter._settings
+    monkeypatch.setattr(tts_openrouter, "_settings", lambda: {**real(), "provider": "elevenlabs"})

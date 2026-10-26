@@ -220,6 +220,12 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0
         words = (_chars_to_words(a["characters"], a["character_start_times_seconds"],
                                  a["character_end_times_seconds"]) if a.get("characters") else None)
         return {"duration": _duration(out_path), "words": words}
+    import tts_openrouter
+    if tts_openrouter.active():
+        # STEP 80 §1: audio only, no timestamps; the plain-convert path carries the routing,
+        # the caps and the cache, and the caller estimates the words as for any plain segment
+        _elevenlabs_with_retry(None, out_path, take=take, **kwargs)
+        return {"duration": _duration(out_path), "words": _local_words(out_path, call["lang"])}
     client = get_client()
 
     from cost_tracker import TTSBudgetExceeded, check_tts_budget, get_tracker
@@ -266,6 +272,17 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0
     if duration <= 0:
         raise RuntimeError(f"Zero-length TTS segment: {call['text'][:60]}")
     return {"duration": duration, "words": words}
+
+
+def _local_words(path: str, lang: str) -> Optional[List[Dict]]:
+    """Word times for a segment that came back without timestamps (OpenRouter, STEP 80 §1): the
+    local whisper, $0. None when it is not installed — the caller then estimates them."""
+    try:
+        import asr_timings
+        return asr_timings._words_from_local(Path(path), (lang or "")[:2] or None)
+    except Exception:                                       # noqa: BLE001 — timings are best effort
+        logger.info("local word times unavailable for %s", path)
+        return None
 
 
 def _chars_to_words(chars: List[str], starts: List[float],

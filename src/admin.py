@@ -2422,9 +2422,19 @@ _STARTED_AT = _ds.once("started_at", lambda: datetime.now().strftime("%H:%M"))
 st.sidebar.markdown('<div class="eu-brand">English <mark>Unlimited</mark></div>'
                     f'<div class="eu-ver">versión {_RUNNING_VERSION} · abierto a las {_STARTED_AT}</div>',
                     unsafe_allow_html=True)
-# STEP 79 §00: what is left on the ElevenLabs plan (a free read, cached a minute).
-st.sidebar.markdown(f'<div class="eu-ver">{voice_credits.header_text(voice_credits.remaining())}</div>',
-                    unsafe_allow_html=True)
+# STEP 79 §00 / STEP 80 §1: what is left on the ElevenLabs plan (a free read, cached a minute)
+# and OpenRouter's spend this month against its cap (from output/costs/).
+def _openrouter_spent():
+    try:
+        import tts_openrouter
+        return tts_openrouter.month_spend(), tts_openrouter._settings()["monthly_usd"]
+    except Exception:                                       # noqa: BLE001 — the header must draw
+        return None, 15.0
+
+
+_or_spent, _or_cap = _openrouter_spent()
+for _line in voice_credits.header_lines(voice_credits.remaining(), _or_spent, _or_cap):
+    st.sidebar.markdown(f'<div class="eu-ver">{_line}</div>', unsafe_allow_html=True)
 
 #: Page key -> (label on screen, Material icon). Keys are what ?page= and the
 #: code use; only the label is translated.

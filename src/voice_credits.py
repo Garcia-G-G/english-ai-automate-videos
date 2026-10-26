@@ -88,6 +88,28 @@ def script_chars(script: Optional[Dict]) -> Optional[int]:
     return None
 
 
+def openrouter_refusal(chars: int, spent: Optional[float] = None, cap: Optional[float] = None) -> Optional[str]:
+    """None when a render voicing `chars` characters fits OpenRouter's monthly cap."""
+    import tts_openrouter
+    s = tts_openrouter._settings()
+    spent = tts_openrouter.month_spend() if spent is None else spent
+    cap = s["monthly_usd"] if cap is None else cap
+    need = tts_openrouter.price_usd(chars, s["model"])
+    if spent + need > cap:
+        return (f"Tope mensual de OpenRouter: este mes van ${spent:.2f} de ${cap:.2f} y este render "
+                f"necesitaría ≈ ${need:.2f}. No se gasta.")
+    return None
+
+
+def header_lines(info: Optional[Dict], openrouter_spent: Optional[float], cap: float) -> list:
+    """The panel header (STEP 80 §1): both balances. Dollars as entities, never LaTeX."""
+    eleven = ("Voz ElevenLabs: no se pudo leer el saldo" if info is None
+              else f"Voz ElevenLabs: {info['remaining']:,} car.".replace(",", "."))
+    router = ("OpenRouter: sin datos" if openrouter_spent is None
+              else f"OpenRouter: &#36;{openrouter_spent:.2f} de &#36;{cap:.0f} este mes")
+    return [eleven, router]
+
+
 class VoiceRefused(RuntimeError):
     """The panel refused to voice a render: not enough characters left on the plan."""
 
@@ -105,6 +127,14 @@ def panel_voice(chars: int, note=lambda message: None, read=None):
     allowed) or None (the balance could not be read: cache only). Raises VoiceRefused when the
     render needs more than remains or would leave less than 5 % of the plan."""
     import voice_lock
+    import tts_openrouter
+    if tts_openrouter.active():                           # STEP 80 §1: OpenRouter's monthly cap decides
+        why = openrouter_refusal(chars)
+        if why:
+            raise VoiceRefused(why)
+        with voice_lock.panel_grant() as token:
+            yield token
+        return
     info = (read or remaining)()
     if info is None:
         note(refusal(chars, None))

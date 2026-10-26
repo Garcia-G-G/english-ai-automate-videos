@@ -63,6 +63,9 @@ PRICING = {
     "eleven_multilingual_v2": {"per_1m_chars": 220.00},
     "eleven_turbo_v2_5": {"per_1m_chars": 110.00},
     "eleven_flash_v2_5": {"per_1m_chars": 110.00},
+    # STEP 80 §1: ElevenLabs through OpenRouter (its own price list)
+    "elevenlabs/eleven-v4": {"per_1m_chars": 80.00},
+    "elevenlabs/eleven-v4-turbo": {"per_1m_chars": 40.00},
 }
 
 #: Per-video TTS budget when config.yaml sets none (costs.per_video_tts_usd).
@@ -114,6 +117,8 @@ def provider_of(api_type: str) -> str:
         return "openai"
     if api_type.startswith("elevenlabs"):
         return "elevenlabs"
+    if api_type.startswith("openrouter"):
+        return "openrouter"
     return "other"
 
 

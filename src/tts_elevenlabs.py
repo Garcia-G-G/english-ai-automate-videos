@@ -398,6 +398,8 @@ def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, take:
     cache_key = tts_cache.key({**kwargs, "endpoint": "convert"}, take)
     if tts_cache.restore(cache_key, output_path) is not None:
         return
+    if _through_openrouter(output_path, take, kwargs):      # STEP 80 §1
+        return
 
     from cost_tracker import check_tts_budget, get_tracker
     text = kwargs.get('text', '')
@@ -422,6 +424,31 @@ def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, take:
         get_tracker().log_elevenlabs_tts(characters=len(text), model=model_id, label="tts_segment")
         tts_cache.store(cache_key, output_path, {**kwargs, "endpoint": "convert"})
         return
+
+
+def _through_openrouter(output_path: str, take: int, kwargs: dict) -> bool:
+    """STEP 80 §1: with config audio.provider «openrouter», the request goes there (its own cache
+    entry, its own caps). ElevenLabs is the fallback only while its plan has more than 5 % left.
+    False: the caller asks ElevenLabs as before."""
+    import tts_openrouter
+    if not tts_openrouter.active():
+        return False
+    import tts_cache
+    model = tts_openrouter._settings()["model"]
+    key = tts_cache.key({**kwargs, "endpoint": "openrouter", "openrouter_model": model}, take)
+    if tts_cache.restore(key, output_path) is not None:
+        return True
+    try:
+        tts_openrouter.speak(kwargs, output_path)
+    except tts_openrouter.OpenRouterRefused as refused:
+        import voice_credits
+        info = voice_credits.remaining()
+        if info is None or voice_credits.refusal(len(kwargs.get("text", "")), info):
+            raise
+        logger.warning("OpenRouter refused (%s); ElevenLabs has %s characters left: using it", refused, info["remaining"])
+        return False
+    tts_cache.store(key, output_path, {**kwargs, "endpoint": "openrouter", "openrouter_model": model})
+    return True
 
 
 def retry_wait(exc: Exception, attempt: int):

@@ -398,8 +398,16 @@ type_categories:
 
 
 audio:
-  # Provider: elevenlabs (primary), openai (fallback)
-  provider: "elevenlabs"
+  # STEP 80 §1: ElevenLabs eleven-v4 through OpenRouter (key: env or the Keychain, service
+  # «english-ai-videos»). ElevenLabs direct is the fallback only while its plan has > 5 % left.
+  provider: "openrouter"
+  openrouter_model: "elevenlabs/eleven-v4"
+  # The voice OpenRouter speaks with. A «premade» or library voice works without BYOK; a cloned
+  # or generated one would spend the same ElevenLabs quota. Garcia, 2026-10-26: a female voice —
+  # Matilda (premade). Its id is OPENROUTER_VOICE_ID in .env (gitignored) or the Keychain.
+  openrouter_voice: {name: "Matilda", category: "premade"}
+  # The v4 delivery cues from the script: laughs, pauses, a beat after a question (tts_openrouter.humanize)
+  humanize_v4: true
 
   # STEP 80 §00: a split-band de-esser on every narration (voice only, before SFX and the final
   # loudnorm): above split_hz, compressed at ratio once louder than (the narration's LUFS − below_lufs_db).
@@ -490,6 +498,10 @@ costs:
   # $0.073, p90 $0.137, max $0.453. STEP 77 §0: 0.30 is Garcia's per-Short budget (0.25
   # would have stopped sy001 at $0.30 and gr004 at $0.28).
   per_video_tts_usd: 0.30
+
+  # STEP 80: OpenRouter (voice + images + clip), enforced: per Short and per calendar month.
+  openrouter_per_short_usd: 0.25
+  openrouter_monthly_usd: 15.00
 
   # STEP 79 §00: the ElevenLabs lock (src/voice_lock.py). Voice is ALWAYS locked except inside
   # the panel's own «Crear video» / «Generar audio» click, within the plan (the panel refuses a
