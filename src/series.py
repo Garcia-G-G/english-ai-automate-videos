@@ -122,7 +122,9 @@ def render_one(style: Optional[str] = None, level: Optional[str] = None, *, prog
     dest.mkdir(parents=True, exist_ok=True)
     final = dest / mp4.name
     shutil.move(str(mp4), final)
+    import video_metadata
     sidecar = {"artifact": final.stem, "video_type": "hecho_con_claude", "script_id": script["id"],
+               "metadata": video_metadata.build(script, "hecho_con_claude"),        # STEP 80 §1b
                "style": script["style"], "level": script["level"], **upload_metadata(script),
                # the house sidecar shape (admin.gate_record): a verdict string and its blocking flags
                "gate": report["gate"], "blocking_flags": report["flags"], "gate_checks": report["checks"],

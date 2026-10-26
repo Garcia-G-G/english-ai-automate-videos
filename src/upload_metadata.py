@@ -42,7 +42,8 @@ def metadata_session_keys(video_name: str) -> tuple:
 
 def resolve_upload_metadata(video_name: str, script: dict, platform: str,
                             video_type: str = "educational",
-                            category: str = "", state: Mapping = None) -> dict:
+                            category: str = "", state: Mapping = None,
+                            generated: dict = None) -> dict:
     """The title/description/hashtags that will actually be PUBLISHED.
 
     ONE resolver for all three upload paths. They used to disagree:
@@ -90,6 +91,14 @@ def resolve_upload_metadata(video_name: str, script: dict, platform: str,
             "hashtags": tags,
             "source": "session",       # surfaced so a dry run can prove it
         }
+
+    # STEP 80 §1b: what the render generated and the review showed, for this platform
+    if generated and generated.get("title"):
+        tags = [t.lstrip("#") for t in (generated.get("hashtags") or {}).get(platform)
+                or (generated.get("hashtags") or {}).get("youtube") or []]
+        return {"title": generated["title"],
+                "description": compose_description(generated.get("description", ""), tags),
+                "hashtags": tags, "source": "sidecar"}
 
     adapted = adapt_for_platform(
         generate_metadata(script, video_type, category), platform)

@@ -1007,6 +1007,8 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                 # The ledger in output/costs/ stays the authoritative record.
                 "cost": tracker.summary() if tracker is not None else None,
                 "script_data": script_data,
+                # STEP 80 §1b: title, description and hashtags, generated at render time
+                "metadata": render_metadata(script_data, video_type, category),
                 "stage_seconds": stage_seconds,
                 "created_at": datetime.now().isoformat()
             }, f, ensure_ascii=False, indent=2)
@@ -1549,6 +1551,80 @@ def _guard_decide(artifact: str, platform: str, manager=None, **content):
     """Ask the idempotency guard before uploading. See upload_guard."""
     from upload_guard import decide
     return decide(artifact, platform, manager=manager, **content)
+
+
+def save_sidecar_metadata(video: dict, metadata: dict) -> None:
+    """Write the edited metadata into the video's sidecar, so «Subir» publishes what was reviewed."""
+    path = Path(video["path"]).with_suffix(".json")
+    data = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    data["metadata"] = metadata
+    tmp = path.with_suffix(".json.part")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    os.replace(tmp, path)
+    (video.setdefault("meta", {}) or {})["metadata"] = metadata
+
+
+def review_metadata_editor(video: dict) -> None:
+    """«Revisar» (STEP 80 §1b): title, description and hashtags already filled in by the render,
+    editable, with «Usar alternativa», «Regenerar» and «Guardar en el vídeo»."""
+    meta = (video.get("meta") or {}).get("metadata")
+    script = script_for_upload(video)
+    if not meta:
+        meta = render_metadata(script, video["type"], (script.get("_meta") or {}).get("category", "")) or {}
+    if not meta.get("title"):
+        return
+    name = video["name"]
+    keys = {k: f"rv_{k}_{name}" for k in ("title", "desc", "tags")}
+    staged = st.session_state.pop(f"rv_pending_{name}", None)
+    if keys["title"] not in st.session_state or staged:
+        src = staged or {"title": meta["title"], "desc": meta.get("description", ""),
+                         "tags": " ".join((meta.get("hashtags") or {}).get("youtube") or [])}
+        for k in keys:
+            st.session_state[keys[k]] = src[k]
+    with st.expander("📝 Título, descripción y hashtags", expanded=False):
+        st.caption("Generados al renderizar" + (" con IA" if meta.get("source") == "llm" else " (plantilla)"))
+        st.text_input("Título", key=keys["title"])
+        st.text_area("Descripción", key=keys["desc"], height=160)
+        st.text_input("Hashtags (YouTube)", key=keys["tags"])
+        for k, alt in enumerate(meta.get("alternatives") or []):
+            if st.button(f"Usar alternativa: {alt}", key=f"rv_alt_{k}_{name}"):
+                st.session_state[f"rv_pending_{name}"] = {"title": alt, "desc": st.session_state[keys["desc"]],
+                                                          "tags": st.session_state[keys["tags"]]}
+                st.rerun()
+        c1, c2 = st.columns(2)
+        if c1.button("🔁 Regenerar", key=f"rv_regen_{name}", help="Una llamada a la IA para YouTube"):
+            try:
+                from metadata_generator import regenerate_for_platform
+                r = regenerate_for_platform(script, "youtube", video["type"])
+                st.session_state[f"rv_pending_{name}"] = {
+                    "title": r.get("title", ""), "desc": r.get("description", ""),
+                    "tags": " ".join(f"#{t.lstrip('#')}" for t in r.get("hashtags", []))}
+                st.rerun()
+            except Exception as e:                          # noqa: BLE001 — shown, not raised
+                st.error(f"No se pudo regenerar: {e}")
+        if c2.button("💾 Guardar en el vídeo", key=f"rv_save_{name}"):
+            from metadata_generator import metadata_problems
+            title, desc = st.session_state[keys["title"]].strip(), st.session_state[keys["desc"]].strip()
+            problems = metadata_problems(title) + metadata_problems(desc)
+            if problems:
+                st.error("No se guardó: " + ", ".join(problems))
+            else:
+                tags = st.session_state[keys["tags"]].split()
+                hashtags = dict(meta.get("hashtags") or {})
+                hashtags["youtube"] = tags
+                save_sidecar_metadata(video, {**meta, "title": title, "description": desc, "hashtags": hashtags,
+                                              "source": "edited"})
+                st.success("Guardado: «Subir» publicará esto.")
+
+
+def render_metadata(script: Optional[dict], video_type: str, category: str = "") -> Optional[dict]:
+    """STEP 80 §1b: the video's metadata, built once at render time (never blocks the render)."""
+    try:
+        import video_metadata
+        return video_metadata.build(script or {}, video_type, category or "")
+    except Exception:                                       # noqa: BLE001 — a render must not fail on copy
+        logger.exception("render metadata failed; the upload page builds it")
+        return None
 
 
 def script_for_upload(video: dict) -> dict:
@@ -3206,19 +3282,8 @@ elif page == "Review":
                         elif video["type"] == "true_false":
                             st.write(f"**Statement:** {script.get('statement', 'N/A')}")
                         st.write(f"**Script:** {script.get('full_script', 'N/A')[:200]}...")
-                    # Show generated metadata preview
-                    try:
-                        from metadata_generator import generate_metadata
-                        category = script.get("_meta", {}).get("category", "")
-                        meta = generate_metadata(script, video["type"], category)
-                        st.markdown("---")
-                        st.markdown("**Generated Metadata:**")
-                        st.markdown(f"📌 **Title:** {meta['title']}")
-                        desc_preview = meta['description'].replace('\n', ' ')[:200]
-                        st.markdown(f"📝 **Description:** {desc_preview}...")
-                        st.markdown(f"🏷️ **Hashtags:** {' '.join(meta['hashtags'][:5])}")
-                    except ImportError:
-                        pass
+                # STEP 80 §1b: the metadata the render generated, editable here
+                review_metadata_editor(video)
                 if video["path"].exists():
                     lazy_video(video["path"], f"review_{video['path'].name}",
                                open_now=(idx == 0))
@@ -3454,6 +3519,11 @@ elif page == "Upload":
                     tags_key = f"meta_tags_{video['name']}"
                     pending_key = f"_meta_pending_{video['name']}"
 
+                    # STEP 80 §1b: start from what the render generated (sidecar «metadata»)
+                    generated = (video.get("meta") or {}).get("metadata") or {}
+                    if generated.get("title"):
+                        meta = {"title": generated["title"], "description": generated.get("description", ""),
+                                "hashtags": (generated.get("hashtags") or {}).get("youtube") or meta["hashtags"]}
                     if title_key not in st.session_state:
                         st.session_state[title_key] = meta["title"]
                         st.session_state[desc_key] = meta["description"]
@@ -3486,7 +3556,15 @@ elif page == "Upload":
                         st.text_area("Description", key=desc_key, height=80)
                         st.text_input("Hashtags", key=tags_key)
 
-                        # Platform regeneration buttons
+                        # STEP 80 §1b: the two other titles the render proposed
+                        for k, alt in enumerate(generated.get("alternatives") or []):
+                            if st.button(f"Usar alternativa: {alt}", key=f"alt_{k}_{video['name']}"):
+                                st.session_state[pending_key] = {
+                                    "title": alt, "description": st.session_state.get(desc_key, ""),
+                                    "hashtags": st.session_state.get(tags_key, "")}
+                                st.rerun()
+
+                        # Platform regeneration buttons («Regenerar»)
                         regen_cols = st.columns(3)
                         for i, (icon, pname, pkey) in enumerate([
                             ("🎵", "TikTok", "tiktok"),
@@ -3543,7 +3621,7 @@ elif page == "Upload":
                             _resolved = resolve_upload_metadata(
                                 video["name"], script, "", 
                                 video.get("type", "educational"), category,
-                                st.session_state,
+                                st.session_state, generated=(video.get("meta") or {}).get("metadata"),
                             )
                             vid_title = _resolved["title"]
                             vid_desc = _resolved["description"]
@@ -3652,7 +3730,8 @@ elif page == "Upload":
                                  help="Muestra el MP4 en Finder y copia el texto de TikTok"):
                         _tk = resolve_upload_metadata(video["name"], script, "tiktok",
                                                       video.get("type", "educational"), category,
-                                                      st.session_state)
+                                                      st.session_state,
+                                                      generated=(video.get("meta") or {}).get("metadata"))
                         try:
                             prepare_for_tiktok(video["path"], tiktok_caption(
                                 _tk["title"], _tk["description"], _tk["hashtags"]))
@@ -3666,7 +3745,8 @@ elif page == "Upload":
                                    width="stretch", help="Registra que lo subiste a TikTok desde la app"):
                         _tk = resolve_upload_metadata(video["name"], script, "tiktok",
                                                       video.get("type", "educational"), category,
-                                                      st.session_state)
+                                                      st.session_state,
+                                                      generated=(video.get("meta") or {}).get("metadata"))
                         try:
                             record_manual_tiktok(video["name"], video["path"], tiktok_caption(
                                 _tk["title"], _tk["description"], _tk["hashtags"]))
@@ -3716,7 +3796,7 @@ elif page == "Upload":
                             adapted = resolve_upload_metadata(
                                 video["name"], script, pkey,
                                 video.get("type", "educational"), category,
-                                st.session_state,
+                                st.session_state, generated=(video.get("meta") or {}).get("metadata"),
                             )
                             # No duplicate override in bulk: that is a per-video decision.
                             _v = _guard_decide(video["name"], pkey, manager=manager,
