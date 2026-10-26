@@ -126,7 +126,7 @@ def render_one(style: Optional[str] = None, level: Optional[str] = None, *, prog
                "style": script["style"], "level": script["level"], **upload_metadata(script),
                # the house sidecar shape (admin.gate_record): a verdict string and its blocking flags
                "gate": report["gate"], "blocking_flags": report["flags"], "gate_checks": report["checks"],
-               "tts_usd": info.get("tts_usd", 0.0), "duration": info["duration"],
+               "tts_usd": info.get("tts_usd", 0.0), "duration": info["duration"], "deesser": info.get("deesser"),
                "outro_variant": info["outro_variant"]}
     final.with_suffix(".json").write_text(json.dumps(sidecar, ensure_ascii=False, indent=1), encoding="utf-8")
     if report["gate"] == "PASS":

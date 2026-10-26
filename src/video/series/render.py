@@ -78,6 +78,7 @@ def render_series(script: Dict, out_mp4, work_dir, *, silent: bool = False, seco
         tl = estimated_timeline(script)
         narration = np.zeros(int(round(tl["duration"] * rate)))
         tts_usd = 0.0
+        de = None
     else:
         tl = B.voice_timeline(script, work_dir)
         tts_usd = tl.get("tts_usd", 0.0)
@@ -86,7 +87,7 @@ def render_series(script: Dict, out_mp4, work_dir, *, silent: bool = False, seco
             {"id": f"beat_{b['i']}", "start": b["start"], "end": b["end"], "text": b["text"]} for b in tl["beats"]]}),
             encoding="utf-8")
         levelled = work_dir / f"{script['id']}.narration.wav"
-        loudness.prepare_narration(tl["audio"], data_json, levelled)     # −14 LUFS, segments levelled
+        de = loudness.prepare_narration(tl["audio"], data_json, levelled)["deesser"]   # de-essed, −14 LUFS, levelled
         narration = loudness.decode(levelled)
     voice_s = narration.size / rate
 
@@ -119,6 +120,6 @@ def render_series(script: Dict, out_mp4, work_dir, *, silent: bool = False, seco
                         workers=workers if workers is not None else render_workers())
     info = {"id": script["id"], "style": script["style"], "level": script["level"],
             "duration": round(duration, 3), "voice_seconds": round(voice_s, 3), "tts_usd": tts_usd,
-            "outro_variant": variant["id"], "timeline": tl, "silent": silent}
+            "outro_variant": variant["id"], "timeline": tl, "silent": silent, "deesser": de}
     out_mp4.with_suffix(".json").write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
     return info

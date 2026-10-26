@@ -20,10 +20,22 @@ class StaleAudioError(RuntimeError):
     """The narration changed after the audio was generated — regenerate it."""
 
 
+def _deesser():
+    """src/deesser.py (STEP 80 §00): the one de-esser every narration path uses."""
+    import sys
+    src = str(Path(__file__).resolve().parents[2] / "src")
+    if src not in sys.path:
+        sys.path.insert(0, src)
+    import deesser
+    return deesser
+
+
 class PrerecordedService(SpeechService):
-    def __init__(self, folder, **kwargs):
+    def __init__(self, folder, deess=True, **kwargs):
         super().__init__(**kwargs)
         self.folder = Path(folder)
+        self.deess = deess                       # STEP 80 §00: the voice is de-essed into the cache
+        self.deesser = {}                        # beat id -> the de-esser's measure
         manifest = json.loads((self.folder / "manifest.json").read_text(encoding="utf-8"))
         self.voice = manifest["voice"]
         self.by_id = {b["id"]: b for b in manifest["beats"]}
@@ -49,17 +61,30 @@ class PrerecordedService(SpeechService):
         mp3_bytes = (self.folder / beat["mp3"]).read_bytes()
         words_bytes = (self.folder / beat["words"]).read_bytes()
         digest = hashlib.sha1(mp3_bytes + b"\0" + words_bytes).hexdigest()[:12]
+        de_cfg = _deesser().settings() if self.deess else {"enabled": False}
         input_data = {"service": "prerecorded", "voice": self.voice, "folder": str(self.folder),
-                      "id": beat_id, "input_text": " ".join(text.split()), "audio": digest,
+                      "id": beat_id, "input_text": " ".join(text.split()), "audio": digest, "deesser": de_cfg,
                       "model": beat.get("model"), "shape": beat.get("shape"),   # one-request vs stitched, never mixed
                       "speed": beat.get("speed"), "language": beat.get("language")}
         cached = self.get_cached_result(input_data, cache_dir)
         if cached is not None and (cache_dir / cached["original_audio"]).exists():
+            saved = cache_dir / (cached["original_audio"] + ".deesser.json")
+            if saved.exists():
+                self.deesser[beat_id] = json.loads(saved.read_text(encoding="utf-8"))
             return cached
 
         lesson_id = self.folder.parent.name
-        audio_name = f"{lesson_id}-{self.voice}-{beat_id}-{digest}.mp3"
-        (cache_dir / audio_name).write_bytes(mp3_bytes)
+        measure = None
+        if de_cfg.get("enabled"):
+            # the voice alone, before Manim mixes the effects and before the final loudnorm;
+            # a wav, so no encoder padding moves the word times
+            audio_name = f"{lesson_id}-{self.voice}-{beat_id}-{digest}-deessed.wav"
+            measure = _deesser().deess(self.folder / beat["mp3"], cache_dir / audio_name, de_cfg)
+            (cache_dir / (audio_name + ".deesser.json")).write_text(json.dumps(measure), encoding="utf-8")
+            self.deesser[beat_id] = measure
+        else:
+            audio_name = f"{lesson_id}-{self.voice}-{beat_id}-{digest}.mp3"
+            (cache_dir / audio_name).write_bytes(mp3_bytes)
         words = json.loads(words_bytes.decode("utf-8"))
         return {"input_text": text, "input_data": input_data, "original_audio": audio_name,
                 "word_boundaries": word_boundaries(plain, words)}
@@ -94,7 +119,7 @@ class StillsService(SpeechService):
         self.beats = {b["id"]: b for b in (lesson or {}).get("beats", [])}
         self.recorded = None
         if folder is not None and (Path(folder) / "manifest.json").exists():
-            self.recorded = PrerecordedService(folder, **kwargs)
+            self.recorded = PrerecordedService(folder, deess=False, **kwargs)     # a still has no sound
         self.estimated = []
 
     def generate_from_text(self, text, cache_dir=None, path=None, beat_id=None, **kwargs):

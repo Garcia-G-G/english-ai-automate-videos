@@ -977,6 +977,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             "blocking_flags": fin.get("blocking_flags", []),
             "outro_appended": bool(fin.get("outro_appended")),
             "outro_variant": fin.get("outro_variant"),
+            "deesser": fin.get("deesser"),              # STEP 80 §00: the voice's de-esser measure
         }
         update_job(job_id, current_step=f"Gate: {fin.get('gate')}", progress=95,
                    **verdict_record)

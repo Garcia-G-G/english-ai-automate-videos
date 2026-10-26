@@ -866,10 +866,14 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
 
     # STEP 75 §5: the rendered audio, as uploaded: −14 ±1 LUFS, TP ≤ −1 dBTP, spread ≤ 3 dB.
     loud = _loudness_check(video_path, audio_json_path)
-    if loud and loud["flags"]:
-        logger.warning("QA gate REJECTED %s: %s — no outro appended", video_path.name, loud["flags"])
+    # STEP 80 §00: the de-esser, measured on the voice alone before the mix (render_video left it)
+    de = _deesser_measure(video_path)
+    de_flags = deesser_flags(de)
+    if (loud and loud["flags"]) or de_flags:
+        flags = (loud["flags"] if loud else []) + de_flags
+        logger.warning("QA gate REJECTED %s: %s — no outro appended", video_path.name, flags)
         return {"video": str(video_path), "gate": "REJECT", "outro_appended": False,
-                "blocking_flags": loud["flags"], "loudness": loud}
+                "blocking_flags": flags, "loudness": loud, "deesser": de}
 
     # THE ARTIFACT KEEPS ITS NAME. append_outro defaults to writing
     # <name>_with_outro.mp4, which would change the stem — and the stem is the
@@ -888,11 +892,30 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
               "outro_variant": variant["id"], "seam": seam}
     if loud:
         result["loudness"] = loud
+    if de:
+        result["deesser"] = de
     if final_check:
         from qa_gate import probe_duration
         final_check["measured_final_seconds"] = probe_duration(final)
         result["final_duration"] = final_check
     return result
+
+
+def deesser_flags(de: Optional[Dict]) -> list:
+    import deesser
+    return deesser.flags(de) if de else []
+
+
+def _deesser_measure(video_path: Path) -> Optional[Dict]:
+    """The de-esser's measure render_video's narration left beside the video (read once, removed)."""
+    import loudness
+    path = loudness.deesser_path(Path(video_path).with_name(f".{Path(video_path).stem}.narration.wav"))
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    finally:
+        path.unlink(missing_ok=True)
 
 
 def _loudness_check(video_path: Path, audio_json_path) -> Optional[Dict]:

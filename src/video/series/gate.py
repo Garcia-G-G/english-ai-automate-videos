@@ -2,6 +2,7 @@
 
     duration     25–60 s, outro included (beats.DURATION_RANGE)
     loudness     −14 LUFS ± 1, true peak ≤ −1 dBTP (loudness.gate, the notebook Shorts' own)
+    deesser      the voice's sibilants down 5–12 dB, other frames ≤ 1.0 dB, body ≤ 0.3 dB (STEP 80 §00)
     english      every [[English]] phrase heard in the transcript, where its beat is (the local
                  whisper, $0): its words in order, in a run of consecutive words, within
                  HEARD_WINDOW of the beat; one miss allowed per four words
@@ -130,6 +131,11 @@ def check(script: Dict, mp4, info: Dict, narration_wav: Optional[Path] = None, s
     loud = loudness.gate(mp4)
     checks["loudness"] = {k: loud.get(k) for k in ("I", "TP", "LRA")}
     flags += [f for f in loud.get("flags", []) if not f.startswith("spread")]
+
+    # STEP 80 §00: the de-esser, measured on the voice alone before the mix
+    import deesser
+    checks["deesser"] = info.get("deesser")
+    flags += deesser.flags(info.get("deesser"))
 
     source = narration_wav or timeline.get("audio") or mp4
     if transcribe is None:

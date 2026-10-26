@@ -401,6 +401,10 @@ audio:
   # Provider: elevenlabs (primary), openai (fallback)
   provider: "elevenlabs"
 
+  # STEP 80 §00: a split-band de-esser on every narration (voice only, before SFX and the final
+  # loudnorm): above split_hz, compressed at ratio once louder than (the narration's LUFS − below_lufs_db).
+  deesser: {enabled: true, split_hz: 5500, below_lufs_db: 12, ratio: 4}
+
   # Voice settings for ElevenLabs
   voice_id: "default"
   model: "eleven_v3"

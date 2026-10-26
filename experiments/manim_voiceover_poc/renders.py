@@ -214,15 +214,19 @@ LUFS_TARGET, LUFS_TOLERANCE = -14.0, 1.0
 
 
 def lesson_gate(mp4: Path, timeline: dict) -> dict:
-    """The lesson's gate on a registered render (STEP 79 §3, §5): the sync report, −14 LUFS ± 1
-    and no still stretch over STILL_MAX_S. {gate: PASS | REJECT, flags, checks}. The collision
+    """The lesson's gate on a registered render (STEP 79 §3, §5): the sync report, −14 LUFS ± 1,
+    no still stretch over STILL_MAX_S, and the voice's de-esser measure (STEP 80 §00). {gate: PASS | REJECT, flags, checks}. The collision
     checker runs on the stills (tools/lesson_stills.py), not on the video."""
     src_dir = str(HERE.parents[1] / "src")
     if src_dir not in sys.path:
         sys.path.insert(0, src_dir)
     import loudness
     import stillness
+    import deesser
     flags, checks = [], {}
+    de = (timeline.get("deesser") or {}).get("combined")
+    checks["deesser"] = de
+    flags += deesser.flags(de)                                # STEP 80 §00, on the voice before the mix
     sync = sync_problems(timeline)
     checks["sync"] = sync
     flags += [f"sync: {line}" for line in sync]

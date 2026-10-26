@@ -426,7 +426,8 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             self.set_speech_service(self.service)
             self.arm_stills()
         else:
-            self.set_speech_service(PrerecordedService(voice_dir))
+            self.service = PrerecordedService(voice_dir)
+            self.set_speech_service(self.service)
         manifest_path = voice_dir / "manifest.json" if voice_dir else None
         manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path and manifest_path.exists() else {"beats": []}
         self.word_files = {b["id"]: voice_dir / b["words"] for b in manifest["beats"]}
@@ -465,11 +466,18 @@ class Lesson(VoiceoverScene, MovingCameraScene):
             print(f"\n{bar}\nOUT OF SYNC: {len(report['late'])} cue(s) start more than {L.MAX_CUE_LAG} s after the "
                   f"word they animate on\n" + "\n".join(lines) + f"\n{bar}\n", flush=True)
 
+    def deesser_report(self):
+        """STEP 80 §00: each beat's de-esser measure and their combination, for the lesson gate."""
+        beats = dict(getattr(getattr(self, "service", None), "deesser", None) or {})
+        import voices
+        return {"beats": beats, "combined": voices._deesser().combine(list(beats.values()))}
+
     def write_timeline(self):
         out = Path(os.environ.get("TIMELINE_OUT", HERE / "media" / "timeline" / f"{self.lesson['id']}.json"))
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps({"lesson": self.lesson["id"], "theme": THEME, "sfx": SFX_ON,
                                    "duration": round(float(self.renderer.time), 2), "beats": self.timeline,
+                                   "deesser": self.deesser_report(),
                                    "effects": self.effects, "cues": self.cues,
                                    "sync": {k: v for k, v in L.sync_report(self.cues).items() if k != "late"}},
                                   ensure_ascii=False, indent=1))

@@ -201,11 +201,26 @@ def measure(path) -> Dict[str, float]:
     return {"I": num("I"), "TP": num("Peak"), "LRA": num("LRA")}
 
 
+def deesser_path(narration_path) -> Path:
+    """Where prepare_narration leaves the de-esser's measure for a narration."""
+    narration_path = Path(narration_path)
+    return narration_path.with_name(narration_path.stem + ".deesser.json")
+
+
 def prepare_narration(audio_path, data_path, out_path) -> Dict:
-    """Level the segments of `audio_path`, normalise to −14 LUFS, write `out_path` (wav)."""
+    """De-ess the voice (STEP 80 §00), level the segments of `audio_path`, normalise to −14 LUFS,
+    write `out_path` (wav). The de-esser's measure is in the result and beside `out_path`
+    (`deesser_path`), where the gates read it."""
+    import deesser
     out_path = Path(out_path)
     segments = json.loads(Path(data_path).read_text(encoding="utf-8")).get("segments") or []
-    samples = decode(audio_path)
+    deessed = out_path.with_name(out_path.stem + ".deessed.wav")
+    try:
+        de = deesser.deess(audio_path, deessed)
+        samples = decode(deessed)
+    finally:
+        deessed.unlink(missing_ok=True)
+    deesser_path(out_path).write_text(json.dumps(de), encoding="utf-8")
     before = segment_levels(samples, segments)
     leveled, gains = level_segments(samples, segments)
     peak = float(np.max(np.abs(leveled))) if leveled.size else 0.0
@@ -221,7 +236,7 @@ def prepare_narration(audio_path, data_path, out_path) -> Dict:
     if abs(result.size - samples.size) > int(0.01 * RATE):
         raise RuntimeError(f"loudness pass changed the length: {samples.size} -> {result.size} samples")
     after = segment_levels(result, segments)
-    info = {"spread_before": spread(before), "spread_after": spread(after), "gains": gains,
+    info = {"deesser": de, "spread_before": spread(before), "spread_after": spread(after), "gains": gains,
             "loudnorm": {k: report.get(k) for k in ("input_i", "input_tp", "output_i", "output_tp",
                                                     "output_lra", "normalization_type")},
             "samples": [samples.size, result.size]}

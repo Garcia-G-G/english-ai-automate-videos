@@ -67,7 +67,7 @@ WITH_PAUSE = "Primera pregunta. Piénsalo. <bookmark mark='p0'/>Es <bookmark mar
 
 
 def run(v, folder, cache, text):
-    svc = v.PrerecordedService(folder, cache_dir=str(cache))
+    svc = v.PrerecordedService(folder, deess=False, cache_dir=str(cache))   # fake mp3 bytes: the keys, not the sound (STEP 80 §00 is tested in test_deesser)
     return svc, svc.generate_from_text(text, beat_id="b26")
 
 
