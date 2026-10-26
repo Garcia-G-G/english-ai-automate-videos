@@ -125,6 +125,63 @@ Rules:
   $15 este mes».
 - **Tests.** Mock the HTTP layer. No real call in tests.
 
+## §1b — Title, description and hashtags generated again, automatically, for every video
+
+Garcia wants it back. Today `metadata_generator.generate_metadata` only copies the script's
+`video_title` / `video_description` / `hashtags`. Its fallbacks are weak, and one of them is the
+empty-quotes bug in §0: `'{word}'`. The LLM path (`regenerate_for_platform`, gpt-4o-mini) runs only
+on a manual button.
+
+**Generate at render time, into the sidecar, editable in «Revisar», with one call per video.**
+
+1. **Title: the data decides.**
+   - `how_do_you_say`: keep exactly `how_do_you_say_title()`, which gives «¿Cómo se dice(n)
+     [CATEGORÍA] en inglés? + emoji». That is the winning formula; the LLM does not touch it.
+   - `phrases_level` and the series: use the script's title if it exists.
+   - Other types: the LLM proposes 3 titles and the code picks one by rules:
+     - ≤ 70 characters;
+     - one emoji at the end;
+     - it contains the key Spanish search phrase («en inglés», «cómo se dice», «cómo decir»…);
+     - no clickbait like «Solo el 10 %…»;
+     - no empty quotes.
+
+     Keep the other 2 in the sidecar as alternatives the panel can swap in.
+2. **Description, for search and retention.** Built by the LLM, then checked by code. In order:
+   - a first line of ≤ 120 characters that promises the payoff;
+   - the content itself as a searchable list, for example «Manzana = apple · Pera = pear · …» for
+     `how_do_you_say`, the phrases for `phrases_level`, or «Se dice: … / No: …» for the series;
+   - one question that invites a comment («¿Cuántas sabías? Dímelo en comentarios»);
+   - the existing `with_site_line` (learningroutes.com).
+
+   The code checks that every listed word or phrase is really in the script. If not, drop the
+   list and use a deterministic one built from the script.
+3. **Hashtags.**
+   - **YouTube:** 3–5 in total, plus `#Shorts`, using the existing tier pool. Order: the topic tag
+     (`#vocabularioeningles`, `#[tema]eningles`), broad (`#aprenderingles`, `#inglesfacil`),
+     audience (`#inglesparahispanohablantes`), then `#englishunlimited`.
+   - **TikTok / Instagram / Facebook:** 4–5, adapted through the existing `adapt_for_platform`
+     and composed once by `compose_description`. That rule stays.
+4. **Model and cost.** Use OpenAI `gpt-4o-mini`, already in the code and logged by the cost
+   tracker, or an OpenRouter equivalent if cheaper. It costs fractions of a cent per video. It is
+   called only inside a render Garcia launched, so it counts under the panel permission. Every
+   failure falls back to the deterministic template, so it never blocks a video.
+5. **Guards, applied to every title and description before the sidecar is written:**
+   - no empty quotes, no stray `{}` or `[[ ]]`;
+   - platform length limits;
+   - no English-only title for the Spanish audience;
+   - no duplicate of a title already in `output/published/ledger.jsonl`.
+6. **The panel.** «Revisar» shows title, description and hashtags already filled in, editable, with
+   «Regenerar» (the existing per-platform button) and «Usar alternativa».
+7. **Tests.** The LLM is mocked. Test:
+   - the `how_do_you_say` title is unchanged;
+   - the guards reject `''`, `{}` and over-length;
+   - the description list matches the script;
+   - the fallback works with the LLM down;
+   - hashtags are composed exactly once per platform.
+
+**Backfill ($0).** For the 6 series videos in `output/pending/`, write deterministic metadata now
+(no LLM call); the LLM can refine it later from the panel.
+
 ## §2 — Performance page, and the queue ordered by what works
 
 1. **New panel page «Rendimiento».**
