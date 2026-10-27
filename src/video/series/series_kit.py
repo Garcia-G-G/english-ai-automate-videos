@@ -278,11 +278,11 @@ OUTRO_ANSWER_AT = 0.0                 # STEP 80: the answer stays on from the re
 OUTRO_ANSWER_W = 760                # centred: it ends left of the rail's x 940
 
 
-def outro_frame(t: float, variant: Dict, answer: str) -> np.ndarray:
+def outro_frame(t: float, variant: Dict, answer: str, next_line: Optional[str] = None) -> np.ndarray:
     """One outro frame (t from the outro's start): video.outro's card and Bubi, then, after
     OUTRO_ANSWER_AT, «¿Acertaste?» and the answer, small, under the card."""
     from .. import outro as O
-    base = Image.fromarray(_outro_fn(variant["id"])(t)).convert("RGBA")
+    base = Image.fromarray(_outro_fn(variant["id"], next_line)(t)).convert("RGBA")
     if t >= OUTRO_ANSWER_AT:
         a = clamp01((t - OUTRO_ANSWER_AT) / 0.3)
         y = outro_answer_y()
@@ -307,10 +307,10 @@ def outro_answer_box(answer: str) -> Box:
 
 
 @lru_cache(maxsize=4)
-def _outro_fn(variant_id: str):
+def _outro_fn(variant_id: str, next_line: Optional[str] = None):
     from .. import outro as O
     variant = next(v for v in O.load_variants()["variants"] if v["id"] == variant_id)
-    return O._make_frame_fn(variant)
+    return O._make_frame_fn(variant, next_line)
 
 
 # ── marks drawn on: a ring and an arrow, stroke by stroke (the notebook kit's 4× painter) ──

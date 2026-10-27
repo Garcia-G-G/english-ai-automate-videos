@@ -881,7 +881,14 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
     # upload_guard). A finalisation step must not rename the thing the
     # publication record identifies, so the outro'd file replaces the original.
     tmp_out = str(video_path).replace(".mp4", ".outro.tmp.mp4")
-    append_outro(str(video_path), variant, output_path=tmp_out)
+    # STEP 80 §6: the outro names the queue's next topic of the same type
+    from video.outro import FOLLOW, next_step
+    try:
+        _script = json.loads(Path(audio_json_path).read_text(encoding="utf-8"))
+        next_line = next_step(_script.get("type") or "", _script)
+    except (OSError, ValueError):
+        next_line = FOLLOW
+    append_outro(str(video_path), variant, output_path=tmp_out, next_line=next_line)
     os.replace(tmp_out, str(video_path))
     final = str(video_path)
     seam = measure_seam(final, seam_t) if seam_t else None
@@ -889,7 +896,7 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
     # Logged so a later A/B read can attribute performance to copy.
     logger.info("outro variant %s appended to %s", variant["id"], final)
     result = {"video": final, "gate": "PASS", "outro_appended": True,
-              "outro_variant": variant["id"], "seam": seam}
+              "outro_variant": variant["id"], "outro_next": next_line, "seam": seam}
     if loud:
         result["loudness"] = loud
     if de:

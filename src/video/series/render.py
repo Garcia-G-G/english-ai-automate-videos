@@ -114,6 +114,7 @@ def render_series(script: Dict, out_mp4, work_dir, *, silent: bool = False, seco
     loudness._write_wav(audio, wav)
 
     answer = script["challenge"]["answer"]
+    next_line = O.next_step("hecho_con_claude", script)         # STEP 80 §6: «Mañana: …»
     challenge_box = dict(style.text_boxes(script)).get("challenge")
 
     def frame_at(t: float) -> np.ndarray:
@@ -124,13 +125,13 @@ def render_series(script: Dict, out_mp4, work_dir, *, silent: bool = False, seco
             if challenge_box is not None:
                 K.after_challenge(img, t - voice_s, challenge_box, answer)
             return np.asarray(img.convert("RGB"))
-        return K.outro_frame(t - voice_s - K.AFTER_S, variant, answer)
+        return K.outro_frame(t - voice_s - K.AFTER_S, variant, answer, next_line)
 
     render_video_ffmpeg(frame_at, str(wav), str(out_mp4), duration,
                         workers=workers if workers is not None else render_workers())
     info = {"id": script["id"], "style": script["style"], "level": script["level"],
             "duration": round(duration, 3), "voice_seconds": round(voice_s, 3), "tts_usd": tts_usd,
             "reveal_at": round(reveal_t, 3),
-            "outro_variant": variant["id"], "timeline": tl, "silent": silent, "deesser": de}
+            "outro_variant": variant["id"], "outro_next": next_line, "timeline": tl, "silent": silent, "deesser": de}
     out_mp4.with_suffix(".json").write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
     return info

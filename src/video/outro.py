@@ -45,7 +45,7 @@ OUTRO_DURATION = 4.0
 #: STEP 62 §4: the brand sticker card on sand. Colours and faces come from brand.json.
 #: STEP 71 (brand v3, mock_cierre_short.png): Bubi waving stands on the card's top edge.
 SYMBOL = ROOT / "assets" / "branding" / "english-unlimited" / "simbolo_512.png"
-CARD_W, CARD_H = 900, 520
+CARD_W, CARD_H = 784, 520           # STEP 80 §6: x 148-932, clear of the Shorts button rail (x > 940)
 CARD_RADIUS = 30
 CARD_OUTLINE = 7
 CARD_DY = 60                       # the card's centre sits this far below the frame's
@@ -64,6 +64,15 @@ ENTER_FROM = 520
 WAVE_STEP = 0.2
 WAVE_SWINGS = 6
 WAVE_DEG = 6.0
+
+#: STEP 80 §6: the v3 logo's wordmark over Bubi, the next step from the queue, «Link en la bio».
+LOGO = ROOT / "assets" / "branding" / "english-unlimited" / "logo_horizontal.png"
+WORDMARK_FROM_X = 520              # logo_horizontal: Bubi left of this x, «English Unlimited» right
+WORDMARK_W, WORDMARK_TOP = 560, 190
+NEXT_TOP, NEXT_W = 350, 760        # «Mañana:» and the next topic, ending above Bubi's head (~y 535)
+FOLLOW = "Síguenos para el siguiente"
+LINK = "Link en la bio"
+_ARTICLES = ("los ", "las ", "el ", "la ")
 
 
 # ── copy ─────────────────────────────────────────────────────────────
@@ -90,6 +99,85 @@ def select_variant(seed: Optional[str] = None) -> Dict:
     return chosen
 
 
+# ── the next step (STEP 80 §6) ───────────────────────────────────────
+
+def _next_phrase(video_type: str, script: Dict) -> str:
+    """How the next script is announced: «¿Cómo se dicen los ANIMALES DEL MAR? 🐬»."""
+    theme = str(script.get("theme") or "").split(" (")[0].strip()
+    if video_type == "how_do_you_say" and theme:
+        article = next((a for a in _ARTICLES if theme.lower().startswith(a)), "")
+        verb = "dicen" if article in ("los ", "las ") else "dice"
+        items = script.get("items") or []
+        emoji = str(items[0].get("emoji") or "") if items else ""
+        return f"¿Cómo se {verb} {article}{theme[len(article):].upper()}? {emoji}".strip()
+    if video_type == "hecho_con_claude":
+        title = str(script.get("title") or "")
+        return title.split(":", 1)[1].strip() if title.upper().startswith("RETO:") else title
+    return theme.upper()
+
+
+def next_step(video_type: str, script: Dict) -> str:
+    """«Mañana: …» from the queue's next script of the same type (another topic), or FOLLOW."""
+    try:
+        if video_type == "hecho_con_claude":
+            import series
+            paths = series.queued(script.get("style"))
+        else:
+            import queue_priority
+            import topic_history
+            root = topic_history.QUEUE_DIR
+            paths = [p for p in sorted(root.rglob("*.json"))
+                     if not {"_done", "_skipped", "hecho_con_claude"} & set(p.relative_to(root).parts[:-1])]
+            paths = [p for p, _pr, _why in queue_priority.ranked(paths)]
+        for path in paths:
+            other = json.loads(Path(path).read_text(encoding="utf-8"))
+            if (other.get("type") or video_type) != video_type or other.get("id", 0) == script.get("id", 1):
+                continue
+            if other.get("theme") and other.get("theme") == script.get("theme"):
+                continue
+            phrase = _next_phrase(video_type, other)
+            if phrase:
+                return f"Mañana: {phrase}"
+    except Exception:                                       # noqa: BLE001 — no queue: the plain line
+        logger.debug("outro: no next step", exc_info=True)
+    return FOLLOW
+
+
+def _wordmark() -> Image.Image:
+    logo = Image.open(LOGO).convert("RGBA")
+    part = logo.crop((WORDMARK_FROM_X, 0, logo.width, logo.height))
+    part = part.crop(part.getchannel("A").getbbox())
+    return part.resize((WORDMARK_W, round(part.height * WORDMARK_W / part.width)), Image.LANCZOS)
+
+
+def draw_top(img: Image.Image, next_line: Optional[str]) -> None:
+    """The wordmark, then «Mañana:» and the next topic (its emoji drawn as art), or FOLLOW."""
+    from .notebook import kit
+    from .series import series_kit as K
+    mark = _wordmark()
+    img.alpha_composite(mark, ((VIDEO_WIDTH - mark.width) // 2, WORDMARK_TOP))
+    ink, muted = _brand_colour("ink"), _brand_colour("secondary_text")
+    line = (next_line or FOLLOW).strip()
+    if not line.startswith("Mañana:"):
+        size, lines = K.fit(line, "fredoka", NEXT_W, 52, 36, 1)
+        K.text_block(img, lines, "fredoka", size, 0, NEXT_TOP + 50, ink, "center", VIDEO_WIDTH)
+        return
+    text = line[len("Mañana:"):].strip()
+    emoji = ""
+    if text and ord(text[-1]) > 0x2000 and not text[-1].isalnum() and text[-1] not in "?!.»":
+        text, emoji = text[:-1].rstrip(), text[-1]
+    K.text_block(img, ["Mañana:"], "fredoka_medium", 36, 0, NEXT_TOP, muted, "center", VIDEO_WIDTH)
+    size, lines = K.fit(text, "fredoka", NEXT_W - (60 if emoji else 0), 50, 34, 2)
+    box = K.text_block(img, list(lines), "fredoka", size, 0, NEXT_TOP + 50, ink, "center", VIDEO_WIDTH)
+    if emoji:
+        try:
+            art = kit.emoji(emoji, size)
+            last_w = K.block_box([lines[-1]], "fredoka", size, 0, 0, "center", VIDEO_WIDTH)
+            img.alpha_composite(art, (int(last_w[2] + 12), int(box[3] - size * 0.95)))
+        except Exception:                                   # noqa: BLE001 — an emoji without art: none
+            logger.debug("outro: no art for %r", emoji)
+
+
 # ── frames ───────────────────────────────────────────────────────────
 
 def _brand_colour(name: str) -> Tuple[int, int, int]:
@@ -104,17 +192,17 @@ def _sand() -> Tuple[int, int, int]:
     return tuple(int(value[i:i + 2], 16) for i in (1, 3, 5))
 
 
-def outro_still(variant: Dict) -> Image.Image:
+def outro_still(variant: Dict, next_line: Optional[str] = None) -> Image.Image:
     """The card at rest: «line_1» in ink, line_2 big in English blue over a yellow marker
     stroke, outro.json's `line_3` small and muted, the symbol on the top edge."""
-    card, bubi, at = outro_layers(variant)
+    card, bubi, at = outro_layers(variant, next_line)
     img = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (*_sand(), 255))
     img.alpha_composite(card)
     img.alpha_composite(bubi, at)
     return img.convert("RGB")
 
 
-def outro_layers(variant: Dict) -> Tuple[Image.Image, Image.Image, Tuple[int, int]]:
+def outro_layers(variant: Dict, next_line: Optional[str] = None) -> Tuple[Image.Image, Image.Image, Tuple[int, int]]:
     """(the card and its text on a transparent frame, Bubi, where Bubi stands)."""
     from .how_do_you_say import fredoka
     ink, blue, yellow = _brand_colour("ink"), _brand_colour("english_blue"), _brand_colour("brand_yellow")
@@ -134,17 +222,19 @@ def outro_layers(variant: Dict) -> Tuple[Image.Image, Image.Image, Tuple[int, in
 
     lead = fredoka(LEAD_SIZE, "display_medium")
     url = fredoka(URL_SIZE)
-    while draw.textlength(variant["line_2"], font=url) > CARD_W - 140:
+    while draw.textlength(variant["line_2"], font=url) > CARD_W - 100:
         url = fredoka(url.size - 4)
-    centred(variant["line_1"], lead, y0 + 150, ink)
-    ucy = y0 + 290
+    centred(variant["line_1"], lead, y0 + 135, ink)
+    ucy = y0 + 262
     w = draw.textlength(variant["line_2"], font=url)
     draw.rounded_rectangle([(VIDEO_WIDTH - w) // 2 - 8, ucy + 2, (VIDEO_WIDTH + w) // 2 + 8, ucy + 2 + MARKER_H],
                            radius=MARKER_H // 2, fill=yellow)
     centred(variant["line_2"], url, ucy, blue)
     sub = load_variants().get("line_3")
     if sub:
-        centred(sub, fredoka(SUB_SIZE, "display_medium"), y0 + 425, muted)
+        centred(sub, fredoka(SUB_SIZE, "display_medium"), y0 + 370, muted)
+    centred(LINK, fredoka(32, "display_medium"), y0 + 448, blue)
+    draw_top(img, next_line)
     symbol = Image.open(SYMBOL).convert("RGBA")
     symbol = symbol.crop(symbol.getchannel("A").getbbox())          # his pixels, not the canvas
     symbol = symbol.resize((SYMBOL_PX, round(symbol.height * SYMBOL_PX / symbol.width)), Image.LANCZOS)
@@ -164,9 +254,9 @@ def card_dy(t: float) -> int:
     return int(round(ENTER_FROM * (1.0 - ease_out_back(t / ENTER)))) if t < ENTER else 0
 
 
-def _make_frame_fn(variant: Dict):
+def _make_frame_fn(variant: Dict, next_line: Optional[str] = None):
     from .notebook import kit
-    card, bubi, (bx, by) = outro_layers(variant)
+    card, bubi, (bx, by) = outro_layers(variant, next_line)
     # a pose tilts him about his feet; the canvas grows so the tilt never clips him
     poses = {0: (bubi, bx, by)}
     for sign in (1, -1):
@@ -300,8 +390,22 @@ def _probe_params(path: str) -> Dict:
     return params
 
 
+def outro_for(variant: Dict, next_line: str, out_path: Path) -> Path:
+    """STEP 80 §6: this video's outro — the card with its «Mañana: …» line, over the variant's
+    cached voice (no TTS, $0), through the same compositor so the concat stays `-c copy`."""
+    cached = ensure_outro(variant)
+    with tempfile.TemporaryDirectory() as tmp:
+        wav = Path(tmp) / "outro_voice.wav"
+        proc.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(cached), "-vn", str(wav)],
+                 check=True, capture_output=True, timeout=proc.FFMPEG)
+        render_video_ffmpeg(frame_generator=_make_frame_fn(variant, next_line), audio_path=str(wav),
+                            output_path=str(out_path), duration=OUTRO_DURATION, fps=FPS,
+                            width=VIDEO_WIDTH, height=VIDEO_HEIGHT)
+    return Path(out_path)
+
+
 def append_outro(video_path: str, variant: Dict,
-                 output_path: Optional[str] = None) -> str:
+                 output_path: Optional[str] = None, next_line: Optional[str] = None) -> str:
     """Concatenate the cached outro onto `video_path` with no re-encode.
 
     Verifies the stream parameters match first. They should, because both
@@ -309,7 +413,20 @@ def append_outro(video_path: str, variant: Dict,
     re-encode is exactly the kind of quality loss nobody notices, so it is
     checked rather than assumed.
     """
-    outro = ensure_outro(variant)
+    own = None
+    if next_line and next_line != FOLLOW:                   # the cached clip already says FOLLOW
+        own = Path(tempfile.mkdtemp()) / "outro_own.mp4"
+        outro = outro_for(variant, next_line, own)
+    else:
+        outro = ensure_outro(variant)
+    try:
+        return _concat(video_path, outro, variant, output_path)
+    finally:
+        if own is not None:
+            shutil.rmtree(own.parent, ignore_errors=True)
+
+
+def _concat(video_path: str, outro: Path, variant: Dict, output_path: Optional[str]) -> str:
     main_p, outro_p = _probe_params(video_path), _probe_params(str(outro))
 
     if main_p != outro_p:

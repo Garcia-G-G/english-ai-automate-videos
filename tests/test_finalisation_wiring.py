@@ -102,7 +102,7 @@ def test_the_gate_runs_before_the_outro(monkeypatch, tmp_path):
                         lambda r: {"verdict": "PASS", "blocking_flags": []})
     monkeypatch.setattr(O, "select_variant", lambda seed=None: {"id": "v"})
     monkeypatch.setattr(O, "append_outro",
-                        lambda p, v, output_path=None: order.append("outro")
+                        lambda p, v, output_path=None, next_line=None: order.append("outro")
                         or Path(output_path).write_bytes(b"y") or output_path)
     monkeypatch.setattr(O, "measure_seam", lambda *a, **k: None)
 
@@ -127,7 +127,7 @@ def test_finalisation_keeps_the_artifact_name(monkeypatch, tmp_path):
                         lambda r: {"verdict": "PASS", "blocking_flags": []})
     monkeypatch.setattr(O, "select_variant", lambda seed=None: {"id": "v"})
     monkeypatch.setattr(O, "append_outro",
-                        lambda p, v, output_path=None:
+                        lambda p, v, output_path=None, next_line=None:
                         Path(output_path).write_bytes(b"outro'd") or output_path)
     monkeypatch.setattr(O, "measure_seam", lambda *a, **k: None)
 

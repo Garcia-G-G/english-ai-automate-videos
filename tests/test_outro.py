@@ -235,8 +235,10 @@ def test_bubi_is_440px_wide_and_stands_on_the_cards_top_edge():
     sand = np.array(O._sand())
     y_card = (O.VIDEO_HEIGHT - O.CARD_H) // 2 + O.CARD_DY
     assert y_card + O.CARD_H // 2 == O.VIDEO_HEIGHT // 2 + 60
-    above = np.abs(img[:y_card - 10] - sand).sum(axis=2) > 30          # Bubi, above the card
+    band_top = 530                                          # STEP 80 §6: wordmark and «Mañana» end above this
+    above = np.abs(img[band_top:y_card - 10] - sand).sum(axis=2) > 30   # Bubi, above the card
     ys, xs = np.nonzero(above)
+    ys = ys + band_top
     assert abs((xs.max() - xs.min() + 1) - 440) <= 10      # his arm stays on screen (faint AA edge aside)
     assert abs((xs.min() + xs.max()) / 2 - O.VIDEO_WIDTH / 2) <= 4
     sym = Image.open(O.SYMBOL).convert("RGBA")

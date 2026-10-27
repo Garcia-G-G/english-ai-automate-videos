@@ -109,7 +109,7 @@ def _finalize_how_do_you_say(monkeypatch, tmp_path, body_seconds):
                                                        "measured_duration": body_seconds})
     monkeypatch.setattr(qa_gate, "verdict", lambda r: {"verdict": "PASS", "blocking_flags": []})
     monkeypatch.setattr(O, "select_variant", lambda seed=None: {"id": "v"})
-    monkeypatch.setattr(O, "append_outro", lambda p, v, output_path=None:
+    monkeypatch.setattr(O, "append_outro", lambda p, v, output_path=None, next_line=None:
                         Path(output_path).write_bytes(b"y") or output_path)
     monkeypatch.setattr(O, "measure_seam", lambda *a, **k: None)
     monkeypatch.setattr(pipeline, "_loudness_check", lambda *a, **k: None)
