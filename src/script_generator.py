@@ -15,7 +15,6 @@ from pathlib import Path
 from datetime import datetime
 
 from dotenv import load_dotenv
-from openai import OpenAI
 
 from script_schema import validate_script
 from tts_common import SPANISH_FILTER
@@ -1287,6 +1286,7 @@ def generate_script_from_prompt(
             raise EnvironmentError(
                 "OPENAI_API_KEY environment variable not set. Add it to .env file."
             )
+        from openai import OpenAI       # lazy: 0.3 s the panel need not pay at start
         client = OpenAI(api_key=api_key)
 
     logger.info(f"Calling OpenAI API ({MODEL}) for {video_type} video...")

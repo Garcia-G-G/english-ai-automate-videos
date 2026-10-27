@@ -17,7 +17,7 @@ import subprocess
 import threading
 import time
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 import uuid
 
@@ -2724,24 +2724,7 @@ if 'upload_history' not in st.session_state:
 # that failed (with its reason and its log), and one line of money.
 if page == "Dashboard":
     st.markdown("## Inicio")
-    st.caption(
-        "Cada bloque nombra artefactos concretos y la acción que los mueve. "
-        "Si algo no se puede accionar, no está aquí."
-    )
-
-    # STEP 80 §2: the main action — the best queued script, and why it is next
-    _best = next_best()
-    if _best:
-        _bp, _bd, _why = _best
-        st.markdown(f"**Siguiente mejor:** `{_bp.name}` — {_why}")
-        if st.button("🚀 Producir el siguiente mejor", type="primary", key="produce_next_best"):
-            try:
-                st.session_state.last_job = start_generation(_bd.get("type"), use_queue=True)
-                st.success(f"En marcha: {_bp.name}")
-            except AlreadyRendering as busy:
-                st.warning(str(busy))
-    else:
-        st.info("La cola no tiene ningún guion listo para producir.")
+    st.caption("Lo que toca hoy, en orden: producir, revisar, subir.")
 
     import thumbnails
     from thumbnails import ensure_thumbnail
@@ -2752,6 +2735,38 @@ if page == "Dashboard":
     published = get_ledger_rows()
     census = independent_disk_census()
 
+    # ── Hoy: four numbers that say what is waiting (STEP 80, Garcia: «velocity without losing quality»)
+    _week_ago = (datetime.now() - timedelta(days=7)).date().isoformat()
+    _week = len({r.get("artifact") for r in published                # videos, not one row per platform
+                 if (r.get("published_at") or "")[:10] >= _week_ago and r.get("artifact")})
+    _hoy = st.columns(4)
+    with _hoy[0]:
+        st.metric("Por revisar", len(pending), border=True)
+    with _hoy[1]:
+        st.metric("Por subir", len(approved), border=True)
+    with _hoy[2]:
+        st.metric("Vídeos publicados · 7 días", _week, border=True)
+    with _hoy[3]:
+        st.metric(f"OpenRouter este mes · tope \\${_or_cap:.0f}", "$" + f"{(_or_spent or 0):.2f}", border=True)   # a metric's value is plain text
+
+    # STEP 80 §2: the main action — the best queued script, in words, and why it is next
+    _best = next_best()
+    with st.container(border=True):
+        if _best:
+            _bp, _bd, _why = _best
+            _what = _bd.get("theme") or _bd.get("title") or _bd.get("topic") or _bp.stem
+            st.caption("SIGUIENTE VÍDEO")
+            st.markdown(f"#### {type_label(_bd.get('type') or '')} · {_what}")
+            st.caption("Por qué este: " + _why.split(": ", 1)[-1])   # the type is already in the title
+            if st.button("▶ Producir ahora", type="primary", key="produce_next_best"):
+                try:
+                    st.session_state.last_job = start_generation(_bd.get("type"), use_queue=True)
+                    st.success(f"En marcha: {_what}")
+                except AlreadyRendering as busy:
+                    st.warning(str(busy))
+        else:
+            st.markdown("**La cola está vacía.** Añade guiones en «Temas» o crea uno en «Crear».")
+
     def _census_line(listed: int, counted: int, what: str) -> None:
         """Print both counts. Never just the one the page happens to like.
 
@@ -2761,14 +2776,12 @@ if page == "Dashboard":
         """
         if listed == counted:
             st.markdown(
-                f'<span class="census-ok">{listed} en la lista · '
-                f'{counted} contados en disco por separado ✓</span>',
+                f'<span class="census-ok">{listed} en la lista · {counted} en disco ✓</span>',
                 unsafe_allow_html=True)
         else:
             st.markdown(
-                f'<span class="census-mismatch">⚠ DESACUERDO en {what}: '
-                f'{listed} en la lista · {counted} contados en disco. '
-                f'Uno de los dos recuentos está mal.</span>',
+                f'<span class="census-mismatch">⚠ No cuadra en «{what}»: {listed} en la lista, '
+                f'{counted} en disco. Uno de los dos recuentos está mal.</span>',
                 unsafe_allow_html=True)
 
     def _queue_head(count, title: str, source: str, action: str) -> None:
@@ -2843,6 +2856,14 @@ if page == "Dashboard":
             for v in uncached:
                 ensure_thumbnail(v)
 
+    def _month_name(ym: str) -> str:
+        names = ("enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre "
+                 "diciembre").split()
+        try:
+            return names[int(ym[5:7]) - 1]
+        except (ValueError, IndexError):
+            return ym
+
     # ── Money, one line ──────────────────────────────────────────────────
     cost = cost_snapshot()
     if cost["ceiling_usd"]:
@@ -2852,8 +2873,8 @@ if page == "Dashboard":
         ceiling_txt = "sin techo configurado en config.yaml (costs.monthly_ceiling_usd)"
     st.markdown(
         # STEP 80 §0: «$» as an entity — two of them on a line rendered as LaTeX math
-        f'<div class="cost-line">💸 Hoy <strong>&#36;{cost["today_usd"]:.4f}</strong>'
-        f' · {cost["month"]} acumulado <strong>&#36;{cost["month_usd"]:.2f}</strong>'
+        f'<div class="cost-line">💸 Gasto total: hoy <strong>&#36;{cost["today_usd"]:.2f}</strong>'
+        f' · {_month_name(cost["month"])} <strong>&#36;{cost["month_usd"]:.2f}</strong>'
         f' {ceiling_txt}</div>', unsafe_allow_html=True)
 
     # ── Money, per video ─────────────────────────────────────────────────
@@ -2865,15 +2886,14 @@ if page == "Dashboard":
         _stats = video_cost_stats(_video_costs)
         _outliers = set(_stats["outliers"])
         with st.expander(
-                f"💸 Costo por video — media \\${_stats['mean_usd']:.4f} "
-                f"(OpenAI \\${_stats['openai_mean_usd']:.4f} · ElevenLabs "
-                f"\\${_stats['elevenlabs_mean_usd']:.4f}) · mediana "
-                f"\\${_stats['median_usd']:.4f} · {_stats['videos']} videos"):
+                f"💸 Coste por vídeo: media \\${_stats['mean_usd']:.3f} · mediana "
+                f"\\${_stats['median_usd']:.3f} · {_stats['videos']} vídeos"):
             st.dataframe(
                 [{"video": r["video_id"],
                   "fecha": (r["last_at"] or "")[:16].replace("T", " "),
                   "OpenAI $": round(r["openai_usd"], 4),
                   "ElevenLabs $": round(r["elevenlabs_usd"], 4),
+                  "OpenRouter $": round(r.get("openrouter_usd", 0.0), 4),
                   "total $": round(r["total_usd"], 4),
                   "llamadas": r["calls"],
                   "⚠": "> 2× mediana" if r["video_id"] in _outliers else ""}
@@ -2896,23 +2916,22 @@ if page == "Dashboard":
         jobs = get_active_jobs()
         if not jobs:
             return
-        _queue_head(len(jobs), "En curso", "", "esperar")
+        _queue_head(len(jobs), "En marcha", "", "se actualiza solo")
         for job in jobs:
             c1, c2 = st.columns([4, 1])
             with c1:
-                st.markdown(f"**{job['video_type'].upper()}** — {job.get('topic', 'Selecting...')}")
+                st.markdown(f"**{type_label(job['video_type'])}** — {job.get('topic') or 'eligiendo tema…'}")
                 st.progress(job.get('progress', 0) / 100)
-                st.caption(job.get('current_step', 'Initializing...'))
+                st.caption(job.get('current_step') or 'empezando…')
             with c2:
                 st.code(job['id'])
 
     _render_active_jobs()
 
     # ── 1. Rendered by --batch, never promoted ───────────────────────────
-    _queue_head(len(batch), "Sin promover", "output/video/", "Promover")
-    _census_line(len(batch), census["batch"], "output/video/")
-    if not batch:
-        st.caption("Nada esperando en output/video/.")
+    if batch or census["batch"]:                        # rare (a --batch render): no block when empty
+        _queue_head(len(batch), "Hechos por lote, sin revisar", "", "pasar a revisión")
+        _census_line(len(batch), census["batch"], "hechos por lote")
     for idx, v in enumerate(batch):
         c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
         with c1:
@@ -2921,19 +2940,19 @@ if page == "Dashboard":
                    f'{v["size"] / (1024*1024):.1f} MB'),
                 unsafe_allow_html=True)
         with c2:
-            if st.button("⬆️ Promover", key=f"inicio_promote_{idx}",
+            if st.button("⬆️ A revisión", key=f"inicio_promote_{idx}",
                          width="stretch"):
                 verdict = promote_to_review(v["path"])
                 if verdict["ok"]:
-                    st.success(f"{verdict['artifact']} → pending. {verdict['reason']}")
+                    st.success(f"{verdict['artifact']} pasó a «Por revisar». {verdict['reason']}")
                     st.rerun()
                 else:
                     st.error(verdict["reason"])
     st.markdown("")
 
     # ── 2. Awaiting review ───────────────────────────────────────────────
-    _queue_head(len(pending), "Esperando revisión", "output/pending/", "Revisar")
-    _census_line(len(pending), census["pending"], "output/pending/")
+    _queue_head(len(pending), "Por revisar", "", "revisar")
+    _census_line(len(pending), census["pending"], "por revisar")
 
     # The gate split, counted twice as well. This is the number that must not
     # be allowed to drift: an artifact with no verdict rendering as one that
@@ -2953,26 +2972,27 @@ if page == "Dashboard":
     gate_txt = (f'{listed_gate["pass"]} con PASS · '
                 f'{listed_gate["missing"]} {GATE_MISSING_LABEL}'
                 + (f' · {listed_gate["other"]} otro veredicto' if listed_gate["other"] else ''))
-    if gate_ok:
+    if gate_ok and not pending:
+        pass                                            # nothing listed, nothing on disk: no line
+    elif gate_ok:
         st.markdown(f'<span class="census-ok">{gate_txt} — '
                     f'({census["pending_gate_pass"]}/{census["pending_gate_missing"]}'
                     + (f'/{census["pending_gate_other"]}' if listed_gate["other"] else '')
-                    + ') releídos de los sidecars por separado ✓</span>',
+                    + ') en disco ✓</span>',
                     unsafe_allow_html=True)
     else:
-        st.markdown(f'<span class="census-mismatch">⚠ DESACUERDO en los veredictos: '
+        st.markdown(f'<span class="census-mismatch">⚠ Los veredictos no cuadran: '
                     f'{gate_txt} vs {census["pending_gate_pass"]}/'
                     f'{census["pending_gate_missing"]}/{census["pending_gate_other"]} '
                     f'en disco.</span>', unsafe_allow_html=True)
     if listed_gate["missing"]:
         st.caption(
-            f'{listed_gate["missing"]} de estos no llevan veredicto de la puerta QA. '
-            f'"{GATE_MISSING_LABEL}" NO quiere decir que pasaran: quiere decir que '
-            f'nadie lo sabe. Son anteriores al commit que empezó a escribir el '
-            f'veredicto en el sidecar del artefacto.')
+            f'{listed_gate["missing"]} no tienen veredicto del control de calidad. '
+            f'«{GATE_MISSING_LABEL}» no quiere decir que pasaran: nadie lo comprobó '
+            f'(son anteriores a que el veredicto se guardara con el vídeo).')
 
     if not pending:
-        st.caption("Nada esperando revisión.")
+        st.caption("Nada por revisar. Produce el siguiente vídeo arriba.")
     for idx, v in enumerate(pending):
         c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
         with c1:
@@ -2989,10 +3009,10 @@ if page == "Dashboard":
     st.markdown("")
 
     # ── 3. Approved, not uploaded ────────────────────────────────────────
-    _queue_head(len(approved), "Aprobados sin subir", "output/approved/", "Subir")
-    _census_line(len(approved), census["approved"], "output/approved/")
+    _queue_head(len(approved), "Por subir", "", "subir")
+    _census_line(len(approved), census["approved"], "por subir")
     if not approved:
-        st.caption("Nada aprobado esperando subida.")
+        st.caption("Nada por subir. Lo que apruebes en «Revisar» aparece aquí.")
     for idx, v in enumerate(approved):
         c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
         with c1:
@@ -3012,9 +3032,8 @@ if page == "Dashboard":
     st.markdown("")
 
     # ── 4. Published ─────────────────────────────────────────────────────
-    _queue_head(len(published), "Publicados", "output/published/ledger.jsonl",
-                "Abrir en la plataforma")
-    _census_line(len(published), census["ledger_rows"], "el registro de publicación")
+    _queue_head(len(published), "Publicados", "", "abrir en la plataforma")
+    _census_line(len(published), census["ledger_rows"], "publicados")
 
     def _ledger_row(r: dict) -> str:
         artifact = r.get("artifact") or "(sin artefacto)"
@@ -3041,7 +3060,7 @@ if page == "Dashboard":
     for r in published[:LEDGER_SHOWN]:
         st.markdown(_ledger_row(r), unsafe_allow_html=True)
     if len(published) > LEDGER_SHOWN:
-        with st.expander(f"Las otras {len(published) - LEDGER_SHOWN} publicaciones del registro"):
+        with st.expander(f"Ver las otras {len(published) - LEDGER_SHOWN} publicaciones"):
             for r in published[LEDGER_SHOWN:]:
                 st.markdown(_ledger_row(r), unsafe_allow_html=True)
     st.markdown("")
@@ -3062,7 +3081,7 @@ if page == "Dashboard":
     failed = get_failed_jobs()
     if failed:
         SHOWN = 3
-        _queue_head(len(failed), "Fallaron", "generation_jobs.json", "leer el log")
+        _queue_head(len(failed), "Fallos recientes", "", "leer el log")
         for job in failed[:SHOWN]:
             when = (job.get("completed_at") or job.get("updated_at") or "")[:16].replace("T", " ")
             topic = job.get("topic") or "(sin tema)"
@@ -3080,7 +3099,7 @@ if page == "Dashboard":
             else:
                 st.caption("📜 sin log_path en el registro del job")
         if len(failed) > SHOWN:
-            with st.expander(f"Los otros {len(failed) - SHOWN} fallos del historial"):
+            with st.expander(f"Ver los otros {len(failed) - SHOWN} fallos"):
                 for job in failed[SHOWN:]:
                     when = (job.get("completed_at") or "")[:16].replace("T", " ")
                     reason = (job.get("error") or "sin motivo").strip().splitlines()[0][:140]
@@ -3090,7 +3109,7 @@ if page == "Dashboard":
         st.markdown("")
 
     # ── How new artifacts enter the queues above ─────────────────────────
-    _queue_head(None, "Generar", "", "crear un artefacto nuevo")
+    _queue_head(None, "Crear rápido", "", "un vídeo del tipo que elijas, de la cola")
     # DERIVED, and that is a bug fix, not tidying. This row was written by
     # hand with four of the six types, so fill_blank and pronunciation had no
     # Generate button -- the exact defect admin.py:2264 documents having fixed
@@ -3101,7 +3120,7 @@ if page == "Dashboard":
         with col:
             if st.button(f"🎬 {label}", width="stretch", key=f"quick_{vtype}"):
                 job_id = start_generation(vtype)
-                st.toast(f"{label} queued (job {job_id})")
+                st.toast(f"{label}: en marcha (job {job_id})")
                 st.rerun()
 
 

@@ -78,8 +78,10 @@ def test_the_summary_judges_formats_on_videos_older_than_three_days():
 
 def test_facebook_reads_video_insights_or_says_why_not(tmp_path, monkeypatch):
     ledger = _ledger(tmp_path)
+    import env_setup
+    monkeypatch.setattr(env_setup, "_loaded", True)        # .env must not bring the real token back
     monkeypatch.delenv("FB_PAGE_TOKEN", raising=False)
-    assert "sin FB_PAGE_TOKEN" in C.fetch_facebook(ledger)["note"]
+    assert "sin FB_PAGE_TOKEN" in C.fetch_facebook(ledger, call=lambda vid: pytest.fail("Graph API called"))["note"]
     monkeypatch.setenv("FB_PAGE_TOKEN", "x")
     got = C.fetch_facebook(ledger, call=lambda vid: {"data": [{"values": [{"value": 77}]}]})
     assert got["views"] == {"f1": 77}

@@ -38,9 +38,8 @@ class OpenRouterRefused(RuntimeError):
 
 
 def _settings() -> Dict:
-    import yaml
-    root = Path(__file__).resolve().parent.parent
-    cfg = yaml.safe_load((root / "config.yaml").read_text(encoding="utf-8")) or {}
+    import queue_priority
+    cfg = queue_priority._config()                          # parsed once per change of config.yaml
     audio = cfg.get("audio") or {}
     costs = cfg.get("costs") or {}
     voice = audio.get("openrouter_voice") or {}
@@ -71,6 +70,22 @@ def month_spend(costs_dir: Optional[Path] = None) -> float:
     folder = Path(costs_dir) if costs_dir else COSTS_DIR
     total = 0.0
     for path in folder.glob(f"costs_{date.today():%Y-%m}-*.jsonl"):
+        total += _file_spend(path)
+    tracker = get_tracker()                                 # this job's rows, not saved yet
+    total += sum(e["cost_usd"] for e in tracker.entries[tracker._saved:]
+                 if str(e.get("api_type", "")).startswith("openrouter"))
+    return round(total, 4)
+
+
+_FILE_SPEND: Dict[tuple, float] = {}
+
+
+def _file_spend(path: Path) -> float:
+    """OpenRouter dollars in one cost file, cached by (path, mtime, size): the panel asks every click."""
+    st = path.stat()
+    key = (str(path), st.st_mtime_ns, st.st_size)
+    if key not in _FILE_SPEND:
+        total = 0.0
         for line in path.read_text(encoding="utf-8").splitlines():
             try:
                 row = json.loads(line)
@@ -78,10 +93,8 @@ def month_spend(costs_dir: Optional[Path] = None) -> float:
                 continue
             if str(row.get("api_type", "")).startswith("openrouter"):
                 total += float(row.get("cost_usd") or 0)
-    tracker = get_tracker()                                 # this job's rows, not saved yet
-    total += sum(e["cost_usd"] for e in tracker.entries[tracker._saved:]
-                 if str(e.get("api_type", "")).startswith("openrouter"))
-    return round(total, 4)
+        _FILE_SPEND[key] = total
+    return _FILE_SPEND[key]
 
 
 def short_spend() -> float:

@@ -25,9 +25,22 @@ def _fold(text: str) -> str:
     return "".join(c for c in text if unicodedata.category(c) != "Mn")
 
 
-def settings() -> Dict:
+_CFG: Dict = {}
+
+
+def _config() -> Dict:
+    """config.yaml, parsed once per change (27 ms a parse; the panel asks on every click)."""
     import yaml
-    cfg = yaml.safe_load((ROOT / "config.yaml").read_text(encoding="utf-8")) or {}
+    path = ROOT / "config.yaml"
+    st = path.stat()
+    key = (str(path), st.st_mtime_ns, st.st_size)
+    if _CFG.get("key") != key:
+        _CFG.update(key=key, cfg=yaml.safe_load(path.read_text(encoding="utf-8")) or {})
+    return _CFG["cfg"]
+
+
+def settings() -> Dict:
+    cfg = _config()
     block = cfg.get("queue_priority") or {}
     return {"prior_views": dict(block.get("prior_views") or {}), "a1": [_fold(w) for w in block.get("a1_categories") or []],
             "default_prior": float(block.get("default_prior", 100))}
@@ -70,8 +83,33 @@ def priority(script: Dict, scores: Dict[str, Dict], cfg: Optional[Dict] = None) 
     return s["score"], base
 
 
+_RANKED: Dict[tuple, list] = {}
+
+
+def _fingerprint(paths: List[Path]) -> Optional[tuple]:
+    """Every input ranked() reads, by mtime and size: the scripts, the stats snapshots, config.yaml."""
+    import channel_stats
+    try:
+        files = [Path(p) for p in paths] + sorted(channel_stats.STATS_DIR.glob("youtube_*.json")) + [ROOT / "config.yaml"]
+        return tuple((str(f), f.stat().st_mtime_ns, f.stat().st_size) for f in files if f.exists())
+    except OSError:
+        return None
+
+
 def ranked(paths: List[Path], stats: Optional[Dict] = None, cfg: Optional[Dict] = None) -> List[Tuple[Path, float, str]]:
-    """[(path, priority, why)], best first; ties keep the queue's own order."""
+    """[(path, priority, why)], best first; ties keep the queue's own order. With neither stats
+    nor cfg given (the panel's every click), the answer is cached until one of its files changes."""
+    key = _fingerprint(paths) if stats is None and cfg is None else None
+    if key is not None and key in _RANKED:
+        return list(_RANKED[key])
+    out = _ranked(paths, stats, cfg)
+    if key is not None:
+        _RANKED.clear()                                     # one entry: the queue as it is now
+        _RANKED[key] = out
+    return list(out)
+
+
+def _ranked(paths: List[Path], stats: Optional[Dict], cfg: Optional[Dict]) -> List[Tuple[Path, float, str]]:
     cfg = cfg or settings()
     if stats is None:
         import channel_stats
