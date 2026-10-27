@@ -241,3 +241,15 @@ def test_the_panel_refuses_a_render_past_the_monthly_cap(monkeypatch):
     monkeypatch.setattr(T, "_settings", lambda: dict(SETTINGS))
     assert V.openrouter_refusal(1000, spent=1.0, cap=15.0) is None
     assert "Tope mensual" in V.openrouter_refusal(1000, spent=14.99, cap=15.0)
+
+
+def test_per_video_costs_reads_openrouter_rows(tmp_path):
+    """An openrouter_* row in output/costs broke admin's import (KeyError 'openrouter_usd')."""
+    import json
+    import cost_tracker
+    (tmp_path / "costs_2026-10-27-a.jsonl").write_text("\n".join(json.dumps(r) for r in [
+        {"video_id": "v1", "api_type": "openrouter_tts", "cost_usd": 0.004, "timestamp": "2026-10-27T09:18:06"},
+        {"video_id": "v1", "api_type": "openrouter_image", "cost_usd": 0.01, "timestamp": "2026-10-27T09:18:07"},
+        {"video_id": "v1", "api_type": "openai_gpt", "cost_usd": 0.001, "timestamp": "2026-10-27T09:18:08"}]))
+    rows = {r["video_id"]: r for r in cost_tracker.per_video_costs(tmp_path)}
+    assert rows["v1"]["openrouter_usd"] == pytest.approx(0.014) and rows["v1"]["total_usd"] == pytest.approx(0.015)

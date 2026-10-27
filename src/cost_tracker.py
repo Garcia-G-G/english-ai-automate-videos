@@ -442,7 +442,7 @@ def _per_video_costs_uncached(files: list) -> list:
                 vid = e.get("video_id") or "unknown"
                 row = videos.setdefault(vid, {
                     "video_id": vid, "openai_usd": 0.0, "elevenlabs_usd": 0.0,
-                    "other_usd": 0.0, "total_usd": 0.0, "calls": 0,
+                    "openrouter_usd": 0.0, "other_usd": 0.0, "total_usd": 0.0, "calls": 0,
                     "by_type": {}, "first_at": None, "last_at": None,
                 })
                 row[f"{provider_of(e.get('api_type'))}_usd"] += cost
