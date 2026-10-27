@@ -167,7 +167,53 @@ def plan_calls(script_data: Dict, settings: Dict = None,
             segments[i + 1]["text"] if i + 1 < len(segments) else "")
         calls[-1]["previous_text"] = previous or None
         calls[-1]["next_text"] = following or None
+    if repeat_gap is None and one_request(script_data.get("type"), settings):
+        calls = merge_sentences(calls, settings)
     return calls
+
+
+#: STEP 80 (Garcia: «the cut when the voice changes from Spanish to English is very noticeable»):
+#: v4 says the English inside a Spanish sentence in one request — the lessons' choice by ear
+#: (STEP 55). Only for the types whose timeline does not need each language piece on its own.
+ONE_REQUEST_TYPES = frozenset({"hecho_con_claude"})
+
+
+def one_request(video_type, settings: Dict) -> bool:
+    """One request per sentence: the series, when the voice goes through OpenRouter's v4."""
+    if "one_request" in settings:
+        return bool(settings["one_request"])
+    try:
+        import tts_openrouter
+        return video_type in ONE_REQUEST_TYPES and tts_openrouter.active()
+    except Exception:                                       # noqa: BLE001 — no config: as before
+        return False
+
+
+def merge_sentences(calls: List[Dict], settings: Dict) -> List[Dict]:
+    """Consecutive calls joined into one per sentence (until one ends in . ? ! …), in the
+    narration's language: no seam inside a sentence. A sentence that is English alone stays
+    its own call, and keeps its English speed."""
+    out, group = [], []
+
+    def flush():
+        if not group:
+            return
+        if len(group) == 1:
+            out.append(dict(group[0], index=len(out)))
+        else:
+            text = re.sub(r"([¿¡«])\s+", r"\1", " ".join(c["text"].strip() for c in group))
+            text = re.sub(r"\s+([,.;:!?»])", r"\1", text)
+            out.append(dict(group[0], index=len(out), text=text,
+                            lang=settings["narration_lang"], is_english=False, speed=settings["speed"],
+                            pause_after=group[-1]["pause_after"], previous_text=None, next_text=None))
+        group.clear()
+
+    for call in calls:
+        group.append(call)
+        if call["text"].rstrip().endswith((".", "?", "!", "…")):
+            flush()
+    flush()
+    return out
 
 
 # ── Real synthesis ────────────────────────────────────────────────────
@@ -176,17 +222,9 @@ def plan_calls(script_data: Dict, settings: Dict = None,
 NO_CONTEXT_MODELS = frozenset({"eleven_v3"})
 
 
-def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0) -> Dict:
-    """One ElevenLabs request. Returns {'duration', 'words': [...] or None}.
-
-    Tries the with-timestamps endpoint first (exact char timings); falls
-    back to the plain convert stream. A cached identical request (tts_cache,
-    the take index included) is copied with its alignment instead.
-    """
-    from tts_elevenlabs import get_client, _elevenlabs_with_retry
-    from tts_common import get_audio_duration
+def request_kwargs(call: Dict, settings: Dict) -> Dict:
+    """The ElevenLabs request one call makes — and so its cache key."""
     from elevenlabs.types import VoiceSettings
-
     vs = VoiceSettings(
         stability=settings["stability"],
         similarity_boost=settings["similarity"],
@@ -210,6 +248,30 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0
             kwargs["previous_text"] = call["previous_text"]
         if call.get("next_text"):
             kwargs["next_text"] = call["next_text"]
+    return kwargs
+
+
+def all_cached(calls: List[Dict], settings: Dict) -> bool:
+    """Every call already has its audio in the TTS cache (either endpoint): voicing them costs $0."""
+    import tts_cache
+    for call in calls:
+        kwargs = request_kwargs(call, settings)
+        keys = [tts_cache.key({**kwargs, "endpoint": e}, 0) for e in ("with_timestamps", "convert")]
+        if not any(tts_cache._paths(k)[0].is_file() for k in keys):
+            return False
+    return True
+
+
+def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0) -> Dict:
+    """One ElevenLabs request. Returns {'duration', 'words': [...] or None}.
+
+    Tries the with-timestamps endpoint first (exact char timings); falls
+    back to the plain convert stream. A cached identical request (tts_cache,
+    the take index included) is copied with its alignment instead.
+    """
+    from tts_elevenlabs import get_client, _elevenlabs_with_retry
+    from tts_common import get_audio_duration
+    kwargs = request_kwargs(call, settings)
 
     import tts_cache
     from tts_common import get_audio_duration as _duration
@@ -341,6 +403,12 @@ def generate_bilingual_narration(
     if voice_id:
         settings["voice_id"] = voice_id
     calls = plan_calls(script_data, settings, language_policy=language_policy)
+    if "one_request" not in settings:
+        # STEP 80: a script already voiced in pieces keeps its cached pieces ($0); only a fresh
+        # voicing is one request per sentence
+        split = plan_calls(script_data, {**settings, "one_request": False}, language_policy=language_policy)
+        if len(split) != len(calls) and all_cached(split, settings):
+            calls = split
     if not calls:
         raise ValueError("Script produced no TTS segments (empty full_script?)")
 
