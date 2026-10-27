@@ -109,6 +109,9 @@ def _isolate_output_tree(tmp_path, monkeypatch):
     # Admin reload re-executes thumbnail warming, so isolate its cache too.
     import thumbnails
     monkeypatch.setattr(thumbnails, "THUMBS_DIR", out / "thumbs")
+    import ai_background
+    monkeypatch.setattr(ai_background, "AB_LOG", out / "stats" / "background_ab.jsonl")
+    monkeypatch.setattr(ai_background, "LIBRARY", out / "ai_backgrounds")
 
     # admin imports streamlit, so it is only redirected if a test already
     # pulled it in — importing it here would cost every test that run.

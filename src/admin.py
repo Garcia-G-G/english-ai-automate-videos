@@ -935,9 +935,11 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         clips_dir = CLIPS_DIR / unique_name
         tts_duration = None
         footage_themes = []
+        artifact_theme = ""
         try:
             with open(json_path, encoding="utf-8") as _f:
                 _artifact = json.load(_f)
+            artifact_theme = str(_artifact.get("theme") or "")
             tts_duration = float(_artifact.get("duration") or 0) or None
             from topic_clips import footage_themes as _themes
             footage_themes = _themes(_artifact)            # STEP 77 §6: the theme before the category
@@ -955,6 +957,12 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         # resolver now guarantees a record on every path, refuses rather
         # than substituting a flat preset, and skips the fetch for v2, so
         # every door gets it once.
+        # STEP 80 §5: every other «Cómo se dice» gets the topic's AI clip behind the page (A/B)
+        background_ab = None
+        if not background and not dry_run:
+            import ai_background
+            background_ab = ai_background.assign(unique_name, video_type, artifact_theme or topic_name or category or "")
+            background = background_ab["background"] or background
         resolved_background = pipeline.resolve_background(
             profile, background,
             topic=topic_name, category=category,
@@ -1034,6 +1042,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                 # the reason it should not be published.
                 **verdict_record,
                 "background": background_record or None,
+                "background_ab": background_ab,             # STEP 80 §5: «ia» or «stock», and why
                 # What this video cost, OpenAI vs ElevenLabs, as of the render.
                 # The ledger in output/costs/ stays the authoritative record.
                 "cost": tracker.summary() if tracker is not None else None,
@@ -1677,6 +1686,33 @@ def illustrations_panel() -> None:
                 if how.startswith("error"):
                     st.warning(f"{w}: {how}")
         except Exception as e:                              # noqa: BLE001 — a cap or the lock: shown
+            st.error(str(e))
+
+
+def ai_background_panel() -> None:
+    """«Fondo IA para «tema» · $0.12» for the next queued «Cómo se dice», and the click that draws
+    it (veo-3.1-lite through OpenRouter, under the caps; cached per topic)."""
+    import ai_background
+    picked = queue_pick("how_do_you_say")
+    if not picked:
+        return
+    topic = picked[1].get("theme") or picked[1].get("category") or ""
+    if not topic:
+        return
+    if ai_background.cached(topic):
+        st.caption(f"🎞️ «{topic}» ya tiene fondo IA (se usa en uno de cada dos vídeos: A/B).")
+        return
+    st.caption(f"🎞️ Fondo IA para «{topic}» · \\${ai_background.estimate_usd():.2f} "
+               f"({ai_background.SECONDS} s, 9:16, sin audio; uno de cada dos vídeos lo usa)")
+    if st.button("Generar fondo IA", key="ai_background_draw"):
+        import voice_lock
+        try:
+            with st.spinner("Generando el clip (1-3 min)…"), voice_lock.panel_grant():
+                ai_background.generate(topic)
+            from cost_tracker import get_tracker
+            get_tracker().save()
+            st.success(f"Fondo de «{topic}» guardado.")
+        except Exception as e:                              # noqa: BLE001 — a cap, the lock or the API: shown
             st.error(str(e))
 
 
@@ -3094,9 +3130,10 @@ elif page == "Generate":
             series_level = None if _level == "Todos" else _level
             st.caption(f"{len(series.queued(series_style, series_level))} guiones en cola")
 
-        # STEP 80 §4: the next «Cómo se dice» script's missing illustrations, drawn once, ever
+        # STEP 80 §4/§5: the next «Cómo se dice» script's illustrations and AI background
         if video_type == "how_do_you_say":
             illustrations_panel()
+            ai_background_panel()
 
         _modes = {"Random": "Al azar", "Select Category": "Elegir categoría", "Specific Topic": "Tema concreto"}
         selection_mode = st.radio("Tema", list(_modes), index=0, format_func=_modes.get)
@@ -4347,6 +4384,14 @@ elif page == "Performance":
         st.markdown("### Por categoría")
         st.dataframe([{"categoría": c["category"], "vídeos": c["count"], "mediana": c["median"]} for c in s["categories"]],
                      hide_index=True)
+    if snap:
+        import ai_background
+        st.markdown("### Fondo IA contra stock («Cómo se dice»)")
+        ab = ai_background.compare(snap["videos"])
+        st.dataframe([{"grupo": g, "vídeos de +3 días": v["n"], "mediana": v["median"], "media": v["mean"]}
+                      for g, v in ab["groups"].items()], hide_index=True)
+        if not ab["ready"]:
+            st.caption(f"Todavía no se compara: cada grupo necesita {ai_background.MIN_PER_GROUP} vídeos de más de 3 días.")
     st.markdown("### Prioridad de la cola")
     try:
         import queue_priority

@@ -127,12 +127,13 @@ def test_a_panel_click_draws_the_missing_words_once_and_logs_them(library, monke
     def opener(request, timeout=None):
         body = json.loads(request.data)
         sent.append(body)
-        return _Answer(json.dumps({"choices": [{"message": {"images": [{"image_url": {"url": _png_data_url()}}]}}]}).encode())
+        return _Answer(json.dumps({"data": [{"b64_json": _png_data_url().split(",", 1)[1], "media_type": "image/png"}],
+                                   "usage": {"cost": 0.01}}).encode())
     _placeholder(I.path_for("pear"))
     done = I.generate(["apple", "pear"], opener=opener)
     assert done == {"apple": "meta/muse-image"} and I.path_for("apple").exists()
-    assert sent[0]["model"] == "meta/muse-image" and sent[0]["modalities"] == ["image", "text"]
-    assert "no text" in sent[0]["messages"][0]["content"][0]["text"]
+    assert sent[0]["model"] == "meta/muse-image" and "no text" in sent[0]["prompt"]
+    assert sent[0]["input_references"][0]["image_url"]["url"].startswith("data:image/png;base64,")
     rows = cost_tracker.get_tracker().entries
     assert [(r["api_type"], r["cost_usd"]) for r in rows] == [("openrouter_image", 0.01)]
 

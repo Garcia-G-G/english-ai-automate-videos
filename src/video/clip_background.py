@@ -129,6 +129,8 @@ class ClipLibraryBackground:
                 if t >= duration:
                     break
 
+        # STEP 80 §5: one clip looping on itself (the AI background) crossfades slowly
+        self._xfade = LOOP_CROSSFADE if len(self._clips) == 1 else CROSSFADE
         logger.info("Clip background: %d clips, playlist of %d entries covering %.1fs",
                     len(self._clips), len(self._playlist), t)
 
@@ -221,7 +223,7 @@ class ClipLibraryBackground:
         """(cut time, entry before, entry after) when t is within CROSSFADE/2 of a cut."""
         for k in range(1, len(self._playlist)):
             start = self._playlist[k]["start"]
-            if abs(t - start) < CROSSFADE / 2:
+            if abs(t - start) < self._xfade / 2:
                 return start, self._playlist[k - 1], self._playlist[k]
         return None
 
@@ -326,7 +328,7 @@ class ClipLibraryBackground:
         cut = self._cut_near(t)
         if cut is not None:
             start, before, after = cut
-            w = (t - (start - CROSSFADE / 2)) / CROSSFADE      # 0 → 1 across the window
+            w = (t - (start - self._xfade / 2)) / self._xfade  # 0 → 1 across the window
             a = self._clip_frame(before["clip"], min(t - before["start"], before["clip"]["duration"] - 1e-3))
             b = self._clip_frame(after["clip"], max(0.0, t - start))
             if a.shape != b.shape:
@@ -372,6 +374,8 @@ class ClipLibraryBackground:
 
 #: STEP 77 §6: cuts between clips crossfade over this many seconds.
 CROSSFADE = 0.5
+#: STEP 80 §5: a single clip looping on itself (a 4 s AI clip) crossfades into its own start this slowly.
+LOOP_CROSSFADE = 1.2
 #: One grade: samples per clip, and how far a clip's colour may be pulled.
 GRADE_SAMPLES = 5
 GRADE_LIMITS = (0.8, 1.25)

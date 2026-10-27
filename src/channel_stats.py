@@ -138,6 +138,8 @@ def refresh(today: Optional[date] = None, get=None, token: Optional[str] = None,
     today = today or date.today()
     rows = youtube_rows()
     stats = fetch_youtube([r["id"] for r in rows], token or _youtube_token(), get)
+    import ai_background
+    groups = ai_background.variants()                       # STEP 80 §5: each video's A/B group
     snapshot = []
     for r in rows:
         s = stats.get(r["id"])
@@ -145,7 +147,8 @@ def refresh(today: Optional[date] = None, get=None, token: Optional[str] = None,
             continue                                        # deleted or private now
         when = (r["published_at"] or "")[:10]
         days = (today - date.fromisoformat(when)).days if when else None
-        snapshot.append({**r, **s, "days": days, "category": category_word(s["title"] or r["title"], r["type"])})
+        snapshot.append({**r, **s, "days": days, "category": category_word(s["title"] or r["title"], r["type"]),
+                         "background_variant": groups.get(r.get("artifact"))})
     STATS_DIR.mkdir(parents=True, exist_ok=True)
     path = STATS_DIR / f"youtube_{today.isoformat()}.json"
     fb = (facebook or fetch_facebook)()
