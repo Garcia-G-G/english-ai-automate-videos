@@ -1648,6 +1648,38 @@ def review_metadata_editor(video: dict) -> None:
                 st.success("Guardado: «Subir» publicará esto.")
 
 
+def illustrations_panel() -> None:
+    """«N ilustraciones nuevas · $X» for the next queued «Cómo se dice», and the click that draws
+    them (OpenRouter, under the caps; every word is drawn once and reused in every video)."""
+    import illustrations
+    picked = queue_pick("how_do_you_say")
+    if not picked:
+        return
+    path, script = picked
+    words = illustrations.words_of(script)
+    need = illustrations.missing(words)
+    if not need:
+        st.caption(f"🖼️ Las {len(words)} ilustraciones de `{path.name}` ya están en la biblioteca.")
+        return
+    cost = illustrations.estimate_usd(len(need))
+    st.caption(f"🖼️ {len(need)} ilustraciones nuevas · \\${cost:.2f} para `{path.name}` "
+               f"({', '.join(need[:6])}{'…' if len(need) > 6 else ''})")
+    if st.button(f"Dibujar {len(need)} ilustraciones", key="illustrations_draw"):
+        import voice_lock
+        try:
+            with st.spinner("Dibujando…"), voice_lock.panel_grant():
+                done = illustrations.generate(need)
+            from cost_tracker import get_tracker
+            get_tracker().save()
+            ok = [w for w, how in done.items() if not how.startswith("error")]
+            st.success(f"{len(ok)} de {len(need)} dibujadas.")
+            for w, how in done.items():
+                if how.startswith("error"):
+                    st.warning(f"{w}: {how}")
+        except Exception as e:                              # noqa: BLE001 — a cap or the lock: shown
+            st.error(str(e))
+
+
 def render_metadata(script: Optional[dict], video_type: str, category: str = "") -> Optional[dict]:
     """STEP 80 §1b: the video's metadata, built once at render time (never blocks the render)."""
     try:
@@ -3061,6 +3093,10 @@ elif page == "Generate":
             series_style = None if _style == "Todos" else _style
             series_level = None if _level == "Todos" else _level
             st.caption(f"{len(series.queued(series_style, series_level))} guiones en cola")
+
+        # STEP 80 §4: the next «Cómo se dice» script's missing illustrations, drawn once, ever
+        if video_type == "how_do_you_say":
+            illustrations_panel()
 
         _modes = {"Random": "Al azar", "Select Category": "Elegir categoría", "Specific Topic": "Tema concreto"}
         selection_mode = st.radio("Tema", list(_modes), index=0, format_func=_modes.get)

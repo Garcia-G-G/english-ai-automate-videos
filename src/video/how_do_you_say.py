@@ -784,6 +784,73 @@ def _draw_countdown(layer: Image.Image, cy: int, p: float) -> None:
     kit.dots(layer, *_p(ENGLISH_X + 110, cy), p)
 
 
+# ── STEP 80 §4: an illustration for the word being taught ──────────────
+
+ILLO_W = round(0.30 * PAGE_W)          # the card: about 30 % of the page's width
+ILLO_GAP = 14                          # between the card and the active row's band
+ILLO_POP = 0.30
+ILLO_OUT = 0.20
+
+
+def active_row(t: float, tl) -> Optional[int]:
+    """The row being taught at t (its Spanish to the next row's), or None (hook, recap)."""
+    n = len(tl.es)
+    for i in range(n):
+        end = tl.es[i + 1][0] if i + 1 < n else tl.recap[0]
+        if tl.es[i][0] <= t < end:
+            return i
+    return None
+
+
+def illustration_box(i: int, centres: List[int]) -> Tuple[float, float, float, float]:
+    """Page-local box of row i's card, at the right of the page: below the row whenever it fits
+    (over rows whose English is not written yet), above it only for the last rows — never over
+    the active row."""
+    x1 = CONTENT_R
+    x0 = x1 - ILLO_W
+    band_top, band_bottom = centres[i] - ROW_PITCH / 2, centres[i] + ROW_PITCH / 2
+    if band_bottom + ILLO_GAP + ILLO_W <= ROWS_BOTTOM:
+        y0 = band_bottom + ILLO_GAP
+    else:
+        y0 = band_top - ILLO_GAP - ILLO_W
+    return (x0, y0, x1, y0 + ILLO_W)
+
+
+@lru_cache(maxsize=24)
+def _illustration_card(path: str, mtime: float) -> Image.Image:
+    art = Image.open(path).convert("RGBA")
+    inner = ILLO_W - 34
+    art.thumbnail((inner, inner), Image.LANCZOS)
+    card = kit.note_card(ILLO_W, ILLO_W, kit.hex_colour("#FFFDF7"), 5, (8, 8)).copy()
+    card.alpha_composite(art, ((ILLO_W - art.width) // 2, (ILLO_W - art.height) // 2))
+    return card
+
+
+def _draw_illustration(layer, t: float, tl, items: List[Dict], centres: List[int]) -> None:
+    i = active_row(t, tl)
+    if i is None:
+        return
+    try:
+        import illustrations
+        path = illustrations.path_for(items[i]["english"])
+    except Exception:                                       # noqa: BLE001 — no library: no card
+        return
+    if not path.exists():
+        return
+    start = tl.es[i][0]
+    end = tl.es[i + 1][0] if i + 1 < len(tl.es) else tl.recap[0]
+    s = EMOJI_POP_FROM + (1.0 - EMOJI_POP_FROM) * ease_out_back(min(1.0, (t - start) / ILLO_POP), EMOJI_OVERSHOOT)
+    a = min(1.0, max(0.0, (end - t) / ILLO_OUT))
+    card = _illustration_card(str(path), path.stat().st_mtime)
+    if s != 1.0:
+        card = card.resize((max(1, round(card.width * s)), max(1, round(card.height * s))), Image.LANCZOS)
+    if a < 1.0:
+        card = _faded(card, round(a * 16) / 16)
+    x0, y0, x1, y1 = illustration_box(i, centres)
+    cx, cy = _p((x0 + x1) / 2, (y0 + y1) / 2)
+    layer.alpha_composite(card, (int(round(cx - card.width / 2)), int(round(cy - card.height / 2))))
+
+
 def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
                                 presentation=None) -> np.ndarray:
     """One frame of a how_do_you_say video."""
@@ -866,6 +933,9 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
         tick_t = tl.reveal_end[i]
         _draw_tick(layer, ENGLISH_X + w + TICK_GAP, cy,
                    ease_out_cubic((t - tick_t) / TICK_POP) if t >= tick_t else 0.0)
+
+    # 4b. STEP 80 §4: the active row's illustration, on a card beside it (never over it)
+    _draw_illustration(layer, t, tl, items, centres)
 
     # 5. the opening hook, and the CTA from the spoken outro on
     _draw_hook(layer, t, data, tl.es[0][0])
