@@ -117,14 +117,15 @@ def test_text_fits_its_box_or_says_it_does_not():
     assert not K.in_safe_area((100, 100, 900, 200)) and not K.in_safe_area((900, 1000, 1000, 1100))
 
 
-def test_the_outro_shows_the_answer_after_two_seconds_inside_the_safe_area():
+def test_the_outro_shows_the_answer_from_its_first_frame_inside_the_safe_area():
+    """STEP 80: the answer was on screen only from the outro's second 2; now from its start."""
     from video import outro as O
     v = O.load_variants()["variants"][0]
-    early, late = K.outro_frame(1.0, v, "My brother is 12."), K.outro_frame(3.0, v, "My brother is 12.")
+    shown, blank = K.outro_frame(0.5, v, "My brother is 12."), K.outro_frame(0.5, v, " ")
     box = K.outro_answer_box("My brother is 12.")
     assert K.in_safe_area(box)
     y0, y1 = int(box[1]), int(box[3])
-    assert np.abs(early[y0:y1].astype(int) - late[y0:y1].astype(int)).sum() > 10000
+    assert np.abs(shown[y0:y1].astype(int) - blank[y0:y1].astype(int)).sum() > 10000
 
 
 def _dummy_style():

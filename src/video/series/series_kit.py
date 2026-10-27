@@ -225,9 +225,56 @@ def challenge_card(img: Image.Image, prompt: str, y: float, p: float = 1.0, widt
     return lay["box"]
 
 
-# ── the outro: the brand card, Bubi waving, the challenge's answer after 2 s ──
+# ── after the challenge: time to think, then the answer (STEP 80; Garcia: «the video cuts too
+#    fast and does not give time to learn the answer of the mini challenge») ──
 
-OUTRO_ANSWER_AT = 2.0
+THINK_S, REVEAL_S = 3.0, 3.0          # a 3-2-1 under the challenge card, then the answer, held
+AFTER_S = THINK_S + REVEAL_S
+REVEAL_W = 760                        # centred: it ends left of the rail's x 940
+
+
+def reveal_layout(challenge_box: Box, answer: str) -> Dict:
+    """Where the countdown and the answer card go: right under the challenge card, inside the
+    safe area (raised over the card's foot when the card sits low)."""
+    size, lines = fit(answer, "fredoka", REVEAL_W - 80, 60, 36, 2)
+    h = 52 + line_height(size, "fredoka") * len(lines) + 56
+    top = min(challenge_box[3] + 30, SAFE_BOTTOM - 8 - h)
+    box = ((W - REVEAL_W) / 2, top, (W + REVEAL_W) / 2, top + h)
+    return {"size": size, "lines": lines, "box": box, "centre": (W / 2, top + h / 2)}
+
+
+def after_challenge(img: Image.Image, t: float, challenge_box: Box, answer: str) -> None:
+    """The THINK_S countdown (3, 2, 1 on a disc, its ring running out), then the answer on a card
+    that pops in: «Respuesta», the answer in green."""
+    lay = reveal_layout(challenge_box, answer)
+    cx, cy = lay["centre"]
+    ink = kit.colour("ink")
+    if t < THINK_S:
+        n = 3 - int(t)
+        r = 74
+        disc = Image.new("RGBA", (2 * r * kit.SS, 2 * r * kit.SS), (0, 0, 0, 0))
+        ImageDraw.Draw(disc).ellipse([0, 0, 2 * r * kit.SS - 1, 2 * r * kit.SS - 1], fill=(255, 255, 255, 255),
+                                     outline=ink, width=6 * kit.SS)
+        img.alpha_composite(disc.resize((2 * r, 2 * r), Image.LANCZOS), (int(cx - r), int(cy - r)))
+        ring(img, (cx - r + 10, cy - r + 10, cx + r - 10, cy + r - 10), 1.0 - (t % 1.0), kit.colour("english_blue"), 8)
+        text_block(img, [str(n)], "fredoka", 76, cx - r, cy - 48, ink, "center", 2 * r)
+        return
+    p = clamp01((t - THINK_S) / 0.3)
+    s = 0.7 + 0.3 * ease_out_back(p, 2.2)
+    x0, y0, x1, y1 = lay["box"]
+    w, h = int(x1 - x0), int(y1 - y0)
+    card = Image.new("RGBA", (w + 14, h + 14), (0, 0, 0, 0))
+    card.alpha_composite(kit.note_card(w, h, (255, 255, 255, 255), 4, (8, 8)))
+    text_block(card, ["Respuesta"], "fredoka_medium", 34, 0, 18, ink, "center", w)
+    text_block(card, list(lay["lines"]), "fredoka", lay["size"], 0, 62, kit.colour("correct"), "center", w)
+    if s != 1.0:
+        card = card.resize((max(1, round(card.width * s)), max(1, round(card.height * s))), Image.LANCZOS)
+    img.alpha_composite(card, (int(round(cx - card.width / 2)), int(round(cy - card.height / 2))))
+
+
+# ── the outro: the brand card, Bubi waving, the challenge's answer from its first frame ──
+
+OUTRO_ANSWER_AT = 0.0                 # STEP 80: the answer stays on from the reveal through the outro
 OUTRO_ANSWER_W = 760                # centred: it ends left of the rail's x 940
 
 

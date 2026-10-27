@@ -174,6 +174,9 @@ def check(script: Dict, mp4, info: Dict, narration_wav: Optional[Path] = None, s
     outside = [label for label, box in style.text_boxes(script) if not K.in_safe_area(box)]
     if not K.in_safe_area(K.outro_answer_box(script["challenge"]["answer"])):
         outside.append("outro answer")
+    challenge_box = dict(style.text_boxes(script)).get("challenge")
+    if challenge_box and not K.in_safe_area(K.reveal_layout(challenge_box, script["challenge"]["answer"])["box"]):
+        outside.append("the answer's reveal")
     checks["safe_areas"] = {"outside": outside}
     flags += [f"unsafe:{label}" for label in outside]
 

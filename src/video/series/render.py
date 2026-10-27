@@ -90,11 +90,15 @@ def render_series(script: Dict, out_mp4, work_dir, *, silent: bool = False, seco
         de = loudness.prepare_narration(tl["audio"], data_json, levelled)["deesser"]   # de-essed, −14 LUFS, levelled
         narration = loudness.decode(levelled)
     voice_s = narration.size / rate
+    # STEP 80: after the challenge, THINK_S to think and REVEAL_S for the answer (room tone)
+    room = np.random.default_rng(7).normal(0.0, 10 ** (-62 / 20), int(round(K.AFTER_S * rate)))
+    narration = np.concatenate([narration, room])
+    reveal_t = voice_s + K.THINK_S
 
-    # 2. the style's sounds, under the voice
+    # 2. the style's sounds, under the voice; a pop when the answer comes
     spoken = [(b["start"], b["end"]) for b in tl["beats"]]
     if not silent:
-        narration, _placed = SFX.mix(narration, rate, style.sfx_events(script, tl), spoken)
+        narration, _placed = SFX.mix(narration, rate, [*style.sfx_events(script, tl), ("pop", reveal_t, 0.0)], spoken)
 
     # 3. the outro: its own voice (cached, −14 LUFS), the card, the answer
     variant = variant or O.select_variant(seed=script["id"])
@@ -103,23 +107,30 @@ def render_series(script: Dict, out_mp4, work_dir, *, silent: bool = False, seco
     peak = float(np.max(np.abs(audio))) if audio.size else 0.0
     if peak > 0.999:
         audio *= 0.999 / peak
-    total = voice_s + O.OUTRO_DURATION
+    total = voice_s + K.AFTER_S + O.OUTRO_DURATION
     duration = min(total, seconds) if seconds else total
     audio = audio[:int(round(duration * rate))]
     wav = work_dir / f"{script['id']}.mix.wav"
     loudness._write_wav(audio, wav)
 
     answer = script["challenge"]["answer"]
+    challenge_box = dict(style.text_boxes(script)).get("challenge")
 
     def frame_at(t: float) -> np.ndarray:
         if t < voice_s:
             return np.asarray(style.frame(t, script, tl).convert("RGB"))
-        return K.outro_frame(t - voice_s, variant, answer)
+        if t < voice_s + K.AFTER_S:                       # the challenge stays; 3-2-1, then the answer
+            img = style.frame(t, script, tl)
+            if challenge_box is not None:
+                K.after_challenge(img, t - voice_s, challenge_box, answer)
+            return np.asarray(img.convert("RGB"))
+        return K.outro_frame(t - voice_s - K.AFTER_S, variant, answer)
 
     render_video_ffmpeg(frame_at, str(wav), str(out_mp4), duration,
                         workers=workers if workers is not None else render_workers())
     info = {"id": script["id"], "style": script["style"], "level": script["level"],
             "duration": round(duration, 3), "voice_seconds": round(voice_s, 3), "tts_usd": tts_usd,
+            "reveal_at": round(reveal_t, 3),
             "outro_variant": variant["id"], "timeline": tl, "silent": silent, "deesser": de}
     out_mp4.with_suffix(".json").write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
     return info
