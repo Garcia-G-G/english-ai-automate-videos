@@ -120,7 +120,7 @@ def test_the_panel_can_start_a_series_render_now():
     at = AppTest.from_file(str(ROOT / "src" / "admin.py"), default_timeout=120)
     at.session_state["current_page"] = "Generate"
     at.run()
-    next(x for x in at.selectbox if x.label == "Video Type").set_value(series.PANEL_LABEL).run()
+    next(x for x in at.selectbox if x.label == "Tipo de vídeo").set_value(series.PANEL_LABEL).run()
     assert [b.disabled for b in at.button if b.label == "Crear video"] == [False]
     import admin
     assert callable(admin.start_series_generation)

@@ -46,8 +46,8 @@ def remaining(fetch=None, now=time.time) -> Optional[Dict]:
         if "pytest" in sys.modules:
             return None
         fetch = _fetch
-    if _cache["value"] is not None and now() - _cache["at"] < CACHE_S:
-        return _cache["value"]
+    if _cache["at"] and now() - _cache["at"] < CACHE_S:   # a failed read is cached too (STEP 80 §3:
+        return _cache["value"]                            # a 401 cost 0.4 s on every click)
     value = fetch()
     _cache.update(at=now(), value=value)
     return value

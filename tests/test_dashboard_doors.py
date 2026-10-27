@@ -152,7 +152,7 @@ def test_every_type_gets_a_label_including_one_nobody_has_added_yet():
     for video_type in VIDEO_TYPES:
         assert admin.type_label(video_type)
 
-    assert admin.type_label("fill_blank") == "Fill Blank"
+    assert admin.type_label("fill_blank") == "Completa (antiguo)"         # its own panel name (STEP 80 §3)
     assert admin.type_label("some_future_type") == "Some Future Type"
 
 

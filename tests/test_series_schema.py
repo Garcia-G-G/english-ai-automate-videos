@@ -98,7 +98,7 @@ def test_the_panel_offers_the_series_with_style_and_level_filters():
     at = AppTest.from_file(str(ROOT / "src" / "admin.py"), default_timeout=120)
     at.session_state["current_page"] = "Generate"
     at.run()
-    vt = next(x for x in at.selectbox if x.label == "Video Type")
+    vt = next(x for x in at.selectbox if x.label == "Tipo de vídeo")
     assert series.PANEL_LABEL in vt.options
     vt.set_value(series.PANEL_LABEL).run()
     labels = [x.label for x in at.selectbox]

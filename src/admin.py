@@ -91,9 +91,13 @@ _TYPE_LABELS = {
 
 
 def type_label(video_type: str) -> str:
-    """Human label for a video type, for checkboxes and selectboxes."""
-    return _TYPE_LABELS.get(video_type,
-                            str(video_type).replace("_", " ").title())
+    """Human label for a video type, for checkboxes and selectboxes: the type's own panel name
+    («Elige la correcta», STEP 80 §3), else the label map, else the key made readable."""
+    import video_types
+    if video_type == series.PANEL_LABEL:                  # the series is offered under its own name
+        return video_type
+    own = (video_types.TYPES.get(video_type) or {}).get("dashboard")
+    return own or _TYPE_LABELS.get(video_type, str(video_type).replace("_", " ").title())
 
 
 def scheduler_default_types() -> list:
@@ -3040,9 +3044,11 @@ elif page == "Generate":
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        st.markdown('<div class="section-header">Configuration</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">Configuración</div>', unsafe_allow_html=True)
 
-        video_type = st.selectbox("Video Type", [*PANEL_TYPES, series.PANEL_LABEL], index=0)
+        # STEP 80 §3: Spanish labels, and the type's own name instead of its key
+        video_type = st.selectbox("Tipo de vídeo", [*PANEL_TYPES, series.PANEL_LABEL], index=0,
+                                  format_func=type_label)
 
         # STEP 78 §1: «Hecho con Claude», its own scripts and queue, filtered by style and level.
         is_series = video_type == series.PANEL_LABEL
@@ -3056,25 +3062,22 @@ elif page == "Generate":
             series_level = None if _level == "Todos" else _level
             st.caption(f"{len(series.queued(series_style, series_level))} guiones en cola")
 
-        selection_mode = st.radio(
-            "Topic Selection",
-            ["Random", "Select Category", "Specific Topic"],
-            index=0
-        )
+        _modes = {"Random": "Al azar", "Select Category": "Elegir categoría", "Specific Topic": "Tema concreto"}
+        selection_mode = st.radio("Tema", list(_modes), index=0, format_func=_modes.get)
 
         category = None
         topic_name = None
 
         if selection_mode == "Select Category":
             categories = list_categories()
-            category = st.selectbox("Category", categories)
+            category = st.selectbox("Categoría", categories)
         elif selection_mode == "Specific Topic":
             categories = list_categories()
-            category = st.selectbox("Category", categories)
+            category = st.selectbox("Categoría", categories)
             if category:
                 topics = load_topics(category)
                 topic_names = [t.get("english") or t.get("topic") or t.get("wrong") for t in topics]
-                topic_name = st.selectbox("Topic", topic_names)
+                topic_name = st.selectbox("Tema concreto", topic_names)
 
         # ── the controls the engine has always accepted ──
         #
@@ -3082,18 +3085,18 @@ elif page == "Generate":
         # took, or a name pipeline.resolve_profile already resolved. None of
         # them had a widget, which is the whole reason this page had three
         # controls for an engine with seven.
-        with st.expander("Options", expanded=False):
+        with st.expander("Opciones", expanded=False):
             profiles = available_profiles()
             profile_name = st.selectbox(
-                "Audience profile", profiles,
+                "Perfil de audiencia", profiles,
                 index=profiles.index("adults") if "adults" in profiles else 0,
-                help="Voice, backgrounds and topic categories.")
+                help="Voz, fondos y categorías de temas.")
 
             # Named with its reason rather than silently missing. A profile
             # that is declared but cannot resolve is a fixable configuration
             # problem, and hiding it makes it an invisible one.
             for name, reason in unavailable_profiles().items():
-                st.caption(f"Profile '{name}' unavailable — {reason}")
+                st.caption(f"Perfil «{name}» no disponible — {reason}")
 
             # NO BACKGROUND CONTROL AND NO ENGINE CONTROL.
             #
@@ -3113,33 +3116,30 @@ elif page == "Generate":
             _q = queue_status()
             if _q["ready"]:
                 use_queue = st.checkbox(
-                    f"Use a queued script ({_q['ready']} ready)", value=True,
-                    help="Written ahead of time and checked by the guard: no "
-                         "OpenAI call, and never a topic already produced. "
-                         "Uncheck to write a fresh script with GPT, which "
-                         "needs credits.")
+                    f"Usar un guion de la cola ({_q['ready']} listos)", value=True,
+                    help="Escritos de antemano y revisados por el guardián: sin llamada a "
+                         "OpenAI y nunca un tema ya producido. Desmárcalo para escribir uno "
+                         "nuevo con GPT, que necesita créditos.")
                 if use_queue:
-                    st.caption(" · ".join(f"{k} {v}" for k, v in
+                    st.caption(" · ".join(f"{type_label(k)} {v}" for k, v in
                                           sorted(_q["by_type"].items())))
             else:
                 use_queue = False
-                st.caption("Queue empty — this will write a new script with "
-                           "GPT, which needs OpenAI credits."
-                           + (f" {_q['blocked']} queued script(s) are blocked "
-                              f"by the guard." if _q["blocked"] else ""))
+                st.caption("La cola está vacía: se escribirá un guion nuevo con GPT, que "
+                           "necesita créditos de OpenAI."
+                           + (f" {_q['blocked']} guion(es) en cola bloqueados por el guardián."
+                              if _q["blocked"] else ""))
 
             dry_run = st.checkbox(
-                "Dry run (no TTS, no render)",
-                help="Writes the script and resolves the TTS plan, then "
-                     "stops. Skips the TTS call and the render — but the "
-                     "GPT script call still happens, so this is cheap, not "
-                     "free.")
+                "Prueba (sin voz ni render)",
+                help="Escribe el guion y resuelve el plan de voz, y para ahí: sin TTS ni "
+                     "render, pero la llamada a GPT para el guion sí ocurre (barato, no gratis).")
 
         generate_btn = st.button("Crear video", type="primary", width="stretch",
                                  disabled=is_series and not hasattr(series, "render_one"))
 
     with col2:
-        st.markdown('<div class="section-header">Generation Status</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-header">En marcha</div>', unsafe_allow_html=True)
 
         # Same reason as the Dashboard panel: repaint this block, not the page.
         @st.fragment(run_every="2s")
@@ -3148,33 +3148,17 @@ elif page == "Generate":
             if not jobs:
                 return
             for job in jobs:
-                st.markdown(f"**{job['video_type'].upper()}** — {job.get('topic', 'Selecting...')}")
+                st.markdown(f"**{type_label(job['video_type'])}** — {job.get('topic', 'eligiendo…')}")
                 st.progress(job.get('progress', 0) / 100)
-                st.caption(job.get('current_step', 'Initializing...'))
-            st.markdown("---")
+                st.caption(job.get('current_step', 'Empezando…'))
 
         _render_generation_status()
-
-        st.markdown("**Recent (Last 5)**")
-        history = get_job_history(5)
-        if history:
-            for i, job in enumerate(history):
-                icon = "✅" if job["status"] == "completed" else "❌"
-                video_file = find_video_file(job.get("video_path", ""))
-                auto_expand = (i == 0 and video_file is not None)
-                with st.expander(f"{icon} {job.get('topic', 'Unknown')} ({job['video_type']})", expanded=auto_expand):
-                    st.write(f"**Status:** {job['status']}")
-                    if job.get("error"):
-                        st.error(job['error'][:300])
-                    if video_file:
-                        lazy_video(video_file, f"gen_{i}_{video_file.name}",
-                                   open_now=auto_expand)
-        else:
-            st.info("No videos generated yet.")
+        # STEP 80 §3: the history and the failures are Inicio's; this page no longer repeats them
+        st.caption("Lo terminado y los fallos están en «Inicio».")
 
         if generate_btn and is_series:
             job_id = start_series_generation(series_style, series_level)
-            st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
+            st.success(f"En marcha: `{job_id}` — el progreso aparece arriba.")
             st.rerun()
         elif generate_btn:
             # Queued, not awaited: the outcome arrives in the job list above,
@@ -3188,7 +3172,7 @@ elif page == "Generate":
             except AlreadyRendering as e:
                 st.error(str(e))
             else:
-                st.success(f"Generation started! Job: `{job_id}` — progress appears above.")
+                st.success(f"En marcha: `{job_id}` — el progreso aparece arriba.")
                 st.rerun()
 
 
@@ -3299,7 +3283,8 @@ elif page == "Review":
             st.caption(f"↑ {_focus} está el primero — vienes de Inicio.")
 
         types_available = list(set(v["type"] for v in pending))
-        filter_type = st.selectbox("Filter by type", ["All"] + types_available)
+        filter_type = st.selectbox("Filtrar por tipo", ["All"] + types_available,
+                                   format_func=lambda k: "Todos" if k == "All" else type_label(k))
         if filter_type != "All":
             pending = [v for v in pending if v["type"] == filter_type]
 
@@ -3955,7 +3940,7 @@ elif page == "Library":
             total_size = sum(v.get("size", 0) or v["path"].stat().st_size for v in all_videos if v["path"].exists())
             st.metric("Total Size", f"{total_size / (1024*1024):.1f} MB")
         with cols[2]:
-            st.metric("Video Types", len(set(v["type"] for v in all_videos)))
+            st.metric("Tipos de vídeo", len(set(v["type"] for v in all_videos)))
 
         stuck = [v for v in all_videos if v.get("stage") == "batch"]
         if stuck:
@@ -3969,7 +3954,8 @@ elif page == "Library":
         fc1, fc2 = st.columns([1, 3])
         with fc1:
             types = ["All"] + list(set(v["type"] for v in all_videos))
-            filter_type = st.selectbox("Filter", types, key="lib_filter")
+            filter_type = st.selectbox("Filtrar", types, key="lib_filter",
+                                       format_func=lambda k: "Todos" if k == "All" else type_label(k))
         with fc2:
             search = st.text_input("Search", placeholder="Search by name...")
 
@@ -4258,11 +4244,13 @@ elif page == "Settings":
     # STEP 74 §3: the same cleanup as `make clean`; the table is `make clean-dry`.
     st.markdown('<div class="section-header">Limpiar</div>', unsafe_allow_html=True)
     _clean = _cleanup_module()
-    try:
-        _plans = _clean.plan()
-    except (OSError, subprocess.CalledProcessError) as e:
-        _plans = None
-        st.error(f"No se pudo calcular la limpieza: {e}")
+    _plans = None
+    # STEP 80 §3: walking the output tree took 0.4–1.7 s on every visit; only on request now
+    if st.toggle("Calcular qué se puede limpiar", key="cleanup_show"):
+        try:
+            _plans = _clean.plan()
+        except (OSError, subprocess.CalledProcessError) as e:
+            st.error(f"No se pudo calcular la limpieza: {e}")
     if _plans is not None:
         _total = sum(p["bytes"] for p in _plans)
         st.caption("Borra vídeos ya subidos, rechazados, artefactos de más de 14 días, intermedios "
@@ -4352,7 +4340,8 @@ elif page == "Logs":
 
     st.markdown("---")
 
-    log_filter = st.selectbox("Filter", ["All", "Active", "Completed", "Failed"])
+    _log_names = {"All": "Todos", "Active": "En marcha", "Completed": "Terminados", "Failed": "Fallidos"}
+    log_filter = st.selectbox("Filtrar", list(_log_names), format_func=_log_names.get)
 
     if log_filter == "Active":
         display_jobs = jobs.get("active", [])
