@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "¿Cuántas palabras de TELÉFONO Y MENSAJES sabes en inglés? 📱",
+  "video_description": "Llamar, colgar, dejar en visto: test de inglés con 10 palabras del móvil 💬",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el teléfono y los mensajes",
+  "intro": "[curious] Diez palabras del teléfono y los mensajes, de fácil a experto. ¿Qué significan?",
+  "items": [
+    {
+      "english": "phone",
+      "spanish": "Teléfono",
+      "cefr": "A1"
+    },
+    {
+      "english": "call",
+      "spanish": "Llamar",
+      "cefr": "A1"
+    },
+    {
+      "english": "message",
+      "spanish": "Mensaje",
+      "cefr": "A1"
+    },
+    {
+      "english": "charger",
+      "spanish": "Cargador",
+      "cefr": "A2"
+    },
+    {
+      "english": "voicemail",
+      "spanish": "Buzón de voz",
+      "cefr": "B1"
+    },
+    {
+      "english": "ringtone",
+      "spanish": "Tono de llamada",
+      "cefr": "B1"
+    },
+    {
+      "english": "hang up",
+      "spanish": "Colgar",
+      "cefr": "B1"
+    },
+    {
+      "english": "speakerphone",
+      "spanish": "Altavoz, manos libres",
+      "cefr": "B2"
+    },
+    {
+      "english": "leave someone on read",
+      "spanish": "Dejar en visto",
+      "cefr": "C1"
+    },
+    {
+      "english": "screen calls",
+      "spanish": "Filtrar llamadas",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres, nivel básico. Hasta la siete, intermedio. Y si llegaste a la diez, experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Mándamelo en un comentario.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésDiario",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv069",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "phone": "Teléfono",
+    "call": "Llamar",
+    "message": "Mensaje",
+    "charger": "Cargador",
+    "voicemail": "Buzón de voz",
+    "ringtone": "Tono de llamada",
+    "hang up": "Colgar",
+    "speakerphone": "Altavoz, manos libres",
+    "leave someone on read": "Dejar en visto",
+    "screen calls": "Filtrar llamadas"
+  },
+  "english_phrases": [
+    "phone",
+    "call",
+    "message",
+    "charger",
+    "voicemail",
+    "ringtone",
+    "hang up",
+    "speakerphone",
+    "leave someone on read",
+    "screen calls"
+  ],
+  "full_script": "[curious] Diez palabras del teléfono y los mensajes, de fácil a experto. ¿Qué significan? phone Teléfono call Llamar message Mensaje Ahora, nivel intermedio. charger Cargador voicemail Buzón de voz ringtone Tono de llamada hang up Colgar Y ahora, nivel experto. speakerphone Altavoz, manos libres leave someone on read Dejar en visto screen calls Filtrar llamadas Hasta la tres, nivel básico. Hasta la siete, intermedio. Y si llegaste a la diez, experto. [happy] ¿Hasta qué número llegaste? Mándamelo en un comentario."
+}

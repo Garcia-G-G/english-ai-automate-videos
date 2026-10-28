@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Phrasal verbs con GET: ¿qué nivel de inglés tienes? 💪",
+  "video_description": "Get up, get over, get away with… ¿cuántos phrasal verbs con GET entiendes? 🔥",
+  "title": "¿Qué nivel tienes?",
+  "theme": "phrasal verbs con GET",
+  "intro": "[excited] Diez phrasal verbs con get, de fácil a experto. Di qué significan antes que yo.",
+  "items": [
+    {
+      "english": "get up",
+      "spanish": "Levantarse",
+      "cefr": "A1"
+    },
+    {
+      "english": "get on",
+      "spanish": "Subirse (al bus)",
+      "cefr": "A2"
+    },
+    {
+      "english": "get off",
+      "spanish": "Bajarse",
+      "cefr": "A2"
+    },
+    {
+      "english": "get back",
+      "spanish": "Volver",
+      "cefr": "B1"
+    },
+    {
+      "english": "get along",
+      "spanish": "Llevarse bien",
+      "cefr": "B1"
+    },
+    {
+      "english": "get over",
+      "spanish": "Superar",
+      "cefr": "B2"
+    },
+    {
+      "english": "get rid of",
+      "spanish": "Deshacerse de",
+      "cefr": "B2"
+    },
+    {
+      "english": "get by",
+      "spanish": "Arreglárselas",
+      "cefr": "B2"
+    },
+    {
+      "english": "get away with",
+      "spanish": "Salirse con la suya",
+      "cefr": "C1"
+    },
+    {
+      "english": "get across",
+      "spanish": "Transmitir una idea",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, nivel básico. A la siete, intermedio. Y si entendiste las diez, experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? ¿Cuál te costó más? Comenta.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#PhrasalVerbs",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésAvanzado"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv075",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "get up": "Levantarse",
+    "get on": "Subirse (al bus)",
+    "get off": "Bajarse",
+    "get back": "Volver",
+    "get along": "Llevarse bien",
+    "get over": "Superar",
+    "get rid of": "Deshacerse de",
+    "get by": "Arreglárselas",
+    "get away with": "Salirse con la suya",
+    "get across": "Transmitir una idea"
+  },
+  "english_phrases": [
+    "get up",
+    "get on",
+    "get off",
+    "get back",
+    "get along",
+    "get over",
+    "get rid of",
+    "get by",
+    "get away with",
+    "get across"
+  ],
+  "full_script": "[excited] Diez phrasal verbs con get, de fácil a experto. Di qué significan antes que yo. get up Levantarse get on Subirse (al bus) get off Bajarse Ahora, nivel intermedio. get back Volver get along Llevarse bien get over Superar get rid of Deshacerse de Y ahora, nivel experto. get by Arreglárselas get away with Salirse con la suya get across Transmitir una idea Si llegaste a la tres, nivel básico. A la siete, intermedio. Y si entendiste las diez, experto. [cheerful] ¿Hasta qué número llegaste? ¿Cuál te costó más? Comenta."
+}

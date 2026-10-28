@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "IE y EI en inglés: test de pronunciación 🎯",
+  "video_description": "Friend, height, leisure… ¿Sabes cuándo IE y EI suenan «e», «ii» o «ai»? 🤓",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con IE y EI",
+  "intro": "[thoughtful] IE y EI engañan a todo el mundo. Lee cada palabra en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "friend",
+      "respelling": "FREND",
+      "ipa": "ˈfrɛnd",
+      "trap": "IE suena «e»: FREND"
+    },
+    {
+      "english": "field",
+      "respelling": "FIILD",
+      "ipa": "ˈfiːld",
+      "trap": "IE es una «i» larga: FIILD"
+    },
+    {
+      "english": "weight",
+      "respelling": "UEIT",
+      "ipa": "ˈweɪt",
+      "trap": "EIGH suena «ei»: UEIT"
+    },
+    {
+      "english": "believe",
+      "respelling": "bi-LIIV",
+      "ipa": "bɪˈliːv",
+      "trap": "Acento en LIIV y la V es suave"
+    },
+    {
+      "english": "ceiling",
+      "respelling": "SII-ling",
+      "ipa": "ˈsiːlɪŋ",
+      "trap": "EI suena «ii» larga"
+    },
+    {
+      "english": "height",
+      "respelling": "JAIT",
+      "ipa": "ˈhaɪt",
+      "trap": "Termina en T, no en TH"
+    },
+    {
+      "english": "foreign",
+      "respelling": "FO-ren",
+      "ipa": "ˈfɔrən",
+      "trap": "La G no suena: FO-ren"
+    },
+    {
+      "english": "science",
+      "respelling": "SAI-ans",
+      "ipa": "ˈsaɪəns",
+      "trap": "IE son dos sílabas: SAI-ans"
+    },
+    {
+      "english": "either",
+      "respelling": "II-dher",
+      "ipa": "ˈiːðɚ",
+      "trap": "En EE. UU. EI suena «ii»"
+    },
+    {
+      "english": "leisure",
+      "respelling": "LII-zher",
+      "ipa": "ˈliːʒɚ",
+      "trap": "EI suena «ii» y la S, «zh»"
+    }
+  ],
+  "verdict": "La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste?",
+  "outro": "[curious] ¿Hasta qué número llegaste? Escríbelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésFácil",
+    "#Ortografía",
+    "#AprenderInglés",
+    "#InglésParaHispanohablantes"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl059",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

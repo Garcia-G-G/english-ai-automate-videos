@@ -1,0 +1,67 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa: el TO que sobra después de must ✂️",
+  "video_description": "El error que comete casi todo el mundo con los modales. ⚠️",
+  "sentence": "I ___ go now, my train leaves in ten minutes.",
+  "options": [
+    "must",
+    "must to",
+    "have",
+    "need"
+  ],
+  "correct": "must",
+  "translation": "Tengo que irme ya, mi tren sale en diez minutos.",
+  "explanation": "[excited] Después de must va el verbo sin to. Must go, nunca must to go.",
+  "full_script": "[excited] ¡Completa la frase! Número uno. I ___ go now, my train leaves in ten minutes. Las opciones son: A, must. B, must to. C, have. D, need. [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, must! Después de must va el verbo sin to. Must go, nunca must to go. Número dos. You ___ try the paella here, it's amazing. Las opciones son: A, should. B, should to. C, ought. D, must to. [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, should! Should funciona igual que must: should try, sin to en medio.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm019",
+    "video_type": "fill_blank",
+    "model": "manual"
+  },
+  "sentences": [
+    {
+      "sentence": "I ___ go now, my train leaves in ten minutes.",
+      "options": [
+        "must",
+        "must to",
+        "have",
+        "need"
+      ],
+      "correct": "must",
+      "translation": "Tengo que irme ya, mi tren sale en diez minutos.",
+      "explanation": "[excited] Después de must va el verbo sin to. Must go, nunca must to go."
+    },
+    {
+      "sentence": "You ___ try the paella here, it's amazing.",
+      "options": [
+        "should",
+        "should to",
+        "ought",
+        "must to"
+      ],
+      "correct": "should",
+      "translation": "Tienes que probar la paella de aquí, está buenísima.",
+      "explanation": "[excited] Should funciona igual que must: should try, sin to en medio."
+    },
+    {
+      "sentence": "I ___ to finish this report by Friday.",
+      "options": [
+        "have",
+        "must",
+        "can",
+        "should"
+      ],
+      "correct": "have",
+      "translation": "Tengo que terminar este informe para el viernes.",
+      "explanation": "[excited] Aquí sí hay to, porque have to no es un modal. Have to finish, must finish."
+    }
+  ]
+}

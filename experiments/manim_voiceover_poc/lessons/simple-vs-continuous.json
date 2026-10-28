@@ -1,0 +1,337 @@
+{
+  "id": "simple-vs-continuous",
+  "title": "¿I work o I'm working? Simple vs. continuo",
+  "kicker": "Inglés · Presente · A2",
+  "level": "A2",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "beats": [
+    {
+      "id": "b01",
+      "type": "title",
+      "narration": "Hola. Hoy resolvemos una de las dudas más comunes del inglés: ¿cuándo digo [[I work]] y cuándo digo [[I'm working]]? Las dos son presente, las dos son correctas, y sin embargo no significan lo mismo. Vamos con calma."
+    },
+    {
+      "id": "b02",
+      "type": "heading",
+      "text": "Parte 1 · Dos presentes, dos ideas",
+      "narration": "Primera parte. En español tenemos un solo presente para casi todo: trabajo. En inglés hay dos, y cada uno cuenta una historia distinta sobre el tiempo."
+    },
+    {
+      "id": "b03",
+      "type": "sentence",
+      "text": "I work in a bank.",
+      "gloss": "Trabajo en un banco. (siempre, es mi trabajo)",
+      "highlight": {
+        "work": "yellow"
+      },
+      "narration": "Mira la primera: [[I work in a bank]]. Trabajo en un banco. Esto habla de mi vida en general: es mi trabajo, lo hago siempre, es un hecho estable. Fíjate en [[work]], el verbo en su forma simple."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "text": "I'm working right now.",
+      "gloss": "Estoy trabajando ahora mismo. (en este momento)",
+      "highlight": {
+        "working": "blue"
+      },
+      "narration": "Ahora la segunda: [[I'm working right now]]. Estoy trabajando ahora mismo. Esto habla de este momento, de lo que pasa mientras hablo. Fíjate en [[working]], con i-ene-ge al final."
+    },
+    {
+      "id": "b05",
+      "type": "tip",
+      "text": "Simple = siempre, en general, hechos. Continuo = ahora, en este momento, temporal.",
+      "narration": "La idea completa en una línea: el presente simple es para lo que pasa siempre o en general, los hechos. El presente continuo es para lo que pasa ahora, en este momento, algo temporal."
+    },
+    {
+      "id": "b06",
+      "type": "heading",
+      "text": "Parte 2 · Cómo se construyen",
+      "narration": "Segunda parte: cómo se arma cada uno. Porque entender la idea es la mitad; la otra mitad es que te salga sin pensar."
+    },
+    {
+      "id": "b07",
+      "type": "table",
+      "headers": [
+        "Simple",
+        "Continuo"
+      ],
+      "emphasis": [
+        "I'm working",
+        "He's working",
+        "They're working"
+      ],
+      "rows": [
+        [
+          "I work",
+          "I'm working"
+        ],
+        [
+          "He works",
+          "He's working"
+        ],
+        [
+          "They work",
+          "They're working"
+        ]
+      ],
+      "narration": "Mira la tabla. [[I work]], y al lado [[I'm working. He works]], con su ese de tercera persona, y [[He's working. They work, They're working]]. El continuo siempre lleva dos piezas: el verbo ser o estar, y el verbo con i-ene-ge."
+    },
+    {
+      "id": "b08",
+      "type": "list",
+      "heading": "El continuo = to be + verbo-ing",
+      "items": [
+        "I am → I'm working",
+        "He / She / It is → He's working",
+        "You / We / They are → They're working"
+      ],
+      "narration": "El continuo es siempre el verbo ser más el verbo con i-ene-ge. [[I am]], que se contrae a [[I'm working. He, she]] o [[it is: He's working. You, we]] o [[they are: They're working]]. Si falta una de las dos piezas, la frase está rota."
+    },
+    {
+      "id": "b09",
+      "type": "sentence",
+      "text": "She working now.",
+      "gloss": "✗ Falta el verbo to be",
+      "highlight": {
+        "working": "red"
+      },
+      "narration": "Este es el error número uno: [[She working now]]. Suena casi bien, pero le falta una pieza. [[Working]] solo, sin el verbo ser, no es una frase en inglés."
+    },
+    {
+      "id": "b10",
+      "type": "sentence",
+      "text": "She is working now.",
+      "gloss": "Ella está trabajando ahora.",
+      "highlight": {
+        "is": "green",
+        "working": "green"
+      },
+      "narration": "La versión correcta: [[She is working now]]. Ella está trabajando ahora. [[Is]] más [[working]]: las dos piezas juntas, siempre."
+    },
+    {
+      "id": "b11",
+      "type": "heading",
+      "text": "Parte 3 · Las palabras que te delatan el tiempo",
+      "narration": "Tercera parte. Hay palabras que casi siempre acompañan a uno u otro. Si las reconoces, eliges el tiempo correcto sin dudar."
+    },
+    {
+      "id": "b12",
+      "type": "table",
+      "headers": [
+        "Simple",
+        "Continuo"
+      ],
+      "rows": [
+        [
+          "always",
+          "now"
+        ],
+        [
+          "every day",
+          "right now"
+        ],
+        [
+          "usually",
+          "at the moment"
+        ],
+        [
+          "never",
+          "today"
+        ]
+      ],
+      "narration": "Con el simple van [[always]], siempre. [[Every day]], todos los días. [[Usually]], normalmente. [[Never]], nunca. Con el continuo van [[now]], ahora. [[Right now]], ahora mismo. [[At the moment]], en este momento. Y [[today]], hoy, cuando hablamos de algo temporal."
+    },
+    {
+      "id": "b13",
+      "type": "sentence",
+      "text": "I usually drink tea.",
+      "gloss": "Normalmente tomo té.",
+      "highlight": {
+        "usually": "yellow",
+        "drink": "green"
+      },
+      "narration": "Escucha cómo la palabra decide el tiempo: [[I usually drink tea]]. Normalmente tomo té. [[Usually]] pide simple, así que [[drink]], sin i-ene-ge."
+    },
+    {
+      "id": "b14",
+      "type": "sentence",
+      "text": "But today I'm drinking coffee.",
+      "gloss": "Pero hoy estoy tomando café.",
+      "highlight": {
+        "today": "blue",
+        "drinking": "green"
+      },
+      "narration": "Y ahora: [[But today I'm drinking coffee]]. Pero hoy estoy tomando café. [[Today]] marca algo temporal, distinto de lo normal, así que continuo: [[I'm drinking]]."
+    },
+    {
+      "id": "b15",
+      "type": "tip",
+      "text": "Cuando describes lo que ves en una foto o por la ventana, casi siempre es continuo.",
+      "narration": "Un truco muy útil: cuando describes lo que ves, una foto, una ventana, una videollamada, casi siempre es continuo. [[She's smiling. They're eating. It's raining]]. Está pasando delante de ti."
+    },
+    {
+      "id": "b16",
+      "type": "heading",
+      "text": "Parte 4 · Un diálogo real",
+      "narration": "Cuarta parte. Vamos a escuchar los dos presentes conviviendo en una conversación normal, por teléfono. Fíjate en cuándo cambia de uno a otro."
+    },
+    {
+      "id": "b17",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "Sofía",
+          "en": "Hi! What are you doing?",
+          "es": "¡Hola! ¿Qué estás haciendo?"
+        },
+        {
+          "speaker": "Marco",
+          "en": "I'm cooking dinner. Why?",
+          "es": "Estoy preparando la cena. ¿Por qué?"
+        },
+        {
+          "speaker": "Sofía",
+          "en": "Do you cook every day?",
+          "es": "¿Cocinas todos los días?"
+        },
+        {
+          "speaker": "Marco",
+          "en": "No, I usually order food. Today is special.",
+          "es": "No, normalmente pido comida. Hoy es especial."
+        }
+      ],
+      "narration": "Sofía: [[Hi! What are you doing?]] ¿Qué estás haciendo? Marco: [[I'm cooking dinner. Why?]] Estoy preparando la cena. Sofía: [[Do you cook every day?]] ¿Cocinas todos los días? Marco: [[No, I usually order food. Today is special.]]"
+    },
+    {
+      "id": "b18",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "What are you doing? → ahora",
+        "I'm cooking → ahora",
+        "Do you cook every day? → hábito",
+        "I usually order → hábito"
+      ],
+      "narration": "¿Lo notaste? [[What are you doing?]] y [[I'm cooking]] hablan de ahora: continuo. [[Do you cook every day?]] e [[I usually order]] hablan del hábito: simple. La misma conversación salta entre los dos según de qué hable."
+    },
+    {
+      "id": "b19",
+      "type": "heading",
+      "text": "Parte 5 · Los verbos que no aceptan -ing",
+      "narration": "Quinta parte, y esta es la que separa el nivel A2 del B1: hay verbos que casi nunca van en continuo, aunque hablemos de ahora."
+    },
+    {
+      "id": "b20",
+      "type": "list",
+      "heading": "Verbos de estado: casi siempre simples",
+      "items": [
+        "like, love, hate, want, need",
+        "know, understand, believe, remember",
+        "have (tener), be (ser)"
+      ],
+      "narration": "Son los verbos de estado, los que describen gustos, pensamientos y posesión. [[Like, love, hate, want, need. Know, understand, believe, remember]]. Y [[have]] cuando significa tener. No describen una acción en marcha, describen un estado."
+    },
+    {
+      "id": "b21",
+      "type": "sentence",
+      "text": "I'm wanting a coffee.",
+      "gloss": "✗ want no va en continuo",
+      "highlight": {
+        "wanting": "red"
+      },
+      "narration": "Por eso esto suena raro a un nativo: [[I'm wanting a coffee]]. Querer no es una acción que estés haciendo; es un estado. [[Wanting]] no."
+    },
+    {
+      "id": "b22",
+      "type": "sentence",
+      "same": true,
+      "fix": {
+        "from": "wanting",
+        "to": "want"
+      },
+      "narration": "Lo correcto es simple, aunque sea ahora mismo: [[I want a coffee]]. Quiero un café. Lo mismo con [[I know, I need, I understand]]: siempre simple."
+    },
+    {
+      "id": "b23",
+      "type": "tip",
+      "text": "Excepción famosa: I'm loving it (McDonald's) es publicidad, no gramática estándar.",
+      "narration": "Una excepción que seguro has visto: [[I'm loving it]], el eslogan de McDonald's. Es publicidad jugando con la regla, no la regla. En un examen o en el trabajo: [[I love it]]."
+    },
+    {
+      "id": "b24",
+      "type": "heading",
+      "text": "Parte 6 · Practica",
+      "narration": "Sexta parte: te toca a ti. Tres frases, dos opciones cada una. Decide antes de que yo dé la respuesta."
+    },
+    {
+      "id": "b25",
+      "type": "quiz",
+      "question": "Listen! Someone ___ the piano.",
+      "options": [
+        "plays",
+        "is playing"
+      ],
+      "answer": 1,
+      "narration": "Primera: [[Listen! Someone]], espacio, [[the piano]]. ¿[[Plays]] o [[is playing]]? Piénsalo. {{pause:3}} [[Listen]], escucha: está pasando ahora. La respuesta es [[is playing. Someone is playing the piano]]."
+    },
+    {
+      "id": "b26",
+      "type": "quiz",
+      "question": "My father ___ to work by train every day.",
+      "options": [
+        "goes",
+        "is going"
+      ],
+      "answer": 0,
+      "narration": "Segunda: [[My father]], espacio, [[to work by train every day]]. {{pause:3}} [[Every day]], todos los días: un hábito. La respuesta es [[goes]], con su ese de tercera persona. [[My father goes to work by train every day]]."
+    },
+    {
+      "id": "b27",
+      "type": "quiz",
+      "question": "I ___ this song. It's beautiful.",
+      "options": [
+        "am loving",
+        "love"
+      ],
+      "answer": 1,
+      "narration": "Tercera: [[I]], espacio, [[this song. It's beautiful]]. ¿[[Am loving]] o [[love]]? {{pause:3}} Amar es un verbo de estado, así que aunque sea ahora mismo, simple. La respuesta es [[love. I love this song]]."
+    },
+    {
+      "id": "b28",
+      "type": "heading",
+      "text": "Resumen",
+      "narration": "Cerramos con lo esencial. Cuatro ideas, y esta duda deja de ser una duda."
+    },
+    {
+      "id": "b29",
+      "type": "recap",
+      "items": [
+        "Simple: siempre, en general, hechos → I work",
+        "Continuo: ahora, temporal → I'm working",
+        "Continuo = to be + verbo-ing, las dos piezas",
+        "Gustos y pensamientos van en simple: I want, I know"
+      ],
+      "narration": "Uno: simple para lo que pasa siempre o en general, [[I work]]. Dos: continuo para lo que pasa ahora o es temporal, [[I'm working]]. Tres: el continuo lleva dos piezas, ser más i-ene-ge. Y cuatro: gustos y pensamientos van en simple, [[I want, I know]]."
+    },
+    {
+      "id": "b30",
+      "type": "sentence",
+      "text": "I work here, but today I'm working from home.",
+      "gloss": "Trabajo aquí, pero hoy estoy trabajando desde casa.",
+      "highlight": {
+        "work": "yellow",
+        "working": "blue"
+      },
+      "narration": "Y la frase que junta todo: [[I work here, but today I'm working from home]]. Trabajo aquí, pero hoy estoy trabajando desde casa. Los dos presentes, cada uno en su lugar. Hasta la próxima."
+    }
+  ],
+  "english_speed": 0.92
+}

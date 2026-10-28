@@ -1,0 +1,28 @@
+{
+ "lesson": "hacer-preguntas",
+ "mp4": "experiments/manim_voiceover_poc/renders/hacer-preguntas/20261023-203644_english-teacher_1080p30_sand.mp4",
+ "duration_s": 466.73,
+ "render_s": 504.0,
+ "render_and_encode_s": 728.4,
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "checks": {
+   "sync": [],
+   "lufs": -14.0,
+   "still": {
+    "seconds": 0.27,
+    "from": 20.03
+   }
+  }
+ },
+ "final_encode": {
+  "loudnorm": "linear",
+  "output_i": "-13.97",
+  "output_tp": "-2.44",
+  "bytes": 45289702
+ },
+ "max_cue_lag": 0.065,
+ "chapters": "00:00 Intro\n00:29 Parte 1 · El problema\n01:29 Parte 2 · La fórmula\n02:32 Parte 3 · Preguntas de sí o no\n03:23 Parte 4 · Cuando no hace falta do\n04:30 Parte 5 · En una conversación real\n05:11 Parte 6 · El error más común\n05:49 Parte 7 · Practica\n06:52 Parte 8 · Resumen\n",
+ "thumbnail": "hacer-preguntas/20261023-203644_english-teacher_1080p30_sand.thumb.jpg"
+}

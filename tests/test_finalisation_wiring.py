@@ -41,23 +41,22 @@ def _calls(path: Path, name: str):
 # ── both paths call it ───────────────────────────────────────────────
 
 def test_the_headless_path_finalises():
-    """`python main.py --batch N --upload` is the path 5a automates."""
-    assert _calls(ROOT / "main.py", "finalize_video"), (
-        "main.py does not finalise; --batch would publish ungated and with "
-        "no Learning Routes CTA")
+    """The CLI delegates production instead of owning finalisation."""
+    assert _calls(ROOT / "main.py", "build_creation_service")
+    assert not _calls(ROOT / "main.py", "finalize_video")
 
 
 def test_the_dashboard_path_finalises():
     """It had no gate and no outro either — this was a gap in both paths, not
     a divergence between them."""
-    assert _calls(ROOT / "src" / "admin.py", "finalize_video"), (
-        "admin.py does not finalise")
+    assert _calls(ROOT / "src" / "jobs.py", "finalize_video"), (
+        "jobs.py does not finalise")
 
 
 def test_there_is_still_exactly_one_finalisation_implementation():
     """Two would drift, and the order below is the part that must not."""
     defs = 0
-    for f in ("src/pipeline.py", "src/admin.py", "main.py"):
+    for f in ("src/pipeline.py", "src/admin.py", "src/jobs.py", "main.py"):
         tree = ast.parse((ROOT / f).read_text(encoding="utf-8"))
         defs += sum(1 for n in ast.walk(tree)
                     if isinstance(n, ast.FunctionDef) and n.name == "finalize_video")
@@ -103,7 +102,7 @@ def test_the_gate_runs_before_the_outro(monkeypatch, tmp_path):
                         lambda r: {"verdict": "PASS", "blocking_flags": []})
     monkeypatch.setattr(O, "select_variant", lambda seed=None: {"id": "v"})
     monkeypatch.setattr(O, "append_outro",
-                        lambda p, v, output_path=None: order.append("outro")
+                        lambda p, v, output_path=None, next_line=None: order.append("outro")
                         or Path(output_path).write_bytes(b"y") or output_path)
     monkeypatch.setattr(O, "measure_seam", lambda *a, **k: None)
 
@@ -128,7 +127,7 @@ def test_finalisation_keeps_the_artifact_name(monkeypatch, tmp_path):
                         lambda r: {"verdict": "PASS", "blocking_flags": []})
     monkeypatch.setattr(O, "select_variant", lambda seed=None: {"id": "v"})
     monkeypatch.setattr(O, "append_outro",
-                        lambda p, v, output_path=None:
+                        lambda p, v, output_path=None, next_line=None:
                         Path(output_path).write_bytes(b"outro'd") or output_path)
     monkeypatch.setattr(O, "measure_seam", lambda *a, **k: None)
 
@@ -198,25 +197,16 @@ def test_the_two_trees_are_distinct():
 
 
 def test_a_rejected_video_is_not_uploaded():
-    """The gate blocking and then publishing anyway would make it decorative."""
+    """The canonical creation adapter never invokes the legacy uploader."""
     src = (ROOT / "main.py").read_text(encoding="utf-8")
     tree = ast.parse(src)
     fn = next(n for n in ast.walk(tree)
-              if isinstance(n, ast.FunctionDef) and n.name == "run_pipeline")
-
-    lines = src.splitlines()
-    rejects = [n.lineno for n in ast.walk(fn)
-               if isinstance(n, ast.Compare)
-               and any(isinstance(c, ast.Constant) and c.value == "REJECT"
-                       for c in n.comparators)]
-    assert rejects, "run_pipeline never checks for REJECT"
-
-    upload_line = next(n.lineno for n in ast.walk(fn)
-                       if isinstance(n, ast.Call)
-                       and isinstance(n.func, ast.Name)
-                       and n.func.id == "upload_video")
-    assert min(rejects) < upload_line, (
-        "the REJECT check happens after the upload call")
+              if isinstance(n, ast.FunctionDef) and n.name == "run_creation")
+    assert not any(
+        isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+        and n.func.id == "upload_video"
+        for n in ast.walk(fn)
+    )
 
 
 if __name__ == "__main__":

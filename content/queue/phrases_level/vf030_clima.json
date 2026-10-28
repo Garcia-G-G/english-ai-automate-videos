@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases hablar del tiempo en inglés 🌦️",
+  "video_description": "Diez frases para hablar del tiempo como un nativo. 🌦️",
+  "title": "¿Cómo se dice?",
+  "theme": "hablar del tiempo",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "Hace frío.",
+      "english": "It's cold."
+    },
+    {
+      "spanish": "Hace mucho calor.",
+      "english": "It's really hot."
+    },
+    {
+      "spanish": "Está lloviendo.",
+      "english": "It's raining."
+    },
+    {
+      "spanish": "Hace un día precioso.",
+      "english": "It's a beautiful day."
+    },
+    {
+      "spanish": "Va a llover.",
+      "english": "It's going to rain."
+    },
+    {
+      "spanish": "Hace un frío que pela.",
+      "english": "It's freezing."
+    },
+    {
+      "spanish": "Estoy empapado.",
+      "english": "I'm soaked."
+    },
+    {
+      "spanish": "Hace bochorno.",
+      "english": "It's muggy."
+    },
+    {
+      "spanish": "Está despejando.",
+      "english": "It's clearing up."
+    },
+    {
+      "spanish": "Llueve a cántaros.",
+      "english": "It's pouring."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf030",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "It's cold.": "Hace frío.",
+    "It's really hot.": "Hace mucho calor.",
+    "It's raining.": "Está lloviendo.",
+    "It's a beautiful day.": "Hace un día precioso.",
+    "It's going to rain.": "Va a llover.",
+    "It's freezing.": "Hace un frío que pela.",
+    "I'm soaked.": "Estoy empapado.",
+    "It's muggy.": "Hace bochorno.",
+    "It's clearing up.": "Está despejando.",
+    "It's pouring.": "Llueve a cántaros."
+  },
+  "english_phrases": [
+    "It's cold.",
+    "It's really hot.",
+    "It's raining.",
+    "It's a beautiful day.",
+    "It's going to rain.",
+    "It's freezing.",
+    "I'm soaked.",
+    "It's muggy.",
+    "It's clearing up.",
+    "It's pouring."
+  ],
+  "full_script": "[cheerful] Lee la frase en español y dila en inglés en voz alta. It's cold. It's really hot. It's raining. It's a beautiful day. It's going to rain. It's freezing. I'm soaked. It's muggy. It's clearing up. It's pouring. [cheerful] Escribe en los comentarios la que más te gustó."
+}

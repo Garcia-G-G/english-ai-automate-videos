@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «TÓMATELO CON CALMA» en inglés? 🧘",
+  "video_description": "Diez frases para calmar las cosas. 🧘",
+  "title": "¿Cómo se dice?",
+  "theme": "para pedir calma",
+  "intro": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan.",
+  "items": [
+    {
+      "spanish": "Tranquilo.",
+      "english": "Relax."
+    },
+    {
+      "spanish": "Respira hondo.",
+      "english": "Take a deep breath."
+    },
+    {
+      "spanish": "No pasa nada.",
+      "english": "It's no big deal."
+    },
+    {
+      "spanish": "Tómatelo con calma.",
+      "english": "Take it easy."
+    },
+    {
+      "spanish": "Sin prisa.",
+      "english": "No rush."
+    },
+    {
+      "spanish": "Una cosa cada vez.",
+      "english": "One thing at a time."
+    },
+    {
+      "spanish": "No te lo tomes a pecho.",
+      "english": "Don't take it personally."
+    },
+    {
+      "spanish": "Vamos a calmarnos.",
+      "english": "Let's all calm down."
+    },
+    {
+      "spanish": "Ya lo arreglaremos.",
+      "english": "We'll figure it out."
+    },
+    {
+      "spanish": "No vale la pena.",
+      "english": "It's not worth it."
+    }
+  ],
+  "outro": "[curious] ¿Cuál no conocías? Cuéntamelo abajo.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf039",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

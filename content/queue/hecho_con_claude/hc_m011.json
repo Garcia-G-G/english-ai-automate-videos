@@ -1,0 +1,59 @@
+{
+  "id": "hc_m011",
+  "style": "mensajes",
+  "level": "principiante",
+  "angle": "reto",
+  "title": "RETO: ¿«brothers» o «siblings»?",
+  "hook_text": "Tengo un hermano y una hermana…",
+  "chat": {
+    "contact": "Chloe · Nueva York",
+    "messages": [
+      [
+        "them",
+        "Do you have brothers or sisters?"
+      ],
+      [
+        "me",
+        "Yes! I have 2 brothers",
+        "error"
+      ],
+      [
+        "them",
+        "cool, two boys!"
+      ],
+      [
+        "me",
+        "no, a boy and a girl 😅"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I have 2 brothers (un chico y una chica)",
+    "right": "I have 2 siblings / a brother and a sister",
+    "rule": "Brothers = solo chicos · Siblings = hermanos de cualquier género"
+  },
+  "voice": [
+    "Reto: tengo un hermano y una hermana. ¿Digo [[I have two brothers]]?",
+    "Piénsalo tres segundos…",
+    "No. [[Brothers]] son solo hermanos varones. En español «hermanos» vale para todos, en inglés no.",
+    "La palabra que buscas es [[siblings]]: [[I have two siblings]].",
+    "O dilo directamente: [[I have a brother and a sister]].",
+    "Reto: ¿cómo dirías «no tengo hermanos»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«No tengo hermanos»",
+    "answer": "I don't have any siblings. / I'm an only child."
+  },
+  "caption": "Brothers vs siblings: si tienes hermanos y hermanas, en inglés son «siblings». ¿Lo sabías?",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 59
+}

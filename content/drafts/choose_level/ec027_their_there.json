@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "¿THEIR, THERE o THEY'RE? Elige la correcta en 10 frases 🏠",
+  "video_description": "Their, there y they're suenan igual. ¿Sabes cuál va? 🏠",
+  "title": "Elige la correcta",
+  "theme": "their, there o they're",
+  "intro": "[curious] Dos opciones en cada frase. Elige antes de que yo la diga.",
+  "items": [
+    {
+      "sentence": "____ is a cat in the garden.",
+      "options": [
+        "There",
+        "Their"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "This is ____ house.",
+      "options": [
+        "there",
+        "their"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ my best friends.",
+      "options": [
+        "Their",
+        "They're"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Put it over ____.",
+      "options": [
+        "there",
+        "their"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "____ late again.",
+      "options": [
+        "There",
+        "They're"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The kids lost ____ toys.",
+      "options": [
+        "their",
+        "there"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Is ____ anything I can do?",
+      "options": [
+        "there",
+        "their"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ going to love it.",
+      "options": [
+        "Their",
+        "They're"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Everyone has ____ own opinion.",
+      "options": [
+        "their",
+        "there"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I'll be ____ in five minutes.",
+      "options": [
+        "their",
+        "there"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#ErroresDeIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec027",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

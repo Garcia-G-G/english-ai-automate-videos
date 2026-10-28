@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "OJALÁ en inglés: ¿I hope o I wish? Test de 10 🌠",
+  "video_description": "Que te mejores, que aproveche, ojalá pudiera: diez deseos en inglés, de fácil a trampa. 🌠",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «ojalá» y deseos",
+  "intro": "[warm] Hoy, deseos y «ojalá». ¿I hope o I wish? Di cada frase en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¡Buena suerte!",
+      "english": "Good luck!",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¡Que lo pases bien!",
+      "english": "Have fun!",
+      "cefr": "A1",
+      "alt": "Have a good time!"
+    },
+    {
+      "spanish": "¡Que te mejores!",
+      "english": "Get well soon!",
+      "cefr": "A2",
+      "alt": "Hope you feel better!"
+    },
+    {
+      "spanish": "Espero que te guste.",
+      "english": "I hope you like it.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Ojalá haga sol mañana.",
+      "english": "I hope it's sunny tomorrow.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¡Que aproveche!",
+      "english": "Enjoy your meal!",
+      "cefr": "B1",
+      "alt": "Enjoy!"
+    },
+    {
+      "spanish": "Ojalá pudiera ir.",
+      "english": "I wish I could go.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Ojalá fuera más alto.",
+      "english": "I wish I were taller.",
+      "cefr": "B2",
+      "alt": "I wish I was taller.",
+      "tip": "Deseo imposible: I wish + pasado, no I hope"
+    },
+    {
+      "spanish": "Ojalá me lo hubieras dicho.",
+      "english": "I wish you'd told me.",
+      "cefr": "C1",
+      "alt": "I wish you had told me.",
+      "tip": "Lamentar el pasado: I wish + had + participio"
+    },
+    {
+      "spanish": "¡Ya quisiera yo!",
+      "english": "I wish!",
+      "cefr": "C1",
+      "tip": "«¡Ya quisiera yo!» es simplemente I wish!"
+    }
+  ],
+  "verdict": "Tres frases: básico. Siete: intermedio. ¿Las diez? Ojalá todos fueran como tú: experto.",
+  "outro": "[happy] ¿Cuál es tu deseo? Escríbelo con tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#GramáticaInglesa",
+    "#IWish"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy094",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Good luck!": "¡Buena suerte!",
+    "Have fun!": "¡Que lo pases bien!",
+    "Get well soon!": "¡Que te mejores!",
+    "I hope you like it.": "Espero que te guste.",
+    "I hope it's sunny tomorrow.": "Ojalá haga sol mañana.",
+    "Enjoy your meal!": "¡Que aproveche!",
+    "I wish I could go.": "Ojalá pudiera ir.",
+    "I wish I were taller.": "Ojalá fuera más alto.",
+    "I wish you'd told me.": "Ojalá me lo hubieras dicho.",
+    "I wish!": "¡Ya quisiera yo!"
+  },
+  "english_phrases": [
+    "Good luck!",
+    "Have fun!",
+    "Get well soon!",
+    "I hope you like it.",
+    "I hope it's sunny tomorrow.",
+    "Enjoy your meal!",
+    "I wish I could go.",
+    "I wish I were taller.",
+    "I wish you'd told me.",
+    "I wish!",
+    "Have a good time!",
+    "Hope you feel better!",
+    "Enjoy!",
+    "I wish I was taller.",
+    "I wish you had told me."
+  ],
+  "full_script": "[warm] Hoy, deseos y «ojalá». ¿I hope o I wish? Di cada frase en inglés antes que yo. Good luck! Have fun! Get well soon! Ahora, nivel intermedio. I hope you like it. I hope it's sunny tomorrow. Enjoy your meal! I wish I could go. Y ahora, nivel experto. I wish I were taller. I wish you'd told me. I wish! Tres frases: básico. Siete: intermedio. ¿Las diez? Ojalá todos fueran como tú: experto. [happy] ¿Cuál es tu deseo? Escríbelo con tu número en los comentarios."
+}

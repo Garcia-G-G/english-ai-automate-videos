@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "El verbo DAR en inglés: ¿give o no? Pon a prueba tu nivel 🎁",
+  "video_description": "Dar un paseo, dar miedo, darse cuenta: diez frases con dar que casi nunca son give. 🎁",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «dar»",
+  "intro": "[curious] Diez frases con «dar». Ojo, que give no siempre vale. Dilas en inglés.",
+  "items": [
+    {
+      "spanish": "Dame tu número.",
+      "english": "Give me your number.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Dale un abrazo.",
+      "english": "Give him a hug.",
+      "cefr": "A1",
+      "alt": "Give her a hug."
+    },
+    {
+      "spanish": "¿Puedes darle de comer al gato?",
+      "english": "Can you feed the cat?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Vamos a dar un paseo.",
+      "english": "Let's go for a walk.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Me dan miedo las arañas.",
+      "english": "I'm scared of spiders.",
+      "cefr": "B1",
+      "alt": "Spiders scare me."
+    },
+    {
+      "spanish": "Me dio mucha vergüenza.",
+      "english": "I was so embarrassed.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "La habitación da al mar.",
+      "english": "The room faces the ocean.",
+      "cefr": "B2",
+      "alt": "The room faces the sea."
+    },
+    {
+      "spanish": "No me di cuenta.",
+      "english": "I didn't realize.",
+      "cefr": "B2",
+      "tip": "«Darse cuenta» es realize, no «give account»"
+    },
+    {
+      "spanish": "Me da igual lo que piensen.",
+      "english": "I don't care what they think.",
+      "cefr": "B2",
+      "tip": "«Me da igual» aquí es I don't care, no «gives me equal»"
+    },
+    {
+      "spanish": "Deja de darme la lata.",
+      "english": "Stop bugging me.",
+      "cefr": "C1",
+      "alt": "Stop nagging me.",
+      "tip": "«Dar la lata» es bug o nag, no «give the can»"
+    }
+  ],
+  "verdict": "Con tres, nivel básico. Con siete, intermedio. Y si diste con las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Dame tu respuesta en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#TrucosDeInglés",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy084",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Give me your number.": "Dame tu número.",
+    "Give him a hug.": "Dale un abrazo.",
+    "Can you feed the cat?": "¿Puedes darle de comer al gato?",
+    "Let's go for a walk.": "Vamos a dar un paseo.",
+    "I'm scared of spiders.": "Me dan miedo las arañas.",
+    "I was so embarrassed.": "Me dio mucha vergüenza.",
+    "The room faces the ocean.": "La habitación da al mar.",
+    "I didn't realize.": "No me di cuenta.",
+    "I don't care what they think.": "Me da igual lo que piensen.",
+    "Stop bugging me.": "Deja de darme la lata."
+  },
+  "english_phrases": [
+    "Give me your number.",
+    "Give him a hug.",
+    "Can you feed the cat?",
+    "Let's go for a walk.",
+    "I'm scared of spiders.",
+    "I was so embarrassed.",
+    "The room faces the ocean.",
+    "I didn't realize.",
+    "I don't care what they think.",
+    "Stop bugging me.",
+    "Give her a hug.",
+    "Spiders scare me.",
+    "The room faces the sea.",
+    "Stop nagging me."
+  ],
+  "full_script": "[curious] Diez frases con «dar». Ojo, que give no siempre vale. Dilas en inglés. Give me your number. Give him a hug. Can you feed the cat? Ahora, nivel intermedio. Let's go for a walk. I'm scared of spiders. I was so embarrassed. The room faces the ocean. Y ahora, nivel experto. I didn't realize. I don't care what they think. Stop bugging me. Con tres, nivel básico. Con siete, intermedio. Y si diste con las diez, eres experto. [excited] ¿Hasta qué número llegaste? Dame tu respuesta en los comentarios."
+}

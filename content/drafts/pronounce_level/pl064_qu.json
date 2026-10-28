@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras con QU: ¿llegas a la última? 👑",
+  "video_description": "Queen, quality, queue: diez palabras con QU para practicar en voz alta. 🗣️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con QU",
+  "intro": "[curious] Todas llevan QU. Tú las dices primero; yo te confirmo cómo suenan.",
+  "items": [
+    {
+      "english": "queen",
+      "respelling": "KUIIN",
+      "ipa": "ˈkwiːn",
+      "trap": "QU suena «ku»: KUIIN"
+    },
+    {
+      "english": "quick",
+      "respelling": "KUIK",
+      "ipa": "ˈkwɪk",
+      "trap": "QU suena «ku» y la I es corta"
+    },
+    {
+      "english": "question",
+      "respelling": "KUES-chan",
+      "ipa": "ˈkwɛstʃən",
+      "trap": "TI suena «ch»: KUES-chan"
+    },
+    {
+      "english": "quality",
+      "respelling": "KUA-la-ti",
+      "ipa": "ˈkwɑləti",
+      "trap": "Acento en KUA: KUA-la-ti"
+    },
+    {
+      "english": "quarter",
+      "respelling": "KUOR-ter",
+      "ipa": "ˈkwɔrtɚ",
+      "trap": "QUAR suena «kuor»"
+    },
+    {
+      "english": "unique",
+      "respelling": "iu-NIIK",
+      "ipa": "juˈniːk",
+      "trap": "QUE final suena «k»: iu-NIIK"
+    },
+    {
+      "english": "technique",
+      "respelling": "tek-NIIK",
+      "ipa": "tɛkˈniːk",
+      "trap": "Acento al final: tek-NIIK"
+    },
+    {
+      "english": "etiquette",
+      "respelling": "E-ti-ket",
+      "ipa": "ˈɛtɪkət",
+      "trap": "Acento en E- y QU suena «k»"
+    },
+    {
+      "english": "acquire",
+      "respelling": "a-KUAI-er",
+      "ipa": "əˈkwaɪɚ",
+      "trap": "La C no suena: a-KUAI-er"
+    },
+    {
+      "english": "queue",
+      "respelling": "KIUU",
+      "ipa": "ˈkjuː",
+      "trap": "Se dice como la letra Q: KIUU"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico. A la siete, intermedio. Y decir bien las diez es de experto.",
+  "outro": "[cheerful] Comenta tu número y dime si conocías «queue».",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Pronunciación",
+    "#InglésParaHispanohablantes",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl064",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

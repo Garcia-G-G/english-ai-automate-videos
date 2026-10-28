@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "¿AS o LIKE? Elige la correcta en 10 frases 🎭",
+  "video_description": "Como en inglés: as o like. Diez frases para elegir bien. 🎭",
+  "title": "Elige la correcta",
+  "theme": "as o like",
+  "intro": "[curious] Dos opciones en cada frase. Elige antes de que yo la diga.",
+  "items": [
+    {
+      "sentence": "She looks ____ her mother.",
+      "options": [
+        "like",
+        "as"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "He works ____ a teacher.",
+      "options": [
+        "like",
+        "as"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "It tastes ____ chicken.",
+      "options": [
+        "as",
+        "like"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Do ____ I say.",
+      "options": [
+        "as",
+        "like"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I used my coat ____ a blanket.",
+      "options": [
+        "like",
+        "as"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "There's no place ____ home.",
+      "options": [
+        "like",
+        "as"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "____ I said before, it's free.",
+      "options": [
+        "As",
+        "Like"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She's not ____ tall as her brother.",
+      "options": [
+        "like",
+        "as"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It's ____ if he didn't care.",
+      "options": [
+        "as",
+        "like"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ a child, I lived in Peru.",
+      "options": [
+        "Like",
+        "As"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AsVsLike",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec032",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

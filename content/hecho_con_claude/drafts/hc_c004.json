@@ -1,0 +1,47 @@
+{
+  "id": "hc_c004",
+  "style": "comic",
+  "level": "principiante",
+  "angle": "reto",
+  "title": "RETO: ¿cómo preguntas la edad?",
+  "hook_text": "El 80 % falla este",
+  "quiz": {
+    "prompt": "¿Cómo dirías «¿cuántos años tienes?»?",
+    "options": [
+      "How many years do you have?",
+      "How old are you?",
+      "How much years you have?"
+    ],
+    "answer": 1,
+    "after": "La edad se pregunta con «how old»."
+  },
+  "correction": {
+    "wrong": "How much years you have?",
+    "right": "How old are you?",
+    "rule": "How old are you?"
+  },
+  "voice": [
+    "El ochenta por ciento falla este. ¿Cómo preguntas «¿cuántos años tienes?»?",
+    "¿[[How many years do you have?]], [[How old are you?]] o [[How much years you have?]]",
+    "¡La B! [[How old are you?]] Literalmente, «¿cómo de viejo eres?».",
+    "Y se responde con [[I'm]]: [[I'm 30]].",
+    "Para alguien más: [[How old is your sister?]]",
+    "¿Cuántos años tienes tú? Respóndelo en inglés en comentarios."
+  ],
+  "challenge": {
+    "prompt": "Responde en inglés: «¿cuántos años tienes?»",
+    "answer": "I'm … (years old)."
+  },
+  "caption": "«¿Cuántos años tienes?» es «How old are you?», no «How many years do you have?». Reto rápido.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 62
+}

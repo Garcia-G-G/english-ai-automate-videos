@@ -1,0 +1,93 @@
+{
+  "type": "true_false_level",
+  "video_title": "OPUESTOS: ¿verdadero o falso? ↔️",
+  "video_description": "Contrarios en inglés: ¿verdadero o falso? ↔️",
+  "title": "¿Verdadero o falso?",
+  "theme": "palabras opuestas",
+  "intro": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto.",
+  "items": [
+    {
+      "statement": "Lo contrario de «hot» es «cold».",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "Lo contrario de «big» es «tall».",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es small"
+    },
+    {
+      "statement": "Lo contrario de «open» es «close».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "Lo contrario de «cheap» es «expensive».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "Lo contrario de «early» es «soon».",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es late"
+    },
+    {
+      "statement": "Lo contrario de «win» es «lose».",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "Lo contrario de «generous» es «stingy».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "Lo contrario de «include» es «enclose».",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es exclude"
+    },
+    {
+      "statement": "Lo contrario de «increase» es «decrease».",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "Lo contrario de «flammable» es «inflammable».",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "significan lo mismo; lo contrario es non-flammable"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf033",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "hot",
+    "big",
+    "open",
+    "cheap",
+    "early",
+    "win",
+    "generous",
+    "include",
+    "increase",
+    "flammable"
+  ],
+  "full_script": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto. Verdadero. Falso: es small. Verdadero. Ahora, nivel intermedio. Verdadero. Falso: es late. Verdadero. Verdadero. Y ahora, nivel experto. Falso: es exclude. Verdadero. Falso: significan lo mismo; lo contrario es non-flammable. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

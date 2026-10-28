@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La R INGLESA: 10 palabras de fácil a experto 🚗",
+  "video_description": "La R inglesa, de fácil a experto, en diez palabras. 🌎",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la R inglesa",
+  "intro": "[cheerful] Diez palabras para entrenar la R inglesa. Léelas en voz alta.",
+  "items": [
+    {
+      "english": "right",
+      "respelling": "RAIT",
+      "ipa": "ˈraɪt",
+      "trap": "R suave sin vibrar y GH muda"
+    },
+    {
+      "english": "road",
+      "respelling": "ROUD",
+      "ipa": "ˈroʊd",
+      "trap": "R suave y OA suena «ou»"
+    },
+    {
+      "english": "run",
+      "respelling": "RAN",
+      "ipa": "ˈrʌn",
+      "trap": "U suena «a» y R sin vibrar"
+    },
+    {
+      "english": "girl",
+      "respelling": "GERL",
+      "ipa": "ˈgɝl",
+      "trap": "IR suena «er»: GERL"
+    },
+    {
+      "english": "word",
+      "respelling": "UERD",
+      "ipa": "ˈwɝd",
+      "trap": "OR suena «er»: UERD"
+    },
+    {
+      "english": "hurry",
+      "respelling": "JER-i",
+      "ipa": "ˈhɝi",
+      "trap": "UR suena «er» y R suave"
+    },
+    {
+      "english": "error",
+      "respelling": "E-rer",
+      "ipa": "ˈɛrɚ",
+      "trap": "Dos R suaves, nada de «rr»"
+    },
+    {
+      "english": "rarely",
+      "respelling": "RER-li",
+      "ipa": "ˈrɛrli",
+      "trap": "Dos R casi seguidas: RER-li"
+    },
+    {
+      "english": "warrior",
+      "respelling": "UO-ri-er",
+      "ipa": "ˈwɔriɚ",
+      "trap": "Tres sílabas y R suaves"
+    },
+    {
+      "english": "rural",
+      "respelling": "RU-rel",
+      "ipa": "ˈrʊrəl",
+      "trap": "Dos R suaves y U corta"
+    }
+  ],
+  "verdict": "Si la tres fue tu límite, eres básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, experto.",
+  "outro": "[warm] Cuéntame en los comentarios cuál vas a practicar hoy.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#RInglesa",
+    "#AprenderInglés",
+    "#InglésAmericano",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl034",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

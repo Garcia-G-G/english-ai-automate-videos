@@ -1,0 +1,55 @@
+{
+  "id": "hc_m024",
+  "style": "mensajes",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«I'm used to wake up early»: el «to» trampa",
+  "hook_text": "Le conté mi rutina…",
+  "chat": {
+    "contact": "Mia · Austin",
+    "messages": [
+      [
+        "them",
+        "6am?? how do you do it?"
+      ],
+      [
+        "me",
+        "I'm used to wake up early",
+        "error"
+      ],
+      [
+        "them",
+        "you're used to waking up early 😉"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I'm used to wake up",
+    "right": "I'm used to waking up",
+    "rule": "Be used to + -ing (estar acostumbrado) · Used to + verbo (antes solía)"
+  },
+  "voice": [
+    "Le conté a mi amiga [[I'm used to wake up early]]. Casi bien, pero no.",
+    "[[Be used to]] significa «estar acostumbrado» y el [[to]] es preposición: va con -ing.",
+    "Por eso: [[I'm used to waking up early]], «estoy acostumbrado a madrugar».",
+    "No lo confundas con [[used to]] sin [[be]], que es «solía»: [[I used to wake up late]].",
+    "Y para hablar del proceso: [[I'm getting used to it]], «me estoy acostumbrando».",
+    "Reto: ¿cómo dirías «no estoy acostumbrado al frío»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«No estoy acostumbrado al frío»",
+    "answer": "I'm not used to the cold."
+  },
+  "caption": "«I'm used to waking up», con -ing. Be used to vs used to: la diferencia que confunde a todos.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 82
+}

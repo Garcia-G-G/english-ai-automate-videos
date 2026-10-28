@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "El COLEGIO en inglés: ¿hasta qué número llegas? 🏫",
+  "video_description": "Diez palabras del colegio en inglés, cada una más difícil que la anterior. 🏫",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el colegio",
+  "intro": "[happy] ¿Cuántas palabras del colegio conoces? Di el significado en voz alta antes de la respuesta.",
+  "items": [
+    {
+      "english": "teacher",
+      "spanish": "Profesor / maestro",
+      "cefr": "A1"
+    },
+    {
+      "english": "homework",
+      "spanish": "Deberes / tarea",
+      "cefr": "A1"
+    },
+    {
+      "english": "eraser",
+      "spanish": "Goma de borrar",
+      "cefr": "A2"
+    },
+    {
+      "english": "recess",
+      "spanish": "Recreo",
+      "cefr": "B1"
+    },
+    {
+      "english": "report card",
+      "spanish": "Boletín de notas",
+      "cefr": "B1"
+    },
+    {
+      "english": "principal",
+      "spanish": "Director del colegio",
+      "cefr": "B1"
+    },
+    {
+      "english": "cheat",
+      "spanish": "Copiar en un examen",
+      "cefr": "B2"
+    },
+    {
+      "english": "detention",
+      "spanish": "Castigo después de clase",
+      "cefr": "B2"
+    },
+    {
+      "english": "flunk",
+      "spanish": "Suspender / reprobar",
+      "cefr": "C1"
+    },
+    {
+      "english": "play hooky",
+      "spanish": "Faltar a clase sin permiso",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Básico si llegaste a la tres, intermedio si llegaste a la siete y experto si acertaste las diez.",
+  "outro": "[curious] ¿Qué palabra te costó más? Dímelo en los comentarios, junto a tu número.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv028",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "teacher": "Profesor / maestro",
+    "homework": "Deberes / tarea",
+    "eraser": "Goma de borrar",
+    "recess": "Recreo",
+    "report card": "Boletín de notas",
+    "principal": "Director del colegio",
+    "cheat": "Copiar en un examen",
+    "detention": "Castigo después de clase",
+    "flunk": "Suspender / reprobar",
+    "play hooky": "Faltar a clase sin permiso"
+  },
+  "english_phrases": [
+    "teacher",
+    "homework",
+    "eraser",
+    "recess",
+    "report card",
+    "principal",
+    "cheat",
+    "detention",
+    "flunk",
+    "play hooky"
+  ],
+  "full_script": "[happy] ¿Cuántas palabras del colegio conoces? Di el significado en voz alta antes de la respuesta. teacher Profesor / maestro homework Deberes / tarea eraser Goma de borrar Ahora, nivel intermedio. recess Recreo report card Boletín de notas principal Director del colegio cheat Copiar en un examen Y ahora, nivel experto. detention Castigo después de clase flunk Suspender / reprobar play hooky Faltar a clase sin permiso Básico si llegaste a la tres, intermedio si llegaste a la siete y experto si acertaste las diez. [curious] ¿Qué palabra te costó más? Dímelo en los comentarios, junto a tu número."
+}

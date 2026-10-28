@@ -1,0 +1,99 @@
+{
+  "type": "vocabulary",
+  "video_title": "Phrasal verbs de casa que usas cada día 🧹",
+  "video_description": "Siete verbos para hablar de tu piso sin traducir. 🏠",
+  "title": "Vocabulario: en casa",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "limpiar todo",
+      "english": "clean up"
+    },
+    {
+      "spanish": "ordenar el cuarto",
+      "english": "tidy up the room"
+    },
+    {
+      "spanish": "tirar a la basura",
+      "english": "throw it away"
+    },
+    {
+      "spanish": "colgar la ropa",
+      "english": "hang up the clothes"
+    },
+    {
+      "spanish": "recoger las cosas",
+      "english": "pick things up"
+    },
+    {
+      "spanish": "apagar la luz",
+      "english": "turn off the light"
+    },
+    {
+      "spanish": "sacar la basura",
+      "english": "take out the trash"
+    },
+    {
+      "spanish": "fregar los platos",
+      "english": "wash up the dishes"
+    },
+    {
+      "spanish": "barrer el suelo",
+      "english": "sweep the floor"
+    },
+    {
+      "spanish": "guardar la ropa",
+      "english": "put the clothes away"
+    },
+    {
+      "spanish": "ventilar la casa",
+      "english": "air out the house"
+    },
+    {
+      "spanish": "poner la mesa",
+      "english": "set the table"
+    }
+  ],
+  "full_script": "[excited] Compartes piso y toca repartir tareas. Limpiar todo, clean up. Ordenar el cuarto, tidy up the room. Tirar a la basura, throw it away. Colgar la ropa, hang up the clothes. Recoger las cosas, pick things up. Apagar la luz, turn off the light. Sacar la basura, take out the trash. Fregar los platos, wash up the dishes. Barrer el suelo, sweep the floor. Guardar la ropa, put the clothes away. Ventilar la casa, air out the house. Poner la mesa, set the table. Clean up es dejarlo limpio. Tidy up es solo dejarlo ordenado.",
+  "translations": {
+    "clean up": "limpiar todo",
+    "tidy up the room": "ordenar el cuarto",
+    "throw it away": "tirar a la basura",
+    "hang up the clothes": "colgar la ropa",
+    "pick things up": "recoger las cosas",
+    "turn off the light": "apagar la luz",
+    "take out the trash": "sacar la basura",
+    "wash up the dishes": "fregar los platos",
+    "sweep the floor": "barrer el suelo",
+    "put the clothes away": "guardar la ropa",
+    "air out the house": "ventilar la casa",
+    "set the table": "poner la mesa"
+  },
+  "english_phrases": [
+    "clean up",
+    "tidy up the room",
+    "throw it away",
+    "hang up the clothes",
+    "pick things up",
+    "turn off the light",
+    "take out the trash",
+    "wash up the dishes",
+    "sweep the floor",
+    "put the clothes away",
+    "air out the house",
+    "set the table"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "phrasal_verbs",
+    "topic_id": "pv018",
+    "video_type": "vocabulary",
+    "model": "manual"
+  }
+}

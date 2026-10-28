@@ -1,0 +1,40 @@
+{
+  "type": "educational",
+  "video_title": "Cómo pedir la cuenta en inglés (bill o check) 🧾",
+  "video_description": "En Nueva York y en Londres se pide distinto. 🍽️",
+  "hook": "Pides the bill en Nueva York y el camarero te mira raro.",
+  "full_script": "[excited] Has cenado genial en Nueva York y llamas al camarero. Pides the bill y te mira un segundo de más. No está mal, pero allí casi siempre dicen otra palabra. En Estados Unidos es check. Could we get the check, please? ¿Nos trae la cuenta, por favor? En Reino Unido, bill. Could we have the bill, please? Lo mismo, al otro lado del Atlántico. Si sois varios, esta frase os ahorra la calculadora. Can we split it? ¿Podemos pagar por separado? Y antes de dejar propina, pregunta. Is service included? ¿Está incluido el servicio? En Estados Unidos casi nunca lo está, y la propina se da por hecha. Entre un quince y un veinte por ciento. Allí no es un detalle, es parte del sueldo del camarero.",
+  "english_phrases": [
+    "the bill",
+    "check",
+    "Could we get the check, please?",
+    "bill",
+    "Could we have the bill, please?",
+    "Can we split it?",
+    "Is service included?"
+  ],
+  "translations": {
+    "the bill": "la cuenta",
+    "check": "la cuenta (EE. UU.)",
+    "Could we get the check, please?": "¿nos trae la cuenta, por favor?",
+    "bill": "la cuenta (Reino Unido)",
+    "Could we have the bill, please?": "¿nos trae la cuenta, por favor?",
+    "Can we split it?": "¿podemos pagar por separado?",
+    "Is service included?": "¿está incluido el servicio?"
+  },
+  "tip": "En Estados Unidos la propina no es opcional: entre un quince y un veinte por ciento.",
+  "cta": "¿Bill o check? ¿Dónde lo vas a usar?",
+  "hashtags": [
+    "#InglésParaViajar",
+    "#Viajes",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr007",
+    "video_type": "educational",
+    "model": "manual"
+  }
+}

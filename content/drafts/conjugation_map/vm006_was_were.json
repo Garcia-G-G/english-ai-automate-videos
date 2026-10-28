@@ -1,0 +1,83 @@
+{
+  "type": "conjugation_map",
+  "video_title": "WAS o WERE: el pasado de TO BE ⏪",
+  "video_description": "Era, estaba, fue: dos formas para todo el pasado. 🗺️",
+  "level": "A1-A2",
+  "verb": "be",
+  "verb_es": "ser o estar",
+  "tense": "pasado",
+  "intro": "[cheerful] El verbo be, ser o estar, en un solo mapa. Repite conmigo.",
+  "rows": [
+    {
+      "pronoun": "I",
+      "form": "was"
+    },
+    {
+      "pronoun": "You",
+      "form": "were"
+    },
+    {
+      "pronoun": "He",
+      "form": "was"
+    },
+    {
+      "pronoun": "She",
+      "form": "was"
+    },
+    {
+      "pronoun": "It",
+      "form": "was"
+    },
+    {
+      "pronoun": "We",
+      "form": "were"
+    },
+    {
+      "pronoun": "They",
+      "form": "were"
+    }
+  ],
+  "highlight": [
+    "was"
+  ],
+  "examples": [
+    {
+      "en": "I was tired.",
+      "es": "Estaba cansado."
+    },
+    {
+      "en": "They were at home.",
+      "es": "Estaban en casa."
+    }
+  ],
+  "negative": {
+    "en": "It wasn't easy.",
+    "es": "No fue fácil."
+  },
+  "question": {
+    "en": "Were you at the party?",
+    "es": "¿Estuviste en la fiesta?"
+  },
+  "tip": "Was con I, he, she e it. Were con you, we y they.",
+  "outro": "[excited] Guárdalo y repásalo mañana. Dos minutos y ya es tuyo.",
+  "translations": {
+    "I was tired.": "Estaba cansado.",
+    "They were at home.": "Estaban en casa.",
+    "It wasn't easy.": "No fue fácil.",
+    "Were you at the party?": "¿Estuviste en la fiesta?"
+  },
+  "hashtags": [
+    "#VerbosEnInglés",
+    "#InglésParaPrincipiantes",
+    "#AprenderInglés",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "verb_maps",
+    "topic_id": "vm006",
+    "video_type": "conjugation_map",
+    "model": "manual",
+    "draft": true
+  }
+}

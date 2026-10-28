@@ -1,0 +1,47 @@
+{
+  "id": "hc_c016",
+  "style": "comic",
+  "level": "medio",
+  "angle": "reto",
+  "title": "RETO: «hazme caso»",
+  "hook_text": "Nada que ver con «case»",
+  "quiz": {
+    "prompt": "¿Cómo dirías «nunca me haces caso»?",
+    "options": [
+      "You never make me case",
+      "You never listen to me",
+      "You never do me case"
+    ],
+    "answer": 1,
+    "after": "Hacer caso = listen to / pay attention to."
+  },
+  "correction": {
+    "wrong": "You never do me case",
+    "right": "You never listen to me",
+    "rule": "Listen to / pay attention"
+  },
+  "voice": [
+    "Nada que ver con [[case]]. ¿Cómo dirías «nunca me haces caso»?",
+    "¿[[You never make me case]], [[You never listen to me]] o [[You never do me case]]?",
+    "¡La B! [[You never listen to me]].",
+    "También: [[You never pay attention to me]].",
+    "Y para un consejo: [[I took your advice]], «te hice caso».",
+    "Reto extra: «hazle caso a tu madre». Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Hazle caso a tu madre»",
+    "answer": "Listen to your mother."
+  },
+  "caption": "«Hacer caso» es «listen to» o «pay attention to». Un reto de inglés que nadie acierta a la primera.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 62
+}

@@ -1,0 +1,46 @@
+{
+  "id": "hc_p015",
+  "style": "poster",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«Can you suggest me…?»: suena raro",
+  "hook_text": "¿Está bien decir «SUGGEST ME»?",
+  "poster": {
+    "error_no": "030",
+    "big_wrong": "SUGGEST ME",
+    "big_right": "RECOMMEND / SUGGEST TO ME",
+    "examples": [
+      "Can you recommend a good restaurant? — ¿Me recomiendas un buen restaurante?",
+      "What do you suggest? — ¿Qué me sugieres?"
+    ]
+  },
+  "correction": {
+    "wrong": "SUGGEST ME",
+    "right": "RECOMMEND / SUGGEST TO ME",
+    "rule": "Suggest no lleva persona directa"
+  },
+  "voice": [
+    "Muy común: [[Can you suggest me a restaurant?]] Pero [[suggest]] no lleva a la persona detrás.",
+    "Lo más natural: [[Can you recommend a good restaurant?]]",
+    "O sin persona: [[What do you suggest?]]",
+    "Y si quieres la persona: [[Can you suggest a restaurant to me?]]",
+    "Con verbo: [[I suggest going early]], o [[I suggest that you go early]].",
+    "Reto: pide que te recomienden una serie. Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "Pide que te recomienden una serie",
+    "answer": "Can you recommend a good series?"
+  },
+  "caption": "«Suggest me» suena raro: di «Can you recommend…?» o «What do you suggest?». Inglés natural.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 68
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La SCHWA: la vocal escondida del inglés 🤫",
+  "video_description": "La schwa, el sonido más común del inglés, en diez palabras. 🎧",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la schwa (la vocal escondida)",
+  "intro": "[calm] La vocal más común del inglés casi no se oye. Lee cada palabra y escucha.",
+  "items": [
+    {
+      "english": "about",
+      "respelling": "e-BAUT",
+      "ipa": "əˈbaʊt",
+      "trap": "La A inicial es una «e» relajada"
+    },
+    {
+      "english": "lesson",
+      "respelling": "LE-sen",
+      "ipa": "ˈlɛsən",
+      "trap": "La O final es una «e» débil"
+    },
+    {
+      "english": "button",
+      "respelling": "BA-ten",
+      "ipa": "ˈbʌtən",
+      "trap": "La O final es una «e» débil"
+    },
+    {
+      "english": "salad",
+      "respelling": "SA-led",
+      "ipa": "ˈsæləd",
+      "trap": "La segunda A es débil: SA-led"
+    },
+    {
+      "english": "family",
+      "respelling": "FA-me-li",
+      "ipa": "ˈfæməli",
+      "trap": "La I del medio se relaja"
+    },
+    {
+      "english": "today",
+      "respelling": "te-DEI",
+      "ipa": "təˈdeɪ",
+      "trap": "La O es débil: te-DEI"
+    },
+    {
+      "english": "elephant",
+      "respelling": "E-le-fent",
+      "ipa": "ˈɛləfənt",
+      "trap": "Solo la primera sílaba es fuerte"
+    },
+    {
+      "english": "camera",
+      "respelling": "KAM-ra",
+      "ipa": "ˈkæmrə",
+      "trap": "La E del medio casi desaparece"
+    },
+    {
+      "english": "separate",
+      "respelling": "SE-pret",
+      "ipa": "ˈsɛprət",
+      "trap": "Adjetivo: dos sílabas, SE-pret"
+    },
+    {
+      "english": "interesting",
+      "respelling": "IN-tres-ting",
+      "ipa": "ˈɪntrəstɪŋ",
+      "trap": "Tres sílabas: IN-tres-ting"
+    }
+  ],
+  "verdict": "Hasta la palabra tres, básico. Hasta la siete, intermedio. Si clavaste las diez, nivel experto.",
+  "outro": "[happy] ¿En qué número te quedaste? Te leo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#Schwa",
+    "#AprenderInglés",
+    "#TestDeInglés",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl032",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

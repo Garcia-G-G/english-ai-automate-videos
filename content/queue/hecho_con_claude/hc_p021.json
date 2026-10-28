@@ -1,0 +1,46 @@
+{
+  "id": "hc_p021",
+  "style": "poster",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«Do you mind?»: por qué hay que decir NO",
+  "hook_text": "¿Tú también dices «DO YOU MIND? — YES»?",
+  "poster": {
+    "error_no": "036",
+    "big_wrong": "DO YOU MIND? — YES",
+    "big_right": "DO YOU MIND? — NO, GO AHEAD",
+    "examples": [
+      "Do you mind if I sit here? — No, go ahead. — Claro, siéntate.",
+      "Would you mind closing the door? — Not at all."
+    ]
+  },
+  "correction": {
+    "wrong": "DO YOU MIND? — YES",
+    "right": "DO YOU MIND? — NO, GO AHEAD",
+    "rule": "Mind = importar"
+  },
+  "voice": [
+    "Si alguien pregunta [[Do you mind if I sit here?]] y respondes [[Yes]], le estás diciendo que no se siente.",
+    "Porque [[mind]] es «importar»: «¿te importa si me siento?».",
+    "Para dar permiso, di que no: [[No, go ahead]] o [[Not at all]].",
+    "Y para pedir un favor: [[Would you mind closing the door?]], con -ing.",
+    "Si sí te importa, con tacto: [[Actually, I'd rather you didn't]].",
+    "Reto: responde que sí puede abrir la ventana. Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "Te preguntan «Do you mind if I open the window?» y te parece bien",
+    "answer": "No, not at all. Go ahead."
+  },
+  "caption": "«Do you mind…?» se responde «No» si te parece bien. La trampa de mind explicada.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 78
+}

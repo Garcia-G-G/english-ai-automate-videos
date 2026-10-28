@@ -1,0 +1,47 @@
+{
+  "id": "hc_c026",
+  "style": "comic",
+  "level": "dificil",
+  "angle": "reto",
+  "title": "RETO: «diste en el clavo»",
+  "hook_text": "Tiene que ver con un martillo",
+  "quiz": {
+    "prompt": "¿Cómo dirías «diste en el clavo»?",
+    "options": [
+      "You gave in the nail",
+      "You hit the nail on the head",
+      "You touched the nail"
+    ],
+    "answer": 1,
+    "after": "Hit the nail on the head = acertar de lleno."
+  },
+  "correction": {
+    "wrong": "You touched the nail",
+    "right": "You hit the nail on the head",
+    "rule": "Idiom"
+  },
+  "voice": [
+    "Tiene que ver con un martillo. ¿Cómo dirías «diste en el clavo»?",
+    "¿[[You gave in the nail]], [[You hit the nail on the head]] o [[You touched the nail]]?",
+    "¡La B! [[You hit the nail on the head]]: en la cabeza del clavo.",
+    "Más corto: [[Spot on!]], muy británico, o [[Exactly!]]",
+    "Y si fallas por poco: [[Close, but no cigar]].",
+    "Reto extra: «tu respuesta dio en el clavo». Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Tu respuesta dio en el clavo»",
+    "answer": "Your answer hit the nail on the head. / Your answer was spot on."
+  },
+  "caption": "«Dar en el clavo» es «hit the nail on the head» o «spot on». Idioms en inglés en un reto.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 71
+}

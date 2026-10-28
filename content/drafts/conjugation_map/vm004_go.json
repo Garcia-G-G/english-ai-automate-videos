@@ -1,0 +1,83 @@
+{
+  "type": "conjugation_map",
+  "video_title": "El verbo TO GO en 1 minuto 🟠",
+  "video_description": "Ir en inglés, con la e-ese de la tercera persona. 🗺️",
+  "level": "A1",
+  "verb": "go",
+  "verb_es": "ir",
+  "tense": "presente",
+  "intro": "[cheerful] El verbo go, ir, en un solo mapa. Repite conmigo.",
+  "rows": [
+    {
+      "pronoun": "I",
+      "form": "go"
+    },
+    {
+      "pronoun": "You",
+      "form": "go"
+    },
+    {
+      "pronoun": "He",
+      "form": "goes"
+    },
+    {
+      "pronoun": "She",
+      "form": "goes"
+    },
+    {
+      "pronoun": "It",
+      "form": "goes"
+    },
+    {
+      "pronoun": "We",
+      "form": "go"
+    },
+    {
+      "pronoun": "They",
+      "form": "go"
+    }
+  ],
+  "highlight": [
+    "goes"
+  ],
+  "examples": [
+    {
+      "en": "We go to work by bus.",
+      "es": "Vamos al trabajo en autobús."
+    },
+    {
+      "en": "She goes to the gym on Mondays.",
+      "es": "Va al gimnasio los lunes."
+    }
+  ],
+  "negative": {
+    "en": "He doesn't go out much.",
+    "es": "No sale mucho."
+  },
+  "question": {
+    "en": "Where do you go on holiday?",
+    "es": "¿Adónde vas de vacaciones?"
+  },
+  "tip": "Con he, she e it se escribe goes, con e-ese. Igual que does.",
+  "outro": "[excited] Guárdalo y repásalo mañana. Dos minutos y ya es tuyo.",
+  "translations": {
+    "We go to work by bus.": "Vamos al trabajo en autobús.",
+    "She goes to the gym on Mondays.": "Va al gimnasio los lunes.",
+    "He doesn't go out much.": "No sale mucho.",
+    "Where do you go on holiday?": "¿Adónde vas de vacaciones?"
+  },
+  "hashtags": [
+    "#VerbosEnInglés",
+    "#InglésParaPrincipiantes",
+    "#AprenderInglés",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "verb_maps",
+    "topic_id": "vm004",
+    "video_type": "conjugation_map",
+    "model": "manual",
+    "draft": true
+  }
+}

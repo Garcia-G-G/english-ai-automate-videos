@@ -1,0 +1,43 @@
+{
+  "id": "hc_e017",
+  "style": "escena",
+  "level": "medio",
+  "angle": "historia",
+  "title": "«The food is very rich»: el cumplido que no lo era",
+  "hook_text": "ESCENA — CENA EN CASA DE UNOS AMIGOS",
+  "scene": {
+    "location": "Cena en casa de unos amigos",
+    "take1": "Wow, the food is very rich!",
+    "take2": "Wow, this is delicious!",
+    "note": "Rich food = comida pesada/contundente. Rico de sabor = delicious, tasty."
+  },
+  "correction": {
+    "wrong": "rich = rico (de sabor)",
+    "right": "delicious / tasty",
+    "rule": "Rich food suena a pesada"
+  },
+  "voice": [
+    "Escena: cena en casa de unos amigos ingleses. Toma uno: [[Wow, the food is very rich!]]",
+    "¡Corten! [[Rich food]] es comida pesada, con mucha grasa o nata. No es un cumplido claro.",
+    "Toma dos: [[Wow, this is delicious!]] O [[This is so tasty!]]",
+    "Y si quieres repetir: [[Can I have some more?]]",
+    "[[Rich]] sí vale para el dinero: [[a rich family]], «una familia rica».",
+    "Reto: di que la sopa está muy rica. Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«La sopa está muy rica»",
+    "answer": "The soup is delicious. / This soup is so tasty."
+  },
+  "caption": "«Rich food» es comida pesada; para decir que algo está rico: «delicious» o «tasty». Falso amigo en la cena.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 76
+}

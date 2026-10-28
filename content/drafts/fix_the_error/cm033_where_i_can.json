@@ -1,0 +1,53 @@
+{
+  "type": "fix_the_error",
+  "video_title": "Corrige el error: Where I can…? ❓",
+  "video_description": "Las preguntas en inglés tienen su orden. 🔀",
+  "level": "A2",
+  "intro": "[curious] Esta frase tiene un error. ¿Lo encuentras antes que yo?",
+  "items": [
+    {
+      "wrong": "Where I can find a taxi?",
+      "error": "I can",
+      "right": "Where can I find a taxi?",
+      "fix": "can I",
+      "translation": "¿Dónde puedo encontrar un taxi?",
+      "explanation": "[excited] En la pregunta, el auxiliar va antes del sujeto: can I."
+    },
+    {
+      "wrong": "What time the train leaves?",
+      "error": "the train leaves",
+      "right": "What time does the train leave?",
+      "fix": "does the train leave",
+      "translation": "¿A qué hora sale el tren?",
+      "explanation": "[excited] Sin auxiliar no hay pregunta. Does delante, y leave sin ese."
+    },
+    {
+      "wrong": "Why you are late?",
+      "error": "you are",
+      "right": "Why are you late?",
+      "fix": "are you",
+      "translation": "¿Por qué llegas tarde?",
+      "explanation": "[excited] Con be, se invierte: are you. Así de simple."
+    }
+  ],
+  "outro": "[excited] ¿Lo pillaste a la primera? Dímelo en los comentarios.",
+  "translations": {
+    "Where can I find a taxi?": "¿Dónde puedo encontrar un taxi?",
+    "What time does the train leave?": "¿A qué hora sale el tren?",
+    "Why are you late?": "¿Por qué llegas tarde?"
+  },
+  "hashtags": [
+    "#CorrigeElError",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#ErroresComunes",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm033",
+    "video_type": "fix_the_error",
+    "model": "manual",
+    "draft": true
+  }
+}

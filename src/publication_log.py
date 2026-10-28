@@ -76,6 +76,7 @@ ATTEMPT_SESSION = "session"      # a resumable session URI exists
 ATTEMPT_PUBLISHED = "published"  # confirmed live, ledger row written
 ATTEMPT_FAILED = "failed"        # confirmed NOT live; safe to retry
 ATTEMPT_UNKNOWN = "unknown"      # could not be determined; needs a human
+ATTEMPT_MANUAL = "manual"        # the operator uploaded it by hand (TikTok, STEP 73 §4)
 
 
 #: The real files, captured at import before any test can monkeypatch them.
@@ -215,6 +216,11 @@ def record_upload_result(*, artifact: str, video_path: str, video_type: str,
                  else getattr(result, "upload_id", None))
     url = (result.get("url") if isinstance(result, dict)
            else getattr(result, "url", None))
+    # STEP 80: what the uploader actually sent, after the platform's rules, when it says
+    sent = (result.get("sent") if isinstance(result, dict) else getattr(result, "sent", None)) or {}
+    sent_title = sent.get("title", sent_title)
+    sent_description = sent.get("description", sent_description)
+    sent_hashtags = sent.get("hashtags", sent_hashtags)
 
     return record_publication(
         artifact=artifact,

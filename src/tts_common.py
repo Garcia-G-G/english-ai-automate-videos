@@ -13,6 +13,12 @@ import logging
 import os
 import re
 import subprocess
+import proc as _proc   # `proc` is a local name for results in this module
+
+#: Room tone is white noise from anoisesrc. Without a seed it is new noise on every run, so the
+#: same cached clips stitched twice gave different files (STEP 76 §4); a fixed seed makes a
+#: re-stitch reproducible. The noise sits ~75 dB down: one seed for every clip is inaudible.
+ROOM_TONE_SEED = 7607
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -220,7 +226,7 @@ def measure_speech_end(audio_path: str, threshold_db: float = None,
 
     duration = get_audio_duration(audio_path)
     try:
-        proc = subprocess.run(
+        proc = _proc.run(
             ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
              f"silencedetect=noise={threshold_db}dB:d={min_dur}",
              "-f", "null", "-"],
@@ -266,44 +272,173 @@ def measure_speech_end(audio_path: str, threshold_db: float = None,
 #: deterministic by construction rather than by luck.
 TRIM_TAIL_PAD = 0.08
 
-#: Leading silence is already small (0-0.096s measured), so this only avoids
-#: clipping the attack of the first phoneme.
-TRIM_LEAD_PAD = 0.02
+#: Pre-roll kept before the measured speech start. 0.02 s was measured on
+#: option clips that open on vowels; a soft /s/ or /n/ runs 30-100 ms under
+#: any edge threshold, so 0.08 s keeps it (STEP 60 §1).
+TRIM_LEAD_PAD = 0.08
+
+#: Speech starts where the level first rises above the clip's own peak minus
+#: this. An absolute -45 dBFS put the start inside a quiet onset: on lv001's
+#: «cutting board» it found 65 ms where the /k/ closure starts at 0 ms. -55,
+#: not -50: a soft /s/ sits near -50 re peak, and a threshold equal to it is
+#: a coin flip per 5 ms frame.
+SPEECH_START_RE_PEAK_DB = -55.0
+#: ...but never below this, so a near-silent clip is not "speech" from its
+#: room tone (ElevenLabs' floor measures -75 to -94 dBFS).
+SPEECH_START_FLOOR_DB = -70.0
 
 
-def measure_speech_start(audio_path: str, threshold_db: float = None,
-                         min_dur: float = 0.03) -> float:
-    """Offset where speech STARTS, i.e. the length of the leading silence.
+def measure_first_take_end(audio_path: str, threshold_db: float = None,
+                           min_gap: float = 0.08) -> "float | None":
+    """Where the FIRST of two takes ends inside one clip, or None.
 
-    Uses a shorter min_dur than measure_speech_end because leading silence is
-    an order of magnitude smaller — measured 0.000s to 0.096s across real
-    option clips, all of which would be invisible at the 0.10s window.
+    how_do_you_say speaks "Family. Family." in ONE call -- the second take
+    costs one word of characters rather than a second request -- and the
+    renderer writes the word in over the first take only. This finds the
+    pause between the two: the first internal silence that has speech after
+    it. None when there is none to find, so the caller decides rather than
+    this guessing a midpoint and presenting it as a measurement.
     """
     import re
     import subprocess
 
     threshold_db = SPEECH_EDGE_THRESHOLD_DB if threshold_db is None else threshold_db
     try:
-        proc = subprocess.run(
+        duration = get_audio_duration(audio_path)
+        proc = _proc.run(
             ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
-             f"silencedetect=noise={threshold_db}dB:d={min_dur}",
+             f"silencedetect=noise={threshold_db}dB:d={min_gap}",
              "-f", "null", "-"],
             capture_output=True, text=True, timeout=60,
         )
+    except (OSError, subprocess.SubprocessError, RuntimeError):
+        return None
+
+    # internal: speech before it AND speech after it. The longest one, as in
+    # clamp_take_gap: a micro-stop inside the word is not the take gap.
+    gaps, start = [], None
+    for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
+        value = float(value)
+        if kind == "start":
+            start = value
+        elif start is not None:
+            if start > 0.15 and value < duration - 0.10:
+                gaps.append((start, value))
+            start = None
+    return max(gaps, key=lambda g: g[1] - g[0])[0] if gaps else None
+
+
+#: The pause left between two takes of one word ("Family. Family.").
+#: eleven_v3 reads ". " as a sentence break and left 1.06-1.63 s there on
+#: the first how_do_you_say render (bv001, 2026-10-09): ten of them added
+#: ~9 s, and the longest tripped qa_gate's 1.5 s dead-air check. A spoken
+#: repetition sits nearer half a second.
+TAKE_GAP_S = 0.45
+
+
+def clamp_take_gap(audio_path: str, max_gap: float = TAKE_GAP_S) -> dict:
+    """Shorten the pause between two takes to `max_gap`, cutting SILENCE only.
+
+    The cut is made inside the measured gap -- half of max_gap kept after the
+    first take's end, half before the second take's start -- so no speech is
+    touched and both edges keep their natural decay and onset. Measured
+    again afterwards; a clip whose gap could not be found is left alone.
+
+    Returns {'clamped', 'gap_before', 'gap_after', 'first_end'}.
+    """
+    import re
+    import subprocess
+
+    out = {"clamped": False, "gap_before": None, "gap_after": None,
+           "first_end": None}
+    try:
+        duration = get_audio_duration(audio_path)
+        proc = _proc.run(
+            ["ffmpeg", "-hide_banner", "-nostats", "-i", audio_path, "-af",
+             f"silencedetect=noise={SPEECH_EDGE_THRESHOLD_DB}dB:d=0.08",
+             "-f", "null", "-"],
+            capture_output=True, text=True, timeout=60)
+    except (OSError, subprocess.SubprocessError, RuntimeError):
+        return out
+
+    # The LONGEST internal pause is the gap between the takes: in bv004 en_5 a
+    # 0.08 s micro-stop inside «black» came first and the 1.7 s gap was left.
+    gaps, start = [], None
+    for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
+        value = float(value)
+        if kind == "start":
+            start = value
+        elif start is not None:
+            if start > 0.15 and value < duration - 0.10:
+                gaps.append((start, value))
+            start = None
+    if not gaps:
+        return out
+    gap = max(gaps, key=lambda g: g[1] - g[0])
+
+    first_end, second_start = gap
+    out.update(gap_before=round(second_start - first_end, 3),
+               first_end=round(first_end, 3))
+    # 0.1 s of slack: silencedetect re-measures a cut gap a little long, and
+    # without it a second pass would keep cutting the same pause.
+    if second_start - first_end <= max_gap + 0.10:
+        out["gap_after"] = out["gap_before"]
+        return out
+
+    cut_from = first_end + max_gap / 2
+    cut_to = second_start - max_gap / 2
+    tmp = f"{audio_path}.gap.mp3"
+    chain = (f"[0:a]atrim=0:{cut_from:.3f},asetpts=PTS-STARTPTS[a];"
+             f"[0:a]atrim={cut_to:.3f},asetpts=PTS-STARTPTS[b];"
+             f"[a][b]concat=n=2:v=0:a=1[out]")
+    try:
+        proc = _proc.run(
+            ["ffmpeg", "-y", "-loglevel", "error", "-i", audio_path,
+             "-filter_complex", chain, "-map", "[out]",
+             "-acodec", "libmp3lame", "-q:a", "2", "-ar", "44100", "-ac", "1", tmp],
+            capture_output=True, text=True, timeout=60)
+        if proc.returncode != 0 or not os.path.exists(tmp):
+            logger.warning("take gap: cut failed for %s (ffmpeg rc=%s: %s); clip left as it is",
+                           audio_path, proc.returncode, (proc.stderr or "no stderr").strip()[-400:])
+            return out
+        os.replace(tmp, audio_path)
+    finally:
+        if os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+    out["clamped"] = True
+    out["gap_after"] = round(max_gap, 3)
+    return out
+
+
+def measure_speech_start(audio_path: str, threshold_db: float = None,
+                         min_dur: float = 0.03) -> float:
+    """Offset where speech STARTS, i.e. the length of the leading silence.
+
+    The threshold is relative to the clip's own peak (SPEECH_START_RE_PEAK_DB,
+    floored at SPEECH_START_FLOOR_DB) unless `threshold_db` gives an absolute
+    one. 5 ms RMS frames; `min_dur` is kept for the signature.
+    """
+    import numpy as np
+
+    try:
+        raw = _proc.run(["ffmpeg", "-v", "error", "-i", audio_path, "-ac", "1",
+                              "-ar", "44100", "-f", "s16le", "-"],
+                             capture_output=True, timeout=60).stdout
     except (OSError, subprocess.SubprocessError):
         return 0.0
-
-    spans, start = [], None
-    for kind, value in re.findall(r"silence_(start|end):\s*(-?[\d.]+)", proc.stderr):
-        if kind == "start":
-            start = float(value)
-        elif start is not None:
-            spans.append((start, float(value)))
-            start = None
-    # Leading silence only counts if it begins at the very top of the file.
-    if spans and spans[0][0] <= 0.02:
-        return spans[0][1]
-    return 0.0
+    x = np.frombuffer(raw, "<i2").astype(float) / 32768
+    frame = 220                                             # 5 ms
+    n = len(x) // frame
+    if not n:
+        return 0.0
+    e = 20 * np.log10(np.sqrt((x[:n * frame].reshape(n, frame) ** 2).mean(1)) + 1e-9)
+    if threshold_db is None:
+        threshold_db = max(float(e.max()) + SPEECH_START_RE_PEAK_DB, SPEECH_START_FLOOR_DB)
+    above = np.where(e > threshold_db)[0]
+    return round(float(above[0]) * frame / 44100, 4) if len(above) else 0.0
 
 
 def trim_clip_silence(audio_path: str, out_path: str = None) -> dict:
@@ -345,7 +480,7 @@ def trim_clip_silence(audio_path: str, out_path: str = None) -> dict:
 
     tmp = f"{out_path}.trim.mp3"
     try:
-        proc = subprocess.run(
+        proc = _proc.run(
             ["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{start:.3f}",
              "-to", f"{end:.3f}", "-i", audio_path, "-c:a", "libmp3lame",
              "-q:a", "2", "-ar", "44100", "-ac", "1", tmp],
@@ -367,8 +502,97 @@ def trim_clip_silence(audio_path: str, out_path: str = None) -> dict:
             return result
 
         os.replace(tmp, out_path)
+        # THE ENTRY, the mirror of repair_truncated_tail's exit.
+        result["lead_shaped"] = shape_clip_lead_in(out_path)
         result.update(trimmed=True, after=get_audio_duration(out_path))
         return result
+    finally:
+        if os.path.exists(tmp):
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# THE ENTRY — WHAT STEP 4 MADE AUDIBLE
+#
+# A trimmed clip keeps TRIM_LEAD_PAD of its OWN leading silence, and that
+# silence measures ~-98 dB — about 23 dB quieter than the room tone the gaps
+# now carry. While gaps were digital zero this was invisible: -98 dB was an
+# improvement on its surroundings. Once the gaps had a floor, the retained
+# lead-in punched a hole straight through it, measured at every option start:
+#
+#     gap ... -75  -75  -75 | -98  -62  -20  -12  -11    <- a tick, then a slam
+#
+# Then full speaking level in 20-30 ms. No human onset does that; the
+# untrimmed segments in the same files take 40-50 ms to reach -25 dB.
+#
+# TWO THINGS, AND RAISING TRIM_LEAD_PAD FIXES NEITHER. More pad keeps more of
+# the same too-quiet pre-roll, so the hole gets longer rather than going away.
+#   1. a room-tone bed at GAP_FLOOR_DB under the clip, so the floor is
+#      CONTINUOUS across the join and nothing sits below the gap it follows
+#   2. a fade-in over the length the model's own onsets actually take
+#
+# DURATION-NEUTRAL, which the shape of the fix did not have to be. Bedding
+# the whole clip rather than prepending a lead means no delay is needed:
+# `amix=duration=first` returns exactly the clip's length. segment_times
+# drives the renderer, so keeping it neutral costs nothing and risks nothing.
+#
+# The fade attenuates the first 45 ms of real speech, exactly as the tail
+# fade attenuates the last 30 ms. That is the same trade and the same
+# reasoning: an onset is an amplitude curve, and this rebuilds it.
+# ═══════════════════════════════════════════════════════════════════════
+
+#: Fade-in length: only so no clip starts on a non-zero sample. It was 45 ms
+#: (the natural onset), but eleven_v3 returns words that already open inside
+#: their first consonant (lv001 «spoon», «sink», «stove» start at -11 dBFS in
+#: their first ms), and 45 ms of fade took the /s/ down to -59 dB re peak: the
+#: cut words the owner heard (STEP 60 §1). The kept pre-roll is the onset now.
+LEAD_FADE_S = 0.005
+#: Linear.
+LEAD_CURVE = "tri"
+
+
+def shape_clip_lead_in(audio_path: str) -> bool:
+    """Bed the clip on room tone and fade its onset in. True if applied.
+
+    Called from trim_clip_silence, because only a trimmed clip starts on its
+    own truncated pre-roll. An untrimmed clip keeps the model's own onset,
+    which is what this is imitating.
+    """
+    import math
+
+    try:
+        duration = get_audio_duration(audio_path)
+    except Exception:                                       # noqa: BLE001
+        return False
+    if duration <= 0:
+        return False
+
+    amplitude = (10 ** ((GAP_FLOOR_DB + GAP_AMP_CALIBRATION_DB) / 20.0)) * math.sqrt(3)
+    tmp = f"{audio_path}.lead.mp3"
+    chain = (
+        f"[0:a]afade=t=in:st=0:d={LEAD_FADE_S}:curve={LEAD_CURVE}[v];"
+        f"anoisesrc=color=white:amplitude={amplitude:.8f}:seed={ROOM_TONE_SEED}"
+        f":duration={duration + 0.5:.3f}:sample_rate=44100[n];"
+        f"[v][n]amix=inputs=2:duration=first:normalize=0[out]"
+    )
+    try:
+        proc = _proc.run(
+            ["ffmpeg", "-y", "-loglevel", "error", "-i", str(audio_path),
+             "-filter_complex", chain, "-map", "[out]",
+             "-acodec", "libmp3lame", "-q:a", "2", "-ar", "44100", "-ac", "1",
+             tmp], capture_output=True, text=True, timeout=60)
+        if proc.returncode != 0 or not os.path.exists(tmp):
+            logger.warning("lead-in: shaping failed for %s; clip left as it is",
+                           audio_path)
+            return False
+        os.replace(tmp, audio_path)
+        return True
+    except Exception:                                       # noqa: BLE001
+        logger.warning("lead-in: shaping raised for %s", audio_path, exc_info=True)
+        return False
     finally:
         if os.path.exists(tmp):
             try:
@@ -388,11 +612,28 @@ def get_audio_duration(audio_path: str) -> float:
         '-of', 'default=noprint_wrappers=1:nokey=1',
         audio_path
     ]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    result = _proc.run(cmd, capture_output=True, text=True, timeout=30)
     raw = result.stdout.strip()
     if not raw:
         raise RuntimeError(f"ffprobe returned no duration for {audio_path}")
     return float(raw)
+
+
+#: The resting level of a gap, in dBFS RMS as it lands in the final mix.
+#: Measured: the speech clips' own floor is -72.2 dB (p10) / -77.6 dB (p5)
+#: across four produced files, so a gap at -75 sits just under the room tone
+#: it joins -- present, never audible as hiss.
+GAP_FLOOR_DB = -75.0
+
+#: anoisesrc `amplitude` is not an RMS and libmp3lame shifts it again.
+#: Measured offset between requested and delivered level, so GAP_FLOOR_DB
+#: means what it says. Re-measure if the codec or sample rate changes.
+GAP_AMP_CALIBRATION_DB = 4.6
+
+
+def _codec_for(path: str) -> list:
+    """PCM for a .wav intermediate (the Timeline's), the old mp3 otherwise."""
+    return ['-acodec', 'pcm_s16le'] if str(path).lower().endswith('.wav') else ['-acodec', 'libmp3lame', '-q:a', '2']
 
 
 def generate_silence(duration: float, output_path: str,
@@ -405,58 +646,125 @@ def generate_silence(duration: float, output_path: str,
         sample_rate: Sample rate (44100 for OpenAI/ElevenLabs, 24000 for Google).
         channels: "mono" or "stereo".
     """
+    # ROOM TONE, NOT DIGITAL ZERO.
+    #
+    # This used `anullsrc`, which emits exact zeros. The voice's own floor
+    # measures -72 dB (p10 across four produced files), so every gap was a
+    # step from -72 dB to absolute nothing and back, 8 to 25 times a video.
+    # The ear does not hear the silence; it hears the floor vanish. That is
+    # the other half of why this audio sounded spliced -- the first half was
+    # the code-switch truncation repaired in repair_truncated_tail.
+    #
+    # The countdown is the worst instance: 4.5 s of 72,000 consecutive zero
+    # samples, the longest stretch of nothing in any video, immediately
+    # before the answer. It stays silent by design; it stops being dead.
+    #
+    # DURATION-NEUTRAL BY CONSTRUCTION. `-t duration` bounds the output
+    # exactly as it did for anullsrc, so every segment start and the declared
+    # duration are untouched. segment_times drives the renderer, so anything
+    # else here would desynchronise every text reveal.
+    #
+    # THE LEVEL IS MEASURED, AND IT IS NOT TAIL_NOISE_DB. A decay's starting
+    # level and a gap's resting level are different jobs: -58 dB would be
+    # audible hiss across every video on the channel. GAP_FLOOR_DB sits just
+    # below the clips' own p10 floor and near their p5, so the gap is quieter
+    # than the room tone around it and never reads as added noise.
+    #
+    # The calibration constant is empirical: anoisesrc's `amplitude` is not
+    # an RMS, and the mp3 round trip shifts it again, so the amplitude that
+    # actually lands at GAP_FLOOR_DB was measured rather than derived.
+    import math
+
+    amplitude = (10 ** ((GAP_FLOOR_DB + GAP_AMP_CALIBRATION_DB) / 20.0)) * math.sqrt(3)
     cmd = [
         'ffmpeg', '-y',
-        '-f', 'lavfi', '-i', f'anullsrc=r={sample_rate}:cl={channels}',
+        '-f', 'lavfi', '-i',
+        f'anoisesrc=color=white:amplitude={amplitude:.8f}:seed={ROOM_TONE_SEED}'
+        f':duration={duration}:sample_rate={sample_rate}',
         '-t', str(duration),
-        '-acodec', 'libmp3lame', '-q:a', '2',
+        *_codec_for(output_path),
         output_path
     ]
-    subprocess.run(cmd, capture_output=True, timeout=30)
+    result = _proc.run(cmd, capture_output=True, timeout=30)
+    if result.returncode != 0 or not os.path.exists(output_path):
+        # Falling back to silence is worse-sounding but never wrong; a gap
+        # that fails to exist would desynchronise everything after it.
+        logger.warning("silence: room tone failed, falling back to anullsrc")
+        _proc.run([
+            'ffmpeg', '-y',
+            '-f', 'lavfi', '-i', f'anullsrc=r={sample_rate}:cl={channels}',
+            '-t', str(duration),
+            *_codec_for(output_path),
+            output_path
+        ], capture_output=True, timeout=30)
 
 
-def concatenate_audio_files(audio_files: list, output_path: str,
-                            sample_rate: int = 44100, channels: int = 1,
-                            copy_codec: bool = False) -> None:
-    """Concatenate multiple audio files using ffmpeg.
+class Timeline:
+    """One PCM timeline for a narration (STEP 76 §6).
 
-    Args:
-        audio_files: List of audio file paths to concatenate.
-        output_path: Path for the output file.
-        sample_rate: Output sample rate.
-        channels: Number of output channels (1=mono, 2=stereo).
-        copy_codec: If True, use -c:a copy (no re-encoding). Otherwise re-encode.
+    Replaces the add_audio / add_silence closures each generator carried (22 copies, kept in
+    step by an arity test) and the ffmpeg concat each one ended with. The timing contract is
+    the old one, so segment timings do not move: a clip advances the clock by its
+    get_audio_duration, a silence by what was asked, and add_audio returns
+    (start, file_end, duration, speech_end).
+
+    What changes is the audio. Every piece is decoded to PCM and placed at the sample its
+    start time names, cut or padded to its declared length; the old concat joined each clip's
+    DECODED length, so clips drifted against their declared starts. Silences are room tone
+    (generate_silence) as WAV, and the narration is encoded once, in finalize.
     """
-    import tempfile
 
-    concat_list_path = Path(output_path).with_suffix('.txt')
-    with open(concat_list_path, 'w') as f:
-        for audio_file in audio_files:
-            f.write(f"file '{audio_file}'\n")
+    def __init__(self, temp_dir, sample_rate: int = 44100):
+        self.temp_dir, self.rate = str(temp_dir), int(sample_rate)
+        self.pieces = []                    # (kind, path or None, start, end)
+        self.time = 0.0
 
-    if copy_codec:
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', str(concat_list_path),
-            '-c:a', 'copy',
-            output_path
-        ]
-    else:
-        cmd = [
-            'ffmpeg', '-y', '-f', 'concat', '-safe', '0',
-            '-i', str(concat_list_path),
-            '-acodec', 'libmp3lame', '-q:a', '2',
-            '-ar', str(sample_rate), '-ac', str(channels),
-            output_path
-        ]
+    def add_audio(self, path: str, duration: float = None):
+        if duration is None:
+            duration = get_audio_duration(path)
+        start = self.time
+        speech_end = start + measure_speech_end(path)
+        self.time += duration
+        self.pieces.append(("audio", str(path), start, self.time))
+        return start, self.time, duration, speech_end
 
-    subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    def add_silence(self, duration: float):
+        start = self.time
+        self.time += duration
+        self.pieces.append(("silence", None, start, self.time))
+        return start, self.time
 
-    # Clean up concat list
-    try:
-        concat_list_path.unlink()
-    except OSError:
-        pass
+    def _decode(self, path: str):
+        import numpy as np
+        raw = _proc.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", str(self.rate),
+                         "-f", "f32le", "-"], capture_output=True, check=True, timeout=_proc.FFMPEG).stdout
+        return np.frombuffer(raw, "<f4")
+
+    def finalize(self, output_path: str) -> float:
+        """Write the narration (one encode, mp3 mono at this rate). Returns its declared length."""
+        import numpy as np
+        pcm = np.zeros(int(round(self.time * self.rate)), dtype=np.float32)
+        for n, (kind, path, start, end) in enumerate(self.pieces):
+            a, b = int(round(start * self.rate)), int(round(end * self.rate))
+            if b <= a:
+                continue
+            if kind == "silence":
+                path = os.path.join(self.temp_dir, f"timeline_silence_{n}.wav")
+                generate_silence(end - start, path, sample_rate=self.rate)
+            x = self._decode(path)[: b - a]
+            pcm[a:a + x.size] = x
+        wav = os.path.join(self.temp_dir, "timeline.wav")
+        _proc.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(self.rate), "-ac", "1", "-i", "-",
+                   "-c:a", "pcm_s16le", wav], input=pcm.tobytes(), check=True, capture_output=True,
+                  timeout=_proc.FFMPEG)
+        if os.path.dirname(output_path):
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        done = _proc.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-acodec", "libmp3lame",
+                          "-q:a", "2", "-ar", str(self.rate), "-ac", "1", str(output_path)],
+                         capture_output=True, text=True, timeout=_proc.FFMPEG)
+        if done.returncode != 0:
+            raise RuntimeError(f"FFmpeg encode failed: {done.stderr[:500]}")
+        return round(self.time, 3)
 
 
 # ============== ENGLISH WORD EXTRACTION ==============
@@ -538,7 +846,15 @@ def extract_english_words_from_script(script: dict) -> set:
 
 # ============== TEXT PREPROCESSING FOR TTS ==============
 
-def clean_for_tts(text: str) -> str:
+#: What a written blank SOUNDS like. Three dots, which eleven_v3 reads as a
+#: hesitation and every other provider reads as an ellipsis pause.
+BLANK_SPOKEN = '...'
+
+#: Two or more underscores: the written blank, in any length an author types.
+_BLANK_RE = re.compile(r'_{2,}')
+
+
+def clean_for_tts(text: str, *, keep_tags: bool = False) -> str:
     """
     Clean text for TTS - remove visual-only elements.
 
@@ -546,16 +862,42 @@ def clean_for_tts(text: str) -> str:
     elements that should be displayed but not spoken.
 
     Examples:
-        "In my opinion, we should ___ the meeting" -> "In my opinion, we should the meeting"
+        "In my opinion, we should ___ the meeting" -> "In my opinion, we should ... the meeting"
         "What does **important** mean?" -> "What does important mean?"
+
+    THE BLANK IS A PAUSE, NOT A DELETION. This used to be
+    `text.replace('___', '')`, which removed the blank and left the sentence
+    around it ungrammatical:
+
+        screen: The dog wagged ___ tail happily.
+        voice : The dog wagged tail happily.
+
+    That is the its/it's quiz the owner rejected. It is not one script: 7 of
+    the 25 questions in the quiz queue carry a blank, and 14 fill_blank
+    scripts go through this same function -- an English-teaching channel
+    speaking ungrammatical English. Multi-item quizzes made it worse rather
+    than better, because items 2 and 3 are now spoken too: gr004 alone says
+    "If I time, I will call you tonight. / If it tomorrow, we'll stay home.
+    / She you if she finds the keys."
+
+    fc702a9 fixed the opposite half of this -- scripts that said "guion
+    bajo" out loud. A blank is neither its own name nor nothing; it is the
+    silence where the missing word goes, which is exactly what the learner
+    is being asked to fill.
+
+    THE SCREEN IS UNAFFECTED. The drawn text comes from the script's own
+    fields, which keep their `___`; this function feeds the API only.
     """
     if not text:
         return text
 
-    # Remove blanks (visual only in fill-in-the-blank)
-    text = text.replace('___', '')
-    text = text.replace('__', '')
+    # Blanks become an audible pause, not a hole in the sentence.
+    text = _BLANK_RE.sub(BLANK_SPOKEN, text)
     # Single underscore between words should become space
+    # [[English]] markers are unwrapped, not stripped: the `\[.*?\]` below would
+    # leave «]» where the English was (STEP 76 §1). The segmenter splits on them first.
+    from audio_tags import unmark
+    text = unmark(text)
     text = re.sub(r'(?<=\w)_(?=\w)', ' ', text)
 
     # Remove markdown formatting
@@ -565,11 +907,34 @@ def clean_for_tts(text: str) -> str:
     text = text.replace('#', '')
     text = text.replace('`', '')
 
-    # Remove brackets used for display hints
-    text = re.sub(r'\[.*?\]', '', text)
+    # EMOTION TAGS, AND WHO IS LISTENING.
+    #
+    # This line deleted every bracketed run, which meant it also deleted
+    # every eleven_v3 audio tag on its way to the API. Dry run on a real
+    # pronunciation script: four tags written, ZERO sent. Across September's
+    # sidecars, 0 of 344 spoken segments carried one. The ~550 tags written
+    # into the queue this month have never reached ElevenLabs -- the owner
+    # asked repeatedly for narration with personality and was given a
+    # cleaning function that removed it.
+    #
+    # keep_tags DEFAULTS TO FALSE, and that direction is deliberate. A tag
+    # sent to a model that does not know it is SPOKEN ALOUD, so a call site
+    # nobody updated must fall back to silence rather than to a narrator
+    # reading stage directions. Callers that reach eleven_v3 opt in, gated
+    # on audio_tags.honours_tags(MODEL_ID) rather than on the video type.
+    if keep_tags:
+        from audio_tags import keep_known_tags
+        text = keep_known_tags(text)
+    else:
+        text = re.sub(r'\[.*?\]', '', text)
 
     # Clean up multiple spaces
     text = ' '.join(text.split())
+
+    # "I need to ___." became "I need to ...." -- one run of dots, not a
+    # pause followed by a stop. preprocess_text_for_tts normalises 3+ dots
+    # anyway, but this function's own output should already be sayable.
+    text = re.sub(r'\.{3,}', BLANK_SPOKEN, text)
 
     return text.strip()
 
@@ -634,76 +999,244 @@ def preprocess_text_for_tts(text: str, target_language: str = "es") -> str:
     return text.strip()
 
 
-def validate_script_for_tts(script: dict) -> dict:
+
+# ── punctuation-only tokens in a word timeline ───────────────────────────
+#
+# ElevenLabs' character alignment returns punctuation as SEPARATE tokens
+# with their own start and end, because _chars_to_words splits on
+# whitespace and "hola , que" really does contain a lone comma. Nothing
+# merged them back, so a token whose entire content is a mark survived into
+# the word timeline and was treated as a word.
+#
+# The visible damage was in the karaoke — cards opening on ", que significa
+# uno", a period highlighted on its own after "a different size?", quote
+# marks floating as words in "' four ' balloons".
+#
+# THE INVISIBLE DAMAGE IS THE REASON THIS IS FIXED IN THE TIMELINE AND NOT
+# IN THE GROUPER. An orphan token carries its own SPAN, and those spans feed
+# measure_speech_end, the declared-silence envelope and the QA gate. The C
+# work measured '(noun)' holding 3.07 -> 4.12 — 1.05 s of declared speech
+# for something never said. Fixing only the display would have left the
+# timing polluted and the gate still reading a span that is not speech.
+
+#: Unicode categories that make a token punctuation rather than content.
+#: Symbol categories are included because '=' shows up as a token: the
+#: script generator writes mnemonics like "Assure = promise" into
+#: full_script and the narrator is handed an equals sign to say.
+_PUNCT_CATEGORIES = ("Pc", "Pd", "Pe", "Pf", "Pi", "Po", "Ps", "Sm", "Sk", "So")
+
+
+def is_punctuation_token(token) -> bool:
+    """True when a token's ENTIRE content is punctuation or symbols."""
+    import unicodedata
+
+    text = str(token or "").strip()
+    if not text:
+        return False
+    return all(unicodedata.category(ch) in _PUNCT_CATEGORIES for ch in text)
+
+
+def merge_punctuation_tokens(words, boundary_key: str = "segment_id"):
+    """Absorb punctuation-only tokens into the neighbouring real word.
+
+    NO TOKEN IS DROPPED AND NO TIME IS LOST. The mark is appended to the
+    preceding word, which keeps its own start and takes the punctuation's
+    end, so the span is absorbed rather than deleted and the timeline still
+    covers the same audio. A mark with no preceding word in its segment is
+    merged into the FOLLOWING word instead, which then takes the
+    punctuation's start.
+
+    Segment boundaries are respected when the words carry `boundary_key`,
+    so a period ending one sentence never attaches itself to the first word
+    of the next.
     """
-    Validate that a script is ready for TTS generation.
+    out = []
+    pending = []          # leading marks waiting for a word to attach to
+    for item in words or []:
+        if not isinstance(item, dict) or "word" not in item:
+            out.append(item)
+            continue
 
-    Returns dict with:
-    - is_valid: bool
-    - errors: list of critical errors
-    - warnings: list of non-critical issues
-    - cleaned_script: preprocessed script text
+        same_segment = bool(out) and (
+            boundary_key is None
+            or item.get(boundary_key) == out[-1].get(boundary_key))
+
+        if is_punctuation_token(item["word"]):
+            if out and same_segment:
+                previous = out[-1]
+                previous["word"] = f"{previous['word']}{str(item['word']).strip()}"
+                previous["end"] = max(float(previous["end"]), float(item["end"]))
+            else:
+                pending.append(item)
+            continue
+
+        merged = dict(item)
+        if pending:
+            # No preceding word in this segment: the marks lead instead.
+            merged["word"] = "".join(
+                str(p["word"]).strip() for p in pending) + str(merged["word"])
+            merged["start"] = min([float(merged["start"])]
+                                  + [float(p["start"]) for p in pending])
+            pending = []
+        out.append(merged)
+
+    # Trailing marks with nothing after them: give them to the last word.
+    for item in pending:
+        if out:
+            out[-1]["word"] = f"{out[-1]['word']}{str(item['word']).strip()}"
+            out[-1]["end"] = max(float(out[-1]["end"]), float(item["end"]))
+        else:
+            out.append(item)
+    return out
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# THE CODE-SWITCH TRUNCATION, AND THE DECAY WE PUT BACK
+#
+# MEASURED, not inferred. ElevenLabs returns any clip containing a language
+# transition cut at the instant the voice stops. Probed at n=6 per condition
+# against the live API:
+#
+#   "the menu."              monolingual EN   tail 0.34-1.29 s   0/6 cut
+#   "la carta."              monolingual ES   tail 1.17-1.27 s   0/6 cut
+#   "la carta... the menu."  ES -> EN         tail 0.000 s       3/3 cut
+#   "the menu... la carta."  EN -> ES         tail 0.000 s       3/3 cut
+#   "el libro... the book."  ES -> EN         tail 0.000 s       6/6 cut
+#
+# Direction does not matter and the ellipsis is not required. It is the
+# transition itself. Corpus-wide this hits 99.3% of vocabulary pair clips.
+#
+# WHAT IS LOST IS ~30 ms OF AMPLITUDE DECAY, NOT A PHONEME. Whisper reads the
+# final word in 6/6 truncated clips. Monolingual clips take a median 30 ms to
+# fall from -40 dB to -60 dB; truncated clips sit at a median -38 dB in their
+# final frame and then stop dead. That distinction is why this function is a
+# repair rather than a mask: an envelope is an amplitude curve, and a fade
+# produces an amplitude curve. A lost phoneme could not be reconstructed.
+#
+# THE RESIDUAL, so a future reader measuring these files knows: the decay at
+# the end of a repaired clip is OURS, not the model's. Reconstructed envelope
+# vs the monolingual reference is 4.93 dB RMS across the +/-50 ms window
+# (naive fade+pad scores 35 dB). The first 50 ms before the cut sits ~5 dB
+# below the natural curve, because the fade attenuates real speech to remove
+# the discontinuity. That is the price of the repair and it is not zero.
+#
+# WHY THE PAD IS NOISE AND NOT SILENCE. `apad` writes exact digital zero.
+# The model's own floor measures -79.5 dB, and padding to -140 dB rebuilds
+# the very defect that makes this audio sound spliced -- the ear does not
+# hear silence, it hears the noise floor vanish. Naive fade+apad scored
+# 35 dB RMS against the reference for exactly this reason. The pad here
+# starts at -58 dB and decays toward the floor, which is what the natural
+# tail does.
+#
+# CONSTANTS ARE MEASURED, NOT CHOSEN. Each was fitted by grid search against
+# the monolingual reference envelope, not picked for looking tidy:
+#   TAIL_FADE   0.030  the measured natural -40 -> -60 dB decay time
+#   TAIL_CURVE  esin   best of tri/exp/log/qsin/hsin/esin/ipar/cub
+#   TAIL_PAD    0.244  the corpus median healthy tail, not 0.25
+#   TAIL_NOISE  -58    pad start level, decaying at TAIL_NOISE_K
+# ═══════════════════════════════════════════════════════════════════════
+
+#: Below this much trailing silence a clip is treated as truncated.
+TAIL_MIN = 0.05
+TAIL_FADE = 0.030
+TAIL_CURVE = "esin"
+TAIL_PAD = 0.244
+TAIL_NOISE_DB = -58.0
+TAIL_NOISE_K = 20
+#: The model's own measured noise floor, for reference in logs.
+TAIL_FLOOR_DB = -79.5
+
+
+def clip_is_truncated(audio_path: str) -> bool:
+    """True when the clip ends within TAIL_MIN of the voice stopping."""
+    try:
+        return (get_audio_duration(audio_path)
+                - measure_speech_end(audio_path)) < TAIL_MIN
+    except Exception:                                       # noqa: BLE001
+        logger.debug("tail: could not measure %s", audio_path, exc_info=True)
+        return False
+
+
+def repair_truncated_tail(audio_path: str, out_path: str = None) -> dict:
+    """Give a guillotined clip its decay back. No-op on a healthy clip.
+
+    CALL THIS BEFORE `add_audio` MEASURES THE CLIP. add_audio derives
+    running_time from the duration, so a clip padded first is accounted for
+    correctly; pad afterwards and every later segment start drifts by
+    TAIL_PAD.
+
+    Returns {'repaired': bool, 'tail_before': float, 'duration_after': float}.
     """
-    result = {
-        "is_valid": True,
-        "errors": [],
-        "warnings": [],
-        "cleaned_script": ""
-    }
+    import math
 
-    full_script = script.get("full_script", "")
+    out_path = out_path or audio_path
+    before = None
+    try:
+        before = get_audio_duration(audio_path) - measure_speech_end(audio_path)
+    except Exception:                                       # noqa: BLE001
+        logger.debug("tail: measurement failed for %s", audio_path, exc_info=True)
+        return {"repaired": False, "tail_before": None, "duration_after": None}
 
-    if not full_script:
-        result["is_valid"] = False
-        result["errors"].append("Missing 'full_script' field")
-        return result
+    if before >= TAIL_MIN:
+        return {"repaired": False, "tail_before": before,
+                "duration_after": get_audio_duration(audio_path)}
 
-    # Check minimum length
-    if len(full_script) < 50:
-        result["warnings"].append(f"Script is very short ({len(full_script)} chars)")
+    duration = get_audio_duration(audio_path)
+    amplitude = (10 ** (TAIL_NOISE_DB / 20.0)) * math.sqrt(3)
+    tmp = f"{out_path}.tail.mp3"
+    chain = (
+        f"[0:a]afade=t=out:st={max(0.0, duration - TAIL_FADE):.4f}:"
+        f"d={TAIL_FADE}:curve={TAIL_CURVE}[v];"
+        f"anoisesrc=color=white:amplitude={amplitude:.6f}:seed={ROOM_TONE_SEED}:"
+        f"duration={TAIL_PAD}:sample_rate=44100,"
+        f"volume=volume='max(0.10\\,exp(-t*{TAIL_NOISE_K}))':eval=frame[n];"
+        f"[v][n]concat=n=2:v=0:a=1[out]"
+    )
+    try:
+        _proc.run(
+            ["ffmpeg", "-v", "error", "-y", "-i", str(audio_path),
+             "-filter_complex", chain, "-map", "[out]", tmp],
+            check=True, capture_output=True, timeout=_proc.FFMPEG)
+        os.replace(tmp, out_path)
+    except Exception:                                       # noqa: BLE001
+        logger.warning("tail: repair failed for %s; leaving the clip as it is",
+                       audio_path, exc_info=True)
+        try:
+            os.path.exists(tmp) and os.remove(tmp)
+        except OSError:
+            pass
+        return {"repaired": False, "tail_before": before,
+                "duration_after": duration}
 
-    # Check for balanced quotes
-    single_quotes = full_script.count("'")
-    if single_quotes % 2 != 0:
-        result["warnings"].append(f"Unbalanced quotes ({single_quotes} single quotes)")
-
-    # Check for English phrases
-    english_phrases = script.get("english_phrases", [])
-    if not english_phrases:
-        result["warnings"].append("No english_phrases defined")
-
-    # Check that English phrases appear in script
-    for phrase in english_phrases:
-        if phrase.lower() not in full_script.lower():
-            result["warnings"].append(f"Phrase '{phrase}' not found in script")
-
-    # Preprocess
-    result["cleaned_script"] = preprocess_text_for_tts(full_script)
-
-    return result
+    after = get_audio_duration(out_path)
+    logger.info("tail: repaired %s (tail was %.3fs, now %.3fs long)",
+                os.path.basename(str(audio_path)), before, after)
+    return {"repaired": True, "tail_before": before, "duration_after": after}
 
 
-def estimate_speech_duration(text: str, words_per_minute: int = 150) -> float:
+def items_to_speak(script: dict, video_type: str) -> list:
+    """The items this script's audio should actually carry.
+
+    THE SWITCH IS config.yaml's `items_spoken`, and it already existed:
+    "how many of the authored items are actually synthesised". duration_spec
+    divides the word budget by it, tools/duration_calibrate measures against
+    it, and its own comment anticipates "the day items_spoken becomes 3, the
+    band it is judged against becomes true on its own".
+
+    1af342d taught the generator to speak every authored item and walked
+    straight past that switch. The result was measurable rather than
+    theoretical: config declared 1, the audio carried 3, and a 123.9s quiz
+    was judged against a band sized for one item.
+
+    Reading it here puts the capability behind the door that governs it. A
+    script with fewer items than the config allows is not padded; the cap is
+    a ceiling, not a quota.
     """
-    Estimate how long text will take to speak.
-
-    Args:
-        text: Text to estimate
-        words_per_minute: Speaking rate (150 is conversational Spanish)
-
-    Returns:
-        Estimated duration in seconds
-    """
-    # Count words
-    words = len(text.split())
-
-    # Add time for pauses
-    pauses = text.count('...') * 0.5  # 0.5s per ellipsis
-    pauses += text.count('.') * 0.2   # 0.2s per sentence end
-    pauses += text.count('?') * 0.3   # 0.3s per question
-    pauses += text.count('!') * 0.2   # 0.2s per exclamation
-
-    # Calculate base duration
-    base_duration = (words / words_per_minute) * 60
-
-    return base_duration + pauses
+    authored = script.get("questions") or []
+    items = [script] + list(authored[1:])
+    try:
+        from duration_spec import type_spec
+        allowed = int((type_spec(video_type) or {}).get("items_spoken") or 1)
+    except Exception:                       # config unreadable: behave as before
+        allowed = 1
+    return items[:max(1, allowed)]

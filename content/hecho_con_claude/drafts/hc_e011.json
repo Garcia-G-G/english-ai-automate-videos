@@ -1,0 +1,43 @@
+{
+  "id": "hc_e011",
+  "style": "escena",
+  "level": "medio",
+  "angle": "errores",
+  "title": "En la entrevista: «I have experience of five years»",
+  "hook_text": "ESCENA — ENTREVISTA DE TRABAJO POR VIDEOLLAMADA",
+  "scene": {
+    "location": "Entrevista de trabajo por videollamada",
+    "take1": "I have experience of five years.",
+    "take2": "I have five years of experience.",
+    "note": "Cantidad de tiempo + of experience."
+  },
+  "correction": {
+    "wrong": "experience of five years",
+    "right": "five years of experience",
+    "rule": "El número va delante"
+  },
+  "voice": [
+    "Escena: entrevista de trabajo. Toma uno: [[I have experience of five years]].",
+    "¡Corten! Se entiende, pero el orden delata que estás traduciendo.",
+    "Toma dos: [[I have five years of experience in marketing]]. El tiempo va delante.",
+    "Y si sigues en ese trabajo: [[I've been working in marketing for five years]].",
+    "Para sonar más seguro: [[I have a strong background in marketing]].",
+    "Reto: di que tienes tres años de experiencia en ventas. Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Tengo tres años de experiencia en ventas»",
+    "answer": "I have three years of experience in sales."
+  },
+  "caption": "En una entrevista en inglés: «I have five years of experience», no «experience of five years».",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 74
+}

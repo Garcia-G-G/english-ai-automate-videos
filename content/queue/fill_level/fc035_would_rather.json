@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "¿Completas las 10? WOULD RATHER y HAD BETTER 🍷",
+  "video_description": "Prefiero, más te vale: would rather y had better en diez frases. 🍷",
+  "title": "Completa la frase",
+  "theme": "would rather y had better",
+  "intro": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo.",
+  "items": [
+    {
+      "sentence": "I'd ____ a coffee, please.",
+      "answer": "like",
+      "translation": "Quería un café, por favor.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'd ____ stay home tonight.",
+      "answer": "rather",
+      "translation": "Prefiero quedarme en casa esta noche.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "You'd ____ hurry.",
+      "answer": "better",
+      "translation": "Más te vale darte prisa.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Would you ____ go now or later?",
+      "answer": "rather",
+      "translation": "¿Prefieres ir ahora o más tarde?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'd rather ____ go out tonight.",
+      "answer": "not",
+      "translation": "Prefiero no salir esta noche.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "We'd better ____ be late.",
+      "answer": "not",
+      "translation": "Más vale que no lleguemos tarde.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'd rather you ____ smoke here.",
+      "answer": "didn't",
+      "translation": "Preferiría que no fumaras aquí.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'd rather walk ____ take a taxi.",
+      "answer": "than",
+      "translation": "Prefiero caminar que coger un taxi.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It's high time we ____.",
+      "answer": "left",
+      "translation": "Ya es hora de que nos vayamos.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I'd sooner die ____ apologize to him.",
+      "answer": "than",
+      "translation": "Antes muerto que pedirle perdón.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc035",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'd like a coffee, please.": "Quería un café, por favor.",
+    "I'd rather stay home tonight.": "Prefiero quedarme en casa esta noche.",
+    "You'd better hurry.": "Más te vale darte prisa.",
+    "Would you rather go now or later?": "¿Prefieres ir ahora o más tarde?",
+    "I'd rather not go out tonight.": "Prefiero no salir esta noche.",
+    "We'd better not be late.": "Más vale que no lleguemos tarde.",
+    "I'd rather you didn't smoke here.": "Preferiría que no fumaras aquí.",
+    "I'd rather walk than take a taxi.": "Prefiero caminar que coger un taxi.",
+    "It's high time we left.": "Ya es hora de que nos vayamos.",
+    "I'd sooner die than apologize to him.": "Antes muerto que pedirle perdón."
+  },
+  "english_phrases": [
+    "I'd like a coffee, please.",
+    "I'd rather stay home tonight.",
+    "You'd better hurry.",
+    "Would you rather go now or later?",
+    "I'd rather not go out tonight.",
+    "We'd better not be late.",
+    "I'd rather you didn't smoke here.",
+    "I'd rather walk than take a taxi.",
+    "It's high time we left.",
+    "I'd sooner die than apologize to him."
+  ],
+  "full_script": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo. I'd like a coffee, please. I'd rather stay home tonight. You'd better hurry. Ahora, nivel intermedio. Would you rather go now or later? I'd rather not go out tonight. We'd better not be late. I'd rather you didn't smoke here. Y ahora, nivel experto. I'd rather walk than take a taxi. It's high time we left. I'd sooner die than apologize to him. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

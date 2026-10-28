@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la PERSONALIDAD en inglés? 😇",
+  "video_description": "Diez palabras para describir a alguien, con dos trampas. 🙃",
+  "title": "¿Cómo se dice…?",
+  "theme": "la personalidad",
+  "level": "A2",
+  "intro": "[cheerful] Mira la lista y adivina antes de que salga la respuesta.",
+  "items": [
+    {
+      "emoji": "😊",
+      "spanish": "Simpático",
+      "english": "nice"
+    },
+    {
+      "emoji": "🙈",
+      "spanish": "Tímido",
+      "english": "shy"
+    },
+    {
+      "emoji": "😂",
+      "spanish": "Divertido",
+      "english": "funny"
+    },
+    {
+      "emoji": "🦥",
+      "spanish": "Perezoso",
+      "english": "lazy"
+    },
+    {
+      "emoji": "🤗",
+      "spanish": "Amable",
+      "english": "kind"
+    },
+    {
+      "emoji": "🦁",
+      "spanish": "Valiente",
+      "english": "brave"
+    },
+    {
+      "emoji": "🧠",
+      "spanish": "Inteligente",
+      "english": "smart"
+    },
+    {
+      "emoji": "🐂",
+      "spanish": "Terco",
+      "english": "stubborn"
+    },
+    {
+      "emoji": "🎩",
+      "spanish": "Educado",
+      "english": "polite"
+    },
+    {
+      "emoji": "😒",
+      "spanish": "Celoso",
+      "english": "jealous"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: nice, shy, funny, lazy, kind, brave, smart, stubborn, polite, jealous.",
+  "outro": "[happy] Guárdalo para repasar y dime cuántas sabías.",
+  "translations": {
+    "nice": "Simpático",
+    "shy": "Tímido",
+    "funny": "Divertido",
+    "lazy": "Perezoso",
+    "kind": "Amable",
+    "brave": "Valiente",
+    "smart": "Inteligente",
+    "stubborn": "Terco",
+    "polite": "Educado",
+    "jealous": "Celoso"
+  },
+  "english_phrases": [
+    "nice",
+    "shy",
+    "funny",
+    "lazy",
+    "kind",
+    "brave",
+    "smart",
+    "stubborn",
+    "polite",
+    "jealous"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv048",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Mira la lista y adivina antes de que salga la respuesta. Simpático... nice. nice. Tímido... shy. shy. Divertido... funny. funny. Perezoso... lazy. lazy. Amable... kind. kind. Valiente... brave. brave. Inteligente... smart. smart. Terco... stubborn. stubborn. Educado... polite. polite. Celoso... jealous. jealous. Ahora, todas conmigo: nice, shy, funny, lazy, kind, brave, smart, stubborn, polite, jealous. [happy] Guárdalo para repasar y dime cuántas sabías."
+}

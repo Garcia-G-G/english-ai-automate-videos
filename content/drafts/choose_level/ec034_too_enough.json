@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "10 frases con TOO o ENOUGH. ¿Aciertas todas? 🍲",
+  "video_description": "Demasiado o suficiente: too y enough en diez frases. 🍲",
+  "title": "Elige la correcta",
+  "theme": "too o enough",
+  "intro": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos.",
+  "items": [
+    {
+      "sentence": "This soup is ____ hot.",
+      "options": [
+        "too",
+        "enough"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I don't have ____ money.",
+      "options": [
+        "too",
+        "enough"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "You're old ____ to decide.",
+      "options": [
+        "too",
+        "enough"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "It's ____ late to go out now.",
+      "options": [
+        "too",
+        "enough"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Is it warm ____ for you?",
+      "options": [
+        "too",
+        "enough"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She talks ____ much.",
+      "options": [
+        "too",
+        "enough"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I've had ____! I'm leaving.",
+      "options": [
+        "enough",
+        "too"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The box is ____ heavy for me to lift.",
+      "options": [
+        "enough",
+        "too"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Funnily ____, I was thinking the same.",
+      "options": [
+        "enough",
+        "too"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "You can never be ____ careful.",
+      "options": [
+        "enough",
+        "too"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#TooVsEnough",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec034",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

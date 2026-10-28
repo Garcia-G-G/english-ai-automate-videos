@@ -15,27 +15,47 @@ from script_schema import validate_render_data
 
 from .constants import FPS, VIDEO_WIDTH, VIDEO_HEIGHT
 from .backgrounds import (
-    set_background, reset_background, get_background_generator,
-    get_default_background, BACKGROUNDS_AVAILABLE,
+    set_background, reset_background,
     CURRENT_BACKGROUND,
 )
 from .utils import load_data
+
+
+def _strip_audio_tags(data):
+    """Every drawn string with its audio tags removed. See src/audio_tags.py.
+
+    The audio is already made by the time any renderer runs, so from that point
+    an ElevenLabs tag is pure text waiting to be drawn. quiz.py:618 and
+    true_false.py:317 read data['explanation'] and draw it DIRECTLY, never via
+    the word list the TTS layer already filters, so a tag in a structured field
+    would land on the answer card. One pass at the single entry point, because
+    this project has paid twice for fixing a door instead of the room.
+    """
+    try:
+        from audio_tags import strip_tags
+    except ImportError:                                     # noqa: BLE001
+        return data
+
+    def clean(value):
+        if isinstance(value, str):
+            return strip_tags(value)
+        if isinstance(value, dict):
+            return {k: clean(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [clean(v) for v in value]
+        return value
+
+    return clean(data)
 from .educational import create_frame_educational, add_sentence_boundaries
 from .karaoke import create_frame_karaoke
+from video_types import VIDEO_TYPES
 from .quiz import create_frame_quiz, resolve_quiz_timestamps
 from .true_false import create_frame_true_false, resolve_true_false_timestamps
 from .fill_blank import create_frame_fill_blank
 from .pronunciation import create_frame_pronunciation
 from .vocabulary import create_frame_vocabulary
+from .how_do_you_say import create_frame_how_do_you_say, create_frame_level
 from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
-
-# Re-export from top-level src/backgrounds.py (on sys.path via main.py)
-try:
-    from backgrounds import BACKGROUND_PRESETS, get_recommended_preset  # noqa: E402
-except ImportError:
-    BACKGROUND_PRESETS = {}
-    def get_recommended_preset():
-        return None
 
 logger = logging.getLogger(__name__)
 
@@ -51,34 +71,11 @@ def peak_rss_mb() -> float:
     return raw / (1024 * 1024) if platform.system() == "Darwin" else raw / 1024
 
 
-def prepare_background_cache(bg, preset: str, duration: float,
-                             fast_mode: bool = False) -> None:
-    """Warm `bg` for `preset`: one frame if it is static, a loop if it moves.
-
-    render_from_preset ignores t for a static_gradient, so pre-rendering a
-    loop of them produces N byte-identical 1080x1920x3 arrays and retains all
-    of them (150 frames ~ 930MB nominal). 69 of the 76 enabled presets are
-    static_gradient, so the loop path was the common one.
-    """
-    import time as _time
-
-    preset_type = (BACKGROUND_PRESETS.get(preset) or {}).get("type")
-    static = fast_mode or preset_type == "static_gradient"
-
-    _bg_start = _time.time()
-
-    if static:
-        logger.info("Rendering static background once (%s)...", preset_type or "fast mode")
-        bg.render_static_once(preset)
-        logger.info("Background rendered in %.1fs (peak RSS %.0f MB)",
-                    _time.time() - _bg_start, peak_rss_mb())
-        return
-
-    logger.info("Pre-rendering background loop...")
-    bg.pre_render_loop(preset, loop_duration=min(5.0, duration),
-                       show_progress=False)
-    logger.info("Background pre-rendered in %.1fs (peak RSS %.0f MB)",
-                _time.time() - _bg_start, peak_rss_mb())
+def _notebook_workers(video_type: str) -> int:
+    """STEP 77 §2: the notebook types (video_types.PANEL_TYPES) render in parallel."""
+    from video_types import PANEL_TYPES
+    from .compositor import render_workers
+    return render_workers() if video_type in PANEL_TYPES else 1
 
 
 def generate_video(
@@ -93,6 +90,7 @@ def generate_video(
     renderer: str = "ffmpeg",
     karaoke_mode: bool = False,
     engine_version: str = "v1",
+    native_language: str = "es",
 ) -> str:
     """
     Generate video based on type.
@@ -103,9 +101,10 @@ def generate_video(
         output_path: Output video path
         video_type: Video type (educational, quiz, etc.)
         fps: Frames per second
-        background: Background preset name or type
-        background_options: Custom background options
-        fast_mode: Use static background and optimized settings for speed
+        background: "clips" or "clips:<dir>" from pipeline.resolve_background;
+            None draws the legacy gradient (tests, stills)
+        background_options: Clip-library options
+        fast_mode: Faster encoder settings
         renderer: "ffmpeg" (fast, default) or "moviepy" (legacy fallback)
         karaoke_mode: Use karaoke-style renderer with inline translations
         engine_version: "v1" (legacy renderers) or "v2" (design-system
@@ -114,6 +113,9 @@ def generate_video(
 
     logger.info(f"Loading data: {data_path}")
     data = load_data(data_path)
+    data = _strip_audio_tags(data)
+    from studio.renderer_presentation import resolve_presentation
+    presentation = resolve_presentation(native_language)
 
     # VALIDATION POINT 3 of 3: renderer input.
     #
@@ -162,18 +164,20 @@ def generate_video(
     if use_v2:
         background = None
 
-    # Configure background with pre-rendering for speed
-    # Auto-select from config.yaml if no background specified
-    if not background and BACKGROUNDS_AVAILABLE and not use_v2:
-        background = get_default_background()
-        if background:
-            logger.info(f"Auto-selected background: {background}")
+    # NOTHING IS CHOSEN HERE. pipeline.resolve_background decides, always
+    # returns a value, and -b carries it in. This used to fall back to a
+    # palette of its own whenever `background` arrived empty, which is what
+    # every dashboard render hit: admin.py resolved to None, pipeline omitted
+    # -b, and this line quietly picked a gen_NNN — so the generated image the
+    # video had paid for never reached the frame.
 
     # Clip-library background: "clips" (with background_options) or "clips:<dir>"
     if background == "clips" or (background and background.startswith("clips:")):
         options = dict(background_options or {})
         if background.startswith("clips:"):
             options["dir"] = background.split(":", 1)[1]
+        # The band needs to know which layout's text zone to cover.
+        options.setdefault("video_type", video_type)
         clips_dir = options.get("dir", "")
         if clips_dir and not os.path.isabs(clips_dir):
             # Resolve relative to project root (parent of src/)
@@ -183,23 +187,13 @@ def generate_video(
         logger.info(f"Background: clips from {options.get('dir')}")
 
     elif background:
-        if BACKGROUNDS_AVAILABLE and background in BACKGROUND_PRESETS:
-            set_background(preset=background, duration=duration)
-            logger.info(f"Background: {background} (preset)")
-
-            bg = get_background_generator()
-            if bg:
-                prepare_background_cache(bg, background, duration,
-                                         fast_mode=fast_mode)
-
-        elif BACKGROUNDS_AVAILABLE:
-            set_background(bg_type=background, options=background_options or {}, duration=duration)
-            logger.info(f"Background: {background} (custom)")
-        else:
-            logger.warning("Background system not available, using legacy gradient")
+        # Presets and "photo:<path>" were removed with src/backgrounds.py.
+        # Refuse loudly: ignoring it would ship the fallback gradient.
+        raise ValueError(f"Unknown background {background!r}: "
+                         "only 'clips' or 'clips:<dir>' exist")
     else:
         reset_background()
-        logger.info("Background: legacy gradient (no presets available)")
+        logger.info("Background: legacy gradient (none set)")
 
     # Determine video type (second, redundant resolution — see line 117)
     if video_type is None:
@@ -238,18 +232,34 @@ def generate_video(
             # comment records why. ADD WORDS THERE, never here.
             SPANISH_COMMON = SPANISH_FILTER
             english_set = set()
+            dropped = []
             for phrase in english_phrases:
                 phrase_words = phrase.lower().split()
-                # Skip phrases with 4+ words — likely full Spanish sentences
-                if len(phrase_words) > 3:
-                    continue
                 for w in phrase_words:
                     cleaned = _re.sub(r'[^\w]', '', w)
-                    # Reject words with Spanish accents/ñ
+                    # Reject words with Spanish accents/ñ. This one is a
+                    # SEMANTIC test — a word carrying á/é/í/ó/ú/ñ/ü is Spanish
+                    # whatever its length — so it stays. Its sibling from the
+                    # same commit, "skip phrases of 4+ words", was a length
+                    # proxy for the same judgement and is gone; see below.
                     if any(c in cleaned for c in 'áéíóúñü'):
+                        dropped.append((phrase, w, 'spanish accent'))
                         continue
-                    if cleaned and cleaned not in SPANISH_COMMON and len(cleaned) > 1:
+                    if cleaned and cleaned in SPANISH_COMMON:
+                        dropped.append((phrase, w, 'spanish stoplist'))
+                        continue
+                    if cleaned and len(cleaned) > 1:
                         english_set.add(cleaned)
+
+            # Loud, with the text. This block used to discard 73% of Whisper's
+            # English flags without saying so, and the silence is why it
+            # survived four months past the bug it was written for.
+            if dropped:
+                logger.warning(
+                    "english_phrases: dropped %d word(s) from the English set",
+                    len(dropped))
+                for phrase, word, why in dropped:
+                    logger.warning("  %-16s %r from phrase %r", why, word, phrase)
 
             fixed_count = 0
             for w in words:
@@ -320,7 +330,9 @@ def generate_video(
                 # as the wrong thing.
                 profile_name = os.getenv("VIDEO_PROFILE", "adults")
             logger.info(f"Engine v2 active (profile: {profile_name})")
-            frame_gen = EducationalRendererV2(data, duration, profile_name)
+            frame_gen = EducationalRendererV2(
+                data, duration, profile_name, presentation=presentation
+            )
         elif karaoke_mode:
             logger.info("Using karaoke-style renderer with inline translations")
             def frame_gen(t):
@@ -343,7 +355,7 @@ def generate_video(
                 logger.debug(f"{key}: {st[key].get('start', 0):.2f}s")
 
         def frame_gen(t):
-            return create_frame_quiz(t, data, duration)
+            return create_frame_quiz(t, data, duration, presentation=presentation)
 
     elif video_type == 'true_false':
         logger.info(f"Statement: {data.get('statement', 'N/A')}")
@@ -352,7 +364,7 @@ def generate_video(
         data = resolve_true_false_timestamps(data, duration)
 
         def frame_gen(t):
-            return create_frame_true_false(t, data, duration)
+            return create_frame_true_false(t, data, duration, presentation=presentation)
 
     elif video_type == 'fill_blank':
         logger.info(f"Sentence: {data.get('sentence', 'N/A')}")
@@ -367,7 +379,9 @@ def generate_video(
         logger.info(f"Phonetic: {data.get('phonetic', 'N/A')}")
 
         def frame_gen(t):
-            return create_frame_pronunciation(t, data, duration)
+            return create_frame_pronunciation(
+                t, data, duration, presentation=presentation
+            )
 
     elif video_type == 'vocabulary':
         pairs = data.get('pairs', [])
@@ -375,7 +389,20 @@ def generate_video(
         logger.info(f"Difficulty: {data.get('difficulty', 'N/A')}")
 
         def frame_gen(t):
-            return create_frame_vocabulary(t, data, duration)
+            return create_frame_vocabulary(t, data, duration, presentation=presentation)
+
+    elif video_type == 'how_do_you_say':
+        logger.info(f"How do you say: {len(data['items'])} items, theme {data.get('theme')!r}")
+
+        def frame_gen(t):
+            return create_frame_how_do_you_say(t, data, duration, presentation=presentation)
+
+    elif video_type in ('level_test', 'say_it_level', 'true_false_level', 'fill_level',
+                        'choose_level', 'phrases_level'):
+        logger.info(f"Level ({video_type}): {len(data['items'])} items, theme {data.get('theme')!r}")
+
+        def frame_gen(t):
+            return create_frame_level(t, data, duration, presentation=presentation)
 
     else:
         logger.error(f"Unknown video type: {video_type}")
@@ -404,8 +431,9 @@ def generate_video(
             fps=fps,
             width=VIDEO_WIDTH,
             height=VIDEO_HEIGHT,
-            preset="ultrafast" if fast_mode else "medium",
-            use_hardware=True,
+            **({"preset": "ultrafast"} if fast_mode else {}),
+            # The notebook renderers are pure functions of t: frames render in a process pool.
+            workers=_notebook_workers(video_type),
         )
 
     # MoviePy renderer (legacy, explicit opt-in only)
@@ -487,13 +515,13 @@ def main():
     parser.add_argument("-a", "--audio", help="MP3 audio file")
     parser.add_argument("-d", "--data", help="JSON data file (defaults to audio path with .json)")
     parser.add_argument("-o", "--output", default="output/video/output.mp4", help="Output MP4")
-    parser.add_argument("-t", "--type", choices=['educational', 'quiz', 'true_false', 'fill_blank', 'pronunciation', 'vocabulary'],
+    parser.add_argument("-t", "--type", choices=list(VIDEO_TYPES),
                         help="Video type (auto-detected from data if not specified)")
     parser.add_argument("--fps", type=int, default=FPS, help="FPS")
-    parser.add_argument("-b", "--background", default=None,
-                        help="Background preset (bokeh_soft, purple_vibes, dark_professional, etc.) or type")
+    parser.add_argument("-b", "--background", required=True,
+                        help="Background: clips:<dir> (from pipeline.resolve_background)")
     parser.add_argument("--fast", action="store_true",
-                        help="Fast mode: use static background and optimized settings")
+                        help="Fast mode: faster encoder settings")
     parser.add_argument("--renderer", choices=["ffmpeg", "moviepy"], default="ffmpeg",
                         help="Rendering backend: ffmpeg (fast, default) or moviepy (legacy)")
     parser.add_argument("--karaoke", action="store_true",
@@ -501,20 +529,9 @@ def main():
     parser.add_argument("--v2", action="store_true",
                         help="Use the v2 render engine (educational only; "
                              "other types fall back to v1)")
-    parser.add_argument("--list-backgrounds", action="store_true",
-                        help="List available background presets")
+    parser.add_argument("--native-language", choices=["es", "zh-Hans"], default="es")
 
     args = parser.parse_args()
-
-    if args.list_backgrounds:
-        if BACKGROUNDS_AVAILABLE:
-            print("Available background presets:")
-            for name, preset in BACKGROUND_PRESETS.items():
-                print(f"  {name}: {preset['type']}")
-            print(f"\nRecommended: {get_recommended_preset()}")
-        else:
-            print("Background system not available")
-        sys.exit(0)
 
     if not args.audio:
         print("Error: Audio file (-a/--audio) is required", file=sys.stderr)
@@ -531,18 +548,19 @@ def main():
         print(f"Error: Data file not found: {args.data}", file=sys.stderr)
         sys.exit(1)
 
+    # -b is required, so this is always a real value. The renderer does not
+    # decide a background; pipeline.resolve_background does, once.
+    #
+    # --fast no longer overrides it either. It still controls render settings
+    # below; it used to also replace the resolved background with a static
+    # preset, discarding a generated image after it had been paid for.
     background = args.background
-
-    if args.fast:
-        background = "dark_professional"
-        print("Fast mode: using static background")
-    elif background is None:
-        background = get_default_background()
 
     result = generate_video(args.audio, args.data, args.output, args.type, args.fps, background,
                             fast_mode=args.fast, renderer=args.renderer,
                             karaoke_mode=getattr(args, 'karaoke', False),
-                            engine_version="v2" if getattr(args, 'v2', False) else "v1")
+                            engine_version="v2" if getattr(args, 'v2', False) else "v1",
+                            native_language=args.native_language)
     if result is None:
         print("Error: Video generation failed - no output produced", file=sys.stderr)
         sys.exit(1)

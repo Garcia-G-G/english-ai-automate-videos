@@ -1,0 +1,47 @@
+{
+  "id": "hc_c027",
+  "style": "comic",
+  "level": "dificil",
+  "angle": "reto",
+  "title": "RETO: «ve al grano»",
+  "hook_text": "Para reuniones eternas",
+  "quiz": {
+    "prompt": "¿Cómo dirías «ve al grano»?",
+    "options": [
+      "Go to the grain",
+      "Get to the point",
+      "Go to the seed"
+    ],
+    "answer": 1,
+    "after": "Get to the point = ir al grano."
+  },
+  "correction": {
+    "wrong": "Go to the seed",
+    "right": "Get to the point",
+    "rule": "Idiom"
+  },
+  "voice": [
+    "Para reuniones eternas. ¿Cómo dirías «ve al grano»?",
+    "¿[[Go to the grain]], [[Get to the point]] o [[Go to the seed]]?",
+    "¡La B! [[Get to the point]].",
+    "Con más tacto en el trabajo: [[What's the bottom line?]]",
+    "Y si eres tú quien se enrolla: [[I'll cut to the chase]], «voy al grano».",
+    "Reto extra: «iré al grano». Escríbelo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«Iré al grano»",
+    "answer": "I'll get to the point. / I'll cut to the chase."
+  },
+  "caption": "«Ir al grano» es «get to the point» o «cut to the chase». Idioms en inglés en un reto.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 61
+}

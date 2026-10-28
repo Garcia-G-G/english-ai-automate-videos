@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "¿Cuántas palabras del DESAYUNO sabes en inglés? 🥞",
+  "video_description": "Tostadas, huevos y mucho más: test de inglés con 10 palabras del desayuno 🍳",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el desayuno",
+  "intro": "[warm] Buenos días. Diez palabras del desayuno en inglés: dime qué significan antes de que aparezcan.",
+  "items": [
+    {
+      "english": "bread",
+      "spanish": "Pan",
+      "cefr": "A1"
+    },
+    {
+      "english": "honey",
+      "spanish": "Miel",
+      "cefr": "A2"
+    },
+    {
+      "english": "butter",
+      "spanish": "Mantequilla",
+      "cefr": "A2"
+    },
+    {
+      "english": "toast",
+      "spanish": "Tostada",
+      "cefr": "A2"
+    },
+    {
+      "english": "jam",
+      "spanish": "Mermelada",
+      "cefr": "A2"
+    },
+    {
+      "english": "scrambled eggs",
+      "spanish": "Huevos revueltos",
+      "cefr": "B1"
+    },
+    {
+      "english": "oatmeal",
+      "spanish": "Avena",
+      "cefr": "B1"
+    },
+    {
+      "english": "sunny-side up",
+      "spanish": "Huevo frito sin voltear",
+      "cefr": "B2"
+    },
+    {
+      "english": "hash browns",
+      "spanish": "Tortitas de patata rallada",
+      "cefr": "C1"
+    },
+    {
+      "english": "poached egg",
+      "spanish": "Huevo escalfado",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Con tres, eres nivel básico. Con siete, intermedio. Y si te sabías las diez, nivel experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Cuéntamelo abajo, mientras desayunas.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#DesayunoEnInglés",
+    "#InglésDiario"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv053",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "bread": "Pan",
+    "honey": "Miel",
+    "butter": "Mantequilla",
+    "toast": "Tostada",
+    "jam": "Mermelada",
+    "scrambled eggs": "Huevos revueltos",
+    "oatmeal": "Avena",
+    "sunny-side up": "Huevo frito sin voltear",
+    "hash browns": "Tortitas de patata rallada",
+    "poached egg": "Huevo escalfado"
+  },
+  "english_phrases": [
+    "bread",
+    "honey",
+    "butter",
+    "toast",
+    "jam",
+    "scrambled eggs",
+    "oatmeal",
+    "sunny-side up",
+    "hash browns",
+    "poached egg"
+  ],
+  "full_script": "[warm] Buenos días. Diez palabras del desayuno en inglés: dime qué significan antes de que aparezcan. bread Pan honey Miel butter Mantequilla Ahora, nivel intermedio. toast Tostada jam Mermelada scrambled eggs Huevos revueltos oatmeal Avena Y ahora, nivel experto. sunny-side up Huevo frito sin voltear hash browns Tortitas de patata rallada poached egg Huevo escalfado Con tres, eres nivel básico. Con siete, intermedio. Y si te sabías las diez, nivel experto. [happy] ¿Hasta qué número llegaste? Cuéntamelo abajo, mientras desayunas."
+}

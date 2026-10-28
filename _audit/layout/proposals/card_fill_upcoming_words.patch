@@ -1,0 +1,31 @@
+diff --git a/src/video/educational.py b/src/video/educational.py
+index 160f919..d8b72cb 100644
+--- a/src/video/educational.py
++++ b/src/video/educational.py
+@@ -32,6 +32,11 @@ _SPANISH_ACTIVE = (0, 120, 200)      # dark blue — pops on cream
+ _SPANISH_UPCOMING = (60, 70, 90)     # dark grey — readable on cream
+ _SPANISH_PAST = (130, 140, 160)      # medium grey — subtle on cream
+ 
++# PROTOTYPE (6a): alpha for a word the narrator has not reached yet, out of
++# 255. Low enough to read as "coming up" rather than as content, high enough
++# that the card looks occupied.
++_UPCOMING_ALPHA = 110
++
+ # ── Translation styling (inside dark glassmorphism card) ─────────
+ _TRANS_SIZE = 48
+ _TRANS_COLOR = (230, 235, 250)       # bright on dark card background
+@@ -495,6 +500,14 @@ def _render_spanish_karaoke(
+ 
+             word_alpha = int(state['alpha'] * group_alpha / 255)
+ 
++            # PROTOTYPE (6a card fill): a word that has not been spoken yet is
++            # drawn dimmed rather than not at all, so the card is full from the
++            # first frame of the phrase and the karaoke sweep only recolours
++            # what is already there. The card is sized for the whole phrase, so
++            # without this the first frames show one word in an empty slab.
++            if state['alpha'] <= 0 and t < word_start:
++                word_alpha = int(_UPCOMING_ALPHA * group_alpha / 255)
++
+             if word_alpha > 0:
+                 if is_english_word:
+                     word_color = ENGLISH_WORD_COLOR

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Script Generator for English AI Videos
-Uses OpenAI GPT to generate lesson scripts from topic database.
+Uses an LLM through OpenRouter to generate lesson scripts from topic database.
 Supports multiple video types: educational, quiz, true_false, fill_blank, pronunciation
 """
 
@@ -15,7 +15,6 @@ from pathlib import Path
 from datetime import datetime
 
 from dotenv import load_dotenv
-from openai import OpenAI
 
 from script_schema import validate_script
 from tts_common import SPANISH_FILTER
@@ -30,12 +29,13 @@ load_dotenv(ROOT / ".env")
 TOPICS_DIR = ROOT / "content" / "topics"
 OUTPUT_DIR = ROOT / "output" / "scripts"
 
-# OpenAI settings
-MODEL = "gpt-4o-mini"
+# LLM settings: the model is config.yaml llm.models.script, through OpenRouter (src/llm.py)
+import llm
 MAX_TOKENS = 3000
 
-# Supported video types
-VIDEO_TYPES = ["educational", "quiz", "true_false", "fill_blank", "pronunciation", "vocabulary"]
+# Supported video types -- derived, not restated. A type legal here and
+# unknown to the schema (or the reverse) was possible until this was one list.
+from video_types import VIDEO_TYPES  # noqa: F401  (re-exported)
 
 
 def load_topics(category: str) -> list:
@@ -74,23 +74,72 @@ def find_topic(category: str, topic_name: str) -> dict:
     raise ValueError(f"Topic '{topic_name}' not found in category '{category}'")
 
 
-def get_random_topic(allowed_categories: list = None) -> tuple:
-    """Get a random topic from a random category.
+def get_random_topic(allowed_categories: list = None,
+                     prefer_unused: bool = True) -> tuple:
+    """A topic to make a video about, drawn uniformly and preferring a new one.
 
     Args:
-        allowed_categories: Optional list to restrict the category pool
-            (e.g. a profile's content.categories). Falls back to all
-            categories if none of them exist.
+        allowed_categories: Optional list to restrict the pool (e.g. a
+            profile's content.categories, or type_categories.resolve()).
+            Falls back to all categories if none of them exist.
+        prefer_unused: Draw from topics with no script on disk while any
+            remain. Pass False for a plain uniform draw over everything.
+
+    TWO DEFECTS, BOTH VISIBLE IN THE OUTPUT.
+
+    1. THE DRAW WAS NOT UNIFORM. It was random.choice(categories) and then
+       random.choice(topics), which weights every topic by 1/len(its
+       category). A kids_animals topic (5 in the file) came up 21x more often
+       than a phrasal_verbs one (105) — and phrasal_verbs and idioms together
+       hold 187 topics that were effectively unreachable. Flattening the pool
+       first is the whole fix: one draw over (category, topic) pairs.
+
+    2. NOTHING REMEMBERED ANYTHING. Measured when Garcia reported seeing the
+       same subject four times: 720 topics on disk, 160 ever generated,
+       social/so008 eleven times. Every video drew as if it were the first.
+
+    The two compound — the biased draw kept returning to the small categories
+    and nothing noticed it had been there before.
+
+    Preference, not exclusion. When the fresh pool empties the draw falls back
+    to the LEAST-used topic rather than to a uniform one, so the degradation is
+    "the oldest subject comes round again" and never "the one you have already
+    seen eleven times". At 2 videos a day and 560 untouched topics, the
+    fallback is about nine months away.
     """
     categories = list_categories()
     if allowed_categories:
         filtered = [c for c in categories if c in allowed_categories]
         if filtered:
             categories = filtered
-    category = random.choice(categories)
-    topics = load_topics(category)
-    topic = random.choice(topics)
-    return category, topic
+
+    pool = [(c, t) for c in categories for t in load_topics(c)]
+    if not pool:
+        raise ValueError(
+            f"no topics for categories {categories!r} — check content/topics/")
+
+    if prefer_unused:
+        try:
+            from topic_history import partition
+            fresh, stale = partition(pool)
+            if fresh:
+                return random.choice(fresh)
+            if stale:
+                # Everything has been made at least once. Take from the least
+                # used, and say so: it is the signal that the topic files need
+                # more content, not a condition to hide.
+                logger.info(
+                    "topic pool exhausted for %s — every one of %d topics has "
+                    "been generated; drawing from the least used",
+                    ", ".join(sorted(categories)), len(pool))
+                least = stale[: max(1, len(stale) // 10)]
+                return random.choice(least)
+        except Exception:                                       # noqa: BLE001
+            # History is an optimisation. A video must never fail because a
+            # file in output/scripts/ could not be read.
+            logger.exception("topic history unavailable — drawing uniformly")
+
+    return random.choice(pool)
 
 
 def _topic_context(category: str, topic: dict) -> str:
@@ -224,16 +273,25 @@ def _category_hashtags(category: str) -> list:
 
 def build_prompt_educational(category: str, topic: dict) -> str:
     """Build educational video prompt for any category."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("educational")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("educational")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
+
     context = _topic_context(category, topic)
     hashtags = _category_hashtags(category)
 
-    return f"""Genera un script de 45-75 segundos para un video de TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un script para un video de TikTok/Reels enseñando inglés a hispanohablantes.
+
+{duration_rule}
 
 TEMA: {context}
 
 REGLAS IMPORTANTES:
-1. El script debe ser en ESPAÑOL, con las palabras en inglés entre comillas simples
-2. Ejemplo: "La palabra 'embarrassed' NO significa embarazada"
+1. El script debe ser en ESPAÑOL. En full_script, CADA palabra o frase en inglés va entre dobles corchetes: [[así]]. La frase inglesa entera, no solo la palabra clave: "[[I have a meeting on Wednesday]]", nunca "I have a [[meeting]]". Lo que esté fuera de [[ ]] lo lee la voz en español.
+2. Ejemplo: "La palabra [[embarrassed]] NO significa embarazada"
 3. Incluye AL MENOS 2-3 ejemplos prácticos de uso en inglés
 4. Usa un tono energético y educativo como profesor de TikTok
 5. Incluye un tip memorable para recordar
@@ -261,7 +319,7 @@ FORMATO JSON REQUERIDO:
   "video_title": "Título viral bilingüe ≤80 chars con curiosidad/reto/identidad",
   "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "hook": "Frase inicial que capte atención (con palabra inglés en 'comillas')",
-  "full_script": "Script completo en español con palabras inglés en 'comillas simples'. Debe fluir naturalmente para ser leído en voz alta. MÍNIMO 45 segundos de contenido.",
+  "full_script": "Script completo en español con todo el inglés entre [[dobles corchetes]]. Debe fluir naturalmente para ser leído en voz alta y respetar el número de palabras indicado arriba.",
   "english_phrases": ["lista", "de", "palabras", "inglés", "usadas"],
   "translations": {{"palabra_ingles": "traduccion_español"}},
   "tip": "Tip memorable para recordar",
@@ -274,10 +332,21 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_quiz(category: str, topic: dict) -> str:
     """Build quiz video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("quiz")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("quiz")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
+    from duration_spec import per_item_instruction
+    duration_rule = duration_rule + "\n\n" + per_item_instruction("quiz")
+
     context = _topic_context(category, topic)
     hashtags = ["#QuizIngles", "#AprendeIngles", "#TestTuIngles"] + _category_hashtags(category)[:1]
 
-    return f"""Genera un QUIZ de 45-60 segundos con 3 PREGUNTAS para TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un QUIZ con 3 PREGUNTAS para TikTok/Reels enseñando inglés a hispanohablantes.
+
+{duration_rule}
 
 TEMA: {context}
 
@@ -286,7 +355,7 @@ Para CADA pregunta:
 1. Pregunta en español (¿Cómo se dice X en inglés? o ¿Qué significa X?)
 2. 4 opciones DIFERENTES: A, B, C, D - solo UNA correcta
 3. Cuenta regresiva EN ESPAÑOL: "Piensa bien... Tres... dos... uno..."
-4. Revelar respuesta con explicación CORTA
+4. Revelar respuesta con la explicación de enseñanza (longitud arriba)
 
 Secuencia: Pregunta 1 → Opciones → Countdown → Respuesta → Pregunta 2 → Opciones → Countdown → Respuesta → Pregunta 3 → Opciones → Countdown → Respuesta
 
@@ -298,7 +367,7 @@ REGLAS ABSOLUTAS (NUNCA VIOLAR):
 3. Las opciones incorrectas deben ser confusiones comunes o palabras similares
 4. CUENTA REGRESIVA SIEMPRE EN ESPAÑOL: "Tres... dos... uno..." (NO "Three... two... one...")
 5. La explicación debe explicar POR QUÉ la respuesta correcta es correcta
-6. Explicación CORTA: 1-2 oraciones + un ejemplo simple
+6. Explicación de ENSEÑANZA con la longitud en palabras indicada arriba: define, contrasta con la opción incorrecta más tentadora, da un ejemplo real y un matiz de uso
 7. Las 3 preguntas deben estar RELACIONADAS al tema pero ser DIFERENTES entre sí
 8. Varía la dificultad: fácil → medio → difícil
 9. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "¿Puedes acertar las 3? 🧠 English Quiz" o "Solo el 10% acierta la pregunta 3 😱"
@@ -322,25 +391,25 @@ FORMATO JSON:
     "D": "opción 4 (DIFERENTE)"
   }},
   "correct": "letra correcta de la primera pregunta",
-  "explanation": "Explicación de la primera pregunta",
+  "explanation": "Explicación DE ENSEÑANZA de la primera pregunta, con la longitud en palabras indicada arriba",
   "questions": [
     {{
       "question": "Pregunta 1 en español",
       "options": {{"A": "opción1", "B": "opción2", "C": "opción3", "D": "opción4"}},
       "correct": "letra correcta",
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }},
     {{
       "question": "Pregunta 2 en español",
       "options": {{"A": "opción1", "B": "opción2", "C": "opción3", "D": "opción4"}},
       "correct": "letra correcta",
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }},
     {{
       "question": "Pregunta 3 en español",
       "options": {{"A": "opción1", "B": "opción2", "C": "opción3", "D": "opción4"}},
       "correct": "letra correcta",
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }}
   ],
   "full_script": "Script completo EN ESPAÑOL narrando LAS 3 PREGUNTAS secuencialmente con countdown 'Tres... dos... uno...' para cada una",
@@ -355,9 +424,20 @@ Responde SOLO con el JSON válido."""
 
 def build_prompt_true_false(category: str, topic: dict) -> str:
     """Build true/false video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("true_false")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("true_false")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
+    from duration_spec import per_item_instruction
+    duration_rule = duration_rule + "\n\n" + per_item_instruction("true_false")
+
     context = _topic_context(category, topic)
 
-    return f"""Genera un video de VERDADERO O FALSO de 40-55 segundos con 3 AFIRMACIONES para TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un video de VERDADERO O FALSO con 3 AFIRMACIONES para TikTok/Reels enseñando inglés a hispanohablantes.
+
+{duration_rule}
 
 TEMA: {context}
 
@@ -370,7 +450,7 @@ FORMATO DEL VIDEO (3 afirmaciones secuenciales):
 Para CADA afirmación:
 1. Afirmación en ESPAÑOL (con palabra inglés en comillas): "¿'Library' significa librería? ¿Verdadero o falso?"
 2. Pausa para pensar: "Piensa bien... Tres... dos... uno..."
-3. Revelar respuesta con explicación CORTA (1-2 oraciones máximo)
+3. Revelar respuesta con la explicación de enseñanza (longitud arriba)
 
 Secuencia: Afirmación 1 → Countdown → Respuesta → Afirmación 2 → Countdown → Respuesta → Afirmación 3 → Countdown → Respuesta
 
@@ -383,7 +463,7 @@ EJEMPLO INCORRECTO (NO hacer esto):
 REGLAS:
 1. Afirmaciones EN ESPAÑOL con solo la palabra inglés en inglés
 2. VARÍA entre verdaderas y falsas (NO todas iguales - mezcla)
-3. Explicación CORTA: 1-2 oraciones máximo + un ejemplo simple
+3. Explicación de ENSEÑANZA con la longitud en palabras indicada arriba: define, contrasta con el error más común, da un ejemplo real y un matiz de uso
 4. Incluir cuenta regresiva para cada afirmación: "Piensa bien... Tres... dos... uno..."
 5. Las 3 afirmaciones deben estar RELACIONADAS al tema pero ser DIFERENTES
 6. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "¿Verdadero o Falso? 🤔 Te va a sorprender"
@@ -397,22 +477,22 @@ FORMATO JSON REQUERIDO:
   "video_description": "Descripción 2-3 líneas con emoji + CTA bilingüe",
   "statement": "Primera afirmación (para compatibilidad)",
   "correct": true,
-  "explanation": "Explicación de la primera afirmación",
+  "explanation": "Explicación DE ENSEÑANZA de la primera afirmación, con la longitud en palabras indicada arriba",
   "statements": [
     {{
       "statement": "¿'palabra_ingles' significa X? ¿Verdadero o falso?",
       "correct": true,
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }},
     {{
       "statement": "¿'palabra_ingles' significa Y? ¿Verdadero o falso?",
       "correct": false,
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }},
     {{
       "statement": "¿'palabra_ingles' significa Z? ¿Verdadero o falso?",
       "correct": true,
-      "explanation": "1-2 oraciones + ejemplo"
+      "explanation": "explicación de enseñanza con ejemplo"
     }}
   ],
   "full_script": "Script EN ESPAÑOL narrando LAS 3 AFIRMACIONES secuencialmente. Palabra inglés en 'comillas'. Countdown para cada una.",
@@ -427,9 +507,20 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_fill_blank(category: str, topic: dict) -> str:
     """Build fill-in-the-blank video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("fill_blank")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("fill_blank")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
+    from duration_spec import per_item_instruction
+    duration_rule = duration_rule + "\n\n" + per_item_instruction("fill_blank")
+
     context = _topic_context(category, topic)
 
-    return f"""Genera un video de COMPLETA LA FRASE de 45-60 segundos con 3 FRASES para TikTok/Reels enseñando inglés.
+    return f"""Genera un video de COMPLETA LA FRASE con 3 FRASES para TikTok/Reels enseñando inglés.
+
+{duration_rule}
 
 TEMA: {context}
 
@@ -504,9 +595,18 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_pronunciation(category: str, topic: dict) -> str:
     """Build pronunciation video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("pronunciation")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("pronunciation")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
+
     word = get_topic_name(topic)
 
-    return f"""Genera un video de PRONUNCIACIÓN de 20-30 segundos para TikTok/Reels enseñando inglés.
+    return f"""Genera un video de PRONUNCIACIÓN para TikTok/Reels enseñando inglés.
+
+{duration_rule}
 
 PALABRA: "{word}"
 
@@ -515,13 +615,26 @@ FORMATO DEL VIDEO:
 2. "¿Cómo se pronuncia?"
 3. Mostrar error común de pronunciación
 4. Mostrar pronunciación correcta (fonética simplificada)
-5. Tip para recordar
+5. REPETICIÓN GUIADA: el estudiante repite después de ti
+6. Una frase de ejemplo con la palabra en contexto
+7. Tip para recordar
 
 REGLAS:
 1. Usa fonética simplificada que hispanohablantes entiendan (ej: "KUMF-ter-bul")
 2. Identifica el error de pronunciación más común
 3. Da un tip memorable
 4. El script debe incluir cómo pronunciar la palabra
+4b. REPETICIÓN — esto es la pedagogía, no relleno. En full_script, la
+   palabra en inglés debe decirse TRES veces en total, cada una como su
+   propia oración corta y separada, para que el estudiante pueda repetirla
+   en la pausa. Escríbelo así:
+     "... Escucha y repite. [[{word}]]. Otra vez. [[{word}]]. Una vez más. [[{word}]]."
+   NO escribas las tres seguidas en una sola oración.
+4c. Incluye UNA frase de ejemplo en inglés que use la palabra en contexto,
+   y su traducción al español. La frase inglesa COMPLETA va entre [[ ]]:
+   "[[I have a meeting on Wednesday]]", nunca "I have a [[meeting on Wednesday]]".
+4d. En full_script todo el inglés va entre [[dobles corchetes]]; lo de fuera lo lee la voz
+   en español. La fonética simplificada (ej. "WENZ-day") NO es inglés: va sin corchetes.
 5. Genera un título viral bilingüe (español + palabras clave en inglés) de máximo 80 caracteres que genere curiosidad. Ejemplo: "Llevas toda tu vida diciendo '{word}' MAL 😬"
 6. Genera una descripción atractiva de 2-3 líneas con emojis, CTA y mezcla bilingüe
 7. Los hashtags deben ser 5-7: 2 amplios (#LearnEnglish #AprendeIngles), 2 medianos (categoría), 1-3 específicos del tema
@@ -535,7 +648,7 @@ FORMATO JSON REQUERIDO:
   "phonetic": "Pronunciación fonética simplificada en mayúsculas",
   "common_mistake": "Error de pronunciación común",
   "tip": "Tip para recordar la pronunciación",
-  "full_script": "Script narrado con la palabra, error común, pronunciación correcta y tip.",
+  "full_script": "Script narrado con la palabra, error común, pronunciación correcta y tip; todo el inglés entre [[ ]].",
   "translation": "traducción de la palabra",
   "hashtags": ["#Pronunciacion", "#AprendeIngles", "#LearnEnglish", "#SpeakEnglish", "#PronunciacionIngles", "#InglesParaHispanohablantes", "#EstudiaIngles", "#InglesFacil", "#EnglishPractice", "#AprenderIngles", "#InglesDiario", "#HablarIngles"]
 }}
@@ -545,21 +658,30 @@ Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 def build_prompt_vocabulary(category: str, topic: dict) -> str:
     """Build vocabulary list video prompt."""
+    from duration_spec import prompt_instruction
+    duration_rule = prompt_instruction("vocabulary")
+    from length_spec import prompt_instruction as _length_rule
+    _len = _length_rule("vocabulary")
+    if _len:
+        duration_rule = duration_rule + "\n\n" + _len
+
     context = _topic_context(category, topic)
     hashtags = ["#Vocabulario", "#AprendeIngles"] + _category_hashtags(category)[:1]
 
-    return f"""Genera un video de LISTA DE VOCABULARIO de 30-45 segundos para TikTok/Reels enseñando inglés a hispanohablantes.
+    return f"""Genera un video de LISTA DE VOCABULARIO para TikTok/Reels enseñando inglés a hispanohablantes.
+
+{duration_rule}
 
 TEMA: {context}
 
 FORMATO DEL VIDEO:
 1. Título del tema (ej: "Vocabulario en el restaurante")
-2. Lista de 6-10 pares español/inglés, uno por uno
+2. Lista de 10-12 pares español/inglés, uno por uno
 3. Cada par: palabra en español → traducción en inglés
 
 REGLAS:
 1. Elige un tema coherente relacionado al contexto dado
-2. Entre 6 y 10 pares de palabras
+2. Entre 10 y 12 pares de palabras (12 es el máximo que cabe en la tarjeta)
 3. Incluye palabras útiles y prácticas
 4. El full_script debe leer cada par: "La cuenta, the bill. El mesero, the waiter."
 5. Nivel de dificultad: facil, medio, dificil, o experto
@@ -588,6 +710,195 @@ FORMATO JSON REQUERIDO:
 Responde SOLO con el JSON, sin explicaciones adicionales."""
 
 
+def build_prompt_how_do_you_say(category: str, topic: dict) -> str:
+    """Build the "¿Cómo se dice…?" prompt: ten A1 words on one theme.
+
+    No duration line yet: the type has no calibrated rate, so
+    duration_spec.prompt_instruction returns "" and the structure itself
+    (8-10 items, the fixed think pause) is what sets the length.
+    """
+    from duration_spec import prompt_instruction
+    from length_spec import prompt_instruction as _length_rule
+    rules = "\n\n".join(r for r in (prompt_instruction("how_do_you_say"),
+                                     _length_rule("how_do_you_say")) if r)
+    theme = topic.get("theme") or topic.get("spanish") or topic.get("topic", "")
+    tags = ", ".join(f"[{t}]" for t in ("cheerful", "excited", "warm"))
+
+    return f"""Genera un video "¿Cómo se dice…?" para TikTok/Reels: vocabulario de nivel A1 para hispanohablantes.
+
+{rules}
+
+TEMA: {theme}  (topic_id {topic.get("id", "")})
+
+CÓMO ES EL VIDEO: una página de cuaderno con 10 palabras en español, cada una con un emoji.
+La voz dice la palabra en español, deja 1.8 s para que el espectador responda, y luego dice
+la palabra en inglés dos veces mientras se escribe. Al final repite todas en inglés.
+
+REGLAS:
+1. Entre 8 y 10 items; 10 es lo ideal. Palabras de nivel A1, muy frecuentes, del tema.
+2. "spanish" con mayúscula inicial y SIN artículo ("Madre", no "la madre"). "english" en minúscula, sin artículo.
+3. "emoji": UN SOLO emoji simple por item (un carácter). PROHIBIDO usar emojis compuestos
+   con varias personas, banderas o tonos de piel. Un emoji DISTINTO por item: el objeto
+   literal de la palabra, no uno parecido ni un sinónimo (manta no es 🧣, alfombra no es 🧶;
+   si dos palabras solo tienen el mismo emoji, cambia una de las palabras).
+4. "intro" pregunta si saben decir las palabras; "outro" pregunta cuántas sabían.
+   Puedes usar UNA etiqueta de voz al inicio de intro y outro, solo de esta lista: {tags}.
+5. "recap" = "Ahora todas en inglés, conmigo: " + las palabras en inglés separadas por comas.
+6. Las palabras de los items NO llevan etiquetas de voz.
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice TEMA en inglés? + emoji",
+  "video_description": "1-2 líneas con emoji",
+  "title": "¿Cómo se dice…?",
+  "theme": "{theme}",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes decir estas 10 palabras en inglés? Piensa antes de que yo lo diga.",
+  "items": [{{"emoji": "👩", "spanish": "Madre", "english": "mother"}}],
+  "recap": "Ahora todas en inglés, conmigo: mother, ...",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "intro + cada 'Español... english. english.' + recap + outro",
+  "translations": {{"mother": "Madre"}},
+  "english_phrases": ["mother"],
+  "hashtags": ["#InglésParaPrincipiantes", "#VocabularioEnInglés", "#AprenderInglés", "#InglésFácil", "#HowDoYouSay"]
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
+def build_prompt_level(category: str, topic: dict, video_type: str) -> str:
+    """The level family (STEP 58): ten items from easy to expert, one theme.
+
+    The 100 queued scripts per type were written by hand to
+    content/drafts/LEVEL_TYPES_SPEC.md; this is the door for the next ones,
+    and the schema holds every rule the prompt states.
+    """
+    from length_spec import prompt_instruction as _length_rule
+    from script_schema import LEVEL_TYPE_TAGS
+    theme = topic.get("theme") or topic.get("spanish") or topic.get("topic", "")
+    tags = ", ".join(f"[{t}]" for t in ("cheerful", "excited", "curious", "warm"))
+    if video_type == "level_test":
+        what = ("La palabra o expresión en inglés aparece y se dice; el espectador dice qué significa; "
+                "después se escribe y se dice el significado en español.")
+        item = '{"english": "spoon", "spanish": "Cuchara", "cefr": "A1"}'
+        levels = ("cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2, al menos dos B1/B2. "
+                  "Items 8-10: B2-C2, al menos dos C1/C2.")
+        extra = ('"english" ≤ 24 caracteres, minúscula. "spanish" ≤ 28, mayúscula inicial, el '
+                 'significado en ESTE sentido.')
+    elif video_type == "true_false_level":
+        what = ("Las 10 afirmaciones en español (la palabra inglesa entre «») se ven desde el inicio y NO se "
+                "leen en voz alta; bajo cada una, la respuesta borrosa se aclara tras una pausa y se dice "
+                "«Verdadero.» o «Falso: <corrección>.».")
+        item = ('{"statement": "«Carpet» significa carpeta.", "truth": false, "correction": "es alfombra", '
+                '"cefr": "A1"}, {"statement": "«Exit» significa salida.", "truth": true, "cefr": "A1"}')
+        levels = "cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2. Items 8-10: B2-C2."
+        extra = ('"statement" ≤ 38 caracteres, una línea, la palabra inglesa entre «». "correction" SOLO si '
+                 '"truth" es false, ≤ 22, empieza por «es ...». Entre 3 y 7 afirmaciones verdaderas.')
+    elif video_type == "fill_level":
+        what = ("Las 10 frases en inglés, cada una con un hueco ____, se ven desde el inicio y NO se leen; tras "
+                "una pausa la respuesta se escribe en el hueco, la traducción aparece debajo y se dice la frase "
+                "completa en inglés.")
+        item = ('{"sentence": "I live ____ Madrid.", "answer": "in", "translation": "Vivo en Madrid.", '
+                '"cefr": "A1"}')
+        levels = "cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2. Items 8-10: B2-C2."
+        extra = ('"sentence" en inglés con EXACTAMENTE un hueco escrito ____ (cuatro guiones bajos), ≤ 34 '
+                 'caracteres; "answer" la palabra o palabras que lo llenan; "translation" en español, ≤ 34.')
+    elif video_type == "choose_level":
+        what = ("Las 10 frases en inglés, cada una con un hueco ____ y dos opciones debajo («make · do»), se ven "
+                "desde el inicio y NO se leen; tras una pausa se rodea la correcta, se tacha la otra y se dice "
+                "la frase completa en inglés.")
+        item = '{"sentence": "I need to ____ my homework.", "options": ["make", "do"], "answer": 1, "cefr": "A1"}'
+        levels = "cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2. Items 8-10: B2-C2."
+        extra = ('"sentence" en inglés con EXACTAMENTE un hueco ____, ≤ 34 caracteres; "options" exactamente 2, '
+                 'distintas; "answer" el índice de la correcta (0 o 1). Cada índice es el correcto entre 3 y 7 '
+                 'veces en el video.')
+    else:
+        what = ("La frase en español aparece y se dice; el espectador la dice en inglés; después se "
+                "escribe y se dice en inglés. Los items 8-10 son TRAMPAS donde la traducción literal falla.")
+        item = ('{"spanish": "¿Nos trae la cuenta, por favor?", "english": "Can we get the check, please?", '
+                '"cefr": "B2", "alt": "Could we have the bill, please?", "tip": "«La cuenta» es check o bill, nunca account"}')
+        levels = "cefr no decreciente. Items 1-3: A1-A2. Items 4-7: A2-B2. Items 8-10: B1-C1."
+        extra = ('"spanish" y "english" ≤ 42 caracteres con puntuación final; "alt" opcional (otra respuesta '
+                 'correcta); "tip" OBLIGATORIO en 8-10, ≤ 60, en español, explica la trampa.')
+    rules = _length_rule(video_type)
+    TITLES = {"level_test": "¿Qué nivel tienes?", "say_it_level": "Dilo en inglés",
+              "true_false_level": "¿Verdadero o falso?", "fill_level": "Completa la frase",
+              "choose_level": "Elige la correcta"}
+    return f"""Genera un Short de nivel ("¿Hasta qué número llegas?") para hispanohablantes que aprenden inglés.
+
+{rules}
+
+TEMA: {theme}  (topic_id {topic.get("id", "")})
+
+CÓMO ES EL VIDEO: una página de cuaderno con los 10 items visibles desde el primer segundo.
+{what} Tras el 3 y el 7 se anuncia el nivel (lo pone el formato: NO lo escribas).
+
+REGLAS:
+1. EXACTAMENTE 10 items, de fácil a experto. {levels}
+2. {extra}
+3. Sin repetir english ni spanish dentro del video.
+4. Etiqueta de voz SOLO al inicio de intro y outro, una, de esta lista: {tags}.
+5. "verdict" (≤ 130, sin etiqueta) nombra los tres cortes: tres, siete y diez.
+6. "video_title" ≤ 70 y "video_description" ≤ 120, en español, terminan en UN emoji simple.
+7. "hashtags": exactamente 5, el primero {LEVEL_TYPE_TAGS[video_type]}.
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "{video_type}",
+  "video_title": "...", "video_description": "...",
+  "title": "{TITLES[video_type]}",
+  "theme": "{theme}",
+  "intro": "[cheerful] ...",
+  "items": [{item}],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "intro + cada item + verdict + outro",
+  "hashtags": ["{LEVEL_TYPE_TAGS[video_type]}", "...", "...", "...", "..."]
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
+def build_prompt_phrases_level(category: str, topic: dict) -> str:
+    """phrases_level (STEP 62): «¿Cómo se dice?» with everyday sentences, no tiers, no verdict."""
+    from length_spec import prompt_instruction as _length_rule
+    from script_schema import PHRASES_LEVEL_TAG
+    theme = topic.get("theme") or topic.get("spanish") or topic.get("topic", "")
+    tags = ", ".join(f"[{t}]" for t in ("cheerful", "excited", "curious", "warm"))
+    return f"""Genera un Short «¿Cómo se dice?» con frases del día a día para hispanohablantes que aprenden inglés.
+
+{_length_rule("phrases_level")}
+
+TEMA: {theme}  (topic_id {topic.get("id", "")})
+
+CÓMO ES EL VIDEO: una página de cuaderno con las frases en español visibles desde el primer segundo, que NO
+se leen en voz alta; tras una pausa se escribe y se dice la frase en inglés, la que de verdad se usa.
+
+REGLAS:
+1. Entre 8 y 10 items. Sin niveles, sin cefr, sin veredicto.
+2. "spanish" y "english" ≤ 42 caracteres con puntuación final; inglés natural, no traducción palabra a palabra.
+3. Sin repetir english ni spanish dentro del video.
+4. Etiqueta de voz SOLO al inicio de intro y outro, una, de esta lista: {tags}.
+5. "video_title" ≤ 70 y "video_description" ≤ 120, en español, terminan en UN emoji simple.
+6. "hashtags": exactamente 5, el primero {PHRASES_LEVEL_TAG}.
+
+FORMATO JSON REQUERIDO:
+{{
+  "type": "phrases_level",
+  "video_title": "...", "video_description": "...",
+  "title": "¿Cómo se dice?",
+  "theme": "{theme}",
+  "intro": "[cheerful] ...",
+  "items": [{{"spanish": "¿Cómo te fue?", "english": "How did it go?"}}],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "intro + cada english + outro",
+  "hashtags": ["{PHRASES_LEVEL_TAG}", "...", "...", "...", "..."]
+}}
+
+Responde SOLO con el JSON, sin explicaciones adicionales."""
+
+
 def build_prompt(category: str, topic: dict, video_type: str = "educational") -> str:
     """Build prompt based on video type."""
     if video_type == "educational":
@@ -602,11 +913,36 @@ def build_prompt(category: str, topic: dict, video_type: str = "educational") ->
         return build_prompt_pronunciation(category, topic)
     elif video_type == "vocabulary":
         return build_prompt_vocabulary(category, topic)
+    elif video_type == "how_do_you_say":
+        return build_prompt_how_do_you_say(category, topic)
+    elif video_type in ("level_test", "say_it_level", "true_false_level", "fill_level", "choose_level"):
+        return build_prompt_level(category, topic, video_type)
+    elif video_type == "phrases_level":
+        return build_prompt_phrases_level(category, topic)
     else:
         raise ValueError(f"Unknown video type: {video_type}. Choose from: {VIDEO_TYPES}")
 
 
-def validate_and_clean_script(script: dict, video_type: str) -> dict:
+SPANISH_CLEANUP_POLICY = {
+    "countdown": ("Tres", "dos", "uno"),
+    "countdown_label": "Spanish",
+    "opening_marks": True,
+    "fallback_title": "Aprende inglés hoy 🦊",
+    "fallback_cta": "Sígueme para más tips de inglés 🦊",
+    "broad_hashtags": ("#LearnEnglish", "#AprendeIngles"),
+}
+
+ZH_HANS_CLEANUP_POLICY = {
+    "countdown": ("三", "二", "一"),
+    "countdown_label": "Simplified Chinese",
+    "opening_marks": False,
+    "fallback_title": "今天学一个实用英语表达",
+    "fallback_cta": "用今天的表达造一个真实句子。",
+    "broad_hashtags": ("#LearnEnglish", "#英语学习"),
+}
+
+
+def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None) -> dict:
     """
     Validate and clean generated script for TTS compatibility.
 
@@ -617,6 +953,8 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
     - Required fields are present
     """
     import re
+
+    policy = cleanup_policy or SPANISH_CLEANUP_POLICY
 
     errors = []
     warnings = []
@@ -629,6 +967,13 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
         "fill_blank": ["full_script", "sentence", "options", "correct"],
         "pronunciation": ["full_script", "word", "phonetic"],
         "vocabulary": ["full_script", "title", "pairs"],
+        "how_do_you_say": ["full_script", "theme", "intro", "items", "recap", "outro"],
+        "level_test": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "say_it_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "true_false_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "fill_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "choose_level": ["full_script", "theme", "intro", "items", "verdict", "outro"],
+        "phrases_level": ["full_script", "theme", "intro", "items", "outro"],
     }
 
     # Check required fields.
@@ -754,6 +1099,9 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
         # desynchronise. Restore them in the captured text.
         quoted = [q.replace(_CONTRACTION, "'")
                   for q in re.findall(r"'([^']+)'", full_script)]
+        # STEP 76 §1: [[marked]] English is English by the author's say-so.
+        from audio_tags import MARKER
+        quoted += [m.replace(_CONTRACTION, "'").strip(" '") for m in MARKER.findall(full_script)]
 
         current_phrases = set(p.lower() for p in script["english_phrases"])
         found_phrases = set(q.lower().strip() for q in quoted)
@@ -792,15 +1140,24 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
 
     # 5. Validate countdown for quiz/true_false
     if video_type in ["quiz", "true_false", "fill_blank"]:
-        spanish_countdown = any(x in full_script.lower() for x in ["tres", "dos", "uno"])
+        expected_countdown = any(
+            x.lower() in full_script.lower() for x in policy["countdown"]
+        )
         english_countdown = any(x in full_script.lower() for x in ["three", "two", "one"])
 
-        if english_countdown and not spanish_countdown:
-            warnings.append("Countdown is in English, should be Spanish (Tres, dos, uno)")
+        if english_countdown and not expected_countdown:
+            warnings.append(
+                "Countdown is in English, should be "
+                f"{policy['countdown_label']} ({', '.join(policy['countdown'])})"
+            )
             # Auto-fix
-            full_script = re.sub(r'\bthree\b', 'Tres', full_script, flags=re.IGNORECASE)
-            full_script = re.sub(r'\btwo\b', 'dos', full_script, flags=re.IGNORECASE)
-            full_script = re.sub(r'\bone\b', 'uno', full_script, flags=re.IGNORECASE)
+            for english, replacement in zip(
+                ("three", "two", "one"), policy["countdown"]
+            ):
+                full_script = re.sub(
+                    rf'\b{english}\b', replacement, full_script,
+                    flags=re.IGNORECASE,
+                )
 
     script["full_script"] = full_script.strip()
 
@@ -833,29 +1190,30 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
             fixed.append(part)
         return ' '.join(fixed), n
 
-    total_marks = 0
-    for field in ("question", "statement", "sentence", "explanation",
-                  "hook", "full_script", "tip", "cta"):
-        value = script.get(field)
-        if isinstance(value, str) and value:
-            repaired, n = _add_opening_marks(value)
-            if n:
-                script[field] = repaired
-                total_marks += n
-    if total_marks:
-        warnings.append(
-            f"Added {total_marks} missing Spanish opening mark(s) (¿ / ¡)")
+    if policy["opening_marks"]:
+        total_marks = 0
+        for field in ("question", "statement", "sentence", "explanation",
+                      "hook", "full_script", "tip", "cta"):
+            value = script.get(field)
+            if isinstance(value, str) and value:
+                repaired, n = _add_opening_marks(value)
+                if n:
+                    script[field] = repaired
+                    total_marks += n
+        if total_marks:
+            warnings.append(
+                f"Added {total_marks} missing Spanish opening mark(s) (¿ / ¡)")
 
     # Ensure video_title exists
     if "video_title" not in script or not script.get("video_title"):
         fallback = script.get("hook") or script.get("question") or script.get("statement") or script.get("word", "")
-        script["video_title"] = fallback[:80] if fallback else "Aprende inglés hoy 🦊"
+        script["video_title"] = fallback[:80] if fallback else policy["fallback_title"]
         warnings.append("Generated fallback video_title from script content")
 
     # Ensure video_description exists
     if "video_description" not in script or not script.get("video_description"):
         title = script.get("video_title", "")
-        cta = script.get("cta", "Sígueme para más tips de inglés 🦊")
+        cta = script.get("cta", policy["fallback_cta"])
         script["video_description"] = f"{title}\n\n{cta}"
         warnings.append("Generated fallback video_description")
 
@@ -879,7 +1237,7 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
         if name and name.lower() not in seen:
             seen.add(name.lower())
             deduped.append(f"#{name}")
-    for tag in ("#LearnEnglish", "#AprendeIngles"):
+    for tag in policy["broad_hashtags"]:
         if tag.lstrip("#").lower() not in seen:
             seen.add(tag.lstrip("#").lower())
             deduped.append(tag)
@@ -892,51 +1250,70 @@ def validate_and_clean_script(script: dict, video_type: str) -> dict:
 
 
 def generate_script(category: str, topic: dict, video_type: str = "educational") -> dict:
-    """Call OpenAI API to generate a script."""
+    """Call the LLM (through OpenRouter) to generate a script."""
 
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        raise EnvironmentError("OPENAI_API_KEY environment variable not set. Add it to .env file.")
+    import channel_insights
+    from script_schema import ScriptValidationError
+    theme = topic.get("theme") or topic.get("spanish") or topic.get("topic") or ""
+    prompt = build_prompt(category, topic, video_type) + "\n\n" + channel_insights.brief(video_type, theme=str(theme))
+    try:
+        return _generate(category, topic, video_type, prompt)
+    except ScriptValidationError as error:
+        # One repair round: the model gets the validator's exact complaints (2026-10-27: Opus wrote
+        # keycap emojis 1️⃣ for «los números», which the renderer cannot draw).
+        logger.warning("script refused by the validator, asking for a corrected one: %s", error)
+        return _generate(category, topic, video_type, prompt + (
+            "\n\nUN INTENTO ANTERIOR FUE RECHAZADO por el validador con estos errores; "
+            f"no los repitas:\n{error}"))
 
-    client = OpenAI(api_key=api_key)
-    prompt = build_prompt(category, topic, video_type)
 
-    logger.info(f"Calling OpenAI API ({MODEL}) for {video_type} video...")
-
-    response = client.chat.completions.create(
-        model=MODEL,
-        max_tokens=MAX_TOKENS,
-        temperature=0.7,  # Slightly creative but consistent
-        messages=[
-            {"role": "system", "content": "You are an expert bilingual Spanish-English teacher creating viral TikTok content. Always respond with valid JSON only."},
-            {"role": "user", "content": prompt}
-        ]
+def _generate(category: str, topic: dict, video_type: str, prompt: str) -> dict:
+    return generate_script_from_prompt(
+        category=category,
+        topic=topic,
+        video_type=video_type,
+        prompt=prompt,
+        system_instruction=(
+            "You are an expert bilingual Spanish-English teacher writing short vertical videos "
+            "(YouTube Shorts, Reels) for Spanish speakers learning English. You write natural Latin "
+            "American Spanish, choose high-frequency words a learner will actually use, and make the "
+            "first second impossible to scroll past. Every format rule in the prompt is a hard "
+            "requirement checked by a validator. Respond with valid JSON only."
+        ),
     )
 
-    # Track cost
+
+def generate_script_from_prompt(
+    category: str,
+    topic: dict,
+    video_type: str,
+    prompt: str,
+    system_instruction: str,
+    *,
+    client=None,
+    cleanup_policy=None,
+    duplicate_options_instruction=(
+        "IMPORTANTE: Las 4 opciones A, B, C, D de CADA pregunta DEBEN ser palabras "
+        "COMPLETAMENTE DIFERENTES. No repitas ninguna opción."
+    ),
+) -> dict:
+    """Invoke, parse, clean, and validate one script with caller-owned policy."""
+
+    client = client or llm.client()
+    model_id = llm.model("script")
+    logger.info(f"Calling OpenRouter ({model_id}) for {video_type} video...")
+
+    response = llm.chat("script", [
+        {"role": "system", "content": system_instruction},
+        {"role": "user", "content": prompt}
+    ], label=f"script_{video_type}", client_=client, max_tokens=MAX_TOKENS,
+        temperature=0.7)  # Slightly creative but consistent
+
     try:
-        from cost_tracker import get_tracker
-        if hasattr(response, 'usage') and response.usage:
-            get_tracker().log_openai_chat(
-                prompt_tokens=response.usage.prompt_tokens,
-                completion_tokens=response.usage.completion_tokens,
-                model=MODEL, label=f"script_{video_type}")
-    except Exception:
-        pass
-
-    response_text = response.choices[0].message.content.strip()
-
-    # Parse JSON from response
-    try:
-        if "```json" in response_text:
-            response_text = response_text.split("```json")[1].split("```")[0].strip()
-        elif "```" in response_text:
-            response_text = response_text.split("```")[1].split("```")[0].strip()
-
-        script = json.loads(response_text)
+        script = llm.json_content(response)
     except json.JSONDecodeError as e:
         logger.warning(f"Failed to parse JSON response: {e}")
-        logger.debug(f"Raw response:\n{response_text}")
+        logger.debug(f"Raw response:\n{response.choices[0].message.content}")
         raise
 
     # Ensure type is set
@@ -962,21 +1339,13 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
         if has_duplicates:
             logger.info("Regenerating with different options...")
             # Retry once with explicit instruction
-            retry_prompt = prompt + "\n\nIMPORTANTE: Las 4 opciones A, B, C, D de CADA pregunta DEBEN ser palabras COMPLETAMENTE DIFERENTES. No repitas ninguna opción."
-            retry_response = client.chat.completions.create(
-                model=MODEL,
-                max_tokens=MAX_TOKENS,
-                messages=[{"role": "user", "content": retry_prompt}]
-            )
-            retry_text = retry_response.choices[0].message.content.strip()
+            retry_prompt = prompt + "\n\n" + duplicate_options_instruction
+            retry_response = llm.chat("script", [{"role": "user", "content": retry_prompt}],
+                                      label=f"script_{video_type}", client_=client, max_tokens=MAX_TOKENS)
             try:
-                if "```json" in retry_text:
-                    retry_text = retry_text.split("```json")[1].split("```")[0].strip()
-                elif "```" in retry_text:
-                    retry_text = retry_text.split("```")[1].split("```")[0].strip()
-                script = json.loads(retry_text)
+                script = llm.json_content(retry_response)
                 script["type"] = video_type
-            except:
+            except Exception:
                 logger.warning("Retry failed, using original")
 
     # Add metadata
@@ -985,11 +1354,13 @@ def generate_script(category: str, topic: dict, video_type: str = "educational")
         "topic_id": topic.get("id", "unknown"),
         "video_type": video_type,
         "generated_at": datetime.now().isoformat(),
-        "model": MODEL
+        "model": model_id
     }
 
     # Validate and clean script for TTS compatibility
-    script = validate_and_clean_script(script, video_type)
+    script = validate_and_clean_script(
+        script, video_type, cleanup_policy=cleanup_policy
+    )
 
     if script.get("_validation_errors"):
         logger.warning(f"Script validation errors: {script['_validation_errors']}")
@@ -1045,7 +1416,7 @@ def save_script(script: dict, name: str) -> Path:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate English lesson scripts using OpenAI GPT",
+        description="Generate English lesson scripts with an LLM through OpenRouter",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""
 Video Types: {', '.join(VIDEO_TYPES)}

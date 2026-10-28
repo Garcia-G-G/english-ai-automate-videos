@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice CASA en inglés? 🏠",
+  "video_description": "Diez cosas de tu casa, en inglés y con su pronunciación. 🔑",
+  "title": "¿Cómo se dice…?",
+  "theme": "la casa",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🏠",
+      "spanish": "Casa",
+      "english": "house"
+    },
+    {
+      "emoji": "🍳",
+      "spanish": "Cocina",
+      "english": "kitchen"
+    },
+    {
+      "emoji": "🛏️",
+      "spanish": "Cama",
+      "english": "bed"
+    },
+    {
+      "emoji": "🚪",
+      "spanish": "Puerta",
+      "english": "door"
+    },
+    {
+      "emoji": "🪟",
+      "spanish": "Ventana",
+      "english": "window"
+    },
+    {
+      "emoji": "🪑",
+      "spanish": "Silla",
+      "english": "chair"
+    },
+    {
+      "emoji": "🛁",
+      "spanish": "Baño",
+      "english": "bathroom"
+    },
+    {
+      "emoji": "🔑",
+      "spanish": "Llave",
+      "english": "key"
+    },
+    {
+      "emoji": "💡",
+      "spanish": "Luz",
+      "english": "light"
+    },
+    {
+      "emoji": "🪞",
+      "spanish": "Espejo",
+      "english": "mirror"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: house, kitchen, bed, door, window, chair, bathroom, key, light, mirror.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "house": "Casa",
+    "kitchen": "Cocina",
+    "bed": "Cama",
+    "door": "Puerta",
+    "window": "Ventana",
+    "chair": "Silla",
+    "bathroom": "Baño",
+    "key": "Llave",
+    "light": "Luz",
+    "mirror": "Espejo"
+  },
+  "english_phrases": [
+    "house",
+    "kitchen",
+    "bed",
+    "door",
+    "window",
+    "chair",
+    "bathroom",
+    "key",
+    "light",
+    "mirror"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv002",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Casa... house. house. Cocina... kitchen. kitchen. Cama... bed. bed. Puerta... door. door. Ventana... window. window. Silla... chair. chair. Baño... bathroom. bathroom. Llave... key. key. Luz... light. light. Espejo... mirror. mirror. Ahora, todas conmigo: house, kitchen, bed, door, window, chair, bathroom, key, light, mirror. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

@@ -167,3 +167,28 @@ def test_every_option_clip_is_trimmed_in_the_generator():
 
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-v"]))
+
+
+def test_a_soft_s_before_the_vowel_survives_the_trim(tmp_path):
+    """STEP 60 §1: 100 ms of silence, 80 ms of noise at -50 dB re peak (the /s/), then the vowel
+    at peak. An absolute -45 dBFS start cut into the /s/; ≥ 70 ms of it must stay."""
+    import numpy as np
+    sr = 44100
+    rng = np.random.default_rng(0)
+    vowel = 0.5 * np.sin(2 * np.pi * 220 * np.arange(int(0.4 * sr)) / sr)
+    peak_rms = np.sqrt(np.mean(vowel[:220] ** 2))
+    s = rng.standard_normal(int(0.08 * sr))
+    s *= peak_rms * 10 ** (-50 / 20) / np.sqrt(np.mean(s ** 2))
+    x = np.concatenate([np.zeros(int(0.1 * sr)), s, vowel, np.zeros(int(0.2 * sr))])
+    wav = tmp_path / "s.wav"
+    import wave
+    with wave.open(str(wav), "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
+        w.writeframes((x * 32767).astype("<i2").tobytes())
+    path = tmp_path / "s.mp3"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(wav), "-q:a", "2", str(path)], check=True)
+    assert measure_speech_start(str(path)) == pytest.approx(0.10, abs=0.015)
+    r = trim_clip_silence(str(path))
+    assert r["trimmed"]
+    kept_noise = 0.18 - max(r["start"], 0.10)              # the /s/ runs 0.10-0.18 s
+    assert kept_noise >= 0.07

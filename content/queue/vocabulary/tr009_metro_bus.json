@@ -1,0 +1,93 @@
+{
+  "type": "vocabulary",
+  "video_title": "Moverte en metro y bus en inglés 🚇",
+  "video_description": "Las palabras que oyes por megafonía y en la taquilla. 🎫",
+  "title": "Vocabulario: metro y bus",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "la parada",
+      "english": "the stop"
+    },
+    {
+      "spanish": "el andén",
+      "english": "the platform"
+    },
+    {
+      "spanish": "subirse",
+      "english": "get on"
+    },
+    {
+      "spanish": "bajarse",
+      "english": "get off"
+    },
+    {
+      "spanish": "hacer transbordo",
+      "english": "change trains"
+    },
+    {
+      "spanish": "la próxima estación",
+      "english": "the next station"
+    },
+    {
+      "spanish": "¿este va al centro?",
+      "english": "does this go downtown?"
+    },
+    {
+      "spanish": "perder el tren",
+      "english": "miss the train"
+    },
+    {
+      "spanish": "va con retraso",
+      "english": "it's delayed"
+    },
+    {
+      "spanish": "la hora punta",
+      "english": "rush hour"
+    },
+    {
+      "spanish": "ida y vuelta",
+      "english": "a return ticket"
+    }
+  ],
+  "full_script": "[excited] Llegas a Londres y tienes que coger el metro. La parada, the stop. El andén, the platform. Subirse, get on. Bajarse, get off. Hacer transbordo, change trains. La próxima estación, the next station. ¿este va al centro?, does this go downtown?. Perder el tren, miss the train. Va con retraso, it's delayed. La hora punta, rush hour. Ida y vuelta, a return ticket. Con estas llegas a cualquier sitio.",
+  "translations": {
+    "the stop": "la parada",
+    "the platform": "el andén",
+    "get on": "subirse",
+    "get off": "bajarse",
+    "change trains": "hacer transbordo",
+    "the next station": "la próxima estación",
+    "does this go downtown?": "¿este va al centro?",
+    "miss the train": "perder el tren",
+    "it's delayed": "va con retraso",
+    "rush hour": "la hora punta",
+    "a return ticket": "ida y vuelta"
+  },
+  "english_phrases": [
+    "the stop",
+    "the platform",
+    "get on",
+    "get off",
+    "change trains",
+    "the next station",
+    "does this go downtown?",
+    "miss the train",
+    "it's delayed",
+    "rush hour",
+    "a return ticket"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr009",
+    "video_type": "vocabulary",
+    "model": "manual"
+  }
+}

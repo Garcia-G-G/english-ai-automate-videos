@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras de origen ITALIANO: ¿cómo las dice un americano? 🍝",
+  "video_description": "Pasta, studio, prosciutto: palabras italianas tal como se dicen en inglés. 🍕",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras de origen italiano",
+  "intro": "[happy] Palabras italianas, pero en inglés americano. Dilas tú primero.",
+  "items": [
+    {
+      "english": "pasta",
+      "respelling": "PAS-ta",
+      "ipa": "ˈpɑstə",
+      "trap": "Casi como en español: PAS-ta"
+    },
+    {
+      "english": "solo",
+      "respelling": "SOU-lou",
+      "ipa": "ˈsoʊloʊ",
+      "trap": "Las dos O suenan «ou»"
+    },
+    {
+      "english": "umbrella",
+      "respelling": "am-BRE-la",
+      "ipa": "ʌmˈbrɛlə",
+      "trap": "La U suena «a»: am-BRE-la"
+    },
+    {
+      "english": "studio",
+      "respelling": "STUU-di-ou",
+      "ipa": "ˈstuːdioʊ",
+      "trap": "Sin «e» delante: STUU-di-ou"
+    },
+    {
+      "english": "volcano",
+      "respelling": "val-KEI-nou",
+      "ipa": "vɑlˈkeɪnoʊ",
+      "trap": "La A suena «ei»: val-KEI-nou"
+    },
+    {
+      "english": "graffiti",
+      "respelling": "gra-FII-ti",
+      "ipa": "ɡrəˈfiːti",
+      "trap": "Acento en FII: gra-FII-ti"
+    },
+    {
+      "english": "gelato",
+      "respelling": "ye-LA-tou",
+      "ipa": "dʒəˈlɑtoʊ",
+      "trap": "La G suena «y»: ye-LA-tou"
+    },
+    {
+      "english": "pistachio",
+      "respelling": "pis-TA-shi-ou",
+      "ipa": "pɪˈstæʃioʊ",
+      "trap": "CH suena «sh»: pis-TA-shi-ou"
+    },
+    {
+      "english": "incognito",
+      "respelling": "in-kag-NII-tou",
+      "ipa": "ɪnkɑɡˈniːtoʊ",
+      "trap": "Acento en NII: in-kag-NII-tou"
+    },
+    {
+      "english": "prosciutto",
+      "respelling": "pra-SHUU-tou",
+      "ipa": "prəˈʃuːtoʊ",
+      "trap": "SC suena «sh» y la I no suena"
+    }
+  ],
+  "verdict": "Si sumaste tres, nivel básico. Si llegaste a siete, intermedio. Y con las diez, experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Escríbelo aquí abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésParaHispanohablantes",
+    "#Etimología",
+    "#AprenderInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl070",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

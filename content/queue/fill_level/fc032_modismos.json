@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: MODISMOS 🎲",
+  "video_description": "Expresiones que usan los nativos todos los días, de fácil a experto. 🎲",
+  "title": "Completa la frase",
+  "theme": "modismos frecuentes",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "Good ____! You can do it.",
+      "answer": "luck",
+      "translation": "¡Suerte! Tú puedes.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Take ____, see you tomorrow.",
+      "answer": "care",
+      "translation": "Cuídate, nos vemos mañana.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "It's a piece of ____.",
+      "answer": "cake",
+      "translation": "Es pan comido.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Let's call it a ____.",
+      "answer": "day",
+      "translation": "Lo dejamos por hoy.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'm feeling a bit under the ____.",
+      "answer": "weather",
+      "translation": "Estoy un poco pachucho.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It costs an arm and a ____.",
+      "answer": "leg",
+      "translation": "Cuesta un ojo de la cara.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Break a ____ tonight!",
+      "answer": "leg",
+      "translation": "¡Mucha suerte esta noche!",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Let's not beat around the ____.",
+      "answer": "bush",
+      "translation": "No nos andemos con rodeos.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Don't let the cat out of the ____.",
+      "answer": "bag",
+      "translation": "No te vayas de la lengua.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "That rings a ____.",
+      "answer": "bell",
+      "translation": "Eso me suena.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Idioms",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc032",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Good luck! You can do it.": "¡Suerte! Tú puedes.",
+    "Take care, see you tomorrow.": "Cuídate, nos vemos mañana.",
+    "It's a piece of cake.": "Es pan comido.",
+    "Let's call it a day.": "Lo dejamos por hoy.",
+    "I'm feeling a bit under the weather.": "Estoy un poco pachucho.",
+    "It costs an arm and a leg.": "Cuesta un ojo de la cara.",
+    "Break a leg tonight!": "¡Mucha suerte esta noche!",
+    "Let's not beat around the bush.": "No nos andemos con rodeos.",
+    "Don't let the cat out of the bag.": "No te vayas de la lengua.",
+    "That rings a bell.": "Eso me suena."
+  },
+  "english_phrases": [
+    "Good luck! You can do it.",
+    "Take care, see you tomorrow.",
+    "It's a piece of cake.",
+    "Let's call it a day.",
+    "I'm feeling a bit under the weather.",
+    "It costs an arm and a leg.",
+    "Break a leg tonight!",
+    "Let's not beat around the bush.",
+    "Don't let the cat out of the bag.",
+    "That rings a bell."
+  ],
+  "full_script": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare. Good luck! You can do it. Take care, see you tomorrow. It's a piece of cake. Ahora, nivel intermedio. Let's call it a day. I'm feeling a bit under the weather. It costs an arm and a leg. Break a leg tonight! Y ahora, nivel experto. Let's not beat around the bush. Don't let the cat out of the bag. That rings a bell. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

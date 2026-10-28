@@ -1,0 +1,99 @@
+{
+  "type": "vocabulary",
+  "video_title": "Vocabulario de restaurante que sí se usa 🍽️",
+  "video_description": "Siete palabras para pedir sin señalar la carta. 🍕",
+  "title": "Vocabulario: restaurante",
+  "difficulty": "fácil",
+  "pairs": [
+    {
+      "spanish": "la carta",
+      "english": "the menu"
+    },
+    {
+      "spanish": "el camarero",
+      "english": "the waiter"
+    },
+    {
+      "spanish": "de primero",
+      "english": "starter"
+    },
+    {
+      "spanish": "plato principal",
+      "english": "main course"
+    },
+    {
+      "spanish": "la cuenta",
+      "english": "the bill"
+    },
+    {
+      "spanish": "propina",
+      "english": "tip"
+    },
+    {
+      "spanish": "para llevar",
+      "english": "to go"
+    },
+    {
+      "spanish": "de postre",
+      "english": "for dessert"
+    },
+    {
+      "spanish": "la reserva",
+      "english": "the reservation"
+    },
+    {
+      "spanish": "sin gluten",
+      "english": "gluten free"
+    },
+    {
+      "spanish": "la propina",
+      "english": "the tip"
+    },
+    {
+      "spanish": "otra ronda",
+      "english": "another round"
+    }
+  ],
+  "full_script": "[warm] Te sientas, llega el camarero y se te va todo el inglés de golpe. Estas siete te sacan del apuro. La carta, the menu. El camarero, the waiter. De primero, starter. Plato principal, main course. La cuenta, the bill. Propina, tip. Para llevar, to go. Un aviso que vale dinero. De postre, for dessert. La reserva, the reservation. Sin gluten, gluten free. La propina, the tip. Otra ronda, another round. En Estados Unidos dicen check en vez de bill. Y la propina no es opcional, aunque te lo parezca.",
+  "translations": {
+    "the menu": "la carta",
+    "the waiter": "el camarero",
+    "starter": "de primero",
+    "main course": "plato principal",
+    "the bill": "la cuenta",
+    "tip": "propina",
+    "to go": "para llevar",
+    "for dessert": "de postre",
+    "the reservation": "la reserva",
+    "gluten free": "sin gluten",
+    "the tip": "la propina",
+    "another round": "otra ronda"
+  },
+  "english_phrases": [
+    "the menu",
+    "the waiter",
+    "starter",
+    "main course",
+    "the bill",
+    "tip",
+    "to go",
+    "for dessert",
+    "the reservation",
+    "gluten free",
+    "the tip",
+    "another round"
+  ],
+  "hashtags": [
+    "#Vocabulario",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "food_restaurant",
+    "topic_id": "food003",
+    "video_type": "vocabulary",
+    "model": "manual"
+  }
+}

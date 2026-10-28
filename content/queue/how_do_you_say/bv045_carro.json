@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el CARRO en inglés? 🚗",
+  "video_description": "Diez partes del carro, del volante a la placa. 🚙",
+  "title": "¿Cómo se dice…?",
+  "theme": "el carro",
+  "level": "A2",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "⚙️",
+      "spanish": "Volante",
+      "english": "steering wheel"
+    },
+    {
+      "emoji": "🛞",
+      "spanish": "Rueda",
+      "english": "wheel"
+    },
+    {
+      "emoji": "🛑",
+      "spanish": "Freno",
+      "english": "brake"
+    },
+    {
+      "emoji": "🔧",
+      "spanish": "Motor",
+      "english": "engine"
+    },
+    {
+      "emoji": "⛽",
+      "spanish": "Gasolina",
+      "english": "gas"
+    },
+    {
+      "emoji": "📯",
+      "spanish": "Bocina",
+      "english": "horn"
+    },
+    {
+      "emoji": "💡",
+      "spanish": "Faro",
+      "english": "headlight"
+    },
+    {
+      "emoji": "⭕",
+      "spanish": "Llanta",
+      "english": "tire"
+    },
+    {
+      "emoji": "🪟",
+      "spanish": "Parabrisas",
+      "english": "windshield"
+    },
+    {
+      "emoji": "🔢",
+      "spanish": "Placa",
+      "english": "license plate"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: steering wheel, wheel, brake, engine, gas, horn, headlight, tire, windshield, license plate.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "steering wheel": "Volante",
+    "wheel": "Rueda",
+    "brake": "Freno",
+    "engine": "Motor",
+    "gas": "Gasolina",
+    "horn": "Bocina",
+    "headlight": "Faro",
+    "tire": "Llanta",
+    "windshield": "Parabrisas",
+    "license plate": "Placa"
+  },
+  "english_phrases": [
+    "steering wheel",
+    "wheel",
+    "brake",
+    "engine",
+    "gas",
+    "horn",
+    "headlight",
+    "tire",
+    "windshield",
+    "license plate"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv045",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Volante... steering wheel. steering wheel. Rueda... wheel. wheel. Freno... brake. brake. Motor... engine. engine. Gasolina... gas. gas. Bocina... horn. horn. Faro... headlight. headlight. Llanta... tire. tire. Parabrisas... windshield. windshield. Placa... license plate. license plate. Ahora, todas conmigo: steering wheel, wheel, brake, engine, gas, horn, headlight, tire, windshield, license plate. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

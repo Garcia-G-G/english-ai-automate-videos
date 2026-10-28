@@ -1,0 +1,79 @@
+[
+ {
+  "page": "Dashboard",
+  "label": "Inicio",
+  "cold_s": 1.78,
+  "warm_s": 0.49,
+  "errors": []
+ },
+ {
+  "page": "Generate",
+  "label": "Crear",
+  "cold_s": 0.37,
+  "warm_s": 0.3,
+  "errors": []
+ },
+ {
+  "page": "Queue",
+  "label": "Cola",
+  "cold_s": 0.29,
+  "warm_s": 0.3,
+  "errors": []
+ },
+ {
+  "page": "Review",
+  "label": "Revisar",
+  "cold_s": 0.26,
+  "warm_s": 0.29,
+  "errors": []
+ },
+ {
+  "page": "Upload",
+  "label": "Subir",
+  "cold_s": 0.42,
+  "warm_s": 0.37,
+  "errors": []
+ },
+ {
+  "page": "Library",
+  "label": "Biblioteca",
+  "cold_s": 0.26,
+  "warm_s": 0.3,
+  "errors": []
+ },
+ {
+  "page": "Topics",
+  "label": "Temas",
+  "cold_s": 0.29,
+  "warm_s": 0.28,
+  "errors": []
+ },
+ {
+  "page": "Scheduler",
+  "label": "Programar",
+  "cold_s": 0.39,
+  "warm_s": 0.28,
+  "errors": []
+ },
+ {
+  "page": "Settings",
+  "label": "Ajustes",
+  "cold_s": 0.34,
+  "warm_s": 0.31,
+  "errors": []
+ },
+ {
+  "page": "Logs",
+  "label": "Registros",
+  "cold_s": 0.29,
+  "warm_s": 0.3,
+  "errors": []
+ },
+ {
+  "page": "Performance",
+  "label": "Rendimiento",
+  "cold_s": 0.31,
+  "warm_s": 0.34,
+  "errors": []
+ }
+]

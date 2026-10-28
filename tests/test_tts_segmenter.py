@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from tts_segmenter import (  # noqa: E402
-    collect_english_terms, segment_text, segment_script, looks_english,
+    LANGUAGE_POLICIES, collect_english_terms, segment_text, segment_script, looks_english,
     describe_segments,
 )
 
@@ -210,6 +210,32 @@ def test_pauses():
     check("all segments have pause_after",
           all(isinstance(s["pause_after"], float) for s in segs))
     assert by_text  # silence linters
+
+
+def test_simplified_chinese_policy_preserves_source_and_isolates_english():
+    text = "先听：I need two tickets，数字 2 不要丢；再说 I need two tickets。"
+    segments = segment_text(
+        text,
+        ["I need two tickets"],
+        language_policy=LANGUAGE_POLICIES["zh-Hans"],
+    )
+    assert "".join(segment["source_text"] for segment in segments) == text
+    assert [segment["lang"] for segment in segments] == ["zh", "en", "zh", "en", "zh"]
+    assert [segment["index"] for segment in segments] == list(range(len(segments)))
+    assert all(segment["source_start"] < segment["source_end"] for segment in segments)
+    assert all(
+        left["source_end"] == right["source_start"]
+        for left, right in zip(segments, segments[1:])
+    )
+
+
+def test_language_policy_rejects_unknown_or_malformed_native_language():
+    import pytest
+
+    with pytest.raises(ValueError, match="language policy"):
+        segment_text("你好", [], narration_lang="zh")
+    with pytest.raises(ValueError, match="language policy"):
+        segment_script({"full_script": "你好"}, narration_lang="zh-Hans")
 
 
 def main():

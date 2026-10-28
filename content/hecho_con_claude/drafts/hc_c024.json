@@ -1,0 +1,47 @@
+{
+  "id": "hc_c024",
+  "style": "comic",
+  "level": "dificil",
+  "angle": "reto",
+  "title": "RETO: «estoy hasta las narices»",
+  "hook_text": "Nivel avanzado",
+  "quiz": {
+    "prompt": "¿Cómo dirías «estoy hasta las narices del tráfico»?",
+    "options": [
+      "I'm until the noses of traffic",
+      "I'm fed up with the traffic",
+      "I'm full of nose of traffic"
+    ],
+    "answer": 1,
+    "after": "Be fed up with = estar harto."
+  },
+  "correction": {
+    "wrong": "I'm full of nose of traffic",
+    "right": "I'm fed up with the traffic",
+    "rule": "Be fed up with"
+  },
+  "voice": [
+    "Nivel avanzado. ¿Cómo dirías «estoy hasta las narices del tráfico»?",
+    "¿[[I'm until the noses of traffic]], [[I'm fed up with the traffic]] o [[I'm full of nose of traffic]]?",
+    "¡La B! [[I'm fed up with the traffic]].",
+    "Otras: [[I'm sick of it]] o [[I've had enough]].",
+    "Y con mucha intensidad: [[I'm sick and tired of it]].",
+    "¿De qué estás harto tú? Escríbelo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«Estoy harto de esperar»",
+    "answer": "I'm fed up with waiting. / I'm sick of waiting."
+  },
+  "caption": "«Estar hasta las narices» es «be fed up with». Idioms en inglés en un reto.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 65
+}

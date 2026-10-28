@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los POSTRES en inglés? 🍰",
+  "video_description": "Diez postres y dulces que todo el mundo pide. 🍩",
+  "title": "¿Cómo se dice…?",
+  "theme": "los postres",
+  "level": "A1",
+  "intro": "[cheerful] Mira la lista y adivina antes de que salga la respuesta.",
+  "items": [
+    {
+      "emoji": "🎂",
+      "spanish": "Pastel",
+      "english": "cake"
+    },
+    {
+      "emoji": "🍦",
+      "spanish": "Helado",
+      "english": "ice cream"
+    },
+    {
+      "emoji": "🍫",
+      "spanish": "Chocolate",
+      "english": "chocolate"
+    },
+    {
+      "emoji": "🍬",
+      "spanish": "Caramelo",
+      "english": "candy"
+    },
+    {
+      "emoji": "🥧",
+      "spanish": "Tarta",
+      "english": "pie"
+    },
+    {
+      "emoji": "🍩",
+      "spanish": "Dona",
+      "english": "donut"
+    },
+    {
+      "emoji": "🍿",
+      "spanish": "Palomitas",
+      "english": "popcorn"
+    },
+    {
+      "emoji": "🍮",
+      "spanish": "Pudín",
+      "english": "pudding"
+    },
+    {
+      "emoji": "🧇",
+      "spanish": "Wafle",
+      "english": "waffle"
+    },
+    {
+      "emoji": "🧁",
+      "spanish": "Magdalena",
+      "english": "muffin"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: cake, ice cream, chocolate, candy, pie, donut, popcorn, pudding, waffle, muffin.",
+  "outro": "[happy] Guárdalo para repasar y dime cuántas sabías.",
+  "translations": {
+    "cake": "Pastel",
+    "ice cream": "Helado",
+    "chocolate": "Chocolate",
+    "candy": "Caramelo",
+    "pie": "Tarta",
+    "donut": "Dona",
+    "popcorn": "Palomitas",
+    "pudding": "Pudín",
+    "waffle": "Wafle",
+    "muffin": "Magdalena"
+  },
+  "english_phrases": [
+    "cake",
+    "ice cream",
+    "chocolate",
+    "candy",
+    "pie",
+    "donut",
+    "popcorn",
+    "pudding",
+    "waffle",
+    "muffin"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv024",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Mira la lista y adivina antes de que salga la respuesta. Pastel... cake. cake. Helado... ice cream. ice cream. Chocolate... chocolate. chocolate. Caramelo... candy. candy. Tarta... pie. pie. Dona... donut. donut. Palomitas... popcorn. popcorn. Pudín... pudding. pudding. Wafle... waffle. waffle. Magdalena... muffin. muffin. Ahora, todas conmigo: cake, ice cream, chocolate, candy, pie, donut, popcorn, pudding, waffle, muffin. [happy] Guárdalo para repasar y dime cuántas sabías."
+}

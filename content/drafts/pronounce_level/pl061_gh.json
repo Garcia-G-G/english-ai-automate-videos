@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "GH en inglés: ¿muda, «f» o «g»? Pruébate 👻",
+  "video_description": "Night, laugh, ghost: la GH puede callarse, sonar «f» o sonar «g». ¿La dominas? 🌙",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con GH",
+  "intro": "[curious] La GH es traicionera. Lee cada palabra en voz alta antes de que yo la diga.",
+  "items": [
+    {
+      "english": "night",
+      "respelling": "NAIT",
+      "ipa": "ˈnaɪt",
+      "trap": "La GH no suena: NAIT"
+    },
+    {
+      "english": "high",
+      "respelling": "JAI",
+      "ipa": "ˈhaɪ",
+      "trap": "GH muda y la H inicial suave"
+    },
+    {
+      "english": "ghost",
+      "respelling": "GOUST",
+      "ipa": "ˈɡoʊst",
+      "trap": "GH al inicio suena «g»"
+    },
+    {
+      "english": "daughter",
+      "respelling": "DA-ter",
+      "ipa": "ˈdɑtɚ",
+      "trap": "La GH no suena: DA-ter"
+    },
+    {
+      "english": "laugh",
+      "respelling": "LAF",
+      "ipa": "ˈlæf",
+      "trap": "Aquí GH suena «f»: LAF"
+    },
+    {
+      "english": "neighbor",
+      "respelling": "NEI-ber",
+      "ipa": "ˈneɪbɚ",
+      "trap": "EIGH suena «ei»: NEI-ber"
+    },
+    {
+      "english": "straight",
+      "respelling": "STREIT",
+      "ipa": "ˈstreɪt",
+      "trap": "AIGH suena «ei»: STREIT"
+    },
+    {
+      "english": "drought",
+      "respelling": "DRAUT",
+      "ipa": "ˈdraʊt",
+      "trap": "Rima con «out», no con «thought»"
+    },
+    {
+      "english": "borough",
+      "respelling": "BER-ou",
+      "ipa": "ˈbɝoʊ",
+      "trap": "Dos sílabas y GH muda: BER-ou"
+    },
+    {
+      "english": "eighth",
+      "respelling": "EITTH",
+      "ipa": "ˈeɪtθ",
+      "trap": "Termina en «t» + «th»: EITTH"
+    }
+  ],
+  "verdict": "¿Hasta la tres? Nivel básico. ¿Hasta la siete? Intermedio. ¿Todas las diez? Eres experto.",
+  "outro": "[excited] ¿Cuál te engañó? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl061",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

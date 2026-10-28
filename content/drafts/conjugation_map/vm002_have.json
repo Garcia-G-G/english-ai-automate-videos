@@ -1,0 +1,83 @@
+{
+  "type": "conjugation_map",
+  "video_title": "El verbo TO HAVE en 1 minuto 🟢",
+  "video_description": "Tener en inglés, y la única persona que cambia. 🗺️",
+  "level": "A1",
+  "verb": "have",
+  "verb_es": "tener",
+  "tense": "presente",
+  "intro": "[cheerful] El verbo have, tener, en un solo mapa. Repite conmigo.",
+  "rows": [
+    {
+      "pronoun": "I",
+      "form": "have"
+    },
+    {
+      "pronoun": "You",
+      "form": "have"
+    },
+    {
+      "pronoun": "He",
+      "form": "has"
+    },
+    {
+      "pronoun": "She",
+      "form": "has"
+    },
+    {
+      "pronoun": "It",
+      "form": "has"
+    },
+    {
+      "pronoun": "We",
+      "form": "have"
+    },
+    {
+      "pronoun": "They",
+      "form": "have"
+    }
+  ],
+  "highlight": [
+    "has"
+  ],
+  "examples": [
+    {
+      "en": "I have a dog.",
+      "es": "Tengo un perro."
+    },
+    {
+      "en": "She has two brothers.",
+      "es": "Tiene dos hermanos."
+    }
+  ],
+  "negative": {
+    "en": "He doesn't have a car.",
+    "es": "No tiene coche."
+  },
+  "question": {
+    "en": "Do you have time?",
+    "es": "¿Tienes tiempo?"
+  },
+  "tip": "Has solo con he, she e it. En negativa y en pregunta vuelve have: doesn't have.",
+  "outro": "[excited] Guárdalo y repásalo mañana. Dos minutos y ya es tuyo.",
+  "translations": {
+    "I have a dog.": "Tengo un perro.",
+    "She has two brothers.": "Tiene dos hermanos.",
+    "He doesn't have a car.": "No tiene coche.",
+    "Do you have time?": "¿Tienes tiempo?"
+  },
+  "hashtags": [
+    "#VerbosEnInglés",
+    "#InglésParaPrincipiantes",
+    "#AprenderInglés",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "verb_maps",
+    "topic_id": "vm002",
+    "video_type": "conjugation_map",
+    "model": "manual",
+    "draft": true
+  }
+}

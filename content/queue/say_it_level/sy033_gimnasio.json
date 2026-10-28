@@ -1,0 +1,114 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Qué nivel de inglés tienes en el GIMNASIO? 💪",
+  "video_description": "Máquinas, series y agujetas: diez frases de gimnasio en inglés de fácil a experto. 💪",
+  "title": "Dilo en inglés",
+  "theme": "en el gimnasio",
+  "intro": "[excited] Calienta, que empezamos. Diez frases de gimnasio: tú las dices en inglés y yo te corrijo.",
+  "items": [
+    {
+      "spanish": "Voy al gimnasio.",
+      "english": "I'm going to the gym.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Está libre esta máquina?",
+      "english": "Is this machine free?",
+      "cefr": "A1",
+      "alt": "Are you using this machine?"
+    },
+    {
+      "spanish": "Voy tres veces por semana.",
+      "english": "I go three times a week.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Cuántas series te quedan?",
+      "english": "How many sets do you have left?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Estoy intentando ponerme en forma.",
+      "english": "I'm trying to get in shape.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Tengo agujetas de ayer.",
+      "english": "I'm sore from yesterday.",
+      "cefr": "B1",
+      "tip": "Las «agujetas» se dicen con sore: I'm sore"
+    },
+    {
+      "spanish": "Deberías estirar antes de correr.",
+      "english": "You should stretch before running.",
+      "cefr": "B1",
+      "alt": "You should stretch before you run."
+    },
+    {
+      "spanish": "Hago ejercicio todos los días.",
+      "english": "I work out every day.",
+      "cefr": "B1",
+      "alt": "I exercise every day.",
+      "tip": "«Hacer ejercicio» es work out, sin make ni do"
+    },
+    {
+      "spanish": "¿Me ayudas con la barra?",
+      "english": "Can you spot me?",
+      "cefr": "B2",
+      "alt": "Can you help me with the bar?",
+      "tip": "En el gimnasio, vigilar a quien levanta es spot"
+    },
+    {
+      "spanish": "Hoy toca pierna.",
+      "english": "It's leg day today.",
+      "cefr": "B2",
+      "alt": "Today is leg day.",
+      "tip": "«Hoy toca...» se dice It's ... day"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y a la diez, experto en plena forma.",
+  "outro": "[excited] ¿Cuántas repeticiones aguantaste? Dime tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés",
+    "#InglésFitness"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy033",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm going to the gym.": "Voy al gimnasio.",
+    "Is this machine free?": "¿Está libre esta máquina?",
+    "I go three times a week.": "Voy tres veces por semana.",
+    "How many sets do you have left?": "¿Cuántas series te quedan?",
+    "I'm trying to get in shape.": "Estoy intentando ponerme en forma.",
+    "I'm sore from yesterday.": "Tengo agujetas de ayer.",
+    "You should stretch before running.": "Deberías estirar antes de correr.",
+    "I work out every day.": "Hago ejercicio todos los días.",
+    "Can you spot me?": "¿Me ayudas con la barra?",
+    "It's leg day today.": "Hoy toca pierna."
+  },
+  "english_phrases": [
+    "I'm going to the gym.",
+    "Is this machine free?",
+    "I go three times a week.",
+    "How many sets do you have left?",
+    "I'm trying to get in shape.",
+    "I'm sore from yesterday.",
+    "You should stretch before running.",
+    "I work out every day.",
+    "Can you spot me?",
+    "It's leg day today.",
+    "Are you using this machine?",
+    "You should stretch before you run.",
+    "I exercise every day.",
+    "Can you help me with the bar?",
+    "Today is leg day."
+  ],
+  "full_script": "[excited] Calienta, que empezamos. Diez frases de gimnasio: tú las dices en inglés y yo te corrijo. I'm going to the gym. Is this machine free? I go three times a week. Ahora, nivel intermedio. How many sets do you have left? I'm trying to get in shape. I'm sore from yesterday. You should stretch before running. Y ahora, nivel experto. I work out every day. Can you spot me? It's leg day today. Si llegaste a la tres, básico. A la siete, intermedio. Y a la diez, experto en plena forma. [excited] ¿Cuántas repeticiones aguantaste? Dime tu número en los comentarios."
+}

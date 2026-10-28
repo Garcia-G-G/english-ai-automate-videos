@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "¿Cómo suenan las palabras de la CASA en inglés? 🏠",
+  "video_description": "Pronuncia diez palabras de la casa y descubre tu nivel de inglés. 🔑",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la casa",
+  "intro": "[curious] Palabras de la casa, de fácil a experto. Tú la dices primero; yo, después.",
+  "items": [
+    {
+      "english": "home",
+      "respelling": "JOUM",
+      "ipa": "ˈhoʊm",
+      "trap": "H suave y la O suena «ou»"
+    },
+    {
+      "english": "roof",
+      "respelling": "RUUF",
+      "ipa": "ˈruːf",
+      "trap": "OO larga: RUUF"
+    },
+    {
+      "english": "window",
+      "respelling": "UIN-dou",
+      "ipa": "ˈwɪndoʊ",
+      "trap": "OW final suena «ou»"
+    },
+    {
+      "english": "kitchen",
+      "respelling": "KI-chen",
+      "ipa": "ˈkɪtʃən",
+      "trap": "No es «chicken»: KI-chen"
+    },
+    {
+      "english": "stairs",
+      "respelling": "STERZ",
+      "ipa": "ˈstɛrz",
+      "trap": "Sin «es-» y una sola sílaba"
+    },
+    {
+      "english": "balcony",
+      "respelling": "BAL-ke-ni",
+      "ipa": "ˈbælkəni",
+      "trap": "Acento en BAL, no en NI"
+    },
+    {
+      "english": "bathroom",
+      "respelling": "BATH-ruum",
+      "ipa": "ˈbæθruːm",
+      "trap": "TH y luego R: BATH-ruum"
+    },
+    {
+      "english": "laundry",
+      "respelling": "LON-dri",
+      "ipa": "ˈlɔndri",
+      "trap": "AU suena «o»: LON-dri"
+    },
+    {
+      "english": "radiator",
+      "respelling": "REI-di-ei-ter",
+      "ipa": "ˈreɪdieɪtɚ",
+      "trap": "Empieza por «rei», no por «ra»"
+    },
+    {
+      "english": "thermostat",
+      "respelling": "THER-me-stat",
+      "ipa": "ˈθɝməstæt",
+      "trap": "TH inicial y acento en THER"
+    }
+  ],
+  "verdict": "¿Hasta la tres? Nivel básico. ¿Hasta la siete? Intermedio. ¿Las diez perfectas? Pronuncias como un experto.",
+  "outro": "[cheerful] Escribe en los comentarios tu número del uno al diez.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LaCasaEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl008",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

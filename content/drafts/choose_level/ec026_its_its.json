@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "ITS o IT'S: el test de 10 frases 🐶",
+  "video_description": "Its o it's: el error que hasta los nativos cometen. Diez frases. 🐶",
+  "title": "Elige la correcta",
+  "theme": "its o it's",
+  "intro": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo.",
+  "items": [
+    {
+      "sentence": "____ raining.",
+      "options": [
+        "It's",
+        "Its"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The dog wagged ____ tail.",
+      "options": [
+        "it's",
+        "its"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ my birthday today!",
+      "options": [
+        "Its",
+        "It's"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "The company changed ____ name.",
+      "options": [
+        "its",
+        "it's"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "____ been a long day.",
+      "options": [
+        "Its",
+        "It's"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Every country has ____ own flag.",
+      "options": [
+        "its",
+        "it's"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I think ____ going to work.",
+      "options": [
+        "it's",
+        "its"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The tree lost all ____ leaves.",
+      "options": [
+        "it's",
+        "its"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ not you, it's me.",
+      "options": [
+        "It's",
+        "Its"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "The plan has ____ pros and cons.",
+      "options": [
+        "it's",
+        "its"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#ErroresDeIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec026",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

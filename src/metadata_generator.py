@@ -6,7 +6,9 @@ with platform-specific formatting for TikTok, YouTube, and Instagram.
 """
 
 import json
+from audio_tags import unmark
 import logging
+import re
 import os
 import random
 from typing import Dict, List, Optional
@@ -18,6 +20,7 @@ PLATFORM_LIMITS = {
     "tiktok": {"title": 150, "description": 2200},
     "youtube": {"title": 100, "description": 5000},
     "instagram": {"title": 0, "description": 2200},
+    "facebook": {"title": 0, "description": 2200},
 }
 
 # Fallback title templates by video type
@@ -52,6 +55,21 @@ TITLE_TEMPLATES = {
         "Palabras en inglés que NECESITAS saber 🔥",
         "{title} — aprende en 30 segundos ⚡",
     ],
+    # ONE template, the brief's. {theme} is the theme without its article,
+    # upper-cased ("la familia" -> FAMILIA); {emoji} is the first row's.
+    "how_do_you_say": [
+        "¿Cómo se dice {theme} en inglés? {emoji}",
+    ],
+    # Only when a script has no video_title of its own; every queued one does.
+    "level_test": ["¿Qué nivel de inglés tienes? 10 palabras, de fácil a experto 🎯"],
+    "say_it_level": ["Dilo en inglés: 10 frases, de fácil a experto 🗣️"],
+    "true_false_level": ["¿Verdadero o falso? 10 frases para probar tu inglés 🤔"],
+    "fill_level": ["Completa la frase: 10 frases, de fácil a experto 📝"],
+    "choose_level": ["Elige la correcta: 10 frases, de fácil a experto 🤔"],
+    "phrases_level": ["¿Cómo se dice en inglés? 10 frases del día a día 💬"],
+    # «Hecho con Claude»: its scripts carry their own title and caption (STEP 80 §0: without
+    # them it fell to «educational» and went up as «¿Sabías que '' NO significa…»)
+    "hecho_con_claude": ["El error de inglés que delata a un hispanohablante 😬"],
 }
 
 # ── Hashtag strategy ────────────────────────────────────────────────
@@ -82,8 +100,9 @@ PLATFORM_HASHTAGS = {
     "tiktok": 10,
 }
 
-#: Exceeding this makes YouTube discard ALL hashtags on the video. Never
-#: raise it; it is a platform rule, not a style choice.
+#: A house cap, not the platform's: YouTube ignores every hashtag only past 60
+#: (support.google.com/youtube/answer/6390658, read 27 Oct 2026; platform_rules
+#: enforces that). 15 stays because YouTube asks for few, relevant hashtags.
 YOUTUBE_HASHTAG_HARD_CAP = 15
 
 BROAD_HASHTAGS = ["#LearnEnglish", "#AprendeIngles", "#InglesOnline"]
@@ -95,6 +114,20 @@ TYPE_HASHTAGS = {
     "fill_blank": ["#FillInTheBlank", "#CompletaLaFrase", "#PracticaIngles"],
     "pronunciation": ["#Pronunciation", "#SpeakEnglish", "#PronunciacionIngles"],
     "vocabulary": ["#Vocabulary", "#EnglishWords", "#VocabularioIngles"],
+    "how_do_you_say": ["#InglésParaPrincipiantes", "#VocabularioEnInglés",
+                       "#AprenderInglés", "#InglésFácil", "#HowDoYouSay"],
+    "level_test": ["#NivelDeInglés", "#AprenderInglés", "#VocabularioEnInglés",
+                   "#TestDeInglés", "#InglésFácil"],
+    "say_it_level": ["#DiloEnInglés", "#AprenderInglés", "#FrasesEnInglés",
+                     "#InglésFácil", "#InglésParaViajar"],
+    "true_false_level": ["#VerdaderoOFalso", "#FalsosAmigos", "#AprenderInglés",
+                         "#InglésFácil", "#VocabularioEnInglés"],
+    "fill_level": ["#CompletaLaFrase", "#GramáticaInglesa", "#AprenderInglés",
+                   "#InglésFácil", "#PracticaInglés"],
+    "choose_level": ["#ElegirLaCorrecta", "#GramáticaInglesa", "#AprenderInglés",
+                     "#InglésFácil", "#ErroresEnInglés"],
+    "phrases_level": ["#CómoSeDice", "#FrasesEnInglés", "#AprenderInglés",
+                      "#InglésFácil", "#InglésParaPrincipiantes"],
 }
 
 #: Audience/intent tags. Spanish-first, because the audience searches in
@@ -106,6 +139,35 @@ NICHE_HASHTAGS = [
 ]
 
 
+#: The site the channel promotes (STEP 61): one plain line after the body, before the hashtags.
+SITE_LINE = "Más lecciones en https://learningroutes.com"
+
+
+def with_site_line(description: str) -> str:
+    """The body, then SITE_LINE once. Idempotent, so a description that has it keeps one."""
+    body = (description or "").rstrip()
+    if SITE_LINE in body:
+        return body
+    return f"{body}\n\n{SITE_LINE}" if body else SITE_LINE
+
+
+#: STEP 80 §0: what a title or a description may never carry — empty quotes ('' "" «» ‘’ “”),
+#: a template field left unfilled ({…}) or the script's English marking ([[ ]]).
+_EMPTY_QUOTES = re.compile(r"''|\"\s*\"|«\s*»|‘\s*’|“\s*”|'\s+'")
+_LEFTOVERS = re.compile(r"\{[^}]*\}|\[\[|\]\]")
+
+
+def metadata_problems(text: str) -> List[str]:
+    """Why a title or description must not be published as it is ([] when it may)."""
+    text = text or ""
+    out = []
+    if _EMPTY_QUOTES.search(text):
+        out.append("empty quotes")
+    if _LEFTOVERS.search(text):
+        out.append("unfilled {} or [[ ]]")
+    return out
+
+
 def generate_metadata(script_data: dict, video_type: str, category: str = "") -> dict:
     """Extract or generate video metadata from script data.
 
@@ -115,21 +177,30 @@ def generate_metadata(script_data: dict, video_type: str, category: str = "") ->
     title = script_data.get("video_title", "")
     description = script_data.get("video_description", "")
     hashtags = script_data.get("hashtags", [])
+    if video_type == "hecho_con_claude":                  # the series' own fields (STEP 78 §1)
+        title = title or script_data.get("title", "")
+        description = description or script_data.get("caption", "")
 
     if isinstance(hashtags, str):
         hashtags = [h.strip() for h in hashtags.split() if h.strip()]
 
-    if not title:
+    if not title or metadata_problems(title):
+        if title:
+            logger.warning("metadata: title %r refused (%s); using the template", title, metadata_problems(title))
         title = _build_fallback_title(script_data, video_type)
+        if metadata_problems(title):                      # the last resort never fails the guard
+            title = "Aprende inglés hoy 🦊"
 
-    if not description:
+    if not description or metadata_problems(description):
         description = _build_fallback_description(script_data, video_type, title)
+        if metadata_problems(description):
+            description = "Sígueme para más tips de inglés 🦊"
 
     hashtags = _ensure_hashtags(hashtags, video_type, category)
 
     return {
         "title": title[:150],
-        "description": description,
+        "description": with_site_line(description),
         "hashtags": hashtags,
     }
 
@@ -178,16 +249,13 @@ def adapt_for_platform(metadata: dict, platform: str) -> dict:
     if platform == "youtube":
         # Hashtags go in the DESCRIPTION, not the title: the first three
         # render as clickable links above the title, and a clean title keeps
-        # the keywords readable. #Shorts is the exception — it must appear
-        # for the Shorts shelf.
-        yt_title = title[:95]
-        if "#Shorts" not in yt_title:
-            yt_title = f"{yt_title[:90]} #Shorts" if len(yt_title) > 90 else f"{yt_title} #Shorts"
-        yt_title = yt_title[:100]
-        yt_desc = compose_description(description, tags)
-        return {"title": yt_title, "description": yt_desc[:5000], "hashtags": tags}
+        # the keywords readable. No #Shorts either (STEP 80): a vertical video
+        # under 3 min is a Short by itself (support.google.com/youtube/answer/15424877).
+        import platform_rules
+        fixed = platform_rules.youtube(title, compose_description(description, tags), tags)
+        return {"title": fixed["title"], "description": fixed["description"], "hashtags": tags}
 
-    elif platform == "instagram":
+    elif platform in ("instagram", "facebook"):
         # No title field; the caption is everything. Keyword-first, because
         # Instagram now indexes caption text more heavily than tags.
         ig_caption = compose_description(f"{title}\n\n{description}", tags)
@@ -199,8 +267,8 @@ def adapt_for_platform(metadata: dict, platform: str) -> dict:
 
 
 def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -> dict:
-    """Use GPT to regenerate metadata optimized for a specific platform."""
-    from openai import OpenAI
+    """Regenerate metadata optimized for a specific platform with an LLM through OpenRouter."""
+    import llm
 
     # Load .env at the ENTRY POINT, not at import.
     #
@@ -211,12 +279,11 @@ def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -
     from env_setup import ensure_env_loaded
     ensure_env_loaded()
 
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
+    try:
+        client = llm.client()
+    except EnvironmentError:
         meta = generate_metadata(script_data, video_type)
         return adapt_for_platform(meta, platform)
-
-    client = OpenAI(api_key=api_key)
 
     # Per-platform guidance, researched 2026-08-01. Full sources and the
     # numbers behind each line are in docs/metadata-best-practices.md.
@@ -252,7 +319,7 @@ def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -
     )
 
     hook = script_data.get("hook") or script_data.get("question") or script_data.get("statement") or ""
-    full_script_preview = (script_data.get("full_script") or "")[:200]
+    full_script_preview = unmark(script_data.get("full_script") or "")[:200]
 
     prompt = f"""Generate an optimized title and description for a {platform} video about learning English (for Spanish speakers).
 
@@ -272,58 +339,49 @@ Return JSON only:
 }}"""
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            max_tokens=500,
-            temperature=0.8,
-            messages=[
-                {"role": "system", "content": "You create viral social media metadata for English learning content targeting Spanish speakers. Always respond with valid JSON only."},
-                {"role": "user", "content": prompt}
-            ]
-        )
+        response = llm.chat("platform_metadata", [
+            {"role": "system", "content": "You create viral social media metadata for English learning content targeting Spanish speakers. Always respond with valid JSON only."},
+            {"role": "user", "content": prompt}
+        ], label=f"metadata_{platform}", client_=client, max_tokens=500, temperature=0.8)
 
-        text = response.choices[0].message.content.strip()
-        if "```json" in text:
-            text = text.split("```json")[1].split("```")[0].strip()
-        elif "```" in text:
-            text = text.split("```")[1].split("```")[0].strip()
-
-        result = json.loads(text)
-
-        try:
-            from cost_tracker import get_tracker
-            if hasattr(response, 'usage') and response.usage:
-                get_tracker().log_openai_chat(
-                    prompt_tokens=response.usage.prompt_tokens,
-                    completion_tokens=response.usage.completion_tokens,
-                    model="gpt-4o-mini", label=f"metadata_{platform}")
-        except Exception:
-            pass
+        result = llm.json_content(response)
 
         hashtags = result.get("hashtags", [])
         if isinstance(hashtags, str):
             hashtags = [h.strip().lstrip("#") for h in hashtags.split()]
         result["hashtags"] = [h.lstrip("#") for h in hashtags]
 
+        # STEP 80 §0: a generated title or description with empty quotes or a leftover {} is refused
+        if metadata_problems(result.get("title", "")) or metadata_problems(result.get("description", "")):
+            raise ValueError(f"generated metadata refused: {metadata_problems(result.get('title', ''))}"
+                             f" {metadata_problems(result.get('description', ''))}")
         return result
 
     except Exception as e:
-        logger.warning("GPT metadata regeneration failed: %s, using fallback", e)
+        logger.warning("LLM metadata regeneration failed: %s, using fallback", e)
         meta = generate_metadata(script_data, video_type)
         return adapt_for_platform(meta, platform)
 
 
 def _build_fallback_title(script_data: dict, video_type: str) -> str:
-    """Build title from script content using proven templates."""
-    templates = TITLE_TEMPLATES.get(video_type, TITLE_TEMPLATES["educational"])
-    template = random.choice(templates)
+    """Build title from script content using proven templates.
+
+    STEP 80 §0: a template is only used when every field it names has a value. «¿Sabías que
+    '{word}' NO significa…» with no word went live as «¿Sabías que '' NO significa…»."""
+    if video_type == "how_do_you_say":
+        return how_do_you_say_title(script_data)
 
     word = (script_data.get("word") or
             (script_data.get("english_phrases", [""])[0] if script_data.get("english_phrases") else "") or "")
-    title_field = script_data.get("title", "")
-
+    word = str(word).strip()
+    title_field = str(script_data.get("title", "") or "").strip()
+    values = {"word": word, "title": title_field}
+    templates = [t for t in TITLE_TEMPLATES.get(video_type, TITLE_TEMPLATES["educational"])
+                 if all(values.get(name) for name in re.findall(r"\{(\w+)\}", t))]
     try:
-        return template.format(word=word, title=title_field)
+        if not templates:
+            raise KeyError("no template can be filled")
+        return random.choice(templates).format(**values)
     except (KeyError, IndexError):
         fallback = (script_data.get("hook") or
                     script_data.get("question") or
@@ -331,6 +389,26 @@ def _build_fallback_title(script_data: dict, video_type: str) -> str:
                     script_data.get("title") or
                     "Aprende inglés hoy 🦊")
         return fallback[:80]
+
+
+_ARTICLES = ("el ", "la ", "los ", "las ")
+
+
+def how_do_you_say_title(script_data: dict) -> str:
+    """`¿Cómo se dice FAMILIA en inglés? 👪`, from the script's own theme."""
+    theme = (script_data.get("theme") or "").strip()
+    bare, article = theme, ""
+    for candidate in _ARTICLES:
+        if bare.lower().startswith(candidate):
+            bare, article = bare[len(candidate):], candidate.strip()
+            break
+    bare = bare.split(" (")[0]
+    items = script_data.get("items") or []
+    emoji = items[0].get("emoji", "") if items else ""
+    title = TITLE_TEMPLATES["how_do_you_say"][0].format(theme=bare.upper(), emoji=emoji).strip()
+    if article in ("los", "las"):                           # «se dicen los ANIMALES DEL MAR», not «se dice»
+        title = title.replace("¿Cómo se dice ", f"¿Cómo se dicen {article} ", 1)
+    return title
 
 
 def _build_fallback_description(script_data: dict, video_type: str, title: str) -> str:
@@ -360,7 +438,7 @@ def _build_fallback_description(script_data: dict, video_type: str, title: str) 
 
     # If we still have nothing meaningful, use script preview
     if not parts:
-        script_preview = (script_data.get("full_script") or "")[:150]
+        script_preview = unmark(script_data.get("full_script") or "")[:150]
         if script_preview:
             parts.append(script_preview)
         parts.append("Sígueme para más tips de inglés 🦊")

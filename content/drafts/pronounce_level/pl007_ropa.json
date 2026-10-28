@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "ROPA en inglés: 10 palabras de fácil a experto 👕",
+  "video_description": "Ropa en inglés, de fácil a experto: la última engaña a casi todos. 👗",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la ropa",
+  "intro": "[warm] Hoy toca ropa. Lee la palabra en voz alta y espera a ver si coincidimos.",
+  "items": [
+    {
+      "english": "dress",
+      "respelling": "DRES",
+      "ipa": "ˈdrɛs",
+      "trap": "Una sílaba, sin «e» final"
+    },
+    {
+      "english": "jeans",
+      "respelling": "YIINZ",
+      "ipa": "ˈdʒiːnz",
+      "trap": "J fuerte y la S suena Z"
+    },
+    {
+      "english": "hat",
+      "respelling": "JAT",
+      "ipa": "ˈhæt",
+      "trap": "La H suena como una «j» suave"
+    },
+    {
+      "english": "jacket",
+      "respelling": "YA-kit",
+      "ipa": "ˈdʒækɪt",
+      "trap": "J fuerte y la E suena «i»"
+    },
+    {
+      "english": "suit",
+      "respelling": "SUUT",
+      "ipa": "ˈsuːt",
+      "trap": "UI suena «uu»: SUUT"
+    },
+    {
+      "english": "sweater",
+      "respelling": "SUE-der",
+      "ipa": "ˈswɛɾɚ",
+      "trap": "EA suena «e» y la T como D suave"
+    },
+    {
+      "english": "pajamas",
+      "respelling": "pe-YA-mez",
+      "ipa": "pəˈdʒæməz",
+      "trap": "J fuerte y acento en YA"
+    },
+    {
+      "english": "scarves",
+      "respelling": "SKARVZ",
+      "ipa": "ˈskɑrvz",
+      "trap": "Sin «es-» y termina en «vz»"
+    },
+    {
+      "english": "tuxedo",
+      "respelling": "tak-SII-dou",
+      "ipa": "tʌkˈsiːdoʊ",
+      "trap": "Acento en SII: tak-SII-dou"
+    },
+    {
+      "english": "clothes",
+      "respelling": "KLOUDHZ",
+      "ipa": "ˈkloʊðz",
+      "trap": "Una sola sílaba: KLOUDHZ"
+    }
+  ],
+  "verdict": "Si pronunciaste bien hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez, nivel experto.",
+  "outro": "[cheerful] ¿Hasta dónde llegaste? Déjalo en un comentario.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#RopaEnInglés",
+    "#AprenderInglés",
+    "#InglésParaHispanos",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl007",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

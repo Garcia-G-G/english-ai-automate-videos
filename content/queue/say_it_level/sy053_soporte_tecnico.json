@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "10 frases para hablar con SOPORTE TÉCNICO en inglés 🛠️",
+  "video_description": "Cuando algo falla y te atienden en inglés: diez frases de básico a experto. 🛠️",
+  "title": "Dilo en inglés",
+  "theme": "hablar con soporte técnico",
+  "intro": "[calm] Llamas a soporte técnico. Lee la frase y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Hola, tengo un problema.",
+      "english": "Hi, I have a problem.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Mi internet no funciona.",
+      "english": "My internet isn't working.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "La pantalla está negra.",
+      "english": "The screen is black.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Ya lo he reiniciado dos veces.",
+      "english": "I've already restarted it twice.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Cuánto tiempo va a tardar?",
+      "english": "How long is it going to take?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me han cobrado dos veces.",
+      "english": "I've been charged twice.",
+      "cefr": "B2",
+      "alt": "They charged me twice."
+    },
+    {
+      "spanish": "¿Me puede pasar con un supervisor?",
+      "english": "Can you put me through to a manager?",
+      "cefr": "B2",
+      "alt": "Can I speak to a supervisor?"
+    },
+    {
+      "spanish": "La aplicación se cuelga todo el rato.",
+      "english": "The app keeps freezing.",
+      "cefr": "B2",
+      "alt": "The app keeps crashing.",
+      "tip": "«Se cuelga todo el rato» es keeps freezing o keeps crashing"
+    },
+    {
+      "spanish": "No me deja entrar en mi cuenta.",
+      "english": "It won't let me log in.",
+      "cefr": "B2",
+      "alt": "I can't log into my account.",
+      "tip": "«No me deja» es won't let me, no «doesn't leave me»"
+    },
+    {
+      "spanish": "¿Me da un número de incidencia?",
+      "english": "Can I get a ticket number?",
+      "cefr": "C1",
+      "alt": "Can I have a reference number?",
+      "tip": "«Número de incidencia» es ticket number, no «incidence»"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres básico; a la siete, intermedio. Y con las diez, el técnico eres tú.",
+  "outro": "[warm] ¿Te ha pasado alguna vez? Cuéntame hasta qué número llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaElTrabajo",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy053",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Hi, I have a problem.": "Hola, tengo un problema.",
+    "My internet isn't working.": "Mi internet no funciona.",
+    "The screen is black.": "La pantalla está negra.",
+    "I've already restarted it twice.": "Ya lo he reiniciado dos veces.",
+    "How long is it going to take?": "¿Cuánto tiempo va a tardar?",
+    "I've been charged twice.": "Me han cobrado dos veces.",
+    "Can you put me through to a manager?": "¿Me puede pasar con un supervisor?",
+    "The app keeps freezing.": "La aplicación se cuelga todo el rato.",
+    "It won't let me log in.": "No me deja entrar en mi cuenta.",
+    "Can I get a ticket number?": "¿Me da un número de incidencia?"
+  },
+  "english_phrases": [
+    "Hi, I have a problem.",
+    "My internet isn't working.",
+    "The screen is black.",
+    "I've already restarted it twice.",
+    "How long is it going to take?",
+    "I've been charged twice.",
+    "Can you put me through to a manager?",
+    "The app keeps freezing.",
+    "It won't let me log in.",
+    "Can I get a ticket number?",
+    "They charged me twice.",
+    "Can I speak to a supervisor?",
+    "The app keeps crashing.",
+    "I can't log into my account.",
+    "Can I have a reference number?"
+  ],
+  "full_script": "[calm] Llamas a soporte técnico. Lee la frase y dila en inglés antes que yo. Hi, I have a problem. My internet isn't working. The screen is black. Ahora, nivel intermedio. I've already restarted it twice. How long is it going to take? I've been charged twice. Can you put me through to a manager? Y ahora, nivel experto. The app keeps freezing. It won't let me log in. Can I get a ticket number? Si llegaste a la tres, eres básico; a la siete, intermedio. Y con las diez, el técnico eres tú. [warm] ¿Te ha pasado alguna vez? Cuéntame hasta qué número llegaste."
+}

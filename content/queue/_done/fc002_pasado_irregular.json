@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: 10 VERBOS IRREGULARES 📚",
+  "video_description": "El pasado de los verbos que no siguen la regla, de fácil a experto. 📚",
+  "title": "Completa la frase",
+  "theme": "verbos irregulares en pasado",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "Yesterday I ____ to the beach.",
+      "answer": "went",
+      "translation": "Ayer fui a la playa.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ a cake for my birthday.",
+      "answer": "made",
+      "translation": "Hizo un pastel para mi cumpleaños.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We ____ pizza last night.",
+      "answer": "ate",
+      "translation": "Comimos pizza anoche.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He ____ me a letter.",
+      "answer": "wrote",
+      "translation": "Me escribió una carta.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I ____ my keys at home.",
+      "answer": "left",
+      "translation": "Me dejé las llaves en casa.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The kids ____ asleep early.",
+      "answer": "fell",
+      "translation": "Los niños se durmieron temprano.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She ____ the glass and it broke.",
+      "answer": "dropped",
+      "translation": "Se le cayó el vaso y se rompió.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He ____ his breath underwater.",
+      "answer": "held",
+      "translation": "Aguantó la respiración bajo el agua.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The price ____ by ten percent.",
+      "answer": "rose",
+      "translation": "El precio subió un diez por ciento.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She ____ her coat on the bed.",
+      "answer": "laid",
+      "translation": "Dejó el abrigo sobre la cama.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#VerbosIrregulares",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc002",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Yesterday I went to the beach.": "Ayer fui a la playa.",
+    "She made a cake for my birthday.": "Hizo un pastel para mi cumpleaños.",
+    "We ate pizza last night.": "Comimos pizza anoche.",
+    "He wrote me a letter.": "Me escribió una carta.",
+    "I left my keys at home.": "Me dejé las llaves en casa.",
+    "The kids fell asleep early.": "Los niños se durmieron temprano.",
+    "She dropped the glass and it broke.": "Se le cayó el vaso y se rompió.",
+    "He held his breath underwater.": "Aguantó la respiración bajo el agua.",
+    "The price rose by ten percent.": "El precio subió un diez por ciento.",
+    "She laid her coat on the bed.": "Dejó el abrigo sobre la cama."
+  },
+  "english_phrases": [
+    "Yesterday I went to the beach.",
+    "She made a cake for my birthday.",
+    "We ate pizza last night.",
+    "He wrote me a letter.",
+    "I left my keys at home.",
+    "The kids fell asleep early.",
+    "She dropped the glass and it broke.",
+    "He held his breath underwater.",
+    "The price rose by ten percent.",
+    "She laid her coat on the bed."
+  ],
+  "full_script": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare. Yesterday I went to the beach. She made a cake for my birthday. We ate pizza last night. Ahora, nivel intermedio. He wrote me a letter. I left my keys at home. The kids fell asleep early. She dropped the glass and it broke. Y ahora, nivel experto. He held his breath underwater. The price rose by ten percent. She laid her coat on the bed. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

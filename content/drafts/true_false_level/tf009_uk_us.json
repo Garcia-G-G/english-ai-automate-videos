@@ -1,0 +1,81 @@
+{
+  "type": "true_false_level",
+  "video_title": "10 frases sobre UK vs US: ¿V o F? ☕",
+  "video_description": "Británico o americano: diez diferencias, ¿verdadero o falso? 🗽",
+  "title": "¿Verdadero o falso?",
+  "theme": "inglés británico y americano",
+  "intro": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total.",
+  "items": [
+    {
+      "statement": "En EE. UU. dicen «apartment» y en Reino Unido «flat».",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Football» en EE. UU. es el fútbol con balón redondo.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "allí el fútbol es soccer"
+    },
+    {
+      "statement": "«Chips» en Reino Unido son patatas fritas de ración.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "En EE. UU. la acera es «pavement».",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "allí es sidewalk"
+    },
+    {
+      "statement": "«Holiday» en Reino Unido puede ser vacaciones.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "En EE. UU. el ascensor es «lift».",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es elevator"
+    },
+    {
+      "statement": "En Reino Unido la goma de borrar es «rubber».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Pants» en Reino Unido son pantalones.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "son calzoncillos"
+    },
+    {
+      "statement": "«Biscuit» en Reino Unido es una galleta.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "En EE. UU. la gasolina es «petrol».",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es gas"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#InglésBritánico",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf009",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

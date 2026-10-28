@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "PRESENT PERFECT: ¿sabes completar estas 10 frases? ⏳",
+  "video_description": "¿Have o has? ¿Been o gone? El present perfect en diez frases. ⏳",
+  "title": "Completa la frase",
+  "theme": "el present perfect",
+  "intro": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto.",
+  "items": [
+    {
+      "sentence": "I ____ never been to Japan.",
+      "answer": "have",
+      "translation": "Nunca he estado en Japón.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ finished her homework.",
+      "answer": "has",
+      "translation": "Ha terminado los deberes.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Have you ever ____ sushi?",
+      "answer": "eaten",
+      "translation": "¿Has comido sushi alguna vez?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We've ____ here since May.",
+      "answer": "lived",
+      "translation": "Vivimos aquí desde mayo.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He's just ____ out. He'll be back soon.",
+      "answer": "gone",
+      "translation": "Acaba de salir. Volverá pronto.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I've ____ to London twice.",
+      "answer": "been",
+      "translation": "He estado en Londres dos veces.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "How long have you ____ each other?",
+      "answer": "known",
+      "translation": "¿Cuánto hace que os conocéis?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I haven't ____ him in years.",
+      "answer": "seen",
+      "translation": "No lo veo desde hace años.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It's the best film I've ever ____.",
+      "answer": "seen",
+      "translation": "Es la mejor película que he visto.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She's been ____ all morning; her eyes are red.",
+      "answer": "crying",
+      "translation": "Ha estado llorando toda la mañana.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PresentPerfect",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc003",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,842 @@
+[
+  {
+    "id": "bv001",
+    "topic": "family",
+    "spanish": "la familia",
+    "theme": "la familia",
+    "meaning": "Ten A1 words about family, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv002",
+    "topic": "house",
+    "spanish": "la casa",
+    "theme": "la casa",
+    "meaning": "Ten A1 words about house, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv003",
+    "topic": "food",
+    "spanish": "la comida",
+    "theme": "la comida",
+    "meaning": "Ten A1 words about food, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv004",
+    "topic": "colors",
+    "spanish": "los colores",
+    "theme": "los colores",
+    "meaning": "Ten A1 words about colors, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv005",
+    "topic": "numbers 1-10",
+    "spanish": "los números 1–10",
+    "theme": "los números 1–10",
+    "meaning": "Ten A1 words about numbers 1-10, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv006",
+    "topic": "clothes",
+    "spanish": "la ropa",
+    "theme": "la ropa",
+    "meaning": "Ten A1 words about clothes, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv007",
+    "topic": "the body",
+    "spanish": "el cuerpo",
+    "theme": "el cuerpo",
+    "meaning": "Ten A1 words about the body, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv008",
+    "topic": "animals",
+    "spanish": "los animales",
+    "theme": "los animales",
+    "meaning": "Ten A1 words about animals, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv009",
+    "topic": "weather",
+    "spanish": "el tiempo (clima)",
+    "theme": "el tiempo",
+    "meaning": "Ten A1 words about weather, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv010",
+    "topic": "the city",
+    "spanish": "la ciudad",
+    "theme": "la ciudad",
+    "meaning": "Ten A1 words about the city, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv011",
+    "topic": "work",
+    "spanish": "el trabajo",
+    "theme": "el trabajo",
+    "meaning": "Ten A1 words about work, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv012",
+    "topic": "school",
+    "spanish": "la escuela",
+    "theme": "la escuela",
+    "meaning": "Ten A1 words about school, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv013",
+    "topic": "emotions",
+    "spanish": "las emociones",
+    "theme": "las emociones",
+    "meaning": "Ten A1 words about emotions, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv014",
+    "topic": "days of the week",
+    "spanish": "los días de la semana",
+    "theme": "los días de la semana",
+    "meaning": "Ten A1 words about days of the week, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv015",
+    "topic": "months",
+    "spanish": "los meses",
+    "theme": "los meses",
+    "meaning": "Ten A1 words about months, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv016",
+    "topic": "kitchen utensils",
+    "spanish": "la cocina (utensilios)",
+    "theme": "la cocina",
+    "meaning": "Ten A1 words about kitchen utensils, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv017",
+    "topic": "transport",
+    "spanish": "el transporte",
+    "theme": "el transporte",
+    "meaning": "Ten A1 words about transport, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv018",
+    "topic": "fruit",
+    "spanish": "la fruta",
+    "theme": "la fruta",
+    "meaning": "Ten A1 words about fruit, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv019",
+    "topic": "sports",
+    "spanish": "los deportes",
+    "theme": "los deportes",
+    "meaning": "Ten A1 words about sports, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv020",
+    "topic": "basic verbs",
+    "spanish": "los verbos básicos (comer, beber, dormir…)",
+    "theme": "los verbos básicos",
+    "meaning": "Ten A1 words about basic verbs, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv021",
+    "topic": "vegetables",
+    "spanish": "las verduras",
+    "theme": "las verduras",
+    "meaning": "Ten A1 words about vegetables, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv022",
+    "topic": "drinks",
+    "spanish": "las bebidas",
+    "theme": "las bebidas",
+    "meaning": "Ten A1 words about drinks, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv023",
+    "topic": "breakfast",
+    "spanish": "el desayuno",
+    "theme": "el desayuno",
+    "meaning": "Ten A1 words about breakfast, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv024",
+    "topic": "desserts",
+    "spanish": "los postres",
+    "theme": "los postres",
+    "meaning": "Ten A1 words about desserts, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv025",
+    "topic": "the bathroom",
+    "spanish": "el baño",
+    "theme": "el baño",
+    "meaning": "Ten A1 words about the bathroom, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv026",
+    "topic": "the bedroom",
+    "spanish": "el dormitorio",
+    "theme": "el dormitorio",
+    "meaning": "Ten A1 words about the bedroom, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv027",
+    "topic": "the living room",
+    "spanish": "la sala",
+    "theme": "la sala",
+    "meaning": "Ten A1 words about the living room, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv028",
+    "topic": "the garden",
+    "spanish": "el jardín",
+    "theme": "el jardín",
+    "meaning": "Ten A1 words about the garden, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv029",
+    "topic": "the beach",
+    "spanish": "la playa",
+    "theme": "la playa",
+    "meaning": "Ten A1 words about the beach, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv030",
+    "topic": "the airport",
+    "spanish": "el aeropuerto",
+    "theme": "el aeropuerto",
+    "meaning": "Ten A2 words about the airport, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv031",
+    "topic": "the hotel",
+    "spanish": "el hotel",
+    "theme": "el hotel",
+    "meaning": "Ten A2 words about the hotel, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv032",
+    "topic": "the restaurant",
+    "spanish": "el restaurante",
+    "theme": "el restaurante",
+    "meaning": "Ten A1 words about the restaurant, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv033",
+    "topic": "the supermarket",
+    "spanish": "el supermercado",
+    "theme": "el supermercado",
+    "meaning": "Ten A1 words about the supermarket, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv034",
+    "topic": "accessories",
+    "spanish": "los accesorios",
+    "theme": "los accesorios",
+    "meaning": "Ten A1 words about accessories, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv035",
+    "topic": "the face",
+    "spanish": "la cara",
+    "theme": "la cara",
+    "meaning": "Ten A1 words about the face, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv036",
+    "topic": "at the doctor",
+    "spanish": "el médico",
+    "theme": "el médico",
+    "meaning": "Ten A2 words about at the doctor, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv037",
+    "topic": "jobs",
+    "spanish": "las profesiones",
+    "theme": "las profesiones",
+    "meaning": "Ten A1 words about jobs, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv038",
+    "topic": "wild animals",
+    "spanish": "los animales salvajes",
+    "theme": "los animales salvajes",
+    "meaning": "Ten A1 words about wild animals, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv039",
+    "topic": "sea animals",
+    "spanish": "los animales del mar",
+    "theme": "los animales del mar",
+    "meaning": "Ten A1 words about sea animals, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv040",
+    "topic": "insects",
+    "spanish": "los insectos",
+    "theme": "los insectos",
+    "meaning": "Ten A1 words about insects, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv041",
+    "topic": "nature",
+    "spanish": "la naturaleza",
+    "theme": "la naturaleza",
+    "meaning": "Ten A1 words about nature, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv042",
+    "topic": "technology",
+    "spanish": "la tecnología",
+    "theme": "la tecnología",
+    "meaning": "Ten A1 words about technology, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv043",
+    "topic": "musical instruments",
+    "spanish": "los instrumentos",
+    "theme": "los instrumentos",
+    "meaning": "Ten A1 words about musical instruments, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv044",
+    "topic": "tools",
+    "spanish": "las herramientas",
+    "theme": "las herramientas",
+    "meaning": "Ten A2 words about tools, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv045",
+    "topic": "the car",
+    "spanish": "el carro",
+    "theme": "el carro",
+    "meaning": "Ten A2 words about the car, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv046",
+    "topic": "shops",
+    "spanish": "las tiendas",
+    "theme": "las tiendas",
+    "meaning": "Ten A2 words about shops, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv047",
+    "topic": "opposites",
+    "spanish": "los opuestos",
+    "theme": "los opuestos",
+    "meaning": "Ten A1 words about opposites, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv048",
+    "topic": "personality",
+    "spanish": "la personalidad",
+    "theme": "la personalidad",
+    "meaning": "Ten A2 words about personality, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv049",
+    "topic": "Halloween",
+    "spanish": "Halloween",
+    "theme": "Halloween",
+    "meaning": "Ten A1 words about Halloween, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv050",
+    "topic": "Christmas",
+    "spanish": "la Navidad",
+    "theme": "la Navidad",
+    "meaning": "Ten A1 words about Christmas, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv051",
+    "topic": "space",
+    "spanish": "el espacio",
+    "theme": "el espacio",
+    "meaning": "Ten A1 words about space, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv052",
+    "topic": "hobbies",
+    "spanish": "los hobbies",
+    "theme": "los hobbies",
+    "meaning": "Ten A1 words about hobbies, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv053",
+    "topic": "daily routine",
+    "spanish": "la rutina diaria",
+    "theme": "la rutina diaria",
+    "meaning": "Ten A2 words about daily routine, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv054",
+    "topic": "shapes",
+    "spanish": "las formas",
+    "theme": "las formas",
+    "meaning": "Ten A1 words about shapes, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv055",
+    "topic": "parts of the house",
+    "spanish": "las partes de la casa",
+    "theme": "las partes de la casa",
+    "meaning": "Ten A2 words about parts of the house, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv056",
+    "topic": "money",
+    "spanish": "el dinero",
+    "theme": "el dinero",
+    "meaning": "Ten A2 words about money, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv057",
+    "topic": "the office",
+    "spanish": "la oficina",
+    "theme": "la oficina",
+    "meaning": "Ten A2 words about the office, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "elementary",
+    "level": "A2",
+    "tags": [
+      "a2",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv058",
+    "topic": "the farm",
+    "spanish": "la granja",
+    "theme": "la granja",
+    "meaning": "Ten A1 words about the farm, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv059",
+    "topic": "common verbs",
+    "spanish": "más verbos",
+    "theme": "más verbos",
+    "meaning": "Ten A1 words about common verbs, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv060",
+    "topic": "time words",
+    "spanish": "la hora",
+    "theme": "la hora",
+    "meaning": "Ten A1 words about time words, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  }
+]

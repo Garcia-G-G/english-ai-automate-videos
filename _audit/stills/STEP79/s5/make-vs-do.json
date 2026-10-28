@@ -1,0 +1,28 @@
+{
+ "lesson": "make-vs-do",
+ "mp4": "experiments/manim_voiceover_poc/renders/make-vs-do/20261023-201353_english-teacher_1080p30_sand.mp4",
+ "duration_s": 461.5,
+ "render_s": 458.9,
+ "render_and_encode_s": 677.7,
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "checks": {
+   "sync": [],
+   "lufs": -14.0,
+   "still": {
+    "seconds": 0.27,
+    "from": 17.43
+   }
+  }
+ },
+ "final_encode": {
+  "loudnorm": "linear",
+  "output_i": "-13.97",
+  "output_tp": "-2.36",
+  "bytes": 45785154
+ },
+ "max_cue_lag": 0.16,
+ "chapters": "00:00 Intro\n00:25 Parte 1 · El problema\n01:15 Parte 2 · Make crea\n02:00 Parte 3 · Do realiza\n03:06 Parte 4 · Las parejas traicioneras\n03:56 Parte 5 · En una conversación real\n04:26 Parte 6 · El do que además ayuda\n04:58 Parte 7 · En el trabajo\n05:48 Parte 8 · Practica\n06:47 Parte 9 · Resumen\n",
+ "thumbnail": "make-vs-do/20261023-201353_english-teacher_1080p30_sand.thumb.jpg"
+}

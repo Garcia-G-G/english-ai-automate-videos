@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "¿Completas las 10? PRESENTE y PASADO CONTINUO 🏃",
+  "video_description": "Estoy haciendo, estaba haciendo: los continuos en diez frases. 🏃",
+  "title": "Completa la frase",
+  "theme": "los tiempos continuos",
+  "intro": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo.",
+  "items": [
+    {
+      "sentence": "I'm ____ a book right now.",
+      "answer": "reading",
+      "translation": "Estoy leyendo un libro ahora mismo.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ cooking dinner.",
+      "answer": "is",
+      "translation": "Está preparando la cena.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "What are you ____?",
+      "answer": "doing",
+      "translation": "¿Qué estás haciendo?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I ____ sleeping when you called.",
+      "answer": "was",
+      "translation": "Estaba durmiendo cuando llamaste.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "They were ____ TV all evening.",
+      "answer": "watching",
+      "translation": "Estuvieron viendo la tele toda la tarde.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "We're ____ to Paris on Friday.",
+      "answer": "flying",
+      "translation": "Volamos a París el viernes.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It ____ raining when we left.",
+      "answer": "was",
+      "translation": "Estaba lloviendo cuando salimos.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "You're always ____ about your job!",
+      "answer": "complaining",
+      "translation": "¡Siempre te estás quejando del trabajo!",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "This time tomorrow I'll be ____ on the beach.",
+      "answer": "lying",
+      "translation": "Mañana a esta hora estaré tumbado en la playa.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I've been ____ for you for an hour!",
+      "answer": "waiting",
+      "translation": "¡Llevo una hora esperándote!",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#TiemposVerbales",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc020",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

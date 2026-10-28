@@ -1,0 +1,79 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes cuáles son verdad? NÚMEROS y FECHAS 🔢",
+  "video_description": "Números, fechas y horas en inglés: ¿verdadero o falso? 🔢",
+  "title": "¿Verdadero o falso?",
+  "theme": "números y fechas",
+  "intro": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad?",
+  "items": [
+    {
+      "statement": "«Twelve» es doce.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Fifteen» es cincuenta.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es quince"
+    },
+    {
+      "statement": "«A dozen» son doce.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "En EE. UU., «03/04» suele ser 4 de marzo.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Half past six» son las cinco y media.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "son las seis y media"
+    },
+    {
+      "statement": "«A quarter to nine» son las nueve menos cuarto.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Billion» en inglés son mil millones.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Fortnight» son cuatro semanas.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "son dos semanas"
+    },
+    {
+      "statement": "«Zero» y «nought» pueden significar cero.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Twenty-twenty» puede ser 2020.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf015",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

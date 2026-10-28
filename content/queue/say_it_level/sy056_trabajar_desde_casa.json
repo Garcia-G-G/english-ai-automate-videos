@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "Frases para TRABAJAR DESDE CASA en inglés, de fácil a experto 🏠",
+  "video_description": "Teletrabajo en inglés: diez frases que suben de nivel hasta las trampas. 🏠",
+  "title": "Dilo en inglés",
+  "theme": "trabajar desde casa",
+  "intro": "[warm] Hoy trabajas desde casa. Lee la frase y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Mi oficina es mi cocina.",
+      "english": "My office is my kitchen.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Tengo una reunión a las diez.",
+      "english": "I have a meeting at ten.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Hoy trabajo desde casa.",
+      "english": "I'm working from home today.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Hoy no me he quitado el pijama.",
+      "english": "I'm still in my pajamas today.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Voy a hacer una pausa para comer.",
+      "english": "I'm going to take a lunch break.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Lo hablamos por videollamada?",
+      "english": "Shall we talk about it on a video call?",
+      "cefr": "B1",
+      "alt": "Can we discuss it on a video call?"
+    },
+    {
+      "spanish": "Me cuesta desconectar del trabajo.",
+      "english": "I find it hard to switch off from work.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Mi jefe quiere que vuelva a la oficina.",
+      "english": "My boss wants me back at the office.",
+      "cefr": "B2",
+      "alt": "My boss wants me in the office.",
+      "tip": "«Quiere que vuelva» es wants me to go, no «wants that I»"
+    },
+    {
+      "spanish": "Llevo dos años teletrabajando.",
+      "english": "I've worked remotely for two years.",
+      "cefr": "B2",
+      "tip": "«Llevo + tiempo + -ando» es I've been + -ing + for"
+    },
+    {
+      "spanish": "Hoy estoy hasta arriba de trabajo.",
+      "english": "I'm swamped today.",
+      "cefr": "C1",
+      "alt": "I'm snowed under today.",
+      "tip": "«Estar hasta arriba» es be swamped, no «up to the top»"
+    }
+  ],
+  "verdict": "Con tres, eres básico. Con siete, intermedio. Y si te salieron las diez, experto en teletrabajo.",
+  "outro": "[curious] ¿Tú también trabajas en pijama? Dime hasta qué número llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#Teletrabajo",
+    "#AprenderInglés",
+    "#InglésParaElTrabajo",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy056",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "My office is my kitchen.": "Mi oficina es mi cocina.",
+    "I have a meeting at ten.": "Tengo una reunión a las diez.",
+    "I'm working from home today.": "Hoy trabajo desde casa.",
+    "I'm still in my pajamas today.": "Hoy no me he quitado el pijama.",
+    "I'm going to take a lunch break.": "Voy a hacer una pausa para comer.",
+    "Shall we talk about it on a video call?": "¿Lo hablamos por videollamada?",
+    "I find it hard to switch off from work.": "Me cuesta desconectar del trabajo.",
+    "My boss wants me back at the office.": "Mi jefe quiere que vuelva a la oficina.",
+    "I've worked remotely for two years.": "Llevo dos años teletrabajando.",
+    "I'm swamped today.": "Hoy estoy hasta arriba de trabajo."
+  },
+  "english_phrases": [
+    "My office is my kitchen.",
+    "I have a meeting at ten.",
+    "I'm working from home today.",
+    "I'm still in my pajamas today.",
+    "I'm going to take a lunch break.",
+    "Shall we talk about it on a video call?",
+    "I find it hard to switch off from work.",
+    "My boss wants me back at the office.",
+    "I've worked remotely for two years.",
+    "I'm swamped today.",
+    "Can we discuss it on a video call?",
+    "My boss wants me in the office.",
+    "I'm snowed under today."
+  ],
+  "full_script": "[warm] Hoy trabajas desde casa. Lee la frase y dila en inglés antes que yo. My office is my kitchen. I have a meeting at ten. I'm working from home today. Ahora, nivel intermedio. I'm still in my pajamas today. I'm going to take a lunch break. Shall we talk about it on a video call? I find it hard to switch off from work. Y ahora, nivel experto. My boss wants me back at the office. I've worked remotely for two years. I'm swamped today. Con tres, eres básico. Con siete, intermedio. Y si te salieron las diez, experto en teletrabajo. [curious] ¿Tú también trabajas en pijama? Dime hasta qué número llegaste."
+}

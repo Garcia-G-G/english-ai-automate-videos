@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «ESTOY SIN BLANCA» en inglés? 💸",
+  "video_description": "Diez frases sobre el dinero que se usan a diario. 💸",
+  "title": "¿Cómo se dice?",
+  "theme": "con el dinero",
+  "intro": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan.",
+  "items": [
+    {
+      "spanish": "¿Cuánto es?",
+      "english": "How much is it?"
+    },
+    {
+      "spanish": "Es muy caro.",
+      "english": "It's really expensive."
+    },
+    {
+      "spanish": "Es una ganga.",
+      "english": "It's a bargain."
+    },
+    {
+      "spanish": "Estoy sin blanca.",
+      "english": "I'm broke."
+    },
+    {
+      "spanish": "Pago yo.",
+      "english": "It's on me."
+    },
+    {
+      "spanish": "¿Pagamos a medias?",
+      "english": "Shall we split it?"
+    },
+    {
+      "spanish": "Estoy ahorrando.",
+      "english": "I'm saving up."
+    },
+    {
+      "spanish": "No me lo puedo permitir.",
+      "english": "I can't afford it."
+    },
+    {
+      "spanish": "Me lo devuelves cuando puedas.",
+      "english": "Pay me back whenever."
+    },
+    {
+      "spanish": "Se me ha ido el sueldo.",
+      "english": "My paycheck is gone."
+    }
+  ],
+  "outro": "[curious] ¿Cuál no conocías? Cuéntamelo abajo.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf029",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "How much is it?": "¿Cuánto es?",
+    "It's really expensive.": "Es muy caro.",
+    "It's a bargain.": "Es una ganga.",
+    "I'm broke.": "Estoy sin blanca.",
+    "It's on me.": "Pago yo.",
+    "Shall we split it?": "¿Pagamos a medias?",
+    "I'm saving up.": "Estoy ahorrando.",
+    "I can't afford it.": "No me lo puedo permitir.",
+    "Pay me back whenever.": "Me lo devuelves cuando puedas.",
+    "My paycheck is gone.": "Se me ha ido el sueldo."
+  },
+  "english_phrases": [
+    "How much is it?",
+    "It's really expensive.",
+    "It's a bargain.",
+    "I'm broke.",
+    "It's on me.",
+    "Shall we split it?",
+    "I'm saving up.",
+    "I can't afford it.",
+    "Pay me back whenever.",
+    "My paycheck is gone."
+  ],
+  "full_script": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan. How much is it? It's really expensive. It's a bargain. I'm broke. It's on me. Shall we split it? I'm saving up. I can't afford it. Pay me back whenever. My paycheck is gone. [curious] ¿Cuál no conocías? Cuéntamelo abajo."
+}

@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "¿Sabes cuándo usar EACH o EVERY? 🔂",
+  "video_description": "Each o every: casi iguales, pero no siempre. Diez frases. 🔂",
+  "title": "Elige la correcta",
+  "theme": "each o every",
+  "intro": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto.",
+  "items": [
+    {
+      "sentence": "I see her almost ____ day.",
+      "options": [
+        "every",
+        "each"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ of the kids got a gift.",
+      "options": [
+        "Every",
+        "Each"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ now and then I go to the beach.",
+      "options": [
+        "Each",
+        "Every"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "They looked at ____ other.",
+      "options": [
+        "each",
+        "every"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We meet ____ other Friday.",
+      "options": [
+        "each",
+        "every"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The tickets cost $10 ____.",
+      "options": [
+        "each",
+        "every"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I've read ____ single page.",
+      "options": [
+        "every",
+        "each"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "We see ____ other on weekends.",
+      "options": [
+        "every",
+        "each"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Buses leave ____ ten minutes.",
+      "options": [
+        "every",
+        "each"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ and every one of them agreed.",
+      "options": [
+        "Every",
+        "Each"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#EachVsEvery",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec040",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "I see her almost every day.",
+    "Each of the kids got a gift.",
+    "Every now and then I go to the beach.",
+    "They looked at each other.",
+    "We meet every other Friday.",
+    "The tickets cost $10 each.",
+    "I've read every single page.",
+    "We see each other on weekends.",
+    "Buses leave every ten minutes.",
+    "Each and every one of them agreed."
+  ],
+  "full_script": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto. I see her almost every day. Each of the kids got a gift. Every now and then I go to the beach. Ahora, nivel intermedio. They looked at each other. We meet every other Friday. The tickets cost $10 each. I've read every single page. Y ahora, nivel experto. We see each other on weekends. Buses leave every ten minutes. Each and every one of them agreed. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

@@ -1,0 +1,28 @@
+{
+ "lesson": "present-perfect-vs-past",
+ "mp4": "experiments/manim_voiceover_poc/renders/present-perfect-vs-past/20261023-211333_english-teacher_1080p30_sand.mp4",
+ "duration_s": 505.6,
+ "render_s": 587.1,
+ "render_and_encode_s": 2531.9,
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "checks": {
+   "sync": [],
+   "lufs": -14.0,
+   "still": {
+    "seconds": 0.3,
+    "from": 72.03
+   }
+  }
+ },
+ "final_encode": {
+  "loudnorm": "linear",
+  "output_i": "-13.95",
+  "output_tp": "-2.36",
+  "bytes": 50636159
+ },
+ "max_cue_lag": 0.072,
+ "chapters": "00:00 Intro\n00:25 Parte 1 · Por qué nos cuesta tanto\n01:32 Parte 2 · Qué dice cada uno\n02:36 Parte 3 · Las palabras que te avisan\n03:37 Parte 4 · Since o for\n04:25 Parte 5 · En una conversación real\n05:12 Parte 6 · El error de nivel alto\n05:47 Parte 7 · Ponerse al día\n06:30 Parte 8 · Practica\n07:27 Parte 9 · Resumen\n",
+ "thumbnail": "present-perfect-vs-past/20261023-211333_english-teacher_1080p30_sand.thumb.jpg"
+}

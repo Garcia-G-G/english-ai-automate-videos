@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "¿LOSE o MISS? Elige la correcta en 10 frases 🚌",
+  "video_description": "Perder un objeto o perder un tren: lose o miss. Diez frases. 🚌",
+  "title": "Elige la correcta",
+  "theme": "lose o miss",
+  "intro": "[curious] Dos opciones en cada frase. Elige antes de que yo la diga.",
+  "items": [
+    {
+      "sentence": "I always ____ my keys.",
+      "options": [
+        "lose",
+        "miss"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Hurry or we'll ____ the bus!",
+      "options": [
+        "lose",
+        "miss"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I ____ you so much.",
+      "options": [
+        "lose",
+        "miss"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Our team ____ the game.",
+      "options": [
+        "lost",
+        "missed"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "You ____ a great party last night.",
+      "options": [
+        "lost",
+        "missed"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Don't ____ your temper.",
+      "options": [
+        "lose",
+        "miss"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I ____ the point of the movie.",
+      "options": [
+        "missed",
+        "lost"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I've ____ five kilos this year.",
+      "options": [
+        "missed",
+        "lost"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He ____ the chance of his life.",
+      "options": [
+        "missed",
+        "lost"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I ____ track of time.",
+      "options": [
+        "missed",
+        "lost"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#LoseVsMiss",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec017",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

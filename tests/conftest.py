@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests cannot write to the real ledger, or anywhere else in output/.
+"""Tests cannot write to the real ledger, to output/, to the queue, or to logs/.
 
 TWO LEAKS, SAME CLASS. An idempotency test wrote 13 fixture rows into the
 real output/published/attempts.jsonl. The same run also left
@@ -30,6 +30,14 @@ TWO LAYERS, for both:
 Reads are deliberately untouched: many tests read real artifacts (the gate
 corpus, audio fixtures, rendered mp4s), and blocking those would gut the
 suite for no safety gain.
+
+THIRD LEAK, AND THE ONLY ONE THAT LOST SOMETHING. Both layers were scoped to
+output/, and the third leak was not in output/. content/queue/ holds scripts
+the owner wrote by hand, run_pipeline_with_tracking claims one by default,
+and a "successful" stubbed run shelves it into content/queue/_done/. Six
+were consumed with no video produced. logs/ went the same way with less at
+stake. Both roots are now redirected below and refused in output_guard, and
+tests/test_output_isolation.py pins it.
 """
 
 import sys
@@ -40,6 +48,7 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tools"))
 
 from output_guard import install as _install_output_guard  # noqa: E402
 
@@ -77,6 +86,15 @@ def _isolate_output_tree(tmp_path, monkeypatch):
     monkeypatch.setattr(PL, "LEDGER_PATH", ledger_dir / "ledger.jsonl")
     monkeypatch.setattr(PL, "ATTEMPTS_PATH", ledger_dir / "attempts.jsonl")
 
+    # The Instagram publisher refreshes and stores its token; never in the real .tokens/.
+    import uploader
+    monkeypatch.setattr(uploader, "TOKEN_DIR", out / ".tokens")
+
+    # The TTS cache (STEP 76 §4): a test's fake clip must never be served to a real render.
+    import tts_cache
+    monkeypatch.setattr(tts_cache, "CACHE_DIR", out / "cache" / "tts")
+    tts_cache.STATS.update(hits=0, misses=0)
+
     try:
         import batch_report as BR
         monkeypatch.setattr(BR, "REPORT_DIR", out / "batch_reports")
@@ -88,18 +106,84 @@ def _isolate_output_tree(tmp_path, monkeypatch):
     if "main" in sys.modules:
         monkeypatch.setattr(sys.modules["main"], "OUTPUT_DIR", out)
 
+    # Admin reload re-executes thumbnail warming, so isolate its cache too.
+    import thumbnails
+    monkeypatch.setattr(thumbnails, "THUMBS_DIR", out / "thumbs")
+    import ai_background
+    monkeypatch.setattr(ai_background, "AB_LOG", out / "stats" / "background_ab.jsonl")
+    monkeypatch.setattr(ai_background, "LIBRARY", out / "ai_backgrounds")
+    import length_ab
+    monkeypatch.setattr(length_ab, "AB_LOG", out / "stats" / "length_ab.jsonl")
+
     # admin imports streamlit, so it is only redirected if a test already
     # pulled it in — importing it here would cost every test that run.
-    admin = sys.modules.get("admin")
-    if admin is not None:
+    # jobs (the engine admin re-exports) holds its own copies of the paths.
+    for module in (sys.modules.get("admin"), sys.modules.get("jobs")):
+        if module is None:
+            continue
         for name, sub in (("OUTPUT_DIR", ""), ("VIDEO_DIR", "video"),
                           ("PENDING_DIR", "pending"),
                           ("APPROVED_DIR", "approved"),
                           ("UPLOADED_DIR", "uploaded"),
                           ("REJECTED_DIR", "rejected")):
-            if hasattr(admin, name):
-                monkeypatch.setattr(admin, name, out / sub if sub else out)
+            if hasattr(module, name):
+                monkeypatch.setattr(module, name, out / sub if sub else out)
+
+    # ── the queue and the logs: same class, outside output/ ──────────
+    #
+    # THE ONE THAT COST SOMETHING. run_pipeline_with_tracking defaults to
+    # use_queue=True, so every test that called it claimed a real
+    # hand-written script out of content/queue/ and — on success — shelved
+    # it into content/queue/_done/. The recorder fixture in
+    # test_dashboard_doors.py stubs the renderer, so the run "succeeded"
+    # without producing anything, and six of the owner's scripts were
+    # consumed with no video to show for them.
+    #
+    # An EMPTY queue rather than a copy of the real one, deliberately. No
+    # test asserts anything about queue contents, so a copy would only buy
+    # back the behaviour that did the damage; an empty queue makes
+    # queue_pick return None and the run falls through to the generator the
+    # test already stubs. A test that ever needs a queued script should put
+    # one here rather than reach for the owner's.
+    queue = out / "queue"
+    (queue / "_done").mkdir(parents=True, exist_ok=True)
+
+    import queue_guard
+    monkeypatch.setattr(queue_guard, "QUEUE_DIR", queue)
+    monkeypatch.setattr(queue_guard, "DONE_DIR", queue / "_done")
+
+    import topic_history
+    monkeypatch.setattr(topic_history, "QUEUE_DIR", queue)
+
+    # run_log attaches a rotating handler to the ROOT logger at a path under
+    # logs/. 13 real log files in one afternoon, 752 accumulated.
+    import run_log
+    monkeypatch.setattr(run_log, "LOG_DIR", out / "logs")
 
     # ── layer 2: refuse ──────────────────────────────────────────────
     _install_output_guard(monkeypatch)
     yield
+
+
+@pytest.fixture
+def queue_sandbox(tmp_path):
+    """The disposable queue this test's pipeline runs actually read.
+
+    Same path _isolate_output_tree redirects to, named here so a test that
+    wants to exercise the queue route can put a script in it instead of
+    reaching for content/queue/.
+    """
+    return tmp_path / "_output" / "queue"
+
+
+@pytest.fixture(autouse=True)
+def _voice_provider_is_elevenlabs_in_tests(monkeypatch):
+    """STEP 80 §1: config.yaml routes voice through OpenRouter. A test of the ElevenLabs path
+    must not depend on that switch, so in tests the provider is ElevenLabs unless the test sets
+    tts_openrouter._settings itself (tests/test_openrouter_tts.py does)."""
+    try:
+        import tts_openrouter
+    except ImportError:
+        return
+    real = tts_openrouter._settings
+    monkeypatch.setattr(tts_openrouter, "_settings", lambda: {**real(), "provider": "elevenlabs"})

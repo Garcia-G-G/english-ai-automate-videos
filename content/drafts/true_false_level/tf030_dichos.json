@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes cuáles son verdad? REFRANES 📜",
+  "video_description": "Refranes en inglés: ¿significan lo que crees? 📜",
+  "title": "¿Verdadero o falso?",
+  "theme": "refranes en inglés",
+  "intro": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad?",
+  "items": [
+    {
+      "statement": "«Better late than never» es más vale tarde que nunca.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Practice makes perfect» es la práctica hace al maestro.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Time is money» significa que el tiempo no importa.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es el tiempo es oro"
+    },
+    {
+      "statement": "«Don't judge a book by its cover» es no juzgues por las apariencias.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Actions speak louder than words» es hablar más alto.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es obras son amores"
+    },
+    {
+      "statement": "«When in Rome, do as the Romans do» es adáptate al lugar.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«The early bird catches the worm» es al que madruga, Dios le ayuda.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Too many cooks spoil the broth» es que cocinar en grupo es mejor.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es que demasiada gente estropea las cosas"
+    },
+    {
+      "statement": "«Every cloud has a silver lining» es no hay mal que por bien no venga.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Kill two birds with one stone» es hacerle daño a alguien.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es matar dos pájaros de un tiro"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#Idioms",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf030",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

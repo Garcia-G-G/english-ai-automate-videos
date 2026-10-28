@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras que hasta los NATIVOS pronuncian mal 😳",
+  "video_description": "Library, nuclear, mischievous: palabras que hasta los nativos dicen mal. ¿Y tú? 🤭",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras que hasta los nativos fallan",
+  "intro": "[surprised] Estas palabras las fallan hasta los nativos. Dilas en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "ask",
+      "respelling": "ASK",
+      "ipa": "ˈæsk",
+      "trap": "Es ASK, no «aks»: la S va antes"
+    },
+    {
+      "english": "library",
+      "respelling": "LAI-bre-ri",
+      "ipa": "ˈlaɪbrɛri",
+      "trap": "No te comas la primera R"
+    },
+    {
+      "english": "probably",
+      "respelling": "PRA-ba-bli",
+      "ipa": "ˈprɑbəbli",
+      "trap": "Tres sílabas: PRA-ba-bli"
+    },
+    {
+      "english": "especially",
+      "respelling": "is-PE-sha-li",
+      "ipa": "ɪˈspɛʃəli",
+      "trap": "Empieza con «es», no con «ex»"
+    },
+    {
+      "english": "jewelry",
+      "respelling": "YUU-al-ri",
+      "ipa": "ˈdʒuːəlri",
+      "trap": "Tres sílabas: YUU-al-ri"
+    },
+    {
+      "english": "Arctic",
+      "respelling": "ARK-tik",
+      "ipa": "ˈɑrktɪk",
+      "trap": "La primera C sí suena: ARK-tik"
+    },
+    {
+      "english": "nuclear",
+      "respelling": "NUU-kli-er",
+      "ipa": "ˈnuːkliɚ",
+      "trap": "Es NUU-kli-er, no NUU-kiu-ler"
+    },
+    {
+      "english": "supposedly",
+      "respelling": "sa-POU-zad-li",
+      "ipa": "səˈpoʊzədli",
+      "trap": "Es -zad-li, no «supposably»"
+    },
+    {
+      "english": "pronunciation",
+      "respelling": "pra-nan-si-EI-shan",
+      "ipa": "prənʌnsiˈeɪʃən",
+      "trap": "NUN suena «nan», no «naun»"
+    },
+    {
+      "english": "mischievous",
+      "respelling": "MIS-cha-vas",
+      "ipa": "ˈmɪstʃəvəs",
+      "trap": "Tres sílabas: nada de «-vious»"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Hasta la siete, intermedio. Y con las diez, experto: mejor que muchos nativos.",
+  "outro": "[curious] ¿Cuál de estas decías mal? Confiésalo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#ErroresComunes",
+    "#InglésParaHispanohablantes",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl081",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La FAMILIA en inglés: ¿hasta qué palabra llegas? 👪",
+  "video_description": "Mother, husband, ancestors: diez palabras de familia para decir en voz alta. ❤️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la familia",
+  "intro": "[warm] Diez palabras de la familia. Dilas en voz alta antes de que yo lo haga.",
+  "items": [
+    {
+      "english": "mother",
+      "respelling": "MA-dher",
+      "ipa": "ˈmʌðɚ",
+      "trap": "TH sonora: MA-dher"
+    },
+    {
+      "english": "sister",
+      "respelling": "SIS-ter",
+      "ipa": "ˈsɪstɚ",
+      "trap": "La R final no vibra"
+    },
+    {
+      "english": "son",
+      "respelling": "SAN",
+      "ipa": "ˈsʌn",
+      "trap": "Suena igual que «sun»: SAN"
+    },
+    {
+      "english": "parents",
+      "respelling": "PE-rents",
+      "ipa": "ˈpɛrənts",
+      "trap": "Acento en PE-: PE-rents"
+    },
+    {
+      "english": "husband",
+      "respelling": "JAZ-band",
+      "ipa": "ˈhʌzbənd",
+      "trap": "La S suena «z»: JAZ-band"
+    },
+    {
+      "english": "niece",
+      "respelling": "NIIS",
+      "ipa": "ˈniːs",
+      "trap": "IE suena «ii»: NIIS"
+    },
+    {
+      "english": "relatives",
+      "respelling": "RE-la-tivz",
+      "ipa": "ˈrɛlətɪvz",
+      "trap": "Acento en RE- y final «tivz»"
+    },
+    {
+      "english": "spouse",
+      "respelling": "SPAUS",
+      "ipa": "ˈspaʊs",
+      "trap": "Sin «e» delante y OU es «au»"
+    },
+    {
+      "english": "granddaughter",
+      "respelling": "GRAN-da-ter",
+      "ipa": "ˈɡrændɑtɚ",
+      "trap": "Solo se oye una D: GRAN-da-ter"
+    },
+    {
+      "english": "ancestors",
+      "respelling": "AN-ses-terz",
+      "ipa": "ˈænsɛstɚz",
+      "trap": "Acento en AN-, no en -TORS"
+    }
+  ],
+  "verdict": "La tres te da nivel básico, la siete intermedio y la diez, experto. ¿Hasta dónde llegaste?",
+  "outro": "[warm] Comenta hasta qué número llegaste y compártelo con tu familia.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#LaFamiliaEnInglés",
+    "#InglésParaHispanohablantes",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl089",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los INSTRUMENTOS en inglés? 🎸",
+  "video_description": "Diez instrumentos musicales, y uno tiene trampa. 🥁",
+  "title": "¿Cómo se dice…?",
+  "theme": "los instrumentos",
+  "level": "A1",
+  "intro": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas?",
+  "items": [
+    {
+      "emoji": "🎸",
+      "spanish": "Guitarra",
+      "english": "guitar"
+    },
+    {
+      "emoji": "🎹",
+      "spanish": "Piano",
+      "english": "piano"
+    },
+    {
+      "emoji": "🥁",
+      "spanish": "Batería",
+      "english": "drums"
+    },
+    {
+      "emoji": "🎻",
+      "spanish": "Violín",
+      "english": "violin"
+    },
+    {
+      "emoji": "🎺",
+      "spanish": "Trompeta",
+      "english": "trumpet"
+    },
+    {
+      "emoji": "🪈",
+      "spanish": "Flauta",
+      "english": "flute"
+    },
+    {
+      "emoji": "🎷",
+      "spanish": "Saxofón",
+      "english": "saxophone"
+    },
+    {
+      "emoji": "🎼",
+      "spanish": "Arpa",
+      "english": "harp"
+    },
+    {
+      "emoji": "🎤",
+      "spanish": "Micrófono",
+      "english": "microphone"
+    },
+    {
+      "emoji": "🔊",
+      "spanish": "Altavoz",
+      "english": "speaker"
+    }
+  ],
+  "recap": "Repite conmigo las diez: guitar, piano, drums, violin, trumpet, flute, saxophone, harp, microphone, speaker.",
+  "outro": "[excited] ¿Las diez? Demuéstralo en los comentarios.",
+  "translations": {
+    "guitar": "Guitarra",
+    "piano": "Piano",
+    "drums": "Batería",
+    "violin": "Violín",
+    "trumpet": "Trompeta",
+    "flute": "Flauta",
+    "saxophone": "Saxofón",
+    "harp": "Arpa",
+    "microphone": "Micrófono",
+    "speaker": "Altavoz"
+  },
+  "english_phrases": [
+    "guitar",
+    "piano",
+    "drums",
+    "violin",
+    "trumpet",
+    "flute",
+    "saxophone",
+    "harp",
+    "microphone",
+    "speaker"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv043",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas? Guitarra... guitar. guitar. Piano... piano. piano. Batería... drums. drums. Violín... violin. violin. Trompeta... trumpet. trumpet. Flauta... flute. flute. Saxofón... saxophone. saxophone. Arpa... harp. harp. Micrófono... microphone. microphone. Altavoz... speaker. speaker. Repite conmigo las diez: guitar, piano, drums, violin, trumpet, flute, saxophone, harp, microphone, speaker. [excited] ¿Las diez? Demuéstralo en los comentarios."
+}

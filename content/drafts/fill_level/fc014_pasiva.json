@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "10 frases con hueco: la VOZ PASIVA 🏗️",
+  "video_description": "Fue construido, se habla, será enviado: la pasiva en diez frases. 🏗️",
+  "title": "Completa la frase",
+  "theme": "la voz pasiva",
+  "intro": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido.",
+  "items": [
+    {
+      "sentence": "English is ____ all over the world.",
+      "answer": "spoken",
+      "translation": "El inglés se habla en todo el mundo.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "This house was ____ in 1900.",
+      "answer": "built",
+      "translation": "Esta casa se construyó en 1900.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The window was ____ by the kids.",
+      "answer": "broken",
+      "translation": "Los niños rompieron la ventana.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Your order will be ____ tomorrow.",
+      "answer": "sent",
+      "translation": "Tu pedido se enviará mañana.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "The car is being ____.",
+      "answer": "repaired",
+      "translation": "Están arreglando el coche.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I was ____ the job!",
+      "answer": "offered",
+      "translation": "¡Me ofrecieron el trabajo!",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The film has been ____ by millions.",
+      "answer": "seen",
+      "translation": "Millones de personas han visto la película.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It is ____ that he lives abroad.",
+      "answer": "said",
+      "translation": "Se dice que vive en el extranjero.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The thief was ____ red-handed.",
+      "answer": "caught",
+      "translation": "Pillaron al ladrón con las manos en la masa.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I'm getting my hair ____ tomorrow.",
+      "answer": "cut",
+      "translation": "Mañana me corto el pelo.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#VozPasiva",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc014",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

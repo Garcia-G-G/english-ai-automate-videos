@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "Verdadero o falso: la ROPA 👕",
+  "video_description": "Ropa en inglés: ¿verdadero o falso? 👕",
+  "title": "¿Verdadero o falso?",
+  "theme": "la ropa",
+  "intro": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo.",
+  "items": [
+    {
+      "statement": "«Shoes» son zapatos.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Shirt» es camisa.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Skirt» es camiseta.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es falda"
+    },
+    {
+      "statement": "«Jacket» es chaqueta.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Trousers» en Reino Unido son pantalones.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Sweater» es un chaleco.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es un jersey"
+    },
+    {
+      "statement": "«Tights» son medias.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Vest» en EE. UU. es una camiseta interior.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "en EE. UU. es un chaleco"
+    },
+    {
+      "statement": "«Slippers» son zapatillas de estar por casa.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Cufflinks» son gemelos de camisa.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf021",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Shoes",
+    "Shirt",
+    "Skirt",
+    "Jacket",
+    "Trousers",
+    "Sweater",
+    "Tights",
+    "Vest",
+    "Slippers",
+    "Cufflinks"
+  ],
+  "full_script": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo. Verdadero. Verdadero. Falso: es falda. Ahora, nivel intermedio. Verdadero. Verdadero. Falso: es un jersey. Verdadero. Y ahora, nivel experto. Falso: en EE. UU. es un chaleco. Verdadero. Verdadero. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

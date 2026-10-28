@@ -1,4 +1,4 @@
-.PHONY: test smoke qa qa-one auth-status auth-youtube auth-tiktok help
+.PHONY: test smoke qa qa-one auth-status auth-youtube auth-tiktok meta-check meta-dry-run meta-tick clean-dry clean help
 
 help:
 	@echo "make test    — full unit suite, free, no API. Run per commit."
@@ -11,6 +11,11 @@ help:
 	@echo "make auth-status   — stored OAuth token state, local only, no network"
 	@echo "make auth-youtube  — run ONLY the YouTube OAuth flow"
 	@echo "make auth-tiktok   — run ONLY the TikTok OAuth flow"
+	@echo "make meta-check    — what the Instagram/Facebook setup is missing, read-only"
+	@echo "make meta-dry-run  — what the next Meta publish would send, sends nothing"
+	@echo "make meta-tick     — publish the queued video if a slot is due"
+	@echo "make clean-dry     — what make clean would delete, per rule; deletes nothing"
+	@echo "make clean         — the same table, then asks before deleting"
 
 test:
 	python3 -m pytest tests/ -q
@@ -42,3 +47,18 @@ auth-tiktok:
 qa-one:
 	@test -n "$(F)" || (echo "usage: make qa-one F=<artifact.json>" && exit 2)
 	python3 src/qa_gate.py $(F)
+
+meta-check:
+	python3 tools/meta_publish.py setup-check
+
+meta-dry-run:
+	python3 tools/meta_publish.py now --dry-run
+
+meta-tick:
+	python3 tools/meta_publish.py tick
+
+clean-dry:
+	python3 tools/cleanup.py --dry-run
+
+clean:
+	python3 tools/cleanup.py

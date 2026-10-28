@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "¿Cuántos MODISMOS CON COMIDA conoces en inglés? 🍌",
+  "video_description": "Piece of cake, spill the beans y más: 10 modismos con comida, de fácil a experto 🥚",
+  "title": "¿Qué nivel tienes?",
+  "theme": "modismos con comida",
+  "intro": "[cheerful] Diez modismos con comida en inglés, de fácil a experto. ¿Sabes qué significan?",
+  "items": [
+    {
+      "english": "piece of cake",
+      "spanish": "Pan comido",
+      "cefr": "A2"
+    },
+    {
+      "english": "couch potato",
+      "spanish": "Adicto al sofá",
+      "cefr": "A2"
+    },
+    {
+      "english": "go bananas",
+      "spanish": "Volverse loco",
+      "cefr": "A2"
+    },
+    {
+      "english": "not my cup of tea",
+      "spanish": "No es lo mío",
+      "cefr": "B1"
+    },
+    {
+      "english": "cheesy",
+      "spanish": "Cursi",
+      "cefr": "B1"
+    },
+    {
+      "english": "spill the beans",
+      "spanish": "Irse de la lengua",
+      "cefr": "B2"
+    },
+    {
+      "english": "in a nutshell",
+      "spanish": "En pocas palabras",
+      "cefr": "B2"
+    },
+    {
+      "english": "walk on eggshells",
+      "spanish": "Ir con pies de plomo",
+      "cefr": "C1"
+    },
+    {
+      "english": "with a grain of salt",
+      "spanish": "Con cierto escepticismo",
+      "cefr": "C1"
+    },
+    {
+      "english": "bring home the bacon",
+      "spanish": "Ganarse el pan",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "En pocas palabras: tres, nivel básico. Siete, intermedio. Diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Suelta la sopa en los comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#ModismosEnInglés",
+    "#ExpresionesEnInglés",
+    "#AprenderInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv084",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "piece of cake": "Pan comido",
+    "couch potato": "Adicto al sofá",
+    "go bananas": "Volverse loco",
+    "not my cup of tea": "No es lo mío",
+    "cheesy": "Cursi",
+    "spill the beans": "Irse de la lengua",
+    "in a nutshell": "En pocas palabras",
+    "walk on eggshells": "Ir con pies de plomo",
+    "with a grain of salt": "Con cierto escepticismo",
+    "bring home the bacon": "Ganarse el pan"
+  },
+  "english_phrases": [
+    "piece of cake",
+    "couch potato",
+    "go bananas",
+    "not my cup of tea",
+    "cheesy",
+    "spill the beans",
+    "in a nutshell",
+    "walk on eggshells",
+    "with a grain of salt",
+    "bring home the bacon"
+  ],
+  "full_script": "[cheerful] Diez modismos con comida en inglés, de fácil a experto. ¿Sabes qué significan? piece of cake Pan comido couch potato Adicto al sofá go bananas Volverse loco Ahora, nivel intermedio. not my cup of tea No es lo mío cheesy Cursi spill the beans Irse de la lengua in a nutshell En pocas palabras Y ahora, nivel experto. walk on eggshells Ir con pies de plomo with a grain of salt Con cierto escepticismo bring home the bacon Ganarse el pan En pocas palabras: tres, nivel básico. Siete, intermedio. Diez, experto. [excited] ¿Hasta qué número llegaste? Suelta la sopa en los comentarios."
+}

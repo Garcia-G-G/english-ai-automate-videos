@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el TIEMPO en inglés? ⛅",
+  "video_description": "Diez palabras para hablar del tiempo, el tema favorito de los ingleses. ☔",
+  "title": "¿Cómo se dice…?",
+  "theme": "el tiempo",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "☀️",
+      "spanish": "Sol",
+      "english": "sun"
+    },
+    {
+      "emoji": "🌧️",
+      "spanish": "Lluvia",
+      "english": "rain"
+    },
+    {
+      "emoji": "❄️",
+      "spanish": "Nieve",
+      "english": "snow"
+    },
+    {
+      "emoji": "💨",
+      "spanish": "Viento",
+      "english": "wind"
+    },
+    {
+      "emoji": "☁️",
+      "spanish": "Nube",
+      "english": "cloud"
+    },
+    {
+      "emoji": "⛈️",
+      "spanish": "Tormenta",
+      "english": "storm"
+    },
+    {
+      "emoji": "🌫️",
+      "spanish": "Niebla",
+      "english": "fog"
+    },
+    {
+      "emoji": "🌈",
+      "spanish": "Arcoíris",
+      "english": "rainbow"
+    },
+    {
+      "emoji": "🥵",
+      "spanish": "Calor",
+      "english": "hot"
+    },
+    {
+      "emoji": "🥶",
+      "spanish": "Frío",
+      "english": "cold"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: sun, rain, snow, wind, cloud, storm, fog, rainbow, hot, cold.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "sun": "Sol",
+    "rain": "Lluvia",
+    "snow": "Nieve",
+    "wind": "Viento",
+    "cloud": "Nube",
+    "storm": "Tormenta",
+    "fog": "Niebla",
+    "rainbow": "Arcoíris",
+    "hot": "Calor",
+    "cold": "Frío"
+  },
+  "english_phrases": [
+    "sun",
+    "rain",
+    "snow",
+    "wind",
+    "cloud",
+    "storm",
+    "fog",
+    "rainbow",
+    "hot",
+    "cold"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv009",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Sol... sun. sun. Lluvia... rain. rain. Nieve... snow. snow. Viento... wind. wind. Nube... cloud. cloud. Tormenta... storm. storm. Niebla... fog. fog. Arcoíris... rainbow. rainbow. Calor... hot. hot. Frío... cold. cold. Ahora, todas conmigo: sun, rain, snow, wind, cloud, storm, fog, rainbow, hot, cold. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

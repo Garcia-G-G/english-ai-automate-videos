@@ -1,0 +1,43 @@
+{
+  "type": "expression_of_day",
+  "video_title": "UNDER THE WEATHER no es bajo la lluvia 🤒",
+  "video_description": "La forma educada de decir que no te encuentras bien. 🌧️",
+  "level": "B1",
+  "intro": "[cheerful] La expresión de hoy la vas a oír esta misma semana.",
+  "expression": "under the weather",
+  "literal": "bajo el tiempo",
+  "meaning": "pachucho, algo enfermo",
+  "register": "neutral",
+  "examples": [
+    {
+      "en": "I'm a bit under the weather today.",
+      "es": "Hoy estoy un poco pachucho."
+    },
+    {
+      "en": "She's been under the weather all week.",
+      "es": "Lleva toda la semana malita."
+    }
+  ],
+  "equivalent_es": "estar pachucho",
+  "tip": "Es para algo leve. Si estás enfermo de verdad, di I'm sick o I'm ill.",
+  "outro": "[excited] Úsala hoy en una frase. Escríbela en los comentarios.",
+  "translations": {
+    "under the weather": "pachucho, algo enfermo",
+    "I'm a bit under the weather today.": "Hoy estoy un poco pachucho.",
+    "She's been under the weather all week.": "Lleva toda la semana malita."
+  },
+  "hashtags": [
+    "#ExpresiónDelDía",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Idioms"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id035",
+    "video_type": "expression_of_day",
+    "model": "manual",
+    "draft": true
+  }
+}

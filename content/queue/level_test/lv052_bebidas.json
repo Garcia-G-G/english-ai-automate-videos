@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Test de inglés: BEBIDAS, de fácil a experto 🥤",
+  "video_description": "Del agua a «a nightcap»: mide tu nivel de inglés con 10 palabras de bebidas 🍹",
+  "title": "¿Qué nivel tienes?",
+  "theme": "las bebidas",
+  "intro": "[happy] Hoy, bebidas en inglés. Diez palabras: tú dices qué significan y luego te lo digo yo.",
+  "items": [
+    {
+      "english": "water",
+      "spanish": "Agua",
+      "cefr": "A1"
+    },
+    {
+      "english": "milk",
+      "spanish": "Leche",
+      "cefr": "A1"
+    },
+    {
+      "english": "juice",
+      "spanish": "Zumo / jugo",
+      "cefr": "A1"
+    },
+    {
+      "english": "sparkling water",
+      "spanish": "Agua con gas",
+      "cefr": "A2"
+    },
+    {
+      "english": "soft drink",
+      "spanish": "Refresco",
+      "cefr": "B1"
+    },
+    {
+      "english": "decaf",
+      "spanish": "Descafeinado",
+      "cefr": "B1"
+    },
+    {
+      "english": "tap water",
+      "spanish": "Agua del grifo",
+      "cefr": "B1"
+    },
+    {
+      "english": "on the rocks",
+      "spanish": "Con hielo",
+      "cefr": "B2"
+    },
+    {
+      "english": "neat",
+      "spanish": "Solo, sin hielo",
+      "cefr": "C1"
+    },
+    {
+      "english": "nightcap",
+      "spanish": "La última copa",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres, nivel básico. Hasta la siete, intermedio. ¿Las diez? Nivel experto, enhorabuena.",
+  "outro": "[cheerful] ¿Cuál se te resistió? Dime en comentarios hasta qué número llegaste.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#BebidasEnInglés",
+    "#VocabularioEnInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv052",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "water": "Agua",
+    "milk": "Leche",
+    "juice": "Zumo / jugo",
+    "sparkling water": "Agua con gas",
+    "soft drink": "Refresco",
+    "decaf": "Descafeinado",
+    "tap water": "Agua del grifo",
+    "on the rocks": "Con hielo",
+    "neat": "Solo, sin hielo",
+    "nightcap": "La última copa"
+  },
+  "english_phrases": [
+    "water",
+    "milk",
+    "juice",
+    "sparkling water",
+    "soft drink",
+    "decaf",
+    "tap water",
+    "on the rocks",
+    "neat",
+    "nightcap"
+  ],
+  "full_script": "[happy] Hoy, bebidas en inglés. Diez palabras: tú dices qué significan y luego te lo digo yo. water Agua milk Leche juice Zumo / jugo Ahora, nivel intermedio. sparkling water Agua con gas soft drink Refresco decaf Descafeinado tap water Agua del grifo Y ahora, nivel experto. on the rocks Con hielo neat Solo, sin hielo nightcap La última copa Hasta la tres, nivel básico. Hasta la siete, intermedio. ¿Las diez? Nivel experto, enhorabuena. [cheerful] ¿Cuál se te resistió? Dime en comentarios hasta qué número llegaste."
+}

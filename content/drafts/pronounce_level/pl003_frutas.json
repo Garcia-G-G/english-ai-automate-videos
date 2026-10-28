@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "10 FRUTAS en inglés que casi todos pronuncian mal 🍓",
+  "video_description": "Frutas en inglés con trampa: algunas tienen letras que no suenan. 🍍",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "las frutas",
+  "intro": "[excited] Diez frutas en inglés. Dilas en voz alta antes que yo y mira hasta dónde llegas.",
+  "items": [
+    {
+      "english": "banana",
+      "respelling": "ba-NA-na",
+      "ipa": "bəˈnænə",
+      "trap": "Acento en NA y la A del medio abierta"
+    },
+    {
+      "english": "mango",
+      "respelling": "MAN-gou",
+      "ipa": "ˈmæŋgoʊ",
+      "trap": "La O final suena «ou»"
+    },
+    {
+      "english": "lemon",
+      "respelling": "LE-men",
+      "ipa": "ˈlɛmən",
+      "trap": "Acento en LE: LE-men"
+    },
+    {
+      "english": "grape",
+      "respelling": "GREIP",
+      "ipa": "ˈgreɪp",
+      "trap": "A suena «ei» y la E final no suena"
+    },
+    {
+      "english": "pear",
+      "respelling": "PER",
+      "ipa": "ˈpɛr",
+      "trap": "EA suena «e»: PER"
+    },
+    {
+      "english": "orange",
+      "respelling": "OR-endch",
+      "ipa": "ˈɔrəndʒ",
+      "trap": "Dos sílabas: OR-endch"
+    },
+    {
+      "english": "pineapple",
+      "respelling": "PAIN-a-pel",
+      "ipa": "ˈpaɪnæpəl",
+      "trap": "PINE suena «pain»"
+    },
+    {
+      "english": "strawberry",
+      "respelling": "STRO-be-ri",
+      "ipa": "ˈstrɔbɛri",
+      "trap": "Sin «es-» y AW suena «o»"
+    },
+    {
+      "english": "pomegranate",
+      "respelling": "PA-me-gra-net",
+      "ipa": "ˈpɑməgrænət",
+      "trap": "Cuatro sílabas, acento en PA"
+    },
+    {
+      "english": "raspberry",
+      "respelling": "RAZ-be-ri",
+      "ipa": "ˈræzbɛri",
+      "trap": "La P no suena y la S suena Z"
+    }
+  ],
+  "verdict": "¿Te quedaste en la tres? Básico. ¿En la siete? Intermedio. Si pronunciaste las diez, nivel experto.",
+  "outro": "[curious] ¿Cuál dijiste mal al principio? Confiésalo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#FrutasEnInglés",
+    "#AprenderInglés",
+    "#InglésOnline",
+    "#InglésAmericano"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl003",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

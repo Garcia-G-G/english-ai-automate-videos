@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿ME OYES?»? 10 frases 💻",
+  "video_description": "Diez frases para sobrevivir a una videollamada en inglés. 🎧",
+  "title": "¿Cómo se dice?",
+  "theme": "en videollamadas",
+  "intro": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Me oyes?",
+      "english": "Can you hear me?"
+    },
+    {
+      "spanish": "Estás en silencio.",
+      "english": "You're on mute."
+    },
+    {
+      "spanish": "Se te corta la voz.",
+      "english": "You're breaking up."
+    },
+    {
+      "spanish": "¿Ves mi pantalla?",
+      "english": "Can you see my screen?"
+    },
+    {
+      "spanish": "Perdona, se me congeló.",
+      "english": "Sorry, I froze."
+    },
+    {
+      "spanish": "Voy a compartir pantalla.",
+      "english": "Let me share my screen."
+    },
+    {
+      "spanish": "¿Puedes repetirlo?",
+      "english": "Could you say that again?"
+    },
+    {
+      "spanish": "Te escucho con eco.",
+      "english": "I'm getting an echo."
+    },
+    {
+      "spanish": "Creo que se fue la conexión.",
+      "english": "I think we lost the connection."
+    },
+    {
+      "spanish": "Me tengo que ir a otra reunión.",
+      "english": "I have to jump on another call."
+    }
+  ],
+  "outro": "[excited] Compártelo con alguien que las necesite.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf006",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

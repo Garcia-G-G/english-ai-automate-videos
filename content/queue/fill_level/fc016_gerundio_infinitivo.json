@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Rellena el hueco: -ING o TO 🎯",
+  "video_description": "¿Doing o to do? Gerundio e infinitivo en diez frases. 🎯",
+  "title": "Completa la frase",
+  "theme": "gerundio o infinitivo",
+  "intro": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "sentence": "I enjoy ____ to music.",
+      "answer": "listening",
+      "translation": "Disfruto escuchando música.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I want ____ a new phone.",
+      "answer": "to buy",
+      "translation": "Quiero comprar un móvil nuevo.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She's good at ____.",
+      "answer": "dancing",
+      "translation": "Se le da bien bailar.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We decided ____ early.",
+      "answer": "to leave",
+      "translation": "Decidimos irnos temprano.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Stop ____! I'm trying to sleep.",
+      "answer": "talking",
+      "translation": "¡Deja de hablar! Intento dormir.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He forgot ____ the door.",
+      "answer": "to lock",
+      "translation": "Se le olvidó cerrar la puerta con llave.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'm thinking of ____ my job.",
+      "answer": "changing",
+      "translation": "Estoy pensando en dejar mi trabajo.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It's no use ____ about it.",
+      "answer": "crying",
+      "translation": "No sirve de nada llorar por eso.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I remember ____ him at the party.",
+      "answer": "seeing",
+      "translation": "Recuerdo haberlo visto en la fiesta.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "He stopped ____ a coffee on the way.",
+      "answer": "to buy",
+      "translation": "Paró para comprarse un café de camino.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#GerundioInfinitivo",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc016",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I enjoy listening to music.": "Disfruto escuchando música.",
+    "I want to buy a new phone.": "Quiero comprar un móvil nuevo.",
+    "She's good at dancing.": "Se le da bien bailar.",
+    "We decided to leave early.": "Decidimos irnos temprano.",
+    "Stop talking! I'm trying to sleep.": "¡Deja de hablar! Intento dormir.",
+    "He forgot to lock the door.": "Se le olvidó cerrar la puerta con llave.",
+    "I'm thinking of changing my job.": "Estoy pensando en dejar mi trabajo.",
+    "It's no use crying about it.": "No sirve de nada llorar por eso.",
+    "I remember seeing him at the party.": "Recuerdo haberlo visto en la fiesta.",
+    "He stopped to buy a coffee on the way.": "Paró para comprarse un café de camino."
+  },
+  "english_phrases": [
+    "I enjoy listening to music.",
+    "I want to buy a new phone.",
+    "She's good at dancing.",
+    "We decided to leave early.",
+    "Stop talking! I'm trying to sleep.",
+    "He forgot to lock the door.",
+    "I'm thinking of changing my job.",
+    "It's no use crying about it.",
+    "I remember seeing him at the party.",
+    "He stopped to buy a coffee on the way."
+  ],
+  "full_script": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas? I enjoy listening to music. I want to buy a new phone. She's good at dancing. Ahora, nivel intermedio. We decided to leave early. Stop talking! I'm trying to sleep. He forgot to lock the door. I'm thinking of changing my job. Y ahora, nivel experto. It's no use crying about it. I remember seeing him at the party. He stopped to buy a coffee on the way. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [happy] ¿Cuántas acertaste? Déjame tu número abajo."
+}

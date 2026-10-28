@@ -1,0 +1,53 @@
+{
+  "type": "fix_the_error",
+  "video_title": "Corrige el error: I didn't went ⏪",
+  "video_description": "El pasado que se cuela dos veces. ❌",
+  "level": "A2",
+  "intro": "[curious] Esta frase tiene un error. ¿Lo encuentras antes que yo?",
+  "items": [
+    {
+      "wrong": "I didn't went to work.",
+      "error": "went",
+      "right": "I didn't go to work.",
+      "fix": "go",
+      "translation": "No fui a trabajar.",
+      "explanation": "[excited] Didn't ya lleva el pasado. El verbo vuelve a su forma base: go."
+    },
+    {
+      "wrong": "Did you saw the match?",
+      "error": "saw",
+      "right": "Did you see the match?",
+      "fix": "see",
+      "translation": "¿Viste el partido?",
+      "explanation": "[excited] En la pregunta pasa lo mismo: did manda y el verbo va en base."
+    },
+    {
+      "wrong": "She didn't called me.",
+      "error": "called",
+      "right": "She didn't call me.",
+      "fix": "call",
+      "translation": "No me llamó.",
+      "explanation": "[excited] Ni went ni called: después de didn't, nunca pasado."
+    }
+  ],
+  "outro": "[excited] ¿Lo pillaste a la primera? Dímelo en los comentarios.",
+  "translations": {
+    "I didn't go to work.": "No fui a trabajar.",
+    "Did you see the match?": "¿Viste el partido?",
+    "She didn't call me.": "No me llamó."
+  },
+  "hashtags": [
+    "#CorrigeElError",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#ErroresComunes",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm027",
+    "video_type": "fix_the_error",
+    "model": "manual",
+    "draft": true
+  }
+}

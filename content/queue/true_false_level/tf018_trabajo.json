@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "el TRABAJO: ¿verdadero o falso? 💼",
+  "video_description": "Vocabulario de oficina y trabajo: ¿verdadero o falso? 💼",
+  "title": "¿Verdadero o falso?",
+  "theme": "inglés del trabajo",
+  "intro": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto.",
+  "items": [
+    {
+      "statement": "«Boss» es jefe.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Salary» es salario.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Meeting» es reunión.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Deadline» es una línea muerta.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es la fecha límite"
+    },
+    {
+      "statement": "«To be fired» es ser despedido.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Résumé» en EE. UU. es un resumen de un libro.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es el currículum"
+    },
+    {
+      "statement": "«Overtime» son horas extra.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«To touch base» es tocar una base.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es ponerse al día"
+    },
+    {
+      "statement": "«Win-win» es una situación en la que todos ganan.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Out of office» puede ser un aviso automático de ausencia.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf018",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Boss",
+    "Salary",
+    "Meeting",
+    "Deadline",
+    "To be fired",
+    "Résumé",
+    "Overtime",
+    "To touch base",
+    "Win-win",
+    "Out of office"
+  ],
+  "full_script": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto. Verdadero. Verdadero. Verdadero. Ahora, nivel intermedio. Falso: es la fecha límite. Verdadero. Falso: es el currículum. Verdadero. Y ahora, nivel experto. Falso: es ponerse al día. Verdadero. Verdadero. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

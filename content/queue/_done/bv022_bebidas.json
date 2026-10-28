@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las BEBIDAS en inglés? 🥤",
+  "video_description": "Diez bebidas para pedir en cualquier bar sin dudar. 🍹",
+  "title": "¿Cómo se dice…?",
+  "theme": "las bebidas",
+  "level": "A1",
+  "intro": "[excited] Te enseño diez palabras. Dilas tú antes que yo.",
+  "items": [
+    {
+      "emoji": "🍵",
+      "spanish": "Té",
+      "english": "tea"
+    },
+    {
+      "emoji": "🧃",
+      "spanish": "Jugo",
+      "english": "juice"
+    },
+    {
+      "emoji": "🍺",
+      "spanish": "Cerveza",
+      "english": "beer"
+    },
+    {
+      "emoji": "🍷",
+      "spanish": "Vino",
+      "english": "wine"
+    },
+    {
+      "emoji": "🥤",
+      "spanish": "Refresco",
+      "english": "soda"
+    },
+    {
+      "emoji": "🧊",
+      "spanish": "Hielo",
+      "english": "ice"
+    },
+    {
+      "emoji": "🥛",
+      "spanish": "Batido",
+      "english": "milkshake"
+    },
+    {
+      "emoji": "🍋",
+      "spanish": "Limonada",
+      "english": "lemonade"
+    },
+    {
+      "emoji": "🍸",
+      "spanish": "Cóctel",
+      "english": "cocktail"
+    },
+    {
+      "emoji": "🍾",
+      "spanish": "Champán",
+      "english": "champagne"
+    }
+  ],
+  "recap": "Repite conmigo las diez: tea, juice, beer, wine, soda, ice, milkshake, lemonade, cocktail, champagne.",
+  "outro": "[cheerful] Escribe en los comentarios cuántas acertaste.",
+  "translations": {
+    "tea": "Té",
+    "juice": "Jugo",
+    "beer": "Cerveza",
+    "wine": "Vino",
+    "soda": "Refresco",
+    "ice": "Hielo",
+    "milkshake": "Batido",
+    "lemonade": "Limonada",
+    "cocktail": "Cóctel",
+    "champagne": "Champán"
+  },
+  "english_phrases": [
+    "tea",
+    "juice",
+    "beer",
+    "wine",
+    "soda",
+    "ice",
+    "milkshake",
+    "lemonade",
+    "cocktail",
+    "champagne"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv022",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Te enseño diez palabras. Dilas tú antes que yo. Té... tea. tea. Jugo... juice. juice. Cerveza... beer. beer. Vino... wine. wine. Refresco... soda. soda. Hielo... ice. ice. Batido... milkshake. milkshake. Limonada... lemonade. lemonade. Cóctel... cocktail. cocktail. Champán... champagne. champagne. Repite conmigo las diez: tea, juice, beer, wine, soda, ice, milkshake, lemonade, cocktail, champagne. [cheerful] Escribe en los comentarios cuántas acertaste."
+}

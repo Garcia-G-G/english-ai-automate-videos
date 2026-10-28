@@ -1,0 +1,28 @@
+{
+ "lesson": "morning-phrasal-verbs",
+ "mp4": "experiments/manim_voiceover_poc/renders/morning-phrasal-verbs/20261023-204804_english-teacher_1080p30_sand.mp4",
+ "duration_s": 444.93,
+ "render_s": 453.4,
+ "render_and_encode_s": 651.4,
+ "gate": {
+  "gate": "PASS",
+  "flags": [],
+  "checks": {
+   "sync": [],
+   "lufs": -14.0,
+   "still": {
+    "seconds": 0.3,
+    "from": 118.83
+   }
+  }
+ },
+ "final_encode": {
+  "loudnorm": "linear",
+  "output_i": "-13.97",
+  "output_tp": "-2.42",
+  "bytes": 41722025
+ },
+ "max_cue_lag": 0.032,
+ "chapters": "00:00 Intro\n00:19 Parte 1 · ¿Qué es un phrasal verb?\n01:04 Parte 2 · Los cinco de la mañana\n02:57 Parte 3 · La gramática que esconden\n03:45 Parte 4 · Una mañana real\n04:26 Parte 5 · El error más común\n05:12 Parte 6 · Practica\n06:23 Resumen\n",
+ "thumbnail": "morning-phrasal-verbs/20261023-204804_english-teacher_1080p30_sand.thumb.jpg"
+}

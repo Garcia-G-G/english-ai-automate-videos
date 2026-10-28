@@ -1,0 +1,55 @@
+{
+  "id": "hc_m018",
+  "style": "mensajes",
+  "level": "medio",
+  "angle": "calle",
+  "title": "«My bad»: la disculpa que usan los nativos",
+  "hook_text": "Me equivoqué de grupo…",
+  "chat": {
+    "contact": "Chat del equipo",
+    "messages": [
+      [
+        "me",
+        "Happy birthday Mom!! ❤️",
+        "error"
+      ],
+      [
+        "them",
+        "lol this is the work group 😂"
+      ],
+      [
+        "me",
+        "omg my bad 🙈"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "Sorry, it's my fault (correcto, pero formal)",
+    "right": "My bad!",
+    "rule": "«My bad» = «culpa mía», informal"
+  },
+  "voice": [
+    "Mandé una felicitación a mi madre… al grupo del trabajo. Y respondí [[My bad]].",
+    "[[My bad]] es la forma informal de decir «culpa mía», «error mío».",
+    "Es como [[Sorry, my fault]], pero más relajada. La oirás muchísimo en series.",
+    "Úsala con amigos o compañeros para errores pequeños, no para algo grave con tu jefe.",
+    "Para algo serio mejor: [[I'm really sorry, that was my mistake]].",
+    "Reto: ¿cómo dirías «perdón, culpa mía, llegué tarde»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Perdón, culpa mía, llegué tarde»",
+    "answer": "Sorry, my bad, I was late."
+  },
+  "caption": "«My bad» significa «culpa mía». Inglés de la calle para disculparte como un nativo.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 76
+}

@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes cuáles son verdad? PLURALES 👣",
+  "video_description": "Plurales que no siguen la regla: ¿verdadero o falso? 👣",
+  "title": "¿Verdadero o falso?",
+  "theme": "plurales irregulares",
+  "intro": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad?",
+  "items": [
+    {
+      "statement": "El plural de «man» es «men».",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "El plural de «child» es «childs».",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es children"
+    },
+    {
+      "statement": "El plural de «foot» es «feet».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "El plural de «mouse» (animal) es «mice».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "El plural de «fish» suele ser «fishes».",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "normalmente es fish"
+    },
+    {
+      "statement": "El plural de «tooth» es «tooths».",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es teeth"
+    },
+    {
+      "statement": "El plural de «sheep» es «sheep».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "El plural de «person» suele ser «people».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "El plural de «criterion» es «criterions».",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es criteria"
+    },
+    {
+      "statement": "El plural de «cactus» puede ser «cacti».",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#GramáticaInglesa",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf010",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

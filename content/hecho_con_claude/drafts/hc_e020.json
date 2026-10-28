@@ -1,0 +1,43 @@
+{
+  "id": "hc_e020",
+  "style": "escena",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«Let's touch base»: la frase de oficina que todos usan",
+  "hook_text": "ESCENA — FINAL DE UNA LLAMADA DE TRABAJO",
+  "scene": {
+    "location": "Final de una llamada de trabajo",
+    "take1": "Let's talk again to see how it's going.",
+    "take2": "Let's touch base next week.",
+    "note": "Touch base = ponerse al día brevemente."
+  },
+  "correction": {
+    "wrong": "frase traducida",
+    "right": "Let's touch base",
+    "rule": "Inglés de oficina"
+  },
+  "voice": [
+    "Escena: final de una llamada de trabajo. Toma uno: [[Let's talk again to see how it's going]].",
+    "¡Corten! Está bien, pero un nativo en la oficina diría algo más corto.",
+    "Toma dos: [[Let's touch base next week]]. Significa «hablamos para ponernos al día».",
+    "Viene del béisbol: tocar la base para seguir en juego.",
+    "Otras parecidas: [[Let's catch up]], [[I'll keep you posted]], «te voy contando».",
+    "Reto: ¿cómo dirías «te mantengo al tanto»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Te mantengo al tanto»",
+    "answer": "I'll keep you posted."
+  },
+  "caption": "«Touch base» y «keep you posted»: inglés de oficina que escuchas en cada reunión, explicado.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 75
+}
