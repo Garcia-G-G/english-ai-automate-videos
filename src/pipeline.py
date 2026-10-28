@@ -917,16 +917,16 @@ def _final_duration_check(video_path: Path, audio_json_path, report: Dict, varia
     import duration_spec
     from qa_gate import probe_duration
     from video.outro import outro_path
-    video_type = report.get("video_type")
-    if not video_type:
-        try:
-            video_type = json.loads(Path(audio_json_path).read_text(encoding="utf-8")).get("type")
-        except (OSError, ValueError):
-            video_type = None
+    try:
+        audio = json.loads(Path(audio_json_path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        audio = {}
+    video_type = report.get("video_type") or audio.get("type")
+    length_variant = audio.get("variant")                   # the short «¿Cómo se dice…?» A/B (length_ab)
     body = probe_duration(str(video_path))
     tail = probe_duration(str(outro_path(variant["id"])))
     if not (video_type and body and tail):
         return None
-    record = duration_spec.check(video_type, body, measured_video_seconds=body + tail)
+    record = duration_spec.check(video_type, body, measured_video_seconds=body + tail, variant=length_variant)
     record["blocks"] = record.get("calibrated", True) or duration_spec.declares_window(video_type)
     return record

@@ -50,7 +50,7 @@ def _hdys_timeline(data):
 #: and at §4 (safe areas: title down, footer, narrower columns, no frame chrome, pencil shadow),
 #: and at §5 (emoji on sticker discs).
 HDYS_PIN = {
-    0.0: "5c5bc1ab493b1eee",
+    0.0: "8160c679d80c1768",        # 2026-10-28: the whole list on frame 1 (was the cascade start)
     4.7: "3e5330764582ff25",
     15.5: "e5af0d54602ba26f",
     25.9: "9ae8b50a04843629",

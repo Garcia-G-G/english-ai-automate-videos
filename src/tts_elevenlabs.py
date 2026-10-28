@@ -1615,14 +1615,16 @@ def generate_how_do_you_say_audio_segmented(
         # Every segment is its own file, so all of them are voiced at once and the timeline below is
         # assembled in order from the files (21 serial requests of ~2 s were 45 s per video).
         intro_text = clean_for_tts(script['intro'], keep_tags=_KEEP_TAGS)
-        recap_text = clean_for_tts(script['recap'], keep_tags=_KEEP_TAGS)
+        recap_text = clean_for_tts(script.get('recap') or '', keep_tags=_KEEP_TAGS)
         outro_text = clean_for_tts(script['outro'], keep_tags=_KEEP_TAGS)
         jobs = [('intro', intro_text, 'question', False)]
         for i, item in enumerate(items, start=1):
             jobs.append((f'es_{i}', clean_for_tts(f"{item['spanish']}.", keep_tags=_KEEP_TAGS), 'options', True))
             jobs.append((f'en_{i}', clean_for_tts(f"{item['english']}. {item['english']}.", keep_tags=_KEEP_TAGS),
                          'english_word', True))
-        jobs += [('recap', recap_text, 'explanation', False), ('outro', outro_text, 'question', False)]
+        if recap_text:                                      # the short A/B variant has none (length_ab)
+            jobs.append(('recap', recap_text, 'explanation', False))
+        jobs.append(('outro', outro_text, 'question', False))
         from concurrent.futures import ThreadPoolExecutor
         with ThreadPoolExecutor(max_workers=TTS_WORKERS) as pool:
             voiced = dict(zip([j[0] for j in jobs], pool.map(lambda j: speak(*j), jobs)))
@@ -1667,12 +1669,15 @@ def generate_how_do_you_say_audio_segmented(
 
             add_silence(HDYS_ITEM_GAP_S)
 
-        # 3. RECAP
-        add_silence(HDYS_BEFORE_RECAP_S)
-        path = voiced['recap']
-        start, _file_end, _dur, end = add_audio(path)
-        add_segment('recap', recap_text, start, end)
-        add_silence(HDYS_AFTER_RECAP_S)
+        # 3. RECAP. Without one (short variant) it is declared with no length, where it would start:
+        # the renderer ends the last row and parks the pencil at the recap's start.
+        if recap_text:
+            add_silence(HDYS_BEFORE_RECAP_S)
+            start, _file_end, _dur, end = add_audio(voiced['recap'])
+            add_segment('recap', recap_text, start, end)
+            add_silence(HDYS_AFTER_RECAP_S)
+        else:
+            add_segment('recap', '', timeline.time, timeline.time)
 
         # 4. OUTRO
         path = voiced['outro']

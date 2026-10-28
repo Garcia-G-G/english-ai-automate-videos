@@ -248,7 +248,7 @@ def project(video_type: str, narration_seconds: float) -> float:
 
 
 def check(video_type: str, narration_seconds: float,
-          measured_video_seconds: float = None) -> Dict:
+          measured_video_seconds: float = None, variant: str = None) -> Dict:
     """The duration verdict for one artifact, shaped like a gate record.
 
     Recorded on the artifact whether it passes or fails: a silent pass tells
@@ -262,8 +262,11 @@ def check(video_type: str, narration_seconds: float,
     a PASS whose reason says it missed the aim, so the miss stays visible
     without stopping production.
     """
-    b = band(video_type)
-    r = reject_window(video_type)
+    # An A/B variant with its own window (`<type>_<variant>` in duration.types, e.g. the short
+    # «¿Cómo se dice…?») is judged on it; the rate and the record's type stay the base type's.
+    window = f"{video_type}_{variant}" if variant and declares_window(f"{video_type}_{variant}") else video_type
+    b = band(window)
+    r = reject_window(window)
     projected = project(video_type, narration_seconds)
     actual = float(measured_video_seconds) if measured_video_seconds else None
     judged = actual if actual is not None else projected

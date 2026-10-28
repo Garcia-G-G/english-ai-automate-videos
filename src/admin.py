@@ -3297,6 +3297,15 @@ elif page == "Performance":
                       for g, v in ab["groups"].items()], hide_index=True)
         if not ab["ready"]:
             st.caption(f"Todavía no se compara: cada grupo necesita {ai_background.MIN_PER_GROUP} vídeos de más de 3 días.")
+        import length_ab
+        st.markdown("### Corto (5 palabras) contra largo (10) («Cómo se dice»)")
+        lab = length_ab.compare(snap["videos"])
+        st.dataframe([{"grupo": "corto" if g == length_ab.SHORT else "largo", "vídeos de +3 días": v["n"],
+                       "vistas (mediana)": v["views"], "% visto (mediana)": v["viewed_pct"]}
+                      for g, v in lab["groups"].items()], hide_index=True)
+        if not lab["ready"]:
+            st.caption(f"Todavía no se compara: cada grupo necesita {length_ab.MIN_PER_GROUP} vídeos "
+                       f"de más de {length_ab.MATURE_DAYS} días.")
     st.markdown("### Prioridad de la cola")
     try:
         import queue_priority

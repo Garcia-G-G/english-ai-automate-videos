@@ -23,6 +23,7 @@ LEDGER = ROOT / "output" / "published" / "ledger.jsonl"
 STATS_DIR = ROOT / "output" / "stats"
 TOKENS = ROOT / ".tokens"
 YOUTUBE_VIDEOS = "https://www.googleapis.com/youtube/v3/videos"
+YOUTUBE_ANALYTICS = "https://youtubeanalytics.googleapis.com/v2/reports"
 #: A video younger than this is not judged yet (STEP 80 §2).
 MATURE_DAYS = 3
 
@@ -95,6 +96,32 @@ def fetch_youtube(ids: List[str], token: str, get=None) -> Dict[str, Dict]:
     return out
 
 
+def fetch_retention(ids: List[str], token: str, today: date, get=None) -> Dict[str, float]:
+    """{id: average % of the video viewed} from YouTube Analytics, 200 ids a report (the cap for
+    the video dimension). {} when the report cannot be read: views are still worth a snapshot."""
+    import requests
+    get = get or requests.get
+    out: Dict[str, float] = {}
+    try:
+        for k in range(0, len(ids), 200):
+            chunk = ids[k:k + 200]
+            resp = get(YOUTUBE_ANALYTICS, params={
+                "ids": "channel==MINE", "startDate": "2020-01-01", "endDate": today.isoformat(),
+                "metrics": "views,averageViewPercentage", "dimensions": "video",
+                "filters": "video==" + ",".join(chunk), "maxResults": 200, "sort": "-views"},
+                headers={"Authorization": f"Bearer {token}"}, timeout=30)
+            resp.raise_for_status()
+            data = resp.json()
+            names = [h["name"] for h in data.get("columnHeaders", [])]
+            for row in data.get("rows") or []:
+                rec = dict(zip(names, row))
+                out[rec["video"]] = round(float(rec["averageViewPercentage"]), 1)
+    except Exception as error:                              # noqa: BLE001 — a missing % is not a failed refresh
+        import logging
+        logging.getLogger(__name__).warning("YouTube Analytics retention unavailable: %s", error)
+    return out
+
+
 def fetch_facebook(ledger: Optional[Path] = None, call=None) -> Dict:
     """Facebook reels' views through video_insights, when the Page token allows it.
     {"views": {video_id: n}, "note": why some or all could not be read}."""
@@ -137,9 +164,13 @@ def refresh(today: Optional[date] = None, get=None, token: Optional[str] = None,
     """Read every published YouTube video's numbers and write the day's snapshot."""
     today = today or date.today()
     rows = youtube_rows()
-    stats = fetch_youtube([r["id"] for r in rows], token or _youtube_token(), get)
+    token = token or _youtube_token()
+    stats = fetch_youtube([r["id"] for r in rows], token, get)
+    retention = fetch_retention([r["id"] for r in rows], token, today, get)
     import ai_background
+    import length_ab
     groups = ai_background.variants()                       # STEP 80 §5: each video's A/B group
+    lengths = length_ab.variants()                          # the short «¿Cómo se dice…?» A/B
     snapshot = []
     for r in rows:
         s = stats.get(r["id"])
@@ -148,7 +179,9 @@ def refresh(today: Optional[date] = None, get=None, token: Optional[str] = None,
         when = (r["published_at"] or "")[:10]
         days = (today - date.fromisoformat(when)).days if when else None
         snapshot.append({**r, **s, "days": days, "category": category_word(s["title"] or r["title"], r["type"]),
-                         "background_variant": groups.get(r.get("artifact"))})
+                         "background_variant": groups.get(r.get("artifact")),
+                         "length_variant": lengths.get(r.get("artifact")),
+                         "avg_view_pct": retention.get(r["id"])})
     STATS_DIR.mkdir(parents=True, exist_ok=True)
     path = STATS_DIR / f"youtube_{today.isoformat()}.json"
     fb = (facebook or fetch_facebook)()

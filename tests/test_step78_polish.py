@@ -122,7 +122,10 @@ def test_the_tab_label_fits_its_tab(rows):
 
 # ── 4. a row enters as one unit ──
 
-def test_a_row_that_has_not_started_its_cascade_draws_nothing_at_all(flat_untilted):
+def test_a_row_that_has_not_started_its_cascade_draws_nothing_at_all(flat_untilted, monkeypatch):
+    # The cascade now ends before frame 1 (whole list on frame 1); its mechanics are tested at
+    # the old start, where a frame can still catch it.
+    monkeypatch.setattr(H, "CASCADE_START", 0.2)
     d, dur = _fixture("choose_level")
     layout = H.level_layout("choose_level", d["items"])
     t = H.CASCADE_START + 4 * H.CASCADE_STAGGER - 0.01          # row 5 has not started
@@ -137,6 +140,7 @@ def test_a_row_that_has_not_started_its_cascade_draws_nothing_at_all(flat_untilt
 
 
 def test_during_the_cascade_every_part_of_a_row_goes_through_one_band(monkeypatch):
+    monkeypatch.setattr(H, "CASCADE_START", 0.2)                # see the test above
     d, dur = _fixture("choose_level")
     seen = {}
     real = H._rows_in

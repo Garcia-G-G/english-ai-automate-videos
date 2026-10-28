@@ -282,6 +282,16 @@ duration:
       reject_min_seconds: 55.0
       reject_max_seconds: 95.0
 
+    # The short A/B variant (src/length_ab.py, owner 2026-10-28): 5 words, no recap. Estimated
+    # from a real render's segments: intro 3.7 + 5 x 5.1 + outro 3.0 + 4 s end card = ~37 s.
+    # Re-derive from the first renders, as how_do_you_say's own band was.
+    how_do_you_say_short:
+      min_seconds: 30.0
+      max_seconds: 44.0
+      target_seconds: 37.0
+      reject_min_seconds: 24.0
+      reject_max_seconds: 55.0
+
 
   # ── REPETITION ────────────────────────────────────────────────────
   # "Repeat after me" — the English phrase said more than once with a real
@@ -401,6 +411,12 @@ type_categories:
      kids_numbers, phrasal_verbs, slang, social, spanish_specific, technology,
      travel, work_office]
 
+
+# The short «¿Cómo se dice…?» A/B (src/length_ab.py, owner 2026-10-28): every other NEW topic is
+# rendered with its first `short_items` words and no recap; «Rendimiento» compares the groups.
+length_ab:
+  enabled: true
+  short_items: 5
 
 # Every LLM call goes through OpenRouter (src/llm.py); OpenAI's own API is not used (2026-10-27).
 # Model ids are OpenRouter's (openrouter.ai/models). A task without its own entry uses `model`.

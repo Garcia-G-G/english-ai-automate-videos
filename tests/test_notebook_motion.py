@@ -57,10 +57,12 @@ def test_the_page_rises_with_an_overshoot_pushes_over_the_recap_and_leaves_throu
     assert H.PAGE_Y - H.PAD + dy + H.LAYER_H <= 0               # the page is out of the frame
 
 
-def test_rows_cascade_in_fifty_ms_apart():
-    assert H.cascade(0, 0.2) == 0 and H.cascade(1, 0.25) == 0
-    assert H.cascade(0, 0.35) == pytest.approx(H.cascade(1, 0.40))
-    assert all(H.cascade(i, 1.0) == 1.0 for i in range(10))
+def test_rows_cascade_fifty_ms_apart_and_are_all_in_by_frame_one():
+    """STEP 80 / owner 2026-10-28: the whole list is on frame 1, as on the top-16 Shorts."""
+    t0 = H.CASCADE_START
+    assert H.cascade(0, t0) == 0 and H.cascade(1, t0 + 0.05) == pytest.approx(0, abs=1e-9)
+    assert H.cascade(0, t0 + 0.15) == pytest.approx(H.cascade(1, t0 + 0.20))
+    assert all(H.cascade(i, 0.0) == 1.0 for i in range(10))
 
 
 def test_the_hook_comes_from_the_script_or_the_theme_and_leaves_with_the_intro():

@@ -487,6 +487,8 @@ class VocabularyScript(ScriptBase, _TranslationsMixin):
 #: rows leave a page that reads half-empty and a video under the band.
 HDYS_MIN_ITEMS = 8
 HDYS_MAX_ITEMS = 10
+#: The short A/B variant (src/length_ab.py): fewer words and no recap.
+HDYS_SHORT_MIN_ITEMS = 5
 
 #: The fields a voice direction may live in. The per-item words are spoken
 #: one or two at a time between silences; a tag there would be the only
@@ -523,10 +525,23 @@ class HowDoYouSayScript(ScriptBase, _TranslationsMixin):
     level: Optional[str] = None
 
     intro: str = Field(min_length=1)
-    items: List[HowDoYouSayItem] = Field(min_length=HDYS_MIN_ITEMS,
+    items: List[HowDoYouSayItem] = Field(min_length=HDYS_SHORT_MIN_ITEMS,
                                          max_length=HDYS_MAX_ITEMS)
-    recap: str = Field(min_length=1)
+    recap: str = ""
     outro: str = Field(min_length=1)
+    #: The length A/B's group (length_ab); absent on every script written before it.
+    variant: Optional[Literal["short", "long"]] = None
+
+    @model_validator(mode="after")
+    def _check_length_for_variant(self):
+        if self.variant == "short":
+            return self
+        if len(self.items) < HDYS_MIN_ITEMS:
+            raise ValueError(f"items: {len(self.items)} rows; at least {HDYS_MIN_ITEMS} "
+                             f"(only the short A/B variant may have {HDYS_SHORT_MIN_ITEMS})")
+        if not self.recap.strip():
+            raise ValueError("recap: required (only the short A/B variant has none)")
+        return self
 
     english_phrases: List[str] = Field(default_factory=list)
 

@@ -119,7 +119,10 @@ PULSE_SCALE = 0.08
 # ── Motion (STEP 77 §3) ──
 RISE = 0.5                       # the page rises from RISE_FROM px below (ease_out_back)
 RISE_FROM = 120
-CASCADE_START, CASCADE_STAGGER, CASCADE_DUR, CASCADE_DY = 0.2, 0.05, 0.3, 24
+# The whole list is on the page on frame 1, as on the top-16 Shorts (STEP 80; owner 2026-10-28):
+# the row cascade ends before t=0 (ten rows: 0.3 s + 9 x 0.05 s), so frame 1 is never half a list.
+CASCADE_STAGGER, CASCADE_DUR, CASCADE_DY = 0.05, 0.3, 24
+CASCADE_START = -(CASCADE_DUR + 9 * CASCADE_STAGGER)
 HOOK_IN, HOOK_POP, HOOK_OUT = 0.45, 0.3, 0.2
 HOOK_ROT = -4.0
 HOOK_SIZE = 68                   # Fredoka 64–72
@@ -129,7 +132,7 @@ WOBBLE = 2.0                     # px, the pencil while it writes
 LIFT = 22                        # px, the pencil between rows
 PUSH_TO = 1.04                   # the slow push over the recap
 HANDOFF = 0.3                    # the page slides away into the outro
-CTA_LINES = ("¿Cuántas sabías?", "__/10")
+CTA_QUESTION = "¿Cuántas sabías?"
 CTA_SIZE = 58
 CTA_POP = 0.35
 
@@ -510,7 +513,7 @@ def page_motion(t: float, enter: float, leave: float, push: Tuple[float, float])
 
 
 def cascade(i: int, t: float) -> float:
-    """0..1 of row i's entrance in the opening (50 ms apart)."""
+    """0..1 of row i's entrance in the opening (50 ms apart; over before frame 1)."""
     return clamp01((t - CASCADE_START - i * CASCADE_STAGGER) / CASCADE_DUR)
 
 
@@ -652,9 +655,10 @@ def _hook_note(text: str) -> Image.Image:
 
 
 @lru_cache(maxsize=4)
-def _cta_card(width: int) -> Image.Image:
-    """«¿Cuántas sabías? __/10» on a sticky note `width` wide, the Bubi sticker on its corner."""
-    note = _sticky(CTA_LINES, CTA_SIZE, -3.0, width)
+def _cta_card(width: int, total: int = 10) -> Image.Image:
+    """«¿Cuántas sabías? __/10» on a sticky note `width` wide, the Bubi sticker on its corner.
+    `total` is the page's rows: the short A/B variant has 5 (length_ab)."""
+    note = _sticky((CTA_QUESTION, f"__/{total}"), CTA_SIZE, -3.0, width)
     bubi = kit.bubi_sticker(150)
     img = Image.new("RGBA", (bubi.width + note.width - CTA_OVERLAP, max(bubi.height, note.height)), (0, 0, 0, 0))
     img.alpha_composite(note, (bubi.width - CTA_OVERLAP, (img.height - note.height) // 2))
@@ -664,7 +668,7 @@ def _cta_card(width: int) -> Image.Image:
 
 @lru_cache(maxsize=64)
 def _scaled_note(kind: str, text: str, s: float, width: int = 0) -> Image.Image:
-    img = _hook_note(text) if kind == "hook" else _cta_card(width)
+    img = _hook_note(text) if kind == "hook" else _cta_card(width, int(text or 10))
     if s == 1.0:
         return img
     return img.resize((max(1, round(img.width * s)), max(1, round(img.height * s))), Image.LANCZOS)
@@ -700,12 +704,12 @@ def cta_width(title_w: float) -> int:
     return int(min(PAGE_W - 120, max(CTA_W, title_w + 70)))
 
 
-def _draw_cta(layer, t: float, start: float, title_w: float) -> None:
+def _draw_cta(layer, t: float, start: float, title_w: float, total: int = 10) -> None:
     """The CTA, its note centred on the title."""
     s = cta_scale(t, start)
     if s > 0:
         x = (64 + PAGE_W) / 2 - (BUBI_STICKER_W - CTA_OVERLAP) / 2 * s
-        _place_note(layer, _scaled_note("cta", "", s, cta_width(title_w)), x, CTA_Y)
+        _place_note(layer, _scaled_note("cta", str(total), s, cta_width(title_w)), x, CTA_Y)
 
 
 # ── Pencil ───────────────────────────────────────────────────────────
@@ -937,7 +941,7 @@ def create_frame_how_do_you_say(t: float, data: Dict, duration: float,
 
     # 5. the opening hook, and the CTA from the spoken outro on
     _draw_hook(layer, t, data, tl.es[0][0])
-    _draw_cta(layer, t, tl.outro[0], fredoka(TITLE_SIZE).getlength(TITLE_TEXT))
+    _draw_cta(layer, t, tl.outro[0], fredoka(TITLE_SIZE).getlength(TITLE_TEXT), len(items))
 
     # 6. the page, tilted (memoised by state) and moved, then the pencil over it
     motion = page_motion(t, 0.0, duration, tl.recap)

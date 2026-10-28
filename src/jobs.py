@@ -692,6 +692,14 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         if tracker is not None:
             tracker.rename(unique_name)
 
+        # The short «¿Cómo se dice…?» A/B: every other new topic is voiced with 5 words, no recap
+        length_ab_record = None
+        if not dry_run:
+            import length_ab
+            length_ab_record = length_ab.assign(unique_name, script_data)
+            if length_ab_record:
+                script_data = length_ab.apply(script_data, length_ab_record["variant"])
+
         script_dir = SCRIPTS_DIR / video_type
         script_dir.mkdir(parents=True, exist_ok=True)
         script_path = script_dir / f"{unique_name}.json"
@@ -892,6 +900,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                 **verdict_record,
                 "background": background_record or None,
                 "background_ab": background_ab,             # STEP 80 §5: «ia» or «stock», and why
+                "length_ab": length_ab_record,              # «short» or «long», and why (length_ab)
                 # What this video cost, OpenAI vs ElevenLabs, as of the render.
                 # The ledger in output/costs/ stays the authoritative record.
                 "cost": tracker.summary() if tracker is not None else None,

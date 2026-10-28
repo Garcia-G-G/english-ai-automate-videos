@@ -28,19 +28,25 @@ def _ledger(tmp_path):
 
 
 class _Resp:
-    def __init__(self, items):
-        self.items = items
+    def __init__(self, items, body=None):
+        self.items, self.body = items, body
 
     def raise_for_status(self):
         pass
 
     def json(self):
-        return {"items": self.items}
+        return self.body if self.body is not None else {"items": self.items}
 
 
-def _get(views):
+def _get(views, viewed=None):
     def get(url, params, headers, timeout):
-        assert headers["Authorization"] == "Bearer tok" and "statistics" in params["part"]
+        assert headers["Authorization"] == "Bearer tok"
+        if url == C.YOUTUBE_ANALYTICS:                     # average % viewed, one row per video
+            asked = params["filters"].removeprefix("video==").split(",")
+            return _Resp([], {"columnHeaders": [{"name": "video"}, {"name": "views"},
+                                                {"name": "averageViewPercentage"}],
+                              "rows": [[i, views[i], p] for i, p in (viewed or {}).items() if i in asked]})
+        assert "statistics" in params["part"]
         return _Resp([{"id": i, "statistics": {"viewCount": str(v)}, "snippet": {"title": f"t{i}"}}
                       for i, v in views.items() if i in params["id"].split(",")])
     return get
@@ -54,12 +60,14 @@ def test_youtube_rows_come_from_the_ledger_once_each(tmp_path):
 def test_refresh_writes_the_days_snapshot_with_days_and_categories(tmp_path, monkeypatch):
     monkeypatch.setattr(C, "LEDGER", _ledger(tmp_path))
     monkeypatch.setattr(C, "STATS_DIR", tmp_path / "stats")
-    path = C.refresh(date(2026, 10, 26), get=_get({"a1": 1200, "a2": 140, "a3": 90}), token="tok",
+    path = C.refresh(date(2026, 10, 26), get=_get({"a1": 1200, "a2": 140, "a3": 90}, {"a1": 63.27}), token="tok",
                      facebook=lambda: {"views": {}, "note": "sin FB_PAGE_TOKEN"})
     snap = json.loads(path.read_text())
     assert path.name == "youtube_2026-10-26.json"
     by = {v["id"]: v for v in snap["videos"]}
     assert by["a1"]["days"] == 25 and by["a1"]["views"] == 1200
+    assert by["a1"]["avg_view_pct"] == 63.3 and by["a2"]["avg_view_pct"] is None
+    assert "length_variant" in by["a1"]
     assert C.category_word("¿Cómo se dicen los ANIMALES en inglés? 🐶", "how_do_you_say") == "ANIMALES"
     assert snap["facebook"]["note"] == "sin FB_PAGE_TOKEN"
 
