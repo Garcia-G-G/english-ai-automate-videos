@@ -290,8 +290,9 @@ def _resolve(**kwargs):
 
 def test_the_random_preset_fallback_died_with_the_image_tier():
     """topic_background.fallback_preset picked one of the 76 rotation names
-    for when a generated image was refused. The image tier is gone, it had
-    no callers left, and it was the last place that read the rotation."""
-    import topic_background
+    for when a generated image was refused. The image tier is gone, and with
+    it the whole photo-prompt module and the preset registry."""
+    import importlib.util
 
-    assert not hasattr(topic_background, "fallback_preset")
+    for gone in ("topic_background", "topic_background_gate", "backgrounds", "palettes"):
+        assert importlib.util.find_spec(gone) is None, gone

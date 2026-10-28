@@ -306,13 +306,13 @@ def test_qa_gate_reads_think_as_declared_silence():
 
 
 def test_duration_has_its_own_window_from_the_approved_renders():
-    """STEP 76 §0: 66-86 s aimed, 55-95 s accepted (with the outro); still no calibrated rate."""
+    """STEP 76 §0: 66-86 s aimed, 55-90 s accepted (with the outro, the Reel ceiling); still no calibrated rate."""
     import duration_spec as ds
     v = ds.check("how_do_you_say", 72.0)                          # +4 s outro = 76 s, the target
     assert v["status"] == ds.PASS and v["calibrated"] is False
-    assert v["band"] == [66.0, 86.0] and v["reject_window"] == [55.0, 95.0]
-    assert ds.check("how_do_you_say", 88.0)["status"] == ds.PASS   # 92 s: past the aim, accepted
-    assert ds.check("how_do_you_say", 92.0)["status"] == ds.OUT_OF_BAND
+    assert v["band"] == [66.0, 86.0] and v["reject_window"] == [55.0, 90.0]
+    assert ds.check("how_do_you_say", 84.0)["status"] == ds.PASS   # 88 s: past the aim, accepted
+    assert ds.check("how_do_you_say", 87.0)["status"] == ds.OUT_OF_BAND
     assert ds.check("how_do_you_say", 50.0)["status"] == ds.OUT_OF_BAND
     assert ds.check("banana", 60.0)["status"] == ds.UNKNOWN
     assert "calibrated" not in ds.check("quiz", 60.0), "existing records unchanged"
@@ -351,12 +351,6 @@ def test_spoken_words_count_english_twice_and_no_emoji():
     from audio_tags import strip_tags
     fixed = sum(len(strip_tags(data[k]).split()) for k in ("intro", "recap", "outro"))
     assert spoken_words(data) == items + fixed
-
-
-def test_openai_refuses_instead_of_narrating_full_script(tmp_path):
-    from tts_providers.openai_provider import OpenAITTSProvider
-    with pytest.raises(NotImplementedError, match="ElevenLabs"):
-        OpenAITTSProvider().generate_from_script(_script(), str(tmp_path / "a.mp3"))
 
 
 def test_the_generator_prompt_names_only_known_tags():

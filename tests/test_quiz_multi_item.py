@@ -156,37 +156,19 @@ def _speak_up_to(monkeypatch, allowed):
 
 
 def _stub_tts(monkeypatch, source_mp3: Path, provider: str):
-    """Every TTS call writes a real (short) mp3 to its path.
-
-    BOTH PROVIDERS, because elevenlabs is the default
-    (pipeline.resolve_provider_name) and openai is what most of this repo's
-    tooling reaches for. A door that opens on only one of them is the same
-    defect one layer along.
-    """
+    """Every TTS call writes a real (short) mp3 to its path."""
     import shutil
 
     calls = []
+    import tts_elevenlabs as mod
 
-    if provider == "openai":
-        import tts_openai as mod
+    def fake_segment(text=None, output_path=None, voice_id=None, **kwargs):
+        # positional callers: generate_segment_audio(txt, path, voice)
+        calls.append(text)
+        shutil.copy(source_mp3, output_path)
+        return output_path
 
-        def fake_tts(client, path, **kwargs):
-            calls.append(kwargs.get("input"))
-            shutil.copy(source_mp3, path)
-            return path
-
-        monkeypatch.setattr(mod, "_tts_with_retry", fake_tts)
-        monkeypatch.setattr(mod, "_get_openai_client", lambda: object())
-    else:
-        import tts_elevenlabs as mod
-
-        def fake_segment(text=None, output_path=None, voice_id=None, **kwargs):
-            # positional callers: generate_segment_audio(txt, path, voice)
-            calls.append(text)
-            shutil.copy(source_mp3, output_path)
-            return output_path
-
-        monkeypatch.setattr(mod, "generate_segment_audio", fake_segment)
+    monkeypatch.setattr(mod, "generate_segment_audio", fake_segment)
 
     return mod, calls
 
@@ -204,7 +186,7 @@ def silent_mp3(tmp_path):
     return path
 
 
-@pytest.mark.parametrize("provider", ["openai", "elevenlabs"])
+@pytest.mark.parametrize("provider", ["elevenlabs"])
 def test_script_to_audio_to_three_rendered_items(tmp_path, monkeypatch,
                                                  silent_mp3, provider):
     """script -> audio -> quiz_item_views -> three items, end to end.
@@ -255,7 +237,7 @@ def test_script_to_audio_to_three_rendered_items(tmp_path, monkeypatch,
     assert data["duration"] > starts[2]
 
 
-@pytest.mark.parametrize("provider", ["openai", "elevenlabs"])
+@pytest.mark.parametrize("provider", ["elevenlabs"])
 def test_a_one_item_script_still_produces_bare_ids_only(tmp_path, monkeypatch,
                                                         silent_mp3, provider):
     """THE COMPATIBILITY PIN. A quiz with no `questions` must come out of the

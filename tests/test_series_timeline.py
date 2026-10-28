@@ -82,21 +82,17 @@ def test_a_voiced_script_has_every_english_phrase_heard_and_its_countdown():
 def test_eleven_v3_is_sent_no_context(monkeypatch, tmp_path):
     import tts_bilingual as TB
     import tts_cache
-    import tts_elevenlabs as TE
     sent = {}
 
     class Stop(Exception):
         pass
 
-    class Fake:
-        class text_to_speech:
-            @staticmethod
-            def convert_with_timestamps(**kw):
-                sent.update(kw)
-                raise Stop()
-    monkeypatch.setattr(TE, "get_client", lambda *a, **k: Fake)
+    def speak(kw, out_path, **k):
+        sent.update(kw)
+        raise Stop()
+    import tts_openrouter
+    monkeypatch.setattr(tts_openrouter, "speak", speak)
     monkeypatch.setattr(tts_cache, "restore", lambda *a, **k: None)
-    monkeypatch.setattr("cost_tracker.check_tts_budget", lambda *a, **k: None)
     call = {"index": 0, "text": "Hola", "lang": "es", "is_english": False, "voice_id": "v", "model_id": "eleven_v3",
             "speed": 1.0, "previous_text": "antes", "next_text": "después", "pause_after": 0.1}
     for model, has_context in (("eleven_v3", False), ("eleven_turbo_v2_5", True)):
@@ -104,7 +100,7 @@ def test_eleven_v3_is_sent_no_context(monkeypatch, tmp_path):
         with pytest.raises(Exception):
             TB._synthesize_segment({**call, "model_id": model}, str(tmp_path / "a.mp3"),
                                    {**TB.resolve_settings(), "model_id": model})
-        assert sent, "the fake client was not reached"
+        assert sent, "the fake speak was not reached"
         assert ("previous_text" in sent and "next_text" in sent) == has_context, model
 
 

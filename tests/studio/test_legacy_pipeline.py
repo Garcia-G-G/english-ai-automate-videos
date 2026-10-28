@@ -587,7 +587,7 @@ def test_gateway_paths_costs_and_available_metadata_are_exact(tmp_path):
     # 74.7-96s aiming window because a 2-item quiz runs past the global
     # ceiling by design; the record carries the type's numbers, not the
     # global ones an operator might otherwise assume.
-    assert duration["band"] == [74.7, 96.0]
+    assert duration["band"] == [74.7, 90.0]
 
     import duration_spec as _ds
     assert duration["band"] != [_ds.band()["min_seconds"],
@@ -598,7 +598,7 @@ def test_gateway_paths_costs_and_available_metadata_are_exact(tmp_path):
     # than its aiming band (a false reject stops production), and the record
     # carries both. The reason line is what an operator reads, so it quotes
     # the reject floor exactly as configured -- 62.2, not a rounded 62.
-    assert duration["reject_window"] == [62.2, 110.7]
+    assert duration["reject_window"] == [62.2, 90.0]
     assert "under the 62.2s floor" in duration["reason"]
 
 

@@ -166,10 +166,9 @@ def test_creating_a_new_directory_is_refused():
             d.mkdir(parents=True)
         assert not d.exists()
     finally:
-        try:
+        # Only if the refusal failed: on Python 3.12 Path.rmdir goes through the guarded os.rmdir.
+        if d.exists():
             d.rmdir()
-        except OSError:
-            pass
 
 
 # ── what must still work ─────────────────────────────────────────────

@@ -46,25 +46,7 @@ ROOT = Path(__file__).parent
 SRC = ROOT / "src"
 OUTPUT_DIR = ROOT / "output"
 
-def get_output_paths(video_type: str, output_name: str) -> tuple:
-    """Get output paths organized by video type."""
-    # Create type-specific folders
-    script_dir = OUTPUT_DIR / "scripts" / video_type
-    audio_dir = OUTPUT_DIR / "audio" / video_type
-    video_dir = OUTPUT_DIR / "video" / video_type
-
-    script_dir.mkdir(parents=True, exist_ok=True)
-    audio_dir.mkdir(parents=True, exist_ok=True)
-    video_dir.mkdir(parents=True, exist_ok=True)
-
-    return (
-        script_dir / f"{output_name}.json",
-        audio_dir / f"{output_name}.mp3",
-        audio_dir / f"{output_name}.json",  # TTS timestamps
-        video_dir / f"{output_name}.mp4"
-    )
-
-# Add src/ to PYTHONPATH so that top-level modules (script_generator, tts_openai, etc.)
+# Add src/ to PYTHONPATH so that top-level modules (script_generator, tts_elevenlabs, etc.)
 # can be imported without package prefixes.  All pipeline code lives under src/.
 sys.path.insert(0, str(SRC))
 from script_generator import (
@@ -168,31 +150,6 @@ def _note_failure(entry: dict, stage: str, exc) -> None:
         logger.exception("could not record the %s failure in the report", stage)
 
 
-def _note_rejection(entry: dict, video_path, fin: dict) -> None:
-    """The gate refused this artifact. Its own category, not a failure.
-
-    Nothing broke: a video was produced and judged unfit. It goes to
-    output/rejected/, which already means exactly that, rather than the
-    output/failed/ tree that means a stage raised.
-    """
-    if entry is None:
-        return
-    try:
-        from batch_report import move_rejected, reject
-        reject(entry, fin.get("blocking_flags"))
-        move_rejected(video_path, entry, report=fin)
-    except Exception:                                      # noqa: BLE001
-        logger.exception("could not record the gate rejection")
-
-
-def _report_upload(entry: dict, outcome: dict) -> None:
-    if entry is None:
-        return
-    try:
-        from batch_report import record_upload_outcome
-        record_upload_outcome(entry, outcome)
-    except Exception:                                      # noqa: BLE001
-        logger.exception("could not fold the upload outcome into the report")
 
 
 def move_uploaded_artifact(video_path: Path, outcome: dict) -> Path:
@@ -492,37 +449,7 @@ def run_pipeline(script_data: dict, output_name: str, video_type: str = None, ba
     return video
 
 
-def run_from_text(text: str, name: str = None, video_type: str = "educational", background: str = None,
-                  upload: bool = False, dry_run: bool = False) -> Path:
-    """Create a canonical artifact from owner-supplied narration text."""
-    if not name:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        name = f"quick_{timestamp}"
 
-    # Create a simple script structure
-    script_data = {
-        "type": video_type,
-        "full_script": text,
-        "translations": {}
-    }
-
-    return run_pipeline(script_data, name, video_type, background, upload=upload,
-                        dry_run=dry_run)
-
-
-
-def generate_and_run(category: str, topic: dict, topic_name: str, video_type: str = "educational",
-                     background: str = None, upload: bool = False,
-                     dry_run: bool = False, entry: dict = None) -> Path:
-    """Compatibility wrapper for a directed canonical creation."""
-    _, video = run_creation(
-        workspace="youtube", audience="adults", idea=topic_name,
-        mode="directed", category=category, topic=topic_name,
-        video_type=video_type, background=background,
-        artifact_id=safe_artifact_name(topic_name), upload=upload,
-        dry_run=dry_run,
-    )
-    return video
 
 
 #: States in which Studio stopped without producing a video. The artifact is

@@ -49,14 +49,14 @@ def test_the_headless_path_finalises():
 def test_the_dashboard_path_finalises():
     """It had no gate and no outro either — this was a gap in both paths, not
     a divergence between them."""
-    assert _calls(ROOT / "src" / "admin.py", "finalize_video"), (
-        "admin.py does not finalise")
+    assert _calls(ROOT / "src" / "jobs.py", "finalize_video"), (
+        "jobs.py does not finalise")
 
 
 def test_there_is_still_exactly_one_finalisation_implementation():
     """Two would drift, and the order below is the part that must not."""
     defs = 0
-    for f in ("src/pipeline.py", "src/admin.py", "main.py"):
+    for f in ("src/pipeline.py", "src/admin.py", "src/jobs.py", "main.py"):
         tree = ast.parse((ROOT / f).read_text(encoding="utf-8"))
         defs += sum(1 for n in ast.walk(tree)
                     if isinstance(n, ast.FunctionDef) and n.name == "finalize_video")

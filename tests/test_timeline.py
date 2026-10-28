@@ -79,7 +79,7 @@ def test_the_output_keeps_the_timelines_rate(tmp_path):
     assert rate["streams"][0]["sample_rate"] == "24000"
 
 
-@pytest.mark.parametrize("rel", ["src/tts_elevenlabs.py", "src/tts_openai.py", "src/tts_google.py", "src/tts_bilingual.py"])
+@pytest.mark.parametrize("rel", ["src/tts_elevenlabs.py", "src/tts_bilingual.py"])
 def test_no_generator_keeps_its_own_closures_or_concat(rel):
     text = (ROOT / rel).read_text(encoding="utf-8")
     tree = ast.parse(text)

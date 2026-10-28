@@ -54,9 +54,6 @@ class TTSProvider(ABC):
         """Generate audio from raw text (simple/fallback flow)."""
         pass
 
-    def get_name(self) -> str:
-        return self.name
-
     # ── Shared helpers ────────────────────────────────────────────
 
     @staticmethod

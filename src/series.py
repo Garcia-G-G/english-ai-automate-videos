@@ -9,6 +9,7 @@ Its narration is `voice`, one line per beat (see script_schema.HechoConClaudeScr
 from __future__ import annotations
 
 import json
+import threading
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -47,9 +48,17 @@ def queued(style: Optional[str] = None, level: Optional[str] = None) -> List[Pat
     return out
 
 
+#: Scripts a panel job is rendering right now. Two jobs started in the same second picked the same
+#: script and shared its work dir, and one deleted the other's audio (2026-10-27, hc_e002).
+_CLAIMED: set = set()
+_CLAIM_LOCK = threading.Lock()
+
+
 def pick(style: Optional[str] = None, level: Optional[str] = None) -> Optional[tuple]:
-    """(path, script) of the next queued script that validates, or None."""
+    """(path, script) of the next queued script that validates and no job is rendering, or None."""
     for path in queued(style, level):
+        if path.name in _CLAIMED:
+            continue
         data = load(path)
         try:
             validate_series(data)
@@ -100,14 +109,23 @@ def render_one(style: Optional[str] = None, level: Optional[str] = None, *, prog
     """Pick, render, gate. PASS: output/pending/hecho_con_claude/<id>.mp4 with its sidecar
     (upload metadata, gate, spend), and the script moves to _done. REJECT: output/rejected/…, the
     script stays queued. Raises when the queue has nothing for the filters."""
+    with _CLAIM_LOCK:
+        picked = pick(style, level)
+        if picked is None:
+            raise RuntimeError(f"no queued «{PANEL_LABEL}» script for style={style or 'any'}, level={level or 'any'}")
+        path, script = picked
+        _CLAIMED.add(path.name)
+    try:
+        return _render_picked(path, script, progress)
+    finally:
+        _CLAIMED.discard(path.name)
+
+
+def _render_picked(path: Path, script: Dict, progress) -> Dict:
     import shutil
     from datetime import datetime
     from video.series import gate as G
     from video.series.render import render_series
-    picked = pick(style, level)
-    if picked is None:
-        raise RuntimeError(f"no queued «{PANEL_LABEL}» script for style={style or 'any'}, level={level or 'any'}")
-    path, script = picked
     stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     work = OUTPUT / "rendering" / "series" / f"{script['id']}_{stamp}"
     work.mkdir(parents=True, exist_ok=True)

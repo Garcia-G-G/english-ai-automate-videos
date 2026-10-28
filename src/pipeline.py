@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 
-# API keys / TTS_PROVIDER come from .env for both entry points.
+# API keys come from .env (or the Keychain, secret_store) for both entry points.
 try:
     from dotenv import load_dotenv
     load_dotenv(ROOT / ".env")
@@ -38,8 +38,9 @@ except ImportError:  # dotenv is optional at import time
 
 from script_schema import validate_script  # noqa: E402
 
-# Providers the factory knows about (tts_providers.get_tts_provider).
-VALID_PROVIDERS = ("elevenlabs", "openai", "google", "edge")
+# Providers the factory knows about (tts_providers.get_tts_provider). ElevenLabs is reached
+# through OpenRouter only; OpenAI, Google and Edge TTS were removed (2026-10-27).
+VALID_PROVIDERS = ("elevenlabs",)
 
 # Keys owned by the TTS result — never overwritten by script data.
 TTS_OWNED_KEYS = ('words', 'segments', 'duration', 'segment_times',
@@ -282,15 +283,6 @@ def resolve_background(profile: Dict = None, background: str = None, *,
     raise BackgroundUnavailable(reason)
 
 
-def _video_config() -> Dict:
-    """The `video:` block of config.yaml, or an empty dict."""
-    try:
-        import yaml
-        cfg = yaml.safe_load(Path(ROOT / "config.yaml").read_text()) or {}
-        return cfg.get("video") or {}
-    except Exception:                                       # noqa: BLE001
-        return {}
-
 
 def _emit_background_record(entry: Dict, on_record, payload: Dict) -> None:
     """Write one background decision to both sinks. THE only recorder.
@@ -482,12 +474,9 @@ def _clip_background(topic: str, category: str = None, dest_dir=None,
 # ── TTS ───────────────────────────────────────────────────────────────
 
 def resolve_provider_name() -> str:
-    """The TTS provider both entry points must agree on."""
-    name = os.getenv("TTS_PROVIDER", "elevenlabs").strip().lower()
-    if name not in VALID_PROVIDERS:
-        logger.warning("Unknown TTS_PROVIDER=%r — using 'elevenlabs'", name)
-        name = "elevenlabs"
-    return name
+    """The TTS provider both entry points must agree on: ElevenLabs through OpenRouter, the only
+    one left. A stale TTS_PROVIDER in .env is ignored."""
+    return "elevenlabs"
 
 
 def _bilingual_enabled() -> bool:
@@ -543,10 +532,6 @@ def resolve_tts_plan(script_data: Dict, provider_name: str = None) -> Dict:
                                 or os.getenv("ELEVENLABS_MODEL")
                                 or "eleven_v3")
             plan["path"] = f"tts_elevenlabs.generate_{video_type}_audio_segmented"
-    elif provider_name == "openai":
-        plan["voice_id"] = os.getenv("OPENAI_TTS_VOICE", "nova")
-        plan["model_id"] = os.getenv("OPENAI_TTS_MODEL", "tts-1")
-        plan["path"] = "tts_openai"
     else:
         plan["path"] = f"tts_{provider_name}"
 
@@ -575,7 +560,6 @@ def format_tts_plan(plan: Dict) -> str:
 def generate_tts(script_data: Dict,
                  audio_path,
                  script_path=None,
-                 allow_edge_fallback: bool = False,
                  dry_run: bool = False) -> Tuple[Optional[Path], Optional[Path]]:
     """Generate narration audio + the companion timestamps JSON.
 
@@ -584,9 +568,6 @@ def generate_tts(script_data: Dict,
         audio_path:  Output mp3 path. The JSON lands next to it.
         script_path: Path to the script JSON on disk (providers use it for
                      automatic English detection).
-        allow_edge_fallback: On provider failure, retry with Edge TTS.
-                     OFF by default: the fallback silently changes voice,
-                     language handling and output schema.
         dry_run:     Resolve and log the plan (provider / model / voice /
                      per-segment language_code), call no API, write
                      <audio>.ttsplan.json, and return (None, None).
@@ -646,15 +627,7 @@ def generate_tts(script_data: Dict,
         )
     except Exception as e:
         logger.error("TTS failed (%s): %s", provider_name, e)
-        if allow_edge_fallback and provider_name != "edge":
-            logger.warning("Falling back to Edge TTS (voice and language handling change)")
-            provider = get_tts_provider("edge")
-            provider.generate_from_script(
-                script_data, str(audio_path),
-                script_path=str(script_path) if script_path else None,
-            )
-        else:
-            raise TTSError(f"TTS failed ({provider_name}): {e}") from e
+        raise TTSError(f"TTS failed ({provider_name}): {e}") from e
 
     if not audio_path.exists():
         raise TTSError(f"Audio file not created: {audio_path}")

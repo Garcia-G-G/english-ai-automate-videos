@@ -22,35 +22,42 @@ DEFERRED SINCE JULY "pending ASR", and the ASR was already paid for:
 requirements.txt has declared openai-whisper since then and nothing ever
 imported it.
 
-LOCAL FIRST, API SECOND. Local Whisper costs nothing per run and keeps the
-narration off the network; the API costs $0.006/min (about $0.005 for a 50 s
-video) and exists as the fallback for a machine without the model. Which one
-ran is recorded on every result rather than inferred, because "we have real
-timings now" is exactly the kind of claim that needs its source attached.
+OPENROUTER FIRST, LOCAL SECOND (2026-10-27, measured on hc_e002's 35 s narration on the M3).
+OpenRouter's /audio/transcriptions with ElevenLabs Scribe v2: 2.5 s, word times + confidence,
+~$0.002, and only inside a panel job (voice_lock) so STEPs, tests and tools spend nothing. Local is
+mlx-whisper large-v3-turbo in its own Python 3.12 process (src/asr_worker.py): free and offline but
+~22 s for the same file. Both heard «spill the tea», which the CPU `base` model they replace missed
+(it also crashed when two panel jobs transcribed at once). OpenAI's own API is not used: its key is
+dead on purpose. Which one ran is recorded on every result rather than
+inferred, because "we have real timings now" is exactly the kind of claim that needs its source.
 """
 
 from __future__ import annotations
 
+import base64
+import json
 import logging
 import os
-import time
+import subprocess
+import tempfile
+import threading
 from pathlib import Path
 from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
-#: Which local model to load. `base` is the smallest that produces stable
-#: word timings on our clips; `tiny` drifts on short Spanish segments.
-#: Overridable so a slower, better model can be tried without a code change.
-LOCAL_MODEL = os.getenv("WHISPER_LOCAL_MODEL", "base")
+ROOT = Path(__file__).resolve().parent.parent
+#: The project's Python 3.12 venv, which has mlx-whisper (MLX needs >= 3.10). Still its own
+#: process even when the panel runs on it: MLX is not thread-safe and job threads share a process.
+VENV_PYTHON = Path(os.getenv("ASR_PYTHON") or ROOT / ".venv" / "bin" / "python")
+LOCAL_MODEL = os.getenv("WHISPER_LOCAL_MODEL", "mlx-community/whisper-large-v3-turbo")
+OPENROUTER_URL = "https://openrouter.ai/api/v1/audio/transcriptions"
+OPENROUTER_MODEL = "elevenlabs/scribe-v2"
 
-#: OpenAI's published rate for whisper-1, per minute of audio.
-API_COST_PER_MINUTE = 0.006
-
-#: Loaded once per process. Loading `base` takes a few seconds and the
-#: narration for one video is a dozen short clips.
-_MODEL = None
 _BACKEND: Optional[str] = None
+#: One worker process per panel process; the lock makes job threads take turns on it.
+_WORKER: Optional[subprocess.Popen] = None
+_LOCK = threading.Lock()
 
 
 def backend_name() -> Optional[str]:
@@ -59,94 +66,88 @@ def backend_name() -> Optional[str]:
 
 
 def reset() -> None:
-    """Drop the cached model. For tests."""
-    global _MODEL, _BACKEND
-    _MODEL, _BACKEND = None, None
+    """Stop the worker and forget the backend. For tests."""
+    global _WORKER, _BACKEND
+    with _LOCK:
+        if _WORKER is not None:
+            _WORKER.kill()
+        _WORKER, _BACKEND = None, None
 
 
-def _local_model():
-    """The local Whisper model, or None if it cannot be loaded.
-
-    Never raises. A missing model must cost the estimate we already had,
-    not the video.
-    """
-    global _MODEL
-    if _MODEL is not None:
-        return _MODEL
-    try:
-        import whisper
-    except Exception:                                       # noqa: BLE001
-        logger.info("asr: local whisper is not importable — will try the API")
+def _worker() -> Optional[subprocess.Popen]:
+    """The running mlx worker, started on first use (call with _LOCK held). None without the venv."""
+    global _WORKER
+    if _WORKER is not None and _WORKER.poll() is None:
+        return _WORKER
+    if not VENV_PYTHON.is_file():
+        logger.info("asr: no %s — local word timings unavailable", VENV_PYTHON)
         return None
-    try:
-        started = time.time()
-        _MODEL = whisper.load_model(LOCAL_MODEL)
-        logger.info("asr: loaded local whisper %r in %.1fs",
-                    LOCAL_MODEL, time.time() - started)
-        return _MODEL
-    except Exception:                                       # noqa: BLE001
-        logger.exception("asr: could not load local whisper %r", LOCAL_MODEL)
-        return None
+    _WORKER = subprocess.Popen([str(VENV_PYTHON), str(Path(__file__).with_name("asr_worker.py"))],
+                               stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                               text=True, bufsize=1)
+    return _WORKER
 
 
 def _words_from_local(path: Path, language: Optional[str]) -> Optional[List[Dict]]:
-    model = _local_model()
-    if model is None:
+    """mlx-whisper word timings, or None (never raises)."""
+    global _WORKER
+    with _LOCK:
+        try:
+            worker = _worker()
+            if worker is None:
+                return None
+            worker.stdin.write(json.dumps({"path": str(path), "language": language,
+                                           "model": LOCAL_MODEL}) + "\n")
+            worker.stdin.flush()
+            reply = json.loads(worker.stdout.readline() or "{}")
+        except Exception:                                   # noqa: BLE001 — a dead worker is restarted next call
+            logger.exception("asr: local worker failed for %s", path)
+            if _WORKER is not None:
+                _WORKER.kill()
+            _WORKER = None
+            return None
+    if reply.get("error") or "words" not in reply:
+        logger.warning("asr: local transcription failed for %s: %s", path, reply.get("error"))
+        return None
+    return reply["words"] or None
+
+
+def _words_from_openrouter(path: Path, language: Optional[str]) -> Optional[List[Dict]]:
+    """Scribe v2 through OpenRouter, billed per second and recorded. Only inside a panel job
+    (voice_lock): STEPs, tests and tools spend nothing. None on any failure."""
+    import voice_lock
+    if voice_lock.locked():
         return None
     try:
-        result = model.transcribe(str(path), word_timestamps=True,
-                                  language=language, verbose=False)
+        import secret_store
+        key = secret_store.get("OPENROUTER_API_KEY")
+        if not key:
+            return None
+        with tempfile.TemporaryDirectory() as tmp:          # a 64 kbps mono mp3: ~10x smaller than the wav
+            mp3 = Path(tmp) / "a.mp3"
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(path), "-ac", "1", "-b:a", "64k", str(mp3)],
+                           check=True, timeout=120)
+            data = base64.b64encode(mp3.read_bytes()).decode()
+        body = {"model": OPENROUTER_MODEL, "input_audio": {"data": data, "format": "mp3"},
+                "response_format": "verbose_json", "timestamp_granularities": ["word"],
+                **({"language": language} if language else {})}
+        import urllib.request
+        req = urllib.request.Request(OPENROUTER_URL, data=json.dumps(body).encode(), headers={
+            "Authorization": f"Bearer {key}", "Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            answer = json.load(resp)
     except Exception:                                       # noqa: BLE001
-        logger.exception("asr: local transcription failed for %s", path)
+        logger.exception("asr: OpenRouter transcription failed for %s", path)
         return None
-
-    words = []
-    for segment in result.get("segments") or []:
-        for w in segment.get("words") or []:
-            token = str(w.get("word", "")).strip()
-            if not token:
-                continue
-            words.append({"word": token,
-                          "start": round(float(w["start"]), 3),
-                          "end": round(float(w["end"]), 3)})
-    return words or None
-
-
-def _words_from_api(path: Path, language: Optional[str]) -> Optional[List[Dict]]:
-    """whisper-1, billed per minute. Logs its own cost to the tracker."""
-    try:
-        from openai import OpenAI
-    except Exception:                                       # noqa: BLE001
-        return None
-    try:
-        client = OpenAI()
-        with open(path, "rb") as handle:
-            transcript = client.audio.transcriptions.create(
-                model="whisper-1", file=handle,
-                response_format="verbose_json",
-                timestamp_granularities=["word"],
-                **({"language": language} if language else {}),
-            )
-    except Exception:                                       # noqa: BLE001
-        logger.exception("asr: API transcription failed for %s", path)
-        return None
-
     try:
         from cost_tracker import get_tracker
-        from tts_common import get_audio_duration
-        get_tracker().log_openai_whisper(
-            duration_seconds=get_audio_duration(str(path)),
-            label="asr_word_timings")
+        get_tracker()._add_entry("openrouter_asr", OPENROUTER_MODEL, float((answer.get("usage") or {}).get("cost") or 0.0),
+                                 "asr_word_timings", {"seconds": answer.get("duration")})
     except Exception:                                       # noqa: BLE001
-        logger.warning("asr: could not record the whisper cost")
-
-    words = []
-    for w in (getattr(transcript, "words", None) or []):
-        token = str(getattr(w, "word", "")).strip()
-        if token:
-            words.append({"word": token,
-                          "start": round(float(w.start), 3),
-                          "end": round(float(w.end), 3)})
+        logger.warning("asr: could not record the transcription cost")
+    words = [{"word": str(w.get("word", "")).strip(), "start": round(float(w["start"]), 3),
+              "end": round(float(w["end"]), 3)}
+             for w in answer.get("words") or [] if str(w.get("word", "")).strip()]
     return words or None
 
 
@@ -165,17 +166,12 @@ def transcribe_words(path, language: str = None) -> Optional[List[Dict]]:
 
     from tts_common import merge_punctuation_tokens
 
-    words = _words_from_local(path, language)
-    if words:
-        words = merge_punctuation_tokens(words, boundary_key=None)
-        _BACKEND = f"local:{LOCAL_MODEL}"
-        return words
-
-    words = _words_from_api(path, language)
-    if words:
-        words = merge_punctuation_tokens(words, boundary_key=None)
-        _BACKEND = "api:whisper-1"
-        return words
+    for name, run in ((f"openrouter:{OPENROUTER_MODEL}", _words_from_openrouter),
+                      (f"local:{LOCAL_MODEL}", _words_from_local)):
+        words = run(path, language)
+        if words:
+            _BACKEND = name
+            return merge_punctuation_tokens(words, boundary_key=None)
 
     logger.warning("asr: no backend produced timings for %s", path.name)
     return None
@@ -197,7 +193,3 @@ def fit_to_clip(words: List[Dict], clip_seconds: float,
         out.append({**w, "start": round(start, 3), "end": round(end, 3)})
     return out
 
-
-def api_cost_for(seconds: float) -> float:
-    """What the API fallback would bill for this much audio."""
-    return round(max(0.0, float(seconds)) / 60.0 * API_COST_PER_MINUTE, 6)

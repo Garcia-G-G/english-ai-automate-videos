@@ -121,7 +121,6 @@ def test_the_page_has_two_tabs_and_the_editor_has_no_upload_button(monkeypatch):
     # The app runs in this process, on these very modules: patch them with monkeypatch
     # so they are restored. Assigning inside app() left publish.fetch_routes a stub for
     # every later test (test_publish failed after this one, STEP 60 §3).
-    monkeypatch.setattr(M, "fetch_voices", lambda key: [])
     monkeypatch.setattr(M.P, "fetch_routes", lambda *a, **k: [])
     monkeypatch.setattr(M, "review_board", lambda *a, **k: {"por_revisar": [], "aprobadas": [], "rehacer": [],
                                                             "subidas": [], "anteriores": []})

@@ -877,6 +877,7 @@ def _pick_file(video: dict) -> Optional[dict]:
         if (f.get("height") or 0) >= MIN_CLIP_HEIGHT
         and (f.get("height") or 0) >= (f.get("width") or 0)   # portrait
         and f.get("link")
+        and (f.get("size") or 0) <= MAX_CLIP_BYTES            # Pexels states it: skip before downloading
     ]
     if not files:
         return None
@@ -929,6 +930,11 @@ def _download(url: str, dest: Path, timeout: float = 60.0) -> Optional[Path]:
         with requests.get(url, stream=True, timeout=timeout) as response:
             if response.status_code != 200:
                 logger.warning("clips: download %s -> HTTP %s", url, response.status_code)
+                return None
+            # The declared length refuses an oversize file before a byte arrives: the stream check
+            # below only fired after 12 MB (87 skips cost 344 s over 56 fetches, 2026-10-27).
+            if int(response.headers.get("Content-Length") or 0) > MAX_CLIP_BYTES:
+                logger.info("clips: %s declares more than %d bytes — skipping", url, MAX_CLIP_BYTES)
                 return None
             written = 0
             with open(tmp, "wb") as handle:

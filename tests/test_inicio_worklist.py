@@ -39,6 +39,7 @@ sys.path.insert(0, str(ROOT / "src"))
 logging.getLogger("streamlit").setLevel(logging.CRITICAL)
 
 import admin  # noqa: E402
+import jobs as jobs_module  # noqa: E402
 import thumbnails  # noqa: E402
 
 
@@ -225,7 +226,7 @@ def test_a_gate_reject_is_not_a_failed_job(tmp_path, monkeypatch):
         {"id": "3", "status": "completed", "gate": "PASS",
          "completed_at": "2026-08-23T10:00:00"},
     ]}))
-    monkeypatch.setattr(admin, "JOBS_FILE", jobs)
+    monkeypatch.setattr(jobs_module, "JOBS_FILE", jobs)
 
     failed = admin.get_failed_jobs()
     assert [j["id"] for j in failed] == ["2"]
@@ -240,7 +241,7 @@ def test_failed_jobs_come_back_newest_first(tmp_path, monkeypatch):
         {"id": "new", "status": "failed", "completed_at": "2026-08-25T00:00:00"},
         {"id": "mid", "status": "failed", "completed_at": "2026-08-10T00:00:00"},
     ]}))
-    monkeypatch.setattr(admin, "JOBS_FILE", jobs)
+    monkeypatch.setattr(jobs_module, "JOBS_FILE", jobs)
     assert [j["id"] for j in admin.get_failed_jobs()] == ["new", "mid", "old"]
     assert [j["id"] for j in admin.get_failed_jobs(limit=2)] == ["new", "mid"]
 

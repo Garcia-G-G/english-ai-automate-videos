@@ -166,6 +166,6 @@ def test_a_level_type_gets_1800s_and_the_others_keep_1200s():
 
 
 def test_the_dashboard_render_uses_the_per_type_limit():
-    src = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
+    src = (ROOT / "src" / "jobs.py").read_text(encoding="utf-8")
     assert "timeout=pipeline.render_timeout(video_type)" in src
     assert "timeout=pipeline.RENDER_TIMEOUT_S" not in src

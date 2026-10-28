@@ -116,6 +116,14 @@ def test_the_upload_publishes_the_sidecars_metadata_with_its_tags_once():
 
 def test_a_render_writes_the_metadata_into_the_sidecar():
     admin = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
-    assert '"metadata": render_metadata(script_data, video_type, category)' in admin
+    engine = (ROOT / "src" / "jobs.py").read_text(encoding="utf-8")
+    assert '"metadata": render_metadata(script_data, video_type, category)' in engine
     assert "review_metadata_editor(video)" in admin and "Usar alternativa" in admin
     assert '"metadata": video_metadata.build(script, "hecho_con_claude")' in (ROOT / "src" / "series.py").read_text(encoding="utf-8")
+
+
+def test_a_plural_theme_gets_se_dicen_and_its_article():
+    """Published 2026-10-27 as «¿Cómo se dice ANIMALES DEL MAR…»."""
+    assert M.how_do_you_say_title({"theme": "los animales del mar", "items": [{"emoji": "🐙"}]}) \
+        == "¿Cómo se dicen los ANIMALES DEL MAR en inglés? 🐙"
+    assert M.how_do_you_say_title({"theme": "la cara", "items": [{"emoji": "👄"}]}) == "¿Cómo se dice CARA en inglés? 👄"

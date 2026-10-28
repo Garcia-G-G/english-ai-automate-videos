@@ -33,10 +33,6 @@ TAG_RE = re.compile(r"\[([a-zA-Z][a-zA-Z ']{0,24})\]")
 import subprocess, functools
 
 
-@functools.lru_cache(maxsize=None)
-def _hun(dic, word):
-    return word
-
 
 def _unknown(dic, words):
     if not words:

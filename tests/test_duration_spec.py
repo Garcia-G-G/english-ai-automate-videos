@@ -134,10 +134,10 @@ def test_a_video_inside_the_band_passes():
 
 
 def test_a_type_with_its_own_band_passes_inside_it():
-    """The same property for a type that overrides — quiz's own 74.7-96s."""
+    """The same property for a type that overrides — quiz's own 74.7-90s."""
     v = ds.check("quiz", narration_seconds=81.3)
     assert v["status"] == ds.PASS, v["reason"]
-    assert v["band"] == [74.7, 96.0]
+    assert v["band"] == [74.7, 90.0]
 
 
 @pytest.mark.parametrize("narration,edge", [(20.0, "floor"), (90.0, "ceiling")])
@@ -254,3 +254,12 @@ def test_the_vocabulary_prompt_asks_for_a_full_card():
     import script_generator as sg
     prompt = sg.build_prompt_vocabulary("travel", {"topic": "restaurant"})
     assert "10-12 pares" in prompt or "10 y 12 pares" in prompt
+
+
+def test_no_type_aims_or_passes_over_the_90s_reel_ceiling():
+    """Every video is also a Facebook Reel, 90 s at most by API, whatever config declares."""
+    types = [None, *(ds._config().get("types") or {})]
+    for t in types:
+        assert ds.band(t)["max_seconds"] <= 90.0 and ds.band(t)["target_seconds"] <= 90.0, t
+        assert ds.reject_window(t)["max_seconds"] <= 90.0, t
+    assert ds.check("quiz", narration_seconds=89.4)["status"] == ds.OUT_OF_BAND   # id016, 93.4 s

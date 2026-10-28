@@ -38,7 +38,7 @@ def render_video_ffmpeg(
     width: int = 1080,
     height: int = 1920,
     crf: int = 17,
-    preset: str = "medium",
+    preset: str = "faster",
     progress_callback: Optional[Callable[[float], None]] = None,
     workers: int = 1,
 ) -> str:
@@ -53,8 +53,9 @@ def render_video_ffmpeg(
         fps: Frames per second.
         width, height: Expected frame dimensions.
         crf: libx264 CRF (17: transparent for flat cards and text).
-        preset: libx264 preset. medium (STEP 77 §2b): at a fixed CRF the preset trades file
-            size for encoder CPU, not colour; −20 % CPU for +3 % size against slow.
+        preset: libx264 preset. faster (2026-10-27, measured on a 2096-frame how_do_you_say):
+            160 CPU-s against medium's 240, same size, VMAF 96.9 against 97.0. At a fixed CRF the
+            preset trades file size for encoder CPU, not colour (STEP 77 §2b).
             ``ultrafast`` only for --fast drafts.
         progress_callback: Called with a float in ``[0, 1]`` once per
             second of rendered video.
@@ -152,11 +153,14 @@ def frames(frame_generator: Callable[[float], np.ndarray], total_frames: int, fp
 
 def render_workers() -> int:
     """Processes for a render: VIDEO_RENDER_WORKERS, else the cores minus two for ffmpeg and
-    the panel, at most 6."""
+    the panel, at most 6, and fewer when the machine is already busy: on a loaded Mac 6 workers
+    rendered 2-3x slower than 1-3 (2026-10-27 profile: forked workers swap and fight ffmpeg)."""
     env = os.environ.get("VIDEO_RENDER_WORKERS")
     if env:
         return max(1, int(env))
-    return max(1, min(6, (os.cpu_count() or 2) - 2))
+    cores = os.cpu_count() or 2
+    idle = cores - os.getloadavg()[0]                       # cores nobody else is using right now
+    return max(1, min(6, cores - 2, int(idle) - 1))
 
 
 def _encode(

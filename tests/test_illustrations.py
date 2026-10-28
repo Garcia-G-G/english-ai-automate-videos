@@ -152,5 +152,5 @@ def test_the_monthly_cap_stops_a_drawing(library, monkeypatch):
 
 def test_the_panel_shows_the_count_and_the_cost_before_drawing():
     admin = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
-    body = admin[admin.index("def illustrations_panel"):admin.index("def render_metadata")]
+    body = admin[admin.index("def illustrations_panel"):admin.index("def script_for_upload")]
     assert "ilustraciones nuevas" in body and "voice_lock.panel_grant()" in body

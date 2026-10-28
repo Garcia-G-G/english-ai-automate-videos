@@ -79,3 +79,15 @@ def test_the_pencil_lands_on_the_rotated_page_point():
     fx, fy = H.page_to_frame(600, 900)
     assert xs.mean() + H.PAGE_X - H.PAD == pytest.approx(fx, abs=0.5)
     assert ys.mean() + H.PAGE_Y - H.PAD == pytest.approx(fy, abs=0.5)
+
+
+def test_a_busy_machine_gets_fewer_render_workers(monkeypatch):
+    from video import compositor as C
+    monkeypatch.delenv("VIDEO_RENDER_WORKERS", raising=False)
+    monkeypatch.setattr(C.os, "cpu_count", lambda: 8)
+    monkeypatch.setattr(C.os, "getloadavg", lambda: (0.5, 0, 0))
+    assert C.render_workers() == 6
+    monkeypatch.setattr(C.os, "getloadavg", lambda: (6.0, 0, 0))
+    assert C.render_workers() == 1
+    monkeypatch.setattr(C.os, "getloadavg", lambda: (70.0, 0, 0))
+    assert C.render_workers() == 1

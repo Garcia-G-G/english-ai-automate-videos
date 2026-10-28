@@ -19,9 +19,9 @@ sampled frame, the bounding box of drawn content and the list of horizontal
 bands that carry it. A constant that shifts by 30px moves a band by 30px and
 names itself in the diff.
 
-Content is isolated by rendering on a static_gradient background and
-subtracting that same background, so "content" means pixels a renderer drew
-rather than pixels that happen to be bright.
+Content is isolated by rendering on the fallback gradient (no background
+set) and subtracting that same gradient at the same t, so "content" means
+pixels a renderer drew rather than pixels that happen to be bright.
 
 The mascot is forced off. It is config-driven and off by default; leaving it
 live would pin a decision that belongs to config rather than to layout.
@@ -42,7 +42,7 @@ GOLDEN = Path(__file__).parent / "fixtures" / "layout_pins.json"
 # Sampling rate for the pin. Low on purpose: this renders real videos, and
 # one frame per second already catches any constant-sized shift.
 PIN_FPS = 1
-BG = "static_ocean"
+BG = None                # the fallback gradient; the preset system is gone
 DIFF_THRESHOLD = 16     # per-pixel RGB sum delta that counts as drawn
 ROW_MIN_PIXELS = 20     # a row carries content above this many pixels
 BAND_BUCKET = 8         # row bands quantised to this, to absorb antialiasing
@@ -83,6 +83,10 @@ def _row_bands(mask: np.ndarray) -> list:
 def measure_type(video_type: str, data_path: str, audio_path: str,
                  out_dir: Path) -> list:
     """Render through the real pipeline and describe each sampled frame."""
+    import random
+    # The pins were recorded while importing video.backgrounds reseeded the global RNG with 42;
+    # that leak is gone (it repeated the outro A/B every session), so the test seeds it itself.
+    random.seed(42)
     import video as videomod
     import video.character as character
     from config.layout import VIDEO_HEIGHT, VIDEO_WIDTH

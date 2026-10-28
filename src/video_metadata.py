@@ -19,7 +19,7 @@ else the list is built from the script.
 **Hashtags**: YouTube gets 3–5 plus #Shorts, ordered topic → broad → audience → #englishunlimited;
 the other platforms take theirs through the existing adapt_for_platform.
 
-**One LLM call per video** (OpenAI gpt-4o-mini, logged by the cost tracker), and only inside a render
+**One LLM call per video** (through OpenRouter, src/llm.py, logged by the cost tracker), and only inside a render
 Garcia launched from the panel (the STEP 79 §00 grant). Any failure, or no grant, falls back to the
 deterministic template: it never blocks a video.
 
@@ -56,7 +56,6 @@ DEFAULT_QUESTION = "¿Lo sabías? Dímelo en comentarios 👇"
 BROAD = ["#aprenderingles", "#inglesfacil"]
 AUDIENCE = "#inglesparahispanohablantes"
 BRAND = "#englishunlimited"
-MODEL = "gpt-4o-mini"
 
 
 # ── the script's own content ─────────────────────────────────────────
@@ -172,23 +171,17 @@ Devuelve SOLO un JSON con:
 
 
 def ask_llm(script: Dict, video_type: str, client=None) -> Optional[Dict]:
-    """One gpt-4o-mini call (logged), only inside a render Garcia launched. None otherwise."""
+    """One LLM call through OpenRouter (logged), only inside a render Garcia launched. None otherwise."""
     import voice_lock
     if voice_lock.locked():
         return None                                         # not from the panel's click: template
     try:
-        if client is None:
-            from openai import OpenAI
-            client = OpenAI()
+        import llm
         content = content_list(script, video_type) or (script.get("title") or "")
-        resp = client.chat.completions.create(
-            model=MODEL, temperature=0.7, response_format={"type": "json_object"},
-            messages=[{"role": "user", "content": PROMPT.format(video_type=video_type, content=content)}])
-        from cost_tracker import get_tracker
-        usage = getattr(resp, "usage", None)
-        if usage is not None:
-            get_tracker().log_openai_chat(usage.prompt_tokens, usage.completion_tokens, MODEL, "video_metadata")
-        return json.loads(resp.choices[0].message.content)
+        resp = llm.chat("metadata", [{"role": "user", "content": PROMPT.format(video_type=video_type, content=content)}],
+                        label="video_metadata", client_=client, temperature=0.7,
+                        response_format={"type": "json_object"})
+        return llm.json_content(resp)
     except Exception as error:                              # noqa: BLE001 — never blocks a video
         logger.warning("metadata LLM failed (%s): the template is used", error)
         return None

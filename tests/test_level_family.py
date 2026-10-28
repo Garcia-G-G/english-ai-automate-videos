@@ -322,13 +322,6 @@ def test_each_category_feeds_its_type_only():
         assert [t for t, cs in cats.items() if category in cs] == [vtype]
 
 
-def test_openai_refuses_instead_of_narrating_full_script(tmp_path):
-    from tts_providers.openai_provider import OpenAITTSProvider
-    for vtype in SCRIPTS:
-        with pytest.raises(NotImplementedError, match=vtype):
-            OpenAITTSProvider().generate_from_script(_script(vtype), str(tmp_path / "a.mp3"))
-
-
 @pytest.mark.parametrize("vtype", sorted(SCRIPTS))
 def test_the_generator_prompt_names_the_type_and_its_tag(vtype):
     from script_generator import build_prompt
@@ -359,9 +352,9 @@ def test_level_test_thinks_four_seconds_on_any_word():
 
 
 @pytest.mark.parametrize("vtype", ["level_test", "say_it_level"])
-def test_the_level_types_reject_over_95_seconds(vtype):
+def test_the_level_types_reject_over_90_seconds(vtype):
     import duration_spec
-    assert duration_spec.reject_window(vtype)["max_seconds"] == 95.0
+    assert duration_spec.reject_window(vtype)["max_seconds"] == 90.0
 
 
 def test_the_predictor_adds_the_thinks_to_speech_gaps_and_the_card():
@@ -374,7 +367,7 @@ def test_the_predictor_adds_the_thinks_to_speech_gaps_and_the_card():
 # ── STEP 62 §0: pauses shrink to keep a level video under its ceiling ──
 
 def _long(vtype, extra_chars):
-    """A real script with its verdict padded, so speech alone pushes it over 95 s."""
+    """A real script with its verdict padded, so speech alone pushes it over 90 s."""
     script = _script(vtype)
     script["verdict"] += " " + "a" * extra_chars
     return script
@@ -384,7 +377,9 @@ def _long(vtype, extra_chars):
 def test_a_script_under_the_ceiling_keeps_its_pauses(vtype):
     import tts_elevenlabs as TE
     script = _script(vtype)
+    script["verdict"] = script["verdict"][:30]          # lv001 runs 91.3 s, over the 90 s Reel ceiling
     plan = TE.LEVEL_PLANS[vtype]
+    assert TE.level_predict(script, TE.level_thinks(script)) < 90.0
     assert TE.level_thinks(script) == [TE.level_think(plan, it[plan["prompt"][0]]) for it in script["items"]]
 
 
@@ -394,10 +389,10 @@ def test_an_overlong_script_shrinks_every_pause_by_one_fraction_to_fit(vtype):
     plan = TE.LEVEL_PLANS[vtype]
     script = _script(vtype)
     full = TE.level_thinks(script)
-    over = 95.0 - TE.level_predict(script, full) + 3.0          # 3 s over the ceiling
+    over = 90.0 - TE.level_predict(script, full) + 3.0          # 3 s over the ceiling
     script = _long(vtype, int(over / plan["s_per_char"]) + 1)
     thinks = TE.level_thinks(script)
-    assert TE.level_predict(script, thinks) <= 95.0
+    assert TE.level_predict(script, thinks) <= 90.0
     ratios = {round(t / f, 2) for t, f in zip(thinks, full)}
     assert len(ratios) == 1 and ratios.pop() < 1.0             # one fraction for every row
     assert min(thinks) >= plan["think_floor"]
@@ -410,7 +405,7 @@ def test_no_pause_goes_under_the_floor_and_the_script_stays_over(vtype):
     script = _long(vtype, 600)
     thinks = TE.level_thinks(script)
     assert min(thinks) == plan["think_floor"]
-    assert TE.level_predict(script, thinks) > 95.0              # duration_calibrate lists it
+    assert TE.level_predict(script, thinks) > 90.0              # duration_calibrate lists it
 
 
 def test_true_false_level_has_no_floor_and_never_shrinks():

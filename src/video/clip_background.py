@@ -94,7 +94,11 @@ class ClipLibraryBackground:
         self.softened = video_type in OPAQUE_PAGE_TYPES and scrim is None
         self._soft_dir = tempfile.mkdtemp(prefix="soft_clips_") if self.softened else None
         if self.softened:
-            clip_paths = [soften_clip(p, Path(self._soft_dir), width, height) for p in clip_paths]
+            # One ffmpeg per clip, 4 at a time (serial cost 4-25 s per render, 2026-10-27 profile).
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                clip_paths = list(pool.map(lambda p: soften_clip(p, Path(self._soft_dir), width, height),
+                                           clip_paths))
 
         # Probe real duration/fps of each clip once
         self._clips = []  # list of dicts: path, duration, fps, frames

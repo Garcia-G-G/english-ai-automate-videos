@@ -4,14 +4,14 @@
 The pipeline lives in experiments/manim_voiceover_poc/ (lesson.py, gen_script.py,
 gen_audio.py, lesson_scene.py, batch_run.py, renders.py); this page only drives it:
 
-  write   a topic → gen_script.py (OpenAI) → lessons/<id>.json, or edit a lesson here
-  voice   ElevenLabs, per segment with language_code (English reads as English,
-          Spanish as Spanish), word timings kept → audio/<lesson>/<voice>/
+  write   edit a lesson here (writing one with AI is OFF, see STUDIO_PAID_OFF)
+  voice   OFF, see STUDIO_PAID_OFF; existing audio/<lesson>/<voice>/ is still used
   render  lesson_scene.py in the background → renders/<lesson>/…mp4 + ledger row
-  batch   several lessons, one click, audio + render each
+  batch   OFF (it voices), see STUDIO_PAID_OFF
 
-Keys (ELEVENLABS_API_KEY, OPENAI_API_KEY) come from the repo's .env or the studio's own
-.env written by the panel below; they are never displayed or sent anywhere else.
+gen_script.py and gen_audio.py call OpenAI and ElevenLabs directly. OpenRouter is the only paid
+AI (2026-10-27) and those keys are dead on purpose, so the panel no longer asks for them and the
+buttons that would run those scripts are off until they are ported to OpenRouter.
 Every function under the Streamlit surface is plain and tested without a browser.
 """
 import contextlib
@@ -23,7 +23,6 @@ import subprocess
 import sys
 import threading
 import time
-import urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -51,7 +50,11 @@ except ImportError as exc:                     # pragma: no cover — clone with
     STUDIO_IMPORT_ERROR = str(exc)
 
 MATILDA = "XrExE9yKIg1WjnnlVkGX"
-ENV_KEYS = ("ELEVENLABS_API_KEY", "ELEVENLABS_VOICE_ID", "OPENAI_API_KEY", "LR_BASE_URL", "LR_STUDIO_TOKEN")
+ENV_KEYS = ("ELEVENLABS_VOICE_ID", "LR_BASE_URL", "LR_STUDIO_TOKEN")
+#: Why writing and voicing are off here (shown in the page).
+STUDIO_PAID_OFF = ("El estudio aún escribe con OpenAI (gen_script.py) y pone la voz con ElevenLabs directo "
+                   "(gen_audio.py). Solo se usa OpenRouter, así que esto está apagado hasta pasarlo a OpenRouter. "
+                   "El render funciona con los audios ya hechos.")
 TTS_MODELS = ("eleven_v4", "eleven_multilingual_v2", "eleven_turbo_v2_5", "eleven_flash_v2_5")   # first: the owner's pick by ear
 # One price table with the Shorts (STEP 76 §5): cost_tracker.PRICING, at the default model.
 from cost_tracker import tts_price_per_1k  # noqa: E402
@@ -61,9 +64,6 @@ LEVELS = ("A1", "A2", "B1", "B2")
 
 
 # ── Pure helpers (tested) ──────────────────────────────────────────────────────
-
-def slugify(name: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", name.strip().lower()).strip("-") or "voice"
 
 
 def estimate_cost_usd(lesson: dict, voices: int = 1) -> float:
@@ -200,13 +200,6 @@ def batch_command(lesson_ids: list, voice_slug: str, voice_id: str, quality: str
             "--quality", quality, "--model", model]
 
 
-def fetch_voices(api_key: str, timeout: int = 20) -> list:
-    request = urllib.request.Request("https://api.elevenlabs.io/v1/voices", headers={"xi-api-key": api_key})
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        data = json.load(response)
-    return [{"voice_id": v["voice_id"], "name": v["name"], "labels": v.get("labels") or {}} for v in data.get("voices", [])]
-
-
 # ── Background jobs (subprocess + thread; state on disk so page reruns see it) ─
 
 def jobs_dir(studio_dir: Path = STUDIO_DIR) -> Path:
@@ -267,7 +260,7 @@ def start_job(kind: str, argv: list, env: dict, cwd: Path, on_success=None, stud
                 log.write("$ " + " ".join(argv) + "\n\n")
                 log.flush()
                 if voice_chars > 0:
-                    grant = voice_credits.panel_voice(voice_chars, note=lambda m: log.write(m + "\n"))
+                    grant = voice_credits.panel_voice(voice_chars)
                 else:
                     grant = contextlib.nullcontext(None)
                 with grant as token:
@@ -615,32 +608,24 @@ def render() -> None:                                  # pragma: no cover — UI
 
     with tab_make:
         env = effective_env()
-        el_key, oa_key = env["ELEVENLABS_API_KEY"], env["OPENAI_API_KEY"]
         manim_bin = R.manim_binary(STUDIO_DIR)
         local_env_path = STUDIO_DIR / ".env"
         files = lesson_files()
 
         # ── Environment ───────────────────────────────────────────────────────────
-        with st.expander("Entorno", expanded=not (manim_bin and el_key)):
-            c1, c2, c3, c4 = st.columns(4)
+        with st.expander("Entorno", expanded=not manim_bin):
+            c1, c2 = st.columns(2)
             c1.metric("Manim", "listo" if manim_bin else "falta")
             c2.metric("ffmpeg", "listo" if shutil.which("ffmpeg") else "falta")
-            src = {"studio": ".env studio", "root": ".env repo", "process": "entorno", "missing": "falta"}
-            c3.metric("ElevenLabs", src[env["ELEVENLABS_API_KEY_SOURCE"]])
-            c4.metric("OpenAI (guiones)", src[env["OPENAI_API_KEY_SOURCE"]])
             if not manim_bin:
                 st.code(f"cd {STUDIO_DIR}\npython3 -m venv .venv && .venv/bin/pip install "
                         '"manim==0.21.0" "manim-voiceover==0.4.0"\nbrew install pango ffmpeg', language="bash")
-            st.caption(f"Las claves se guardan en `{local_env_path}` (solo este studio, permisos 600, ignorado por git); "
-                       "si falta una, se usa la del `.env` de la raíz. Nunca se muestran enteras.")
-            e1, e2, e3, e4 = st.columns(4)
-            e1.text_input("ElevenLabs actual", mask(el_key), disabled=True)
-            e2.text_input("OpenAI actual", mask(oa_key), disabled=True)
+            st.caption(f"Se guarda en `{local_env_path}` (solo este studio, permisos 600, ignorado por git); "
+                       "si falta algo, se usa el `.env` de la raíz. El token nunca se muestra entero.")
+            e3, e4 = st.columns(2)
             e3.text_input("Voice ID por defecto", env["ELEVENLABS_VOICE_ID"] or "—", disabled=True)
             e4.text_input("Learning Routes", f"{env['LR_BASE_URL'] or P.DEFAULT_BASE} · token {mask(env['LR_STUDIO_TOKEN'])}", disabled=True)
             with st.form("studio_env", clear_on_submit=True):
-                new_el = st.text_input("Nueva clave de ElevenLabs", type="password", help="Vacío = conservar")
-                new_oa = st.text_input("Nueva clave de OpenAI", type="password", help="Vacío = conservar")
                 new_voice = st.text_input("Voice ID por defecto", env["ELEVENLABS_VOICE_ID"] or MATILDA)
                 l1, l2 = st.columns(2)
                 new_base = l1.text_input("URL de Learning Routes", env["LR_BASE_URL"] or P.DEFAULT_BASE,
@@ -649,18 +634,15 @@ def render() -> None:                                  # pragma: no cover — UI
                                        help="Vacío = conservar. Lo generas con bin/rails secret y lo pones en las credenciales y aquí.")
                 if st.form_submit_button("Guardar entorno", type="primary"):
                     updates = {"ELEVENLABS_VOICE_ID": new_voice.strip() or None, "LR_BASE_URL": new_base.strip() or None,
-                               "ELEVENLABS_API_KEY": new_el.strip() or None, "OPENAI_API_KEY": new_oa.strip() or None,
                                "LR_STUDIO_TOKEN": new_lr.strip() or None}
                     write_env_file(local_env_path, updates)
-                    st.session_state.pop("el_voices", None)
                     st.success("Entorno guardado.")
                     st.rerun()
 
         # ── 1. Write ──────────────────────────────────────────────────────────────
         st.markdown("### 1 · Guion")
         with st.expander("Nueva lección con IA", expanded=not files):
-            if len(oa_key) <= 10:
-                st.info("Sin clave de OpenAI no se pueden escribir guiones automáticamente. Ponla en «Entorno».")
+            st.info(STUDIO_PAID_OFF)
             with st.form("new_lesson"):
                 topic = st.text_input("Tema", placeholder="Ej.: Past simple: verbos regulares e irregulares del día a día")
                 f1, f2, f3 = st.columns(3)
@@ -669,7 +651,7 @@ def render() -> None:                                  # pragma: no cover — UI
                 writer = f3.selectbox("Modelo", WRITER_MODELS, help="gpt-4o escribe mejor; gpt-4o-mini cuesta centavos")
                 extra = st.text_area("Indicaciones extra (opcional)", height=60,
                                      placeholder="Ej.: incluye un diálogo en una entrevista de trabajo; público: adultos de Colombia")
-                if st.form_submit_button("Escribir guion", type="primary", disabled=len(oa_key) <= 10):
+                if st.form_submit_button("Escribir guion", type="primary", disabled=True):
                     if topic.strip():
                         st.session_state.ms_job = start_job("guion", script_command(topic, level, minutes, writer, extra), {}, STUDIO_DIR)
                         st.rerun()
@@ -735,42 +717,7 @@ def render() -> None:                                  # pragma: no cover — UI
         # ── 2. Voice ──────────────────────────────────────────────────────────────
         st.markdown("### 2 · Voz")
         ready = voices_with_audio(lesson_id)
-        voice_slug, voice_id, tts_model = None, None, TTS_MODELS[0]
-        if len(el_key) <= 10:
-            st.info("Sin clave de ElevenLabs no se puede generar la voz. Ponla en «Entorno». El render sí funciona con audios ya hechos.")
-        else:
-            if st.session_state.get("el_voices") is None:
-                try:
-                    st.session_state.el_voices = fetch_voices(el_key)
-                except Exception as error:                     # noqa: BLE001
-                    st.session_state.el_voices = []
-                    st.warning(f"No pude listar las voces ({error}). Pega un voice_id a mano.")
-            voices = st.session_state.el_voices or []
-            options = {f"{v['name']} — {v['labels'].get('gender', '?')}, {v['labels'].get('accent', '?')}, "
-                       f"{v['labels'].get('use_case', v['labels'].get('description', ''))}": v for v in voices}
-            preferred = env["ELEVENLABS_VOICE_ID"] or MATILDA
-            default_index = next((i for i, v in enumerate(options.values()) if v["voice_id"] == preferred),
-                                 next((i for i, v in enumerate(options.values()) if v["voice_id"] == MATILDA), 0))
-            v1, v2, v3 = st.columns([2, 1, 1])
-            chosen = options.get(v1.selectbox("Voz", list(options) or ["(pega un voice_id)"], index=default_index))
-            manual = v2.text_input("voice_id", chosen["voice_id"] if chosen else preferred)
-            voice_id = manual.strip() or MATILDA
-            voice_slug = slugify(chosen["name"] if chosen and chosen["voice_id"] == voice_id else voice_id[:8])
-            tts_model = v3.selectbox("Modelo TTS", TTS_MODELS,
-                                     help="eleven_v4: una petición por beat, en español, inglés bien pronunciado (elegido de oído). multilingual_v2: el anterior. turbo/flash: más baratos.")
-            stale = stale_beats(lesson, voice_slug)
-            force = st.checkbox("Regenerar todos los golpes (forzar)", value=False,
-                                help="Para oír un cambio del generador de audio, no del texto: rehace la voz completa de esta lección.")
-            todo = [b["id"] for b in lesson["beats"]] if force else stale
-            cost = round(sum(len(L.spoken_text(b["narration"])) for b in lesson["beats"] if b["id"] in todo) / 1000 * PRICE_PER_1K_CHARS, 3)
-            label = (f"Generar audio · {voice_slug} · {len(todo)} de {len(lesson['beats'])} golpes (≈ \\${cost:.2f})" if todo
-                     else f"Audio de {voice_slug} al día")
-            if st.button(label, disabled=not todo or bool(problems) or changed, type="primary",
-                         help="Guarda la narración primero" if changed else None):
-                chars = sum(len(L.spoken_text(b["narration"])) for b in lesson["beats"] if b["id"] in todo)
-                st.session_state.ms_job = start_job("audio", audio_command(lesson_id, voice_slug, voice_id, tts_model, force), {},
-                                                    STUDIO_DIR, voice_chars=max(1, chars))
-                st.rerun()
+        st.info(STUDIO_PAID_OFF)
         if ready:
             st.caption("Voces con audio para esta lección: " + ", ".join(
                 f"`{v}`" + (f" ({len(stale_beats(lesson, v))} desactualizados)" if stale_beats(lesson, v) else "") for v in ready))
@@ -805,19 +752,7 @@ def render() -> None:                                  # pragma: no cover — UI
 
         # ── 4. Batch ──────────────────────────────────────────────────────────────
         with st.expander("Lote · varias lecciones, audio + vídeo, un clic"):
-            if len(el_key) <= 10 or not manim_bin:
-                st.info("El lote necesita la clave de ElevenLabs y Manim instalado.")
-            else:
-                picked = st.multiselect("Lecciones", [s["id"] for s in summaries], default=[s["id"] for s in summaries if not s["problems"]])
-                bq = st.selectbox("Calidad del lote", list(R.QUALITIES), format_func=lambda q: R.QUALITIES[q][1],
-                                  index=list(R.QUALITIES).index(R.DEFAULT_QUALITY), key="bq")
-                total_chars = sum(s["chars"] for s in summaries if s["id"] in picked)
-                st.caption(f"{len(picked)} lección(es) · ≈ {sum(s['minutes'] for s in summaries if s['id'] in picked):.0f} min de vídeo · "
-                           f"audio ≈ \\${total_chars / 1000 * PRICE_PER_1K_CHARS:.2f} como máximo (lo ya generado no se repite)")
-                if st.button("Lanzar lote", disabled=not picked or not voice_slug):
-                    st.session_state.ms_job = start_job("lote", batch_command(picked, voice_slug, voice_id, bq, tts_model), {},
-                                                        STUDIO_DIR, voice_chars=max(1, total_chars))
-                    st.rerun()
+            st.info(STUDIO_PAID_OFF)                       # the batch voices: off until ported
 
         # ── 5. Publish into a Learning Routes step ────────────────────────────────
         st.markdown("### 4 · Publicar en un curso de Learning Routes")
@@ -840,7 +775,7 @@ def render() -> None:                                  # pragma: no cover — UI
                 picked = labels[st.selectbox("Paso del curso", list(labels))]
                 p1, p2 = st.columns(2)
                 topic, extra = P.topic_for(picked)
-                if p1.button("Escribir guion desde este paso", disabled=len(oa_key) <= 10,
+                if p1.button("Escribir guion desde este paso", disabled=True,
                              help="gen_script.py con el título del paso como tema y su descripción como guía"):
                     st.session_state.ms_job = start_job("guion", script_command(topic, picked.get("level") or "A2", 7, WRITER_MODELS[0], extra),
                                                         {}, STUDIO_DIR)
@@ -1035,7 +970,6 @@ def _job_monitor(st) -> None:                          # pragma: no cover — UI
             st.video(str(STUDIO_DIR / "renders" / result["file"]))
         if st.button("Cerrar", key="close_job"):
             del st.session_state.ms_job
-            st.session_state.pop("el_voices", None)
             st.rerun()
     else:
         st.error(f"❌ `{job_id}` falló (código {status.get('code')}). {status.get('result', {}).get('error', '')}")

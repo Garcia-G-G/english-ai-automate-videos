@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Script Generator for English AI Videos
-Uses OpenAI GPT to generate lesson scripts from topic database.
+Uses an LLM through OpenRouter to generate lesson scripts from topic database.
 Supports multiple video types: educational, quiz, true_false, fill_blank, pronunciation
 """
 
@@ -29,8 +29,8 @@ load_dotenv(ROOT / ".env")
 TOPICS_DIR = ROOT / "content" / "topics"
 OUTPUT_DIR = ROOT / "output" / "scripts"
 
-# OpenAI settings
-MODEL = "gpt-4o-mini"
+# LLM settings: the model is config.yaml llm.models.script, through OpenRouter (src/llm.py)
+import llm
 MAX_TOKENS = 3000
 
 # Supported video types -- derived, not restated. A type legal here and
@@ -1250,16 +1250,35 @@ def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None
 
 
 def generate_script(category: str, topic: dict, video_type: str = "educational") -> dict:
-    """Call OpenAI API to generate a script."""
+    """Call the LLM (through OpenRouter) to generate a script."""
 
+    import channel_insights
+    from script_schema import ScriptValidationError
+    theme = topic.get("theme") or topic.get("spanish") or topic.get("topic") or ""
+    prompt = build_prompt(category, topic, video_type) + "\n\n" + channel_insights.brief(video_type, theme=str(theme))
+    try:
+        return _generate(category, topic, video_type, prompt)
+    except ScriptValidationError as error:
+        # One repair round: the model gets the validator's exact complaints (2026-10-27: Opus wrote
+        # keycap emojis 1️⃣ for «los números», which the renderer cannot draw).
+        logger.warning("script refused by the validator, asking for a corrected one: %s", error)
+        return _generate(category, topic, video_type, prompt + (
+            "\n\nUN INTENTO ANTERIOR FUE RECHAZADO por el validador con estos errores; "
+            f"no los repitas:\n{error}"))
+
+
+def _generate(category: str, topic: dict, video_type: str, prompt: str) -> dict:
     return generate_script_from_prompt(
         category=category,
         topic=topic,
         video_type=video_type,
-        prompt=build_prompt(category, topic, video_type),
+        prompt=prompt,
         system_instruction=(
-            "You are an expert bilingual Spanish-English teacher creating viral "
-            "TikTok content. Always respond with valid JSON only."
+            "You are an expert bilingual Spanish-English teacher writing short vertical videos "
+            "(YouTube Shorts, Reels) for Spanish speakers learning English. You write natural Latin "
+            "American Spanish, choose high-frequency words a learner will actually use, and make the "
+            "first second impossible to scroll past. Every format rule in the prompt is a hard "
+            "requirement checked by a validator. Respond with valid JSON only."
         ),
     )
 
@@ -1280,42 +1299,21 @@ def generate_script_from_prompt(
 ) -> dict:
     """Invoke, parse, clean, and validate one script with caller-owned policy."""
 
-    if client is None:
-        api_key = os.environ.get("OPENAI_API_KEY")
-        if not api_key:
-            raise EnvironmentError(
-                "OPENAI_API_KEY environment variable not set. Add it to .env file."
-            )
-        from openai import OpenAI       # lazy: 0.3 s the panel need not pay at start
-        client = OpenAI(api_key=api_key)
+    client = client or llm.client()
+    model_id = llm.model("script")
+    logger.info(f"Calling OpenRouter ({model_id}) for {video_type} video...")
 
-    logger.info(f"Calling OpenAI API ({MODEL}) for {video_type} video...")
+    response = llm.chat("script", [
+        {"role": "system", "content": system_instruction},
+        {"role": "user", "content": prompt}
+    ], label=f"script_{video_type}", client_=client, max_tokens=MAX_TOKENS,
+        temperature=0.7)  # Slightly creative but consistent
 
-    response = client.chat.completions.create(
-        model=MODEL,
-        max_tokens=MAX_TOKENS,
-        temperature=0.7,  # Slightly creative but consistent
-        messages=[
-            {"role": "system", "content": system_instruction},
-            {"role": "user", "content": prompt}
-        ]
-    )
-
-    _record_response_usage(response, video_type)
-
-    response_text = response.choices[0].message.content.strip()
-
-    # Parse JSON from response
     try:
-        if "```json" in response_text:
-            response_text = response_text.split("```json")[1].split("```")[0].strip()
-        elif "```" in response_text:
-            response_text = response_text.split("```")[1].split("```")[0].strip()
-
-        script = json.loads(response_text)
+        script = llm.json_content(response)
     except json.JSONDecodeError as e:
         logger.warning(f"Failed to parse JSON response: {e}")
-        logger.debug(f"Raw response:\n{response_text}")
+        logger.debug(f"Raw response:\n{response.choices[0].message.content}")
         raise
 
     # Ensure type is set
@@ -1342,19 +1340,10 @@ def generate_script_from_prompt(
             logger.info("Regenerating with different options...")
             # Retry once with explicit instruction
             retry_prompt = prompt + "\n\n" + duplicate_options_instruction
-            retry_response = client.chat.completions.create(
-                model=MODEL,
-                max_tokens=MAX_TOKENS,
-                messages=[{"role": "user", "content": retry_prompt}]
-            )
-            _record_response_usage(retry_response, video_type)
-            retry_text = retry_response.choices[0].message.content.strip()
+            retry_response = llm.chat("script", [{"role": "user", "content": retry_prompt}],
+                                      label=f"script_{video_type}", client_=client, max_tokens=MAX_TOKENS)
             try:
-                if "```json" in retry_text:
-                    retry_text = retry_text.split("```json")[1].split("```")[0].strip()
-                elif "```" in retry_text:
-                    retry_text = retry_text.split("```")[1].split("```")[0].strip()
-                script = json.loads(retry_text)
+                script = llm.json_content(retry_response)
                 script["type"] = video_type
             except Exception:
                 logger.warning("Retry failed, using original")
@@ -1365,7 +1354,7 @@ def generate_script_from_prompt(
         "topic_id": topic.get("id", "unknown"),
         "video_type": video_type,
         "generated_at": datetime.now().isoformat(),
-        "model": MODEL
+        "model": model_id
     }
 
     # Validate and clean script for TTS compatibility
@@ -1412,19 +1401,6 @@ def generate_script_from_prompt(
     return script
 
 
-def _record_response_usage(response, video_type: str) -> None:
-    """Record one completed model attempt, including retry attempts."""
-    try:
-        from cost_tracker import get_tracker
-        if hasattr(response, 'usage') and response.usage:
-            get_tracker().log_openai_chat(
-                prompt_tokens=response.usage.prompt_tokens,
-                completion_tokens=response.usage.completion_tokens,
-                model=MODEL, label=f"script_{video_type}")
-    except Exception:
-        pass
-
-
 def save_script(script: dict, name: str) -> Path:
     """Save script to output directory."""
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1440,7 +1416,7 @@ def save_script(script: dict, name: str) -> Path:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate English lesson scripts using OpenAI GPT",
+        description="Generate English lesson scripts with an LLM through OpenRouter",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""
 Video Types: {', '.join(VIDEO_TYPES)}

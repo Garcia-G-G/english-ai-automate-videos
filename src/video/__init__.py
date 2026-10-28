@@ -15,8 +15,7 @@ from script_schema import validate_render_data
 
 from .constants import FPS, VIDEO_WIDTH, VIDEO_HEIGHT
 from .backgrounds import (
-    set_background, reset_background, get_background_generator,
-    BACKGROUNDS_AVAILABLE,
+    set_background, reset_background,
     CURRENT_BACKGROUND,
 )
 from .utils import load_data
@@ -58,14 +57,6 @@ from .vocabulary import create_frame_vocabulary
 from .how_do_you_say import create_frame_how_do_you_say, create_frame_level
 from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
-# Re-export from top-level src/backgrounds.py (on sys.path via main.py)
-try:
-    from backgrounds import BACKGROUND_PRESETS, get_recommended_preset  # noqa: E402
-except ImportError:
-    BACKGROUND_PRESETS = {}
-    def get_recommended_preset():
-        return None
-
 logger = logging.getLogger(__name__)
 
 
@@ -78,36 +69,6 @@ def peak_rss_mb() -> float:
     import resource
     raw = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     return raw / (1024 * 1024) if platform.system() == "Darwin" else raw / 1024
-
-
-def prepare_background_cache(bg, preset: str, duration: float,
-                             fast_mode: bool = False) -> None:
-    """Warm `bg` for `preset`: one frame if it is static, a loop if it moves.
-
-    render_from_preset ignores t for a static_gradient, so pre-rendering a
-    loop of them produces N byte-identical 1080x1920x3 arrays and retains all
-    of them (150 frames ~ 930MB nominal). 69 of the 76 enabled presets are
-    static_gradient, so the loop path was the common one.
-    """
-    import time as _time
-
-    preset_type = (BACKGROUND_PRESETS.get(preset) or {}).get("type")
-    static = fast_mode or preset_type == "static_gradient"
-
-    _bg_start = _time.time()
-
-    if static:
-        logger.info("Rendering static background once (%s)...", preset_type or "fast mode")
-        bg.render_static_once(preset)
-        logger.info("Background rendered in %.1fs (peak RSS %.0f MB)",
-                    _time.time() - _bg_start, peak_rss_mb())
-        return
-
-    logger.info("Pre-rendering background loop...")
-    bg.pre_render_loop(preset, loop_duration=min(5.0, duration),
-                       show_progress=False)
-    logger.info("Background pre-rendered in %.1fs (peak RSS %.0f MB)",
-                _time.time() - _bg_start, peak_rss_mb())
 
 
 def _notebook_workers(video_type: str) -> int:
@@ -140,9 +101,10 @@ def generate_video(
         output_path: Output video path
         video_type: Video type (educational, quiz, etc.)
         fps: Frames per second
-        background: Background preset name or type
-        background_options: Custom background options
-        fast_mode: Use static background and optimized settings for speed
+        background: "clips" or "clips:<dir>" from pipeline.resolve_background;
+            None draws the legacy gradient (tests, stills)
+        background_options: Clip-library options
+        fast_mode: Faster encoder settings
         renderer: "ffmpeg" (fast, default) or "moviepy" (legacy fallback)
         karaoke_mode: Use karaoke-style renderer with inline translations
         engine_version: "v1" (legacy renderers) or "v2" (design-system
@@ -209,33 +171,8 @@ def generate_video(
     # -b, and this line quietly picked a gen_NNN — so the generated image the
     # video had paid for never reached the frame.
 
-    # Per-video generated background: "photo:<path>". The image was made
-    # from this video's topic and has already cleared the contrast gate;
-    # there is no category to pick from.
-    if background and background.startswith("photo:"):
-        image_path = background.split(":", 1)[1]
-        from topic_background import (RENDER_BLUR_RADIUS,
-                                      RENDER_OVERLAY_OPACITY,
-                                      RENDER_ZOOM_RANGE)
-        set_background(bg_type="photo_kenburns",
-                       options={"image_path": image_path,
-                                "overlay_opacity": RENDER_OVERLAY_OPACITY,
-                                "blur_radius": RENDER_BLUR_RADIUS,
-                                "zoom_range": RENDER_ZOOM_RANGE},
-                       duration=duration)
-        logger.info("Background: generated image %s", image_path)
-        bg = get_background_generator()
-        if bg:
-            # Ken Burns moves, so it cannot be cached as one static frame.
-            bg.clear_cache()
-
     # Clip-library background: "clips" (with background_options) or "clips:<dir>"
-    # ELIF, not IF. As a separate `if`, the generic `elif background:` at the
-    # end of this chain still ran for a "photo:<path>" spec, took the
-    # not-a-preset route and called set_background(bg_type="photo:/...") —
-    # silently replacing the image with a default gradient. The six videos
-    # rendered black-ish and nothing said why.
-    elif background == "clips" or (background and background.startswith("clips:")):
+    if background == "clips" or (background and background.startswith("clips:")):
         options = dict(background_options or {})
         if background.startswith("clips:"):
             options["dir"] = background.split(":", 1)[1]
@@ -250,23 +187,13 @@ def generate_video(
         logger.info(f"Background: clips from {options.get('dir')}")
 
     elif background:
-        if BACKGROUNDS_AVAILABLE and background in BACKGROUND_PRESETS:
-            set_background(preset=background, duration=duration)
-            logger.info(f"Background: {background} (preset)")
-
-            bg = get_background_generator()
-            if bg:
-                prepare_background_cache(bg, background, duration,
-                                         fast_mode=fast_mode)
-
-        elif BACKGROUNDS_AVAILABLE:
-            set_background(bg_type=background, options=background_options or {}, duration=duration)
-            logger.info(f"Background: {background} (custom)")
-        else:
-            logger.warning("Background system not available, using legacy gradient")
+        # Presets and "photo:<path>" were removed with src/backgrounds.py.
+        # Refuse loudly: ignoring it would ship the fallback gradient.
+        raise ValueError(f"Unknown background {background!r}: "
+                         "only 'clips' or 'clips:<dir>' exist")
     else:
         reset_background()
-        logger.info("Background: legacy gradient (no presets available)")
+        logger.info("Background: legacy gradient (none set)")
 
     # Determine video type (second, redundant resolution — see line 117)
     if video_type is None:
@@ -592,9 +519,9 @@ def main():
                         help="Video type (auto-detected from data if not specified)")
     parser.add_argument("--fps", type=int, default=FPS, help="FPS")
     parser.add_argument("-b", "--background", required=True,
-                        help="Background preset (bokeh_soft, purple_vibes, dark_professional, etc.) or type")
+                        help="Background: clips:<dir> (from pipeline.resolve_background)")
     parser.add_argument("--fast", action="store_true",
-                        help="Fast mode: use static background and optimized settings")
+                        help="Fast mode: faster encoder settings")
     parser.add_argument("--renderer", choices=["ffmpeg", "moviepy"], default="ffmpeg",
                         help="Rendering backend: ffmpeg (fast, default) or moviepy (legacy)")
     parser.add_argument("--karaoke", action="store_true",
@@ -603,20 +530,8 @@ def main():
                         help="Use the v2 render engine (educational only; "
                              "other types fall back to v1)")
     parser.add_argument("--native-language", choices=["es", "zh-Hans"], default="es")
-    parser.add_argument("--list-backgrounds", action="store_true",
-                        help="List available background presets")
 
     args = parser.parse_args()
-
-    if args.list_backgrounds:
-        if BACKGROUNDS_AVAILABLE:
-            print("Available background presets:")
-            for name, preset in BACKGROUND_PRESETS.items():
-                print(f"  {name}: {preset['type']}")
-            print(f"\nRecommended: {get_recommended_preset()}")
-        else:
-            print("Background system not available")
-        sys.exit(0)
 
     if not args.audio:
         print("Error: Audio file (-a/--audio) is required", file=sys.stderr)

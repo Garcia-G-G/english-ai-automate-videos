@@ -46,8 +46,8 @@ def test_the_themes_reach_the_fetch_from_the_resolver_and_the_panel(monkeypatch,
     except pipeline.BackgroundUnavailable:
         pass
     assert seen.get("themes") == ["pillow close up"]
-    admin = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
-    assert "themes=footage_themes" in admin and "footage_themes = _themes(_artifact)" in admin
+    engine = (ROOT / "src" / "jobs.py").read_text(encoding="utf-8")
+    assert "themes=footage_themes" in engine and "footage_themes = _themes(_artifact)" in engine
 
 
 @pytest.mark.parametrize("fps, step", [(30.0, 1), (60.0, 2), (25.0, None), (30000 / 1001, None), (60000 / 1001, None)])

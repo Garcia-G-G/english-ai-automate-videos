@@ -98,8 +98,10 @@ def test_the_shorts_request_is_unchanged(monkeypatch, tmp_path):
     video = tmp_path / "v.mp4"; video.write_bytes(b"x" * 16)
     result = _yt().upload_video(str(video), "T", "D", ["Alpha"])
     body = sent["post"][0][1]["json"]
-    assert body == {"snippet": {"title": "T #Shorts", "description": "D", "tags": ["Alpha"], "categoryId": "27"},
+    assert body == {"snippet": {"title": "T", "description": "D", "tags": ["Alpha"], "categoryId": "27",
+                                "defaultLanguage": "es", "defaultAudioLanguage": "es"},
                     "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False}}
+    assert result.sent == {"title": "T", "description": "D", "hashtags": ["Alpha"], "changes": []}
     assert sent["put"][0][1]["timeout"] == uploader.UPLOAD_TIMEOUT_SECONDS
     assert result.url == "https://youtube.com/shorts/vid123"
 

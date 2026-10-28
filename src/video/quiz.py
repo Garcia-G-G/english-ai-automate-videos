@@ -63,16 +63,6 @@ def find_word_time(words: List[Dict], target: str, start_from: int = 0) -> Tuple
     return None, start_from
 
 
-def find_phrase_time(words: List[Dict], phrase: str, start_from: int = 0) -> Optional[float]:
-    """Find when a phrase starts in the word list."""
-    phrase_words = phrase.lower().split()
-    if not phrase_words:
-        return None
-
-    first_word = phrase_words[0].strip('.,!?')
-    time, _ = find_word_time(words, first_word, start_from)
-    return time
-
 
 def parse_quiz_timestamps(words: List[Dict]) -> Dict[str, float]:
     """Parse TTS timestamps to find key moments in quiz audio."""

@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from config import secrets as S  # noqa: E402
 
-ENV = "# keys\nOPENAI_API_KEY=sk-" + "a" * 30 + "\nTTS_PROVIDER=elevenlabs\n"
+ENV = "# keys\nOPENROUTER_API_KEY=sk-or-v1-" + "a" * 30 + "\nELEVENLABS_VOICE_ID=" + "A" * 20 + "\n"
 
 
 @pytest.fixture
@@ -22,26 +22,28 @@ def env_file(tmp_path, monkeypatch):
     path.parent.mkdir()
     path.write_text(ENV)
     path.chmod(0o600)
-    for key in ("OPENAI_API_KEY", "TTS_PROVIDER", "ELEVENLABS_API_KEY"):
+    for key in ("OPENROUTER_API_KEY", "ELEVENLABS_VOICE_ID", "OPENROUTER_VOICE_ID"):
         monkeypatch.setenv(key, os.environ.get(key, ""))        # restored after the test
     return path
 
 
 def test_a_valid_value_replaces_one_line_atomically_and_keeps_the_mode(env_file):
-    S.save_env_key("TTS_PROVIDER", "openai", env_path=env_file)
-    assert env_file.read_text() == ENV.replace("TTS_PROVIDER=elevenlabs", "TTS_PROVIDER=openai")
+    S.save_env_key("ELEVENLABS_VOICE_ID", "B" * 20, env_path=env_file)
+    assert env_file.read_text() == ENV.replace("A" * 20, "B" * 20)
     assert stat.S_IMODE(env_file.stat().st_mode) == 0o600
     assert list(env_file.parent.iterdir()) == [env_file]            # no temp file left
-    S.save_env_key("ELEVENLABS_API_KEY", "sk_" + "0f" * 24, env_path=env_file)
-    assert env_file.read_text().endswith("ELEVENLABS_API_KEY=sk_" + "0f" * 24 + "\n")
+    S.save_env_key("OPENROUTER_VOICE_ID", "C" * 20, env_path=env_file)
+    assert env_file.read_text().endswith("OPENROUTER_VOICE_ID=" + "C" * 20 + "\n")
 
 
 @pytest.mark.parametrize("key,value", [
-    ("TTS_PROVIDER", "openai\nOPENAI_API_KEY=sk-evil"),     # a second key smuggled in
-    ("TTS_PROVIDER", "nope"),                               # fails its pattern
-    ("OPENAI_API_KEY", "not-a-key"),
-    ("TTS_PROVIDER", ""),
+    ("ELEVENLABS_VOICE_ID", "B" * 20 + "\nOPENROUTER_API_KEY=sk-evil"),   # a second key smuggled in
+    ("ELEVENLABS_VOICE_ID", "nope"),                                      # fails its pattern
+    ("OPENROUTER_API_KEY", "not-a-key"),
+    ("ELEVENLABS_VOICE_ID", ""),
     ("NOT_A_KEY", "x"),
+    ("OPENAI_API_KEY", "sk-" + "a" * 30),          # the dead keys are no longer accepted
+    ("ELEVENLABS_API_KEY", "sk_" + "0f" * 24),
 ])
 def test_a_bad_value_is_refused_and_the_file_is_untouched(env_file, key, value):
     with pytest.raises(ValueError):

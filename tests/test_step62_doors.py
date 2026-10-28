@@ -67,13 +67,6 @@ def test_hashtags_title_and_duration_band(vtype):
 
 
 @pytest.mark.parametrize("vtype", sorted(FIXTURES))
-def test_openai_refuses(vtype, tmp_path):
-    from tts_providers.openai_provider import OpenAITTSProvider
-    with pytest.raises(NotImplementedError, match=vtype):
-        OpenAITTSProvider().generate_from_script(_script(vtype), str(tmp_path / "a.mp3"))
-
-
-@pytest.mark.parametrize("vtype", sorted(FIXTURES))
 def test_elevenlabs_routes_to_the_level_generator(vtype, tmp_path, monkeypatch):
     import tts_elevenlabs as TE
     import tts_providers.elevenlabs_provider as EP

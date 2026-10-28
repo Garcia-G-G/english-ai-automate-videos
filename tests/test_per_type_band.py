@@ -55,9 +55,9 @@ def test_a_type_with_no_override_gets_the_global_band(cfg):
 
 def test_a_type_overrides_only_what_it_declares(cfg):
     """Restating the floor and target is how two numbers drift apart."""
-    cfg({"quiz": dict(BASE, max_seconds=100.0)})
+    cfg({"quiz": dict(BASE, max_seconds=88.0)})
     b = ds.band("quiz")
-    assert b["max_seconds"] == 100.0
+    assert b["max_seconds"] == 88.0
     assert b["min_seconds"] == 50.0
     assert b["target_seconds"] == 65.0
 
@@ -65,22 +65,22 @@ def test_a_type_overrides_only_what_it_declares(cfg):
 def test_one_types_override_does_not_touch_another(cfg):
     """THE WHOLE POINT. Raising quiz's ceiling must not stop the guard
     catching a runaway educational video."""
-    cfg({"quiz": dict(BASE, max_seconds=100.0),
+    cfg({"quiz": dict(BASE, max_seconds=88.0),
          "educational": dict(BASE)})
 
-    assert ds.band("quiz")["max_seconds"] == 100.0
+    assert ds.band("quiz")["max_seconds"] == 88.0
     assert ds.band("educational")["max_seconds"] == 80.0
     assert ds.band()["max_seconds"] == 80.0
 
 
 def test_an_unknown_type_gets_the_global_band(cfg):
-    cfg({"quiz": dict(BASE, max_seconds=100.0)})
+    cfg({"quiz": dict(BASE, max_seconds=88.0)})
     assert ds.band("nonexistent")["max_seconds"] == 80.0
 
 
 def test_the_type_name_is_case_insensitive(cfg):
-    cfg({"quiz": dict(BASE, max_seconds=100.0)})
-    assert ds.band("QUIZ")["max_seconds"] == 100.0
+    cfg({"quiz": dict(BASE, max_seconds=88.0)})
+    assert ds.band("QUIZ")["max_seconds"] == 88.0
 
 
 # ── the band must reach the things that use it ───────────────────────
@@ -88,21 +88,21 @@ def test_the_type_name_is_case_insensitive(cfg):
 def test_the_verdict_judges_against_the_types_own_ceiling(cfg):
     """A judge that reads the global band while the type declares its own
     is the same bug wearing a different hat."""
-    cfg({"quiz": dict(BASE, max_seconds=100.0)})
+    cfg({"quiz": dict(BASE, max_seconds=88.0)})
 
     record = ds.check("quiz", narration_seconds=80.0,
-                      measured_video_seconds=92.0)
+                      measured_video_seconds=86.0)
     assert record["status"] == ds.PASS, (
-        f"92s judged against quiz's own 100s ceiling: {record.get('reason')}")
-    assert record["band"] == [50.0, 100.0]
+        f"86s judged against quiz's own 88s ceiling: {record.get('reason')}")
+    assert record["band"] == [50.0, 88.0]
 
-    record = ds.check("quiz", narration_seconds=100.0,
-                      measured_video_seconds=104.0)
-    assert record["status"] == ds.OUT_OF_BAND, "104s is past quiz's ceiling"
+    record = ds.check("quiz", narration_seconds=85.0,
+                      measured_video_seconds=89.0)
+    assert record["status"] == ds.OUT_OF_BAND, "89s is past quiz's ceiling"
 
 
 def test_another_type_is_still_caught_at_eighty(cfg):
-    cfg({"quiz": dict(BASE, max_seconds=100.0),
+    cfg({"quiz": dict(BASE, max_seconds=88.0),
          "educational": dict(BASE)})
 
     record = ds.check("educational", narration_seconds=88.0,
@@ -126,9 +126,9 @@ def test_the_word_range_follows_the_types_band(cfg):
 
 
 def test_the_prompt_instruction_quotes_the_types_own_numbers(cfg):
-    cfg({"quiz": dict(BASE, max_seconds=100.0)})
+    cfg({"quiz": dict(BASE, max_seconds=88.0)})
     text = ds.prompt_instruction("quiz")
-    assert "100" in text, f"the instruction still quotes the global band: {text}"
+    assert "88" in text, f"the instruction still quotes the global band: {text}"
 
 
 # ── the live config ──────────────────────────────────────────────────
@@ -168,14 +168,15 @@ def test_the_fitted_renders_video_duration_is_narration_plus_outro():
         assert ds.project("quiz", narration) == pytest.approx(video, abs=0.05), name
 
 
-def test_quizs_band_holds_every_two_item_render_it_was_fitted_on():
-    """The four the number came from. If a later change moves quiz's
-    duration, this names which render fell out."""
+def test_quizs_band_holds_every_two_item_render_under_the_reel_ceiling():
+    """The four the number came from. The two over 90 s (sl001, id016) are
+    refused since the Facebook Reel cap (27 Oct 2026); the rest still pass."""
     ds.reload()
     for name, _words, narration, video in FITTED_RENDERS:
         record = ds.check("quiz", narration_seconds=narration,
                           measured_video_seconds=video)
-        assert record["status"] == ds.PASS, f"{name}: {record['reason']}"
+        want = ds.PASS if video <= ds.PLATFORM_MAX_SECONDS else ds.OUT_OF_BAND
+        assert record["status"] == want, f"{name}: {record['reason']}"
 
 
 def test_quizs_band_still_catches_one_and_three_item_cuts():
@@ -212,9 +213,9 @@ def test_the_other_types_still_answer_with_the_global_band():
 
 def test_the_reject_window_falls_back_to_the_types_band(cfg):
     """A type that declares no reject edges rejects exactly where it did."""
-    cfg({"quiz": dict(BASE, max_seconds=100.0)})
+    cfg({"quiz": dict(BASE, max_seconds=88.0)})
     assert ds.reject_window("quiz") == {"min_seconds": 50.0,
-                                        "max_seconds": 100.0}
+                                        "max_seconds": 88.0}
     assert ds.reject_window() == {"min_seconds": 50.0, "max_seconds": 80.0}
 
 
@@ -267,10 +268,10 @@ def test_the_reason_quotes_a_fractional_edge_unrounded(cfg):
 def test_the_prompt_states_the_rule_the_pipeline_enforces(cfg):
     """"se rechaza" has to quote the reject window, or it states a rule
     check() does not apply."""
-    cfg({"quiz": dict(BASE, reject_min_seconds=40.0, reject_max_seconds=120.0)})
+    cfg({"quiz": dict(BASE, reject_min_seconds=40.0, reject_max_seconds=86.0)})
     text = ds.prompt_instruction("quiz")
     assert "entre 50 y 80 segundos" in text, "the aim is still the band"
-    assert "más corto que 40s o más largo que 120s se rechaza" in text
+    assert "más corto que 40s o más largo que 86s se rechaza" in text
 
 
 # ── the live config's reject window ──────────────────────────────────
@@ -298,11 +299,12 @@ def test_quizs_reject_edges_are_the_midpoints_between_formats():
     one_item, three_items = 47.5, 127.9
     w = ds.reject_window("quiz")
     assert w["min_seconds"] == pytest.approx((one_item + min(videos)) / 2, abs=0.05)
-    assert w["max_seconds"] == pytest.approx((max(videos) + three_items) / 2, abs=0.05)
+    # The ceiling's midpoint (110.7) sits past the Reel cap, so the cap rejects first.
+    assert w["max_seconds"] == ds.PLATFORM_MAX_SECONDS < (max(videos) + three_items) / 2
 
 
 def test_quizs_reject_window_is_wider_than_its_aim_on_both_sides():
     ds.reload()
     b, w = ds.band("quiz"), ds.reject_window("quiz")
     assert w["min_seconds"] < b["min_seconds"]
-    assert w["max_seconds"] > b["max_seconds"]
+    assert w["max_seconds"] >= b["max_seconds"]          # equal at the 90 s Reel cap

@@ -213,13 +213,7 @@ def test_hashtags_title_and_duration_band():
     import metadata_generator
     assert metadata_generator.TYPE_HASHTAGS[VTYPE][0] == "#VerdaderoOFalso"
     assert metadata_generator.TITLE_TEMPLATES[VTYPE]
-    assert duration_spec.reject_window(VTYPE)["max_seconds"] == 95.0
-
-
-def test_openai_refuses(tmp_path):
-    from tts_providers.openai_provider import OpenAITTSProvider
-    with pytest.raises(NotImplementedError, match=VTYPE):
-        OpenAITTSProvider().generate_from_script(_script(), str(tmp_path / "a.mp3"))
+    assert duration_spec.reject_window(VTYPE)["max_seconds"] == 90.0
 
 
 def test_the_generator_prompt_names_the_type_and_its_tag():

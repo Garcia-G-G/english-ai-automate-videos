@@ -136,19 +136,6 @@ def manrope(size: int, weight: str = "SemiBold") -> ImageFont.FreeTypeFont:
     return f
 
 
-def instrument_serif_italic(size: int) -> ImageFont.FreeTypeFont:
-    """Instrument Serif Italic — the Learning Routes heading face."""
-    key = ("instrument-italic", size)
-    if key in _brand_fonts:
-        return _brand_fonts[key]
-
-    if not _INSTRUMENT_ITALIC.exists():
-        raise BrandFontMissing(f"Instrument Serif not found at {_INSTRUMENT_ITALIC}")
-
-    f = ImageFont.truetype(str(_INSTRUMENT_ITALIC), size)
-    _brand_fonts[key] = f
-    return f
-
 
 def font_line_height(f: ImageFont.FreeTypeFont) -> int:
     """Line-to-line advance for `f`, from the font's own metrics.
@@ -848,96 +835,6 @@ def get_word_animation_state(
     return state
 
 
-def draw_glass_button(
-    img: Image.Image,
-    draw: ImageDraw.Draw,
-    x: int, y: int,
-    w: int, h: int,
-    text: str,
-    text_font: ImageFont.FreeTypeFont,
-    alpha: int = 255,
-    state: str = 'normal',
-    glow_amount: float = 0.0,
-):
-    """Draw a glassmorphism-style button with optional glow/sparkle states.
-
-    Args:
-        state: 'normal', 'correct', or 'dimmed'
-        glow_amount: 0.0–1.0 for glow intensity on correct state
-    """
-    radius = 22
-
-    # Drop shadow
-    shadow_layer = Image.new('RGBA', img.size, (0, 0, 0, 0))
-    shadow_draw = ImageDraw.Draw(shadow_layer)
-    shadow_alpha = int(alpha * 0.35)
-    shadow_draw.rounded_rectangle(
-        [x + 2, y + 4, x + w + 2, y + h + 4],
-        radius=radius, fill=(0, 0, 0, shadow_alpha),
-    )
-    img.paste(shadow_layer, (0, 0), shadow_layer)
-
-    # Glow halo for correct state
-    if state == 'correct' and glow_amount > 0:
-        glow_layer = Image.new('RGBA', img.size, (0, 0, 0, 0))
-        glow_draw = ImageDraw.Draw(glow_layer)
-        ga = int(50 * glow_amount * (alpha / 255))
-        for spread in (12, 8, 4):
-            glow_draw.rounded_rectangle(
-                [x - spread, y - spread, x + w + spread, y + h + spread],
-                radius=radius + spread, fill=(34, 197, 94, ga),
-            )
-        img.paste(glow_layer, (0, 0), glow_layer)
-
-    # Button fill
-    if state == 'correct':
-        fill = (34, 197, 94, int(alpha * 0.86))
-    elif state == 'dimmed':
-        fill = (30, 30, 60, int(alpha * 0.30))
-    else:
-        fill = (30, 30, 60, int(alpha * 0.70))
-
-    draw.rounded_rectangle([x, y, x + w, y + h], radius=radius, fill=fill)
-
-    # Border (glassmorphism white edge)
-    border_alpha = int(alpha * (0.15 if state == 'dimmed' else 0.45))
-    draw.rounded_rectangle(
-        [x, y, x + w, y + h], radius=radius,
-        outline=(255, 255, 255, border_alpha), width=2,
-    )
-
-    # Top highlight (1px white line near top edge)
-    hl_alpha = int(alpha * (0.05 if state == 'dimmed' else 0.15))
-    draw.line(
-        [(x + radius, y + 2), (x + w - radius, y + 2)],
-        fill=(255, 255, 255, hl_alpha), width=1,
-    )
-
-    # Text
-    text_alpha = alpha if state != 'dimmed' else int(alpha * 0.4)
-    bbox = draw.textbbox((0, 0), text, font=text_font)
-    tw = bbox[2] - bbox[0]
-    th = bbox[3] - bbox[1]
-    tx = x + (w - tw) // 2
-    ty = y + (h - th) // 2 - 2
-
-    # Text shadow
-    if state != 'dimmed':
-        draw.text((tx + 1, ty + 1), text, font=text_font,
-                  fill=(0, 0, 0, int(text_alpha * 0.5)),
-                  stroke_width=2, stroke_fill=(0, 0, 0, int(text_alpha * 0.3)))
-
-    # Text fill
-    if state == 'correct':
-        text_color = (255, 255, 255, text_alpha)
-    elif state == 'dimmed':
-        text_color = (180, 180, 200, text_alpha)
-    else:
-        text_color = (255, 255, 255, text_alpha)
-
-    draw.text((tx, ty), text, font=text_font, fill=text_color,
-              stroke_width=3, stroke_fill=(0, 0, 0, text_alpha))
-
 
 def draw_gradient_rounded_rect(
     img: Image.Image,
@@ -1289,66 +1186,6 @@ def draw_progress_timer_bar(
         )
         img.paste(bar_layer, (0, 0), bar_layer)
 
-
-def draw_two_column_row(
-    draw: ImageDraw.Draw,
-    img: Image.Image,
-    left_text: str,
-    right_text: str,
-    y: int,
-    row_height: int = 90,
-    left_font_size: int = 44,
-    right_font_size: int = 44,
-    left_color: Tuple = (255, 255, 255),
-    right_color: Tuple = (255, 215, 0),
-    highlight: bool = False,
-    highlight_color: Tuple = (255, 255, 255, 30),
-    margin_x: int = 80,
-    divider_x: int = 540,
-):
-    """Draw a two-column vocabulary row with optional highlight stripe.
-
-    Left text is right-aligned to *divider_x*; right text is left-aligned
-    from *divider_x*.  A thin vertical divider is drawn between them.
-    """
-    # Highlight background
-    if highlight:
-        hl_layer = Image.new('RGBA', img.size, (0, 0, 0, 0))
-        hd = ImageDraw.Draw(hl_layer)
-        hc = highlight_color if len(highlight_color) == 4 else (*highlight_color[:3], 30)
-        hd.rectangle(
-            [margin_x, y, VIDEO_WIDTH - margin_x, y + row_height],
-            fill=hc,
-        )
-        img.paste(hl_layer, (0, 0), hl_layer)
-
-    # Vertical divider
-    divider_color = CARD_COLORS.get('divider', (200, 200, 210))
-    divider_pad = 12
-    draw.line(
-        [(divider_x, y + divider_pad), (divider_x, y + row_height - divider_pad)],
-        fill=(*divider_color[:3], 80),
-        width=2,
-    )
-
-    gap = 24  # horizontal gap between text and divider
-
-    # Left text — right-aligned to divider
-    lf = font(left_font_size)
-    lbbox = draw.textbbox((0, 0), left_text, font=lf)
-    lw = lbbox[2] - lbbox[0]
-    lh = lbbox[3] - lbbox[1]
-    lx = divider_x - gap - lw
-    ly = y + (row_height - lh) // 2 - 1
-    draw_text_solid(draw, left_text, max(margin_x, lx), ly, lf, left_color, outline=4)
-
-    # Right text — left-aligned from divider
-    rf = font(right_font_size)
-    rbbox = draw.textbbox((0, 0), right_text, font=rf)
-    rh = rbbox[3] - rbbox[1]
-    rx = divider_x + gap
-    ry = y + (row_height - rh) // 2 - 1
-    draw_text_solid(draw, right_text, rx, ry, rf, right_color, outline=4)
 
 
 def draw_difficulty_badge(

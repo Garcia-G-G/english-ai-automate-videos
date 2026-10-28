@@ -139,12 +139,12 @@ def check(script: Dict, mp4, info: Dict, narration_wav: Optional[Path] = None, s
 
     source = narration_wav or timeline.get("audio") or mp4
     if transcribe is None:
-        # Local only ($0). The base model's temperature fallback makes runs differ on a mixed
-        # Spanish/English voice, so a phrase counts as heard in the auto-language transcript or
-        # in one forced to English.
+        # Scribe v2 through OpenRouter first (~$0.002, only in a panel job), then local mlx-whisper
+        # turbo ($0). Both heard «spill the tea» where the old CPU `base` model did not (2026-10-27).
+        # A phrase counts as heard in either transcript.
         import asr_timings as A
-        passes = [lambda path: A._words_from_local(Path(path), None) or [],
-                  lambda path: A._words_from_local(Path(path), "en") or []]
+        passes = [lambda path: A._words_from_openrouter(Path(path), None) or [],
+                  lambda path: A._words_from_local(Path(path), None) or []]
     else:
         passes = [transcribe]
     words, heard = [], None

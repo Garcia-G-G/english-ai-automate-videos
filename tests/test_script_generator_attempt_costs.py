@@ -8,8 +8,9 @@ class _Tracker:
     def __init__(self):
         self.entries = []
 
-    def log_openai_chat(self, **entry):
-        self.entries.append(entry)
+    def _add_entry(self, api_type, model, cost, label, details):   # llm.record, one row per attempt
+        assert api_type == "openrouter_chat"
+        self.entries.append(details)
 
 
 def _response(payload, prompt_tokens, completion_tokens):
@@ -88,3 +89,19 @@ def test_retry_usage_is_recorded_even_when_retry_payload_is_malformed(monkeypatc
 
     assert len(tracker.entries) == 2
     assert tracker.entries[-1]["prompt_tokens"] == 7
+
+
+def test_a_script_the_validator_refuses_gets_one_repair_round_with_the_errors(monkeypatch):
+    import script_generator as SG
+    from script_schema import ScriptValidationError
+    prompts = []
+
+    def fake(category, topic, video_type, prompt):
+        prompts.append(prompt)
+        if len(prompts) == 1:
+            raise ScriptValidationError("how_do_you_say", ["emoji: '1️⃣' is 3 code points"])
+        return {"ok": True}
+    monkeypatch.setattr(SG, "_generate", fake)
+    monkeypatch.setattr("channel_insights.brief", lambda vt, **k: "BRIEF")
+    assert SG.generate_script("c", {"id": "t"}, "how_do_you_say") == {"ok": True}
+    assert "BRIEF" in prompts[0] and "1️⃣" in prompts[1] and len(prompts) == 2

@@ -1,20 +1,15 @@
 # English AI Videos - Dependencies
 
 # Core
-openai>=1.0.0
+openai>=1.0.0                      # src/llm.py, pointed at OpenRouter (not OpenAI)
 python-dotenv>=1.0.0
 pyyaml>=6.0
 ruamel.yaml>=0.18     # config_edit: patch one key of config.yaml in place
 pydantic>=2.0                      # src/script_schema.py — the script JSON contract
 
-# TTS & Audio
-elevenlabs>=1.0.0                  # src/tts_elevenlabs.py, src/tts_bilingual.py
-google-cloud-texttospeech>=2.14.0  # src/tts_google.py
-edge-tts>=6.1.0                    # src/tts.py
-pydub>=0.25.1                      # src/tts.py
-# Not imported anywhere today. Kept deliberately: local Whisper is planned
-# for the timestamp work. Remove it if that plan changes.
-openai-whisper>=20231117
+# TTS & Audio: the voice goes through OpenRouter over plain HTTP (src/tts_openrouter.py).
+# Word timings: Scribe v2 through OpenRouter, else mlx-whisper (src/asr_worker.py, its own process).
+mlx-whisper>=0.4; sys_platform == "darwin" and platform_machine == "arm64"
 
 # Video Generation
 # moviepy intentionally NOT listed: the ffmpeg compositor is the only
@@ -33,7 +28,6 @@ watchdog>=3.0
 google-api-python-client>=2.100.0
 google-auth-oauthlib>=1.1.0
 requests>=2.31.0
-httpx>=0.24.0                      # src/tts_elevenlabs.py, src/tts_openai.py
 
 # Optional: Video Analysis
 opencv-python>=4.8.0

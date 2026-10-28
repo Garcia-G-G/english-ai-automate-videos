@@ -203,9 +203,14 @@ duration:
       #   the four renders   76.9  79.0  91.7  93.4   all inside
       #   the 1-item cut     47.5                      rejected
       #   the 3-item cut    127.9                      rejected
+      #
+      # 27 Oct 2026: every video is also a Facebook Reel, capped at 90 s
+      # (duration_spec.PLATFORM_MAX_SECONDS clamps any number here). The two
+      # longest renders above would now be refused, so the aim moves down
+      # 5.3 s of words to 80.0 and the ceiling to 90.0.
       min_seconds: 74.7
-      max_seconds: 96.0
-      target_seconds: 85.3
+      max_seconds: 90.0
+      target_seconds: 80.0
       # THE BAND ABOVE AIMS; THESE REJECT. The band is derived
       # symmetrically from a median, which is right for telling the
       # generator how long to write and wrong for refusing a video: it sits
@@ -228,7 +233,7 @@ duration:
       # want -- that is target_seconds. Re-derive both when a render
       # outside 76.9-93.4 lands, or when the 1- or 3-item figures move.
       reject_min_seconds: 62.2
-      reject_max_seconds: 110.7
+      reject_max_seconds: 110.7   # clamped to 90 by duration_spec
 
     # STEP 61: ten statements, 4.0 s to read and decide each, read off the page.
     # Estimated ~79 s with the outro before the first render; reject_max as
@@ -396,6 +401,18 @@ type_categories:
      kids_numbers, phrasal_verbs, slang, social, spanish_specific, technology,
      travel, work_office]
 
+
+# Every LLM call goes through OpenRouter (src/llm.py); OpenAI's own API is not used (2026-10-27).
+# Model ids are OpenRouter's (openrouter.ai/models). A task without its own entry uses `model`.
+# Chosen 2026-10-27 from OpenRouter's live list: all support structured outputs. Scripts are what
+# the videos are made of, so they get the best model (Opus 5.5, ~$0.04 a script); a metadata call
+# costs ~$0.0001 on Haiku (measured: usage.cost).
+llm:
+  model: "anthropic/claude-haiku-5.5"
+  models:
+    script: "anthropic/claude-opus-5.5"
+    metadata: "anthropic/claude-haiku-5.5"
+    platform_metadata: "anthropic/claude-haiku-5.5"
 
 audio:
   # STEP 80 §1: ElevenLabs eleven-v4 through OpenRouter (key: env or the Keychain, service

@@ -38,6 +38,7 @@ sys.path.insert(0, str(ROOT / "src"))
 logging.getLogger("streamlit").setLevel(logging.CRITICAL)
 
 import admin  # noqa: E402
+import jobs  # noqa: E402
 from script_generator import VIDEO_TYPES  # noqa: E402
 
 
@@ -46,7 +47,7 @@ def ledger(tmp_path, monkeypatch):
     """Point the job ledger at tmp_path (conftest does not cover JOBS_FILE)."""
     path = tmp_path / "generation_jobs.json"
     path.write_text(json.dumps({"active": [], "history": []}))
-    monkeypatch.setattr(admin, "JOBS_FILE", path)
+    monkeypatch.setattr(jobs, "JOBS_FILE", path)
     return path
 
 
@@ -101,15 +102,15 @@ class _Recorder:
 def recorder(monkeypatch, tmp_path, ledger):
     """A full run of run_pipeline_with_tracking with no paid call and no render."""
     rec = _Recorder()
-    monkeypatch.setattr(admin, "pipeline", rec)
-    monkeypatch.setattr(admin, "generate_script",
+    monkeypatch.setattr(jobs, "pipeline", rec)
+    monkeypatch.setattr(jobs, "generate_script",
                         lambda c, t, v: {"type": v, "word": "test"})
-    monkeypatch.setattr(admin, "get_random_topic",
+    monkeypatch.setattr(jobs, "get_random_topic",
                         lambda allowed_categories=None: ("social", {"english": "test"}))
-    monkeypatch.setattr(admin, "reset_tracker", lambda video_id=None: None)
+    monkeypatch.setattr(jobs, "reset_tracker", lambda video_id=None: None)
     for name, sub in (("SCRIPTS_DIR", "scripts"), ("AUDIO_DIR", "audio"),
                       ("PENDING_DIR", "pending"), ("CLIPS_DIR", "clips")):
-        monkeypatch.setattr(admin, name, tmp_path / sub)
+        monkeypatch.setattr(jobs, name, tmp_path / sub)
     return rec
 
 
@@ -131,10 +132,10 @@ def test_the_dashboard_holds_no_hand_written_copy_of_the_type_list():
     out by hand; a third list under 'Add 5 of Each Type' queued three types
     and reported fifteen videos. VIDEO_TYPES is defined once, in
     script_generator, and the UI must read it rather than restate it."""
-    tree = ast.parse((ROOT / "src" / "admin.py").read_text(encoding="utf-8"))
-
     hand_written = []
-    for node in ast.walk(tree):
+    nodes = [n for f in ("admin.py", "jobs.py")
+             for n in ast.walk(ast.parse((ROOT / "src" / f).read_text(encoding="utf-8")))]
+    for node in nodes:
         if isinstance(node, (ast.List, ast.Tuple, ast.Set)):
             values = [e.value for e in node.elts
                       if isinstance(e, ast.Constant) and isinstance(e.value, str)]
@@ -242,16 +243,20 @@ def test_the_controls_offer_only_values_the_engine_accepts():
     assert not hasattr(admin, "available_backgrounds")
 
 
-def test_start_generation_forwards_the_new_controls(ledger, monkeypatch):
+def test_start_generation_forwards_the_new_controls(ledger, monkeypatch, tmp_path):
     """The button hands these to start_generation, which is the only thing
     between the widget and the pipeline."""
+    import voice_credits
+    import voice_lock
+    monkeypatch.setattr(voice_lock, "GRANT_DIR", tmp_path / "grants")       # the panel grant, not output/
+    monkeypatch.setattr(voice_credits, "openrouter_refusal", lambda chars: None)
     seen = {}
 
     def fake(job_id, video_type, category=None, topic_name=None, **kwargs):
         seen.update(kwargs)
         return {"success": True}
 
-    monkeypatch.setattr(admin, "run_pipeline_with_tracking", fake)
+    monkeypatch.setattr(jobs, "run_pipeline_with_tracking", fake)
     admin.start_generation("educational", None, None,
                            profile_name="children", background="static_fire",
                            use_v2=True, dry_run=True)

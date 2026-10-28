@@ -200,11 +200,3 @@ def renderer_for(video_type: str):
     return getattr(module, attribute)
 
 
-def resolver_for(video_type: str):
-    """The timestamp resolver, or None when the type has none."""
-    entry = spec(video_type)
-    if not entry or not entry.get("resolver"):
-        return None
-    module_name, attribute = entry["resolver"].split(":", 1)
-    module = __import__(module_name, fromlist=[attribute])
-    return getattr(module, attribute)

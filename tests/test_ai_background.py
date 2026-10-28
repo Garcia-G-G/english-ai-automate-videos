@@ -128,6 +128,6 @@ def test_a_failed_job_writes_nothing(monkeypatch):
 
 def test_the_panel_offers_the_clip_with_its_price_and_records_the_group():
     admin = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
-    body = admin[admin.index("def ai_background_panel"):admin.index("def render_metadata")]
+    body = admin[admin.index("def ai_background_panel"):admin.index("def script_for_upload")]
     assert "Fondo IA" in body and "voice_lock.panel_grant()" in body and "estimate_usd" in body
-    assert '"background_ab": background_ab' in admin
+    assert '"background_ab": background_ab' in (ROOT / "src" / "jobs.py").read_text(encoding="utf-8")

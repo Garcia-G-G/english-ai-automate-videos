@@ -136,6 +136,7 @@ CTA_POP = 0.35
 
 # ── Text fitting, shared with length_spec ────────────────────────────
 
+@lru_cache(maxsize=4096)                                    # called per row per frame; pure
 def fit_word(text: str, width: int, font_max: int = None,
              font_min: int = None) -> Tuple[ImageFont.FreeTypeFont, int, int]:
     """(font, size, drawn width) of the largest size at which `text` fits
@@ -154,9 +155,6 @@ def fit_word(text: str, width: int, font_max: int = None,
     f = fredoka(font_min)
     return f, font_min, int(math.ceil(f.getlength(text)))
 
-
-def column_width(field: str) -> int:
-    return {"spanish": SPANISH_W, "english": ENGLISH_W}[field]
 
 
 def row_centres(n: int) -> List[int]:
@@ -1051,15 +1049,6 @@ BLANK_BAR_H = 26
 BLANK_RULE = 4
 
 
-def fill_parts(sentence: str) -> Tuple[str, str]:
-    """(before, after) the blank. The before keeps its trailing space, the after its leading one."""
-    before, after = sentence.split(FILL_BLANK)
-    return before, after
-
-
-def fit_line(text: str, size: int = LINE_FONT_MAX) -> Tuple[ImageFont.FreeTypeFont, int, int]:
-    return fit_word(text, LINE_W, size, LINE_FONT_MIN)
-
 
 @lru_cache(maxsize=64)
 def note_lines(tip: Optional[str], alt: Optional[str]) -> List[Tuple[str, str]]:
@@ -1370,11 +1359,16 @@ def _draw_cross(layer: Image.Image, x: float, cy: int, scale: float) -> None:
     kit.cross(layer, *_p(x, cy), scale, CROSS_SIZE)
 
 
+@lru_cache(maxsize=4096)
+def _length(size: int, text: str) -> float:
+    """Drawn width of `text` in Fredoka at `size` (37k uncached calls per level video)."""
+    return fredoka(size).getlength(text)
+
+
 def written_point(layout: LevelLayout, i: int, p: float) -> Tuple[int, float, float]:
     """(line, x) where row i's line 2 is being written at p of its reveal, and the width
     written on that line. The lines are written one after another, by width."""
-    f = fredoka(layout.size)
-    widths = [f.getlength(text) for text, _y in layout.rows[i].l2]
+    widths = [_length(layout.size, text) for text, _y in layout.rows[i].l2]
     left = sum(widths) * clamp01(p)
     for k, w in enumerate(widths):
         if left <= w or k == len(widths) - 1:
@@ -1521,12 +1515,6 @@ CHOICE_SEP = "   ·   "           # wide, so a circle and a strike never touch
 CIRCLE_PAD_X, CIRCLE_PAD_Y = 12, 6
 DOTS_GAP = 34                    # the countdown starts this far after the options line
 
-
-def blank_key(item: Dict) -> Tuple[str, str]:
-    """(sentence, what the blank must hold): fill_level's answer, choose_level's longer option."""
-    if "options" in item:
-        return item["sentence"], max(item["options"], key=len)
-    return item["sentence"], item["answer"]
 
 
 def choice_line(item: Dict) -> str:

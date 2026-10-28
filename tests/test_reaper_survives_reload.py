@@ -35,13 +35,14 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 import admin  # noqa: E402
+import jobs as jobs_module  # noqa: E402
 
 
 @pytest.fixture
 def ledger(tmp_path, monkeypatch):
     path = tmp_path / "generation_jobs.json"
     path.write_text(json.dumps({"active": [], "history": []}))
-    monkeypatch.setattr(admin, "JOBS_FILE", path)
+    monkeypatch.setattr(jobs_module, "JOBS_FILE", path)
     return path
 
 
@@ -64,9 +65,11 @@ def test_a_live_job_survives_a_module_reload(ledger, monkeypatch):
     ledger.write_text(json.dumps({"active": [_running_row()], "history": []}))
 
     # What Streamlit does when a watched source file changes: run the module
-    # body again. Every in-memory registry is rebuilt empty by this.
+    # body again. Every in-memory registry is rebuilt empty by this. The
+    # engine lives in jobs now, so reload it as well as the page.
+    importlib.reload(jobs_module)
     importlib.reload(admin)
-    monkeypatch.setattr(admin, "JOBS_FILE", ledger)
+    monkeypatch.setattr(jobs_module, "JOBS_FILE", ledger)
 
     reaped = admin.reap_orphaned_jobs()
 

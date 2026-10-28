@@ -19,17 +19,17 @@ _ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
 
 # Key definitions: name -> (required, format_regex, description)
 _KEY_DEFINITIONS = {
-    "OPENAI_API_KEY": {
+    # OpenRouter is the only paid AI (2026-10-27); the OpenAI and ElevenLabs keys are gone.
+    # Read through secret_store (the environment, then the Keychain), see get_api_status.
+    "OPENROUTER_API_KEY": {
         "required": True,
-        "pattern": r"^sk-.{20,}$",
-        "description": "OpenAI API key (must start with 'sk-')",
+        "pattern": r"^sk-or-.{20,}$",
+        "description": "OpenRouter API key (sk-or-…)",
     },
-    # ElevenLabs keys are now «sk_» + 48 hex (51 chars, checked against the live key
-    # 2026-10-20, STEP 75 §3); the old 32-hex form still parses.
-    "ELEVENLABS_API_KEY": {
+    "OPENROUTER_VOICE_ID": {
         "required": False,
-        "pattern": r"^(sk_[a-f0-9]{48}|[a-f0-9]{32})$",
-        "description": "ElevenLabs API key (sk_ + 48 hex)",
+        "pattern": r"^[a-zA-Z0-9]{20,}$",
+        "description": "Voice id OpenRouter speaks with (a premade ElevenLabs voice)",
     },
     "ELEVENLABS_VOICE_ID": {
         "required": False,
@@ -75,11 +75,6 @@ _KEY_DEFINITIONS = {
         "required": False,
         "pattern": r"^xkeysib-.{20,}$",
         "description": "Brevo API key (transactional email)",
-    },
-    "TTS_PROVIDER": {
-        "required": False,
-        "pattern": r"^(openai|elevenlabs|google|edge)$",
-        "description": "TTS provider name",
     },
 }
 
@@ -129,9 +124,11 @@ def get_api_status() -> dict:
 
     Each entry contains: set, valid, masked, description, error.
     """
+    import secret_store
     statuses = {}
     for name in _KEY_DEFINITIONS:
-        value = os.environ.get(name)
+        # OpenRouter's key and voice may live in the Keychain instead of the environment
+        value = secret_store.get(name) if name.startswith("OPENROUTER_") else os.environ.get(name)
         statuses[name] = _validate_key(name, value)
     return statuses
 
@@ -158,26 +155,6 @@ def is_valid_voice_id(value: Optional[str]) -> bool:
     """
     return bool(value) and bool(re.match(voice_id_pattern(), value))
 
-
-def validate_all_keys() -> dict:
-    """Validate all keys and return categorized warnings and errors.
-
-    Returns:
-        {"errors": [...], "warnings": [...], "ok": [...]}
-    """
-    result = {"errors": [], "warnings": [], "ok": []}
-    statuses = get_api_status()
-
-    for name, status in statuses.items():
-        if status["error"]:
-            if _KEY_DEFINITIONS[name]["required"]:
-                result["errors"].append(f"{name}: {status['error']}")
-            else:
-                result["warnings"].append(f"{name}: {status['error']}")
-        elif status["set"]:
-            result["ok"].append(f"{name}: {status['masked']}")
-
-    return result
 
 
 def save_env_key(key_name: str, value: str, env_path: Optional[Path] = None) -> None:

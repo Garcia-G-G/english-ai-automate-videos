@@ -651,19 +651,3 @@ def treatment_for_dir(clips_dir: Path, video_type: str = None,
     }
 
 
-def _patch_at(path: Path, t: float, zone: Tuple[int, int]) -> Optional[np.ndarray]:
-    """The measured patch of one clip at one moment, fitted as it will ship."""
-    import cv2
-
-    capture = cv2.VideoCapture(str(path))
-    fps = capture.get(cv2.CAP_PROP_FPS) or 30.0
-    frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
-    if frames <= 0:
-        capture.release()
-        return None
-    capture.set(cv2.CAP_PROP_POS_FRAMES, min(frames - 1, int(t * fps)))
-    ok, frame = capture.read()
-    capture.release()
-    if not ok:
-        return None
-    return zone_patch(fit_frame(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)), zone)

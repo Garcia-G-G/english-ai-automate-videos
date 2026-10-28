@@ -195,3 +195,20 @@ def test_the_attribution_line_names_pexels():
     """The license does not require attribution; the API terms ask for a
     visible link. It lives with the code that incurs the obligation."""
     assert "pexels.com" in tc.ATTRIBUTION_LINE.lower()
+
+
+def test_a_file_pexels_says_is_oversize_is_never_picked_or_downloaded(tmp_path, monkeypatch):
+    import requests
+    import topic_clips as T
+    big = {"height": 1920, "width": 1080, "link": "big", "size": T.MAX_CLIP_BYTES + 1}
+    ok = {"height": 1280, "width": 720, "link": "ok", "size": 5_000_000}
+    assert T._pick_file({"video_files": [big, ok]})["link"] == "ok"
+
+    class Resp:
+        status_code = 200
+        headers = {"Content-Length": str(T.MAX_CLIP_BYTES + 1)}
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def iter_content(self, chunk_size): raise AssertionError("downloaded an oversize file")
+    monkeypatch.setattr(requests, "get", lambda *a, **k: Resp())
+    assert T._download("u", tmp_path / "c.mp4") is None

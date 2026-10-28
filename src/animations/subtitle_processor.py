@@ -42,39 +42,6 @@ def fix_overlapping_timestamps(words: List[Dict], min_gap_ms: float = MIN_GAP_MS
     return words
 
 
-def validate_subtitle_text(text: str, max_chars: int = MAX_CHARS_PER_LINE,
-                           max_lines: int = MAX_LINES) -> Dict:
-    """
-    Validate subtitle text against BBC guidelines.
-
-    Returns dict with is_valid, suggested_splits, warnings.
-    """
-    result = {
-        "is_valid": True,
-        "warnings": [],
-        "suggested_splits": []
-    }
-
-    lines = text.split('\n') if '\n' in text else [text]
-
-    if len(lines) > max_lines:
-        result["is_valid"] = False
-        result["warnings"].append(f"Too many lines: {len(lines)} (max {max_lines})")
-
-    for i, line in enumerate(lines):
-        if len(line) > max_chars:
-            result["is_valid"] = False
-            result["warnings"].append(f"Line {i+1} too long: {len(line)} chars (max {max_chars})")
-
-            # Suggest split point
-            words = line.split()
-            mid = len(words) // 2
-            split1 = ' '.join(words[:mid])
-            split2 = ' '.join(words[mid:])
-            result["suggested_splits"].append((split1, split2))
-
-    return result
-
 
 def clean_word_for_display(word: str) -> str:
     """

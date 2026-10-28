@@ -125,9 +125,10 @@ def test_ranked_puts_the_best_first_and_keeps_the_queue_order_on_ties(tmp_path):
 
 def test_the_panel_picks_in_priority_order_and_inicio_offers_the_next_best():
     admin = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
-    body = admin[admin.index("def queue_pick"):admin.index("def queue_pick") + 1500]
+    engine = (ROOT / "src" / "jobs.py").read_text(encoding="utf-8")
+    body = engine[engine.index("def queue_pick"):engine.index("def queue_pick") + 1500]
     assert "queue_order(queue_guard.queued_scripts())" in body
-    assert "Producir el siguiente mejor" in admin and "next_best()" in admin
+    assert "Producir el siguiente mejor" in engine and "next_best()" in admin
     assert '"Performance": ("Rendimiento"' in admin and "Actualizar estadísticas" in admin
 
 

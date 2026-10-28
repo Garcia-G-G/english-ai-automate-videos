@@ -8,19 +8,6 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 
-def test_a_failed_balance_read_is_cached_too():
-    """A 401 from ElevenLabs used to be asked again on every click: 0.4 s on every page."""
-    import voice_credits as V
-    V._cache.update(at=0.0, value=None)
-    calls = []
-    fetch = lambda: calls.append(1) or None
-    assert V.remaining(fetch, now=lambda: 100.0) is None
-    assert V.remaining(fetch, now=lambda: 130.0) is None
-    assert len(calls) == 1
-    V.remaining(fetch, now=lambda: 100.0 + V.CACHE_S + 1)
-    assert len(calls) == 2
-
-
 def test_the_cleanup_plan_waits_for_its_switch():
     admin = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
     body = admin[admin.index('st.markdown(\'<div class="section-header">Limpiar</div>\''):admin.index('elif page == "Manim"')]

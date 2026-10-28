@@ -19,20 +19,16 @@ FORCE the language per request — one voice, two accents, per segment.
 (eleven_v3 does NOT accept language_code, so this path uses turbo v2.5 by
 default; override via audio.segment_model / ELEVENLABS_SEGMENT_MODEL.)
 
-Timestamps: the primary source is ElevenLabs' own character timings
-(``convert_with_timestamps``), aggregated into words and shifted by each
-segment's offset in the stitched file — exact by construction, and each
-word inherits ``is_english`` from its segment's language (no more fragile
-word-list heuristics).  If timestamps are unavailable the caller can still
-run the legacy Whisper pass over the final audio: stitching does not break
-that path either, because Whisper only ever sees the finished file.
+Every request goes through OpenRouter (tts_elevenlabs._elevenlabs_with_retry);
+the direct ElevenLabs API was removed on 2026-10-27. Timestamps: ElevenLabs'
+own character timings survive only in cached with-timestamps entries; a new
+segment gets its words from asr_timings (_local_words), else an estimate.
+Stitching does not break either path: offsets are summed per segment.
 
 Dry-run: set ``dry_run=True`` (or env ``TTS_DRY_RUN=1``) to log every call
-that would be made (text, lang, voice, model) without importing the
-ElevenLabs SDK or touching the network.
+that would be made (text, lang, voice, model) without touching the network.
 """
 
-import base64
 import json
 import logging
 import os
@@ -223,9 +219,9 @@ NO_CONTEXT_MODELS = frozenset({"eleven_v3"})
 
 
 def request_kwargs(call: Dict, settings: Dict) -> Dict:
-    """The ElevenLabs request one call makes — and so its cache key."""
-    from elevenlabs.types import VoiceSettings
-    vs = VoiceSettings(
+    """The ElevenLabs request one call makes — and so its cache key. voice_settings is a plain
+    dict: the same key as the SDK's VoiceSettings had (tts_cache._plain)."""
+    vs = dict(
         stability=settings["stability"],
         similarity_boost=settings["similarity"],
         style=settings["style"],
@@ -263,14 +259,14 @@ def all_cached(calls: List[Dict], settings: Dict) -> bool:
 
 
 def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0) -> Dict:
-    """One ElevenLabs request. Returns {'duration', 'words': [...] or None}.
+    """One voice request. Returns {'duration', 'words': [...] or None}.
 
-    Tries the with-timestamps endpoint first (exact char timings); falls
-    back to the plain convert stream. A cached identical request (tts_cache,
-    the take index included) is copied with its alignment instead.
+    A cached identical with-timestamps request (tts_cache, the take index included; voiced
+    by ElevenLabs direct before 2026-10-27) is copied with its alignment. Otherwise the
+    request goes through OpenRouter (STEP 80 §1): audio only, no timestamps, so the words
+    come from _local_words or the caller's estimate. No direct ElevenLabs call any more.
     """
-    from tts_elevenlabs import get_client, _elevenlabs_with_retry
-    from tts_common import get_audio_duration
+    from tts_elevenlabs import _elevenlabs_with_retry
     kwargs = request_kwargs(call, settings)
 
     import tts_cache
@@ -282,66 +278,20 @@ def _synthesize_segment(call: Dict, out_path: str, settings: Dict, take: int = 0
         words = (_chars_to_words(a["characters"], a["character_start_times_seconds"],
                                  a["character_end_times_seconds"]) if a.get("characters") else None)
         return {"duration": _duration(out_path), "words": words}
-    import tts_openrouter
-    if tts_openrouter.active():
-        # STEP 80 §1: audio only, no timestamps; the plain-convert path carries the routing,
-        # the caps and the cache, and the caller estimates the words as for any plain segment
-        _elevenlabs_with_retry(None, out_path, take=take, **kwargs)
-        return {"duration": _duration(out_path), "words": _local_words(out_path, call["lang"])}
-    client = get_client()
-
-    from cost_tracker import TTSBudgetExceeded, check_tts_budget, get_tracker
-    check_tts_budget(len(call["text"]), call["model_id"])
-
-    words = None
-    try:
-        resp = client.text_to_speech.convert_with_timestamps(**kwargs)
-        audio_b64 = getattr(resp, "audio_base_64", None) or (
-            resp.get("audio_base64") if isinstance(resp, dict) else None)
-        alignment = getattr(resp, "alignment", None) or (
-            resp.get("alignment") if isinstance(resp, dict) else None)
-        if not audio_b64:
-            raise RuntimeError("no audio in with_timestamps response")
-        with open(out_path, "wb") as f:
-            f.write(base64.b64decode(audio_b64))
-        # Cost once, for a 2xx that carried audio (STEP 76 §5); the plain-convert fallback
-        # logs its own, so an empty answer is not counted twice.
-        get_tracker().log_elevenlabs_tts(
-            characters=len(call["text"]), model=call["model_id"],
-            label="tts_bilingual_segment")
-        if alignment is not None:
-            chars = (getattr(alignment, "characters", None)
-                     or alignment.get("characters"))
-            starts = (getattr(alignment, "character_start_times_seconds", None)
-                      or alignment.get("character_start_times_seconds"))
-            ends = (getattr(alignment, "character_end_times_seconds", None)
-                    or alignment.get("character_end_times_seconds"))
-            if chars and starts and ends:
-                words = _chars_to_words(chars, starts, ends)
-                tts_cache.store(cache_key, out_path, {**kwargs, "endpoint": "with_timestamps"},
-                                {"characters": list(chars), "character_start_times_seconds": list(starts),
-                                 "character_end_times_seconds": list(ends)})
-            else:
-                tts_cache.store(cache_key, out_path, {**kwargs, "endpoint": "with_timestamps"})
-    except TTSBudgetExceeded:
-        raise
-    except Exception as e:
-        # with_timestamps is tried once; the plain stream has the retry policy.
-        logger.info("with_timestamps unavailable (%s) — using plain convert", e)
-        _elevenlabs_with_retry(client, out_path, take=take, **kwargs)
-
-    duration = get_audio_duration(out_path)
+    _elevenlabs_with_retry(out_path, take=take, **kwargs)
+    duration = _duration(out_path)
     if duration <= 0:
         raise RuntimeError(f"Zero-length TTS segment: {call['text'][:60]}")
-    return {"duration": duration, "words": words}
+    return {"duration": duration, "words": _local_words(out_path, call["lang"])}
 
 
 def _local_words(path: str, lang: str) -> Optional[List[Dict]]:
-    """Word times for a segment that came back without timestamps (OpenRouter, STEP 80 §1): the
-    local whisper, $0. None when it is not installed — the caller then estimates them."""
+    """Word times for a segment that came back without timestamps (OpenRouter, STEP 80 §1):
+    asr_timings (Scribe v2 via OpenRouter, else local mlx-whisper). None when neither answers —
+    the caller then estimates them."""
     try:
         import asr_timings
-        return asr_timings._words_from_local(Path(path), (lang or "")[:2] or None)
+        return asr_timings.transcribe_words(Path(path), (lang or "")[:2] or None)
     except Exception:                                       # noqa: BLE001 — timings are best effort
         logger.info("local word times unavailable for %s", path)
         return None

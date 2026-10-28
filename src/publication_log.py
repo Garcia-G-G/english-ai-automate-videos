@@ -216,6 +216,11 @@ def record_upload_result(*, artifact: str, video_path: str, video_type: str,
                  else getattr(result, "upload_id", None))
     url = (result.get("url") if isinstance(result, dict)
            else getattr(result, "url", None))
+    # STEP 80: what the uploader actually sent, after the platform's rules, when it says
+    sent = (result.get("sent") if isinstance(result, dict) else getattr(result, "sent", None)) or {}
+    sent_title = sent.get("title", sent_title)
+    sent_description = sent.get("description", sent_description)
+    sent_hashtags = sent.get("hashtags", sent_hashtags)
 
     return record_publication(
         artifact=artifact,

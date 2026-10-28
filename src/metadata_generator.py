@@ -100,8 +100,9 @@ PLATFORM_HASHTAGS = {
     "tiktok": 10,
 }
 
-#: Exceeding this makes YouTube discard ALL hashtags on the video. Never
-#: raise it; it is a platform rule, not a style choice.
+#: A house cap, not the platform's: YouTube ignores every hashtag only past 60
+#: (support.google.com/youtube/answer/6390658, read 27 Oct 2026; platform_rules
+#: enforces that). 15 stays because YouTube asks for few, relevant hashtags.
 YOUTUBE_HASHTAG_HARD_CAP = 15
 
 BROAD_HASHTAGS = ["#LearnEnglish", "#AprendeIngles", "#InglesOnline"]
@@ -248,14 +249,11 @@ def adapt_for_platform(metadata: dict, platform: str) -> dict:
     if platform == "youtube":
         # Hashtags go in the DESCRIPTION, not the title: the first three
         # render as clickable links above the title, and a clean title keeps
-        # the keywords readable. #Shorts is the exception — it must appear
-        # for the Shorts shelf.
-        yt_title = title[:95]
-        if "#Shorts" not in yt_title:
-            yt_title = f"{yt_title[:90]} #Shorts" if len(yt_title) > 90 else f"{yt_title} #Shorts"
-        yt_title = yt_title[:100]
-        yt_desc = compose_description(description, tags)
-        return {"title": yt_title, "description": yt_desc[:5000], "hashtags": tags}
+        # the keywords readable. No #Shorts either (STEP 80): a vertical video
+        # under 3 min is a Short by itself (support.google.com/youtube/answer/15424877).
+        import platform_rules
+        fixed = platform_rules.youtube(title, compose_description(description, tags), tags)
+        return {"title": fixed["title"], "description": fixed["description"], "hashtags": tags}
 
     elif platform in ("instagram", "facebook"):
         # No title field; the caption is everything. Keyword-first, because
@@ -269,8 +267,8 @@ def adapt_for_platform(metadata: dict, platform: str) -> dict:
 
 
 def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -> dict:
-    """Use GPT to regenerate metadata optimized for a specific platform."""
-    from openai import OpenAI
+    """Regenerate metadata optimized for a specific platform with an LLM through OpenRouter."""
+    import llm
 
     # Load .env at the ENTRY POINT, not at import.
     #
@@ -281,12 +279,11 @@ def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -
     from env_setup import ensure_env_loaded
     ensure_env_loaded()
 
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
+    try:
+        client = llm.client()
+    except EnvironmentError:
         meta = generate_metadata(script_data, video_type)
         return adapt_for_platform(meta, platform)
-
-    client = OpenAI(api_key=api_key)
 
     # Per-platform guidance, researched 2026-08-01. Full sources and the
     # numbers behind each line are in docs/metadata-best-practices.md.
@@ -342,33 +339,12 @@ Return JSON only:
 }}"""
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            max_tokens=500,
-            temperature=0.8,
-            messages=[
-                {"role": "system", "content": "You create viral social media metadata for English learning content targeting Spanish speakers. Always respond with valid JSON only."},
-                {"role": "user", "content": prompt}
-            ]
-        )
+        response = llm.chat("platform_metadata", [
+            {"role": "system", "content": "You create viral social media metadata for English learning content targeting Spanish speakers. Always respond with valid JSON only."},
+            {"role": "user", "content": prompt}
+        ], label=f"metadata_{platform}", client_=client, max_tokens=500, temperature=0.8)
 
-        text = response.choices[0].message.content.strip()
-        if "```json" in text:
-            text = text.split("```json")[1].split("```")[0].strip()
-        elif "```" in text:
-            text = text.split("```")[1].split("```")[0].strip()
-
-        result = json.loads(text)
-
-        try:
-            from cost_tracker import get_tracker
-            if hasattr(response, 'usage') and response.usage:
-                get_tracker().log_openai_chat(
-                    prompt_tokens=response.usage.prompt_tokens,
-                    completion_tokens=response.usage.completion_tokens,
-                    model="gpt-4o-mini", label=f"metadata_{platform}")
-        except Exception:
-            pass
+        result = llm.json_content(response)
 
         hashtags = result.get("hashtags", [])
         if isinstance(hashtags, str):
@@ -382,7 +358,7 @@ Return JSON only:
         return result
 
     except Exception as e:
-        logger.warning("GPT metadata regeneration failed: %s, using fallback", e)
+        logger.warning("LLM metadata regeneration failed: %s, using fallback", e)
         meta = generate_metadata(script_data, video_type)
         return adapt_for_platform(meta, platform)
 
@@ -421,16 +397,18 @@ _ARTICLES = ("el ", "la ", "los ", "las ")
 def how_do_you_say_title(script_data: dict) -> str:
     """`¿Cómo se dice FAMILIA en inglés? 👪`, from the script's own theme."""
     theme = (script_data.get("theme") or "").strip()
-    bare = theme
-    for article in _ARTICLES:
-        if bare.lower().startswith(article):
-            bare = bare[len(article):]
+    bare, article = theme, ""
+    for candidate in _ARTICLES:
+        if bare.lower().startswith(candidate):
+            bare, article = bare[len(candidate):], candidate.strip()
             break
     bare = bare.split(" (")[0]
     items = script_data.get("items") or []
     emoji = items[0].get("emoji", "") if items else ""
-    return TITLE_TEMPLATES["how_do_you_say"][0].format(
-        theme=bare.upper(), emoji=emoji).strip()
+    title = TITLE_TEMPLATES["how_do_you_say"][0].format(theme=bare.upper(), emoji=emoji).strip()
+    if article in ("los", "las"):                           # «se dicen los ANIMALES DEL MAR», not «se dice»
+        title = title.replace("¿Cómo se dice ", f"¿Cómo se dicen {article} ", 1)
+    return title
 
 
 def _build_fallback_description(script_data: dict, video_type: str, title: str) -> str:

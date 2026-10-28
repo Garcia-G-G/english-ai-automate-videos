@@ -21,6 +21,7 @@ sys.path.insert(0, str(ROOT / "src"))
 logging.getLogger("streamlit").setLevel(logging.CRITICAL)
 
 import admin  # noqa: E402
+import jobs  # noqa: E402
 
 BV010 = {"type": "how_do_you_say", "theme": "la ciudad", "video_title": "x",
          "_meta": {"topic_id": "bv010", "video_type": "how_do_you_say"}}
@@ -72,16 +73,17 @@ class _Pipeline:
 def rig(tmp_path, monkeypatch):
     ledger = tmp_path / "generation_jobs.json"
     ledger.write_text(json.dumps({"active": [], "history": []}))
-    monkeypatch.setattr(admin, "JOBS_FILE", ledger)
+    monkeypatch.setattr(jobs, "JOBS_FILE", ledger)
     for name, sub in (("SCRIPTS_DIR", "scripts"), ("AUDIO_DIR", "audio"), ("PENDING_DIR", "pending"),
                       ("CLIPS_DIR", "clips"), ("RENDERING_DIR", "rendering"), ("CUT_DIR", "rejected/_cut")):
-        monkeypatch.setattr(admin, name, tmp_path / sub)
-    monkeypatch.setattr(admin, "reset_tracker", lambda video_id=None: None)
-    monkeypatch.setattr(admin, "queue_pick", lambda video_type=None: None)
+        for module in (admin, jobs):              # jobs renders, admin's review page lists
+            monkeypatch.setattr(module, name, tmp_path / sub)
+    monkeypatch.setattr(jobs, "reset_tracker", lambda video_id=None: None)
+    monkeypatch.setattr(jobs, "queue_pick", lambda video_type=None: None)
 
     def run(render, probe=69.4):
         import qa_gate
-        monkeypatch.setattr(admin, "pipeline", _Pipeline(render))
+        monkeypatch.setattr(jobs, "pipeline", _Pipeline(render))
         monkeypatch.setattr(qa_gate, "probe_duration", lambda path: probe)
         job_id = admin.create_job("how_do_you_say")
         return job_id, admin.run_pipeline_with_tracking(job_id, "how_do_you_say", "basic_vocab", "la ciudad",
@@ -128,8 +130,8 @@ def test_a_whole_render_reaches_pending_with_its_sidecar_and_stage_times(rig):
 
 def test_two_submits_of_the_same_script_give_one_job(rig, monkeypatch):
     release = threading.Event()
-    monkeypatch.setattr(admin, "run_pipeline_with_tracking", lambda *a, **k: release.wait(10))
-    monkeypatch.setattr(admin, "batch_advance", lambda: None)
+    monkeypatch.setattr(jobs, "run_pipeline_with_tracking", lambda *a, **k: release.wait(10))
+    monkeypatch.setattr(jobs, "batch_advance", lambda: None)
     try:
         admin.start_generation("how_do_you_say", script_data=dict(BV010))
         with pytest.raises(admin.AlreadyRendering, match="Ya se está renderizando bv010"):
@@ -166,7 +168,7 @@ def test_a_dashboard_restart_moves_the_unfinished_render_to_cut(rig, monkeypatch
     stage.write_bytes(b"0")
     job_id = admin.create_job("how_do_you_say")
     admin.update_job(job_id, stage_path=str(stage))
-    monkeypatch.setattr(admin, "_owner_alive", lambda job: False)
+    monkeypatch.setattr(jobs, "_owner_alive", lambda job: False)
     assert admin.reap_orphaned_jobs() == 1
     assert not stage.exists()
     assert (tmp / "rejected" / "_cut" / "cómo_se_dice_x" / "cómo_se_dice_x.mp4").exists()

@@ -210,11 +210,4 @@ def passes_watermark(metrics: Dict[str, float],
     return metrics["watermark_contrast_worst"] >= floor
 
 
-def format_row(name: str, metrics: Dict[str, float]) -> str:
-    return (f"{name:22s} mean {metrics['contrast_mean']:6.2f}:1   "
-            f"worst {metrics['contrast_worst']:6.2f}:1")
 
-
-def floor_of(all_metrics: Iterable[Dict[str, float]]) -> float:
-    """The lowest worst-case contrast across a set — the set's floor."""
-    return min(m["contrast_worst"] for m in all_metrics)

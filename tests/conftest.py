@@ -115,15 +115,17 @@ def _isolate_output_tree(tmp_path, monkeypatch):
 
     # admin imports streamlit, so it is only redirected if a test already
     # pulled it in — importing it here would cost every test that run.
-    admin = sys.modules.get("admin")
-    if admin is not None:
+    # jobs (the engine admin re-exports) holds its own copies of the paths.
+    for module in (sys.modules.get("admin"), sys.modules.get("jobs")):
+        if module is None:
+            continue
         for name, sub in (("OUTPUT_DIR", ""), ("VIDEO_DIR", "video"),
                           ("PENDING_DIR", "pending"),
                           ("APPROVED_DIR", "approved"),
                           ("UPLOADED_DIR", "uploaded"),
                           ("REJECTED_DIR", "rejected")):
-            if hasattr(admin, name):
-                monkeypatch.setattr(admin, name, out / sub if sub else out)
+            if hasattr(module, name):
+                monkeypatch.setattr(module, name, out / sub if sub else out)
 
     # ── the queue and the logs: same class, outside output/ ──────────
     #

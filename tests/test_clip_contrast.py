@@ -39,19 +39,7 @@ def _patch(rgb, size=(40, 40)):
     return np.full((*size, 3), rgb, dtype=np.uint8)
 
 
-# ───────────────────── one band, not two implementations ─────────────────────
-
-def test_the_still_scrim_and_the_clip_scrim_are_the_same_function():
-    """topic_background wrote this curve first, for images. A second copy
-    for clips would drift one edit at a time until a still and a clip were
-    darkened differently for no stated reason."""
-    import inspect
-
-    import topic_background as tb
-    source = inspect.getsource(tb.apply_readability_scrim)
-    assert "scrim_profile" in source
-    assert "np.cos" not in source, "the curve must not be reimplemented here"
-
+# ───────────────────────────── the scrim profile ─────────────────────────────
 
 def test_the_profile_is_flat_inside_the_band_and_untouched_outside():
     prof = cc.scrim_profile(1920, (700, 1000), strength=0.5).ravel()

@@ -223,7 +223,11 @@ class ReelsPublisher(BaseUploader):
                 on_session(h, size)
         try:
             validate_reel(video_path, self.PLATFORM)
-            return self._publish(video_path, compose_caption(caption, hashtags), session)
+            text = compose_caption(caption, hashtags)
+            if self.PLATFORM == "instagram":                 # ≤ 30 hashtags, ≤ 2200 chars (platform_rules)
+                import platform_rules
+                text = platform_rules.instagram(text)["caption"]
+            return self._publish(video_path, text, session)
         except (MetaError, ReelSpecError) as exc:
             logger.error("%s publish failed: %s", self.PLATFORM, exc)
             return UploadResult(self.PLATFORM, False, session_uri=handle[-1] if handle else None,

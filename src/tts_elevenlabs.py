@@ -2,8 +2,9 @@
 """
 ElevenLabs TTS Module for English AI Video Generator
 
-Uses ElevenLabs API for high-quality bilingual speech synthesis.
-Uses eleven_multilingual_v2 model for Spanish/English support.
+ElevenLabs voices, reached ONLY through OpenRouter (tts_openrouter, STEP 80 §1). The direct
+ElevenLabs API and its key were removed on 2026-10-27: if OpenRouter refuses, the job fails
+with OpenRouter's Spanish message.
 
 Advantages:
 - Excellent Spanish pronunciation
@@ -24,8 +25,6 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 from dotenv import load_dotenv
-from elevenlabs import ElevenLabs
-from elevenlabs.types import VoiceSettings
 
 from tts_common import (
     Timeline,
@@ -40,9 +39,6 @@ from tts_common import SPANISH_FILTER  # canonical Spanish stoplist
 
 # Load environment variables (override=True so .env always wins over stale process env)
 load_dotenv(Path(__file__).parent.parent / ".env", override=True)
-
-# ElevenLabs configuration
-ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
 
 # Voice IDs (you can get these from ElevenLabs dashboard)
 # Popular multilingual voices:
@@ -61,8 +57,8 @@ VOICES = {
 # The channel's voice. It lives in .env and ONLY there: the repository is not
 # the place for an account's voice id, and a hardcoded fallback would silently
 # keep working if .env lost it. VIDEO_PROFILE_VOICE_ID (set by src/profiles.py)
-# takes precedence. May be None here; _elevenlabs_with_retry refuses to call the
-# API without one, with a message that says where to set it.
+# takes precedence. May be None here; _elevenlabs_with_retry refuses to make a
+# request without one, with a message that says where to set it.
 DEFAULT_VOICE_ID = (os.getenv("VIDEO_PROFILE_VOICE_ID")
                     or os.getenv("ELEVENLABS_VOICE_ID"))
 
@@ -241,20 +237,6 @@ def enhance_bilingual_text(text: str, english_words: set, model: str = None) -> 
 
     return text
 
-def get_client() -> ElevenLabs:
-    """Get ElevenLabs client with generous timeout for TTS streaming."""
-    if not ELEVENLABS_API_KEY:
-        raise ValueError("ELEVENLABS_API_KEY not set in environment")
-    import httpx
-    return ElevenLabs(
-        api_key=ELEVENLABS_API_KEY,
-        timeout=120.0,
-        httpx_client=httpx.Client(
-            timeout=httpx.Timeout(connect=10.0, read=120.0, write=30.0, pool=10.0),
-        ),
-    )
-
-
 def _is_audio_tag(token: str) -> bool:
     """Whether this token is an ElevenLabs audio tag. See src/audio_tags.py."""
     try:
@@ -384,96 +366,37 @@ def estimate_word_timestamps(text: str, duration: float, english_phrases: list =
     return words, segments
 
 
-def _elevenlabs_with_retry(client, output_path: str, max_retries: int = 3, take: int = 0, **kwargs) -> None:
-    """Call ElevenLabs TTS API with exponential backoff retry; a cached identical request
-    (tts_cache, `take` included) is copied instead of asked again."""
-    import time as _time
+#: Segments voiced at once (OpenRouter takes them in parallel; order is restored on assembly).
+TTS_WORKERS = 6
 
-    # Every ElevenLabs call in this module passes through here, so this is the
+
+def _elevenlabs_with_retry(output_path: str, take: int = 0, **kwargs) -> None:
+    """The one place a voice request is made. A cached identical request (tts_cache, `take`
+    included) is copied instead of asked again; otherwise it goes through OpenRouter, which
+    retries 429/5xx itself. There is no direct ElevenLabs call any more (2026-10-27): a refusal
+    (OpenRouterRefused, in Spanish) is the job's failure."""
+    # Every voice request in this module passes through here, so this is the
     # one place a missing voice id is caught -- not six call sites.
     if not kwargs.get("voice_id"):
         raise RuntimeError("ELEVENLABS_VOICE_ID no está configurado. Ponlo en .env (el ID de la voz del canal); ya no hay voz por defecto en el código.")
 
     import tts_cache
-    cache_key = tts_cache.key({**kwargs, "endpoint": "convert"}, take)
-    if tts_cache.restore(cache_key, output_path) is not None:
+    # audio voiced earlier by ElevenLabs direct is still a valid cache entry
+    if tts_cache.restore(tts_cache.key({**kwargs, "endpoint": "convert"}, take), output_path) is not None:
         return
-    if _through_openrouter(output_path, take, kwargs):      # STEP 80 §1
-        return
-
-    from cost_tracker import check_tts_budget, get_tracker
-    text = kwargs.get('text', '')
-    model_id = kwargs.get('model_id', 'eleven_v3')
-    check_tts_budget(len(text), model_id)
-
-    for attempt in range(max_retries):
-        try:
-            audio_generator = client.text_to_speech.convert(**kwargs)
-            with open(output_path, 'wb') as f:
-                for chunk in audio_generator:
-                    f.write(chunk)
-        except Exception as e:
-            wait = retry_wait(e, attempt)
-            if wait is None or attempt == max_retries - 1:
-                raise
-            logger.warning("ElevenLabs attempt %d failed (%s), retrying in %.1fs...", attempt + 1, e, wait)
-            _time.sleep(wait)
-            continue
-        # Cost once, for the attempt that came back 2xx (STEP 76 §5): a refused or
-        # timed-out request is not billed, and logging before the call counted retries.
-        get_tracker().log_elevenlabs_tts(characters=len(text), model=model_id, label="tts_segment")
-        tts_cache.store(cache_key, output_path, {**kwargs, "endpoint": "convert"})
-        return
+    _through_openrouter(output_path, take, kwargs)
 
 
-def _through_openrouter(output_path: str, take: int, kwargs: dict) -> bool:
-    """STEP 80 §1: with config audio.provider «openrouter», the request goes there (its own cache
-    entry, its own caps). ElevenLabs is the fallback only while its plan has more than 5 % left.
-    False: the caller asks ElevenLabs as before."""
+def _through_openrouter(output_path: str, take: int, kwargs: dict) -> None:
+    """STEP 80 §1: the request goes to OpenRouter (its own cache entry, its own caps)."""
     import tts_openrouter
-    if not tts_openrouter.active():
-        return False
     import tts_cache
     model = tts_openrouter._settings()["model"]
     key = tts_cache.key({**kwargs, "endpoint": "openrouter", "openrouter_model": model}, take)
     if tts_cache.restore(key, output_path) is not None:
-        return True
-    try:
-        tts_openrouter.speak(kwargs, output_path)
-    except tts_openrouter.OpenRouterRefused as refused:
-        import voice_credits
-        info = voice_credits.remaining()
-        if info is None or voice_credits.refusal(len(kwargs.get("text", "")), info):
-            raise
-        logger.warning("OpenRouter refused (%s); ElevenLabs has %s characters left: using it", refused, info["remaining"])
-        return False
+        return
+    tts_openrouter.speak(kwargs, output_path)
     tts_cache.store(key, output_path, {**kwargs, "endpoint": "openrouter", "openrouter_model": model})
-    return True
-
-
-def retry_wait(exc: Exception, attempt: int):
-    """Seconds to wait before re-asking, or None when the error is not worth a retry.
-
-    Only rate limits (429), server errors (5xx) and timeouts are retried (STEP 76 §5); a
-    401/400/422 fails the same way every time, and retrying it only spends the wait.
-    Retry-After is honoured when the server sends it (capped at 60 s)."""
-    status = getattr(exc, "status_code", None)
-    if status == 429 or (isinstance(status, int) and 500 <= status < 600):
-        headers = getattr(exc, "headers", None) or {}
-        after = headers.get("retry-after") or headers.get("Retry-After")
-        try:
-            return min(60.0, max(0.0, float(after)))
-        except (TypeError, ValueError):
-            return float(2 ** attempt)
-    try:
-        import httpx
-        if isinstance(exc, httpx.TimeoutException):
-            return float(2 ** attempt)
-    except ImportError:
-        pass
-    if isinstance(exc, TimeoutError):
-        return float(2 ** attempt)
-    return None
 
 
 def generate_segment_audio(
@@ -516,7 +439,6 @@ def generate_segment_audio(
     Returns:
         Duration in seconds
     """
-    client = get_client()
     voice_id = voice_id or DEFAULT_VOICE_ID
 
     # Determine speed: explicit > per-segment > global
@@ -537,12 +459,13 @@ def generate_segment_audio(
     speed = max(0.7, min(1.2, speed))
 
     _elevenlabs_with_retry(
-        client, output_path,
+        output_path,
         take=take,
         voice_id=voice_id,
         text=text,
         model_id=MODEL_ID,
-        voice_settings=VoiceSettings(
+        # a plain dict: the same cache key as the SDK's VoiceSettings (tts_cache._plain)
+        voice_settings=dict(
             stability=stability,
             similarity_boost=similarity_boost,
             style=style,
@@ -1689,9 +1612,23 @@ def generate_how_do_you_say_audio_segmented(
                     logger.debug("no trim on %s: %s", seg_id, r["reason"])
             return path
 
-        # 1. INTRO
+        # Every segment is its own file, so all of them are voiced at once and the timeline below is
+        # assembled in order from the files (21 serial requests of ~2 s were 45 s per video).
         intro_text = clean_for_tts(script['intro'], keep_tags=_KEEP_TAGS)
-        path = speak('intro', intro_text, 'question', trim=False)
+        recap_text = clean_for_tts(script['recap'], keep_tags=_KEEP_TAGS)
+        outro_text = clean_for_tts(script['outro'], keep_tags=_KEEP_TAGS)
+        jobs = [('intro', intro_text, 'question', False)]
+        for i, item in enumerate(items, start=1):
+            jobs.append((f'es_{i}', clean_for_tts(f"{item['spanish']}.", keep_tags=_KEEP_TAGS), 'options', True))
+            jobs.append((f'en_{i}', clean_for_tts(f"{item['english']}. {item['english']}.", keep_tags=_KEEP_TAGS),
+                         'english_word', True))
+        jobs += [('recap', recap_text, 'explanation', False), ('outro', outro_text, 'question', False)]
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=TTS_WORKERS) as pool:
+            voiced = dict(zip([j[0] for j in jobs], pool.map(lambda j: speak(*j), jobs)))
+
+        # 1. INTRO
+        path = voiced['intro']
         start, _file_end, _dur, end = add_audio(path)
         add_segment('intro', intro_text, start, end)
         add_silence(HDYS_AFTER_INTRO_S)
@@ -1702,7 +1639,7 @@ def generate_how_do_you_say_audio_segmented(
             logger.info("[item %d] %s -> %s", i, spanish, english)
 
             es_text = clean_for_tts(f"{spanish}.", keep_tags=_KEEP_TAGS)
-            path = speak(f'es_{i}', es_text, 'options', trim=True)
+            path = voiced[f'es_{i}']
             start, _file_end, _dur, end = add_audio(path)
             add_segment(f'es_{i}', es_text, start, end)
 
@@ -1712,7 +1649,7 @@ def generate_how_do_you_say_audio_segmented(
             add_segment(f'think_{i}', '[silence]', start, end)
 
             en_text = clean_for_tts(f"{english}. {english}.", keep_tags=_KEEP_TAGS)
-            path = speak(f'en_{i}', en_text, 'english_word', trim=True)
+            path = voiced[f'en_{i}']
             gap = clamp_take_gap(path)
             if gap["clamped"]:
                 logger.info("en_%d: pause between takes %.2fs -> %.2fs",
@@ -1732,15 +1669,13 @@ def generate_how_do_you_say_audio_segmented(
 
         # 3. RECAP
         add_silence(HDYS_BEFORE_RECAP_S)
-        recap_text = clean_for_tts(script['recap'], keep_tags=_KEEP_TAGS)
-        path = speak('recap', recap_text, 'explanation', trim=False)
+        path = voiced['recap']
         start, _file_end, _dur, end = add_audio(path)
         add_segment('recap', recap_text, start, end)
         add_silence(HDYS_AFTER_RECAP_S)
 
         # 4. OUTRO
-        outro_text = clean_for_tts(script['outro'], keep_tags=_KEEP_TAGS)
-        path = speak('outro', outro_text, 'question', trim=False)
+        path = voiced['outro']
         start, _file_end, _dur, end = add_audio(path)
         add_segment('outro', outro_text, start, end)
 
@@ -2084,18 +2019,6 @@ def generate_level_audio_segmented(
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 
-def list_voices() -> None:
-    """List available ElevenLabs voices."""
-    client = get_client()
-    response = client.voices.get_all()
-
-    logger.info("Available ElevenLabs voices:")
-    for voice in response.voices:
-        logger.info("  %s (ID: %s)", voice.name, voice.voice_id)
-        if voice.labels:
-            logger.debug("    Labels: %s", voice.labels)
-
-
 def test_voice(
     text: str = "Hola, esta es una prueba. ¿Qué significa 'library' en español? Significa biblioteca.",
     voice_id: str = None,
@@ -2123,7 +2046,6 @@ if __name__ == "__main__":
     import json
 
     parser = argparse.ArgumentParser(description="ElevenLabs TTS Module")
-    parser.add_argument("--list-voices", "-l", action="store_true", help="List available voices")
     parser.add_argument("--test", "-t", action="store_true", help="Test TTS with sample text")
     parser.add_argument("--text", default="Hola, ¿qué significa 'embarrassed' en inglés?", help="Text to test")
     parser.add_argument("--voice", default=DEFAULT_VOICE_ID, help="Voice ID to use")
@@ -2131,9 +2053,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.list_voices:
-        list_voices()
-    elif args.test:
+    if args.test:
         test_voice(args.text, args.voice, args.output)
     else:
         parser.print_help()

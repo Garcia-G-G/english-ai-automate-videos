@@ -39,6 +39,7 @@ sys.path.insert(0, str(ROOT / "src"))
 logging.getLogger("streamlit").setLevel(logging.CRITICAL)
 
 import admin  # noqa: E402
+import jobs  # noqa: E402
 
 
 @pytest.fixture
@@ -46,7 +47,12 @@ def ledger(tmp_path, monkeypatch):
     """Point the job ledger at tmp_path (conftest does not cover JOBS_FILE)."""
     path = tmp_path / "generation_jobs.json"
     path.write_text(json.dumps({"active": [], "history": []}))
-    monkeypatch.setattr(admin, "JOBS_FILE", path)
+    monkeypatch.setattr(jobs, "JOBS_FILE", path)
+    # The worker takes the panel voice grant; keep it out of output/ and off the real cap.
+    import voice_credits
+    import voice_lock
+    monkeypatch.setattr(voice_lock, "GRANT_DIR", tmp_path / "grants")
+    monkeypatch.setattr(voice_credits, "openrouter_refusal", lambda chars: None)
     return path
 
 
@@ -60,7 +66,7 @@ def test_start_generation_returns_before_the_pipeline_finishes(ledger, monkeypat
         assert release.wait(timeout=10), "pipeline never released"
         return {"success": True, "video_path": None, "error": None}
 
-    monkeypatch.setattr(admin, "run_pipeline_with_tracking", blocking_pipeline)
+    monkeypatch.setattr(jobs, "run_pipeline_with_tracking", blocking_pipeline)
 
     job_id = admin.start_generation("quiz")
 
@@ -91,7 +97,7 @@ def test_only_one_generation_runs_at_a_time(ledger, monkeypatch):
                 state["now"] -= 1
         return {"success": True, "video_path": None, "error": None}
 
-    monkeypatch.setattr(admin, "run_pipeline_with_tracking", counting_pipeline)
+    monkeypatch.setattr(jobs, "run_pipeline_with_tracking", counting_pipeline)
 
     for _ in range(4):
         admin.start_generation("quiz")

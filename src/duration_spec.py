@@ -89,6 +89,11 @@ def reload() -> None:
     _CACHE = None
 
 
+#: No video may run longer than this, whatever a type declares: every video
+#: goes out as a Facebook Reel too, and a Reel by API is 3-90 s (platform_rules).
+from platform_rules import FB_REEL_S
+PLATFORM_MAX_SECONDS = FB_REEL_S[1]
+
 #: The three numbers a band is made of. A type overrides any subset.
 BAND_KEYS = ("min_seconds", "max_seconds", "target_seconds")
 
@@ -118,10 +123,11 @@ def band(video_type: str = None) -> Dict[str, float]:
         for key in BAND_KEYS:
             if entry.get(key) is not None:
                 b[key] = entry[key]
+    hi = min(float(b.get("max_seconds", 80.0)), PLATFORM_MAX_SECONDS)
     return {
         "min_seconds": float(b.get("min_seconds", 50.0)),
-        "max_seconds": float(b.get("max_seconds", 80.0)),
-        "target_seconds": float(b.get("target_seconds", 65.0)),
+        "max_seconds": hi,
+        "target_seconds": min(float(b.get("target_seconds", 65.0)), hi),
     }
 
 
@@ -155,6 +161,7 @@ def reject_window(video_type: str = None) -> Dict[str, float]:
         for key, edge in REJECT_KEYS.items():
             if entry.get(key) is not None:
                 w[edge] = float(entry[key])
+    w["max_seconds"] = min(w["max_seconds"], PLATFORM_MAX_SECONDS)
     return w
 
 
@@ -364,15 +371,6 @@ def takes(video_type: str) -> int:
     cfg = (_config().get("repetition") or {}).get("takes") or {}
     return max(1, int(cfg.get((video_type or "").lower(), 1)))
 
-
-def repeat_cost(video_type: str, phrase_seconds: float, n_phrases: int = 1) -> float:
-    """Seconds this type's repetition adds. For projecting before synthesis.
-
-    Each extra take costs the phrase plus one pause; the first take is the
-    content that was always there.
-    """
-    extra = takes(video_type) - 1
-    return n_phrases * extra * (float(phrase_seconds) + repetition_pause())
 
 
 # ─────────────────────── the per-ITEM budget (A) ───────────────────────

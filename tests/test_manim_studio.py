@@ -123,14 +123,20 @@ def test_effective_env_prefers_the_studio_over_the_repo_and_names_the_source(tmp
     studio.mkdir(parents=True)
     for key in ms.ENV_KEYS:
         monkeypatch.delenv(key, raising=False)
-    (root / ".env").write_text("ELEVENLABS_API_KEY=root-key-abcdefgh\nOPENAI_API_KEY=root-openai-key\n")
+    (root / ".env").write_text("LR_BASE_URL=http://root.example\nLR_STUDIO_TOKEN=root-token\n")
     env = ms.effective_env(studio, root)
-    assert env["ELEVENLABS_API_KEY_SOURCE"] == "root" and env["OPENAI_API_KEY"] == "root-openai-key"
+    assert env["LR_BASE_URL_SOURCE"] == "root" and env["LR_STUDIO_TOKEN"] == "root-token"
     assert env["ELEVENLABS_VOICE_ID_SOURCE"] == "missing"
     (studio / ".env").write_text("ELEVENLABS_VOICE_ID=studio-voice\n")
     env = ms.effective_env(studio, root)
     assert env["ELEVENLABS_VOICE_ID"] == "studio-voice" and env["ELEVENLABS_VOICE_ID_SOURCE"] == "studio"
-    assert env["ELEVENLABS_API_KEY_SOURCE"] == "root"
+    assert env["LR_BASE_URL_SOURCE"] == "root"
+
+
+def test_the_studio_never_asks_for_the_dead_keys():
+    # OpenRouter is the only paid AI (2026-10-27): no OpenAI / ElevenLabs key in the panel
+    assert not {"OPENAI_API_KEY", "ELEVENLABS_API_KEY"} & set(ms.ENV_KEYS)
+    assert not hasattr(ms, "fetch_voices")
 
 
 def test_mask_never_shows_the_middle_of_a_key():

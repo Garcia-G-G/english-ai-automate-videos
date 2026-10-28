@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import re
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -129,7 +130,12 @@ def check_voice(settings: Optional[Dict] = None) -> None:
     """The voice must be one OpenRouter can use without BYOK (config audio.openrouter_voice.category)."""
     import secret_store
     s = settings or _settings()
-    category = s.get("voice_category") if (s.get("voice_name") is None or secret_store.get(VOICE_ID_NAME)) else None
+    if s.get("voice_name") is not None and not secret_store.get(VOICE_ID_NAME):
+        raise OpenRouterRefused(
+            f"Falta el id de la voz {s['voice_name']!r} ({VOICE_ID_NAME} no está en el entorno, .env ni el "
+            "Llavero). Sin él se usaría la voz clonada del canal, que gasta la cuota de ElevenLabs. "
+            "No se pidió nada.")
+    category =s.get("voice_category") if (s.get("voice_name") is None or secret_store.get(VOICE_ID_NAME)) else None
     if category not in USABLE_CATEGORIES:
         raise OpenRouterRefused(
             "La voz del canal no está confirmada para OpenRouter (config.yaml audio.voice_category = "
@@ -177,18 +183,34 @@ def request_body(kwargs: Dict, model: str = MODEL) -> Dict:
             "response_format": "mp3", "provider": {"options": {"elevenlabs": options}}}
 
 
+#: Spend of requests sent but not yet recorded. Segments are voiced in parallel (6 at a time), so
+#: each cap check must count the others in flight or the caps could be overshot by a few requests.
+_IN_FLIGHT = {"usd": 0.0}
+_IN_FLIGHT_LOCK = threading.Lock()
+
+
 def speak(kwargs: Dict, out_path, opener=None, retries: int = 3) -> None:
     """One request through OpenRouter, the mp3 written to `out_path`. `kwargs` are the ElevenLabs
     convert arguments the callers already build (voice_id, text, model_id, language_code,
     voice_settings, previous_text, next_text)."""
-    import secret_store
     import voice_lock
-    from cost_tracker import get_tracker
     s = _settings()
     check_voice(s)
     cost = price_usd(len(kwargs["text"]), s["model"])
-    check_caps(cost, s)
     voice_lock.check(f"una petición de {len(kwargs['text'])} caracteres a OpenRouter ({s['model']})")
+    with _IN_FLIGHT_LOCK:
+        check_caps(cost + _IN_FLIGHT["usd"], s)
+        _IN_FLIGHT["usd"] += cost
+    try:
+        _send(kwargs, out_path, s, cost, opener, retries)
+    finally:
+        with _IN_FLIGHT_LOCK:
+            _IN_FLIGHT["usd"] -= cost
+
+
+def _send(kwargs: Dict, out_path, s: Dict, cost: float, opener, retries: int) -> None:
+    import secret_store
+    from cost_tracker import get_tracker
     key = secret_store.get(KEY_NAME)
     if not key:
         raise OpenRouterRefused("No hay clave de OpenRouter (entorno o Llavero «english-ai-videos»). No se pidió nada.")

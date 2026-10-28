@@ -114,8 +114,7 @@ def test_a_studio_job_without_the_voicing_click_is_locked_and_with_it_granted(tm
     monkeypatch.setattr(voice_lock, "GRANT_DIR", tmp_path / "grants")
     probe = [sys.executable, "-c", "import sys; sys.path.insert(0, 'src'); import voice_lock; print('LOCKED' if voice_lock.locked() else 'GRANTED')"]
     env = {k: "" for k in os.environ if k.startswith("PYTEST")}
-    plan = {"used": 0, "limit": 100_000, "remaining": 100_000, "resets": None}
-    monkeypatch.setattr(voice_credits, "remaining", lambda *a, **k: plan)
+    monkeypatch.setattr(voice_credits, "openrouter_refusal", lambda chars: None)     # within the cap
 
     def finished(job_id):
         status = M.jobs_dir(tmp_path) / f"{job_id}.json"
@@ -138,6 +137,7 @@ def test_with_the_lock_on_a_cache_hit_still_renders(tmp_path, monkeypatch):
     import tts_cache
     import tts_elevenlabs as T
     monkeypatch.setattr(tts_cache, "CACHE_DIR", tmp_path / "cache")
+    monkeypatch.setenv("OPENROUTER_VOICE_ID", "M" * 20)          # the voice check passes: the lock decides
     request = {"voice_id": "v", "text": "Hola", "model_id": "eleven_v3"}
     k = tts_cache.key({**request, "endpoint": "convert"}, 0)
     src = tmp_path / "src.mp3"
@@ -146,44 +146,26 @@ def test_with_the_lock_on_a_cache_hit_still_renders(tmp_path, monkeypatch):
     tts_cache.store(k, src, request)
     assert voice_lock.locked()
     out = tmp_path / "out.mp3"
-    T._elevenlabs_with_retry(None, str(out), **request)          # no client: a request would crash
+    T._elevenlabs_with_retry(str(out), **request)                # a request would be locked
     assert out.exists() and out.stat().st_size > 0
     with pytest.raises(voice_lock.VoiceLocked):
-        T._elevenlabs_with_retry(None, str(tmp_path / "miss.mp3"), **dict(request, text="Adiós"))
+        T._elevenlabs_with_retry(str(tmp_path / "miss.mp3"), **dict(request, text="Adiós"))
 
 
-# ── the panel's plan check ───────────────────────────────────────────
+# ── the panel's cap check ────────────────────────────────────────────
 
-PLAN = {"used": 90_000, "limit": 100_000, "remaining": 10_000, "resets": None}
-
-
-def test_the_header_says_what_is_left():
-    assert voice_credits.header_text(PLAN) == "Voz: 10.000 caracteres restantes"
-    assert "solo audio en caché" in voice_credits.header_text(None)
-
-
-def test_a_render_is_refused_past_the_plan_or_under_five_percent():
-    assert voice_credits.refusal(4_000, PLAN) is None
-    assert "Sin voz suficiente" in voice_credits.refusal(12_000, PLAN)
-    assert "5 %" in voice_credits.refusal(6_000, PLAN)          # would leave 4 000 < 5 000
-
-
-def test_panel_voice_grants_refuses_or_runs_cache_only(grants):
-    with voice_credits.panel_voice(1_000, read=lambda: PLAN) as token:
+def test_panel_voice_grants_within_openrouters_cap_and_refuses_past_it(grants, monkeypatch):
+    monkeypatch.setattr(voice_credits, "openrouter_refusal", lambda chars: None)
+    with voice_credits.panel_voice(1_000) as token:
         assert token and (grants / token).exists()
-    with pytest.raises(voice_credits.VoiceRefused):
-        with voice_credits.panel_voice(9_000, read=lambda: PLAN):
+    assert not list(grants.iterdir())                           # the grant ends with the block
+    monkeypatch.setattr(voice_credits, "openrouter_refusal", lambda chars: "Tope mensual de OpenRouter")
+    with pytest.raises(voice_credits.VoiceRefused, match="Tope mensual"):
+        with voice_credits.panel_voice(9_000):
             pass
-    notes = []
-    with voice_credits.panel_voice(1_000, note=notes.append, read=lambda: None) as token:
-        assert token is None
-    assert "caché" in notes[0]
 
 
-def test_the_remaining_read_is_cached_and_never_fetched_under_pytest(monkeypatch):
-    monkeypatch.setattr(voice_credits, "_cache", {"at": 0.0, "value": None})
-    assert voice_credits.remaining() is None
-    calls = []
-    fetch = lambda: calls.append(1) or PLAN
-    assert voice_credits.remaining(fetch, now=lambda: 1000.0) == PLAN
-    assert voice_credits.remaining(fetch, now=lambda: 1030.0) == PLAN and len(calls) == 1
+def test_the_elevenlabs_plan_reading_is_gone():
+    # OpenRouter is the only paid AI (2026-10-27): no balance read with the dead ElevenLabs key
+    assert not hasattr(voice_credits, "remaining")
+    assert "ELEVENLABS_API_KEY" not in (ROOT / "src" / "voice_credits.py").read_text(encoding="utf-8")

@@ -216,6 +216,9 @@ class UploadResult:
     #: True when the platform may have published but could not confirm it.
     #: Callers keep the attempt OPEN (status unknown) so the guard reconciles.
     in_doubt: bool = False
+    #: What actually went out after the platform's rules (platform_rules): {title, description,
+    #: hashtags, changes}. The ledger records this, not what the caller meant to send.
+    sent: Optional[dict] = None
 
 
 # ---------------------------------------------------------------------------
@@ -797,21 +800,26 @@ class YouTubeUploader(BaseUploader):
 
         meta = VideoMetadata(title, description, hashtags or [])
 
-        # Ensure #Shorts appears so YouTube surfaces it as a Short
-        shorts_tag = "#Shorts"
-        if shorts:
-            yt_title = meta.title if shorts_tag in meta.title else f"{meta.title} {shorts_tag}"
-        else:
-            yt_title = meta.title
+        # STEP 80: YouTube's own limits, applied last (platform_rules). No «#Shorts» in the title:
+        # a vertical video under 3 min is a Short by itself, and a hashtag eats the title's keywords.
+        import platform_rules
+        fixed = platform_rules.youtube(meta.title, meta.full_description, meta.hashtags)
+        if fixed["changes"]:
+            logger.info("YouTube rules changed the upload: %s", "; ".join(fixed["changes"]))
+        sent = {"title": fixed["title"], "description": fixed["description"],
+                "hashtags": fixed["tags"], "changes": fixed["changes"]}
 
         privacy_status = privacy or resolve_privacy(self.PLATFORM)
 
         body = {
             "snippet": {
-                "title": yt_title[:100],
-                "description": meta.full_description[:5000],
-                "tags": [t.lstrip("#") for t in meta.hashtags][:500],
+                "title": fixed["title"],
+                "description": fixed["description"],
+                "tags": fixed["tags"],
                 "categoryId": self.CATEGORY_EDUCATION,
+                # the title, description and voice are Spanish-led; YouTube is told so
+                "defaultLanguage": "es",
+                "defaultAudioLanguage": "es",
             },
             "status": {
                 "privacyStatus": privacy_status,
@@ -887,7 +895,7 @@ class YouTubeUploader(BaseUploader):
                         return UploadResult(self.PLATFORM, True,
                                             upload_id=video_id, url=url,
                                             raw_response=result_data,
-                                            session_uri=upload_url)
+                                            session_uri=upload_url, sent=sent)
                     if resp.status_code == 308:
                         # Partially received, continue
                         range_header = resp.headers.get("Range", "")
@@ -1145,21 +1153,6 @@ class UploadManager:
         """Return the list of platforms that have credentials configured."""
         return [name for name, up in self.uploaders.items() if up.is_configured()]
 
-    def authenticate_all(self) -> dict[str, bool]:
-        """Authenticate every configured platform. Returns {platform: success}."""
-        results: dict[str, bool] = {}
-        for name, uploader in self.uploaders.items():
-            if not uploader.is_configured():
-                logger.info("Skipping %s – not configured.", name)
-                results[name] = False
-                continue
-            try:
-                results[name] = uploader.authenticate()
-            except Exception as exc:
-                logger.error("Auth failed for %s: %s", name, exc)
-                results[name] = False
-        return results
-
     def upload_all(
         self,
         video_path: str,
@@ -1246,17 +1239,6 @@ class UploadManager:
                     "upload_id": r.upload_id, "url": r.url,
                     "session_uri": r.session_uri, "in_doubt": r.in_doubt}
         return {"success": False, "error": "No result returned"}
-
-    def get_status(self, platform: str, upload_id: str) -> UploadResult:
-        """Check the status of a single upload."""
-        uploader = self.uploaders.get(platform)
-        if not uploader:
-            return UploadResult(platform, False, error="Unknown platform.")
-        try:
-            return uploader.get_upload_status(upload_id)
-        except Exception as exc:
-            return UploadResult(platform, False, upload_id=upload_id,
-                                error=str(exc))
 
 
 # ---------------------------------------------------------------------------

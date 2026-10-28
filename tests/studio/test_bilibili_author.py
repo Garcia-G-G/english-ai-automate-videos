@@ -144,12 +144,11 @@ class Tracker:
     def __init__(self):
         self.entries = [{"api_type": "old", "cost_usd": 8.0}]
 
-    def log_openai_chat(self, prompt_tokens, completion_tokens, model, label):
+    def _add_entry(self, api_type, model, cost, label, details):    # llm.record (OpenRouter)
         self.entries.append({
-            "api_type": "openai_chat",
+            "api_type": api_type,
             "cost_usd": 0.001,
-            "prompt_tokens": prompt_tokens,
-            "completion_tokens": completion_tokens,
+            **details,
             "model": model,
             "label": label,
         })
@@ -416,7 +415,7 @@ def test_shared_model_seam_parses_validates_and_logs_unicode(monkeypatch):
 
     assert result["hook"] == "这个表达在机场特别实用。"
     validate_script(result, "educational")
-    assert tracker.entries[-1]["api_type"] == "openai_chat"
+    assert tracker.entries[-1]["api_type"] == "openrouter_chat"
     assert "#AprendeIngles" not in result["hashtags"]
     assert "#英语学习" in result["hashtags"]
 

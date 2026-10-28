@@ -132,3 +132,13 @@ def test_the_guard_reads_neither_the_skipped_shelf_nor_the_series():
     shelves = {Q.DONE_DIR, Q.SKIPPED_DIR, Q.SERIES_DIR}
     assert not [p for p in Q.queued_scripts() if shelves & set(p.parents)]
     assert (Q.SKIPPED_DIR / "README.md").exists()
+
+
+def test_a_script_a_job_is_rendering_is_not_picked_again(dirs, monkeypatch):
+    """Two panel jobs started in the same second both took hc_e002 and shared its work dir."""
+    series.queue_drafts()
+    first = series.pick()
+    assert first is not None
+    monkeypatch.setattr(series, "_CLAIMED", {first[0].name})
+    again = series.pick()
+    assert again is None or again[0] != first[0]

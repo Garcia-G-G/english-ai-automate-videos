@@ -1,9 +1,7 @@
 """STEP 76 §4: every TTS call is cached by content; a second run of a script asks nothing."""
-import base64
 import subprocess
 import sys
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
@@ -36,31 +34,23 @@ def _mp3_bytes(tmp_path, seconds=1.2):
 
 
 class FakeTTS:
-    """ElevenLabs' two endpoints, counting HTTP calls."""
+    """tts_openrouter.speak, counting HTTP calls (the only voice request there is)."""
 
     def __init__(self, audio):
         self.audio, self.calls = audio, 0
-        self.text_to_speech = self
 
-    def convert_with_timestamps(self, **kw):
+    def __call__(self, kwargs, out_path, **k):
         self.calls += 1
-        text = kw["text"]
-        n = len(text)
-        return SimpleNamespace(audio_base_64=base64.b64encode(self.audio).decode(), alignment=SimpleNamespace(
-            characters=list(text), character_start_times_seconds=[0.3 + 0.5 * i / n for i in range(n)],
-            character_end_times_seconds=[0.3 + 0.5 * (i + 1) / n for i in range(n)]))
-
-    def convert(self, **kw):
-        self.calls += 1
-        yield self.audio
+        Path(out_path).write_bytes(self.audio)
 
 
 def test_a_second_run_of_the_same_script_makes_no_http_call(tmp_path, monkeypatch):
     import stitch
     import tts_bilingual as TB
-    import tts_elevenlabs as TE
+    import tts_openrouter
     fake = FakeTTS(_mp3_bytes(tmp_path))
-    monkeypatch.setattr(TE, "get_client", lambda: fake)
+    monkeypatch.setattr(tts_openrouter, "speak", fake)
+    monkeypatch.setattr(TB, "_local_words", lambda *a: None)    # no transcriber: the words are estimated
     monkeypatch.setattr(stitch, "onset_values", lambda p: {"start_db": -40.0, "fragment": None,
                                                            "doubled_onset": None, "first_dbfs": -90.0})
     first = TB.generate_bilingual_narration(SCRIPT, str(tmp_path / "a.mp3"), settings=SETTINGS, dry_run=False)
@@ -89,11 +79,13 @@ def test_the_key_covers_what_changes_the_audio_and_the_take():
 
 def test_the_level_path_convert_is_cached_per_take(tmp_path, monkeypatch):
     import tts_elevenlabs as TE
+    import tts_openrouter
     fake = FakeTTS(_mp3_bytes(tmp_path))
+    monkeypatch.setattr(tts_openrouter, "speak", fake)
     kw = dict(voice_id="v", text="spoon.", model_id="eleven_v3", output_format="mp3_44100_128")
-    TE._elevenlabs_with_retry(fake, str(tmp_path / "0.mp3"), take=0, **kw)
-    TE._elevenlabs_with_retry(fake, str(tmp_path / "1.mp3"), take=1, **kw)
-    TE._elevenlabs_with_retry(fake, str(tmp_path / "0b.mp3"), take=0, **kw)
+    TE._elevenlabs_with_retry(str(tmp_path / "0.mp3"), take=0, **kw)
+    TE._elevenlabs_with_retry(str(tmp_path / "1.mp3"), take=1, **kw)
+    TE._elevenlabs_with_retry(str(tmp_path / "0b.mp3"), take=0, **kw)
     assert fake.calls == 2 and (tmp_path / "0b.mp3").read_bytes() == (tmp_path / "0.mp3").read_bytes()
 
 

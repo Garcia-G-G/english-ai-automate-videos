@@ -94,7 +94,7 @@ def test_the_chosen_voice_replaces_the_channels(monkeypatch):
 
 
 def test_a_named_voice_without_its_id_is_refused(monkeypatch):
-    with pytest.raises(T.OpenRouterRefused):
+    with pytest.raises(T.OpenRouterRefused, match="OPENROUTER_VOICE_ID"):   # names what is missing
         T.check_voice({**SETTINGS, "voice_name": "Matilda", "voice_category": "premade"})
     monkeypatch.setenv("OPENROUTER_VOICE_ID", "matilda-id")
     T.check_voice({**SETTINGS, "voice_name": "Matilda", "voice_category": "premade"})
@@ -169,8 +169,8 @@ def test_the_elevenlabs_path_routes_to_openrouter_and_caches_it(router, monkeypa
     calls = []
     monkeypatch.setattr(T, "speak", lambda kw, out, **k: (calls.append(kw["text"]), Path(out).write_bytes(b"ID3x")))
     kw = {k: v for k, v in KW.items()}
-    E._elevenlabs_with_retry(None, str(tmp / "a.mp3"), **kw)
-    E._elevenlabs_with_retry(None, str(tmp / "b.mp3"), **kw)              # the second one is a cache hit
+    E._elevenlabs_with_retry(str(tmp / "a.mp3"), **kw)
+    E._elevenlabs_with_retry(str(tmp / "b.mp3"), **kw)              # the second one is a cache hit
     assert calls == [KW["text"]] and (tmp / "b.mp3").read_bytes() == b"ID3x"
 
 
@@ -183,35 +183,31 @@ def test_audio_already_cached_from_elevenlabs_is_used_and_nothing_is_asked(route
     src.write_bytes(b"ID3old")
     tts_cache.store(tts_cache.key({**KW, "endpoint": "convert"}, 0), src, {**KW, "endpoint": "convert"})
     monkeypatch.setattr(T, "speak", lambda *a, **k: pytest.fail("a cached segment was asked again"))
-    E._elevenlabs_with_retry(None, str(tmp / "c.mp3"), **KW)
+    E._elevenlabs_with_retry(str(tmp / "c.mp3"), **KW)
     assert (tmp / "c.mp3").read_bytes() == b"ID3old"
 
 
-def test_elevenlabs_is_the_fallback_only_above_five_percent(router, monkeypatch):
+def test_a_refusal_is_the_jobs_failure_with_no_direct_elevenlabs_call(router, monkeypatch):
     import tts_cache
     import tts_elevenlabs as E
-    import voice_credits
     sent, opener, tmp = router
     monkeypatch.setattr(tts_cache, "CACHE_DIR", tmp / "cache")
 
     def refuse(*a, **k):
-        raise T.OpenRouterRefused("no")
+        raise T.OpenRouterRefused("Tope mensual de OpenRouter")
     monkeypatch.setattr(T, "speak", refuse)
-    monkeypatch.setattr(voice_credits, "remaining", lambda *a, **k: {"used": 0, "limit": 100000, "remaining": 100000})
-    assert E._through_openrouter(str(tmp / "d.mp3"), 0, dict(KW)) is False         # ElevenLabs may answer
-    monkeypatch.setattr(voice_credits, "remaining", lambda *a, **k: {"used": 97000, "limit": 100000, "remaining": 3000})
-    with pytest.raises(T.OpenRouterRefused):
-        E._through_openrouter(str(tmp / "e.mp3"), 0, dict(KW))
-    monkeypatch.setattr(voice_credits, "remaining", lambda *a, **k: None)          # unreadable: no fallback
-    with pytest.raises(T.OpenRouterRefused):
-        E._through_openrouter(str(tmp / "f.mp3"), 0, dict(KW))
+    with pytest.raises(T.OpenRouterRefused, match="Tope mensual"):
+        E._elevenlabs_with_retry(str(tmp / "d.mp3"), **KW)
+    assert not (tmp / "d.mp3").exists()
+    source = (ROOT / "src" / "tts_elevenlabs.py").read_text(encoding="utf-8")
+    assert "from elevenlabs" not in source and "text_to_speech.convert" not in source
 
 
 def test_the_bilingual_path_goes_through_the_same_routing():
     source = (ROOT / "src" / "tts_bilingual.py").read_text(encoding="utf-8")
     body = source[source.index("def _synthesize_segment"):source.index("def _local_words")]
-    assert body.index("tts_openrouter.active()") < body.index("client = get_client()")
-    assert "_local_words(out_path" in body
+    assert "_elevenlabs_with_retry(out_path" in body and "_local_words(out_path" in body
+    assert "get_client" not in source and "elevenlabs.types" not in source
 
 
 # ── the key, the panel, the price table ──────────────────────────────
@@ -230,10 +226,10 @@ def test_the_price_table_has_the_two_openrouter_models():
     assert cost_tracker.PRICING["elevenlabs/eleven-v4-turbo"]["per_1m_chars"] == 40.0
 
 
-def test_the_panel_header_shows_both_balances_without_latex():
+def test_the_panel_header_shows_openrouters_balance_without_latex():
     import voice_credits as V
-    lines = V.header_lines({"used": 1, "limit": 10, "remaining": 7039}, 2.5, 15.0)
-    assert lines == ["Voz ElevenLabs: 7.039 car.", "OpenRouter: &#36;2.50 de &#36;15 este mes"]
+    assert V.header_lines(2.5, 15.0) == ["OpenRouter: &#36;2.50 de &#36;15 este mes"]
+    assert V.header_lines(None, 15.0) == ["OpenRouter: sin datos"]
 
 
 def test_the_panel_refuses_a_render_past_the_monthly_cap(monkeypatch):
