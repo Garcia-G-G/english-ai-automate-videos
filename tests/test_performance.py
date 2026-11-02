@@ -81,7 +81,7 @@ def test_the_summary_judges_formats_on_videos_older_than_three_days():
     f = {x["type"]: x for x in s["formats"]}
     assert f["how_do_you_say"]["mature_median"] == 1100 and f["how_do_you_say"]["count"] == 3
     assert s["formats"][0]["type"] == "how_do_you_say"
-    assert [v["id"] for v in s["top"]][:2] == ["1", "2"] and s["bottom"][0]["id"] == "3"
+    assert [v["id"] for v in s["top"]][:2] == ["1", "2"] and s["bottom"][0]["id"] == "4"   # "3" is 1 day old
 
 
 def test_facebook_reads_video_insights_or_says_why_not(tmp_path, monkeypatch):

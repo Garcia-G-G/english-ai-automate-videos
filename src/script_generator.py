@@ -16,7 +16,7 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 
-from script_schema import validate_script
+from script_schema import LEVEL_TYPE_TAGS, validate_script
 from tts_common import SPANISH_FILTER
 
 logger = logging.getLogger(__name__)
@@ -1227,6 +1227,9 @@ def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None
     # Padding is delegated to metadata_generator._ensure_hashtags so the tiers
     # and the dedup live in ONE place; here we only normalise, add the broad
     # tags, and drop duplicates.
+    # The uploader adds #Shorts; in the script it only hides the title's emoji from how_do_you_say_title.
+    if isinstance(script.get("video_title"), str):
+        script["video_title"] = re.sub(r"\s*#shorts\b", "", script["video_title"], flags=re.I).strip()
     hashtags = script.get("hashtags", [])
     if isinstance(hashtags, str):
         hashtags = [h.strip() for h in hashtags.split() if h.startswith("#")]
@@ -1237,7 +1240,8 @@ def validate_and_clean_script(script: dict, video_type: str, cleanup_policy=None
         if name and name.lower() not in seen:
             seen.add(name.lower())
             deduped.append(f"#{name}")
-    for tag in policy["broad_hashtags"]:
+    # These formats' schema wants exactly the five the model wrote: two more refused every one of them.
+    for tag in () if video_type == "phrases_level" or video_type in LEVEL_TYPE_TAGS else policy["broad_hashtags"]:
         if tag.lstrip("#").lower() not in seen:
             seen.add(tag.lstrip("#").lower())
             deduped.append(tag)
@@ -1299,7 +1303,6 @@ def generate_script_from_prompt(
 ) -> dict:
     """Invoke, parse, clean, and validate one script with caller-owned policy."""
 
-    client = client or llm.client()
     model_id = llm.model("script")
     logger.info(f"Calling OpenRouter ({model_id}) for {video_type} video...")
 

@@ -906,11 +906,12 @@ class YouTubeUploader(BaseUploader):
                     else:
                         error = _google_error(resp)
                         logger.error("YouTube chunk upload failed: %s", error)
-                        return UploadResult(self.PLATFORM, False, error=error, session_uri=upload_url)
+                        return UploadResult(self.PLATFORM, False, error=error, session_uri=upload_url,
+                                            in_doubt=resp.status_code >= 500)
         except requests.RequestException as exc:
             logger.error("YouTube chunk upload failed: %s", exc)
             return UploadResult(self.PLATFORM, False, error=str(exc),
-                                session_uri=upload_url)
+                                session_uri=upload_url, in_doubt=True)
 
         return UploadResult(self.PLATFORM, False, error="Upload ended unexpectedly.",
                             session_uri=upload_url)
@@ -1010,7 +1011,7 @@ class YouTubeUploader(BaseUploader):
             return {"state": "unknown", "upload_id": None,
                     "detail": "session URI expired (404)"}
 
-        if 400 <= resp.status_code < 600:
+        if 400 <= resp.status_code < 500:
             return {"state": "failed", "upload_id": None,
                     "detail": f"HTTP {resp.status_code}"}
 

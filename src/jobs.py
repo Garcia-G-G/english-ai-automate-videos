@@ -661,8 +661,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             # types have scripts and THIS one has run out.
             raise RuntimeError(
                 f"no queued script left for {video_type!r}, though the queue "
-                f"still has others. Add more of this type, or turn off 'Use a "
-                f"queued script' to write one with the model (OpenRouter).")
+                f"still has others. Add more of this type.")
 
         if script_data is None:
             # script_source was "gpt" before 2026-10-27; nothing filters on it
@@ -871,6 +870,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         verdict_record = {
             "gate": fin.get("gate"),
             "blocking_flags": fin.get("blocking_flags", []),
+            "gate_warnings": fin.get("gate_warnings", []),
             "outro_appended": bool(fin.get("outro_appended")),
             "outro_variant": fin.get("outro_variant"),
             "deesser": fin.get("deesser"),              # STEP 80 §00: the voice's de-esser measure
@@ -1032,16 +1032,19 @@ def start_series_generation(style: Optional[str] = None, level: Optional[str] = 
         update_job(job_id, log_path=str(log_path))
         try:
             # STEP 79 §00: the series click may voice one script, within the plan.
-            picked = series.pick(style, level)
-            chars = voice_credits.script_chars(picked[1] if picked else None) or voice_credits.cap_chars()
-            with voice_credits.panel_voice(chars):
-                result = series.render_one(style, level, progress=lambda msg: update_job(job_id, current_step=msg))
+            with _RENDER_LOCK:                               # the cost tracker and the per-video cap are one per process
+                picked = series.pick(style, level)
+                chars = voice_credits.script_chars(picked[1] if picked else None) or voice_credits.cap_chars()
+                with voice_credits.panel_voice(chars):
+                    result = series.render_one(style, level, progress=lambda msg: update_job(job_id, current_step=msg))
             ok = result["gate"] == "PASS"
             complete_job(job_id, ok, result["video"],
                          None if ok else "quality gate: " + ", ".join(result["blocking_flags"]))
         except Exception as exc:                            # noqa: BLE001 — the job row says why
             logger.exception("series job %s failed", job_id)
             complete_job(job_id, False, None, str(exc))
+        finally:
+            detach_run_log(log_path)
 
     threading.Thread(target=_worker, daemon=True).start()
     return job_id

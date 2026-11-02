@@ -85,7 +85,7 @@ def limit_block(attempts: Iterable[Dict], now: datetime, platform: str = "youtub
     # window would slide past it and keep the button grey for another day
     failed_at = _at(rows[-1]) or now
     slot = next_free_slot(rows, failed_at, platform)
-    if slot is not None and now >= slot:
+    if now >= (slot if slot is not None else failed_at + WINDOW):
         return None
     return spanish(f"{platform} 400 {UPLOAD_LIMIT}", rows, failed_at)
 

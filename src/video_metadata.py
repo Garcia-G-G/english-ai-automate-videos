@@ -53,6 +53,12 @@ COMMENT_QUESTION = {"how_do_you_say": "¿Cuántas sabías? Dímelo en comentario
                     "phrases_level": "¿Cuál usarías hoy? Cuéntamelo en comentarios 👇",
                     "hecho_con_claude": "¿Tú también lo decías así? Dímelo en comentarios 👇"}
 DEFAULT_QUESTION = "¿Lo sabías? Dímelo en comentarios 👇"
+#: Types whose theme names what they teach (a phrasal verb or a grammar point does not make a tag).
+THEME_TAG_TYPES = ("phrases_level", "say_it_level", "level_test")
+FORMAT_TAG = {"phrases_level": "#fraseseningles", "say_it_level": "#fraseseningles", "level_test": "#testdeingles",
+              "choose_level": "#gramaticainglesa", "fill_level": "#gramaticainglesa", "true_false_level": "#gramaticainglesa",
+              "fill_blank": "#gramaticainglesa", "true_false": "#gramaticainglesa", "quiz": "#quizdeingles",
+              "pronunciation": "#pronunciacioningles", "hecho_con_claude": "#erroreseningles"}
 BROAD = ["#aprenderingles", "#inglesfacil"]
 AUDIENCE = "#inglesparahispanohablantes"
 BRAND = "#englishunlimited"
@@ -103,10 +109,12 @@ def topic_tag(script: Dict, video_type: str) -> str:
     for article in ("el ", "la ", "los ", "las "):
         if theme.lower().startswith(article):
             theme = theme[len(article):]
-    word = re.sub(r"[^a-z0-9]", "", _fold(theme.split(" (")[0]).replace(" ", ""))
-    if video_type == "how_do_you_say" and word:
+    theme = theme.split(" (")[0]
+    word = re.sub(r"[^a-z0-9]", "", _fold(theme))
+    # A long theme makes a tag nobody searches («#hablardetufamiliaeningles»): then the format's.
+    if word and (video_type == "how_do_you_say" or (len(theme.split()) <= 2 and video_type in THEME_TAG_TYPES)):
         return f"#{word}eningles"
-    return "#vocabularioeningles"
+    return FORMAT_TAG.get(video_type, "#vocabularioeningles")
 
 
 # ── rules and guards ─────────────────────────────────────────────────
@@ -211,6 +219,12 @@ def build(script: Dict, video_type: str, category: str = "", llm: Optional[Calla
         title, alternatives = M.how_do_you_say_title(script), []
     elif video_type in OWN_TITLE_TYPES and (script.get("video_title") or script.get("title")):
         title, alternatives = script.get("video_title") or script.get("title"), []
+    elif (script.get("video_title") and not CLICKBAIT.search(script["video_title"])
+          and not guard({"title": script["video_title"], "description": ""}, published)):
+        # Written for this topic («SPEAK o TALK: ¿cuál va?»); the LLM sees only the rows and gave
+        # «Elige la correcta en inglés: ¿cuál es?» (2026-10-30). Its ideas stay as alternatives.
+        title = script["video_title"]
+        alternatives = [t.strip() for t in (proposal or {}).get("titles", []) if isinstance(t, str) and not title_ok(t.strip())][:2]
     else:
         proposed = [t.strip() for t in (proposal or {}).get("titles", []) if isinstance(t, str)]
         good = [t for t in proposed if not title_ok(t) and _fold(t).strip() not in published]

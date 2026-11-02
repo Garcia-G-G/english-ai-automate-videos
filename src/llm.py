@@ -43,6 +43,15 @@ def client():
                   default_headers={"X-Title": "english-ai-videos"})
 
 
+class ScriptModelOff(RuntimeError):
+    """A script was about to be written with the OpenRouter key."""
+
+
+#: What a call may cost, for the caps before it is made: the real cost comes back with the reply.
+CALL_ESTIMATE_USD = {"metadata": 0.002}
+DEFAULT_CALL_ESTIMATE_USD = 0.05                            # a script on Opus 5.5 is ~$0.04
+
+
 def record(response: Any, model_id: str, label: str) -> float:
     """One row in output/costs/ (api_type «openrouter_chat»), at the cost OpenRouter reports."""
     usage = getattr(response, "usage", None)
@@ -60,6 +69,13 @@ def record(response: Any, model_id: str, label: str) -> float:
 def chat(task: str, messages, *, label: Optional[str] = None, client_=None, **kwargs):
     """One chat completion for `task`, recorded. Returns the SDK response."""
     model_id = model(task)
+    if task == "script" and client_ is None:                # owner, 2026-11-02: never with the OpenRouter key
+        raise ScriptModelOff("Los guiones no se escriben con la clave de OpenRouter. Añade guiones a la cola.")
+    if client_ is None:                                     # only a test injects one: every paid path passes None
+        import tts_openrouter
+        import voice_lock
+        voice_lock.check("una llamada al modelo de texto")
+        tts_openrouter.check_caps(CALL_ESTIMATE_USD.get(task, DEFAULT_CALL_ESTIMATE_USD))
     response = (client_ or client()).chat.completions.create(
         model=model_id, messages=messages, extra_body={"usage": {"include": True}}, **kwargs)
     try:

@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 RATE = 44100                    # the outros and every narration are 44.1 kHz; -c copy needs a match
 TARGET_I, TARGET_TP, TARGET_LRA = -14.0, -1.5, 7.0
 MAX_GAIN_DB = 6.0
+LOUDNESS_LIMIT_DB, SPREAD_LIMIT_DB = 2.0, 6.0   # past these gate() refuses; the worst published so far: 1.5, 5.8
 SILENT_DB = -50.0               # a segment quieter than this is silence, not speech
 RAMP_S = 0.010
 #: A sample limiter at 4× the rate sees (nearly) the true peak. The sample-peak limiter
@@ -247,16 +248,19 @@ def prepare_narration(audio_path, data_path, out_path) -> Dict:
 
 
 def gate(path, segments: Optional[List[Dict]] = None) -> Dict:
-    """STEP 75 §5 thresholds on a rendered file: −14 ±1 LUFS, TP ≤ −1 dBTP, spread ≤ 3 dB."""
+    """A rendered file against STEP 75 §5: −14 ±1 LUFS, TP ≤ −1 dBTP, spread ≤ 3 dB. Past the target
+    is a warning and only past the limit a refusal (owner, 2026-11-02): a refusal costs the video its
+    end card, and 12 of 41 published videos lost it over 0.1–2.8 dB nobody could hear."""
     m = measure(path)
-    flags = []
-    if abs(m["I"] - TARGET_I) > 1.0:
-        flags.append(f"loudness:{m['I']:.1f}LUFS")
+    flags, warnings = [], []
+    off = abs(m["I"] - TARGET_I)
+    if off > 1.0:
+        (flags if off > LOUDNESS_LIMIT_DB else warnings).append(f"loudness:{m['I']:.1f}LUFS")
     if m["TP"] > -1.0:
         flags.append(f"true_peak:{m['TP']:.1f}dBTP")
     if segments:
         s = spread(segment_levels(decode(path), segments))
         m["spread"] = s
         if s > 3.0:
-            flags.append(f"segment_spread:{s:.1f}dB")
-    return {**m, "flags": flags}
+            (flags if s > SPREAD_LIMIT_DB else warnings).append(f"segment_spread:{s:.1f}dB")
+    return {**m, "flags": flags, "warnings": warnings}

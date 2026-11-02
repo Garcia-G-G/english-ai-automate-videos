@@ -262,6 +262,7 @@ class CostTracker:
             return None
 
         today = date.today().isoformat()
+        COSTS_DIR.mkdir(parents=True, exist_ok=True)
         log_path = COSTS_DIR / f"costs_{today}.jsonl"
 
         with open(log_path, 'a', encoding='utf-8') as f:
@@ -291,6 +292,11 @@ def get_tracker(video_id: str = None) -> CostTracker:
 def reset_tracker(video_id: str = None) -> CostTracker:
     """Create a fresh tracker for a new video."""
     global _current_tracker
+    if _current_tracker is not None:
+        try:
+            _current_tracker.save()                         # a click's spend must reach the monthly total
+        except OSError:
+            logger.exception("cost_tracker: unsaved rows of %s were lost", _current_tracker.video_id)
     _current_tracker = CostTracker(video_id)
     return _current_tracker
 

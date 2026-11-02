@@ -31,7 +31,9 @@ CONFIG = ROOT / "config.yaml"
 DEFAULTS = {"enabled": True, "split_hz": 5500, "below_lufs_db": 12.0, "ratio": 4.0}
 RATE = 44100
 #: The gate's band math (STEP 80 §00).
-SIB_MIN_DB, SIB_MAX_DB, NONSIB_MAX_DB, BODY_MAX_DB = 5.0, 12.0, 1.0, 0.3
+SIB_MIN_DB, SIB_MAX_DB, NONSIB_MAX_DB, BODY_MAX_DB = 4.0, 12.0, 1.0, 0.3
+#: The target. Between it and SIB_MIN_DB is a warning (owner, 2026-11-02): published videos measured 4.4–4.97.
+SIB_TARGET_DB = 5.0
 
 
 def settings() -> Dict:
@@ -107,6 +109,14 @@ def measure(before: Path, after: Path) -> Dict:
     other = round(float(per_frame[rest].mean()), 2) if rest.any() else None
     return {"sibilant_hf_db": off(hf_a, hf_b, sib), "other_hf_db": other,
             "body_db": off(body_a, body_b, voiced), "sibilant_frames": int(sib.sum()), "voiced_frames": int(voiced.sum())}
+
+
+def warnings(m: Dict) -> list:
+    """Short of the target, not worth a video's end card."""
+    sib = (m or {}).get("sibilant_hf_db")
+    if not m or m.get("enabled") is False or sib is None or not SIB_MIN_DB <= sib < SIB_TARGET_DB:
+        return []
+    return [f"deesser:sibilants_{sib}dB"]
 
 
 def flags(m: Dict) -> list:

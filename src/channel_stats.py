@@ -46,7 +46,7 @@ def youtube_rows(ledger: Optional[Path] = None) -> List[Dict]:
         seen.add(row["upload_id"])
         out.append({"id": row["upload_id"], "artifact": row.get("artifact"), "type": row.get("video_type") or "",
                     "title": row.get("published_title") or "", "published_at": row.get("published_at") or "",
-                    "url": row.get("url")})
+                    "url": row.get("url"), "hashtags": row.get("hashtags") or []})
     return out
 
 
@@ -92,22 +92,25 @@ def fetch_youtube(ids: List[str], token: str, get=None) -> Dict[str, Dict]:
             s = item.get("statistics") or {}
             out[item["id"]] = {"views": int(s.get("viewCount", 0)), "likes": int(s.get("likeCount", 0)),
                                "comments": int(s.get("commentCount", 0)),
-                               "title": (item.get("snippet") or {}).get("title", "")}
+                               "title": (item.get("snippet") or {}).get("title", ""),
+                               "published": (item.get("snippet") or {}).get("publishedAt", "")}
     return out
 
 
-def fetch_retention(ids: List[str], token: str, today: date, get=None) -> Dict[str, float]:
-    """{id: average % of the video viewed} from YouTube Analytics, 200 ids a report (the cap for
-    the video dimension). {} when the report cannot be read: views are still worth a snapshot."""
+def fetch_retention(ids: List[str], token: str, today: date, get=None) -> Dict[str, Dict]:
+    """{id: {avg_view_pct, avg_view_seconds, subs_gained, shares}} from YouTube Analytics, 200 ids a
+    report (the cap for the video dimension). The % passes 100 when viewers loop a Short, and it
+    flatters short videos, so the seconds travel with it. {} when the report cannot be read: views
+    are still worth a snapshot."""
     import requests
     get = get or requests.get
-    out: Dict[str, float] = {}
+    out: Dict[str, Dict] = {}
     try:
         for k in range(0, len(ids), 200):
             chunk = ids[k:k + 200]
             resp = get(YOUTUBE_ANALYTICS, params={
                 "ids": "channel==MINE", "startDate": "2020-01-01", "endDate": today.isoformat(),
-                "metrics": "views,averageViewPercentage", "dimensions": "video",
+                "metrics": "views,averageViewPercentage,averageViewDuration,subscribersGained,shares", "dimensions": "video",
                 "filters": "video==" + ",".join(chunk), "maxResults": 200, "sort": "-views"},
                 headers={"Authorization": f"Bearer {token}"}, timeout=30)
             resp.raise_for_status()
@@ -115,7 +118,9 @@ def fetch_retention(ids: List[str], token: str, today: date, get=None) -> Dict[s
             names = [h["name"] for h in data.get("columnHeaders", [])]
             for row in data.get("rows") or []:
                 rec = dict(zip(names, row))
-                out[rec["video"]] = round(float(rec["averageViewPercentage"]), 1)
+                out[rec["video"]] = {"avg_view_pct": round(float(rec["averageViewPercentage"]), 1),
+                                     "avg_view_seconds": rec.get("averageViewDuration"),
+                                     "subs_gained": rec.get("subscribersGained"), "shares": rec.get("shares")}
     except Exception as error:                              # noqa: BLE001 — a missing % is not a failed refresh
         import logging
         logging.getLogger(__name__).warning("YouTube Analytics retention unavailable: %s", error)
@@ -176,12 +181,13 @@ def refresh(today: Optional[date] = None, get=None, token: Optional[str] = None,
         s = stats.get(r["id"])
         if s is None:
             continue                                        # deleted or private now
-        when = (r["published_at"] or "")[:10]
+        when = (s.pop("published", "") or r["published_at"] or "")[:10]   # YouTube's date: a recovered ledger row is days late
         days = (today - date.fromisoformat(when)).days if when else None
         snapshot.append({**r, **s, "days": days, "category": category_word(s["title"] or r["title"], r["type"]),
                          "background_variant": groups.get(r.get("artifact")),
                          "length_variant": lengths.get(r.get("artifact")),
-                         "avg_view_pct": retention.get(r["id"])})
+                         "avg_view_pct": None, "avg_view_seconds": None, "subs_gained": None, "shares": None,
+                         **retention.get(r["id"], {})})
     STATS_DIR.mkdir(parents=True, exist_ok=True)
     path = STATS_DIR / f"youtube_{today.isoformat()}.json"
     fb = (facebook or fetch_facebook)()
@@ -208,10 +214,24 @@ def summary(videos: List[Dict]) -> Dict:
                         "mean": round(statistics.mean(views), 1),
                         "mature_count": len(mature), "mature_median": statistics.median(mature) if mature else None})
     formats.sort(key=lambda f: -(f["mature_median"] if f["mature_median"] is not None else f["median"]))
-    ranked = sorted(videos, key=lambda v: -v["views"])
+    # A video under MATURE_DAYS is not judged yet: not a winner, not a loser, not a category's number.
+    judged = [v for v in videos if (v.get("days") or 0) > MATURE_DAYS] or videos
+    ranked = sorted(judged, key=lambda v: -v["views"])
     cats: Dict[str, List[int]] = {}
-    for v in videos:
+    for v in judged:
         cats.setdefault(v.get("category") or "—", []).append(v["views"])
     categories = sorted(({"category": c, "count": len(vs), "median": statistics.median(vs)} for c, vs in cats.items()),
                         key=lambda c: -c["median"])
-    return {"formats": formats, "top": ranked[:10], "bottom": ranked[-10:][::-1], "categories": categories}
+    return {"formats": formats, "top": ranked[:10], "bottom": ranked[-10:][::-1], "categories": categories,
+            "hashtags": hashtags(judged)}
+
+
+def hashtags(videos: List[Dict], min_videos: int = 3) -> List[Dict]:
+    """Median views per hashtag. It shows what the channel used, not what caused the views: a tag
+    on every winner may just be a tag on every «¿Cómo se dice…?»."""
+    tags: Dict[str, List[int]] = {}
+    for v in videos:
+        for tag in {str(t).lstrip("#").casefold() for t in v.get("hashtags") or []} - {"shorts"}:
+            tags.setdefault(tag, []).append(v["views"])
+    return sorted(({"hashtag": f"#{t}", "count": len(n), "median": statistics.median(n)}
+                   for t, n in tags.items() if len(n) >= min_videos), key=lambda t: -t["median"])

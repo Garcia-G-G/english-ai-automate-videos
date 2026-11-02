@@ -93,6 +93,8 @@ def _isolate_output_tree(tmp_path, monkeypatch):
     # The TTS cache (STEP 76 §4): a test's fake clip must never be served to a real render.
     import tts_cache
     monkeypatch.setattr(tts_cache, "CACHE_DIR", out / "cache" / "tts")
+    import cost_tracker
+    monkeypatch.setattr(cost_tracker, "COSTS_DIR", out / "costs")
     tts_cache.STATS.update(hits=0, misses=0)
 
     try:

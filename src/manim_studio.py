@@ -540,7 +540,7 @@ def upload_to_youtube(render_row: dict, meta: dict, privacy: Optional[str] = Non
 
 
 def _upload_lesson(youtube, video, artifact, render_row, meta, privacy, on_progress, studio_dir) -> dict:
-    from publication_log import (ATTEMPT_FAILED, ATTEMPT_PUBLISHED, ATTEMPT_SESSION, ATTEMPT_STARTED,
+    from publication_log import (ATTEMPT_FAILED, ATTEMPT_PUBLISHED, ATTEMPT_SESSION, ATTEMPT_STARTED, ATTEMPT_UNKNOWN,
                                  PublicationRecordError, read_attempts, record_attempt, record_upload_result)
     from upload_limits import spanish
     youtube_json_path(render_row, studio_dir).write_text(json.dumps(meta, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -554,8 +554,9 @@ def _upload_lesson(youtube, video, artifact, render_row, meta, privacy, on_progr
                                                   video_path=str(video), session_uri=uri, file_size=sz,
                                                   detail=meta["title"][:120]))
     if not result.success:
-        record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_FAILED, video_path=str(video),
-                       session_uri=result.session_uri, file_size=size, detail=str(result.error)[:300])
+        record_attempt(artifact=artifact, platform="youtube", status=ATTEMPT_UNKNOWN if result.in_doubt else ATTEMPT_FAILED,
+                       video_path=str(video), session_uri=result.session_uri, file_size=size,
+                       detail=str(result.error)[:300])
         return {"ok": False, "refused": None, "url": None, "upload_id": None,
                 "notes": [f"No se subió: {spanish(result.error, read_attempts(), datetime.now())}"]}
     notes = []

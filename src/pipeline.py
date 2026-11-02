@@ -870,6 +870,11 @@ def finalize_video(video_path, audio_json_path, variant_seed: str = None) -> Dic
     logger.info("outro variant %s appended to %s", variant["id"], final)
     result = {"video": final, "gate": "PASS", "outro_appended": True,
               "outro_variant": variant["id"], "outro_next": next_line, "seam": seam}
+    import deesser as _deesser
+    warned = ((loud or {}).get("warnings") or []) + (_deesser.warnings(de) if de else [])
+    if warned:
+        logger.warning("QA gate warned on %s: %s", video_path.name, warned)
+        result["gate_warnings"] = warned
     if loud:
         result["loudness"] = loud
     if de:

@@ -280,7 +280,7 @@ def regenerate_for_platform(script_data: dict, platform: str, video_type: str) -
     ensure_env_loaded()
 
     try:
-        client = llm.client()
+        llm.client()                                        # no key: the template, not an error
     except EnvironmentError:
         meta = generate_metadata(script_data, video_type)
         return adapt_for_platform(meta, platform)
@@ -342,7 +342,7 @@ Return JSON only:
         response = llm.chat("platform_metadata", [
             {"role": "system", "content": "You create viral social media metadata for English learning content targeting Spanish speakers. Always respond with valid JSON only."},
             {"role": "user", "content": prompt}
-        ], label=f"metadata_{platform}", client_=client, max_tokens=500, temperature=0.8)
+        ], label=f"metadata_{platform}", max_tokens=500, temperature=0.8)
 
         result = llm.json_content(response)
 
@@ -404,7 +404,9 @@ def how_do_you_say_title(script_data: dict) -> str:
             break
     bare = bare.split(" (")[0]
     items = script_data.get("items") or []
-    emoji = items[0].get("emoji", "") if items else ""
+    # The one chosen for the topic, when the script has it: the first row's gave PROFESIONES 🍎.
+    tail = (script_data.get("video_title") or "").rstrip().rsplit(" ", 1)[-1]
+    emoji = tail if tail and not any(c.isalnum() or c in "?!." for c in tail) else (items[0].get("emoji", "") if items else "")
     title = TITLE_TEMPLATES["how_do_you_say"][0].format(theme=bare.upper(), emoji=emoji).strip()
     if article in ("los", "las"):                           # «se dicen los ANIMALES DEL MAR», not «se dice»
         title = title.replace("¿Cómo se dice ", f"¿Cómo se dicen {article} ", 1)

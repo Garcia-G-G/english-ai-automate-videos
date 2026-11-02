@@ -9,6 +9,7 @@ script's priority is its type's score, ×A1_BOOST when its topic is a basic A1 c
 from __future__ import annotations
 
 import json
+import re
 import statistics
 import unicodedata
 from pathlib import Path
@@ -50,14 +51,22 @@ def type_scores(stats: Optional[Dict], cfg: Optional[Dict] = None) -> Dict[str, 
     """{type: {score, source, n}}: the measured median when there is enough, else the prior."""
     cfg = cfg or settings()
     mature: Dict[str, List[int]] = {}
+    by_bucket: Dict[tuple, List[int]] = {}
     for v in (stats or {}).get("videos", []):
         if (v.get("days") or 0) > MATURE_DAYS:
             mature.setdefault(v.get("type") or "", []).append(int(v.get("views", 0)))
+            bucket = (v.get("type") or "", bool(a1_word({"title": v.get("title")}, cfg)))
+            by_bucket.setdefault(bucket, []).append(int(v.get("views", 0)))
     out = {}
     for vtype in set(mature) | set(cfg["prior_views"]):
         views = mature.get(vtype, [])
         if len(views) >= MIN_VIDEOS:
             out[vtype] = {"score": float(statistics.median(views)), "source": "medida", "n": len(views)}
+            # Measured apart when both kinds of topic have enough videos: then no ×A1_BOOST guess is needed.
+            a1, other = by_bucket.get((vtype, True), []), by_bucket.get((vtype, False), [])
+            if len(a1) >= MIN_VIDEOS and len(other) >= MIN_VIDEOS:
+                out[vtype]["a1"] = {"score": float(statistics.median(a1)), "n": len(a1)}
+                out[vtype]["other"] = {"score": float(statistics.median(other)), "n": len(other)}
         else:
             out[vtype] = {"score": float(cfg["prior_views"].get(vtype, cfg["default_prior"])), "source": "previa",
                           "n": len(views)}
@@ -68,7 +77,8 @@ def a1_word(script: Dict, cfg: Optional[Dict] = None) -> Optional[str]:
     """The basic A1 category a script's topic names, if any («fruta», «casa»…)."""
     cfg = cfg or settings()
     topic = _fold(" ".join(str(script.get(k) or "") for k in ("theme", "title", "video_title")))
-    return next((w for w in cfg["a1"] if w and w in topic), None)
+    # Whole words, an optional plural: «cara» is not in «carácter» nor «cocina» in «cocinar».
+    return next((w for w in cfg["a1"] if w and re.search(rf"\b{re.escape(w)}s?\b", topic)), None)
 
 
 def priority(script: Dict, scores: Dict[str, Dict], cfg: Optional[Dict] = None) -> Tuple[float, str]:
@@ -78,6 +88,10 @@ def priority(script: Dict, scores: Dict[str, Dict], cfg: Optional[Dict] = None) 
     s = scores.get(vtype) or {"score": cfg["default_prior"], "source": "previa", "n": 0}
     base = f"{vtype}: {s['score']:.0f} vistas ({'mediana de ' + str(s['n']) + ' vídeos de más de 3 días' if s['source'] == 'medida' else 'estimación previa'})"
     word = a1_word(script, cfg)
+    apart = s.get("a1" if word else "other")
+    if apart:
+        kind = f"temas A1 como «{word}»" if word else "temas que no son A1"
+        return apart["score"], f"{vtype}: {apart['score']:.0f} vistas (mediana de {apart['n']} vídeos de {kind})"
     if word:
         return s["score"] * A1_BOOST, f"{base} × {A1_BOOST} por categoría A1 «{word}»"
     return s["score"], base

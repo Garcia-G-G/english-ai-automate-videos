@@ -516,7 +516,13 @@ def review_metadata_editor(video: dict) -> None:
         if c1.button("🔁 Regenerar", key=f"rv_regen_{name}", help="Una llamada a la IA para YouTube"):
             try:
                 from metadata_generator import regenerate_for_platform
-                r = regenerate_for_platform(script, "youtube", video["type"])
+                import voice_lock
+                from cost_tracker import get_tracker
+                try:
+                    with voice_lock.panel_grant():
+                        r = regenerate_for_platform(script, "youtube", video["type"])
+                finally:
+                    get_tracker().save()
                 st.session_state[f"rv_pending_{name}"] = {
                     "title": r.get("title", ""), "desc": r.get("description", ""),
                     "tags": " ".join(f"#{t.lstrip('#')}" for t in r.get("hashtags", []))}
@@ -635,14 +641,16 @@ def upload_content(video: dict, script: dict, title: str, description: str,
             "allow_duplicate": allow_duplicate}
 
 
-def _guard_notice(st_module, artifact: str, platform_label: str, verdict) -> None:
+def _guard_notice(st_module, artifact: str, platform_label: str, verdict, platform_key: str = "") -> None:
     """Tell the operator why an upload did not happen.
 
     A guard that silently skips is indistinguishable from a broken button,
     and the operator's next move would be to upload by hand — which is the
     route that produced the duplicate in the first place.
     """
-    from upload_guard import REFUSE, SKIP_DONE
+    from upload_guard import REFUSE, SKIP_DONE, SKIP_HOLD
+    if verdict.action == SKIP_HOLD and platform_key:
+        st_module.session_state.setdefault("held_uploads", {})[artifact] = platform_key
     if verdict.action == REFUSE:
         st_module.error(f"⛔ {platform_label}: no se sube — {verdict.reason}")
     elif verdict.action == SKIP_DONE:
@@ -2569,10 +2577,15 @@ elif page == "Upload":
                                 if st.button(f"{icon} {pname}", key=f"regen_{pkey}_{video['name']}",
                                              width="stretch", help=f"Regenerate for {pname}"):
                                     try:
-                                        with st.spinner(f"Generating for {pname}..."):
-                                            result = regenerate_for_platform(
-                                                script, pkey, video.get("type", "educational")
-                                            )
+                                        import voice_lock
+                                        from cost_tracker import get_tracker
+                                        with st.spinner(f"Generating for {pname}..."), voice_lock.panel_grant():
+                                            try:
+                                                result = regenerate_for_platform(
+                                                    script, pkey, video.get("type", "educational")
+                                                )
+                                            finally:
+                                                get_tracker().save()
                                             # Stage, do not assign: these
                                             # widgets already exist this run.
                                             tags = result.get("hashtags", [])
@@ -2628,6 +2641,7 @@ elif page == "Upload":
                                 "Facebook Reels": "facebook",
                             }
                             upload_success = False
+                            upload_missing = False
                             upload_platforms = []
                             for platform_name in target_platforms:
                                 platform_key = platform_map.get(platform_name, platform_name.lower())
@@ -2646,7 +2660,12 @@ elif page == "Upload":
                                                        video, script, sent_title, sent_desc,
                                                        allow_dup))
                                 if not _v.should_upload:
-                                    _guard_notice(st, video["name"], platform_name, _v)
+                                    _guard_notice(st, video["name"], platform_name, _v, platform_key)
+                                    if _v.action == "skip_done":
+                                        upload_success = True
+                                        upload_platforms.append(platform_name)
+                                    else:
+                                        upload_missing = True
                                     continue
                                 with st.spinner(f"Uploading to {platform_name}..."):
                                     result = _guarded_upload(
@@ -2659,6 +2678,7 @@ elif page == "Upload":
                                         hashtags=sent_tags,
                                     )
                                     success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
+                                    upload_missing = upload_missing or not success
                                     if success:
                                         st.success(f"Uploaded to {platform_name}!")
                                         upload_success = True
@@ -2681,8 +2701,11 @@ elif page == "Upload":
                                         err = result.get("error", "Unknown") if isinstance(result, dict) else getattr(result, 'error', 'Unknown')
                                         st.error(f"Failed: {_spanish(err, _read_attempts(), datetime.now())}")
 
-                            # Move to uploaded if at least one platform succeeded
-                            if upload_success and video["path"].exists():
+                            # Only when every platform has it: the guard skips the done ones on the next press,
+                            # and from «Subidos» the missing one could never be retried.
+                            if upload_success and upload_missing:
+                                st.warning("Falta alguna plataforma: el vídeo sigue aquí para reintentarla.")
+                            elif upload_success and video["path"].exists():
                                 move_to_uploaded(video["path"], {
                                     "platforms": upload_platforms,
                                     "uploaded_at": datetime.now().isoformat(),
@@ -2695,6 +2718,13 @@ elif page == "Upload":
                             st.error(f"Upload error: {str(e)}")
                 else:
                     st.button("📤 Upload", key=f"upload_{video['name']}", disabled=True, width="stretch")
+                _held = st.session_state.get("held_uploads", {}).get(video["name"])
+                if _held and st.button(f"Lo comprobé en {_held} y no está: permitir reintento", key=f"unhold_{video['name']}"):
+                    from publication_log import ATTEMPT_FAILED, record_attempt
+                    record_attempt(artifact=video["name"], platform=_held, status=ATTEMPT_FAILED, video_path=str(video["path"]),
+                                   detail="el dueño comprobó en el canal que el vídeo no está")
+                    st.session_state["held_uploads"].pop(video["name"])
+                    st.rerun()
 
                 btn_cols = st.columns(3)
                 with btn_cols[0]:
@@ -2778,10 +2808,12 @@ elif page == "Upload":
                         category = script.get("_meta", {}).get("category", "")
 
                         any_success = False
+                        any_missing = False
                         platforms_done = []
                         for pname in target_platforms:
                             pkey = bulk_platform_map.get(pname, pname.lower())
                             if pkey in setup_pending:     # failed for its setup earlier in this batch
+                                any_missing = True
                                 continue
                             # Was generate_metadata(script, ...) + adapt, which
                             # ignored session_state entirely and published text
@@ -2797,7 +2829,12 @@ elif page == "Upload":
                                                **upload_content(video, script, adapted["title"],
                                                                 adapted["description"]))
                             if not _v.should_upload:
-                                _guard_notice(st, video["name"], pname, _v)
+                                _guard_notice(st, video["name"], pname, _v, pkey)
+                                if _v.action == "skip_done":
+                                    any_success = True
+                                    platforms_done.append(pname)
+                                else:
+                                    any_missing = True
                                 continue
                             result = _guarded_upload(
                                 manager,
@@ -2815,6 +2852,7 @@ elif page == "Upload":
                             if setup_msg:
                                 st.error(setup_msg)
                             success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
+                            any_missing = any_missing or not success
                             if success:
                                 any_success = True
                                 platforms_done.append(pname)
@@ -2823,7 +2861,7 @@ elif page == "Upload":
                                     adapted["title"], adapted["description"],
                                     adapted["hashtags"])
 
-                        if any_success and video["path"].exists():
+                        if any_success and not any_missing and video["path"].exists():
                             move_to_uploaded(video["path"], {
                                 "platforms": platforms_done,
                                 "uploaded_at": datetime.now().isoformat(),
@@ -3272,6 +3310,9 @@ elif page == "Performance":
         st.info("Todavía no hay estadísticas: pulsa «Actualizar estadísticas».")
     else:
         s = channel_stats.summary(snap["videos"])
+        _age = (datetime.now() - datetime.fromisoformat(snap["read_at"])).days
+        if _age >= 1:
+            st.warning(f"Estos números tienen {_age} días: la cola se ordena con ellos. Pulsa «Actualizar estadísticas».")
         st.caption(f"Leídas {snap['read_at']} · {len(snap['videos'])} vídeos · Facebook: "
                    f"{(snap.get('facebook') or {}).get('note', '—') if isinstance(snap.get('facebook'), dict) else snap.get('facebook')}")
         st.markdown("### Por formato")
@@ -3279,7 +3320,9 @@ elif page == "Performance":
                        "de +3 días": f["mature_count"], "mediana +3 días": f["mature_median"]} for f in s["formats"]],
                      hide_index=True)
         cols = st.columns(2)
-        _row = lambda v: {"vistas": v["views"], "días publicado": v.get("days"), "formato": v["type"], "título": v["title"]}
+        _row = lambda v: {"vistas": v["views"], "% visto": v.get("avg_view_pct"), "seg. vistos": v.get("avg_view_seconds"),
+                          "subs": v.get("subs_gained"), "compartidos": v.get("shares"), "días publicado": v.get("days"),
+                          "formato": v["type"], "título": v["title"]}
         with cols[0]:
             st.markdown("### Top 10")
             st.dataframe([_row(v) for v in s["top"]], hide_index=True)
@@ -3288,6 +3331,11 @@ elif page == "Performance":
             st.dataframe([_row(v) for v in s["bottom"]], hide_index=True)
         st.markdown("### Por categoría")
         st.dataframe([{"categoría": c["category"], "vídeos": c["count"], "mediana": c["median"]} for c in s["categories"]],
+                     hide_index=True)
+        st.markdown("### Por hashtag")
+        st.caption("Lo que usó el canal, no lo que causó las vistas: una etiqueta puede ir solo en un formato que ya gana. "
+                   "Las tablas de arriba dejan fuera los vídeos de menos de 3 días, y el % visto pasa de 100 cuando se repite en bucle.")
+        st.dataframe([{"hashtag": t["hashtag"], "vídeos": t["count"], "mediana": t["median"]} for t in s["hashtags"]],
                      hide_index=True)
     if snap:
         import ai_background

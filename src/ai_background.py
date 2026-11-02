@@ -15,6 +15,7 @@ Drawing a clip happens only from the panel's own click, under the voice lock and
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import statistics
 import time
@@ -34,7 +35,7 @@ MIN_PER_GROUP = 8
 AB_TYPES = {"how_do_you_say"}
 PROMPT = ("A calm, slow, softly lit vertical scene about «{topic}»: on theme, no people's faces in close-up, "
           "no text, no letters, no logos, gentle camera drift, warm and inviting, shallow depth of field. "
-          "It sits behind a notebook page, so keep the centre simple.")
+          "Keep the centre of the frame soft and uncluttered, with no paper, books or objects placed in front of the scene.")   # naming the notebook drew one in the clip (2026-11-02)
 
 
 def estimate_usd() -> float:
@@ -64,13 +65,13 @@ def _log_rows() -> List[Dict]:
 
 
 def assign(artifact: str, video_type: str, topic: str) -> Dict:
-    """This render's group, logged: «ia» every other render of an A/B type when the topic has a
-    clip, else «stock» (with why). {variant, background (a clips: dir or None), why}."""
+    """This render's group, logged: «ia» for half the topics (a stable hash of the topic, so it can
+    never move in step with length_ab's turns) when the topic has a clip, else «stock» (with why).
+    {variant, background (a clips: dir or None), why}."""
     if video_type not in AB_TYPES:
         return {"variant": None, "background": None, "why": "fuera del A/B"}
-    turn = sum(1 for r in _log_rows() if r.get("video_type") == video_type)
     clip = cached(topic)
-    if turn % 2 == 1:
+    if hashlib.sha256(f"background:{topic}".encode()).digest()[0] % 2 == 1:
         out = {"variant": "stock", "background": None, "why": "turno de stock"}
     elif clip is None:
         out = {"variant": "stock", "background": None, "why": "turno de IA, pero el tema no tiene clip"}

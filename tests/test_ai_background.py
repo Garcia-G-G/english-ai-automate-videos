@@ -1,5 +1,6 @@
 """STEP 80 §5: an AI background behind the notebook, as an A/B. Fake transport, no network."""
 import io
+import hashlib
 import json
 import subprocess
 import sys
@@ -22,15 +23,24 @@ def test_the_price_is_four_seconds_at_three_cents():
     assert AB.SECONDS == 4 and AB.estimate_usd() == pytest.approx(0.12)
 
 
-def test_every_other_render_is_the_ai_group_when_the_topic_has_a_clip():
-    _clip(AB.clip_dir("la cocina") / "clip.mp4")
-    got = [AB.assign(f"a{i}", "how_do_you_say", "la cocina")["variant"] for i in range(4)]
-    assert got == ["ia", "stock", "ia", "stock"]
-    assert AB.assign("x", "how_do_you_say", "los animales")["variant"] == "stock"      # turn 4: ia, no clip
-    assert AB.assign("q", "quiz", "la cocina") == {"variant": None, "background": None, "why": "fuera del A/B"}
-    assert AB.variants() == {"a0": "ia", "a1": "stock", "a2": "ia", "a3": "stock", "x": "stock"}
-    ia = AB.assign("a5", "how_do_you_say", "la cocina")                                # turn 5: stock
-    assert ia["variant"] == "stock" and AB.assign("a6", "how_do_you_say", "la cocina")["background"].startswith("clips:")
+def _topic(group):
+    """A topic the hash puts in this group (0 = IA, 1 = stock)."""
+    return next(t for t in (f"tema {k}" for k in range(99))
+                if hashlib.sha256(f"background:{t}".encode()).digest()[0] % 2 == group)
+
+
+def test_half_the_topics_are_the_ai_group_when_they_have_a_clip():
+    ia, stock, noclip = _topic(0), _topic(1), [t for t in (f"otro {k}" for k in range(99))
+                                                if hashlib.sha256(f"background:{t}".encode()).digest()[0] % 2 == 0][0]
+    for t in (ia, stock):
+        _clip(AB.clip_dir(t) / "clip.mp4")
+    first = AB.assign("a0", "how_do_you_say", ia)
+    assert first["variant"] == "ia" and first["background"].startswith("clips:")
+    assert AB.assign("a1", "how_do_you_say", ia)["variant"] == "ia"                    # a topic keeps its group
+    assert AB.assign("a2", "how_do_you_say", stock)["variant"] == "stock"
+    assert AB.assign("x", "how_do_you_say", noclip)["variant"] == "stock"              # its turn, no clip
+    assert AB.assign("q", "quiz", ia) == {"variant": None, "background": None, "why": "fuera del A/B"}
+    assert AB.variants() == {"a0": "ia", "a1": "ia", "a2": "stock", "x": "stock"}
 
 
 def test_one_clip_loops_with_a_slow_crossfade(tmp_path):
