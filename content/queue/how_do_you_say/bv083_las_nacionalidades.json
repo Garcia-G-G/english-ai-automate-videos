@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las NACIONALIDADES en inglés? 🌎",
+  "video_description": "🌎 ¿Mexicano, español, japonés…? Aprende 10 nacionalidades en inglés en menos de un minuto. ¡Responde antes que yo!",
+  "title": "¿Cómo se dice…?",
+  "theme": "las nacionalidades",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes decir tu nacionalidad en inglés? Aquí van 10. ¡Responde antes que yo!",
+  "items": [
+    {
+      "emoji": "🌮",
+      "spanish": "Mexicano",
+      "english": "Mexican"
+    },
+    {
+      "emoji": "🥘",
+      "spanish": "Español",
+      "english": "Spanish"
+    },
+    {
+      "emoji": "☕",
+      "spanish": "Colombiano",
+      "english": "Colombian"
+    },
+    {
+      "emoji": "🦙",
+      "spanish": "Peruano",
+      "english": "Peruvian"
+    },
+    {
+      "emoji": "🍁",
+      "spanish": "Canadiense",
+      "english": "Canadian"
+    },
+    {
+      "emoji": "🍕",
+      "spanish": "Italiano",
+      "english": "Italian"
+    },
+    {
+      "emoji": "🥐",
+      "spanish": "Francés",
+      "english": "French"
+    },
+    {
+      "emoji": "🥨",
+      "spanish": "Alemán",
+      "english": "German"
+    },
+    {
+      "emoji": "🍣",
+      "spanish": "Japonés",
+      "english": "Japanese"
+    },
+    {
+      "emoji": "🥟",
+      "spanish": "Chino",
+      "english": "Chinese"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: Mexican, Spanish, Colombian, Peruvian, Canadian, Italian, French, German, Japanese, Chinese.",
+  "outro": "[warm] ¿Cuántas sabías? Escribe tu nacionalidad en inglés en los comentarios.",
+  "full_script": "[excited] ¿Sabes decir tu nacionalidad en inglés? Aquí van 10. ¡Responde antes que yo! Mexicano... Mexican. Mexican. Español... Spanish. Spanish. Colombiano... Colombian. Colombian. Peruano... Peruvian. Peruvian. Canadiense... Canadian. Canadian. Italiano... Italian. Italian. Francés... French. French. Alemán... German. German. Japonés... Japanese. Japanese. Chino... Chinese. Chinese. Ahora todas en inglés, conmigo: Mexican, Spanish, Colombian, Peruvian, Canadian, Italian, French, German, Japanese, Chinese. [warm] ¿Cuántas sabías? Escribe tu nacionalidad en inglés en los comentarios.",
+  "translations": {
+    "Mexican": "Mexicano",
+    "Spanish": "Español",
+    "Colombian": "Colombiano",
+    "Peruvian": "Peruano",
+    "Canadian": "Canadiense",
+    "Italian": "Italiano",
+    "French": "Francés",
+    "German": "Alemán",
+    "Japanese": "Japonés",
+    "Chinese": "Chino"
+  },
+  "english_phrases": [
+    "Mexican",
+    "Spanish",
+    "Colombian",
+    "Peruvian",
+    "Canadian",
+    "Italian",
+    "French",
+    "German",
+    "Japanese",
+    "Chinese"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#Nacionalidades",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv083",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:50:36.551341",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

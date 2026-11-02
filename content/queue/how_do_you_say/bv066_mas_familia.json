@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice MÁS FAMILIA en inglés? 👵",
+  "video_description": "👴👵 Abuelo, esposa, boda… ¿las sabes decir en inglés? Responde antes que yo y cuéntame cuántas acertaste 👇",
+  "title": "¿Cómo se dice…?",
+  "theme": "más familia",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes decir abuela o esposo en inglés? Di cada palabra antes que yo.",
+  "items": [
+    {
+      "emoji": "👴",
+      "spanish": "Abuelo",
+      "english": "grandpa"
+    },
+    {
+      "emoji": "👵",
+      "spanish": "Abuela",
+      "english": "grandma"
+    },
+    {
+      "emoji": "👶",
+      "spanish": "Bebé",
+      "english": "baby"
+    },
+    {
+      "emoji": "👦",
+      "spanish": "Niño",
+      "english": "boy"
+    },
+    {
+      "emoji": "👧",
+      "spanish": "Niña",
+      "english": "girl"
+    },
+    {
+      "emoji": "👨",
+      "spanish": "Hombre",
+      "english": "man"
+    },
+    {
+      "emoji": "👩",
+      "spanish": "Mujer",
+      "english": "woman"
+    },
+    {
+      "emoji": "👰",
+      "spanish": "Esposa",
+      "english": "wife"
+    },
+    {
+      "emoji": "🤵",
+      "spanish": "Esposo",
+      "english": "husband"
+    },
+    {
+      "emoji": "💒",
+      "spanish": "Boda",
+      "english": "wedding"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: grandpa, grandma, baby, boy, girl, man, woman, wife, husband, wedding",
+  "outro": "[excited] ¿Cuántas sabías de las 10? Escribe tu número en los comentarios.",
+  "full_script": "[cheerful] ¿Sabes decir abuela o esposo en inglés? Di cada palabra antes que yo. Abuelo... grandpa. grandpa. Abuela... grandma. grandma. Bebé... baby. baby. Niño... boy. boy. Niña... girl. girl. Hombre... man. man. Mujer... woman. woman. Esposa... wife. wife. Esposo... husband. husband. Boda... wedding. wedding. Ahora todas en inglés, conmigo: grandpa, grandma, baby, boy, girl, man, woman, wife, husband, wedding. [excited] ¿Cuántas sabías de las 10? Escribe tu número en los comentarios.",
+  "translations": {
+    "grandpa": "Abuelo",
+    "grandma": "Abuela",
+    "baby": "Bebé",
+    "boy": "Niño",
+    "girl": "Niña",
+    "man": "Hombre",
+    "woman": "Mujer",
+    "wife": "Esposa",
+    "husband": "Esposo",
+    "wedding": "Boda"
+  },
+  "english_phrases": [
+    "grandpa",
+    "grandma",
+    "baby",
+    "boy",
+    "girl",
+    "man",
+    "woman",
+    "wife",
+    "husband",
+    "wedding"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#FamiliaEnInglés",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv066",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:44:35.166938",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

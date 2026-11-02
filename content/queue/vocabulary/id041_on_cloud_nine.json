@@ -1,0 +1,101 @@
+{
+  "type": "vocabulary",
+  "video_title": "¿Cómo se dice FELIZ en inglés sin decir 'happy'? ☁️😄",
+  "video_description": "¿Siempre dices 'happy'? 😅 Sube de nivel con 11 formas nativas de decir FELIZ, como 'on cloud nine' ☁️\n👇 Comenta cuál usas tú y guarda el video para practicar. Follow for more English! 🚀",
+  "title": "Vocabulario: formas de decir FELIZ",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "feliz de la vida",
+      "english": "on cloud nine"
+    },
+    {
+      "spanish": "contentísimo",
+      "english": "over the moon"
+    },
+    {
+      "spanish": "emocionado",
+      "english": "thrilled"
+    },
+    {
+      "spanish": "encantado",
+      "english": "delighted"
+    },
+    {
+      "spanish": "alegre",
+      "english": "cheerful"
+    },
+    {
+      "spanish": "contento",
+      "english": "glad"
+    },
+    {
+      "spanish": "de buen humor",
+      "english": "in a good mood"
+    },
+    {
+      "spanish": "eufórico",
+      "english": "ecstatic"
+    },
+    {
+      "spanish": "radiante",
+      "english": "beaming"
+    },
+    {
+      "spanish": "saltar de alegría",
+      "english": "jump for joy"
+    },
+    {
+      "spanish": "satisfecho",
+      "english": "pleased"
+    },
+    {
+      "spanish": "ha estado feliz de la vida",
+      "english": "She's been on cloud nine"
+    }
+  ],
+  "full_script": "¿Siempre dices happy? Hay mejores formas. Feliz de la vida, on cloud nine. Literal: en la nube nueve. Contentísimo, over the moon. Emocionado, thrilled. Encantado, delighted. Alegre, cheerful. Contento, glad. De buen humor, in a good mood. Eufórico, ecstatic. Radiante, beaming. Saltar de alegría, jump for joy. Satisfecho, pleased. Por ejemplo: She's been on cloud nine since she got engaged. ¿Cuál usas tú? Comenta abajo.",
+  "translations": {
+    "on cloud nine": "feliz de la vida",
+    "over the moon": "contentísimo",
+    "thrilled": "emocionado",
+    "delighted": "encantado",
+    "cheerful": "alegre",
+    "glad": "contento",
+    "in a good mood": "de buen humor",
+    "ecstatic": "eufórico",
+    "beaming": "radiante",
+    "jump for joy": "saltar de alegría",
+    "pleased": "satisfecho",
+    "She's been on cloud nine since she got engaged.": "Ha estado feliz de la vida desde que se comprometió."
+  },
+  "english_phrases": [
+    "on cloud nine",
+    "over the moon",
+    "thrilled",
+    "delighted",
+    "cheerful",
+    "glad",
+    "in a good mood",
+    "ecstatic",
+    "beaming",
+    "jump for joy",
+    "pleased",
+    "She's been on cloud nine since she got engaged."
+  ],
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#VocabularioEnIngles",
+    "#EnglishIdioms",
+    "#OnCloudNine",
+    "#Emociones"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id041",
+    "video_type": "vocabulary",
+    "generated_at": "2026-11-02T11:12:53.683633",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

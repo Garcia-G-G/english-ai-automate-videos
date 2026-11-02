@@ -1,0 +1,104 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los LÁCTEOS en inglés? 🧀",
+  "video_description": "🥛 Leche, queso, helado… ¿los sabes decir en inglés? Responde antes que yo y cuenta tus aciertos 🧀",
+  "title": "¿Cómo se dice…?",
+  "theme": "los lácteos",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes pedir leche y queso en inglés? Di cada palabra antes que yo.",
+  "items": [
+    {
+      "emoji": "🥛",
+      "spanish": "Leche",
+      "english": "milk"
+    },
+    {
+      "emoji": "🧀",
+      "spanish": "Queso",
+      "english": "cheese"
+    },
+    {
+      "emoji": "🧈",
+      "spanish": "Mantequilla",
+      "english": "butter"
+    },
+    {
+      "emoji": "🍦",
+      "spanish": "Helado",
+      "english": "ice cream"
+    },
+    {
+      "emoji": "🐄",
+      "spanish": "Vaca",
+      "english": "cow"
+    },
+    {
+      "emoji": "🐐",
+      "spanish": "Cabra",
+      "english": "goat"
+    },
+    {
+      "emoji": "🍼",
+      "spanish": "Biberón",
+      "english": "baby bottle"
+    },
+    {
+      "emoji": "🥤",
+      "spanish": "Malteada",
+      "english": "milkshake"
+    },
+    {
+      "emoji": "🥣",
+      "spanish": "Yogur",
+      "english": "yogurt"
+    },
+    {
+      "emoji": "🍮",
+      "spanish": "Flan",
+      "english": "flan"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: milk, cheese, butter, ice cream, cow, goat, baby bottle, milkshake, yogurt, flan.",
+  "outro": "[excited] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[cheerful] ¿Sabes pedir leche y queso en inglés? Di cada palabra antes que yo. Leche... milk. milk. Queso... cheese. cheese. Mantequilla... butter. butter. Helado... ice cream. ice cream. Vaca... cow. cow. Cabra... goat. goat. Biberón... baby bottle. baby bottle. Malteada... milkshake. milkshake. Yogur... yogurt. yogurt. Flan... flan. flan. Ahora todas en inglés, conmigo: milk, cheese, butter, ice cream, cow, goat, baby bottle, milkshake, yogurt, flan. [excited] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "milk": "Leche",
+    "cheese": "Queso",
+    "butter": "Mantequilla",
+    "ice cream": "Helado",
+    "cow": "Vaca",
+    "goat": "Cabra",
+    "baby bottle": "Biberón",
+    "milkshake": "Malteada",
+    "yogurt": "Yogur",
+    "flan": "Flan"
+  },
+  "english_phrases": [
+    "milk",
+    "cheese",
+    "butter",
+    "ice cream",
+    "cow",
+    "goat",
+    "baby bottle",
+    "milkshake",
+    "yogurt",
+    "flan"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv073",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:47:11.364700",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

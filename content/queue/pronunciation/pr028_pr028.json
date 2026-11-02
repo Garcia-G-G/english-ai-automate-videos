@@ -1,0 +1,26 @@
+{
+  "type": "pronunciation",
+  "video_title": "¿Dices GOTTA con T fuerte? Así suena de verdad 😬",
+  "video_description": "😬 ¿Dices GOTTA como 'GO-TA'? Así suenas a robot. 🇺🇸 Aprende cómo lo dicen los nativos: GÁ-da.\n🔁 Repite conmigo y comenta qué tienes que hacer hoy en inglés: 'I gotta...' 👇\n💾 Guarda este video y practica hasta que suene natural. Learn English the easy way!",
+  "word": "gotta",
+  "phonetic": "GÁ-da (la T suena casi como R suave)",
+  "common_mistake": "Decir 'GO-TA' con una T fuerte española, como en 'tomate', y con O cerrada.",
+  "tip": "Gotta = got to. Di GÁ-da rápido, como 'nada' pero con G: la T americana suena como R suave.",
+  "full_script": "¿Pronuncias esta palabra con una T fuerte, como en español? Casi todos lo hacemos. El error típico es decir GO-TA, marcando la T como en tomate. Así suena a robot. Esta palabra es la forma rápida de [[got to]], y significa tengo que. En inglés americano esa doble T se suaviza y suena casi como una R suave, como en pero. Se dice GÁ-da. La A bien abierta, como cuando el doctor te pide decir aaa. Escucha y repite. [[gotta]]. Otra vez. [[gotta]]. Una vez más. [[gotta]]. Ahora en una frase: [[I gotta go to work]]. Me tengo que ir a trabajar. Tip para recordar: piensa en la palabra nada, pero con G. GÁ-da. ¿Y tú qué tienes que hacer hoy? Escríbelo en inglés en los comentarios.",
+  "translation": "tengo que / tienes que (forma informal de 'got to')",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#PronunciacionIngles",
+    "#InglesParaLatinos",
+    "#Gotta",
+    "#InglesAmericano"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr028",
+    "video_type": "pronunciation",
+    "generated_at": "2026-11-02T11:10:26.663749",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

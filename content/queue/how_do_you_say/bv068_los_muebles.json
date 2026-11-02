@@ -1,0 +1,104 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las cosas de la CASA en inglés? 🛋",
+  "video_description": "🪑 Aprende 10 cosas de la casa en inglés. ¿Cuántas sabías? Cuéntamelo en los comentarios 👇",
+  "title": "¿Cómo se dice…?",
+  "theme": "las cosas de la casa",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes decir las cosas de tu casa en inglés? Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🪑",
+      "spanish": "Silla",
+      "english": "chair"
+    },
+    {
+      "emoji": "🛏",
+      "spanish": "Cama",
+      "english": "bed"
+    },
+    {
+      "emoji": "🛋",
+      "spanish": "Sofá",
+      "english": "sofa"
+    },
+    {
+      "emoji": "🛁",
+      "spanish": "Bañera",
+      "english": "bathtub"
+    },
+    {
+      "emoji": "🚽",
+      "spanish": "Inodoro",
+      "english": "toilet"
+    },
+    {
+      "emoji": "🪞",
+      "spanish": "Espejo",
+      "english": "mirror"
+    },
+    {
+      "emoji": "🕰",
+      "spanish": "Reloj",
+      "english": "clock"
+    },
+    {
+      "emoji": "📺",
+      "spanish": "Televisor",
+      "english": "television"
+    },
+    {
+      "emoji": "🚪",
+      "spanish": "Puerta",
+      "english": "door"
+    },
+    {
+      "emoji": "🪟",
+      "spanish": "Ventana",
+      "english": "window"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: chair, bed, sofa, bathtub, toilet, mirror, clock, television, door, window.",
+  "outro": "[cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[excited] ¿Sabes decir las cosas de tu casa en inglés? Piensa antes de que yo lo diga. Silla... chair. chair. Cama... bed. bed. Sofá... sofa. sofa. Bañera... bathtub. bathtub. Inodoro... toilet. toilet. Espejo... mirror. mirror. Reloj... clock. clock. Televisor... television. television. Puerta... door. door. Ventana... window. window. Ahora todas en inglés, conmigo: chair, bed, sofa, bathtub, toilet, mirror, clock, television, door, window. [cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "chair": "Silla",
+    "bed": "Cama",
+    "sofa": "Sofá",
+    "bathtub": "Bañera",
+    "toilet": "Inodoro",
+    "mirror": "Espejo",
+    "clock": "Reloj",
+    "television": "Televisor",
+    "door": "Puerta",
+    "window": "Ventana"
+  },
+  "english_phrases": [
+    "chair",
+    "bed",
+    "sofa",
+    "bathtub",
+    "toilet",
+    "mirror",
+    "clock",
+    "television",
+    "door",
+    "window"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv068",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:45:23.019963",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

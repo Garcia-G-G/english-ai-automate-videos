@@ -1,0 +1,69 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «TENGO GANAS DE» en inglés? 😋",
+  "video_description": "Deja de decir «I have wishes of». Aprende cómo se dice tener ganas y estar dispuesto en inglés real. 💪",
+  "title": "¿Cómo se dice?",
+  "theme": "tener ganas de, estar dispuesto a",
+  "intro": "[curious] ¿Todavía dices «I have wishes of»? Así lo dicen de verdad.",
+  "items": [
+    {
+      "spanish": "Tengo ganas de pizza.",
+      "english": "I'm craving pizza."
+    },
+    {
+      "spanish": "No tengo ganas de salir hoy.",
+      "english": "I don't feel like going out today."
+    },
+    {
+      "spanish": "¿Tienes ganas de ver una peli?",
+      "english": "Do you feel like watching a movie?"
+    },
+    {
+      "spanish": "Me muero de ganas de verte.",
+      "english": "I can't wait to see you."
+    },
+    {
+      "spanish": "Tengo muchísimas ganas.",
+      "english": "I'm really looking forward to it."
+    },
+    {
+      "spanish": "¿Te animas a un café?",
+      "english": "Are you up for a coffee?"
+    },
+    {
+      "spanish": "Estoy dispuesto a ayudarte.",
+      "english": "I'm willing to help you."
+    },
+    {
+      "spanish": "No estoy dispuesto a esperar más.",
+      "english": "I'm not willing to wait any longer."
+    },
+    {
+      "spanish": "Estoy abierto a sugerencias.",
+      "english": "I'm open to suggestions."
+    },
+    {
+      "spanish": "Haría lo que fuera por ti.",
+      "english": "I'd do anything for you."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "[curious] ¿Todavía dices «I have wishes of»? Así lo dicen de verdad. I'm craving pizza. I don't feel like going out today. ¿Do you feel like watching a movie? I can't wait to see you. I'm really looking forward to it. ¿Are you up for a coffee? I'm willing to help you. I'm not willing to wait any longer. I'm open to suggestions. I'd do anything for you. [excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp013",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:54:42.184333",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 2 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

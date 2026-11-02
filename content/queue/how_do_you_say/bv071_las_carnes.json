@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las CARNES en inglés? 🥩",
+  "video_description": "🍗 ¿Pides pollo, tocino o bistec en inglés sin dudar? Aprende 10 palabras de carnes en menos de un minuto. 🍔",
+  "title": "¿Cómo se dice…?",
+  "theme": "las carnes",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes pedir carne en inglés? Di cada palabra antes que yo.",
+  "items": [
+    {
+      "emoji": "🍖",
+      "spanish": "Carne",
+      "english": "meat"
+    },
+    {
+      "emoji": "🥩",
+      "spanish": "Bistec",
+      "english": "steak"
+    },
+    {
+      "emoji": "🍗",
+      "spanish": "Pollo",
+      "english": "chicken"
+    },
+    {
+      "emoji": "🥓",
+      "spanish": "Tocino",
+      "english": "bacon"
+    },
+    {
+      "emoji": "🍔",
+      "spanish": "Hamburguesa",
+      "english": "hamburger"
+    },
+    {
+      "emoji": "🦃",
+      "spanish": "Pavo",
+      "english": "turkey"
+    },
+    {
+      "emoji": "🦆",
+      "spanish": "Pato",
+      "english": "duck"
+    },
+    {
+      "emoji": "🐄",
+      "spanish": "Carne de res",
+      "english": "beef"
+    },
+    {
+      "emoji": "🐖",
+      "spanish": "Cerdo",
+      "english": "pork"
+    },
+    {
+      "emoji": "🌭",
+      "spanish": "Hot dog",
+      "english": "hot dog"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: meat, steak, chicken, bacon, hamburger, turkey, duck, beef, pork, hot dog.",
+  "outro": "[warm] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[excited] ¿Sabes pedir carne en inglés? Di cada palabra antes que yo. Carne... meat. meat. Bistec... steak. steak. Pollo... chicken. chicken. Tocino... bacon. bacon. Hamburguesa... hamburger. hamburger. Pavo... turkey. turkey. Pato... duck. duck. Carne de res... beef. beef. Cerdo... pork. pork. Hot dog... hot dog. hot dog. Ahora todas en inglés, conmigo: meat, steak, chicken, bacon, hamburger, turkey, duck, beef, pork, hot dog. [warm] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "meat": "Carne",
+    "steak": "Bistec",
+    "chicken": "Pollo",
+    "bacon": "Tocino",
+    "hamburger": "Hamburguesa",
+    "turkey": "Pavo",
+    "duck": "Pato",
+    "beef": "Carne de res",
+    "pork": "Cerdo",
+    "hot dog": "Hot dog"
+  },
+  "english_phrases": [
+    "meat",
+    "steak",
+    "chicken",
+    "bacon",
+    "hamburger",
+    "turkey",
+    "duck",
+    "beef",
+    "pork",
+    "hot dog"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#Food",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv071",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:46:25.244327",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

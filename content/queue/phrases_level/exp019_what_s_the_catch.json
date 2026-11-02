@@ -1,0 +1,69 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿CUÁL ES LA TRAMPA?» en inglés? 🤔",
+  "video_description": "No digas «Which is the trap?». Aprende 10 frases en inglés para cuando algo huele raro 🧐",
+  "title": "¿Cómo se dice?",
+  "theme": "¿cuál es la trampa?",
+  "intro": "[curious] ¿Tú dirías «Which is the trap?»? Error típico. Mira cómo se dice de verdad.",
+  "items": [
+    {
+      "spanish": "¿Cuál es la trampa?",
+      "english": "What's the catch?"
+    },
+    {
+      "spanish": "Suena demasiado bueno.",
+      "english": "It sounds too good to be true."
+    },
+    {
+      "spanish": "¿Es una pregunta trampa?",
+      "english": "Is this a trick question?"
+    },
+    {
+      "spanish": "Aquí hay gato encerrado.",
+      "english": "Something's fishy here."
+    },
+    {
+      "spanish": "No me lo creo.",
+      "english": "I don't buy it."
+    },
+    {
+      "spanish": "Lee la letra pequeña.",
+      "english": "Read the fine print."
+    },
+    {
+      "spanish": "Me engañaron.",
+      "english": "I got tricked."
+    },
+    {
+      "spanish": "¡Caíste!",
+      "english": "Gotcha!"
+    },
+    {
+      "spanish": "Me estás tomando el pelo.",
+      "english": "You're pulling my leg."
+    },
+    {
+      "spanish": "No hagas trampa.",
+      "english": "Don't cheat."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "[curious] ¿Tú dirías «Which is the trap?»? Error típico. Mira cómo se dice de verdad. ¿What's the catch? It sounds too good to be true. ¿Is this a trick question? Something's fishy here. I don't buy it. Read the fine print. I got tricked. ¡Gotcha! You're pulling my leg. Don't cheat. [excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#AprendeInglés",
+    "#FrasesEnInglés",
+    "#InglésFácil",
+    "#InglésDiario"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp019",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:54:56.953373",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 3 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "type": "choose_level",
+  "video_title": "¿AT, ON o IN? Elige la correcta en 10 frases ⏰",
+  "video_description": "Preposiciones de tiempo en inglés: ¿hasta qué número llegas sin fallar? ⏰",
+  "title": "Elige la correcta",
+  "theme": "Prepositions of Time (At, On, In)",
+  "intro": "[curious] ¿Tú dices 'in Monday'? Pon a prueba tus AT, ON e IN. ¿Hasta qué número llegas?",
+  "items": [
+    {
+      "sentence": "I wake up ____ 7 o'clock.",
+      "options": [
+        "at",
+        "on"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "My birthday is ____ May.",
+      "options": [
+        "on",
+        "in"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We have class ____ Monday.",
+      "options": [
+        "on",
+        "in"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I sleep ____ night.",
+      "options": [
+        "in",
+        "at"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She was born ____ 1998.",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'll call you ____ Christmas Day.",
+      "options": [
+        "on",
+        "at"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It's cold ____ the winter.",
+      "options": [
+        "at",
+        "in"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "We met ____ a rainy morning.",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'll finish ____ two days.",
+      "options": [
+        "in",
+        "on"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She arrived ____ the end of May.",
+      "options": [
+        "at",
+        "in"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Tú dices 'in Monday'? Pon a prueba tus AT, ON e IN. ¿Hasta qué número llegas? I wake up at 7 o'clock. My birthday is in May. We have class on Monday. I sleep at night. She was born in 1998. I'll call you on Christmas Day. It's cold in the winter. We met on a rainy morning. I'll finish in two days. She arrived at the end of May. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AprenderIngles",
+    "#PreposicionesEnIngles",
+    "#EnglishQuiz",
+    "#InglesFacil"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr038",
+    "video_type": "choose_level",
+    "generated_at": "2026-11-02T11:08:48.843695",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

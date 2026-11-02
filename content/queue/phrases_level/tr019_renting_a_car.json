@@ -1,0 +1,69 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «QUIERO RENTAR UN CARRO» en inglés? 🚗",
+  "video_description": "Frases para rentar un carro en inglés: seguro, tanque lleno, licencia y más. ¿Cuántas sabías? 🚗",
+  "title": "¿Cómo se dice?",
+  "theme": "Alquilar un coche",
+  "intro": "[curious] ¿Vas a rentar un carro en otro país? ¿Sabrías decir esto en inglés?",
+  "items": [
+    {
+      "spanish": "Quiero rentar un carro.",
+      "english": "I'd like to rent a car."
+    },
+    {
+      "spanish": "¿Cuánto cuesta por día?",
+      "english": "How much is it per day?"
+    },
+    {
+      "spanish": "¿Incluye el seguro?",
+      "english": "Does that include insurance?"
+    },
+    {
+      "spanish": "¿Es automático o manual?",
+      "english": "Is it automatic or manual?"
+    },
+    {
+      "spanish": "Aquí está mi licencia.",
+      "english": "Here's my driver's license."
+    },
+    {
+      "spanish": "¿Puedo agregar otro conductor?",
+      "english": "Can I add another driver?"
+    },
+    {
+      "spanish": "Lo necesito hasta el viernes.",
+      "english": "I need it until Friday."
+    },
+    {
+      "spanish": "El carro tiene un rayón.",
+      "english": "There's a scratch on the car."
+    },
+    {
+      "spanish": "¿Lo devuelvo con el tanque lleno?",
+      "english": "Do I return it with a full tank?"
+    },
+    {
+      "spanish": "¿Dónde lo devuelvo?",
+      "english": "Where do I drop it off?"
+    }
+  ],
+  "outro": "[warm] ¿Cuántas sabías? Guarda el video para tu próximo viaje.",
+  "full_script": "[curious] ¿Vas a rentar un carro en otro país? ¿Sabrías decir esto en inglés? I'd like to rent a car. ¿How much is it per day? ¿Does that include insurance? ¿Is it automatic or manual? Here's my driver's license. ¿Can I add another driver? I need it until Friday. There's a scratch on the car. ¿Do I return it with a full tank? ¿Where do I drop it off? [warm] ¿Cuántas sabías? Guarda el video para tu próximo viaje.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr019",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:56:14.133285",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 6 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

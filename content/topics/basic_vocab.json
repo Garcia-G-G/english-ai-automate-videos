@@ -838,5 +838,425 @@
       "a1",
       "how_do_you_say"
     ]
+  },
+  {
+    "id": "bv061",
+    "topic": "family",
+    "spanish": "la familia",
+    "theme": "la familia",
+    "meaning": "Ten A1 words about family, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv062",
+    "topic": "numbers",
+    "spanish": "los números",
+    "theme": "los números",
+    "meaning": "Ten A1 words about numbers, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv063",
+    "topic": "months",
+    "spanish": "los meses",
+    "theme": "los meses",
+    "meaning": "Twelve A1 words about months: the format holds 10 rows, so no script yet",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv064",
+    "topic": "numbers 11 to 20",
+    "spanish": "los números del 11 al 20",
+    "theme": "los números del 11 al 20",
+    "meaning": "Ten A1 words about numbers 11 to 20, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv065",
+    "topic": "tens",
+    "spanish": "los números de diez en diez",
+    "theme": "los números de diez en diez",
+    "meaning": "Ten A1 words about tens, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv066",
+    "topic": "extended family",
+    "spanish": "más familia",
+    "theme": "más familia",
+    "meaning": "Ten A1 words about extended family, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv067",
+    "topic": "greetings",
+    "spanish": "los saludos",
+    "theme": "los saludos",
+    "meaning": "Ten A1 words about greetings, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv068",
+    "topic": "furniture",
+    "spanish": "los muebles",
+    "theme": "los muebles",
+    "meaning": "Ten A1 words about furniture, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv069",
+    "topic": "home appliances",
+    "spanish": "los electrodomésticos",
+    "theme": "los electrodomésticos",
+    "meaning": "Ten A1 words about home appliances, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv070",
+    "topic": "cutlery and tableware",
+    "spanish": "los cubiertos",
+    "theme": "los cubiertos",
+    "meaning": "Ten A1 words about cutlery and tableware, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv071",
+    "topic": "meats",
+    "spanish": "las carnes",
+    "theme": "las carnes",
+    "meaning": "Ten A1 words about meats, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv072",
+    "topic": "seafood",
+    "spanish": "los mariscos",
+    "theme": "los mariscos",
+    "meaning": "Ten A1 words about seafood, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv073",
+    "topic": "dairy",
+    "spanish": "los lácteos",
+    "theme": "los lácteos",
+    "meaning": "Ten A1 words about dairy, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv074",
+    "topic": "tropical fruit",
+    "spanish": "las frutas tropicales",
+    "theme": "las frutas tropicales",
+    "meaning": "Ten A1 words about tropical fruit, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv075",
+    "topic": "winter clothes",
+    "spanish": "la ropa de invierno",
+    "theme": "la ropa de invierno",
+    "meaning": "Ten A1 words about winter clothes, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv076",
+    "topic": "footwear",
+    "spanish": "los zapatos",
+    "theme": "los zapatos",
+    "meaning": "Ten A1 words about footwear, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv077",
+    "topic": "more colors",
+    "spanish": "más colores",
+    "theme": "más colores",
+    "meaning": "Ten A1 words about more colors, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv078",
+    "topic": "daily action verbs",
+    "spanish": "las acciones diarias",
+    "theme": "las acciones diarias",
+    "meaning": "Ten A1 words about daily action verbs, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv079",
+    "topic": "basic adjectives",
+    "spanish": "los adjetivos básicos",
+    "theme": "los adjetivos básicos",
+    "meaning": "Ten A1 words about basic adjectives, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv080",
+    "topic": "question words",
+    "spanish": "las preguntas",
+    "theme": "las preguntas",
+    "meaning": "Ten A1 words about question words, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv081",
+    "topic": "time words",
+    "spanish": "ayer, hoy y mañana",
+    "theme": "ayer, hoy y mañana",
+    "meaning": "Ten A1 words about time words, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv082",
+    "topic": "countries",
+    "spanish": "los países",
+    "theme": "los países",
+    "meaning": "Ten A1 words about countries, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv083",
+    "topic": "nationalities",
+    "spanish": "las nacionalidades",
+    "theme": "las nacionalidades",
+    "meaning": "Ten A1 words about nationalities, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv084",
+    "topic": "parts of the head",
+    "spanish": "las partes de la cabeza",
+    "theme": "las partes de la cabeza",
+    "meaning": "Ten A1 words about parts of the head, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv085",
+    "topic": "pets",
+    "spanish": "las mascotas",
+    "theme": "las mascotas",
+    "meaning": "Ten A1 words about pets, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv086",
+    "topic": "birds",
+    "spanish": "las aves",
+    "theme": "las aves",
+    "meaning": "Ten A1 words about birds, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv087",
+    "topic": "school supplies",
+    "spanish": "los útiles escolares",
+    "theme": "los útiles escolares",
+    "meaning": "Ten A1 words about school supplies, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv088",
+    "topic": "school subjects",
+    "spanish": "las materias",
+    "theme": "las materias",
+    "meaning": "Ten A1 words about school subjects, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv089",
+    "topic": "more sports",
+    "spanish": "más deportes",
+    "theme": "más deportes",
+    "meaning": "Ten A1 words about more sports, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
+  },
+  {
+    "id": "bv090",
+    "topic": "more food",
+    "spanish": "más comida",
+    "theme": "más comida",
+    "meaning": "Ten A1 words about more food, Spanish first, English revealed",
+    "category": "basic_vocab",
+    "difficulty": "beginner",
+    "level": "A1",
+    "tags": [
+      "a1",
+      "how_do_you_say"
+    ]
   }
 ]

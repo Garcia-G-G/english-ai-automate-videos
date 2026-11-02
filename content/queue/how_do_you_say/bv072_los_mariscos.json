@@ -1,0 +1,99 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las COSAS DEL MAR en inglés? 🦐",
+  "video_description": "🦀 ¿Pulpo, cangrejo, camarón… en inglés? Di cada palabra antes que yo y cuéntame cuántas sabías. 🐙",
+  "title": "¿Cómo se dice…?",
+  "theme": "las cosas del mar",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes cómo se dice CAMARÓN en inglés? Aquí hay 9 palabras del mar. ¡Dilas antes que yo!",
+  "items": [
+    {
+      "emoji": "🦐",
+      "spanish": "Camarón",
+      "english": "shrimp"
+    },
+    {
+      "emoji": "🦀",
+      "spanish": "Cangrejo",
+      "english": "crab"
+    },
+    {
+      "emoji": "🦞",
+      "spanish": "Langosta",
+      "english": "lobster"
+    },
+    {
+      "emoji": "🐙",
+      "spanish": "Pulpo",
+      "english": "octopus"
+    },
+    {
+      "emoji": "🦑",
+      "spanish": "Calamar",
+      "english": "squid"
+    },
+    {
+      "emoji": "🦪",
+      "spanish": "Ostra",
+      "english": "oyster"
+    },
+    {
+      "emoji": "🐟",
+      "spanish": "Pescado",
+      "english": "fish"
+    },
+    {
+      "emoji": "🐚",
+      "spanish": "Concha",
+      "english": "shell"
+    },
+    {
+      "emoji": "🌊",
+      "spanish": "Mar",
+      "english": "sea"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: shrimp, crab, lobster, octopus, squid, oyster, fish, shell, sea.",
+  "outro": "[warm] ¿Cuántas sabías? Escríbeme tu número en los comentarios.",
+  "full_script": "[excited] ¿Sabes cómo se dice CAMARÓN en inglés? Aquí hay 9 palabras del mar. ¡Dilas antes que yo! Camarón... shrimp. shrimp. Cangrejo... crab. crab. Langosta... lobster. lobster. Pulpo... octopus. octopus. Calamar... squid. squid. Ostra... oyster. oyster. Pescado... fish. fish. Concha... shell. shell. Mar... sea. sea. Ahora todas en inglés, conmigo: shrimp, crab, lobster, octopus, squid, oyster, fish, shell, sea. [warm] ¿Cuántas sabías? Escríbeme tu número en los comentarios.",
+  "translations": {
+    "shrimp": "Camarón",
+    "crab": "Cangrejo",
+    "lobster": "Langosta",
+    "octopus": "Pulpo",
+    "squid": "Calamar",
+    "oyster": "Ostra",
+    "fish": "Pescado",
+    "shell": "Concha",
+    "sea": "Mar"
+  },
+  "english_phrases": [
+    "shrimp",
+    "crab",
+    "lobster",
+    "octopus",
+    "squid",
+    "oyster",
+    "fish",
+    "shell",
+    "sea"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#Mariscos",
+    "#Seafood",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv072",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:46:45.687167",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

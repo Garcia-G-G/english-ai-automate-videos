@@ -1,0 +1,82 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Caes con estos FALSOS AMIGOS en inglés? 🤔",
+  "video_description": "Diez palabras inglesas que engañan a todo hispanohablante. ¿Hasta qué número llegas sin caer? 🧠",
+  "title": "¿Verdadero o falso?",
+  "theme": "Falsos amigos",
+  "intro": "[curious] ¿Crees que «embarrassed» significa embarazada? Llega hasta el diez y descubre tu nivel real.",
+  "items": [
+    {
+      "statement": "«Exit» significa éxito.",
+      "truth": false,
+      "correction": "es salida",
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Library» significa biblioteca.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Embarrassed» significa embarazada.",
+      "truth": false,
+      "correction": "es avergonzado",
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Actually» significa actualmente.",
+      "truth": false,
+      "correction": "es en realidad",
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Sensible» significa sensato.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Realize» significa darse cuenta.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Attend» significa atender.",
+      "truth": false,
+      "correction": "es asistir",
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Eventually» significa finalmente.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Deception» significa engaño.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Sympathetic» significa simpático.",
+      "truth": false,
+      "correction": "es comprensivo",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si acertaste las diez, eres experto en falsos amigos.",
+  "outro": "[excited] ¿En qué número caíste? Escríbelo en los comentarios y reta a un amigo.",
+  "full_script": "[curious] ¿Crees que «embarrassed» significa embarazada? Llega hasta el diez y descubre tu nivel real. Uno. Falso: es salida. Dos. Verdadero. Tres. Falso: es avergonzado. Cuatro. Falso: es en realidad. Cinco. Verdadero. Seis. Verdadero. Siete. Falso: es asistir. Ocho. Verdadero. Nueve. Verdadero. Diez. Falso: es comprensivo. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si acertaste las diez, eres experto en falsos amigos. [excited] ¿En qué número caíste? Escríbelo en los comentarios y reta a un amigo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#FalsosAmigos",
+    "#AprenderIngles",
+    "#InglesFacil",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff063",
+    "video_type": "true_false_level",
+    "generated_at": "2026-11-02T11:02:32.319789",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

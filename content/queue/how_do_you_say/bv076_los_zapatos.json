@@ -1,0 +1,104 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los ZAPATOS en inglés? 👟",
+  "video_description": "👟 ¿Tenis, botas, chanclas? Aprende 10 palabras de zapatos en inglés en menos de un minuto. ¿Cuántas sabías?",
+  "title": "¿Cómo se dice…?",
+  "theme": "los zapatos",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes decir 'tenis' en inglés? No es 'tennis'. Responde antes que yo con estas 10.",
+  "items": [
+    {
+      "emoji": "👞",
+      "spanish": "Zapato",
+      "english": "shoe"
+    },
+    {
+      "emoji": "👟",
+      "spanish": "Tenis",
+      "english": "sneakers"
+    },
+    {
+      "emoji": "👢",
+      "spanish": "Bota",
+      "english": "boot"
+    },
+    {
+      "emoji": "👡",
+      "spanish": "Sandalia",
+      "english": "sandal"
+    },
+    {
+      "emoji": "🩴",
+      "spanish": "Chancla",
+      "english": "flip-flop"
+    },
+    {
+      "emoji": "👠",
+      "spanish": "Tacón",
+      "english": "high heel"
+    },
+    {
+      "emoji": "🥿",
+      "spanish": "Bailarina",
+      "english": "ballet flat"
+    },
+    {
+      "emoji": "🧦",
+      "spanish": "Calcetín",
+      "english": "sock"
+    },
+    {
+      "emoji": "🦶",
+      "spanish": "Pie",
+      "english": "foot"
+    },
+    {
+      "emoji": "🪢",
+      "spanish": "Cordón",
+      "english": "shoelace"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: shoe, sneakers, boot, sandal, flip-flop, high heel, ballet flat, sock, foot, shoelace.",
+  "outro": "[cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[excited] ¿Sabes decir 'tenis' en inglés? No es 'tennis'. Responde antes que yo con estas 10. Zapato... shoe. shoe. Tenis... sneakers. sneakers. Bota... boot. boot. Sandalia... sandal. sandal. Chancla... flip-flop. flip-flop. Tacón... high heel. high heel. Bailarina... ballet flat. ballet flat. Calcetín... sock. sock. Pie... foot. foot. Cordón... shoelace. shoelace. Ahora todas en inglés, conmigo: shoe, sneakers, boot, sandal, flip-flop, high heel, ballet flat, sock, foot, shoelace. [cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "shoe": "Zapato",
+    "sneakers": "Tenis",
+    "boot": "Bota",
+    "sandal": "Sandalia",
+    "flip-flop": "Chancla",
+    "high heel": "Tacón",
+    "ballet flat": "Bailarina",
+    "sock": "Calcetín",
+    "foot": "Pie",
+    "shoelace": "Cordón"
+  },
+  "english_phrases": [
+    "shoe",
+    "sneakers",
+    "boot",
+    "sandal",
+    "flip-flop",
+    "high heel",
+    "ballet flat",
+    "sock",
+    "foot",
+    "shoelace"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv076",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:48:14.662008",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

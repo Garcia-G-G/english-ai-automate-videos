@@ -1,0 +1,120 @@
+{
+  "type": "choose_level",
+  "video_title": "¿GOOD o WELL? Elige la correcta en 10 frases ✅",
+  "video_description": "¿Dices 'she sings good'? Pon a prueba tu inglés con GOOD y WELL, de fácil a experto. ¿Hasta cuál llegas? 🎯",
+  "title": "Elige la correcta",
+  "theme": "good vs well",
+  "intro": "[curious] ¿Tú dices 'she sings good'? Es un error muy común. ¿Hasta qué número llegas sin fallar?",
+  "items": [
+    {
+      "sentence": "She sings very ____.",
+      "options": [
+        "good",
+        "well"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "This pizza is ____!",
+      "options": [
+        "good",
+        "well"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Get ____ soon!",
+      "options": [
+        "well",
+        "good"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "You speak English ____.",
+      "options": [
+        "good",
+        "well"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "That sounds ____ to me.",
+      "options": [
+        "well",
+        "good"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He did ____ on the test.",
+      "options": [
+        "well",
+        "good"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The cake smells really ____.",
+      "options": [
+        "good",
+        "well"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She's a ____-known writer.",
+      "options": [
+        "good",
+        "well"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Your plan looks ____ on paper.",
+      "options": [
+        "well",
+        "good"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "It's just as ____ you came.",
+      "options": [
+        "well",
+        "good"
+      ],
+      "answer": 0,
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Tú dices 'she sings good'? Es un error muy común. ¿Hasta qué número llegas sin fallar? She sings very well. ¡This pizza is good! ¡Get well soon! You speak English well. That sounds good to me. He did well on the test. The cake smells really good. She's a well-known writer. Your plan looks good on paper. It's just as well you came. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AprenderIngles",
+    "#GoodVsWell",
+    "#InglesFacil",
+    "#EnglishQuiz"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw028",
+    "video_type": "choose_level",
+    "generated_at": "2026-11-02T11:08:27.941802",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 2 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

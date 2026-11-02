@@ -1,0 +1,106 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los ÚTILES ESCOLARES en inglés? ✏️",
+  "video_description": "🎒 ¿Sabes decir lápiz, regla y mochila en inglés? Responde antes que yo y cuéntame cuántas sabías ✏️",
+  "title": "¿Cómo se dice…?",
+  "theme": "los útiles escolares",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes cómo se dice lo que llevas en tu mochila? Di cada palabra en inglés antes que yo.",
+  "items": [
+    {
+      "emoji": "✏️",
+      "spanish": "Lápiz",
+      "english": "pencil"
+    },
+    {
+      "emoji": "🖊️",
+      "spanish": "Bolígrafo",
+      "english": "pen"
+    },
+    {
+      "emoji": "📕",
+      "spanish": "Libro",
+      "english": "book"
+    },
+    {
+      "emoji": "📓",
+      "spanish": "Cuaderno",
+      "english": "notebook"
+    },
+    {
+      "emoji": "📏",
+      "spanish": "Regla",
+      "english": "ruler"
+    },
+    {
+      "emoji": "✂️",
+      "spanish": "Tijeras",
+      "english": "scissors"
+    },
+    {
+      "emoji": "🎒",
+      "spanish": "Mochila",
+      "english": "backpack"
+    },
+    {
+      "emoji": "🖍️",
+      "spanish": "Crayón",
+      "english": "crayon"
+    },
+    {
+      "emoji": "📁",
+      "spanish": "Carpeta",
+      "english": "folder"
+    },
+    {
+      "emoji": "🖌️",
+      "spanish": "Pincel",
+      "english": "paintbrush"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: pencil, pen, book, notebook, ruler, scissors, backpack, crayon, folder, paintbrush",
+  "outro": "[excited] ¿Cuántas sabías de las 10? Escribe tu número en los comentarios.",
+  "full_script": "[cheerful] ¿Sabes cómo se dice lo que llevas en tu mochila? Di cada palabra en inglés antes que yo. Lápiz... pencil. pencil. Bolígrafo... pen. pen. Libro... book. book. Cuaderno... notebook. notebook. Regla... ruler. ruler. Tijeras... scissors. scissors. Mochila... backpack. backpack. Crayón... crayon. crayon. Carpeta... folder. folder. Pincel... paintbrush. paintbrush. Ahora todas en inglés, conmigo: pencil, pen, book, notebook, ruler, scissors, backpack, crayon, folder, paintbrush. [excited] ¿Cuántas sabías de las 10? Escribe tu número en los comentarios.",
+  "translations": {
+    "pencil": "Lápiz",
+    "pen": "Bolígrafo",
+    "book": "Libro",
+    "notebook": "Cuaderno",
+    "ruler": "Regla",
+    "scissors": "Tijeras",
+    "backpack": "Mochila",
+    "crayon": "Crayón",
+    "folder": "Carpeta",
+    "paintbrush": "Pincel"
+  },
+  "english_phrases": [
+    "pencil",
+    "pen",
+    "book",
+    "notebook",
+    "ruler",
+    "scissors",
+    "backpack",
+    "crayon",
+    "folder",
+    "paintbrush"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#ÚtilesEscolares",
+    "#BackToSchool",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv087",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:51:57.723702",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: 10 PREPOSICIONES en inglés 📚",
+  "video_description": "¿IN, ON, AT o algo más difícil? Completa las 10 PREPOSICIONES y descubre tu nivel de inglés 🧠",
+  "title": "Completa la frase",
+  "theme": "PREPOSICIONES",
+  "intro": "[curious] ¿Sabes cuándo usar IN, ON o AT? Completa las diez y descubre tu nivel.",
+  "items": [
+    {
+      "sentence": "I live ____ Mexico.",
+      "answer": "in",
+      "translation": "Vivo en México.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The keys are ____ the table.",
+      "answer": "on",
+      "translation": "Las llaves están en la mesa.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'm afraid ____ dogs.",
+      "answer": "of",
+      "translation": "Les tengo miedo a los perros.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'm good ____ cooking.",
+      "answer": "at",
+      "translation": "Soy bueno para cocinar.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She's married ____ Luis.",
+      "answer": "to",
+      "translation": "Está casada con Luis.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Thanks ____ your help.",
+      "answer": "for",
+      "translation": "Gracias por tu ayuda.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It's different ____ mine.",
+      "answer": "from",
+      "translation": "Es diferente al mío.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It happened ____ the war.",
+      "answer": "during",
+      "translation": "Pasó durante la guerra.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It's ____ my control.",
+      "answer": "beyond",
+      "translation": "Está fuera de mi control.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ all odds, she won.",
+      "answer": "Against",
+      "translation": "Contra todo pronóstico, ganó.",
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Sabes cuándo usar IN, ON o AT? Completa las diez y descubre tu nivel. I live in Mexico. The keys are on the table. I'm afraid of dogs. I'm good at cooking. She's married to Luis. Thanks for your help. It's different from mine. It happened during the war. It's beyond my control. Against all odds, she won. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#PreposicionesEnIngles",
+    "#InglesParaLatinos",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm027",
+    "video_type": "fill_level",
+    "generated_at": "2026-11-02T11:05:54.327681",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

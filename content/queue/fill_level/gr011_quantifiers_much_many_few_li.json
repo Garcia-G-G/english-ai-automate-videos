@@ -1,0 +1,90 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: MUCH, MANY, FEW o LITTLE 🧠",
+  "video_description": "¿Much o many? ¿Few o little? Completa las 10 frases y descubre tu nivel de inglés real 🎯",
+  "title": "Completa la frase",
+  "theme": "Quantifiers (Much, Many, Few, Little)",
+  "intro": "[curious] ¿Todavía dices 'much people'? Completa estas diez frases y descubre tu nivel real.",
+  "items": [
+    {
+      "sentence": "I don't have ____ money.",
+      "answer": "much",
+      "translation": "No tengo mucho dinero.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "How ____ brothers do you have?",
+      "answer": "many",
+      "translation": "¿Cuántos hermanos tienes?",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "How ____ water do you drink?",
+      "answer": "much",
+      "translation": "¿Cuánta agua tomas?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I need ____ sugar, please.",
+      "answer": "a little",
+      "translation": "Necesito un poco de azúcar.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We stayed ____ days in Rome.",
+      "answer": "a few",
+      "translation": "Nos quedamos unos días en Roma.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "There were too ____ people there.",
+      "answer": "many",
+      "translation": "Había demasiada gente allí.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Very ____ of us passed the exam.",
+      "answer": "few",
+      "translation": "Muy pocos aprobamos el examen.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "There is ____ hope left.",
+      "answer": "little",
+      "translation": "Queda poca esperanza.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Quite ____ people came to the party.",
+      "answer": "a few",
+      "translation": "Vino bastante gente a la fiesta.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ a man has tried and failed.",
+      "answer": "Many",
+      "translation": "Más de uno lo intentó y fracasó.",
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Todavía dices 'much people'? Completa estas diez frases y descubre tu nivel real. I don't have much money. ¿How many brothers do you have? ¿How much water do you drink? I need a little sugar, please. We stayed a few days in Rome. There were too many people there. Very few of us passed the exam. There is little hope left. Quite a few people came to the party. Many a man has tried and failed. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#InglesParaLatinos",
+    "#GramaticaInglesa",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr011",
+    "video_type": "fill_level",
+    "generated_at": "2026-11-02T11:06:21.576649",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 2 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

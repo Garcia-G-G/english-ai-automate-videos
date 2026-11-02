@@ -1,0 +1,66 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «CASI NUNCA» en inglés? 🤔",
+  "video_description": "Aprende a decir «casi nunca» y «rara vez» en inglés como un nativo: hardly ever, rarely y más. 📝",
+  "title": "¿Cómo se dice?",
+  "theme": "muy raramente, casi nunca",
+  "intro": "[curious] ¿Tú también dices «almost never» para todo? Mira cómo lo dicen de verdad.",
+  "items": [
+    {
+      "spanish": "Casi nunca como carne.",
+      "english": "I hardly ever eat meat."
+    },
+    {
+      "spanish": "Rara vez veo la tele.",
+      "english": "I rarely watch TV."
+    },
+    {
+      "spanish": "Casi nunca llueve aquí.",
+      "english": "It hardly ever rains here."
+    },
+    {
+      "spanish": "Muy pocas veces salgo de noche.",
+      "english": "I seldom go out at night."
+    },
+    {
+      "spanish": "Casi nunca lo veo.",
+      "english": "I hardly ever see him."
+    },
+    {
+      "spanish": "Rara vez me enfermo.",
+      "english": "I rarely get sick."
+    },
+    {
+      "spanish": "Casi nunca cocino.",
+      "english": "I hardly ever cook."
+    },
+    {
+      "spanish": "Muy de vez en cuando.",
+      "english": "Once in a blue moon."
+    },
+    {
+      "spanish": "Ella casi nunca llega a tiempo.",
+      "english": "She's hardly ever on time."
+    },
+    {
+      "spanish": "No es algo que haga seguido.",
+      "english": "It's not something I do often."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "[curious] ¿Tú también dices «almost never» para todo? Mira cómo lo dicen de verdad. I hardly ever eat meat. I rarely watch TV. It hardly ever rains here. I seldom go out at night. I hardly ever see him. I rarely get sick. I hardly ever cook. Once in a blue moon. She's hardly ever on time. It's not something I do often. [excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp026",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:54:24.685569",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

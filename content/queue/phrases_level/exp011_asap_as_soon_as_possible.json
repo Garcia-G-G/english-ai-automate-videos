@@ -1,0 +1,66 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «LO ANTES POSIBLE» en inglés? ⏰",
+  "video_description": "Cómo decir «cuanto antes», «enseguida» y «en cuanto pueda» en inglés, como lo dicen los nativos. ⏰",
+  "title": "¿Cómo se dice?",
+  "theme": "lo antes posible, cuanto antes",
+  "intro": "[curious] ¿Te piden algo para ya y no sabes decirlo en inglés? Mira estas frases.",
+  "items": [
+    {
+      "spanish": "Lo antes posible.",
+      "english": "As soon as possible."
+    },
+    {
+      "spanish": "Llámame en cuanto llegues.",
+      "english": "Call me as soon as you get there."
+    },
+    {
+      "spanish": "Te respondo cuanto antes.",
+      "english": "I'll get back to you ASAP."
+    },
+    {
+      "spanish": "Lo necesito para ya.",
+      "english": "I need it right away."
+    },
+    {
+      "spanish": "Voy enseguida.",
+      "english": "I'll be right there."
+    },
+    {
+      "spanish": "Cuanto antes, mejor.",
+      "english": "The sooner, the better."
+    },
+    {
+      "spanish": "Avísame en cuanto sepas algo.",
+      "english": "Let me know as soon as you hear anything."
+    },
+    {
+      "spanish": "Lo hago en cuanto pueda.",
+      "english": "I'll do it as soon as I can."
+    },
+    {
+      "spanish": "Ven lo más rápido que puedas.",
+      "english": "Come as fast as you can."
+    },
+    {
+      "spanish": "Es urgente, no puede esperar.",
+      "english": "It's urgent, it can't wait."
+    }
+  ],
+  "outro": "[warm] ¿Cuántas sabías? Escríbeme tu número en los comentarios.",
+  "full_script": "[curious] ¿Te piden algo para ya y no sabes decirlo en inglés? Mira estas frases. As soon as possible. Call me as soon as you get there. I'll get back to you ASAP. I need it right away. I'll be right there. The sooner, the better. Let me know as soon as you hear anything. I'll do it as soon as I can. Come as fast as you can. It's urgent, it can't wait. [warm] ¿Cuántas sabías? Escríbeme tu número en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésDiario"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp011",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:57:16.645800",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

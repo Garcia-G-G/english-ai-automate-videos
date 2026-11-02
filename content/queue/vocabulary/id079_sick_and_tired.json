@@ -1,0 +1,94 @@
+{
+  "type": "vocabulary",
+  "video_title": "¿Cómo se dice ESTOY HARTO en inglés? 😤",
+  "video_description": "😤 ¿Harto de todo? Aprende a decirlo como nativo: sick and tired, fed up, enough is enough 🔥\n💬 Comenta cuál usas más, which one is your favorite?\n👉 Sígueme para más inglés real cada día.",
+  "title": "Vocabulario: estar HARTO en inglés",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "harto de",
+      "english": "sick and tired of"
+    },
+    {
+      "spanish": "estoy harto",
+      "english": "I'm fed up"
+    },
+    {
+      "spanish": "ya basta",
+      "english": "enough is enough"
+    },
+    {
+      "spanish": "no aguanto más",
+      "english": "I can't take it anymore"
+    },
+    {
+      "spanish": "me vuelve loco",
+      "english": "it drives me crazy"
+    },
+    {
+      "spanish": "qué fastidio",
+      "english": "what a pain"
+    },
+    {
+      "spanish": "me molesta",
+      "english": "it bugs me"
+    },
+    {
+      "spanish": "estoy agotado",
+      "english": "I'm worn out"
+    },
+    {
+      "spanish": "ya no puedo más",
+      "english": "I'm done"
+    },
+    {
+      "spanish": "perder la paciencia",
+      "english": "to lose patience"
+    }
+  ],
+  "full_script": "¿Estás harto de todo? Dilo como nativo. Harto de, sick and tired of. Estoy harto, I'm fed up. Ya basta, enough is enough. No aguanto más, I can't take it anymore. Me vuelve loco, it drives me crazy. Qué fastidio, what a pain. Me molesta, it bugs me. Estoy agotado, I'm worn out. Ya no puedo más, I'm done. Perder la paciencia, to lose patience. ¡I'm sick and tired of all these excuses!",
+  "translations": {
+    "sick and tired of": "harto de",
+    "I'm fed up": "estoy harto",
+    "enough is enough": "ya basta",
+    "I can't take it anymore": "no aguanto más",
+    "it drives me crazy": "me vuelve loco",
+    "what a pain": "qué fastidio",
+    "it bugs me": "me molesta",
+    "I'm worn out": "estoy agotado",
+    "I'm done": "ya no puedo más",
+    "to lose patience": "perder la paciencia",
+    "I'm sick and tired of all these excuses!": "¡Estoy harto de todas estas excusas!"
+  },
+  "english_phrases": [
+    "sick and tired of",
+    "I'm fed up",
+    "enough is enough",
+    "I can't take it anymore",
+    "it drives me crazy",
+    "what a pain",
+    "it bugs me",
+    "I'm worn out",
+    "I'm done",
+    "to lose patience",
+    "I'm sick and tired of all these excuses!"
+  ],
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#VocabularioIngles",
+    "#Idioms",
+    "#SickAndTired",
+    "#InglesReal"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id079",
+    "video_type": "vocabulary",
+    "generated_at": "2026-11-02T11:12:34.815893",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 1 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

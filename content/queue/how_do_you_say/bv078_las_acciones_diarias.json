@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las ACCIONES DIARIAS en inglés? ⏰",
+  "video_description": "⏰ Del despertar al dormir: 10 verbos que usas todos los días, ahora en inglés. ¿Cuántos sabes sin mirar? 😴",
+  "title": "¿Cómo se dice…?",
+  "theme": "las acciones diarias",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes decir en inglés lo que haces cada día? Responde antes que yo.",
+  "items": [
+    {
+      "emoji": "⏰",
+      "spanish": "Despertarse",
+      "english": "wake up"
+    },
+    {
+      "emoji": "🚿",
+      "spanish": "Ducharse",
+      "english": "shower"
+    },
+    {
+      "emoji": "🍴",
+      "spanish": "Comer",
+      "english": "eat"
+    },
+    {
+      "emoji": "🥤",
+      "spanish": "Beber",
+      "english": "drink"
+    },
+    {
+      "emoji": "🚶",
+      "spanish": "Caminar",
+      "english": "walk"
+    },
+    {
+      "emoji": "📖",
+      "spanish": "Leer",
+      "english": "read"
+    },
+    {
+      "emoji": "📝",
+      "spanish": "Escribir",
+      "english": "write"
+    },
+    {
+      "emoji": "🍳",
+      "spanish": "Cocinar",
+      "english": "cook"
+    },
+    {
+      "emoji": "🏃",
+      "spanish": "Correr",
+      "english": "run"
+    },
+    {
+      "emoji": "😴",
+      "spanish": "Dormir",
+      "english": "sleep"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: wake up, shower, eat, drink, walk, read, write, cook, run, sleep",
+  "outro": "[excited] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[cheerful] ¿Sabes decir en inglés lo que haces cada día? Responde antes que yo. Despertarse... wake up. wake up. Ducharse... shower. shower. Comer... eat. eat. Beber... drink. drink. Caminar... walk. walk. Leer... read. read. Escribir... write. write. Cocinar... cook. cook. Correr... run. run. Dormir... sleep. sleep. Ahora todas en inglés, conmigo: wake up, shower, eat, drink, walk, read, write, cook, run, sleep. [excited] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "wake up": "Despertarse",
+    "shower": "Ducharse",
+    "eat": "Comer",
+    "drink": "Beber",
+    "walk": "Caminar",
+    "read": "Leer",
+    "write": "Escribir",
+    "cook": "Cocinar",
+    "run": "Correr",
+    "sleep": "Dormir"
+  },
+  "english_phrases": [
+    "wake up",
+    "shower",
+    "eat",
+    "drink",
+    "walk",
+    "read",
+    "write",
+    "cook",
+    "run",
+    "sleep"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#DailyRoutine",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv078",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:48:55.749062",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

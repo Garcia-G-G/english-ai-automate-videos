@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los NÚMEROS de diez en diez en inglés? 🔟",
+  "video_description": "¿Fourty o forty? 🤔 Aprende del 10 al 100 en inglés y no vuelvas a escribirlo mal. ✍️",
+  "title": "¿Cómo se dice…?",
+  "theme": "los números de diez en diez",
+  "level": "A1",
+  "intro": "[excited] ¿Escribes 'fourty' en inglés? ¡Error! ¿Sabes contar de diez en diez hasta cien? Di cada número antes que yo.",
+  "items": [
+    {
+      "emoji": "🔟",
+      "spanish": "Diez",
+      "english": "ten"
+    },
+    {
+      "emoji": "💵",
+      "spanish": "Veinte",
+      "english": "twenty"
+    },
+    {
+      "emoji": "📅",
+      "spanish": "Treinta",
+      "english": "thirty"
+    },
+    {
+      "emoji": "🥵",
+      "spanish": "Cuarenta",
+      "english": "forty"
+    },
+    {
+      "emoji": "🪙",
+      "spanish": "Cincuenta",
+      "english": "fifty"
+    },
+    {
+      "emoji": "⏳",
+      "spanish": "Sesenta",
+      "english": "sixty"
+    },
+    {
+      "emoji": "👴",
+      "spanish": "Setenta",
+      "english": "seventy"
+    },
+    {
+      "emoji": "👵",
+      "spanish": "Ochenta",
+      "english": "eighty"
+    },
+    {
+      "emoji": "📐",
+      "spanish": "Noventa",
+      "english": "ninety"
+    },
+    {
+      "emoji": "💯",
+      "spanish": "Cien",
+      "english": "one hundred"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: ten, twenty, thirty, forty, fifty, sixty, seventy, eighty, ninety, one hundred",
+  "outro": "[cheerful] ¿Cuántas sabías? ¿Llegaste al cien? Escribe tu número en los comentarios.",
+  "full_script": "[excited] ¿Escribes 'fourty' en inglés? ¡Error! ¿Sabes contar de diez en diez hasta cien? Di cada número antes que yo. Diez... ten. ten. Veinte... twenty. twenty. Treinta... thirty. thirty. Cuarenta... forty. forty. Cincuenta... fifty. fifty. Sesenta... sixty. sixty. Setenta... seventy. seventy. Ochenta... eighty. eighty. Noventa... ninety. ninety. Cien... one hundred. one hundred. Ahora todas en inglés, conmigo: ten, twenty, thirty, forty, fifty, sixty, seventy, eighty, ninety, one hundred. [cheerful] ¿Cuántas sabías? ¿Llegaste al cien? Escribe tu número en los comentarios.",
+  "translations": {
+    "ten": "Diez",
+    "twenty": "Veinte",
+    "thirty": "Treinta",
+    "forty": "Cuarenta",
+    "fifty": "Cincuenta",
+    "sixty": "Sesenta",
+    "seventy": "Setenta",
+    "eighty": "Ochenta",
+    "ninety": "Noventa",
+    "one hundred": "Cien"
+  },
+  "english_phrases": [
+    "ten",
+    "twenty",
+    "thirty",
+    "forty",
+    "fifty",
+    "sixty",
+    "seventy",
+    "eighty",
+    "ninety",
+    "one hundred"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#NúmerosEnInglés",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv065",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:41:54.944692",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

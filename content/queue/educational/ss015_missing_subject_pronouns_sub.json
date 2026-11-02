@@ -1,0 +1,57 @@
+{
+  "type": "educational",
+  "video_title": "¡No digas 'IS RAINING'! El SUJETO que olvidas en inglés 😱",
+  "video_description": "¿Dices 'Is raining' o 'Am tired'? 😬 En inglés el sujeto es OBLIGATORIO. Aprende a decir 'It is raining' como un nativo 🌧️\n👇 Escribe en los comentarios cómo dirías 'es tarde' in English. ¡Follow para más tips! 🚀",
+  "hook": "¿Tú dices 'Is raining' cuando llueve?",
+  "full_script": "¿Tú dices [[Is raining]] cuando llueve? ¡Error clásico de hispanohablante! En español quitamos el sujeto: decimos «llueve» o «estoy cansado» y todos entienden. Pero en inglés el sujeto es obligatorio, siempre. Ejemplo uno: miras por la ventana y llueve. No digas [[Is raining]]. Di [[It is raining]]. Ese [[it]] no significa nada, pero tiene que estar. Ejemplo dos: en diciembre cae nieve. No es [[Is snowing]], es [[It is snowing]]. Ejemplo tres: llegas del trabajo agotado. No digas [[Am tired]]. Di [[I am tired]]. Y con amigos: [[We are hungry]], nosotros tenemos hambre. Tip para recordar: en inglés el verbo nunca camina solo, siempre lleva a su sujeto de la mano. Repite conmigo: [[It is cold today]]. Otra vez: [[I am very happy]]. ¿Cómo dirías «es tarde» en inglés? ¡Escríbelo en los comentarios y sígueme para más!",
+  "english_phrases": [
+    "It is raining",
+    "It is snowing",
+    "I am tired",
+    "We are hungry",
+    "It is cold today",
+    "I am very happy",
+    "it",
+    "am tired",
+    "is raining",
+    "is snowing"
+  ],
+  "translations": {
+    "It is raining": "Está lloviendo",
+    "It is snowing": "Está nevando",
+    "I am tired": "Estoy cansado",
+    "We are hungry": "Tenemos hambre",
+    "It is cold today": "Hace frío hoy",
+    "I am very happy": "Estoy muy feliz",
+    "it": "sujeto impersonal (sin traducción directa)"
+  },
+  "tip": "En inglés el verbo nunca camina solo: siempre lleva a su sujeto de la mano. ¡It is raining, no 'Is raining'! ¡I am tired, no 'Am tired'!",
+  "cta": "¿Cómo dirías «es tarde» en inglés? ¡Escríbelo en los comentarios y sígueme para más!",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#EnglishTips",
+    "#ErroresEnIngles",
+    "#EnglishMistakes",
+    "#GramaticaInglesa",
+    "#InglesParaHispanohablantes",
+    "#EstudiaIngles",
+    "#InglesFacil",
+    "#SpanishSpeakers",
+    "#TipsDeIngles",
+    "#InglesBasico",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "spanish_specific",
+    "topic_id": "ss015",
+    "video_type": "educational",
+    "generated_at": "2026-11-02T11:13:42.432280",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added missing phrase: 'am tired'",
+    "Added missing phrase: 'is raining'",
+    "Added missing phrase: 'is snowing'"
+  ]
+}

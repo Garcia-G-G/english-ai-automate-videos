@@ -1,0 +1,26 @@
+{
+  "type": "pronunciation",
+  "video_title": "¿Dices 'DIS'? Llevas TODA tu vida diciendo THIS mal 😬",
+  "video_description": "👅 ¿'Dis', 'zis' o THIS? El secreto está en tu lengua 😮\nAprende la TH en 60 segundos y suena más natural 🇺🇸\n💬 Comenta 'THIS' si lo lograste y guarda el video para practicar 🔁",
+  "word": "this",
+  "phonetic": "DHIS (TH suave con la lengua, I corta)",
+  "common_mistake": "Decir 'dis' con una D dura o 'zis' con Z, sin poner la lengua entre los dientes",
+  "tip": "Saca la lengua entre los dientes y sopla suave: si vibra, es TH. Si no la ves, suena 'dis'.",
+  "full_script": "¿Dices 'dis' cuando quieres decir [[this]]? Casi todos los hispanohablantes lo hacen. El error común es decir 'dis' o 'zis', con una D dura o con una Z. Pero en inglés esa TH es especial. Pon la punta de la lengua entre los dientes, sopla suave y deja que vibre. Luego viene una I corta y relajada, casi entre I y E. Suena DHIS. Escucha y repite. [[this]]. Otra vez. [[this]]. Una vez más. [[this]]. Ahora en una frase: [[Is this your phone?]] Significa: ¿Este es tu teléfono? Tip para recordar: si no ves tu lengua en el espejo, no estás diciendo [[this]], estás diciendo 'dis'. Practícalo hoy señalando cinco cosas que tengas cerca. ¿Lo lograste? Escríbelo en los comentarios.",
+  "translation": "esto / este / esta",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#PronunciacionIngles",
+    "#InglesParaHispanohablantes",
+    "#SonidoTH",
+    "#This"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr012",
+    "video_type": "pronunciation",
+    "generated_at": "2026-11-02T11:09:47.968275",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

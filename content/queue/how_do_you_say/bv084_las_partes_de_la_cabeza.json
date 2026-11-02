@@ -1,0 +1,97 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las partes de la CABEZA en inglés? 🧠",
+  "video_description": "👀 Ojos, nariz, boca… ¿cuántas partes de la cabeza sabes decir en inglés? Responde antes que yo y cuéntame tu puntaje 👇",
+  "title": "¿Cómo se dice…?",
+  "theme": "las partes de la cabeza",
+  "level": "A1",
+  "intro": "[cheerful] ¿Puedes nombrar las partes de tu cabeza en inglés? Son 9 palabras. ¡Dilas antes que yo!",
+  "items": [
+    {
+      "emoji": "👀",
+      "spanish": "Ojos",
+      "english": "eyes"
+    },
+    {
+      "emoji": "👃",
+      "spanish": "Nariz",
+      "english": "nose"
+    },
+    {
+      "emoji": "👄",
+      "spanish": "Boca",
+      "english": "mouth"
+    },
+    {
+      "emoji": "👂",
+      "spanish": "Oreja",
+      "english": "ear"
+    },
+    {
+      "emoji": "🦷",
+      "spanish": "Diente",
+      "english": "tooth"
+    },
+    {
+      "emoji": "👅",
+      "spanish": "Lengua",
+      "english": "tongue"
+    },
+    {
+      "emoji": "🙂",
+      "spanish": "Cara",
+      "english": "face"
+    },
+    {
+      "emoji": "🧔",
+      "spanish": "Barba",
+      "english": "beard"
+    },
+    {
+      "emoji": "🧠",
+      "spanish": "Cerebro",
+      "english": "brain"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: eyes, nose, mouth, ear, tooth, tongue, face, beard, brain.",
+  "outro": "[excited] ¿Cuántas sabías de las 9? Escribe tu número en los comentarios.",
+  "full_script": "[cheerful] ¿Puedes nombrar las partes de tu cabeza en inglés? Son 9 palabras. ¡Dilas antes que yo! Ojos... eyes. eyes. Nariz... nose. nose. Boca... mouth. mouth. Oreja... ear. ear. Diente... tooth. tooth. Lengua... tongue. tongue. Cara... face. face. Barba... beard. beard. Cerebro... brain. brain. Ahora todas en inglés, conmigo: eyes, nose, mouth, ear, tooth, tongue, face, beard, brain. [excited] ¿Cuántas sabías de las 9? Escribe tu número en los comentarios.",
+  "translations": {
+    "eyes": "Ojos",
+    "nose": "Nariz",
+    "mouth": "Boca",
+    "ear": "Oreja",
+    "tooth": "Diente",
+    "tongue": "Lengua",
+    "face": "Cara",
+    "beard": "Barba",
+    "brain": "Cerebro"
+  },
+  "english_phrases": [
+    "eyes",
+    "nose",
+    "mouth",
+    "ear",
+    "tooth",
+    "tongue",
+    "face",
+    "beard",
+    "brain"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv084",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:50:59.479168",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

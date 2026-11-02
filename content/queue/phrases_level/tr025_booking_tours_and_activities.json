@@ -1,0 +1,69 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «¿QUEDAN LUGARES?» en inglés? 🚌",
+  "video_description": "Frases en inglés para reservar tours y excursiones en tu próximo viaje. ¿Cuántas sabías? 🌎",
+  "title": "¿Cómo se dice?",
+  "theme": "Reservar tours y actividades",
+  "intro": "[curious] ¿Vas de viaje y quieres reservar un tour? ¿Sabrías pedirlo en inglés?",
+  "items": [
+    {
+      "spanish": "¿Quedan lugares para el tour?",
+      "english": "Are there any spots left on the tour?"
+    },
+    {
+      "spanish": "Quiero reservar para dos personas.",
+      "english": "I'd like to book for two people."
+    },
+    {
+      "spanish": "¿A qué hora sale el tour?",
+      "english": "What time does the tour leave?"
+    },
+    {
+      "spanish": "¿Dónde es el punto de encuentro?",
+      "english": "Where's the meeting point?"
+    },
+    {
+      "spanish": "¿Cuánto dura la excursión?",
+      "english": "How long does it last?"
+    },
+    {
+      "spanish": "¿Incluye la entrada?",
+      "english": "Is the entrance fee included?"
+    },
+    {
+      "spanish": "¿Pasan a recogernos al hotel?",
+      "english": "Do you offer hotel pickup?"
+    },
+    {
+      "spanish": "¿Hay guía en español?",
+      "english": "Is there a Spanish-speaking guide?"
+    },
+    {
+      "spanish": "¿Hay descuento para niños?",
+      "english": "Do kids get a discount?"
+    },
+    {
+      "spanish": "¿Puedo cancelar sin costo?",
+      "english": "Can I cancel for free?"
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Cuéntame en los comentarios y guarda el video para tu viaje.",
+  "full_script": "[curious] ¿Vas de viaje y quieres reservar un tour? ¿Sabrías pedirlo en inglés? ¿Are there any spots left on the tour? I'd like to book for two people. ¿What time does the tour leave? ¿Where's the meeting point? ¿How long does it last? ¿Is the entrance fee included? ¿Do you offer hotel pickup? ¿Is there a Spanish-speaking guide? ¿Do kids get a discount? ¿Can I cancel for free? [excited] ¿Cuántas sabías? Cuéntame en los comentarios y guarda el video para tu viaje.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaViajar",
+    "#AprendeInglés",
+    "#FrasesEnInglés",
+    "#InglésBásico"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr025",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:55:41.442421",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 9 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

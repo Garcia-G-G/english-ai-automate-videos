@@ -1,0 +1,26 @@
+{
+  "type": "pronunciation",
+  "video_title": "PRIVACY: ¿PRAI o PRI? 🇺🇸 vs 🇬🇧 Casi todos la dicen MAL 😬",
+  "video_description": "🇺🇸 PRAI-va-si o 🇬🇧 PRI-va-si: ¿cuál es la correcta para decir PRIVACY? 🤔\nAprende el error que cometen casi todos los hispanohablantes y repite conmigo 🗣️\n👉 Comenta cuál usas tú y sígueme para more English tips cada día ✨",
+  "word": "privacy (British vs American)",
+  "phonetic": "US: PRAI-va-si · UK: PRI-va-si",
+  "common_mistake": "Decir pri-VA-ci como en español, con la fuerza en la segunda sílaba y una C fuerte.",
+  "tip": "EE.UU. dice PRAI como 'private'; Reino Unido dice PRI como 'privilege'. ¡Ambas son correctas!",
+  "full_script": "¿Tú dices privacidad en inglés como PRAI o como PRI? Esta palabra divide al mundo: [[privacy]]. El error típico es leerla como en español, pri-VA-ci, con la fuerza en la segunda sílaba. En inglés la fuerza va al inicio. En Estados Unidos se dice PRAI-va-si, con PRAI como en [[private]]. En Reino Unido se dice PRI-va-si, con una i corta y rápida. Las dos son correctas, así que elige una y úsala siempre. Escucha y repite. [[privacy]]. Otra vez. [[privacy]]. Una vez más. [[privacy]]. Ahora en una frase: [[I need some privacy, please]]. Necesito un poco de privacidad, por favor. Tip para recordar: si piensas en [[private]], di PRAI como en Estados Unidos; si piensas en [[privilege]], di PRI como en Londres. ¿Tú cuál usas? Escríbelo en los comentarios.",
+  "translation": "privacidad",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#PronunciacionIngles",
+    "#InglesParaHispanohablantes",
+    "#Privacy",
+    "#BritishVsAmerican"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr034",
+    "video_type": "pronunciation",
+    "generated_at": "2026-11-02T11:10:49.128434",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

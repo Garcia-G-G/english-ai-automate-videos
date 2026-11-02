@@ -1,0 +1,97 @@
+{
+  "type": "vocabulary",
+  "video_title": "¿Tienes FOMO? Palabras de REDES SOCIALES en inglés 📱",
+  "video_description": "📱 ¿Te da FOMO ver las historias de todos? Aprende cómo se dice en inglés todo lo que haces en redes 🔥\nFrom 'to post' to 'leave on read', habla como nativo online 💬\n👉 Comenta la palabra que más usas y sígueme para más English diario 🚀",
+  "title": "Vocabulario: redes sociales y FOMO",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "miedo a perderse algo",
+      "english": "FOMO"
+    },
+    {
+      "spanish": "estar conectado",
+      "english": "to be online"
+    },
+    {
+      "spanish": "publicar",
+      "english": "to post"
+    },
+    {
+      "spanish": "seguidores",
+      "english": "followers"
+    },
+    {
+      "spanish": "una historia",
+      "english": "a story"
+    },
+    {
+      "spanish": "compartir",
+      "english": "to share"
+    },
+    {
+      "spanish": "un me gusta",
+      "english": "a like"
+    },
+    {
+      "spanish": "dejar en visto",
+      "english": "to leave on read"
+    },
+    {
+      "spanish": "ver malas noticias sin parar",
+      "english": "doomscrolling"
+    },
+    {
+      "spanish": "tendencia",
+      "english": "trending"
+    },
+    {
+      "spanish": "desconectarse",
+      "english": "to log off"
+    }
+  ],
+  "full_script": "¿Te da FOMO ver las historias de todos? Vocabulario de redes sociales. Miedo a perderse algo, FOMO. Estar conectado, to be online. Publicar, to post. Seguidores, followers. Una historia, a story. Compartir, to share. Un me gusta, a like. Dejar en visto, to leave on read. Ver sin parar, doomscrolling. Tendencia, trending. Desconectarse, to log off. Y recuerda: I have serious FOMO seeing everyone at the concert.",
+  "translations": {
+    "FOMO": "miedo a perderse algo",
+    "to be online": "estar conectado",
+    "to post": "publicar",
+    "followers": "seguidores",
+    "a story": "una historia",
+    "to share": "compartir",
+    "a like": "un me gusta",
+    "to leave on read": "dejar en visto",
+    "doomscrolling": "ver malas noticias sin parar",
+    "trending": "tendencia",
+    "to log off": "desconectarse",
+    "I have serious FOMO seeing everyone at the concert": "Me da mucho FOMO ver a todos en el concierto"
+  },
+  "english_phrases": [
+    "FOMO",
+    "to be online",
+    "to post",
+    "followers",
+    "a story",
+    "to share",
+    "a like",
+    "to leave on read",
+    "doomscrolling",
+    "trending",
+    "to log off",
+    "I have serious FOMO seeing everyone at the concert"
+  ],
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#VocabularioEnIngles",
+    "#InglesFacil",
+    "#FOMO",
+    "#RedesSociales"
+  ],
+  "_meta": {
+    "category": "technology",
+    "topic_id": "tech017",
+    "video_type": "vocabulary",
+    "generated_at": "2026-11-02T11:11:37.078406",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

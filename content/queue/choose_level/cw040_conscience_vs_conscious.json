@@ -1,0 +1,117 @@
+{
+  "type": "choose_level",
+  "video_title": "¿CONSCIENCE o CONSCIOUS? Elige la correcta en 10 frases 🧠",
+  "video_description": "Conciencia moral o estar consciente: dos palabras que confunden a casi todos. ¿Hasta qué número llegas? 🧠",
+  "title": "Elige la correcta",
+  "theme": "conscience vs conscious",
+  "intro": "[curious] ¿Sabes cuándo se dice conscience y cuándo conscious? Una es la voz moral, la otra es estar despierto. ¿Hasta qué número llegas?",
+  "items": [
+    {
+      "sentence": "The patient is ____ now.",
+      "options": [
+        "conscious",
+        "conscience"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "My ____ says no.",
+      "options": [
+        "conscious",
+        "conscience"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I have a clear ____.",
+      "options": [
+        "conscience",
+        "conscious"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Be ____ of the time.",
+      "options": [
+        "conscious",
+        "conscience"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He has a guilty ____.",
+      "options": [
+        "conscious",
+        "conscience"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She felt self-____ on stage.",
+      "options": [
+        "conscience",
+        "conscious"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It was a ____ decision.",
+      "options": [
+        "conscience",
+        "conscious"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He lost ____ after the fall.",
+      "options": [
+        "consciousness",
+        "conscience"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "A ____ worker checks everything.",
+      "options": [
+        "conscientious",
+        "conscious"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "He's a prisoner of ____.",
+      "options": [
+        "conscience",
+        "consciousness"
+      ],
+      "answer": 0,
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Sabes cuándo se dice conscience y cuándo conscious? Una es la voz moral, la otra es estar despierto. ¿Hasta qué número llegas? The patient is conscious now. My conscience says no. I have a clear conscience. Be conscious of the time. He has a guilty conscience. She felt self-conscious on stage. It was a conscious decision. He lost consciousness after the fall. A conscientious worker checks everything. He's a prisoner of conscience. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AprenderIngles",
+    "#InglesFacil",
+    "#EnglishQuiz",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw040",
+    "video_type": "choose_level",
+    "generated_at": "2026-11-02T11:08:08.998599",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice MÁS COMIDA en inglés? 🧀",
+  "video_description": "🍞🧀 10 comidas de todos los días en inglés. ¿Las dices antes que yo? Cuéntame tu puntaje 👇",
+  "title": "¿Cómo se dice…?",
+  "theme": "más comida",
+  "level": "A1",
+  "intro": "[cheerful] ¿Comes esto todos los días? A ver si lo dices en inglés antes que yo.",
+  "items": [
+    {
+      "emoji": "🍞",
+      "spanish": "Pan",
+      "english": "bread"
+    },
+    {
+      "emoji": "🧀",
+      "spanish": "Queso",
+      "english": "cheese"
+    },
+    {
+      "emoji": "🥚",
+      "spanish": "Huevo",
+      "english": "egg"
+    },
+    {
+      "emoji": "🥛",
+      "spanish": "Leche",
+      "english": "milk"
+    },
+    {
+      "emoji": "🍚",
+      "spanish": "Arroz",
+      "english": "rice"
+    },
+    {
+      "emoji": "🍗",
+      "spanish": "Pollo",
+      "english": "chicken"
+    },
+    {
+      "emoji": "🧈",
+      "spanish": "Mantequilla",
+      "english": "butter"
+    },
+    {
+      "emoji": "🥕",
+      "spanish": "Zanahoria",
+      "english": "carrot"
+    },
+    {
+      "emoji": "🍪",
+      "spanish": "Galleta",
+      "english": "cookie"
+    },
+    {
+      "emoji": "🍦",
+      "spanish": "Helado",
+      "english": "ice cream"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: bread, cheese, egg, milk, rice, chicken, butter, carrot, cookie, ice cream",
+  "outro": "[excited] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[cheerful] ¿Comes esto todos los días? A ver si lo dices en inglés antes que yo. Pan... bread. bread. Queso... cheese. cheese. Huevo... egg. egg. Leche... milk. milk. Arroz... rice. rice. Pollo... chicken. chicken. Mantequilla... butter. butter. Zanahoria... carrot. carrot. Galleta... cookie. cookie. Helado... ice cream. ice cream. Ahora todas en inglés, conmigo: bread, cheese, egg, milk, rice, chicken, butter, carrot, cookie, ice cream. [excited] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "bread": "Pan",
+    "cheese": "Queso",
+    "egg": "Huevo",
+    "milk": "Leche",
+    "rice": "Arroz",
+    "chicken": "Pollo",
+    "butter": "Mantequilla",
+    "carrot": "Zanahoria",
+    "cookie": "Galleta",
+    "ice cream": "Helado"
+  },
+  "english_phrases": [
+    "bread",
+    "cheese",
+    "egg",
+    "milk",
+    "rice",
+    "chicken",
+    "butter",
+    "carrot",
+    "cookie",
+    "ice cream"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#ComidaEnInglés",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv090",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:52:50.522366",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

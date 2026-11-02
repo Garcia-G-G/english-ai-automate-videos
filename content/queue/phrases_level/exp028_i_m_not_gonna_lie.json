@@ -1,0 +1,66 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «NO VOY A MENTIR» en inglés? 😅",
+  "video_description": "10 frases para hablar con honestidad en inglés, como lo dicen los nativos de verdad. ¿Cuántas sabías? 🙌",
+  "title": "¿Cómo se dice?",
+  "theme": "no voy a mentir, siendo honesto",
+  "intro": "[curious] ¿Cómo dirías «no voy a mentir» en inglés? Piénsalo antes de que aparezca.",
+  "items": [
+    {
+      "spanish": "No voy a mentir.",
+      "english": "I'm not gonna lie."
+    },
+    {
+      "spanish": "Siendo honesto, no me gustó.",
+      "english": "To be honest, I didn't like it."
+    },
+    {
+      "spanish": "Te estoy diciendo la verdad.",
+      "english": "I'm telling you the truth."
+    },
+    {
+      "spanish": "Sé sincero conmigo.",
+      "english": "Be honest with me."
+    },
+    {
+      "spanish": "En serio, no fui yo.",
+      "english": "Seriously, it wasn't me."
+    },
+    {
+      "spanish": "Si te soy sincero, me da igual.",
+      "english": "Honestly, I don't really care."
+    },
+    {
+      "spanish": "Te lo juro.",
+      "english": "I swear."
+    },
+    {
+      "spanish": "No te miento, fue increíble.",
+      "english": "No lie, it was amazing."
+    },
+    {
+      "spanish": "La verdad es que se me olvidó.",
+      "english": "The truth is, I forgot."
+    },
+    {
+      "spanish": "Dime la verdad.",
+      "english": "Tell me the truth."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Sé honesto y dímelo en los comentarios.",
+  "full_script": "[curious] ¿Cómo dirías «no voy a mentir» en inglés? Piénsalo antes de que aparezca. I'm not gonna lie. To be honest, I didn't like it. I'm telling you the truth. Be honest with me. Seriously, it wasn't me. Honestly, I don't really care. I swear. No lie, it was amazing. The truth is, I forgot. Tell me the truth. [excited] ¿Cuántas sabías? Sé honesto y dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#AprendeInglés",
+    "#FrasesEnInglés",
+    "#InglésFácil",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp028",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:57:32.423066",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

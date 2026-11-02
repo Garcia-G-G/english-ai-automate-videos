@@ -1,0 +1,82 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Caes en estos FALSOS AMIGOS del inglés? 🤔",
+  "video_description": "10 palabras en inglés que engañan a todo hispanohablante. ¿Hasta qué número llegas sin fallar? 🎯",
+  "title": "¿Verdadero o falso?",
+  "theme": "Falsos amigos",
+  "intro": "[curious] ¿Tú también crees que «embarrassed» es embarazada? Lee las diez y responde antes que yo.",
+  "items": [
+    {
+      "statement": "«Library» significa librería.",
+      "truth": false,
+      "correction": "es biblioteca",
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Shoes» significa zapatos.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Embarrassed» significa embarazada.",
+      "truth": false,
+      "correction": "es avergonzado",
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Actually» significa actualmente.",
+      "truth": false,
+      "correction": "es en realidad",
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Fabric» significa tela.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Success» significa éxito.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Constipated» significa resfriado.",
+      "truth": false,
+      "correction": "es estreñido",
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Sensible» significa sensato.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Eventually» significa eventualmente.",
+      "truth": false,
+      "correction": "es al final",
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Lecture» significa conferencia.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Tú también crees que «embarrassed» es embarazada? Lee las diez y responde antes que yo. Falso: es biblioteca. Verdadero. Falso: es avergonzado. Falso: es en realidad. Verdadero. Verdadero. Falso: es estreñido. Verdadero. Falso: es al final. Verdadero. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#FalsosAmigos",
+    "#InglesFacil",
+    "#AprenderIngles",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff064",
+    "video_type": "true_false_level",
+    "generated_at": "2026-11-02T10:59:06.411133",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

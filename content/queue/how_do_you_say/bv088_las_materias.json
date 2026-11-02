@@ -1,0 +1,104 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las MATERIAS en inglés? 📚",
+  "video_description": "🎒 ¿Sabes decir tus materias del cole en inglés? Responde antes que yo y cuenta tus aciertos ✏️",
+  "title": "¿Cómo se dice…?",
+  "theme": "las materias",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes decir tus materias del cole en inglés? Responde antes que yo.",
+  "items": [
+    {
+      "emoji": "➗",
+      "spanish": "Matemáticas",
+      "english": "math"
+    },
+    {
+      "emoji": "🔬",
+      "spanish": "Ciencias",
+      "english": "science"
+    },
+    {
+      "emoji": "📜",
+      "spanish": "Historia",
+      "english": "history"
+    },
+    {
+      "emoji": "🌍",
+      "spanish": "Geografía",
+      "english": "geography"
+    },
+    {
+      "emoji": "🎨",
+      "spanish": "Arte",
+      "english": "art"
+    },
+    {
+      "emoji": "🎵",
+      "spanish": "Música",
+      "english": "music"
+    },
+    {
+      "emoji": "🧪",
+      "spanish": "Química",
+      "english": "chemistry"
+    },
+    {
+      "emoji": "🧬",
+      "spanish": "Biología",
+      "english": "biology"
+    },
+    {
+      "emoji": "💻",
+      "spanish": "Informática",
+      "english": "computing"
+    },
+    {
+      "emoji": "📚",
+      "spanish": "Literatura",
+      "english": "literature"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: math, science, history, geography, art, music, chemistry, biology, computing, literature",
+  "outro": "[excited] ¿Cuántas sabías? ¿Y cuál es tu materia favorita? Dímelo en los comentarios.",
+  "full_script": "[cheerful] ¿Sabes decir tus materias del cole en inglés? Responde antes que yo. Matemáticas... math. math. Ciencias... science. science. Historia... history. history. Geografía... geography. geography. Arte... art. art. Música... music. music. Química... chemistry. chemistry. Biología... biology. biology. Informática... computing. computing. Literatura... literature. literature. Ahora todas en inglés, conmigo: math, science, history, geography, art, music, chemistry, biology, computing, literature. [excited] ¿Cuántas sabías? ¿Y cuál es tu materia favorita? Dímelo en los comentarios.",
+  "translations": {
+    "math": "Matemáticas",
+    "science": "Ciencias",
+    "history": "Historia",
+    "geography": "Geografía",
+    "art": "Arte",
+    "music": "Música",
+    "chemistry": "Química",
+    "biology": "Biología",
+    "computing": "Informática",
+    "literature": "Literatura"
+  },
+  "english_phrases": [
+    "math",
+    "science",
+    "history",
+    "geography",
+    "art",
+    "music",
+    "chemistry",
+    "biology",
+    "computing",
+    "literature"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv088",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:52:16.116026",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «NO, GRACIAS, ESTOY BIEN» en inglés? 👍",
+  "video_description": "Frases reales para decir que estás bien o rechazar algo con amabilidad en inglés. ¿Cuántas sabías? 👍",
+  "title": "¿Cómo se dice?",
+  "theme": "estoy bien / no gracias",
+  "intro": "[curious] ¿Sabes decir «no, gracias» sin sonar como robot? Escucha cómo lo dicen de verdad.",
+  "items": [
+    {
+      "spanish": "Estoy bien, gracias.",
+      "english": "I'm good, thanks."
+    },
+    {
+      "spanish": "No, gracias, estoy lleno.",
+      "english": "No thanks, I'm full."
+    },
+    {
+      "spanish": "Así estoy bien, gracias.",
+      "english": "I'm all set, thanks."
+    },
+    {
+      "spanish": "No te preocupes, estoy bien.",
+      "english": "Don't worry, I'm okay."
+    },
+    {
+      "spanish": "No hace falta, gracias.",
+      "english": "No need, thanks."
+    },
+    {
+      "spanish": "Ya comí, gracias.",
+      "english": "I already ate, thanks."
+    },
+    {
+      "spanish": "Tal vez otro día.",
+      "english": "Maybe some other time."
+    },
+    {
+      "spanish": "Estoy bien por ahora.",
+      "english": "I'm good for now."
+    },
+    {
+      "spanish": "Gracias, pero paso.",
+      "english": "Thanks, but I'll pass."
+    },
+    {
+      "spanish": "Todo bien, no pasa nada.",
+      "english": "It's all good, no worries."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Cuéntame en los comentarios.",
+  "full_script": "[curious] ¿Sabes decir «no, gracias» sin sonar como robot? Escucha cómo lo dicen de verdad. I'm good, thanks. No thanks, I'm full. I'm all set, thanks. Don't worry, I'm okay. No need, thanks. I already ate, thanks. Maybe some other time. I'm good for now. Thanks, but I'll pass. It's all good, no worries. [excited] ¿Cuántas sabías? Cuéntame en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#InglésBásico",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp016",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:58:03.774500",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

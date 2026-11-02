@@ -1,0 +1,120 @@
+{
+  "type": "choose_level",
+  "video_title": "¿TOO o ENOUGH? Elige la correcta en 10 frases ✅",
+  "video_description": "TOO o ENOUGH: el error que casi todos cometemos. Diez frases de fácil a experto. ¿Hasta cuál llegas? 🔥",
+  "title": "Elige la correcta",
+  "theme": "Too vs Enough",
+  "intro": "[curious] ¿Dices TOO o ENOUGH sin dudar? Mira las diez frases y dime hasta cuál llegas.",
+  "items": [
+    {
+      "sentence": "This tea is ____ hot.",
+      "options": [
+        "too",
+        "enough"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'm not old ____ to drive.",
+      "options": [
+        "too",
+        "enough"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "These shoes are ____ small.",
+      "options": [
+        "enough",
+        "too"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Is the room warm ____?",
+      "options": [
+        "enough",
+        "too"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She has ____ money for a car.",
+      "options": [
+        "enough",
+        "too"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "There are ____ people here.",
+      "options": [
+        "too much",
+        "too many"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He drank ____ coffee today.",
+      "options": [
+        "too much",
+        "too many"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Are you ____ to go out?",
+      "options": [
+        "well enough",
+        "enough well"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The soup is too hot ____.",
+      "options": [
+        "to eat it",
+        "to eat"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "It's too ____ problem to ignore.",
+      "options": [
+        "big a",
+        "a big"
+      ],
+      "answer": 0,
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Dices TOO o ENOUGH sin dudar? Mira las diez frases y dime hasta cuál llegas. This tea is too hot. I'm not old enough to drive. These shoes are too small. ¿Is the room warm enough? She has enough money for a car. There are too many people here. He drank too much coffee today. ¿Are you well enough to go out? The soup is too hot to eat. It's too big a problem to ignore. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AprenderIngles",
+    "#TooVsEnough",
+    "#GramaticaInglesa",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr017",
+    "video_type": "choose_level",
+    "generated_at": "2026-11-02T11:09:09.917275",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 2 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

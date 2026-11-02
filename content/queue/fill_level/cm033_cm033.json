@@ -1,0 +1,87 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: 10 PREPOSICIONES en inglés 📚",
+  "video_description": "¿IN, ON o AT? Completa 10 frases con preposiciones, de fácil a experto, y descubre tu nivel 🎯",
+  "title": "Completa la frase",
+  "theme": "Preposiciones",
+  "intro": "[curious] ¿Dices 'in', 'on' o 'at'? Completa estas 10 frases con la PREPOSICIÓN correcta y descubre tu nivel.",
+  "items": [
+    {
+      "sentence": "I live ____ Mexico.",
+      "answer": "in",
+      "translation": "Vivo en México.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The keys are ____ the table.",
+      "answer": "on",
+      "translation": "Las llaves están en la mesa.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "See you ____ 8 o'clock.",
+      "answer": "at",
+      "translation": "Nos vemos a las 8.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I go ____ the gym every day.",
+      "answer": "to",
+      "translation": "Voy al gimnasio todos los días.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I've lived here ____ two years.",
+      "answer": "for",
+      "translation": "Vivo aquí desde hace dos años.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She's worked here ____ 2019.",
+      "answer": "since",
+      "translation": "Trabaja aquí desde 2019.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Don't worry ____ it.",
+      "answer": "about",
+      "translation": "No te preocupes por eso.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "We ran out ____ milk.",
+      "answer": "of",
+      "translation": "Se nos acabó la leche.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It happened ____ the war.",
+      "answer": "during",
+      "translation": "Pasó durante la guerra.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "He's ____ the weather.",
+      "answer": "under",
+      "translation": "Está algo indispuesto.",
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Dices 'in', 'on' o 'at'? Completa estas 10 frases con la PREPOSICIÓN correcta y descubre tu nivel. I live in Mexico. The keys are on the table. See you at 8 o'clock. I go to the gym every day. I've lived here for two years. She's worked here since 2019. Don't worry about it. We ran out of milk. It happened during the war. He's under the weather. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#PreposicionesEnIngles",
+    "#InglesParaLatinos",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm033",
+    "video_type": "fill_level",
+    "generated_at": "2026-11-02T11:04:07.208431",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

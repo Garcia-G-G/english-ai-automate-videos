@@ -1,0 +1,48 @@
+{
+  "type": "educational",
+  "video_title": "¿Qué significa 'TOUCH BASE' en inglés? 😱 ¡No es béisbol!",
+  "video_description": "⚾ ¿Tu jefe te dijo 'touch base' y no entendiste nada? ¡Aprende qué significa y úsalo como nativo! 💼\n🗣️ Repite las frases y escribe tu propio ejemplo en los comentarios 👇 Let's touch base! #LearnEnglish",
+  "hook": "¿Tu jefe te dijo 'touch base' y pensaste que tenías que tocar una base?",
+  "full_script": "¿Tu jefe te dijo [[touch base]] y pensaste que tenías que tocar una base? ¡Tranquilo, no es béisbol! [[Touch base]] significa ponerse en contacto o comunicarse brevemente con alguien. Es súper común en el trabajo y entre amigos. Ejemplo uno, en la oficina: [[Let me touch base with you tomorrow]]. O sea, mañana te escribo o te llamo. Ejemplo dos, con un cliente: [[I just wanted to touch base about the project]]. Solo quería saber cómo va el proyecto. Ejemplo tres, con un amigo: [[Let's touch base next week]]. Hablamos la próxima semana. Ojo: no digas [[touch the base]], va sin [[the]]. Tip para recordar: imagina un jugador de béisbol que toca la base un segundo y sigue corriendo. Un contacto rápido, nada más. Ahora repite conmigo: [[Let me touch base with you tomorrow]]. Otra vez: [[Let's touch base next week]]. ¿Con quién tienes que [[touch base]] esta semana? ¡Escríbelo en los comentarios en inglés!",
+  "english_phrases": [
+    "touch base",
+    "Let me touch base with you tomorrow",
+    "I just wanted to touch base about the project",
+    "Let's touch base next week",
+    "touch the base",
+    "the"
+  ],
+  "translations": {
+    "touch base": "ponerse en contacto, comunicarse brevemente",
+    "Let me touch base with you tomorrow": "Déjame contactarte mañana",
+    "I just wanted to touch base about the project": "Solo quería ponerme en contacto sobre el proyecto",
+    "Let's touch base next week": "Hablamos la próxima semana",
+    "touch the base": "tocar la base (forma incorrecta para esta expresión)",
+    "the": "el, la"
+  },
+  "tip": "Imagina a un jugador de béisbol que toca la base un segundo y sigue corriendo: un contacto rápido, nada más. ¡Y siempre sin 'the'!",
+  "cta": "¿Con quién tienes que 'touch base' esta semana? ¡Escríbelo en los comentarios en inglés!",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#EnglishTips",
+    "#Shorts",
+    "#FrasesEnIngles",
+    "#InglesRapido",
+    "#InglesParaHispanohablantes",
+    "#EstudiaIngles",
+    "#InglesDeNegocios",
+    "#BusinessEnglish",
+    "#SlangEnIngles",
+    "#InglesInformal",
+    "#TouchBase",
+    "#InglesFacil"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl050",
+    "video_type": "educational",
+    "generated_at": "2026-11-02T11:14:58.656484",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

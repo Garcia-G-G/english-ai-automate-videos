@@ -1,0 +1,69 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes pedir PERDÓN en inglés? Formal vs informal 🙏",
+  "video_description": "Pide perdón en inglés como nativo: frases formales para el trabajo e informales para tus amigos. 🙏",
+  "title": "¿Cómo se dice?",
+  "theme": "Disculparse: formal vs informal",
+  "intro": "[curious] ¿Solo sabes decir sorry? Hoy pides perdón en inglés con tu jefe y con tus amigos.",
+  "items": [
+    {
+      "spanish": "¡Uy, perdón!",
+      "english": "Oops, my bad!"
+    },
+    {
+      "spanish": "Perdón, fue sin querer.",
+      "english": "Sorry, I didn't mean to."
+    },
+    {
+      "spanish": "Perdón por llegar tarde.",
+      "english": "Sorry I'm late."
+    },
+    {
+      "spanish": "Disculpa la molestia.",
+      "english": "Sorry to bother you."
+    },
+    {
+      "spanish": "Perdóname, me equivoqué.",
+      "english": "I'm sorry, I messed up."
+    },
+    {
+      "spanish": "Disculpe, ¿me deja pasar?",
+      "english": "Excuse me, can I get by?"
+    },
+    {
+      "spanish": "Una disculpa por la demora.",
+      "english": "I apologize for the delay."
+    },
+    {
+      "spanish": "Le pido disculpas por el error.",
+      "english": "My apologies for the mistake."
+    },
+    {
+      "spanish": "Lamento mucho lo ocurrido.",
+      "english": "I'm so sorry about what happened."
+    },
+    {
+      "spanish": "No volverá a pasar.",
+      "english": "It won't happen again."
+    }
+  ],
+  "outro": "[warm] ¿Cuál usarías con tu jefe? Dímelo en los comentarios.",
+  "full_script": "[curious] ¿Solo sabes decir sorry? Hoy pides perdón en inglés con tu jefe y con tus amigos. ¡Oops, my bad! Sorry, I didn't mean to. Sorry I'm late. Sorry to bother you. I'm sorry, I messed up. ¿Excuse me, can I get by? I apologize for the delay. My apologies for the mistake. I'm so sorry about what happened. It won't happen again. [warm] ¿Cuál usarías con tu jefe? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#AprendeInglés",
+    "#FrasesEnInglés",
+    "#InglésFácil",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "social",
+    "topic_id": "so010",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:56:46.636504",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 2 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

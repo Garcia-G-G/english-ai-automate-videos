@@ -1,0 +1,66 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «ABIERTO LAS 24 HORAS» en inglés? 🕒",
+  "video_description": "Frases en inglés para hablar de todo el día, toda la noche y todo el tiempo. ¿Cuántas sabías? ⏰",
+  "title": "¿Cómo se dice?",
+  "theme": "las 24 horas, todo el tiempo",
+  "intro": "[curious] ¿Tú dirías «open 24 hours» o algo más corto? Mira estas frases y dilas antes que yo.",
+  "items": [
+    {
+      "spanish": "Abierto las 24 horas.",
+      "english": "Open 24/7."
+    },
+    {
+      "spanish": "Trabajo todo el día.",
+      "english": "I work all day long."
+    },
+    {
+      "spanish": "Pienso en ti todo el tiempo.",
+      "english": "I think about you all the time."
+    },
+    {
+      "spanish": "Me la paso en el celular.",
+      "english": "I'm always on my phone."
+    },
+    {
+      "spanish": "No pegué el ojo en toda la noche.",
+      "english": "I didn't sleep a wink."
+    },
+    {
+      "spanish": "Estoy despierto desde el amanecer.",
+      "english": "I've been up since dawn."
+    },
+    {
+      "spanish": "Siempre llega tarde.",
+      "english": "He's always late."
+    },
+    {
+      "spanish": "Pasé todo el fin de semana en casa.",
+      "english": "I spent the whole weekend at home."
+    },
+    {
+      "spanish": "Estoy disponible a toda hora.",
+      "english": "I'm available around the clock."
+    },
+    {
+      "spanish": "Hablamos día y noche.",
+      "english": "We talk day and night."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "[curious] ¿Tú dirías «open 24 hours» o algo más corto? Mira estas frases y dilas antes que yo. Open 24/7. I work all day long. I think about you all the time. I'm always on my phone. I didn't sleep a wink. I've been up since dawn. He's always late. I spent the whole weekend at home. I'm available around the clock. We talk day and night. [excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp009",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:55:11.223614",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

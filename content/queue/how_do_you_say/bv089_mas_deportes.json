@@ -1,0 +1,106 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen MÁS DEPORTES en inglés? 🎾",
+  "video_description": "🏐 ¿Tenis, natación, bolos…? Aprende 10 deportes en inglés y di cada uno antes que yo. ¿Cuántos sabes? 🏆",
+  "title": "¿Cómo se dice…?",
+  "theme": "más deportes",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes decir estos 10 deportes en inglés? Dilo tú primero, antes que yo.",
+  "items": [
+    {
+      "emoji": "🎾",
+      "spanish": "Tenis",
+      "english": "tennis"
+    },
+    {
+      "emoji": "⚾",
+      "spanish": "Béisbol",
+      "english": "baseball"
+    },
+    {
+      "emoji": "🏐",
+      "spanish": "Voleibol",
+      "english": "volleyball"
+    },
+    {
+      "emoji": "⛳",
+      "spanish": "Golf",
+      "english": "golf"
+    },
+    {
+      "emoji": "🥊",
+      "spanish": "Boxeo",
+      "english": "boxing"
+    },
+    {
+      "emoji": "🏊",
+      "spanish": "Natación",
+      "english": "swimming"
+    },
+    {
+      "emoji": "🎿",
+      "spanish": "Esquí",
+      "english": "skiing"
+    },
+    {
+      "emoji": "🎳",
+      "spanish": "Bolos",
+      "english": "bowling"
+    },
+    {
+      "emoji": "🚴",
+      "spanish": "Ciclismo",
+      "english": "cycling"
+    },
+    {
+      "emoji": "🏄",
+      "spanish": "Surf",
+      "english": "surfing"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: tennis, baseball, volleyball, golf, boxing, swimming, skiing, bowling, cycling, surfing",
+  "outro": "[cheerful] ¿Cuántos sabías? Escribe tu número en los comentarios.",
+  "full_script": "[excited] ¿Sabes decir estos 10 deportes en inglés? Dilo tú primero, antes que yo. Tenis... tennis. tennis. Béisbol... baseball. baseball. Voleibol... volleyball. volleyball. Golf... golf. golf. Boxeo... boxing. boxing. Natación... swimming. swimming. Esquí... skiing. skiing. Bolos... bowling. bowling. Ciclismo... cycling. cycling. Surf... surfing. surfing. Ahora todas en inglés, conmigo: tennis, baseball, volleyball, golf, boxing, swimming, skiing, bowling, cycling, surfing. [cheerful] ¿Cuántos sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "tennis": "Tenis",
+    "baseball": "Béisbol",
+    "volleyball": "Voleibol",
+    "golf": "Golf",
+    "boxing": "Boxeo",
+    "swimming": "Natación",
+    "skiing": "Esquí",
+    "bowling": "Bolos",
+    "cycling": "Ciclismo",
+    "surfing": "Surf"
+  },
+  "english_phrases": [
+    "tennis",
+    "baseball",
+    "volleyball",
+    "golf",
+    "boxing",
+    "swimming",
+    "skiing",
+    "bowling",
+    "cycling",
+    "surfing"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#DeportesEnInglés",
+    "#Shorts",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv089",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:52:32.513089",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «ME DEJO LLEVAR» en inglés? 🌊",
+  "video_description": "Frases del día a día para dejarte llevar y seguir la corriente en inglés. ¿Cuántas sabías? 🌊",
+  "title": "¿Cómo se dice?",
+  "theme": "dejarse llevar, seguir la corriente",
+  "intro": "[curious] ¿Tú lo planeas todo o te dejas llevar? Mira cómo se dice en inglés.",
+  "items": [
+    {
+      "spanish": "Me dejo llevar.",
+      "english": "I just go with the flow."
+    },
+    {
+      "spanish": "Lo que tú quieras.",
+      "english": "Whatever you want."
+    },
+    {
+      "spanish": "Me da igual, tú decide.",
+      "english": "I'm easy, you choose."
+    },
+    {
+      "spanish": "Vamos viendo sobre la marcha.",
+      "english": "Let's play it by ear."
+    },
+    {
+      "spanish": "No hay que planearlo todo.",
+      "english": "We don't have to plan everything."
+    },
+    {
+      "spanish": "Lo que salga, sale.",
+      "english": "Whatever happens, happens."
+    },
+    {
+      "spanish": "Me apunto a lo que sea.",
+      "english": "I'm up for anything."
+    },
+    {
+      "spanish": "Relájate y disfruta.",
+      "english": "Just relax and enjoy it."
+    },
+    {
+      "spanish": "Le seguí la corriente.",
+      "english": "I just went along with it."
+    },
+    {
+      "spanish": "A ver qué pasa.",
+      "english": "Let's see what happens."
+    }
+  ],
+  "outro": "[warm] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "[curious] ¿Tú lo planeas todo o te dejas llevar? Mira cómo se dice en inglés. I just go with the flow. Whatever you want. I'm easy, you choose. Let's play it by ear. We don't have to plan everything. Whatever happens, happens. I'm up for anything. Just relax and enjoy it. I just went along with it. Let's see what happens. [warm] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp022",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:55:24.529046",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

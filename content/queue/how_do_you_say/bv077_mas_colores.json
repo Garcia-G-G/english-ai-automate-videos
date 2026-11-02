@@ -1,0 +1,98 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen MÁS COLORES en inglés? 🩷",
+  "video_description": "¿Rosa, morado, celeste…? 🩷💜🩵 ¡Aprende 9 colores más en inglés en menos de un minuto!",
+  "title": "¿Cómo se dice…?",
+  "theme": "más colores",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes decir \"celeste\" en inglés? Di estos 9 colores antes que yo.",
+  "items": [
+    {
+      "emoji": "🩷",
+      "spanish": "Rosa",
+      "english": "pink"
+    },
+    {
+      "emoji": "💜",
+      "spanish": "Morado",
+      "english": "purple"
+    },
+    {
+      "emoji": "🧡",
+      "spanish": "Naranja",
+      "english": "orange"
+    },
+    {
+      "emoji": "🤎",
+      "spanish": "Marrón",
+      "english": "brown"
+    },
+    {
+      "emoji": "🩶",
+      "spanish": "Gris",
+      "english": "gray"
+    },
+    {
+      "emoji": "🖤",
+      "spanish": "Negro",
+      "english": "black"
+    },
+    {
+      "emoji": "🤍",
+      "spanish": "Blanco",
+      "english": "white"
+    },
+    {
+      "emoji": "🩵",
+      "spanish": "Celeste",
+      "english": "light blue"
+    },
+    {
+      "emoji": "💙",
+      "spanish": "Azul oscuro",
+      "english": "dark blue"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: pink, purple, orange, brown, gray, black, white, light blue, dark blue",
+  "outro": "[warm] ¿Cuántos colores sabías? Escríbelo en los comentarios.",
+  "full_script": "[excited] ¿Sabes decir \"celeste\" en inglés? Di estos 9 colores antes que yo. Rosa... pink. pink. Morado... purple. purple. Naranja... orange. orange. Marrón... brown. brown. Gris... gray. gray. Negro... black. black. Blanco... white. white. Celeste... light blue. light blue. Azul oscuro... dark blue. dark blue. Ahora todas en inglés, conmigo: pink, purple, orange, brown, gray, black, white, light blue, dark blue. [warm] ¿Cuántos colores sabías? Escríbelo en los comentarios.",
+  "translations": {
+    "pink": "Rosa",
+    "purple": "Morado",
+    "orange": "Naranja",
+    "brown": "Marrón",
+    "gray": "Gris",
+    "black": "Negro",
+    "white": "Blanco",
+    "light blue": "Celeste",
+    "dark blue": "Azul oscuro"
+  },
+  "english_phrases": [
+    "pink",
+    "purple",
+    "orange",
+    "brown",
+    "gray",
+    "black",
+    "white",
+    "light blue",
+    "dark blue"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#ColoresEnInglés",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv077",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:48:38.119210",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

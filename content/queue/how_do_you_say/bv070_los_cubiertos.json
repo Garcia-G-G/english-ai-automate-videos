@@ -1,0 +1,104 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las cosas de la MESA en inglés? 🍴",
+  "video_description": "🍴 Tenedor, cuchara, cuchillo… ¿los sabes decir en inglés? ¡Ponte a prueba y aprende 10 palabras de la mesa! 🥄",
+  "title": "¿Cómo se dice…?",
+  "theme": "las cosas de la mesa",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes poner la mesa en inglés? Di cada palabra antes que yo.",
+  "items": [
+    {
+      "emoji": "🍴",
+      "spanish": "Tenedor",
+      "english": "fork"
+    },
+    {
+      "emoji": "🔪",
+      "spanish": "Cuchillo",
+      "english": "knife"
+    },
+    {
+      "emoji": "🥄",
+      "spanish": "Cuchara",
+      "english": "spoon"
+    },
+    {
+      "emoji": "🥢",
+      "spanish": "Palillos",
+      "english": "chopsticks"
+    },
+    {
+      "emoji": "🥣",
+      "spanish": "Tazón",
+      "english": "bowl"
+    },
+    {
+      "emoji": "☕",
+      "spanish": "Taza",
+      "english": "cup"
+    },
+    {
+      "emoji": "🥛",
+      "spanish": "Vaso",
+      "english": "glass"
+    },
+    {
+      "emoji": "🍷",
+      "spanish": "Copa",
+      "english": "wine glass"
+    },
+    {
+      "emoji": "🫖",
+      "spanish": "Tetera",
+      "english": "teapot"
+    },
+    {
+      "emoji": "🧂",
+      "spanish": "Salero",
+      "english": "salt shaker"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: fork, knife, spoon, chopsticks, bowl, cup, glass, wine glass, teapot, salt shaker.",
+  "outro": "[excited] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[cheerful] ¿Sabes poner la mesa en inglés? Di cada palabra antes que yo. Tenedor... fork. fork. Cuchillo... knife. knife. Cuchara... spoon. spoon. Palillos... chopsticks. chopsticks. Tazón... bowl. bowl. Taza... cup. cup. Vaso... glass. glass. Copa... wine glass. wine glass. Tetera... teapot. teapot. Salero... salt shaker. salt shaker. Ahora todas en inglés, conmigo: fork, knife, spoon, chopsticks, bowl, cup, glass, wine glass, teapot, salt shaker. [excited] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "fork": "Tenedor",
+    "knife": "Cuchillo",
+    "spoon": "Cuchara",
+    "chopsticks": "Palillos",
+    "bowl": "Tazón",
+    "cup": "Taza",
+    "glass": "Vaso",
+    "wine glass": "Copa",
+    "teapot": "Tetera",
+    "salt shaker": "Salero"
+  },
+  "english_phrases": [
+    "fork",
+    "knife",
+    "spoon",
+    "chopsticks",
+    "bowl",
+    "cup",
+    "glass",
+    "wine glass",
+    "teapot",
+    "salt shaker"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv070",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:46:05.373018",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

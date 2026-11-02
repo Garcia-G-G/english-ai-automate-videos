@@ -1,0 +1,69 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «QUIERO DEVOLVER ESTO» en inglés? 🧾",
+  "video_description": "Diez frases reales para devolver o cambiar algo en una tienda en inglés. ¿Cuántas sabías? 🧾",
+  "title": "¿Cómo se dice?",
+  "theme": "Compras - devoluciones y cambios",
+  "intro": "[curious] ¿Compraste algo y no te queda? Así lo devuelves en inglés.",
+  "items": [
+    {
+      "spanish": "Quiero devolver esto.",
+      "english": "I'd like to return this."
+    },
+    {
+      "spanish": "¿Lo puedo cambiar por otra talla?",
+      "english": "Can I exchange it for another size?"
+    },
+    {
+      "spanish": "Aquí está el ticket.",
+      "english": "Here's the receipt."
+    },
+    {
+      "spanish": "No me queda bien.",
+      "english": "It doesn't fit."
+    },
+    {
+      "spanish": "Ya venía roto.",
+      "english": "It was already broken."
+    },
+    {
+      "spanish": "¿Me devuelven el dinero?",
+      "english": "Can I get a refund?"
+    },
+    {
+      "spanish": "No me lo he puesto.",
+      "english": "I haven't worn it."
+    },
+    {
+      "spanish": "Todavía tiene la etiqueta.",
+      "english": "It still has the tag on."
+    },
+    {
+      "spanish": "¿Hasta cuándo puedo devolverlo?",
+      "english": "How long do I have to return it?"
+    },
+    {
+      "spanish": "¿Me lo pueden reembolsar en la tarjeta?",
+      "english": "Can you put it back on my card?"
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "full_script": "[curious] ¿Compraste algo y no te queda? Así lo devuelves en inglés. I'd like to return this. ¿Can I exchange it for another size? Here's the receipt. It doesn't fit. It was already broken. ¿Can I get a refund? I haven't worn it. It still has the tag on. ¿How long do I have to return it? ¿Can you put it back on my card? [excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#InglésParaHispanos",
+    "#Compras"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr012",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:53:21.299218",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 4 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}
