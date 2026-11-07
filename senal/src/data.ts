@@ -32,7 +32,7 @@ export interface Payload {
     median: { retention: number; shares_per_1k: number; subs_per_1k: number };
   };
   videos: Video[];
-  star: Record<string, string | null>;
+  star: { youtube: string | null } & Record<string, string | null>;
 }
 
 export type ParseResult = { ok: true; data: Payload } | { ok: false; reason: string };
@@ -45,7 +45,7 @@ const isObj = (v: unknown): v is Record<string, unknown> => typeof v === "object
 const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
 const numArr = (v: unknown, max = Infinity): v is number[] => Array.isArray(v) && v.length <= max && v.every(isNum);
 const numMap = (v: unknown): boolean => isObj(v) && Object.values(v).every(isNum);
-const curveMap = (v: unknown): boolean => isObj(v) && Object.values(v).every((c) => numArr(c));
+const curveMap = (v: unknown): boolean => isObj(v) && "all" in v && Object.values(v).every((c) => numArr(c));
 
 function videoProblem(v: unknown, i: number): string | null {
   if (!isObj(v)) return `videos[${i}] is not an object`;
@@ -82,4 +82,5 @@ export function parsePayload(raw: unknown): ParseResult {
   return { ok: true, data: raw as unknown as Payload };
 }
 
-export const isStale = (p: Payload, now: Date): boolean => now.getTime() - Date.parse(p.read_at) > STALE_MS;
+// NaN (unparseable read_at) counts as stale.
+export const isStale = (p: Payload, now: Date): boolean => !(now.getTime() - Date.parse(p.read_at) <= STALE_MS);

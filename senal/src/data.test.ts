@@ -37,3 +37,15 @@ test("read 49 h ago is stale", () =>
 
 test("read 47 h ago is fresh", () =>
   expect(isStale(fixture, new Date(Date.parse(fixture.read_at) + 47 * 3600e3))).toBe(false));
+
+test("typical_daily without an 'all' curve is refused", () => {
+  const { all: _, ...rest } = fixture.channel.typical_daily;
+  expect(parsePayload({ ...fixture, channel: { ...fixture.channel, typical_daily: rest } }).ok).toBe(false);
+});
+
+test("typical_cum without an 'all' curve is refused", () => {
+  const { all: _, ...rest } = fixture.channel.typical_cum;
+  expect(parsePayload({ ...fixture, channel: { ...fixture.channel, typical_cum: rest } }).ok).toBe(false);
+});
+
+test("an unparseable read_at is stale", () => expect(isStale({ ...fixture, read_at: "soon" }, new Date())).toBe(true));

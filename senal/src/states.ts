@@ -15,6 +15,8 @@ document.head.append(style);
 export function showLoading(root: HTMLElement): () => void {
   const line = document.createElement("div");
   line.id = "senal-sweep";
+  line.setAttribute("role", "status");
+  line.setAttribute("aria-label", "Cargando");
   root.append(line);
   return () => line.remove();
 }
