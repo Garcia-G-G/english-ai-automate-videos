@@ -174,3 +174,31 @@ def test_refresh_if_stale_skips_a_fresh_file():
     def get(*a, **k):
         raise AssertionError("must not call")
     assert senal.refresh_if_stale(get=get, token="t") is None
+
+
+def test_refresh_truncates_each_video_to_its_real_age_and_zero_fills_gaps():
+    d = senal.SENAL_DIR.parent / "stats"
+    d.mkdir(parents=True, exist_ok=True)
+    row = lambda i, v, days: {"id": i, "type": "quiz", "views": v, "days": days}  # noqa: E731
+    (d / "youtube_2026-11-06.json").write_text(json.dumps({"videos": [row("young", 100, 1), row("old", 900, 19)]}))
+    (d / "youtube_2026-11-07.json").write_text(json.dumps({"videos": [row("young", 130, 2), row("old", 950, 20)]}))
+
+    def get(url, params, headers, timeout):
+        if params["dimensions"] != "day":
+            return _Resp([["SHORTS", 1]])
+        if params["filters"] == "video==old":   # runs past day 14, with gaps (10-20, 10-25 missing)
+            return _Resp([[f"2026-10-{n}", 5] for n in range(18, 32) if n not in (20, 25)]
+                         + [["2026-11-01", 5], ["2026-11-06", 5]])
+        return _Resp([["2026-11-05", 0], ["2026-11-06", 40]])
+    data = json.loads(senal.refresh(date(2026, 11, 7), get, "tok").read_text())
+    by_id = {v["id"]: v for v in data["videos"]}
+    assert len(by_id["old"]["daily"]) == 15 and by_id["old"]["daily"][2] == 0 and by_id["old"]["daily"][7] == 0
+    assert by_id["old"]["est_from"] is None
+    assert by_id["young"]["daily"] == [0, 40, 30] and by_id["young"]["est_from"] == 2
+
+
+def test_refresh_if_stale_refreshes_an_old_file():
+    senal.SENAL_DIR.mkdir(parents=True, exist_ok=True)
+    (senal.SENAL_DIR / "senal.json").write_text(json.dumps({"read_at": "2020-01-01T00:00:00"}))
+    _snapshot(date.today().isoformat(), 100)
+    assert senal.refresh_if_stale(get=lambda *a, **k: _Resp([]), token="t") == senal.SENAL_DIR / "senal.json"

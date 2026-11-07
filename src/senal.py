@@ -162,8 +162,8 @@ def refresh(today: date | None = None, get=None, token: str | None = None) -> Pa
     raw = []
     for r in rows:
         pub = today - timedelta(days=r["days"])
-        by_day = fetch_daily(r["id"], pub, min(today, pub + timedelta(days=DAYS)), token, get)
-        raw.append((r, pub, by_day, fetch_sources(r["id"], pub, min(today, pub + timedelta(days=DAYS)), token, get)))
+        end = min(today, pub + timedelta(days=DAYS))
+        raw.append((r, pub, fetch_daily(r["id"], pub, end, token, get), fetch_sources(r["id"], pub, end, token, get)))
     data_until = max((date.fromisoformat(d) for _, _, by_day, _ in raw for d in by_day), default=today - timedelta(days=2))
     videos = []
     for r, pub, by_day, sources in raw:
