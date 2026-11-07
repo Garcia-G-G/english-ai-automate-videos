@@ -110,3 +110,6 @@ client_secret*.json
 
 # config.yaml backups written by the panel's Save (STEP 75)
 config.yaml.bak-*
+.superpowers/
+senal/node_modules/
+senal/dist/
