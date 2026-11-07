@@ -116,6 +116,10 @@ def _isolate_output_tree(tmp_path, monkeypatch):
     monkeypatch.setattr(ai_background, "LIBRARY", out / "ai_backgrounds")
     import length_ab
     monkeypatch.setattr(length_ab, "AB_LOG", out / "stats" / "length_ab.jsonl")
+    import senal
+    monkeypatch.setattr(senal, "SENAL_DIR", out / "senal")
+    import channel_stats
+    monkeypatch.setattr(channel_stats, "STATS_DIR", out / "stats")
 
     # admin imports streamlit, so it is only redirected if a test already
     # pulled it in — importing it here would cost every test that run.
