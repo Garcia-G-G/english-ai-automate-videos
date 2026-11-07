@@ -13,8 +13,10 @@ const SPAN = 20; // dayX maps 0..DAYS onto -SPAN/2..SPAN/2
 const SUBDIV = 6; // crest samples per day; the curtain gets one hairline per sample
 const GHOST_BACK = 0.3; // ghost sits just behind its ridge
 const LINE = new Color("#dfe6ff");
+// Retention is a percentage and can exceed 100 on loops; null means no reading yet.
+const NO_RETENTION = 0.2;
 
-export type LineRole = "crest" | "ghost" | "curtain";
+export type LineRole = "crest" | "ghost" | "curtain" | "floor";
 
 export interface RidgeObject {
   group: Group;
@@ -80,7 +82,7 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
   const curtainMat = material("curtain", 0.55 * keep);
   const estCurtainMat = material("curtain", 0.55 * keep * 0.5);
   const ghostMat = material("ghost", 0.35, { dashed: true, dashSize: 0.25, gapSize: 0.2 });
-  const floorMat = material("curtain", 0.2);
+  const floorMat = material("floor", 0.12); // zero baseline: quieter than any curtain
   const mats = [crestMat, estMat, curtainMat, estCurtainMat, ghostMat, floorMat];
 
   const ghost = crestLine(smooth(typicalDaily.slice(0, v.daily.length), maxDaily, z - GHOST_BACK), 0.8, ghostMat);
@@ -92,7 +94,7 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
     curtain(crest.slice(0, cut), 1, curtainMat),
     curtain(crest.slice(cut), 1, estCurtainMat),
     // The video's own day axis 0..DAYS on the ground: the days it has not lived yet stay visible.
-    crestLine([new Vector3(dayX(0), 0, z), new Vector3(dayX(DAYS), 0, z)], 0.6, floorMat),
+    crestLine([new Vector3(dayX(0), 0, z), new Vector3(dayX(DAYS), 0, z)], 0.45, floorMat),
   ];
   for (const p of parts) if (p) group.add(p);
 
@@ -118,6 +120,4 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
   return ridge;
 }
 
-// Retention is a percentage and can exceed 100 on loops; null means no reading yet.
-const NO_RETENTION = 0.2;
 const retentionOf = (v: Video): number => (v.retention === null ? NO_RETENTION : Math.max(0, v.retention / 100));

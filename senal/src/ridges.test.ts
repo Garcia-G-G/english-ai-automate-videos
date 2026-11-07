@@ -29,3 +29,19 @@ test("the crest never dips below the ground", () => {
   const r = buildRidge(v, fixture.channel.typical_daily.all, 500, 0);
   expect(Math.min(...r.crest.map((p) => p.y))).toBeGreaterThanOrEqual(0);
 });
+
+test("state, not position, decides which crest glows", () => {
+  const crestOf = (state: "breakout" | "normal") => {
+    const r = buildRidge({ ...fixture.videos[0], state }, fixture.channel.typical_daily.all, 520, ridgeZ(3));
+    let m: { opacity: number; color: { r: number } } | undefined;
+    r.group.traverse((o) => {
+      const mat = (o as { material?: { userData: { role?: string; base?: number }; opacity: number; color: { r: number } } }).material;
+      if (mat?.userData.role === "crest" && mat.userData.base === 1) m = mat;
+    });
+    return m!;
+  };
+  const hot = crestOf("breakout");
+  const calm = crestOf("normal");
+  expect(hot.opacity).toBeGreaterThan(calm.opacity);
+  expect(hot.color.r).toBeGreaterThan(calm.color.r);
+});
