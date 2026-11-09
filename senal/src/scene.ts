@@ -7,6 +7,8 @@ export interface Stage {
   scene: Scene;
   camera: PerspectiveCamera;
   composer: EffectComposer;
+  /** The fitted overview: where the camera sits and what it looks at. Updated on every refit. */
+  home: { position: Vector3; target: Vector3 };
   frame(points: Vector3[]): void;
   render(): void;
   dispose(): void;
@@ -78,9 +80,12 @@ export function createStage(canvas: HTMLCanvasElement, look: Look): Stage {
   camera.position.set(-2, 16, 26);
   camera.lookAt(0, 1, -10);
   let framed: Vector3[] | null = null;
+  const home = { position: camera.position.clone(), target: new Vector3(0, 1, -10) };
   const refit = () => {
     if (!framed) return;
     const d = fitCamera(camera, framed, look.view);
+    home.position.copy(camera.position);
+    home.target.copy(camera.getWorldDirection(new Vector3())).multiplyScalar(d).add(camera.position);
     const radius = new Box3().setFromPoints(framed).getBoundingSphere(new Sphere()).radius;
     fog.near = d - radius * 0.4; // the front ridge stays clear
     fog.far = d + radius * look.fogDepth;
@@ -120,6 +125,7 @@ export function createStage(canvas: HTMLCanvasElement, look: Look): Stage {
     scene,
     camera,
     composer,
+    home,
     frame(points) {
       framed = points;
       refit();
