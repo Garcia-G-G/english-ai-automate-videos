@@ -1,7 +1,7 @@
 import type { Vector3 } from "three";
 import { parsePayload, type Payload } from "./data";
-import { lookFromQuery, type Look } from "./looks";
-import { buildRidge, DAYS, ridgeZ, type LineRole } from "./ridges";
+import { DEFAULT_LOOK, type Look } from "./looks";
+import { applyLook, buildRidge, DAYS, ridgeZ } from "./ridges";
 import { createStage } from "./scene";
 import { showError, showLoading } from "./states";
 
@@ -17,7 +17,7 @@ async function load(): Promise<void> {
     const parsed = parsePayload(await res.json());
     stop();
     if (!parsed.ok) return fail(parsed.reason);
-    draw(parsed.data, lookFromQuery(location.search));
+    draw(parsed.data, DEFAULT_LOOK);
   } catch (e) {
     stop();
     fail(e instanceof Error ? e.message : String(e));
@@ -32,19 +32,11 @@ function draw(p: Payload, look: Look): void {
   const stage = createStage(canvas, look);
   const recent = p.videos.filter((v) => v.age_days <= DAYS).sort((a, b) => a.age_days - b.age_days);
   const maxDaily = Math.max(1, ...recent.flatMap((v) => v.daily));
-  const width: Record<LineRole, number> = { crest: look.crestWidth, ghost: look.ghostWidth, curtain: look.hairWidth, floor: look.hairWidth };
-  const gain: Record<LineRole, number> = { crest: 1, ghost: look.ghost, curtain: look.curtain, floor: 1 };
   const drawn: Vector3[] = [];
   recent.forEach((v, i) => {
     const typical = p.channel.typical_daily[v.format] ?? p.channel.typical_daily.all;
     const r = buildRidge(v, typical, maxDaily, ridgeZ(i));
-    r.group.traverse((o) => {
-      const m = (o as { material?: { userData: { role?: LineRole; base: number }; linewidth: number; opacity: number } }).material;
-      if (!m?.userData.role) return;
-      m.linewidth = width[m.userData.role];
-      m.userData.base *= gain[m.userData.role]; // keeps setDim consistent with the look
-      m.opacity *= gain[m.userData.role];
-    });
+    applyLook(r.group, look);
     // Frame the drawn crests and the ground under them, not the full 0..DAYS floor lines.
     for (const pt of r.crest) drawn.push(pt, pt.clone().setY(0));
     stage.scene.add(r.group);

@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
-import { buildRidge, dayX, heightOf, ridgeZ } from "./ridges";
+import { applyLook, buildRidge, dayX, heightOf, ridgeZ } from "./ridges";
 import { fixture } from "./fixture";
+import { DEFAULT_LOOK } from "./looks";
 
 test("the busiest day reaches full height", () => expect(heightOf(500, 500)).toBe(7));
 
@@ -44,4 +45,17 @@ test("state, not position, decides which crest glows", () => {
   const calm = crestOf("normal");
   expect(hot.opacity).toBeGreaterThan(calm.opacity);
   expect(hot.color.r).toBeGreaterThan(calm.color.r);
+});
+
+test("with no retention data the floor line stays subtler than every curtain under the look", () => {
+  const v = { ...fixture.videos[0], retention: null, est_from: 5 }; // est_from gives both curtain materials
+  const { group } = buildRidge(v, [], 100, 0);
+  applyLook(group, DEFAULT_LOOK);
+  const op: Record<string, number[]> = {};
+  group.traverse((o) => {
+    const m = (o as { material?: { userData: { role?: string }; opacity: number } }).material;
+    if (m?.userData.role) (op[m.userData.role] ??= []).push(m.opacity);
+  });
+  expect(op.curtain.length).toBeGreaterThan(0);
+  expect(Math.max(...op.floor)).toBeLessThan(Math.min(...op.curtain));
 });

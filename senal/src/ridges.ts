@@ -5,6 +5,7 @@ import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { LineSegments2 } from "three/examples/jsm/lines/LineSegments2.js";
 import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry.js";
 import type { Video } from "./data";
+import type { Look } from "./looks";
 
 export const HMAX = 7;
 export const GAP = 1.6;
@@ -82,7 +83,7 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
   const curtainMat = material("curtain", 0.55 * keep);
   const estCurtainMat = material("curtain", 0.55 * keep * 0.5);
   const ghostMat = material("ghost", 0.35, { dashed: true, dashSize: 0.25, gapSize: 0.2 });
-  const floorMat = material("floor", 0.12); // zero baseline: quieter than any curtain
+  const floorMat = material("floor", 0.05); // zero baseline; applyLook scales it with the curtain gain, so it stays under the curtain
   const mats = [crestMat, estMat, curtainMat, estCurtainMat, ghostMat, floorMat];
 
   const ghost = crestLine(smooth(typicalDaily.slice(0, v.daily.length), maxDaily, z - GHOST_BACK), 0.8, ghostMat);
@@ -121,3 +122,17 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
 }
 
 const retentionOf = (v: Video): number => (v.retention === null ? NO_RETENTION : Math.max(0, v.retention / 100));
+
+/** Applies the look's widths and opacity gains; the floor follows the curtain gain so it never outshines it. */
+export function applyLook(group: Group, look: Look): void {
+  const width: Record<LineRole, number> = { crest: look.crestWidth, ghost: look.ghostWidth, curtain: look.hairWidth, floor: look.hairWidth };
+  const gain: Record<LineRole, number> = { crest: 1, ghost: look.ghost, curtain: look.curtain, floor: look.curtain };
+  group.traverse((o) => {
+    const m = (o as { material?: LineMaterial }).material;
+    const role = m?.userData.role as LineRole | undefined;
+    if (!m || !role) return;
+    m.linewidth = width[role];
+    m.userData.base *= gain[role]; // keeps setDim consistent with the look
+    m.opacity *= gain[role];
+  });
+}
