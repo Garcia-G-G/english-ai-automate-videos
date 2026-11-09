@@ -1,10 +1,10 @@
 import { Vector3 } from "three";
-import { createRig, framing, reducedMotion, type Rig } from "./camera";
+import { createRig, reducedMotion, type Rig } from "./camera";
 import { parsePayload, type Payload, type Video } from "./data";
 import { DEFAULT_LOOK, type Look } from "./looks";
 import { playOpening } from "./opening";
 import { pickRidge } from "./pick";
-import { applyLook, buildRidge, DAYS, ridgeZ, type RidgeObject } from "./ridges";
+import { applyLook, buildRidge, DAYS, REST_DIM, ridgeZ, type RidgeObject } from "./ridges";
 import { createStage, type Stage } from "./scene";
 import { showError, showLoading } from "./states";
 
@@ -64,10 +64,10 @@ function draw(p: Payload, look: Look): void {
 
   const starAt = recent.findIndex((v) => v.id === p.star.youtube);
   const star = starAt < 0 ? null : starAt;
-  void playOpening(ridges, rig, star, reducedMotion()).then(() => start(star));
+  void playOpening(ridges, rig, star, reducedMotion(), () => start(star)).then(() => start(null));
 }
 
-/** Hover, click and double-click all select through pickRidge. Inert until the returned start(star) is called. */
+/** Hover, click and double-click all select through pickRidge. Inert until the returned start(selection) is called; later calls are ignored. */
 function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[], ridges: RidgeObject[], rig: Rig): (star: number | null) => void {
   // Engine verdict at rest: breakout and second wind lit, the rest dimmed (same rule as buildRidge).
   const lit = videos.map((v) => v.state === "breakout" || v.state === "second_wind");
@@ -79,16 +79,19 @@ function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[
   const emphasize = (focus: number | null) =>
     ridges.forEach((r, i) => {
       const on = focus === null ? lit[i] : i === focus;
-      r.setDim(on ? 0 : 1);
+      r.setDim(on ? 0 : focus === null ? REST_DIM : 1);
       r.setGlow(on ? 1 : 0);
     });
+
+  /** Ridges in front of the selected one sit near the camera in its close-up and slash across it: hide them. */
+  const clearFront = () => ridges.forEach((r, i) => (r.group.visible = selected === null || i >= selected));
 
   const pick = (e: MouseEvent): number | null => {
     const v = new Vector3();
     const w = canvas.clientWidth / 2;
     const h = canvas.clientHeight / 2;
     const screen = ridges.map((r) =>
-      r.crest.flatMap((pt) => {
+      !r.group.visible ? [] : r.crest.flatMap((pt) => {
         v.copy(pt).project(camera);
         return v.z > 1 ? [] : [{ x: (v.x + 1) * w, y: (1 - v.y) * h }]; // behind the camera: skip
       }),
@@ -99,9 +102,11 @@ function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[
   const select = (i: number) => {
     selected = i;
     emphasize(i);
-    const { target, from } = framing(ridges[i].crest);
-    void rig.flyTo(target, from);
+    clearFront();
+    void rig.focus(ridges[i].crest);
   };
+  // The stage only updates the overview on resize; keep whatever the user was looking at.
+  addEventListener("resize", () => void (selected === null ? rig.overview(0) : rig.focus(ridges[selected].crest, 0)));
 
   canvas.addEventListener("pointermove", (e) => {
     if (!ready || e.buttons) return;
@@ -127,12 +132,15 @@ function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[
   canvas.addEventListener("dblclick", (e) => {
     if (!ready || pick(e) !== null) return;
     selected = null;
+    clearFront();
     emphasize(hovered);
     void rig.overview();
   });
   return (star) => {
+    if (ready) return;
     ready = true;
     selected = star;
+    clearFront();
     if (star !== null) emphasize(star);
   };
 }

@@ -21,3 +21,14 @@ test.each([
   expect(Math.max(spanX, spanY)).toBeGreaterThan(1.6); // fills one axis to ~the margin
   expect(Math.abs(Math.max(...ndc.map((p) => p.x)) + Math.min(...ndc.map((p) => p.x)))).toBeLessThan(0.1); // centred
 });
+
+test("a smaller margin fits a short crest tighter and still keeps it in frame", () => {
+  const crest = [new Vector3(-10, 0, -8), new Vector3(-8.6, 7, -8), new Vector3(-8.6, 0, -8)];
+  const view = { elevation: 9, azimuth: -28, fov: 16 };
+  const cam = new PerspectiveCamera(16, 16 / 9);
+  fitCamera(cam, crest, view, 0.62);
+  cam.updateMatrixWorld();
+  const ys = crest.map((c) => c.clone().project(cam).y);
+  expect(Math.max(...ys.map(Math.abs))).toBeLessThanOrEqual(0.63);
+  expect(Math.max(...ys) - Math.min(...ys)).toBeGreaterThan(1.2); // the 1-day crest fills most of the height
+});

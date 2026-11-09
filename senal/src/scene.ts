@@ -2,13 +2,20 @@ import { BloomEffect, BlendFunction, EffectComposer, EffectPass, NoiseEffect, Re
 import { Box3, CanvasTexture, Color, Fog, HalfFloatType, MathUtils, PerspectiveCamera, Scene, Sphere, SRGBColorSpace, Vector3, WebGLRenderer } from "three";
 import type { Look } from "./looks";
 
+export interface View {
+  position: Vector3;
+  target: Vector3;
+}
+
 export interface Stage {
   renderer: WebGLRenderer;
   scene: Scene;
   camera: PerspectiveCamera;
   composer: EffectComposer;
-  /** The fitted overview: where the camera sits and what it looks at. Updated on every refit. */
-  home: { position: Vector3; target: Vector3 };
+  /** The fitted overview: where the camera sits and what it looks at. Updated on every resize; the camera is not moved. */
+  home: View;
+  /** Where the camera would sit to fit these points, from the look's azimuth and elevation. Does not move the camera. */
+  fit(points: Vector3[], margin?: number): View;
   frame(points: Vector3[]): void;
   render(): void;
   dispose(): void;
@@ -20,7 +27,7 @@ const MARGIN = 0.86; // fraction of the frustum the drawn box may fill
  * Places the camera on the look's elevation/azimuth so the drawn points fill the frame with a margin.
  * Returns the camera-to-target distance. Two passes re-centre the perspective-skewed projection.
  */
-export function fitCamera(camera: PerspectiveCamera, points: Vector3[], view: Look["view"]): number {
+export function fitCamera(camera: PerspectiveCamera, points: Vector3[], view: Look["view"], margin = MARGIN): number {
   const el = MathUtils.degToRad(view.elevation);
   const az = MathUtils.degToRad(view.azimuth);
   const dir = new Vector3(Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el));
@@ -28,7 +35,7 @@ export function fitCamera(camera: PerspectiveCamera, points: Vector3[], view: Lo
   const u = new Vector3().crossVectors(dir, r);
   camera.fov = view.fov;
   camera.updateProjectionMatrix();
-  const tanV = Math.tan(MathUtils.degToRad(camera.fov / 2)) * MARGIN;
+  const tanV = Math.tan(MathUtils.degToRad(camera.fov / 2)) * margin;
   const tanH = tanV * camera.aspect;
   const target = new Box3().setFromPoints(points).getCenter(new Vector3());
   let d = 0;
@@ -80,12 +87,24 @@ export function createStage(canvas: HTMLCanvasElement, look: Look): Stage {
   camera.position.set(-2, 16, 26);
   camera.lookAt(0, 1, -10);
   let framed: Vector3[] | null = null;
-  const home = { position: camera.position.clone(), target: new Vector3(0, 1, -10) };
+  const home: View = { position: camera.position.clone(), target: new Vector3(0, 1, -10) };
+  const scratch = camera.clone();
+  const fitView = (points: Vector3[], margin?: number): View & { d: number } => {
+    scratch.aspect = camera.aspect;
+    const d = fitCamera(scratch, points, look.view, margin);
+    const target = scratch.getWorldDirection(new Vector3()).multiplyScalar(d).add(scratch.position);
+    return { position: scratch.position.clone(), target, d };
+  };
   const refit = () => {
     if (!framed) return;
-    const d = fitCamera(camera, framed, look.view);
-    home.position.copy(camera.position);
-    home.target.copy(camera.getWorldDirection(new Vector3())).multiplyScalar(d).add(camera.position);
+    const { position, target, d } = fitView(framed);
+    home.position.copy(position);
+    home.target.copy(target);
+    // Clip planes and fog follow the overview so a close-up sees the same landscape.
+    camera.fov = scratch.fov;
+    camera.near = scratch.near;
+    camera.far = scratch.far;
+    camera.updateProjectionMatrix();
     const radius = new Box3().setFromPoints(framed).getBoundingSphere(new Sphere()).radius;
     fog.near = d - radius * 0.4; // the front ridge stays clear
     fog.far = d + radius * look.fogDepth;
@@ -126,9 +145,15 @@ export function createStage(canvas: HTMLCanvasElement, look: Look): Stage {
     camera,
     composer,
     home,
+    fit: (points, margin) => {
+      const { position, target } = fitView(points, margin);
+      return { position, target };
+    },
     frame(points) {
       framed = points;
       refit();
+      camera.position.copy(home.position);
+      camera.lookAt(home.target);
     },
     render,
     dispose() {

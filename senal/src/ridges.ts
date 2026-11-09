@@ -16,6 +16,9 @@ const GHOST_BACK = 0.3; // ghost sits just behind its ridge
 const LINE = new Color("#dfe6ff");
 // Retention is a percentage and can exceed 100 on loops; null means no reading yet.
 const NO_RETENTION = 0.2;
+// setDim(1) leaves a faint trace so a focused ridge stands alone; REST_DIM keeps the resting verdict's 0.22 opacity.
+const DIM_DEPTH = 0.985;
+export const REST_DIM = 0.78 / DIM_DEPTH;
 
 export type LineRole = "crest" | "ghost" | "curtain" | "floor";
 
@@ -103,7 +106,7 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
   let glow = 0;
   const apply = () => {
     for (const m of mats) {
-      m.opacity = m.userData.base * (1 - 0.78 * dim);
+      m.opacity = m.userData.base * (1 - DIM_DEPTH * dim);
       // Above 1 the crest crosses the bloom threshold; the ghost and curtain never glow.
       if (m.userData.role === "crest") m.color.setScalar(1 + 2.2 * glow);
     }
@@ -116,7 +119,7 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
   };
   // Colour and dimming follow the engine's verdict, never the ridge's position.
   const bright = v.state === "breakout" || v.state === "second_wind";
-  ridge.setDim(bright ? 0 : 1);
+  ridge.setDim(bright ? 0 : REST_DIM);
   ridge.setGlow(bright ? 1 : 0);
   return ridge;
 }
