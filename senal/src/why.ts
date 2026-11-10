@@ -5,8 +5,6 @@ import {
   CatmullRomCurve3,
   Color,
   DoubleSide,
-  LineBasicMaterial,
-  LineSegments,
   Mesh,
   MeshBasicMaterial,
   Points,
@@ -17,8 +15,12 @@ import {
 } from "three";
 import { reducedMotion } from "./camera";
 import type { Video } from "./data";
-import { DEFAULT_LOOK } from "./looks";
-import { curtainOpacity, softDot } from "./ridges";
+import { Line2 } from "three/examples/jsm/lines/Line2.js";
+import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
+import type { LineSegments2 } from "three/examples/jsm/lines/LineSegments2.js";
+import type { Look } from "./looks";
+import { curtain, curtainOpacity, HMAX, material as lineMaterial, softDot } from "./ridges";
 import type { Stage } from "./scene";
 
 export type Source = "SHORTS" | "YT_SEARCH" | "EXT";
@@ -29,14 +31,22 @@ const WHITE = new Color("#f4f6ff");
 const RING = new Color("#dfe6ff");
 const EMPHASIS_SOURCE: Record<string, Source> = { search: "YT_SEARCH", external: "EXT" };
 
-// Streams: base -> peak along the crest. Lanes sit side by side (z across the ridge, y above the crest) so each colour reads alone.
-const STREAM_TOTAL = 380;
+// Streams run the whole crest, ground to the last day, in three parallel lanes with Shorts in the middle.
+// Lanes are offset along the crest's outward normal in the ridge plane: depth (z) offsets collapse on screen because the
+// camera sits only 9 degrees up, and on the crest itself the white line's bloom drowns the particles.
+const STREAM_TOTAL = 420;
+export const MIN_LANE = 28; // a 4 % source still reads as a continuous thin stream; its width keeps the proportion honest
 const STREAM_TRAIL = 6; // points per particle: the head plus a fading tail
-const LANE: Record<Source, { z: number; y: number }> = { SHORTS: { z: 0, y: 0.04 }, YT_SEARCH: { z: 0.42, y: 0.16 }, EXT: { z: -0.42, y: 0.28 } };
-const LANE_WIDTH = 0.11; // half-spread of a lane, world units
-const STREAM_SPEED = 0.2; // fraction of the path per second: a particle climbs in ~5 s
+const LANE: Record<Source, number> = { YT_SEARCH: 0.16, SHORTS: 0.46, EXT: 0.76 }; // world units out from the crest
+const LANE_HALF = 0.11; // half-spread of a lane that carries every view; a lane's spread scales with its share
+const LANE_MIN_HALF = 0.012;
+const STREAM_SPEED = 0.07; // fraction of the views per second; world speed eases, slow where many views came in
+const DENSITY_FLOOR = 0.15; // weight of a zero-view day, so the low tail still carries a few particles
 const STREAM_SIZE = 0.13;
 const HEAD_GAIN = 1.15; // above 1 the heads cross the bloom threshold
+const LOUD_GAIN = 1.6; // the emphasized lane's particles
+const LOUD_LINE = 0.35; // opacity of the emphasized lane's glowing trail line
+const RETENTION_GAIN = 1.8;
 
 // Shares: one burst of sparks per share from the peak, capped.
 const SPARKS_PER_SHARE = 45;
@@ -61,6 +71,13 @@ export interface Why {
   show(v: Video, crest: Vector3[], emphasis: string | null): void;
   hide(): void;
   update(dt: number): void;
+}
+
+/** Proportional counts plus a legibility floor of MIN_LANE for every source that carries views. */
+export function laneCounts(sources: Record<string, number>, total: number): Record<Source, number> {
+  const n = allocateParticles(sources, total);
+  for (const k of SOURCES) if ((sources[k] ?? 0) > 0) n[k] = Math.max(n[k], MIN_LANE);
+  return n;
 }
 
 /** Splits `total` across the three drawn sources in their real proportions; largest remainder keeps the sum exact. */
@@ -122,7 +139,38 @@ const rand = (i: number, salt: number): number => {
   return s - Math.floor(s);
 };
 
-export function createWhy(stage: Stage, starId: string | null = null): Why {
+/**
+ * Inverse of the cumulative views along the path: equal steps in its input land on equal shares of the views.
+ * Views come back from crest height (heightOf is a 0.55 power), with a floor so empty days still get a trickle.
+ */
+function density(path: Vector3[]): Float32Array {
+  if (path.length < 2) return new Float32Array(0);
+  const w = path.map((q) => DENSITY_FLOOR + (1 - DENSITY_FLOOR) * Math.max(0, q.y / HMAX) ** (1 / 0.55));
+  const cdf = [0];
+  for (let i = 1; i < w.length; i++) cdf.push(cdf[i - 1] + (w[i - 1] + w[i]) / 2);
+  const total = cdf.at(-1)!;
+  const inv = new Float32Array(path.length);
+  let i = 0;
+  for (let j = 0; j < inv.length; j++) {
+    const target = (j / (inv.length - 1)) * total;
+    while (i < cdf.length - 2 && cdf[i + 1] < target) i++;
+    const span = cdf[i + 1] - cdf[i] || 1;
+    inv[j] = (i + Math.min(1, (target - cdf[i]) / span)) / (path.length - 1);
+  }
+  return inv;
+}
+
+/** Unit normal of the crest in its x-y plane, always pointing up and away from the ridge (into the empty sky beside it). */
+function outward(path: Vector3[]): Vector3[] {
+  return path.map((_, i) => {
+    const a = path[Math.max(0, i - 1)];
+    const b = path[Math.min(path.length - 1, i + 1)];
+    const nrm = new Vector3(-(b.y - a.y), b.x - a.x, 0).normalize();
+    return nrm.y < 0 ? nrm.negate() : nrm;
+  });
+}
+
+export function createWhy(stage: Stage, look: Look, starId: string | null = null): Why {
   const material = new ShaderMaterial({
     vertexShader: VERT,
     fragmentShader: FRAG,
@@ -131,40 +179,57 @@ export function createWhy(stage: Stage, starId: string | null = null): Why {
     depthWrite: false,
     blending: AdditiveBlending,
   });
-  const stream = layer("stream", STREAM_TOTAL * STREAM_TRAIL, material);
+  const stream = layer("stream", (STREAM_TOTAL + 2 * MIN_LANE) * STREAM_TRAIL, material);
   const sparks = layer("sparks", SPARKS_MAX * 2 * SPARK_TRAIL, material);
   const subs = layer("subs", SUBS_MAX * 2, material);
   const ringMats = [0, 1].map(() => new MeshBasicMaterial({ color: RING, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending, side: DoubleSide }));
   const ringGeo = new RingGeometry(0.94, 1, 96).rotateX(-Math.PI / 2);
   const rings = ringMats.map((m) => Object.assign(new Mesh(ringGeo, m), { visible: false }));
-  const curtainMat = new LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending });
-  const glow = new LineSegments(new BufferGeometry(), curtainMat);
-  glow.visible = false;
-  for (const o of [stream.points, sparks.points, subs.points, glow, ...rings]) stage.scene.add(o);
+  for (const o of [stream.points, sparks.points, subs.points, ...rings]) stage.scene.add(o);
+  // Rebuilt per show: the retention curtain and the emphasized lane's line.
+  let glow: LineSegments2 | null = null;
+  let laneLine: Line2 | null = null;
+  const drop = (o: LineSegments2 | Line2 | null) => {
+    if (!o) return;
+    stage.scene.remove(o);
+    o.geometry.dispose();
+    o.material.dispose();
+  };
 
   // Per-show state.
   let path: Vector3[] = [];
   let peak = new Vector3();
   let src: Source[] = [];
   let phase = new Float32Array(0);
-  let width: Record<Source, number> = { SHORTS: LANE_WIDTH, YT_SEARCH: LANE_WIDTH, EXT: LANE_WIDTH };
+  let normals: Vector3[] = [];
+  let inv: Float32Array = new Float32Array(0); // views fraction -> path fraction, so density follows each day's views
+  let loud: Source | undefined;
+  let width: Record<Source, number> = { SHORTS: 0, YT_SEARCH: 0, EXT: 0 };
   let speed: Record<Source, number> = { SHORTS: STREAM_SPEED, YT_SEARCH: STREAM_SPEED, EXT: STREAM_SPEED };
   let nSparks = 0;
   let nSubs = 0;
   let isStar = false;
   let glowOpacity = 0;
+  let lineOpacity = 0;
   let alpha = 0;
   let target = 0;
   let t = 0; // seconds since show
   let still = false;
 
-  const at = (u: number, out: Vector3): Vector3 => {
-    const f = Math.min(Math.max(u, 0), 1) * (path.length - 1);
-    const i = Math.min(Math.floor(f), path.length - 2);
-    return out.lerpVectors(path[i], path[i + 1], f - i);
+  const lerpAt = (pts: Vector3[], u: number, out: Vector3): Vector3 => {
+    const f = Math.min(Math.max(u, 0), 1) * (pts.length - 1);
+    const i = Math.min(Math.floor(f), pts.length - 2);
+    return out.lerpVectors(pts[i], pts[i + 1], f - i);
+  };
+
+  const pathAt = (f: number): number => {
+    const x = Math.min(Math.max(f, 0), 1) * (inv.length - 1);
+    const i = Math.min(Math.floor(x), inv.length - 2);
+    return inv[i] + (inv[i + 1] - inv[i]) * (x - i);
   };
 
   const p = new Vector3();
+  const n = new Vector3();
   const writeStream = (dt: number) => {
     let w = 0;
     for (let h = 0; h < src.length; h++) {
@@ -174,14 +239,17 @@ export function createWhy(stage: Stage, starId: string | null = null): Why {
       const s1 = rand(h, 2) - 0.5;
       const s2 = rand(h, 3) - 0.5;
       for (let k = 0; k < STREAM_TRAIL; k++, w++) {
-        const u = phase[h] - k * v * 0.045; // a faster particle draws a longer tail
-        at(u, p);
+        const f = phase[h] - k * v * 0.1; // a faster particle draws a longer tail
+        const u = pathAt(f);
+        lerpAt(path, u, p);
+        lerpAt(normals, u, n);
         const turb = rand(h, 4) * 6.283;
-        stream.pos[w * 3] = p.x;
-        stream.pos[w * 3 + 1] = p.y + LANE[s].y + s2 * 1.2 * width[s] + 0.03 * Math.sin(t * 1.6 + turb + u * 8);
-        stream.pos[w * 3 + 2] = p.z + LANE[s].z + s1 * 2 * width[s] + 0.035 * Math.sin(t * 2.1 + turb + u * 11);
-        const env = u < 0 ? 0 : smooth(0, 0.06, u) * (1 - smooth(0.86, 1, u));
-        const b = env * (k === 0 ? HEAD_GAIN : 0.45 * (1 - k / STREAM_TRAIL) ** 1.6);
+        const out = LANE[s] + s2 * 2 * width[s] + 0.02 * Math.sin(t * 1.6 + turb + u * 30);
+        stream.pos[w * 3] = p.x + n.x * out;
+        stream.pos[w * 3 + 1] = Math.max(0.02, p.y + n.y * out);
+        stream.pos[w * 3 + 2] = p.z + s1 * width[s] + 0.025 * Math.sin(t * 2.1 + turb + u * 40);
+        const env = f < 0 ? 0 : smooth(0, 0.03, f) * (1 - smooth(0.95, 1, f));
+        const b = env * (s === loud ? LOUD_GAIN : 1) * (k === 0 ? HEAD_GAIN : 0.45 * (1 - k / STREAM_TRAIL) ** 1.6);
         stream.tint[w * 3] = HUE[s].r * b;
         stream.tint[w * 3 + 1] = HUE[s].g * b;
         stream.tint[w * 3 + 2] = HUE[s].b * b;
@@ -251,7 +319,8 @@ export function createWhy(stage: Stage, starId: string | null = null): Why {
 
   const setVisible = (on: boolean) => {
     stream.points.visible = sparks.points.visible = subs.points.visible = on;
-    glow.visible = on && glowOpacity > 0;
+    if (glow) glow.visible = on;
+    if (laneLine) laneLine.visible = on;
     rings.forEach((r) => (r.visible = on && isStar));
   };
 
@@ -261,13 +330,18 @@ export function createWhy(stage: Stage, starId: string | null = null): Why {
       t = still ? STILL_T : 0;
       const top = crest.reduce((best, q, i) => (q.y > crest[best].y ? i : best), 0);
       peak = crest[top]?.clone() ?? new Vector3();
-      path = crest.length >= 2 ? new CatmullRomCurve3(crest.slice(0, Math.max(top, 1) + 1)).getSpacedPoints(PATH_SAMPLES - 1) : [];
+      path = crest.length >= 2 ? new CatmullRomCurve3(crest).getSpacedPoints(PATH_SAMPLES - 1) : [];
+      inv = density(path);
+      normals = outward(path);
 
-      const loud = emphasis ? EMPHASIS_SOURCE[emphasis] : undefined;
-      width = { SHORTS: LANE_WIDTH, YT_SEARCH: LANE_WIDTH, EXT: LANE_WIDTH };
-      speed = { SHORTS: STREAM_SPEED, YT_SEARCH: STREAM_SPEED, EXT: STREAM_SPEED };
-      if (loud) (width[loud] *= 2), (speed[loud] *= 2);
-      const counts = path.length ? allocateParticles(v.sources, STREAM_TOTAL) : allocateParticles({}, 0);
+      loud = emphasis ? EMPHASIS_SOURCE[emphasis] : undefined;
+      const known = SOURCES.reduce((a, k) => a + Math.max(0, v.sources[k] ?? 0), 0) || 1;
+      for (const k of SOURCES) {
+        const share = Math.max(0, v.sources[k] ?? 0) / known;
+        width[k] = (LANE_MIN_HALF + LANE_HALF * share) * (k === loud ? 2 : 1);
+        speed[k] = STREAM_SPEED * (k === loud ? 2 : 1);
+      }
+      const counts = path.length ? laneCounts(v.sources, STREAM_TOTAL) : laneCounts({}, 0);
       src = SOURCES.flatMap((s) => Array<Source>(counts[s]).fill(s));
       phase = Float32Array.from(src, (_, h) => rand(h, 0)); // spread along the path from the first frame
 
@@ -283,12 +357,26 @@ export function createWhy(stage: Stage, starId: string | null = null): Why {
       isStar = v.id === starId;
       rings.forEach((r) => r.position.set(peak.x, 0.01, peak.z));
 
-      // Retention as the reason: an additive copy of the curtain brings it to 1.8x its own brightness.
-      glowOpacity = emphasis === "retention" ? 0.8 * curtainOpacity(v) * DEFAULT_LOOK.curtain : 0;
-      glow.geometry.dispose();
-      glow.geometry = new BufferGeometry()
-        .setAttribute("position", new BufferAttribute(Float32Array.from(crest.flatMap((q) => [q.x, q.y, q.z, q.x, 0, q.z])), 3))
-        .setAttribute("color", new BufferAttribute(Float32Array.from(crest.flatMap(() => [RING.r, RING.g, RING.b, 0, 0, 0])), 3));
+      // Retention as the reason: the curtain redrawn with its own hairlines at 1.8x its live opacity.
+      drop(glow);
+      glow = null;
+      glowOpacity = emphasis === "retention" ? Math.min(0.9, RETENTION_GAIN * curtainOpacity(v) * look.curtain) : 0;
+      if (glowOpacity > 0) {
+        glow = curtain(crest, 1, lineMaterial("curtain", 0, { linewidth: look.hairWidth }));
+        if (glow) stage.scene.add(glow);
+      }
+      // Search or external as the reason: a faint glowing line runs along that lane.
+      drop(laneLine);
+      laneLine = null;
+      lineOpacity = loud && path.length ? LOUD_LINE : 0;
+      if (loud && lineOpacity) {
+        const g = new LineGeometry();
+        const lane = LANE[loud];
+        g.setPositions(path.flatMap((q, i) => [q.x + normals[i].x * lane, Math.max(0.02, q.y + normals[i].y * lane), q.z]));
+        const c = HUE[loud].clone().multiplyScalar(1.4);
+        laneLine = new Line2(g, new LineMaterial({ color: c, linewidth: 2, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending }));
+        stage.scene.add(laneLine);
+      }
 
       alpha = still ? 1 : 0;
       target = 1;
@@ -308,7 +396,8 @@ export function createWhy(stage: Stage, starId: string | null = null): Why {
       material.uniforms.uOpacity.value = alpha;
       // World size to pixels: half the buffer height times the projection focal term (fov 16 is narrow, so this matters).
       material.uniforms.uScale.value = stage.renderer.getDrawingBufferSize(new Vector2()).y * 0.5 * stage.camera.projectionMatrix.elements[5];
-      curtainMat.opacity = glowOpacity * alpha;
+      if (glow) glow.material.opacity = glowOpacity * alpha;
+      if (laneLine) laneLine.material.opacity = lineOpacity * alpha;
       if (path.length) writeStream(step);
       writeSparks();
       writeSubs();

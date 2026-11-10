@@ -32,6 +32,9 @@ export async function playOpening(ridges: RidgeObject[], rig: Rig, star: number 
 
   const inputs = rig.inputs;
   const tl = gsap.timeline();
+  // Debug knob: `?slow=3` plays the opening three times slower so it can be recorded.
+  const slow = Number(new URLSearchParams(location.search).get("slow"));
+  if (slow > 0) tl.timeScale(1 / slow);
   tl.from(ridges.flatMap((r) => materials(r, true)), { opacity: 0, duration: GROUND_S, ease: "none" });
   // ridges[0] is the newest (front), so the oldest goes first.
   const each = ridges.length > 1 ? STAGGER_S / (ridges.length - 1) : 0;

@@ -50,7 +50,7 @@ function draw(p: Payload, look: Look): void {
   });
   if (drawn.length) stage.frame(drawn);
   const rig = createRig(stage, canvas);
-  const why = createWhy(stage, p.star.youtube);
+  const why = createWhy(stage, look, p.star.youtube);
   const start = wire(canvas, stage.camera, recent, ridges, rig, why);
 
   let raf = 0;
@@ -65,7 +65,9 @@ function draw(p: Payload, look: Look): void {
   loop();
   document.addEventListener("visibilitychange", () => {
     cancelAnimationFrame(raf);
-    if (!document.hidden) (last = performance.now()), loop();
+    if (document.hidden) return;
+    last = performance.now();
+    loop();
   });
 
   const starAt = recent.findIndex((v) => v.id === p.star.youtube);
@@ -150,7 +152,9 @@ function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[
     ready = true;
     selected = star;
     clearFront();
-    if (star !== null) emphasize(star), explain(star);
+    if (star === null) return;
+    emphasize(star);
+    explain(star);
   };
 }
 

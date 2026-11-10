@@ -51,7 +51,7 @@ function smooth(values: number[], maxDaily: number, z: number): Vector3[] {
   return curve.getPoints((pts.length - 1) * SUBDIV).map((p) => p.setY(Math.max(0, p.y)));
 }
 
-function material(role: LineRole, opacity: number, extra: Partial<LineMaterial> = {}): LineMaterial {
+export function material(role: LineRole, opacity: number, extra: Partial<LineMaterial> = {}): LineMaterial {
   const m = new LineMaterial({ color: 0xffffff, vertexColors: true, transparent: true, opacity, depthWrite: false, ...extra });
   m.fog = true;
   m.userData = { role, base: opacity };
@@ -73,7 +73,7 @@ function crestLine(pts: Vector3[], k: number, mat: LineMaterial): Line2 | null {
 }
 
 /** Vertical hairlines from each crest sample to the ground, fading toward the floor. */
-function curtain(pts: Vector3[], k: number, mat: LineMaterial): LineSegments2 | null {
+export function curtain(pts: Vector3[], k: number, mat: LineMaterial): LineSegments2 | null {
   if (!pts.length) return null;
   const g = new LineSegmentsGeometry();
   g.setPositions(pts.flatMap((p) => [p.x, p.y, p.z, p.x, 0, p.z]));
