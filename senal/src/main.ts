@@ -7,6 +7,7 @@ import { pickRidge } from "./pick";
 import { applyLook, buildRidge, DAYS, REST_DIM, ridgeZ, type RidgeObject } from "./ridges";
 import { createStage, type Stage } from "./scene";
 import { showError, showLoading } from "./states";
+import { createWhy, type Why } from "./why";
 
 const root = document.getElementById("app")!;
 const fail = (reason: string) =>
@@ -49,17 +50,22 @@ function draw(p: Payload, look: Look): void {
   });
   if (drawn.length) stage.frame(drawn);
   const rig = createRig(stage, canvas);
-  const start = wire(canvas, stage.camera, recent, ridges, rig);
+  const why = createWhy(stage, p.star.youtube);
+  const start = wire(canvas, stage.camera, recent, ridges, rig, why);
 
   let raf = 0;
+  let last = performance.now();
   const loop = () => {
+    const now = performance.now();
+    why.update((now - last) / 1000);
+    last = now;
     stage.render();
     raf = requestAnimationFrame(loop);
   };
   loop();
   document.addEventListener("visibilitychange", () => {
     cancelAnimationFrame(raf);
-    if (!document.hidden) loop();
+    if (!document.hidden) (last = performance.now()), loop();
   });
 
   const starAt = recent.findIndex((v) => v.id === p.star.youtube);
@@ -68,7 +74,7 @@ function draw(p: Payload, look: Look): void {
 }
 
 /** Hover, click and double-click all select through pickRidge. Inert until the returned start(selection) is called; later calls are ignored. */
-function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[], ridges: RidgeObject[], rig: Rig): (star: number | null) => void {
+function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[], ridges: RidgeObject[], rig: Rig, why: Why): (star: number | null) => void {
   // Engine verdict at rest: breakout and second wind lit, the rest dimmed (same rule as buildRidge).
   const lit = videos.map((v) => v.state === "breakout" || v.state === "second_wind");
   let ready = false;
@@ -99,10 +105,12 @@ function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[
     return pickRidge({ x: e.offsetX, y: e.offsetY }, screen);
   };
 
+  const explain = (i: number) => why.show(videos[i], ridges[i].crest, videos[i].why[0] ?? null);
   const select = (i: number) => {
     selected = i;
     emphasize(i);
     clearFront();
+    explain(i);
     void rig.focus(ridges[i].crest);
   };
   // The stage only updates the overview on resize; keep whatever the user was looking at.
@@ -134,6 +142,7 @@ function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[
     selected = null;
     clearFront();
     emphasize(hovered);
+    why.hide();
     void rig.overview();
   });
   return (star) => {
@@ -141,7 +150,7 @@ function wire(canvas: HTMLCanvasElement, camera: Stage["camera"], videos: Video[
     ready = true;
     selected = star;
     clearFront();
-    if (star !== null) emphasize(star);
+    if (star !== null) emphasize(star), explain(star);
   };
 }
 

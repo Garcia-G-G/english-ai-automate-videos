@@ -1,4 +1,4 @@
-import { CatmullRomCurve3, Color, DataTexture, Group, Sprite, SpriteMaterial, Vector3 } from "three";
+import { CatmullRomCurve3, Color, DataTexture, Group, LinearFilter, Sprite, SpriteMaterial, Vector3 } from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
@@ -88,19 +88,18 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
   const cut = Math.min(estStart(v), crest.length);
   const confirmed = crest.slice(0, cut + 1);
   const estimated = crest.slice(cut);
-  const keep = Math.min(retentionOf(v), 1);
 
   const crestMat = material("crest", 1);
   const estMat = material("crest", 0.5);
-  const curtainMat = material("curtain", 0.55 * keep);
-  const estCurtainMat = material("curtain", 0.55 * keep * 0.5);
+  const curtainMat = material("curtain", curtainOpacity(v));
+  const estCurtainMat = material("curtain", curtainOpacity(v) * 0.5);
   const young = v.age_days <= YOUNG_DAYS;
   // A young video's ghost runs the whole 0..DAYS path, quieter, to show where a typical video goes.
   const ghostMat = material("ghost", young ? 0.2 : 0.35, { dashed: true, dashSize: 0.25, gapSize: 0.2 });
   const floorMat = material("floor", 0.05); // zero baseline; applyLook scales it with the curtain gain, so it stays under the curtain
   const mats: (LineMaterial | SpriteMaterial)[] = [crestMat, estMat, curtainMat, estCurtainMat, ghostMat, floorMat];
 
-  const ghost = crestLine(smooth(young ? typicalDaily : typicalDaily.slice(0, v.daily.length), maxDaily, z - GHOST_BACK), 0.8, ghostMat);
+  const ghost = crestLine(smooth(typicalDaily.slice(0, young ? DAYS + 1 : v.daily.length), maxDaily, z - GHOST_BACK), 0.8, ghostMat);
   ghost?.computeLineDistances();
   const parts = [
     ghost,
@@ -142,7 +141,7 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
 
 let glowTexture: DataTexture | null = null;
 /** Soft round falloff, built without a DOM so it also works in tests. */
-function softDot(): DataTexture {
+export function softDot(): DataTexture {
   if (glowTexture) return glowTexture;
   const n = 64;
   const px = new Uint8Array(n * n * 4);
@@ -154,6 +153,7 @@ function softDot(): DataTexture {
       px[i + 3] = Math.round(255 * Math.max(0, 1 - r) ** 2);
     }
   glowTexture = new DataTexture(px, n, n);
+  glowTexture.magFilter = glowTexture.minFilter = LinearFilter; // Nearest (the default) shows square steps when enlarged
   glowTexture.needsUpdate = true;
   return glowTexture;
 }
@@ -174,6 +174,8 @@ function liveEdge(at: Vector3): Sprite {
 }
 
 const retentionOf = (v: Video): number => (v.retention === null ? NO_RETENTION : Math.max(0, v.retention / 100));
+/** Curtain opacity before the look's gain: brighter the more of the video people watch. */
+export const curtainOpacity = (v: Video): number => 0.55 * Math.min(retentionOf(v), 1);
 
 /** Applies the look's widths and opacity gains; the floor follows the curtain gain so it never outshines it. */
 export function applyLook(group: Group, look: Look): void {
