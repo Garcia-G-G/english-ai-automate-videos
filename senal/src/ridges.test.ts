@@ -1,3 +1,4 @@
+import { Box3, type Material, type Object3D } from "three";
 import { expect, test } from "vitest";
 import { applyLook, buildRidge, dayX, heightOf, ridgeZ } from "./ridges";
 import { fixture } from "./fixture";
@@ -58,4 +59,43 @@ test("with no retention data the floor line stays subtler than every curtain und
   });
   expect(op.curtain.length).toBeGreaterThan(0);
   expect(Math.max(...op.floor)).toBeLessThan(Math.min(...op.curtain));
+});
+
+const withRole = (r: { group: Object3D }, role: string): Object3D[] => {
+  const out: Object3D[] = [];
+  r.group.traverse((o) => {
+    if ((o as { material?: Material }).material?.userData.role === role) out.push(o);
+  });
+  return out;
+};
+
+test("every crest rises from the ground half a day before day 0", () => {
+  const r = buildRidge(fixture.videos[0], fixture.channel.typical_daily.all, 520, 0);
+  expect(r.crest[0].x).toBeCloseTo(dayX(-0.5));
+  expect(r.crest[0].y).toBe(0);
+  expect(r.crest.at(-1)!.x).toBeCloseTo(dayX(6));
+});
+
+test("a one-day video is a mountain, not a stroke: ground, then its value", () => {
+  const v = { ...fixture.videos[0], age_days: 1, daily: [300, 520], est_from: null };
+  const r = buildRidge(v, fixture.channel.typical_daily.all, 520, 0);
+  expect(r.crest.length).toBeGreaterThan(3);
+  expect(r.crest[0].y).toBe(0);
+  expect(r.crest.at(-1)!.y).toBeCloseTo(7);
+});
+
+test("a video up to 3 days old gets a live edge at its last crest point and a full 0..14 ghost", () => {
+  const v = { ...fixture.videos[0], age_days: 2, daily: [100, 300, 200], est_from: null };
+  const r = buildRidge(v, fixture.channel.typical_daily.all, 520, 0);
+  const [edge] = withRole(r, "edge");
+  expect(edge.position.distanceTo(r.crest.at(-1)!)).toBeCloseTo(0);
+  const ghost = new Box3().setFromObject(withRole(r, "ghost")[0]);
+  expect(ghost.max.x).toBeCloseTo(dayX(fixture.channel.typical_daily.all.length - 1));
+  expect(ghost.min.x).toBeCloseTo(dayX(-0.5));
+});
+
+test("an older video has no live edge and its ghost stops where its data stops", () => {
+  const r = buildRidge(fixture.videos[0], fixture.channel.typical_daily.all, 520, 0);
+  expect(withRole(r, "edge")).toHaveLength(0);
+  expect(new Box3().setFromObject(withRole(r, "ghost")[0]).max.x).toBeCloseTo(dayX(6));
 });

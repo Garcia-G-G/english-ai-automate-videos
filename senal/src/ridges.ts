@@ -1,10 +1,11 @@
-import { CatmullRomCurve3, Color, Group, Vector3 } from "three";
+import { CatmullRomCurve3, Color, DataTexture, Group, Sprite, SpriteMaterial, Vector3 } from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { LineSegments2 } from "three/examples/jsm/lines/LineSegments2.js";
 import { LineSegmentsGeometry } from "three/examples/jsm/lines/LineSegmentsGeometry.js";
 import type { Video } from "./data";
+import { reducedMotion } from "./camera";
 import type { Look } from "./looks";
 
 export const HMAX = 7;
@@ -20,6 +21,11 @@ const NO_RETENTION = 0.2;
 const DIM_DEPTH = 0.985;
 export const REST_DIM = 0.78 / DIM_DEPTH;
 
+// A video this young is still growing: it gets a live edge and the full typical path ahead of it.
+export const YOUNG_DAYS = 3;
+const LEAD_DAYS = 0.5; // every crest rises from the ground this far before day 0
+const EDGE_SIZE = 0.9; // live edge sprite, world units
+
 export type LineRole = "crest" | "ghost" | "curtain" | "floor";
 
 export interface RidgeObject {
@@ -34,10 +40,13 @@ export const heightOf = (views: number, maxDaily: number): number =>
 export const ridgeZ = (index: number): number => 0 - index * GAP;
 export const dayX = (day: number): number => (day / DAYS) * SPAN - SPAN / 2;
 
-/** Smooth path through the daily samples; y clamped so a spline overshoot never goes underground. */
+/**
+ * Smooth path from the ground at -LEAD_DAYS through the daily samples, so even a 1-day video reads as a mountain.
+ * Sample k*SUBDIV is exactly day k-1 (index-uniform spline). y clamped so an overshoot never goes underground.
+ */
 function smooth(values: number[], maxDaily: number, z: number): Vector3[] {
-  const pts = values.map((n, d) => new Vector3(dayX(d), heightOf(n, maxDaily), z));
-  if (pts.length < 2) return pts;
+  if (!values.length) return [];
+  const pts = [new Vector3(dayX(-LEAD_DAYS), 0, z), ...values.map((n, d) => new Vector3(dayX(d), heightOf(n, maxDaily), z))];
   const curve = new CatmullRomCurve3(pts, false, "centripetal");
   return curve.getPoints((pts.length - 1) * SUBDIV).map((p) => p.setY(Math.max(0, p.y)));
 }
@@ -53,7 +62,7 @@ const flat = (pts: Vector3[]): number[] => pts.flatMap((p) => [p.x, p.y, p.z]);
 const tint = (k: number, n: number): number[] => Array.from({ length: n }, () => [LINE.r * k, LINE.g * k, LINE.b * k]).flat();
 
 /** Index of the first crest sample that belongs to an estimated day, or Infinity. */
-const estStart = (v: Video): number => (v.est_from === null ? Infinity : v.est_from * SUBDIV);
+const estStart = (v: Video): number => (v.est_from === null ? Infinity : (v.est_from + 1) * SUBDIV); // +1: the ground lead
 
 function crestLine(pts: Vector3[], k: number, mat: LineMaterial): Line2 | null {
   if (pts.length < 2) return null;
@@ -85,11 +94,13 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
   const estMat = material("crest", 0.5);
   const curtainMat = material("curtain", 0.55 * keep);
   const estCurtainMat = material("curtain", 0.55 * keep * 0.5);
-  const ghostMat = material("ghost", 0.35, { dashed: true, dashSize: 0.25, gapSize: 0.2 });
+  const young = v.age_days <= YOUNG_DAYS;
+  // A young video's ghost runs the whole 0..DAYS path, quieter, to show where a typical video goes.
+  const ghostMat = material("ghost", young ? 0.2 : 0.35, { dashed: true, dashSize: 0.25, gapSize: 0.2 });
   const floorMat = material("floor", 0.05); // zero baseline; applyLook scales it with the curtain gain, so it stays under the curtain
-  const mats = [crestMat, estMat, curtainMat, estCurtainMat, ghostMat, floorMat];
+  const mats: (LineMaterial | SpriteMaterial)[] = [crestMat, estMat, curtainMat, estCurtainMat, ghostMat, floorMat];
 
-  const ghost = crestLine(smooth(typicalDaily.slice(0, v.daily.length), maxDaily, z - GHOST_BACK), 0.8, ghostMat);
+  const ghost = crestLine(smooth(young ? typicalDaily : typicalDaily.slice(0, v.daily.length), maxDaily, z - GHOST_BACK), 0.8, ghostMat);
   ghost?.computeLineDistances();
   const parts = [
     ghost,
@@ -101,6 +112,11 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
     crestLine([new Vector3(dayX(0), 0, z), new Vector3(dayX(DAYS), 0, z)], 0.45, floorMat),
   ];
   for (const p of parts) if (p) group.add(p);
+  if (young && crest.length) {
+    const edge = liveEdge(crest.at(-1)!);
+    mats.push(edge.material);
+    group.add(edge);
+  }
 
   let dim = 0;
   let glow = 0;
@@ -108,7 +124,7 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
     for (const m of mats) {
       m.opacity = m.userData.base * (1 - DIM_DEPTH * dim);
       // Above 1 the crest crosses the bloom threshold; the ghost and curtain never glow.
-      if (m.userData.role === "crest") m.color.setScalar(1 + 2.2 * glow);
+      if (m.userData.role === "crest" || m.userData.role === "edge") m.color.setScalar(1 + 2.2 * glow);
     }
   };
   const ridge: RidgeObject = {
@@ -124,6 +140,39 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
   return ridge;
 }
 
+let glowTexture: DataTexture | null = null;
+/** Soft round falloff, built without a DOM so it also works in tests. */
+function softDot(): DataTexture {
+  if (glowTexture) return glowTexture;
+  const n = 64;
+  const px = new Uint8Array(n * n * 4);
+  for (let y = 0; y < n; y++)
+    for (let x = 0; x < n; x++) {
+      const r = Math.hypot(x - n / 2 + 0.5, y - n / 2 + 0.5) / (n / 2);
+      const i = (y * n + x) * 4;
+      px.fill(255, i, i + 3);
+      px[i + 3] = Math.round(255 * Math.max(0, 1 - r) ** 2);
+    }
+  glowTexture = new DataTexture(px, n, n);
+  glowTexture.needsUpdate = true;
+  return glowTexture;
+}
+
+/** The glowing point at a young video's last crest sample; breathes gently unless motion is reduced. */
+function liveEdge(at: Vector3): Sprite {
+  const m = new SpriteMaterial({ map: softDot(), transparent: true, depthWrite: false, opacity: 0.9 });
+  m.userData = { role: "edge", base: 0.9 };
+  const s = new Sprite(m);
+  s.position.copy(at);
+  s.scale.setScalar(EDGE_SIZE);
+  let still: boolean | null = null;
+  s.onBeforeRender = () => {
+    still ??= reducedMotion();
+    if (!still) s.scale.setScalar(EDGE_SIZE * (1 + 0.12 * Math.sin(performance.now() / 700)));
+  };
+  return s;
+}
+
 const retentionOf = (v: Video): number => (v.retention === null ? NO_RETENTION : Math.max(0, v.retention / 100));
 
 /** Applies the look's widths and opacity gains; the floor follows the curtain gain so it never outshines it. */
@@ -133,7 +182,7 @@ export function applyLook(group: Group, look: Look): void {
   group.traverse((o) => {
     const m = (o as { material?: LineMaterial }).material;
     const role = m?.userData.role as LineRole | undefined;
-    if (!m || !role) return;
+    if (!m || !role || !(role in gain)) return; // the live edge keeps its own size and opacity
     m.linewidth = width[role];
     m.userData.base *= gain[role]; // keeps setDim consistent with the look
     m.opacity *= gain[role];
