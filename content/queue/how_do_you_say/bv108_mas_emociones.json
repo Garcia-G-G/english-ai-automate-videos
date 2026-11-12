@@ -1,0 +1,107 @@
+{
+ "type": "how_do_you_say",
+ "video_title": "¿Cómo se dicen MÁS EMOCIONES en inglés? 😌",
+ "video_description": "Segunda parte: diez emociones más en inglés. Dilas antes que yo. ¿Cuántas palabras sabías? 😒",
+ "title": "¿Cómo se dice…?",
+ "theme": "más emociones",
+ "level": "A1",
+ "intro": "[warm] Segunda parte: diez emociones más. Tú primero, luego yo.",
+ "items": [
+  {
+   "emoji": "😌",
+   "spanish": "Orgulloso",
+   "english": "proud"
+  },
+  {
+   "emoji": "😒",
+   "spanish": "Celoso",
+   "english": "jealous"
+  },
+  {
+   "emoji": "😳",
+   "spanish": "Avergonzado",
+   "english": "embarrassed"
+  },
+  {
+   "emoji": "😟",
+   "spanish": "Preocupado",
+   "english": "worried"
+  },
+  {
+   "emoji": "🤩",
+   "spanish": "Emocionado",
+   "english": "excited"
+  },
+  {
+   "emoji": "🧘",
+   "spanish": "Tranquilo",
+   "english": "calm"
+  },
+  {
+   "emoji": "😔",
+   "spanish": "Solo",
+   "english": "lonely"
+  },
+  {
+   "emoji": "🙏",
+   "spanish": "Agradecido",
+   "english": "grateful"
+  },
+  {
+   "emoji": "🤢",
+   "spanish": "Asqueado",
+   "english": "disgusted"
+  },
+  {
+   "emoji": "😫",
+   "spanish": "Estresado",
+   "english": "stressed"
+  }
+ ],
+ "recap": "Ahora todas en inglés, conmigo: proud, jealous, embarrassed, worried, excited, calm, lonely, grateful, disgusted, stressed.",
+ "outro": "[happy] ¿Cuál no sabías? Escríbela en los comentarios.",
+ "translations": {
+  "proud": "Orgulloso",
+  "jealous": "Celoso",
+  "embarrassed": "Avergonzado",
+  "worried": "Preocupado",
+  "excited": "Emocionado",
+  "calm": "Tranquilo",
+  "lonely": "Solo",
+  "grateful": "Agradecido",
+  "disgusted": "Asqueado",
+  "stressed": "Estresado"
+ },
+ "english_phrases": [
+  "proud",
+  "jealous",
+  "embarrassed",
+  "worried",
+  "excited",
+  "calm",
+  "lonely",
+  "grateful",
+  "disgusted",
+  "stressed"
+ ],
+ "hashtags": [
+  "#InglésParaPrincipiantes",
+  "#VocabularioEnInglés",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#HowDoYouSay",
+  "#EmocionesEnInglés",
+  "#Shorts",
+  "#LearnEnglish",
+  "#AprendeIngles"
+ ],
+ "_meta": {
+  "category": "basic_vocab",
+  "topic_id": "bv108",
+  "video_type": "how_do_you_say",
+  "model": "manual",
+  "sequel_of": "emociones",
+  "why": "sequel of a ≥1K-view topic (research 2026-11-12)"
+ },
+ "full_script": "[warm] Segunda parte: diez emociones más. Tú primero, luego yo. Orgulloso... proud. proud. Celoso... jealous. jealous. Avergonzado... embarrassed. embarrassed. Preocupado... worried. worried. Emocionado... excited. excited. Tranquilo... calm. calm. Solo... lonely. lonely. Agradecido... grateful. grateful. Asqueado... disgusted. disgusted. Estresado... stressed. stressed. Ahora todas en inglés, conmigo: proud, jealous, embarrassed, worried, excited, calm, lonely, grateful, disgusted, stressed. [happy] ¿Cuál no sabías? Escríbela en los comentarios."
+}

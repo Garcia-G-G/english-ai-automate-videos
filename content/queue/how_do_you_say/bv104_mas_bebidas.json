@@ -1,0 +1,107 @@
+{
+ "type": "how_do_you_say",
+ "video_title": "¿Cómo se dicen MÁS BEBIDAS en inglés? ☕",
+ "video_description": "Segunda parte: diez bebidas más en inglés. Dilas antes que yo. ¿Cuántas palabras sabías? 🫧",
+ "title": "¿Cómo se dice…?",
+ "theme": "más bebidas",
+ "level": "A1",
+ "intro": "[warm] Segunda parte: diez bebidas más. Tú primero, luego yo.",
+ "items": [
+  {
+   "emoji": "☕",
+   "spanish": "Chocolate caliente",
+   "english": "hot chocolate"
+  },
+  {
+   "emoji": "🫧",
+   "spanish": "Agua con gas",
+   "english": "sparkling water"
+  },
+  {
+   "emoji": "🧊",
+   "spanish": "Té helado",
+   "english": "iced tea"
+  },
+  {
+   "emoji": "⚡",
+   "spanish": "Bebida energética",
+   "english": "energy drink"
+  },
+  {
+   "emoji": "🥥",
+   "spanish": "Agua de coco",
+   "english": "coconut water"
+  },
+  {
+   "emoji": "🥛",
+   "spanish": "Café con leche",
+   "english": "latte"
+  },
+  {
+   "emoji": "🍹",
+   "spanish": "Ponche",
+   "english": "punch"
+  },
+  {
+   "emoji": "🍏",
+   "spanish": "Sidra",
+   "english": "cider"
+  },
+  {
+   "emoji": "🍷",
+   "spanish": "Sangría",
+   "english": "sangria"
+  },
+  {
+   "emoji": "🧉",
+   "spanish": "Mate",
+   "english": "mate"
+  }
+ ],
+ "recap": "Ahora todas en inglés, conmigo: hot chocolate, sparkling water, iced tea, energy drink, coconut water, latte, punch, cider, sangria, mate.",
+ "outro": "[cheerful] ¿Cuántos sabías? Escribe tu número en los comentarios.",
+ "translations": {
+  "hot chocolate": "Chocolate caliente",
+  "sparkling water": "Agua con gas",
+  "iced tea": "Té helado",
+  "energy drink": "Bebida energética",
+  "coconut water": "Agua de coco",
+  "latte": "Café con leche",
+  "punch": "Ponche",
+  "cider": "Sidra",
+  "sangria": "Sangría",
+  "mate": "Mate"
+ },
+ "english_phrases": [
+  "hot chocolate",
+  "sparkling water",
+  "iced tea",
+  "energy drink",
+  "coconut water",
+  "latte",
+  "punch",
+  "cider",
+  "sangria",
+  "mate"
+ ],
+ "hashtags": [
+  "#InglésParaPrincipiantes",
+  "#VocabularioEnInglés",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#HowDoYouSay",
+  "#BebidasEnInglés",
+  "#Shorts",
+  "#LearnEnglish",
+  "#AprendeIngles"
+ ],
+ "_meta": {
+  "category": "basic_vocab",
+  "topic_id": "bv104",
+  "video_type": "how_do_you_say",
+  "model": "manual",
+  "sequel_of": "bebidas",
+  "why": "sequel of a ≥1K-view topic (research 2026-11-12)"
+ },
+ "full_script": "[warm] Segunda parte: diez bebidas más. Tú primero, luego yo. Chocolate caliente... hot chocolate. hot chocolate. Agua con gas... sparkling water. sparkling water. Té helado... iced tea. iced tea. Bebida energética... energy drink. energy drink. Agua de coco... coconut water. coconut water. Café con leche... latte. latte. Ponche... punch. punch. Sidra... cider. cider. Sangría... sangria. sangria. Mate... mate. mate. Ahora todas en inglés, conmigo: hot chocolate, sparkling water, iced tea, energy drink, coconut water, latte, punch, cider, sangria, mate. [cheerful] ¿Cuántos sabías? Escribe tu número en los comentarios."
+}

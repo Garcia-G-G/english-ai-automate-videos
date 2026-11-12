@@ -1,0 +1,107 @@
+{
+ "type": "how_do_you_say",
+ "video_title": "¿Cómo se dicen MÁS SITIOS DE LA CIUDAD en inglés? 🏥",
+ "video_description": "Segunda parte: diez sitios de la ciudad más en inglés. Dilas antes que yo. ¿Cuántas palabras sabías? 📚",
+ "title": "¿Cómo se dice…?",
+ "theme": "más sitios de la ciudad",
+ "level": "A1",
+ "intro": "[excited] Diez sitios de la ciudad más en inglés. Dilo tú primero, antes que yo.",
+ "items": [
+  {
+   "emoji": "🏥",
+   "spanish": "Hospital",
+   "english": "hospital"
+  },
+  {
+   "emoji": "📚",
+   "spanish": "Biblioteca",
+   "english": "library"
+  },
+  {
+   "emoji": "🎬",
+   "spanish": "Cine",
+   "english": "movie theater"
+  },
+  {
+   "emoji": "📮",
+   "spanish": "Correo",
+   "english": "post office"
+  },
+  {
+   "emoji": "🚓",
+   "spanish": "Estación de policía",
+   "english": "police station"
+  },
+  {
+   "emoji": "⛽",
+   "spanish": "Gasolinera",
+   "english": "gas station"
+  },
+  {
+   "emoji": "🦓",
+   "spanish": "Zoológico",
+   "english": "zoo"
+  },
+  {
+   "emoji": "⛲",
+   "spanish": "Plaza",
+   "english": "square"
+  },
+  {
+   "emoji": "🏟️",
+   "spanish": "Estadio",
+   "english": "stadium"
+  },
+  {
+   "emoji": "🏛️",
+   "spanish": "Ayuntamiento",
+   "english": "city hall"
+  }
+ ],
+ "recap": "Ahora todas en inglés, conmigo: hospital, library, movie theater, post office, police station, gas station, zoo, square, stadium, city hall.",
+ "outro": "[excited] Si sabías las diez, escribe DIEZ en los comentarios.",
+ "translations": {
+  "hospital": "Hospital",
+  "library": "Biblioteca",
+  "movie theater": "Cine",
+  "post office": "Correo",
+  "police station": "Estación de policía",
+  "gas station": "Gasolinera",
+  "zoo": "Zoológico",
+  "square": "Plaza",
+  "stadium": "Estadio",
+  "city hall": "Ayuntamiento"
+ },
+ "english_phrases": [
+  "hospital",
+  "library",
+  "movie theater",
+  "post office",
+  "police station",
+  "gas station",
+  "zoo",
+  "square",
+  "stadium",
+  "city hall"
+ ],
+ "hashtags": [
+  "#InglésParaPrincipiantes",
+  "#VocabularioEnInglés",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#HowDoYouSay",
+  "#CiudadEnInglés",
+  "#Shorts",
+  "#LearnEnglish",
+  "#AprendeIngles"
+ ],
+ "_meta": {
+  "category": "basic_vocab",
+  "topic_id": "bv109",
+  "video_type": "how_do_you_say",
+  "model": "manual",
+  "sequel_of": "sitios de la ciudad",
+  "why": "sequel of a ≥1K-view topic (research 2026-11-12)"
+ },
+ "full_script": "[excited] Diez sitios de la ciudad más en inglés. Dilo tú primero, antes que yo. Hospital... hospital. hospital. Biblioteca... library. library. Cine... movie theater. movie theater. Correo... post office. post office. Estación de policía... police station. police station. Gasolinera... gas station. gas station. Zoológico... zoo. zoo. Plaza... square. square. Estadio... stadium. stadium. Ayuntamiento... city hall. city hall. Ahora todas en inglés, conmigo: hospital, library, movie theater, post office, police station, gas station, zoo, square, stadium, city hall. [excited] Si sabías las diez, escribe DIEZ en los comentarios."
+}
