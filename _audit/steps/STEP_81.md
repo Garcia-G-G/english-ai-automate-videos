@@ -1,5 +1,25 @@
 # STEP 81 — Make the engine produce what the channel's data says works
 
+
+## Skills — use these explicitly (Garcia's instruction)
+
+Before §1, check which of these skills you have, and say in your first reply which ones are present. Invoke each skill at the step named below, not from memory of what it says. If a named skill is not installed, say so in the report and follow its intent by hand. Do not silently skip it.
+
+Every section:
+- `agent-protocols:planning-and-task-breakdown` — at the start of the STEP, to break the sections into tasks with acceptance checks.
+- `agent-protocols:incremental-implementation` — while building each section: small verified steps.
+- `mattpocock-skills:tdd` (or `agent-protocols:test-driven-development`) — write the failing test first for every rule this STEP adds.
+- `mattpocock-skills:diagnosing-bugs` (or `agent-protocols:debugging-and-error-recovery`) — whenever a test or render fails, before changing code.
+- `agent-protocols:code-review-and-quality` — on your own diff before each commit.
+- `agent-protocols:git-workflow-and-versioning` — for each commit and push.
+
+STEP 81 specifically:
+- §1–§2, the ranking, the scheduler and the YouTube/Facebook API calls: `agent-protocols:api-and-interface-design` for the scoring and slot interfaces. `agent-protocols:security-and-hardening` for the token handling and the snapshot of `.tokens` before any refresh write.
+- §3, the comments page: `llm-secure-patterns:agent-action-surface`, because nothing is posted without Garcia's click. `llm-secure-patterns:output-validation`, for the LLM-drafted replies (length, no links, no personal data). `design:ux-copy` plus `vectorlab-ux-skills:verbs` and `vectorlab-ux-skills:errors`, for the Spanish button labels and error messages.
+- §5, the vowel check and the voice scoring: `agent-protocols:research-spike-and-poc`. Write the measurement as a spike first; write findings, not conclusions.
+- §7, the LatAm lint: `agent-protocols:test-driven-development`. Use a fixture per mapped word, including «tío», which stays.
+- §4.4, the compilation: `agent-protocols:incremental-implementation`, one topic family first.
+
 ## Context
 
 Claude's research of 12 Nov 2026 is the Claude Doc «English Unlimited: investigación del canal y plan para reforzar el core». The facts that drive this STEP:

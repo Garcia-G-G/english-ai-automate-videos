@@ -21,6 +21,26 @@ Rules, as always:
 - No attribution lines.
 - No paid call from you; proofs come from cache. Claude reviews them in `_audit/stills/STEP82/`.
 
+
+## Skills — use these explicitly (Garcia's instruction)
+
+Before §1, check which of these skills you have, and say in your first reply which ones are present. Invoke each skill at the step named below, not from memory of what it says. If a named skill is not installed, say so in the report and follow its intent by hand. Do not silently skip it.
+
+Every section:
+- `agent-protocols:planning-and-task-breakdown` — at the start of the STEP, to break the sections into tasks with acceptance checks.
+- `agent-protocols:incremental-implementation` — while building each section: small verified steps.
+- `mattpocock-skills:tdd` (or `agent-protocols:test-driven-development`) — write the failing test first for every rule this STEP adds.
+- `mattpocock-skills:diagnosing-bugs` (or `agent-protocols:debugging-and-error-recovery`) — whenever a test or render fails, before changing code.
+- `agent-protocols:code-review-and-quality` — on your own diff before each commit.
+- `agent-protocols:git-workflow-and-versioning` — for each commit and push.
+
+STEP 82 specifically:
+- §1, the kit: `audit-suite:make-interfaces-feel-better` and `hzblj-skills:ui-surfaces`. These cover concentric radii, optical alignment, shadows and outlines. Also `hzblj-skills:ui-typography` for auto-fit, tabular numbers on the counter and no orphan letters.
+- §1, the contrast test: `design:accessibility-review`. WCAG AA for white text on each family gradient.
+- §2, motion: `audit-suite:web-animation-design` and `hzblj-skills:ui-motion`, for easing curves, durations and staggering. Apply their principles to the frame timeline.
+- §2, render cost: `agent-protocols:performance-optimization`. Measure CPU s before and after.
+- §5, proofs: `design:design-critique`, on your own 6-frame sheets, against the mock, before handing them to Claude.
+
 ## §1 — The Tablero kit (`src/video/tablero/`)
 
 - **Canvas and background.**
