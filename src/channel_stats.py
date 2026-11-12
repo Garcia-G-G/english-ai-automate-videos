@@ -16,7 +16,7 @@ import shutil
 import statistics
 from datetime import date, datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Iterable, Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parent.parent
 LEDGER = ROOT / "output" / "published" / "ledger.jsonl"
@@ -197,6 +197,74 @@ def refresh(today: Optional[date] = None, get=None, token: Optional[str] = None,
     path.write_text(json.dumps({"read_at": datetime.now().isoformat(timespec="seconds"), "videos": snapshot,
                                 "facebook": fb}, ensure_ascii=False, indent=1), encoding="utf-8")
     return path
+
+
+REFRESH_HOURS = 20
+AUTO = {"started": False, "last": None, "error": None}
+_AUTO_LOCK = __import__("threading").Lock()
+
+
+def snapshot_age_hours(now: Optional[datetime] = None) -> Optional[float]:
+    """Hours since the newest snapshot was read, or None when there is none."""
+    snap = latest()
+    if not snap or not snap.get("read_at"):
+        return None
+    return ((now or datetime.now()) - datetime.fromisoformat(snap["read_at"])).total_seconds() / 3600
+
+
+def refresh_if_stale(hours: float = REFRESH_HOURS, now: Optional[datetime] = None, do=None) -> Dict:
+    """STEP 81 §1.1: read the stats again when the newest snapshot is `hours` old or missing. Read-only
+    and free quota. Never raises: a failure comes back as {"error": ...} for the panel to warn about."""
+    age = snapshot_age_hours(now)
+    if age is not None and age < hours:
+        return {"ran": False, "error": None}
+    try:
+        (do or refresh)()
+    except Exception as exc:                                # noqa: BLE001 — never block the panel
+        return {"ran": True, "error": f"{type(exc).__name__}: {str(exc)[:200]}"}
+    return {"ran": True, "error": None}
+
+
+def start_auto_refresh(hours: float = REFRESH_HOURS, do=None) -> Dict:
+    """Once per process: refresh now if stale, then every `hours` while the panel runs (a daemon thread).
+    Off under pytest or with CHANNEL_STATS_AUTO=0. Returns the shared state the panel reads."""
+    import os
+    import threading
+    if "PYTEST_CURRENT_TEST" in os.environ or os.environ.get("CHANNEL_STATS_AUTO") == "0":
+        return AUTO
+    with _AUTO_LOCK:
+        if AUTO["started"]:
+            return AUTO
+        AUTO["started"] = True
+
+    def loop():
+        while True:
+            result = refresh_if_stale(hours, do=do)
+            AUTO["last"], AUTO["error"] = datetime.now().isoformat(timespec="seconds"), result["error"]
+            threading.Event().wait(hours * 3600)
+
+    threading.Thread(target=loop, name="channel-stats-auto", daemon=True).start()
+    return AUTO
+
+
+def sequel_suggestions(videos: List[Dict], queued_themes: Iterable[str] = (), min_views: int = 800,
+                       by_day: int = 3) -> List[Dict]:
+    """STEP 81 §1.4: published «Cómo se dice» videos that reached `min_views` by day `by_day` and have no
+    «MÁS <TEMA>» queued or published yet: [{category, views, title}], best first."""
+    import queue_priority
+    have = {queue_priority._fold(t) for t in queued_themes}
+    out = []
+    for v in videos:
+        cat = (v.get("category") or "").strip()
+        if v.get("type") != "how_do_you_say" or not cat or cat.upper().startswith("MÁS ") or cat == "—":
+            continue
+        if (v.get("days") or 0) < by_day or int(v.get("views", 0)) < min_views:
+            continue
+        key = queue_priority._fold(f"más {cat}")
+        if key in have or any(h.endswith(key) or key in h for h in have):
+            continue
+        out.append({"category": cat, "views": int(v["views"]), "title": v.get("title") or ""})
+    return sorted(out, key=lambda r: -r["views"])
 
 
 def latest() -> Optional[Dict]:

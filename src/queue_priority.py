@@ -19,6 +19,13 @@ ROOT = Path(__file__).resolve().parent.parent
 MATURE_DAYS = 3
 MIN_VIDEOS = 3
 A1_BOOST = 1.5
+# STEP 81 §1: priority = format_score × topic_score × freshness (scaled so 1000 = the how_do_you_say median)
+BASE = 1000
+MIN_FORMAT_VIDEOS = 5
+FRESH_DAYS = 3
+FRESH_FACTOR = 0.5
+SEQUEL_PARENT_MIN = 800
+DEFAULT_TOPIC_SCORES = {"a": 1.0, "sequel": 0.85, "c": 0.35, "other": 0.6}
 
 
 def _fold(text: str) -> str:
@@ -44,7 +51,9 @@ def settings() -> Dict:
     cfg = _config()
     block = cfg.get("queue_priority") or {}
     return {"prior_views": dict(block.get("prior_views") or {}), "a1": [_fold(w) for w in block.get("a1_categories") or []],
-            "default_prior": float(block.get("default_prior", 100))}
+            "default_prior": float(block.get("default_prior", 100)),
+            "tier_c": [_fold(w) for w in block.get("tier_c") or []],
+            "topic_scores": {**DEFAULT_TOPIC_SCORES, **(block.get("topic_scores") or {})}}
 
 
 def type_scores(stats: Optional[Dict], cfg: Optional[Dict] = None) -> Dict[str, Dict]:
@@ -97,6 +106,75 @@ def priority(script: Dict, scores: Dict[str, Dict], cfg: Optional[Dict] = None) 
     return s["score"], base
 
 
+def _median_views(videos: List[Dict], vtype: str) -> Tuple[Optional[float], int]:
+    views = [int(v.get("views", 0)) for v in videos if v.get("type") == vtype and (v.get("days") or 0) >= MATURE_DAYS]
+    return (float(statistics.median(views)) if views else None), len(views)
+
+
+def format_score(vtype: str, stats: Optional[Dict], cfg: Dict) -> Tuple[float, str]:
+    """This format's median views (videos aged 3 days or more) over how_do_you_say's; a format with
+    fewer than MIN_FORMAT_VIDEOS uses its config prior instead."""
+    videos = (stats or {}).get("videos", [])
+    priors = cfg["prior_views"]
+    prior_base = float(priors.get("how_do_you_say") or cfg["default_prior"])
+    base, n_base = _median_views(videos, "how_do_you_say")
+    base = base if n_base >= MIN_FORMAT_VIDEOS else prior_base
+    med, n = _median_views(videos, vtype)
+    if n >= MIN_FORMAT_VIDEOS:
+        return med / base, f"mediana {med:.0f} de {n} vídeos"
+    return float(priors.get(vtype, cfg["default_prior"])) / prior_base, "estimación previa"
+
+
+def family(script: Dict, cfg: Dict) -> str:
+    """The topic family: its A1 category word, else the theme without its article."""
+    word = a1_word(script, cfg)
+    if word:
+        return word
+    theme = _fold(script.get("theme") or script.get("title") or "")
+    return re.sub(r"^(el|la|los|las|mas)\s+", "", theme).strip()
+
+
+def topic_score(script: Dict, stats: Optional[Dict], cfg: Dict) -> Tuple[float, str]:
+    ts = cfg["topic_scores"]
+    meta = script.get("_meta") or {}
+    parent = meta.get("sequel_of")
+    if parent:
+        views = [int(v.get("views", 0)) for v in (stats or {}).get("videos", [])
+                 if v.get("type") == "how_do_you_say" and _fold(v.get("category") or "") == _fold(parent)]
+        if views and max(views) >= SEQUEL_PARENT_MIN:
+            return ts["sequel"], f"secuela de «{parent}» ({max(views)} vistas)"
+    word = a1_word(script, cfg)
+    if word:
+        return ts["a"], f"tema A «{word}»"
+    topic = _fold(" ".join(str(script.get(k) or "") for k in ("theme", "title", "video_title")))
+    hit = next((w for w in cfg["tier_c"] if w and re.search(rf"\b{re.escape(w)}s?\b", topic)), None)
+    if hit:
+        return ts["c"], f"subtema o situación «{hit}»"
+    return ts["other"], "tema sin categoría A1"
+
+
+def freshness(script: Dict, stats: Optional[Dict], cfg: Dict) -> Tuple[float, str]:
+    """×0.5 when this topic family was published in the last 3 days: two kitchen videos never go out in a row."""
+    fam = family(script, cfg)
+    for v in (stats or {}).get("videos", []):
+        if v.get("days") is not None and v["days"] <= FRESH_DAYS and fam and \
+                (fam == _fold(v.get("category") or "") or re.search(rf"\b{re.escape(fam)}", _fold(v.get("title") or ""))):
+            return FRESH_FACTOR, f"familia «{fam}» publicada hace {v['days']} d"
+    return 1.0, "familia sin publicar esta semana"
+
+
+def score(script: Dict, stats: Optional[Dict], cfg: Optional[Dict] = None) -> Tuple[float, str]:
+    """(priority, why): format_score × topic_score × freshness, with one Spanish sentence."""
+    cfg = cfg or settings()
+    cfg = {**cfg, "tier_c": cfg.get("tier_c", []), "topic_scores": {**DEFAULT_TOPIC_SCORES, **cfg.get("topic_scores", {})}}
+    vtype = script.get("type") or ""
+    f, f_why = format_score(vtype, stats, cfg)
+    t, t_why = topic_score(script, stats, cfg)
+    fr, fr_why = freshness(script, stats, cfg)
+    return BASE * f * t * fr, (f"{vtype}: formato ×{f:.2f} ({f_why}) × tema ×{t:.2f} ({t_why}) "
+                                f"× frescura ×{fr:.2f} ({fr_why})")
+
+
 _RANKED: Dict[tuple, list] = {}
 
 
@@ -128,14 +206,13 @@ def _ranked(paths: List[Path], stats: Optional[Dict], cfg: Optional[Dict]) -> Li
     if stats is None:
         import channel_stats
         stats = channel_stats.latest()
-    scores = type_scores(stats, cfg)
     out = []
     for k, path in enumerate(paths):
         try:
             script = json.loads(Path(path).read_text(encoding="utf-8"))
         except (OSError, ValueError):
             continue
-        p, why = priority(script, scores, cfg)
+        p, why = score(script, stats, cfg)
         out.append((path, p, why, k))
     out.sort(key=lambda r: (-r[1], r[3]))
     return [(p, pr, why) for p, pr, why, _k in out]

@@ -169,7 +169,7 @@ def test_the_title_emoji_is_the_topics_not_the_first_rows():
     items = [{"emoji": "🍎"}]
     assert M.how_do_you_say_title({"theme": "el trabajo", "video_title": "¿Cómo se dice TRABAJO en inglés? 💼",
                                    "items": items}).endswith("💼")
-    assert M.how_do_you_say_title({"theme": "el trabajo", "video_title": "Sin emoji en inglés?", "items": items}).endswith("🍎")
+    assert M.how_do_you_say_title({"theme": "el trabajo", "video_title": "Sin emoji en inglés?", "items": items}).endswith("💼")   # STEP 81 §0.3: the map, not the first row
 
 
 # ── what gets made next ──────────────────────────────────────────────

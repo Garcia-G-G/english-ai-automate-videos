@@ -679,6 +679,12 @@ queue_priority:
   # A basic A1 category in the topic multiplies its priority by 1.5
   a1_categories: [casa, comida, animales, cuerpo, colores, fruta, bebidas, dias, cocina, escuela, ropa,
                   verbos, postres, deportes, verduras, numeros, meses, familia, cara, profesiones, bano]
+  # STEP 81 §1: topic_score. Tier A is a1_categories (1.0); a sequel of a ≥800-view parent 0.85; subtopics and
+  # situations (tier C) 0.35; anything else 0.6.
+  topic_scores: {a: 1.0, sequel: 0.85, c: 0.35, other: 0.6}
+  tier_c: [restaurante, aeropuerto, hotel, banco, farmacia, hospital, entrevista, supermercado, taxi, cine,
+           gimnasio, playa, viaje, cita, llamada, alquiler, emergencia, reunion, cubiertos, mariscos,
+           instrumentos, nacionalidades, adjetivos, opuestos, preguntas, saludos, hobbies, formas]
 
 
 # STEP 82 §1: «Tablero», the Shorts' board design. Each family is a vertical gradient (top, bottom);

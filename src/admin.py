@@ -1631,6 +1631,23 @@ if page == "Dashboard":
     with _hoy[3]:
         st.metric(f"OpenRouter este mes · tope \\${_or_cap:.0f}", "$" + f"{(_or_spent or 0):.2f}", border=True)   # a metric's value is plain text
 
+    # STEP 81 §1.1: the stats refresh themselves (at start, then every 20 h); a failure warns, never blocks
+    import channel_stats as _cs
+    _auto = _cs.start_auto_refresh()
+    if _auto.get("error"):
+        st.warning(f"No pude actualizar las estadísticas: {_auto['error']}. Sigo con las últimas que tengo.")
+
+    # STEP 81 §1.4: a «Cómo se dice» that reached 800 views by day 3 earns a sequel
+    try:
+        _snap = _cs.latest()
+        _themes = [str((_d.get("theme") or "")) for _p in _queue_guard().queued_scripts()
+                   for _d in [json.loads(_p.read_text(encoding="utf-8"))]]
+        _seq = _cs.sequel_suggestions((_snap or {}).get("videos", []), _themes)[:3]
+    except Exception:                                       # noqa: BLE001
+        _seq = []
+    for _s in _seq:
+        st.info(f"Escribir la secuela: MÁS {_s['category']} ({_s['views']:,} vistas en los primeros días).")
+
     # STEP 80 §2: the main action — the best queued script, in words, and why it is next
     _best = next_best()
     with st.container(border=True):

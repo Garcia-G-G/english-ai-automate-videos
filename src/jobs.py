@@ -360,16 +360,38 @@ def queue_order(paths: list) -> list:
 
 
 def next_best() -> Optional[tuple]:
-    """(path, script, why) — what «Producir el siguiente mejor» would make now, or None."""
-    picked = queue_pick()
+    """(path, script, why) — what «Producir el siguiente mejor» would make now, or None. The day's mix
+    (daily_mix: 3 «Cómo se dice» + 1 «otro») picks the type; the priority score picks the script."""
+    picked = None
+    plan_text = ""
+    try:
+        import daily_mix
+        import publication_log
+        import queue_priority
+        rows = publication_log.read_ledger()
+        today = daily_mix.uploads_on(rows, datetime.now().date())
+        other_done = sum(1 for r in rows if r.get("platform") == "youtube" and r.get("video_type") != daily_mix.MAIN_TYPE)
+        plan = daily_mix.next_slot(today, other_done)
+        plan_text = daily_mix.explain(plan)
+        cfg = queue_priority.settings()
+        for vtype in plan["types"]:
+            candidate = queue_pick(vtype)
+            if candidate and (not plan["tier_a_only"] or vtype != "level_test"
+                              or queue_priority.a1_word(candidate[1], cfg)):
+                picked = candidate
+                break
+    except Exception:                                       # noqa: BLE001 — the mix never blocks the queue
+        logger.debug("queue: daily mix unavailable", exc_info=True)
+    picked = picked or queue_pick()
     if not picked:
         return None
     path, data = picked
     try:
         import channel_stats
         import queue_priority
-        cfg = queue_priority.settings()
-        _p, why = queue_priority.priority(data, queue_priority.type_scores(channel_stats.latest(), cfg), cfg)
+        _p, why = queue_priority.score(data, channel_stats.latest(), queue_priority.settings())
+        if plan_text:
+            why = f"{why}. {plan_text}"
     except Exception:                                       # noqa: BLE001
         why = "orden de la cola"
     return path, data, why
