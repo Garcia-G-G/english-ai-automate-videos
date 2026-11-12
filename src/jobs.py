@@ -699,6 +699,10 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             if length_ab_record:
                 script_data = length_ab.apply(script_data, length_ab_record["variant"])
 
+        if not dry_run and script_data.get("type") == "how_do_you_say":
+            import pron                                   # STEP 82 §3: a cheap draft, inside the click
+            pron.fill_missing(script_data["items"])
+
         script_dir = SCRIPTS_DIR / video_type
         script_dir.mkdir(parents=True, exist_ok=True)
         script_path = script_dir / f"{unique_name}.json"

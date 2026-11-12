@@ -507,6 +507,8 @@ class HowDoYouSayItem(BaseModel):
     # that with the real face at the real size.
     spanish: str = Field(min_length=1)
     english: str = Field(min_length=1)
+    # STEP 82 §3: figured pronunciation for Spanish speakers («jáus»), optional.
+    pron: Optional[str] = None
 
     @model_validator(mode="after")
     def _check_emoji(self):
@@ -514,6 +516,10 @@ class HowDoYouSayItem(BaseModel):
         problem = emoji_problem(self.emoji)
         if problem:
             raise ValueError(f"emoji: {problem}")
+        if self.pron is not None:
+            from video.tablero.kit import valid_pron
+            if not valid_pron(self.pron):
+                raise ValueError("pron: lowercase Spanish letters, accents and hyphens only, max 14 characters")
         return self
 
 
