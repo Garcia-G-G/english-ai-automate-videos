@@ -405,8 +405,13 @@ def generate_video(
                         'choose_level', 'phrases_level'):
         logger.info(f"Level ({video_type}): {len(data['items'])} items, theme {data.get('theme')!r}")
 
+        from .tablero import frame as tablero_frame
+        draw = (tablero_frame.create_frame_tablero_phrases
+                if video_type == "phrases_level" and tablero_frame.variant(data) == "tablero"
+                else create_frame_level)
+
         def frame_gen(t):
-            return create_frame_level(t, data, duration, presentation=presentation)
+            return draw(t, data, duration, presentation=presentation)
 
     else:
         logger.error(f"Unknown video type: {video_type}")

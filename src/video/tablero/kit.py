@@ -199,11 +199,11 @@ def _rotated(im: Image.Image, deg: float) -> Image.Image:
 
 
 @lru_cache(maxsize=64)
-def header(theme_emoji: str, topic: str) -> Image.Image:
+def header(theme_emoji: str, topic: str, title: str = "¿CÓMO SE DICE?") -> Image.Image:
     """«¿CÓMO SE DICE?» on its highlighter bar + the topic chip, as one full-width layer."""
     layer = Image.new("RGBA", (W, 420), (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
-    title, f = "¿CÓMO SE DICE?", fredoka(92)
+    f = fredoka(92)
     tw = d.textlength(title, font=f)
     x, y = (W - tw) / 2, 150
     bar = Image.new("RGBA", (int(tw + 60), 70), (0, 0, 0, 0))
@@ -211,7 +211,10 @@ def header(theme_emoji: str, topic: str) -> Image.Image:
     layer.alpha_composite(_rotated(bar, -1.5), (int(x - 30), int(y + 38)))
     d.text((x, y), title, font=f, fill=INK)
     text = topic.upper()
-    cf = fredoka(64)
+    size = 64
+    while size > 36 and fredoka(size).getlength(text) > W - 120 - 156:       # a long topic shrinks, never clips
+        size -= 2
+    cf = fredoka(size)
     cw = int(min(W - 120, 120 + cf.getlength(text) + 36))
     chip = card(cw, 100, PAPER, shadow=8, outline=6, r=50).copy()
     em = nb.emoji(theme_emoji, 70)
@@ -343,7 +346,83 @@ def place_tile(frame: Image.Image, im: Image.Image, i: int, scale: float = 1.0, 
     frame.alpha_composite(im, (ox, oy))
 
 
-# ── counter, Bubi, speech, outro ─────────────────────────────────────
+# ── phrase tiles (§6: phrases_level, one column) ─────────────────────
+
+PHRASE_X, PHRASE_Y0, PHRASE_W, PHRASE_GAP, PHRASE_BOTTOM = 60, 424, 960, 10, 1470
+PHRASE_COL1_X, PHRASE_COL2_X, PHRASE_COL_PAD = 100, 520, 30
+PHRASE_COL1_W, PHRASE_COL2_W = 390, 410
+PHRASE_SIZE_MAX, PHRASE_SIZE_MIN = 34, 26
+
+
+def phrase_height(n: int) -> int:
+    return min(132, (PHRASE_BOTTOM - PHRASE_Y0 - (n - 1) * PHRASE_GAP) // n)
+
+
+def phrase_origin(i: int, n: int) -> Tuple[int, int]:
+    return PHRASE_X, PHRASE_Y0 + i * (phrase_height(n) + PHRASE_GAP)
+
+
+def phrase_lines(text: str, width: int) -> Tuple[int, Tuple[str, ...]]:
+    """`text` on at most two lines at the largest size (34 down to 26) that fits `width`; a
+    phrase that still does not fit is returned at the minimum on two lines for the tests to see."""
+    words = text.split()
+    for size in range(PHRASE_SIZE_MAX, PHRASE_SIZE_MIN - 1, -2):
+        f = fredoka(size)
+        if f.getlength(text) <= width:
+            return size, (text,)
+        cuts = [(" ".join(words[:k]), " ".join(words[k:])) for k in range(1, len(words))]
+        best = min(cuts, key=lambda c: max(f.getlength(c[0]), f.getlength(c[1])), default=None)
+        if best and max(f.getlength(x) for x in best) <= width:
+            return size, best
+    return PHRASE_SIZE_MIN, best if best else (text,)
+
+
+@lru_cache(maxsize=512)
+def phrase_tile(index: int, n: int, spanish: str, english: str, state: str, timer: float = 0.0) -> Image.Image:
+    """One phrase tile (blank | active | done) with CARD_PAD of margin."""
+    h = phrase_height(n)
+    fill = {"blank": PAPER, "active": YEL, "done": BLUE}[state]
+    im = card(PHRASE_W, h, fill, shadow=8 if state != "active" else 12, outline=5, r=28).copy()
+    d, pad = ImageDraw.Draw(im), CARD_PAD
+    cy = pad + h / 2
+    badge = h - 36
+    d.ellipse((pad + 20, cy - badge / 2, pad + 20 + badge, cy + badge / 2),
+              fill=(255, 255, 255, 235) if state == "done" else (28, 24, 18, 255))
+    d.text((pad + 20 + badge / 2, cy), str(index + 1), font=fredoka(30), anchor="mm",
+           fill=INK if state == "done" else YEL)
+    ink = (255, 255, 255, 217) if state == "done" else INK
+
+    def block(text, x, width, colour):
+        size, lines = phrase_lines(text, width)
+        for k, line in enumerate(lines):
+            y = cy + (k - (len(lines) - 1) / 2) * size * 1.12
+            d.text((pad + x, y), line, font=fredoka(size), fill=colour, anchor="lm")
+
+    block(spanish, PHRASE_COL1_X, PHRASE_COL1_W, ink)
+    if state == "done":
+        block(english, PHRASE_COL2_X, PHRASE_COL2_W, YEL)
+    else:
+        d.rounded_rectangle((pad + PHRASE_COL2_X, cy - 7, pad + PHRASE_COL2_X + 300, cy + 7), 7,
+                            fill=(28, 24, 18, 90 if state == "blank" else 160))
+        if state == "active" and timer > 0:
+            d.rounded_rectangle((pad + 40, pad + h - 13, pad + 40 + (PHRASE_W - 80) * (1 - timer), pad + h - 7), 3,
+                                fill=CORAL)
+    return im
+
+
+def place_phrase(frame: Image.Image, im: Image.Image, i: int, n: int, scale: float = 1.0, rot: float = 0.0,
+                 glow: bool = False, flip: float = 1.0) -> None:
+    x, y = phrase_origin(i, n)
+    cx, cy = x + PHRASE_W / 2, y + phrase_height(n) / 2
+    if scale != 1.0 or rot:
+        im = im.resize((round(im.width * scale), round(im.height * scale)), Image.LANCZOS)
+        im = _rotated(im, rot)
+    if flip < 1.0:
+        im = im.resize((max(2, round(im.width * flip)), im.height), Image.LANCZOS)
+    frame.alpha_composite(im, (round(cx - im.width / 2), round(cy - im.height / 2)))
+
+
+# ── counter, Bubi, outro ─────────────────────────────────────
 
 @lru_cache(maxsize=64)
 def counter(n: int, total: int = 10, scale: float = 1.0) -> Image.Image:

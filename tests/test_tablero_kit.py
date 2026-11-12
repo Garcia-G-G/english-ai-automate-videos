@@ -96,3 +96,8 @@ def test_a_pronunciation_that_cannot_fit_is_dropped_not_overflowed():
     plain = kit.tile(0, "🍽", "Papel", "toilet paper", None, "done")
     assert long_tag.tobytes() == plain.tobytes()
     assert kit.tile(0, "🏠", "Casa", "house", "jáus", "done").tobytes() != kit.tile(0, "🏠", "Casa", "house", None, "done").tobytes()
+
+
+def test_a_long_topic_shrinks_inside_the_chip():
+    kit.header("💬", "preguntas del día a día")            # draws without clipping or raising
+    assert kit.fredoka(36).getlength("PREGUNTAS DEL DÍA A DÍA") < kit.W - 276
