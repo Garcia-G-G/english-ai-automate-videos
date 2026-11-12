@@ -700,3 +700,56 @@ design_ab:
   enabled: true
   control_every: 4
   until: "2026-11-26"
+
+# STEP 81 §0.2: seasonal scripts are picked only inside their window (month-day); outside it the queue
+# guard blocks them as OUT OF SEASON and they wait.
+content_calendar:
+  navidad: {from: "12-01", to: "12-20", words: ["navidad", "christmas"]}
+  halloween: {from: "10-01", to: "10-31", words: ["halloween"]}
+
+# STEP 81 §0.3: the title's emoji. Order: _meta.title_emoji, then this map (first key found in the theme), then the
+# script's own title emoji, and only then the first row. A fruit/food emoji is refused on a theme with no food word.
+title_emoji:
+  map:
+    profesiones: "👷"
+    trabajo: "💼"
+    cara: "😊"
+    familia: "👪"
+    casa: "🏠"
+    cocina: "🍳"
+    baño: "🛁"
+    cuerpo: "🧍"
+    cabeza: "🗣️"
+    animales: "🐶"
+    mascotas: "🐕"
+    aves: "🐦"
+    insectos: "🐛"
+    mar: "🐬"
+    "animales del mar": "🐙"
+    ropa: "👕"
+    zapatos: "👟"
+    colores: "🎨"
+    formas: "🔷"
+    ciudad: "🏙️"
+    tiendas: "🏪"
+    carro: "🚗"
+    clima: "⛅"
+    tiempo: "⏰"
+    deportes: "⚽"
+    escuela: "🎒"
+    escolares: "✏️"
+    tecnología: "📱"
+    dinero: "💰"
+    emociones: "😮"
+    países: "🌎"
+    nacionalidades: "🌎"
+    instrumentos: "🎸"
+    herramientas: "🔧"
+    verbos: "🔁"
+    acciones: "🏃"
+    saludos: "👋"
+    hobbies: "🎮"
+    oficina: "🖥️"
+    espacio: "🚀"
+    naturaleza: "🌳"
+  food_words: [comida, fruta, frutas, verdura, verduras, carne, carnes, lácteos, postres, bebidas, desayuno, mesa, mariscos, cubiertos, cocina, restaurante, platillos]

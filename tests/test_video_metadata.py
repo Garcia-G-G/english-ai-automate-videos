@@ -126,4 +126,4 @@ def test_a_plural_theme_gets_se_dicen_and_its_article():
     """Published 2026-10-27 as «¿Cómo se dice ANIMALES DEL MAR…»."""
     assert M.how_do_you_say_title({"theme": "los animales del mar", "items": [{"emoji": "🐙"}]}) \
         == "¿Cómo se dicen los ANIMALES DEL MAR en inglés? 🐙"
-    assert M.how_do_you_say_title({"theme": "la cara", "items": [{"emoji": "👄"}]}) == "¿Cómo se dice CARA en inglés? 👄"
+    assert M.how_do_you_say_title({"theme": "la cara", "items": [{"emoji": "👄"}]}) == "¿Cómo se dice CARA en inglés? 😊"

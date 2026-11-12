@@ -394,6 +394,36 @@ def _build_fallback_title(script_data: dict, video_type: str) -> str:
 _ARTICLES = ("el ", "la ", "los ", "las ")
 
 
+_FOOD_EMOJI = set("🍎🍏🍐🍊🍋🍌🍉🍇🍓🫐🍈🍒🍑🥭🍍🥥🥝🍅🥑🍆🥔🥕🌽🥦🥬🍞🥐🧀🥚🍳🥓🥩🍗🍔🍟🍕🌭🥪🌮🍝🍜🍣🍦🍩🍪🎂🍰🍫🍿")
+
+
+def _emoji_mismatch(emoji: str, theme: str, food_words: list) -> bool:
+    """A fruit/food emoji on a theme with no food word in it («PROFESIONES 🍎»)."""
+    if not any(ch in _FOOD_EMOJI for ch in emoji):
+        return False
+    return not any(re.search(rf"\b{re.escape(w)}\b", theme.lower()) for w in food_words)
+
+
+def title_emoji(script_data: dict) -> str:
+    """The title's emoji: `_meta.title_emoji`, else config.yaml title_emoji.map by theme, else the
+    script's own title emoji, else the first row's (last resort). A food emoji on a non-food theme is
+    refused at every step (config.yaml title_emoji.food_words)."""
+    import queue_priority
+    cfg = queue_priority._config().get("title_emoji") or {}
+    theme = (script_data.get("theme") or "").lower()
+    food = cfg.get("food_words") or []
+    mapped = next((e for k, e in sorted((cfg.get("map") or {}).items(), key=lambda kv: -len(kv[0]))
+                   if re.search(rf"\b{re.escape(k)}\b", theme)), "")
+    tail = (script_data.get("video_title") or "").rstrip().rsplit(" ", 1)[-1]
+    tail = tail if tail and not any(c.isalnum() or c in "?!." for c in tail) else ""
+    items = script_data.get("items") or []
+    first = items[0].get("emoji", "") if items else ""
+    for candidate in ((script_data.get("_meta") or {}).get("title_emoji") or "", mapped, tail, first):
+        if candidate and not _emoji_mismatch(candidate, theme, food):
+            return candidate
+    return mapped or first
+
+
 def how_do_you_say_title(script_data: dict) -> str:
     """`¿Cómo se dice FAMILIA en inglés? 👪`, from the script's own theme."""
     theme = (script_data.get("theme") or "").strip()
@@ -403,10 +433,7 @@ def how_do_you_say_title(script_data: dict) -> str:
             bare, article = bare[len(candidate):], candidate.strip()
             break
     bare = bare.split(" (")[0]
-    items = script_data.get("items") or []
-    # The one chosen for the topic, when the script has it: the first row's gave PROFESIONES 🍎.
-    tail = (script_data.get("video_title") or "").rstrip().rsplit(" ", 1)[-1]
-    emoji = tail if tail and not any(c.isalnum() or c in "?!." for c in tail) else (items[0].get("emoji", "") if items else "")
+    emoji = title_emoji(script_data)
     title = TITLE_TEMPLATES["how_do_you_say"][0].format(theme=bare.upper(), emoji=emoji).strip()
     if article in ("los", "las"):                           # «se dicen los ANIMALES DEL MAR», not «se dice»
         title = title.replace("¿Cómo se dice ", f"¿Cómo se dicen {article} ", 1)

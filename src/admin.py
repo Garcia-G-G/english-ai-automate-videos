@@ -181,7 +181,7 @@ from jobs import (  # noqa: E402,F401
     RENDERING_DIR, CUT_DIR, REJECTED_DIR, UPLOADED_DIR, JOBS_FILE, _JOBS_LOCK,
     load_jobs, save_jobs, _proc_start, _OWNER_PID, _OWNER_STARTED, _owner_alive,
     touch_heartbeat, create_job, update_job, complete_job, _queue_guard, _AUDIT_CACHE,
-    _AUDIT_TTL, _queue_bad, AlreadyRendering, script_key, rendering_job_for,
+    _AUDIT_TTL, _queue_bad, AlreadyRendering, AlreadyRendered, script_key, rendering_job_for,
     move_to_cut, queue_order, next_best, queue_pick, queue_status, queue_shelve,
     BATCH_QUEUE_PATH, _BATCH_LOCK, batch_queue, _write_batch_queue, batch_add,
     batch_clear, batch_take, batch_advance, scheduler_batch, batch_estimate_usd,
@@ -2104,6 +2104,9 @@ elif page == "Generate":
                            + (f" {_q['blocked']} guion(es) en cola bloqueados por el guardián."
                               if _q["blocked"] else ""))
 
+            rerender = st.checkbox(
+                "Volver a renderizar",
+                help="Un guion que ya tiene vídeo en pendientes, aprobados o subidos se rechaza, salvo que marques esto.")
             dry_run = st.checkbox(
                 "Prueba (sin voz ni render)",
                 help="Escribe el guion y resuelve el plan de voz, y para ahí: sin TTS ni "
@@ -2142,7 +2145,8 @@ elif page == "Generate":
                                           profile_name=profile_name,
                                           background=background,
                                           use_queue=use_queue,
-                                          dry_run=dry_run)
+                                          dry_run=dry_run,
+                                          rerender=rerender)
             except AlreadyRendering as e:
                 st.error(str(e))
             else:

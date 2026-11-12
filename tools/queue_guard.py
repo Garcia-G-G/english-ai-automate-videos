@@ -103,7 +103,7 @@ def queued_scripts():
     if not QUEUE_DIR.exists():
         return []
     return sorted(p for p in QUEUE_DIR.rglob("*.json")
-                  if not {DONE_DIR, SKIPPED_DIR, SERIES_DIR} & set(p.parents))
+                  if not {DONE_DIR, SKIPPED_DIR, SERIES_DIR, QUEUE_DIR / "_rewrite"} & set(p.parents))
 
 
 #: (fingerprint -> problems). The audit reads every queued script, validates
@@ -124,7 +124,7 @@ def queued_scripts():
 #
 # So: correctness blocks, quality warns.
 BLOCKING = ("ALREADY PRODUCED", "DUPLICATE", "NO SUCH TOPIC", "schema:",
-            "UNKNOWN AUDIO TAG", "unreadable", "not a JSON object",
+            "UNKNOWN AUDIO TAG", "REPEATS WORDS", "OUT OF SEASON", "unreadable", "not a JSON object",
             "_meta.category", "no `type`")
 
 
@@ -179,6 +179,8 @@ def audit(fresh: bool = False):
     # ~50 source files and fonts, so a 104-script queue paid 208 topic scans
     # and 104 signatures -- 2.1 s of a 2.9 s audit (measured 2026-10-13).
     real_topics = _real_topics()
+    import repetition                                       # STEP 81 §0.1, read once per audit
+    known = {t: repetition.corpus(t, QUEUE_DIR, DONE_DIR) for t in repetition.GUARDED}
     sig = _code_signature()
     dirty = []
 
@@ -229,6 +231,14 @@ def audit(fresh: bool = False):
                                         f"both claim {category}/{topic_id}"))
             else:
                 seen_in_queue[key] = rel
+
+        repeats = repetition.problem(data, path, known.get(vtype))
+        if repeats:
+            problems.append((rel, repeats))
+        import season                                       # STEP 81 §0.2
+        late = season.out_of_season(data)
+        if late:
+            problems.append((rel, late))
 
         # -- and the three gates the pipeline applies anyway --
         problems.extend((rel, problem) for problem in

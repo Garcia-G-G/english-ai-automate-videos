@@ -351,7 +351,7 @@ def test_metadata_title_template():
     data = _script()
     data.pop("video_title")
     meta = generate_metadata(data, "how_do_you_say", "basic_vocab")
-    assert meta["title"] == f"¿Cómo se dice FAMILIA en inglés? {data['items'][0]['emoji']}"
+    assert meta["title"] == "¿Cómo se dice FAMILIA en inglés? 👪"          # STEP 81 §0.3: the theme's emoji, not the first row's
     assert meta["hashtags"][:5] == ["#InglésParaPrincipiantes", "#VocabularioEnInglés",
                                     "#AprenderInglés", "#InglésFácil", "#HowDoYouSay"]
 

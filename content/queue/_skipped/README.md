@@ -12,6 +12,7 @@ Queued scripts whose topic already has a video. The queue guard blocked them as 
 | `sy002_cafeteria.json` | say_it_level | say_it/sy002 |
 | `cm016_information.json` | true_false | common_mistakes/cm016 |
 | `cu001_saludos.json` | vocabulary | cultural/cu001 |
+| `bv049_halloween.json` | how_do_you_say | out of season, until 2027-10-01 (STEP 81 §0.2) |
 
 The STEP 78 report counted 7: the seventh, a second how_do_you_say script, was rendered by the panel
 between the two STEPs and is in `_done/`.

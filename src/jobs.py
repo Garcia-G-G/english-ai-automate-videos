@@ -291,6 +291,35 @@ class AlreadyRendering(RuntimeError):
     """A job for this script (topic_id + type) is already queued or running."""
 
 
+class AlreadyRendered(AlreadyRendering):
+    """An MP4 for this script already sits in pending/, approved/ or uploaded/ (STEP 81 §0.4)."""
+
+
+def rendered_artifact(key: Optional[str]) -> Optional[Path]:
+    """The MP4 already made from this script (topic_id:type), in pending/, approved/ or uploaded/."""
+    if not key:
+        return None
+    for root in (PENDING_DIR, APPROVED_DIR, UPLOADED_DIR):
+        for side in root.rglob("*.json"):
+            try:
+                if script_key(json.loads(side.read_text(encoding="utf-8")).get("script_data")) == key:
+                    mp4 = side.with_suffix(".mp4")
+                    if mp4.exists():
+                        return mp4
+            except (OSError, ValueError, AttributeError):
+                continue
+    return None
+
+
+def refuse_repeat_render(script: Optional[dict], rerender: bool) -> None:
+    """Raise AlreadyRendered (in Spanish) unless Garcia ticked «Volver a renderizar»."""
+    key = script_key(script)
+    mp4 = None if rerender else rendered_artifact(key)
+    if mp4:
+        raise AlreadyRendered(f"{key.split(':')[0]} ya tiene un vídeo ({mp4.parent.name}/{mp4.name}). "
+                              "Marca «Volver a renderizar» si de verdad quieres otro.")
+
+
 def script_key(script: dict) -> Optional[str]:
     """topic_id:type, the identity of a script across jobs; None for a script without one."""
     meta = (script or {}).get("_meta") or {}
@@ -515,7 +544,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                                 topic_name: str = None, script_data: dict = None,
                                 use_queue: bool = True,
                                 background: str = None, dry_run: bool = False,
-                                profile_name: str = None) -> dict:
+                                profile_name: str = None, rerender: bool = False) -> dict:
     """Generate one video through the shared pipeline (src/pipeline.py).
 
     Same TTS dispatch, same merge and same renderer as main.py — only the
@@ -673,6 +702,13 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         # one) may hold the same topic_id + type; two renders of bv010 is how
         # a second copy of a topic reached YouTube.
         key = script_key(script_data)
+        refuse_repeat_render(script_data, rerender)         # STEP 81 §0.4, before any voice is spent
+        if not rerender and script_data.get("type") in ("how_do_you_say", "phrases_level"):
+            import repetition                               # STEP 81 §0.1 at generation time: vs what is published
+            published = [c for c in repetition.corpus(script_data["type"]) if c[2]]
+            repeats = repetition.problem(script_data, None, published)
+            if repeats:
+                raise RuntimeError(repeats)
         if rendering_job_for(key, exclude=job_id):
             queued_path = None            # not ours to release or shelve
             raise AlreadyRendering(f"Ya se está renderizando {key.split(':')[0]}")
@@ -1070,6 +1106,7 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
     AlreadyRendering, before any job exists.
     """
     key = script_key(kwargs.get("script_data"))
+    refuse_repeat_render(kwargs.get("script_data"), bool(kwargs.get("rerender")))
     if rendering_job_for(key):
         raise AlreadyRendering(f"Ya se está renderizando {key.split(':')[0]}")
     job_id = create_job(video_type, category, topic_name)
