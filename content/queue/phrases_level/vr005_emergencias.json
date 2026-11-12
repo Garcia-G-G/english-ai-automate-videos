@@ -1,0 +1,91 @@
+{
+ "type": "phrases_level",
+ "video_title": "Inglés para una EMERGENCIA: 10 frases que pueden salvarte 🚨",
+ "video_description": "Diez frases para pedir ayuda en una emergencia en inglés. 🚑",
+ "title": "¿Cómo se dice?",
+ "theme": "en una emergencia",
+ "intro": "[warm] Diez frases que te van a servir de verdad. Dilas en inglés antes que yo.",
+ "outro": "[happy] ¿Cuál te sirve más? Escríbela en los comentarios.",
+ "hashtags": [
+  "#CómoSeDice",
+  "#InglésParaLaVidaReal",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#FrasesEnInglés"
+ ],
+ "_meta": {
+  "category": "everyday_expressions",
+  "topic_id": "vr005",
+  "video_type": "phrases_level",
+  "model": "manual",
+  "series": "vida_real",
+  "why": "practical adult topics, Garcia 2026-11-12"
+ },
+ "items": [
+  {
+   "spanish": "¡Ayuda!",
+   "english": "Help!"
+  },
+  {
+   "spanish": "Llamen al 911.",
+   "english": "Call 911."
+  },
+  {
+   "spanish": "Necesito una ambulancia.",
+   "english": "I need an ambulance."
+  },
+  {
+   "spanish": "Hubo un accidente.",
+   "english": "There's been an accident."
+  },
+  {
+   "spanish": "No puede respirar.",
+   "english": "He can't breathe."
+  },
+  {
+   "spanish": "Está sangrando.",
+   "english": "He's bleeding."
+  },
+  {
+   "spanish": "Hay un incendio.",
+   "english": "There's a fire."
+  },
+  {
+   "spanish": "Me robaron.",
+   "english": "I've been robbed."
+  },
+  {
+   "spanish": "Estoy en la calle Main.",
+   "english": "I'm on Main Street."
+  },
+  {
+   "spanish": "Por favor, apúrense.",
+   "english": "Please hurry."
+  }
+ ],
+ "translations": {
+  "Help!": "¡Ayuda!",
+  "Call 911.": "Llamen al 911.",
+  "I need an ambulance.": "Necesito una ambulancia.",
+  "There's been an accident.": "Hubo un accidente.",
+  "He can't breathe.": "No puede respirar.",
+  "He's bleeding.": "Está sangrando.",
+  "There's a fire.": "Hay un incendio.",
+  "I've been robbed.": "Me robaron.",
+  "I'm on Main Street.": "Estoy en la calle Main.",
+  "Please hurry.": "Por favor, apúrense."
+ },
+ "english_phrases": [
+  "Help!",
+  "Call 911.",
+  "I need an ambulance.",
+  "There's been an accident.",
+  "He can't breathe.",
+  "He's bleeding.",
+  "There's a fire.",
+  "I've been robbed.",
+  "I'm on Main Street.",
+  "Please hurry."
+ ],
+ "full_script": "[warm] Diez frases que te van a servir de verdad. Dilas en inglés antes que yo. Help! Call 911. I need an ambulance. There's been an accident. He can't breathe. He's bleeding. There's a fire. I've been robbed. I'm on Main Street. Please hurry. [happy] ¿Cuál te sirve más? Escríbela en los comentarios."
+}

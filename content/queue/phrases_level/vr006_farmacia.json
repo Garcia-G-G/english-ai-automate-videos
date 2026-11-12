@@ -1,0 +1,91 @@
+{
+ "type": "phrases_level",
+ "video_title": "Inglés para la FARMACIA: 10 frases 💊",
+ "video_description": "Diez frases para comprar medicinas en inglés. 🩺",
+ "title": "¿Cómo se dice?",
+ "theme": "en la farmacia",
+ "intro": "[cheerful] Frases para la vida real. Tú primero, luego yo.",
+ "outro": "[excited] Guárdalo para cuando lo necesites y dime cuántas sabías.",
+ "hashtags": [
+  "#CómoSeDice",
+  "#InglésParaLaVidaReal",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#FrasesEnInglés"
+ ],
+ "_meta": {
+  "category": "everyday_expressions",
+  "topic_id": "vr006",
+  "video_type": "phrases_level",
+  "model": "manual",
+  "series": "vida_real",
+  "why": "practical adult topics, Garcia 2026-11-12"
+ },
+ "items": [
+  {
+   "spanish": "Vengo por mi receta.",
+   "english": "I'm here to pick up my prescription."
+  },
+  {
+   "spanish": "¿Tiene algo para la gripa?",
+   "english": "Do you have anything for the flu?"
+  },
+  {
+   "spanish": "Me duele la garganta.",
+   "english": "I have a sore throat."
+  },
+  {
+   "spanish": "¿Esto da sueño?",
+   "english": "Does this make you drowsy?"
+  },
+  {
+   "spanish": "¿Lo tomo con comida?",
+   "english": "Should I take it with food?"
+  },
+  {
+   "spanish": "¿Hay una versión genérica?",
+   "english": "Is there a generic version?"
+  },
+  {
+   "spanish": "¿Mi seguro lo cubre?",
+   "english": "Does my insurance cover it?"
+  },
+  {
+   "spanish": "Necesito algo para el dolor.",
+   "english": "I need something for the pain."
+  },
+  {
+   "spanish": "¿Es seguro para niños?",
+   "english": "Is it safe for kids?"
+  },
+  {
+   "spanish": "¿Dónde están las vitaminas?",
+   "english": "Where are the vitamins?"
+  }
+ ],
+ "translations": {
+  "I'm here to pick up my prescription.": "Vengo por mi receta.",
+  "Do you have anything for the flu?": "¿Tiene algo para la gripa?",
+  "I have a sore throat.": "Me duele la garganta.",
+  "Does this make you drowsy?": "¿Esto da sueño?",
+  "Should I take it with food?": "¿Lo tomo con comida?",
+  "Is there a generic version?": "¿Hay una versión genérica?",
+  "Does my insurance cover it?": "¿Mi seguro lo cubre?",
+  "I need something for the pain.": "Necesito algo para el dolor.",
+  "Is it safe for kids?": "¿Es seguro para niños?",
+  "Where are the vitamins?": "¿Dónde están las vitaminas?"
+ },
+ "english_phrases": [
+  "I'm here to pick up my prescription.",
+  "Do you have anything for the flu?",
+  "I have a sore throat.",
+  "Does this make you drowsy?",
+  "Should I take it with food?",
+  "Is there a generic version?",
+  "Does my insurance cover it?",
+  "I need something for the pain.",
+  "Is it safe for kids?",
+  "Where are the vitamins?"
+ ],
+ "full_script": "[cheerful] Frases para la vida real. Tú primero, luego yo. I'm here to pick up my prescription. Do you have anything for the flu? I have a sore throat. Does this make you drowsy? Should I take it with food? Is there a generic version? Does my insurance cover it? I need something for the pain. Is it safe for kids? Where are the vitamins? [excited] Guárdalo para cuando lo necesites y dime cuántas sabías."
+}

@@ -1,0 +1,91 @@
+{
+ "type": "phrases_level",
+ "video_title": "Inglés para el BANCO: 10 frases que vas a necesitar 🏦",
+ "video_description": "Diez frases para hacer trámites en el banco en inglés. 💳",
+ "title": "¿Cómo se dice?",
+ "theme": "en el banco",
+ "intro": "[warm] Diez frases que te van a servir de verdad. Dilas en inglés antes que yo.",
+ "outro": "[happy] ¿Cuál te sirve más? Escríbela en los comentarios.",
+ "hashtags": [
+  "#CómoSeDice",
+  "#InglésParaLaVidaReal",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#FrasesEnInglés"
+ ],
+ "_meta": {
+  "category": "everyday_expressions",
+  "topic_id": "vr003",
+  "video_type": "phrases_level",
+  "model": "manual",
+  "series": "vida_real",
+  "why": "practical adult topics, Garcia 2026-11-12"
+ },
+ "items": [
+  {
+   "spanish": "Quiero abrir una cuenta.",
+   "english": "I'd like to open an account."
+  },
+  {
+   "spanish": "Quiero depositar este cheque.",
+   "english": "I'd like to deposit this check."
+  },
+  {
+   "spanish": "¿Cuál es mi saldo?",
+   "english": "What's my balance?"
+  },
+  {
+   "spanish": "Perdí mi tarjeta.",
+   "english": "I lost my card."
+  },
+  {
+   "spanish": "Olvidé mi NIP.",
+   "english": "I forgot my PIN."
+  },
+  {
+   "spanish": "Quiero enviar dinero.",
+   "english": "I want to send money."
+  },
+  {
+   "spanish": "¿Cuánto es la comisión?",
+   "english": "How much is the fee?"
+  },
+  {
+   "spanish": "Necesito cambiar dinero.",
+   "english": "I need to exchange money."
+  },
+  {
+   "spanish": "Hay un cargo que no reconozco.",
+   "english": "There's a charge I don't recognize."
+  },
+  {
+   "spanish": "¿Me da un recibo?",
+   "english": "Can I get a receipt?"
+  }
+ ],
+ "translations": {
+  "I'd like to open an account.": "Quiero abrir una cuenta.",
+  "I'd like to deposit this check.": "Quiero depositar este cheque.",
+  "What's my balance?": "¿Cuál es mi saldo?",
+  "I lost my card.": "Perdí mi tarjeta.",
+  "I forgot my PIN.": "Olvidé mi NIP.",
+  "I want to send money.": "Quiero enviar dinero.",
+  "How much is the fee?": "¿Cuánto es la comisión?",
+  "I need to exchange money.": "Necesito cambiar dinero.",
+  "There's a charge I don't recognize.": "Hay un cargo que no reconozco.",
+  "Can I get a receipt?": "¿Me da un recibo?"
+ },
+ "english_phrases": [
+  "I'd like to open an account.",
+  "I'd like to deposit this check.",
+  "What's my balance?",
+  "I lost my card.",
+  "I forgot my PIN.",
+  "I want to send money.",
+  "How much is the fee?",
+  "I need to exchange money.",
+  "There's a charge I don't recognize.",
+  "Can I get a receipt?"
+ ],
+ "full_script": "[warm] Diez frases que te van a servir de verdad. Dilas en inglés antes que yo. I'd like to open an account. I'd like to deposit this check. What's my balance? I lost my card. I forgot my PIN. I want to send money. How much is the fee? I need to exchange money. There's a charge I don't recognize. Can I get a receipt? [happy] ¿Cuál te sirve más? Escríbela en los comentarios."
+}

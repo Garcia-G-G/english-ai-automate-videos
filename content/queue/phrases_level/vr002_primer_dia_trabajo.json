@@ -1,0 +1,91 @@
+{
+ "type": "phrases_level",
+ "video_title": "Inglés para tu PRIMER DÍA DE TRABAJO: 10 frases 🧰",
+ "video_description": "Diez frases para tu primer día en un trabajo nuevo. 🙌",
+ "title": "¿Cómo se dice?",
+ "theme": "en tu primer día de trabajo",
+ "intro": "[cheerful] Frases para la vida real. Tú primero, luego yo.",
+ "outro": "[excited] Guárdalo para cuando lo necesites y dime cuántas sabías.",
+ "hashtags": [
+  "#CómoSeDice",
+  "#InglésParaElTrabajo",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#FrasesEnInglés"
+ ],
+ "_meta": {
+  "category": "everyday_expressions",
+  "topic_id": "vr002",
+  "video_type": "phrases_level",
+  "model": "manual",
+  "series": "vida_real",
+  "why": "practical adult topics, Garcia 2026-11-12"
+ },
+ "items": [
+  {
+   "spanish": "¿A qué hora entro?",
+   "english": "What time do I start?"
+  },
+  {
+   "spanish": "¿A qué hora salgo?",
+   "english": "What time do I get off?"
+  },
+  {
+   "spanish": "¿Dónde dejo mis cosas?",
+   "english": "Where can I leave my things?"
+  },
+  {
+   "spanish": "¿Me enseña cómo se hace?",
+   "english": "Can you show me how to do it?"
+  },
+  {
+   "spanish": "Ya terminé.",
+   "english": "I'm done."
+  },
+  {
+   "spanish": "¿Qué hago ahora?",
+   "english": "What should I do next?"
+  },
+  {
+   "spanish": "Necesito un descanso.",
+   "english": "I need a break."
+  },
+  {
+   "spanish": "No entendí, ¿me lo repite?",
+   "english": "I didn't understand, can you repeat that?"
+  },
+  {
+   "spanish": "Voy a llegar tarde.",
+   "english": "I'm going to be late."
+  },
+  {
+   "spanish": "Hasta mañana.",
+   "english": "See you tomorrow."
+  }
+ ],
+ "translations": {
+  "What time do I start?": "¿A qué hora entro?",
+  "What time do I get off?": "¿A qué hora salgo?",
+  "Where can I leave my things?": "¿Dónde dejo mis cosas?",
+  "Can you show me how to do it?": "¿Me enseña cómo se hace?",
+  "I'm done.": "Ya terminé.",
+  "What should I do next?": "¿Qué hago ahora?",
+  "I need a break.": "Necesito un descanso.",
+  "I didn't understand, can you repeat that?": "No entendí, ¿me lo repite?",
+  "I'm going to be late.": "Voy a llegar tarde.",
+  "See you tomorrow.": "Hasta mañana."
+ },
+ "english_phrases": [
+  "What time do I start?",
+  "What time do I get off?",
+  "Where can I leave my things?",
+  "Can you show me how to do it?",
+  "I'm done.",
+  "What should I do next?",
+  "I need a break.",
+  "I didn't understand, can you repeat that?",
+  "I'm going to be late.",
+  "See you tomorrow."
+ ],
+ "full_script": "[cheerful] Frases para la vida real. Tú primero, luego yo. What time do I start? What time do I get off? Where can I leave my things? Can you show me how to do it? I'm done. What should I do next? I need a break. I didn't understand, can you repeat that? I'm going to be late. See you tomorrow. [excited] Guárdalo para cuando lo necesites y dime cuántas sabías."
+}

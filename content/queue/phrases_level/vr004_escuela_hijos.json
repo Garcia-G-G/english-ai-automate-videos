@@ -1,0 +1,91 @@
+{
+ "type": "phrases_level",
+ "video_title": "Inglés para la ESCUELA DE TUS HIJOS: 10 frases 🎒",
+ "video_description": "Diez frases para hablar con la escuela de tus hijos en inglés. 🏫",
+ "title": "¿Cómo se dice?",
+ "theme": "en la escuela de tus hijos",
+ "intro": "[cheerful] Frases para la vida real. Tú primero, luego yo.",
+ "outro": "[excited] Guárdalo para cuando lo necesites y dime cuántas sabías.",
+ "hashtags": [
+  "#CómoSeDice",
+  "#InglésParaLaVidaReal",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#FrasesEnInglés"
+ ],
+ "_meta": {
+  "category": "everyday_expressions",
+  "topic_id": "vr004",
+  "video_type": "phrases_level",
+  "model": "manual",
+  "series": "vida_real",
+  "why": "practical adult topics, Garcia 2026-11-12"
+ },
+ "items": [
+  {
+   "spanish": "Soy la mamá de Sofía.",
+   "english": "I'm Sofia's mom."
+  },
+  {
+   "spanish": "Vengo a recoger a mi hijo.",
+   "english": "I'm here to pick up my son."
+  },
+  {
+   "spanish": "Mi hijo está enfermo.",
+   "english": "My son is sick."
+  },
+  {
+   "spanish": "Hoy no va a venir.",
+   "english": "He won't be in today."
+  },
+  {
+   "spanish": "¿Cómo va en la escuela?",
+   "english": "How is he doing in school?"
+  },
+  {
+   "spanish": "¿Qué tarea tiene?",
+   "english": "What homework does he have?"
+  },
+  {
+   "spanish": "¿A qué hora es la junta?",
+   "english": "What time is the meeting?"
+  },
+  {
+   "spanish": "¿Necesito firmar algo?",
+   "english": "Do I need to sign anything?"
+  },
+  {
+   "spanish": "¿Hay alguien que hable español?",
+   "english": "Is there anyone who speaks Spanish?"
+  },
+  {
+   "spanish": "Gracias por ayudarlo.",
+   "english": "Thank you for helping him."
+  }
+ ],
+ "translations": {
+  "I'm Sofia's mom.": "Soy la mamá de Sofía.",
+  "I'm here to pick up my son.": "Vengo a recoger a mi hijo.",
+  "My son is sick.": "Mi hijo está enfermo.",
+  "He won't be in today.": "Hoy no va a venir.",
+  "How is he doing in school?": "¿Cómo va en la escuela?",
+  "What homework does he have?": "¿Qué tarea tiene?",
+  "What time is the meeting?": "¿A qué hora es la junta?",
+  "Do I need to sign anything?": "¿Necesito firmar algo?",
+  "Is there anyone who speaks Spanish?": "¿Hay alguien que hable español?",
+  "Thank you for helping him.": "Gracias por ayudarlo."
+ },
+ "english_phrases": [
+  "I'm Sofia's mom.",
+  "I'm here to pick up my son.",
+  "My son is sick.",
+  "He won't be in today.",
+  "How is he doing in school?",
+  "What homework does he have?",
+  "What time is the meeting?",
+  "Do I need to sign anything?",
+  "Is there anyone who speaks Spanish?",
+  "Thank you for helping him."
+ ],
+ "full_script": "[cheerful] Frases para la vida real. Tú primero, luego yo. I'm Sofia's mom. I'm here to pick up my son. My son is sick. He won't be in today. How is he doing in school? What homework does he have? What time is the meeting? Do I need to sign anything? Is there anyone who speaks Spanish? Thank you for helping him. [excited] Guárdalo para cuando lo necesites y dime cuántas sabías."
+}
