@@ -1648,6 +1648,30 @@ if page == "Dashboard":
     for _s in _seq:
         st.info(f"Escribir la secuela: MÁS {_s['category']} ({_s['views']:,} vistas en los primeros días).")
 
+    # STEP 81 §2: the next 8 publishing slots and what fills them
+    with st.expander("Próximos 8 huecos de publicación"):
+        try:
+            import daily_mix
+            import publication_log
+            import slots as _slots
+            _cfg = _slots.settings()
+            _rows = publication_log.read_ledger()
+            _next = _slots.next_slots(datetime.now(_slots._tz(_cfg)), _slots.taken_times(_rows, _cfg), 8, _cfg)
+            _bad = _queue_bad(_queue_guard())
+            _ranked = []
+            for _p in queue_order(_queue_guard().queued_scripts()):
+                if _p.relative_to(ROOT) not in _bad:
+                    _ranked.append((_p, json.loads(_p.read_text(encoding="utf-8"))))
+            _today = daily_mix.uploads_on(_rows, datetime.now().date())
+            _plan = _slots.fill_plan(_next, _ranked, _today)
+            st.dataframe([{"hueco": at.strftime("%a %d %b %H:%M"), "tipo": want,
+                           "guion": path.name if path else "— sin guion —"} for at, want, path in _plan],
+                         hide_index=True)
+            st.caption("YouTube sube el vídeo en privado y lo publica solo a esa hora (Costa Rica); "
+                       "mínimo 2,5 h entre dos y 4 al día.")
+        except Exception as _e:                              # noqa: BLE001
+            st.caption(f"Huecos no disponibles: {_e}")
+
     # STEP 80 §2: the main action — the best queued script, in words, and why it is next
     _best = next_best()
     with st.container(border=True):

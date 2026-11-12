@@ -193,7 +193,7 @@ def record_publication(
 def record_upload_result(*, artifact: str, video_path: str, video_type: str,
                          platform: str, result, sent_title: str,
                          sent_description: str, sent_hashtags: List[str],
-                         ledger_path: Optional[Path] = None) -> Dict:
+                         ledger_path: Optional[Path] = None, extra: Optional[Dict] = None) -> Dict:
     """Record a publication from an uploader `result`, whatever shape it is.
 
     THE ONLY RECORDER. It lives here rather than in admin.py because admin.py
@@ -232,6 +232,7 @@ def record_upload_result(*, artifact: str, video_path: str, video_type: str,
         published_title=sent_title,
         published_description=sent_description,
         hashtags=sent_hashtags,
+        extra=extra,
         ledger_path=ledger_path,
     )
 

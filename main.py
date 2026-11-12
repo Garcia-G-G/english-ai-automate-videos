@@ -49,6 +49,7 @@ OUTPUT_DIR = ROOT / "output"
 # Add src/ to PYTHONPATH so that top-level modules (script_generator, tts_elevenlabs, etc.)
 # can be imported without package prefixes.  All pipeline code lives under src/.
 sys.path.insert(0, str(SRC))
+import slots                                  # STEP 81 §2: publishing slots
 from script_generator import (
     get_random_topic,
     get_topic_name,
@@ -190,6 +191,18 @@ def move_uploaded_artifact(video_path: Path, outcome: dict) -> Path:
 
     logger.info("moved %s -> %s", video_path.name, uploaded_dir)
     return dest
+
+
+def next_youtube_slot():
+    """The next free YouTube slot (STEP 81 §2), or None when scheduling is off. Reads the ledger."""
+    import publication_log
+    import slots
+    cfg = slots.settings()
+    if not cfg["enabled"]:
+        return None
+    taken = slots.taken_times(publication_log.read_ledger(), cfg)
+    found = slots.next_slots(datetime.now(slots._tz(cfg)), taken, 1, cfg)
+    return found[0] if found else None
 
 
 def upload_video(video_path: Path, video_type: str, script_data: dict = None,
@@ -336,6 +349,14 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
                                status=ATTEMPT_SESSION, video_path=str(video_path),
                                session_uri=uri, file_size=size, detail=_t)
 
+            # STEP 81 §2: YouTube goes up private and publishes itself at the next free slot
+            slot_kwargs, scheduled_for = {}, None
+            if platform_key == "youtube":
+                scheduled_for = next_youtube_slot()
+                if scheduled_for is not None:
+                    slot_kwargs["publish_at"] = slots.publish_at(scheduled_for)
+                    logger.info("YouTube slot: %s", scheduled_for.isoformat())
+
             result = manager.upload(
                 platform_key,
                 str(video_path),
@@ -343,6 +364,7 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
                 description=sent_description,
                 hashtags=sent_hashtags,
                 on_session=_session,
+                **slot_kwargs,
             )
         except Exception as e:                          # noqa: BLE001
             # Kept per-platform: a YouTube failure must not stop Instagram,
@@ -395,6 +417,7 @@ def upload_video(video_path: Path, video_type: str, script_data: dict = None,
                 sent_title=sent_title,
                 sent_description=sent_description,
                 sent_hashtags=sent_hashtags,
+                extra={"scheduled_for": scheduled_for.isoformat()} if scheduled_for else None,
             )
             outcome["recorded"].append(platform_name)
             record_attempt(artifact=artifact, platform=platform_key,

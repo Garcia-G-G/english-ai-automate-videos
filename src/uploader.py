@@ -783,9 +783,11 @@ class YouTubeUploader(BaseUploader):
         shorts: bool = True,
         privacy: Optional[str] = None,
         on_progress=None,
+        publish_at: Optional[str] = None,
     ) -> UploadResult:
         """Upload one video.
 
+        `publish_at` (RFC 3339 UTC, STEP 81 §2): the video is uploaded private and goes public then.
         `shorts=False` (the long Manim lessons) keeps the title as given — no `#Shorts` —
         and returns a watch URL. `privacy` overrides PLATFORM_PRIVACY for one call (the
         first lesson upload is a test, unlisted). `on_progress(sent, total)` after each chunk.
@@ -822,8 +824,9 @@ class YouTubeUploader(BaseUploader):
                 "defaultAudioLanguage": "es",
             },
             "status": {
-                "privacyStatus": privacy_status,
+                "privacyStatus": "private" if publish_at else privacy_status,
                 "selfDeclaredMadeForKids": False,
+                **({"publishAt": publish_at} if publish_at else {}),
             },
         }
 

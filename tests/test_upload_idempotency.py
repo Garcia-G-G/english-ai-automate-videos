@@ -75,7 +75,7 @@ class Rig:
             uploaders = {"youtube": FakeYouTube()}
 
             def upload(self, platform, path, title=None, description=None,
-                       hashtags=None, on_session=None):
+                       hashtags=None, on_session=None, **_slot):
                 rig.calls.append({"platform": platform, "title": title})
                 if rig.init_fails:
                     # Init 500: no session was ever created, nothing is live.

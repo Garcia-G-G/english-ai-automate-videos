@@ -654,7 +654,7 @@ voices:
 # cron/launchd every few minutes, or `loop` in a terminal.
 meta_publish:
   platforms: [instagram, facebook]
-  slots: ["10:00", "19:00"]          # local time
+  slots: ["08:30", "12:00", "16:00", "19:30"]   # local time (Costa Rica): the same slots as YouTube, STEP 81 §2
   auto_enqueue_on_approve: false     # true: approving in the dashboard queues the video
 
 # STEP 80 §2: the queue ordered by what works (src/queue_priority.py). A type's score is the median
@@ -759,3 +759,12 @@ title_emoji:
     espacio: "🚀"
     naturaleza: "🌳"
   food_words: [comida, fruta, frutas, verdura, verduras, carne, carnes, lácteos, postres, bebidas, desayuno, mesa, mariscos, cubiertos, cocina, restaurante, platillos]
+
+# STEP 81 §2: YouTube uploads go up private with status.publishAt at the next free slot (America/Costa_Rica):
+# never two less than 2.5 h apart, never more than 4 a day. enabled: false uploads at once, as before.
+youtube_schedule:
+  enabled: true
+  tz: "America/Costa_Rica"
+  slots: ["08:30", "12:00", "16:00", "19:30"]
+  min_gap_hours: 2.5
+  max_per_day: 4

@@ -63,9 +63,9 @@ def rig(tmp_path, monkeypatch):
         # on_session is passed by the real manager.upload as of the
         # idempotency change; the stub must accept it.
         def upload(self, platform, path, title=None, description=None,
-                   hashtags=None, on_session=None):
+                   hashtags=None, on_session=None, **_slot):
             sent.append({"platform": platform, "path": path, "title": title,
-                         "description": description, "hashtags": hashtags})
+                         "description": description, "hashtags": hashtags, **_slot})
             if on_session:
                 on_session("https://upload.example/s/1", 17)
             return rig.result
@@ -269,3 +269,20 @@ def test_main_no_longer_swallows_every_exception():
 
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-v"]))
+
+
+def test_a_youtube_upload_goes_up_for_the_next_free_slot_and_the_ledger_keeps_it(rig, monkeypatch):
+    """STEP 81 §2: private + publishAt at the slot; the row says which slot, so the next video skips it."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    slot = datetime(2026, 11, 30, 12, 0, tzinfo=ZoneInfo("America/Costa_Rica"))
+    monkeypatch.setattr(rig.main, "next_youtube_slot", lambda: slot)
+    rig.main.upload_video(rig.video, "quiz", SCRIPT, ["youtube"])
+    assert rig.sent[0]["publish_at"] == "2026-11-30T18:00:00.000Z"
+    assert _rows(rig.ledger)[0]["extra"]["scheduled_for"] == slot.isoformat()
+
+
+def test_scheduling_off_uploads_at_once(rig, monkeypatch):
+    monkeypatch.setattr(rig.main, "next_youtube_slot", lambda: None)
+    rig.main.upload_video(rig.video, "quiz", SCRIPT, ["youtube"])
+    assert "publish_at" not in rig.sent[0] and "extra" not in _rows(rig.ledger)[0]
