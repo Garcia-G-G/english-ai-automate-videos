@@ -173,9 +173,11 @@ def refresh(today: Optional[date] = None, get=None, token: Optional[str] = None,
     stats = fetch_youtube([r["id"] for r in rows], token, get)
     retention = fetch_retention([r["id"] for r in rows], token, today, get)
     import ai_background
+    import design_ab
     import length_ab
     groups = ai_background.variants()                       # STEP 80 §5: each video's A/B group
     lengths = length_ab.variants()                          # the short «¿Cómo se dice…?» A/B
+    designs = design_ab.variants()                          # STEP 82 §4: Tablero against the notebook
     snapshot = []
     for r in rows:
         s = stats.get(r["id"])
@@ -186,6 +188,7 @@ def refresh(today: Optional[date] = None, get=None, token: Optional[str] = None,
         snapshot.append({**r, **s, "days": days, "category": category_word(s["title"] or r["title"], r["type"]),
                          "background_variant": groups.get(r.get("artifact")),
                          "length_variant": lengths.get(r.get("artifact")),
+                         "design_variant": designs.get(r.get("artifact")),
                          "avg_view_pct": None, "avg_view_seconds": None, "subs_gained": None, "shares": None,
                          **retention.get(r["id"], {})})
     STATS_DIR.mkdir(parents=True, exist_ok=True)

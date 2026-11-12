@@ -33,8 +33,8 @@ TITLE_EMOJI = re.compile(r"([\U0001F300-\U0001FAFF☀-➿]️?)\s*$")
 
 
 def variant(data: Dict) -> str:
-    """tablero | cuaderno. A script says which; STEP 82 §4 sets the default."""
-    return data.get("design_variant") or "cuaderno"
+    """tablero | cuaderno. A script says which (design_ab assigns it); Tablero is the default."""
+    return data.get("design_variant") or "tablero"
 
 
 def topic(data: Dict) -> str:

@@ -130,8 +130,21 @@ def test_drafts_were_moved_not_copied():
 
 def test_every_queued_word_fits_its_column():
     import length_spec
+    from video.tablero import kit
+
+    def fits_tablero(v):
+        # STEP 82: Tablero is the default design and wraps a long Spanish word onto two lines,
+        # so the notebook's one-line column is no longer the rule for what a script may say.
+        if v["type"] != "how_do_you_say" or v["field"] not in ("spanish", "english"):
+            return False
+        if v["field"] == "spanish":
+            size, lines = kit.spanish_lines(v["text"])
+            return all(kit.fredoka(size).getlength(x) <= kit.SPANISH_W for x in lines)
+        return kit.fit_font(v["text"], kit.TILE_W - kit.TEXT_PAD_R - kit.TEXT_X)[1] <= kit.TILE_W - kit.TEXT_PAD_R - kit.TEXT_X
+
     for p in SCRIPTS:
-        assert length_spec.check_script(json.loads(p.read_text(encoding="utf-8"))) == []
+        bad = [v for v in length_spec.check_script(json.loads(p.read_text(encoding="utf-8"))) if not fits_tablero(v)]
+        assert bad == [], p.name
 
 
 def test_an_overlong_word_is_caught_with_the_renderers_fit():

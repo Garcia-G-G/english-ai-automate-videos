@@ -46,6 +46,7 @@ def test_an_effect_sits_22db_under_the_voice_and_6_more_on_a_word():
 def test_how_do_you_say_events_follow_its_timeline():
     T = _load("t_h7", ROOT / "tests" / "test_how_do_you_say.py")
     data, dur = T._timeline(T._script())
+    data["design_variant"] = "cuaderno"                  # the notebook control keeps its pencil sounds
     events, spoken = H.sfx_events(data, dur)
     names = [e[0] for e in events]
     tl = H.Timeline(data, dur)
@@ -70,6 +71,7 @@ def test_the_mix_keeps_the_narrations_length_and_loudness(tmp_path):
     import pipeline
     T = _load("t_h7b", ROOT / "tests" / "test_how_do_you_say.py")
     data, dur = T._timeline(T._script())
+    data["design_variant"] = "cuaderno"
     t = np.arange(int(dur * RATE)) / RATE
     voice = np.zeros_like(t)
     for v in data["segment_times"].values():

@@ -699,9 +699,15 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             if length_ab_record:
                 script_data = length_ab.apply(script_data, length_ab_record["variant"])
 
+        design_ab_record = None
+        if not dry_run:
+            import design_ab
+            design_ab_record = design_ab.assign(unique_name, script_data)
+            if design_ab_record:
+                script_data = {**script_data, "design_variant": design_ab_record["variant"]}
         if not dry_run and script_data.get("type") == "how_do_you_say":
             import pron                                   # STEP 82 §3: a cheap draft, inside the click
-            pron.fill_missing(script_data["items"])
+            pron.fill_missing(script_data.get("items") or [])
 
         script_dir = SCRIPTS_DIR / video_type
         script_dir.mkdir(parents=True, exist_ok=True)
@@ -905,6 +911,7 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
                 "background": background_record or None,
                 "background_ab": background_ab,             # STEP 80 §5: «ia» or «stock», and why
                 "length_ab": length_ab_record,              # «short» or «long», and why (length_ab)
+                "design_variant": (design_ab_record or {}).get("variant"),   # STEP 82 §4: tablero | cuaderno
                 # What this video cost, OpenAI vs ElevenLabs, as of the render.
                 # The ledger in output/costs/ stays the authoritative record.
                 "cost": tracker.summary() if tracker is not None else None,

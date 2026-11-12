@@ -29,8 +29,8 @@ def _data():
     return d, t + 4.0
 
 
-def test_the_variant_defaults_to_the_notebook_until_section_four():
-    assert F.variant({}) == "cuaderno" and F.variant({"design_variant": "tablero"}) == "tablero"
+def test_tablero_is_the_default_variant_and_a_script_can_ask_for_the_notebook():
+    assert F.variant({}) == "tablero" and F.variant({"design_variant": "cuaderno"}) == "cuaderno"
 
 
 def test_frame_zero_is_complete_and_the_first_item_is_blank():

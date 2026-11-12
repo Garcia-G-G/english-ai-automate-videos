@@ -3354,6 +3354,17 @@ elif page == "Performance":
         if not lab["ready"]:
             st.caption(f"Todavía no se compara: cada grupo necesita {length_ab.MIN_PER_GROUP} vídeos "
                        f"de más de {length_ab.MATURE_DAYS} días.")
+        import design_ab
+        st.markdown("### Tablero contra cuaderno («Cómo se dice», solo temas A1)")
+        dab = design_ab.compare(snap["videos"])
+        st.dataframe([{"diseño": g, "vídeos de +3 días": v["n"], "vistas (mediana)": v["views"],
+                       "% visto (mediana)": v["viewed_pct"]} for g, v in dab["groups"].items()], hide_index=True)
+        if not dab["ready"]:
+            st.caption(f"Todavía no se compara: cada grupo necesita {design_ab.MIN_PER_GROUP} vídeos de más de "
+                       f"{design_ab.MATURE_DAYS} días.")
+        elif dab["loses"]:
+            st.error(f":red[Tablero pierde más del {int(design_ab.LOSS * 100)} % de vistas frente al cuaderno. "
+                     "Decides tú.]")
     st.markdown("### Prioridad de la cola")
     try:
         import queue_priority

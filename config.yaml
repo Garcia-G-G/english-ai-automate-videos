@@ -694,3 +694,9 @@ tablero:
     emociones: ["#F06BB0", "#B8307F"]
     clima: ["#4FB6F2", "#1B76B8"]
     "vida real": ["#2E4A8A", "#13234F"]
+
+# STEP 82 §4: Tablero is the default; until `until`, 1 of every `control_every` new topics keeps the notebook.
+design_ab:
+  enabled: true
+  control_every: 4
+  until: "2026-11-26"
