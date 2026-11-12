@@ -394,8 +394,12 @@ def generate_video(
     elif video_type == 'how_do_you_say':
         logger.info(f"How do you say: {len(data['items'])} items, theme {data.get('theme')!r}")
 
+        from .tablero import frame as tablero_frame
+        draw = (tablero_frame.create_frame_tablero if tablero_frame.variant(data) == "tablero"
+                else create_frame_how_do_you_say)
+
         def frame_gen(t):
-            return create_frame_how_do_you_say(t, data, duration, presentation=presentation)
+            return draw(t, data, duration, presentation=presentation)
 
     elif video_type in ('level_test', 'say_it_level', 'true_false_level', 'fill_level',
                         'choose_level', 'phrases_level'):

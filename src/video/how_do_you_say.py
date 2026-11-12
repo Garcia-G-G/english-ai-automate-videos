@@ -1949,6 +1949,9 @@ def sfx_events(data: Dict, duration: float) -> Tuple[List[Tuple[str, float, floa
     """(events, spoken spans) for a notebook Short, read off the same timeline the frames are:
     a swish as the page comes in, turns and leaves, a pop on every emoji, tick and note, and
     the pencil's scratch while it writes. Spoken spans: every segment but the think pauses."""
+    from .tablero import frame as tablero_frame
+    if data["type"] == "how_do_you_say" and tablero_frame.variant(data) == "tablero":
+        return tablero_frame.sfx_events(data, duration)
     st = data["segment_times"]
     spoken = sorted((float(v["start"]), float(v["end"])) for k, v in st.items() if not k.startswith("think"))
     events = [("swish", 0.0, 0.0), ("pop", HOOK_IN, 0.0)]

@@ -315,6 +315,14 @@ def tile_english_extent(english: str, pron: Optional[str], state: str = "done") 
     return w, w + tag
 
 
+@lru_cache(maxsize=64)
+def _glow(size: Tuple[int, int]) -> Image.Image:
+    g = Image.new("RGBA", size, (0, 0, 0, 0))
+    ImageDraw.Draw(g).rounded_rectangle((CARD_PAD, CARD_PAD, size[0] - CARD_PAD, size[1] - CARD_PAD),
+                                        40, fill=(255, 240, 170, 120))
+    return g.filter(ImageFilter.GaussianBlur(24))
+
+
 def place_tile(frame: Image.Image, im: Image.Image, i: int, scale: float = 1.0, rot: float = 0.0,
                glow: bool = False, flip: float = 1.0) -> None:
     """Composite a tile at its grid slot. `scale`/`rot` animate the active state; `flip` is the
@@ -323,15 +331,15 @@ def place_tile(frame: Image.Image, im: Image.Image, i: int, scale: float = 1.0, 
     if scale != 1.0 or rot:
         im = im.resize((round(im.width * scale), round(im.height * scale)), Image.LANCZOS)
         im = _rotated(im, rot)
+    cx, cy = x + TILE_W / 2, y + TILE_H / 2
+    if glow:                                            # sized before the flip squeezes the tile
+        g = _glow(im.size)
+        if flip < 1.0:
+            g = g.resize((max(2, round(g.width * flip)), g.height), Image.LANCZOS)
+        frame.alpha_composite(g, (round(cx - g.width / 2), round(cy - g.height / 2)))
     if flip < 1.0:
         im = im.resize((max(2, round(im.width * flip)), im.height), Image.LANCZOS)
-    cx, cy = x + TILE_W / 2, y + TILE_H / 2
     ox, oy = round(cx - im.width / 2), round(cy - im.height / 2)
-    if glow:
-        g = Image.new("RGBA", (im.width, im.height), (0, 0, 0, 0))
-        ImageDraw.Draw(g).rounded_rectangle((CARD_PAD, CARD_PAD, im.width - CARD_PAD, im.height - CARD_PAD),
-                                            40, fill=(255, 240, 170, 120))
-        frame.alpha_composite(g.filter(ImageFilter.GaussianBlur(24)), (ox, oy))
     frame.alpha_composite(im, (ox, oy))
 
 
