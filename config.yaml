@@ -768,3 +768,23 @@ youtube_schedule:
   slots: ["08:30", "12:00", "16:00", "19:30"]
   min_gap_hours: 2.5
   max_per_day: 4
+
+# STEP 81 §3.1: the end-of-video bonus question draws from here when the script has no `_meta.bonus` and no
+# sequel is queued (Spanish word: its English answer, which the comments page uses to confirm replies).
+bonus_words:
+  ventana: window
+  puerta: door
+  llave: key
+  espejo: mirror
+  almohada: pillow
+  cuchara: spoon
+  tenedor: fork
+  paraguas: umbrella
+  zapato: shoe
+  reloj: clock
+  nube: cloud
+  camisa: shirt
+  manzana: apple
+  queso: cheese
+  gato: cat
+  playa: beach

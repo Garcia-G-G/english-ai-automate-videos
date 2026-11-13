@@ -1503,6 +1503,7 @@ NAV_LABELS = {
     "Upload": ("Subir", ":material/upload:"),
     "Library": ("Biblioteca", ":material/video_library:"),
     "Performance": ("Rendimiento", ":material/insights:"),
+    "Comments": ("Comentarios", ":material/forum:"),
     "Topics": ("Temas", ":material/psychology:"),
     "Manim": ("Lecciones", ":material/school:"),
     "Scheduler": ("Programar", ":material/schedule:"),
@@ -1529,6 +1530,7 @@ main_pages = {
     "Upload": "📤",
     "Library": "📚",
     "Performance": "📈",
+    "Comments": "💬",
 }
 
 tool_pages = {
@@ -3338,6 +3340,49 @@ elif page == "Manim":
 
 
 # ============== LOGS PAGE ==============
+elif page == "Comments":
+    # STEP 81 §3.2: read the channel's comments, draft replies, post ONLY on Garcia's click
+    st.markdown("## Comentarios")
+    st.caption("Lo nuevo del canal, con una respuesta sugerida. No se publica nada hasta que pulses «Responder».")
+    import comments as _cm
+    if st.button("Cargar comentarios", key="comments_load"):
+        try:
+            import channel_stats as _cs2
+            st.session_state.comment_threads = _cm.fetch_threads(_cs2._youtube_token())
+        except Exception as _e:                              # noqa: BLE001
+            st.error(f"No pude leer los comentarios: {_e}")
+    _threads = st.session_state.get("comment_threads") or []
+    if not _threads:
+        st.info("Pulsa «Cargar comentarios» para traer los 50 más recientes (no gasta dinero).")
+    else:
+        _snap_c = __import__("channel_stats").latest() or {}
+        _titles = {v["id"]: v.get("title", "") for v in _snap_c.get("videos", [])}
+        _answers = _cm.bonus_answers(_snap_c.get("videos", []), [PENDING_DIR, APPROVED_DIR, UPLOADED_DIR])
+        if st.button("Redactar respuestas (modelo barato, ~0,001 $ cada una)", key="comments_draft"):
+            import voice_lock
+            with voice_lock.panel_grant():
+                for _t in _threads:
+                    _cm.draft_reply(_t, _answers.get(_t["video_id"]))
+            st.rerun()
+        _drafts = _cm._cache()
+        for _t in _threads:
+            with st.container(border=True):
+                st.caption(f"{_titles.get(_t['video_id'], _t['video_id'])} · {_t['author']} · {_t['published'][:10]}")
+                st.write(_t["text"])
+                _reply = st.text_area("Tu respuesta", value=_drafts.get(_t["id"], ""), key=f"reply_{_t['id']}", height=80,
+                                      max_chars=_cm.MAX_REPLY)
+                if st.button("Responder", key=f"send_{_t['id']}", disabled=not _reply.strip()):
+                    try:
+                        import channel_stats as _cs3
+                        _cm.post_reply(_cs3._youtube_token(), _t["id"], _reply)
+                        st.success("Respuesta publicada.")
+                    except ValueError as _e:
+                        st.error(str(_e))
+                    except Exception as _e:                  # noqa: BLE001
+                        st.error("No se pudo publicar la respuesta. Si dice «403», vuelve a conectar YouTube en Ajustes "
+                                 f"para dar el permiso de comentarios. ({_e})")
+
+
 elif page == "Performance":
     st.markdown("## Rendimiento")
     st.caption("Lo que hicieron los vídeos publicados en YouTube (lectura gratuita con el token del canal). "

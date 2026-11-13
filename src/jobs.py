@@ -763,6 +763,13 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             design_ab_record = design_ab.assign(unique_name, script_data)
             if design_ab_record:
                 script_data = {**script_data, "design_variant": design_ab_record["variant"]}
+        if not dry_run and script_data.get("type") in ("how_do_you_say", "phrases_level"):
+            import bonus                                     # STEP 81 §3.1: voiced inside this click, under its cap
+            try:
+                _queued = [json.loads(p.read_text(encoding="utf-8")) for p in _queue_guard().queued_scripts()]
+            except Exception:                               # noqa: BLE001 — no queue read, no sequel word
+                _queued = []
+            script_data = bonus.apply(script_data, _queued)
         if not dry_run and script_data.get("type") == "how_do_you_say":
             import pron                                   # STEP 82 §3: a cheap draft, inside the click
             pron.fill_missing(script_data.get("items") or [])
