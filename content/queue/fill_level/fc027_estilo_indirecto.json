@@ -57,13 +57,13 @@
     {
       "sentence": "She denied ____ the money.",
       "answer": "taking",
-      "translation": "Negó haber cogido el dinero.",
+      "translation": "Negó haber tomado el dinero.",
       "cefr": "C1"
     },
     {
       "sentence": "He suggested ____ a taxi.",
       "answer": "taking",
-      "translation": "Sugirió coger un taxi.",
+      "translation": "Sugirió tomar un taxi.",
       "cefr": "C1"
     }
   ],

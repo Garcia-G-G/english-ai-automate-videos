@@ -1,13 +1,13 @@
 {
   "type": "say_it_level",
   "video_title": "LLEVAR en inglés: wear, carry, take… ¿o ninguno? 🎒",
-  "video_description": "Llevar gafas, llevar a alguien, llevar dos horas: diez trampas con llevar. 🎒",
+  "video_description": "Llevar lentes, llevar a alguien, llevar dos horas: diez trampas con llevar. 🎒",
   "title": "Dilo en inglés",
   "theme": "trampas con «llevar»",
   "intro": "[curious] Diez frases con «llevar», y cada una se dice distinto. Dilas en inglés antes que yo.",
   "items": [
     {
-      "spanish": "Llevo gafas.",
+      "spanish": "Llevo lentes.",
       "english": "I wear glasses.",
       "cefr": "A1"
     },

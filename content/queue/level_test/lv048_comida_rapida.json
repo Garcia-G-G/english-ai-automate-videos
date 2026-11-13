@@ -8,7 +8,7 @@
   "items": [
     {
       "english": "fries",
-      "spanish": "Papas / patatas fritas",
+      "spanish": "Papas fritas",
       "cefr": "A1"
     },
     {
@@ -96,5 +96,5 @@
     "refill",
     "condiments"
   ],
-  "full_script": "[curious] ¿Hasta qué número llegas? Diez palabras de comida rápida; tú dices qué significan. fries Papas / patatas fritas hot dog Perrito caliente napkin Servilleta Ahora, nivel intermedio. to go Para llevar junk food Comida basura / chatarra combo meal Combo / menú drive-through Autoservicio en coche Y ahora, nivel experto. greasy Grasiento refill Rellenar el vaso condiments Salsas y aderezos Con tres tienes nivel básico, con siete nivel intermedio, y si sabías las diez, eres experto. [warm] ¿Cuántas acertaste? Te leo en los comentarios."
+  "full_script": "[curious] ¿Hasta qué número llegas? Diez palabras de comida rápida; tú dices qué significan. fries Papas fritas hot dog Perrito caliente napkin Servilleta Ahora, nivel intermedio. to go Para llevar junk food Comida basura / chatarra combo meal Combo / menú drive-through Autoservicio en coche Y ahora, nivel experto. greasy Grasiento refill Rellenar el vaso condiments Salsas y aderezos Con tres tienes nivel básico, con siete nivel intermedio, y si sabías las diez, eres experto. [warm] ¿Cuántas acertaste? Te leo en los comentarios."
 }

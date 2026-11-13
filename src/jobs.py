@@ -757,6 +757,13 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
             if length_ab_record:
                 script_data = length_ab.apply(script_data, length_ab_record["variant"])
 
+        try:                                                # STEP 81 §7: every script is born in neutral LatAm Spanish
+            if str(ROOT / "tools") not in sys.path:
+                sys.path.insert(0, str(ROOT / "tools"))
+            import es_latam_lint
+            script_data = es_latam_lint.fix_script(script_data)[0]
+        except Exception:                                   # noqa: BLE001 — a lint never stops a render
+            logger.debug("latam lint unavailable", exc_info=True)
         design_ab_record = None
         if not dry_run:
             import design_ab

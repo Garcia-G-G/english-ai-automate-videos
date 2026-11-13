@@ -38,7 +38,7 @@
     },
     {
       "english": "faucet",
-      "spanish": "Grifo / llave",
+      "spanish": "Llave",
       "cefr": "B1"
     },
     {
@@ -96,5 +96,5 @@
     "floss",
     "medicine cabinet"
   ],
-  "full_script": "[happy] Aquí tienes diez palabras del baño. Tu misión: decir qué significan antes que yo. shower Ducha towel Toalla toothbrush Cepillo de dientes Ahora, nivel intermedio. toilet paper Papel higiénico mirror Espejo bathtub Bañera / tina faucet Grifo / llave Y ahora, nivel experto. razor Maquinilla de afeitar floss Hilo dental medicine cabinet Botiquín La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste? [happy] Deja tu puntuación en los comentarios y nos vemos en el próximo test."
+  "full_script": "[happy] Aquí tienes diez palabras del baño. Tu misión: decir qué significan antes que yo. shower Ducha towel Toalla toothbrush Cepillo de dientes Ahora, nivel intermedio. toilet paper Papel higiénico mirror Espejo bathtub Bañera / tina faucet Llave Y ahora, nivel experto. razor Maquinilla de afeitar floss Hilo dental medicine cabinet Botiquín La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste? [happy] Deja tu puntuación en los comentarios y nos vemos en el próximo test."
 }

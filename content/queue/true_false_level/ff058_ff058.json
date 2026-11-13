@@ -30,7 +30,7 @@
     {
       "statement": "«Pie» significa pie.",
       "truth": false,
-      "correction": "es pastel o tarta",
+      "correction": "es pastel o pastel",
       "cefr": "B1"
     },
     {
@@ -63,7 +63,7 @@
   ],
   "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
   "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
-  "full_script": "[curious] ¿Cuántas palabras de COMIDA en inglés sabes de verdad? Responde antes de que se aclare. Verdadero. Verdadero. Falso: es mantequilla. Verdadero. Falso: es pastel o tarta. Verdadero. Verdadero. Verdadero. Falso: son mejillones. Falso: son brotes. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Cuántas palabras de COMIDA en inglés sabes de verdad? Responde antes de que se aclare. Verdadero. Verdadero. Falso: es mantequilla. Verdadero. Falso: es pastel o pastel. Verdadero. Verdadero. Verdadero. Falso: son mejillones. Falso: son brotes. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
   "hashtags": [
     "#VerdaderoOFalso",
     "#InglésFácil",

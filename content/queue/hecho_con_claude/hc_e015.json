@@ -22,10 +22,10 @@
     "Porque [[preservatives]] son los conservantes: [[This bread has no preservatives]].",
     "Lo que buscabas es [[condoms]]: [[Where can I find condoms?]]",
     "Otro falso amigo de farmacia: [[drugs]] puede ser medicamento o droga; mejor [[medicine]].",
-    "Reto: ¿cómo dirías «este zumo no tiene conservantes»? Te leo abajo."
+    "Reto: ¿cómo dirías «este jugo no tiene conservantes»? Te leo abajo."
   ],
   "challenge": {
-    "prompt": "«Este zumo no tiene conservantes»",
+    "prompt": "«Este jugo no tiene conservantes»",
     "answer": "This juice has no preservatives."
   },
   "caption": "Preservatives no son preservativos: son conservantes. Un falso amigo que da mucha vergüenza en la farmacia.",

@@ -4,9 +4,9 @@
   "level": "dificil",
   "angle": "historia",
   "title": "«I'm broken»: no estás roto, estás sin dinero",
-  "hook_text": "ESCENA — FIN DE MES, PISO COMPARTIDO",
+  "hook_text": "ESCENA — FIN DE MES, DEPARTAMENTO COMPARTIDO",
   "scene": {
-    "location": "Fin de mes, piso compartido",
+    "location": "Fin de mes, departamento compartido",
     "take1": "I can't go out, I'm broken.",
     "take2": "I can't go out, I'm broke.",
     "note": "Broke = sin dinero. Broken = roto."
@@ -17,7 +17,7 @@
     "rule": "Una letra lo cambia todo"
   },
   "voice": [
-    "Escena: fin de mes, piso compartido. Toma uno: [[I can't go out, I'm broken]].",
+    "Escena: fin de mes, departamento compartido. Toma uno: [[I can't go out, I'm broken]].",
     "¡Corten! [[Broken]] es roto. Tus amigos pensarán que estás destrozado.",
     "Toma dos: [[I can't go out, I'm broke]]. Sin la n: estoy sin dinero, pelado.",
     "Más intenso todavía: [[I'm totally broke]].",

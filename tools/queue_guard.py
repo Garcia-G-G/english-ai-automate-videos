@@ -412,6 +412,15 @@ def _content_problems(data: dict, rel="<script>") -> list:
     except Exception:                                       # noqa: BLE001
         pass
 
+    # STEP 81 §7: Spain-only words are reported (never blocking): a script should be born in neutral LatAm Spanish
+    try:
+        if str(ROOT / "tools") not in sys.path:
+            sys.path.insert(0, str(ROOT / "tools"))
+        import es_latam_lint
+        out.extend(es_latam_lint.problems(data))
+    except Exception:                                       # noqa: BLE001
+        pass
+
     return out
 
 

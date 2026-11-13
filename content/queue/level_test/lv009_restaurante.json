@@ -13,7 +13,7 @@
     },
     {
       "english": "waiter",
-      "spanish": "Camarero / mesero",
+      "spanish": "Mesero",
       "cefr": "A1"
     },
     {
@@ -96,5 +96,5 @@
     "on the house",
     "doggy bag"
   ],
-  "full_script": "[happy] Aquí tienes diez palabras del restaurante. Tu misión: decir qué significan antes que yo. menu Carta / menú waiter Camarero / mesero check La cuenta Ahora, nivel intermedio. tip Propina appetizer Entrante / entrada main course Plato principal side dish Guarnición Y ahora, nivel experto. split the check Pagar a medias on the house Invita la casa doggy bag Bolsa para las sobras La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste? [happy] Deja tu puntuación en los comentarios y nos vemos en el próximo test."
+  "full_script": "[happy] Aquí tienes diez palabras del restaurante. Tu misión: decir qué significan antes que yo. menu Carta / menú waiter Mesero check La cuenta Ahora, nivel intermedio. tip Propina appetizer Entrante / entrada main course Plato principal side dish Guarnición Y ahora, nivel experto. split the check Pagar a medias on the house Invita la casa doggy bag Bolsa para las sobras La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste? [happy] Deja tu puntuación en los comentarios y nos vemos en el próximo test."
 }

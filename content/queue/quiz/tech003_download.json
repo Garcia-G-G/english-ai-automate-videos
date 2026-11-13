@@ -2,7 +2,7 @@
   "type": "quiz",
   "video_title": "Descargar y subir, sin confundirlos ⬇️⬆️",
   "video_description": "Dos verbos opuestos que todo el mundo mezcla. 📶",
-  "question": "[curious] Para enviar una foto desde tu móvil a la nube, tú...",
+  "question": "[curious] Para enviar una foto desde tu celular a la nube, tú...",
   "options": {
     "A": "download it",
     "B": "upload it",
@@ -11,7 +11,7 @@
   },
   "correct": "B",
   "explanation": "[excited] Upload es subir. Download es bajar a tu dispositivo.",
-  "full_script": "[excited] ¡Quiz time! Pregunta número uno. Quieres guardar una foto en la nube y tienes que elegir el verbo. Para enviar una foto desde tu móvil a la nube, tú...... A, 'download it'.... B, 'upload it'.... C, 'unload it'.... D, 'reload it'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B. Upload es subir, mandar hacia arriba. Download es traer hacia ti. Piensa en la dirección y no fallas. Y las otras dos existen. Unload es descargar un camión. Reload es recargar una página.",
+  "full_script": "[excited] ¡Quiz time! Pregunta número uno. Quieres guardar una foto en la nube y tienes que elegir el verbo. Para enviar una foto desde tu celular a la nube, tú...... A, 'download it'.... B, 'upload it'.... C, 'unload it'.... D, 'reload it'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡Correcto! La respuesta es B. Upload es subir, mandar hacia arriba. Download es traer hacia ti. Piensa en la dirección y no fallas. Y las otras dos existen. Unload es descargar un camión. Reload es recargar una página.",
   "translations": {
     "upload": "subir",
     "download": "descargar",
@@ -33,7 +33,7 @@
   },
   "questions": [
     {
-      "question": "[curious] Para enviar una foto desde tu móvil a la nube, tú...",
+      "question": "[curious] Para enviar una foto desde tu celular a la nube, tú...",
       "options": {
         "A": "download it",
         "B": "upload it",
@@ -49,7 +49,7 @@
         "A": "cargar el camión",
         "B": "descargar el camión",
         "C": "arrancar el camión",
-        "D": "aparcar el camión"
+        "D": "estacionar el camión"
       },
       "correct": "B",
       "explanation": "[excited] Unload es vaciar algo físico. Nada que ver con internet."

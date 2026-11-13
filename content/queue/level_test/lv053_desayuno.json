@@ -48,7 +48,7 @@
     },
     {
       "english": "hash browns",
-      "spanish": "Tortitas de patata rallada",
+      "spanish": "Tortitas de papa rallada",
       "cefr": "C1"
     },
     {
@@ -96,5 +96,5 @@
     "hash browns",
     "poached egg"
   ],
-  "full_script": "[warm] Buenos días. Diez palabras del desayuno en inglés: dime qué significan antes de que aparezcan. bread Pan honey Miel butter Mantequilla Ahora, nivel intermedio. toast Tostada jam Mermelada scrambled eggs Huevos revueltos oatmeal Avena Y ahora, nivel experto. sunny-side up Huevo frito sin voltear hash browns Tortitas de patata rallada poached egg Huevo escalfado Con tres, eres nivel básico. Con siete, intermedio. Y si te sabías las diez, nivel experto. [happy] ¿Hasta qué número llegaste? Cuéntamelo abajo, mientras desayunas."
+  "full_script": "[warm] Buenos días. Diez palabras del desayuno en inglés: dime qué significan antes de que aparezcan. bread Pan honey Miel butter Mantequilla Ahora, nivel intermedio. toast Tostada jam Mermelada scrambled eggs Huevos revueltos oatmeal Avena Y ahora, nivel experto. sunny-side up Huevo frito sin voltear hash browns Tortitas de papa rallada poached egg Huevo escalfado Con tres, eres nivel básico. Con siete, intermedio. Y si te sabías las diez, nivel experto. [happy] ¿Hasta qué número llegaste? Cuéntamelo abajo, mientras desayunas."
 }

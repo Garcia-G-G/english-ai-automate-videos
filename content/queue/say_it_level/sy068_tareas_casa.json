@@ -1,7 +1,7 @@
 {
   "type": "say_it_level",
   "video_title": "LAS TAREAS DE CASA en inglés: ¿hasta qué frase llegas? 🧹",
-  "video_description": "Fregar, tender, planchar: diez frases de las tareas de casa en inglés. 🧹",
+  "video_description": "Lavar los platos, tender, planchar: diez frases de las tareas de casa en inglés. 🧹",
   "title": "Dilo en inglés",
   "theme": "las tareas de casa",
   "intro": "[cheerful] Toca limpiar la casa. Lee la frase en español y dila en inglés antes que yo.",
@@ -28,7 +28,7 @@
       "alt": "Can you take the rubbish out?"
     },
     {
-      "spanish": "Te toca fregar a ti.",
+      "spanish": "Te toca lavar los platos a ti.",
       "english": "It's your turn to do the dishes.",
       "cefr": "B1",
       "alt": "It's your turn to wash up."

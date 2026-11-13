@@ -8,7 +8,7 @@
   "items": [
     {
       "english": "computer",
-      "spanish": "Ordenador / computadora",
+      "spanish": "Computadora",
       "cefr": "A1"
     },
     {
@@ -96,5 +96,5 @@
     "glitch",
     "cutting-edge"
   ],
-  "full_script": "[curious] ¿Hasta qué número llegas? Diez palabras de tecnología; tú dices qué significan. computer Ordenador / computadora screen Pantalla keyboard Teclado Ahora, nivel intermedio. download Descargar update Actualizar wireless Inalámbrico storage Almacenamiento Y ahora, nivel experto. user-friendly Fácil de usar glitch Fallo técnico cutting-edge De vanguardia Con tres tienes nivel básico, con siete nivel intermedio, y si sabías las diez, eres experto. [warm] ¿Cuántas acertaste? Te leo en los comentarios."
+  "full_script": "[curious] ¿Hasta qué número llegas? Diez palabras de tecnología; tú dices qué significan. computer Computadora screen Pantalla keyboard Teclado Ahora, nivel intermedio. download Descargar update Actualizar wireless Inalámbrico storage Almacenamiento Y ahora, nivel experto. user-friendly Fácil de usar glitch Fallo técnico cutting-edge De vanguardia Con tres tienes nivel básico, con siete nivel intermedio, y si sabías las diez, eres experto. [warm] ¿Cuántas acertaste? Te leo en los comentarios."
 }

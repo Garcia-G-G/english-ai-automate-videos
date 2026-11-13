@@ -1,7 +1,7 @@
 {
   "type": "say_it_level",
   "video_title": "¿PERDISTE ALGO? Explícalo en inglés en la comisaría 👮",
-  "video_description": "Carteras perdidas, móviles robados y denuncias: diez frases para la comisaría en inglés. 👮",
+  "video_description": "Carteras perdidas, celulares robados y denuncias: diez frases para la comisaría en inglés. 👮",
   "title": "Dilo en inglés",
   "theme": "perdiste algo (en la comisaría)",
   "intro": "[serious] Has perdido algo y vas a la comisaría. Explícalo en inglés antes de que lo diga yo.",
@@ -45,7 +45,7 @@
       "alt": "I want to file a report."
     },
     {
-      "spanish": "Me han robado el móvil.",
+      "spanish": "Me han robado el celular.",
       "english": "My phone was stolen.",
       "cefr": "B1",
       "alt": "Someone stole my phone.",

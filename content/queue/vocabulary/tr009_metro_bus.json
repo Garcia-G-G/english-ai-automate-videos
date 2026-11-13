@@ -50,7 +50,7 @@
       "english": "a return ticket"
     }
   ],
-  "full_script": "[excited] Llegas a Londres y tienes que coger el metro. La parada, the stop. El andén, the platform. Subirse, get on. Bajarse, get off. Hacer transbordo, change trains. La próxima estación, the next station. ¿este va al centro?, does this go downtown?. Perder el tren, miss the train. Va con retraso, it's delayed. La hora punta, rush hour. Ida y vuelta, a return ticket. Con estas llegas a cualquier sitio.",
+  "full_script": "[excited] Llegas a Londres y tienes que tomar el metro. La parada, the stop. El andén, the platform. Subirse, get on. Bajarse, get off. Hacer transbordo, change trains. La próxima estación, the next station. ¿este va al centro?, does this go downtown?. Perder el tren, miss the train. Va con retraso, it's delayed. La hora punta, rush hour. Ida y vuelta, a return ticket. Con estas llegas a cualquier sitio.",
   "translations": {
     "the stop": "la parada",
     "the platform": "el andén",

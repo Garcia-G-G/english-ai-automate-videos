@@ -8,7 +8,7 @@
   "items": [
     {
       "english": "potato",
-      "spanish": "Papa / patata",
+      "spanish": "Papa",
       "cefr": "A1"
     },
     {
@@ -96,5 +96,5 @@
     "eggplant",
     "zucchini"
   ],
-  "full_script": "[curious] Te enseño una palabra de verduras y tú dices qué significa. ¿Hasta dónde llegas? potato Papa / patata tomato Tomate carrot Zanahoria Ahora, nivel intermedio. onion Cebolla garlic Ajo lettuce Lechuga cucumber Pepino Y ahora, nivel experto. spinach Espinacas eggplant Berenjena zucchini Calabacín / calabacita Si sabías hasta la tres, nivel básico. Si llegaste a la siete, intermedio. Y si acertaste las diez, ¡experto! [cheerful] ¿Hasta dónde llegaste? Escríbelo abajo y comparte el reto."
+  "full_script": "[curious] Te enseño una palabra de verduras y tú dices qué significa. ¿Hasta dónde llegas? potato Papa tomato Tomate carrot Zanahoria Ahora, nivel intermedio. onion Cebolla garlic Ajo lettuce Lechuga cucumber Pepino Y ahora, nivel experto. spinach Espinacas eggplant Berenjena zucchini Calabacín / calabacita Si sabías hasta la tres, nivel básico. Si llegaste a la siete, intermedio. Y si acertaste las diez, ¡experto! [cheerful] ¿Hasta dónde llegaste? Escríbelo abajo y comparte el reto."
 }

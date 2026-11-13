@@ -28,7 +28,7 @@
     },
     {
       "english": "peach",
-      "spanish": "Melocotón / durazno",
+      "spanish": "Durazno",
       "cefr": "B1"
     },
     {
@@ -96,5 +96,5 @@
     "apricot",
     "pomegranate"
   ],
-  "full_script": "[cheerful] Diez palabras de frutas, de fácil a experto. Di qué significan antes que yo. apple Manzana banana Plátano / banana strawberry Fresa / frutilla Ahora, nivel intermedio. pear Pera peach Melocotón / durazno watermelon Sandía plum Ciruela Y ahora, nivel experto. raspberry Frambuesa apricot Albaricoque / damasco pomegranate Granada ¿Te quedaste en la tres? Básico. ¿Llegaste a la siete? Intermedio. ¿Las diez? Experto, sin duda. [cheerful] Dime en los comentarios cuántas sabías. ¡Sin trampas!"
+  "full_script": "[cheerful] Diez palabras de frutas, de fácil a experto. Di qué significan antes que yo. apple Manzana banana Plátano / banana strawberry Fresa / frutilla Ahora, nivel intermedio. pear Pera peach Durazno watermelon Sandía plum Ciruela Y ahora, nivel experto. raspberry Frambuesa apricot Albaricoque / damasco pomegranate Granada ¿Te quedaste en la tres? Básico. ¿Llegaste a la siete? Intermedio. ¿Las diez? Experto, sin duda. [cheerful] Dime en los comentarios cuántas sabías. ¡Sin trampas!"
 }
