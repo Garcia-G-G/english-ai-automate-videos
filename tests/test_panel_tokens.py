@@ -47,7 +47,7 @@ def test_the_streamlit_theme_matches_the_tokens():
 
 def test_the_mocks_components_are_ported():
     css = T.css()
-    for sel in (".card", ".sticker", ".btn", ".tag", ".chip", ".nav.on", ".badge", ".badge.soft", ".st-key-btn-primary"):
+    for sel in (".card", ".sticker", ".btn", ".tag", ".chip", ".nav.on", ".badge", ".badge.soft", "st-key-btn-primary"):
         assert sel in css, sel
 
 

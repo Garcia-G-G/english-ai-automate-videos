@@ -1521,450 +1521,593 @@ if 'upload_history' not in st.session_state:
 # What stayed or arrived: the four real queues, anything in flight, anything
 # that failed (with its reason and its log), and one line of money.
 if page == "Dashboard":
-    st.markdown("## Inicio")
-    st.caption("Lo que toca hoy, en orden: producir, revisar, subir.")
-
-    import thumbnails
-    from thumbnails import ensure_thumbnail
-
-    batch = get_library_videos()
-    pending = get_pending_videos()
-    approved = get_approved_videos()
-    published = get_ledger_rows()
-    census = independent_disk_census()
-
-    # ── Hoy: four numbers that say what is waiting (STEP 80, Garcia: «velocity without losing quality»)
-    _week_ago = (datetime.now() - timedelta(days=7)).date().isoformat()
-    _week = len({r.get("artifact") for r in published                # videos, not one row per platform
-                 if (r.get("published_at") or "")[:10] >= _week_ago and r.get("artifact")})
-    _hoy = st.columns(4)
-    with _hoy[0]:
-        st.metric("Por revisar", len(pending), border=True)
-    with _hoy[1]:
-        st.metric("Por subir", len(approved), border=True)
-    with _hoy[2]:
-        st.metric("Vídeos publicados · 7 días", _week, border=True)
-    with _hoy[3]:
-        st.metric(f"OpenRouter este mes · tope \\${_or_cap:.0f}", "$" + f"{(_or_spent or 0):.2f}", border=True)   # a metric's value is plain text
-
-    # STEP 81 §1.1: the stats refresh themselves (at start, then every 20 h); a failure warns, never blocks
+    # ═══ STEP 83 §2: the new Inicio. Real data only; a missing value reads «sin dato». ═══
+    from panel import inicio as _ini
     import channel_stats as _cs
-    _auto = _cs.start_auto_refresh()
-    if _auto.get("error"):
-        st.warning(f"No pude actualizar las estadísticas: {_auto['error']}. Sigo con las últimas que tengo.")
-
-    # STEP 81 §1.4: a «Cómo se dice» that reached 800 views by day 3 earns a sequel
+    import daily_mix as _dm
+    import publication_log as _pl
+    import slots as _slots_mod
+    import queue_priority as _qp
+    from datetime import time as _time
+    _now = datetime.now(_ini.TZ)
+    _scfg = _slots_mod.settings()
+    _snap0 = _cs.latest() or {}
+    _videos = _snap0.get("videos", [])
+    _ledger = _pl.read_ledger()
+    _owner = (_qp._config().get("panel") or {}).get("owner_name", "Garcia")
+    _today_slots = [datetime.combine(_now.date(), _time.fromisoformat(t), _ini.TZ) for t in _scfg["slots"]]
     try:
-        _snap = _cs.latest()
-        _themes = [str((_d.get("theme") or "")) for _p in _queue_guard().queued_scripts()
-                   for _d in [json.loads(_p.read_text(encoding="utf-8"))]]
-        _seq = _cs.sequel_suggestions((_snap or {}).get("videos", []), _themes)[:3]
+        _bad0 = _queue_bad(_queue_guard())
+        _ranked0 = [(p, json.loads(p.read_text(encoding="utf-8"))) for p in queue_order(_queue_guard().queued_scripts())
+                    if p.relative_to(ROOT) not in _bad0]
+        _queued_n = len(_queue_guard().queued_scripts())
     except Exception:                                       # noqa: BLE001
-        _seq = []
-    for _s in _seq:
-        st.info(f"Escribir la secuela: MÁS {_s['category']} ({_s['views']:,} vistas en los primeros días).")
+        _ranked0, _queued_n = [], 0
+    _states0 = _ini.slot_states(_now, _today_slots, _ledger, _videos, {})
+    _free0 = [x["at"] for x in _states0 if x["state"] == "free" and x["at"] > _now]
+    _plan0 = _slots_mod.fill_plan(_free0, _ranked0, _dm.uploads_on(_ledger, _now.date())) if _free0 else []
+    _fill = {at: (path.stem if path else "") for at, _w, path in _plan0}
+    _states = _ini.slot_states(_now, _today_slots, _ledger, _videos, _fill)
 
-    # STEP 81 §2: the next 8 publishing slots and what fills them
-    with st.expander("Próximos 8 huecos de publicación"):
-        try:
-            import daily_mix
-            import publication_log
-            import slots as _slots
-            _cfg = _slots.settings()
-            _rows = publication_log.read_ledger()
-            _next = _slots.next_slots(datetime.now(_slots._tz(_cfg)), _slots.taken_times(_rows, _cfg), 8, _cfg)
-            _bad = _queue_bad(_queue_guard())
-            _ranked = []
-            for _p in queue_order(_queue_guard().queued_scripts()):
-                if _p.relative_to(ROOT) not in _bad:
-                    _ranked.append((_p, json.loads(_p.read_text(encoding="utf-8"))))
-            _today = daily_mix.uploads_on(_rows, datetime.now().date())
-            _plan = _slots.fill_plan(_next, _ranked, _today)
-            st.dataframe([{"hueco": at.strftime("%a %d %b %H:%M"), "tipo": want,
-                           "guion": path.name if path else "— sin guion —"} for at, want, path in _plan],
-                         hide_index=True)
-            st.caption("YouTube sube el vídeo en privado y lo publica solo a esa hora (Costa Rica); "
-                       "mínimo 2,5 h entre dos y 4 al día.")
-        except Exception as _e:                              # noqa: BLE001
-            st.caption(f"Huecos no disponibles: {_e}")
+    _top = st.columns([3, 1.4], vertical_alignment="bottom")
+    with _top[0]:
+        _hi = _ini.greeting(_now, "@@NAME@@").replace("@@NAME@@", f"<mark>{_owner}</mark>")
+        st.markdown(f"<h1>{_hi}</h1><div class='sub'>{_ini.date_line(_now)} · {_ini.slots_sentence(_states, _now)}</div>", unsafe_allow_html=True)
+    with _top[1]:
+        _txt, _dot = _ini.stats_chip(_cs.snapshot_age_hours())
+        st.markdown(f'<span class="chip"><span class="{_dot}"></span>{_txt}</span>', unsafe_allow_html=True)
+        with st.container(key="btn-ghost"):
+            if st.button("Actualizar", key="inicio_refresh_stats"):
+                _res = _cs.refresh_if_stale(hours=0)
+                st.warning(f"No pude actualizar: {_res['error']}") if _res["error"] else st.rerun()
 
-    # STEP 80 §2: the main action — the best queued script, in words, and why it is next
-    _best = next_best()
-    with st.container(border=True):
-        if _best:
-            _bp, _bd, _why = _best
-            _what = _bd.get("theme") or _bd.get("title") or _bd.get("topic") or _bp.stem
-            st.caption("SIGUIENTE VÍDEO")
-            st.markdown(f"#### {type_label(_bd.get('type') or '')} · {_what}")
-            st.caption("Por qué este: " + _why.split(": ", 1)[-1])   # the type is already in the title
-            if st.button("▶ Producir ahora", type="primary", key="produce_next_best"):
-                try:
-                    st.session_state.last_job = start_generation(_bd.get("type"), use_queue=True)
-                    st.success(f"En marcha: {_what}")
-                except AlreadyRendering as busy:
-                    st.warning(str(busy))
-        else:
-            st.markdown("**La cola está vacía.** Añade guiones en «Temas» o crea uno en «Crear».")
-
-    def _census_line(listed: int, counted: int, what: str) -> None:
-        """Print both counts. Never just the one the page happens to like.
-
-        The list and the census are two different walks of the same disk. If
-        they agree, the number on the page is worth something. If they do not,
-        the page says which two numbers disagree and stops pretending.
-        """
-        if listed == counted:
-            st.markdown(
-                f'<span class="census-ok">{listed} en la lista · {counted} en disco ✓</span>',
-                unsafe_allow_html=True)
-        else:
-            st.markdown(
-                f'<span class="census-mismatch">⚠ No cuadra en «{what}»: {listed} en la lista, '
-                f'{counted} en disco. Uno de los dos recuentos está mal.</span>',
-                unsafe_allow_html=True)
-
-    def _queue_head(count, title: str, source: str, action: str) -> None:
-        num = (f'<span class="queue-count">{count}</span>'
-               if count is not None else '')
-        st.markdown(
-            f'<div class="queue-head">{num}'
-            f'<span class="queue-title">{title}</span>'
-            f'<span class="artifact-meta">{source}</span>'
-            f'<span class="queue-action">→ {action}</span>'
-            f'</div>', unsafe_allow_html=True)
-
-    def _esc(value) -> str:
-        """Everything below builds HTML by concatenation, and every value in
-        it comes off disk: artifact names are filenames, the failure reasons
-        are exception strings, the URLs are ledger rows. An `&` in a topic or
-        a `<` in a traceback would otherwise silently mangle the row it is in.
-        """
-        import html as _html
-        return _html.escape(str(value), quote=True)
-
-    def _gate_html(meta: Optional[dict]) -> str:
-        g = gate_record(meta)
-        return f'<span class="gate-badge gate-{g["tone"]}">{_esc(g["label"])}</span>'
-
-    @st.cache_data(show_spinner=False)
-    def _thumb_uri(path: str, mtime: float) -> str:
-        """The still, inlined. Keyed on mtime so a re-render busts the cache.
-
-        Inlined rather than served through st.image because the picture has to
-        sit INSIDE the flex row with the name; two Streamlit elements stacked
-        in a column cannot be made to share a line."""
-        import base64
-        return ("data:image/jpeg;base64,"
-                + base64.b64encode(Path(path).read_bytes()).decode("ascii"))
-
-    def _thumb_html(video_path: Path) -> str:
-        thumb = ensure_thumbnail(video_path)
-        if not thumb:
-            return '<div class="art-thumb-empty">sin<br>imagen</div>'
-        try:
-            uri = _thumb_uri(thumb, Path(thumb).stat().st_mtime)
-        except OSError:
-            return '<div class="art-thumb-empty">sin<br>imagen</div>'
-        return f'<img class="art-thumb" src="{uri}" alt="">'
-
-    def _artifact_row(video: dict, meta_line: str, badge: str = "",
-                      note: str = "") -> str:
-        note_html = f'<div class="art-note">{_esc(note)}</div>' if note else ""
-        return (f'<div class="art-row">{_thumb_html(video["path"])}'
-                f'<div class="art-body">'
-                f'<div class="artifact-name">{_esc(video["name"])}</div>'
-                f'<div class="artifact-meta">{_esc(meta_line)}</div>'
-                f'{badge}{note_html}</div></div>')
-
-    def _go(page_name: str, artifact: str) -> None:
-        """Hand the operator to the page where the decision is made, with the
-        artifact they pressed on moved to the top of it. Without the second
-        half, pressing "Revisar" on the seventh video drops you at the first."""
-        st.session_state.focus_artifact = artifact
-        st.session_state.current_page = page_name
-        st.rerun()
-
-    # One pass over every artifact the page is about to draw, so the operator
-    # waits once with a spinner instead of watching rows appear one ffmpeg
-    # call at a time. After the first visit this loop is all cache hits.
-    to_warm = [v["path"] for v in (batch + pending + approved)]
-    uncached = [v for v in to_warm
-                if not thumbnails.thumbnail_path(v).exists()]
-    if uncached:
-        with st.spinner(f"Extrayendo {len(uncached)} miniaturas (una vez por artefacto)..."):
-            for v in uncached:
-                ensure_thumbnail(v)
-
-    def _month_name(ym: str) -> str:
-        names = ("enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre "
-                 "diciembre").split()
-        try:
-            return names[int(ym[5:7]) - 1]
-        except (ValueError, IndexError):
-            return ym
-
-    # ── Money, one line ──────────────────────────────────────────────────
-    cost = cost_snapshot()
-    if cost["ceiling_usd"]:
-        ceiling_txt = (f'de un techo de &#36;{cost["ceiling_usd"]:.2f} '
-                       f'({cost["pct_of_ceiling"]:.0f}%)')
-    else:
-        ceiling_txt = "sin techo configurado en config.yaml (costs.monthly_ceiling_usd)"
-    st.markdown(
-        # STEP 80 §0: «$» as an entity — two of them on a line rendered as LaTeX math
-        f'<div class="cost-line">💸 Gasto total: hoy <strong>&#36;{cost["today_usd"]:.2f}</strong>'
-        f' · {_month_name(cost["month"])} <strong>&#36;{cost["month_usd"]:.2f}</strong>'
-        f' {ceiling_txt}</div>', unsafe_allow_html=True)
-
-    # ── Money, per video ─────────────────────────────────────────────────
-    # Collapsed: the line above is the question that changes what the
-    # operator does next; this is where they go when it looks wrong.
-    from cost_tracker import per_video_costs, video_cost_stats
-    _video_costs = per_video_costs(OUTPUT_DIR / "costs")
-    if _video_costs:
-        _stats = video_cost_stats(_video_costs)
-        _outliers = set(_stats["outliers"])
-        with st.expander(
-                f"💸 Coste por vídeo: media \\${_stats['mean_usd']:.3f} · mediana "
-                f"\\${_stats['median_usd']:.3f} · {_stats['videos']} vídeos"):
-            st.dataframe(
-                [{"video": r["video_id"],
-                  "fecha": (r["last_at"] or "")[:16].replace("T", " "),
-                  "OpenRouter $": round(r.get("openrouter_usd", 0.0), 4),
-                  # historical: rows from before OpenRouter was the only paid AI (2026-10-27)
-                  "OpenAI $ (antiguo)": round(r["openai_usd"], 4),
-                  "ElevenLabs $ (antiguo)": round(r["elevenlabs_usd"], 4),
-                  "total $": round(r["total_usd"], 4),
-                  "llamadas": r["calls"],
-                  "⚠": "> 2× mediana" if r["video_id"] in _outliers else ""}
-                 for r in _video_costs[:50]],
-                width="stretch", hide_index=True)
-            st.caption("Últimos 50. Detalle completo: "
-                       "`python3 src/cost_tracker.py --videos 100`")
-    st.markdown("")
-
-    # ── In flight ────────────────────────────────────────────────────────
-    #
-    # A fragment, not a page-level rerun. The old version called st.rerun()
-    # from inside this loop, which abandons the rest of the draw — harmless
-    # while generation blocked the thread (nothing else could run anyway),
-    # but now that jobs run in the background it would hide every queue below
-    # for as long as anything was rendering. run_every repaints only this
-    # block, and only while there is something to show.
-    @st.fragment(run_every="2s")
-    def _render_active_jobs():
-        jobs = get_active_jobs()
-        if not jobs:
-            return
-        _queue_head(len(jobs), "En marcha", "", "se actualiza solo")
-        for job in jobs:
-            c1, c2 = st.columns([4, 1])
-            with c1:
-                st.markdown(f"**{type_label(job['video_type'])}** — {job.get('topic') or 'eligiendo tema…'}")
-                st.progress(job.get('progress', 0) / 100)
-                st.caption(job.get('current_step') or 'empezando…')
-            with c2:
-                st.code(job['id'])
-
-    _render_active_jobs()
-
-    # ── 1. Rendered by --batch, never promoted ───────────────────────────
-    if batch or census["batch"]:                        # rare (a --batch render): no block when empty
-        _queue_head(len(batch), "Hechos por lote, sin revisar", "", "pasar a revisión")
-        _census_line(len(batch), census["batch"], "hechos por lote")
-    for idx, v in enumerate(batch):
-        c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
-        with c1:
-            st.markdown(_artifact_row(
-                v, f'{v["type"]} · {v["created"].strftime("%Y-%m-%d %H:%M")} · '
-                   f'{v["size"] / (1024*1024):.1f} MB'),
-                unsafe_allow_html=True)
-        with c2:
-            if st.button("⬆️ A revisión", key=f"inicio_promote_{idx}",
-                         width="stretch"):
-                verdict = promote_to_review(v["path"])
-                if verdict["ok"]:
-                    st.success(f"{verdict['artifact']} pasó a «Por revisar». {verdict['reason']}")
+    _cells = _ini.flow_cells(len(_free0), _free0[0] if _free0 else None, len(get_pending_videos()), len(get_approved_videos()), _queued_n)
+    for _col, _c in zip(st.columns(4), _cells):
+        with _col:
+            _hot = "border:2.5px solid var(--ink);box-shadow:4px 4px 0 var(--ink);" if _c["hot"] else ""
+            st.markdown(f'<div class="card" style="{_hot}padding:14px"><div class="eyebrow">{_c["label"]}</div>'
+                        f'<div class="num" style="font-family:Fredoka;font-size:30px;font-weight:600">{_c["n"]}</div>'
+                        f'<div class="muted">{_c["line"]}</div></div>', unsafe_allow_html=True)
+            with st.container(key=f"btn-ghost-flow-{_c['page']}"):
+                if st.button("Abrir", key=f"flow_{_c['page']}", width="stretch"):
+                    st.session_state.current_page = _c["page"]
                     st.rerun()
-                else:
-                    st.error(verdict["reason"])
-    st.markdown("")
 
-    # ── 2. Awaiting review ───────────────────────────────────────────────
-    _queue_head(len(pending), "Por revisar", "", "revisar")
-    _census_line(len(pending), census["pending"], "por revisar")
-
-    # The gate split, counted twice as well. This is the number that must not
-    # be allowed to drift: an artifact with no verdict rendering as one that
-    # passed is precisely the failure D0 was written to end.
-    listed_gate = {"pass": 0, "missing": 0, "other": 0}
-    for v in pending:
-        g = gate_record(v.get("meta"))
-        if not g["known"]:
-            listed_gate["missing"] += 1
-        elif g["verdict"] == "PASS":
-            listed_gate["pass"] += 1
+    _left, _right = st.columns([2.3, 1.2])
+    with _left:
+        _best = next_best()
+        if not _best:
+            st.markdown('<div class="sticker" style="padding:22px"><h3>La cola está vacía.</h3>'
+                        '<div class="muted">Añade guiones en Temas.</div></div>', unsafe_allow_html=True)
+            with st.container(key="btn-primary-empty"):
+                if st.button("Ir a Temas", key="inicio_to_topics"):
+                    st.session_state.current_page = "Topics"
+                    st.rerun()
         else:
-            listed_gate["other"] += 1
-    gate_ok = (listed_gate["pass"] == census["pending_gate_pass"]
-               and listed_gate["missing"] == census["pending_gate_missing"]
-               and listed_gate["other"] == census["pending_gate_other"])
-    gate_txt = (f'{listed_gate["pass"]} con PASS · '
-                f'{listed_gate["missing"]} {GATE_MISSING_LABEL}'
-                + (f' · {listed_gate["other"]} otro veredicto' if listed_gate["other"] else ''))
-    if gate_ok and not pending:
-        pass                                            # nothing listed, nothing on disk: no line
-    elif gate_ok:
-        st.markdown(f'<span class="census-ok">{gate_txt} — '
-                    f'({census["pending_gate_pass"]}/{census["pending_gate_missing"]}'
-                    + (f'/{census["pending_gate_other"]}' if listed_gate["other"] else '')
-                    + ') en disco ✓</span>',
-                    unsafe_allow_html=True)
-    else:
-        st.markdown(f'<span class="census-mismatch">⚠ Los veredictos no cuadran: '
-                    f'{gate_txt} vs {census["pending_gate_pass"]}/'
-                    f'{census["pending_gate_missing"]}/{census["pending_gate_other"]} '
-                    f'en disco.</span>', unsafe_allow_html=True)
-    if listed_gate["missing"]:
-        st.caption(
-            f'{listed_gate["missing"]} no tienen veredicto del control de calidad. '
-            f'«{GATE_MISSING_LABEL}» no quiere decir que pasaran: nadie lo comprobó '
-            f'(son anteriores a que el veredicto se guardara con el vídeo).')
-
-    if not pending:
-        st.caption("Nada por revisar. Produce el siguiente vídeo arriba.")
-    for idx, v in enumerate(pending):
-        c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
-        with c1:
-            flags = gate_record(v.get("meta"))["flags"]
-            st.markdown(_artifact_row(
-                v, f'{v["type"]} · {v["created"].strftime("%Y-%m-%d %H:%M")}',
-                badge=_gate_html(v.get("meta")),
-                note=("⚠ " + ", ".join(str(f) for f in flags)) if flags else ""),
-                unsafe_allow_html=True)
-        with c2:
-            if st.button("👀 Revisar", key=f"inicio_review_{idx}",
-                         width="stretch"):
-                _go("Review", v["name"])
-    st.markdown("")
-
-    # ── 3. Approved, not uploaded ────────────────────────────────────────
-    _queue_head(len(approved), "Por subir", "", "subir")
-    _census_line(len(approved), census["approved"], "por subir")
-    if not approved:
-        st.caption("Nada por subir. Lo que apruebes en «Revisar» aparece aquí.")
-    for idx, v in enumerate(approved):
-        c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
-        with c1:
-            # The ledger is the authority on what is published, and a video
-            # already live sitting in the "ready to upload" list is the exact
-            # shape of the mistake that published hPdSoqjvu3E twice.
-            note = ("⚠ el registro ya lo da por publicado en: "
-                    + ", ".join(v["published_to"])) if v.get("published_to") else ""
-            st.markdown(_artifact_row(
-                v, f'{v["type"]} · {v["created"].strftime("%Y-%m-%d %H:%M")}',
-                badge=_gate_html(v.get("meta")), note=note),
-                unsafe_allow_html=True)
-        with c2:
-            if st.button("📤 Subir", key=f"inicio_upload_{idx}",
-                         width="stretch"):
-                _go("Upload", v["name"])
-    st.markdown("")
-
-    # ── 4. Published ─────────────────────────────────────────────────────
-    _queue_head(len(published), "Publicados", "", "abrir en la plataforma")
-    _census_line(len(published), census["ledger_rows"], "publicados")
-
-    def _ledger_row(r: dict) -> str:
-        artifact = r.get("artifact") or "(sin artefacto)"
-        when = (r.get("published_at") or "")[:10]
-        url = r.get("url") or ""
-        plat = r.get("platform") or "?"
-        # The href is escaped AND scheme-checked: a ledger row is data, and a
-        # javascript: value reaching an anchor would be a click away from
-        # running in the operator's dashboard.
-        safe = url if url.startswith(("http://", "https://")) else ""
-        link = (f'<a href="{_esc(safe)}" target="_blank" rel="noopener noreferrer">'
-                f'▶ abrir</a>' if safe
-                else '<span class="artifact-meta">sin URL</span>')
-        # UNMATCHED:: rows were backfilled from the platform API and have no
-        # local file; saying so is the point of keeping them in the list.
-        note = (' <span class="artifact-meta">· sin fichero local</span>'
-                if artifact.startswith("UNMATCHED::") else '')
-        return (f'<div class="ledger-row">{link} · '
-                f'<span class="artifact-name">{_esc(artifact)}</span>'
-                f'<span class="artifact-meta"> · {_esc(plat)} · {_esc(when)}</span>'
-                f'{note}</div>')
-
-    LEDGER_SHOWN = 6
-    for r in published[:LEDGER_SHOWN]:
-        st.markdown(_ledger_row(r), unsafe_allow_html=True)
-    if len(published) > LEDGER_SHOWN:
-        with st.expander(f"Ver las otras {len(published) - LEDGER_SHOWN} publicaciones"):
-            for r in published[LEDGER_SHOWN:]:
-                st.markdown(_ledger_row(r), unsafe_allow_html=True)
-    st.markdown("")
-
-    # ── Failures ─────────────────────────────────────────────────────────
-    #
-    # BELOW the queues, deliberately. This block was drawn first and the
-    # top of Inicio became five stale crashes — the newest nine days old,
-    # four of them the same ImportError from a bug fixed weeks ago — with
-    # every actionable queue pushed under the fold. A three-week-old
-    # traceback is not the next thing to do, so it does not get the
-    # position that says it is.
-    #
-    # A gate REJECT is deliberately NOT here: "failed" means the pipeline
-    # raised, a refused video is a successful render of a bad artifact and
-    # carries its verdict on the artifact instead. These are crashes, and the
-    # only thing to do with a crash is read its log — so the log is the row.
-    failed = get_failed_jobs()
-    if failed:
-        SHOWN = 3
-        _queue_head(len(failed), "Fallos recientes", "", "leer el log")
-        for job in failed[:SHOWN]:
-            when = (job.get("completed_at") or job.get("updated_at") or "")[:16].replace("T", " ")
-            topic = job.get("topic") or "(sin tema)"
-            reason = (job.get("error") or "sin motivo registrado").strip().splitlines()[0][:180]
-            log_path = job.get("log_path")
-            st.markdown(
-                f'<div class="activity-item">❌ <strong>{_esc(topic)}</strong> '
-                f'<span class="artifact-meta">· {_esc(job.get("video_type",""))} '
-                f'· {_esc(when)} · job {_esc(job.get("id",""))}</span><br>'
-                f'<span style="color:var(--eu-red);font-size:0.8rem">{_esc(reason)}</span></div>',
-                unsafe_allow_html=True)
-            if log_path:
-                exists = Path(log_path).exists()
-                st.caption(f'📜 `{log_path}`' + ("" if exists else "  — el archivo ya no está"))
-            else:
-                st.caption("📜 sin log_path en el registro del job")
-        if len(failed) > SHOWN:
-            with st.expander(f"Ver los otros {len(failed) - SHOWN} fallos"):
-                for job in failed[SHOWN:]:
-                    when = (job.get("completed_at") or "")[:16].replace("T", " ")
-                    reason = (job.get("error") or "sin motivo").strip().splitlines()[0][:140]
-                    st.markdown(f"- **{job.get('topic') or '(sin tema)'}** · {when} — {reason}")
-                    if job.get("log_path"):
-                        st.caption(f"  📜 `{job['log_path']}`")
-        st.markdown("")
-
-    # ── How new artifacts enter the queues above ─────────────────────────
-    _queue_head(None, "Crear rápido", "", "un vídeo del tipo que elijas, de la cola")
-    # DERIVED, and that is a bug fix, not tidying. This row was written by
-    # hand with four of the six types, so fill_blank and pronunciation had no
-    # Generate button -- the exact defect admin.py:2264 documents having fixed
-    # in the scheduler, regrown in a different list in the same file.
-    _buttons = video_types.DASHBOARD_BUTTONS
-    action_cols = st.columns(len(_buttons))
-    for col, (label, vtype) in zip(action_cols, _buttons):
-        with col:
-            if st.button(f"🎬 {label}", width="stretch", key=f"quick_{vtype}"):
-                job_id = start_generation(vtype)
-                st.toast(f"{label}: en marcha (job {job_id})")
+            _bp, _bd, _why = _best
+            _img = _ini.frame0_png(_bp.stem, _bd, _bp.stat().st_mtime)
+            _prev, _info = st.columns([1, 2.2])
+            with _prev:
+                if _img:
+                    st.image(str(_img), width=270)
+                else:
+                    st.markdown(_ini.fallback_card_html(_bd), unsafe_allow_html=True)
+            with _info:
+                _next_slot = _free0[0] if _free0 else None
+                _title = _bd.get("video_title") or _bd.get("theme") or _bp.stem
+                _title_html = _ini.highlight_topic(_title)
+                _cfg = _qp.settings()
+                _f = _qp.format_score(_bd.get("type") or "", _snap0, _cfg)
+                _t = _qp.topic_score(_bd, _snap0, _cfg)
+                _words = [i.get("english", "") for i in (_bd.get("items") or [])][:10]
+                import repetition as _rep
+                _rep_n = len(_rep.repeated(_bd, _bp))
+                try:
+                    import duration_spec as _dsp
+                    _dur = _dsp.band(_bd.get("type"))["target_seconds"]
+                except Exception:                           # noqa: BLE001
+                    _dur = None
+                _cost = batch_estimate_usd(1)
+                _rt = _ini.render_seconds(load_jobs().get("history", []), _bd.get("type") or "")
+                st.markdown(
+                    '<div class="sticker" style="padding:20px">'
+                    f'<div class="eyebrow">Siguiente vídeo{f" · sale {_next_slot:%H:%M}" if _next_slot else ""}</div>'
+                    f'<h2 style="margin:6px 0 10px">{_title_html}</h2>'
+                    f'<span class="tag blue">{_ini.e(_t[1])}</span> <span class="tag yellow">{_ini.e(_bd.get("type") or "")}: {_ini.e(_f[1])}</span> '
+                    f'<span class="tag green">tema ×{_t[0]:.2f}</span>'
+                    f'<div style="margin:12px 0">' + "".join(f'<span class="chip" style="margin:2px">{_ini.e(w)}</span>' for w in _words) + '</div>'
+                    + _ini.facts_html(_bd.get("type") or "", _dur, _cost, _rt, _rep_n) + '</div>', unsafe_allow_html=True)
+                _b1, _b2 = st.columns([1, 1])
+                with _b1:
+                    with st.container(key="btn-primary-hero"):
+                        if st.button("▶ Producir ahora", key="inicio_produce"):
+                            try:
+                                st.session_state.last_job = start_generation(_bd.get("type"), use_queue=True)
+                                st.success("En marcha: el progreso está en «Detalles».")
+                            except AlreadyRendering as busy:
+                                st.warning(str(busy))
+                with _b2:
+                    with st.container(key="btn-ghost-other"):
+                        if st.button("Elegir otro de la cola", key="inicio_other"):
+                            st.session_state.current_page = "Queue"
+                            st.rerun()
+        st.markdown(_ini.recent_html(_videos, _ini.normals(_videos)), unsafe_allow_html=True)
+        with st.container(key="btn-ghost-perf"):
+            if st.button("Ver todo en Rendimiento →", key="inicio_to_perf"):
+                st.session_state.current_page = "Performance"
                 st.rerun()
 
+    with _right:
+        _tomorrow_ready = max(0, min(len(_scfg["slots"]), len(_ranked0) - len(_free0)))
+        st.markdown(_ini.agenda_html(_states, len(_scfg["slots"]), _tomorrow_ready), unsafe_allow_html=True)
+        st.markdown("### Secuelas por escribir")
+        try:
+            _themes = [str(d.get("theme") or "") for _p, d in _ranked0]
+            _seqs = _cs.sequel_suggestions(_videos, _themes)[:3]
+        except Exception:                                   # noqa: BLE001
+            _seqs = []
+        if not _seqs:
+            st.caption("Ninguna secuela pendiente: ningún vídeo ha pasado de 800 vistas sin la suya.")
+        for _s in _seqs:
+            st.markdown(f'<div class="card" style="padding:12px;margin-bottom:8px"><b>MÁS {_ini.e(_s["category"])}</b>'
+                        f'<div class="muted">{_s["views"]:,} vistas en los primeros días</div></div>', unsafe_allow_html=True)
+        _pi = _ini.postit(_videos, _ini.normals(_videos))
+        if _pi:
+            if _pi["kind"] == "weak":
+                _lines = "".join(f"<li>{_ini.e((v.get('title') or '')[:40])}</li>" for v in _pi["videos"])
+                _msg = f"<b>Vídeos que no arrancaron</b><ul>{_lines}</ul><div>Tienen menos del 25 % de lo normal de su formato.</div>"
+            else:
+                _msg = f"<b>Buen ritmo</b><div>{_ini.e((_pi['videos'][0].get('title') or '')[:48])} va a {_pi['ratio']:.1f}× lo normal esta semana.</div>"
+            st.markdown(f'<div style="background:var(--yellow);color:var(--ink);border:2.5px solid var(--ink);border-radius:14px;'
+                        f'padding:14px;transform:rotate(-1deg);box-shadow:4px 4px 0 var(--ink)">{_msg}</div>', unsafe_allow_html=True)
+            st.image(str(ROOT / "assets/branding/english-unlimited/expresiones/bien_hecho.png"), width=70)
 
-# ============== GENERATE PAGE ==============
+    # Everything that used to be on Inicio, intact, one fold down
+    with st.expander("Detalles", expanded=False):
+
+        import thumbnails
+        from thumbnails import ensure_thumbnail
+
+        batch = get_library_videos()
+        pending = get_pending_videos()
+        approved = get_approved_videos()
+        published = get_ledger_rows()
+        census = independent_disk_census()
+
+        # ── Hoy: four numbers that say what is waiting (STEP 80, Garcia: «velocity without losing quality»)
+        _week_ago = (datetime.now() - timedelta(days=7)).date().isoformat()
+        _week = len({r.get("artifact") for r in published                # videos, not one row per platform
+                     if (r.get("published_at") or "")[:10] >= _week_ago and r.get("artifact")})
+        _hoy = st.columns(4)
+        with _hoy[0]:
+            st.metric("Por revisar", len(pending), border=True)
+        with _hoy[1]:
+            st.metric("Por subir", len(approved), border=True)
+        with _hoy[2]:
+            st.metric("Vídeos publicados · 7 días", _week, border=True)
+        with _hoy[3]:
+            st.metric(f"OpenRouter este mes · tope \\${_or_cap:.0f}", "$" + f"{(_or_spent or 0):.2f}", border=True)   # a metric's value is plain text
+
+        # STEP 81 §1.1: the stats refresh themselves (at start, then every 20 h); a failure warns, never blocks
+        import channel_stats as _cs
+        _auto = _cs.start_auto_refresh()
+        if _auto.get("error"):
+            st.warning(f"No pude actualizar las estadísticas: {_auto['error']}. Sigo con las últimas que tengo.")
+
+        # STEP 81 §1.4: a «Cómo se dice» that reached 800 views by day 3 earns a sequel
+        try:
+            _snap = _cs.latest()
+            _themes = [str((_d.get("theme") or "")) for _p in _queue_guard().queued_scripts()
+                       for _d in [json.loads(_p.read_text(encoding="utf-8"))]]
+            _seq = _cs.sequel_suggestions((_snap or {}).get("videos", []), _themes)[:3]
+        except Exception:                                       # noqa: BLE001
+            _seq = []
+        for _s in _seq:
+            st.info(f"Escribir la secuela: MÁS {_s['category']} ({_s['views']:,} vistas en los primeros días).")
+
+        # STEP 81 §2: the next 8 publishing slots and what fills them
+        with st.expander("Próximos 8 huecos de publicación"):
+            try:
+                import daily_mix
+                import publication_log
+                import slots as _slots
+                _cfg = _slots.settings()
+                _rows = publication_log.read_ledger()
+                _next = _slots.next_slots(datetime.now(_slots._tz(_cfg)), _slots.taken_times(_rows, _cfg), 8, _cfg)
+                _bad = _queue_bad(_queue_guard())
+                _ranked = []
+                for _p in queue_order(_queue_guard().queued_scripts()):
+                    if _p.relative_to(ROOT) not in _bad:
+                        _ranked.append((_p, json.loads(_p.read_text(encoding="utf-8"))))
+                _today = daily_mix.uploads_on(_rows, datetime.now().date())
+                _plan = _slots.fill_plan(_next, _ranked, _today)
+                st.dataframe([{"hueco": at.strftime("%a %d %b %H:%M"), "tipo": want,
+                               "guion": path.name if path else "— sin guion —"} for at, want, path in _plan],
+                             hide_index=True)
+                st.caption("YouTube sube el vídeo en privado y lo publica solo a esa hora (Costa Rica); "
+                           "mínimo 2,5 h entre dos y 4 al día.")
+            except Exception as _e:                              # noqa: BLE001
+                st.caption(f"Huecos no disponibles: {_e}")
+
+        # STEP 80 §2: the main action — the best queued script, in words, and why it is next
+        _best = next_best()
+        with st.container(border=True):
+            if _best:
+                _bp, _bd, _why = _best
+                _what = _bd.get("theme") or _bd.get("title") or _bd.get("topic") or _bp.stem
+                st.caption("SIGUIENTE VÍDEO")
+                st.markdown(f"#### {type_label(_bd.get('type') or '')} · {_what}")
+                st.caption("Por qué este: " + _why.split(": ", 1)[-1])   # the type is already in the title
+                if st.button("▶ Producir ahora", type="primary", key="produce_next_best"):
+                    try:
+                        st.session_state.last_job = start_generation(_bd.get("type"), use_queue=True)
+                        st.success(f"En marcha: {_what}")
+                    except AlreadyRendering as busy:
+                        st.warning(str(busy))
+            else:
+                st.markdown("**La cola está vacía.** Añade guiones en «Temas» o crea uno en «Crear».")
+
+        def _census_line(listed: int, counted: int, what: str) -> None:
+            """Print both counts. Never just the one the page happens to like.
+
+            The list and the census are two different walks of the same disk. If
+            they agree, the number on the page is worth something. If they do not,
+            the page says which two numbers disagree and stops pretending.
+            """
+            if listed == counted:
+                st.markdown(
+                    f'<span class="census-ok">{listed} en la lista · {counted} en disco ✓</span>',
+                    unsafe_allow_html=True)
+            else:
+                st.markdown(
+                    f'<span class="census-mismatch">⚠ No cuadra en «{what}»: {listed} en la lista, '
+                    f'{counted} en disco. Uno de los dos recuentos está mal.</span>',
+                    unsafe_allow_html=True)
+
+        def _queue_head(count, title: str, source: str, action: str) -> None:
+            num = (f'<span class="queue-count">{count}</span>'
+                   if count is not None else '')
+            st.markdown(
+                f'<div class="queue-head">{num}'
+                f'<span class="queue-title">{title}</span>'
+                f'<span class="artifact-meta">{source}</span>'
+                f'<span class="queue-action">→ {action}</span>'
+                f'</div>', unsafe_allow_html=True)
+
+        def _esc(value) -> str:
+            """Everything below builds HTML by concatenation, and every value in
+            it comes off disk: artifact names are filenames, the failure reasons
+            are exception strings, the URLs are ledger rows. An `&` in a topic or
+            a `<` in a traceback would otherwise silently mangle the row it is in.
+            """
+            import html as _html
+            return _html.escape(str(value), quote=True)
+
+        def _gate_html(meta: Optional[dict]) -> str:
+            g = gate_record(meta)
+            return f'<span class="gate-badge gate-{g["tone"]}">{_esc(g["label"])}</span>'
+
+        @st.cache_data(show_spinner=False)
+        def _thumb_uri(path: str, mtime: float) -> str:
+            """The still, inlined. Keyed on mtime so a re-render busts the cache.
+
+            Inlined rather than served through st.image because the picture has to
+            sit INSIDE the flex row with the name; two Streamlit elements stacked
+            in a column cannot be made to share a line."""
+            import base64
+            return ("data:image/jpeg;base64,"
+                    + base64.b64encode(Path(path).read_bytes()).decode("ascii"))
+
+        def _thumb_html(video_path: Path) -> str:
+            thumb = ensure_thumbnail(video_path)
+            if not thumb:
+                return '<div class="art-thumb-empty">sin<br>imagen</div>'
+            try:
+                uri = _thumb_uri(thumb, Path(thumb).stat().st_mtime)
+            except OSError:
+                return '<div class="art-thumb-empty">sin<br>imagen</div>'
+            return f'<img class="art-thumb" src="{uri}" alt="">'
+
+        def _artifact_row(video: dict, meta_line: str, badge: str = "",
+                          note: str = "") -> str:
+            note_html = f'<div class="art-note">{_esc(note)}</div>' if note else ""
+            return (f'<div class="art-row">{_thumb_html(video["path"])}'
+                    f'<div class="art-body">'
+                    f'<div class="artifact-name">{_esc(video["name"])}</div>'
+                    f'<div class="artifact-meta">{_esc(meta_line)}</div>'
+                    f'{badge}{note_html}</div></div>')
+
+        def _go(page_name: str, artifact: str) -> None:
+            """Hand the operator to the page where the decision is made, with the
+            artifact they pressed on moved to the top of it. Without the second
+            half, pressing "Revisar" on the seventh video drops you at the first."""
+            st.session_state.focus_artifact = artifact
+            st.session_state.current_page = page_name
+            st.rerun()
+
+        # One pass over every artifact the page is about to draw, so the operator
+        # waits once with a spinner instead of watching rows appear one ffmpeg
+        # call at a time. After the first visit this loop is all cache hits.
+        to_warm = [v["path"] for v in (batch + pending + approved)]
+        uncached = [v for v in to_warm
+                    if not thumbnails.thumbnail_path(v).exists()]
+        if uncached:
+            with st.spinner(f"Extrayendo {len(uncached)} miniaturas (una vez por artefacto)..."):
+                for v in uncached:
+                    ensure_thumbnail(v)
+
+        def _month_name(ym: str) -> str:
+            names = ("enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre "
+                     "diciembre").split()
+            try:
+                return names[int(ym[5:7]) - 1]
+            except (ValueError, IndexError):
+                return ym
+
+        # ── Money, one line ──────────────────────────────────────────────────
+        cost = cost_snapshot()
+        if cost["ceiling_usd"]:
+            ceiling_txt = (f'de un techo de &#36;{cost["ceiling_usd"]:.2f} '
+                           f'({cost["pct_of_ceiling"]:.0f}%)')
+        else:
+            ceiling_txt = "sin techo configurado en config.yaml (costs.monthly_ceiling_usd)"
+        st.markdown(
+            # STEP 80 §0: «$» as an entity — two of them on a line rendered as LaTeX math
+            f'<div class="cost-line">💸 Gasto total: hoy <strong>&#36;{cost["today_usd"]:.2f}</strong>'
+            f' · {_month_name(cost["month"])} <strong>&#36;{cost["month_usd"]:.2f}</strong>'
+            f' {ceiling_txt}</div>', unsafe_allow_html=True)
+
+        # ── Money, per video ─────────────────────────────────────────────────
+        # Collapsed: the line above is the question that changes what the
+        # operator does next; this is where they go when it looks wrong.
+        from cost_tracker import per_video_costs, video_cost_stats
+        _video_costs = per_video_costs(OUTPUT_DIR / "costs")
+        if _video_costs:
+            _stats = video_cost_stats(_video_costs)
+            _outliers = set(_stats["outliers"])
+            with st.expander(
+                    f"💸 Coste por vídeo: media \\${_stats['mean_usd']:.3f} · mediana "
+                    f"\\${_stats['median_usd']:.3f} · {_stats['videos']} vídeos"):
+                st.dataframe(
+                    [{"video": r["video_id"],
+                      "fecha": (r["last_at"] or "")[:16].replace("T", " "),
+                      "OpenRouter $": round(r.get("openrouter_usd", 0.0), 4),
+                      # historical: rows from before OpenRouter was the only paid AI (2026-10-27)
+                      "OpenAI $ (antiguo)": round(r["openai_usd"], 4),
+                      "ElevenLabs $ (antiguo)": round(r["elevenlabs_usd"], 4),
+                      "total $": round(r["total_usd"], 4),
+                      "llamadas": r["calls"],
+                      "⚠": "> 2× mediana" if r["video_id"] in _outliers else ""}
+                     for r in _video_costs[:50]],
+                    width="stretch", hide_index=True)
+                st.caption("Últimos 50. Detalle completo: "
+                           "`python3 src/cost_tracker.py --videos 100`")
+        st.markdown("")
+
+        # ── In flight ────────────────────────────────────────────────────────
+        #
+        # A fragment, not a page-level rerun. The old version called st.rerun()
+        # from inside this loop, which abandons the rest of the draw — harmless
+        # while generation blocked the thread (nothing else could run anyway),
+        # but now that jobs run in the background it would hide every queue below
+        # for as long as anything was rendering. run_every repaints only this
+        # block, and only while there is something to show.
+        @st.fragment(run_every="2s")
+        def _render_active_jobs():
+            jobs = get_active_jobs()
+            if not jobs:
+                return
+            _queue_head(len(jobs), "En marcha", "", "se actualiza solo")
+            for job in jobs:
+                c1, c2 = st.columns([4, 1])
+                with c1:
+                    st.markdown(f"**{type_label(job['video_type'])}** — {job.get('topic') or 'eligiendo tema…'}")
+                    st.progress(job.get('progress', 0) / 100)
+                    st.caption(job.get('current_step') or 'empezando…')
+                with c2:
+                    st.code(job['id'])
+
+        _render_active_jobs()
+
+        # ── 1. Rendered by --batch, never promoted ───────────────────────────
+        if batch or census["batch"]:                        # rare (a --batch render): no block when empty
+            _queue_head(len(batch), "Hechos por lote, sin revisar", "", "pasar a revisión")
+            _census_line(len(batch), census["batch"], "hechos por lote")
+        for idx, v in enumerate(batch):
+            c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
+            with c1:
+                st.markdown(_artifact_row(
+                    v, f'{v["type"]} · {v["created"].strftime("%Y-%m-%d %H:%M")} · '
+                       f'{v["size"] / (1024*1024):.1f} MB'),
+                    unsafe_allow_html=True)
+            with c2:
+                if st.button("⬆️ A revisión", key=f"inicio_promote_{idx}",
+                             width="stretch"):
+                    verdict = promote_to_review(v["path"])
+                    if verdict["ok"]:
+                        st.success(f"{verdict['artifact']} pasó a «Por revisar». {verdict['reason']}")
+                        st.rerun()
+                    else:
+                        st.error(verdict["reason"])
+        st.markdown("")
+
+        # ── 2. Awaiting review ───────────────────────────────────────────────
+        _queue_head(len(pending), "Por revisar", "", "revisar")
+        _census_line(len(pending), census["pending"], "por revisar")
+
+        # The gate split, counted twice as well. This is the number that must not
+        # be allowed to drift: an artifact with no verdict rendering as one that
+        # passed is precisely the failure D0 was written to end.
+        listed_gate = {"pass": 0, "missing": 0, "other": 0}
+        for v in pending:
+            g = gate_record(v.get("meta"))
+            if not g["known"]:
+                listed_gate["missing"] += 1
+            elif g["verdict"] == "PASS":
+                listed_gate["pass"] += 1
+            else:
+                listed_gate["other"] += 1
+        gate_ok = (listed_gate["pass"] == census["pending_gate_pass"]
+                   and listed_gate["missing"] == census["pending_gate_missing"]
+                   and listed_gate["other"] == census["pending_gate_other"])
+        gate_txt = (f'{listed_gate["pass"]} con PASS · '
+                    f'{listed_gate["missing"]} {GATE_MISSING_LABEL}'
+                    + (f' · {listed_gate["other"]} otro veredicto' if listed_gate["other"] else ''))
+        if gate_ok and not pending:
+            pass                                            # nothing listed, nothing on disk: no line
+        elif gate_ok:
+            st.markdown(f'<span class="census-ok">{gate_txt} — '
+                        f'({census["pending_gate_pass"]}/{census["pending_gate_missing"]}'
+                        + (f'/{census["pending_gate_other"]}' if listed_gate["other"] else '')
+                        + ') en disco ✓</span>',
+                        unsafe_allow_html=True)
+        else:
+            st.markdown(f'<span class="census-mismatch">⚠ Los veredictos no cuadran: '
+                        f'{gate_txt} vs {census["pending_gate_pass"]}/'
+                        f'{census["pending_gate_missing"]}/{census["pending_gate_other"]} '
+                        f'en disco.</span>', unsafe_allow_html=True)
+        if listed_gate["missing"]:
+            st.caption(
+                f'{listed_gate["missing"]} no tienen veredicto del control de calidad. '
+                f'«{GATE_MISSING_LABEL}» no quiere decir que pasaran: nadie lo comprobó '
+                f'(son anteriores a que el veredicto se guardara con el vídeo).')
+
+        if not pending:
+            st.caption("Nada por revisar. Produce el siguiente vídeo arriba.")
+        for idx, v in enumerate(pending):
+            c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
+            with c1:
+                flags = gate_record(v.get("meta"))["flags"]
+                st.markdown(_artifact_row(
+                    v, f'{v["type"]} · {v["created"].strftime("%Y-%m-%d %H:%M")}',
+                    badge=_gate_html(v.get("meta")),
+                    note=("⚠ " + ", ".join(str(f) for f in flags)) if flags else ""),
+                    unsafe_allow_html=True)
+            with c2:
+                if st.button("👀 Revisar", key=f"inicio_review_{idx}",
+                             width="stretch"):
+                    _go("Review", v["name"])
+        st.markdown("")
+
+        # ── 3. Approved, not uploaded ────────────────────────────────────────
+        _queue_head(len(approved), "Por subir", "", "subir")
+        _census_line(len(approved), census["approved"], "por subir")
+        if not approved:
+            st.caption("Nada por subir. Lo que apruebes en «Revisar» aparece aquí.")
+        for idx, v in enumerate(approved):
+            c1, c2 = st.columns([6, 1.6], vertical_alignment="center")
+            with c1:
+                # The ledger is the authority on what is published, and a video
+                # already live sitting in the "ready to upload" list is the exact
+                # shape of the mistake that published hPdSoqjvu3E twice.
+                note = ("⚠ el registro ya lo da por publicado en: "
+                        + ", ".join(v["published_to"])) if v.get("published_to") else ""
+                st.markdown(_artifact_row(
+                    v, f'{v["type"]} · {v["created"].strftime("%Y-%m-%d %H:%M")}',
+                    badge=_gate_html(v.get("meta")), note=note),
+                    unsafe_allow_html=True)
+            with c2:
+                if st.button("📤 Subir", key=f"inicio_upload_{idx}",
+                             width="stretch"):
+                    _go("Upload", v["name"])
+        st.markdown("")
+
+        # ── 4. Published ─────────────────────────────────────────────────────
+        _queue_head(len(published), "Publicados", "", "abrir en la plataforma")
+        _census_line(len(published), census["ledger_rows"], "publicados")
+
+        def _ledger_row(r: dict) -> str:
+            artifact = r.get("artifact") or "(sin artefacto)"
+            when = (r.get("published_at") or "")[:10]
+            url = r.get("url") or ""
+            plat = r.get("platform") or "?"
+            # The href is escaped AND scheme-checked: a ledger row is data, and a
+            # javascript: value reaching an anchor would be a click away from
+            # running in the operator's dashboard.
+            safe = url if url.startswith(("http://", "https://")) else ""
+            link = (f'<a href="{_esc(safe)}" target="_blank" rel="noopener noreferrer">'
+                    f'▶ abrir</a>' if safe
+                    else '<span class="artifact-meta">sin URL</span>')
+            # UNMATCHED:: rows were backfilled from the platform API and have no
+            # local file; saying so is the point of keeping them in the list.
+            note = (' <span class="artifact-meta">· sin fichero local</span>'
+                    if artifact.startswith("UNMATCHED::") else '')
+            return (f'<div class="ledger-row">{link} · '
+                    f'<span class="artifact-name">{_esc(artifact)}</span>'
+                    f'<span class="artifact-meta"> · {_esc(plat)} · {_esc(when)}</span>'
+                    f'{note}</div>')
+
+        LEDGER_SHOWN = 6
+        for r in published[:LEDGER_SHOWN]:
+            st.markdown(_ledger_row(r), unsafe_allow_html=True)
+        if len(published) > LEDGER_SHOWN:
+            with st.expander(f"Ver las otras {len(published) - LEDGER_SHOWN} publicaciones"):
+                for r in published[LEDGER_SHOWN:]:
+                    st.markdown(_ledger_row(r), unsafe_allow_html=True)
+        st.markdown("")
+
+        # ── Failures ─────────────────────────────────────────────────────────
+        #
+        # BELOW the queues, deliberately. This block was drawn first and the
+        # top of Inicio became five stale crashes — the newest nine days old,
+        # four of them the same ImportError from a bug fixed weeks ago — with
+        # every actionable queue pushed under the fold. A three-week-old
+        # traceback is not the next thing to do, so it does not get the
+        # position that says it is.
+        #
+        # A gate REJECT is deliberately NOT here: "failed" means the pipeline
+        # raised, a refused video is a successful render of a bad artifact and
+        # carries its verdict on the artifact instead. These are crashes, and the
+        # only thing to do with a crash is read its log — so the log is the row.
+        failed = get_failed_jobs()
+        if failed:
+            SHOWN = 3
+            _queue_head(len(failed), "Fallos recientes", "", "leer el log")
+            for job in failed[:SHOWN]:
+                when = (job.get("completed_at") or job.get("updated_at") or "")[:16].replace("T", " ")
+                topic = job.get("topic") or "(sin tema)"
+                reason = (job.get("error") or "sin motivo registrado").strip().splitlines()[0][:180]
+                log_path = job.get("log_path")
+                st.markdown(
+                    f'<div class="activity-item">❌ <strong>{_esc(topic)}</strong> '
+                    f'<span class="artifact-meta">· {_esc(job.get("video_type",""))} '
+                    f'· {_esc(when)} · job {_esc(job.get("id",""))}</span><br>'
+                    f'<span style="color:var(--eu-red);font-size:0.8rem">{_esc(reason)}</span></div>',
+                    unsafe_allow_html=True)
+                if log_path:
+                    exists = Path(log_path).exists()
+                    st.caption(f'📜 `{log_path}`' + ("" if exists else "  — el archivo ya no está"))
+                else:
+                    st.caption("📜 sin log_path en el registro del job")
+            if len(failed) > SHOWN:
+                with st.expander(f"Ver los otros {len(failed) - SHOWN} fallos"):
+                    for job in failed[SHOWN:]:
+                        when = (job.get("completed_at") or "")[:16].replace("T", " ")
+                        reason = (job.get("error") or "sin motivo").strip().splitlines()[0][:140]
+                        st.markdown(f"- **{job.get('topic') or '(sin tema)'}** · {when} — {reason}")
+                        if job.get("log_path"):
+                            st.caption(f"  📜 `{job['log_path']}`")
+            st.markdown("")
+
+        # ── How new artifacts enter the queues above ─────────────────────────
+        _queue_head(None, "Crear rápido", "", "un vídeo del tipo que elijas, de la cola")
+        # DERIVED, and that is a bug fix, not tidying. This row was written by
+        # hand with four of the six types, so fill_blank and pronunciation had no
+        # Generate button -- the exact defect admin.py:2264 documents having fixed
+        # in the scheduler, regrown in a different list in the same file.
+        _buttons = video_types.DASHBOARD_BUTTONS
+        action_cols = st.columns(len(_buttons))
+        for col, (label, vtype) in zip(action_cols, _buttons):
+            with col:
+                if st.button(f"🎬 {label}", width="stretch", key=f"quick_{vtype}"):
+                    job_id = start_generation(vtype)
+                    st.toast(f"{label}: en marcha (job {job_id})")
+                    st.rerun()
+
+
+    # ============== GENERATE PAGE ==============
+
+
 elif page == "Generate":
     st.markdown("## Crear video")
 

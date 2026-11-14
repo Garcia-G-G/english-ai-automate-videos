@@ -788,3 +788,7 @@ bonus_words:
   queso: cheese
   gato: cat
   playa: beach
+
+# STEP 83 §2: the panel's greeting.
+panel:
+  owner_name: "Garcia"

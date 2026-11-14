@@ -142,9 +142,9 @@ section[data-testid="stSidebar"] .stButton button [data-testid="stMarkdownContai
 [data-testid="stMarkdownContainer"] code, .stMarkdown code, [data-testid="stCaptionContainer"] code { background: var(--sand2) !important; color: var(--ink) !important; border-radius: 6px; padding: 1px 6px; font-size: 0.85em; }
 
 /* Streamlit's own buttons, through keyed containers: st.container(key="btn-primary") etc. */
-.st-key-btn-primary button { background: var(--blue); color: var(--white); border: 2.5px solid var(--ink); border-radius: 14px; font-weight: 800; box-shadow: 4px 4px 0 var(--ink); }
-.st-key-btn-green button { background: var(--green); color: var(--white); border: 2.5px solid var(--ink); border-radius: 14px; font-weight: 800; box-shadow: 4px 4px 0 var(--ink); }
-.st-key-btn-ghost button { background: var(--card); color: var(--ink); border: 1.5px solid var(--line); border-radius: 14px; font-weight: 700; box-shadow: none; }
-.st-key-btn-primary button:hover, .st-key-btn-green button:hover { filter: brightness(1.06); }
-.st-key-btn-primary button:disabled, .st-key-btn-green button:disabled { background: var(--sand2); color: var(--muted); box-shadow: none; border-color: var(--line); }
+[class*="st-key-btn-primary"] button { background: var(--blue); color: var(--white); border: 2.5px solid var(--ink); border-radius: 14px; font-weight: 800; box-shadow: 4px 4px 0 var(--ink); }
+[class*="st-key-btn-green"] button { background: var(--green); color: var(--white); border: 2.5px solid var(--ink); border-radius: 14px; font-weight: 800; box-shadow: 4px 4px 0 var(--ink); }
+[class*="st-key-btn-ghost"] button { background: var(--card); color: var(--ink); border: 1.5px solid var(--line); border-radius: 14px; font-weight: 700; box-shadow: none; }
+[class*="st-key-btn-primary"] button:hover, [class*="st-key-btn-green"] button:hover { filter: brightness(1.06); }
+[class*="st-key-btn-primary"] button:disabled, [class*="st-key-btn-green"] button:disabled { background: var(--sand2); color: var(--muted); box-shadow: none; border-color: var(--line); }
 """
