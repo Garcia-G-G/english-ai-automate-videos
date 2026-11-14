@@ -1,0 +1,309 @@
+{
+  "daySentence": "Hoy salen 4 vídeos y ya hay 3 en su sitio. Falta el de las 19:30.",
+  "next": {
+    "scriptId": "bv101_mas_animales",
+    "type": "how_do_you_say",
+    "typeLabel": "Cómo se dice",
+    "title": "¿Cómo se dicen MÁS ANIMALES en inglés?",
+    "topic": "MÁS ANIMALES",
+    "emoji": "🦒",
+    "family": "animales",
+    "slot": "19:30",
+    "tags": [
+      {
+        "label": "★ Secuela de ANIMALES · 1,336",
+        "tone": "good"
+      },
+      {
+        "label": "Cómo se dice",
+        "tone": "neutral"
+      },
+      {
+        "label": "Tema básico",
+        "tone": "neutral"
+      }
+    ],
+    "words": [
+      "kangaroo",
+      "camel",
+      "crocodile",
+      "hippo",
+      "frog",
+      "bat",
+      "gorilla",
+      "rhino",
+      "raccoon",
+      "hedgehog"
+    ],
+    "facts": {
+      "durationS": 42,
+      "costUsd": 0.11,
+      "renderMin": 2,
+      "repeated": 0
+    },
+    "thumb": null,
+    "xp": 40
+  },
+  "agenda": {
+    "tz": "America/Costa_Rica",
+    "today": [
+      {
+        "time": "08:30",
+        "state": "published",
+        "title": "¿Cómo se dice MÉDICO?",
+        "emoji": "🩺",
+        "views": 661,
+        "platforms": [
+          "youtube",
+          "facebook"
+        ],
+        "fillsWith": null
+      },
+      {
+        "time": "12:00",
+        "state": "published",
+        "title": "«YA LO RESOLVÍ»",
+        "emoji": "🧩",
+        "views": 496,
+        "platforms": [
+          "youtube",
+          "facebook"
+        ],
+        "fillsWith": null
+      },
+      {
+        "time": "16:00",
+        "state": "scheduled",
+        "title": "Test: LA FAMILIA",
+        "emoji": "👪",
+        "views": null,
+        "platforms": [
+          "YouTube",
+          "Facebook"
+        ],
+        "fillsWith": null
+      },
+      {
+        "time": "19:30",
+        "state": "free",
+        "title": null,
+        "emoji": null,
+        "views": null,
+        "platforms": [],
+        "fillsWith": "MÁS ANIMALES"
+      }
+    ],
+    "tomorrow": {
+      "slots": 4,
+      "scripted": 4
+    }
+  },
+  "views": {
+    "periodDays": 28,
+    "views": 47488,
+    "prevViews": 1528,
+    "daily": [
+      {
+        "date": "2026-10-11",
+        "views": 1,
+        "uploads": 0
+      },
+      {
+        "date": "2026-10-12",
+        "views": 2,
+        "uploads": 0
+      },
+      {
+        "date": "2026-10-13",
+        "views": 3205,
+        "uploads": 4
+      },
+      {
+        "date": "2026-10-14",
+        "views": 3153,
+        "uploads": 5
+      },
+      {
+        "date": "2026-10-15",
+        "views": 1402,
+        "uploads": 5
+      },
+      {
+        "date": "2026-10-16",
+        "views": 2678,
+        "uploads": 4
+      },
+      {
+        "date": "2026-10-17",
+        "views": 3711,
+        "uploads": 5
+      },
+      {
+        "date": "2026-10-18",
+        "views": 3717,
+        "uploads": 5
+      },
+      {
+        "date": "2026-10-19",
+        "views": 4886,
+        "uploads": 6
+      },
+      {
+        "date": "2026-10-20",
+        "views": 3730,
+        "uploads": 8
+      },
+      {
+        "date": "2026-10-21",
+        "views": 1750,
+        "uploads": 7
+      },
+      {
+        "date": "2026-10-22",
+        "views": 2077,
+        "uploads": 3
+      },
+      {
+        "date": "2026-10-23",
+        "views": 1408,
+        "uploads": 3
+      },
+      {
+        "date": "2026-10-24",
+        "views": 358,
+        "uploads": 0
+      },
+      {
+        "date": "2026-10-25",
+        "views": 129,
+        "uploads": 0
+      },
+      {
+        "date": "2026-10-26",
+        "views": 468,
+        "uploads": 6
+      },
+      {
+        "date": "2026-10-27",
+        "views": 1475,
+        "uploads": 4
+      },
+      {
+        "date": "2026-10-28",
+        "views": 2480,
+        "uploads": 5
+      },
+      {
+        "date": "2026-10-29",
+        "views": 1150,
+        "uploads": 0
+      },
+      {
+        "date": "2026-10-30",
+        "views": 1272,
+        "uploads": 5
+      },
+      {
+        "date": "2026-10-31",
+        "views": 1105,
+        "uploads": 0
+      },
+      {
+        "date": "2026-11-01",
+        "views": 155,
+        "uploads": 0
+      },
+      {
+        "date": "2026-11-02",
+        "views": 2104,
+        "uploads": 7
+      },
+      {
+        "date": "2026-11-03",
+        "views": 572,
+        "uploads": 5
+      },
+      {
+        "date": "2026-11-04",
+        "views": 251,
+        "uploads": 0
+      },
+      {
+        "date": "2026-11-05",
+        "views": 95,
+        "uploads": 0
+      },
+      {
+        "date": "2026-11-06",
+        "views": 3726,
+        "uploads": 5
+      },
+      {
+        "date": "2026-11-07",
+        "views": 428,
+        "uploads": 0
+      }
+    ],
+    "totals": {
+      "views": 71097,
+      "subs": 126,
+      "likes": 1509
+    },
+    "dataUntil": "2026-11-07"
+  },
+  "formats": [
+    {
+      "key": "how_do_you_say",
+      "label": "Cómo se dice",
+      "median": 858,
+      "videos": 52,
+      "color": "#1F6FD1"
+    },
+    {
+      "key": "level_test",
+      "label": "Test de nivel",
+      "median": 502,
+      "videos": 9,
+      "color": "#FF6F4F"
+    },
+    {
+      "key": "phrases_level",
+      "label": "Frases",
+      "median": 405,
+      "videos": 14,
+      "color": "#12854F"
+    },
+    {
+      "key": "vocabulary",
+      "label": "Vocabulario",
+      "median": 318,
+      "videos": 8,
+      "color": "#2BB5A8"
+    },
+    {
+      "key": "say_it_level",
+      "label": "Dilo en inglés",
+      "median": 276,
+      "videos": 11,
+      "color": "#8A5CD6"
+    }
+  ],
+  "formatsNote": "«Cómo se dice» duplica a casi todo lo demás.",
+  "sequels": [
+    {
+      "topic": "MÁS CASA",
+      "emoji": "🏠",
+      "parentViews": 1601
+    },
+    {
+      "topic": "MÁS COMIDA",
+      "emoji": "🍎",
+      "parentViews": 1389
+    },
+    {
+      "topic": "MÁS CARA",
+      "emoji": "🙂",
+      "parentViews": 1311
+    }
+  ]
+}

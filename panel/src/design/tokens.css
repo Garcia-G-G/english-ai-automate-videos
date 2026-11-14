@@ -1,0 +1,121 @@
+/*
+ * «Mezcla» — Garcia's pick (14 Nov 2026): the bounce of Pegatina, the drifting
+ * colour and frosted panels of Vidrio, and the game pieces of Modo juego.
+ * Two themes, switched by New York time (design/theme.ts). Every colour the app
+ * uses is a token here; components never hard-code a theme colour.
+ */
+:root,
+:root[data-theme="night"] {
+  color-scheme: dark;
+  --bg: #1A1442;
+  --fg: #FFFFFF;
+  --muted: #B9B0EE;
+  --line: rgba(255, 255, 255, 0.14);
+  --nav: rgba(20, 14, 58, 0.55);
+  --tile: rgba(40, 30, 104, 0.52);
+  --tile-strong: rgba(48, 36, 120, 0.72);
+  --tile-border: 1.5px solid rgba(255, 255, 255, 0.16);
+  --tile-shadow: 0 6px 0 rgba(8, 5, 30, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --hover: rgba(255, 255, 255, 0.08);
+  --on: #FFD23F;
+  --on-fg: #1A1442;
+  --on-shadow: 0 4px 0 #B8890B;
+  --badge: #FF4F8B;
+  --accent: #FFD23F;
+  --accent-fg: #1A1442;
+  --accent-edge: #1A1442;
+  --accent-shadow: #B8890B;
+  --good: #4BE3A0;
+  --good-soft: rgba(75, 227, 160, 0.16);
+  --good-fg: #4BE3A0;
+  --warn: #FFD23F;
+  --bad: #FF6B7A;
+  --bad-soft: rgba(255, 107, 122, 0.16);
+  --track: rgba(255, 255, 255, 0.12);
+  --chip: rgba(255, 255, 255, 0.1);
+  --chip-fg: #EEE9FF;
+  --mark: linear-gradient(90deg, #FF4F8B, #A05BFF);
+  --mark-fg: #FFFFFF;
+  --pill: #4BE3A0;
+  --pill-fg: #0C2B1E;
+  --chart: #4BE3A0;
+  --toast: #FFD23F;
+  --toast-fg: #1A1442;
+  --toast-em: #C2185B;
+  --hero-border: 2.5px solid #FFD23F;
+  --hero-shadow: 0 0 0 4px rgba(255, 210, 63, 0.12), 0 8px 0 rgba(8, 5, 30, 0.6);
+  --hero-bg: rgba(40, 30, 104, 0.6);
+  --streak: #FFD23F;
+  --blob-1: #6F4BFF;
+  --blob-2: #FF4F8B;
+  --blob-3: #2BD9C7;
+  --blob-o1: 0.55;
+  --blob-o2: 0.35;
+  --blob-o3: 0.3;
+  --eyebrow: #FFD23F;
+  --scrim: rgba(10, 6, 34, 0.55);
+}
+
+:root[data-theme="day"] {
+  color-scheme: light;
+  --bg: #EEE9FB;
+  --fg: #1B1640;
+  --muted: #5E5884;
+  --line: rgba(27, 22, 64, 0.1);
+  --nav: rgba(255, 255, 255, 0.5);
+  --tile: rgba(255, 255, 255, 0.6);
+  --tile-strong: rgba(255, 255, 255, 0.85);
+  --tile-border: 1.5px solid rgba(255, 255, 255, 0.9);
+  --tile-shadow: 0 16px 40px rgba(60, 40, 160, 0.12), inset 0 1px 0 #FFFFFF;
+  --hover: rgba(255, 255, 255, 0.75);
+  --on: #1B1640;
+  --on-fg: #FFFFFF;
+  --on-shadow: 3px 3px 0 #FFD23F;
+  --badge: #E0336E;
+  --accent: #FFD23F;
+  --accent-fg: #1B1640;
+  --accent-edge: #1B1640;
+  --accent-shadow: #1B1640;
+  --good: #14A06B;
+  --good-soft: rgba(20, 160, 107, 0.13);
+  --good-fg: #0C7550;
+  --warn: #F59E0B;
+  --bad: #D2433A;
+  --bad-soft: rgba(210, 67, 58, 0.12);
+  --track: rgba(27, 22, 64, 0.08);
+  --chip: rgba(255, 255, 255, 0.75);
+  --chip-fg: #1B1640;
+  --mark: linear-gradient(90deg, #FF4F8B, #A05BFF);
+  --mark-fg: #FFFFFF;
+  --pill: #1B1640;
+  --pill-fg: #FFD23F;
+  --chart: #7B5CFF;
+  --toast: #1B1640;
+  --toast-fg: #FFFFFF;
+  --toast-em: #FFD23F;
+  --hero-border: 2.5px solid #1B1640;
+  --hero-shadow: 6px 6px 0 #1B1640;
+  --hero-bg: rgba(255, 255, 255, 0.82);
+  --streak: #B07A00;
+  --blob-1: #B9A8FF;
+  --blob-2: #8FDCFF;
+  --blob-3: #FFB3D9;
+  --blob-o1: 0.75;
+  --blob-o2: 0.75;
+  --blob-o3: 0.75;
+  --eyebrow: #6A4BEB;
+  --scrim: rgba(238, 233, 251, 0.6);
+}
+
+:root {
+  --font-display: "Fredoka", "Manrope", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-pixel: "Silkscreen", ui-monospace, monospace;
+  --radius: 22px;
+  --radius-sm: 12px;
+  --nav-w: 232px;
+  /* motion presets (copied from the prototype) */
+  --ease-pop: cubic-bezier(0.3, 1.4, 0.5, 1);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.3, 1.6, 0.5, 1);
+}

@@ -1,0 +1,216 @@
+{
+  "items": [
+    {
+      "id": "mas_familia_demo",
+      "type": "how_do_you_say",
+      "typeLabel": "Cómo se dice",
+      "design": "Tablero",
+      "items": 5,
+      "title": "¿Cómo se dice MÁS FAMILIA en inglés? 👵 #Shorts",
+      "description": "Abuelo, abuela, bebé, niño y niña: ¿cuántas sabías en inglés? Dilo antes que yo 👀 Bonus: ¿cómo se dice «primo»? Escríbelo en los comentarios 👇\nMás rutas para aprender en learningroutes.com",
+      "hashtags": [
+        "#AprendeInglés",
+        "#InglésFácil",
+        "#Familia",
+        "#VocabularioEnInglés",
+        "#Shorts"
+      ],
+      "durationS": 31,
+      "costUsd": 0.09,
+      "frame0": {
+        "src": "/demo/mas_familia_270.webp",
+        "src2x": "/demo/mas_familia_540.webp"
+      },
+      "strip": [
+        {
+          "label": "0 %",
+          "src": "/demo/mas_familia_s0.webp"
+        },
+        {
+          "label": "25 %",
+          "src": "/demo/mas_familia_s1.webp"
+        },
+        {
+          "label": "50 %",
+          "src": "/demo/mas_familia_s2.webp"
+        },
+        {
+          "label": "75 %",
+          "src": "/demo/mas_familia_s3.webp"
+        },
+        {
+          "label": "final",
+          "src": "/demo/mas_familia_s4.webp"
+        },
+        {
+          "label": "fin",
+          "src": "/demo/mas_familia_s5.webp"
+        }
+      ],
+      "videoUrl": "",
+      "checks": [
+        {
+          "key": "loudness",
+          "label": "Volumen",
+          "ok": true,
+          "detail": "−14.1 LUFS"
+        },
+        {
+          "key": "sync",
+          "label": "Voz y texto sincronizados",
+          "ok": true,
+          "detail": "desfase máx. 40 ms"
+        },
+        {
+          "key": "vowels",
+          "label": "Vocales del español",
+          "ok": true,
+          "detail": "ninguna «e» suena «i»"
+        },
+        {
+          "key": "motion",
+          "label": "Siempre hay movimiento",
+          "ok": true,
+          "detail": "quietud máx. 2.1 s"
+        },
+        {
+          "key": "repeats",
+          "label": "Palabras nuevas",
+          "ok": true,
+          "detail": "0 repetidas del canal"
+        },
+        {
+          "key": "text",
+          "label": "Título y texto limpios",
+          "ok": null,
+          "detail": null
+        }
+      ],
+      "gate": {
+        "passed": 5,
+        "total": 6,
+        "reason": null
+      }
+    },
+    {
+      "id": "casa_demo",
+      "type": "how_do_you_say",
+      "typeLabel": "Cómo se dice",
+      "design": "Tablero",
+      "items": 10,
+      "title": "¿Cómo se dice CASA en inglés? 🏠 #Shorts",
+      "description": "Las 10 cosas de la casa en inglés. ¿Cuántas sabías?",
+      "hashtags": [
+        "#AprendeInglés",
+        "#Casa",
+        "#Shorts"
+      ],
+      "durationS": 41,
+      "costUsd": 0.11,
+      "frame0": {
+        "src": "/demo/casa_270.webp",
+        "src2x": "/demo/casa_540.webp"
+      },
+      "strip": [],
+      "videoUrl": "",
+      "checks": [
+        {
+          "key": "loudness",
+          "label": "Volumen",
+          "ok": true,
+          "detail": "−13.9 LUFS"
+        },
+        {
+          "key": "sync",
+          "label": "Voz y texto sincronizados",
+          "ok": true,
+          "detail": "desfase máx. 40 ms"
+        },
+        {
+          "key": "vowels",
+          "label": "Vocales del español",
+          "ok": true,
+          "detail": "ninguna «e» suena «i»"
+        },
+        {
+          "key": "motion",
+          "label": "Siempre hay movimiento",
+          "ok": true,
+          "detail": "quietud máx. 2.1 s"
+        },
+        {
+          "key": "repeats",
+          "label": "Palabras nuevas",
+          "ok": true,
+          "detail": "0 repetidas del canal"
+        },
+        {
+          "key": "text",
+          "label": "Título y texto limpios",
+          "ok": null,
+          "detail": null
+        }
+      ],
+      "gate": {
+        "passed": 5,
+        "total": 6,
+        "reason": null
+      }
+    }
+  ],
+  "schedule": {
+    "tz": "America/Costa_Rica",
+    "utcOffset": "-06:00",
+    "slots": [
+      "08:30",
+      "12:00",
+      "16:00",
+      "19:30"
+    ],
+    "taken": [
+      {
+        "at": "2026-11-14T08:30:00-06:00",
+        "title": "¿Cómo se dice MÉDICO?"
+      },
+      {
+        "at": "2026-11-14T12:00:00-06:00",
+        "title": "«YA LO RESOLVÍ»"
+      },
+      {
+        "at": "2026-11-14T16:00:00-06:00",
+        "title": "Test: LA FAMILIA"
+      },
+      {
+        "at": "2026-11-15T08:30:00-06:00",
+        "title": "MÁS PARTES DEL CUERPO"
+      }
+    ],
+    "minLeadMin": 15,
+    "spacingH": 2.5,
+    "maxPerDay": 4,
+    "next": "2026-11-14T19:30:00-06:00"
+  },
+  "platforms": [
+    {
+      "key": "youtube",
+      "label": "YouTube",
+      "mode": "auto",
+      "enabled": true,
+      "note": "privado → público a la hora"
+    },
+    {
+      "key": "facebook",
+      "label": "Facebook",
+      "mode": "auto",
+      "enabled": true,
+      "note": "Reel programado"
+    },
+    {
+      "key": "tiktok",
+      "label": "TikTok",
+      "mode": "manual",
+      "enabled": false,
+      "note": "a mano"
+    }
+  ]
+}
