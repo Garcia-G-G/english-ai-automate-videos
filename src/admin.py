@@ -666,6 +666,40 @@ def _guard_notice(st_module, artifact: str, platform_label: str, verdict, platfo
         )
 
 
+def _schedule_approved(video: dict, script: dict, platforms: list, slot) -> dict:
+    """STEP 83 §3: send an approved video to each platform through the SAME guarded path as Subir (guard decision,
+    attempt log, ledger row), YouTube private with publishAt at `slot`. Returns {platform: reason} for the ones
+    that failed; empty when all went. On full success the video moves to «subidos»."""
+    from uploader import get_upload_manager
+    failed, done = {}, []
+    manager = get_upload_manager()
+    resolved = resolve_upload_metadata(video["name"], script, "", video.get("type", "educational"),
+                                       (script.get("_meta") or {}).get("category", ""), st.session_state,
+                                       generated=(video.get("meta") or {}).get("metadata"))
+    title, desc, tags = resolved["title"][:100], resolved["description"], [t.lstrip("#") for t in resolved["hashtags"]]
+    for platform in platforms:
+        verdict = _guard_decide(video["name"], platform, manager=manager, **upload_content(video, script, title, desc, False))
+        if not verdict.should_upload:
+            if verdict.action == "skip_done":
+                done.append(platform)
+            else:
+                failed[platform] = verdict.reason
+            continue
+        extra = {"scheduled_for": slot} if (platform == "youtube" and slot is not None) else {}
+        result = _guarded_upload(manager, video["name"], platform, str(video["path"]), title=title, description=desc,
+                                 hashtags=tags, **extra)
+        ok = (isinstance(result, dict) and result.get("success")) or getattr(result, "success", False)
+        if ok:
+            done.append(platform)
+            _record_upload(st, video, platform, result, title, desc, tags)
+        else:
+            err = result.get("error") if isinstance(result, dict) else getattr(result, "error", "")
+            failed[platform] = str(err or "error")[:120]
+    if done and not failed and video["path"].exists():
+        move_to_uploaded(video["path"], {"platforms": done, "uploaded_at": datetime.now().isoformat(), "title": title})
+    return failed
+
+
 def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
                     **kwargs):
     """_guarded_upload_unlocked, under the Meta publish lock for Instagram and Facebook
@@ -2360,81 +2394,142 @@ elif page == "Queue":
 
 # ============== REVIEW PAGE ==============
 elif page == "Review":
-    st.markdown("## Revisar")
-
-    pending = get_pending_videos()
-
-    # Arriving from Inicio's "Revisar" button on a specific artifact.
-    _focus = st.session_state.pop("focus_artifact", None)
-    pending = focus_first(pending, _focus)
-
+    # STEP 83 §3: one video at a time, what the feed will show, six checks, one-click approve and schedule.
+    from panel import revisar as _rv
+    import slots as _slots_mod
+    import publication_log as _pl
+    pending = focus_first(get_pending_videos(), st.session_state.pop("focus_artifact", None))
     if not pending:
-        st.info("No videos pending review. Generate some new videos!")
+        st.markdown("<h1>Revisar</h1><div class='sub'>Nada que revisar. Produce el siguiente en Inicio.</div>", unsafe_allow_html=True)
+        with st.container(key="btn-primary-empty-review"):
+            if st.button("Ir a Inicio", key="review_to_home"):
+                st.session_state.current_page = "Dashboard"
+                st.rerun()
     else:
-        st.write(f"**{len(pending)} videos pending review**")
-        if _focus and any(v["name"] == _focus for v in pending):
-            st.caption(f"↑ {_focus} está el primero — vienes de Inicio.")
-
-        types_available = list(set(v["type"] for v in pending))
-        filter_type = st.selectbox("Filtrar por tipo", ["All"] + types_available,
-                                   format_func=lambda k: "Todos" if k == "All" else type_label(k))
-        if filter_type != "All":
-            pending = [v for v in pending if v["type"] == filter_type]
-
-        st.markdown("---")
-
-        for idx, video in enumerate(pending):
-            col1, col2 = st.columns([2, 1])
-            with col1:
-                st.subheader(f"{video['name']}")
-                st.write(f"**Type:** {video['type']} | **Created:** {video['created'].strftime('%Y-%m-%d %H:%M')}")
-                if video.get("damaged"):
-                    st.error(f"⚠️ {video['damaged']}. No se puede revisar hasta repararlo o volver a renderizarlo.")
-                    continue
-                if video["meta"] and "script_data" in video["meta"]:
-                    script = video["meta"]["script_data"]
-                    with st.expander("Script Details"):
-                        if video["type"] == "quiz":
-                            st.write(f"**Question:** {script.get('question', 'N/A')}")
-                            st.write(f"**Options:** {script.get('options', {})}")
-                            st.write(f"**Correct:** {script.get('correct', 'N/A')}")
-                        elif video["type"] == "educational":
-                            st.write(f"**Hook:** {script.get('hook', 'N/A')}")
-                        elif video["type"] == "true_false":
-                            st.write(f"**Statement:** {script.get('statement', 'N/A')}")
-                        st.write(f"**Script:** {script.get('full_script', 'N/A')[:200]}...")
-                # STEP 80 §1b: the metadata the render generated, editable here
+        n = len(pending)
+        idx = max(0, min(st.session_state.get("review_idx", 0), n - 1))
+        head, pager = st.columns([4, 1.4], vertical_alignment="bottom")
+        with head:
+            st.markdown(f"<h1>Revisar</h1><div class='sub'>{n} vídeo{'s esperan' if n != 1 else ' espera'} tu visto bueno. "
+                        "Al aprobar, se programan solos en el siguiente hueco.</div>", unsafe_allow_html=True)
+        with pager:
+            pc = st.columns([1, 2, 1])
+            if pc[0].button("‹", key="rv_prev", disabled=idx == 0):
+                st.session_state.review_idx = idx - 1
+                st.rerun()
+            pc[1].markdown(f"<div class='chip'>{idx + 1} de {n}</div>", unsafe_allow_html=True)
+            if pc[2].button("›", key="rv_next", disabled=idx >= n - 1):
+                st.session_state.review_idx = idx + 1
+                st.rerun()
+        video = pending[idx]
+        meta = video.get("meta") or {}
+        script = (meta.get("script_data") or {})
+        if video.get("damaged"):
+            st.error(f"{video['damaged']}. No se puede revisar hasta repararlo o volver a renderizarlo.")
+        left, right = st.columns([1, 1.5])
+        with left:
+            f0, strip = _rv.frames(video["path"]) if video["path"].exists() else (None, None)
+            st.markdown('<div class="chip" style="margin-bottom:8px">Fotograma 0 · lo que se ve en el feed</div>', unsafe_allow_html=True)
+            if st.session_state.get(f"_lazy_video_review_{video['path'].name}"):
+                st.video(str(video["path"]))
+            else:
+                if f0:
+                    st.image(str(f0))
+                else:
+                    st.caption("No pude sacar el fotograma 0 de este vídeo.")
+                lazy_video(video["path"], f"review_{video['path'].name}")
+            if strip:
+                st.image(str(strip))
+                st.caption("0 % · 25 % · 50 % · 75 % · la despedida · el final")
+        with right:
+            try:
+                import repetition as _rep
+                known = [c for c in _rep.corpus(script.get("type") or video["type"]) if c[2] and _rep.words(script) != c[1]]
+                _repeated = len(_rep.repeated(script, None, known)) if script else None
+            except Exception:                               # noqa: BLE001
+                _repeated = None
+            _title_now = st.session_state.get(f"rv_title_{video['name']}", (meta.get("metadata") or {}).get("title", ""))
+            _desc_now = st.session_state.get(f"rv_desc_{video['name']}", (meta.get("metadata") or {}).get("description", ""))
+            try:
+                from upload_guard import content_refusal
+                _cr = content_refusal(title=_title_now or None, description=_desc_now or None)
+                _tp, _tc = (_cr.reason if _cr else None), bool(_title_now)
+            except Exception:                               # noqa: BLE001
+                _tp, _tc = None, False
+            rows = _rv.checks(meta, _repeated, _tp, _tc)
+            icon = {"ok": "✓", "bad": "✕", "none": "–"}
+            tone = {"ok": "green", "bad": "red", "none": ""}
+            lines = "".join(f'<div style="display:flex;justify-content:space-between;padding:4px 0"><span>{r["label"]}</span>'
+                            f'<span class="tag {tone[r["state"]]}">{icon[r["state"]]} '
+                            f'{"<span class=sin-dato>sin dato</span>" if r["state"] == "none" else r["value"]}</span></div>' for r in rows)
+            _design = script.get("design_variant") or "tablero"
+            st.markdown(f'<div class="sticker" style="padding:18px"><div class="eyebrow">{type_label(video["type"])} · {_design} · '
+                        f'{len(script.get("items") or [])} palabras</div><h2>{(meta.get("metadata") or {}).get("title") or video["name"]}</h2>'
+                        f'<div class="muted" style="margin-bottom:8px">{_rv.verdict(meta, rows)}</div>{lines}</div>', unsafe_allow_html=True)
+            st.write("")
+            with st.container(border=True):
                 review_metadata_editor(video)
-                if video["path"].exists():
-                    lazy_video(video["path"], f"review_{video['path'].name}",
-                               open_now=(idx == 0))
-
-            with col2:
-                st.write("")
-                st.write("")
-                if st.button("✅ Approve", key=f"approve_{idx}", type="primary", width="stretch"):
-                    approve_video(video["path"])
-                    st.success("Approved!")
+                _plats = st.columns(3)
+                use_yt = _plats[0].toggle("YouTube", value=True, key=f"rv_yt_{video['name']}")
+                use_fb = _plats[1].toggle("Facebook", value=True, key=f"rv_fb_{video['name']}")
+                _plats[2].toggle("TikTok (a mano)", value=False, key=f"rv_tt_{video['name']}", disabled=True)
+                _sc = _slots_mod.settings()
+                _taken = _slots_mod.taken_times(_pl.read_ledger(), _sc)
+                _free = _slots_mod.next_slots(datetime.now(_slots_mod._tz(_sc)), _taken, 6, _sc)
+                _opts = {f"{s:%a %d %b %H:%M}": s for s in _free}
+                _pick = st.selectbox("Sale", list(_opts) or ["sin huecos"], key=f"rv_slot_{video['name']}") if _opts else None
+                st.caption("YouTube lo sube en privado y se publica solo a esa hora (Costa Rica).")
+            _cost = _rv.cost_of(meta)
+            a1, a2, a3 = st.columns(3)
+            with a1:
+                with st.container(key="btn-green-approve"):
+                    go = st.button("✓ Aprobar y programar", key=f"rv_ok_{video['name']}", disabled=bool(video.get("damaged")))
+            with a2:
+                reject_open = st.button("✕ Rechazar", key=f"rv_no_{video['name']}")
+            with a3:
+                rerender_open = st.button("↻ Volver a renderizar", key=f"rv_re_{video['name']}")
+            st.caption("sin dato" if _cost is None else f"\\${_cost:.2f} — lo que costó este vídeo")
+            if go:
+                _slot = _opts.get(_pick) if _pick else None
+                approve_video(video["path"])
+                _new = {**video, "path": APPROVED_DIR / video["type"] / video["path"].name, "stage": "approved"}
+                _platforms = [p for p, on in (("youtube", use_yt), ("facebook", use_fb)) if on]
+                _failed = _schedule_approved(_new, script, _platforms, _slot)
+                if _failed:
+                    st.warning("El vídeo está aprobado pero no se programó en: " + "; ".join(f"{p} ({why})" for p, why in _failed.items())
+                               + ". Sigue en «Por subir» para reintentarlo.")
+                else:
+                    st.success("Aprobado y programado.")
+                    st.session_state.review_idx = max(0, idx - 1)
                     st.rerun()
-                if st.button("❌ Reject", key=f"reject_{idx}", width="stretch"):
+            if reject_open or st.session_state.get(f"rv_rej_{video['name']}"):
+                st.session_state[f"rv_rej_{video['name']}"] = True
+                why = st.radio("Motivo", _rv.REASONS, horizontal=True, key=f"rv_why_{video['name']}")
+                note = st.text_input("Una línea más (opcional)", key=f"rv_note_{video['name']}")
+                if st.button("Confirmar rechazo", key=f"rv_rej_ok_{video['name']}"):
+                    _rv.save_reject_reason(video["path"].with_suffix(".json"), why, note, datetime.now().isoformat())
                     reject_video(video["path"])
+                    st.session_state.pop(f"rv_rej_{video['name']}", None)
                     st.rerun()
-
-            st.markdown("---")
-
-        st.markdown("**Bulk Actions**")
-        bc1, bc2 = st.columns(2)
-        with bc1:
-            if st.button("✅ Approve All", width="stretch"):
-                for v in pending:
-                    approve_video(v["path"])
-                st.success(f"Approved {len(pending)} videos!")
-                st.rerun()
-        with bc2:
-            if st.button("❌ Reject All", width="stretch"):
-                for v in pending:
-                    reject_video(v["path"])
-                st.rerun()
+            if rerender_open or st.session_state.get(f"rv_rer_{video['name']}"):
+                st.session_state[f"rv_rer_{video['name']}"] = True
+                _est = batch_estimate_usd(1)
+                st.info("Volver a renderizar cuesta " + ("sin dato" if _est is None else f"unos \\${_est:.2f}") + ". Un segundo clic lo lanza.")
+                if st.button("Sí, volver a renderizar", key=f"rv_rer_ok_{video['name']}") and script:
+                    reject_video(video["path"])
+                    st.session_state.last_job = start_generation(video["type"], script_data=script, rerender=True)
+                    st.session_state.pop(f"rv_rer_{video['name']}", None)
+                    st.success("En marcha: el progreso está en Inicio → Detalles.")
+        if n > idx + 1:
+            nxt = pending[idx + 1]
+            st.markdown("### Después")
+            nf0 = nxt["path"].with_name(nxt["path"].stem + "_f0.png")
+            c1, c2 = st.columns([1, 6])
+            with c1:
+                if nf0.exists():
+                    st.image(str(nf0), width=80)
+            with c2:
+                st.markdown(f"**{nxt['name']}**  \n<span class='muted'>{_rv.verdict(nxt.get('meta') or {}, _rv.checks(nxt.get('meta') or {}, None, None, False))}</span>", unsafe_allow_html=True)
 
 
 # ============== UPLOAD PAGE ==============
