@@ -1,9 +1,9 @@
-"""STEP 79 §4: a lesson's YouTube thumbnail, 1280×720, made with PIL from the lesson itself.
+"""STEP 85b §3: the 16:9 thumbnail of every long video, 1280x720, one template for all of them.
 
-The hook is the lesson's first wrong → right pair, in beat order: a `transform` (from → to), a
-`sentence` with a `fix`, or a sentence with a red highlight followed by the next sentence. The
-wrong form is struck through in red, the right form big in green under it, Bubi on the right, the
-lesson's title in at most 5 words on the yellow marker. Everything is sized to read at 320 px wide.
+The REAL frame of the lesson's first `sentence` beat on the right as a card with the ink outline; on the left at
+most 4 words of the title in Fredoka Bold, white on the family gradient, one word in yellow (the word the lesson
+corrects, when it has one); Bubi bottom left; the learningroutes.com mark. No arrows, no shocked faces, no word the
+video does not say, nothing in the bottom-right 220x70 px (YouTube's duration badge).
 """
 from __future__ import annotations
 
@@ -12,6 +12,9 @@ import re
 from pathlib import Path
 from typing import Optional, Tuple
 
+import subprocess
+import sys
+
 from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent
@@ -19,6 +22,8 @@ REPO = HERE.parent.parent
 BRAND_DIR = REPO / "assets" / "branding" / "english-unlimited"
 FONT = REPO / "assets" / "fonts" / "Fredoka-Bold.ttf"
 SIZE = (1280, 720)
+BADGE = (1280 - 220, 720 - 70, 1280, 720)       # YouTube's duration badge: keep it empty
+CARD = (660, 150, 1240, 476)                     # 580x326, 16:9
 TEXT_W = 740                    # the left column (x 70..810); Bubi has the right, from x 860
 BUBI_W = 360
 MIN_PX = 64                     # 16 px at 320 wide
@@ -80,93 +85,178 @@ def _font(px: int) -> ImageFont.FreeTypeFont:
     return ImageFont.truetype(str(FONT), px)
 
 
-def _fit(draw, text: str, width: int, start: int, floor: int = MIN_PX, one_line_floor: int = 72):
-    """(font, lines): one line at the largest size down to `one_line_floor`, else two lines at
-    the largest size that fits `width`."""
-    for px in range(start, one_line_floor - 1, -4):
-        if draw.textlength(text, font=_font(px)) <= width:
-            return _font(px), [text]
-    for px in range(start, floor - 1, -4):
-        f = _font(px)
-        words = text.split()
-        for cut in range(len(words) - 1, 0, -1):
-            a, b = " ".join(words[:cut]), " ".join(words[cut:])
-            if draw.textlength(a, font=f) <= width and draw.textlength(b, font=f) <= width:
-                return f, [a, b]
-    f = _font(floor)
-    return f, [text]
-
-
 def _colour(hex_: str) -> tuple:
     hex_ = hex_.lstrip("#")
     return tuple(int(hex_[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def _draw_text(img, title, wrong, right, scale, ink, red, green, yellow) -> float:
-    """The title, the struck wrong form and the right form at `scale`; returns the bottom y."""
-    d = ImageDraw.Draw(img)
-    x0, px = 70, lambda v: max(40, int(v * scale))
-
-    # the title on the yellow marker, top left
-    tf, tlines = _fit(d, title, TEXT_W, px(76), px(56), px(56))
-    y = 56
-    for line in tlines:
-        w = d.textlength(line, font=tf)
-        box = d.textbbox((x0, y), line, font=tf)
-        d.rectangle([x0 - 10, box[1] + (box[3] - box[1]) * 0.45, x0 + w + 10, box[3] + 8], fill=yellow)
-        d.text((x0, y), line, font=tf, fill=ink)
-        y = box[3] + 18
-
-    # the wrong form, struck through in red
-    y += 34 * scale
-    wf, wlines = _fit(d, wrong, TEXT_W, max(MIN_PX, px(96)), MIN_PX, max(MIN_PX, px(72)))     # never under 16 px at 320
-    for line in wlines:
-        box = d.textbbox((x0, y), line, font=wf)
-        d.text((x0, y), line, font=wf, fill=red)
-        mid = (box[1] + box[3]) / 2
-        d.line([box[0] - 8, mid + 6, box[2] + 8, mid - 6], fill=ink, width=16)
-        d.line([box[0] - 8, mid + 6, box[2] + 8, mid - 6], fill=red, width=10)
-        y = box[3] + 22
-
-    # the right form, big, in green, a tick before its first line
-    y += 18 * scale
-    rf, rlines = _fit(d, right, TEXT_W - 90, max(MIN_PX, px(112)), MIN_PX, max(MIN_PX, px(72)))
-    for k, line in enumerate(rlines):
-        box = d.textbbox((x0 + 90, y), line, font=rf)
-        d.text((x0 + 90, y), line, font=rf, fill=green)
-        if k == 0:
-            cy = (box[1] + box[3]) / 2
-            d.line([(x0 + 4, cy), (x0 + 30, cy + 28), (x0 + 74, cy - 34)], fill=green, width=16, joint="curve")
-        y = box[3] + 22
-    return y
+WORDS_MAX = 4
+TEXT_BOX = (60, 70, 580)                         # x, y, width of the left column
+XHEIGHT_MIN_320 = 7.0
+YELLOW = "#F2D66B"
 
 
-def make(lesson: dict, out: Path) -> Optional[Path]:
-    """Write the thumbnail to `out` (a .jpg), or return None when the lesson has no wrong → right."""
+def words(lesson: dict) -> list:
+    """At most 4 words, the title's own (short_title), never invented."""
+    return short_title(lesson["title"], WORDS_MAX).split()
+
+
+def highlight(lesson: dict, ws: list) -> int:
+    """Index of the yellow word: one the lesson corrects (in the right form, not in the wrong one), else the longest."""
     pair = hook(lesson)
-    if pair is None:
+    if pair:
+        clean = lambda t: {w.strip(".,!?").casefold() for w in t.split()}          # noqa: E731
+        diff = clean(pair[1]) - clean(pair[0])
+        for k, w in enumerate(ws):
+            if w.casefold() in diff:
+                return k
+    return max(range(len(ws)), key=lambda k: len(ws[k]))
+
+
+def first_sentence_time(timeline: dict) -> Optional[float]:
+    b = next((b for b in timeline.get("beats") or [] if b.get("type") == "sentence"), None)
+    return float(b["start"]) if b else None
+
+
+def _extract(video: Path, t: float, size: Tuple[int, int]) -> Optional[Image.Image]:
+    import tempfile
+    out = Path(tempfile.mkdtemp()) / "f.png"
+    r = subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{t:.2f}", "-accurate_seek", "-i", str(video), "-frames:v", "1",
+                        "-vf", f"scale={size[0]}:{size[1]}:flags=lanczos", str(out)], capture_output=True, timeout=60)
+    return Image.open(out).convert("RGB") if r.returncode == 0 and out.exists() else None
+
+
+def real_frame(video: Path, timeline: dict) -> Tuple[Optional[Image.Image], Optional[float]]:
+    """A frame of the first sentence beat once it has drawn (1.5 s on, then later): the first that is not blank."""
+    import numpy as np
+    sys.path.insert(0, str(REPO / "src"))
+    import thumbs
+    t0 = first_sentence_time(timeline)
+    if t0 is None:
+        return None, None
+    for dt in (1.5, 2.5, 3.5, 5.0):
+        im = _extract(video, t0 + dt, (CARD[2] - CARD[0], CARD[3] - CARD[1]))
+        if im is None:
+            continue
+        luma, edges = thumbs.luminance_and_edges(np.asarray(im))
+        if luma >= thumbs.LUMA_RANGE[0] and edges >= 0.005:      # a paper-coloured lesson is bright: no upper bound
+            return im, t0 + dt
+    return None, None
+
+
+def _gradient(top: str, bottom: str) -> Image.Image:
+    a, b = _colour(top), _colour(bottom)
+    im = Image.new("RGB", SIZE)
+    d = ImageDraw.Draw(im)
+    for y in range(SIZE[1]):
+        q = y / (SIZE[1] - 1)
+        d.line([(0, y), (SIZE[0], y)], fill=tuple(round(a[i] + (b[i] - a[i]) * q) for i in range(3)))
+    return im
+
+
+def _family(title: str) -> Tuple[str, str]:
+    """The topic family's gradient, only if white AND yellow text clear 4.5:1 on both stops; else «vida real»."""
+    sys.path.insert(0, str(REPO / "src"))
+    from video.tablero import kit
+    from thumbs.checks import contrast
+    fam = kit.families()
+    for name in (kit.family_for(title), "vida real"):
+        top, bottom = fam[name]
+        if all(contrast(fg, _colour(stop)) >= 4.5 for stop in (top, bottom) for fg in ((255, 255, 255), _colour(YELLOW))):
+            return top, bottom
+    return fam["vida real"]
+
+
+def _layout(d, ws: list):
+    """The biggest size (down to 80 px: 20 px at 320 wide) whose wrapped lines fit the column."""
+    for px in range(136, 79, -8):
+        f = _font(px)
+        lines, cur = [], ""
+        for w in ws:
+            trial = (cur + " " + w).strip()
+            if d.textlength(trial, font=f) <= TEXT_BOX[2] or not cur:
+                cur = trial
+            else:
+                lines.append(cur)
+                cur = w
+        lines.append(cur)
+        if len(lines) * px * 1.12 <= 300 and all(d.textlength(l, font=f) <= TEXT_BOX[2] for l in lines):
+            return f, lines
+    return _font(80), [" ".join(ws[:2]), " ".join(ws[2:])]
+
+
+def measurements(f: ImageFont.FreeTypeFont, top: str, bottom: str) -> dict:
+    """Contrast of white and yellow on the gradient, x-height at 320x180."""
+    from thumbs.checks import contrast
+    bb = f.getbbox("x")
+    return {"white_contrast": min(contrast((255, 255, 255), _colour(c)) for c in (top, bottom)),
+            "yellow_contrast": min(contrast(_colour(YELLOW), _colour(c)) for c in (top, bottom)),
+            "xheight_320": round((bb[3] - bb[1]) * 320 / 1280, 1), "font_px": f.size}
+
+
+def make(lesson: dict, out: Path, video: Optional[Path] = None, timeline: Optional[dict] = None) -> Optional[Path]:
+    """Write the thumbnail to `out` (a .jpg), or None when there is no real frame to show (no render, no `sentence`
+    beat): an honest thumbnail needs a real frame."""
+    if video is None or not Path(video).exists():
         return None
-    wrong, right = pair
-    brand = json.loads((BRAND_DIR / "brand.json").read_text(encoding="utf-8"))
-    sand = brand["manim"]["themes"]["sand"]
-    bg, ink = _colour(sand["bg"]), _colour(brand["color"]["ink"])
-    red, green, yellow = _colour(sand["red"]), _colour(sand["green"]), _colour(brand["color"]["brand_yellow"])
-    for scale in (1.0, 0.9, 0.8, 0.72, 0.64):
-        img = Image.new("RGB", SIZE, bg)
-        bottom = _draw_text(img, short_title(lesson["title"]), wrong, right, scale, ink, red, green, yellow)
-        if bottom <= SIZE[1] - 30:
-            break
-
-    # Bubi on the right, celebrating
-    bubi = Image.open(BRAND_DIR / "expresiones" / "lo_lograste.png").convert("RGBA")
+    card, t = real_frame(Path(video), timeline or {})
+    if card is None:
+        return None
+    top, bottom = _family(lesson["title"])
+    img = _gradient(top, bottom)
+    d = ImageDraw.Draw(img)
+    ws = words(lesson)
+    hi = highlight(lesson, ws)
+    f, lines = _layout(d, ws)
+    y, k = TEXT_BOX[1], 0
+    for line in lines:
+        x = TEXT_BOX[0]
+        for w in line.split():
+            d.text((x, y), w, font=f, fill=_colour(YELLOW) if k == hi else (255, 255, 255))
+            x += d.textlength(w + " ", font=f)
+            k += 1
+        y += int(f.size * 1.12)
+    x0, y0, x1, y1 = CARD                                                # the real frame: ink outline, hard shadow
+    d.rounded_rectangle((x0 + 10, y0 + 12, x1 + 10, y1 + 12), 18, fill=(0, 0, 0))
+    mask = Image.new("L", card.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, card.width - 1, card.height - 1), 14, fill=255)
+    img.paste(card, (x0, y0), mask)
+    d.rounded_rectangle((x0 - 3, y0 - 3, x1 + 3, y1 + 3), 18, outline=_colour("#1C1812"), width=8)
+    bubi = Image.open(BRAND_DIR / "expresiones" / "wow.png").convert("RGBA")
     bubi = bubi.crop(bubi.getchannel("A").getbbox())
-    h = 430
+    h = 270
     bubi = bubi.resize((int(bubi.width * h / bubi.height), h), Image.LANCZOS)
-    if bubi.width > BUBI_W:
-        bubi = bubi.resize((BUBI_W, int(bubi.height * BUBI_W / bubi.width)), Image.LANCZOS)
-    img.paste(bubi, (SIZE[0] - bubi.width - 60, (SIZE[1] - bubi.height) // 2 + 20), bubi)
-
+    img.paste(bubi, (40, SIZE[1] - h - 20), bubi)
+    d.text((660, 640), "learningroutes.com", font=_font(30), fill=(255, 255, 255))      # away from the duration badge
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    img.save(out, quality=92)
+    for q in (92, 88, 84, 80):                                           # YouTube takes up to 2 MB
+        img.save(out, quality=q, subsampling=0, optimize=True, progressive=True)
+        if out.stat().st_size <= 2_000_000:
+            break
+    out.with_suffix(".json").write_text(json.dumps({"frame_t": round(t, 2), "words": ws, "yellow": ws[hi], "gradient": [top, bottom],
+                                                    **measurements(f, top, bottom)}, ensure_ascii=False), encoding="utf-8")
     return out
+
+
+def remake_all(studio: Path = HERE) -> list:
+    """Re-make the thumbnail of every lesson's newest render from the render itself ($0). Returns [(lesson, path|None)]."""
+    sys.path.insert(0, str(studio))
+    import lesson as L
+    done = []
+    for folder in sorted((studio / "renders").iterdir()):
+        mp4s = sorted(folder.glob("*.mp4"))
+        lp = studio / "lessons" / f"{folder.name}.json"
+        tl = mp4s[-1].with_suffix(".timeline.json") if mp4s else None
+        if not mp4s or not lp.exists():
+            continue
+        if not tl.exists():
+            done.append((folder.name, None))
+            continue
+        done.append((folder.name, make(L.load(lp), mp4s[-1].with_suffix(".thumb.jpg"), mp4s[-1], json.loads(tl.read_text(encoding="utf-8")))))
+    return done
+
+
+if __name__ == "__main__":
+    for name, path in remake_all():
+        print(name, path or "no thumbnail (no real frame)")

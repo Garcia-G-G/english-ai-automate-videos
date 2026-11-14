@@ -45,9 +45,11 @@ def test_a_cut_off_piece_or_the_same_sentence_is_not_a_right_form():
     assert T._sentence_like("He has coffee.", "He have coffee.")
 
 
-def test_a_lesson_without_a_correction_has_no_thumbnail_and_says_so():
+def test_a_lesson_without_a_render_has_no_thumbnail_and_says_so():
+    """An honest thumbnail needs a real frame: no render, no thumbnail."""
     assert T.hook(_lesson("pronunciacion-ed")) is None
-    assert T.make(_lesson("pronunciacion-ed"), Path("/nonexistent/x.jpg")) is None
+    assert T.make(_lesson("make-vs-do"), Path("/nonexistent/x.jpg")) is None
+    assert T.make(_lesson("make-vs-do"), Path("/nonexistent/x.jpg"), Path("/nonexistent/v.mp4"), {}) is None
 
 
 def test_the_title_is_at_most_five_words():
@@ -55,12 +57,46 @@ def test_the_title_is_at_most_five_words():
     assert len(T.short_title("Present perfect o pasado simple: cuándo usar cada uno").split()) <= 5
 
 
-@pytest.mark.parametrize("lid", [l for l in LESSONS if l != "pronunciacion-ed"])
-def test_every_thumbnail_is_1280x720_and_readable_at_320(lid, tmp_path):
-    out = T.make(_lesson(lid), tmp_path / f"{lid}.jpg")
-    img = Image.open(out)
-    assert img.size == (1280, 720)
-    assert T.MIN_PX * 320 / 1280 >= 16                       # the forms never go under 16 px at 320 wide
+@pytest.fixture(scope="module")
+def video(tmp_path_factory):
+    import subprocess
+    mp4 = tmp_path_factory.mktemp("v") / "lesson.mp4"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi", "-i", "testsrc2=s=960x540:r=10:d=12", "-pix_fmt", "yuv420p", str(mp4)], check=True)
+    return mp4
+
+
+TIMELINE = {"beats": [{"type": "title", "start": 0.0}, {"type": "sentence", "start": 3.0, "text": "I need to make my homework."}]}
+
+
+def test_the_thumbnail_is_1280x720_with_a_real_frame_under_2mb(video, tmp_path):
+    out = T.make(_lesson("make-vs-do"), tmp_path / "t.jpg", video, TIMELINE)
+    assert Image.open(out).size == (1280, 720) and out.stat().st_size <= 2_000_000
+    info = json.loads(out.with_suffix(".json").read_text())
+    assert info["frame_t"] >= 3.0 + 1.5                                             # after the first sentence drew
+
+
+def test_at_most_four_words_one_yellow_the_corrected_one():
+    ws = T.words(_lesson("make-vs-do"))
+    assert 1 <= len(ws) <= 4 and ws == ["Make", "y", "do"]
+    assert ws[T.highlight(_lesson("make-vs-do"), ws)] in ws
+
+
+def test_text_is_readable_at_320_and_the_duration_badge_corner_is_empty(video, tmp_path):
+    from PIL import ImageStat
+    out = T.make(_lesson("make-vs-do"), tmp_path / "t.jpg", video, TIMELINE)
+    info = json.loads(out.with_suffix(".json").read_text())
+    assert info["white_contrast"] >= 4.5 and info["yellow_contrast"] >= 4.5 and info["xheight_320"] >= T.XHEIGHT_MIN_320
+    badge = Image.open(out).convert("L").crop(T.BADGE)
+    assert max(ImageStat.Stat(badge).stddev) < 6                                    # plain gradient only: no text, no card, no Bubi
+
+
+def test_no_sentence_beat_means_no_frame_to_show_and_no_thumbnail(video, tmp_path):
+    assert T.make(_lesson("make-vs-do"), tmp_path / "t.jpg", video, {"beats": [{"type": "title", "start": 0.0}]}) is None
+
+
+def test_the_thumbnail_follows_the_render_in_register():
+    source = (STUDIO / "renders.py").read_text(encoding="utf-8")
+    assert "thumbnail.make(lesson, target.with_suffix(\".thumb.jpg\"), target, timeline)" in source
 
 
 # ── chapters ─────────────────────────────────────────────────────────
@@ -90,7 +126,7 @@ def test_an_hour_long_lesson_writes_hours():
 
 def test_register_puts_the_thumbnail_beside_the_render():
     source = (STUDIO / "renders.py").read_text(encoding="utf-8")
-    assert '"thumbnail": thumbnail_for(lesson_id, target, studio_dir)' in source
+    assert '"thumbnail": thumbnail_for(lesson_id, target, studio_dir, timeline)' in source
     assert "chapters_text(timeline, duration)" in source
 
 

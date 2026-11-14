@@ -91,15 +91,15 @@ def chapters_text(timeline: dict, duration: Optional[float] = None) -> str:
     return "".join(f"{_stamp(t)} {name}\n" for t, name in chapters)
 
 
-def thumbnail_for(lesson_id: str, target: Path, studio_dir: Path = HERE) -> Optional[str]:
-    """STEP 79 §4: the lesson's 1280×720 thumbnail next to the render (thumbnail.make), as a path
-    under renders/, or None when the lesson has no wrong → right to show."""
+def thumbnail_for(lesson_id: str, target: Path, studio_dir: Path = HERE, timeline: Optional[dict] = None) -> Optional[str]:
+    """STEP 85b §3: the lesson's 1280×720 thumbnail next to the render (thumbnail.make, from a real frame of it), as
+    a path under renders/, or None when there is no frame to show."""
     path = studio_dir / "lessons" / f"{lesson_id}.json"
     if not path.exists():
         return None
     lesson = _lesson_module().load(path)                   # puts the studio on sys.path too
     import thumbnail
-    made = thumbnail.make(lesson, target.with_suffix(".thumb.jpg"))
+    made = thumbnail.make(lesson, target.with_suffix(".thumb.jpg"), target, timeline)
     return f"{lesson_id}/{made.name}" if made else None
 
 
@@ -197,7 +197,7 @@ def register(source_mp4: Path, lesson_id: str, voice: str, quality: str, seconds
            "poster": f"{lesson_id}/{poster.name}" if has_poster else None,
            "chapters": (f"{lesson_id}/{target.with_suffix('.chapters.txt').name}"
                         if target.with_suffix(".chapters.txt").exists() else None),
-           "thumbnail": thumbnail_for(lesson_id, target, studio_dir),
+           "thumbnail": thumbnail_for(lesson_id, target, studio_dir, timeline),
            "theme": timeline.get("theme"), "sfx": timeline.get("sfx"),
            "max_cue_lag": (timeline.get("sync") or {}).get("max_lag"),
            "final_encode": encode,
