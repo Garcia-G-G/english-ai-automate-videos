@@ -116,7 +116,7 @@ def facebook(video_id: str, jpg: Path, token: str, post: Callable) -> Dict:
         resp = post(FB_URL.format(id=video_id), params={"access_token": token}, data={"is_preferred": "true"},
                     files={"source": ("thumb.jpg", Path(jpg).read_bytes(), "image/jpeg")}, timeout=120)
     except Exception as exc:                                # noqa: BLE001
-        return {"result": "error", "message": str(exc)[:200]}
+        return {"result": "error", "message": str(exc)[:200].replace(token, "***")}
     if 200 <= resp.status_code < 300:
         return {"result": "ok", "message": ""}
     return {"result": "rate_limited" if resp.status_code == 429 else ("forbidden" if resp.status_code in (400, 403) else "error"),
@@ -145,6 +145,55 @@ def daily_quota(uploads: int = MAX_PER_DAY) -> Dict:
 LOG = ROOT / "output" / "state" / "thumb_results.jsonl"
 
 
+def _log_and_record(artifact: str, platform: str, video_id: str, outcome: Dict, log: Path = None) -> Dict:
+    """One JSONL line in the ledger and the answer in the sidecar of the artifact wherever it sits."""
+    line = {"artifact": artifact, "platform": platform, "video_id": video_id, **outcome, "at": datetime.now().isoformat(timespec="seconds")}
+    path = log or LOG
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(line, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
+    for stage in ("uploaded", "approved"):
+        for side in (ROOT / "output" / stage).glob(f"*/{artifact}.json"):
+            record(side, platform, outcome)
+    return outcome
+
+
+def after_facebook_upload(artifact: str, video_id: str, jpg: Path, token: Optional[str] = None, post: Optional[Callable] = None,
+                          log: Path = None, background: bool = True):
+    """After the reel is published: POST /{video_id}/thumbnails with is_preferred=true. Background, never raises, never
+    touches the reel; a missing token or a refusal is recorded and the reel stays."""
+    import threading
+    try:
+        blob = Path(jpg).read_bytes()
+    except OSError:
+        return None
+
+    def work():
+        import os
+        import tempfile
+        try:
+            tok = token or os.getenv("FB_PAGE_TOKEN", "")
+            if not tok:
+                outcome = {"result": "forbidden", "message": "sin FB_PAGE_TOKEN"}
+            else:
+                import requests
+                tmp = Path(tempfile.mkdtemp()) / "thumb.jpg"
+                tmp.write_bytes(blob)
+                outcome = facebook(video_id, tmp, tok, post or requests.post)
+        except Exception as exc:                            # noqa: BLE001
+            outcome = {"result": "error", "message": str(exc)[:200].replace(token or "\0", "***")}
+        return _log_and_record(artifact, "facebook", video_id, outcome, log)
+
+    if not background:
+        return work()
+    t = threading.Thread(target=work, name=f"thumb-fb-{artifact}", daemon=True)
+    t.start()
+    return t
+
+
 def after_youtube_upload(artifact: str, video_id: str, jpg: Path, vertical: bool = True, token: Optional[str] = None,
                          get: Optional[Callable] = None, post: Optional[Callable] = None, log: Path = None,
                          background: bool = True, memo: Path = None):
@@ -170,20 +219,7 @@ def after_youtube_upload(artifact: str, video_id: str, jpg: Path, vertical: bool
             outcome = youtube(video_id, tmp, vertical, tok, get or requests.get, post or requests.post, memo=memo)
         except Exception as exc:                            # noqa: BLE001 — a thumbnail never touches the upload
             outcome = {"result": "error", "message": str(exc)[:200]}
-        line = {"artifact": artifact, "platform": "youtube", "video_id": video_id, **outcome,
-                "at": datetime.now().isoformat(timespec="seconds")}
-        path = log or LOG
-        try:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            with path.open("a", encoding="utf-8") as fh:
-                fh.write(json.dumps(line, ensure_ascii=False) + "\n")
-        except OSError:
-            pass
-        out_dir = ROOT / "output"
-        for stage in ("uploaded", "approved"):
-            for side in (out_dir / stage).glob(f"*/{artifact}.json"):
-                record(side, "youtube", outcome)
-        return outcome
+        return _log_and_record(artifact, "youtube", video_id, outcome, log)
 
     if not background:
         return work()

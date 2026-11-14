@@ -799,6 +799,15 @@ def _record_upload(st_module, video: dict, platform: str, result,
                 _tp.after_youtube_upload(video["name"], str(_vid_id), _jpg)
             except Exception:                               # noqa: BLE001
                 logger.exception("thumbnail follow-up not started for %s", video["name"])
+    if platform == "facebook":                              # STEP 85b §4: same follow-up for the reel; the reel is already live
+        _fb_id = (result.get("upload_id") if isinstance(result, dict) else getattr(result, "upload_id", None))
+        _fjpg = Path(video["path"]).with_name(Path(video["path"]).stem + ".thumb") / "thumb.jpg"
+        if _fb_id and _fjpg.exists():
+            try:
+                from thumbs import publish as _tp
+                _tp.after_facebook_upload(video["name"], str(_fb_id), _fjpg)
+            except Exception:                               # noqa: BLE001
+                logger.exception("facebook thumbnail follow-up not started for %s", video["name"])
     try:
         record_upload_result(
             artifact=video["name"],

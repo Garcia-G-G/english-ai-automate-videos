@@ -574,7 +574,12 @@ def _upload_lesson(youtube, video, artifact, render_row, meta, privacy, on_progr
     # STEP 79 §4: the lesson's own thumbnail (wrong → right, Bubi), else the poster frame
     picture = next((studio_dir / "renders" / render_row[k] for k in ("thumbnail", "poster")
                     if render_row.get(k) and (studio_dir / "renders" / render_row[k]).exists()), None)
-    notes.append(youtube.set_thumbnail(result.upload_id, str(picture))[1] if picture else "no thumbnail beside the render")
+    if picture:                                        # STEP 85b §4: after processing, in the background, with the capability memo
+        from thumbs import publish as _tp
+        _tp.after_youtube_upload(artifact, str(result.upload_id), picture, vertical=False)
+        notes.append("thumbnail queued: set once YouTube finishes processing (result in output/state/thumb_results.jsonl)")
+    else:
+        notes.append("no thumbnail beside the render")
     srt = video.with_suffix(".srt")
     notes.append(youtube.upload_captions(result.upload_id, str(srt))[1] if srt.exists() else "no .srt beside the render")
     return {"ok": True, "refused": None, "url": result.url, "upload_id": result.upload_id, "notes": notes}

@@ -121,3 +121,34 @@ def test_the_follow_up_logs_the_outcome_and_survives_the_folder_moving(tmp_path)
 
 def test_a_missing_image_means_no_follow_up_and_no_error(tmp_path):
     assert P.after_youtube_upload("a", "v", tmp_path / "none.jpg", True, "t", background=False) is None
+
+
+# ── Facebook: wired after the reel is published ──────────────────────
+
+def test_facebook_follow_up_posts_the_preferred_thumbnail_logs_it_and_never_leaks_the_token(tmp_path):
+    calls = []
+    log = tmp_path / "log.jsonl"
+    out = P.after_facebook_upload("art", "999", _jpg(tmp_path), "SECRET", lambda url, **k: calls.append((url, k)) or R(200), log, background=False)
+    assert out["result"] == "ok" and calls[0][0].endswith("/999/thumbnails") and calls[0][1]["data"] == {"is_preferred": "true"}
+    line = json.loads(log.read_text().splitlines()[0])
+    assert line["platform"] == "facebook" and line["video_id"] == "999" and "SECRET" not in log.read_text()
+
+
+def test_facebook_refusal_or_error_is_recorded_and_the_reel_stays(tmp_path):
+    log = tmp_path / "log.jsonl"
+    denied = P.after_facebook_upload("a", "1", _jpg(tmp_path), "T", lambda *a, **k: R(403, text="perm"), log, background=False)
+    boom = P.after_facebook_upload("b", "2", _jpg(tmp_path), "TOK", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("net TOK")), log, background=False)
+    assert denied["result"] == "forbidden" and boom["result"] == "error" and "TOK" not in boom["message"]
+    assert len(log.read_text().splitlines()) == 2
+
+
+def test_facebook_without_a_token_is_recorded_not_raised(tmp_path, monkeypatch):
+    monkeypatch.delenv("FB_PAGE_TOKEN", raising=False)
+    out = P.after_facebook_upload("a", "1", _jpg(tmp_path), None, None, tmp_path / "l.jsonl", background=False)
+    assert out["result"] == "forbidden" and "FB_PAGE_TOKEN" in out["message"]
+
+
+def test_facebook_runs_in_the_background_by_default(tmp_path):
+    t = P.after_facebook_upload("a", "1", _jpg(tmp_path), "T", lambda *a, **k: R(200), tmp_path / "l.jsonl")
+    t.join(5)
+    assert (tmp_path / "l.jsonl").exists()

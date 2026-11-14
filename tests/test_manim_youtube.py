@@ -213,3 +213,21 @@ def test_the_lesson_description_names_the_site_after_the_chapters(tmp_path):
     parts = M.youtube_metadata(_lesson(), _render(tmp_path), tmp_path)["description"].split("\n\n")
     assert parts.index(SITE_LINE) == parts.index(CHAPTERS.strip()) + 1
     assert parts[parts.index(SITE_LINE) + 1] == M.YT_CTA
+
+
+def test_a_lessons_thumbnail_goes_through_the_memoised_follow_up_as_a_16x9_video(monkeypatch, tmp_path):
+    _capture(monkeypatch)
+    row = _render(tmp_path)
+    (tmp_path / "renders" / "l" / "r.mp4").write_bytes(b"x" * 16)
+    (tmp_path / "renders" / "l" / "r.thumb.jpg").write_bytes(b"\xff\xd8")
+    row["thumbnail"] = "l/r.thumb.jpg"
+    manager = uploader.UploadManager()
+    yt = manager.uploaders["youtube"]
+    yt._token_data = {"access_token": "tok", "scope": " ".join(uploader.YOUTUBE_SCOPES)}
+    monkeypatch.setattr(yt, "authenticate", lambda: True)
+    calls = []
+    from thumbs import publish
+    monkeypatch.setattr(publish, "after_youtube_upload", lambda *a, **k: calls.append((a, k)))
+    out = M.upload_to_youtube(row, {"title": "T", "description": "D", "tags": ["a"], "hashtags": []}, studio_dir=tmp_path, manager=manager)
+    assert out["ok"] and calls and calls[0][0][1] == "vid123" and calls[0][1] == {"vertical": False}
+    assert any("thumbnail queued" in n for n in out["notes"])
