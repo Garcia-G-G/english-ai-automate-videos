@@ -157,6 +157,18 @@ def touch_heartbeat(job_id: str) -> None:
                 return
 
 
+#: STEP 85 §1: the five steps the new panel shows, each 0..1, as bands of the job's overall `progress` (0-100).
+#: The pipeline reports one overall number; «sonido» (audio merge) is the 50-55 band, a heuristic split of voice.
+STEP_BANDS = {"guion": (0, 30), "voz": (30, 50), "sonido": (50, 55), "montaje": (55, 90), "control": (90, 100)}
+#: callables (job_id, steps) told after every progress change; a listener that raises never breaks a job.
+PROGRESS_LISTENERS: list = []
+
+
+def steps_from_progress(progress) -> dict:
+    p = float(progress or 0)
+    return {k: round(min(1.0, max(0.0, (p - lo) / (hi - lo))), 3) for k, (lo, hi) in STEP_BANDS.items()}
+
+
 def create_job(video_type: str, category: str = None, topic: str = None) -> str:
     job_id = str(uuid.uuid4())[:8]
     job = {
@@ -172,6 +184,7 @@ def create_job(video_type: str, category: str = None, topic: str = None) -> str:
         "current_step": "Initializing...",
         "step_number": 0,
         "total_steps": 4,
+        "steps": steps_from_progress(0),
         "created_at": datetime.now().isoformat(),
         "updated_at": datetime.now().isoformat(),
         "video_path": None,
@@ -191,6 +204,13 @@ def update_job(job_id: str, **kwargs):
             if job["id"] == job_id:
                 job.update(kwargs)
                 job["updated_at"] = datetime.now().isoformat()
+                if "progress" in kwargs:
+                    job["steps"] = steps = steps_from_progress(job["progress"])
+                    for fn in list(PROGRESS_LISTENERS):
+                        try:
+                            fn(job_id, steps)
+                        except Exception:                   # noqa: BLE001
+                            logger.debug("progress listener failed", exc_info=True)
                 break
         save_jobs(jobs)
 
@@ -206,6 +226,7 @@ def complete_job(job_id: str, success: bool, video_path: str = None, error: str 
         if completed_job:
             completed_job["status"] = "completed" if success else "failed"
             completed_job["progress"] = 100 if success else completed_job.get("progress", 0)
+            completed_job["steps"] = steps_from_progress(completed_job["progress"])
             completed_job["video_path"] = video_path
             completed_job["error"] = error
             completed_job["completed_at"] = datetime.now().isoformat()
