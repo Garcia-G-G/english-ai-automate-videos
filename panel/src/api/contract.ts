@@ -16,7 +16,7 @@ export interface Meta {
   version: string; // short git sha of the engine
   startedAt: string; // when the API process started
   ownerName: string; // config.yaml panel.owner_name, e.g. "Garcia"
-  openrouter: { spentUsd: number; capUsd: number; perVideoAvgUsd: number | null; perVideoCapUsd: number };
+  openrouter: { spentUsd: number | null; capUsd: number; perVideoAvgUsd: number | null; perVideoCapUsd: number | null };
   elevenlabsChars: number | null; // remaining characters, null if unreachable
   statsReadAt: string | null; // when YouTube stats were last read
   counts: { queue: number; review: number; upload: number; comments: number };
@@ -104,7 +104,7 @@ export interface Home {
   daySentence: string; // «Hoy salen 4 vídeos y ya hay 3 en su sitio. Falta el de las 19:30.»
   next: NextVideo | null;
   agenda: Agenda;
-  views: ViewsBlock;
+  views: ViewsBlock | null; // null when senal.json is missing
   formats: FormatRow[]; // top 5, by median views
   formatsNote: string | null; // rule-based sentence, or null
   sequels: Sequel[];

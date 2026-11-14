@@ -56,7 +56,7 @@ html.theme-swap .blobs i { transition: background-color 600ms ease, opacity 600m
 /* ── main ──────────────────────────────── */
 .main { min-width: 0; overflow-y: auto; overflow-x: hidden; scrollbar-gutter: stable; }
 .page { max-width: 1240px; margin: 0 auto; padding: 26px 32px 40px; display: flex; flex-direction: column; gap: 16px; }
-.hd { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.hd { position: relative; z-index: 5; display: flex; /* fade-up makes a stacking context: keep the theme menu above the tiles */ justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
 .eyebrow { font-family: var(--font-pixel); font-size: 12px; letter-spacing: 0.05em; color: var(--eyebrow); }
 .hd h1 { font-family: var(--font-display); font-weight: 700; font-size: 34px; margin: 4px 0 4px; line-height: 1.05; letter-spacing: -0.01em; text-wrap: balance; }
 .hd p { margin: 0; color: var(--muted); font-size: 14.5px; }

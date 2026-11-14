@@ -185,6 +185,12 @@ function AgendaTile({ home }: { home: Home | undefined }) {
 function ViewsTile({ home }: { home: Home | undefined }) {
   if (!home) return <div className="tile enter" style={{ minHeight: 320 }}><div className="skel" style={{ height: 280 }} /></div>;
   const v = home.views;
+  if (!v) return (
+    <section className="tile enter" style={{ ["--i" as string]: 2 }} aria-labelledby="vw-t">
+      <h3 id="vw-t">Vistas</h3>
+      <p>sin dato: pulsa «Actualizar estadísticas».</p>
+    </section>
+  );
   const ch = change(v.views, v.prevViews);
   return (
     <section className="tile lift enter" style={{ ["--i" as string]: 2 }} aria-labelledby="vw-t">

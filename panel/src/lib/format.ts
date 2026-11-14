@@ -1,6 +1,6 @@
 /** Numbers the way the channel shows them: 1,601. Missing values are «sin dato». */
 export const n = (v: number) => v.toLocaleString("en-US");
-export const usd = (v: number) => `$${v.toFixed(2)}`;
+export const usd = (v: number | null) => (v === null ? "sin dato" : `$${v.toFixed(2)}`);
 export const NA = "sin dato";
 
 const MES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];

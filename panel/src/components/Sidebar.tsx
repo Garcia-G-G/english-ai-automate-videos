@@ -67,7 +67,7 @@ export function Sidebar({ meta }: { meta: Meta | undefined }) {
       {or && (
         <div className="meter" aria-label={`OpenRouter: ${usd(or.spentUsd)} de ${usd(or.capUsd)} este mes`}>
           <div className="row"><span>OpenRouter</span><span>{usd(or.spentUsd)} de ${or.capUsd}</span></div>
-          <div className="bar"><i style={{ width: `${Math.min(100, (or.spentUsd / or.capUsd) * 100)}%` }} /></div>
+          <div className="bar"><i style={{ width: `${Math.min(100, ((or.spentUsd ?? 0) / or.capUsd) * 100)}%` }} /></div>
           <div className="row"><span>Por vídeo</span><span>{or.perVideoAvgUsd === null ? "sin dato" : usd(or.perVideoAvgUsd)} · tope {usd(or.perVideoCapUsd)}</span></div>
         </div>
       )}
