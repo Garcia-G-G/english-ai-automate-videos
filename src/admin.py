@@ -194,107 +194,28 @@ from jobs import (  # noqa: E402,F401
 # ============== HELPER FUNCTIONS ==============
 
 
-#: What a page shows for a sidecar that is not valid JSON (STEP 75 §3).
-DAMAGED = "archivo dañado"
-
-
-def read_sidecar(meta_file: Path):
-    """(meta, problem): problem is None, or «archivo dañado: name (why)» instead of a crash."""
-    try:
-        meta = json.loads(Path(meta_file).read_text(encoding="utf-8"))
-        if not isinstance(meta, dict):
-            raise ValueError("not an object")
-        return meta, None
-    except (OSError, ValueError) as e:
-        logger.warning("sidecar %s unreadable: %s", meta_file, e)
-        return {}, f"{DAMAGED}: {Path(meta_file).name} ({type(e).__name__})"
+from panel_core import videos as _pc                      # noqa: E402  STEP 85 §0: the logic lives there, UI-free
+from panel_core.videos import DAMAGED, read_sidecar       # noqa: E402,F401
 
 
 def get_pending_videos() -> list:
-    videos = []
-    if not PENDING_DIR.exists():
-        return videos
-    for type_dir in PENDING_DIR.iterdir():
-        if type_dir.is_dir():
-            for video_file in type_dir.glob("*.mp4"):
-                meta_file = video_file.with_suffix('.json')
-                if not meta_file.exists():
-                    # STEP 59 §6: no sidecar means the job never finished it.
-                    logger.warning("review: %s has no sidecar; not shown", video_file.name)
-                    continue
-                meta, damaged = read_sidecar(meta_file)
-                videos.append({
-                    "path": video_file,
-                    "type": type_dir.name,
-                    "name": video_file.stem,
-                    "meta": meta,
-                    "damaged": damaged,
-                    "stage": "pending",
-                    "created": datetime.fromtimestamp(video_file.stat().st_mtime)
-                })
-    return sorted(videos, key=lambda x: x["created"], reverse=True)
+    return _pc.get_pending_videos(PENDING_DIR)
 
 
 def get_approved_videos() -> list:
-    """Videos awaiting upload, each annotated with what the ledger knows.
-
-    THE SECOND DUPLICATE VECTOR. main.py never moves an uploaded file the way
-    move_to_uploaded does for the dashboard, so an already-published video
-    stays sitting in approved/ where this function lists it as ready to
-    upload. The operator then uploads it again BY HAND — and a hand upload is
-    exactly how hPdSoqjvu3E happened.
-
-    Moving the file (main.py now does) is not sufficient on its own: a move
-    can fail, a re-render puts the file back, and the operator can move it
-    back. The ledger is the authority on what is published, so the list
-    consults it. The two fixes cover different failure modes and both are
-    applied — the move keeps disk state honest, this keeps the DECISION
-    honest even when disk state is not.
-    """
-    from publication_log import find_by_artifact
-
-    videos = []
-    if not APPROVED_DIR.exists():
-        return videos
-    for type_dir in APPROVED_DIR.iterdir():
-        if type_dir.is_dir():
-            for video_file in type_dir.glob("*.mp4"):
-                meta_file = video_file.with_suffix('.json')
-                meta, damaged = read_sidecar(meta_file) if meta_file.exists() else ({}, None)
-                published = find_by_artifact(video_file.stem)
-                videos.append({
-                    "path": video_file,
-                    "type": type_dir.name,
-                    "name": video_file.stem,
-                    "meta": meta,
-                    "damaged": damaged,
-                    "stage": "approved",
-                    "published_to": sorted({r.get("platform") for r in published
-                                            if r.get("platform")}),
-                    "published_rows": published,
-                    "created": datetime.fromtimestamp(video_file.stat().st_mtime)
-                })
-    return sorted(videos, key=lambda x: x["created"], reverse=True)
+    return _pc.get_approved_videos(APPROVED_DIR)
 
 
 def get_library_videos() -> list:
-    videos = []
-    if not VIDEO_DIR.exists():
-        return videos
-    for type_dir in VIDEO_DIR.iterdir():
-        if type_dir.is_dir():
-            for video_file in type_dir.glob("*.mp4"):
-                videos.append({
-                    "path": video_file,
-                    "type": type_dir.name,
-                    "name": video_file.stem,
-                    "size": video_file.stat().st_size,
-                    # output/video/ is where `main.py --batch` stops. Until
-                    # promote_to_review existed this was a dead end.
-                    "stage": "batch",
-                    "created": datetime.fromtimestamp(video_file.stat().st_mtime)
-                })
-    return sorted(videos, key=lambda x: x["created"], reverse=True)
+    return _pc.get_library_videos(VIDEO_DIR)
+
+
+def approve_video(video_path: Path):
+    return _pc.approve_video(video_path, APPROVED_DIR)
+
+
+def reject_video(video_path: Path):
+    return _pc.reject_video(video_path, REJECTED_DIR)
 
 
 def find_script_for(video_path: Path) -> Optional[Path]:
@@ -430,32 +351,6 @@ def render_meta_queue(st_module) -> None:
               **{f"{p} enlace / motivo": r[p].get("url") or r[p].get("detail") or "" for p in cfg["platforms"]}}
              for r in rows],
             width="stretch", hide_index=True)
-
-
-def approve_video(video_path: Path):
-    video_type = video_path.parent.name
-    dest_dir = APPROVED_DIR / video_type
-    dest_dir.mkdir(parents=True, exist_ok=True)
-    shutil.move(str(video_path), str(dest_dir / video_path.name))
-    meta_path = video_path.with_suffix('.json')
-    if meta_path.exists():
-        shutil.move(str(meta_path), str(dest_dir / meta_path.name))
-    from publishers import schedule
-    if schedule.settings()["auto_enqueue_on_approve"]:
-        try:
-            schedule.enqueue(dest_dir / video_path.name)
-        except (OSError, ValueError):
-            logger.exception("could not queue %s for Meta publishing", video_path.name)
-
-
-def reject_video(video_path: Path):
-    video_type = video_path.parent.name
-    dest_dir = REJECTED_DIR / video_type
-    dest_dir.mkdir(parents=True, exist_ok=True)
-    shutil.move(str(video_path), str(dest_dir / video_path.name))
-    meta_path = video_path.with_suffix('.json')
-    if meta_path.exists():
-        shutil.move(str(meta_path), str(dest_dir / meta_path.name))
 
 
 def unapprove_video(video_path: Path):

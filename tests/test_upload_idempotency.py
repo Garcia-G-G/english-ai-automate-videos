@@ -347,7 +347,7 @@ def test_the_dashboard_list_consults_the_ledger():
     """Moving the file is not enough on its own — a move can fail and a
     re-render puts it back. The list itself must know."""
     import ast
-    src = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
+    src = (ROOT / "src" / "panel_core" / "videos.py").read_text(encoding="utf-8")    # STEP 85 §0: the logic moved here
     tree = ast.parse(src)
     fn = next(n for n in ast.walk(tree)
               if isinstance(n, ast.FunctionDef) and n.name == "get_approved_videos")
