@@ -13,14 +13,14 @@ npm ci
 npm run demo        # http://127.0.0.1:5173
 ```
 
-**Real.** The API (STEP 85) serves the built app on http://127.0.0.1:8600:
+**Real.** The API (STEP 85) serves the built app on **http://localhost:8501**, the panel's usual URL. The old Streamlit panel moved to 8502 until every page is rebuilt:
 
 ```sh
 npm run build       # writes panel/dist, which the API serves
 ./run_panel.sh      # from the repo root (STEP 85 §5)
 ```
 
-During development, run `npm run dev` with the API running. Vite proxies `/api` and `/media` to 8600.
+During development, run `npm run dev` with the API running. Vite proxies `/api` and `/media` to 8501.
 
 ## What is where
 

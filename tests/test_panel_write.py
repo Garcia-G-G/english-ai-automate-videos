@@ -19,8 +19,8 @@ import voice_lock  # noqa: E402
 from panel_api import app as appmod, gate  # noqa: E402
 
 CR = ZoneInfo("America/Costa_Rica")
-PAID = {"Origin": "http://127.0.0.1:8600", gate.HEADER: gate.TOKEN}
-FREE = {"Origin": "http://127.0.0.1:8600"}
+PAID = {"Origin": "http://127.0.0.1:8501", gate.HEADER: gate.TOKEN}
+FREE = {"Origin": "http://127.0.0.1:8501"}
 
 
 class FakeManager:
@@ -59,7 +59,7 @@ def rig(tmp_path, monkeypatch):
     (out / "scripts" / "how_do_you_say").mkdir(parents=True)
     (out / "scripts" / "how_do_you_say" / "uno.json").write_text(json.dumps(script))
     app = appmod.create_app()
-    client = TestClient(app, base_url="http://127.0.0.1:8600")
+    client = TestClient(app, base_url="http://127.0.0.1:8501")
     return client, app, manager, out, publication_log, script
 
 

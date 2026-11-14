@@ -24,7 +24,7 @@ export const demoMeta: Meta = {
   elevenlabsChars: null,
   statsReadAt: "2026-11-14T03:33:14-06:00",
   counts: { queue: 491, review: 2, upload: 0, comments: 5 },
-  streamlitUrl: "http://localhost:8501",
+  streamlitUrl: "http://localhost:8502",
   mock: true,
 };
 

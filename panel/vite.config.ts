@@ -1,9 +1,9 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 
-// The panel is served by the local API on 127.0.0.1:8600 (STEP 85, backend).
+// The panel is served by the local API on 127.0.0.1:8501 (./run_panel.sh, the URL Garcia always used).
 // In dev, Vite proxies /api there, so the app and the API share one origin.
-const api = { "/api": "http://127.0.0.1:8600", "/media": "http://127.0.0.1:8600" };
+const api = { "/api": "http://127.0.0.1:8501", "/media": "http://127.0.0.1:8501" };
 
 export default defineConfig({
   plugins: [react()],

@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 TZ = ZoneInfo("America/Costa_Rica")
 STARTED_AT = datetime.now(TZ).isoformat(timespec="seconds")
 THUMBS_ROOT = ROOT / "output" / "thumbs" / "scripts"          # drawn frame 0 of queued scripts (STEP 83 §2)
-STREAMLIT_URL = "http://localhost:8501"
+STREAMLIT_URL = "http://localhost:8502"
 FAMILIES = {"casa", "comida", "cuerpo", "animales", "ropa", "ciudad", "emociones", "clima", "vida", "reto", "test"}
 #: one colour per format for the bars; a format not listed takes the next of FALLBACK_COLORS
 FORMAT_COLORS = {"how_do_you_say": "#1F6FD1", "level_test": "#FF6F4F", "phrases_level": "#12854F", "vocabulary": "#2BB5A8",

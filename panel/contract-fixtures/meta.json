@@ -16,6 +16,6 @@
     "upload": 0,
     "comments": 5
   },
-  "streamlitUrl": "http://localhost:8501",
+  "streamlitUrl": "http://localhost:8502",
   "mock": true
 }

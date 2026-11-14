@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DIST = ROOT / "panel" / "dist"
 TOKEN = secrets.token_urlsafe(32)               # one per process: a restart invalidates every open page
 HEADER = "X-EU-Session"
-HOSTS = {"127.0.0.1:8600", "localhost:8600"}
+HOSTS = {"127.0.0.1:8501", "localhost:8501"}
 DEV_HOSTS = {"127.0.0.1:5173", "localhost:5173"}
 DEV_ENV = "EU_PANEL_DEV"                         # off unless set to 1/true: only then the Vite dev server is allowed
 

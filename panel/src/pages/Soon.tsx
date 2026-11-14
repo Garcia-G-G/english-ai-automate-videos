@@ -7,7 +7,7 @@ export function Soon({ title, what, meta }: { title: string; what: string; meta:
       <div className="tile soon enter">
         <img src="/bubi/wow.webp" alt="" />
         <h2>{title}, muy pronto aquí</h2>
-        <p>{what} Mientras tanto sigue en el panel de siempre.</p>
+        <p>{what} Mientras tanto sigue en el panel de siempre (localhost:8502).</p>
         {meta && <a className="lbtn" href={meta.streamlitUrl} target="_blank" rel="noreferrer">Abrir el panel de siempre</a>}
       </div>
     </div>

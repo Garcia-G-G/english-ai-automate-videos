@@ -14,7 +14,7 @@ from fastapi.testclient import TestClient  # noqa: E402
 import jobs  # noqa: E402
 from panel_api import app as appmod, events  # noqa: E402
 
-HOST = "http://127.0.0.1:8600"
+HOST = "http://127.0.0.1:8501"
 FREE = {"Origin": HOST}
 
 
@@ -117,7 +117,7 @@ def test_counts_follow_an_approve_and_a_reject(env):
 
 
 def test_the_stream_is_get_only_and_checks_the_host(env):
-    with TestClient(appmod.create_app(), base_url="http://evil.example:8600") as client:
+    with TestClient(appmod.create_app(), base_url="http://evil.example:8501") as client:
         r = client.get("/api/events")
         assert r.status_code == 403 and "error" in r.json()
     with TestClient(appmod.create_app(), base_url=HOST) as client:

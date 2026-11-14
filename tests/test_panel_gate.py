@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient  # noqa: E402
 from panel_api import app as appmod, gate  # noqa: E402
 import voice_lock  # noqa: E402
 
-GOOD = {"Origin": "http://127.0.0.1:8600", gate.HEADER: gate.TOKEN}
+GOOD = {"Origin": "http://127.0.0.1:8501", gate.HEADER: gate.TOKEN}
 
 
 @pytest.fixture
@@ -33,7 +33,7 @@ def rig(tmp_path, monkeypatch):
 
     app = appmod.create_app({"produce": produce, "rerender": rerender,
                              "approve": lambda i, b: {"state": "approved", "id": i}, "reject": lambda i, b: {"ok": True}})
-    client = TestClient(app, base_url="http://127.0.0.1:8600")
+    client = TestClient(app, base_url="http://127.0.0.1:8501")
     return client, app, seen, tmp_path
 
 
@@ -64,7 +64,7 @@ def test_a_foreign_or_missing_origin_is_403_even_with_the_token(rig):
     assert _post(client, "/api/produce", {**GOOD, "Origin": "http://evil.example"}).status_code == 403
     assert _post(client, "/api/produce", {**GOOD, "Origin": "http://127.0.0.1:9999"}).status_code == 403
     assert _post(client, "/api/produce", {gate.HEADER: gate.TOKEN}).status_code == 403          # no Origin at all
-    wrong_host = TestClient(client.app, base_url="http://evil.example:8600")
+    wrong_host = TestClient(client.app, base_url="http://evil.example:8501")
     assert _post(wrong_host, "/api/produce").status_code == 403                                  # Host not the panel
 
 
@@ -90,7 +90,7 @@ def test_a_valid_produce_runs_the_engine_with_the_voice_grant_open_then_closed(r
 def test_the_grant_closes_even_when_the_job_fails(rig):
     client, app, seen, tmp = rig
     app2 = appmod.create_app({"produce": lambda s: ("j", None, lambda: (_ for _ in ()).throw(RuntimeError("boom")))})
-    c2 = TestClient(app2, base_url="http://127.0.0.1:8600")
+    c2 = TestClient(app2, base_url="http://127.0.0.1:8501")
     assert _post(c2, "/api/produce").status_code == 200
     _join(app2)
     assert list((tmp / "grants").glob("*")) == [] and voice_lock._ACTIVE == set()

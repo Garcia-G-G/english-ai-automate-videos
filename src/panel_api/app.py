@@ -10,7 +10,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from panel_core import game
 from . import build, engine as engine_mod, events, gate, media
 
-HOST, PORT = "127.0.0.1", 8600          # bind this host only; nothing in this package listens on its own
+HOST, PORT = "127.0.0.1", 8501          # bind this host only; nothing in this package listens on its own
 
 
 def create_app(engine: Optional[Dict[str, object]] = None, heartbeat_s: float = events.HEARTBEAT_S) -> FastAPI:
