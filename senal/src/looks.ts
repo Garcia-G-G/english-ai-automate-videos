@@ -40,8 +40,8 @@ const grey = (hex: string, keep: number): string => {
   return `#${c.setHSL(hsl.h, hsl.s * keep, hsl.l).getHexString()}`;
 };
 
-/** Stale data (spec §8): fog and horizon lose most of their colour; the ridges themselves are untouched. */
+/** Stale data (spec §8): fog and horizon lose most of their colour; the ridges and the #05070f floor are untouched. */
 export function muted(look: Look, keep = 0.15): Look {
-  const { top, horizon, bottom } = look.background;
-  return { ...look, fogColor: grey(look.fogColor, keep), background: { ...look.background, top: grey(top, keep), horizon: grey(horizon, keep), bottom: grey(bottom, keep) } };
+  const { top, horizon } = look.background;
+  return { ...look, fogColor: grey(look.fogColor, keep), background: { ...look.background, top: grey(top, keep), horizon: grey(horizon, keep) } };
 }

@@ -48,37 +48,36 @@ const numMap = (v: unknown): boolean => isObj(v) && Object.values(v).every(isNum
 const curveMap = (v: unknown): boolean => isObj(v) && "all" in v && Object.values(v).every((c) => numArr(c));
 
 function videoProblem(v: unknown, i: number): string | null {
-  if (!isObj(v)) return `videos[${i}] is not an object`;
-  const at = `videos[${i}]`;
-  for (const k of ["id", "platform", "format", "published"]) if (typeof v[k] !== "string") return `${at}.${k} is missing`;
-  if (!numArr(v.daily, MAX_DAILY)) return `${at}.daily must be at most ${MAX_DAILY} numbers`;
-  if (v.est_from !== null && !Number.isInteger(v.est_from)) return `${at}.est_from must be an integer or null`;
-  for (const k of ["age_days", "views", "shares", "subs"]) if (!isNum(v[k])) return `${at}.${k} is missing`;
-  if (v.retention !== null && !isNum(v.retention)) return `${at}.retention must be a number or null`;
-  if (v.score !== null && !isNum(v.score)) return `${at}.score must be a number or null`;
-  if (!numMap(v.sources)) return `${at}.sources is malformed`;
-  if (!STATES.includes(v.state as string)) return `${at}.state is unknown`;
-  if (!Array.isArray(v.why) || !v.why.every((w) => typeof w === "string")) return `${at}.why is malformed`;
+  if (!isObj(v)) return `el video ${i + 1} no es un objeto`;
+  for (const k of ["id", "platform", "format", "published"]) if (typeof v[k] !== "string") return `falta el campo ${k} del video ${i + 1}`;
+  if (!numArr(v.daily, MAX_DAILY)) return `el campo daily del video ${i + 1} debe tener hasta ${MAX_DAILY} números`;
+  if (v.est_from !== null && !Number.isInteger(v.est_from)) return `el campo est_from del video ${i + 1} debe ser un entero o nulo`;
+  for (const k of ["age_days", "views", "shares", "subs"]) if (!isNum(v[k])) return `falta el campo ${k} del video ${i + 1}`;
+  if (v.retention !== null && !isNum(v.retention)) return `el campo retention del video ${i + 1} debe ser un número o nulo`;
+  if (v.score !== null && !isNum(v.score)) return `el campo score del video ${i + 1} debe ser un número o nulo`;
+  if (!numMap(v.sources)) return `el campo sources del video ${i + 1} está mal formado`;
+  if (!STATES.includes(v.state as string)) return `el estado del video ${i + 1} no se reconoce`;
+  if (!Array.isArray(v.why) || !v.why.every((w) => typeof w === "string")) return `el campo why del video ${i + 1} está mal formado`;
   return null;
 }
 
 export function parsePayload(raw: unknown): ParseResult {
   const fail = (reason: string): ParseResult => ({ ok: false, reason });
-  if (!isObj(raw)) return fail("the file is not a JSON object");
-  if (raw.version !== 1) return fail(`unsupported version ${String(raw.version)}`);
-  for (const k of ["read_at", "data_until"]) if (typeof raw[k] !== "string") return fail(`${k} is missing`);
-  if (!Array.isArray(raw.platforms)) return fail("platforms is missing");
+  if (!isObj(raw)) return fail("el archivo no es un objeto JSON");
+  if (raw.version !== 1) return fail(`versión ${String(raw.version)} no compatible`);
+  for (const k of ["read_at", "data_until"]) if (typeof raw[k] !== "string") return fail(`falta el campo ${k}`);
+  if (!Array.isArray(raw.platforms)) return fail("falta el campo platforms");
   const ch = raw.channel;
   if (!isObj(ch) || !curveMap(ch.typical_daily) || !curveMap(ch.typical_cum) || !numMap(ch.sources) || !numMap(ch.median))
-    return fail("channel is missing or malformed");
-  if (!Array.isArray(raw.videos)) return fail("videos is missing");
+    return fail("falta el canal o está mal formado");
+  if (!Array.isArray(raw.videos)) return fail("falta la lista de videos");
   for (let i = 0; i < raw.videos.length; i++) {
     const p = videoProblem(raw.videos[i], i);
     if (p) return fail(p);
   }
   const star = raw.star;
-  if (!isObj(star) || !Object.values(star).every((s) => s === null || typeof s === "string")) return fail("star is missing or malformed");
-  if (!("youtube" in star)) return fail("star.youtube is missing");
+  if (!isObj(star) || !Object.values(star).every((s) => s === null || typeof s === "string")) return fail("falta el destacado o está mal formado");
+  if (!("youtube" in star)) return fail("falta el destacado de YouTube");
   return { ok: true, data: raw as unknown as Payload };
 }
 

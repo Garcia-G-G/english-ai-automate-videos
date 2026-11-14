@@ -7,6 +7,7 @@ const STYLE = `
 let box: HTMLDivElement | null = null;
 let shownId: string | null = null;
 let readAt: string | null = null;
+let size = { w: 0, h: 0 }; // measured once per video: reading offsetWidth every frame would force layout
 
 const fmt = new Intl.NumberFormat("es");
 const lines = (v: Video): string[] => [
@@ -33,10 +34,11 @@ export function showNumbers(v: Video, anchor: { x: number; y: number }): void {
   if (shownId !== v.id) {
     box.replaceChildren(...lines(v).map((t) => Object.assign(document.createElement("div"), { textContent: t })));
     shownId = v.id;
+    box.style.display = "block"; // must be laid out to be measured
+    size = { w: box.offsetWidth, h: box.offsetHeight };
   }
   box.style.display = "block";
-  const w = box.offsetWidth;
-  const h = box.offsetHeight;
+  const { w, h } = size;
   const x = Math.min(Math.max(8, anchor.x + 14), innerWidth - w - 8);
   const y = Math.min(Math.max(8, anchor.y - h - 14), innerHeight - h - 8);
   box.style.transform = `translate(${x}px,${y}px)`;

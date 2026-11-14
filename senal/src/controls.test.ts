@@ -46,3 +46,8 @@ test("stale data drains the colour of the fog and horizon", () => {
   expect(sat(m.fogColor)).toBeLessThan(sat(DEFAULT_LOOK.fogColor) / 2);
   expect(sat(m.background.horizon)).toBeLessThan(sat(DEFAULT_LOOK.background.horizon) / 2);
 });
+
+test("stale data leaves the #05070f floor of the background alone", () => {
+  expect(muted(DEFAULT_LOOK).background.bottom).toBe(DEFAULT_LOOK.background.bottom);
+  expect(DEFAULT_LOOK.background.bottom).toBe("#05070f");
+});

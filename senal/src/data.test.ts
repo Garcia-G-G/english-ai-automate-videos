@@ -7,7 +7,7 @@ test("a valid payload parses", () => expect(parsePayload(fixture).ok).toBe(true)
 test("version 2 is refused with a reason", () => {
   const r = parsePayload({ ...fixture, version: 2 });
   expect(r.ok).toBe(false);
-  if (!r.ok) expect(r.reason).toContain("version");
+  if (!r.ok) expect(r.reason).toBe("versión 2 no compatible");
 });
 
 test("missing videos array is refused", () => expect(parsePayload({ version: 1 }).ok).toBe(false));

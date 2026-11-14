@@ -23,8 +23,8 @@ async function load(): Promise<void> {
     // ?data=<url> swaps the file for testing broken or stale payloads; the production build ignores it.
     const url = (import.meta.env.DEV && new URLSearchParams(location.search).get("data")) || "./senal.json";
     const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const parsed = parsePayload(await res.json());
+    if (!res.ok) throw new Error(`el servidor respondió ${res.status}`);
+    const parsed = parsePayload(await res.json().catch(() => null));
     stop();
     if (!parsed.ok) return fail(parsed.reason);
     draw(parsed.data, DEFAULT_LOOK);
@@ -112,6 +112,7 @@ function draw(p: Payload, baseLook: Look): void {
   };
   const select = (i: number) => {
     selected = i;
+    hovered = null; // numbers follow the selection, not a stale hover
     emphasize(i);
     clearFront();
     why.show(videos[i], ridges[i].crest, videos[i].why[0] ?? null);
@@ -210,7 +211,7 @@ function draw(p: Payload, baseLook: Look): void {
     loop();
   });
 
-  /** Inert until the opening hands over (start is called at most once effectively). */
+  /** Called only once the opening timeline has finished (before the star flight or after it), so the bar never rebuilds ridges that are still animating; a rebuild during the flight cancels it. */
   const start = (star: number | null) => {
     if (ready) return;
     ready = true;
