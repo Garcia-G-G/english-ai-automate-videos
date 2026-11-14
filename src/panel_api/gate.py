@@ -50,6 +50,12 @@ def check_origin(request: Request) -> None:
         raise GateError(403, "Petición rechazada: no viene del panel.")
 
 
+def check_host(request: Request) -> None:
+    """GET-only, read-only routes (the event stream): the Host must be the panel's; no Origin or token is needed."""
+    if (request.headers.get("host") or "").lower() not in allowed_hosts():
+        raise GateError(403, "Petición rechazada: el servidor solo responde en el panel local.")
+
+
 def free_post(request: Request) -> None:
     """Dependency for POSTs that spend nothing (approve, reject): the Origin/Host check only."""
     check_origin(request)

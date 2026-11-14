@@ -196,9 +196,16 @@ def refresh(today: Optional[date] = None, get=None, token: Optional[str] = None,
     fb = (facebook or fetch_facebook)()
     path.write_text(json.dumps({"read_at": datetime.now().isoformat(timespec="seconds"), "videos": snapshot,
                                 "facebook": fb}, ensure_ascii=False, indent=1), encoding="utf-8")
+    for fn in list(REFRESH_LISTENERS):
+        try:
+            fn()
+        except Exception:                                   # noqa: BLE001 — a listener never breaks the refresh
+            pass
     return path
 
 
+#: callables told after a snapshot is written (the live feed's `stats.refreshed`)
+REFRESH_LISTENERS: list = []
 REFRESH_HOURS = 20
 AUTO = {"started": False, "last": None, "error": None}
 _AUTO_LOCK = __import__("threading").Lock()

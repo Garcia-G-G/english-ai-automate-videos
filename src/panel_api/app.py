@@ -1,21 +1,35 @@
 """STEP 85 §2-§3: the FastAPI app. Reads are open; POSTs pass the gate (gate.py). §4 swaps the engine stubs for real ones."""
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from typing import Dict, Optional
 
 from fastapi import Depends, FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 
-from . import build, engine as engine_mod, gate, media
+from . import build, engine as engine_mod, events, gate, media
 
 HOST, PORT = "127.0.0.1", 8600          # bind this host only; nothing in this package listens on its own
 
 
-def create_app(engine: Optional[Dict[str, object]] = None) -> FastAPI:
+def create_app(engine: Optional[Dict[str, object]] = None, heartbeat_s: float = events.HEARTBEAT_S) -> FastAPI:
     """`engine` overrides produce / rerender (`f(...) -> (job_id, eta_s, runner)`) and approve / reject (`f(id, body) -> dict`);
     the defaults are the real handlers in engine.py. Tests pass mocks."""
     eng = {**engine_mod.REAL, **(engine or {})}
-    app = FastAPI(title="English Unlimited panel API", docs_url=None, redoc_url=None, openapi_url=None)
+    bus = events.Bus()
+    feed = events.Feed(bus)
+
+    @asynccontextmanager
+    async def lifespan(_app):
+        feed.start()                                      # job steps, done/failed and stats.refreshed reach the bus
+        try:
+            yield
+        finally:
+            feed.stop()
+            bus.close()
+
+    app = FastAPI(title="English Unlimited panel API", docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
+    app.state.bus, app.state.feed = bus, feed
     app.add_exception_handler(gate.GateError, gate.gate_error_handler)
     app.state.jobs = []                                   # the threads of paid jobs, for shutdown and tests
 
@@ -41,6 +55,11 @@ def create_app(engine: Optional[Dict[str, object]] = None) -> FastAPI:
         got = build.job(job_id)
         return got if got is not None else JSONResponse({"error": "No encuentro ese trabajo.", "detail": job_id}, status_code=404)
 
+    @app.get("/api/events", dependencies=[Depends(gate.check_host)])
+    async def live():
+        return StreamingResponse(events.stream(bus, heartbeat_s), media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
     def _start(fn, *args):
         job_id, eta, runner = fn(*args)
         gate.run_job(runner, app.state.jobs)
@@ -52,15 +71,21 @@ def create_app(engine: Optional[Dict[str, object]] = None) -> FastAPI:
 
     @app.post("/api/review/{item_id}/rerender")
     def rerender(item_id: str, _body: dict = Depends(gate.paid)):
-        return _start(eng["rerender"], item_id)
+        got = _start(eng["rerender"], item_id)
+        feed.counts()                                     # the old render left «Por revisar»
+        return got
 
     @app.post("/api/review/{item_id}/approve", dependencies=[Depends(gate.free_post)])
     async def approve(item_id: str, request: Request):
-        return eng["approve"](item_id, await request.json())
+        got = eng["approve"](item_id, await request.json())
+        feed.counts()                                     # Por revisar / Por subir changed
+        return got
 
     @app.post("/api/review/{item_id}/reject", dependencies=[Depends(gate.free_post)])
     async def reject(item_id: str, request: Request):
-        return eng["reject"](item_id, await request.json())
+        got = eng["reject"](item_id, await request.json())
+        feed.counts()
+        return got
 
     app.include_router(media.router)
     return app
