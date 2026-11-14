@@ -19,8 +19,20 @@ export function mockSubscribe(l: Listener): () => void {
   return () => listeners.delete(l);
 }
 
+/** VITE_FIXTURE=real: replay payloads captured from the real API (public/real, never committed). */
+const REAL = import.meta.env.VITE_FIXTURE === "real";
+const realCache = new Map<string, unknown>();
+async function real(name: string) {
+  if (!realCache.has(name)) realCache.set(name, await (await fetch(`/real/real_${name}.json`)).json());
+  return realCache.get(name);
+}
+
 export async function mockGet(path: string): Promise<unknown> {
   await wait(120 + Math.random() * 120); // feel like a real local API
+  if (REAL && path === "/api/meta") return { ...((await real("meta")) as object), mock: true };
+  if (REAL && path === "/api/home") return real("home");
+  if (REAL && path === "/api/review") return real("review");
+  if (REAL && path === "/api/game") throw Object.assign(new Error("Aún no conectado"), { status: 404 });
   if (path === "/api/meta") return meta;
   if (path === "/api/home") return demoHome;
   if (path === "/api/game") return game;

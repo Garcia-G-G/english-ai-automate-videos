@@ -48,7 +48,7 @@ export function Inicio({ meta, theme, mode, until, setMode }: Props) {
         </div>
       </header>
 
-      {g ? <XPStrip game={g} fresh={fresh} /> : <div className="skel" style={{ height: 56, borderRadius: 18 }} />}
+      {g ? <XPStrip game={g} fresh={fresh} /> : game.isError ? null : <div className="skel" style={{ height: 56, borderRadius: 18 }} />}
 
       {home.isError ? (
         <div className="tile err">No pude leer Inicio: {(home.error as Error).message} <button className="lbtn" onClick={() => home.refetch()}><RotateCcw size={14} /> Reintentar</button></div>
@@ -65,6 +65,8 @@ export function Inicio({ meta, theme, mode, until, setMode }: Props) {
   );
 }
 
+/** «bv045_carro» → «CARRO»: a script id shown as its topic, until the API sends the topic itself. */
+const scriptLabel = (s: string) => (/^[a-z]{2,4}\d{2,4}_/.test(s) ? s.replace(/^[a-z]{2,4}\d{2,4}_/, "").replace(/_/g, " ").toUpperCase() : s);
 const escapeHtml = (s: string) => s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const EMPTY_STEPS: Record<StepKey, number> = { guion: 0, voz: 0, montaje: 0, sonido: 0, control: 0 };
 
@@ -117,7 +119,7 @@ function Hero({ home, game }: { home: Home | undefined; game: Game | undefined }
         <Video9x16 thumb={nx.thumb} family={nx.family} emoji={nx.emoji} topic={nx.topic} />
         <div style={{ minWidth: 0 }}>
           <div className="ey">Siguiente vídeo{nx.slot ? ` · sale a las ${nx.slot}` : ""}</div>
-          <h2 id="next-t">{before}<span className="mark">{nx.topic}</span>{after} <span aria-hidden="true">{nx.emoji}</span></h2>
+          <h2 id="next-t">{before}<span className="mark">{nx.topic}</span>{after}{nx.emoji && !nx.title.includes(nx.emoji) ? <> <span aria-hidden="true">{nx.emoji}</span></> : null}</h2>
           <div className="tags">{nx.tags.map((t) => <span key={t.label} className={`tag ${t.tone}`}>{t.label}</span>)}</div>
           <div className="words" aria-label="Palabras en inglés">{nx.words.map((w) => <span key={w}>{w}</span>)}</div>
           {job ? (
@@ -136,7 +138,7 @@ function Hero({ home, game }: { home: Home | undefined; game: Game | undefined }
           )}
           <div className="actions">
             <button ref={btn} type="button" className={`gbtn${job?.state === "done" ? " done" : ""}`} aria-busy={job?.state === "running"} onClick={go} disabled={!!job}>
-              {job?.state === "done" ? <><Check aria-hidden="true" /> Listo · en Revisar</> : job ? "En marcha…" : <><Play aria-hidden="true" fill="currentColor" /> Producir{game ? ` · +${nx.xp} XP` : ""}</>}
+              {job?.state === "done" ? <><Check aria-hidden="true" /> Listo · en Revisar</> : job ? "En marcha…" : <><Play aria-hidden="true" fill="currentColor" /> Producir{game && typeof nx.xp === "number" ? ` · +${nx.xp} XP` : ""}</>}
             </button>
           </div>
         </div>
@@ -167,10 +169,10 @@ function AgendaTile({ home }: { home: Home | undefined }) {
           <span className="dot" aria-hidden="true" />
           <div className="bx">
             {s.state === "free" ? (
-              <><span className="em" aria-hidden="true">＋</span><b>Libre</b><span className="rest">{s.fillsWith ? `· lo llena ${s.fillsWith}` : "· sin guion"}</span></>
+              <><span className="em" aria-hidden="true">＋</span><b>Libre</b><span className="rest">{s.fillsWith ? `· lo llena ${scriptLabel(s.fillsWith)}` : "· sin guion"}</span></>
             ) : (
-              <><span className="em" aria-hidden="true">{s.emoji}</span><b>{s.title}</b>
-                <span className="rest">{s.state === "published" ? `· ${s.views === null ? NA : n(s.views)}` : "· programado"}</span></>
+              <><span className="em" aria-hidden="true">{s.emoji ?? "▶"}</span><b>{s.title}</b>
+                <span className="rest">{s.state === "published" ? (s.views === null ? "· publicado" : `· ${n(s.views)}`) : "· programado"}</span></>
             )}
           </div>
         </div>
@@ -226,7 +228,7 @@ function SequelsTile({ home }: { home: Home | undefined }) {
       <h3 id="sq-t">Secuelas por escribir <small>pasaron de 800 vistas</small></h3>
       {home.sequels.map((s) => (
         <div key={s.topic} className="seqrow">
-          <span className="em" aria-hidden="true">{s.emoji}</span>
+          <span className="em" aria-hidden="true">{s.emoji || "★"}</span>
           <div><b>{s.topic}</b><small>el original: {n(s.parentViews)} vistas</small></div>
         </div>
       ))}

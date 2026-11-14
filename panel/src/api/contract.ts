@@ -67,7 +67,7 @@ export interface NextVideo {
   words: string[]; // the English items
   facts: { durationS: number | null; costUsd: number | null; renderMin: number | null; repeated: number | null };
   thumb: Thumb | null; // frame 0 of the script (STEP 85b), null until drawn
-  xp: number; // XP this video will earn when published
+  xp: number | null; // XP this video will earn when published (null until game.py)
 }
 
 export interface Slot {
@@ -77,7 +77,7 @@ export interface Slot {
   emoji: string | null;
   views: number | null; // published only
   platforms: string[]; // scheduled: where
-  fillsWith: string | null; // free: the script that will fill it
+  fillsWith: string | null; // free: the topic of the script that will fill it («MÁS ANIMALES»)
 }
 
 export interface Agenda {
