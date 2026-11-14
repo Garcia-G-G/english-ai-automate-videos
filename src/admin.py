@@ -918,6 +918,8 @@ def move_to_uploaded(video_path: Path, upload_info: dict = None):
     dest_dir = UPLOADED_DIR / video_type
     dest_dir.mkdir(parents=True, exist_ok=True)
     dest_path = dest_dir / video_path.name
+    import thumbs
+    thumbs.carry(video_path, dest_dir)                      # STEP 85b
     shutil.move(str(video_path), str(dest_path))
     meta_path = video_path.with_suffix('.json')
     dest_meta = dest_dir / meta_path.name

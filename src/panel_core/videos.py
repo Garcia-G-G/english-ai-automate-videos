@@ -125,6 +125,8 @@ def approve_video(video_path: Path, approved_dir: Optional[Path] = None):
     video_type = video_path.parent.name
     dest_dir = (approved_dir or jobs.APPROVED_DIR) / video_type
     dest_dir.mkdir(parents=True, exist_ok=True)
+    import thumbs
+    thumbs.carry(video_path, dest_dir)                      # STEP 85b: the <stem>.thumb/ folder travels with it
     shutil.move(str(video_path), str(dest_dir / video_path.name))
     meta_path = video_path.with_suffix('.json')
     if meta_path.exists():
@@ -141,6 +143,8 @@ def reject_video(video_path: Path, rejected_dir: Optional[Path] = None):
     video_type = video_path.parent.name
     dest_dir = (rejected_dir or jobs.REJECTED_DIR) / video_type
     dest_dir.mkdir(parents=True, exist_ok=True)
+    import thumbs
+    thumbs.carry(video_path, dest_dir)
     shutil.move(str(video_path), str(dest_dir / video_path.name))
     meta_path = video_path.with_suffix('.json')
     if meta_path.exists():

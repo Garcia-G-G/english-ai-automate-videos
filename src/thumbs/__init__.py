@@ -1,0 +1,218 @@
+"""STEP 85b §0-§2: natural thumbnails, chosen per video and checked by measurements.
+
+Every thumbnail is a REAL frame of its video. For the formats drawn by our PIL kits it is drawn directly at
+1080x1920 (lossless), never grabbed from the compressed MP4. Each artifact gets `<stem>.thumb/` next to its
+sidecar (not a shared `thumb/`: several artifacts live in one folder) holding `thumb.jpg` (what is uploaded),
+`cands/` (A, B, C as PNG) and `thumb.json` (the chosen one, the metrics and why).
+"""
+from __future__ import annotations
+
+import io
+import json
+import shutil
+from pathlib import Path
+from typing import Callable, Dict, List, Optional, Tuple
+
+import numpy as np
+from PIL import Image
+
+W, H = 1080, 1920
+STEADY_DT = 0.12                 # frames compared at t ± this
+SLIDE_STEP, SLIDE_MAX = 0.04, 0.6
+#: calibrated 2026-11 on settled Tablero frames vs mid-flip ones (see tests/test_thumbs.py)
+STEADY_MAX = 1.2                 # mean absolute difference (0-255) on a 270x480 grey frame
+SHARP_MIN = 300.0                # half the weakest of 10 settled frames measured (631 to 1830)
+LUMA_RANGE = (40.0, 215.0)
+EDGE_MIN = 0.02                  # share of pixels that are edges
+JPEG_MAX = 2_000_000
+
+
+def thumb_dir(mp4: Path) -> Path:
+    return Path(mp4).with_name(Path(mp4).stem + ".thumb")
+
+
+# ── measurements ─────────────────────────────────────────────────────
+
+def _grey(rgb: np.ndarray, size=(270, 480)) -> np.ndarray:
+    return np.asarray(Image.fromarray(rgb).convert("L").resize(size, Image.BILINEAR), dtype=np.float32)
+
+
+def steadiness(draw: Callable[[float], np.ndarray], t: float, dt: float = STEADY_DT) -> float:
+    """Mean absolute difference of the frame at t against the ones at t-dt and t+dt (0 = perfectly still)."""
+    mid = _grey(draw(t))
+    return float(max(np.abs(mid - _grey(draw(max(0.0, t - dt)))).mean(), np.abs(mid - _grey(draw(t + dt))).mean()))
+
+
+def laplacian_variance(rgb: np.ndarray, box: Tuple[int, int, int, int] = (0, 430, W, 1475)) -> float:
+    g = np.asarray(Image.fromarray(rgb).convert("L"), dtype=np.float32)[box[1]:box[3], box[0]:box[2]]
+    lap = 4 * g[1:-1, 1:-1] - g[:-2, 1:-1] - g[2:, 1:-1] - g[1:-1, :-2] - g[1:-1, 2:]
+    return float(lap.var())
+
+
+def luminance_and_edges(rgb: np.ndarray) -> Tuple[float, float]:
+    g = np.asarray(Image.fromarray(rgb).convert("L"), dtype=np.float32)
+    gx, gy = np.abs(np.diff(g, axis=1))[:-1], np.abs(np.diff(g, axis=0))[:, :-1]
+    return float(g.mean()), float(((gx + gy) > 40).mean())
+
+
+def measure(draw: Callable[[float], np.ndarray], t: float, frame: Optional[np.ndarray] = None) -> Dict:
+    frame = frame if frame is not None else draw(t)
+    luma, edges = luminance_and_edges(frame)
+    m = {"t": round(t, 3), "steady": round(steadiness(draw, t), 3), "sharp": round(laplacian_variance(frame), 1),
+         "luma": round(luma, 1), "edges": round(edges, 4)}
+    m["steady_ok"] = m["steady"] <= STEADY_MAX
+    m["sharp_ok"] = m["sharp"] >= SHARP_MIN
+    m["not_blank_ok"] = LUMA_RANGE[0] <= luma <= LUMA_RANGE[1] and edges >= EDGE_MIN
+    m["ok"] = m["steady_ok"] and m["sharp_ok"] and m["not_blank_ok"]
+    return m
+
+
+def settle(draw: Callable[[float], np.ndarray], t: float, limit: float) -> Tuple[float, Dict]:
+    """The candidate's moment: t if it passes, else the first passing frame sliding forward in 40 ms steps up to
+    0.6 s (never past `limit`). Returns (t, metrics); metrics["shift"] is how far it slid, and metrics["ok"]
+    is False when nothing in the window passed (the steadiest is returned)."""
+    best, best_m, shift = t, measure(draw, t), 0.0
+    if best_m["ok"]:
+        return best, {**best_m, "shift": 0.0}
+    steadiest = (best, best_m, 0.0)
+    while shift + SLIDE_STEP <= SLIDE_MAX and t + shift + SLIDE_STEP <= limit:
+        shift += SLIDE_STEP
+        m = measure(draw, t + shift)
+        if m["ok"]:
+            return t + shift, {**m, "shift": round(shift, 2)}
+        if m["steady"] < steadiest[1]["steady"]:
+            steadiest = (t + shift, m, round(shift, 2))
+    return steadiest[0], {**steadiest[1], "shift": steadiest[2]}
+
+
+# ── the moment rule, per format ──────────────────────────────────────
+
+def hdys_moments(data: Dict, duration: float) -> List[Tuple[str, float]]:
+    """A: the 4th tile just lit, three done (right after the 3rd reveal settles); B: frame 0; C: the 6th reveal
+    settled. The Tablero beats the renderer already derives."""
+    from video.how_do_you_say import Timeline
+    from video.tablero.frame import Beats
+    tl = Timeline(data, duration)
+    b = Beats(tl)
+    out = []
+    if tl.n > 3:
+        out.append(("A", tl.es[3][0] + 0.5))                      # after the 3rd reveal's «bien_hecho» hold: Bubi is `wow`
+    out.append(("B", 0.0))
+    if tl.n > 6:
+        out.append(("C", b.flip_end[5] + 0.3))
+    return out
+
+
+# ── encoding ─────────────────────────────────────────────────────────
+
+def encode_jpeg(rgb: np.ndarray) -> bytes:
+    """1080x1920 sRGB, quality 92, 4:4:4 chroma, progressive, no metadata; under 2 MB (quality down to 86, then 4:2:0)."""
+    im = Image.fromarray(rgb).convert("RGB")
+    for q, sub in ((92, 0), (90, 0), (88, 0), (86, 0), (86, 2)):
+        buf = io.BytesIO()
+        im.save(buf, "JPEG", quality=q, subsampling=sub, progressive=True, optimize=True)
+        if buf.tell() <= JPEG_MAX:
+            return buf.getvalue()
+    return buf.getvalue()
+
+
+# ── making a video's thumbnails ──────────────────────────────────────
+
+def make_for_tablero(mp4: Path, data: Dict, duration: float, root: Optional[Path] = None) -> Dict:
+    """Candidates A, B, C drawn losslessly by the Tablero kit, measured, the default chosen, thumb.jpg written."""
+    from video.tablero import frame as F
+
+    def draw(t: float) -> np.ndarray:
+        return F.create_frame_tablero(t, data, duration)
+
+    folder = thumb_dir(mp4) if root is None else root
+    (folder / "cands").mkdir(parents=True, exist_ok=True)
+    moments = hdys_moments(data, duration)
+    cands: Dict[str, Dict] = {}
+    for label, t in moments:
+        tt, m = settle(draw, t, duration)
+        frame = draw(tt)
+        Image.fromarray(frame).save(folder / "cands" / f"{label}.png")
+        cands[label] = {**m, "t": round(tt, 3), "wanted": round(t, 3), "source": "kit"}
+    chosen = next((k for k in ("A", "B", "C") if k in cands and cands[k]["ok"]), None)
+    why = "A: the format's moment passed every check" if chosen == "A" else (
+        f"A failed or is missing; {chosen} is the first candidate that passes" if chosen else "no candidate passed: A kept")
+    chosen = chosen or ("A" if "A" in cands else next(iter(cands)))
+    return _finish(folder, chosen, cands, why)
+
+
+def _finish(folder: Path, chosen: str, cands: Dict, why: str) -> Dict:
+    pick(folder, chosen)
+    info = {"chosen": chosen, "why": why, "metrics": cands}
+    (folder / "thumb.json").write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
+    return info
+
+
+def pick(folder: Path, label: str) -> Path:
+    """Make candidate `label` the uploaded thumbnail (Revisar's switch): no re-render, just a re-encode of the PNG."""
+    png = folder / "cands" / f"{label}.png"
+    if not png.exists():
+        raise FileNotFoundError(f"no candidate {label}")
+    out = folder / "thumb.jpg"
+    out.write_bytes(encode_jpeg(np.asarray(Image.open(png).convert("RGB"))))
+    info_path = folder / "thumb.json"
+    if info_path.exists():
+        info = json.loads(info_path.read_text(encoding="utf-8"))
+        info["chosen"] = label
+        info_path.write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
+    return out
+
+
+def carry(src_mp4: Path, dest_dir: Path) -> None:
+    """The move helpers call this: the `<stem>.thumb/` folder travels with the MP4 and its sidecar."""
+    folder = thumb_dir(src_mp4)
+    if folder.is_dir():
+        target = dest_dir / folder.name
+        if target.exists():
+            shutil.rmtree(target)
+        shutil.move(str(folder), str(target))
+
+
+# ── any format: the dispatcher the render calls ──────────────────────
+
+def _extract(mp4: Path, t: float, out: Path) -> bool:
+    import subprocess
+    r = subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{t:.2f}", "-accurate_seek", "-i", str(mp4), "-frames:v", "1",
+                        "-vf", f"scale={W}:{H}:flags=lanczos", str(out)], capture_output=True, timeout=60)
+    return r.returncode == 0 and out.exists()
+
+
+def make_from_mp4(mp4: Path, duration: float, root: Optional[Path] = None) -> Dict:
+    """For formats we cannot redraw: A at 20 % (past the intro), B frame 0, C at 45 %, extracted from the MP4 with
+    an accurate seek and lanczos. Measured on sharpness and not-blank only (a steadiness check needs the kit)."""
+    folder = thumb_dir(mp4) if root is None else root
+    (folder / "cands").mkdir(parents=True, exist_ok=True)
+    cands: Dict[str, Dict] = {}
+    for label, frac in (("A", 0.20), ("B", 0.0), ("C", 0.45)):
+        png = folder / "cands" / f"{label}.png"
+        t = duration * frac
+        if not _extract(mp4, t, png):
+            continue
+        frame = np.asarray(Image.open(png).convert("RGB"))
+        luma, edges = luminance_and_edges(frame)
+        m = {"t": round(t, 3), "sharp": round(laplacian_variance(frame), 1), "luma": round(luma, 1), "edges": round(edges, 4),
+             "source": "mp4"}
+        m["ok"] = m["sharp"] >= SHARP_MIN / 3 and LUMA_RANGE[0] <= luma <= LUMA_RANGE[1] and edges >= EDGE_MIN
+        cands[label] = m
+    if not cands:
+        raise RuntimeError("no frame could be extracted")
+    chosen = next((k for k in ("A", "B", "C") if k in cands and cands[k]["ok"]), next(iter(cands)))
+    return _finish(folder, chosen, cands, f"{chosen}: first extracted frame that is sharp and not blank (no kit for this format)")
+
+
+def make_for_video(mp4: Path, data: Dict, duration: float) -> Optional[Dict]:
+    """The render's call. Never raises: a missing thumbnail must not fail a video. Returns the thumb.json info."""
+    import logging
+    try:
+        if data.get("type") == "how_do_you_say" and (data.get("design_variant") or "tablero") == "tablero" \
+                and data.get("segment_times") and data.get("items"):
+            return make_for_tablero(mp4, data, duration)
+        return make_from_mp4(mp4, duration)
+    except Exception:                                       # noqa: BLE001
+        logging.getLogger(__name__).exception("thumbnails: could not make them for %s", mp4)
+        return None

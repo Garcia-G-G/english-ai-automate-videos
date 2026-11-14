@@ -997,6 +997,19 @@ def run_pipeline_with_tracking(job_id: str, video_type: str, category: str = Non
         # The sidecar exists, so now the video may have its pending/ name.
         os.replace(stage_path, video_path)
         rendered_video = video_path
+        try:                                                # STEP 85b: the thumbnails are made WITH the video, never while a page draws
+            import thumbs
+            with open(json_path, encoding="utf-8") as _f:
+                _tdata = json.load(_f)
+            _tdata.setdefault("design_variant", script_data.get("design_variant"))
+            _info = thumbs.make_for_video(video_path, _tdata, float(_tdata.get("duration") or 0)) if _tdata.get("duration") else None
+            if _info:
+                _meta = json.loads(meta_path.read_text(encoding="utf-8"))
+                _meta["thumbnail"] = {"chosen": _info["chosen"], "metrics": _info["metrics"][_info["chosen"]], "why": _info["why"],
+                                      "platforms": {}}
+                meta_path.write_text(json.dumps(_meta, ensure_ascii=False, indent=2), encoding="utf-8")
+        except Exception:                                   # noqa: BLE001 — a thumbnail never fails a video
+            logger.exception("job %s: thumbnails failed", job_id)
         logger.info("job %s stage seconds: %s", job_id, stage_seconds)
 
         result["success"] = True
