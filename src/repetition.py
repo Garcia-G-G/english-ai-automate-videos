@@ -33,20 +33,36 @@ def _read(path: Path) -> dict:
         return {}
 
 
+_READ: Dict[tuple, dict] = {}          # (path, mtime, size) -> script: an unchanged file is parsed once per process
+
+
+def _read_cached(path: Path) -> dict:
+    try:
+        st = path.stat()
+    except OSError:
+        return {}
+    key = (str(path), st.st_mtime_ns, st.st_size)
+    if key not in _READ:
+        if len(_READ) > 6000:
+            _READ.clear()
+        _READ[key] = _read(path)
+    return _READ[key]
+
+
 def corpus(vtype: str, queue_dir: Path = None, done_dir: Path = None) -> List[Tuple[Path, Set[str], bool]]:
     """[(path, words, published)] of every script of this type: published first, then queued by name."""
     queue_dir, done_dir = queue_dir or QUEUE_DIR, done_dir or DONE_DIR
     out = []
     if done_dir.exists():
         for p in sorted(done_dir.rglob("*.json")):
-            d = _read(p)
+            d = _read_cached(p)
             if d.get("type") == vtype:
                 out.append((p, words(d), True))
     if queue_dir.exists():
         for p in sorted(queue_dir.rglob("*.json")):
             if set(p.relative_to(queue_dir).parts[:-1]) & set(SHELVES):
                 continue
-            d = _read(p)
+            d = _read_cached(p)
             if d.get("type") == vtype:
                 out.append((p, words(d), False))
     return out

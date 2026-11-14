@@ -375,14 +375,14 @@ def next_best() -> Optional[tuple]:
         plan_text = daily_mix.explain(plan)
         cfg = queue_priority.settings()
         for vtype in plan["types"]:
-            candidate = queue_pick(vtype)
+            candidate = queue_pick(vtype, fresh=False)
             if candidate and (not plan["tier_a_only"] or vtype != "level_test"
                               or queue_priority.a1_word(candidate[1], cfg)):
                 picked = candidate
                 break
     except Exception:                                       # noqa: BLE001 — the mix never blocks the queue
         logger.debug("queue: daily mix unavailable", exc_info=True)
-    picked = picked or queue_pick()
+    picked = picked or queue_pick(fresh=False)
     if not picked:
         return None
     path, data = picked
@@ -397,7 +397,7 @@ def next_best() -> Optional[tuple]:
     return path, data, why
 
 
-def queue_pick(video_type: str = None):
+def queue_pick(video_type: str = None, fresh: bool = True):
     """The next SAFE queued script for this type, or None.
 
     Safe means the guard raised no problem against it: not a topic already
@@ -412,7 +412,7 @@ def queue_pick(video_type: str = None):
         return None
 
     try:
-        bad = _queue_bad(queue_guard, fresh=True)
+        bad = _queue_bad(queue_guard, fresh=fresh)          # fresh only when a render is about to take it
         # STEP 80 §2: best first — the type's measured views, an A1 category boost
         for path in queue_order(queue_guard.queued_scripts()):
             if path.relative_to(ROOT) in bad:

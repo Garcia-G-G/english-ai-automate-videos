@@ -136,3 +136,25 @@ def test_generation_time_refuses_a_script_made_of_published_words(tmp_path, monk
     again = jobs.run_pipeline_with_tracking(jobs.create_job("how_do_you_say"), "how_do_you_say",
                                             script_data=bv090, use_queue=False, dry_run=True, rerender=True)
     assert "REPEATS WORDS" not in (again.get("error") or "")
+
+
+def test_the_repetition_corpus_parses_an_unchanged_file_once(tmp_path, monkeypatch):
+    q, done, queue = _tree(tmp_path, {"a.json": ["x", "y"]}, {"b.json": ["z"]})
+    calls = []
+    real = R._read
+    monkeypatch.setattr(R, "_read", lambda p: calls.append(p) or real(p))
+    R._READ.clear()
+    R.corpus("how_do_you_say", q, done)
+    n = len(calls)
+    R.corpus("how_do_you_say", q, done)
+    assert n == 2 and len(calls) == n                        # second pass: no parse
+    (queue / "b.json").write_text(json.dumps(_s(["z", "w"])), encoding="utf-8")
+    assert {len(w) for _p, w, _pub in R.corpus("how_do_you_say", q, done) if _p.name == "b.json"} == {2}   # an edit is seen
+
+
+def test_showing_the_next_best_does_not_run_a_fresh_audit_but_a_render_does():
+    import inspect
+    import jobs
+    assert inspect.signature(jobs.queue_pick).parameters["fresh"].default is True
+    src = inspect.getsource(jobs.next_best)
+    assert "fresh=False" in src and "queue_pick(vtype)" not in src
