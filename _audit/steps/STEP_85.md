@@ -1,5 +1,10 @@
 # STEP 85 (rewritten 14 Nov) — The local API for Panel 2.0. Claude built the front end.
 
+> **Update (Claude, after §6):** Garcia wants one URL. The new panel now runs on **localhost:8501**, and Streamlit (`run_admin.sh`) moves to **8502**. That's commit `ccf0333`.
+> - The same port change is also in your uncommitted `app.py`, `gate.py`, `build.py`, tests, `run_panel.sh` and `__main__.py`, without touching your other edits.
+> - Keep 8501 everywhere you'd written 8600.
+> - When the STEP says 8600, read 8501.
+
 Garcia: «necesito que tú hagas todo lo frontend». So the split is:
 
 - **Claude builds the whole front end in `panel/`.** It is in this commit, and it runs today in demo mode with `cd panel && npm ci && npm run demo`. Inicio and Revisar are done; Claude builds the other pages next.
