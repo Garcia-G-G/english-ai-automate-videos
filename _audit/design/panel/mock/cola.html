@@ -1,0 +1,85 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><link rel="stylesheet" href="theme-papel.css"><style>
+.th9 { aspect-ratio: 9/16; border-radius: 12px; border: 2px solid #1C1812; position: relative; overflow: hidden; color: #1C1812; }
+.th9::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.14) 1.1px, transparent 1.2px); background-size: 8px 8px; }
+.th9 .h { position: relative; text-align: center; margin-top: 9%; }
+.th9 .h span { font-family: Fredoka; font-weight: 700; font-size: 9.5px; background: #F2D66B; padding: 1px 4px; display: inline-block; transform: rotate(-1.5deg); }
+.th9 .c { position: relative; margin: 5% auto 0; width: max-content; max-width: 88%; background: #fff; border: 1.2px solid #1C1812; box-shadow: 1.5px 1.5px 0 #1C1812; border-radius: 5px; font-family: Fredoka, Emo; font-weight: 700; font-size: 8px; padding: 1px 5px; transform: rotate(2deg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.th9 .tiles { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 4%; padding: 8% 7% 0; }
+.th9 .tiles i { display: block; height: 15px; background: #fff; border: 1.2px solid #1C1812; border-radius: 5px; box-shadow: 1.5px 1.5px 0 #1C1812; }
+.th9 .tiles.one { grid-template-columns: 1fr; } .th9 .tiles.one i { height: 18px; }
+.th9 .bb { position: absolute; right: 5%; bottom: 4%; width: 30%; }
+
+.fuel { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 24px; }
+.gauge { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; position: relative; }
+.gauge.warn { border: 2.5px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); background: #FFF8E6; }
+.gauge .t { font-weight: 800; font-size: 13px; display: flex; align-items: center; gap: 7px; }
+.gauge .t i { width: 10px; height: 10px; border-radius: 3px; }
+.gauge .n { font-family: Fredoka; font-weight: 700; font-size: 38px; line-height: 1; margin: 10px 0 2px; }
+.gauge .n small { font-family: Manrope; font-size: 13px; font-weight: 700; color: var(--muted); margin-left: 4px; }
+.gauge .d { font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.gauge .meter2 { height: 10px; background: #F1ECE3; border-radius: 99px; margin: 12px 0 8px; overflow: hidden; }
+.gauge .meter2 div { height: 100%; border-radius: 99px; }
+.gauge .tag { margin-top: 2px; }
+.qgrid { display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
+.qi { display: grid; grid-template-columns: 34px 54px 1fr 180px 110px; gap: 16px; align-items: center; padding: 12px 0; border-top: 1px solid #F1ECE3; }
+.qi:first-of-type { border-top: 0; }
+.qi .pos { font-family: Fredoka; font-weight: 700; font-size: 22px; color: var(--muted); text-align: center; }
+.qi.first .pos { color: var(--ink); }
+.qi .ti b { font-size: 15px; display: block; }
+.qi .ti small { font-size: 12px; color: var(--muted); font-weight: 650; }
+.qi .tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+.score2 { display: flex; flex-direction: column; gap: 4px; }
+.score2 .sb { height: 9px; border-radius: 99px; background: #F1ECE3; overflow: hidden; display: flex; }
+.score2 .sb div { height: 100%; }
+.score2 small { font-size: 11.5px; font-weight: 700; color: var(--muted); }
+.qi .when { font-size: 12.5px; font-weight: 750; text-align: right; }
+.qi .when b { display: block; font-family: Fredoka; font-weight: 500; font-size: 16px; }
+.qi.first { background: var(--yellow-soft); margin: 0 -22px; padding: 12px 22px; border-radius: 0; border-top: 0; }
+.mixcard .mix { display: flex; height: 34px; border-radius: 10px; overflow: hidden; border: 2px solid var(--ink); margin: 12px 0 10px; }
+.mixcard .mix div { display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 12px; }
+.mixcard .ml { display: flex; flex-direction: column; gap: 7px; font-size: 13px; font-weight: 650; }
+.mixcard .ml div { display: flex; align-items: center; gap: 8px; } .mixcard .ml i { width: 11px; height: 11px; border-radius: 3px; } .mixcard .ml b { margin-left: auto; }
+.trays { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.tray { border: 1.5px dashed #CFC5B4; border-radius: 14px; padding: 12px; }
+.tray b { font-family: Fredoka; font-weight: 700; font-size: 24px; display: block; } .tray span { font-size: 12.5px; font-weight: 700; color: var(--muted); }
+</style></head><body><div class="app"><aside class="side">
+  <div class="brand"><img src="img/simbolo_512_s.png"><div><b>English <mark>Unlimited</mark></b><small>Estudio de vídeos</small></div></div>
+  <div class="navlabel">PRODUCIR</div>
+  <div class="nav"><i>⌂</i>Inicio</div>
+  <div class="nav"><i>＋</i>Crear</div>
+  <div class="nav on"><i>☰</i>Cola<span class="badge soft">491</span></div>
+  <div class="nav"><i>◉</i>Revisar<span class="badge">2</span></div>
+  <div class="nav"><i>↑</i>Subir</div>
+  <div class="navlabel">CANAL</div>
+  <div class="nav"><i>↗</i>Rendimiento</div>
+  <div class="nav"><i>✎</i>Comentarios<span class="badge">5</span></div>
+  <div class="nav"><i>▤</i>Biblioteca</div>
+  <div class="navlabel">AJUSTES</div>
+  <div class="nav"><i>#</i>Temas</div>
+  <div class="nav"><i>◷</i>Programar</div>
+  <div class="nav"><i>⚙</i>Ajustes</div>
+  <div class="nav"><i>≡</i>Registros</div>
+  <div class="spacer"></div>
+  <div class="meter">
+    <div class="row"><span>OpenRouter</span><span>$6.58 de $15</span></div>
+    <div class="bar"><div style="width:44%"></div></div>
+    <div class="row"><span>Por vídeo</span><span>$0.11 · tope $0.25</span></div>
+  </div>
+  <div class="ver">versión 050b4a5 · abierto 20:21</div>
+</aside><main class="main">
+<div class="top"><div><h1>Cola</h1><div class="sub"><b>491 guiones</b> esperan turno. Salen solos en este orden, 4 al día.</div></div>
+<div class="tools" style="display:flex;gap:10px"><span class="btn ghost">⇅ Reordenar</span><span class="btn sm" style="padding:10px 16px;font-size:14px">＋ Añadir guiones</span></div></div>
+<div class="eyebrow" style="margin-bottom:10px">Combustible · cuántos días quedan de cada formato</div>
+<div class="fuel"><div class="gauge warn"><div class="t"><i style="background:#1F6FD1"></i>Cómo se dice</div><div class="n">32<small>guiones</small></div><div class="d">3 al día · para <b>11 días</b></div><div class="meter2"><div style="width:37%;background:#E0533A"></div></div><span class="tag coral">⚠ Se acaba pronto · escribe más</span></div><div class="gauge"><div class="t"><i style="background:#12854F"></i>Frases y vida real</div><div class="n">51<small>guiones</small></div><div class="d">1 cada 3 días · para más de 2 meses</div><div class="meter2"><div style="width:100%;background:#12854F"></div></div><span class="tag green">De sobra</span></div><div class="gauge"><div class="t"><i style="background:#E9A100"></i>Series «RETO»</div><div class="n">98<small>guiones</small></div><div class="d">1 cada 3 días · para más de 2 meses</div><div class="meter2"><div style="width:100%;background:#E9A100"></div></div><span class="tag green">De sobra</span></div><div class="gauge"><div class="t"><i style="background:#FF6F4F"></i>Test de nivel</div><div class="n">90<small>guiones</small></div><div class="d">1 cada 3 días · para más de 2 meses</div><div class="meter2"><div style="width:100%;background:#FF6F4F"></div></div><span class="tag green">De sobra</span></div><div class="gauge"><div class="t"><i style="background:#A59C90"></i>Gramática y otros</div><div class="n">220<small>guiones</small></div><div class="d">solo huecos libres · sin prisa</div><div class="meter2"><div style="width:100%;background:#A59C90"></div></div><span class="tag">Al final de la cola</span></div></div>
+<div class="qgrid">
+  <section class="card"><div class="ch" style="display:flex;justify-content:space-between;margin-bottom:6px"><div><div class="eyebrow">Lo próximo</div><h2 style="margin-top:3px">Así se llenan los huecos</h2></div><span class="chip">Ver los 491 →</span></div><div class="qi first"><span class="pos">1</span><div class="th9" style="background:linear-gradient(180deg,#2BB5A8,#157A78)"><div class="h"><span>¿CÓMO SE DICE?</span></div><div class="c">🦒 MÁS ANIMALES</div><div class="tiles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><img src="img/wow_s.png" class="bb"></div><div class="ti"><b>¿Cómo se dicen MÁS ANIMALES en inglés?</b><small>Cómo se dice · secuela</small><div class="tags"><span class="tag green">★ Secuela · 1,336</span><span class="tag ">Tema A</span></div></div><div class="score2"><div class="sb"><div style="width:85%;background:#1F6FD1"></div></div><small>prioridad 0.85 = formato 1.00 × tema 0.85 × frescura 1.0</small></div><div class="when"><b>19:30</b>Hoy</div></div><div class="qi"><span class="pos">2</span><div class="th9" style="background:linear-gradient(180deg,#9B6BE8,#6A3CB8)"><div class="h"><span>¿CÓMO SE DICE?</span></div><div class="c">🦵 MÁS CUERPO</div><div class="tiles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><img src="img/wow_s.png" class="bb"></div><div class="ti"><b>¿Cómo se dicen MÁS PARTES DEL CUERPO?</b><small>Cómo se dice · secuela</small><div class="tags"><span class="tag green">★ Secuela · 1,259</span><span class="tag ">Tema A</span></div></div><div class="score2"><div class="sb"><div style="width:85%;background:#1F6FD1"></div></div><small>prioridad 0.85 = formato 1.00 × tema 0.85 × frescura 1.0</small></div><div class="when"><b>08:30</b>Mañana</div></div><div class="qi"><span class="pos">3</span><div class="th9" style="background:linear-gradient(180deg,#2E4A8A,#13234F)"><div class="h"><span>¿CÓMO SE DICE?</span></div><div class="c">💼 ENTREVISTA</div><div class="tiles one"><i></i><i></i><i></i><i></i></div><img src="img/wow_s.png" class="bb"></div><div class="ti"><b>Inglés para una entrevista de trabajo (2)</b><small>Frases · vida real</small><div class="tags"><span class="tag ">Vida real</span><span class="tag ">Otro hueco</span></div></div><div class="score2"><div class="sb"><div style="width:47%;background:#E9A100"></div></div><small>prioridad 0.47 = formato 0.47 × tema 1.00 × frescura 1.0</small></div><div class="when"><b>12:00</b>Mañana</div></div><div class="qi"><span class="pos">4</span><div class="th9" style="background:linear-gradient(180deg,#FF7A59,#D43B59)"><div class="h"><span>¿CÓMO SE DICE?</span></div><div class="c">🛁 MÁS BAÑO</div><div class="tiles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><img src="img/wow_s.png" class="bb"></div><div class="ti"><b>¿Cómo se dicen MÁS COSAS DEL BAÑO?</b><small>Cómo se dice · secuela</small><div class="tags"><span class="tag green">★ Secuela · 1,199</span><span class="tag ">Tema A</span></div></div><div class="score2"><div class="sb"><div style="width:42%;background:#E9A100"></div></div><small>prioridad 0.42 = formato 1.00 × tema 0.85 × frescura 0.5</small></div><div class="when"><b>16:00</b>Mañana</div></div><div class="qi"><span class="pos">5</span><div class="th9" style="background:linear-gradient(180deg,#3DB36B,#1F7A4D)"><div class="h"><span>¿CÓMO SE DICE?</span></div><div class="c">🥤 MÁS BEBIDAS</div><div class="tiles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><img src="img/wow_s.png" class="bb"></div><div class="ti"><b>¿Cómo se dicen MÁS BEBIDAS en inglés?</b><small>Cómo se dice · secuela</small><div class="tags"><span class="tag green">★ Secuela · 1,150</span><span class="tag ">Tema A</span></div></div><div class="score2"><div class="sb"><div style="width:42%;background:#E9A100"></div></div><small>prioridad 0.42 = formato 1.00 × tema 0.85 × frescura 0.5</small></div><div class="when"><b>19:30</b>Mañana</div></div><div class="qi"><span class="pos">6</span><div class="th9" style="background:linear-gradient(180deg,#F5B82E,#D9822B)"><div class="h"><span>RETO</span></div><div class="c">😴 TENGO SUEÑO</div><div class="tiles one"><i></i><i></i><i></i><i></i></div><img src="img/wow_s.png" class="bb"></div><div class="ti"><b>RETO: «tengo sueño» en inglés</b><small>Series · cómic</small><div class="tags"><span class="tag ">Otro hueco</span><span class="tag ">RETO 415–537</span></div></div><div class="score2"><div class="sb"><div style="width:13%;background:#C9C1B4"></div></div><small>prioridad 0.13 = formato 0.13 × tema 1.00 × frescura 1.0</small></div><div class="when"><b>12:00</b>Dom</div></div><div class="qi"><span class="pos">7</span><div class="th9" style="background:linear-gradient(180deg,#6C7BE8,#3B3FA8)"><div class="h"><span>¿CÓMO SE DICE?</span></div><div class="c">🔧 HERRAMIENTAS</div><div class="tiles"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><img src="img/wow_s.png" class="bb"></div><div class="ti"><b>¿Cómo se dicen las HERRAMIENTAS?</b><small>Cómo se dice</small><div class="tags"><span class="tag coral">Tema C · ×0.35</span></div></div><div class="score2"><div class="sb"><div style="width:35%;background:#E9A100"></div></div><small>prioridad 0.35 = formato 1.00 × tema 0.35 × frescura 1.0</small></div><div class="when"><b>16:00</b>Dom</div></div></section>
+  <div style="display:flex;flex-direction:column;gap:24px">
+  <section class="card mixcard"><div class="eyebrow">La mezcla de cada día</div><h2 style="margin-top:3px">3 + 1</h2>
+    <div class="mix"><div style="flex:3;background:#1F6FD1">Cómo se dice ×3</div><div style="flex:1;background:#12854F">+1</div></div>
+    <div class="ml"><div><i style="background:#1F6FD1"></i>Cómo se dice y secuelas<b>75 %</b></div><div><i style="background:#12854F"></i>Frases → RETO → Test, por turnos<b>25 %</b></div><div><i style="background:#A59C90"></i>Gramática<b>solo si sobra hueco</b></div></div>
+    <div class="note2" style="margin-top:12px;font-size:12.5px;color:var(--muted);font-weight:600">Nunca dos del mismo tema en 3 días.</div></section>
+  <section class="card"><div class="eyebrow">Apartados</div><h2 style="margin:3px 0 0">Fuera de la cola</h2>
+    <div class="trays"><div class="tray"><b>12</b><span>por reescribir · repiten palabras</span></div><div class="tray"><b>7</b><span>saltados · temporada o tema hecho</span></div></div></section>
+  </div>
+</div>
+<div class="note">Maqueta · Cola. Recuentos reales del 14 nov; el orden y las puntuaciones son ilustrativos.</div></main></div></body></html>

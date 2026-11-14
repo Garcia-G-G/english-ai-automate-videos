@@ -1,0 +1,75 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><link rel="stylesheet" href="theme-papel.css"><style>
+.cgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.lbl { font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin: 14px 0 6px; }
+.inp { border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 13px; font-size: 14.5px; font-weight: 600; background: #FFFDF9; display: flex; justify-content: space-between; align-items: center; }
+.inp.focus { border: 2px solid var(--blue); box-shadow: 0 0 0 4px #E1ECFB; }
+.inp .ph { color: #A39E96; } .step { display: flex; gap: 6px; } .step span { width: 28px; height: 28px; border-radius: 8px; background: var(--sand); display: grid; place-items: center; font-weight: 800; }
+.seg2 { display: flex; background: var(--sand); border-radius: 12px; padding: 4px; gap: 4px; }
+.seg2 span { flex: 1; text-align: center; padding: 8px; border-radius: 9px; font-weight: 750; font-size: 13px; color: var(--muted); }
+.seg2 span.on { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.tg { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 14px; margin: 8px 0; } .sw { width: 38px; height: 22px; border-radius: 99px; background: var(--green); position: relative; } .sw::after { content: ""; position: absolute; right: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; } .sw.off { background: #CFC6B6; } .sw.off::after { right: auto; left: 3px; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13.5px; }
+th { text-align: left; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 800; padding: 8px 10px; border-bottom: 1.5px solid var(--line); }
+td { padding: 10px; border-bottom: 1px solid #F1ECE3; font-weight: 600; } td.n { text-align: right; font-family: Fredoka; font-weight: 500; font-size: 15px; }
+tr:hover td { background: #FBF8F3; }
+.al { border-radius: 14px; padding: 12px 14px; font-weight: 650; font-size: 13.5px; display: flex; gap: 10px; margin-bottom: 10px; border: 1.5px solid; }
+.al.i { background: #E1ECFB; border-color: #B9D1F3; color: #164C93; } .al.s { background: #DAF1E4; border-color: #A9DCBF; color: #1F6B42; } .al.w { background: #FCF0C4; border-color: #EED78A; color: #6E5300; } .al.e { background: #FADCD8; border-color: #F0B3AC; color: #8E2B22; }
+.exp { border: 1.5px solid var(--line); border-radius: 14px; } .exp div { padding: 12px 14px; font-weight: 750; display: flex; justify-content: space-between; } .exp div + div { border-top: 1px solid var(--line); font-weight: 600; color: var(--muted); font-size: 13px; }
+.tabs { display: flex; gap: 18px; border-bottom: 1.5px solid var(--line); } .tabs span { padding: 8px 0; font-weight: 750; color: var(--muted); } .tabs span.on { color: var(--ink); border-bottom: 3px solid var(--blue); margin-bottom: -1.5px; }
+.toast { background: var(--ink); color: #fff; border-radius: 14px; padding: 12px 16px; font-weight: 700; display: flex; gap: 10px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+.toast b { color: #F6D35B; }
+.empty { text-align: center; padding: 18px; border: 2px dashed #D9D0C0; border-radius: 16px; } .empty img { width: 70px; } .empty b { display: block; font-family: Fredoka; font-weight: 500; font-size: 17px; margin: 6px 0 2px; } .empty span { font-size: 13px; color: var(--muted); font-weight: 600; }
+.skel { height: 12px; border-radius: 6px; background: linear-gradient(90deg, #EFE9DF, #F8F4EE, #EFE9DF); margin: 8px 0; }
+.btnrow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.btn.dis { opacity: .45; box-shadow: none; }
+</style></head><body><div class="app"><aside class="side">
+  <div class="brand"><img src="img/simbolo_512_s.png"><div><b>English <mark>Unlimited</mark></b><small>Estudio de vídeos</small></div></div>
+  <div class="navlabel">PRODUCIR</div>
+  <div class="nav"><i>⌂</i>Inicio</div>
+  <div class="nav"><i>＋</i>Crear</div>
+  <div class="nav"><i>☰</i>Cola<span class="badge soft">491</span></div>
+  <div class="nav"><i>◉</i>Revisar<span class="badge">2</span></div>
+  <div class="nav"><i>↑</i>Subir</div>
+  <div class="navlabel">CANAL</div>
+  <div class="nav"><i>↗</i>Rendimiento</div>
+  <div class="nav"><i>✎</i>Comentarios<span class="badge">5</span></div>
+  <div class="nav"><i>▤</i>Biblioteca</div>
+  <div class="navlabel">AJUSTES</div>
+  <div class="nav"><i>#</i>Temas</div>
+  <div class="nav"><i>◷</i>Programar</div>
+  <div class="nav on"><i>⚙</i>Ajustes</div>
+  <div class="nav"><i>≡</i>Registros</div>
+  <div class="spacer"></div>
+  <div class="meter">
+    <div class="row"><span>OpenRouter</span><span>$6.58 de $15</span></div>
+    <div class="bar"><div style="width:44%"></div></div>
+    <div class="row"><span>Por vídeo</span><span>$0.11 · tope $0.25</span></div>
+  </div>
+  <div class="ver">versión 050b4a5 · abierto 20:21</div>
+</aside><main class="main">
+<div class="top"><div><h1>Componentes</h1><div class="sub">Cómo debe verse cada pieza de Streamlit en el panel. <b>Nada con el aspecto por defecto.</b></div></div></div>
+<div class="cgrid">
+<section class="card"><h3>Campos</h3>
+ <div class="lbl">Texto</div><div class="inp focus">¿Cómo se dice MÁS FAMILIA? <span class="muted" style="font-size:12px">58/100</span></div>
+ <div class="lbl">Buscar</div><div class="inp"><span class="ph">⌕ Buscar por tema o palabra…</span></div>
+ <div class="lbl">Desplegable</div><div class="inp">Cómo se dice <span>⌄</span></div>
+ <div class="lbl">Número</div><div class="inp">5 <span class="step"><span>−</span><span>＋</span></span></div>
+ <div class="lbl">Opciones (en vez de radio)</div><div class="seg2"><span>Al azar</span><span class="on">Categoría</span><span>Tema</span></div>
+ <div class="lbl">Interruptor (en vez de checkbox)</div><div class="tg"><span class="sw"></span>YouTube</div><div class="tg"><span class="sw off"></span>TikTok</div>
+</section>
+<section class="card"><h3>Botones y avisos</h3>
+ <div class="lbl">Botones</div><div class="btnrow"><span class="btn primary">▶&#xFE0E; Producir</span><span class="btn green">✓ Aprobar</span></div>
+ <div class="btnrow" style="margin-top:12px"><span class="btn">Secundario</span><span class="btn ghost">Fantasma</span><span class="btn sm">Pequeño</span><span class="btn dis">Desactivado</span></div>
+ <div class="lbl">Avisos</div>
+ <div class="al i">ℹ Las estadísticas se actualizan solas cada 20 h.</div><div class="al s">✓ Programado para hoy a las 19:30.</div><div class="al w">⚠ Quedan 32 «Cómo se dice»: unos 11 días.</div><div class="al e">✕ Facebook no aceptó el vídeo: falta el permiso read_insights.</div>
+ <div class="lbl">Notificación</div><div class="toast">✓ <span>En marcha: <b>MÁS ANIMALES</b> · listo en ~2 min</span></div>
+</section>
+<section class="card"><h3>Datos y estados</h3>
+ <div class="lbl">Pestañas</div><div class="tabs"><span class="on">YouTube</span><span>Facebook</span><span>TikTok</span></div>
+ <div class="lbl">Tabla</div><table><tr><th>Formato</th><th style="text-align:right">Vídeos</th><th style="text-align:right">Típicas</th></tr><tr><td>Cómo se dice</td><td class="n">52</td><td class="n">858</td></tr><tr><td>Test de nivel</td><td class="n">9</td><td class="n">502</td></tr><tr><td>Frases</td><td class="n">14</td><td class="n">405</td></tr></table>
+ <div class="lbl">Desplegable de sección</div><div class="exp"><div>Detalles del disco <span>⌄</span></div><div>79 vídeos en disco · 79 en la lista · cuadran</div></div>
+ <div class="lbl">Vacío</div><div class="empty"><img src="img/bien_hecho_s.png"><b>Nada que revisar</b><span>Produce el siguiente en Inicio.</span></div>
+ <div class="lbl">Cargando</div><div class="skel" style="width:90%"></div><div class="skel" style="width:70%"></div>
+</section>
+</div>
+<div class="note">Maqueta · Componentes: la guía para vestir los controles de Streamlit (campos, desplegables, radios, checkboxes, tablas, pestañas, avisos y estados).</div></main></div></body></html>

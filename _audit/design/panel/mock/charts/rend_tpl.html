@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><link rel="stylesheet" href="theme-papel.css">
+<style>
+svg text { font-family: Manrope, sans-serif; }
+.seg { display: inline-flex; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 4px; gap: 2px; }
+.seg span { padding: 6px 13px; border-radius: 9px; font-weight: 750; font-size: 13px; color: var(--muted); }
+.seg span.on { background: var(--ink); color: #fff; }
+.tools { display: flex; gap: 10px; align-items: center; }
+
+.score { background: var(--ink); color: #fff; border-radius: 26px; padding: 26px 28px 20px; display: grid; grid-template-columns: 300px 1fr; gap: 26px; position: relative; overflow: hidden; box-shadow: 7px 7px 0 var(--blue); }
+.score::after { content: ""; position: absolute; right: -60px; top: -80px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(246,211,91,.16), transparent 70%); }
+.score .eyebrow { color: rgba(255,255,255,.55); }
+.big { font-family: Fredoka; font-weight: 700; font-size: 64px; line-height: 1; letter-spacing: -.01em; margin: 10px 0 10px; }
+.pill { display: inline-flex; gap: 6px; align-items: center; background: #F6D35B; color: #191720; font-weight: 800; font-size: 13px; border-radius: 99px; padding: 5px 12px; }
+.pill.green { background: #2FBF7A; color: #08281A; }
+.mini4 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+.mini4 div { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 11px 13px; }
+.mini4 b { font-family: Fredoka; font-weight: 700; font-size: 24px; display: block; line-height: 1.1; }
+.mini4 span { font-size: 12px; color: rgba(255,255,255,.6); font-weight: 650; }
+.mini4 em { font-style: normal; color: #7FE0AE; font-weight: 800; font-size: 12px; margin-left: 4px; }
+.chart-h { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.chart-h b { font-family: Fredoka; font-weight: 500; font-size: 18px; }
+.chart-h small { font-size: 12px; color: rgba(255,255,255,.55); font-weight: 650; }
+.chart-h small i { display: inline-block; width: 8px; height: 12px; border-radius: 3px; background: #7FB2F0; vertical-align: -1px; margin-right: 4px; }
+
+.r { display: grid; gap: 24px; margin-top: 24px; }
+.r.a { grid-template-columns: 1fr 340px; }
+.r.b { grid-template-columns: 1fr 1fr; }
+.ch { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; gap: 16px; }
+.ch h2 { margin-top: 3px; }
+.ch p { color: var(--muted); font-size: 13px; font-weight: 600; margin-top: 4px; max-width: 520px; }
+.insight { background: var(--yellow-soft); border: 1.5px solid #EED78A; border-radius: 12px; padding: 8px 12px; font-size: 12.5px; font-weight: 700; color: #4F3B00; max-width: 300px; }
+.insight b { font-family: Fredoka; font-weight: 700; font-size: 15px; display: block; color: #191720; }
+
+.fr { display: grid; grid-template-columns: 230px 1fr 54px 92px; gap: 14px; align-items: center; padding: 7px 0; }
+.fr + .fr { border-top: 1px solid #F1ECE3; }
+.fl b { font-size: 14px; display: inline; }
+.fl small { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; }
+.crown { font-size: 10.5px; font-weight: 800; background: var(--yellow); border-radius: 6px; padding: 1px 6px; margin-left: 4px; vertical-align: 1px; }
+.fb { height: 26px; background: #F4EFE7; border-radius: 8px; }
+.fb div { height: 100%; border-radius: 8px; position: relative; min-width: 46px; }
+.fb span { position: absolute; right: 9px; top: 4px; color: #fff; font-family: Fredoka; font-weight: 700; font-size: 14px; }
+.fx { font-weight: 800; font-size: 13px; text-align: right; color: var(--muted); }
+.fret { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 750; }
+.fret i { width: 22px; height: 22px; border-radius: 50%; background: conic-gradient(var(--ink) var(--p), #EAE3D6 0); flex: none; -webkit-mask: radial-gradient(circle 6px, transparent 98%, #000 100%); mask: radial-gradient(circle 6px, transparent 98%, #000 100%); }
+.colhead { display: grid; grid-template-columns: 230px 1fr 54px 92px; gap: 14px; font-size: 10.5px; font-weight: 800; letter-spacing: .1em; color: var(--muted); padding-bottom: 6px; border-bottom: 1px solid var(--line); text-transform: uppercase; }
+.colhead span:nth-child(3) { text-align: right; }
+
+.dn { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.dleg { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.dleg div { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 650; }
+.dleg i { width: 12px; height: 12px; border-radius: 4px; }
+.dleg b { margin-left: auto; font-family: Fredoka; font-weight: 500; font-size: 15px; }
+.note2 { font-size: 12.5px; font-weight: 600; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; margin-top: 6px; line-height: 1.45; }
+.note2 b { color: var(--ink); }
+
+.bignum { font-family: Fredoka; font-weight: 700; font-size: 40px; line-height: 1; color: var(--blue); }
+.bignum.g { color: var(--green); }
+.sidefact { display: flex; gap: 14px; align-items: center; }
+.sidefact small { font-size: 12.5px; font-weight: 650; color: var(--muted); line-height: 1.35; display: block; max-width: 170px; }
+
+.lg { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; font-weight: 700; color: var(--muted); margin-top: 8px; }
+.lg i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.tp { display: grid; grid-template-columns: 22px 32px 1fr 52px; gap: 10px; align-items: center; padding: 6px 0; }
+.tp .rk { font-family: Fredoka; font-weight: 700; color: var(--muted); font-size: 15px; text-align: center; }
+.tp .em { width: 32px; height: 32px; border-radius: 10px; background: var(--sand); display: grid; place-items: center; font-size: 17px; }
+.tp .tn b { font-size: 12.5px; display: block; line-height: 1.2; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb { height: 7px; background: #F1ECE3; border-radius: 99px; } .tb div { height: 100%; background: var(--blue); border-radius: 99px; }
+.tp .tv { font-family: Fredoka; font-weight: 700; font-size: 15px; text-align: right; }
+.abr { display:grid; grid-template-columns: 78px 1fr 52px; gap:10px; align-items:center; margin-bottom:10px; font-size:13px; font-weight:700; }
+.abr b { text-align:right; font-family:Fredoka; font-weight:500; }
+.abt { height:12px; background:#F1ECE3; border-radius:99px; overflow:hidden; } .abt div { height:100%; border-radius:99px; }
+.tp:first-of-type .tb div { background: var(--yellow); }
+</style></head>
+<body><div class="app">
+<aside class="side">
+  <div class="brand"><img src="a/simbolo_512_s.png"><div><b>English <mark>Unlimited</mark></b><small>Estudio de vídeos</small></div></div>
+  <div class="navlabel">PRODUCIR</div>
+  <div class="nav"><i>⌂</i>Inicio</div>
+  <div class="nav"><i>＋</i>Crear</div>
+  <div class="nav"><i>☰</i>Cola<span class="badge soft">491</span></div>
+  <div class="nav"><i>◉</i>Revisar<span class="badge">2</span></div>
+  <div class="nav"><i>↑</i>Subir</div>
+  <div class="navlabel">CANAL</div>
+  <div class="nav on"><i>↗</i>Rendimiento</div>
+  <div class="nav"><i>✎</i>Comentarios<span class="badge">5</span></div>
+  <div class="nav"><i>▤</i>Biblioteca</div>
+  <div class="navlabel">AJUSTES</div>
+  <div class="nav"><i>#</i>Temas</div>
+  <div class="nav"><i>◷</i>Programar</div>
+  <div class="nav"><i>⚙</i>Ajustes</div>
+  <div class="nav"><i>≡</i>Registros</div>
+  <div class="spacer"></div>
+  <div class="meter">
+    <div class="row"><span>OpenRouter</span><span>$6.58 de $15</span></div>
+    <div class="bar"><div style="width:44%"></div></div>
+    <div class="row"><span>Por vídeo</span><span>$0.11 · tope $0.25</span></div>
+  </div>
+  <div class="ver">versión 050b4a5 · abierto 20:21</div>
+</aside>
+<main class="main">
+  <div class="top">
+    <div>
+      <h1>Rendimiento</h1>
+      <div class="sub">Cómo le va al canal. <b>{{N}} vídeos</b> leídos de YouTube hoy a las 03:33.</div>
+    </div>
+    <div class="tools"><div class="seg"><span>7 días</span><span class="on">28 días</span><span>Todo</span></div><span class="chip"><span class="dot"></span>Actualizado · hace 2 h</span></div>
+  </div>
+
+  <section class="score">
+    <div style="position:relative;z-index:1">
+      <div class="eyebrow">Vistas · últimas 4 semanas</div>
+      <div class="big">{{L28}}</div>
+      <span class="pill">▲ {{X28}} que las 4 anteriores</span>
+      <div class="mini4">
+        <div><b>{{TOTAL}}</b><span>vistas en total</span></div>
+        <div><b>{{SUBS}}</b><span>suscriptores ganados</span><em>+{{S7}} sem.</em></div>
+        <div><b>{{LIKES}}</b><span>me gusta</span></div>
+        <div><b>{{SHARES}}</b><span>veces compartido</span></div>
+      </div>
+    </div>
+    <div style="position:relative;z-index:1">
+      <div class="chart-h"><b>Vistas por día</b><small><i></i>vídeos subidos ese día</small></div>
+      {{AREA}}
+    </div>
+  </section>
+
+  <div class="r a">
+    <section class="card">
+      <div class="ch"><div><div class="eyebrow">Por formato · vídeos de 3 días o más</div><h2>¿Qué formato rinde?</h2><p>Vistas típicas (mediana) de cada formato. «Cómo se dice» duplica a casi todo lo demás.</p></div>
+        <div class="insight"><b>70 % Cómo se dice</b>Es la mezcla que ya aplica «Producir el siguiente mejor».</div></div>
+      <div class="colhead"><span>Formato</span><span>Vistas típicas</span><span>vs CSD</span><span>% visto</span></div>
+      {{FORMATS}}
+    </section>
+    <div style="display:flex;flex-direction:column;gap:24px"><section class="card dn">
+      <div style="width:100%"><div class="eyebrow">Tráfico</div><h2 style="margin-top:3px">¿De dónde vienen?</h2></div>
+      {{DONUT}}
+      <div class="dleg">{{DONUTLEG}}</div>
+      <div class="note2"><b>Casi todo llega por el feed de Shorts.</b> Lo que decide es el fotograma 0 y los primeros 2 segundos, no el título.</div>
+    </section>
+    <section class="card ab">
+      <div class="eyebrow">Prueba en marcha</div><h2 style="margin:3px 0 12px">Tablero vs cuaderno</h2>
+      <div class="abr"><span class="abn">Tablero</span><div class="abt"><div style="width:66%;background:var(--blue)"></div></div><b>4 de 6</b></div>
+      <div class="abr"><span class="abn">Cuaderno</span><div class="abt"><div style="width:17%;background:#A59C90"></div></div><b>1 de 6</b></div>
+      <div class="note2">El veredicto sale cuando cada diseño tenga <b>6 vídeos de 3 días</b>. Faltan unos 8 días.</div>
+    </section></div>
+  </div>
+
+  <div class="r b">
+    <section class="card">
+      <div class="ch"><div><div class="eyebrow">La vida de un vídeo</div><h2>Un «Cómo se dice», día a día</h2><p>Vistas típicas en cada uno de sus primeros 15 días ({{CURVEN}} vídeos).</p></div>
+        <div class="sidefact"><span class="bignum">{{D1}}%</span><small>de sus vistas llegan el <b>primer día</b></small></div></div>
+      {{CURVE}}
+    </section>
+    <section class="card">
+      <div class="ch"><div><div class="eyebrow">Hora de publicación</div><h2>¿A qué hora le va mejor?</h2><p>Vistas típicas según la hora en que salió. Líneas: tus 4 horarios.</p></div>
+        <div class="sidefact"><span class="bignum g">{{BEST}}</span><small>la mejor hora: <b>{{BESTV}} vistas</b> típicas ({{BESTN}} vídeos)</small></div></div>
+      {{HOURS}}
+    </section>
+  </div>
+
+  <div class="r a">
+    <section class="card">
+      <div class="ch"><div><div class="eyebrow">Cada punto es un vídeo</div><h2>¿Lo ven entero? ¿Lo ve mucha gente?</h2><p>Arriba: más vistas. A la derecha: lo ven más tiempo. Los azules grandes son «Cómo se dice».</p></div></div>
+      {{SCATTER}}
+      <div class="lg">{{LEGFMT}}</div>
+    </section>
+    <section class="card">
+      <div class="eyebrow">Los 10 mejores</div><h2 style="margin:3px 0 10px">Top 10 de siempre</h2>
+      {{TOP}}
+      <div class="note2" style="margin-top:10px"><b>Los 10 son «Cómo se dice»</b> de temas básicos de todos los días.</div>
+    </section>
+  </div>
+  <div class="note">Maqueta · Rendimiento. Datos reales del canal (14 nov). «Vistas por día» suma los primeros 15 días de cada vídeo, leídos hasta el 7 nov.</div>
+</main>
+</div></body></html>
