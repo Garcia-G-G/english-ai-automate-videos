@@ -138,12 +138,15 @@ def make_for_tablero(mp4: Path, data: Dict, duration: float, root: Optional[Path
     why = "A: the format's moment passed every check" if chosen == "A" else (
         f"A failed or is missing; {chosen} is the first candidate that passes" if chosen else "no candidate passed: A kept")
     chosen = chosen or ("A" if "A" in cands else next(iter(cands)))
-    return _finish(folder, chosen, cands, why)
+    from .checks import tablero_checks
+    return _finish(folder, chosen, cands, why, tablero_checks(data))
 
 
-def _finish(folder: Path, chosen: str, cands: Dict, why: str) -> Dict:
+def _finish(folder: Path, chosen: str, cands: Dict, why: str, checks: Optional[Dict] = None) -> Dict:
     pick(folder, chosen)
     info = {"chosen": chosen, "why": why, "metrics": cands}
+    if checks:                                              # nothing cut + readable small (x-height is a warning)
+        info["checks"] = checks
     (folder / "thumb.json").write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
     return info
 

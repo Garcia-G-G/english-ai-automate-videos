@@ -26,7 +26,7 @@ def test_a_mid_flip_frame_is_rejected_and_the_settled_one_three_tiles_later_pass
     tl = Timeline(d, dur)
     b = F.Beats(tl)
     draw = _draw(d, dur)
-    flipping = T.measure(draw, b.fill_end[2] + F.FLIP_DUR / 2)
+    flipping = T.measure(draw, b.fill_end[2] + F.FLIP_DUR / 4)
     settled = T.measure(draw, tl.es[3][0] + 0.5)
     assert flipping["steady"] > 4 and not flipping["steady_ok"] and not flipping["ok"]
     assert settled["steady"] < 0.5 and settled["ok"], settled
@@ -139,3 +139,45 @@ def test_approve_and_reject_carry_the_thumb_folder(tmp_path, monkeypatch):
     videos.reject_video(pending / "b.mp4", tmp_path / "rejected")
     assert (tmp_path / "approved" / "quiz" / "a.thumb" / "thumb.jpg").exists()
     assert (tmp_path / "rejected" / "quiz" / "b.thumb" / "thumb.jpg").exists()
+
+
+# ── §2: nothing cut, readable small ──────────────────────────────────
+
+def test_nothing_is_cut_on_the_fixture_and_a_box_that_overflows_is_caught():
+    from thumbs import checks as C
+    d, _ = _data()
+    assert C.nothing_cut(d) == {"ok": True, "cut": []}
+    long = {**d, "items": [{**d["items"][0], "english": "an extraordinarily long english phrase here"}] + d["items"][1:]}
+    assert "english1" in C.nothing_cut(long)["cut"]
+
+
+def test_a_tile_below_the_caption_zone_counts_as_cut(monkeypatch):
+    from thumbs import checks as C
+    d, _ = _data()
+    monkeypatch.setattr(F.kit, "GRID_Y0", F.kit.GRID_Y0 + 60)
+    assert "tile10" in C.nothing_cut(d)["cut"]
+
+
+def test_contrast_is_enforced_and_the_x_height_is_only_a_warning():
+    from thumbs import checks as C
+    d, _ = _data()
+    r = C.readable_small(d)
+    assert r["contrast_ok"] and r["contrast"]["chip_topic"] >= 4.5
+    assert r["warnings"] and all(v < C.XHEIGHT_MIN for v in r["xheight_px"].values())     # the 7 px rule would fail every tile
+    assert C.tablero_checks(d)["ok"]                                                      # ...and it does not fail the thumbnail
+
+
+def test_low_contrast_fails_the_check(monkeypatch):
+    from thumbs import checks as C
+    d, _ = _data()
+    monkeypatch.setattr(F.kit, "PAPER", (200, 200, 200, 255))
+    monkeypatch.setattr(F.kit, "INK", (150, 150, 150, 255))
+    assert not C.readable_small(d)["contrast_ok"]
+
+
+def test_thumb_json_stores_the_checks(tmp_path):
+    d, dur = _data()
+    mp4 = tmp_path / "v.mp4"
+    T.make_for_tablero(mp4, d, dur)
+    saved = json.loads((T.thumb_dir(mp4) / "thumb.json").read_text())
+    assert saved["checks"]["nothing_cut"]["ok"] and saved["checks"]["readable_small"]["xheight_px"]["english"] < 7

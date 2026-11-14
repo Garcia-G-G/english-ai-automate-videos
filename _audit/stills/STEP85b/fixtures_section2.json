@@ -1,0 +1,59 @@
+{
+ "mid-flip (3rd tile flipping)": {
+  "t": 16.813,
+  "steady": 4.541,
+  "sharp": 1861.4,
+  "luma": 156.9,
+  "edges": 0.0462,
+  "steady_ok": false,
+  "sharp_ok": true,
+  "not_blank_ok": true,
+  "ok": false
+ },
+ "settled, 3 tiles later": {
+  "t": 18.9,
+  "steady": 0.204,
+  "sharp": 1738.1,
+  "luma": 153.1,
+  "edges": 0.0472,
+  "steady_ok": true,
+  "sharp_ok": true,
+  "not_blank_ok": true,
+  "ok": true
+ },
+ "black transition frame": {
+  "t": 1.0,
+  "steady": 0.0,
+  "sharp": 0.0,
+  "luma": 0.0,
+  "edges": 0.0,
+  "steady_ok": true,
+  "sharp_ok": false,
+  "not_blank_ok": false,
+  "ok": false
+ },
+ "checks": {
+  "nothing_cut": {
+   "ok": true,
+   "cut": []
+  },
+  "readable_small": {
+   "contrast": {
+    "chip_topic": 17.38,
+    "tile_spanish_blank": 17.38,
+    "tile_spanish_done": 5.32,
+    "tile_english_done": 3.76
+   },
+   "contrast_ok": true,
+   "xheight_px": {
+    "english": 5.2,
+    "chip_topic": 5.8
+   },
+   "warnings": [
+    "english x-height 5.2 px at 180x320 (< 7.0)",
+    "chip_topic x-height 5.8 px at 180x320 (< 7.0)"
+   ]
+  },
+  "ok": true
+ }
+}
