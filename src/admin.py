@@ -1368,9 +1368,8 @@ def _running_version() -> str:
 _RUNNING_VERSION = _ds.once("running_version", _running_version)
 _STARTED_AT = _ds.once("started_at", lambda: datetime.now().strftime("%H:%M"))
 
-st.sidebar.markdown('<div class="eu-brand">English <mark>Unlimited</mark></div>'
-                    f'<div class="eu-ver">versión {_RUNNING_VERSION} · abierto a las {_STARTED_AT}</div>',
-                    unsafe_allow_html=True)
+from panel import sidebar as _sidebar
+st.sidebar.markdown(_sidebar.brand_html(f"versión {_RUNNING_VERSION} · abierto a las {_STARTED_AT}"), unsafe_allow_html=True)
 # STEP 80 §1: OpenRouter's spend this month against its cap (from output/costs/), the one
 # balance that decides whether a render may voice.
 def _openrouter_spent():
@@ -1382,8 +1381,6 @@ def _openrouter_spent():
 
 
 _or_spent, _or_cap = _openrouter_spent()
-for _line in voice_credits.header_lines(_or_spent, _or_cap):
-    st.sidebar.markdown(f'<div class="eu-ver">{_line}</div>', unsafe_allow_html=True)
 
 #: Page key -> (label on screen, Material icon). Keys are what ?page= and the
 #: code use; only the label is translated.
@@ -1402,6 +1399,11 @@ NAV_LABELS = {
     "Settings": ("Ajustes", ":material/settings:"),
     "Logs": ("Registros", ":material/receipt_long:"),
 }
+
+
+def _cost_tracker_stats() -> dict:
+    import cost_tracker
+    return cost_tracker.video_cost_stats(cost_tracker.per_video_costs())
 
 
 def _nav_button(name: str, is_active: bool) -> bool:
@@ -1438,29 +1440,49 @@ if 'current_page' not in st.session_state:
     wanted = getattr(st, "query_params", {}).get("page", "Dashboard")
     st.session_state.current_page = wanted if wanted in {**main_pages, **tool_pages} else "Dashboard"
 
-st.sidebar.markdown('<div class="eu-navlabel">Producción</div>', unsafe_allow_html=True)
-for name, icon in main_pages.items():
-    is_active = st.session_state.current_page == name
-    if _nav_button(name, is_active):
-        st.session_state.current_page = name
-        st.rerun()
+def _badge_counts() -> dict:
+    """What the sidebar badges show. Every number is read from disk or a cache, never from an API."""
+    out = {}
+    try:
+        out["Queue"] = len(_queue_guard().queued_scripts())
+    except Exception:                                       # noqa: BLE001 — a sidebar never breaks the page
+        out["Queue"] = 0
+    out["Review"] = len(get_pending_videos())
+    try:
+        import comments as _cmts
+        out["Comments"] = _cmts.unanswered_count()
+    except Exception:                                       # noqa: BLE001
+        out["Comments"] = 0
+    return out
 
-st.sidebar.markdown('<div class="eu-navlabel">Herramientas</div>', unsafe_allow_html=True)
-for name, icon in tool_pages.items():
-    is_active = st.session_state.current_page == name
-    if _nav_button(name, is_active):
-        st.session_state.current_page = name
-        st.rerun()
 
-# Sidebar stats
+_counts = _badge_counts()
+st.markdown(f"<style>{_sidebar.badge_css(_counts)}</style>", unsafe_allow_html=True)
+for _group, _pages in _sidebar.GROUPS:
+    st.sidebar.markdown(f'<div class="eu-navlabel">{_group}</div>', unsafe_allow_html=True)
+    for name in _pages:
+        if _nav_button(name, st.session_state.current_page == name):
+            st.session_state.current_page = name
+            st.rerun()
+
+# Bottom: the OpenRouter meter, and what is waiting
 st.sidebar.markdown("---")
+try:
+    _rows = _cost_tracker_stats()
+    _mean = _rows["mean_usd"] if _rows["videos"] else None
+except Exception:                                           # noqa: BLE001
+    _mean = None
+try:
+    import queue_priority as _qp
+    _per_cap = float((_qp._config().get("costs") or {}).get("openrouter_per_short_usd"))
+except (TypeError, ValueError):
+    _per_cap = None
+st.sidebar.markdown(_sidebar.meter_html(_or_spent, _or_cap, _mean, _per_cap), unsafe_allow_html=True)
 api_status = get_api_status()
 configured_count = sum(1 for s in api_status.values() if s["configured"])
 st.sidebar.caption(f"Claves API: {configured_count} de {len(api_status)} configuradas")
-
-pending_count = len(get_pending_videos())
 approved_count = len(get_approved_videos())
-st.sidebar.caption(f"Videos: {pending_count} por revisar · {approved_count} aprobados")
+st.sidebar.caption(f"{_counts['Review']} por revisar · {approved_count} aprobados")
 st.sidebar.markdown("---")
 
 page = st.session_state.current_page
@@ -3241,6 +3263,7 @@ elif page == "Comments":
         try:
             import channel_stats as _cs2
             st.session_state.comment_threads = _cm.fetch_threads(_cs2._youtube_token())
+            _cm.save_threads(st.session_state.comment_threads)
         except Exception as _e:                              # noqa: BLE001
             st.error(f"No pude leer los comentarios: {_e}")
     _threads = st.session_state.get("comment_threads") or []

@@ -124,3 +124,21 @@ def bonus_answers(videos: List[Dict], roots: List[Path]) -> Dict[str, str]:
             if used and used.get("en"):
                 out[vid] = used["en"]
     return out
+
+
+THREADS = ROOT / "output" / "comments" / "threads.json"
+
+
+def save_threads(threads: List[Dict], path: Path = None) -> None:
+    """Keep the last list read, so the sidebar can count unanswered comments without calling the API."""
+    path = path or THREADS
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(threads, ensure_ascii=False), encoding="utf-8")
+
+
+def unanswered_count(path: Path = None) -> int:
+    """Threads with no reply in the cached list; 0 when nothing was ever loaded."""
+    try:
+        return sum(1 for t in json.loads((path or THREADS).read_text(encoding="utf-8")) if not t.get("replies"))
+    except (OSError, ValueError, AttributeError):
+        return 0

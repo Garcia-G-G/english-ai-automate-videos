@@ -99,6 +99,11 @@ section[data-testid="stSidebar"] .stButton button > div { justify-content: flex-
 .nav.on { background: var(--ink); color: var(--white); box-shadow: 3px 3px 0 var(--blue); }
 .badge { margin-left: auto; background: var(--badge); color: var(--white); font-size: 11px; font-weight: 800; border-radius: 99px; padding: 1px 8px; }
 .badge.soft { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 6px 14px; }
+.brand img { width: 44px; height: 44px; }
+.brand b { display: block; white-space: nowrap; font-size: 1.05rem; }
+section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] { gap: 0.2rem; } .brand small { display: block; color: var(--muted); font-size: 11.5px; }
+section[data-testid="stSidebar"] .stButton button [data-testid="stMarkdownContainer"] { flex: 1; text-align: left; }
 .eu-brand, .brand b { font-family: "Fredoka", system-ui, sans-serif; font-weight: 700; font-size: 1.15rem; line-height: 1.1; color: var(--ink); }
 .eu-brand mark { background: linear-gradient(transparent 58%, var(--yellow) 58%, var(--yellow) 92%, transparent 92%); color: inherit; padding: 0 2px; }
 .eu-navlabel { font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding-top: 0.9rem; }
