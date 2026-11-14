@@ -69,7 +69,7 @@ def test_a_fake_job_emits_the_five_steps_then_done_in_order(env):
     assert all(e["jobId"] == jid and e["progress"] == 1.0 for e in got[:5])
     assert got[0]["log"] == "Script generated" and got[3]["log"] == "Video rendered"
     done = got[5]
-    assert done == {"type": "job.done", "jobId": jid, "artifact": "a", "reviewCount": 1, "xpGained": None}
+    assert done == {"type": "job.done", "jobId": jid, "artifact": "a", "reviewCount": 1, "xpGained": 50}
     assert got[6]["counts"] == {"queue": 2, "review": 1, "upload": 0, "comments": 0}
 
 

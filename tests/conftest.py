@@ -125,6 +125,9 @@ def _isolate_output_tree(tmp_path, monkeypatch):
     monkeypatch.setattr(senal, "SENAL_DIR", out / "senal")
     import channel_stats
     monkeypatch.setattr(channel_stats, "STATS_DIR", out / "stats")
+    from panel_core import game as _game                    # STEP 85 §6: the last-seen achievements are state, never the real file
+    monkeypatch.setattr(_game, "STATE_DIR", out / "state")
+    _game._CACHE.clear()
 
     # admin imports streamlit, so it is only redirected if a test already
     # pulled it in — importing it here would cost every test that run.

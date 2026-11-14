@@ -105,10 +105,12 @@ def api(tmp_path, monkeypatch):
     monkeypatch.setattr(qr, "next_best", lambda: (script, {"type": "level_test", "video_title": "El CARRO en inglés 🚗", "theme": "carro",
                                                            "items": [{"english": "car", "emoji": "🚗"}]}, "porque sí"))
     build._CACHE.clear()
+    from panel_core import game
+    game._CACHE.clear()
     return TestClient(appmod.create_app()), out
 
 
-@pytest.mark.parametrize("name,url", [("meta", "/api/meta"), ("home", "/api/home"), ("review", "/api/review")])
+@pytest.mark.parametrize("name,url", [("meta", "/api/meta"), ("home", "/api/home"), ("review", "/api/review"), ("game", "/api/game")])
 def test_each_get_matches_its_contract_fixture(api, name, url):
     client, _ = api
     r = client.get(url)
@@ -146,7 +148,7 @@ def test_review_item_reads_the_sidecar_and_never_ticks_what_it_does_not_know(api
 def test_home_next_views_and_agenda_come_from_the_engine(api):
     client, _ = api
     h = client.get("/api/home").json()
-    assert h["next"]["scriptId"] == "bv1_carro" and h["next"]["topic"] == "CARRO" and h["next"]["xp"] is None
+    assert h["next"]["scriptId"] == "bv1_carro" and h["next"]["topic"] == "CARRO" and h["next"]["xp"] == 50
     assert h["next"]["thumb"] is None                                          # not a Tablero script: no drawn frame 0, so null
     assert [s["time"] for s in h["agenda"]["today"]] == ["08:30", "12:00", "16:00", "19:30"]
     assert h["agenda"]["today"][0]["title"] == "MÉDICO 🩺" and h["agenda"]["today"][0]["emoji"] == "🩺"

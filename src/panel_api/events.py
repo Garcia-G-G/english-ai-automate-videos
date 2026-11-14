@@ -5,12 +5,14 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import threading
 from pathlib import Path
 from typing import AsyncIterator, Callable, Dict, Optional
 
-from panel_core import counts, jobstate, videos
+from panel_core import counts, game, jobstate, videos
 
+logger = logging.getLogger(__name__)
 STEP_ORDER = ["guion", "voz", "sonido", "montaje", "control"]       # the pipeline's order
 HEARTBEAT_S = 15.0
 QUEUE_MAX = 200
@@ -120,8 +122,9 @@ class Feed:
         self._last.pop(job_id, None)
         if success:
             self.bus.publish({"type": "job.done", "jobId": job_id, "artifact": Path(video_path).stem if video_path else None,
-                              "reviewCount": len(videos.get_pending_videos()), "xpGained": None})   # xp: STEP 85 §6
+                              "reviewCount": len(videos.get_pending_videos()), "xpGained": game.BASE_XP})
             self.counts()
+            self.game()
         else:
             self.bus.publish({"type": "job.failed", "jobId": job_id, "reason": reason_in_spanish(error)})
 
@@ -130,6 +133,14 @@ class Feed:
 
     def stats_refreshed(self) -> None:
         self.bus.publish({"type": "stats.refreshed"})
+        self.game()
+
+    def game(self) -> None:
+        """Recompute; `achievement.unlocked` and `game` go out only for what changed since the last look."""
+        try:
+            game.recompute(self.bus.publish)
+        except Exception:                                   # noqa: BLE001 — a score never breaks a job or a click
+            logger.exception("game recompute failed")
 
     def start(self) -> None:
         import channel_stats

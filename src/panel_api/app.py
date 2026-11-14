@@ -7,6 +7,7 @@ from typing import Dict, Optional
 from fastapi import Depends, FastAPI, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
+from panel_core import game
 from . import build, engine as engine_mod, events, gate, media
 
 HOST, PORT = "127.0.0.1", 8600          # bind this host only; nothing in this package listens on its own
@@ -46,6 +47,10 @@ def create_app(engine: Optional[Dict[str, object]] = None, heartbeat_s: float = 
     def home():
         return build.home()
 
+    @app.get("/api/game")
+    def game_():
+        return game.snapshot()
+
     @app.get("/api/review")
     def review():
         return build.review()
@@ -79,6 +84,7 @@ def create_app(engine: Optional[Dict[str, object]] = None, heartbeat_s: float = 
     async def approve(item_id: str, request: Request):
         got = eng["approve"](item_id, await request.json())
         feed.counts()                                     # Por revisar / Por subir changed
+        feed.game()                                       # a scheduled video may light today's streak
         return got
 
     @app.post("/api/review/{item_id}/reject", dependencies=[Depends(gate.free_post)])

@@ -13,7 +13,7 @@ from typing import Callable, Dict, List, Optional
 from zoneinfo import ZoneInfo
 
 import jobs
-from panel_core import costs, counts, jobstate, queue_read, schedule, thumbnails, videos
+from panel_core import costs, counts, game, jobstate, queue_read, schedule, thumbnails, videos
 from . import media
 from .admin_free import script_for
 
@@ -225,7 +225,7 @@ def _next(next_slot: Optional[datetime]) -> Optional[Dict]:
             "words": [i.get("english", "") for i in (data.get("items") or [])][:10],
             "facts": {"durationS": dur, "costUsd": jobs.batch_estimate_usd(1), "renderMin": None if rt is None else round(rt / 60),
                       "repeated": repeated},
-            "thumb": _script_thumb(path.stem, data, path), "xp": None}      # xp: game.py is STEP 85 §6
+            "thumb": _script_thumb(path.stem, data, path), "xp": game.BASE_XP}   # 40 published + 10 approved; the +100 is not promised
 
 
 def _views_block(today: date) -> Optional[Dict]:
