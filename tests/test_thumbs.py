@@ -77,7 +77,7 @@ def test_make_for_tablero_writes_three_candidates_the_choice_and_the_why(tmp_pat
     mp4 = tmp_path / "v.mp4"
     info = T.make_for_tablero(mp4, d, dur)
     folder = T.thumb_dir(mp4)
-    assert {p.name for p in (folder / "cands").iterdir()} == {"A.png", "B.png", "C.png"}
+    assert {p.name for p in (folder / "cands").glob("*.png")} == {"A.png", "B.png", "C.png"}
     assert info["chosen"] == "A" and "passed every check" in info["why"]
     assert Image.open(folder / "thumb.jpg").size == (1080, 1920)
     saved = json.loads((folder / "thumb.json").read_text())
@@ -114,7 +114,7 @@ def test_other_formats_get_frames_extracted_from_the_mp4_with_the_same_files(tmp
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi", "-i", "testsrc2=s=540x960:r=10:d=10", "-pix_fmt", "yuv420p", str(mp4)], check=True)
     info = T.make_for_video(mp4, {"type": "quiz"}, 10.0)
     folder = T.thumb_dir(mp4)
-    assert {p.name for p in (folder / "cands").iterdir()} == {"A.png", "B.png", "C.png"} and info["metrics"]["A"]["source"] == "mp4"
+    assert {p.name for p in (folder / "cands").glob("*.png")} == {"A.png", "B.png", "C.png"} and info["metrics"]["A"]["source"] == "mp4"
     assert Image.open(folder / "thumb.jpg").size == (1080, 1920)
 
 

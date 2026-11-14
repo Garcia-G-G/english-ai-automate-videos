@@ -2,7 +2,7 @@
 """STEP 85b §5: make `<stem>.thumb/` for every video on disk that lacks one, from its MP4 (or, for Tablero
 videos, from the kit and the audio json's beats), with the §2 checks. One background run; prints the time and sizes.
 
-    python3 tools/thumbs_backfill.py [--limit N]
+    python3 tools/thumbs_backfill.py [--limit N] [--remake]
 """
 import json
 import sys
@@ -34,9 +34,14 @@ def main(argv):
     t0, done, skipped, failed, total_bytes = time.time(), 0, 0, 0, 0
     for stage in STAGES:
         for mp4 in sorted((ROOT / "output" / stage).glob("*/*.mp4")):
-            if (thumbs.thumb_dir(mp4) / "thumb.jpg").exists():
-                skipped += 1
-                continue
+            folder = thumbs.thumb_dir(mp4)
+            if (folder / "thumb.jpg").exists():
+                manual = json.loads((folder / "thumb.json").read_text(encoding="utf-8")).get("manual") if (folder / "thumb.json").exists() else False
+                if manual or "--remake" not in argv:        # Garcia's pick is never overwritten
+                    if (folder / "thumb.json").exists() and not (folder / "thumb_540.webp").exists():
+                        thumbs.web.make_web(folder)         # made before the WebPs existed: add them from the candidates
+                    skipped += 1
+                    continue
             if limit is not None and done >= limit:
                 break
             data = audio_json(mp4)

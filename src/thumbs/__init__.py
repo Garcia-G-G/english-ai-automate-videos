@@ -16,6 +16,8 @@ from typing import Callable, Dict, List, Optional, Tuple
 import numpy as np
 from PIL import Image
 
+from . import web  # noqa: E402
+
 W, H = 1080, 1920
 STEADY_DT = 0.12                 # frames compared at t ± this
 SLIDE_STEP, SLIDE_MAX = 0.04, 0.6
@@ -189,7 +191,7 @@ def _finish(folder: Path, chosen: str, cands: Dict, why: str, checks: Optional[D
     if checks:                                              # nothing cut + readable small (x-height is a warning)
         info["checks"] = checks
     (folder / "thumb.json").write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
-    return info
+    return web.make_web(folder) or info
 
 
 def pick(folder: Path, label: str) -> Path:
@@ -204,6 +206,26 @@ def pick(folder: Path, label: str) -> Path:
         info = json.loads(info_path.read_text(encoding="utf-8"))
         info["chosen"] = label
         info_path.write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
+        web.make_web(folder)                                # the panel's WebPs follow the choice, still no re-render
+    return out
+
+
+def choose(mp4: Path, label: str) -> Path:
+    """Revisar's click: switch thumb.jpg (and the panel's WebPs) to candidate `label` and tell the sidecar. Marked as
+    Garcia's pick so a later backfill never overwrites it."""
+    folder = thumb_dir(mp4)
+    out = pick(folder, label)
+    info_path = folder / "thumb.json"
+    info = json.loads(info_path.read_text(encoding="utf-8"))
+    info["manual"] = True
+    info_path.write_text(json.dumps(info, ensure_ascii=False, indent=1), encoding="utf-8")
+    sidecar = Path(mp4).with_suffix(".json")
+    try:
+        meta = json.loads(sidecar.read_text(encoding="utf-8"))
+        meta.setdefault("thumbnail", {}).update({"chosen": label, "metrics": info["metrics"].get(label, {}), "manual": True})
+        sidecar.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+    except (OSError, ValueError):
+        pass                                                # no sidecar yet: thumb.json still has the choice
     return out
 
 

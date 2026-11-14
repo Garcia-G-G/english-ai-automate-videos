@@ -118,3 +118,44 @@ def save_reject_reason(sidecar: Path, reason: str, note: str, now_iso: str) -> N
 def cost_of(meta: Dict) -> Optional[float]:
     total = ((meta or {}).get("cost") or {}).get("total_usd")
     return float(total) if total is not None else None
+
+
+# ── STEP 85b §5: the «Miniatura» row ─────────────────────────────────
+
+def miniatura_candidates(mp4: Path) -> Optional[Dict]:
+    """{chosen, cands: [(label, webp path, 'frame at t')]} from `<stem>.thumb/`, or None when the video has none."""
+    import json
+    folder = mp4.with_name(mp4.stem + ".thumb")
+    try:
+        info = json.loads((folder / "thumb.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    cands = [(k, folder / "cands" / f"{k}.webp", info["metrics"][k]) for k in sorted(info["metrics"]) if (folder / "cands" / f"{k}.webp").exists()]
+    return {"chosen": info["chosen"], "cands": cands, "why": info.get("why", "")} if cands else None
+
+
+def miniatura_row(st, mp4: Path) -> None:
+    """The 3 candidates at 90x160 (the 180x320 WebP, 2x), the chosen one outlined; a click switches thumb.jpg at once,
+    with no re-render. Plus the capability line from §4."""
+    import base64
+    import thumbs
+    from thumbs import publish
+    info = miniatura_candidates(mp4)
+    if not info:
+        return
+    names = {"A": "el momento", "B": "fotograma 0", "C": "más adelante"}
+    st.markdown('<div class="chip" style="margin:10px 0 6px">Miniatura · lo que se ve en búsquedas y en el perfil</div>', unsafe_allow_html=True)
+    cols = st.columns(len(info["cands"]))
+    for col, (label, webp, m) in zip(cols, info["cands"]):
+        chosen = label == info["chosen"]
+        uri = "data:image/webp;base64," + base64.b64encode(webp.read_bytes()).decode("ascii")
+        outline = "3px solid var(--ink)" if chosen else "1px solid var(--line)"
+        col.markdown(f'<img src="{uri}" width="90" height="160" decoding="async" alt="" '
+                     f'style="border:{outline};border-radius:6px;display:block;{"box-shadow:3px 3px 0 var(--yellow)" if chosen else ""}">',
+                     unsafe_allow_html=True)
+        if chosen:
+            col.caption(f"{names.get(label, label)} · elegida")
+        elif col.button(f"Usar {names.get(label, label)}", key=f"mini_{mp4.stem}_{label}"):
+            thumbs.choose(mp4, label)
+            st.rerun()
+    st.caption(publish.capability_line())

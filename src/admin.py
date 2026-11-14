@@ -1768,6 +1768,10 @@ if page == "Dashboard":
                     + base64.b64encode(Path(path).read_bytes()).decode("ascii"))
 
         def _thumb_html(video_path: Path) -> str:
+            import thumbs as _thumbs                       # STEP 85b §5: the WebP made at render time; the lazy JPEG only for older videos
+            _img = _thumbs.web.row_img(Path(video_path))
+            if _img:
+                return _img
             thumb = ensure_thumbnail(video_path)
             if not thumb:
                 return '<div class="art-thumb-empty">sin<br>imagen</div>'
@@ -2361,6 +2365,7 @@ elif page == "Review":
             if strip:
                 st.image(str(strip))
                 st.caption("0 % · 25 % · 50 % · 75 % · la despedida · el final")
+            _rv.miniatura_row(st, video["path"])
         with right:
             try:
                 import repetition as _rep
