@@ -123,12 +123,6 @@ def test_the_dev_origin_is_allowed_only_with_the_dev_flag(rig, monkeypatch):
     assert _post(dev, "/api/produce", h).status_code == 200
 
 
-def test_unwired_actions_answer_501_in_spanish_not_a_crash():
-    c = TestClient(appmod.create_app(), base_url="http://127.0.0.1:8600")
-    r = _post(c, "/api/produce")
-    assert r.status_code == 501 and "STEP 85 §4" in r.json()["error"]
-
-
 def test_the_token_appears_only_in_the_served_index_meta(rig, tmp_path, monkeypatch):
     client, *_ = rig
     dist = tmp_path / "dist"

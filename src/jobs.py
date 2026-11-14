@@ -1167,13 +1167,12 @@ def start_series_generation(style: Optional[str] = None, level: Optional[str] = 
     return job_id
 
 
-def start_generation(video_type: str, category: str = None, topic_name: str = None,
-                     **kwargs) -> str:
-    """Queue one video and return its job id immediately.
+def prepare_generation(video_type: str, category: str = None, topic_name: str = None, **kwargs):
+    """Create the job row and return (job_id, runner). `runner()` blocks until the job ends: heartbeat, run log,
+    the voice cap check (voice_credits.panel_voice), the render lock, the pipeline, the next batch item.
 
-    The job appears in the ledger before this returns, so the very next page
-    draw shows it as active. A script another job holds is refused with
-    AlreadyRendering, before any job exists.
+    The ONE path both the Streamlit button (start_generation: runs it in a thread) and the panel API (run_job: runs it
+    under its own voice grant) use. A script another job holds is refused with AlreadyRendering, before any job exists.
     """
     key = script_key(kwargs.get("script_data"))
     refuse_repeat_render(kwargs.get("script_data"), bool(kwargs.get("rerender")))
@@ -1183,18 +1182,19 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
     if key:
         update_job(job_id, script_key=key)
 
-    # The heartbeat is what a running job leaves behind, and it keeps
-    # ticking through the long encode, when nothing else writes to the row.
-    stop_beating = threading.Event()
+    def runner():
+        # The heartbeat is what a running job leaves behind, and it keeps
+        # ticking through the long encode, when nothing else writes to the row.
+        stop_beating = threading.Event()
 
-    def _heartbeat():
-        while not stop_beating.wait(HEARTBEAT_SEC):
-            try:
-                touch_heartbeat(job_id)
-            except Exception:                               # noqa: BLE001
-                logger.debug("heartbeat failed for job %s", job_id, exc_info=True)
+        def _heartbeat():
+            while not stop_beating.wait(HEARTBEAT_SEC):
+                try:
+                    touch_heartbeat(job_id)
+                except Exception:                           # noqa: BLE001
+                    logger.debug("heartbeat failed for job %s", job_id, exc_info=True)
 
-    def _worker():
+        threading.Thread(target=_heartbeat, name=f"heartbeat-{job_id}", daemon=True).start()
         # One file per job, recorded on the row so a 3am failure can be read
         # back from the ledger rather than from a console nobody kept.
         log_path = attach_run_log(f"job-{job_id}")
@@ -1224,9 +1224,19 @@ def start_generation(video_type: str, category: str = None, topic_name: str = No
             except Exception:                               # noqa: BLE001
                 logger.exception("batch: could not start the next item")
 
-    threading.Thread(target=_heartbeat, name=f"heartbeat-{job_id}",
-                     daemon=True).start()
-    t = threading.Thread(target=_worker, name=f"generate-{job_id}", daemon=True)
+    return job_id, runner
+
+
+def start_generation(video_type: str, category: str = None, topic_name: str = None,
+                     **kwargs) -> str:
+    """Queue one video and return its job id immediately.
+
+    The job appears in the ledger before this returns, so the very next page
+    draw shows it as active. A script another job holds is refused with
+    AlreadyRendering, before any job exists.
+    """
+    job_id, runner = prepare_generation(video_type, category, topic_name, **kwargs)
+    t = threading.Thread(target=runner, name=f"generate-{job_id}", daemon=True)
     _WORKERS.append(t)
     t.start()
     return job_id

@@ -372,7 +372,10 @@ def test_all_three_upload_call_sites_go_through_the_guard():
     # No dashboard path may reach manager.upload directly. AST, not a
     # substring: _guarded_upload's OWN call is the one legitimate site, and a
     # text search cannot tell it apart from an unguarded one.
+    # STEP 85 §4: the guarded body lives in panel_core/upload.py; scan both files as one program.
+    core = (ROOT / "src" / "panel_core" / "upload.py").read_text(encoding="utf-8")
     tree = ast.parse(admin)
+    core_tree = ast.parse(core)
     offenders = []
     for fn in [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]:
         if fn.name in ("_guarded_upload", "_guarded_upload_unlocked"):
@@ -405,11 +408,15 @@ def test_all_three_upload_call_sites_go_through_the_guard():
         f"unguarded manager.upload call(s) in admin.py at {offenders}")
 
     # STEP 70 §3: the body runs only through _guarded_upload, which takes the Meta lock.
-    callers = {fn.name for fn in ast.walk(tree) if isinstance(fn, ast.FunctionDef)
+    callers = {fn.name for fn in ast.walk(core_tree) if isinstance(fn, ast.FunctionDef)
                for c in ast.walk(fn) if isinstance(c, ast.Call)
-               and isinstance(c.func, ast.Name) and c.func.id == "_guarded_upload_unlocked"}
-    assert callers == {"_guarded_upload"}, callers
-    assert admin.count("_guarded_upload_unlocked(") == 3   # its def and the two calls in the wrapper
+               and isinstance(c.func, ast.Name) and c.func.id == "guarded_upload_unlocked"}
+    assert callers == {"guarded_upload"}, callers
+    assert core.count("guarded_upload_unlocked(") == 3     # its def and the two calls in the wrapper
+    raw = [c for c in ast.walk(core_tree) if isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute) and c.func.attr == "upload"
+           and isinstance(c.func.value, ast.Name) and c.func.value.id == "manager"]
+    assert len(raw) == 1 and not [c for c in ast.walk(tree) if isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
+                                  and c.func.attr == "upload" and isinstance(c.func.value, ast.Name) and c.func.value.id == "manager"]
 
 
 if __name__ == "__main__":

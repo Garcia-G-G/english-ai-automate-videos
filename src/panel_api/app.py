@@ -6,19 +6,15 @@ from typing import Dict, Optional
 from fastapi import Depends, FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from . import build, gate, media
+from . import build, engine as engine_mod, gate, media
 
 HOST, PORT = "127.0.0.1", 8600          # bind this host only; nothing in this package listens on its own
 
 
-def _not_wired(*_a, **_k):
-    raise gate.GateError(501, "Esta acción todavía no está conectada al motor (STEP 85 §4).")
-
-
 def create_app(engine: Optional[Dict[str, object]] = None) -> FastAPI:
-    """`engine` maps produce / rerender to `f(...) -> (job_id, eta_s, runner)` and approve / reject to `f(id, body) -> dict`.
-    Tests pass mocks; §4 passes the real ones."""
-    eng = {"produce": _not_wired, "rerender": _not_wired, "approve": _not_wired, "reject": _not_wired, **(engine or {})}
+    """`engine` overrides produce / rerender (`f(...) -> (job_id, eta_s, runner)`) and approve / reject (`f(id, body) -> dict`);
+    the defaults are the real handlers in engine.py. Tests pass mocks."""
+    eng = {**engine_mod.REAL, **(engine or {})}
     app = FastAPI(title="English Unlimited panel API", docs_url=None, redoc_url=None, openapi_url=None)
     app.add_exception_handler(gate.GateError, gate.gate_error_handler)
     app.state.jobs = []                                   # the threads of paid jobs, for shutdown and tests

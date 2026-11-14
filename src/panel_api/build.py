@@ -375,6 +375,12 @@ def _frame0(mp4: Path) -> Dict:
 _CHECK_KEYS = {"volume": "loudness", "words": "repeats"}
 
 
+def _youtube_tags(raw) -> List[str]:
+    """The sidecar keeps hashtags per platform ({youtube: [...]}); older ones are a plain list."""
+    tags = raw.get("youtube") if isinstance(raw, dict) else raw
+    return [t for t in (tags or []) if isinstance(t, str)]
+
+
 def _review_item(v: Dict) -> Dict:
     from panel import revisar
     mp4: Path = v["path"]
@@ -402,7 +408,7 @@ def _review_item(v: Dict) -> Dict:
     return {"id": v["name"], "type": v["type"], "typeLabel": type_label(v["type"]),
             "design": (script.get("design_variant") or "tablero").capitalize() if script else None,
             "items": len(script.get("items") or []) if script else None,
-            "title": title or v["name"], "description": desc, "hashtags": [h if h.startswith("#") else f"#{h}" for h in (md.get("hashtags") or [])],
+            "title": title or v["name"], "description": desc, "hashtags": [h if h.startswith("#") else f"#{h}" for h in _youtube_tags(md.get("hashtags"))],
             "durationS": revisar.duration_seconds(mp4), "costUsd": revisar.cost_of(meta_),
             "frame0": _frame0(mp4), "strip": _strip(mp4), "videoUrl": media.url_for(mp4) or "",
             "checks": [{"key": _CHECK_KEYS.get(r["key"], r["key"]), "label": r["label"], "ok": ok[r["state"]],

@@ -221,7 +221,8 @@ def test_both_admin_upload_paths_record(monkeypatch):
     inside the wrapper.
     """
     import ast
-    src = (ROOT / "src" / "admin.py").read_text(encoding="utf-8")
+    # STEP 85 §4: the guarded upload body moved to panel_core/upload.py; admin keeps wrappers and the call sites.
+    src = (ROOT / "src" / "admin.py").read_text(encoding="utf-8") + "\n" + (ROOT / "src" / "panel_core" / "upload.py").read_text(encoding="utf-8")
 
     assert src.count("_record_upload(") >= 3, (
         "expected the helper definition plus both upload call sites")

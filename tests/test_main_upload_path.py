@@ -238,14 +238,14 @@ def test_there_is_exactly_one_recorder():
     publication_log.record_upload_result."""
     import ast
     defs = 0
-    for f in ("src/publication_log.py", "src/admin.py", "main.py"):
+    for f in ("src/publication_log.py", "src/admin.py", "src/panel_core/upload.py", "main.py"):
         tree = ast.parse((ROOT / f).read_text(encoding="utf-8"))
         defs += sum(1 for n in ast.walk(tree)
                     if isinstance(n, ast.FunctionDef)
                     and n.name == "record_upload_result")
     assert defs == 1, f"expected one definition, found {defs}"
 
-    for f in ("src/admin.py", "main.py"):
+    for f in ("src/panel_core/upload.py", "main.py"):          # STEP 85 §4: admin's recorder moved to panel_core
         assert "record_upload_result(" in (ROOT / f).read_text(encoding="utf-8"), (
             f"{f} does not use the shared recorder")
 

@@ -194,6 +194,7 @@ from jobs import (  # noqa: E402,F401
 # ============== HELPER FUNCTIONS ==============
 
 
+from panel_core import upload as _up                      # noqa: E402  STEP 85 §4: the guarded upload lives there
 from panel_core import videos as _pc                      # noqa: E402  STEP 85 §0: the logic lives there, UI-free
 from panel_core.videos import DAMAGED, read_sidecar       # noqa: E402,F401
 
@@ -365,8 +366,7 @@ def unapprove_video(video_path: Path):
 
 def _guard_decide(artifact: str, platform: str, manager=None, **content):
     """Ask the idempotency guard before uploading. See upload_guard."""
-    from upload_guard import decide
-    return decide(artifact, platform, manager=manager, **content)
+    return _up.guard_decide(artifact, platform, manager=manager, **content)
 
 
 def save_sidecar_metadata(video: dict, metadata: dict) -> None:
@@ -529,11 +529,7 @@ def script_for_upload(video: dict) -> dict:
 def upload_content(video: dict, script: dict, title: str, description: str,
                    allow_duplicate: bool = False) -> dict:
     """What upload_guard.content_refusal checks for one approved video."""
-    return {"title": title, "description": description,
-            "gate": (video.get("meta") or {}).get("gate"),
-            "topic_id": (script.get("_meta") or {}).get("topic_id"),
-            "topic_name": script.get("theme") or (script.get("_meta") or {}).get("topic"),
-            "allow_duplicate": allow_duplicate}
+    return _up.upload_content(video, script, title, description, allow_duplicate)
 
 
 def _guard_notice(st_module, artifact: str, platform_label: str, verdict, platform_key: str = "") -> None:
@@ -562,63 +558,15 @@ def _guard_notice(st_module, artifact: str, platform_label: str, verdict, platfo
 
 
 def _schedule_approved(video: dict, script: dict, platforms: list, slot) -> dict:
-    """STEP 83 §3: send an approved video to each platform through the SAME guarded path as Subir (guard decision,
-    attempt log, ledger row), YouTube private with publishAt at `slot`. Returns {platform: reason} for the ones
-    that failed; empty when all went. On full success the video moves to «subidos»."""
-    from uploader import get_upload_manager
-    failed, done = {}, []
-    if slot is not None and "youtube" in platforms:           # STEP 85 §0: the lead rule is the one limit that binds Garcia
-        import slots as _s
-        _err = _s.check_time(slot, [], datetime.now(slot.tzinfo))["error"]
-        if _err:
-            failed["youtube"] = _err
-            platforms = [p for p in platforms if p != "youtube"]
-            if not platforms:
-                return failed
-    manager = get_upload_manager()
-    resolved = resolve_upload_metadata(video["name"], script, "", video.get("type", "educational"),
-                                       (script.get("_meta") or {}).get("category", ""), st.session_state,
-                                       generated=(video.get("meta") or {}).get("metadata"))
-    title, desc, tags = resolved["title"][:100], resolved["description"], [t.lstrip("#") for t in resolved["hashtags"]]
-    for platform in platforms:
-        verdict = _guard_decide(video["name"], platform, manager=manager, **upload_content(video, script, title, desc, False))
-        if not verdict.should_upload:
-            if verdict.action == "skip_done":
-                done.append(platform)
-            else:
-                failed[platform] = verdict.reason
-            continue
-        extra = {"scheduled_for": slot} if (platform == "youtube" and slot is not None) else {}
-        result = _guarded_upload(manager, video["name"], platform, str(video["path"]), title=title, description=desc,
-                                 hashtags=tags, **extra)
-        ok = (isinstance(result, dict) and result.get("success")) or getattr(result, "success", False)
-        if ok:
-            done.append(platform)
-            _record_upload(st, video, platform, result, title, desc, tags)
-        else:
-            err = result.get("error") if isinstance(result, dict) else getattr(result, "error", "")
-            failed[platform] = str(err or "error")[:120]
-    if done and not failed and video["path"].exists():
-        move_to_uploaded(video["path"], {"platforms": done, "uploaded_at": datetime.now().isoformat(), "title": title,
-                                         **({"scheduled_by": "garcia"} if slot is not None else {"scheduled_by": "auto"})})
-    return failed
+    """STEP 83 §3: send an approved video to each platform through the SAME guarded path as Subir. The body lives in
+    panel_core.upload (STEP 85 §4) so the panel API uses it too; this passes Streamlit's state, notice and mover."""
+    return _up.schedule_approved(video, script, platforms, slot, state=st.session_state, mover=move_to_uploaded, on_error=st.error)
 
 
 def _guarded_upload(manager, artifact: str, platform: str, video_path: str,
                     **kwargs):
-    """_guarded_upload_unlocked, under the Meta publish lock for Instagram and Facebook
-    (STEP 70 §3): a click while the slot tick publishes does nothing, and a video the tick
-    has just published is not sent again."""
-    from publishers import schedule
-    if platform not in schedule.LOCKED_PLATFORMS:
-        return _guarded_upload_unlocked(manager, artifact, platform, video_path, **kwargs)
-    with schedule.publish_lock() as got:
-        if not got:
-            return {"success": False, "error": schedule.LOCKED, "locked": True}
-        state = schedule.platform_status(artifact, platform)["status"]
-        if state in ("published", "holding"):           # re-read under the lock
-            return {"success": False, "error": f"ya publicado o en curso en {platform}", "locked": True}
-        return _guarded_upload_unlocked(manager, artifact, platform, video_path, **kwargs)
+    """panel_core.upload.guarded_upload: under the Meta publish lock for Instagram and Facebook (STEP 70 §3)."""
+    return _up.guarded_upload(manager, artifact, platform, video_path, **kwargs)
 
 
 SETUP_PENDING = "configuración pendiente"
@@ -702,157 +650,15 @@ def manual_tiktok_row(artifact: str, attempts) -> Optional[dict]:
 
 def _guarded_upload_unlocked(manager, artifact: str, platform: str, video_path: str,
                              **kwargs):
-    """manager.upload, with the attempt persisted before a byte is sent.
-
-    The dashboard needs this for the same reason main.py does: the window
-    between a live video and its ledger row is structural, not specific to
-    the unattended path.
-    """
-    import os as _os
-
-    from publication_log import (ATTEMPT_FAILED, ATTEMPT_PUBLISHED,
-                                 ATTEMPT_SESSION, ATTEMPT_STARTED,
-                                 ATTEMPT_UNKNOWN, record_attempt)
-
-    from upload_limits import claim, release
-
-    # STEP 67: a second press while this video is uploading does nothing, and logs nothing.
-    if not claim(artifact, platform):
-        return {"success": False, "error": "ya se está subiendo este vídeo", "in_flight": True}
-    try:
-        size = _os.path.getsize(video_path)
-    except OSError:
-        size = 0
-
-    record_attempt(artifact=artifact, platform=platform,
-                   status=ATTEMPT_STARTED, video_path=video_path,
-                   file_size=size, detail=str(kwargs.get("title", ""))[:120])
-
-    def _session(uri, sz):
-        record_attempt(artifact=artifact, platform=platform,
-                       status=ATTEMPT_SESSION, video_path=video_path,
-                       session_uri=uri, file_size=sz,
-                       detail=str(kwargs.get("title", ""))[:120])
-
-    # STEP 81 §2 / STEP 83 §3: YouTube goes up private and publishes itself at a free slot (the one Revisar
-    # shows, else the next one); every other platform is untouched.
-    scheduled_for = kwargs.pop("scheduled_for", None)
-    scheduled_by = "garcia" if scheduled_for is not None else "auto"       # STEP 85 §0: his own time skips the limits
-    if platform == "youtube" and "publish_at" not in kwargs:
-        import slots as _slots
-        scheduled_for = scheduled_for or _slots.next_free()
-        if scheduled_for is not None:
-            kwargs["publish_at"] = _slots.publish_at(scheduled_for)
-    try:
-        result = manager.upload(platform, video_path, on_session=_session, **kwargs)
-    finally:
-        release(artifact, platform)
-    if scheduled_for is not None and platform == "youtube":
-        try:
-            result["scheduled_for"] = scheduled_for.isoformat()
-        except TypeError:
-            setattr(result, "scheduled_for", scheduled_for.isoformat())
-        try:
-            result["scheduled_by"] = scheduled_by
-        except TypeError:
-            setattr(result, "scheduled_by", scheduled_by)
-
-    ok = (result.get("success") if isinstance(result, dict)
-          else getattr(result, "success", False))
-    uri = (result.get("session_uri") if isinstance(result, dict)
-           else getattr(result, "session_uri", None))
-    vid = (result.get("upload_id") if isinstance(result, dict)
-           else getattr(result, "upload_id", None))
-
-    # On success the attempt is closed only AFTER _record_upload writes the
-    # ledger row, so it is left open here deliberately. On failure it is
-    # closed now, because the platform said nothing was created.
-    if not ok:
-        err = (result.get("error") if isinstance(result, dict)
-               else getattr(result, "error", None))
-        doubt = (result.get("in_doubt") if isinstance(result, dict)
-                 else getattr(result, "in_doubt", False))
-        record_attempt(artifact=artifact, platform=platform,
-                       status=ATTEMPT_UNKNOWN if doubt else ATTEMPT_FAILED,
-                       video_path=video_path,
-                       session_uri=uri, file_size=size,
-                       detail=str(err or result)[:300])
-    return result
+    """panel_core.upload.guarded_upload_unlocked: manager.upload with the attempt persisted before a byte is sent."""
+    return _up.guarded_upload_unlocked(manager, artifact, platform, video_path, **kwargs)
 
 
 def _record_upload(st_module, video: dict, platform: str, result,
                    sent_title: str, sent_description: str,
                    sent_hashtags: list) -> None:
-    """Persist the publication, and SHOUT if that fails.
-
-    A video that is live but unrecorded is worse than a failed upload: a
-    failure can be retried, an unrecorded success has to be found by hand on
-    the platform. So a recording failure is surfaced in the UI rather than
-    swallowed — the upload itself already succeeded and cannot be undone, but
-    the operator has to know the id was lost.
-
-    This is now only the UI half. The recording itself lives in
-    publication_log.record_upload_result, so main.py's headless path uses the
-    same recorder rather than a second one that could drift from it.
-    """
-    from publication_log import (ATTEMPT_PUBLISHED, ATTEMPT_SESSION,
-                                 PublicationRecordError, record_attempt,
-                                 record_upload_result)
-
-    uri = (result.get("session_uri") if isinstance(result, dict)
-           else getattr(result, "session_uri", None))
-    vid = (result.get("upload_id") if isinstance(result, dict)
-           else getattr(result, "upload_id", None))
-
-    if platform == "youtube":                               # STEP 85b §4: the thumbnail follows the upload, never blocks it
-        _vid_id = (result.get("upload_id") if isinstance(result, dict) else getattr(result, "upload_id", None))
-        _jpg = Path(video["path"]).with_name(Path(video["path"]).stem + ".thumb") / "thumb.jpg"
-        if _vid_id and _jpg.exists():
-            try:
-                from thumbs import publish as _tp
-                _tp.after_youtube_upload(video["name"], str(_vid_id), _jpg)
-            except Exception:                               # noqa: BLE001
-                logger.exception("thumbnail follow-up not started for %s", video["name"])
-    if platform == "facebook":                              # STEP 85b §4: same follow-up for the reel; the reel is already live
-        _fb_id = (result.get("upload_id") if isinstance(result, dict) else getattr(result, "upload_id", None))
-        _fjpg = Path(video["path"]).with_name(Path(video["path"]).stem + ".thumb") / "thumb.jpg"
-        if _fb_id and _fjpg.exists():
-            try:
-                from thumbs import publish as _tp
-                _tp.after_facebook_upload(video["name"], str(_fb_id), _fjpg)
-            except Exception:                               # noqa: BLE001
-                logger.exception("facebook thumbnail follow-up not started for %s", video["name"])
-    try:
-        record_upload_result(
-            artifact=video["name"],
-            video_path=str(video["path"]),
-            video_type=video.get("type", ""),
-            platform=platform,
-            result=result,
-            sent_title=sent_title,
-            sent_description=sent_description,
-            sent_hashtags=sent_hashtags,
-            extra=({"scheduled_for": _sf, "scheduled_by": (result.get("scheduled_by") if isinstance(result, dict)
-                                                           else getattr(result, "scheduled_by", None))}
-                   if (_sf := (result.get("scheduled_for") if isinstance(result, dict)
-                               else getattr(result, "scheduled_for", None))) else None),
-        )
-        # Only now is the attempt closed: the video is live AND named.
-        record_attempt(artifact=video["name"], platform=platform,
-                       status=ATTEMPT_PUBLISHED, video_path=str(video["path"]),
-                       session_uri=uri, upload_id=vid, detail="recorded")
-    except PublicationRecordError as exc:
-        logger.exception("publication record failed")
-        # Leave the attempt OPEN, now carrying the id. That open row is what
-        # stops the next run from publishing a second copy.
-        record_attempt(artifact=video["name"], platform=platform,
-                       status=ATTEMPT_SESSION, video_path=str(video["path"]),
-                       session_uri=uri, upload_id=vid,
-                       detail=f"published but record failed: {exc}")
-        st_module.error(
-            f"⚠️ Subido a {platform} pero NO SE PUDO REGISTRAR: {exc}. "
-            f"The video is live and this repo cannot name it — note the id now."
-        )
+    """panel_core.upload.record_upload, with the failure shouted in the page."""
+    _up.record_upload(video, platform, result, sent_title, sent_description, sent_hashtags, on_error=st_module.error)
 
 
 def reconcile_platform_target(state: dict, platform_name: str,
