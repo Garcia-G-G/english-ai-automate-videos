@@ -3479,12 +3479,13 @@ elif page == "Performance":
         if not (senal_server.DIST / "index.html").is_file():
             st.error("Señal no está construida: corre «cd senal && npm run build».")
         else:
-            try:
-                with st.spinner("Actualizando Señal…"):
-                    senal.refresh_if_stale()
-            except Exception as e:                          # noqa: BLE001 — the page opens with the previous data
-                st.error(f"No se pudo actualizar Señal: {e}")
-            webbrowser.open(senal_server.ensure_running())
+            # the refresh reads YouTube for ~1.5 min: open now with the last data, refresh behind it
+            import threading
+            threading.Thread(target=lambda: senal.refresh_if_stale(), daemon=True).start()
+            url = senal_server.ensure_running()
+            webbrowser.open(url)
+            st.success("Señal se abrió en otra pestaña. Los datos nuevos tardan un par de minutos: recarga la página entonces.")
+            st.link_button("Ir a Señal", url)
     snap = channel_stats.latest()
     if not snap:
         st.info("Todavía no hay estadísticas: pulsa «Actualizar estadísticas».")
