@@ -1,0 +1,97 @@
+{
+  "type": "vocabulary",
+  "video_title": "¿Cómo se dice TRISTE en inglés? No solo 'sad' 😢",
+  "video_description": "¿Siempre dices 'sad'? 😢 Aprende 'down in the dumps' y 10 formas más de decir cómo te sientes 💙\nSave this video y comenta: How do you feel today? 👇\n¡Síguenos para hablar inglés como nativo! 🚀",
+  "title": "Vocabulario: TRISTEZA y emociones",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "triste",
+      "english": "sad"
+    },
+    {
+      "spanish": "bajoneado",
+      "english": "down in the dumps"
+    },
+    {
+      "spanish": "decaído",
+      "english": "feeling blue"
+    },
+    {
+      "spanish": "molesto",
+      "english": "upset"
+    },
+    {
+      "spanish": "solo",
+      "english": "lonely"
+    },
+    {
+      "spanish": "harto",
+      "english": "fed up"
+    },
+    {
+      "spanish": "desanimado",
+      "english": "discouraged"
+    },
+    {
+      "spanish": "con el corazón roto",
+      "english": "heartbroken"
+    },
+    {
+      "spanish": "llorar",
+      "english": "to cry"
+    },
+    {
+      "spanish": "extrañar a alguien",
+      "english": "to miss someone"
+    },
+    {
+      "spanish": "animarse",
+      "english": "to cheer up"
+    }
+  ],
+  "full_script": "¿Cómo dices que estás TRISTE en inglés? Más allá de sad. Vocabulario de tristeza. Triste, sad. Bajoneado, down in the dumps. Decaído, feeling blue. Molesto, upset. Solo, lonely. Harto, fed up. Desanimado, discouraged. Con el corazón roto, heartbroken. Llorar, to cry. Extrañar a alguien, to miss someone. Animarse, to cheer up. Ejemplo: He's been down in the dumps since the breakup. Ha estado bajoneado desde la ruptura.",
+  "translations": {
+    "sad": "triste",
+    "down in the dumps": "bajoneado",
+    "feeling blue": "decaído",
+    "upset": "molesto",
+    "lonely": "solo",
+    "fed up": "harto",
+    "discouraged": "desanimado",
+    "heartbroken": "con el corazón roto",
+    "to cry": "llorar",
+    "to miss someone": "extrañar a alguien",
+    "to cheer up": "animarse",
+    "He's been down in the dumps since the breakup.": "Ha estado bajoneado desde la ruptura."
+  },
+  "english_phrases": [
+    "sad",
+    "down in the dumps",
+    "feeling blue",
+    "upset",
+    "lonely",
+    "fed up",
+    "discouraged",
+    "heartbroken",
+    "to cry",
+    "to miss someone",
+    "to cheer up",
+    "He's been down in the dumps since the breakup."
+  ],
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#VocabularioEnIngles",
+    "#IdiomsInEnglish",
+    "#Emociones",
+    "#DownInTheDumps"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id076",
+    "video_type": "vocabulary",
+    "generated_at": "2026-11-02T11:11:55.427119",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

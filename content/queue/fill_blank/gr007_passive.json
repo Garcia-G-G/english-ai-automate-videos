@@ -1,0 +1,67 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa: ¿quién construyó la casa? 🏠",
+  "video_description": "La voz pasiva explicada en una sola frase. 🔨",
+  "sentence": "This house ___ built in 1990.",
+  "options": [
+    "was",
+    "is",
+    "has",
+    "were"
+  ],
+  "correct": "was",
+  "translation": "Esta casa se construyó en 1990.",
+  "explanation": "[excited] La pasiva se forma con el verbo be más participio. Aquí, was built.",
+  "full_script": "[curious] ¡Completa la frase! Número uno. Hablas de un edificio antiguo y no te importa quién lo hizo. This house ___ built in 1990. Las opciones son: A, was. B, is. C, has. D, were.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, was! La pasiva se forma con el verbo be más participio. Was built. Fue construida. Se usa cuando lo importante es la acción, no quién la hizo. They built this house in 1990 también es correcto. Pero pone el foco en ellos, y a ti te da igual quiénes fueran.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr007",
+    "video_type": "fill_blank",
+    "model": "manual"
+  },
+  "sentences": [
+    {
+      "sentence": "This house ___ built in 1990.",
+      "options": [
+        "was",
+        "is",
+        "has",
+        "were"
+      ],
+      "correct": "was",
+      "translation": "Esta casa se construyó en 1990.",
+      "explanation": "[excited] La pasiva se forma con el verbo be más participio. Aquí, was built."
+    },
+    {
+      "sentence": "The emails ___ sent every Monday.",
+      "options": [
+        "are",
+        "is",
+        "has",
+        "was"
+      ],
+      "correct": "are",
+      "translation": "Los correos se envían cada lunes.",
+      "explanation": "[excited] Sujeto plural, así que are. La pasiva concuerda como cualquier verbo."
+    },
+    {
+      "sentence": "My car ___ stolen last night.",
+      "options": [
+        "was",
+        "is",
+        "were",
+        "has"
+      ],
+      "correct": "was",
+      "translation": "Me robaron el coche anoche.",
+      "explanation": "[excited] Pasado y singular: was stolen. Y no dices quién, que es el punto."
+    }
+  ]
+}

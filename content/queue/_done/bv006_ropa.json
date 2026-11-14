@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice ROPA en inglés? 👕",
+  "video_description": "Diez prendas para ir de compras sin traductor. 🛍️",
+  "title": "¿Cómo se dice…?",
+  "theme": "la ropa",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "👕",
+      "spanish": "Camiseta",
+      "english": "T-shirt"
+    },
+    {
+      "emoji": "👖",
+      "spanish": "Vaqueros",
+      "english": "jeans"
+    },
+    {
+      "emoji": "👗",
+      "spanish": "Vestido",
+      "english": "dress"
+    },
+    {
+      "emoji": "👞",
+      "spanish": "Zapatos",
+      "english": "shoes"
+    },
+    {
+      "emoji": "🧦",
+      "spanish": "Calcetines",
+      "english": "socks"
+    },
+    {
+      "emoji": "🧥",
+      "spanish": "Abrigo",
+      "english": "coat"
+    },
+    {
+      "emoji": "🧢",
+      "spanish": "Gorra",
+      "english": "cap"
+    },
+    {
+      "emoji": "🧣",
+      "spanish": "Bufanda",
+      "english": "scarf"
+    },
+    {
+      "emoji": "🧤",
+      "spanish": "Guantes",
+      "english": "gloves"
+    },
+    {
+      "emoji": "👒",
+      "spanish": "Sombrero",
+      "english": "hat"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: T-shirt, jeans, dress, shoes, socks, coat, cap, scarf, gloves, hat.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "T-shirt": "Camiseta",
+    "jeans": "Vaqueros",
+    "dress": "Vestido",
+    "shoes": "Zapatos",
+    "socks": "Calcetines",
+    "coat": "Abrigo",
+    "cap": "Gorra",
+    "scarf": "Bufanda",
+    "gloves": "Guantes",
+    "hat": "Sombrero"
+  },
+  "english_phrases": [
+    "T-shirt",
+    "jeans",
+    "dress",
+    "shoes",
+    "socks",
+    "coat",
+    "cap",
+    "scarf",
+    "gloves",
+    "hat"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv006",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Camiseta... T-shirt. T-shirt. Vaqueros... jeans. jeans. Vestido... dress. dress. Zapatos... shoes. shoes. Calcetines... socks. socks. Abrigo... coat. coat. Gorra... cap. cap. Bufanda... scarf. scarf. Guantes... gloves. gloves. Sombrero... hat. hat. Ahora, todas conmigo: T-shirt, jeans, dress, shoes, socks, coat, cap, scarf, gloves, hat. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

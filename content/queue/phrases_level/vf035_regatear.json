@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases para negociar un precio en inglés 🏷️",
+  "video_description": "Diez frases para negociar un precio. 🏷️",
+  "title": "¿Cómo se dice?",
+  "theme": "para negociar un precio",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "Es demasiado caro.",
+      "english": "It's too expensive."
+    },
+    {
+      "spanish": "¿Me hace un descuento?",
+      "english": "Can you give me a discount?"
+    },
+    {
+      "spanish": "¿Es su mejor precio?",
+      "english": "Is that your best price?"
+    },
+    {
+      "spanish": "Le doy veinte.",
+      "english": "I'll give you twenty."
+    },
+    {
+      "spanish": "¿Y si me llevo dos?",
+      "english": "What if I take two?"
+    },
+    {
+      "spanish": "Lo dejamos en quince.",
+      "english": "Let's say fifteen."
+    },
+    {
+      "spanish": "Me lo pensaré.",
+      "english": "I'll think about it."
+    },
+    {
+      "spanish": "En la otra tienda está más barato.",
+      "english": "It's cheaper at the other store."
+    },
+    {
+      "spanish": "Trato hecho.",
+      "english": "It's a deal."
+    },
+    {
+      "spanish": "¿Lo incluye?",
+      "english": "Is that included?"
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf035",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "It's too expensive.": "Es demasiado caro.",
+    "Can you give me a discount?": "¿Me hace un descuento?",
+    "Is that your best price?": "¿Es su mejor precio?",
+    "I'll give you twenty.": "Le doy veinte.",
+    "What if I take two?": "¿Y si me llevo dos?",
+    "Let's say fifteen.": "Lo dejamos en quince.",
+    "I'll think about it.": "Me lo pensaré.",
+    "It's cheaper at the other store.": "En la otra tienda está más barato.",
+    "It's a deal.": "Trato hecho.",
+    "Is that included?": "¿Lo incluye?"
+  },
+  "english_phrases": [
+    "It's too expensive.",
+    "Can you give me a discount?",
+    "Is that your best price?",
+    "I'll give you twenty.",
+    "What if I take two?",
+    "Let's say fifteen.",
+    "I'll think about it.",
+    "It's cheaper at the other store.",
+    "It's a deal.",
+    "Is that included?"
+  ],
+  "full_script": "[cheerful] Lee la frase en español y dila en inglés en voz alta. It's too expensive. Can you give me a discount? Is that your best price? I'll give you twenty. What if I take two? Let's say fifteen. I'll think about it. It's cheaper at the other store. It's a deal. Is that included? [cheerful] Escribe en los comentarios la que más te gustó."
+}

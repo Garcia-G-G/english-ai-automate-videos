@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "¿Completas las 10? DO, DOES o DID ❓",
+  "video_description": "Do, does o did: cómo hacer preguntas en inglés en diez frases. ❓",
+  "title": "Completa la frase",
+  "theme": "preguntas con do, does y did",
+  "intro": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo.",
+  "items": [
+    {
+      "sentence": "____ you like coffee?",
+      "answer": "Do",
+      "translation": "¿Te gusta el café?",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ she live here?",
+      "answer": "Does",
+      "translation": "¿Vive ella aquí?",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ you see the game last night?",
+      "answer": "Did",
+      "translation": "¿Viste el partido anoche?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Where ____ he work?",
+      "answer": "does",
+      "translation": "¿Dónde trabaja él?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "What time ____ you get up yesterday?",
+      "answer": "did",
+      "translation": "¿A qué hora te levantaste ayer?",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Why ____ they always arrive late?",
+      "answer": "do",
+      "translation": "¿Por qué siempre llegan tarde?",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "How long ____ it take to get there?",
+      "answer": "does",
+      "translation": "¿Cuánto se tarda en llegar?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Who ____ you go with?",
+      "answer": "did",
+      "translation": "¿Con quién fuiste?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "You like it, ____ you?",
+      "answer": "don't",
+      "translation": "Te gusta, ¿verdad?",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She didn't call, ____ she?",
+      "answer": "did",
+      "translation": "No llamó, ¿verdad?",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PreguntasEnIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc010",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Do you like coffee?": "¿Te gusta el café?",
+    "Does she live here?": "¿Vive ella aquí?",
+    "Did you see the game last night?": "¿Viste el partido anoche?",
+    "Where does he work?": "¿Dónde trabaja él?",
+    "What time did you get up yesterday?": "¿A qué hora te levantaste ayer?",
+    "Why do they always arrive late?": "¿Por qué siempre llegan tarde?",
+    "How long does it take to get there?": "¿Cuánto se tarda en llegar?",
+    "Who did you go with?": "¿Con quién fuiste?",
+    "You like it, don't you?": "Te gusta, ¿verdad?",
+    "She didn't call, did she?": "No llamó, ¿verdad?"
+  },
+  "english_phrases": [
+    "Do you like coffee?",
+    "Does she live here?",
+    "Did you see the game last night?",
+    "Where does he work?",
+    "What time did you get up yesterday?",
+    "Why do they always arrive late?",
+    "How long does it take to get there?",
+    "Who did you go with?",
+    "You like it, don't you?",
+    "She didn't call, did she?"
+  ],
+  "full_script": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo. Do you like coffee? Does she live here? Did you see the game last night? Ahora, nivel intermedio. Where does he work? What time did you get up yesterday? Why do they always arrive late? How long does it take to get there? Y ahora, nivel experto. Who did you go with? You like it, don't you? She didn't call, did she? Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

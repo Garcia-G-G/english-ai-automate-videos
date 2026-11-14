@@ -85,13 +85,13 @@ def test_youtube_never_crosses_the_nullification_cliff():
     assert MG.YOUTUBE_HASHTAG_HARD_CAP == 15
 
 
-def test_youtube_title_carries_shorts_and_no_other_hashtag():
-    """Hashtags belong in the description; they eat the keyword space a
-    search surface needs. #Shorts is the required exception."""
+def test_youtube_title_carries_no_hashtag():
+    """Hashtags belong in the description; they eat the keyword space a search
+    surface needs. Not even #Shorts (STEP 80): a vertical video under 3 min is a
+    Short by itself (support.google.com/youtube/answer/15424877)."""
     adapted = MG.adapt_for_platform(MG.generate_metadata(SCRIPT, "quiz"), "youtube")
 
-    assert "#Shorts" in adapted["title"]
-    assert adapted["title"].count("#") == 1
+    assert "#" not in adapted["title"]
 
 
 def test_youtube_title_stays_within_the_platform_limit():

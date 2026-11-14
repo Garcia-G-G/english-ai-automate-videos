@@ -1,0 +1,113 @@
+{
+  "type": "say_it_level",
+  "video_title": "Frases de CLASE en inglés: ¿básico, intermedio o experto? 🎒",
+  "video_description": "Deberes, exámenes y notas: diez frases que se dicen en clase, en inglés. 🎒",
+  "title": "Dilo en inglés",
+  "theme": "en clase",
+  "intro": "[happy] Volvemos a clase. Lee cada frase y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Puedo ir al baño?",
+      "english": "Can I go to the bathroom?",
+      "cefr": "A1",
+      "alt": "Can I go to the toilet?"
+    },
+    {
+      "spanish": "No he hecho los deberes.",
+      "english": "I didn't do my homework.",
+      "cefr": "A2",
+      "alt": "I haven't done my homework."
+    },
+    {
+      "spanish": "¿Puede escribirlo en la pizarra?",
+      "english": "Can you write it on the board?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Podemos trabajar en parejas?",
+      "english": "Can we work in pairs?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Para cuándo es el trabajo?",
+      "english": "When is the assignment due?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Esto entra en el examen?",
+      "english": "Is this going to be on the test?",
+      "cefr": "B1",
+      "alt": "Will this be on the exam?"
+    },
+    {
+      "spanish": "¿Puedo entregarlo mañana?",
+      "english": "Can I hand it in tomorrow?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "He sacado buena nota.",
+      "english": "I got a good grade.",
+      "cefr": "B2",
+      "alt": "I got a good mark.",
+      "tip": "«Sacar» una nota es get, no «take out»"
+    },
+    {
+      "spanish": "Tengo que asistir a todas las clases.",
+      "english": "I have to attend every class.",
+      "cefr": "B2",
+      "tip": "«Asistir» es attend; assist significa «ayudar»"
+    },
+    {
+      "spanish": "Me presento al examen el lunes.",
+      "english": "I'm taking the exam on Monday.",
+      "cefr": "C1",
+      "alt": "I'm sitting the exam on Monday.",
+      "tip": "«Presentarse a» un examen es take, no «present»"
+    }
+  ],
+  "verdict": "Tres de diez: básico. Siete de diez: intermedio. Diez de diez: matrícula de honor, nivel experto.",
+  "outro": "[excited] ¿Qué nota te pones? Escribe hasta qué frase llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaEstudiantes",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy065",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Can I go to the bathroom?": "¿Puedo ir al baño?",
+    "I didn't do my homework.": "No he hecho los deberes.",
+    "Can you write it on the board?": "¿Puede escribirlo en la pizarra?",
+    "Can we work in pairs?": "¿Podemos trabajar en parejas?",
+    "When is the assignment due?": "¿Para cuándo es el trabajo?",
+    "Is this going to be on the test?": "¿Esto entra en el examen?",
+    "Can I hand it in tomorrow?": "¿Puedo entregarlo mañana?",
+    "I got a good grade.": "He sacado buena nota.",
+    "I have to attend every class.": "Tengo que asistir a todas las clases.",
+    "I'm taking the exam on Monday.": "Me presento al examen el lunes."
+  },
+  "english_phrases": [
+    "Can I go to the bathroom?",
+    "I didn't do my homework.",
+    "Can you write it on the board?",
+    "Can we work in pairs?",
+    "When is the assignment due?",
+    "Is this going to be on the test?",
+    "Can I hand it in tomorrow?",
+    "I got a good grade.",
+    "I have to attend every class.",
+    "I'm taking the exam on Monday.",
+    "Can I go to the toilet?",
+    "I haven't done my homework.",
+    "Will this be on the exam?",
+    "I got a good mark.",
+    "I'm sitting the exam on Monday."
+  ],
+  "full_script": "[happy] Volvemos a clase. Lee cada frase y dila en inglés antes que yo. Can I go to the bathroom? I didn't do my homework. Can you write it on the board? Ahora, nivel intermedio. Can we work in pairs? When is the assignment due? Is this going to be on the test? Can I hand it in tomorrow? Y ahora, nivel experto. I got a good grade. I have to attend every class. I'm taking the exam on Monday. Tres de diez: básico. Siete de diez: intermedio. Diez de diez: matrícula de honor, nivel experto. [excited] ¿Qué nota te pones? Escribe hasta qué frase llegaste."
+}

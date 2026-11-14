@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "Verdadero o falso: EMOCIONES 😊",
+  "video_description": "Emociones en inglés: ¿verdadero o falso? 😊",
+  "title": "¿Verdadero o falso?",
+  "theme": "las emociones",
+  "intro": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo.",
+  "items": [
+    {
+      "statement": "«Happy» es feliz.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Angry» es enfadado.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Scared» es aburrido.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es asustado"
+    },
+    {
+      "statement": "«Proud» es orgulloso.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Jealous» es celoso.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Lonely» es feliz.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es solo, solitario"
+    },
+    {
+      "statement": "«Upset» es disgustado.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Relieved» es aliviado.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Overwhelmed» es aburrido.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es abrumado"
+    },
+    {
+      "statement": "«Thrilled» es encantado.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf036",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Happy",
+    "Angry",
+    "Scared",
+    "Proud",
+    "Jealous",
+    "Lonely",
+    "Upset",
+    "Relieved",
+    "Overwhelmed",
+    "Thrilled"
+  ],
+  "full_script": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo. Verdadero. Verdadero. Falso: es asustado. Ahora, nivel intermedio. Verdadero. Verdadero. Falso: es solo, solitario. Verdadero. Y ahora, nivel experto. Verdadero. Falso: es abrumado. Verdadero. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

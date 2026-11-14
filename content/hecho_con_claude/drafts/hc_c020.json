@@ -1,0 +1,47 @@
+{
+  "id": "hc_c020",
+  "style": "comic",
+  "level": "dificil",
+  "angle": "reto",
+  "title": "RETO: «cuesta un ojo de la cara»",
+  "hook_text": "En inglés no es un ojo",
+  "quiz": {
+    "prompt": "¿Cómo dirías «cuesta un ojo de la cara»?",
+    "options": [
+      "It costs an eye of the face",
+      "It costs an arm and a leg",
+      "It costs a head"
+    ],
+    "answer": 1,
+    "after": "Cost an arm and a leg = carísimo."
+  },
+  "correction": {
+    "wrong": "It costs a head",
+    "right": "It costs an arm and a leg",
+    "rule": "Idiom"
+  },
+  "voice": [
+    "En inglés no es un ojo. ¿Cómo dirías «cuesta un ojo de la cara»?",
+    "¿[[It costs an eye of the face]], [[It costs an arm and a leg]] o [[It costs a head]]?",
+    "¡La B! [[It costs an arm and a leg]]: un brazo y una pierna.",
+    "Más casual: [[It's a rip-off]], «es un robo».",
+    "Y si es barato: [[It's a steal]], «está tirado».",
+    "¿Qué cosa te parece un robo? Escríbelo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«Ese móvil cuesta un ojo de la cara»",
+    "answer": "That phone costs an arm and a leg."
+  },
+  "caption": "«Cuesta un ojo de la cara» es «it costs an arm and a leg». Idioms en inglés en un reto.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 74
+}

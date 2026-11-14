@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "AFFECT o EFFECT: ¿cuál va en cada frase? 🌍",
+  "video_description": "Affect es verbo, effect es sustantivo… casi siempre. Diez frases. 🌍",
+  "title": "Elige la correcta",
+  "theme": "affect o effect",
+  "intro": "[cheerful] Diez frases, dos opciones. Di la correcta antes que yo.",
+  "items": [
+    {
+      "sentence": "Did the news ____ you?",
+      "options": [
+        "affect",
+        "effect"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The medicine had no ____.",
+      "options": [
+        "affect",
+        "effect"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Smoking ____ your health.",
+      "options": [
+        "effects",
+        "affects"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "What are the side ____?",
+      "options": [
+        "effects",
+        "affects"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "The rain ____ our plans.",
+      "options": [
+        "effected",
+        "affected"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It had a big ____ on me.",
+      "options": [
+        "effect",
+        "affect"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The new rules take ____ today.",
+      "options": [
+        "effect",
+        "affect"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The film's special ____ are amazing.",
+      "options": [
+        "affects",
+        "effects"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The cold weather ____ my mood.",
+      "options": [
+        "affects",
+        "effects"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "The new manager ____ real change.",
+      "options": [
+        "affected",
+        "effected"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AffectVsEffect",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec038",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

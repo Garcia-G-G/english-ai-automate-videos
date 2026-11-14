@@ -1,0 +1,43 @@
+{
+  "type": "expression_of_day",
+  "video_title": "I HAVE A LOT ON MY PLATE: no es comida 🍽️",
+  "video_description": "La excusa perfecta, y educada, para decir que no llegas. 📋",
+  "level": "B1",
+  "intro": "[cheerful] La expresión de hoy la vas a oír esta misma semana.",
+  "expression": "have a lot on my plate",
+  "literal": "tener mucho en mi plato",
+  "meaning": "tener muchísimo que hacer",
+  "register": "neutral",
+  "examples": [
+    {
+      "en": "I can't help this week. I have a lot on my plate.",
+      "es": "Esta semana no puedo ayudar. Voy hasta arriba."
+    },
+    {
+      "en": "She has a lot on her plate right now.",
+      "es": "Ahora mismo va muy cargada."
+    }
+  ],
+  "equivalent_es": "ir hasta arriba",
+  "tip": "Cambia el posesivo según la persona: my plate, your plate, her plate.",
+  "outro": "[excited] Úsala hoy en una frase. Escríbela en los comentarios.",
+  "translations": {
+    "have a lot on my plate": "tener muchísimo que hacer",
+    "I can't help this week. I have a lot on my plate.": "Esta semana no puedo ayudar. Voy hasta arriba.",
+    "She has a lot on her plate right now.": "Ahora mismo va muy cargada."
+  },
+  "hashtags": [
+    "#ExpresiónDelDía",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Idioms"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id033",
+    "video_type": "expression_of_day",
+    "model": "manual",
+    "draft": true
+  }
+}

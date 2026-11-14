@@ -1,0 +1,46 @@
+{
+  "id": "hc_p019",
+  "style": "poster",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«Despite of»: el «of» que sobra",
+  "hook_text": "¿Está bien decir «DESPITE OF»?",
+  "poster": {
+    "error_no": "034",
+    "big_wrong": "DESPITE OF",
+    "big_right": "DESPITE / IN SPITE OF",
+    "examples": [
+      "Despite the rain, we went out. — A pesar de la lluvia, salimos.",
+      "In spite of being tired, she came. — Aunque estaba cansada, vino."
+    ]
+  },
+  "correction": {
+    "wrong": "DESPITE OF",
+    "right": "DESPITE / IN SPITE OF",
+    "rule": "Despite sin of"
+  },
+  "voice": [
+    "Error de nivel alto: [[despite of]]. Mezcla dos expresiones correctas.",
+    "O [[despite]], solo: [[Despite the rain, we went out]].",
+    "O [[in spite of]], con [[of]]: [[In spite of the rain]].",
+    "Con verbo, -ing: [[Despite being tired, she came]].",
+    "Y con frase completa, [[although]]: [[Although it was raining, we went out]].",
+    "Reto: di «a pesar del tráfico, llegué a tiempo». Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«A pesar del tráfico, llegué a tiempo»",
+    "answer": "Despite the traffic, I arrived on time."
+  },
+  "caption": "Se dice «despite» o «in spite of», nunca «despite of». Error de nivel avanzado explicado.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 62
+}

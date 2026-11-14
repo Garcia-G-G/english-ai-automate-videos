@@ -1,0 +1,106 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las PREGUNTAS en inglés? ❓",
+  "video_description": "❓ Las 10 palabras para hacer preguntas en inglés: what, who, where, why… ¿Cuántas sabes? 🤔",
+  "title": "¿Cómo se dice…?",
+  "theme": "las preguntas",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes hacer preguntas en inglés? Ojo: «por qué» no es «for what». Di cada palabra antes que yo.",
+  "items": [
+    {
+      "emoji": "❓",
+      "spanish": "Qué",
+      "english": "what"
+    },
+    {
+      "emoji": "👤",
+      "spanish": "Quién",
+      "english": "who"
+    },
+    {
+      "emoji": "📍",
+      "spanish": "Dónde",
+      "english": "where"
+    },
+    {
+      "emoji": "📅",
+      "spanish": "Cuándo",
+      "english": "when"
+    },
+    {
+      "emoji": "🤔",
+      "spanish": "Por qué",
+      "english": "why"
+    },
+    {
+      "emoji": "🔧",
+      "spanish": "Cómo",
+      "english": "how"
+    },
+    {
+      "emoji": "👉",
+      "spanish": "Cuál",
+      "english": "which"
+    },
+    {
+      "emoji": "💰",
+      "spanish": "Cuánto",
+      "english": "how much"
+    },
+    {
+      "emoji": "🔢",
+      "spanish": "Cuántos",
+      "english": "how many"
+    },
+    {
+      "emoji": "⏰",
+      "spanish": "A qué hora",
+      "english": "what time"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: what, who, where, when, why, how, which, how much, how many, what time",
+  "outro": "[cheerful] ¿Cuántas sabías? Escríbelo en los comentarios y hazme una pregunta en inglés.",
+  "full_script": "[excited] ¿Sabes hacer preguntas en inglés? Ojo: «por qué» no es «for what». Di cada palabra antes que yo. Qué... what. what. Quién... who. who. Dónde... where. where. Cuándo... when. when. Por qué... why. why. Cómo... how. how. Cuál... which. which. Cuánto... how much. how much. Cuántos... how many. how many. A qué hora... what time. what time. Ahora todas en inglés, conmigo: what, who, where, when, why, how, which, how much, how many, what time. [cheerful] ¿Cuántas sabías? Escríbelo en los comentarios y hazme una pregunta en inglés.",
+  "translations": {
+    "what": "Qué",
+    "who": "Quién",
+    "where": "Dónde",
+    "when": "Cuándo",
+    "why": "Por qué",
+    "how": "Cómo",
+    "which": "Cuál",
+    "how much": "Cuánto",
+    "how many": "Cuántos",
+    "what time": "A qué hora"
+  },
+  "english_phrases": [
+    "what",
+    "who",
+    "where",
+    "when",
+    "why",
+    "how",
+    "which",
+    "how much",
+    "how many",
+    "what time"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#PreguntasEnInglés",
+    "#InglésParaLatinos",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv080",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:49:31.836366",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "POLÍTICA en inglés: palabras difíciles de pronunciar 🗳️",
+  "video_description": "Party, campaign, sovereignty: el vocabulario político tiene sus trampas. 🏛️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la política",
+  "intro": "[thoughtful] Palabras de política. Léelas en voz alta antes de que yo las pronuncie.",
+  "items": [
+    {
+      "english": "party",
+      "respelling": "PAR-ti",
+      "ipa": "ˈpɑrti",
+      "trap": "La T suena casi como una «r» suave"
+    },
+    {
+      "english": "president",
+      "respelling": "PRE-zi-dent",
+      "ipa": "ˈprɛzɪdənt",
+      "trap": "La S suena «z»: PRE-zi-dent"
+    },
+    {
+      "english": "election",
+      "respelling": "i-LEK-shan",
+      "ipa": "ɪˈlɛkʃən",
+      "trap": "TI suena «sh»: i-LEK-shan"
+    },
+    {
+      "english": "mayor",
+      "respelling": "MEI-er",
+      "ipa": "ˈmeɪɚ",
+      "trap": "Dos sílabas: MEI-er"
+    },
+    {
+      "english": "government",
+      "respelling": "GA-vern-ment",
+      "ipa": "ˈɡʌvɚnmənt",
+      "trap": "La O suena «a»: GA-vern-ment"
+    },
+    {
+      "english": "campaign",
+      "respelling": "kam-PEIN",
+      "ipa": "kæmˈpeɪn",
+      "trap": "La G no suena: kam-PEIN"
+    },
+    {
+      "english": "politics",
+      "respelling": "PA-la-tiks",
+      "ipa": "ˈpɑlətɪks",
+      "trap": "Acento en PA-, no en -LI-"
+    },
+    {
+      "english": "parliament",
+      "respelling": "PAR-la-ment",
+      "ipa": "ˈpɑrləmənt",
+      "trap": "La I no suena: PAR-la-ment"
+    },
+    {
+      "english": "bureaucracy",
+      "respelling": "biu-RA-kra-si",
+      "ipa": "bjʊˈrɑkrəsi",
+      "trap": "Acento en RA: biu-RA-kra-si"
+    },
+    {
+      "english": "sovereignty",
+      "respelling": "SAV-ren-ti",
+      "ipa": "ˈsɑvrənti",
+      "trap": "La G no suena: SAV-ren-ti"
+    }
+  ],
+  "verdict": "La tres es básico, la siete intermedio y la diez experto. ¿Qué nivel votas para ti?",
+  "outro": "[serious] ¿Hasta dónde llegaste? Tu número, en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#InglésParaHispanohablantes",
+    "#Actualidad"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl095",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

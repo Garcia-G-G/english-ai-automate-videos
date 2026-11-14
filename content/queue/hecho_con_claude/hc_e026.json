@@ -1,0 +1,43 @@
+{
+  "id": "hc_e026",
+  "style": "escena",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«Long story short»: cómo resumir como un nativo",
+  "hook_text": "ESCENA — CAFÉ CON UNA AMIGA",
+  "scene": {
+    "location": "Café con una amiga",
+    "take1": "Well, to make the story short…",
+    "take2": "Long story short, I got the job!",
+    "note": "Long story short = en resumen."
+  },
+  "correction": {
+    "wrong": "to make the story short",
+    "right": "Long story short",
+    "rule": "Conector natural"
+  },
+  "voice": [
+    "Escena: café con una amiga, le cuentas tu semana. Toma uno: [[Well, to make the story short]]…",
+    "¡Corten! Se entiende, pero hay una fórmula fija que usan los nativos.",
+    "Toma dos: [[Long story short, I got the job!]] «En resumen, me dieron el trabajo».",
+    "Otras para resumir: [[In a nutshell]] o [[Bottom line]].",
+    "Y si quieres alargar el suspense: [[You won't believe what happened]].",
+    "Reto: resume tu fin de semana empezando con [[long story short]]."
+  ],
+  "challenge": {
+    "prompt": "Resume tu fin de semana en una frase",
+    "answer": "Long story short, I slept all weekend."
+  },
+  "caption": "«Long story short» e «in a nutshell»: cómo resumir una historia en inglés como un nativo.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 75
+}

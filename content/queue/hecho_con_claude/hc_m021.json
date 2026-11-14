@@ -1,0 +1,59 @@
+{
+  "id": "hc_m021",
+  "style": "mensajes",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«Not my cup of tea»: decir que no sin ofender",
+  "hook_text": "Me invitaron a la ópera…",
+  "chat": {
+    "contact": "Oliver · Londres",
+    "messages": [
+      [
+        "them",
+        "I've got two tickets for the opera tonight!"
+      ],
+      [
+        "me",
+        "Thanks but I don't like it",
+        "error"
+      ],
+      [
+        "them",
+        "oh ok 😕"
+      ],
+      [
+        "them",
+        "(you could say: it's not my cup of tea 🍵)"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I don't like it (seco)",
+    "right": "It's not really my cup of tea",
+    "rule": "Idiom para «no es lo mío», amable"
+  },
+  "voice": [
+    "Un amigo me invitó a la ópera y le dije [[Thanks, but I don't like it]]. Correcto, pero seco.",
+    "Los nativos suavizan con una expresión: [[It's not my cup of tea]], «no es lo mío».",
+    "Y para sonar todavía más amable: [[It's not really my cup of tea, but thanks!]]",
+    "Sirve para música, deportes, planes o personas: [[Horror movies aren't my cup of tea]].",
+    "En positivo se usa menos; mejor [[That's right up my street]], «eso es justo lo mío».",
+    "Reto: rechaza un plan de karaoke con esta expresión. Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "Rechaza un plan de karaoke con elegancia",
+    "answer": "Thanks, but karaoke isn't really my cup of tea."
+  },
+  "caption": "«It's not my cup of tea» = «no es lo mío». Cómo decir que no en inglés sin sonar seco.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 92
+}

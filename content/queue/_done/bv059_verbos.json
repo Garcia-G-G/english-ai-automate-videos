@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen más VERBOS en inglés? 🔁",
+  "video_description": "Diez verbos que vas a usar todos los días. 💬",
+  "title": "¿Cómo se dice…?",
+  "theme": "más verbos",
+  "level": "A1",
+  "intro": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas?",
+  "items": [
+    {
+      "emoji": "📖",
+      "spanish": "Abrir",
+      "english": "open"
+    },
+    {
+      "emoji": "🔒",
+      "spanish": "Cerrar",
+      "english": "close"
+    },
+    {
+      "emoji": "🛒",
+      "spanish": "Comprar",
+      "english": "buy"
+    },
+    {
+      "emoji": "🏷️",
+      "spanish": "Vender",
+      "english": "sell"
+    },
+    {
+      "emoji": "💳",
+      "spanish": "Pagar",
+      "english": "pay"
+    },
+    {
+      "emoji": "🤝",
+      "spanish": "Ayudar",
+      "english": "help"
+    },
+    {
+      "emoji": "⏳",
+      "spanish": "Esperar",
+      "english": "wait"
+    },
+    {
+      "emoji": "🔍",
+      "spanish": "Buscar",
+      "english": "look for"
+    },
+    {
+      "emoji": "🎯",
+      "spanish": "Encontrar",
+      "english": "find"
+    },
+    {
+      "emoji": "🤯",
+      "spanish": "Olvidar",
+      "english": "forget"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: open, close, buy, sell, pay, help, wait, look for, find, forget.",
+  "outro": "[curious] ¿Cuál no sabías? Cuéntamelo abajo.",
+  "translations": {
+    "open": "Abrir",
+    "close": "Cerrar",
+    "buy": "Comprar",
+    "sell": "Vender",
+    "pay": "Pagar",
+    "help": "Ayudar",
+    "wait": "Esperar",
+    "look for": "Buscar",
+    "find": "Encontrar",
+    "forget": "Olvidar"
+  },
+  "english_phrases": [
+    "open",
+    "close",
+    "buy",
+    "sell",
+    "pay",
+    "help",
+    "wait",
+    "look for",
+    "find",
+    "forget"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv059",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Reto rápido: diez palabras. ¿Cuántas aciertas? Abrir... open. open. Cerrar... close. close. Comprar... buy. buy. Vender... sell. sell. Pagar... pay. pay. Ayudar... help. help. Esperar... wait. wait. Buscar... look for. look for. Encontrar... find. find. Olvidar... forget. forget. Otra vez, todas seguidas: open, close, buy, sell, pay, help, wait, look for, find, forget. [curious] ¿Cuál no sabías? Cuéntamelo abajo."
+}

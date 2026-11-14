@@ -1,0 +1,51 @@
+{
+  "id": "hc_m008",
+  "style": "mensajes",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«Explain me»: dos palabras, un error",
+  "hook_text": "Le pedí ayuda con los deberes…",
+  "chat": {
+    "contact": "Sophie · Manchester",
+    "messages": [
+      [
+        "me",
+        "Can you explain me the homework? 📚",
+        "error"
+      ],
+      [
+        "them",
+        "sure! I'll explain it TO you 🙂"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "Explain me the homework",
+    "right": "Explain the homework to me",
+    "rule": "Explain + cosa + to + persona"
+  },
+  "voice": [
+    "Le escribí a mi compañera: [[Can you explain me the homework?]] Me entendió, pero está mal.",
+    "Con [[explain]] la persona necesita [[to]]: [[Can you explain the homework to me?]]",
+    "Primero lo que explicas, después a quién: [[explain it to me]].",
+    "Pasa lo mismo con [[say]] y [[describe]]: [[Say it to me]], [[Describe it to me]].",
+    "Pero con [[tell]] no: [[Tell me]] está perfecto.",
+    "Reto: ¿cómo dirías «explícamelo otra vez»? Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Explícamelo otra vez»",
+    "answer": "Explain it to me again."
+  },
+  "caption": "Se dice «Explain it to me», no «Explain me». El orden de las palabras con explain, say y describe.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 73
+}

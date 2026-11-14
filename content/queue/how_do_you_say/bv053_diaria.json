@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la RUTINA DIARIA en inglés? ⏰",
+  "video_description": "Tu día entero en diez verbos, de despertarte a dormirte. 🌙",
+  "title": "¿Cómo se dice…?",
+  "theme": "la rutina diaria",
+  "level": "A2",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "⏰",
+      "spanish": "Despertarse",
+      "english": "wake up"
+    },
+    {
+      "emoji": "🌅",
+      "spanish": "Levantarse",
+      "english": "get up"
+    },
+    {
+      "emoji": "👕",
+      "spanish": "Vestirse",
+      "english": "get dressed"
+    },
+    {
+      "emoji": "🥐",
+      "spanish": "Desayunar",
+      "english": "have breakfast"
+    },
+    {
+      "emoji": "🚌",
+      "spanish": "Ir a trabajar",
+      "english": "go to work"
+    },
+    {
+      "emoji": "🥗",
+      "spanish": "Almorzar",
+      "english": "have lunch"
+    },
+    {
+      "emoji": "🏠",
+      "spanish": "Volver a casa",
+      "english": "go home"
+    },
+    {
+      "emoji": "🍝",
+      "spanish": "Cenar",
+      "english": "have dinner"
+    },
+    {
+      "emoji": "🛌",
+      "spanish": "Acostarse",
+      "english": "go to bed"
+    },
+    {
+      "emoji": "😴",
+      "spanish": "Dormirse",
+      "english": "fall asleep"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: wake up, get up, get dressed, have breakfast, go to work, have lunch, go home, have dinner, go to bed, fall asleep.",
+  "outro": "[curious] ¿Cuál no sabías? Cuéntamelo abajo.",
+  "translations": {
+    "wake up": "Despertarse",
+    "get up": "Levantarse",
+    "get dressed": "Vestirse",
+    "have breakfast": "Desayunar",
+    "go to work": "Ir a trabajar",
+    "have lunch": "Almorzar",
+    "go home": "Volver a casa",
+    "have dinner": "Cenar",
+    "go to bed": "Acostarse",
+    "fall asleep": "Dormirse"
+  },
+  "english_phrases": [
+    "wake up",
+    "get up",
+    "get dressed",
+    "have breakfast",
+    "go to work",
+    "have lunch",
+    "go home",
+    "have dinner",
+    "go to bed",
+    "fall asleep"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv053",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Despertarse... wake up. wake up. Levantarse... get up. get up. Vestirse... get dressed. get dressed. Desayunar... have breakfast. have breakfast. Ir a trabajar... go to work. go to work. Almorzar... have lunch. have lunch. Volver a casa... go home. go home. Cenar... have dinner. have dinner. Acostarse... go to bed. go to bed. Dormirse... fall asleep. fall asleep. Otra vez, todas seguidas: wake up, get up, get dressed, have breakfast, go to work, have lunch, go home, have dinner, go to bed, fall asleep. [curious] ¿Cuál no sabías? Cuéntamelo abajo."
+}

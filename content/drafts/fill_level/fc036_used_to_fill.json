@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "Rellena el hueco: USED TO 📼",
+  "video_description": "Lo que solías hacer: used to y would en diez frases. 📼",
+  "title": "Completa la frase",
+  "theme": "used to y would",
+  "intro": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "sentence": "I ____ to live in Lima.",
+      "answer": "used",
+      "translation": "Antes vivía en Lima.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Did you use ____ play sports?",
+      "answer": "to",
+      "translation": "¿Hacías deporte antes?",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ have long hair.",
+      "answer": "used to",
+      "translation": "Antes tenía el pelo largo.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I didn't use to ____ coffee.",
+      "answer": "like",
+      "translation": "Antes no me gustaba el café.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We ____ go fishing every summer.",
+      "answer": "would",
+      "translation": "Íbamos a pescar todos los veranos.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'm used to ____ alone.",
+      "answer": "living",
+      "translation": "Estoy acostumbrado a vivir solo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "You'll get used to ____ early.",
+      "answer": "waking",
+      "translation": "Te acostumbrarás a madrugar.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "There ____ to be a park here.",
+      "answer": "used",
+      "translation": "Aquí antes había un parque.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I can't get used ____ the noise.",
+      "answer": "to",
+      "translation": "No me acostumbro al ruido.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "He's not what he ____ to be.",
+      "answer": "used",
+      "translation": "Ya no es lo que era.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#UsedTo",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc036",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

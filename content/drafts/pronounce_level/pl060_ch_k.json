@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Cuando la CH suena K: ¿las dices bien? 🎄",
+  "video_description": "School, chaos, choir: palabras donde la CH suena como una K. 🎶",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "CH que suena K",
+  "intro": "[surprised] En estas palabras la CH suena «k». Pronúncialas antes de que yo lo haga.",
+  "items": [
+    {
+      "english": "school",
+      "respelling": "SKUUL",
+      "ipa": "ˈskuːl",
+      "trap": "Sin «e» delante y la CH es «k»"
+    },
+    {
+      "english": "echo",
+      "respelling": "E-kou",
+      "ipa": "ˈɛkoʊ",
+      "trap": "CH suena «k»: E-kou"
+    },
+    {
+      "english": "Christmas",
+      "respelling": "KRIS-mas",
+      "ipa": "ˈkrɪsməs",
+      "trap": "CH es «k» y la T no suena"
+    },
+    {
+      "english": "ache",
+      "respelling": "EIK",
+      "ipa": "ˈeɪk",
+      "trap": "Una sola sílaba: EIK"
+    },
+    {
+      "english": "stomach",
+      "respelling": "STA-mak",
+      "ipa": "ˈstʌmək",
+      "trap": "Termina en «k»: STA-mak"
+    },
+    {
+      "english": "character",
+      "respelling": "KE-rak-ter",
+      "ipa": "ˈkɛrəktɚ",
+      "trap": "Acento en KE-, no en -TER"
+    },
+    {
+      "english": "schedule",
+      "respelling": "SKE-yuul",
+      "ipa": "ˈskɛdʒuːl",
+      "trap": "En EE. UU. empieza con «sk»"
+    },
+    {
+      "english": "chaos",
+      "respelling": "KEI-as",
+      "ipa": "ˈkeɪɑs",
+      "trap": "Suena KEI-as, no CHA-os"
+    },
+    {
+      "english": "archive",
+      "respelling": "AR-kaiv",
+      "ipa": "ˈɑrkaɪv",
+      "trap": "Acento en AR y la I es «ai»"
+    },
+    {
+      "english": "choir",
+      "respelling": "KUAI-er",
+      "ipa": "ˈkwaɪɚ",
+      "trap": "Ni CH ni O: suena KUAI-er"
+    }
+  ],
+  "verdict": "Hasta la tres eres básico, hasta la siete intermedio, y si dijiste las diez, eres experto.",
+  "outro": "[excited] ¿Cuántas dijiste bien? Déjame tu número aquí abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#LetrasMudas",
+    "#InglésOnline",
+    "#Pronunciación"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl060",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

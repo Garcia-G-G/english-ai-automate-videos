@@ -1,0 +1,36 @@
+{
+  "type": "educational",
+  "video_title": "Cómo terminar una conversación en inglés sin ser borde 👋",
+  "video_description": "Tres pasos para salir con elegancia de cualquier charla. 🚪",
+  "hook": "Llevas diez minutos hablando y no sabes cómo cortar.",
+  "full_script": "[excited] Llevas diez minutos de charla y no sabes cómo cortar. Si sueltas un bye de golpe, suena seco. En inglés hay una salida elegante en tres pasos. Primero, la señal. Anyway. Con ese anyway, el otro ya sabe que vas cerrando. Después, la frase clave. Anyway, I'll let you go. Bueno, te dejo. Fíjate en el truco: parece que lo haces por el otro, no por ti. Luego, algo bonito. It was great catching up. Me ha encantado ponernos al día. Y para rematar, dejas la puerta abierta. Let's talk soon. Hablamos pronto. Señal, frase y despedida. Con esos tres pasos sales de cualquier charla. Sin quedar mal, ni en una boda ni en la máquina del café.",
+  "english_phrases": [
+    "bye",
+    "Anyway",
+    "Anyway, I'll let you go",
+    "It was great catching up",
+    "Let's talk soon"
+  ],
+  "translations": {
+    "bye": "adiós",
+    "Anyway": "bueno",
+    "Anyway, I'll let you go": "bueno, te dejo",
+    "It was great catching up": "me ha encantado ponernos al día",
+    "Let's talk soon": "hablamos pronto"
+  },
+  "tip": "I'll let you go: parece que cortas por el otro, no por ti.",
+  "cta": "¿Con quién lo vas a probar primero?",
+  "hashtags": [
+    "#InglésReal",
+    "#Conversación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "social",
+    "topic_id": "so027",
+    "video_type": "educational",
+    "model": "manual"
+  }
+}

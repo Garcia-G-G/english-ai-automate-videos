@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "PAÍSES en inglés: no se dicen como piensas 🌍",
+  "video_description": "Países en inglés que no se dicen como en español. ¿Hasta dónde llegas? 🗺️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los países",
+  "intro": "[surprised] Los nombres de países en inglés esconden trampas. Di cada uno en voz alta.",
+  "items": [
+    {
+      "english": "Mexico",
+      "respelling": "MEK-si-kou",
+      "ipa": "ˈmɛksɪkoʊ",
+      "trap": "X suena «ks»: MEK-si-kou"
+    },
+    {
+      "english": "Italy",
+      "respelling": "I-te-li",
+      "ipa": "ˈɪtəli",
+      "trap": "Acento en la I inicial"
+    },
+    {
+      "english": "China",
+      "respelling": "CHAI-na",
+      "ipa": "ˈtʃaɪnə",
+      "trap": "La I suena «ai»: CHAI-na"
+    },
+    {
+      "english": "Spain",
+      "respelling": "SPEIN",
+      "ipa": "ˈspeɪn",
+      "trap": "Sin «es-» y AI suena «ei»"
+    },
+    {
+      "english": "Brazil",
+      "respelling": "bre-ZIL",
+      "ipa": "brəˈzɪl",
+      "trap": "La Z inglesa vibra: bre-ZIL"
+    },
+    {
+      "english": "Japan",
+      "respelling": "ye-PAN",
+      "ipa": "dʒəˈpæn",
+      "trap": "J fuerte «y» y acento en PAN"
+    },
+    {
+      "english": "Germany",
+      "respelling": "YER-me-ni",
+      "ipa": "ˈdʒɝməni",
+      "trap": "G fuerte «y»: YER-me-ni"
+    },
+    {
+      "english": "Portugal",
+      "respelling": "POR-che-gel",
+      "ipa": "ˈpɔrtʃəgəl",
+      "trap": "La T suena «ch»: POR-che-gel"
+    },
+    {
+      "english": "Colombia",
+      "respelling": "ke-LAM-bi-a",
+      "ipa": "kəˈlʌmbiə",
+      "trap": "La O suena «a»: ke-LAM-bi-a"
+    },
+    {
+      "english": "Uruguay",
+      "respelling": "IUR-e-guai",
+      "ipa": "ˈjʊrəgwaɪ",
+      "trap": "Acento en IUR y termina en «guai»"
+    }
+  ],
+  "verdict": "Si solo te salieron las tres primeras, básico. Hasta la siete, intermedio. Las diez, experto.",
+  "outro": "[warm] ¿Hasta qué palabra llegaste? Comenta y sigue practicando.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#PaísesEnInglés",
+    "#AprenderInglés",
+    "#InglésAmericano",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl013",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

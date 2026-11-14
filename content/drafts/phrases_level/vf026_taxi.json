@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «PARE AQUÍ»? 10 frases 🚕",
+  "video_description": "Diez frases para moverte en taxi o en transporte. 🚕",
+  "title": "¿Cómo se dice?",
+  "theme": "en el taxi",
+  "intro": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo.",
+  "items": [
+    {
+      "spanish": "Al centro, por favor.",
+      "english": "Downtown, please."
+    },
+    {
+      "spanish": "¿Cuánto tarda?",
+      "english": "How long does it take?"
+    },
+    {
+      "spanish": "¿Cuánto cuesta ir al aeropuerto?",
+      "english": "How much is it to the airport?"
+    },
+    {
+      "spanish": "Pare aquí, por favor.",
+      "english": "Pull over here, please."
+    },
+    {
+      "spanish": "Quédese con el cambio.",
+      "english": "Keep the change."
+    },
+    {
+      "spanish": "¿Qué autobús va a la playa?",
+      "english": "Which bus goes to the beach?"
+    },
+    {
+      "spanish": "¿Es esta mi parada?",
+      "english": "Is this my stop?"
+    },
+    {
+      "spanish": "Un billete de ida y vuelta.",
+      "english": "A round-trip ticket."
+    },
+    {
+      "spanish": "¿Este tren va a Londres?",
+      "english": "Does this train go to London?"
+    },
+    {
+      "spanish": "Voy con prisa.",
+      "english": "I'm in a hurry."
+    }
+  ],
+  "outro": "[excited] Compártelo con alguien que las necesite.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf026",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

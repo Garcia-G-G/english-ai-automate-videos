@@ -1,0 +1,46 @@
+{
+  "id": "hc_c001",
+  "style": "comic",
+  "angle": "reto",
+  "title": "RETO: ¿cómo dices «tengo frío» en inglés?",
+  "hook_text": "¿Tú también dices esto?",
+  "quiz": {
+    "prompt": "¿Cómo dirías «tengo frío»?",
+    "options": [
+      "I have cold",
+      "I am cold",
+      "I make cold"
+    ],
+    "answer": 1,
+    "after": "Frío, calor, hambre y sed se ES: I'm cold, I'm hot, I'm hungry, I'm thirsty."
+  },
+  "correction": {
+    "wrong": "I have cold",
+    "right": "I'm cold",
+    "rule": "Estados del cuerpo con «to be»"
+  },
+  "voice": [
+    "Reto rápido. ¿Cómo dirías «tengo frío»? ¿[[I have cold]], [[I am cold]] o [[I make cold]]?",
+    "Tienes tres segundos.",
+    "¡La B! [[I'm cold]]. En inglés el frío no se tiene, se es.",
+    "Y lo mismo con calor, hambre y sed: [[I'm hot]], [[I'm hungry]], [[I'm thirsty]]. Hasta el miedo: [[I'm scared]].",
+    "¿Acertaste a la primera? Dímelo en comentarios con un sí o un no."
+  ],
+  "challenge": {
+    "prompt": "«Tengo hambre y sed»",
+    "answer": "I'm hungry and thirsty."
+  },
+  "caption": "Reto de inglés: «tengo frío» se dice «I'm cold», no «I have cold». ¿Acertaste? Pon a prueba a un amigo.",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "principiante",
+  "level_label": "Principiante · A1–A2",
+  "voice_words": 64
+}

@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases para terminar una conversación en inglés 👋",
+  "video_description": "Diez frases para cerrar una conversación con estilo. 👋",
+  "title": "¿Cómo se dice?",
+  "theme": "para terminar una conversación",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "Me tengo que ir.",
+      "english": "I have to go."
+    },
+    {
+      "spanish": "Hablamos.",
+      "english": "Talk soon."
+    },
+    {
+      "spanish": "Me alegro de haberte visto.",
+      "english": "Great seeing you."
+    },
+    {
+      "spanish": "Te dejo, que tengo prisa.",
+      "english": "I'll let you go, I'm in a rush."
+    },
+    {
+      "spanish": "Saluda a tu familia.",
+      "english": "Say hi to your family."
+    },
+    {
+      "spanish": "Escríbeme.",
+      "english": "Text me."
+    },
+    {
+      "spanish": "A ver si quedamos pronto.",
+      "english": "Let's catch up soon."
+    },
+    {
+      "spanish": "Ha sido un placer.",
+      "english": "It was a pleasure."
+    },
+    {
+      "spanish": "Que vaya bien.",
+      "english": "Hope it goes well."
+    },
+    {
+      "spanish": "Ya nos veremos.",
+      "english": "See you around."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#ConversaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf040",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I have to go.": "Me tengo que ir.",
+    "Talk soon.": "Hablamos.",
+    "Great seeing you.": "Me alegro de haberte visto.",
+    "I'll let you go, I'm in a rush.": "Te dejo, que tengo prisa.",
+    "Say hi to your family.": "Saluda a tu familia.",
+    "Text me.": "Escríbeme.",
+    "Let's catch up soon.": "A ver si quedamos pronto.",
+    "It was a pleasure.": "Ha sido un placer.",
+    "Hope it goes well.": "Que vaya bien.",
+    "See you around.": "Ya nos veremos."
+  },
+  "english_phrases": [
+    "I have to go.",
+    "Talk soon.",
+    "Great seeing you.",
+    "I'll let you go, I'm in a rush.",
+    "Say hi to your family.",
+    "Text me.",
+    "Let's catch up soon.",
+    "It was a pleasure.",
+    "Hope it goes well.",
+    "See you around."
+  ],
+  "full_script": "[cheerful] Lee la frase en español y dila en inglés en voz alta. I have to go. Talk soon. Great seeing you. I'll let you go, I'm in a rush. Say hi to your family. Text me. Let's catch up soon. It was a pleasure. Hope it goes well. See you around. [cheerful] Escribe en los comentarios la que más te gustó."
+}

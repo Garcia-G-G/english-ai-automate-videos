@@ -1,0 +1,69 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «¿SIGUE EN PIE?» en inglés? 📅",
+  "video_description": "Frases para hacer y confirmar planes con amigos en inglés, como se dicen de verdad. ¿Cuántas sabías? 📅",
+  "title": "¿Cómo se dice?",
+  "theme": "Hacer y confirmar planes",
+  "intro": "[curious] ¿Dirías «is it still on foot?» para confirmar un plan? Mira cómo se dice de verdad.",
+  "items": [
+    {
+      "spanish": "¿Sigue en pie lo de mañana?",
+      "english": "Are we still on for tomorrow?"
+    },
+    {
+      "spanish": "¿Estás libre el sábado?",
+      "english": "Are you free on Saturday?"
+    },
+    {
+      "spanish": "¿Nos vemos a las ocho?",
+      "english": "Should we meet at eight?"
+    },
+    {
+      "spanish": "¿Te queda bien el viernes?",
+      "english": "Does Friday work for you?"
+    },
+    {
+      "spanish": "Te confirmo más tarde.",
+      "english": "I'll let you know later."
+    },
+    {
+      "spanish": "¡Hecho! Nos vemos ahí.",
+      "english": "Deal! See you there."
+    },
+    {
+      "spanish": "Lo siento, tengo que cancelar.",
+      "english": "Sorry, I have to cancel."
+    },
+    {
+      "spanish": "¿Lo dejamos para otro día?",
+      "english": "Can we take a rain check?"
+    },
+    {
+      "spanish": "Ya voy en camino.",
+      "english": "I'm on my way."
+    },
+    {
+      "spanish": "Avísame cuando llegues.",
+      "english": "Text me when you get here."
+    }
+  ],
+  "outro": "[warm] ¿Con cuál vas a confirmar tu próximo plan? Escríbela en los comentarios.",
+  "full_script": "[curious] ¿Dirías «is it still on foot?» para confirmar un plan? Mira cómo se dice de verdad. ¿Are we still on for tomorrow? ¿Are you free on Saturday? ¿Should we meet at eight? ¿Does Friday work for you? I'll let you know later. ¡Deal! See you there. Sorry, I have to cancel. ¿Can we take a rain check? I'm on my way. Text me when you get here. [warm] ¿Con cuál vas a confirmar tu próximo plan? Escríbela en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésFácil",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "social",
+    "topic_id": "so022",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:53:05.532796",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 6 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

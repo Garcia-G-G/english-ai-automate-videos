@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "las frases con IF: ¿sabes completar estas 10 frases? 🤷",
+  "video_description": "Si llueve, si tuviera, si hubiera: los condicionales en diez frases. 🤷",
+  "title": "Completa la frase",
+  "theme": "las frases con if",
+  "intro": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto.",
+  "items": [
+    {
+      "sentence": "If it rains, we ____ stay home.",
+      "answer": "will",
+      "translation": "Si llueve, nos quedaremos en casa.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "If you heat ice, it ____.",
+      "answer": "melts",
+      "translation": "Si calientas el hielo, se derrite.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "If I ____ rich, I'd travel the world.",
+      "answer": "were",
+      "translation": "Si fuera rico, viajaría por el mundo.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "If I had time, I ____ help you.",
+      "answer": "would",
+      "translation": "Si tuviera tiempo, te ayudaría.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "If she ____ studied, she would have passed.",
+      "answer": "had",
+      "translation": "Si hubiera estudiado, habría aprobado.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'll go ____ you come with me.",
+      "answer": "if",
+      "translation": "Iré si vienes conmigo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Call me ____ you need anything.",
+      "answer": "if",
+      "translation": "Llámame si necesitas algo.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ you hurry, you'll miss the train.",
+      "answer": "Unless",
+      "translation": "Si no te das prisa, perderás el tren.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'd have come if you ____ asked me.",
+      "answer": "had",
+      "translation": "Habría venido si me lo hubieras pedido.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ I known, I'd have told you.",
+      "answer": "Had",
+      "translation": "Si lo hubiera sabido, te lo habría dicho.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Condicionales",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc013",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "If it rains, we will stay home.": "Si llueve, nos quedaremos en casa.",
+    "If you heat ice, it melts.": "Si calientas el hielo, se derrite.",
+    "If I were rich, I'd travel the world.": "Si fuera rico, viajaría por el mundo.",
+    "If I had time, I would help you.": "Si tuviera tiempo, te ayudaría.",
+    "If she had studied, she would have passed.": "Si hubiera estudiado, habría aprobado.",
+    "I'll go if you come with me.": "Iré si vienes conmigo.",
+    "Call me if you need anything.": "Llámame si necesitas algo.",
+    "Unless you hurry, you'll miss the train.": "Si no te das prisa, perderás el tren.",
+    "I'd have come if you had asked me.": "Habría venido si me lo hubieras pedido.",
+    "Had I known, I'd have told you.": "Si lo hubiera sabido, te lo habría dicho."
+  },
+  "english_phrases": [
+    "If it rains, we will stay home.",
+    "If you heat ice, it melts.",
+    "If I were rich, I'd travel the world.",
+    "If I had time, I would help you.",
+    "If she had studied, she would have passed.",
+    "I'll go if you come with me.",
+    "Call me if you need anything.",
+    "Unless you hurry, you'll miss the train.",
+    "I'd have come if you had asked me.",
+    "Had I known, I'd have told you."
+  ],
+  "full_script": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto. If it rains, we will stay home. If you heat ice, it melts. If I were rich, I'd travel the world. Ahora, nivel intermedio. If I had time, I would help you. If she had studied, she would have passed. I'll go if you come with me. Call me if you need anything. Y ahora, nivel experto. Unless you hurry, you'll miss the train. I'd have come if you had asked me. Had I known, I'd have told you. Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

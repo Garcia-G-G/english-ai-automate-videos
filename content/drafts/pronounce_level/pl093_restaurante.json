@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "En el RESTAURANTE: ¿pides bien en inglés? 🍽️",
+  "video_description": "Check, appetizer, cuisine: lo que necesitas pronunciar bien para pedir. 🍷",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el restaurante",
+  "intro": "[happy] Mesa para uno: diez palabras de restaurante. Tú las dices primero.",
+  "items": [
+    {
+      "english": "tip",
+      "respelling": "TIP",
+      "ipa": "ˈtɪp",
+      "trap": "La I es corta: TIP"
+    },
+    {
+      "english": "check",
+      "respelling": "CHEK",
+      "ipa": "ˈtʃɛk",
+      "trap": "CK suena «k»: CHEK"
+    },
+    {
+      "english": "order",
+      "respelling": "OR-der",
+      "ipa": "ˈɔrdɚ",
+      "trap": "Dos R suaves, sin vibrar"
+    },
+    {
+      "english": "medium",
+      "respelling": "MII-di-am",
+      "ipa": "ˈmiːdiəm",
+      "trap": "La E suena «ii»: MII-di-am"
+    },
+    {
+      "english": "restaurant",
+      "respelling": "RES-ta-rant",
+      "ipa": "ˈrɛstərɑnt",
+      "trap": "Tres sílabas: RES-ta-rant"
+    },
+    {
+      "english": "reservation",
+      "respelling": "re-zer-VEI-shan",
+      "ipa": "rɛzɚˈveɪʃən",
+      "trap": "La S suena «z»: re-zer-VEI-shan"
+    },
+    {
+      "english": "appetizer",
+      "respelling": "A-pe-tai-zer",
+      "ipa": "ˈæpətaɪzɚ",
+      "trap": "Acento en A- y la I suena «ai»"
+    },
+    {
+      "english": "beverage",
+      "respelling": "BEV-ridch",
+      "ipa": "ˈbɛvrɪdʒ",
+      "trap": "Dos sílabas: BEV-ridch"
+    },
+    {
+      "english": "cuisine",
+      "respelling": "kui-ZIIN",
+      "ipa": "kwɪˈziːn",
+      "trap": "Suena kui-ZIIN, con «z»"
+    },
+    {
+      "english": "gratuity",
+      "respelling": "gra-TUU-a-ti",
+      "ipa": "ɡrəˈtuːəti",
+      "trap": "Cuatro sílabas: gra-TUU-a-ti"
+    }
+  ],
+  "verdict": "Hasta la tres pides en nivel básico, hasta la siete en intermedio y con las diez, como un experto.",
+  "outro": "[happy] ¿Cuántas dijiste bien? Deja tu número abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésDeViaje",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl093",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "PÁJAROS e INSECTOS en inglés: test de pronunciación 🦋",
+  "video_description": "Abejas, búhos, palomas: ¿sabes pronunciarlos en inglés? 🐝",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los pájaros y los insectos",
+  "intro": "[cheerful] Pájaros e insectos: lee la palabra en voz alta antes de oír la respuesta.",
+  "items": [
+    {
+      "english": "bee",
+      "respelling": "BII",
+      "ipa": "ˈbiː",
+      "trap": "Doble E: «ii» larga"
+    },
+    {
+      "english": "fly",
+      "respelling": "FLAI",
+      "ipa": "ˈflaɪ",
+      "trap": "La Y final suena «ai»"
+    },
+    {
+      "english": "bird",
+      "respelling": "BERD",
+      "ipa": "ˈbɝd",
+      "trap": "IR suena «er»: BERD"
+    },
+    {
+      "english": "owl",
+      "respelling": "AUL",
+      "ipa": "ˈaʊl",
+      "trap": "OW suena «au»: AUL"
+    },
+    {
+      "english": "eagle",
+      "respelling": "II-gel",
+      "ipa": "ˈiːgəl",
+      "trap": "EA suena «ii»: II-gel"
+    },
+    {
+      "english": "spider",
+      "respelling": "SPAI-der",
+      "ipa": "ˈspaɪdɚ",
+      "trap": "Sin «es-» y la I suena «ai»"
+    },
+    {
+      "english": "butterfly",
+      "respelling": "BA-der-flai",
+      "ipa": "ˈbʌɾɚflaɪ",
+      "trap": "U suena «a» y la T como D suave"
+    },
+    {
+      "english": "caterpillar",
+      "respelling": "KA-der-pi-ler",
+      "ipa": "ˈkæɾɚpɪlɚ",
+      "trap": "Acento en KA y la T como D suave"
+    },
+    {
+      "english": "ostrich",
+      "respelling": "AS-trich",
+      "ipa": "ˈɑstrɪtʃ",
+      "trap": "La O suena «a»: AS-trich"
+    },
+    {
+      "english": "pigeon",
+      "respelling": "PI-yen",
+      "ipa": "ˈpɪdʒən",
+      "trap": "Dos sílabas: PI-yen"
+    }
+  ],
+  "verdict": "¿Llegaste a la tres? Eres básico. ¿A la siete? Intermedio. Si sacaste las diez, nivel experto.",
+  "outro": "[curious] ¿Cuál te costó más? Escríbela en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AnimalesEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl011",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

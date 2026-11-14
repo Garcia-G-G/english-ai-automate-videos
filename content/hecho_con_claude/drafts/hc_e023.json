@@ -1,0 +1,43 @@
+{
+  "id": "hc_e023",
+  "style": "escena",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«Break a leg»: no le desees que se rompa nada",
+  "hook_text": "ESCENA — CAMERINO ANTES DE UN CONCIERTO",
+  "scene": {
+    "location": "Camerino antes de un concierto",
+    "take1": "Good luck!",
+    "take2": "Break a leg!",
+    "note": "En teatro y espectáculos se desea suerte con «break a leg»."
+  },
+  "correction": {
+    "wrong": "Good luck (correcto, pero…)",
+    "right": "Break a leg!",
+    "rule": "Idiom del espectáculo"
+  },
+  "voice": [
+    "Escena: camerino antes de un concierto. Toma uno: [[Good luck!]]",
+    "¡Corten! Está bien, pero entre artistas da mala suerte decir «suerte».",
+    "Toma dos: [[Break a leg!]] Literalmente «rómpete una pierna», y significa «mucha suerte», «que te vaya genial».",
+    "Se usa antes de una actuación, un examen o una entrevista, siempre en buena onda.",
+    "Si le fue bien después: [[You nailed it!]], «lo bordaste».",
+    "Reto: anima a un amigo antes de su entrevista. Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "Anima a un amigo antes de su entrevista",
+    "answer": "Break a leg! You've got this."
+  },
+  "caption": "«Break a leg» significa «mucha suerte» antes de actuar. Y «you nailed it», «lo bordaste». Idioms con escena.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 76
+}

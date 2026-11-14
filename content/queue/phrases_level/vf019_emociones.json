@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «ESTOY HASTA ARRIBA» en inglés? 😩",
+  "video_description": "Diez frases para decir cómo te sientes de verdad. 😅",
+  "title": "¿Cómo se dice?",
+  "theme": "contar cómo te sientes",
+  "intro": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan.",
+  "items": [
+    {
+      "spanish": "Estoy cansado.",
+      "english": "I'm tired."
+    },
+    {
+      "spanish": "Estoy muy contento.",
+      "english": "I'm really happy."
+    },
+    {
+      "spanish": "Estoy nervioso.",
+      "english": "I'm nervous."
+    },
+    {
+      "spanish": "Estoy agotado.",
+      "english": "I'm exhausted."
+    },
+    {
+      "spanish": "Me aburro.",
+      "english": "I'm bored."
+    },
+    {
+      "spanish": "Estoy hasta arriba de trabajo.",
+      "english": "I'm swamped with work."
+    },
+    {
+      "spanish": "Me da vergüenza.",
+      "english": "I'm embarrassed."
+    },
+    {
+      "spanish": "Estoy harto.",
+      "english": "I'm fed up."
+    },
+    {
+      "spanish": "Me hace mucha ilusión.",
+      "english": "I'm really looking forward to it."
+    },
+    {
+      "spanish": "No estoy de humor.",
+      "english": "I'm not in the mood."
+    }
+  ],
+  "outro": "[curious] ¿Cuál no conocías? Cuéntamelo abajo.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf019",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm tired.": "Estoy cansado.",
+    "I'm really happy.": "Estoy muy contento.",
+    "I'm nervous.": "Estoy nervioso.",
+    "I'm exhausted.": "Estoy agotado.",
+    "I'm bored.": "Me aburro.",
+    "I'm swamped with work.": "Estoy hasta arriba de trabajo.",
+    "I'm embarrassed.": "Me da vergüenza.",
+    "I'm fed up.": "Estoy harto.",
+    "I'm really looking forward to it.": "Me hace mucha ilusión.",
+    "I'm not in the mood.": "No estoy de humor."
+  },
+  "english_phrases": [
+    "I'm tired.",
+    "I'm really happy.",
+    "I'm nervous.",
+    "I'm exhausted.",
+    "I'm bored.",
+    "I'm swamped with work.",
+    "I'm embarrassed.",
+    "I'm fed up.",
+    "I'm really looking forward to it.",
+    "I'm not in the mood."
+  ],
+  "full_script": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan. I'm tired. I'm really happy. I'm nervous. I'm exhausted. I'm bored. I'm swamped with work. I'm embarrassed. I'm fed up. I'm really looking forward to it. I'm not in the mood. [curious] ¿Cuál no conocías? Cuéntamelo abajo."
+}

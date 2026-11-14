@@ -1,0 +1,68 @@
+{
+  "type": "quiz",
+  "video_title": "Cancelar un plan en inglés sin quedar fatal 🙈",
+  "video_description": "Dos frases para decir que no puedes ir y seguir teniendo amigos. 📅",
+  "question": "[curious] Quieres cancelar con un amigo sin quedar fatal. Dices...",
+  "options": {
+    "A": "I can't make it",
+    "B": "I can't do it",
+    "C": "I don't arrive",
+    "D": "I can't assist"
+  },
+  "correct": "A",
+  "explanation": "[excited] I can't make it es no poder ir. Suena natural y nada brusco.",
+  "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. [curious] Quieres cancelar con un amigo sin quedar fatal. Dices... A, 'I can't make it'.... B, 'I can't do it'.... C, 'I don't arrive'.... D, 'I can't assist'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A! I can't make it es no poder ir. Suena natural y nada brusco. Pregunta número dos. [curious] Para dejarlo para otro día, pides... A, 'a rain check'.... B, 'a rain day'.... C, 'a cancel'.... D, 'a free check'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A! Rain check es dejarlo para otro día. Acepto, pero hoy no puedo.",
+  "translations": {
+    "I can't make it": "no puedo ir",
+    "a rain check": "dejarlo para otro día",
+    "no worries": "no pasa nada"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Test"
+  ],
+  "_meta": {
+    "category": "social",
+    "topic_id": "so023",
+    "video_type": "quiz",
+    "model": "manual"
+  },
+  "questions": [
+    {
+      "question": "[curious] Quieres cancelar con un amigo sin quedar fatal. Dices...",
+      "options": {
+        "A": "I can't make it",
+        "B": "I can't do it",
+        "C": "I don't arrive",
+        "D": "I can't assist"
+      },
+      "correct": "A",
+      "explanation": "[excited] I can't make it es no poder ir. Suena natural y nada brusco."
+    },
+    {
+      "question": "[curious] Para dejarlo para otro día, pides...",
+      "options": {
+        "A": "a rain check",
+        "B": "a rain day",
+        "C": "a cancel",
+        "D": "a free check"
+      },
+      "correct": "A",
+      "explanation": "[excited] Rain check es dejarlo para otro día. Acepto, pero hoy no puedo."
+    },
+    {
+      "question": "[curious] Tu amigo te cancela y respondes 'no worries'. Significa...",
+      "options": {
+        "A": "no pasa nada",
+        "B": "qué preocupante",
+        "C": "no me importas",
+        "D": "estoy preocupado"
+      },
+      "correct": "A",
+      "explanation": "[excited] No worries es no pasa nada. Quita hierro y el plan sigue vivo."
+    }
+  ]
+}

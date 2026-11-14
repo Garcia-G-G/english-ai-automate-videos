@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "PS y PN: el reto de pronunciación más raro 🧠",
+  "video_description": "De «maps» a «pseudonym»: palabras con PS y PN, de fácil a experto. 🔍",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con PS y PN",
+  "intro": "[surprised] PS y PN, un reto de verdad. Pronuncia cada palabra antes de escucharme.",
+  "items": [
+    {
+      "english": "maps",
+      "respelling": "MAPS",
+      "ipa": "ˈmæps",
+      "trap": "Se oyen la P y la S juntas"
+    },
+    {
+      "english": "upset",
+      "respelling": "ap-SET",
+      "ipa": "ʌpˈsɛt",
+      "trap": "Acento en SET: ap-SET"
+    },
+    {
+      "english": "eclipse",
+      "respelling": "i-KLIPS",
+      "ipa": "ɪˈklɪps",
+      "trap": "Termina en «ps», sin «e» final"
+    },
+    {
+      "english": "collapse",
+      "respelling": "ka-LAPS",
+      "ipa": "kəˈlæps",
+      "trap": "Acento en LAPS, sin «e» final"
+    },
+    {
+      "english": "glimpse",
+      "respelling": "GLIMPS",
+      "ipa": "ˈɡlɪmps",
+      "trap": "Una sola sílaba: GLIMPS"
+    },
+    {
+      "english": "psychology",
+      "respelling": "sai-KA-la-yi",
+      "ipa": "saɪˈkɑlədʒi",
+      "trap": "La P no suena: sai-KA-"
+    },
+    {
+      "english": "pneumonia",
+      "respelling": "nuu-MOU-nia",
+      "ipa": "nuːˈmoʊnjə",
+      "trap": "La P no suena: nuu-MOU-nia"
+    },
+    {
+      "english": "psychiatrist",
+      "respelling": "sai-KAI-a-trist",
+      "ipa": "saɪˈkaɪətrɪst",
+      "trap": "P muda y acento en KAI"
+    },
+    {
+      "english": "synopsis",
+      "respelling": "si-NAP-sis",
+      "ipa": "sɪˈnɑpsɪs",
+      "trap": "Acento en NAP: si-NAP-sis"
+    },
+    {
+      "english": "pseudonym",
+      "respelling": "SUU-de-nim",
+      "ipa": "ˈsuːdənɪm",
+      "trap": "P muda y acento en SUU"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico; a la siete, intermedio. Y si dijiste las diez, eres experto.",
+  "outro": "[surprised] ¿Llegaste hasta el final? Cuéntame tu número abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#AprenderInglés",
+    "#InglésParaHispanohablantes",
+    "#Pronunciación"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl067",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

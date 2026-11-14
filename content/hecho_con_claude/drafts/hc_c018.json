@@ -1,0 +1,47 @@
+{
+  "id": "hc_c018",
+  "style": "comic",
+  "level": "medio",
+  "angle": "reto",
+  "title": "RETO: «me quedé dormido» (dos significados)",
+  "hook_text": "Ojo: hay trampa",
+  "quiz": {
+    "prompt": "Llegas tarde al trabajo porque no sonó la alarma. ¿Qué dices?",
+    "options": [
+      "I fell asleep",
+      "I overslept",
+      "I stayed sleeping"
+    ],
+    "answer": 1,
+    "after": "Overslept = me quedé dormido y no me desperté a tiempo. Fell asleep = me dormí."
+  },
+  "correction": {
+    "wrong": "I stayed sleeping",
+    "right": "I overslept",
+    "rule": "Fall asleep vs oversleep"
+  },
+  "voice": [
+    "Ojo, hay trampa. Llegas tarde porque no sonó la alarma. ¿Qué dices?",
+    "¿[[I fell asleep]], [[I overslept]] o [[I stayed sleeping]]?",
+    "¡La B! [[I overslept]]: me dormí más de la cuenta.",
+    "[[I fell asleep]] es «me quedé dormido» en el sentido de dormirme: [[I fell asleep on the sofa]].",
+    "En español es la misma frase; en inglés son dos verbos distintos.",
+    "¿Te pasó alguna vez? Cuéntalo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«Me quedé dormido viendo la peli»",
+    "answer": "I fell asleep watching the movie."
+  },
+  "caption": "«Me quedé dormido» tiene dos traducciones: «I fell asleep» y «I overslept». Reto con trampa.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 69
+}

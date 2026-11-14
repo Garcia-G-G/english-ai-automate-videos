@@ -1,0 +1,47 @@
+{
+  "id": "hc_c005",
+  "style": "comic",
+  "level": "principiante",
+  "angle": "reto",
+  "title": "RETO: «hace calor» en inglés",
+  "hook_text": "¿Tú qué dices?",
+  "quiz": {
+    "prompt": "¿Cómo dirías «hace calor»?",
+    "options": [
+      "It makes hot",
+      "It's hot",
+      "It does hot"
+    ],
+    "answer": 1,
+    "after": "El tiempo se describe con «it's»."
+  },
+  "correction": {
+    "wrong": "It does hot",
+    "right": "It's hot",
+    "rule": "It's + adjetivo para el tiempo"
+  },
+  "voice": [
+    "Reto rápido. ¿Cómo dirías «hace calor»? ¿[[It makes hot]], [[It's hot]] o [[It does hot]]?",
+    "Tres, dos, uno…",
+    "¡La B! [[It's hot]]. En inglés el tiempo no se hace, se es.",
+    "Igual: [[It's cold]], [[It's windy]], [[It's sunny]].",
+    "Y si hace muchísimo calor: [[It's boiling]].",
+    "¿Qué tiempo hace donde vives? Escríbelo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "Describe el tiempo que hace hoy donde vives",
+    "answer": "It's sunny. / It's raining. / It's cold."
+  },
+  "caption": "«Hace calor» es «It's hot», no «It makes hot». El tiempo en inglés en un reto de 30 segundos.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 54
+}

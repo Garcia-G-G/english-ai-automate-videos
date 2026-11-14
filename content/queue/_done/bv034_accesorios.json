@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los ACCESORIOS en inglés? 👜",
+  "video_description": "Diez accesorios, del reloj al paraguas. ⌚",
+  "title": "¿Cómo se dice…?",
+  "theme": "los accesorios",
+  "level": "A1",
+  "intro": "[curious] Lee cada palabra y piensa cómo se dice en inglés.",
+  "items": [
+    {
+      "emoji": "⌚",
+      "spanish": "Reloj",
+      "english": "watch"
+    },
+    {
+      "emoji": "👓",
+      "spanish": "Gafas",
+      "english": "glasses"
+    },
+    {
+      "emoji": "💍",
+      "spanish": "Anillo",
+      "english": "ring"
+    },
+    {
+      "emoji": "📿",
+      "spanish": "Collar",
+      "english": "necklace"
+    },
+    {
+      "emoji": "💎",
+      "spanish": "Aretes",
+      "english": "earrings"
+    },
+    {
+      "emoji": "👖",
+      "spanish": "Cinturón",
+      "english": "belt"
+    },
+    {
+      "emoji": "☂️",
+      "spanish": "Paraguas",
+      "english": "umbrella"
+    },
+    {
+      "emoji": "👜",
+      "spanish": "Bolso",
+      "english": "handbag"
+    },
+    {
+      "emoji": "⭕",
+      "spanish": "Pulsera",
+      "english": "bracelet"
+    },
+    {
+      "emoji": "👔",
+      "spanish": "Corbata",
+      "english": "tie"
+    }
+  ],
+  "recap": "Repite conmigo las diez: watch, glasses, ring, necklace, earrings, belt, umbrella, handbag, bracelet, tie.",
+  "outro": "[cheerful] Escribe en los comentarios cuántas acertaste.",
+  "translations": {
+    "watch": "Reloj",
+    "glasses": "Gafas",
+    "ring": "Anillo",
+    "necklace": "Collar",
+    "earrings": "Aretes",
+    "belt": "Cinturón",
+    "umbrella": "Paraguas",
+    "handbag": "Bolso",
+    "bracelet": "Pulsera",
+    "tie": "Corbata"
+  },
+  "english_phrases": [
+    "watch",
+    "glasses",
+    "ring",
+    "necklace",
+    "earrings",
+    "belt",
+    "umbrella",
+    "handbag",
+    "bracelet",
+    "tie"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv034",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] Lee cada palabra y piensa cómo se dice en inglés. Reloj... watch. watch. Gafas... glasses. glasses. Anillo... ring. ring. Collar... necklace. necklace. Aretes... earrings. earrings. Cinturón... belt. belt. Paraguas... umbrella. umbrella. Bolso... handbag. handbag. Pulsera... bracelet. bracelet. Corbata... tie. tie. Repite conmigo las diez: watch, glasses, ring, necklace, earrings, belt, umbrella, handbag, bracelet, tie. [cheerful] Escribe en los comentarios cuántas acertaste."
+}

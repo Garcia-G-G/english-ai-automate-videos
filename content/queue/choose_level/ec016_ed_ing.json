@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "-ED o -ING: el test de 10 frases 🧐",
+  "video_description": "-ed o -ing: interested, interesting y compañía en diez frases. 🧐",
+  "title": "Elige la correcta",
+  "theme": "adjetivos en -ed o -ing",
+  "intro": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo.",
+  "items": [
+    {
+      "sentence": "This book is very ____.",
+      "options": [
+        "interesting",
+        "interested"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Are you ____ in music?",
+      "options": [
+        "interesting",
+        "interested"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I was ____ by the news.",
+      "options": [
+        "surprising",
+        "surprised"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "The results were really ____.",
+      "options": [
+        "surprising",
+        "surprised"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'm so ____ about the trip!",
+      "options": [
+        "exciting",
+        "excited"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It was an ____ game.",
+      "options": [
+        "exciting",
+        "excited"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I felt ____ when I fell.",
+      "options": [
+        "embarrassed",
+        "embarrassing"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "That was so ____!",
+      "options": [
+        "embarrassed",
+        "embarrassing"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The situation is ____.",
+      "options": [
+        "confusing",
+        "confused"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I'm ____ by the instructions.",
+      "options": [
+        "confusing",
+        "confused"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AdjetivosEnIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec016",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "This book is very interesting.",
+    "Are you interested in music?",
+    "I was surprised by the news.",
+    "The results were really surprising.",
+    "I'm so excited about the trip!",
+    "It was an exciting game.",
+    "I felt embarrassed when I fell.",
+    "That was so embarrassing!",
+    "The situation is confusing.",
+    "I'm confused by the instructions."
+  ],
+  "full_script": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo. This book is very interesting. Are you interested in music? I was surprised by the news. Ahora, nivel intermedio. The results were really surprising. I'm so excited about the trip! It was an exciting game. I felt embarrassed when I fell. Y ahora, nivel experto. That was so embarrassing! The situation is confusing. I'm confused by the instructions. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

@@ -1,0 +1,43 @@
+{
+  "id": "hc_e004",
+  "style": "escena",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«I want a window»: suena exigente sin querer",
+  "hook_text": "ESCENA — MOSTRADOR DEL AEROPUERTO",
+  "scene": {
+    "location": "Mostrador del aeropuerto",
+    "take1": "I want a window.",
+    "take2": "Could I have a window seat, please?",
+    "note": "«I want» suena a orden; «Could I have…» o «I'd like…» suena amable."
+  },
+  "correction": {
+    "wrong": "I want a window",
+    "right": "Could I have a window seat, please?",
+    "rule": "Para pedir: Could I have / I'd like"
+  },
+  "voice": [
+    "Escena: mostrador del aeropuerto. Toma uno: [[I want a window]].",
+    "¡Corten! No es incorrecto, pero [[I want]] suena a exigencia, como «quiero esto ya».",
+    "Toma dos: [[Could I have a window seat, please?]] Mucho más amable. Y el asiento es [[seat]].",
+    "Otra forma muy natural: [[I'd like a window seat]], «me gustaría».",
+    "Y si prefieres pasillo: [[an aisle seat]]. Ojo: [[aisle]] se pronuncia «ail».",
+    "Reto: pide un asiento de pasillo de forma amable. Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "Pide un asiento de pasillo, amable",
+    "answer": "Could I have an aisle seat, please?"
+  },
+  "caption": "Cómo pedir en inglés sin sonar exigente: «Could I have…?» o «I'd like…», no «I want». Escena en el aeropuerto.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 76
+}

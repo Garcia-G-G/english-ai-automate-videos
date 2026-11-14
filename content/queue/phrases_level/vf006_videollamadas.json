@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿ME OYES?»? 10 frases 💻",
+  "video_description": "Diez frases para sobrevivir a una videollamada en inglés. 🎧",
+  "title": "¿Cómo se dice?",
+  "theme": "en videollamadas",
+  "intro": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Me oyes?",
+      "english": "Can you hear me?"
+    },
+    {
+      "spanish": "Estás en silencio.",
+      "english": "You're on mute."
+    },
+    {
+      "spanish": "Se te corta la voz.",
+      "english": "You're breaking up."
+    },
+    {
+      "spanish": "¿Ves mi pantalla?",
+      "english": "Can you see my screen?"
+    },
+    {
+      "spanish": "Perdona, se me congeló.",
+      "english": "Sorry, I froze."
+    },
+    {
+      "spanish": "Voy a compartir pantalla.",
+      "english": "Let me share my screen."
+    },
+    {
+      "spanish": "¿Puedes repetirlo?",
+      "english": "Could you say that again?"
+    },
+    {
+      "spanish": "Te escucho con eco.",
+      "english": "I'm getting an echo."
+    },
+    {
+      "spanish": "Creo que se fue la conexión.",
+      "english": "I think we lost the connection."
+    },
+    {
+      "spanish": "Me tengo que ir a otra reunión.",
+      "english": "I have to jump on another call."
+    }
+  ],
+  "outro": "[excited] Compártelo con alguien que las necesite.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf006",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Can you hear me?": "¿Me oyes?",
+    "You're on mute.": "Estás en silencio.",
+    "You're breaking up.": "Se te corta la voz.",
+    "Can you see my screen?": "¿Ves mi pantalla?",
+    "Sorry, I froze.": "Perdona, se me congeló.",
+    "Let me share my screen.": "Voy a compartir pantalla.",
+    "Could you say that again?": "¿Puedes repetirlo?",
+    "I'm getting an echo.": "Te escucho con eco.",
+    "I think we lost the connection.": "Creo que se fue la conexión.",
+    "I have to jump on another call.": "Me tengo que ir a otra reunión."
+  },
+  "english_phrases": [
+    "Can you hear me?",
+    "You're on mute.",
+    "You're breaking up.",
+    "Can you see my screen?",
+    "Sorry, I froze.",
+    "Let me share my screen.",
+    "Could you say that again?",
+    "I'm getting an echo.",
+    "I think we lost the connection.",
+    "I have to jump on another call."
+  ],
+  "full_script": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo. Can you hear me? You're on mute. You're breaking up. Can you see my screen? Sorry, I froze. Let me share my screen. Could you say that again? I'm getting an echo. I think we lost the connection. I have to jump on another call. [excited] Compártelo con alguien que las necesite."
+}

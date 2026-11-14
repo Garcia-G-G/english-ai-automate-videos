@@ -1,0 +1,55 @@
+{
+  "id": "hc_m017",
+  "style": "mensajes",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«I have to make my homework»: make o do",
+  "hook_text": "Le dije por qué no podía salir…",
+  "chat": {
+    "contact": "Jack · Liverpool",
+    "messages": [
+      [
+        "them",
+        "Coming to play football?"
+      ],
+      [
+        "me",
+        "Can't, I have to make my homework",
+        "error"
+      ],
+      [
+        "them",
+        "make it? like… invent it? 😂"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "make my homework",
+    "right": "do my homework",
+    "rule": "Do = tareas y actividades · Make = crear algo"
+  },
+  "voice": [
+    "Mi amigo me invitó a jugar y le dije [[I have to make my homework]].",
+    "Me preguntó si me la iba a inventar. Porque [[make]] es crear, fabricar.",
+    "Las tareas y las obligaciones van con [[do]]: [[do my homework]], [[do the dishes]], [[do the laundry]].",
+    "Y [[make]] cuando produces algo: [[make dinner]], [[make a decision]], [[make a mistake]].",
+    "Así que: [[I have to do my homework]].",
+    "Reto: ¿«make» o «do» un examen? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "¿«Make» o «do» an exam?",
+    "answer": "Do an exam (o «take an exam»)."
+  },
+  "caption": "Se dice «do my homework», no «make my homework». Make vs do en 40 segundos, con un chat.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 75
+}

@@ -1,0 +1,55 @@
+{
+  "id": "hc_m006",
+  "style": "mensajes",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«I go to the bed»: el «the» que sobra",
+  "hook_text": "Me despedí así y se rio",
+  "chat": {
+    "contact": "Noah · Sídney",
+    "messages": [
+      [
+        "them",
+        "It's late! What are you doing?"
+      ],
+      [
+        "me",
+        "Good night! I go to the bed 😴",
+        "error"
+      ],
+      [
+        "them",
+        "which bed? 😂 you have many?"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I go to the bed",
+    "right": "I'm going to bed",
+    "rule": "Go to bed, go to school, go to work: sin «the»"
+  },
+  "voice": [
+    "Me despedí de un amigo con [[I go to the bed]]. Y me preguntó a qué cama.",
+    "Porque [[go to bed]], acostarse, va sin [[the]]. Lo mismo [[go to school]] y [[go to work]].",
+    "Y como lo vas a hacer ahora, se dice en presente continuo: [[I'm going to bed]].",
+    "Si dices [[the bed]], hablas de una cama concreta, como [[Don't jump on the bed]].",
+    "Así que para despedirte: [[Good night! I'm going to bed]].",
+    "Reto: ¿cómo dirías «me voy al trabajo»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Me voy al trabajo»",
+    "answer": "I'm going to work."
+  },
+  "caption": "Se dice «I'm going to bed», sin «the». Go to bed, go to work, go to school: el artículo que sobra.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 85
+}

@@ -1,0 +1,110 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Sobrevivirías a una REUNIÓN en inglés? 📊",
+  "video_description": "Opinar, pedir que repitan y cerrar temas: diez frases de reunión en inglés con trampa. 📊",
+  "title": "Dilo en inglés",
+  "theme": "en una reunión",
+  "intro": "[thoughtful] Tienes una reunión en inglés. Di cada frase antes que yo. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "spanish": "Buenos días a todos.",
+      "english": "Good morning, everyone.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Tengo una pregunta.",
+      "english": "I have a question.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Empecemos.",
+      "english": "Let's get started.",
+      "cefr": "A2",
+      "alt": "Let's begin."
+    },
+    {
+      "spanish": "Perdona, ¿puedes repetir eso?",
+      "english": "Sorry, could you repeat that?",
+      "cefr": "A2",
+      "alt": "Sorry, can you say that again?"
+    },
+    {
+      "spanish": "Pasemos al siguiente punto.",
+      "english": "Let's move on to the next point.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Lo hablamos la semana que viene.",
+      "english": "We'll discuss it next week.",
+      "cefr": "B1",
+      "tip": "Discuss va sin about: discuss it"
+    },
+    {
+      "spanish": "¿Quién toma notas hoy?",
+      "english": "Who's taking notes today?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Estoy de acuerdo contigo.",
+      "english": "I agree with you.",
+      "cefr": "B1",
+      "tip": "Agree ya es un verbo: nunca «I'm agree»"
+    },
+    {
+      "spanish": "Se nos acaba el tiempo.",
+      "english": "We're running out of time.",
+      "cefr": "B2",
+      "tip": "«Se nos acaba» algo: we're running out of"
+    },
+    {
+      "spanish": "Lo dejamos para el lunes.",
+      "english": "Let's put it off until Monday.",
+      "cefr": "B2",
+      "alt": "Let's leave it until Monday.",
+      "tip": "«Dejar algo para más tarde» es put off"
+    }
+  ],
+  "verdict": "Tres frases, básico. Siete, intermedio. Diez, experto: ya puedes dirigir la reunión.",
+  "outro": "[curious] ¿En qué punto del orden del día te quedaste? Escribe tu número.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaElTrabajo",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy016",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Good morning, everyone.": "Buenos días a todos.",
+    "I have a question.": "Tengo una pregunta.",
+    "Let's get started.": "Empecemos.",
+    "Sorry, could you repeat that?": "Perdona, ¿puedes repetir eso?",
+    "Let's move on to the next point.": "Pasemos al siguiente punto.",
+    "We'll discuss it next week.": "Lo hablamos la semana que viene.",
+    "Who's taking notes today?": "¿Quién toma notas hoy?",
+    "I agree with you.": "Estoy de acuerdo contigo.",
+    "We're running out of time.": "Se nos acaba el tiempo.",
+    "Let's put it off until Monday.": "Lo dejamos para el lunes."
+  },
+  "english_phrases": [
+    "Good morning, everyone.",
+    "I have a question.",
+    "Let's get started.",
+    "Sorry, could you repeat that?",
+    "Let's move on to the next point.",
+    "We'll discuss it next week.",
+    "Who's taking notes today?",
+    "I agree with you.",
+    "We're running out of time.",
+    "Let's put it off until Monday.",
+    "Let's begin.",
+    "Sorry, can you say that again?",
+    "Let's leave it until Monday."
+  ],
+  "full_script": "[thoughtful] Tienes una reunión en inglés. Di cada frase antes que yo. ¿Hasta dónde llegas? Good morning, everyone. I have a question. Let's get started. Ahora, nivel intermedio. Sorry, could you repeat that? Let's move on to the next point. We'll discuss it next week. Who's taking notes today? Y ahora, nivel experto. I agree with you. We're running out of time. Let's put it off until Monday. Tres frases, básico. Siete, intermedio. Diez, experto: ya puedes dirigir la reunión. [curious] ¿En qué punto del orden del día te quedaste? Escribe tu número."
+}

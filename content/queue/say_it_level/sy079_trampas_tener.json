@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "Trampas con TENER: ¿cuántas dices bien en inglés? 🪤",
+  "video_description": "En inglés no siempre se «tiene»: diez frases con tener, de fácil a trampa. 🪤",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «tener»",
+  "intro": "[curious] Diez frases con «tener». Ojo: no siempre es have. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Tengo un perro.",
+      "english": "I have a dog.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Tienes hermanos?",
+      "english": "Do you have brothers or sisters?",
+      "cefr": "A1",
+      "alt": "Have you got any siblings?"
+    },
+    {
+      "spanish": "No tengo tiempo.",
+      "english": "I don't have time.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Tenemos que irnos ya.",
+      "english": "We have to leave now.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Ten cuidado con el perro.",
+      "english": "Be careful with the dog.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Tienes razón.",
+      "english": "You're right.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Tengo muchas ganas de verte.",
+      "english": "I can't wait to see you.",
+      "cefr": "B1",
+      "alt": "I'm looking forward to seeing you."
+    },
+    {
+      "spanish": "Tengo sueño.",
+      "english": "I'm sleepy.",
+      "cefr": "B1",
+      "alt": "I feel sleepy.",
+      "tip": "«Tener sueño» va con be: I'm sleepy"
+    },
+    {
+      "spanish": "¿Qué tiene que ver eso?",
+      "english": "What does that have to do with it?",
+      "cefr": "B2",
+      "tip": "«Tener que ver con» es have to do with, no «see»"
+    },
+    {
+      "spanish": "La reunión tendrá lugar el lunes.",
+      "english": "The meeting will take place on Monday.",
+      "cefr": "C1",
+      "tip": "«Tener lugar» es take place, no «have place»"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, tienes nivel básico. A la siete, intermedio. Y con las diez, tienes razón: eres experto.",
+  "outro": "[excited] ¿Cuál de estas te pilló? Dime tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#TrucosDeInglés",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy079",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I have a dog.": "Tengo un perro.",
+    "Do you have brothers or sisters?": "¿Tienes hermanos?",
+    "I don't have time.": "No tengo tiempo.",
+    "We have to leave now.": "Tenemos que irnos ya.",
+    "Be careful with the dog.": "Ten cuidado con el perro.",
+    "You're right.": "Tienes razón.",
+    "I can't wait to see you.": "Tengo muchas ganas de verte.",
+    "I'm sleepy.": "Tengo sueño.",
+    "What does that have to do with it?": "¿Qué tiene que ver eso?",
+    "The meeting will take place on Monday.": "La reunión tendrá lugar el lunes."
+  },
+  "english_phrases": [
+    "I have a dog.",
+    "Do you have brothers or sisters?",
+    "I don't have time.",
+    "We have to leave now.",
+    "Be careful with the dog.",
+    "You're right.",
+    "I can't wait to see you.",
+    "I'm sleepy.",
+    "What does that have to do with it?",
+    "The meeting will take place on Monday.",
+    "Have you got any siblings?",
+    "I'm looking forward to seeing you.",
+    "I feel sleepy."
+  ],
+  "full_script": "[curious] Diez frases con «tener». Ojo: no siempre es have. Dilas en inglés antes que yo. I have a dog. Do you have brothers or sisters? I don't have time. Ahora, nivel intermedio. We have to leave now. Be careful with the dog. You're right. I can't wait to see you. Y ahora, nivel experto. I'm sleepy. What does that have to do with it? The meeting will take place on Monday. Si llegaste a la tres, tienes nivel básico. A la siete, intermedio. Y con las diez, tienes razón: eres experto. [excited] ¿Cuál de estas te pilló? Dime tu número en los comentarios."
+}

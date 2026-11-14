@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes cuáles son verdad? MODISMOS AVANZADOS 🦉",
+  "video_description": "Modismos de nivel avanzado: ¿verdadero o falso? 🦉",
+  "title": "¿Verdadero o falso?",
+  "theme": "modismos avanzados",
+  "intro": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad?",
+  "items": [
+    {
+      "statement": "«Easy peasy» significa muy fácil.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Good luck» se usa para desear suerte.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Sleep on it» significa dormir encima de algo.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es consultarlo con la almohada"
+    },
+    {
+      "statement": "«Hit the hay» es irse a dormir.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Beat around the bush» es ir al grano.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es andarse con rodeos"
+    },
+    {
+      "statement": "«The ball is in your court» significa que te toca a ti.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Cut corners» es hacer algo mal por ahorrar.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«A blessing in disguise» es un desastre oculto.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es un mal que trae algo bueno"
+    },
+    {
+      "statement": "«Sit on the fence» es no tomar partido.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Burn the midnight oil» es encender velas.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es trasnochar trabajando"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#Idioms",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf040",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

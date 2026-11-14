@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las EMOCIONES en inglés? 😀",
+  "video_description": "Diez palabras para decir cómo te sientes. 💬",
+  "title": "¿Cómo se dice…?",
+  "theme": "las emociones",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "😀",
+      "spanish": "Feliz",
+      "english": "happy"
+    },
+    {
+      "emoji": "😢",
+      "spanish": "Triste",
+      "english": "sad"
+    },
+    {
+      "emoji": "😠",
+      "spanish": "Enfadado",
+      "english": "angry"
+    },
+    {
+      "emoji": "🥱",
+      "spanish": "Cansado",
+      "english": "tired"
+    },
+    {
+      "emoji": "😨",
+      "spanish": "Asustado",
+      "english": "scared"
+    },
+    {
+      "emoji": "😲",
+      "spanish": "Sorprendido",
+      "english": "surprised"
+    },
+    {
+      "emoji": "😬",
+      "spanish": "Nervioso",
+      "english": "nervous"
+    },
+    {
+      "emoji": "😑",
+      "spanish": "Aburrido",
+      "english": "bored"
+    },
+    {
+      "emoji": "😕",
+      "spanish": "Confundido",
+      "english": "confused"
+    },
+    {
+      "emoji": "😍",
+      "spanish": "Enamorado",
+      "english": "in love"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: happy, sad, angry, tired, scared, surprised, nervous, bored, confused, in love.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "happy": "Feliz",
+    "sad": "Triste",
+    "angry": "Enfadado",
+    "tired": "Cansado",
+    "scared": "Asustado",
+    "surprised": "Sorprendido",
+    "nervous": "Nervioso",
+    "bored": "Aburrido",
+    "confused": "Confundido",
+    "in love": "Enamorado"
+  },
+  "english_phrases": [
+    "happy",
+    "sad",
+    "angry",
+    "tired",
+    "scared",
+    "surprised",
+    "nervous",
+    "bored",
+    "confused",
+    "in love"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv013",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Feliz... happy. happy. Triste... sad. sad. Enfadado... angry. angry. Cansado... tired. tired. Asustado... scared. scared. Sorprendido... surprised. surprised. Nervioso... nervous. nervous. Aburrido... bored. bored. Confundido... confused. confused. Enamorado... in love. in love. Ahora, todas conmigo: happy, sad, angry, tired, scared, surprised, nervous, bored, confused, in love. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

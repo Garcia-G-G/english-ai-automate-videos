@@ -1,0 +1,43 @@
+{
+  "id": "hc_e007",
+  "style": "escena",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«Can I make a question?»: el verbo que cambia",
+  "hook_text": "ESCENA — CLASE DE INGLÉS",
+  "scene": {
+    "location": "Clase de inglés",
+    "take1": "Teacher, can I make a question?",
+    "take2": "Can I ask a question?",
+    "note": "Las preguntas se hacen con ask."
+  },
+  "correction": {
+    "wrong": "make a question",
+    "right": "ask a question",
+    "rule": "Hacer una pregunta = ask a question"
+  },
+  "voice": [
+    "Escena: clase de inglés. Toma uno: [[Teacher, can I make a question?]]",
+    "¡Corten! En español hacemos preguntas, pero en inglés se piden: [[ask a question]].",
+    "Toma dos: [[Can I ask a question?]] O más natural todavía: [[Can I ask you something?]]",
+    "Y no se dice [[ask to you]]: es [[ask you]], sin [[to]].",
+    "Para responder: [[answer a question]].",
+    "Reto: ¿cómo dirías «te hago una pregunta rápida»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Te hago una pregunta rápida»",
+    "answer": "Can I ask you a quick question?"
+  },
+  "caption": "Se dice «ask a question», no «make a question». El verbo que todos cambiamos, en una escena de clase.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 69
+}

@@ -1,0 +1,104 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice AYER, HOY y MAÑANA en inglés? ⏰",
+  "video_description": "⏪📍⏩ Aprende ayer, hoy, mañana y 7 palabras más del tiempo en inglés. ¿Cuántas sabías? 👇",
+  "title": "¿Cómo se dice…?",
+  "theme": "ayer, hoy y mañana",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes decir ayer, hoy y mañana en inglés? Responde antes que yo. ¡Vamos!",
+  "items": [
+    {
+      "emoji": "⏪",
+      "spanish": "Ayer",
+      "english": "yesterday"
+    },
+    {
+      "emoji": "📍",
+      "spanish": "Hoy",
+      "english": "today"
+    },
+    {
+      "emoji": "⏩",
+      "spanish": "Mañana",
+      "english": "tomorrow"
+    },
+    {
+      "emoji": "🌞",
+      "spanish": "Día",
+      "english": "day"
+    },
+    {
+      "emoji": "🌇",
+      "spanish": "Tarde",
+      "english": "afternoon"
+    },
+    {
+      "emoji": "🌙",
+      "spanish": "Noche",
+      "english": "night"
+    },
+    {
+      "emoji": "⏰",
+      "spanish": "Hora",
+      "english": "hour"
+    },
+    {
+      "emoji": "📅",
+      "spanish": "Semana",
+      "english": "week"
+    },
+    {
+      "emoji": "📆",
+      "spanish": "Mes",
+      "english": "month"
+    },
+    {
+      "emoji": "🎆",
+      "spanish": "Año",
+      "english": "year"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: yesterday, today, tomorrow, day, afternoon, night, hour, week, month, year",
+  "outro": "[cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[excited] ¿Sabes decir ayer, hoy y mañana en inglés? Responde antes que yo. ¡Vamos! Ayer... yesterday. yesterday. Hoy... today. today. Mañana... tomorrow. tomorrow. Día... day. day. Tarde... afternoon. afternoon. Noche... night. night. Hora... hour. hour. Semana... week. week. Mes... month. month. Año... year. year. Ahora todas en inglés, conmigo: yesterday, today, tomorrow, day, afternoon, night, hour, week, month, year. [cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "yesterday": "Ayer",
+    "today": "Hoy",
+    "tomorrow": "Mañana",
+    "day": "Día",
+    "afternoon": "Tarde",
+    "night": "Noche",
+    "hour": "Hora",
+    "week": "Semana",
+    "month": "Mes",
+    "year": "Año"
+  },
+  "english_phrases": [
+    "yesterday",
+    "today",
+    "tomorrow",
+    "day",
+    "afternoon",
+    "night",
+    "hour",
+    "week",
+    "month",
+    "year"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv081",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:49:50.332285",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

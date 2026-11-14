@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras en -TURE: 10 de fácil a experto 🖼️",
+  "video_description": "Diez palabras en -TURE para pronunciar como un nativo. 🌡️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras en -TURE",
+  "intro": "[curious] -TURE no se dice «tur». Lee estas diez palabras y comprueba cómo suenan.",
+  "items": [
+    {
+      "english": "picture",
+      "respelling": "PIK-cher",
+      "ipa": "ˈpɪktʃɚ",
+      "trap": "-TURE suena «cher»"
+    },
+    {
+      "english": "future",
+      "respelling": "FIUU-cher",
+      "ipa": "ˈfjuːtʃɚ",
+      "trap": "Empieza «fiuu»: FIUU-cher"
+    },
+    {
+      "english": "nature",
+      "respelling": "NEI-cher",
+      "ipa": "ˈneɪtʃɚ",
+      "trap": "A suena «ei»: NEI-cher"
+    },
+    {
+      "english": "culture",
+      "respelling": "KAL-cher",
+      "ipa": "ˈkʌltʃɚ",
+      "trap": "U suena «a»: KAL-cher"
+    },
+    {
+      "english": "adventure",
+      "respelling": "ed-VEN-cher",
+      "ipa": "ədˈvɛntʃɚ",
+      "trap": "Acento en VEN"
+    },
+    {
+      "english": "signature",
+      "respelling": "SIG-ne-cher",
+      "ipa": "ˈsɪgnətʃɚ",
+      "trap": "Acento en SIG; la G sí suena"
+    },
+    {
+      "english": "mature",
+      "respelling": "me-CHUR",
+      "ipa": "məˈtʃʊr",
+      "trap": "Excepción: acento al final"
+    },
+    {
+      "english": "architecture",
+      "respelling": "AR-ke-tek-cher",
+      "ipa": "ˈɑrkətɛktʃɚ",
+      "trap": "CH = K y acento en AR"
+    },
+    {
+      "english": "literature",
+      "respelling": "LI-ter-e-cher",
+      "ipa": "ˈlɪtɚətʃɚ",
+      "trap": "Acento en LI: cuatro sílabas"
+    },
+    {
+      "english": "temperature",
+      "respelling": "TEM-pre-cher",
+      "ipa": "ˈtɛmprətʃɚ",
+      "trap": "Tres sílabas: TEM-pre-cher"
+    }
+  ],
+  "verdict": "Con tres eres nivel básico, con siete intermedio, y si te salieron las diez, eres experto.",
+  "outro": "[happy] Dime en los comentarios en qué palabra te trabaste.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#SufijosEnInglés",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl040",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

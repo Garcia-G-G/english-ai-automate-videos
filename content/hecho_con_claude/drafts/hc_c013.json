@@ -1,0 +1,47 @@
+{
+  "id": "hc_c013",
+  "style": "comic",
+  "level": "medio",
+  "angle": "reto",
+  "title": "RETO: «quedar con amigos»",
+  "hook_text": "El verbo que no existe en inglés",
+  "quiz": {
+    "prompt": "¿Cómo dirías «he quedado con mis amigos»?",
+    "options": [
+      "I've stayed with my friends",
+      "I'm meeting my friends",
+      "I've remained with my friends"
+    ],
+    "answer": 1,
+    "after": "Quedar con alguien = meet / meet up with."
+  },
+  "correction": {
+    "wrong": "I've remained with my friends",
+    "right": "I'm meeting my friends",
+    "rule": "Meet (up) with"
+  },
+  "voice": [
+    "«Quedar» no tiene traducción directa. ¿Cómo dirías «he quedado con mis amigos»?",
+    "¿[[I've stayed with my friends]], [[I'm meeting my friends]] o [[I've remained with my friends]]?",
+    "¡La B! [[I'm meeting my friends]]. Plan del futuro cercano en presente continuo.",
+    "También: [[I'm meeting up with my friends]].",
+    "Y para proponerlo: [[Do you want to meet up this weekend?]]",
+    "¿Con quién quedas este finde? Escríbelo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«¿Quedamos el sábado?»",
+    "answer": "Do you want to meet up on Saturday?"
+  },
+  "caption": "«Quedar con alguien» es «meet up with». «Stay» es quedarse en un sitio. Reto de inglés.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 67
+}

@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Vocabulario de LEY Y JUSTICIA: del básico al experto ⚖️",
+  "video_description": "Juez, testigo, fianza… pon a prueba tu inglés con 10 palabras de la ley 📜",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la ley y la justicia",
+  "intro": "[serious] La ley y la justicia en inglés. Diez palabras: di qué significan antes que yo.",
+  "items": [
+    {
+      "english": "police",
+      "spanish": "Policía",
+      "cefr": "A1"
+    },
+    {
+      "english": "law",
+      "spanish": "Ley",
+      "cefr": "A2"
+    },
+    {
+      "english": "judge",
+      "spanish": "Juez / jueza",
+      "cefr": "A2"
+    },
+    {
+      "english": "jail",
+      "spanish": "Cárcel",
+      "cefr": "A2"
+    },
+    {
+      "english": "lawyer",
+      "spanish": "Abogado / abogada",
+      "cefr": "B1"
+    },
+    {
+      "english": "trial",
+      "spanish": "Juicio",
+      "cefr": "B1"
+    },
+    {
+      "english": "witness",
+      "spanish": "Testigo",
+      "cefr": "B2"
+    },
+    {
+      "english": "sue",
+      "spanish": "Demandar",
+      "cefr": "B2"
+    },
+    {
+      "english": "plead guilty",
+      "spanish": "Declararse culpable",
+      "cefr": "C1"
+    },
+    {
+      "english": "bail",
+      "spanish": "Fianza",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Veredicto: hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez, nivel experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? El jurado espera tu respuesta en comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#InglésAvanzado",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv056",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "police": "Policía",
+    "law": "Ley",
+    "judge": "Juez / jueza",
+    "jail": "Cárcel",
+    "lawyer": "Abogado / abogada",
+    "trial": "Juicio",
+    "witness": "Testigo",
+    "sue": "Demandar",
+    "plead guilty": "Declararse culpable",
+    "bail": "Fianza"
+  },
+  "english_phrases": [
+    "police",
+    "law",
+    "judge",
+    "jail",
+    "lawyer",
+    "trial",
+    "witness",
+    "sue",
+    "plead guilty",
+    "bail"
+  ],
+  "full_script": "[serious] La ley y la justicia en inglés. Diez palabras: di qué significan antes que yo. police Policía law Ley judge Juez / jueza Ahora, nivel intermedio. jail Cárcel lawyer Abogado / abogada trial Juicio witness Testigo Y ahora, nivel experto. sue Demandar plead guilty Declararse culpable bail Fianza Veredicto: hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez, nivel experto. [cheerful] ¿Hasta qué número llegaste? El jurado espera tu respuesta en comentarios."
+}

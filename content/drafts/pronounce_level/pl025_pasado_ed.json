@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "El pasado en -ED: ¿cómo suena de verdad? ⏪",
+  "video_description": "¿-ED suena «t», «d» o «id»? Compruébalo con diez verbos. 🕰️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el pasado en -ED",
+  "intro": "[thoughtful] El pasado en -ED no siempre suena igual. Pronuncia cada verbo y compara.",
+  "items": [
+    {
+      "english": "played",
+      "respelling": "PLEID",
+      "ipa": "ˈpleɪd",
+      "trap": "Una sola sílaba: PLEID"
+    },
+    {
+      "english": "opened",
+      "respelling": "OU-pend",
+      "ipa": "ˈoʊpənd",
+      "trap": "Dos sílabas, no tres"
+    },
+    {
+      "english": "wanted",
+      "respelling": "UAN-tid",
+      "ipa": "ˈwɑntɪd",
+      "trap": "Tras T, -ED suma sílaba: -tid"
+    },
+    {
+      "english": "worked",
+      "respelling": "UERKT",
+      "ipa": "ˈwɝkt",
+      "trap": "-ED suena T: UERKT"
+    },
+    {
+      "english": "needed",
+      "respelling": "NII-did",
+      "ipa": "ˈniːdɪd",
+      "trap": "Tras D, -ED suma sílaba: -did"
+    },
+    {
+      "english": "stopped",
+      "respelling": "STAPT",
+      "ipa": "ˈstɑpt",
+      "trap": "-ED suena T y sin «es-»"
+    },
+    {
+      "english": "watched",
+      "respelling": "UACHT",
+      "ipa": "ˈwɑtʃt",
+      "trap": "Una sílaba: -ED suena T"
+    },
+    {
+      "english": "laughed",
+      "respelling": "LAFT",
+      "ipa": "ˈlæft",
+      "trap": "GH suena F y -ED suena T"
+    },
+    {
+      "english": "asked",
+      "respelling": "ASKT",
+      "ipa": "ˈæskt",
+      "trap": "S, K y T seguidas: ASKT"
+    },
+    {
+      "english": "texted",
+      "respelling": "TEKS-tid",
+      "ipa": "ˈtɛkstɪd",
+      "trap": "KST y luego -ED: TEKS-tid"
+    }
+  ],
+  "verdict": "¿Hasta la tres? Nivel básico. ¿Hasta la siete? Intermedio. ¿Las diez perfectas? Pronuncias como un experto.",
+  "outro": "[cheerful] Escribe en los comentarios tu número del uno al diez.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#PasadoEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl025",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

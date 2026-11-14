@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "«¡NO ME DIGAS!» y 9 frases más en inglés 😲",
+  "video_description": "Diez reacciones para cuando algo te sorprende. 😲",
+  "title": "¿Cómo se dice?",
+  "theme": "para reaccionar",
+  "intro": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo?",
+  "items": [
+    {
+      "spanish": "¡No me digas!",
+      "english": "No way!"
+    },
+    {
+      "spanish": "¿En serio?",
+      "english": "Seriously?"
+    },
+    {
+      "spanish": "¡Qué fuerte!",
+      "english": "That's crazy!"
+    },
+    {
+      "spanish": "¡Qué bien!",
+      "english": "That's great!"
+    },
+    {
+      "spanish": "¡Qué pena!",
+      "english": "That's a shame."
+    },
+    {
+      "spanish": "¡Qué raro!",
+      "english": "That's weird."
+    },
+    {
+      "spanish": "No me lo puedo creer.",
+      "english": "I can't believe it."
+    },
+    {
+      "spanish": "¡Me lo imaginaba!",
+      "english": "I knew it!"
+    },
+    {
+      "spanish": "Ya era hora.",
+      "english": "About time."
+    },
+    {
+      "spanish": "Me dejas sin palabras.",
+      "english": "I'm speechless."
+    }
+  ],
+  "outro": "[happy] Guarda el vídeo y repítelas mañana.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#ConversaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf033",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "No way!": "¡No me digas!",
+    "Seriously?": "¿En serio?",
+    "That's crazy!": "¡Qué fuerte!",
+    "That's great!": "¡Qué bien!",
+    "That's a shame.": "¡Qué pena!",
+    "That's weird.": "¡Qué raro!",
+    "I can't believe it.": "No me lo puedo creer.",
+    "I knew it!": "¡Me lo imaginaba!",
+    "About time.": "Ya era hora.",
+    "I'm speechless.": "Me dejas sin palabras."
+  },
+  "english_phrases": [
+    "No way!",
+    "Seriously?",
+    "That's crazy!",
+    "That's great!",
+    "That's a shame.",
+    "That's weird.",
+    "I can't believe it.",
+    "I knew it!",
+    "About time.",
+    "I'm speechless."
+  ],
+  "full_script": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo? No way! Seriously? That's crazy! That's great! That's a shame. That's weird. I can't believe it. I knew it! About time. I'm speechless. [happy] Guarda el vídeo y repítelas mañana."
+}

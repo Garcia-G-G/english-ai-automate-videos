@@ -1,0 +1,107 @@
+{
+  "type": "say_it_level",
+  "video_title": "En el VETERINARIO: ¿sabes decirlo en inglés? 🐶",
+  "video_description": "Vacunas, pastillas y pelos por todas partes: diez frases para el veterinario en inglés. 🐾",
+  "title": "Dilo en inglés",
+  "theme": "en el veterinario",
+  "intro": "[warm] Llevas a tu mascota al veterinario. Di cada frase en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Mi perro está enfermo.",
+      "english": "My dog is sick.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Tiene tres años.",
+      "english": "He's three years old.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Mi gato vomita mucho.",
+      "english": "My cat throws up a lot.",
+      "cefr": "A2",
+      "alt": "My cat is vomiting a lot."
+    },
+    {
+      "spanish": "No quiere comer nada.",
+      "english": "He won't eat anything.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Le toca alguna vacuna?",
+      "english": "Is he due for any shots?",
+      "cefr": "B1",
+      "alt": "Does he need any vaccines?"
+    },
+    {
+      "spanish": "¿Cada cuánto le doy la pastilla?",
+      "english": "How often should I give him the pill?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Creo que se ha comido algo malo.",
+      "english": "I think he ate something bad.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Cojea de una pata.",
+      "english": "He's limping.",
+      "cefr": "B2",
+      "tip": "«Cojear» es limp, y no hace falta decir la pata"
+    },
+    {
+      "spanish": "Hay que castrarlo.",
+      "english": "He needs to be neutered.",
+      "cefr": "B2",
+      "tip": "Castrar a una mascota es neuter (spay si es hembra)"
+    },
+    {
+      "spanish": "Se le cae mucho el pelo.",
+      "english": "He's shedding a lot.",
+      "cefr": "C1",
+      "tip": "El pelo que suelta un animal: shed, no «fall hair»"
+    }
+  ],
+  "verdict": "Con tres, básico. Con siete, intermedio. Y si te sabías las diez, tu mascota tiene un experto en casa.",
+  "outro": "[cheerful] ¿Cómo se llama tu mascota? Dímelo con tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Mascotas"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy099",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "My dog is sick.": "Mi perro está enfermo.",
+    "He's three years old.": "Tiene tres años.",
+    "My cat throws up a lot.": "Mi gato vomita mucho.",
+    "He won't eat anything.": "No quiere comer nada.",
+    "Is he due for any shots?": "¿Le toca alguna vacuna?",
+    "How often should I give him the pill?": "¿Cada cuánto le doy la pastilla?",
+    "I think he ate something bad.": "Creo que se ha comido algo malo.",
+    "He's limping.": "Cojea de una pata.",
+    "He needs to be neutered.": "Hay que castrarlo.",
+    "He's shedding a lot.": "Se le cae mucho el pelo."
+  },
+  "english_phrases": [
+    "My dog is sick.",
+    "He's three years old.",
+    "My cat throws up a lot.",
+    "He won't eat anything.",
+    "Is he due for any shots?",
+    "How often should I give him the pill?",
+    "I think he ate something bad.",
+    "He's limping.",
+    "He needs to be neutered.",
+    "He's shedding a lot.",
+    "My cat is vomiting a lot.",
+    "Does he need any vaccines?"
+  ],
+  "full_script": "[warm] Llevas a tu mascota al veterinario. Di cada frase en inglés antes que yo. My dog is sick. He's three years old. My cat throws up a lot. Ahora, nivel intermedio. He won't eat anything. Is he due for any shots? How often should I give him the pill? I think he ate something bad. Y ahora, nivel experto. He's limping. He needs to be neutered. He's shedding a lot. Con tres, básico. Con siete, intermedio. Y si te sabías las diez, tu mascota tiene un experto en casa. [cheerful] ¿Cómo se llama tu mascota? Dímelo con tu número en los comentarios."
+}

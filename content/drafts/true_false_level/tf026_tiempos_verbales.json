@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "Verdadero o falso: TIEMPOS VERBALES ⏱️",
+  "video_description": "Tiempos verbales en inglés: ¿verdadero o falso? ⏱️",
+  "title": "¿Verdadero o falso?",
+  "theme": "los tiempos verbales",
+  "intro": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo.",
+  "items": [
+    {
+      "statement": "«I eat» es presente.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«I ate» es futuro.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es pasado"
+    },
+    {
+      "statement": "«I'm eating» es presente continuo.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«I will eat» es pasado.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es futuro"
+    },
+    {
+      "statement": "«I've eaten» es present perfect.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«I'm going to eat» habla de un plan.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«I've been waiting for an hour» es correcto.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«I am knowing him for years» es correcto.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es I've known him for years"
+    },
+    {
+      "statement": "«By 2030 I'll have finished» es futuro perfecto.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«I'm loving it» siempre es incorrecto.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "en lenguaje informal se usa"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#TiemposVerbales",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf026",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

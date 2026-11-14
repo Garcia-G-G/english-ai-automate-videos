@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "BEBIDAS en inglés: ¿hasta qué número las pronuncias bien? 🥤",
+  "video_description": "Del té al licor: pon a prueba tu pronunciación con diez bebidas. 🍹",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "las bebidas",
+  "intro": "[cheerful] Te enseño una bebida y tú la dices en voz alta. Luego compruebas si acertaste.",
+  "items": [
+    {
+      "english": "milk",
+      "respelling": "MILK",
+      "ipa": "ˈmɪlk",
+      "trap": "I corta y la L se oye antes de la K"
+    },
+    {
+      "english": "tea",
+      "respelling": "TII",
+      "ipa": "ˈtiː",
+      "trap": "EA suena «ii» larga"
+    },
+    {
+      "english": "coffee",
+      "respelling": "KO-fi",
+      "ipa": "ˈkɔfi",
+      "trap": "Acento en KO y la EE final suena «i»"
+    },
+    {
+      "english": "juice",
+      "respelling": "YUUS",
+      "ipa": "ˈdʒuːs",
+      "trap": "J fuerte y UI suena «uu»"
+    },
+    {
+      "english": "wine",
+      "respelling": "UAIN",
+      "ipa": "ˈwaɪn",
+      "trap": "W suena «u» y la I suena «ai»"
+    },
+    {
+      "english": "water",
+      "respelling": "UO-der",
+      "ipa": "ˈwɔɾɚ",
+      "trap": "La T suena como una D suave"
+    },
+    {
+      "english": "smoothie",
+      "respelling": "SMUU-dhi",
+      "ipa": "ˈsmuːði",
+      "trap": "Sin «es-» y TH suave, como «d»"
+    },
+    {
+      "english": "lemonade",
+      "respelling": "le-me-NEID",
+      "ipa": "lɛməˈneɪd",
+      "trap": "Acento al final: -NEID"
+    },
+    {
+      "english": "champagne",
+      "respelling": "sham-PEIN",
+      "ipa": "ʃæmˈpeɪn",
+      "trap": "CH suena SH y la G no suena"
+    },
+    {
+      "english": "liqueur",
+      "respelling": "li-KER",
+      "ipa": "lɪˈkɝ",
+      "trap": "Acento al final y -QUEUR suena «ker»"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio. Pronunciar bien las diez es de experto.",
+  "outro": "[happy] Escribe tu nivel en los comentarios: ¿básico, intermedio o experto?",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#BebidasEnInglés",
+    "#AprenderInglés",
+    "#ClasesDeInglés",
+    "#HablarInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl002",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

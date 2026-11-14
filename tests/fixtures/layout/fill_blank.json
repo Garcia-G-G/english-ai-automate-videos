@@ -1,0 +1,243 @@
+{
+  "duration": 41.859,
+  "segments": [
+    {
+      "id": "sentence",
+      "text": "¿Cómo completarías esta frase? Everyone came ... Maria, who was sick.",
+      "start": 0.0,
+      "end": 5.751,
+      "duration": 5.751
+    },
+    {
+      "id": "transition",
+      "text": "[curious] Aquí van las opciones.",
+      "start": 6.504,
+      "end": 8.111,
+      "duration": 1.607
+    },
+    {
+      "id": "option_1",
+      "text": "Opción 1, except.",
+      "start": 8.511,
+      "end": 10.555,
+      "duration": 2.044
+    },
+    {
+      "id": "option_2",
+      "text": "Opción 2, accept.",
+      "start": 10.955,
+      "end": 12.999,
+      "duration": 2.044
+    },
+    {
+      "id": "option_3",
+      "text": "Opción 3, expect.",
+      "start": 13.399,
+      "end": 15.441,
+      "duration": 2.042
+    },
+    {
+      "id": "option_4",
+      "text": "Opción 4, exept.",
+      "start": 15.841,
+      "end": 18.051,
+      "duration": 2.21
+    },
+    {
+      "id": "options",
+      "text": "[curious] Aquí van las opciones. Opción 1, except. Opción 2, accept. Opción 3, expect. Opción 4, exept.",
+      "start": 6.504,
+      "end": 18.051,
+      "duration": 11.547
+    },
+    {
+      "id": "think",
+      "text": "[thoughtful] Piénsalo un segundo.",
+      "start": 18.651,
+      "end": 20.264,
+      "duration": 1.613
+    },
+    {
+      "id": "countdown_3",
+      "text": "[3]",
+      "start": 22.631,
+      "end": 24.131,
+      "duration": 1.5
+    },
+    {
+      "id": "countdown_2",
+      "text": "[2]",
+      "start": 24.131,
+      "end": 25.631,
+      "duration": 1.5
+    },
+    {
+      "id": "countdown_1",
+      "text": "[1]",
+      "start": 25.631,
+      "end": 27.131,
+      "duration": 1.5
+    },
+    {
+      "id": "answer",
+      "text": "[excited] ¡Eso es! La respuesta es 'except'.",
+      "start": 28.131,
+      "end": 31.439,
+      "duration": 3.308
+    },
+    {
+      "id": "repeat_answer_take2",
+      "text": "except.",
+      "start": 32.635,
+      "end": 33.391,
+      "duration": 0.756
+    },
+    {
+      "id": "explanation",
+      "text": "[excited] Except es excepto. Accept es aceptar. Una letra y el sentido se invierte.",
+      "start": 34.955,
+      "end": 41.111,
+      "duration": 6.156
+    }
+  ],
+  "segment_times": {
+    "sentence": {
+      "start": 0.0,
+      "end": 5.751,
+      "duration": 5.751
+    },
+    "transition": {
+      "start": 6.504,
+      "end": 8.111,
+      "duration": 1.607
+    },
+    "option_1": {
+      "start": 8.511,
+      "end": 10.555,
+      "duration": 2.044
+    },
+    "option_2": {
+      "start": 10.955,
+      "end": 12.999,
+      "duration": 2.044
+    },
+    "option_3": {
+      "start": 13.399,
+      "end": 15.441,
+      "duration": 2.042
+    },
+    "option_4": {
+      "start": 15.841,
+      "end": 18.051,
+      "duration": 2.21
+    },
+    "options": {
+      "start": 6.504,
+      "end": 18.051,
+      "duration": 11.547
+    },
+    "think": {
+      "start": 18.651,
+      "end": 20.264,
+      "duration": 1.613
+    },
+    "countdown_3": {
+      "start": 22.631,
+      "end": 24.131,
+      "duration": 1.5
+    },
+    "countdown_2": {
+      "start": 24.131,
+      "end": 25.631,
+      "duration": 1.5
+    },
+    "countdown_1": {
+      "start": 25.631,
+      "end": 27.131,
+      "duration": 1.5
+    },
+    "answer": {
+      "start": 28.131,
+      "end": 31.439,
+      "duration": 3.308
+    },
+    "repeat_answer_take2": {
+      "start": 32.635,
+      "end": 33.391,
+      "duration": 0.756
+    },
+    "explanation": {
+      "start": 34.955,
+      "end": 41.111,
+      "duration": 6.156
+    }
+  },
+  "tts_model_id": "eleven_v3",
+  "type": "fill_blank",
+  "sentence": "Everyone came ___ Maria, who was sick.",
+  "options": [
+    "except",
+    "accept",
+    "expect",
+    "exept"
+  ],
+  "correct": "except",
+  "explanation": "[excited] Except es excepto. Accept es aceptar. Una letra y el sentido se invierte.",
+  "translation": "Vinieron todos menos María.",
+  "full_script": "[curious] ¡Completa la frase! Número uno. Cuentas quién vino a una cena y una sola letra lo cambia todo. Everyone came ___ Maria, who was sick. Las opciones son: A, except. B, accept. C, expect. D, exept.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, except! Except es excepto, menos. Accept con a es aceptar. I accept your offer. Acepto tu oferta. Y hay una tercera parecida que también confunde. Expect es esperar algo. Tres palabras, tres significados sin relación.",
+  "translations": {},
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "words": [],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw008",
+    "video_type": "fill_blank",
+    "model": "claude-opus-5"
+  },
+  "video_title": "Completa: ¿ACCEPT o EXCEPT? ✅",
+  "video_description": "Dos palabras casi iguales y sentidos opuestos. 🔀",
+  "sentences": [
+    {
+      "sentence": "Everyone came ___ Maria, who was sick.",
+      "options": [
+        "except",
+        "accept",
+        "expect",
+        "exept"
+      ],
+      "correct": "except",
+      "translation": "Vinieron todos menos María.",
+      "explanation": "[excited] Except es excepto. Accept es aceptar. Una letra y el sentido se invierte."
+    },
+    {
+      "sentence": "I ___ your offer, thank you.",
+      "options": [
+        "accept",
+        "except",
+        "expect",
+        "exept"
+      ],
+      "correct": "accept",
+      "translation": "Acepto tu oferta, gracias.",
+      "explanation": "[excited] Accept con a es aceptar. Except con e es excluir."
+    },
+    {
+      "sentence": "I didn't ___ him to arrive so early.",
+      "options": [
+        "expect",
+        "except",
+        "accept",
+        "exept"
+      ],
+      "correct": "expect",
+      "translation": "No esperaba que llegara tan pronto.",
+      "explanation": "[excited] Expect es esperar algo. La tercera del trío, y también confunde."
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La J INGLESA: test de pronunciación de fácil a experto 🃏",
+  "video_description": "La J inglesa en diez palabras, de fácil a experto. 💎",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el sonido de la J inglesa",
+  "intro": "[happy] La J inglesa suena como una «y» con fuerza. Pon a prueba tu pronunciación.",
+  "items": [
+    {
+      "english": "job",
+      "respelling": "YAB",
+      "ipa": "ˈdʒɑb",
+      "trap": "J fuerte, como una «y» con fuerza"
+    },
+    {
+      "english": "jam",
+      "respelling": "YAM",
+      "ipa": "ˈdʒæm",
+      "trap": "J fuerte: YAM"
+    },
+    {
+      "english": "joke",
+      "respelling": "YOUK",
+      "ipa": "ˈdʒoʊk",
+      "trap": "J fuerte y O = «ou»"
+    },
+    {
+      "english": "bridge",
+      "respelling": "BRIDCH",
+      "ipa": "ˈbrɪdʒ",
+      "trap": "DGE final suena «dch»"
+    },
+    {
+      "english": "giant",
+      "respelling": "YAI-ent",
+      "ipa": "ˈdʒaɪənt",
+      "trap": "G suena «y» fuerte: YAI-ent"
+    },
+    {
+      "english": "general",
+      "respelling": "YE-ner-el",
+      "ipa": "ˈdʒɛnɚəl",
+      "trap": "G suena «y» fuerte"
+    },
+    {
+      "english": "manager",
+      "respelling": "MA-ni-yer",
+      "ipa": "ˈmænɪdʒɚ",
+      "trap": "G suena «y» y acento en MA"
+    },
+    {
+      "english": "agenda",
+      "respelling": "e-YEN-da",
+      "ipa": "əˈdʒɛndə",
+      "trap": "G suena «y»: e-YEN-da"
+    },
+    {
+      "english": "gesture",
+      "respelling": "YES-cher",
+      "ipa": "ˈdʒɛstʃɚ",
+      "trap": "G = «y» y -TURE = «cher»"
+    },
+    {
+      "english": "judgment",
+      "respelling": "YADCH-ment",
+      "ipa": "ˈdʒʌdʒmənt",
+      "trap": "Dos J fuertes: YADCH-ment"
+    }
+  ],
+  "verdict": "Hasta la tres, básico; hasta la siete, intermedio. Si ninguna de las diez te frenó, eres experto.",
+  "outro": "[warm] ¿Llegaste a la diez? Cuéntame tu resultado aquí abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#JInglesa",
+    "#AprenderInglés",
+    "#InglésOnline",
+    "#InglésAmericano"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl038",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

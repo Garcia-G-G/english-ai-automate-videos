@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Los cinco SENTIDOS en inglés: test de pronunciación 👃",
+  "video_description": "See, smooth, deaf: diez palabras de los sentidos, de fácil a experto. 🍋",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los sentidos",
+  "intro": "[curious] Ver, oír, tocar… Diez palabras de los sentidos. Di cada una antes que yo.",
+  "items": [
+    {
+      "english": "see",
+      "respelling": "SII",
+      "ipa": "ˈsiː",
+      "trap": "EE es una «i» larga: SII"
+    },
+    {
+      "english": "hear",
+      "respelling": "JIR",
+      "ipa": "ˈhɪr",
+      "trap": "EAR suena «ir»: JIR"
+    },
+    {
+      "english": "taste",
+      "respelling": "TEIST",
+      "ipa": "ˈteɪst",
+      "trap": "La A suena «ei»: TEIST"
+    },
+    {
+      "english": "touch",
+      "respelling": "TACH",
+      "ipa": "ˈtʌtʃ",
+      "trap": "OU suena «a»: TACH"
+    },
+    {
+      "english": "sour",
+      "respelling": "SAU-er",
+      "ipa": "ˈsaʊɚ",
+      "trap": "Dos sílabas: SAU-er"
+    },
+    {
+      "english": "smooth",
+      "respelling": "SMUUDH",
+      "ipa": "ˈsmuːð",
+      "trap": "TH sonora al final: SMUUDH"
+    },
+    {
+      "english": "flavor",
+      "respelling": "FLEI-ver",
+      "ipa": "ˈfleɪvɚ",
+      "trap": "La A suena «ei»: FLEI-ver"
+    },
+    {
+      "english": "scent",
+      "respelling": "SENT",
+      "ipa": "ˈsɛnt",
+      "trap": "La C no suena: SENT"
+    },
+    {
+      "english": "deaf",
+      "respelling": "DEF",
+      "ipa": "ˈdɛf",
+      "trap": "EA suena «e»: DEF, no DIIF"
+    },
+    {
+      "english": "tactile",
+      "respelling": "TAK-tal",
+      "ipa": "ˈtæktəl",
+      "trap": "En EE. UU. termina en «tal»"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Y si dijiste bien las diez, experto.",
+  "outro": "[curious] ¿Hasta qué número llegaste? Te leo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#InglésOnline",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl097",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

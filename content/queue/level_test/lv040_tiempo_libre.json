@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "El TIEMPO LIBRE en inglés: 10 palabras de fácil a experto 🎲",
+  "video_description": "¿Llegas a la décima palabra del tiempo libre? Haz el test y compruébalo. 🎲",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el tiempo libre",
+  "intro": "[happy] ¿Cuántas palabras del tiempo libre conoces? Di el significado en voz alta antes de la respuesta.",
+  "items": [
+    {
+      "english": "weekend",
+      "spanish": "Fin de semana",
+      "cefr": "A1"
+    },
+    {
+      "english": "go for a walk",
+      "spanish": "Dar un paseo",
+      "cefr": "A2"
+    },
+    {
+      "english": "play video games",
+      "spanish": "Jugar a videojuegos",
+      "cefr": "A2"
+    },
+    {
+      "english": "hang out",
+      "spanish": "Pasar el rato",
+      "cefr": "B1"
+    },
+    {
+      "english": "nap",
+      "spanish": "Siesta",
+      "cefr": "B1"
+    },
+    {
+      "english": "sleep in",
+      "spanish": "Dormir hasta tarde",
+      "cefr": "B1"
+    },
+    {
+      "english": "chill out",
+      "spanish": "Relajarse",
+      "cefr": "B2"
+    },
+    {
+      "english": "kill time",
+      "spanish": "Matar el tiempo",
+      "cefr": "B2"
+    },
+    {
+      "english": "unwind",
+      "spanish": "Desconectar",
+      "cefr": "C1"
+    },
+    {
+      "english": "me time",
+      "spanish": "Tiempo para uno mismo",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Básico si llegaste a la tres, intermedio si llegaste a la siete y experto si acertaste las diez.",
+  "outro": "[curious] ¿Qué palabra te costó más? Dímelo en los comentarios, junto a tu número.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv040",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "weekend": "Fin de semana",
+    "go for a walk": "Dar un paseo",
+    "play video games": "Jugar a videojuegos",
+    "hang out": "Pasar el rato",
+    "nap": "Siesta",
+    "sleep in": "Dormir hasta tarde",
+    "chill out": "Relajarse",
+    "kill time": "Matar el tiempo",
+    "unwind": "Desconectar",
+    "me time": "Tiempo para uno mismo"
+  },
+  "english_phrases": [
+    "weekend",
+    "go for a walk",
+    "play video games",
+    "hang out",
+    "nap",
+    "sleep in",
+    "chill out",
+    "kill time",
+    "unwind",
+    "me time"
+  ],
+  "full_script": "[happy] ¿Cuántas palabras del tiempo libre conoces? Di el significado en voz alta antes de la respuesta. weekend Fin de semana go for a walk Dar un paseo play video games Jugar a videojuegos Ahora, nivel intermedio. hang out Pasar el rato nap Siesta sleep in Dormir hasta tarde chill out Relajarse Y ahora, nivel experto. kill time Matar el tiempo unwind Desconectar me time Tiempo para uno mismo Básico si llegaste a la tres, intermedio si llegaste a la siete y experto si acertaste las diez. [curious] ¿Qué palabra te costó más? Dímelo en los comentarios, junto a tu número."
+}

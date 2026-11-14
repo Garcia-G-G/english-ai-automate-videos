@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "DEPORTES en inglés: test de pronunciación ⚽",
+  "video_description": "Deportes en inglés: diez palabras con trampa. 🏀",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los deportes",
+  "intro": "[excited] Deportes en inglés. Lee cada palabra en voz alta antes de que yo la diga.",
+  "items": [
+    {
+      "english": "golf",
+      "respelling": "GALF",
+      "ipa": "ˈgɑlf",
+      "trap": "La O suena «a»: GALF"
+    },
+    {
+      "english": "tennis",
+      "respelling": "TE-nis",
+      "ipa": "ˈtɛnɪs",
+      "trap": "Acento en TE y la I corta"
+    },
+    {
+      "english": "sport",
+      "respelling": "SPORT",
+      "ipa": "ˈspɔrt",
+      "trap": "Sin «es-» delante: SPORT"
+    },
+    {
+      "english": "basketball",
+      "respelling": "BAS-kit-bol",
+      "ipa": "ˈbæskɪtbɔl",
+      "trap": "Acento en BAS"
+    },
+    {
+      "english": "soccer",
+      "respelling": "SA-ker",
+      "ipa": "ˈsɑkɚ",
+      "trap": "La O suena «a»: SA-ker"
+    },
+    {
+      "english": "volleyball",
+      "respelling": "VA-li-bol",
+      "ipa": "ˈvɑlibɔl",
+      "trap": "V con dientes y O = «a»"
+    },
+    {
+      "english": "badminton",
+      "respelling": "BAD-min-ten",
+      "ipa": "ˈbædmɪntən",
+      "trap": "Acento en BAD: BAD-min-ten"
+    },
+    {
+      "english": "referee",
+      "respelling": "re-fe-RII",
+      "ipa": "rɛfəˈriː",
+      "trap": "Acento al final: re-fe-RII"
+    },
+    {
+      "english": "marathon",
+      "respelling": "MA-re-than",
+      "ipa": "ˈmærəθɑn",
+      "trap": "TH, no T: MA-re-than"
+    },
+    {
+      "english": "triathlon",
+      "respelling": "trai-ATH-lan",
+      "ipa": "traɪˈæθlɑn",
+      "trap": "Tres sílabas: trai-ATH-lan"
+    }
+  ],
+  "verdict": "Si solo te salieron las tres primeras, básico. Hasta la siete, intermedio. Las diez, experto.",
+  "outro": "[warm] ¿Hasta qué palabra llegaste? Comenta y sigue practicando.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#DeportesEnInglés",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl047",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

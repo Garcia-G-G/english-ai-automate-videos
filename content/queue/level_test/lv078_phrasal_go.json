@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Phrasal verbs con GO en inglés: ¿llegas al nivel experto? 🚦",
+  "video_description": "Go out, go through, go along with: ¿hasta dónde llegas con los phrasal verbs con GO? 🏃",
+  "title": "¿Qué nivel tienes?",
+  "theme": "phrasal verbs con GO",
+  "intro": "[happy] Diez phrasal verbs con go, de fácil a experto. ¿Sabes qué significa cada uno?",
+  "items": [
+    {
+      "english": "go out",
+      "spanish": "Salir",
+      "cefr": "A1"
+    },
+    {
+      "english": "go back",
+      "spanish": "Volver",
+      "cefr": "A2"
+    },
+    {
+      "english": "go away",
+      "spanish": "Irse",
+      "cefr": "A2"
+    },
+    {
+      "english": "go on",
+      "spanish": "Continuar",
+      "cefr": "B1"
+    },
+    {
+      "english": "go up",
+      "spanish": "Subir (precios)",
+      "cefr": "B1"
+    },
+    {
+      "english": "go off",
+      "spanish": "Sonar (una alarma)",
+      "cefr": "B2"
+    },
+    {
+      "english": "go through",
+      "spanish": "Pasar por algo difícil",
+      "cefr": "B2"
+    },
+    {
+      "english": "go over",
+      "spanish": "Repasar",
+      "cefr": "B2"
+    },
+    {
+      "english": "go along with",
+      "spanish": "Seguirle la corriente a",
+      "cefr": "C1"
+    },
+    {
+      "english": "go without",
+      "spanish": "Pasar sin, prescindir de",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y con las diez, eres experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Dímelo y seguimos practicando.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#PhrasalVerbs",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv078",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "go out": "Salir",
+    "go back": "Volver",
+    "go away": "Irse",
+    "go on": "Continuar",
+    "go up": "Subir (precios)",
+    "go off": "Sonar (una alarma)",
+    "go through": "Pasar por algo difícil",
+    "go over": "Repasar",
+    "go along with": "Seguirle la corriente a",
+    "go without": "Pasar sin, prescindir de"
+  },
+  "english_phrases": [
+    "go out",
+    "go back",
+    "go away",
+    "go on",
+    "go up",
+    "go off",
+    "go through",
+    "go over",
+    "go along with",
+    "go without"
+  ],
+  "full_script": "[happy] Diez phrasal verbs con go, de fácil a experto. ¿Sabes qué significa cada uno? go out Salir go back Volver go away Irse Ahora, nivel intermedio. go on Continuar go up Subir (precios) go off Sonar (una alarma) go through Pasar por algo difícil Y ahora, nivel experto. go over Repasar go along with Seguirle la corriente a go without Pasar sin, prescindir de Si llegaste a la tres, básico. A la siete, intermedio. Y con las diez, eres experto. [cheerful] ¿Hasta qué número llegaste? Dímelo y seguimos practicando."
+}

@@ -1,0 +1,59 @@
+{
+  "id": "hc_m025",
+  "style": "mensajes",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«He ghosted me»: qué significa de verdad",
+  "hook_text": "Mi amigo me escribió esto…",
+  "chat": {
+    "contact": "Noah · Miami",
+    "messages": [
+      [
+        "them",
+        "Remember the guy from the app?"
+      ],
+      [
+        "them",
+        "He totally ghosted me 👻"
+      ],
+      [
+        "me",
+        "he became a ghost?? 😱",
+        "error"
+      ],
+      [
+        "them",
+        "lol he stopped answering!"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "ghost = fantasma",
+    "right": "ghost someone = dejar de contestar sin explicación",
+    "rule": "Argot de citas y amistades"
+  },
+  "voice": [
+    "Mi amiga me escribió [[He totally ghosted me]]. Y yo me imaginé un fantasma.",
+    "[[To ghost someone]] es desaparecer: dejar de contestar sin dar ninguna explicación.",
+    "Muy usado en citas y apps: [[She ghosted me after the second date]].",
+    "Y si alguien vuelve meses después: [[He's back from the dead]]. A eso le dicen [[zombieing]].",
+    "Si eres tú quien desaparece: [[Sorry for ghosting you!]]",
+    "Reto: ¿cómo dirías «no me dejes en visto»? Pista: usa [[ghost]]."
+  ],
+  "challenge": {
+    "prompt": "«No me dejes en visto»",
+    "answer": "Don't ghost me!"
+  },
+  "caption": "«Ghosting» es desaparecer sin explicación. Argot en inglés que sale en series, apps y chats.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 75
+}

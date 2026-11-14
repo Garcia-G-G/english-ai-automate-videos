@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Las 10 palabras MÁS DIFÍCILES para hispanohablantes 🔥",
+  "video_description": "Think, worth, necessarily: el reto final de pronunciación para hispanohablantes. 🏆",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "las 10 palabras más difíciles para hispanohablantes",
+  "intro": "[excited] El reto definitivo: las diez palabras que más cuestan. Dilas antes que yo.",
+  "items": [
+    {
+      "english": "think",
+      "respelling": "THINK",
+      "ipa": "ˈθɪŋk",
+      "trap": "TH sorda: ni «t» ni «s»"
+    },
+    {
+      "english": "early",
+      "respelling": "ER-li",
+      "ipa": "ˈɝli",
+      "trap": "EAR suena «er»: ER-li"
+    },
+    {
+      "english": "heard",
+      "respelling": "JERD",
+      "ipa": "ˈhɝd",
+      "trap": "Rima con «bird»: JERD"
+    },
+    {
+      "english": "worth",
+      "respelling": "UERTH",
+      "ipa": "ˈwɝθ",
+      "trap": "OR suena «er» y la TH final es sorda"
+    },
+    {
+      "english": "thirsty",
+      "respelling": "THERS-ti",
+      "ipa": "ˈθɝsti",
+      "trap": "TH sorda + «er»: THERS-ti"
+    },
+    {
+      "english": "everything",
+      "respelling": "EV-ri-thing",
+      "ipa": "ˈɛvriθɪŋ",
+      "trap": "Tres sílabas y TH sorda"
+    },
+    {
+      "english": "refrigerator",
+      "respelling": "ri-FRI-ye-rei-ter",
+      "ipa": "rɪˈfrɪdʒəreɪtɚ",
+      "trap": "Acento en FRI: ri-FRI-ye-rei-ter"
+    },
+    {
+      "english": "environment",
+      "respelling": "in-VAI-ran-ment",
+      "ipa": "ɪnˈvaɪrənmənt",
+      "trap": "Acento en VAI: in-VAI-ran-ment"
+    },
+    {
+      "english": "literally",
+      "respelling": "LI-ter-a-li",
+      "ipa": "ˈlɪtɚəli",
+      "trap": "Cuatro sílabas: LI-ter-a-li"
+    },
+    {
+      "english": "necessarily",
+      "respelling": "ne-se-SE-ra-li",
+      "ipa": "nɛsəˈsɛrəli",
+      "trap": "Acento en la tercera: -SE-, no en -RI-"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, eres un experto de verdad.",
+  "outro": "[excited] ¿Superaste el reto? Escribe tu número en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#RetoDeInglés",
+    "#InglésParaHispanohablantes",
+    "#Pronunciación"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl100",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "hc_m001",
+  "style": "mensajes",
+  "angle": "errores",
+  "title": "¿Le dices tu edad así a un nativo? 😬",
+  "hook_text": "Le escribí esto a mi amigo de Nueva York…",
+  "chat": {
+    "contact": "Jake · Nueva York",
+    "messages": [
+      [
+        "them",
+        "Hey! Are you coming to the party tomorrow?"
+      ],
+      [
+        "me",
+        "Yes!! It's my birthday"
+      ],
+      [
+        "me",
+        "I have 25 years!",
+        "error"
+      ],
+      [
+        "them",
+        "wait… you HAVE them?? 😂"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I have 25 years",
+    "right": "I'm 25",
+    "rule": "La edad en inglés se ES, no se TIENE"
+  },
+  "voice": [
+    "Le escribí esto a mi amigo de Nueva York y me contestó con un «¿qué?».",
+    "En español la edad se tiene: tengo veinticinco años. En inglés no se tiene, se es.",
+    "Por eso se dice [[I'm 25]]. O, si quieres alargarlo, [[I'm 25 years old]].",
+    "Nunca [[I have 25 years]]: para un nativo suena a que coleccionas años.",
+    "Lo mismo con todo el mundo: [[She's 30]], [[My dad is 60]].",
+    "Reto: ¿cómo dirías «mi hermano tiene doce años»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Mi hermano tiene doce años»",
+    "answer": "My brother is 12."
+  },
+  "caption": "Cómo decir tu edad en inglés sin que un nativo se ría: «I'm 25», no «I have 25 years». Guárdalo para tu próximo cumpleaños.",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "principiante",
+  "level_label": "Principiante · A1–A2",
+  "voice_words": 81
+}

@@ -1,0 +1,47 @@
+{
+  "id": "hc_c012",
+  "style": "comic",
+  "level": "medio",
+  "angle": "reto",
+  "title": "RETO: «¿ya comiste?»",
+  "hook_text": "¿Already o yet?",
+  "quiz": {
+    "prompt": "¿Cómo dirías «¿ya comiste?»?",
+    "options": [
+      "Did you already eat yet?",
+      "Have you eaten yet?",
+      "Have you ate already?"
+    ],
+    "answer": 1,
+    "after": "En preguntas, «ya» suele ser yet, al final."
+  },
+  "correction": {
+    "wrong": "Have you ate already?",
+    "right": "Have you eaten yet?",
+    "rule": "Yet en preguntas y negativas"
+  },
+  "voice": [
+    "¿Already o yet? ¿Cómo dirías «¿ya comiste?»?",
+    "¿[[Did you already eat yet?]], [[Have you eaten yet?]] o [[Have you ate already?]]",
+    "¡La B! [[Have you eaten yet?]] En preguntas, «ya» suele ser [[yet]], al final.",
+    "En afirmativas va [[already]]: [[I've already eaten]].",
+    "En negativas, «todavía no»: [[I haven't eaten yet]].",
+    "Reto extra: «todavía no he terminado». Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Todavía no he terminado»",
+    "answer": "I haven't finished yet."
+  },
+  "caption": "«¿Ya comiste?» es «Have you eaten yet?». Already vs yet en un reto de 30 segundos.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 58
+}

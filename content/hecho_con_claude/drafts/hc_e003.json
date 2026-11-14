@@ -1,0 +1,42 @@
+{
+  "id": "hc_e003",
+  "style": "escena",
+  "angle": "errores",
+  "title": "«I'm agree»: el error que delata en cada reunión",
+  "hook_text": "ESCENA 03 — REUNIÓN POR VIDEOLLAMADA",
+  "scene": {
+    "location": "Reunión por videollamada",
+    "take1": "Yes, I'm agree with you.",
+    "take2": "Yes, I agree with you.",
+    "note": "«Agree» ya es un verbo: no lleva «am». Igual que «I like», no «I'm like»."
+  },
+  "correction": {
+    "wrong": "I'm agree",
+    "right": "I agree",
+    "rule": "«Agree» es un verbo, no un adjetivo: sin «am»"
+  },
+  "voice": [
+    "Escena tres. Reunión por videollamada. Toma uno: [[Yes, I'm agree with you]].",
+    "¡Corten! En español decimos «estoy de acuerdo», pero en inglés [[agree]] ya es un verbo. No necesita [[am]].",
+    "Toma dos: [[Yes, I agree with you]]. Y en negativo: [[I don't agree]], nunca [[I'm not agree]].",
+    "Si quieres sonar más natural en una reunión: [[That makes sense]] o [[Fair point]].",
+    "Reto: ¿cómo dirías «no estoy de acuerdo con eso»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«No estoy de acuerdo con eso»",
+    "answer": "I don't agree with that. / I disagree with that."
+  },
+  "caption": "Se dice «I agree», no «I'm agree». El error de inglés que más se oye en reuniones de trabajo, y cómo sonar natural.",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "principiante",
+  "level_label": "Principiante · A1–A2",
+  "voice_words": 73
+}

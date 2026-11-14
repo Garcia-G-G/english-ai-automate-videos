@@ -1,0 +1,43 @@
+{
+  "type": "expression_of_day",
+  "video_title": "NOT MY CUP OF TEA: decir que no te gusta, con estilo ☕",
+  "video_description": "Más elegante que I don't like it. 🎩",
+  "level": "B1",
+  "intro": "[cheerful] La expresión de hoy la vas a oír esta misma semana.",
+  "expression": "not my cup of tea",
+  "literal": "no es mi taza de té",
+  "meaning": "no es lo mío",
+  "register": "neutral",
+  "examples": [
+    {
+      "en": "Horror films are not my cup of tea.",
+      "es": "Las pelis de miedo no son lo mío."
+    },
+    {
+      "en": "Golf isn't really my cup of tea.",
+      "es": "El golf no es mucho lo mío."
+    }
+  ],
+  "equivalent_es": "no es lo mío",
+  "tip": "Suena suave y educada. Perfecta para rechazar un plan sin ofender.",
+  "outro": "[excited] Úsala hoy en una frase. Escríbela en los comentarios.",
+  "translations": {
+    "not my cup of tea": "no es lo mío",
+    "Horror films are not my cup of tea.": "Las pelis de miedo no son lo mío.",
+    "Golf isn't really my cup of tea.": "El golf no es mucho lo mío."
+  },
+  "hashtags": [
+    "#ExpresiónDelDía",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Idioms"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp025",
+    "video_type": "expression_of_day",
+    "model": "manual",
+    "draft": true
+  }
+}

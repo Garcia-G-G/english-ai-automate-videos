@@ -1,0 +1,107 @@
+{
+  "type": "say_it_level",
+  "video_title": "Cómo CONSOLAR A ALGUIEN en inglés: 10 frases 🫂",
+  "video_description": "Palabras de apoyo para un mal momento, en inglés y de fácil a experto. 🫂",
+  "title": "Dilo en inglés",
+  "theme": "consolar a alguien",
+  "intro": "[warm] Alguien lo está pasando mal. Lee la frase y dila con cariño en inglés.",
+  "items": [
+    {
+      "spanish": "Lo siento mucho.",
+      "english": "I'm so sorry.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Estoy aquí para ti.",
+      "english": "I'm here for you.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Quieres hablar de ello?",
+      "english": "Do you want to talk about it?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "No es culpa tuya.",
+      "english": "It's not your fault.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Todo va a salir bien.",
+      "english": "Everything's going to be okay.",
+      "cefr": "B1",
+      "alt": "It's all going to be fine."
+    },
+    {
+      "spanish": "Tómate el tiempo que necesites.",
+      "english": "Take all the time you need.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Si necesitas algo, llámame.",
+      "english": "If you need anything, call me.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Te acompaño en el sentimiento.",
+      "english": "I'm sorry for your loss.",
+      "cefr": "B2",
+      "tip": "El pésame en inglés: I'm sorry for your loss"
+    },
+    {
+      "spanish": "Sé por lo que estás pasando.",
+      "english": "I know what you're going through.",
+      "cefr": "B2",
+      "tip": "«Pasar por» algo difícil es go through"
+    },
+    {
+      "spanish": "Desahógate.",
+      "english": "Let it all out.",
+      "cefr": "C1",
+      "alt": "Get it off your chest.",
+      "tip": "«Desahogarse» es let it out o get it off your chest"
+    }
+  ],
+  "verdict": "Tres frases: básico. Siete: intermedio. Las diez: sabes estar ahí en inglés, nivel experto.",
+  "outro": "[calm] ¿Hasta qué frase llegaste? Comparte el vídeo con quien lo necesite.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésConversacional",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy070",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm so sorry.": "Lo siento mucho.",
+    "I'm here for you.": "Estoy aquí para ti.",
+    "Do you want to talk about it?": "¿Quieres hablar de ello?",
+    "It's not your fault.": "No es culpa tuya.",
+    "Everything's going to be okay.": "Todo va a salir bien.",
+    "Take all the time you need.": "Tómate el tiempo que necesites.",
+    "If you need anything, call me.": "Si necesitas algo, llámame.",
+    "I'm sorry for your loss.": "Te acompaño en el sentimiento.",
+    "I know what you're going through.": "Sé por lo que estás pasando.",
+    "Let it all out.": "Desahógate."
+  },
+  "english_phrases": [
+    "I'm so sorry.",
+    "I'm here for you.",
+    "Do you want to talk about it?",
+    "It's not your fault.",
+    "Everything's going to be okay.",
+    "Take all the time you need.",
+    "If you need anything, call me.",
+    "I'm sorry for your loss.",
+    "I know what you're going through.",
+    "Let it all out.",
+    "It's all going to be fine.",
+    "Get it off your chest."
+  ],
+  "full_script": "[warm] Alguien lo está pasando mal. Lee la frase y dila con cariño en inglés. I'm so sorry. I'm here for you. Do you want to talk about it? Ahora, nivel intermedio. It's not your fault. Everything's going to be okay. Take all the time you need. If you need anything, call me. Y ahora, nivel experto. I'm sorry for your loss. I know what you're going through. Let it all out. Tres frases: básico. Siete: intermedio. Las diez: sabes estar ahí en inglés, nivel experto. [calm] ¿Hasta qué frase llegaste? Comparte el vídeo con quien lo necesite."
+}

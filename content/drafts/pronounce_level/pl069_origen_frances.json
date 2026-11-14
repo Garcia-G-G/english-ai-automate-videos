@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "¿Pronuncias bien estas palabras de origen FRANCÉS? 🥐",
+  "video_description": "Chef, garage, genre: palabras francesas con pronunciación americana. 🗼",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras de origen francés",
+  "intro": "[cheerful] El inglés le robó estas palabras al francés. Pronúncialas antes de que yo lo haga.",
+  "items": [
+    {
+      "english": "chef",
+      "respelling": "SHEF",
+      "ipa": "ˈʃɛf",
+      "trap": "CH suena «sh»: SHEF"
+    },
+    {
+      "english": "menu",
+      "respelling": "MEN-iuu",
+      "ipa": "ˈmɛnjuː",
+      "trap": "Acento en ME- y la U suena «iuu»"
+    },
+    {
+      "english": "machine",
+      "respelling": "ma-SHIIN",
+      "ipa": "məˈʃiːn",
+      "trap": "CH suena «sh» y acento al final"
+    },
+    {
+      "english": "garage",
+      "respelling": "ga-RAZH",
+      "ipa": "ɡəˈrɑʒ",
+      "trap": "Termina en «zh»: ga-RAZH"
+    },
+    {
+      "english": "souvenir",
+      "respelling": "suu-ve-NIR",
+      "ipa": "suːvəˈnɪr",
+      "trap": "Acento al final: -NIR"
+    },
+    {
+      "english": "bouquet",
+      "respelling": "bou-KEI",
+      "ipa": "boʊˈkeɪ",
+      "trap": "QUET suena «kei»: bou-KEI"
+    },
+    {
+      "english": "debris",
+      "respelling": "de-BRII",
+      "ipa": "dəˈbriː",
+      "trap": "La S final no suena"
+    },
+    {
+      "english": "facade",
+      "respelling": "fa-SAD",
+      "ipa": "fəˈsɑd",
+      "trap": "La C suena «s» y acento en SAD"
+    },
+    {
+      "english": "genre",
+      "respelling": "ZHAN-ra",
+      "ipa": "ˈʒɑnrə",
+      "trap": "Empieza con «zh»: ZHAN-ra"
+    },
+    {
+      "english": "rendezvous",
+      "respelling": "RAN-dei-vuu",
+      "ipa": "ˈrɑndeɪvuː",
+      "trap": "La Z y la S no suenan"
+    }
+  ],
+  "verdict": "Tres correctas, básico. Siete, intermedio. ¿Diez? Nivel experto, sin duda.",
+  "outro": "[cheerful] ¿Cuántas dijiste a la francesa? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Etimología",
+    "#InglésFácil",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl069",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "PROFESIONES en inglés: ¿cuántas pronuncias bien? 👷",
+  "video_description": "Diez profesiones en inglés para medir tu pronunciación. 🔧",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "las profesiones",
+  "intro": "[curious] Diez profesiones en inglés. ¿Las pronuncias bien? Dilas antes que yo.",
+  "items": [
+    {
+      "english": "doctor",
+      "respelling": "DAK-ter",
+      "ipa": "ˈdɑktɚ",
+      "trap": "La O suena «a»: DAK-ter"
+    },
+    {
+      "english": "actor",
+      "respelling": "AK-ter",
+      "ipa": "ˈæktɚ",
+      "trap": "Acento en AK, no al final"
+    },
+    {
+      "english": "pilot",
+      "respelling": "PAI-let",
+      "ipa": "ˈpaɪlət",
+      "trap": "La I suena «ai»: PAI-let"
+    },
+    {
+      "english": "waiter",
+      "respelling": "UEI-ter",
+      "ipa": "ˈweɪtɚ",
+      "trap": "AI suena «ei»: UEI-ter"
+    },
+    {
+      "english": "nurse",
+      "respelling": "NERS",
+      "ipa": "ˈnɝs",
+      "trap": "UR suena «er»: NERS"
+    },
+    {
+      "english": "cashier",
+      "respelling": "ka-SHIR",
+      "ipa": "kæˈʃɪr",
+      "trap": "Acento al final: ka-SHIR"
+    },
+    {
+      "english": "engineer",
+      "respelling": "en-ye-NIR",
+      "ipa": "ɛndʒəˈnɪr",
+      "trap": "Acento al final: -NIR"
+    },
+    {
+      "english": "electrician",
+      "respelling": "i-lek-TRI-shen",
+      "ipa": "ɪlɛkˈtrɪʃən",
+      "trap": "Acento en TRI y CI suena SH"
+    },
+    {
+      "english": "surgeon",
+      "respelling": "SER-yen",
+      "ipa": "ˈsɝdʒən",
+      "trap": "Dos sílabas: SER-yen"
+    },
+    {
+      "english": "veterinarian",
+      "respelling": "ve-ter-e-NE-ri-en",
+      "ipa": "vɛtɚəˈnɛriən",
+      "trap": "Seis sílabas, acento en NE"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, experto total.",
+  "outro": "[surprised] ¿Las sacaste todas? Demuéstralo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#ProfesionesEnInglés",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl012",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

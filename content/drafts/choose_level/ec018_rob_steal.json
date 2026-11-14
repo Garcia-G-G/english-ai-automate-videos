@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "ROB o STEAL: ¿cuál va en cada frase? 🕵️",
+  "video_description": "Robar a alguien o robar algo: rob y steal en diez frases. 🕵️",
+  "title": "Elige la correcta",
+  "theme": "rob o steal",
+  "intro": "[cheerful] Diez frases, dos opciones. Di la correcta antes que yo.",
+  "items": [
+    {
+      "sentence": "Someone ____ my phone!",
+      "options": [
+        "stole",
+        "robbed"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "They ____ a bank.",
+      "options": [
+        "stole",
+        "robbed"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Don't ____ my idea!",
+      "options": [
+        "rob",
+        "steal"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I was ____ on my way home.",
+      "options": [
+        "robbed",
+        "stolen"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "My bike was ____ last night.",
+      "options": [
+        "robbed",
+        "stolen"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "They ____ the old man of all his money.",
+      "options": [
+        "robbed",
+        "stole"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She ____ the show with her performance.",
+      "options": [
+        "stole",
+        "robbed"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Twenty dollars for that? It's daylight ____!",
+      "options": [
+        "stealing",
+        "robbery"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The goal was disallowed — we were ____!",
+      "options": [
+        "robbed",
+        "stolen"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "That jacket was a ____ at that price.",
+      "options": [
+        "rob",
+        "steal"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#RobVsSteal",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec018",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

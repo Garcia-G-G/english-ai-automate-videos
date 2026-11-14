@@ -1,0 +1,46 @@
+{
+  "id": "hc_p010",
+  "style": "poster",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«It depends of»: la preposición que cambia",
+  "hook_text": "«DEPEND OF»: ¿bien o mal?",
+  "poster": {
+    "error_no": "025",
+    "big_wrong": "DEPEND OF",
+    "big_right": "DEPEND ON",
+    "examples": [
+      "It depends on the weather. — Depende del tiempo.",
+      "You can count on me. — Puedes contar conmigo."
+    ]
+  },
+  "correction": {
+    "wrong": "DEPEND OF",
+    "right": "DEPEND ON",
+    "rule": "Depend on"
+  },
+  "voice": [
+    "Decimos «depende de», así que sale [[depend of]]. En inglés la preposición es otra.",
+    "Se dice [[depend on]]: [[It depends on the weather]].",
+    "Y como respuesta corta: [[It depends]], sin nada más.",
+    "Otras que cambian: [[count on]], «contar con»; [[think about]], «pensar en».",
+    "Estas hay que aprenderlas en bloque, verbo y preposición juntos.",
+    "Reto: ¿cómo dirías «depende de ti»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Depende de ti»",
+    "answer": "It depends on you."
+  },
+  "caption": "Se dice «depend on», no «depend of». Verbos con preposición que hay que aprender en bloque.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 61
+}

@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "LIBROS Y LECTURA en inglés: test de 10 palabras 📚",
+  "video_description": "Vocabulario de libros y lectura en inglés de menos a más: ¿hasta dónde llegas? 📚",
+  "title": "¿Qué nivel tienes?",
+  "theme": "los libros y la lectura",
+  "intro": "[cheerful] Reto de vocabulario de libros y lectura: di en español qué significa cada palabra. ¡Vamos!",
+  "items": [
+    {
+      "english": "read",
+      "spanish": "Leer",
+      "cefr": "A1"
+    },
+    {
+      "english": "cover",
+      "spanish": "Portada / tapa",
+      "cefr": "A2"
+    },
+    {
+      "english": "story",
+      "spanish": "Historia / cuento",
+      "cefr": "A2"
+    },
+    {
+      "english": "library",
+      "spanish": "Biblioteca",
+      "cefr": "A2"
+    },
+    {
+      "english": "bookstore",
+      "spanish": "Librería",
+      "cefr": "B1"
+    },
+    {
+      "english": "bookmark",
+      "spanish": "Marcapáginas / separador",
+      "cefr": "B1"
+    },
+    {
+      "english": "paperback",
+      "spanish": "Libro de bolsillo",
+      "cefr": "B2"
+    },
+    {
+      "english": "hardcover",
+      "spanish": "Libro de tapa dura",
+      "cefr": "B2"
+    },
+    {
+      "english": "page-turner",
+      "spanish": "Libro que engancha",
+      "cefr": "C1"
+    },
+    {
+      "english": "skim",
+      "spanish": "Leer por encima",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] Comenta tu número y reta a un amigo a superarlo.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#TestDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv035",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "read": "Leer",
+    "cover": "Portada / tapa",
+    "story": "Historia / cuento",
+    "library": "Biblioteca",
+    "bookstore": "Librería",
+    "bookmark": "Marcapáginas / separador",
+    "paperback": "Libro de bolsillo",
+    "hardcover": "Libro de tapa dura",
+    "page-turner": "Libro que engancha",
+    "skim": "Leer por encima"
+  },
+  "english_phrases": [
+    "read",
+    "cover",
+    "story",
+    "library",
+    "bookstore",
+    "bookmark",
+    "paperback",
+    "hardcover",
+    "page-turner",
+    "skim"
+  ],
+  "full_script": "[cheerful] Reto de vocabulario de libros y lectura: di en español qué significa cada palabra. ¡Vamos! read Leer cover Portada / tapa story Historia / cuento Ahora, nivel intermedio. library Biblioteca bookstore Librería bookmark Marcapáginas / separador paperback Libro de bolsillo Y ahora, nivel experto. hardcover Libro de tapa dura page-turner Libro que engancha skim Leer por encima Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] Comenta tu número y reta a un amigo a superarlo."
+}

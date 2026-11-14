@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «ME DUELE LA CABEZA» en inglés? 🩺",
+  "video_description": "Diez frases para explicar cómo te encuentras. 🩺",
+  "title": "¿Cómo se dice?",
+  "theme": "en el médico",
+  "intro": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Me duele la cabeza.",
+      "english": "I have a headache."
+    },
+    {
+      "spanish": "Tengo fiebre.",
+      "english": "I have a fever."
+    },
+    {
+      "spanish": "Me encuentro mal.",
+      "english": "I don't feel well."
+    },
+    {
+      "spanish": "Estoy mareado.",
+      "english": "I feel dizzy."
+    },
+    {
+      "spanish": "Me duele aquí.",
+      "english": "It hurts here."
+    },
+    {
+      "spanish": "Tengo tos desde hace una semana.",
+      "english": "I've had a cough for a week."
+    },
+    {
+      "spanish": "Soy alérgico a la penicilina.",
+      "english": "I'm allergic to penicillin."
+    },
+    {
+      "spanish": "¿Cada cuánto lo tomo?",
+      "english": "How often should I take it?"
+    },
+    {
+      "spanish": "Necesito pedir cita.",
+      "english": "I need to make an appointment."
+    },
+    {
+      "spanish": "¿Necesito receta?",
+      "english": "Do I need a prescription?"
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésÚtil",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf007",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

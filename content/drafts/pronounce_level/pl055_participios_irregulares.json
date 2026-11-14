@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Participios irregulares: ¿hasta cuál los dices bien? 📚",
+  "video_description": "Been, done, gone… y otros participios con sorpresa. ¿Llegas a la diez? 🧩",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "participios irregulares",
+  "intro": "[cheerful] Participios irregulares en inglés. Lee cada palabra en voz alta y luego compara.",
+  "items": [
+    {
+      "english": "been",
+      "respelling": "BIN",
+      "ipa": "ˈbɪn",
+      "trap": "En EE. UU. suena BIN, corta"
+    },
+    {
+      "english": "done",
+      "respelling": "DAN",
+      "ipa": "ˈdʌn",
+      "trap": "La O suena «a»: DAN"
+    },
+    {
+      "english": "seen",
+      "respelling": "SIIN",
+      "ipa": "ˈsiːn",
+      "trap": "EE es una «i» larga"
+    },
+    {
+      "english": "gone",
+      "respelling": "GAN",
+      "ipa": "ˈɡɑn",
+      "trap": "Suena GAN, no GON"
+    },
+    {
+      "english": "written",
+      "respelling": "RI-ten",
+      "ipa": "ˈrɪtən",
+      "trap": "La W no suena y la I es corta"
+    },
+    {
+      "english": "broken",
+      "respelling": "BROU-ken",
+      "ipa": "ˈbroʊkən",
+      "trap": "La O suena «ou»: BROU-ken"
+    },
+    {
+      "english": "frozen",
+      "respelling": "FROU-zen",
+      "ipa": "ˈfroʊzən",
+      "trap": "La Z zumba: FROU-zen"
+    },
+    {
+      "english": "risen",
+      "respelling": "RI-zen",
+      "ipa": "ˈrɪzən",
+      "trap": "Suena RI-zen, no RAI-zen"
+    },
+    {
+      "english": "sewn",
+      "respelling": "SOUN",
+      "ipa": "ˈsoʊn",
+      "trap": "Rima con «bone», no con «new»"
+    },
+    {
+      "english": "withdrawn",
+      "respelling": "uidh-DRAN",
+      "ipa": "wɪðˈdrɑn",
+      "trap": "TH sonora y acento en DRAN"
+    }
+  ],
+  "verdict": "Si acertaste hasta la tres, eres básico. Hasta la siete, intermedio. Con las diez, experto total.",
+  "outro": "[excited] Dime tu número en los comentarios y reta a un amigo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#VerbosIrregulares",
+    "#InglésParaHispanohablantes",
+    "#Pronunciación",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl055",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

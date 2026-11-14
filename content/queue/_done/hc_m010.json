@@ -1,0 +1,59 @@
+{
+  "id": "hc_m010",
+  "style": "mensajes",
+  "level": "principiante",
+  "angle": "historia",
+  "title": "Dejé mi «carpet» en la oficina",
+  "hook_text": "Le conté lo que olvidé… y se asustó",
+  "chat": {
+    "contact": "Ethan · Seattle",
+    "messages": [
+      [
+        "me",
+        "Oh no, I left my carpet at the office 😩",
+        "error"
+      ],
+      [
+        "them",
+        "you take a CARPET to work?? 😳"
+      ],
+      [
+        "me",
+        "the thing with papers!"
+      ],
+      [
+        "them",
+        "ohh your FOLDER 😂"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "carpet = carpeta",
+    "right": "folder",
+    "rule": "Carpet = alfombra · Carpeta = folder"
+  },
+  "voice": [
+    "Le dije a un compañero que me había dejado la [[carpet]] en la oficina. Pensó que llevo una alfombra al trabajo.",
+    "Porque [[carpet]] es alfombra, la que cubre el suelo.",
+    "La carpeta de papeles es [[folder]]: [[I left my folder at the office]].",
+    "Y la carpeta del ordenador también es [[folder]].",
+    "Es un falso amigo: se parece al español pero significa otra cosa.",
+    "Reto: ¿cómo dirías «la alfombra es roja»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«La alfombra es roja»",
+    "answer": "The carpet is red. (o «The rug is red» si es pequeña)"
+  },
+  "caption": "Carpet no es carpeta, es alfombra. La carpeta es «folder». Un falso amigo con historia real.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 72
+}

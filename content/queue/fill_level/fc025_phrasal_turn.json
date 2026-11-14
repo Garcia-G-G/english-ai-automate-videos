@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "¿Completas las 10? PHRASAL VERBS con TURN 💡",
+  "video_description": "Turn on, turn down, turn out: diez phrasal verbs con turn. 💡",
+  "title": "Completa la frase",
+  "theme": "phrasal verbs con TURN",
+  "intro": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo.",
+  "items": [
+    {
+      "sentence": "Turn ____ the light, please.",
+      "answer": "on",
+      "translation": "Enciende la luz, por favor.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Turn ____ the TV, I'm trying to sleep.",
+      "answer": "off",
+      "translation": "Apaga la tele, intento dormir.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Can you turn ____ the music? It's too loud.",
+      "answer": "down",
+      "translation": "¿Puedes bajar la música? Está muy alta.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Turn it ____, I can't hear!",
+      "answer": "up",
+      "translation": "¡Súbelo, que no oigo!",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Turn ____ and look at me.",
+      "answer": "around",
+      "translation": "Date la vuelta y mírame.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She turned ____ the job offer.",
+      "answer": "down",
+      "translation": "Rechazó la oferta de trabajo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Only ten people turned ____.",
+      "answer": "up",
+      "translation": "Solo vinieron diez personas.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It turned ____ to be a great day.",
+      "answer": "out",
+      "translation": "Al final resultó ser un día genial.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The frog turned ____ a prince.",
+      "answer": "into",
+      "translation": "La rana se convirtió en príncipe.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "You can always turn ____ me.",
+      "answer": "to",
+      "translation": "Siempre puedes contar conmigo.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc025",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Turn on the light, please.": "Enciende la luz, por favor.",
+    "Turn off the TV, I'm trying to sleep.": "Apaga la tele, intento dormir.",
+    "Can you turn down the music? It's too loud.": "¿Puedes bajar la música? Está muy alta.",
+    "Turn it up, I can't hear!": "¡Súbelo, que no oigo!",
+    "Turn around and look at me.": "Date la vuelta y mírame.",
+    "She turned down the job offer.": "Rechazó la oferta de trabajo.",
+    "Only ten people turned up.": "Solo vinieron diez personas.",
+    "It turned out to be a great day.": "Al final resultó ser un día genial.",
+    "The frog turned into a prince.": "La rana se convirtió en príncipe.",
+    "You can always turn to me.": "Siempre puedes contar conmigo."
+  },
+  "english_phrases": [
+    "Turn on the light, please.",
+    "Turn off the TV, I'm trying to sleep.",
+    "Can you turn down the music? It's too loud.",
+    "Turn it up, I can't hear!",
+    "Turn around and look at me.",
+    "She turned down the job offer.",
+    "Only ten people turned up.",
+    "It turned out to be a great day.",
+    "The frog turned into a prince.",
+    "You can always turn to me."
+  ],
+  "full_script": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo. Turn on the light, please. Turn off the TV, I'm trying to sleep. Can you turn down the music? It's too loud. Ahora, nivel intermedio. Turn it up, I can't hear! Turn around and look at me. She turned down the job offer. Only ten people turned up. Y ahora, nivel experto. It turned out to be a great day. The frog turned into a prince. You can always turn to me. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

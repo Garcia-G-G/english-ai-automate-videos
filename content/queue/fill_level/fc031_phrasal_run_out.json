@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Rellena el hueco: PHRASAL VERBS del día a día 🔋",
+  "video_description": "Run out, find out, give up: phrasal verbs que usas cada día. 🔋",
+  "title": "Completa la frase",
+  "theme": "phrasal verbs del día a día",
+  "intro": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "sentence": "Wake ____, it's late!",
+      "answer": "up",
+      "translation": "¡Despierta, que es tarde!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Sit ____, please.",
+      "answer": "down",
+      "translation": "Siéntate, por favor.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Don't give ____!",
+      "answer": "up",
+      "translation": "¡No te rindas!",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We've run ____ of milk.",
+      "answer": "out",
+      "translation": "Se nos ha acabado la leche.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I need to find ____ the truth.",
+      "answer": "out",
+      "translation": "Necesito averiguar la verdad.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Fill ____ this form, please.",
+      "answer": "in",
+      "translation": "Rellena este formulario, por favor.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Can you pick me ____ at six?",
+      "answer": "up",
+      "translation": "¿Puedes recogerme a las seis?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "We need to figure ____ a solution.",
+      "answer": "out",
+      "translation": "Tenemos que dar con una solución.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "They broke ____ last month.",
+      "answer": "up",
+      "translation": "Lo dejaron el mes pasado.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I'll sort it ____, don't worry.",
+      "answer": "out",
+      "translation": "Yo lo arreglo, no te preocupes.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc031",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Wake up, it's late!": "¡Despierta, que es tarde!",
+    "Sit down, please.": "Siéntate, por favor.",
+    "Don't give up!": "¡No te rindas!",
+    "We've run out of milk.": "Se nos ha acabado la leche.",
+    "I need to find out the truth.": "Necesito averiguar la verdad.",
+    "Fill in this form, please.": "Rellena este formulario, por favor.",
+    "Can you pick me up at six?": "¿Puedes recogerme a las seis?",
+    "We need to figure out a solution.": "Tenemos que dar con una solución.",
+    "They broke up last month.": "Lo dejaron el mes pasado.",
+    "I'll sort it out, don't worry.": "Yo lo arreglo, no te preocupes."
+  },
+  "english_phrases": [
+    "Wake up, it's late!",
+    "Sit down, please.",
+    "Don't give up!",
+    "We've run out of milk.",
+    "I need to find out the truth.",
+    "Fill in this form, please.",
+    "Can you pick me up at six?",
+    "We need to figure out a solution.",
+    "They broke up last month.",
+    "I'll sort it out, don't worry."
+  ],
+  "full_script": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas? Wake up, it's late! Sit down, please. Don't give up! Ahora, nivel intermedio. We've run out of milk. I need to find out the truth. Fill in this form, please. Can you pick me up at six? Y ahora, nivel experto. We need to figure out a solution. They broke up last month. I'll sort it out, don't worry. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [happy] ¿Cuántas acertaste? Déjame tu número abajo."
+}

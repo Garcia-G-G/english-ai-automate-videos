@@ -1,0 +1,26 @@
+{
+  "type": "pronunciation",
+  "video_title": "¿Dices GATOS en inglés y suena a CORTES? 😬 CATS 🐱",
+  "video_description": "🐱 ¿Tus 'cats' suenan a 'cuts'? Aprende la vocal que NO existe en español en 1 minuto.\n👉 Repite conmigo y escribe en los comentarios el nombre de tu gato. Practice makes perfect! 💬",
+  "word": "cats",
+  "phonetic": "KÆTS (abre la boca: entre A y E)",
+  "common_mistake": "Usar la A del español o decir 'KAS' sin T, y suena a 'cuts' (cortes)",
+  "tip": "Sonríe como para decir E, pero abre la boca como para A. Y no te comas la T: termina en TS.",
+  "full_script": "¿Dices la palabra gatos en inglés con la A del español? Casi, pero no. Esta palabra es [[cats]], y significa gatos. El error más común es usar nuestra A normal, o peor, decir 'cas' y comerse la T. Así suena como [[cuts]], que significa cortes. El truco está en la vocal: abre la boca como para decir A, pero estira los labios como si dijeras E. Sale un sonido intermedio: KÆTS. Y al final, una T rápida pegada a la S: TS, como en pizza. Escucha y repite. [[cats]]. Otra vez. [[cats]]. Una vez más. [[cats]]. Ahora en una frase: [[My cats sleep all day]]. Mis gatos duermen todo el día. Recuerda: sonrisa de E, boca de A, y TS al final. ¿Tienes gatos? Escríbeme sus nombres en los comentarios.",
+  "translation": "gatos",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#PronunciacionIngles",
+    "#InglesParaPrincipiantes",
+    "#AnimalesEnIngles",
+    "#Cats"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr050",
+    "video_type": "pronunciation",
+    "generated_at": "2026-11-02T11:09:30.727842",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "MATEMÁTICAS en inglés: ¿sabes decir estas palabras? ➗",
+  "video_description": "Plus, average, arithmetic: el vocabulario de mates también tiene trampas. 📐",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "las matemáticas",
+  "intro": "[curious] Palabras de matemáticas. Léelas en voz alta antes de que yo las diga.",
+  "items": [
+    {
+      "english": "plus",
+      "respelling": "PLAS",
+      "ipa": "ˈplʌs",
+      "trap": "La U suena «a»: PLAS"
+    },
+    {
+      "english": "minus",
+      "respelling": "MAI-nas",
+      "ipa": "ˈmaɪnəs",
+      "trap": "La I suena «ai»: MAI-nas"
+    },
+    {
+      "english": "equal",
+      "respelling": "II-kual",
+      "ipa": "ˈiːkwəl",
+      "trap": "Acento en II: II-kual"
+    },
+    {
+      "english": "divide",
+      "respelling": "di-VAID",
+      "ipa": "dɪˈvaɪd",
+      "trap": "Acento en VAID y la I es «ai»"
+    },
+    {
+      "english": "percent",
+      "respelling": "per-SENT",
+      "ipa": "pɚˈsɛnt",
+      "trap": "Acento en SENT: per-SENT"
+    },
+    {
+      "english": "average",
+      "respelling": "AV-ridch",
+      "ipa": "ˈævrɪdʒ",
+      "trap": "Dos sílabas: AV-ridch"
+    },
+    {
+      "english": "geometry",
+      "respelling": "yi-A-me-tri",
+      "ipa": "dʒiˈɑmətri",
+      "trap": "La G suena «y»: yi-A-me-tri"
+    },
+    {
+      "english": "algebra",
+      "respelling": "AL-ye-bra",
+      "ipa": "ˈældʒəbrə",
+      "trap": "Acento en AL- y la G suena «y»"
+    },
+    {
+      "english": "diameter",
+      "respelling": "dai-A-me-ter",
+      "ipa": "daɪˈæmətɚ",
+      "trap": "Acento en A: dai-A-me-ter"
+    },
+    {
+      "english": "arithmetic",
+      "respelling": "a-RITH-me-tik",
+      "ipa": "əˈrɪθmətɪk",
+      "trap": "Acento en RITH y TH sorda"
+    }
+  ],
+  "verdict": "Tres aciertos: básico. Siete aciertos: intermedio. Diez aciertos: experto. Así de exacto.",
+  "outro": "[curious] Haz la cuenta: ¿cuántas dijiste bien? Escríbelo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#MatemáticasEnInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl075",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

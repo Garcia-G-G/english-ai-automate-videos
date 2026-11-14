@@ -1,0 +1,82 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes las palabras de la CASA en inglés? 🏠",
+  "video_description": "Diez palabras de la casa en inglés, de fácil a experto. ¿Verdadero o falso? Cuenta tus aciertos 🏠",
+  "title": "¿Verdadero o falso?",
+  "theme": "CASA",
+  "intro": "[curious] ¿Cuántas palabras de la CASA sabes en inglés? Lee las diez y cuenta tus aciertos.",
+  "items": [
+    {
+      "statement": "«Bed» significa cama.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Roof» significa cuarto.",
+      "truth": false,
+      "correction": "es techo",
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Fridge» significa refrigerador.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Stairs» significa estrellas.",
+      "truth": false,
+      "correction": "son escaleras",
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Pillow» significa almohada.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Basement» significa sótano.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Drawer» significa dibujante.",
+      "truth": false,
+      "correction": "es cajón",
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Gutter» significa canaleta.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Mantelpiece» significa mantel.",
+      "truth": false,
+      "correction": "es repisa de chimenea",
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Banister» significa banquito.",
+      "truth": false,
+      "correction": "es pasamanos",
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[warm] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Cuántas palabras de la CASA sabes en inglés? Lee las diez y cuenta tus aciertos. Verdadero. Falso: es techo. Verdadero. Falso: son escaleras. Verdadero. Verdadero. Falso: es cajón. Verdadero. Falso: es repisa de chimenea. Falso: es pasamanos. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [warm] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#InglesFacil",
+    "#AprenderIngles",
+    "#VocabularioIngles",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff038",
+    "video_type": "true_false_level",
+    "generated_at": "2026-11-02T11:00:16.633182",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

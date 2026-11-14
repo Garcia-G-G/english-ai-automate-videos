@@ -1,0 +1,107 @@
+{
+ "type": "how_do_you_say",
+ "video_title": "¿Cómo se dice MÁS ROPA en inglés? 👔",
+ "video_description": "Segunda parte: diez prendas más en inglés. Dilas antes que yo. ¿Cuántas palabras sabías? 🎽",
+ "title": "¿Cómo se dice…?",
+ "theme": "más ropa",
+ "level": "A1",
+ "intro": "[warm] Segunda parte: diez prendas más. Tú primero, luego yo.",
+ "items": [
+  {
+   "emoji": "👔",
+   "spanish": "Corbata",
+   "english": "tie"
+  },
+  {
+   "emoji": "🎽",
+   "spanish": "Uniforme",
+   "english": "uniform"
+  },
+  {
+   "emoji": "🤵",
+   "spanish": "Traje",
+   "english": "suit"
+  },
+  {
+   "emoji": "🩳",
+   "spanish": "Shorts",
+   "english": "shorts"
+  },
+  {
+   "emoji": "👙",
+   "spanish": "Bikini",
+   "english": "bikini"
+  },
+  {
+   "emoji": "👚",
+   "spanish": "Blusa",
+   "english": "blouse"
+  },
+  {
+   "emoji": "🛌",
+   "spanish": "Pijama",
+   "english": "pajamas"
+  },
+  {
+   "emoji": "🩲",
+   "spanish": "Ropa interior",
+   "english": "underwear"
+  },
+  {
+   "emoji": "🦺",
+   "spanish": "Chaleco",
+   "english": "vest"
+  },
+  {
+   "emoji": "🥼",
+   "spanish": "Bata",
+   "english": "robe"
+  }
+ ],
+ "recap": "Ahora todas en inglés, conmigo: tie, uniform, suit, shorts, bikini, blouse, pajamas, underwear, vest, robe.",
+ "outro": "[cheerful] ¿Cuántos sabías? Escribe tu número en los comentarios.",
+ "translations": {
+  "tie": "Corbata",
+  "uniform": "Uniforme",
+  "suit": "Traje",
+  "shorts": "Shorts",
+  "bikini": "Bikini",
+  "blouse": "Blusa",
+  "pajamas": "Pijama",
+  "underwear": "Ropa interior",
+  "vest": "Chaleco",
+  "robe": "Bata"
+ },
+ "english_phrases": [
+  "tie",
+  "uniform",
+  "suit",
+  "shorts",
+  "bikini",
+  "blouse",
+  "pajamas",
+  "underwear",
+  "vest",
+  "robe"
+ ],
+ "hashtags": [
+  "#InglésParaPrincipiantes",
+  "#VocabularioEnInglés",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#HowDoYouSay",
+  "#RopaEnInglés",
+  "#Shorts",
+  "#LearnEnglish",
+  "#AprendeIngles"
+ ],
+ "_meta": {
+  "category": "basic_vocab",
+  "topic_id": "bv110",
+  "video_type": "how_do_you_say",
+  "model": "manual",
+  "sequel_of": "ropa",
+  "why": "sequel of a ≥1K-view topic (research 2026-11-12)"
+ },
+ "full_script": "[warm] Segunda parte: diez prendas más. Tú primero, luego yo. Corbata... tie. tie. Uniforme... uniform. uniform. Traje... suit. suit. Shorts... shorts. shorts. Bikini... bikini. bikini. Blusa... blouse. blouse. Pijama... pajamas. pajamas. Ropa interior... underwear. underwear. Chaleco... vest. vest. Bata... robe. robe. Ahora todas en inglés, conmigo: tie, uniform, suit, shorts, bikini, blouse, pajamas, underwear, vest, robe. [cheerful] ¿Cuántos sabías? Escribe tu número en los comentarios."
+}

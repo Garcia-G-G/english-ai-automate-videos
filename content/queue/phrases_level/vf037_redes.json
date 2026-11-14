@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¡SÍGUEME!» en inglés? 📱",
+  "video_description": "Diez frases de redes sociales en inglés. 📱",
+  "title": "¿Cómo se dice?",
+  "theme": "en redes sociales",
+  "intro": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¡Sígueme!",
+      "english": "Follow me!"
+    },
+    {
+      "spanish": "Dale a me gusta.",
+      "english": "Hit like."
+    },
+    {
+      "spanish": "Lo he subido.",
+      "english": "I posted it."
+    },
+    {
+      "spanish": "¿Me mandas el enlace?",
+      "english": "Can you send me the link?"
+    },
+    {
+      "spanish": "Mira mi historia.",
+      "english": "Check out my story."
+    },
+    {
+      "spanish": "Te he etiquetado.",
+      "english": "I tagged you."
+    },
+    {
+      "spanish": "Se ha hecho viral.",
+      "english": "It went viral."
+    },
+    {
+      "spanish": "Te mando un mensaje.",
+      "english": "I'll DM you."
+    },
+    {
+      "spanish": "Lo he visto en TikTok.",
+      "english": "I saw it on TikTok."
+    },
+    {
+      "spanish": "Me ha dejado en visto.",
+      "english": "He left me on read."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf037",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Follow me!": "¡Sígueme!",
+    "Hit like.": "Dale a me gusta.",
+    "I posted it.": "Lo he subido.",
+    "Can you send me the link?": "¿Me mandas el enlace?",
+    "Check out my story.": "Mira mi historia.",
+    "I tagged you.": "Te he etiquetado.",
+    "It went viral.": "Se ha hecho viral.",
+    "I'll DM you.": "Te mando un mensaje.",
+    "I saw it on TikTok.": "Lo he visto en TikTok.",
+    "He left me on read.": "Me ha dejado en visto."
+  },
+  "english_phrases": [
+    "Follow me!",
+    "Hit like.",
+    "I posted it.",
+    "Can you send me the link?",
+    "Check out my story.",
+    "I tagged you.",
+    "It went viral.",
+    "I'll DM you.",
+    "I saw it on TikTok.",
+    "He left me on read."
+  ],
+  "full_script": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo. Follow me! Hit like. I posted it. Can you send me the link? Check out my story. I tagged you. It went viral. I'll DM you. I saw it on TikTok. He left me on read. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

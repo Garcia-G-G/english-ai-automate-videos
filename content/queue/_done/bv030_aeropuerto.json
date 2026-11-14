@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el AEROPUERTO en inglés? ✈️",
+  "video_description": "Diez palabras que vas a ver y oír en cualquier aeropuerto. 🛂",
+  "title": "¿Cómo se dice…?",
+  "theme": "el aeropuerto",
+  "level": "A2",
+  "intro": "[excited] Te enseño diez palabras. Dilas tú antes que yo.",
+  "items": [
+    {
+      "emoji": "🛂",
+      "spanish": "Pasaporte",
+      "english": "passport"
+    },
+    {
+      "emoji": "🧳",
+      "spanish": "Maleta",
+      "english": "suitcase"
+    },
+    {
+      "emoji": "🎫",
+      "spanish": "Boleto",
+      "english": "ticket"
+    },
+    {
+      "emoji": "🚪",
+      "spanish": "Puerta",
+      "english": "gate"
+    },
+    {
+      "emoji": "✈️",
+      "spanish": "Vuelo",
+      "english": "flight"
+    },
+    {
+      "emoji": "💺",
+      "spanish": "Asiento",
+      "english": "seat"
+    },
+    {
+      "emoji": "🎒",
+      "spanish": "Equipaje",
+      "english": "luggage"
+    },
+    {
+      "emoji": "🛃",
+      "spanish": "Aduana",
+      "english": "customs"
+    },
+    {
+      "emoji": "⏳",
+      "spanish": "Retraso",
+      "english": "delay"
+    },
+    {
+      "emoji": "🛬",
+      "spanish": "Aterrizaje",
+      "english": "landing"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: passport, suitcase, ticket, gate, flight, seat, luggage, customs, delay, landing.",
+  "outro": "[happy] Guárdalo para repasar y dime cuántas sabías.",
+  "translations": {
+    "passport": "Pasaporte",
+    "suitcase": "Maleta",
+    "ticket": "Boleto",
+    "gate": "Puerta",
+    "flight": "Vuelo",
+    "seat": "Asiento",
+    "luggage": "Equipaje",
+    "customs": "Aduana",
+    "delay": "Retraso",
+    "landing": "Aterrizaje"
+  },
+  "english_phrases": [
+    "passport",
+    "suitcase",
+    "ticket",
+    "gate",
+    "flight",
+    "seat",
+    "luggage",
+    "customs",
+    "delay",
+    "landing"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv030",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Te enseño diez palabras. Dilas tú antes que yo. Pasaporte... passport. passport. Maleta... suitcase. suitcase. Boleto... ticket. ticket. Puerta... gate. gate. Vuelo... flight. flight. Asiento... seat. seat. Equipaje... luggage. luggage. Aduana... customs. customs. Retraso... delay. delay. Aterrizaje... landing. landing. Ahora, todas conmigo: passport, suitcase, ticket, gate, flight, seat, luggage, customs, delay, landing. [happy] Guárdalo para repasar y dime cuántas sabías."
+}

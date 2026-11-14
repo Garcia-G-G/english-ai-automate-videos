@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "HERRAMIENTAS en inglés: test de pronunciación 🔧",
+  "video_description": "Hammer, pliers, scissors: diez herramientas para practicar en voz alta. 🧰",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "las herramientas",
+  "intro": "[cheerful] Saca la caja de herramientas: diez palabras, de fácil a experto. Dilas tú primero.",
+  "items": [
+    {
+      "english": "tool",
+      "respelling": "TUUL",
+      "ipa": "ˈtuːl",
+      "trap": "OO larga y la L final se oye"
+    },
+    {
+      "english": "hammer",
+      "respelling": "JA-mer",
+      "ipa": "ˈhæmɚ",
+      "trap": "La H suena como una «j» suave"
+    },
+    {
+      "english": "nail",
+      "respelling": "NEIL",
+      "ipa": "ˈneɪl",
+      "trap": "AI suena «ei»: NEIL"
+    },
+    {
+      "english": "ladder",
+      "respelling": "LA-der",
+      "ipa": "ˈlædɚ",
+      "trap": "La DD suena casi como una «r» suave"
+    },
+    {
+      "english": "screw",
+      "respelling": "SKRUU",
+      "ipa": "ˈskruː",
+      "trap": "Sin «e» delante: SKRUU"
+    },
+    {
+      "english": "shovel",
+      "respelling": "SHA-val",
+      "ipa": "ˈʃʌvəl",
+      "trap": "La O suena «a»: SHA-val"
+    },
+    {
+      "english": "pliers",
+      "respelling": "PLAI-erz",
+      "ipa": "ˈplaɪɚz",
+      "trap": "Dos sílabas: PLAI-erz"
+    },
+    {
+      "english": "chisel",
+      "respelling": "CHI-zal",
+      "ipa": "ˈtʃɪzəl",
+      "trap": "La S suena «z»: CHI-zal"
+    },
+    {
+      "english": "wheelbarrow",
+      "respelling": "UIIL-be-rou",
+      "ipa": "ˈwiːlbɛroʊ",
+      "trap": "WH suena «u» y acento en UIIL"
+    },
+    {
+      "english": "scissors",
+      "respelling": "SI-zerz",
+      "ipa": "ˈsɪzɚz",
+      "trap": "SC suena «s» y las demás S, «z»"
+    }
+  ],
+  "verdict": "Básico hasta la tres, intermedio hasta la siete y experto si dijiste bien las diez.",
+  "outro": "[happy] Comenta tu número y la herramienta que más te costó.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#InglésParaHispanohablantes",
+    "#Bricolaje"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl086",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

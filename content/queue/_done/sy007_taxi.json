@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "Tomar un TAXI en inglés: 10 frases con trampa 🚕",
+  "video_description": "Dar la dirección, pagar y bajarte donde quieres: diez frases de taxi en inglés. 🚕",
+  "title": "Dilo en inglés",
+  "theme": "en un taxi",
+  "intro": "[cheerful] Te subes a un taxi. Tú das las órdenes, pero en inglés. ¡Vamos allá!",
+  "items": [
+    {
+      "spanish": "Al aeropuerto, por favor.",
+      "english": "To the airport, please.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Pare aquí, por favor.",
+      "english": "Stop here, please.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Acepta tarjeta?",
+      "english": "Do you take cards?",
+      "cefr": "A2",
+      "alt": "Can I pay by card?"
+    },
+    {
+      "spanish": "¿Cuánto le debo?",
+      "english": "How much do I owe you?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Puede ir más despacio?",
+      "english": "Can you slow down, please?",
+      "cefr": "B1",
+      "alt": "Could you drive more slowly?"
+    },
+    {
+      "spanish": "¿Me abre el maletero?",
+      "english": "Can you open the trunk?",
+      "cefr": "B1",
+      "alt": "Can you open the boot?"
+    },
+    {
+      "spanish": "Quédese con el cambio.",
+      "english": "Keep the change.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Tengo prisa.",
+      "english": "I'm in a hurry.",
+      "cefr": "B1",
+      "tip": "«Tener prisa» va con be: I'm in a hurry"
+    },
+    {
+      "spanish": "Déjeme en la esquina.",
+      "english": "Drop me off at the corner, please.",
+      "cefr": "B2",
+      "alt": "You can drop me at the corner.",
+      "tip": "«Dejar a alguien» en un sitio es drop off"
+    },
+    {
+      "spanish": "Ponga el taxímetro, por favor.",
+      "english": "Can you turn on the meter, please?",
+      "cefr": "B2",
+      "tip": "«Taxímetro» es meter, y «poner» un aparato, turn on"
+    }
+  ],
+  "verdict": "Tres es básico, siete es intermedio y diez es experto. ¿Hasta dónde te llevó el taxi?",
+  "outro": "[curious] ¿Cuál te pilló? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#InglésFácil",
+    "#FrasesEnInglés",
+    "#AprendeInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy007",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "To the airport, please.": "Al aeropuerto, por favor.",
+    "Stop here, please.": "Pare aquí, por favor.",
+    "Do you take cards?": "¿Acepta tarjeta?",
+    "How much do I owe you?": "¿Cuánto le debo?",
+    "Can you slow down, please?": "¿Puede ir más despacio?",
+    "Can you open the trunk?": "¿Me abre el maletero?",
+    "Keep the change.": "Quédese con el cambio.",
+    "I'm in a hurry.": "Tengo prisa.",
+    "Drop me off at the corner, please.": "Déjeme en la esquina.",
+    "Can you turn on the meter, please?": "Ponga el taxímetro, por favor."
+  },
+  "english_phrases": [
+    "To the airport, please.",
+    "Stop here, please.",
+    "Do you take cards?",
+    "How much do I owe you?",
+    "Can you slow down, please?",
+    "Can you open the trunk?",
+    "Keep the change.",
+    "I'm in a hurry.",
+    "Drop me off at the corner, please.",
+    "Can you turn on the meter, please?",
+    "Can I pay by card?",
+    "Could you drive more slowly?",
+    "Can you open the boot?",
+    "You can drop me at the corner."
+  ],
+  "full_script": "[cheerful] Te subes a un taxi. Tú das las órdenes, pero en inglés. ¡Vamos allá! To the airport, please. Stop here, please. Do you take cards? Ahora, nivel intermedio. How much do I owe you? Can you slow down, please? Can you open the trunk? Keep the change. Y ahora, nivel experto. I'm in a hurry. Drop me off at the corner, please. Can you turn on the meter, please? Tres es básico, siete es intermedio y diez es experto. ¿Hasta dónde te llevó el taxi? [curious] ¿Cuál te pilló? Cuéntamelo en los comentarios."
+}

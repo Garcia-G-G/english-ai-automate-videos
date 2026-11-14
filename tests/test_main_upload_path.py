@@ -24,6 +24,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
+
+import uploader as _real_uploader  # noqa: E402
 sys.path.insert(0, str(ROOT))
 
 import publication_log as PL  # noqa: E402
@@ -61,9 +63,9 @@ def rig(tmp_path, monkeypatch):
         # on_session is passed by the real manager.upload as of the
         # idempotency change; the stub must accept it.
         def upload(self, platform, path, title=None, description=None,
-                   hashtags=None, on_session=None):
+                   hashtags=None, on_session=None, **_slot):
             sent.append({"platform": platform, "path": path, "title": title,
-                         "description": description, "hashtags": hashtags})
+                         "description": description, "hashtags": hashtags, **_slot})
             if on_session:
                 on_session("https://upload.example/s/1", 17)
             return rig.result
@@ -72,15 +74,19 @@ def rig(tmp_path, monkeypatch):
     fake_uploader.UploadManager = FakeManager
 
     class VideoMetadata:
-        def __init__(self, title, description, hashtags, privacy="public"):
+        def __init__(self, title, description, hashtags):
             self.title, self.description = title, description
-            self.hashtags, self.privacy = hashtags, privacy
+            self.hashtags = hashtags
 
         @property
         def full_description(self):
             return self.description
 
     fake_uploader.VideoMetadata = VideoMetadata
+    # The REAL resolver, not a stand-in. A fake privacy table here would be a
+    # second place the answer is decided, which is the whole defect this stub
+    # is standing in front of.
+    fake_uploader.resolve_privacy = _real_uploader.resolve_privacy
     monkeypatch.setitem(sys.modules, "uploader", fake_uploader)
 
     video = tmp_path / "fabric_20260804_101010.mp4"
@@ -263,3 +269,20 @@ def test_main_no_longer_swallows_every_exception():
 
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-v"]))
+
+
+def test_a_youtube_upload_goes_up_for_the_next_free_slot_and_the_ledger_keeps_it(rig, monkeypatch):
+    """STEP 81 §2: private + publishAt at the slot; the row says which slot, so the next video skips it."""
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    slot = datetime(2026, 11, 30, 12, 0, tzinfo=ZoneInfo("America/Costa_Rica"))
+    monkeypatch.setattr(rig.main, "next_youtube_slot", lambda: slot)
+    rig.main.upload_video(rig.video, "quiz", SCRIPT, ["youtube"])
+    assert rig.sent[0]["publish_at"] == "2026-11-30T18:00:00.000Z"
+    assert _rows(rig.ledger)[0]["extra"]["scheduled_for"] == slot.isoformat()
+
+
+def test_scheduling_off_uploads_at_once(rig, monkeypatch):
+    monkeypatch.setattr(rig.main, "next_youtube_slot", lambda: None)
+    rig.main.upload_video(rig.video, "quiz", SCRIPT, ["youtube"])
+    assert "publish_at" not in rig.sent[0] and "extra" not in _rows(rig.ledger)[0]

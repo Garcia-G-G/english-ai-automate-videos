@@ -1,0 +1,53 @@
+{
+  "type": "fix_the_error",
+  "video_title": "Corrige el error: Is raining ☔",
+  "video_description": "La palabra que el español se come y el inglés exige. 👀",
+  "level": "A1",
+  "intro": "[curious] Esta frase tiene un error. ¿Lo encuentras antes que yo?",
+  "items": [
+    {
+      "wrong": "Is raining.",
+      "error": "Is",
+      "right": "It is raining.",
+      "fix": "It is",
+      "translation": "Está lloviendo.",
+      "explanation": "[excited] En inglés la frase necesita sujeto. Si no hay nadie, pon it."
+    },
+    {
+      "wrong": "Is very expensive.",
+      "error": "Is",
+      "right": "It is very expensive.",
+      "fix": "It is",
+      "translation": "Es carísimo.",
+      "explanation": "[excited] Es carísimo también pide it delante: it is, o it's."
+    },
+    {
+      "wrong": "Are three people.",
+      "error": "Are",
+      "right": "There are three people.",
+      "fix": "There are",
+      "translation": "Hay tres personas.",
+      "explanation": "[excited] Hay se dice there is o there are. Nunca are solo."
+    }
+  ],
+  "outro": "[excited] ¿Lo pillaste a la primera? Dímelo en los comentarios.",
+  "translations": {
+    "It is raining.": "Está lloviendo.",
+    "It is very expensive.": "Es carísimo.",
+    "There are three people.": "Hay tres personas."
+  },
+  "hashtags": [
+    "#CorrigeElError",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#ErroresComunes",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "spanish_specific",
+    "topic_id": "ss015",
+    "video_type": "fix_the_error",
+    "model": "manual",
+    "draft": true
+  }
+}

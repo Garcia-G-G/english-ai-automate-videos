@@ -1,0 +1,55 @@
+{
+  "id": "hc_m026",
+  "style": "mensajes",
+  "level": "dificil",
+  "angle": "historia",
+  "title": "«I'm constipated» no es lo que crees",
+  "hook_text": "Le avisé de que estaba resfriado…",
+  "chat": {
+    "contact": "Emily · Seattle",
+    "messages": [
+      [
+        "me",
+        "Can't come today, I'm constipated 🤧",
+        "error"
+      ],
+      [
+        "them",
+        "oh… TMI 😳"
+      ],
+      [
+        "them",
+        "you mean you have a cold?"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "constipated = constipado",
+    "right": "I have a cold",
+    "rule": "Constipated = estreñido · Constipado = have a cold"
+  },
+  "voice": [
+    "Le escribí a mi amiga [[I'm constipated]] porque estaba resfriado. Y me contestó [[TMI]], «demasiada información».",
+    "Porque [[constipated]] significa estreñido.",
+    "Estar constipado o resfriado es [[I have a cold]] o [[I've caught a cold]].",
+    "Y si es más fuerte: [[I've got the flu]], «tengo gripe».",
+    "Por cierto, [[TMI]] significa [[too much information]].",
+    "Reto: ¿cómo dirías «creo que me estoy resfriando»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Creo que me estoy resfriando»",
+    "answer": "I think I'm coming down with a cold."
+  },
+  "caption": "Constipated no es constipado, es estreñido. Para resfriado: «I have a cold». Falso amigo con historia.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 63
+}

@@ -1,0 +1,106 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la ROPA DE INVIERNO en inglés? 🧣",
+  "video_description": "🥶 ¡Hace frío! ¿Sabes decir abrigo, bufanda y guantes en inglés? Responde antes que yo y cuéntame cuántas sabías 🧤",
+  "title": "¿Cómo se dice…?",
+  "theme": "la ropa de invierno",
+  "level": "A1",
+  "intro": "[cheerful] ¿Tienes frío? ¿Sabes decir estas 10 cosas de invierno en inglés? Piensa rápido, antes que yo.",
+  "items": [
+    {
+      "emoji": "🧥",
+      "spanish": "Abrigo",
+      "english": "coat"
+    },
+    {
+      "emoji": "🧣",
+      "spanish": "Bufanda",
+      "english": "scarf"
+    },
+    {
+      "emoji": "🧤",
+      "spanish": "Guantes",
+      "english": "gloves"
+    },
+    {
+      "emoji": "👢",
+      "spanish": "Botas",
+      "english": "boots"
+    },
+    {
+      "emoji": "🧦",
+      "spanish": "Calcetines",
+      "english": "socks"
+    },
+    {
+      "emoji": "👖",
+      "spanish": "Pantalones",
+      "english": "pants"
+    },
+    {
+      "emoji": "🧢",
+      "spanish": "Gorra",
+      "english": "cap"
+    },
+    {
+      "emoji": "👔",
+      "spanish": "Camisa",
+      "english": "shirt"
+    },
+    {
+      "emoji": "👞",
+      "spanish": "Zapatos",
+      "english": "shoes"
+    },
+    {
+      "emoji": "🧶",
+      "spanish": "Suéter",
+      "english": "sweater"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: coat, scarf, gloves, boots, socks, pants, cap, shirt, shoes, sweater.",
+  "outro": "[excited] ¿Cuántas sabías? Escribe tu número en los comentarios y abrígate bien.",
+  "full_script": "[cheerful] ¿Tienes frío? ¿Sabes decir estas 10 cosas de invierno en inglés? Piensa rápido, antes que yo. Abrigo... coat. coat. Bufanda... scarf. scarf. Guantes... gloves. gloves. Botas... boots. boots. Calcetines... socks. socks. Pantalones... pants. pants. Gorra... cap. cap. Camisa... shirt. shirt. Zapatos... shoes. shoes. Suéter... sweater. sweater. Ahora todas en inglés, conmigo: coat, scarf, gloves, boots, socks, pants, cap, shirt, shoes, sweater. [excited] ¿Cuántas sabías? Escribe tu número en los comentarios y abrígate bien.",
+  "translations": {
+    "coat": "Abrigo",
+    "scarf": "Bufanda",
+    "gloves": "Guantes",
+    "boots": "Botas",
+    "socks": "Calcetines",
+    "pants": "Pantalones",
+    "cap": "Gorra",
+    "shirt": "Camisa",
+    "shoes": "Zapatos",
+    "sweater": "Suéter"
+  },
+  "english_phrases": [
+    "coat",
+    "scarf",
+    "gloves",
+    "boots",
+    "socks",
+    "pants",
+    "cap",
+    "shirt",
+    "shoes",
+    "sweater"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#RopaEnInglés",
+    "#Invierno",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv075",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:47:51.670405",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,1402 @@
+[
+  {
+    "id": "pl001",
+    "topic": "comida",
+    "spanish": "la comida",
+    "theme": "la comida",
+    "meaning": "Ten English words about la comida, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl002",
+    "topic": "bebidas",
+    "spanish": "las bebidas",
+    "theme": "las bebidas",
+    "meaning": "Ten English words about las bebidas, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl003",
+    "topic": "frutas",
+    "spanish": "las frutas",
+    "theme": "las frutas",
+    "meaning": "Ten English words about las frutas, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl004",
+    "topic": "verduras",
+    "spanish": "las verduras",
+    "theme": "las verduras",
+    "meaning": "Ten English words about las verduras, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl005",
+    "topic": "cuerpo",
+    "spanish": "el cuerpo",
+    "theme": "el cuerpo",
+    "meaning": "Ten English words about el cuerpo, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl006",
+    "topic": "cara",
+    "spanish": "la cara",
+    "theme": "la cara",
+    "meaning": "Ten English words about la cara, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl007",
+    "topic": "ropa",
+    "spanish": "la ropa",
+    "theme": "la ropa",
+    "meaning": "Ten English words about la ropa, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl008",
+    "topic": "casa",
+    "spanish": "la casa",
+    "theme": "la casa",
+    "meaning": "Ten English words about la casa, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl009",
+    "topic": "muebles",
+    "spanish": "los muebles",
+    "theme": "los muebles",
+    "meaning": "Ten English words about los muebles, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl010",
+    "topic": "animales",
+    "spanish": "los animales",
+    "theme": "los animales",
+    "meaning": "Ten English words about los animales, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl011",
+    "topic": "pajaros_insectos",
+    "spanish": "los pájaros y los insectos",
+    "theme": "los pájaros y los insectos",
+    "meaning": "Ten English words about los pájaros y los insectos, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl012",
+    "topic": "profesiones",
+    "spanish": "las profesiones",
+    "theme": "las profesiones",
+    "meaning": "Ten English words about las profesiones, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl013",
+    "topic": "paises",
+    "spanish": "los países",
+    "theme": "los países",
+    "meaning": "Ten English words about los países, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl014",
+    "topic": "ciudades_reino_unido",
+    "spanish": "ciudades del Reino Unido",
+    "theme": "ciudades del Reino Unido",
+    "meaning": "Ten English words about ciudades del Reino Unido, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl015",
+    "topic": "ciudades_estados_unidos",
+    "spanish": "ciudades de Estados Unidos",
+    "theme": "ciudades de Estados Unidos",
+    "meaning": "Ten English words about ciudades de Estados Unidos, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl016",
+    "topic": "dias_meses",
+    "spanish": "los días y los meses",
+    "theme": "los días y los meses",
+    "meaning": "Ten English words about los días y los meses, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl017",
+    "topic": "numeros",
+    "spanish": "los números",
+    "theme": "los números",
+    "meaning": "Ten English words about los números, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl018",
+    "topic": "k_muda",
+    "spanish": "la K muda",
+    "theme": "la K muda",
+    "meaning": "Ten English words about la K muda, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl019",
+    "topic": "b_muda",
+    "spanish": "la B muda",
+    "theme": "la B muda",
+    "meaning": "Ten English words about la B muda, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl020",
+    "topic": "l_muda",
+    "spanish": "la L muda",
+    "theme": "la L muda",
+    "meaning": "Ten English words about la L muda, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl021",
+    "topic": "w_muda",
+    "spanish": "la W muda",
+    "theme": "la W muda",
+    "meaning": "Ten English words about la W muda, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl022",
+    "topic": "h_muda",
+    "spanish": "la H muda",
+    "theme": "la H muda",
+    "meaning": "Ten English words about la H muda, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl023",
+    "topic": "t_muda",
+    "spanish": "la T muda",
+    "theme": "la T muda",
+    "meaning": "Ten English words about la T muda, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl024",
+    "topic": "th",
+    "spanish": "palabras con TH",
+    "theme": "palabras con TH",
+    "meaning": "Ten English words about palabras con TH, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl025",
+    "topic": "pasado_ed",
+    "spanish": "el pasado en -ED",
+    "theme": "el pasado en -ED",
+    "meaning": "Ten English words about el pasado en -ED, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl026",
+    "topic": "ough",
+    "spanish": "palabras con -OUGH",
+    "theme": "palabras con -OUGH",
+    "meaning": "Ten English words about palabras con -OUGH, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl027",
+    "topic": "palabras_largas",
+    "spanish": "palabras largas",
+    "theme": "palabras largas",
+    "meaning": "Ten English words about palabras largas, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl028",
+    "topic": "cognados",
+    "spanish": "cognados traicioneros (se escriben como en español)",
+    "theme": "cognados traicioneros (se escriben como en español)",
+    "meaning": "Ten English words about cognados traicioneros (se escriben como en español), pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl029",
+    "topic": "cambio_acento",
+    "spanish": "cambio de acento (PHOtograph / phoTOGraphy)",
+    "theme": "cambio de acento (PHOtograph / phoTOGraphy)",
+    "meaning": "Ten English words about cambio de acento (PHOtograph / phoTOGraphy), pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl030",
+    "topic": "sustantivo_verbo",
+    "spanish": "sustantivo y verbo (REcord / reCORD)",
+    "theme": "sustantivo y verbo (REcord / reCORD)",
+    "meaning": "Ten English words about sustantivo y verbo (REcord / reCORD), pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl031",
+    "topic": "heteronimos",
+    "spanish": "palabras que se escriben igual y suenan distinto",
+    "theme": "palabras que se escriben igual y suenan distinto",
+    "meaning": "Ten English words about palabras que se escriben igual y suenan distinto, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl032",
+    "topic": "schwa",
+    "spanish": "la schwa (la vocal escondida)",
+    "theme": "la schwa (la vocal escondida)",
+    "meaning": "Ten English words about la schwa (la vocal escondida), pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl033",
+    "topic": "vocales_largas_cortas",
+    "spanish": "vocales largas y cortas",
+    "theme": "vocales largas y cortas",
+    "meaning": "Ten English words about vocales largas y cortas, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl034",
+    "topic": "r_inglesa",
+    "spanish": "la R inglesa",
+    "theme": "la R inglesa",
+    "meaning": "Ten English words about la R inglesa, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl035",
+    "topic": "v_b",
+    "spanish": "la V y la B",
+    "theme": "la V y la B",
+    "meaning": "Ten English words about la V y la B, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl036",
+    "topic": "sonido_z",
+    "spanish": "el sonido Z",
+    "theme": "el sonido Z",
+    "meaning": "Ten English words about el sonido Z, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl037",
+    "topic": "sh_ch",
+    "spanish": "SH y CH",
+    "theme": "SH y CH",
+    "meaning": "Ten English words about SH y CH, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl038",
+    "topic": "j_inglesa",
+    "spanish": "el sonido de la J inglesa",
+    "theme": "el sonido de la J inglesa",
+    "meaning": "Ten English words about el sonido de la J inglesa, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl039",
+    "topic": "tion_sion",
+    "spanish": "palabras en -TION y -SION",
+    "theme": "palabras en -TION y -SION",
+    "meaning": "Ten English words about palabras en -TION y -SION, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl040",
+    "topic": "ture",
+    "spanish": "palabras en -TURE",
+    "theme": "palabras en -TURE",
+    "meaning": "Ten English words about palabras en -TURE, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl041",
+    "topic": "ous",
+    "spanish": "palabras en -OUS",
+    "theme": "palabras en -OUS",
+    "meaning": "Ten English words about palabras en -OUS, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl042",
+    "topic": "able",
+    "spanish": "palabras en -ABLE",
+    "theme": "palabras en -ABLE",
+    "meaning": "Ten English words about palabras en -ABLE, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl043",
+    "topic": "oficina",
+    "spanish": "la oficina",
+    "theme": "la oficina",
+    "meaning": "Ten English words about la oficina, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl044",
+    "topic": "tecnologia",
+    "spanish": "la tecnología",
+    "theme": "la tecnología",
+    "meaning": "Ten English words about la tecnología, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl045",
+    "topic": "ciencia",
+    "spanish": "la ciencia",
+    "theme": "la ciencia",
+    "meaning": "Ten English words about la ciencia, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl046",
+    "topic": "medicina",
+    "spanish": "la medicina",
+    "theme": "la medicina",
+    "meaning": "Ten English words about la medicina, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl047",
+    "topic": "deportes",
+    "spanish": "los deportes",
+    "theme": "los deportes",
+    "meaning": "Ten English words about los deportes, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl048",
+    "topic": "musica",
+    "spanish": "la música",
+    "theme": "la música",
+    "meaning": "Ten English words about la música, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl049",
+    "topic": "postres",
+    "spanish": "los postres",
+    "theme": "los postres",
+    "meaning": "Ten English words about los postres, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl050",
+    "topic": "aeropuerto",
+    "spanish": "el aeropuerto",
+    "theme": "el aeropuerto",
+    "meaning": "Ten English words about el aeropuerto, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl051",
+    "topic": "dinero",
+    "spanish": "el dinero",
+    "theme": "el dinero",
+    "meaning": "Ten English words about el dinero, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl052",
+    "topic": "emociones",
+    "spanish": "las emociones",
+    "theme": "las emociones",
+    "meaning": "Ten English words about las emociones, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl053",
+    "topic": "adjetivos_comunes",
+    "spanish": "adjetivos comunes",
+    "theme": "adjetivos comunes",
+    "meaning": "Ten English words about adjetivos comunes, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl054",
+    "topic": "pasado_irregular",
+    "spanish": "verbos irregulares en pasado",
+    "theme": "verbos irregulares en pasado",
+    "meaning": "Ten English words about verbos irregulares en pasado, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl055",
+    "topic": "participios_irregulares",
+    "spanish": "participios irregulares",
+    "theme": "participios irregulares",
+    "meaning": "Ten English words about participios irregulares, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl056",
+    "topic": "ea",
+    "spanish": "palabras con EA",
+    "theme": "palabras con EA",
+    "meaning": "Ten English words about palabras con EA, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl057",
+    "topic": "oo",
+    "spanish": "palabras con OO",
+    "theme": "palabras con OO",
+    "meaning": "Ten English words about palabras con OO, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl058",
+    "topic": "ou",
+    "spanish": "palabras con OU",
+    "theme": "palabras con OU",
+    "meaning": "Ten English words about palabras con OU, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl059",
+    "topic": "ie_ei",
+    "spanish": "palabras con IE y EI",
+    "theme": "palabras con IE y EI",
+    "meaning": "Ten English words about palabras con IE y EI, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl060",
+    "topic": "ch_k",
+    "spanish": "CH que suena K",
+    "theme": "CH que suena K",
+    "meaning": "Ten English words about CH que suena K, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl061",
+    "topic": "gh",
+    "spanish": "palabras con GH",
+    "theme": "palabras con GH",
+    "meaning": "Ten English words about palabras con GH, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl062",
+    "topic": "ph",
+    "spanish": "palabras con PH",
+    "theme": "palabras con PH",
+    "meaning": "Ten English words about palabras con PH, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl063",
+    "topic": "x",
+    "spanish": "palabras con X",
+    "theme": "palabras con X",
+    "meaning": "Ten English words about palabras con X, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl064",
+    "topic": "qu",
+    "spanish": "palabras con QU",
+    "theme": "palabras con QU",
+    "meaning": "Ten English words about palabras con QU, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl065",
+    "topic": "wr_kn",
+    "spanish": "palabras con WR y KN",
+    "theme": "palabras con WR y KN",
+    "meaning": "Ten English words about palabras con WR y KN, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl066",
+    "topic": "mb",
+    "spanish": "palabras con MB",
+    "theme": "palabras con MB",
+    "meaning": "Ten English words about palabras con MB, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl067",
+    "topic": "ps_pn",
+    "spanish": "palabras con PS y PN",
+    "theme": "palabras con PS y PN",
+    "meaning": "Ten English words about palabras con PS y PN, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl068",
+    "topic": "origen_griego",
+    "spanish": "palabras de origen griego",
+    "theme": "palabras de origen griego",
+    "meaning": "Ten English words about palabras de origen griego, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl069",
+    "topic": "origen_frances",
+    "spanish": "palabras de origen francés",
+    "theme": "palabras de origen francés",
+    "meaning": "Ten English words about palabras de origen francés, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl070",
+    "topic": "origen_italiano",
+    "spanish": "palabras de origen italiano",
+    "theme": "palabras de origen italiano",
+    "meaning": "Ten English words about palabras de origen italiano, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl071",
+    "topic": "naturaleza",
+    "spanish": "la naturaleza",
+    "theme": "la naturaleza",
+    "meaning": "Ten English words about la naturaleza, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl072",
+    "topic": "clima",
+    "spanish": "el clima",
+    "theme": "el clima",
+    "meaning": "Ten English words about el clima, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl073",
+    "topic": "colores",
+    "spanish": "los colores",
+    "theme": "los colores",
+    "meaning": "Ten English words about los colores, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl074",
+    "topic": "salud",
+    "spanish": "la salud y las enfermedades",
+    "theme": "la salud y las enfermedades",
+    "meaning": "Ten English words about la salud y las enfermedades, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl075",
+    "topic": "matematicas",
+    "spanish": "las matemáticas",
+    "theme": "las matemáticas",
+    "meaning": "Ten English words about las matemáticas, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl076",
+    "topic": "geografia",
+    "spanish": "la geografía",
+    "theme": "la geografía",
+    "meaning": "Ten English words about la geografía, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl077",
+    "topic": "espacio",
+    "spanish": "el espacio",
+    "theme": "el espacio",
+    "meaning": "Ten English words about el espacio, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl078",
+    "topic": "historia",
+    "spanish": "la historia",
+    "theme": "la historia",
+    "meaning": "Ten English words about la historia, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl079",
+    "topic": "ley",
+    "spanish": "la ley",
+    "theme": "la ley",
+    "meaning": "Ten English words about la ley, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl080",
+    "topic": "cortas_enganosas",
+    "spanish": "palabras cortas engañosas",
+    "theme": "palabras cortas engañosas",
+    "meaning": "Ten English words about palabras cortas engañosas, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl081",
+    "topic": "nativos_fallan",
+    "spanish": "palabras que hasta los nativos fallan",
+    "theme": "palabras que hasta los nativos fallan",
+    "meaning": "Ten English words about palabras que hasta los nativos fallan, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl082",
+    "topic": "consonantes",
+    "spanish": "grupos de consonantes difíciles",
+    "theme": "grupos de consonantes difíciles",
+    "meaning": "Ten English words about grupos de consonantes difíciles, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl083",
+    "topic": "s_inicial",
+    "spanish": "palabras con S inicial (sin «es-»)",
+    "theme": "palabras con S inicial (sin «es-»)",
+    "meaning": "Ten English words about palabras con S inicial (sin «es-»), pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl084",
+    "topic": "y",
+    "spanish": "palabras con Y",
+    "theme": "palabras con Y",
+    "meaning": "Ten English words about palabras con Y, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl085",
+    "topic": "utensilios_cocina",
+    "spanish": "la cocina (utensilios)",
+    "theme": "la cocina (utensilios)",
+    "meaning": "Ten English words about la cocina (utensilios), pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl086",
+    "topic": "herramientas",
+    "spanish": "las herramientas",
+    "theme": "las herramientas",
+    "meaning": "Ten English words about las herramientas, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl087",
+    "topic": "coche",
+    "spanish": "el coche",
+    "theme": "el coche",
+    "meaning": "Ten English words about el coche, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl088",
+    "topic": "escuela",
+    "spanish": "la escuela",
+    "theme": "la escuela",
+    "meaning": "Ten English words about la escuela, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl089",
+    "topic": "familia",
+    "spanish": "la familia",
+    "theme": "la familia",
+    "meaning": "Ten English words about la familia, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl090",
+    "topic": "tiempo_libre",
+    "spanish": "el tiempo libre",
+    "theme": "el tiempo libre",
+    "meaning": "Ten English words about el tiempo libre, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl091",
+    "topic": "ciudad",
+    "spanish": "la ciudad",
+    "theme": "la ciudad",
+    "meaning": "Ten English words about la ciudad, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl092",
+    "topic": "hotel",
+    "spanish": "el hotel",
+    "theme": "el hotel",
+    "meaning": "Ten English words about el hotel, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl093",
+    "topic": "restaurante",
+    "spanish": "el restaurante",
+    "theme": "el restaurante",
+    "meaning": "Ten English words about el restaurante, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl094",
+    "topic": "trabajo",
+    "spanish": "el trabajo",
+    "theme": "el trabajo",
+    "meaning": "Ten English words about el trabajo, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl095",
+    "topic": "politica",
+    "spanish": "la política",
+    "theme": "la política",
+    "meaning": "Ten English words about la política, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl096",
+    "topic": "religion_fiestas",
+    "spanish": "la religión y las fiestas",
+    "theme": "la religión y las fiestas",
+    "meaning": "Ten English words about la religión y las fiestas, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl097",
+    "topic": "sentidos",
+    "spanish": "los sentidos",
+    "theme": "los sentidos",
+    "meaning": "Ten English words about los sentidos, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl098",
+    "topic": "sonidos",
+    "spanish": "los sonidos de la naturaleza y del hogar",
+    "theme": "los sonidos de la naturaleza y del hogar",
+    "meaning": "Ten English words about los sonidos de la naturaleza y del hogar, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl099",
+    "topic": "palabras_funcion",
+    "spanish": "los pronombres y palabras de función",
+    "theme": "los pronombres y palabras de función",
+    "meaning": "Ten English words about los pronombres y palabras de función, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "pl100",
+    "topic": "mas_dificiles",
+    "spanish": "las 10 palabras más difíciles para hispanohablantes",
+    "theme": "las 10 palabras más difíciles para hispanohablantes",
+    "meaning": "Ten English words about las 10 palabras más difíciles para hispanohablantes, pronounce them: easy to expert",
+    "category": "pron_level",
+    "difficulty": "mixed",
+    "level": "A2-C2",
+    "tags": [
+      "pronounce_level",
+      "level_family"
+    ]
+  }
+]

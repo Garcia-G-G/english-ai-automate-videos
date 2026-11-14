@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras en -OUS: ¿las pronuncias bien? 😱",
+  "video_description": "Adjetivos en -OUS: el final que casi todos dicen mal. 😬",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras en -OUS",
+  "intro": "[cheerful] Diez adjetivos en -OUS. Dilos en voz alta y mira hasta dónde llegas.",
+  "items": [
+    {
+      "english": "famous",
+      "respelling": "FEI-mes",
+      "ipa": "ˈfeɪməs",
+      "trap": "-OUS suena «es» relajada"
+    },
+    {
+      "english": "nervous",
+      "respelling": "NER-ves",
+      "ipa": "ˈnɝvəs",
+      "trap": "ER suena «er» y -OUS = «es»"
+    },
+    {
+      "english": "dangerous",
+      "respelling": "DEIN-yer-es",
+      "ipa": "ˈdeɪndʒɚəs",
+      "trap": "A suena «ei» y G = «y»"
+    },
+    {
+      "english": "delicious",
+      "respelling": "di-LI-shes",
+      "ipa": "dɪˈlɪʃəs",
+      "trap": "-CIOUS suena «shes»"
+    },
+    {
+      "english": "curious",
+      "respelling": "KIU-ri-es",
+      "ipa": "ˈkjʊriəs",
+      "trap": "Empieza «kiu»: KIU-ri-es"
+    },
+    {
+      "english": "enormous",
+      "respelling": "i-NOR-mes",
+      "ipa": "ɪˈnɔrməs",
+      "trap": "Acento en NOR"
+    },
+    {
+      "english": "gorgeous",
+      "respelling": "GOR-yes",
+      "ipa": "ˈgɔrdʒəs",
+      "trap": "Dos sílabas: GOR-yes"
+    },
+    {
+      "english": "hilarious",
+      "respelling": "ji-LE-ri-es",
+      "ipa": "hɪˈlɛriəs",
+      "trap": "Acento en LE y H aspirada"
+    },
+    {
+      "english": "ridiculous",
+      "respelling": "ri-DI-kie-les",
+      "ipa": "rɪˈdɪkjələs",
+      "trap": "Acento en DI: ri-DI-kie-les"
+    },
+    {
+      "english": "anonymous",
+      "respelling": "e-NA-ne-mes",
+      "ipa": "əˈnɑnəməs",
+      "trap": "Acento en NA: e-NA-ne-mes"
+    }
+  ],
+  "verdict": "Si pronunciaste bien hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez, nivel experto.",
+  "outro": "[cheerful] ¿Hasta dónde llegaste? Déjalo en un comentario.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AdjetivosEnInglés",
+    "#AprenderInglés",
+    "#InglésAmericano",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl041",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

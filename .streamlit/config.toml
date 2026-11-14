@@ -1,0 +1,13 @@
+# English Unlimited panel theme: «Papel» (STEP 83 §0). One explicit light theme, so the panel looks the
+# same whatever the Mac's appearance setting is. The values come from src/panel/tokens.py; a test
+# (tests/test_panel_tokens.py) fails if they drift apart.
+[theme]
+base = "light"
+primaryColor = "#1F6FD1"
+backgroundColor = "#F5F1EA"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#191720"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"

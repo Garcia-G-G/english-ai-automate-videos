@@ -1,0 +1,47 @@
+{
+  "id": "hc_c003",
+  "style": "comic",
+  "level": "principiante",
+  "angle": "reto",
+  "title": "RETO: «tengo prisa» en inglés",
+  "hook_text": "¿Lo sabes en 3 segundos?",
+  "quiz": {
+    "prompt": "¿Cómo dirías «tengo prisa»?",
+    "options": [
+      "I have hurry",
+      "I'm in a hurry",
+      "I'm hurrying me"
+    ],
+    "answer": 1,
+    "after": "Tener prisa = be in a hurry."
+  },
+  "correction": {
+    "wrong": "I'm hurrying me",
+    "right": "I'm in a hurry",
+    "rule": "Be in a hurry"
+  },
+  "voice": [
+    "Reto. ¿Cómo dirías «tengo prisa»? ¿[[I have hurry]], [[I'm in a hurry]] o [[I'm hurrying me]]?",
+    "Tres segundos.",
+    "¡La B! [[I'm in a hurry]]. Otra vez el inglés usa [[to be]] donde decimos «tener».",
+    "Y para meterle prisa a alguien: [[Hurry up!]], «¡date prisa!».",
+    "Si no hay prisa: [[No rush]] o [[Take your time]].",
+    "¿Acertaste? Dímelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Tranquilo, no hay prisa»",
+    "answer": "Relax, no rush. / Take your time."
+  },
+  "caption": "«Tengo prisa» es «I'm in a hurry». Reto de inglés en 30 segundos: ¿acertaste?",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 58
+}

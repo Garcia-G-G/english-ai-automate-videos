@@ -1,0 +1,52 @@
+{
+  "type": "minimal_pairs",
+  "video_title": "SIT o SEAT: ¿sentarse o asiento? 🪑",
+  "video_description": "Una vocal más larga y cambia la palabra. 👂",
+  "level": "A2",
+  "intro": "[curious] Dos palabras que para ti suenan igual. Para un nativo, no.",
+  "pair": [
+    {
+      "word": "sit",
+      "phonetic": "SIT",
+      "meaning": "sentarse",
+      "emoji": "🧘"
+    },
+    {
+      "word": "seat",
+      "phonetic": "SIIIT",
+      "meaning": "asiento",
+      "emoji": "🪑"
+    }
+  ],
+  "sound_tip": "Sit es rápida, casi sit con e. Seat estira la i y sonríe un poco.",
+  "test": [
+    0,
+    1,
+    1,
+    0
+  ],
+  "sentence": {
+    "en": "Please sit in your seat.",
+    "es": "Por favor, siéntate en tu asiento."
+  },
+  "outro": "[excited] ¿Cuántas acertaste de cuatro? Dímelo en los comentarios.",
+  "translations": {
+    "sit": "sentarse",
+    "seat": "asiento",
+    "Please sit in your seat.": "Por favor, siéntate en tu asiento."
+  },
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#ParesMínimos"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr019",
+    "video_type": "minimal_pairs",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Las EMOCIONES en inglés: ¿las pronuncias bien? 😬",
+  "video_description": "Diez emociones en inglés, de fácil a experto: ¿hasta cuál las dices bien? 😅",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "las emociones",
+  "intro": "[cheerful] Te enseño una emoción en inglés y tú la pronuncias. Diez palabras, cada vez más difíciles.",
+  "items": [
+    {
+      "english": "happy",
+      "respelling": "JA-pi",
+      "ipa": "ˈhæpi",
+      "trap": "La H suena como una «j» suave"
+    },
+    {
+      "english": "love",
+      "respelling": "LAV",
+      "ipa": "ˈlʌv",
+      "trap": "La O suena «a» y la V es suave"
+    },
+    {
+      "english": "bored",
+      "respelling": "BORD",
+      "ipa": "ˈbɔrd",
+      "trap": "Una sílaba: la E no suena"
+    },
+    {
+      "english": "worried",
+      "respelling": "UER-id",
+      "ipa": "ˈwɝid",
+      "trap": "OR suena «er»: UER-id"
+    },
+    {
+      "english": "jealous",
+      "respelling": "YE-las",
+      "ipa": "ˈdʒɛləs",
+      "trap": "EA suena «e»: YE-las"
+    },
+    {
+      "english": "anxious",
+      "respelling": "ANK-shas",
+      "ipa": "ˈæŋkʃəs",
+      "trap": "La X suena «ksh»: ANK-shas"
+    },
+    {
+      "english": "embarrassed",
+      "respelling": "im-BE-rast",
+      "ipa": "ɪmˈbɛrəst",
+      "trap": "Acento en BE y la -ED suena «t»"
+    },
+    {
+      "english": "anxiety",
+      "respelling": "an-ZAI-a-ti",
+      "ipa": "æŋˈzaɪəti",
+      "trap": "Aquí la X suena «z»: an-ZAI-"
+    },
+    {
+      "english": "exhausted",
+      "respelling": "ig-ZAS-tid",
+      "ipa": "ɪɡˈzɑstɪd",
+      "trap": "La H no suena y la X es «gz»"
+    },
+    {
+      "english": "overwhelmed",
+      "respelling": "ou-ver-UELMD",
+      "ipa": "oʊvɚˈwɛlmd",
+      "trap": "Final «lmd» sin vocal: -UELMD"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. ¿Las diez sin fallar? Nivel experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Escríbelo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#EmocionesEnInglés",
+    "#InglésParaHispanohablantes",
+    "#Pronunciación"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl052",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

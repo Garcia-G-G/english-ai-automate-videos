@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "POSTRES en inglés: ¿los pronuncias bien? 🍰",
+  "video_description": "Postres en inglés con letras mudas y acentos raros. 🍪",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los postres",
+  "intro": "[happy] Postres en inglés: dulces de decir, pero con trampa. Léelos en voz alta.",
+  "items": [
+    {
+      "english": "cake",
+      "respelling": "KEIK",
+      "ipa": "ˈkeɪk",
+      "trap": "A suena «ei»: KEIK"
+    },
+    {
+      "english": "cookie",
+      "respelling": "KU-ki",
+      "ipa": "ˈkʊki",
+      "trap": "OO corta: KU-ki"
+    },
+    {
+      "english": "ice cream",
+      "respelling": "AIS-kriim",
+      "ipa": "ˈaɪskriːm",
+      "trap": "ICE = «ais» y EA = «ii»"
+    },
+    {
+      "english": "pie",
+      "respelling": "PAI",
+      "ipa": "ˈpaɪ",
+      "trap": "IE suena «ai»: PAI"
+    },
+    {
+      "english": "pudding",
+      "respelling": "PU-ding",
+      "ipa": "ˈpʊdɪŋ",
+      "trap": "U corta: PU-ding"
+    },
+    {
+      "english": "dessert",
+      "respelling": "di-ZERT",
+      "ipa": "dɪˈzɝt",
+      "trap": "SS suena Z y acento al final"
+    },
+    {
+      "english": "cinnamon",
+      "respelling": "SI-ne-men",
+      "ipa": "ˈsɪnəmən",
+      "trap": "Acento en SI: SI-ne-men"
+    },
+    {
+      "english": "custard",
+      "respelling": "KAS-terd",
+      "ipa": "ˈkʌstɚd",
+      "trap": "U suena «a»: KAS-terd"
+    },
+    {
+      "english": "caramel",
+      "respelling": "KAR-mel",
+      "ipa": "ˈkɑrməl",
+      "trap": "Dos sílabas: KAR-mel"
+    },
+    {
+      "english": "meringue",
+      "respelling": "me-RANG",
+      "ipa": "məˈræŋ",
+      "trap": "GUE final muda: me-RANG"
+    }
+  ],
+  "verdict": "Hasta la palabra tres, básico. Hasta la siete, intermedio. Si clavaste las diez, nivel experto.",
+  "outro": "[happy] ¿En qué número te quedaste? Te leo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#PostresEnInglés",
+    "#AprenderInglés",
+    "#InglésParaHispanos",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl049",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

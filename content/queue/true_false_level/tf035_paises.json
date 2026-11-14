@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes cuáles son verdad? PAÍSES y NACIONALIDADES 🌎",
+  "video_description": "Países y nacionalidades en inglés: ¿verdadero o falso? 🌎",
+  "title": "¿Verdadero o falso?",
+  "theme": "países y nacionalidades",
+  "intro": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad?",
+  "items": [
+    {
+      "statement": "Una persona de Francia es «French».",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "Alemania en inglés es «Germany».",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "Una persona de España es «Spanishman».",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es Spanish o a Spaniard"
+    },
+    {
+      "statement": "Holanda también se llama «the Netherlands».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "Una persona de Suiza es «Swedish».",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es Swiss"
+    },
+    {
+      "statement": "«Spanish» se escribe con mayúscula.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "Una persona de Dinamarca es «Danish».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "Grecia en inglés es «Grease».",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es Greece"
+    },
+    {
+      "statement": "Una persona de Tailandia es «Thai».",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "Una persona de Nueva Zelanda es «Kiwi» en lenguaje coloquial.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf035",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "French",
+    "Germany",
+    "Spanishman",
+    "the Netherlands",
+    "Swedish",
+    "Spanish",
+    "Danish",
+    "Grease",
+    "Thai",
+    "Kiwi"
+  ],
+  "full_script": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad? Verdadero. Verdadero. Falso: es Spanish o a Spaniard. Ahora, nivel intermedio. Verdadero. Falso: es Swiss. Verdadero. Verdadero. Y ahora, nivel experto. Falso: es Greece. Verdadero. Verdadero. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [happy] ¿Cuántas acertaste? Déjame tu número abajo."
+}

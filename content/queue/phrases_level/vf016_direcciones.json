@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿CÓMO LLEGO A...?»? 10 frases 🗺️",
+  "video_description": "Diez frases para preguntar y entender direcciones. 🗺️",
+  "title": "¿Cómo se dice?",
+  "theme": "preguntar el camino",
+  "intro": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Dónde está el baño?",
+      "english": "Where's the bathroom?"
+    },
+    {
+      "spanish": "¿Cómo llego a la estación?",
+      "english": "How do I get to the station?"
+    },
+    {
+      "spanish": "¿Está lejos?",
+      "english": "Is it far?"
+    },
+    {
+      "spanish": "Siga recto.",
+      "english": "Go straight ahead."
+    },
+    {
+      "spanish": "Gire a la izquierda.",
+      "english": "Turn left."
+    },
+    {
+      "spanish": "Está a la vuelta de la esquina.",
+      "english": "It's around the corner."
+    },
+    {
+      "spanish": "Está enfrente del banco.",
+      "english": "It's across from the bank."
+    },
+    {
+      "spanish": "Se puede ir andando.",
+      "english": "It's within walking distance."
+    },
+    {
+      "spanish": "Me he perdido.",
+      "english": "I got lost."
+    },
+    {
+      "spanish": "¿Me lo enseña en el mapa?",
+      "english": "Can you show me on the map?"
+    }
+  ],
+  "outro": "[excited] Compártelo con alguien que las necesite.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf016",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Where's the bathroom?": "¿Dónde está el baño?",
+    "How do I get to the station?": "¿Cómo llego a la estación?",
+    "Is it far?": "¿Está lejos?",
+    "Go straight ahead.": "Siga recto.",
+    "Turn left.": "Gire a la izquierda.",
+    "It's around the corner.": "Está a la vuelta de la esquina.",
+    "It's across from the bank.": "Está enfrente del banco.",
+    "It's within walking distance.": "Se puede ir andando.",
+    "I got lost.": "Me he perdido.",
+    "Can you show me on the map?": "¿Me lo enseña en el mapa?"
+  },
+  "english_phrases": [
+    "Where's the bathroom?",
+    "How do I get to the station?",
+    "Is it far?",
+    "Go straight ahead.",
+    "Turn left.",
+    "It's around the corner.",
+    "It's across from the bank.",
+    "It's within walking distance.",
+    "I got lost.",
+    "Can you show me on the map?"
+  ],
+  "full_script": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo. Where's the bathroom? How do I get to the station? Is it far? Go straight ahead. Turn left. It's around the corner. It's across from the bank. It's within walking distance. I got lost. Can you show me on the map? [excited] Compártelo con alguien que las necesite."
+}

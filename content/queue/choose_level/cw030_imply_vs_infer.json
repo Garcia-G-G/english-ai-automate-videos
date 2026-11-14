@@ -1,0 +1,120 @@
+{
+  "type": "choose_level",
+  "video_title": "¿IMPLY o INFER? Elige la correcta en 10 frases 🤔",
+  "video_description": "IMPLY es insinuar y INFER es deducir. ¿Hasta qué número llegas sin confundirte? Pruébate y cuéntame 🧠",
+  "title": "Elige la correcta",
+  "theme": "imply vs infer",
+  "intro": "[curious] ¿Confundes IMPLY con INFER? Quien habla insinúa con IMPLY y quien escucha deduce con INFER. ¿Hasta qué número llegas?",
+  "items": [
+    {
+      "sentence": "Are you ____ I'm lying?",
+      "options": [
+        "implying",
+        "inferring"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I ____ from his face he was sad.",
+      "options": [
+        "imply",
+        "infer"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Her smile ____ she was happy.",
+      "options": [
+        "implied",
+        "inferred"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "What can we ____ from the data?",
+      "options": [
+        "imply",
+        "infer"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "His tone ____ he was angry.",
+      "options": [
+        "inferred",
+        "implied"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The reader must ____ the ending.",
+      "options": [
+        "infer",
+        "imply"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Don't ____ that I'm wrong.",
+      "options": [
+        "imply",
+        "infer"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Am I to ____ that you disagree?",
+      "options": [
+        "infer",
+        "imply"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The study ____ a strong link.",
+      "options": [
+        "infers",
+        "implies"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "It was ____ from his silence.",
+      "options": [
+        "implied",
+        "inferred"
+      ],
+      "answer": 1,
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Confundes IMPLY con INFER? Quien habla insinúa con IMPLY y quien escucha deduce con INFER. ¿Hasta qué número llegas? ¿Are you implying I'm lying? I infer from his face he was sad. Her smile implied she was happy. ¿What can we infer from the data? His tone implied he was angry. The reader must infer the ending. Don't imply that I'm wrong. ¿Am I to infer that you disagree? The study implies a strong link. It was inferred from his silence. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AprenderIngles",
+    "#InglesFacil",
+    "#EnglishQuiz",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw030",
+    "video_type": "choose_level",
+    "generated_at": "2026-11-02T11:07:30.509908",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 3 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

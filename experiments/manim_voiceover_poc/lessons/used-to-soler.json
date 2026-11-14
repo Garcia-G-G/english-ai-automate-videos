@@ -1,0 +1,466 @@
+{
+  "id": "used-to-soler",
+  "title": "Used to: lo que hacías antes (y la trampa del soler)",
+  "kicker": "Inglés · Pasado · A2–B1",
+  "level": "A2-B1",
+  "language": "es",
+  "target_minutes": 7,
+  "model": "eleven_turbo_v2_5",
+  "voice_settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.3,
+    "use_speaker_boost": true
+  },
+  "english_speed": 0.92,
+  "beats": [
+    {
+      "type": "transform",
+      "from": "I am used to go there.",
+      "to": "I used to go there.",
+      "narration": "¿Ves la diferencia? [[I am used to go there]] está mal. [[I used to go there]] está bien. Una palabra de más y cambia todo el significado. Hoy lo aclaramos de una vez.",
+      "gloss": "Antes iba allí.",
+      "id": "b01"
+    },
+    {
+      "id": "b02",
+      "type": "title",
+      "narration": "Hola. Hoy vamos con [[used to]], una forma de hablar del pasado que no existe tal cual en español. Y con una trampa enorme: no sirve para decir lo que sueles hacer hoy."
+    },
+    {
+      "id": "b03",
+      "type": "heading",
+      "text": "Parte 1 · El problema",
+      "narration": "Empezamos por la trampa, porque es lo primero que hace casi todo el mundo cuando descubre esta expresión."
+    },
+    {
+      "id": "b04",
+      "type": "sentence",
+      "text": "I use to wake up at seven.",
+      "gloss": "Suelo levantarme a las siete.",
+      "narration": "[[I use to wake up at seven]]. Suelo levantarme a las siete. Buscamos soler en el diccionario, encontramos algo parecido y lo usamos en presente."
+    },
+    {
+      "id": "b05",
+      "type": "sentence",
+      "same": true,
+      "narration": "El problema: [[use to]] no funciona en presente. [[Used to]] solo habla de hábitos del pasado que ya no existen. Para hoy, se dice de otra manera.",
+      "highlight": {
+        "use": "red"
+      }
+    },
+    {
+      "type": "transform",
+      "from": "I use to wake up at seven.",
+      "to": "I usually wake up at seven.",
+      "narration": "En presente se usa [[usually]]. Mira cómo cambia: [[I use to wake up at seven]] se convierte en [[I usually wake up at seven]]. Normalmente me levanto a las siete.",
+      "gloss": "Normalmente me levanto a las siete.",
+      "id": "b06"
+    },
+    {
+      "id": "b07",
+      "type": "tip",
+      "text": "Suelo hacer algo = I usually do it. Solía hacer algo = I used to do it.",
+      "narration": "La regla en una línea: suelo hacer algo es [[I usually do it]]. Solía hacer algo es [[I used to do it]]. Presente por un lado, pasado por el otro."
+    },
+    {
+      "type": "timeline",
+      "events": [
+        {
+          "label": "I used to smoke",
+          "start": -9,
+          "kind": "repeat",
+          "end": -3
+        },
+        {
+          "label": "I usually run",
+          "start": -2,
+          "kind": "repeat",
+          "end": 7
+        }
+      ],
+      "narration": "Así se ven las dos en el tiempo. [[I used to smoke]]: una fila de puntos que se corta en el pasado. [[I usually run]]: una costumbre que sigue hoy y seguirá mañana.",
+      "id": "b08"
+    },
+    {
+      "id": "b09",
+      "type": "heading",
+      "text": "Parte 2 · Used to: lo que ya no haces",
+      "narration": "Vamos con lo que sí hace [[used to]]. Habla de algo que era habitual antes y que ahora ya no pasa."
+    },
+    {
+      "type": "timeline",
+      "events": [
+        {
+          "label": "I used to live in Paris",
+          "start": -8,
+          "kind": "span",
+          "end": -3
+        }
+      ],
+      "narration": "[[I used to live in Paris]]. Antes vivía en París. Mira la línea: una etapa que empezó y terminó. La frase dice dos cosas a la vez: que vivías allí, y que ya no.",
+      "id": "b10"
+    },
+    {
+      "id": "b11",
+      "type": "sentence",
+      "text": "She used to smoke a lot.",
+      "gloss": "Antes fumaba mucho.",
+      "narration": "[[She used to smoke a lot]]. Antes fumaba mucho. Fíjate: el verbo que va después está en su forma base. [[Smoke]], no [[smoked]].",
+      "highlight": {
+        "used": "blue",
+        "smoke": "yellow"
+      }
+    },
+    {
+      "id": "b12",
+      "type": "table",
+      "headers": [
+        "Inglés",
+        "Español"
+      ],
+      "rows": [
+        [
+          "I used to play football",
+          "jugaba al fútbol"
+        ],
+        [
+          "We used to go camping",
+          "íbamos de acampada"
+        ],
+        [
+          "He used to have long hair",
+          "tenía el pelo largo"
+        ],
+        [
+          "They used to be friends",
+          "antes eran amigos"
+        ]
+      ],
+      "narration": "[[I used to play football]]: jugaba al fútbol. [[We used to go camping]]: íbamos de acampada. [[He used to have long hair]]: tenía el pelo largo. [[They used to be friends]]: antes eran amigos."
+    },
+    {
+      "id": "b13",
+      "type": "tip",
+      "text": "Used to suele equivaler al imperfecto de costumbre: jugaba, íbamos, tenía.",
+      "narration": "Un atajo para hispanohablantes: [[used to]] suele traducirse con nuestro imperfecto de costumbre. Jugaba, íbamos, tenía. Cuando en español dirías antes hacía, piensa en esta forma."
+    },
+    {
+      "id": "b14",
+      "type": "heading",
+      "text": "Parte 3 · Preguntas y negativas",
+      "narration": "Ahora la parte que confunde incluso a gente con buen nivel: qué le pasa a la de final en las preguntas y en las negativas."
+    },
+    {
+      "id": "b15",
+      "type": "sentence",
+      "text": "I didn't use to like coffee.",
+      "gloss": "Antes no me gustaba el café.",
+      "narration": "[[I didn't use to like coffee]]. Antes no me gustaba el café. Con [[didn't]], la de final desaparece: [[use to]]. El pasado ya lo lleva el ayudante.",
+      "highlight": {
+        "didn't": "red",
+        "use": "blue"
+      }
+    },
+    {
+      "id": "b16",
+      "type": "sentence",
+      "text": "Did you use to play an instrument?",
+      "gloss": "¿Tocabas algún instrumento?",
+      "narration": "En preguntas, lo mismo: [[Did you use to play an instrument?]] ¿Tocabas algún instrumento? [[Did]] se lleva el pasado y [[use]] se queda sin de.",
+      "highlight": {
+        "Did": "blue",
+        "use": "blue"
+      }
+    },
+    {
+      "id": "b17",
+      "type": "tip",
+      "text": "Con did o didn't se escribe use to, sin d. El pasado ya está en did.",
+      "narration": "Pasa igual con cualquier verbo: [[did or didn't]] se quedan con el pasado, y el verbo vuelve a su forma base. Por eso se escribe sin de. Al hablar, suena casi igual."
+    },
+    {
+      "id": "b18",
+      "type": "heading",
+      "text": "Parte 4 · Be used to: otra cosa distinta",
+      "narration": "Y ahora el primo que lo complica todo. Se parece muchísimo, pero significa algo completamente distinto: estar acostumbrado."
+    },
+    {
+      "id": "b19",
+      "type": "sentence",
+      "text": "I'm used to working at night.",
+      "gloss": "Estoy acostumbrado a trabajar de noche.",
+      "narration": "[[I'm used to working at night]]. Estoy acostumbrado a trabajar de noche. Dos diferencias: lleva el verbo [[be]] delante, y después va la forma en i-ene-ge.",
+      "highlight": {
+        "I'm": "blue",
+        "working": "green"
+      }
+    },
+    {
+      "id": "b20",
+      "type": "table",
+      "headers": [
+        "Expresión",
+        "Significa"
+      ],
+      "rows": [
+        [
+          "used to",
+          "antes hacía"
+        ],
+        [
+          "be used to",
+          "estar acostumbrado"
+        ],
+        [
+          "get used to",
+          "acostumbrarse"
+        ]
+      ],
+      "narration": "Ponlas juntas. [[Used to]] más verbo: antes lo hacía. [[Be used to]] más i-ene-ge: estoy acostumbrado. [[Get used to]] más i-ene-ge: me estoy acostumbrando, todavía en proceso."
+    },
+    {
+      "type": "sort",
+      "bins": [
+        "used to",
+        "be used to"
+      ],
+      "items": [
+        [
+          "play football",
+          0
+        ],
+        [
+          "the cold",
+          1
+        ],
+        [
+          "live in Paris",
+          0
+        ],
+        [
+          "working nights",
+          1
+        ],
+        [
+          "smoke",
+          0
+        ],
+        [
+          "the noise",
+          1
+        ]
+      ],
+      "narration": "Ahora clasifica: [[used to or be used to]]. [[Play football. The cold. Live in Paris. Working nights. Smoke. The noise.]] Un hábito que ya no tienes, o algo a lo que ya estás acostumbrado.",
+      "id": "b21"
+    },
+    {
+      "id": "b22",
+      "type": "sentence",
+      "text": "You'll get used to the cold.",
+      "gloss": "Te acostumbrarás al frío.",
+      "narration": "[[You'll get used to the cold]]. Te acostumbrarás al frío. Es el proceso: todavía te cuesta, pero vas camino de acostumbrarte.",
+      "highlight": {
+        "get": "yellow"
+      }
+    },
+    {
+      "id": "b23",
+      "type": "heading",
+      "text": "Parte 5 · En una conversación real",
+      "narration": "Vamos a oír las tres en una conversación real. Dos amigos se reencuentran después de años sin verse."
+    },
+    {
+      "id": "b24",
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "You look different! Didn't you use to have long hair?",
+          "es": "¡Estás distinto! ¿No tenías el pelo largo?"
+        },
+        {
+          "speaker": "B",
+          "en": "Yes, I used to. Now I'm used to it short.",
+          "es": "Sí, antes sí. Ahora ya me he acostumbrado corto."
+        },
+        {
+          "speaker": "A",
+          "en": "And do you still live in London?",
+          "es": "¿Y sigues viviendo en Londres?"
+        },
+        {
+          "speaker": "B",
+          "en": "No, Madrid. I'm still getting used to the heat.",
+          "es": "No, en Madrid. Aún me estoy acostumbrando al calor."
+        }
+      ],
+      "narration": "[[You look different! Didn't you use to have long hair? Yes, I used to. Now I'm used to it short. And do you still live in London? No, Madrid. I'm still getting used to the heat.]]"
+    },
+    {
+      "id": "b25",
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "Didn't you use to: pregunta negativa, sin d",
+        "I used to: antes sí, ahora no",
+        "I'm used to it: estoy acostumbrado",
+        "Getting used to: en proceso"
+      ],
+      "narration": "[[Didn't you use to]]: pregunta negativa, sin de final. [[I used to]]: antes sí, ahora no. [[I'm used to it]]: estoy acostumbrado. [[Getting used to]]: todavía en proceso."
+    },
+    {
+      "id": "b26",
+      "type": "heading",
+      "text": "Parte 6 · El error más común",
+      "narration": "Volvemos al principio, porque es el error que más se repite. Si solo arreglas uno hoy, que sea este."
+    },
+    {
+      "id": "b27",
+      "type": "sentence",
+      "text": "I use to go to the gym on Mondays.",
+      "gloss": "Suelo ir al gimnasio los lunes.",
+      "narration": "[[I use to go to the gym on Mondays]]. Suelo ir al gimnasio los lunes. Es un hábito de hoy, así que esa forma está fuera de lugar.",
+      "highlight": {
+        "use": "red"
+      }
+    },
+    {
+      "id": "b28",
+      "type": "sentence",
+      "text": "I usually go to the gym on Mondays.",
+      "gloss": "Suelo ir al gimnasio los lunes.",
+      "narration": "La versión natural: [[I usually go to the gym on Mondays]]. Y si ya no vas, entonces sí: [[I used to go to the gym on Mondays]].",
+      "highlight": {
+        "usually": "green"
+      }
+    },
+    {
+      "type": "heading",
+      "text": "Parte 7 · Hablar de tu infancia",
+      "narration": "Otra situación real: dos amigos hablan de cuando eran pequeños. Es el terreno natural de esta forma.",
+      "id": "b29"
+    },
+    {
+      "type": "dialogue",
+      "lines": [
+        {
+          "speaker": "A",
+          "en": "What did you use to do after school?",
+          "es": "¿Qué hacías después del colegio?"
+        },
+        {
+          "speaker": "B",
+          "en": "I used to play football with my cousins.",
+          "es": "Jugaba al fútbol con mis primos."
+        },
+        {
+          "speaker": "A",
+          "en": "Did you use to watch cartoons?",
+          "es": "¿Veías dibujos animados?"
+        },
+        {
+          "speaker": "B",
+          "en": "Every day! Now I'm not used to watching TV.",
+          "es": "¡Cada día! Ahora no estoy acostumbrado a ver la tele."
+        }
+      ],
+      "narration": "[[What did you use to do after school? I used to play football with my cousins. Did you use to watch cartoons? Every day! Now I'm not used to watching TV.]]",
+      "id": "b30"
+    },
+    {
+      "type": "list",
+      "heading": "Lo que acabas de oír",
+      "items": [
+        "What did you use to do: pregunta, sin d",
+        "I used to play: hábito del pasado",
+        "Did you use to watch: pregunta, sin d",
+        "I'm not used to watching: no estoy acostumbrado"
+      ],
+      "narration": "[[What did you use to do]]: pregunta, sin de final. [[I used to play]]: un hábito del pasado. [[Did you use to watch]]: otra pregunta, otra vez sin de. Y [[I'm not used to watching]]: no estoy acostumbrado.",
+      "id": "b31"
+    },
+    {
+      "type": "sentence",
+      "text": "We used to live near the beach.",
+      "gloss": "Antes vivíamos cerca de la playa.",
+      "narration": "[[We used to live near the beach]]. Antes vivíamos cerca de la playa. Y ahora ya no. Esa segunda parte nunca se dice, pero [[used to]] la lleva dentro.",
+      "highlight": {
+        "used": "blue"
+      },
+      "id": "b32"
+    },
+    {
+      "type": "tip",
+      "text": "Would también vale para acciones repetidas del pasado, pero no para estados: ahí solo used to.",
+      "narration": "Para nivel alto: para acciones repetidas del pasado también vale [[would]]. [[When I was a kid, I would play outside]]. Para estados, como vivir o tener, solo [[used to]].",
+      "id": "b33"
+    },
+    {
+      "id": "b34",
+      "type": "heading",
+      "text": "Parte 8 · Practica",
+      "narration": "Tu turno. Tres frases. Tienes tres segundos para pensar antes de cada respuesta."
+    },
+    {
+      "id": "b35",
+      "type": "quiz",
+      "question": "When I was a kid, I ___ climb trees.",
+      "options": [
+        "used to",
+        "use to",
+        "am used to"
+      ],
+      "answer": 0,
+      "narration": "Primera: [[When I was a kid, I, blank, climb trees]]. ¿[[used to, use to or am used to]]? Piénsalo. {{pause:3}} Es [[used to]]. Un hábito de la infancia que ya no tienes."
+    },
+    {
+      "id": "b36",
+      "type": "quiz",
+      "question": "I ___ drink coffee in the morning.",
+      "options": [
+        "usually",
+        "use to",
+        "used"
+      ],
+      "answer": 0,
+      "narration": "Segunda: [[I, blank, drink coffee in the morning]]. ¿[[usually, use to or used]]? Piénsalo. {{pause:3}} Es [[usually]]. Es lo que haces hoy, y para eso la otra forma no sirve."
+    },
+    {
+      "id": "b37",
+      "type": "quiz",
+      "question": "She isn't used to ___ so early.",
+      "options": [
+        "getting up",
+        "get up",
+        "got up"
+      ],
+      "answer": 0,
+      "narration": "Tercera: [[She isn't used to, blank, so early]]. ¿[[getting up, get up or got up]]? Piénsalo. {{pause:3}} Es [[getting up]]. Detrás de estar acostumbrado siempre va la forma en i-ene-ge."
+    },
+    {
+      "id": "b38",
+      "type": "heading",
+      "text": "Parte 9 · Resumen",
+      "narration": "Cerramos con cuatro ideas. Tenlas a mano y ya no vas a confundir estas tres expresiones."
+    },
+    {
+      "id": "b39",
+      "type": "recap",
+      "items": [
+        "Usually para lo que sueles hacer hoy",
+        "Used to para lo que hacías antes",
+        "Con did o didn't, use to sin d",
+        "Be used to + -ing: estar acostumbrado"
+      ],
+      "narration": "[[Usually]], para lo que sueles hacer hoy. [[Used to]], para lo que hacías antes. Con [[did or didn't]], se escribe sin de. Y [[be used to]], con i-ene-ge, es estar acostumbrado."
+    },
+    {
+      "id": "b40",
+      "type": "sentence",
+      "text": "You used to struggle with this. Not anymore.",
+      "gloss": "Antes te costaba esto. Ya no.",
+      "narration": "Y la despedida: [[You used to struggle with this. Not anymore]]. Antes te costaba. Ya no. Nos vemos en la siguiente lección."
+    }
+  ]
+}

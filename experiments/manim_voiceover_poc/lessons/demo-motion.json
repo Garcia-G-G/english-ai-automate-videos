@@ -1,0 +1,144 @@
+{
+ "id": "demo-motion",
+ "title": "Gramática en movimiento",
+ "kicker": "Inglés · Demo · A2",
+ "level": "A2",
+ "demo": true,
+ "language": "es",
+ "target_minutes": 2,
+ "model": "eleven_turbo_v2_5",
+ "voice_settings": {
+  "stability": 0.45,
+  "similarity_boost": 0.8,
+  "style": 0.3,
+  "use_speaker_boost": true
+ },
+ "english_speed": 0.92,
+ "beats": [
+  {
+   "id": "b01",
+   "type": "transform",
+   "from": "Where you live?",
+   "to": "Where do you live?",
+   "gloss": "¿Dónde vives?",
+   "narration": "¿Ves lo que falta? [[Where you live?]] Se entiende, pero a un nativo le suena raro. Le falta una pieza pequeña: [[Where do you live?]]"
+  },
+  {
+   "id": "b02",
+   "type": "title",
+   "narration": "Hoy vas a ver la gramática moverse. Tres ideas, y cada una con su imagen. Empezamos."
+  },
+  {
+   "id": "b03",
+   "type": "transform",
+   "from": "You are tired.",
+   "to": "Are you tired?",
+   "gloss": "¿Estás cansado?",
+   "narration": "Con el verbo ser o estar no hace falta ayudante. Mira cómo salta delante: [[You are tired. Are you tired?]] El verbo cambia de sitio, y ya es una pregunta."
+  },
+  {
+   "id": "b04",
+   "type": "timeline",
+   "events": [
+    {
+     "label": "I used to live in Paris",
+     "start": -8,
+     "end": -3,
+     "kind": "span"
+    },
+    {
+     "label": "I live in Madrid",
+     "start": -3,
+     "end": 0,
+     "kind": "span"
+    }
+   ],
+   "narration": "Ahora, la línea del tiempo. [[I used to live in Paris]]: una etapa que empezó y terminó. Y desde entonces hasta hoy, [[I live in Madrid]]."
+  },
+  {
+   "id": "b05",
+   "type": "timeline",
+   "events": [
+    {
+     "label": "I usually wake up at seven",
+     "start": -6,
+     "end": 6,
+     "kind": "repeat"
+    }
+   ],
+   "narration": "Un hábito de hoy es una fila de puntos que sigue hacia el futuro: [[I usually wake up at seven]]. Por eso aquí no sirve [[used to]]: esa forma se queda siempre atrás."
+  },
+  {
+   "id": "b06",
+   "type": "sort",
+   "bins": [
+    "make",
+    "do"
+   ],
+   "items": [
+    [
+     "coffee",
+     0
+    ],
+    [
+     "homework",
+     1
+    ],
+    [
+     "a mistake",
+     0
+    ],
+    [
+     "the dishes",
+     1
+    ],
+    [
+     "a decision",
+     0
+    ],
+    [
+     "exercise",
+     1
+    ]
+   ],
+   "narration": "Y ahora a clasificar. Mira dónde cae cada una: [[Make coffee. Do homework. Make a mistake. Do the dishes. Make a decision. Do exercise.]]"
+  },
+  {
+   "id": "b09",
+   "type": "syllables",
+   "word": "comfortable",
+   "parts": [
+    "COMF",
+    "ta",
+    "ble"
+   ],
+   "stress": 0,
+   "respelling": true,
+   "gloss": "cómodo",
+   "narration": "Y la pronunciación también se mueve. Se escribe con cuatro sílabas, pero suena en tres golpes: [[comfortable]]. El golpe fuerte va al principio, y la o del medio casi desaparece."
+  },
+  {
+   "id": "b07",
+   "type": "quiz",
+   "question": "___ you like coffee?",
+   "options": [
+    "Are",
+    "Do",
+    "Does"
+   ],
+   "answer": 1,
+   "narration": "Tu turno: [[blank, you like coffee?]] ¿[[Are, Do or Does]]? Piénsalo. {{pause:3}} Es [[Do]]. Gustar es un verbo normal y el sujeto es tú."
+  },
+  {
+   "id": "b08",
+   "type": "recap",
+   "items": [
+    "Do o does delante para preguntar",
+    "El verbo be salta delante él solo",
+    "Used to se queda en el pasado",
+    "Make crea, do realiza"
+   ],
+   "narration": "[[Do or does]] delante para preguntar. El verbo [[be]] salta delante él solo. [[Used to]] se queda en el pasado. Y [[make]] crea, mientras que [[do]] realiza."
+  }
+ ]
+}

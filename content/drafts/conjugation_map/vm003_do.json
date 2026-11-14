@@ -1,0 +1,83 @@
+{
+  "type": "conjugation_map",
+  "video_title": "El verbo TO DO en 1 minuto 🟡",
+  "video_description": "Hacer en inglés, y su segundo trabajo en las preguntas. 🗺️",
+  "level": "A1",
+  "verb": "do",
+  "verb_es": "hacer",
+  "tense": "presente",
+  "intro": "[cheerful] El verbo do, hacer, en un solo mapa. Repite conmigo.",
+  "rows": [
+    {
+      "pronoun": "I",
+      "form": "do"
+    },
+    {
+      "pronoun": "You",
+      "form": "do"
+    },
+    {
+      "pronoun": "He",
+      "form": "does"
+    },
+    {
+      "pronoun": "She",
+      "form": "does"
+    },
+    {
+      "pronoun": "It",
+      "form": "does"
+    },
+    {
+      "pronoun": "We",
+      "form": "do"
+    },
+    {
+      "pronoun": "They",
+      "form": "do"
+    }
+  ],
+  "highlight": [
+    "does"
+  ],
+  "examples": [
+    {
+      "en": "I do my homework.",
+      "es": "Hago los deberes."
+    },
+    {
+      "en": "He does the dishes.",
+      "es": "Él friega los platos."
+    }
+  ],
+  "negative": {
+    "en": "She doesn't like coffee.",
+    "es": "No le gusta el café."
+  },
+  "question": {
+    "en": "Do you work here?",
+    "es": "¿Trabajas aquí?"
+  },
+  "tip": "Does con he, she e it. Y do también sirve para preguntar y para negar.",
+  "outro": "[excited] Guárdalo y repásalo mañana. Dos minutos y ya es tuyo.",
+  "translations": {
+    "I do my homework.": "Hago los deberes.",
+    "He does the dishes.": "Él friega los platos.",
+    "She doesn't like coffee.": "No le gusta el café.",
+    "Do you work here?": "¿Trabajas aquí?"
+  },
+  "hashtags": [
+    "#VerbosEnInglés",
+    "#InglésParaPrincipiantes",
+    "#AprenderInglés",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "verb_maps",
+    "topic_id": "vm003",
+    "video_type": "conjugation_map",
+    "model": "manual",
+    "draft": true
+  }
+}

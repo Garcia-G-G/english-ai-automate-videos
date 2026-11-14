@@ -1,0 +1,47 @@
+{
+  "id": "hc_c010",
+  "style": "comic",
+  "level": "medio",
+  "angle": "reto",
+  "title": "RETO: «llevo dos horas esperando»",
+  "hook_text": "Nivel medio: ¿lo sacas?",
+  "quiz": {
+    "prompt": "¿Cómo dirías «llevo dos horas esperando»?",
+    "options": [
+      "I carry two hours waiting",
+      "I've been waiting for two hours",
+      "I'm waiting since two hours"
+    ],
+    "answer": 1,
+    "after": "Acción que empezó y sigue: present perfect continuous + for."
+  },
+  "correction": {
+    "wrong": "I'm waiting since two hours",
+    "right": "I've been waiting for two hours",
+    "rule": "Have been + -ing + for"
+  },
+  "voice": [
+    "Nivel medio. ¿Cómo dirías «llevo dos horas esperando»?",
+    "¿[[I carry two hours waiting]], [[I've been waiting for two hours]] o [[I'm waiting since two hours]]?",
+    "¡La B! [[I've been waiting for two hours]].",
+    "Se usa para algo que empezó en el pasado y todavía sigue. Con cantidad de tiempo va [[for]].",
+    "Y con un momento: [[since three o'clock]].",
+    "Reto extra: «llevo un año estudiando inglés». Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Llevo un año estudiando inglés»",
+    "answer": "I've been studying English for a year."
+  },
+  "caption": "«Llevo dos horas esperando» es «I've been waiting for two hours». El present perfect continuous en un reto.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 68
+}

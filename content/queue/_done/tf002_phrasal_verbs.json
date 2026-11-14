@@ -1,0 +1,94 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Verdadero o falso? PHRASAL VERBS 🧩",
+  "video_description": "Diez phrasal verbs: ¿significan lo que crees? 🧩",
+  "title": "¿Verdadero o falso?",
+  "theme": "phrasal verbs",
+  "intro": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta.",
+  "items": [
+    {
+      "statement": "«Wake up» significa despertarse.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Sit down» significa levantarse.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es sentarse"
+    },
+    {
+      "statement": "«Give up» significa rendirse.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Look for» significa mirar.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es buscar"
+    },
+    {
+      "statement": "«Run out of» significa quedarse sin algo.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Turn down» una oferta es aceptarla.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es rechazarla"
+    },
+    {
+      "statement": "«Put off» significa aplazar.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Take after» significa perseguir a alguien.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es parecerse a alguien"
+    },
+    {
+      "statement": "«Come across» significa encontrar por casualidad.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Make up» con alguien significa discutir.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es reconciliarse"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf002",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Wake up",
+    "Sit down",
+    "Give up",
+    "Look for",
+    "Run out of",
+    "Turn down",
+    "Put off",
+    "Take after",
+    "Come across",
+    "Make up"
+  ],
+  "full_script": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta. Verdadero. Falso: es sentarse. Verdadero. Ahora, nivel intermedio. Falso: es buscar. Verdadero. Falso: es rechazarla. Verdadero. Y ahora, nivel experto. Falso: es parecerse a alguien. Verdadero. Falso: es reconciliarse. Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

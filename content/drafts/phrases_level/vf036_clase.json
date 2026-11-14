@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿CÓMO SE ESCRIBE?»? 10 frases ✏️",
+  "video_description": "Diez frases para cualquier clase de inglés. ✏️",
+  "title": "¿Cómo se dice?",
+  "theme": "en clase",
+  "intro": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Cómo se escribe?",
+      "english": "How do you spell it?"
+    },
+    {
+      "spanish": "¿Qué significa esto?",
+      "english": "What does this mean?"
+    },
+    {
+      "spanish": "¿Cómo se pronuncia?",
+      "english": "How do you pronounce it?"
+    },
+    {
+      "spanish": "No lo entiendo.",
+      "english": "I don't understand."
+    },
+    {
+      "spanish": "¿Lo puede repetir?",
+      "english": "Can you repeat that?"
+    },
+    {
+      "spanish": "¿Puedo ir al baño?",
+      "english": "Can I go to the bathroom?"
+    },
+    {
+      "spanish": "Se me olvidó el libro.",
+      "english": "I forgot my book."
+    },
+    {
+      "spanish": "¿Para cuándo es?",
+      "english": "When is it due?"
+    },
+    {
+      "spanish": "Ya he terminado.",
+      "english": "I'm done."
+    },
+    {
+      "spanish": "¿Me presta un boli?",
+      "english": "Can I borrow a pen?"
+    }
+  ],
+  "outro": "[excited] Compártelo con alguien que las necesite.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaPrincipiantes",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf036",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

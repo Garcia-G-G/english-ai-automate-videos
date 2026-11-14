@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los VERBOS BÁSICOS en inglés? 🗣️",
+  "video_description": "Diez verbos para construir tus primeras frases. ✍️",
+  "title": "¿Cómo se dice…?",
+  "theme": "los verbos básicos",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🍽️",
+      "spanish": "Comer",
+      "english": "eat"
+    },
+    {
+      "emoji": "🥤",
+      "spanish": "Beber",
+      "english": "drink"
+    },
+    {
+      "emoji": "😴",
+      "spanish": "Dormir",
+      "english": "sleep"
+    },
+    {
+      "emoji": "🏃",
+      "spanish": "Correr",
+      "english": "run"
+    },
+    {
+      "emoji": "📖",
+      "spanish": "Leer",
+      "english": "read"
+    },
+    {
+      "emoji": "✍️",
+      "spanish": "Escribir",
+      "english": "write"
+    },
+    {
+      "emoji": "🗣️",
+      "spanish": "Hablar",
+      "english": "speak"
+    },
+    {
+      "emoji": "🎧",
+      "spanish": "Escuchar",
+      "english": "listen"
+    },
+    {
+      "emoji": "🍳",
+      "spanish": "Cocinar",
+      "english": "cook"
+    },
+    {
+      "emoji": "💼",
+      "spanish": "Trabajar",
+      "english": "work"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: eat, drink, sleep, run, read, write, speak, listen, cook, work.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "eat": "Comer",
+    "drink": "Beber",
+    "sleep": "Dormir",
+    "run": "Correr",
+    "read": "Leer",
+    "write": "Escribir",
+    "speak": "Hablar",
+    "listen": "Escuchar",
+    "cook": "Cocinar",
+    "work": "Trabajar"
+  },
+  "english_phrases": [
+    "eat",
+    "drink",
+    "sleep",
+    "run",
+    "read",
+    "write",
+    "speak",
+    "listen",
+    "cook",
+    "work"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv020",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Comer... eat. eat. Beber... drink. drink. Dormir... sleep. sleep. Correr... run. run. Leer... read. read. Escribir... write. write. Hablar... speak. speak. Escuchar... listen. listen. Cocinar... cook. cook. Trabajar... work. work. Ahora, todas conmigo: eat, drink, sleep, run, read, write, speak, listen, cook, work. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

@@ -1,0 +1,26 @@
+{
+  "type": "pronunciation",
+  "video_title": "¿Dices BANANA como en español? Así suena de verdad 🍌",
+  "video_description": "🍌 Banana se escribe igual, pero NO suena igual en inglés 😬\nAprende el sonido real y repite conmigo: buh-NAN-uh 🎧\n👇 Comenta tu fruta favorita y te enseño cómo se pronuncia | Follow for more English!",
+  "word": "banana",
+  "phonetic": "buh-NAN-uh",
+  "common_mistake": "Decir ba-na-na con las tres A abiertas como en español",
+  "tip": "Solo la A del medio suena fuerte, como en CAT. Las otras dos se apagan: buh... uh.",
+  "full_script": "¿Tú también dices banana como en español? En inglés suena distinto. El error más común es pronunciar las tres A iguales y abiertas: ba-na-na. Pero en inglés la primera y la última A casi desaparecen, suenan como una E débil: buh y uh. Y la del medio es fuerte y abierta, como en [[cat]]. Se dice buh-NAN-uh. Escucha y repite. [[banana]]. Otra vez. [[banana]]. Una vez más. [[banana]]. Ahora en una frase: [[I eat a banana every morning]]. Yo como un plátano cada mañana. Tip para recordar: solo la A del medio suena fuerte, como en [[cat]]; las otras dos se apagan. Y ojo, aunque en tu país digas plátano o guineo, en inglés se escribe igual que en español, solo cambia el sonido. Comenta tu fruta favorita y te digo cómo se pronuncia.",
+  "translation": "plátano / banana",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#PronunciacionIngles",
+    "#InglesFacil",
+    "#FrutasEnIngles",
+    "#Banana"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr056",
+    "video_type": "pronunciation",
+    "generated_at": "2026-11-02T11:10:08.151383",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

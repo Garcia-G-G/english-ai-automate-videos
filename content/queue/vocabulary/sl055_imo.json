@@ -1,0 +1,89 @@
+{
+  "type": "vocabulary",
+  "video_title": "¿Qué significa IMO? 10 ABREVIATURAS de chat en inglés 💬",
+  "video_description": "¿Te escriben IMO, TBH o IDK y no entiendes nada? 🤔📱\nAprende el slang de chat que usan los nativos todos los días 🔥\nComenta tu favorita 👇 and follow for more English!",
+  "title": "Vocabulario: abreviaturas de chat",
+  "difficulty": "medio",
+  "pairs": [
+    {
+      "spanish": "en mi opinión",
+      "english": "IMO = in my opinion"
+    },
+    {
+      "spanish": "por cierto",
+      "english": "BTW = by the way"
+    },
+    {
+      "spanish": "no sé",
+      "english": "IDK = I don't know"
+    },
+    {
+      "spanish": "para ser honesto",
+      "english": "TBH = to be honest"
+    },
+    {
+      "spanish": "ahora mismo",
+      "english": "RN = right now"
+    },
+    {
+      "spanish": "lo antes posible",
+      "english": "ASAP = as soon as possible"
+    },
+    {
+      "spanish": "hablamos luego",
+      "english": "TTYL = talk to you later"
+    },
+    {
+      "spanish": "por si acaso",
+      "english": "JIC = just in case"
+    },
+    {
+      "spanish": "me muero de risa",
+      "english": "LOL = laughing out loud"
+    },
+    {
+      "spanish": "para tu información",
+      "english": "FYI = for your information"
+    }
+  ],
+  "full_script": "¿Escribes en inglés con abreviaturas? Abreviaturas en inglés. En mi opinión, IMO, in my opinion. Por cierto, BTW, by the way. No sé, IDK, I don't know. Para ser honesto, TBH, to be honest. Ahora mismo, RN, right now. Lo antes posible, ASAP, as soon as possible. Hablamos luego, TTYL, talk to you later. Por si acaso, JIC, just in case. Me muero de risa, LOL, laughing out loud. Para tu información, FYI, for your information.",
+  "translations": {
+    "IMO = in my opinion": "en mi opinión",
+    "BTW = by the way": "por cierto",
+    "IDK = I don't know": "no sé",
+    "TBH = to be honest": "para ser honesto",
+    "RN = right now": "ahora mismo",
+    "ASAP = as soon as possible": "lo antes posible",
+    "TTYL = talk to you later": "hablamos luego",
+    "JIC = just in case": "por si acaso",
+    "LOL = laughing out loud": "me muero de risa",
+    "FYI = for your information": "para tu información"
+  },
+  "english_phrases": [
+    "IMO = in my opinion",
+    "BTW = by the way",
+    "IDK = I don't know",
+    "TBH = to be honest",
+    "RN = right now",
+    "ASAP = as soon as possible",
+    "TTYL = talk to you later",
+    "JIC = just in case",
+    "LOL = laughing out loud",
+    "FYI = for your information"
+  ],
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#SlangEnIngles",
+    "#InglesFacil",
+    "#IMO",
+    "#Abreviaturas"
+  ],
+  "_meta": {
+    "category": "slang",
+    "topic_id": "sl055",
+    "video_type": "vocabulary",
+    "generated_at": "2026-11-02T11:12:16.192898",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

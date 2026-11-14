@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "¿Sabes decir estas palabras del DINERO en inglés? 💰",
+  "video_description": "De «cash» a «entrepreneur»: diez palabras de dinero para decir en voz alta. 💸",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el dinero",
+  "intro": "[curious] Diez palabras de dinero. Léelas en voz alta antes de que yo las diga.",
+  "items": [
+    {
+      "english": "money",
+      "respelling": "MA-ni",
+      "ipa": "ˈmʌni",
+      "trap": "La O suena «a»: MA-ni"
+    },
+    {
+      "english": "cash",
+      "respelling": "KASH",
+      "ipa": "ˈkæʃ",
+      "trap": "Termina en «sh», no en «s»"
+    },
+    {
+      "english": "coin",
+      "respelling": "KOIN",
+      "ipa": "ˈkɔɪn",
+      "trap": "Una sola sílaba: la OI va junta"
+    },
+    {
+      "english": "budget",
+      "respelling": "BA-yit",
+      "ipa": "ˈbʌdʒɪt",
+      "trap": "La U suena «a» y DG es una «y» fuerte"
+    },
+    {
+      "english": "receipt",
+      "respelling": "ri-SIIT",
+      "ipa": "rɪˈsiːt",
+      "trap": "La P no suena"
+    },
+    {
+      "english": "wealthy",
+      "respelling": "UEL-thi",
+      "ipa": "ˈwɛlθi",
+      "trap": "EA suena «e», no «ii»"
+    },
+    {
+      "english": "mortgage",
+      "respelling": "MOR-gidch",
+      "ipa": "ˈmɔrɡɪdʒ",
+      "trap": "La T no suena: MOR-gidch"
+    },
+    {
+      "english": "revenue",
+      "respelling": "RE-ve-nuu",
+      "ipa": "ˈrɛvənuː",
+      "trap": "Acento en la primera: RE-"
+    },
+    {
+      "english": "bankruptcy",
+      "respelling": "BANK-rap-si",
+      "ipa": "ˈbæŋkrəpsi",
+      "trap": "La T se pierde: BANK-rap-si"
+    },
+    {
+      "english": "entrepreneur",
+      "respelling": "an-tre-pre-NER",
+      "ipa": "ɑntrəprəˈnɝ",
+      "trap": "Acento al final: -NER"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, nivel básico. Hasta la siete, intermedio. Y si clavaste las diez, eres experto.",
+  "outro": "[excited] ¿En qué número te atascaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FinanzasEnInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl051",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

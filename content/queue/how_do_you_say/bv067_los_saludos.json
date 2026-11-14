@@ -1,0 +1,106 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los SALUDOS en inglés? 👋",
+  "video_description": "👋 Hola, buenos días, ¿qué tal?… ¿Cuántos saludos sabes decir en inglés? Responde antes que yo y cuéntame tu puntuación 💬",
+  "title": "¿Cómo se dice…?",
+  "theme": "los saludos",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes saludar en inglés? Te digo 10 saludos en español y tú los dices en inglés antes que yo.",
+  "items": [
+    {
+      "emoji": "👋",
+      "spanish": "Hola",
+      "english": "hello"
+    },
+    {
+      "emoji": "🌅",
+      "spanish": "Buenos días",
+      "english": "good morning"
+    },
+    {
+      "emoji": "🤙",
+      "spanish": "¿Qué tal?",
+      "english": "what's up"
+    },
+    {
+      "emoji": "🌙",
+      "spanish": "Buenas noches",
+      "english": "good evening"
+    },
+    {
+      "emoji": "❓",
+      "spanish": "¿Cómo estás?",
+      "english": "how are you"
+    },
+    {
+      "emoji": "🤗",
+      "spanish": "Cuídate",
+      "english": "take care"
+    },
+    {
+      "emoji": "🏠",
+      "spanish": "Bienvenido",
+      "english": "welcome"
+    },
+    {
+      "emoji": "🔜",
+      "spanish": "Hasta luego",
+      "english": "see you later"
+    },
+    {
+      "emoji": "🚶",
+      "spanish": "Adiós",
+      "english": "goodbye"
+    },
+    {
+      "emoji": "🙏",
+      "spanish": "Gracias",
+      "english": "thank you"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: hello, good morning, what's up, good evening, how are you, take care, welcome, see you later, goodbye, thank you.",
+  "outro": "[warm] ¿Cuántas sabías? Escribe tu número en los comentarios y salúdame en inglés.",
+  "full_script": "[excited] ¿Sabes saludar en inglés? Te digo 10 saludos en español y tú los dices en inglés antes que yo. Hola... hello. hello. Buenos días... good morning. good morning. ¿Qué tal?... what's up. what's up. Buenas noches... good evening. good evening. ¿Cómo estás?... how are you. how are you. Cuídate... take care. take care. Bienvenido... welcome. welcome. Hasta luego... see you later. see you later. Adiós... goodbye. goodbye. Gracias... thank you. thank you. Ahora todas en inglés, conmigo: hello, good morning, what's up, good evening, how are you, take care, welcome, see you later, goodbye, thank you. [warm] ¿Cuántas sabías? Escribe tu número en los comentarios y salúdame en inglés.",
+  "translations": {
+    "hello": "Hola",
+    "good morning": "Buenos días",
+    "what's up": "¿Qué tal?",
+    "good evening": "Buenas noches",
+    "how are you": "¿Cómo estás?",
+    "take care": "Cuídate",
+    "welcome": "Bienvenido",
+    "see you later": "Hasta luego",
+    "goodbye": "Adiós",
+    "thank you": "Gracias"
+  },
+  "english_phrases": [
+    "hello",
+    "good morning",
+    "what's up",
+    "good evening",
+    "how are you",
+    "take care",
+    "welcome",
+    "see you later",
+    "goodbye",
+    "thank you"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#SaludosEnInglés",
+    "#Shorts",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv067",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:45:00.628471",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "10 frases con REMEMBER o REMIND. ¿Aciertas todas? 🧠",
+  "video_description": "Recordar algo o recordárselo a alguien: diez frases para no fallar. 🧠",
+  "title": "Elige la correcta",
+  "theme": "remember o remind",
+  "intro": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos.",
+  "items": [
+    {
+      "sentence": "I can't ____ his name.",
+      "options": [
+        "remember",
+        "remind"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ me to call Mom.",
+      "options": [
+        "Remember",
+        "Remind"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Do you ____ me?",
+      "options": [
+        "remind",
+        "remember"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "You ____ me of my sister.",
+      "options": [
+        "remind",
+        "remember"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I ____ locking the door.",
+      "options": [
+        "remind",
+        "remember"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "This song ____ me of summer.",
+      "options": [
+        "reminds",
+        "remembers"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Please ____ to turn off the lights.",
+      "options": [
+        "remember",
+        "remind"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Can you ____ me what time it starts?",
+      "options": [
+        "remember",
+        "remind"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "That ____ me, I owe you money.",
+      "options": [
+        "reminds",
+        "remembers"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "As far as I can ____, she lived here.",
+      "options": [
+        "remind",
+        "remember"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#RememberVsRemind",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec019",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "I can't remember his name.",
+    "Remind me to call Mom.",
+    "Do you remember me?",
+    "You remind me of my sister.",
+    "I remember locking the door.",
+    "This song reminds me of summer.",
+    "Please remember to turn off the lights.",
+    "Can you remind me what time it starts?",
+    "That reminds me, I owe you money.",
+    "As far as I can remember, she lived here."
+  ],
+  "full_script": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos. I can't remember his name. Remind me to call Mom. Do you remember me? Ahora, nivel intermedio. You remind me of my sister. I remember locking the door. This song reminds me of summer. Please remember to turn off the lights. Y ahora, nivel experto. Can you remind me what time it starts? That reminds me, I owe you money. As far as I can remember, she lived here. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

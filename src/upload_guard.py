@@ -35,7 +35,10 @@ the first byte was sent.
 
 from __future__ import annotations
 
+import json
 import logging
+import re
+from pathlib import Path
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -44,6 +47,16 @@ logger = logging.getLogger(__name__)
 PROCEED = "proceed"      # nothing published; upload
 SKIP_DONE = "skip_done"  # already published; do not upload
 SKIP_HOLD = "skip_hold"  # cannot determine; do not upload, tell a human
+REFUSE = "refuse"        # the upload itself is wrong (STEP 65); fix it first
+
+AUDIO_DIR = Path(__file__).resolve().parent.parent / "output" / "audio"
+
+#: The fallback CTA metadata_generator writes when a script has no description.
+FALLBACK_CTA = "Sígueme para más tips de inglés 🦊"
+_EMPTY_SLOT = re.compile(r"  |\{|\}|\bNone\b")
+NO_GATE = "Sin revisión automática"
+#: `gate` default: the caller did not say (manim lessons have their own review).
+UNCHECKED = object()
 
 
 class Decision:
@@ -62,9 +75,54 @@ class Decision:
         return self.action == PROCEED
 
 
+def topic_of(row: dict, audio_dir: Path = None) -> Optional[str]:
+    """The `_meta.topic_id` of a published row, from the row or its audio JSON."""
+    if row.get("topic_id"):
+        return row["topic_id"]
+    path = Path(audio_dir or AUDIO_DIR) / (row.get("video_type") or "") / f"{row.get('artifact')}.json"
+    try:
+        return (json.loads(path.read_text(encoding="utf-8")).get("_meta") or {}).get("topic_id")
+    except (OSError, ValueError, AttributeError):
+        return None
+
+
+def content_refusal(*, title=None, description=None, gate=UNCHECKED, topic_id=None,
+                    topic_name=None, platform="youtube", allow_duplicate=False, artifact="",
+                    ledger_path=None, audio_dir=None) -> Optional[Decision]:
+    """STEP 65: what is wrong with the upload itself, or None. Only checks what the caller passes."""
+    from publication_log import read_ledger
+
+    if title is not None and (not title.strip() or _EMPTY_SLOT.search(title)):
+        return Decision(REFUSE, f"el título tiene un hueco vacío: «{title}»")
+    if description is not None:
+        body = "\n".join(line for line in description.splitlines()
+                          if line.strip() and not line.lstrip().startswith("#")
+                          and "learningroutes.com" not in line)
+        if body.strip() in ("", FALLBACK_CTA):
+            return Decision(REFUSE, "la descripción es solo el CTA genérico; falta la del guion")
+    if gate is not UNCHECKED and not gate:
+        return Decision(REFUSE, NO_GATE)
+    if topic_id:
+        for row in read_ledger(ledger_path):
+            if (row.get("platform") == platform and row.get("artifact") != artifact
+                    and topic_of(row, audio_dir) == topic_id):
+                if allow_duplicate:
+                    logger.warning("DUPLICATE OVERRIDE: %s uploads another %s video of %s (already %s)",
+                                   artifact, platform, topic_id, row.get("url"))
+                    break
+                label = f"{topic_id} ({topic_name})" if topic_name else topic_id
+                return Decision(REFUSE, f"Ya hay un vídeo de {label} subido: {row.get('url')}",
+                                upload_id=row.get("upload_id"))
+    return None
+
+
 def decide(artifact: str, platform: str, *, manager=None,
-           ledger_path=None, attempts_path=None) -> Decision:
+           ledger_path=None, attempts_path=None, **content) -> Decision:
     """Should `artifact` be uploaded to `platform`?
+
+    `content` (title, description, gate, topic_id, topic_name, allow_duplicate) is checked
+    first by content_refusal: an empty title slot, the bare fallback CTA, no QA
+    verdict, or a second video of a topic already published is refused.
 
     `manager` is an UploadManager, used only to reconcile an ambiguous
     attempt. Without one an ambiguous attempt resolves to SKIP_HOLD, which is
@@ -81,6 +139,11 @@ def decide(artifact: str, platform: str, *, manager=None,
         return Decision(SKIP_DONE, "already in the ledger",
                         upload_id=rows[0].get("upload_id"))
 
+    refused = content_refusal(platform=platform, artifact=artifact,
+                              ledger_path=ledger_path, **content)
+    if refused:
+        return refused
+
     pending = open_attempt(artifact, platform, attempts_path)
     if not pending:
         return Decision(PROCEED, "no publication row and no open attempt")
@@ -89,7 +152,7 @@ def decide(artifact: str, platform: str, *, manager=None,
     session_uri = pending.get("session_uri")
     if not session_uri:
         # The attempt was written but the session never opened, so no bytes
-        # can have reached YouTube: the init POST had not returned yet.
+        # can have reached the platform: the init POST had not returned yet.
         if pending.get("status") == "started":
             return Decision(PROCEED,
                             "attempt started but no session was ever opened")
@@ -129,8 +192,9 @@ def decide(artifact: str, platform: str, *, manager=None,
                 video_type="",
                 platform=platform,
                 result={"upload_id": upload_id,
-                        "url": f"https://youtube.com/shorts/{upload_id}"
-                               if upload_id else None,
+                        "url": state.get("url") or (
+                            f"https://youtube.com/shorts/{upload_id}"
+                            if upload_id and platform == "youtube" else None),
                         "success": True},
                 sent_title=pending.get("detail", ""),
                 sent_description="",

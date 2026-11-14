@@ -1,0 +1,46 @@
+{
+  "id": "hc_p017",
+  "style": "poster",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«Lecture» no es lectura",
+  "hook_text": "¿Tú también dices «LECTURE = LECTURA»?",
+  "poster": {
+    "error_no": "032",
+    "big_wrong": "LECTURE = LECTURA",
+    "big_right": "LECTURE = CLASE MAGISTRAL",
+    "examples": [
+      "I have a lecture at nine. — Tengo una clase a las nueve.",
+      "I love reading. — Me encanta la lectura."
+    ]
+  },
+  "correction": {
+    "wrong": "LECTURE = LECTURA",
+    "right": "LECTURE = CLASE MAGISTRAL",
+    "rule": "Falso amigo"
+  },
+  "voice": [
+    "[[Lecture]] parece «lectura», pero es una clase o conferencia en la universidad.",
+    "[[I have a lecture at nine]], «tengo clase a las nueve».",
+    "La lectura es [[reading]]: [[I love reading]].",
+    "Y [[lecture]] también es un sermón: [[Don't lecture me]], «no me sermonees».",
+    "El profesor universitario en Reino Unido es [[lecturer]].",
+    "Reto: ¿cómo dirías «la lectura me relaja»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«La lectura me relaja»",
+    "answer": "Reading relaxes me."
+  },
+  "caption": "Lecture no es lectura, es una clase o conferencia. La lectura es «reading». Falso amigo explicado.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 60
+}

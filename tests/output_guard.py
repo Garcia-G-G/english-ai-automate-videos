@@ -1,4 +1,4 @@
-"""Refuse writes into the real output/ tree while a test is running.
+"""Refuse writes into the real trees a test does not own, while it runs.
 
 WHY THIS EXISTS, TWICE. An idempotency test wrote 13 fixture rows into the
 real output/published/attempts.jsonl. PROMPT 3 covered that with a redirect
@@ -10,6 +10,17 @@ Same class, one level up. The ledger had a single chokepoint
 (record_publication) so its refusal could live in production code. The output
 tree has no chokepoint: anything can shutil.move into it. So the chokepoint
 here is the filesystem API itself, patched for the duration of every test.
+
+AND A THIRD TIME, OUTSIDE output/ ENTIRELY. `run_pipeline_with_tracking`
+defaults to use_queue=True, so a test that called it claimed a real
+hand-written script out of content/queue/ and shelved it into
+content/queue/_done/ on success — six of them, none of which produced a
+video, because the fixture that stubs the renderer still lets the run
+"succeed". The same run opened real rotating log files under logs/.
+
+That is why this guard protects three roots rather than one, and why the
+queue is listed first: output/ and logs/ are regenerable, and a queued
+script is the only copy of something a person wrote.
 
 WHAT IS AND IS NOT BLOCKED.
 
@@ -40,37 +51,61 @@ import os
 import shutil
 from pathlib import Path
 
-#: The real tree, captured at import before any fixture can redirect it.
-REAL_OUTPUT = (Path(__file__).resolve().parent.parent / "output").resolve()
+#: The real trees, captured at import before any fixture can redirect them.
+_REPO = Path(__file__).resolve().parent.parent
+
+REAL_OUTPUT = (_REPO / "output").resolve()
+
+#: THE ONE THAT IS NOT REGENERABLE. output/ can be deleted and remade; a
+#: queued script is hand-written by the owner and this is the only copy.
+REAL_QUEUE = (_REPO / "content" / "queue").resolve()
+
+REAL_LOGS = (_REPO / "logs").resolve()
+
+#: Ordered so the message names the most specific tree first.
+PROTECTED_TREES = ((REAL_QUEUE, "the owner's script queue"),
+                   (REAL_OUTPUT, "the real output tree"),
+                   (REAL_LOGS, "the real logs/ directory"))
 
 
 class OutputTreeWriteRefused(RuntimeError):
-    """A test tried to write into the real output/ tree."""
+    """A test tried to write into a real tree it does not own."""
 
 
-def _inside_real_output(path) -> bool:
+def _protected_tree(path):
+    """The tree `path` falls inside, with its name — or None."""
     if path is None:
-        return False
+        return None
     try:
         p = Path(os.fspath(path))
     except (TypeError, ValueError):
-        return False          # file descriptors and the like
+        return None           # file descriptors and the like
     try:
         resolved = p if p.is_absolute() else (Path.cwd() / p)
         # Resolve without requiring existence, so a not-yet-created file in
-        # the real tree is still caught.
+        # a real tree is still caught.
         resolved = Path(os.path.normpath(str(resolved))).resolve()
     except (OSError, RuntimeError):
-        return False
-    return resolved == REAL_OUTPUT or REAL_OUTPUT in resolved.parents
+        return None
+    for root, name in PROTECTED_TREES:
+        if resolved == root or root in resolved.parents:
+            return name
+    return None
+
+
+def _inside_real_output(path) -> bool:
+    return _protected_tree(path) is not None
 
 
 def _refuse(path, what: str):
+    tree = _protected_tree(path) or "a protected tree"
     raise OutputTreeWriteRefused(
-        f"REFUSING {what} into the real output tree: {path}\n"
+        f"REFUSING {what} into {tree}: {path}\n"
         f"A test left output/uploaded/test_a_raising_platform_does_n0/ behind "
-        f"once already. Point the module's directory global at tmp_path (see "
-        f"the autouse fixture in tests/conftest.py) instead of writing here."
+        f"once already, and a later run shelved six of the owner's queued "
+        f"scripts into content/queue/_done/ without producing a video. Point "
+        f"the module's directory global at tmp_path (see the autouse fixture "
+        f"in tests/conftest.py) instead of writing here."
     )
 
 

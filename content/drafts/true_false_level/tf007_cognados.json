@@ -1,0 +1,81 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Verdadero o falso? COGNADOS 🤝",
+  "video_description": "Palabras que se parecen al español: ¿significan lo mismo? 🤝",
+  "title": "¿Verdadero o falso?",
+  "theme": "palabras iguales al español",
+  "intro": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta.",
+  "items": [
+    {
+      "statement": "«Animal» significa animal.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Hospital» significa hospital.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Idea» significa idea.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Actual» significa actual.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es real, verdadero"
+    },
+    {
+      "statement": "«Decision» significa decisión.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Assist» significa asistir a un evento.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es ayudar"
+    },
+    {
+      "statement": "«Fabric» significa fábrica.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es tela"
+    },
+    {
+      "statement": "«Sensible» significa sensible.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es sensato"
+    },
+    {
+      "statement": "«Compromise» significa compromiso.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es un acuerdo con concesiones"
+    },
+    {
+      "statement": "«Fatal» puede significar mortal.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf007",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

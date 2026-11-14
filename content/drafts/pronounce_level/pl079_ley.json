@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras de la LEY en inglés: ¿las dices bien? ⚖️",
+  "video_description": "Court, lawyer, subpoena: vocabulario legal con trampas de pronunciación. 🔨",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la ley",
+  "intro": "[serious] Vocabulario de la ley. Pronuncia cada palabra antes de que yo lo haga.",
+  "items": [
+    {
+      "english": "law",
+      "respelling": "LA",
+      "ipa": "ˈlɑ",
+      "trap": "AW suena «a»: LA"
+    },
+    {
+      "english": "police",
+      "respelling": "pa-LIIS",
+      "ipa": "pəˈliːs",
+      "trap": "Acento en LIIS: pa-LIIS"
+    },
+    {
+      "english": "court",
+      "respelling": "KORT",
+      "ipa": "ˈkɔrt",
+      "trap": "OU suena «o»: KORT"
+    },
+    {
+      "english": "guilty",
+      "respelling": "GIL-ti",
+      "ipa": "ˈɡɪlti",
+      "trap": "La U no suena: GIL-ti"
+    },
+    {
+      "english": "lawyer",
+      "respelling": "LOI-er",
+      "ipa": "ˈlɔɪɚ",
+      "trap": "Suena LOI-er, no LA-uier"
+    },
+    {
+      "english": "evidence",
+      "respelling": "E-vi-dens",
+      "ipa": "ˈɛvɪdəns",
+      "trap": "Acento en E-: E-vi-dens"
+    },
+    {
+      "english": "witness",
+      "respelling": "UIT-nas",
+      "ipa": "ˈwɪtnəs",
+      "trap": "Dos sílabas: UIT-nas"
+    },
+    {
+      "english": "attorney",
+      "respelling": "a-TER-ni",
+      "ipa": "əˈtɝni",
+      "trap": "Acento en TER: a-TER-ni"
+    },
+    {
+      "english": "subpoena",
+      "respelling": "sa-PII-na",
+      "ipa": "səˈpiːnə",
+      "trap": "La B no suena: sa-PII-na"
+    },
+    {
+      "english": "indictment",
+      "respelling": "in-DAIT-ment",
+      "ipa": "ɪnˈdaɪtmənt",
+      "trap": "La C no suena e IC es «ai»"
+    }
+  ],
+  "verdict": "Si dijiste bien hasta la tres, básico. Hasta la siete, intermedio. Las diez, experto.",
+  "outro": "[serious] Tu número, en los comentarios. ¿Hasta dónde llegaste?",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésLegal",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl079",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

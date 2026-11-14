@@ -1,0 +1,55 @@
+{
+  "id": "hc_m019",
+  "style": "mensajes",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«I wish I would have more time»: el error avanzado",
+  "hook_text": "Hasta los de nivel alto fallan esto",
+  "chat": {
+    "contact": "Hannah · Nueva York",
+    "messages": [
+      [
+        "them",
+        "You should come to the gym with me!"
+      ],
+      [
+        "me",
+        "I wish I would have more time",
+        "error"
+      ],
+      [
+        "them",
+        "you mean you wish you HAD 😉"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I wish I would have",
+    "right": "I wish I had",
+    "rule": "Deseo sobre el presente: wish + pasado"
+  },
+  "voice": [
+    "Le contesté a mi amiga [[I wish I would have more time]]. Incluso en nivel alto se escapa.",
+    "Para desear que el presente fuera distinto, [[wish]] va con pasado: [[I wish I had more time]].",
+    "Es como «ojalá tuviera»: el español también usa un tiempo del pasado.",
+    "Para el pasado, pasado perfecto: [[I wish I had gone]], «ojalá hubiera ido».",
+    "Y [[wish]] con [[would]] es para quejarte de lo que hace otro: [[I wish you would stop]].",
+    "Reto: ¿cómo dirías «ojalá supiera nadar»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Ojalá supiera nadar»",
+    "answer": "I wish I could swim. (o «I wish I knew how to swim»)"
+  },
+  "caption": "«Ojalá tuviera más tiempo» es «I wish I had more time». Wish + pasado explicado con un chat real.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 86
+}

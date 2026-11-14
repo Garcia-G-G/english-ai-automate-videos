@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "MUEBLES en inglés: ¿llegas a la diez? 🛋️",
+  "video_description": "Muebles en inglés con letras mudas y acentos traicioneros. 🛏️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los muebles",
+  "intro": "[happy] Muebles en inglés. Pronuncia cada palabra en la pausa y comprueba tu nivel.",
+  "items": [
+    {
+      "english": "bed",
+      "respelling": "BED",
+      "ipa": "ˈbɛd",
+      "trap": "E corta y la D final se oye"
+    },
+    {
+      "english": "table",
+      "respelling": "TEI-bel",
+      "ipa": "ˈteɪbəl",
+      "trap": "La A suena «ei»: TEI-bel"
+    },
+    {
+      "english": "chair",
+      "respelling": "CHER",
+      "ipa": "ˈtʃɛr",
+      "trap": "AI suena «e»: CHER"
+    },
+    {
+      "english": "sofa",
+      "respelling": "SOU-fa",
+      "ipa": "ˈsoʊfə",
+      "trap": "La O suena «ou»: SOU-fa"
+    },
+    {
+      "english": "shelf",
+      "respelling": "SHELF",
+      "ipa": "ˈʃɛlf",
+      "trap": "Empieza con SH: SHELF"
+    },
+    {
+      "english": "armchair",
+      "respelling": "ARM-cher",
+      "ipa": "ˈɑrmtʃɛr",
+      "trap": "Acento en ARM"
+    },
+    {
+      "english": "drawer",
+      "respelling": "DROR",
+      "ipa": "ˈdrɔr",
+      "trap": "Una sola sílaba: DROR"
+    },
+    {
+      "english": "furniture",
+      "respelling": "FER-ni-cher",
+      "ipa": "ˈfɝnɪtʃɚ",
+      "trap": "-TURE suena «cher»"
+    },
+    {
+      "english": "cupboard",
+      "respelling": "KA-berd",
+      "ipa": "ˈkʌbɚd",
+      "trap": "La P no suena: KA-berd"
+    },
+    {
+      "english": "chandelier",
+      "respelling": "shan-de-LIR",
+      "ipa": "ʃændəˈlɪr",
+      "trap": "CH suena SH y acento al final"
+    }
+  ],
+  "verdict": "Si acertaste hasta la tres, vas por el nivel básico. Hasta la siete, intermedio. ¿Las diez? Experto.",
+  "outro": "[excited] Comenta tu número y vuelve mañana a por más palabras.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#MueblesEnInglés",
+    "#AprenderInglés",
+    "#ClasesDeInglés",
+    "#HablarInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl009",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

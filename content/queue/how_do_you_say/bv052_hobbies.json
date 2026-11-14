@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los HOBBIES en inglés? 🎨",
+  "video_description": "Diez cosas que te gusta hacer en tu tiempo libre. 🎣",
+  "title": "¿Cómo se dice…?",
+  "theme": "los hobbies",
+  "level": "A1",
+  "intro": "[warm] Vamos con diez palabras. Tú primero, luego yo.",
+  "items": [
+    {
+      "emoji": "🎨",
+      "spanish": "Pintar",
+      "english": "paint"
+    },
+    {
+      "emoji": "💃",
+      "spanish": "Bailar",
+      "english": "dance"
+    },
+    {
+      "emoji": "🎤",
+      "spanish": "Cantar",
+      "english": "sing"
+    },
+    {
+      "emoji": "🏊",
+      "spanish": "Nadar",
+      "english": "swim"
+    },
+    {
+      "emoji": "🧳",
+      "spanish": "Viajar",
+      "english": "travel"
+    },
+    {
+      "emoji": "✏️",
+      "spanish": "Dibujar",
+      "english": "draw"
+    },
+    {
+      "emoji": "🎮",
+      "spanish": "Jugar",
+      "english": "play"
+    },
+    {
+      "emoji": "⛺",
+      "spanish": "Acampar",
+      "english": "camp"
+    },
+    {
+      "emoji": "🧶",
+      "spanish": "Tejer",
+      "english": "knit"
+    },
+    {
+      "emoji": "🎣",
+      "spanish": "Pescar",
+      "english": "go fishing"
+    }
+  ],
+  "recap": "Repite conmigo las diez: paint, dance, sing, swim, travel, draw, play, camp, knit, go fishing.",
+  "outro": "[cheerful] Escribe en los comentarios cuántas acertaste.",
+  "translations": {
+    "paint": "Pintar",
+    "dance": "Bailar",
+    "sing": "Cantar",
+    "swim": "Nadar",
+    "travel": "Viajar",
+    "draw": "Dibujar",
+    "play": "Jugar",
+    "camp": "Acampar",
+    "knit": "Tejer",
+    "go fishing": "Pescar"
+  },
+  "english_phrases": [
+    "paint",
+    "dance",
+    "sing",
+    "swim",
+    "travel",
+    "draw",
+    "play",
+    "camp",
+    "knit",
+    "go fishing"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv052",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[warm] Vamos con diez palabras. Tú primero, luego yo. Pintar... paint. paint. Bailar... dance. dance. Cantar... sing. sing. Nadar... swim. swim. Viajar... travel. travel. Dibujar... draw. draw. Jugar... play. play. Acampar... camp. camp. Tejer... knit. knit. Pescar... go fishing. go fishing. Repite conmigo las diez: paint, dance, sing, swim, travel, draw, play, camp, knit, go fishing. [cheerful] Escribe en los comentarios cuántas acertaste."
+}

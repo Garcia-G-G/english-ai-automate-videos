@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras con -OUGH: el terror del inglés 🤯",
+  "video_description": "Diez palabras con OUGH y no todas suenan igual. 🍩",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con -OUGH",
+  "intro": "[surprised] OUGH puede sonar de muchas formas distintas. Lee cada palabra y ponte a prueba.",
+  "items": [
+    {
+      "english": "enough",
+      "respelling": "i-NAF",
+      "ipa": "ɪˈnʌf",
+      "trap": "OUGH suena «af»: i-NAF"
+    },
+    {
+      "english": "through",
+      "respelling": "THRUU",
+      "ipa": "ˈθruː",
+      "trap": "OUGH suena «uu»: THRUU"
+    },
+    {
+      "english": "thought",
+      "respelling": "THOT",
+      "ipa": "ˈθɔt",
+      "trap": "OUGH suena «o»: THOT"
+    },
+    {
+      "english": "though",
+      "respelling": "DHOU",
+      "ipa": "ˈðoʊ",
+      "trap": "OUGH suena «ou» y TH suave"
+    },
+    {
+      "english": "tough",
+      "respelling": "TAF",
+      "ipa": "ˈtʌf",
+      "trap": "OUGH suena «af»: TAF"
+    },
+    {
+      "english": "cough",
+      "respelling": "KOF",
+      "ipa": "ˈkɔf",
+      "trap": "OUGH suena «of»: KOF"
+    },
+    {
+      "english": "doughnut",
+      "respelling": "DOU-nat",
+      "ipa": "ˈdoʊnʌt",
+      "trap": "OUGH suena «ou»: DOU-nat"
+    },
+    {
+      "english": "throughout",
+      "respelling": "thru-AUT",
+      "ipa": "θruˈaʊt",
+      "trap": "Acento al final: thru-AUT"
+    },
+    {
+      "english": "although",
+      "respelling": "ol-DHOU",
+      "ipa": "ɔlˈðoʊ",
+      "trap": "Acento en DHOU y TH suave"
+    },
+    {
+      "english": "thorough",
+      "respelling": "THER-ou",
+      "ipa": "ˈθɝoʊ",
+      "trap": "No es «through»: THER-ou"
+    }
+  ],
+  "verdict": "Si acertaste hasta la tres, vas por el nivel básico. Hasta la siete, intermedio. ¿Las diez? Experto.",
+  "outro": "[excited] Comenta tu número y vuelve mañana a por más palabras.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#PalabrasConOUGH",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl026",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

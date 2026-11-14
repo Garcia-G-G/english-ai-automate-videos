@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las cosas de la COCINA en inglés? 🍳",
+  "video_description": "Diez cosas de la cocina que usas cada día. 🍽️",
+  "title": "¿Cómo se dice…?",
+  "theme": "la cocina",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🔪",
+      "spanish": "Cuchillo",
+      "english": "knife"
+    },
+    {
+      "emoji": "🍴",
+      "spanish": "Tenedor",
+      "english": "fork"
+    },
+    {
+      "emoji": "🥄",
+      "spanish": "Cuchara",
+      "english": "spoon"
+    },
+    {
+      "emoji": "🍽️",
+      "spanish": "Plato",
+      "english": "plate"
+    },
+    {
+      "emoji": "🥃",
+      "spanish": "Vaso",
+      "english": "glass"
+    },
+    {
+      "emoji": "☕",
+      "spanish": "Taza",
+      "english": "cup"
+    },
+    {
+      "emoji": "🥣",
+      "spanish": "Cuenco",
+      "english": "bowl"
+    },
+    {
+      "emoji": "🍳",
+      "spanish": "Sartén",
+      "english": "frying pan"
+    },
+    {
+      "emoji": "🍲",
+      "spanish": "Olla",
+      "english": "pot"
+    },
+    {
+      "emoji": "🍾",
+      "spanish": "Botella",
+      "english": "bottle"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: knife, fork, spoon, plate, glass, cup, bowl, frying pan, pot, bottle.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "knife": "Cuchillo",
+    "fork": "Tenedor",
+    "spoon": "Cuchara",
+    "plate": "Plato",
+    "glass": "Vaso",
+    "cup": "Taza",
+    "bowl": "Cuenco",
+    "frying pan": "Sartén",
+    "pot": "Olla",
+    "bottle": "Botella"
+  },
+  "english_phrases": [
+    "knife",
+    "fork",
+    "spoon",
+    "plate",
+    "glass",
+    "cup",
+    "bowl",
+    "frying pan",
+    "pot",
+    "bottle"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv016",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Cuchillo... knife. knife. Tenedor... fork. fork. Cuchara... spoon. spoon. Plato... plate. plate. Vaso... glass. glass. Taza... cup. cup. Cuenco... bowl. bowl. Sartén... frying pan. frying pan. Olla... pot. pot. Botella... bottle. bottle. Ahora, todas conmigo: knife, fork, spoon, plate, glass, cup, bowl, frying pan, pot, bottle. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

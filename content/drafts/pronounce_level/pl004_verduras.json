@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "¿Pronuncias bien las VERDURAS en inglés? Test de nivel 🥕",
+  "video_description": "¿Dices bien las verduras en inglés? Llega a la diez si puedes. 🥦",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "las verduras",
+  "intro": "[happy] Verduras en inglés: lee cada una en voz alta y escucha si lo hiciste bien.",
+  "items": [
+    {
+      "english": "corn",
+      "respelling": "KORN",
+      "ipa": "ˈkɔrn",
+      "trap": "Una sílaba y R suave: KORN"
+    },
+    {
+      "english": "garlic",
+      "respelling": "GAR-lik",
+      "ipa": "ˈgɑrlɪk",
+      "trap": "Acento en GAR"
+    },
+    {
+      "english": "carrot",
+      "respelling": "KA-ret",
+      "ipa": "ˈkærət",
+      "trap": "Acento en KA: KA-ret"
+    },
+    {
+      "english": "potato",
+      "respelling": "pe-TEI-tou",
+      "ipa": "pəˈteɪtoʊ",
+      "trap": "La A suena «ei»: pe-TEI-tou"
+    },
+    {
+      "english": "onion",
+      "respelling": "AN-ien",
+      "ipa": "ˈʌnjən",
+      "trap": "Empieza por «a»: AN-ien"
+    },
+    {
+      "english": "cucumber",
+      "respelling": "KIUU-kam-ber",
+      "ipa": "ˈkjuːkʌmbɚ",
+      "trap": "Empieza por «kiuu»"
+    },
+    {
+      "english": "lettuce",
+      "respelling": "LE-tes",
+      "ipa": "ˈlɛtəs",
+      "trap": "Se dice LE-tes, no «le-tu-che»"
+    },
+    {
+      "english": "vegetable",
+      "respelling": "VEDCH-te-bel",
+      "ipa": "ˈvɛdʒtəbəl",
+      "trap": "Tres sílabas, no cuatro"
+    },
+    {
+      "english": "asparagus",
+      "respelling": "a-SPE-re-gas",
+      "ipa": "əˈspɛrəgəs",
+      "trap": "Acento en SPE, no al final"
+    },
+    {
+      "english": "cauliflower",
+      "respelling": "KA-li-flau-er",
+      "ipa": "ˈkɑlɪflaʊɚ",
+      "trap": "Acento en KA y AU suena «a»"
+    }
+  ],
+  "verdict": "Hasta la tres, básico; hasta la siete, intermedio. Si ninguna de las diez te frenó, eres experto.",
+  "outro": "[warm] ¿Llegaste a la diez? Cuéntame tu resultado aquí abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#VerdurasEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl004",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

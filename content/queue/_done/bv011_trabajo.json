@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice TRABAJO en inglés? 💼",
+  "video_description": "Diez palabras de la oficina que vas a oír el primer día. 🏢",
+  "title": "¿Cómo se dice…?",
+  "theme": "el trabajo",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🏢",
+      "spanish": "Oficina",
+      "english": "office"
+    },
+    {
+      "emoji": "👔",
+      "spanish": "Jefe",
+      "english": "boss"
+    },
+    {
+      "emoji": "💻",
+      "spanish": "Ordenador",
+      "english": "computer"
+    },
+    {
+      "emoji": "🤝",
+      "spanish": "Reunión",
+      "english": "meeting"
+    },
+    {
+      "emoji": "📧",
+      "spanish": "Correo",
+      "english": "email"
+    },
+    {
+      "emoji": "💰",
+      "spanish": "Sueldo",
+      "english": "salary"
+    },
+    {
+      "emoji": "📞",
+      "spanish": "Teléfono",
+      "english": "phone"
+    },
+    {
+      "emoji": "👥",
+      "spanish": "Compañero",
+      "english": "coworker"
+    },
+    {
+      "emoji": "📝",
+      "spanish": "Contrato",
+      "english": "contract"
+    },
+    {
+      "emoji": "🗓️",
+      "spanish": "Horario",
+      "english": "schedule"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: office, boss, computer, meeting, email, salary, phone, coworker, contract, schedule.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "office": "Oficina",
+    "boss": "Jefe",
+    "computer": "Ordenador",
+    "meeting": "Reunión",
+    "email": "Correo",
+    "salary": "Sueldo",
+    "phone": "Teléfono",
+    "coworker": "Compañero",
+    "contract": "Contrato",
+    "schedule": "Horario"
+  },
+  "english_phrases": [
+    "office",
+    "boss",
+    "computer",
+    "meeting",
+    "email",
+    "salary",
+    "phone",
+    "coworker",
+    "contract",
+    "schedule"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv011",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Oficina... office. office. Jefe... boss. boss. Ordenador... computer. computer. Reunión... meeting. meeting. Correo... email. email. Sueldo... salary. salary. Teléfono... phone. phone. Compañero... coworker. coworker. Contrato... contract. contract. Horario... schedule. schedule. Ahora, todas conmigo: office, boss, computer, meeting, email, salary, phone, coworker, contract, schedule. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

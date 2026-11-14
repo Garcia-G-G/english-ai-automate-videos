@@ -1,0 +1,52 @@
+{
+  "type": "minimal_pairs",
+  "video_title": "HIT o HEAT: ¿golpe o calor? 🔥",
+  "video_description": "Dos palabras que separa medio segundo de vocal. 👂",
+  "level": "A2",
+  "intro": "[curious] Dos palabras que para ti suenan igual. Para un nativo, no.",
+  "pair": [
+    {
+      "word": "hit",
+      "phonetic": "HIT",
+      "meaning": "golpear",
+      "emoji": "🥊"
+    },
+    {
+      "word": "heat",
+      "phonetic": "HIIIT",
+      "meaning": "calor",
+      "emoji": "🔥"
+    }
+  ],
+  "sound_tip": "La hache inglesa es aire suave, no la jota española. Y heat alarga la i.",
+  "test": [
+    1,
+    1,
+    0,
+    1
+  ],
+  "sentence": {
+    "en": "The heat hit us at the airport.",
+    "es": "El calor nos golpeó en el aeropuerto."
+  },
+  "outro": "[excited] ¿Cuántas acertaste de cuatro? Dímelo en los comentarios.",
+  "translations": {
+    "hit": "golpear",
+    "heat": "calor",
+    "The heat hit us at the airport.": "El calor nos golpeó en el aeropuerto."
+  },
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#ParesMínimos"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr020",
+    "video_type": "minimal_pairs",
+    "model": "manual",
+    "draft": true
+  }
+}

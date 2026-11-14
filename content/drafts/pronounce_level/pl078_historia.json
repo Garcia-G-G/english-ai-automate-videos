@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "HISTORIA en inglés: palabras que engañan al leerlas 🏰",
+  "video_description": "Reyes, imperios y coroneles: palabras de historia que no se leen como se escriben. 📜",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la historia",
+  "intro": "[thoughtful] Palabras de historia, de fácil a experto. Dilas en voz alta y compara.",
+  "items": [
+    {
+      "english": "king",
+      "respelling": "KING",
+      "ipa": "ˈkɪŋ",
+      "trap": "La G final casi no suena"
+    },
+    {
+      "english": "war",
+      "respelling": "UOR",
+      "ipa": "ˈwɔr",
+      "trap": "Suena UOR, no UAR"
+    },
+    {
+      "english": "history",
+      "respelling": "JIS-ta-ri",
+      "ipa": "ˈhɪstəri",
+      "trap": "La H suena: JIS-ta-ri"
+    },
+    {
+      "english": "century",
+      "respelling": "SEN-cha-ri",
+      "ipa": "ˈsɛntʃəri",
+      "trap": "La T suena «ch»: SEN-cha-ri"
+    },
+    {
+      "english": "empire",
+      "respelling": "EM-pai-er",
+      "ipa": "ˈɛmpaɪɚ",
+      "trap": "Acento en EM-: EM-pai-er"
+    },
+    {
+      "english": "ancient",
+      "respelling": "EIN-shant",
+      "ipa": "ˈeɪnʃənt",
+      "trap": "La A suena «ei» y CI, «sh»"
+    },
+    {
+      "english": "soldier",
+      "respelling": "SOUL-yer",
+      "ipa": "ˈsoʊldʒɚ",
+      "trap": "DI suena «y»: SOUL-yer"
+    },
+    {
+      "english": "monarchy",
+      "respelling": "MA-ner-ki",
+      "ipa": "ˈmɑnɚki",
+      "trap": "CH suena «k»: MA-ner-ki"
+    },
+    {
+      "english": "archaeology",
+      "respelling": "ar-ki-A-la-yi",
+      "ipa": "ɑrkiˈɑlədʒi",
+      "trap": "AE suena «i» y acento en A"
+    },
+    {
+      "english": "colonel",
+      "respelling": "KER-nal",
+      "ipa": "ˈkɝnəl",
+      "trap": "Suena como «kernel»: KER-nal"
+    }
+  ],
+  "verdict": "Tres bien significa básico, siete significa intermedio y las diez significan nivel experto.",
+  "outro": "[curious] ¿Qué palabra te sorprendió? Déjala en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Historia",
+    "#InglésFácil",
+    "#Pronunciación"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl078",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

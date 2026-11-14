@@ -1,0 +1,47 @@
+{
+  "id": "hc_c025",
+  "style": "comic",
+  "level": "dificil",
+  "angle": "reto",
+  "title": "RETO: «no tiene pelos en la lengua»",
+  "hook_text": "La más difícil del día",
+  "quiz": {
+    "prompt": "¿Cómo dirías «no tiene pelos en la lengua»?",
+    "options": [
+      "She has no hair on the tongue",
+      "She doesn't mince her words",
+      "She has a clean tongue"
+    ],
+    "answer": 1,
+    "after": "Not mince your words = hablar sin rodeos."
+  },
+  "correction": {
+    "wrong": "She has a clean tongue",
+    "right": "She doesn't mince her words",
+    "rule": "Idiom"
+  },
+  "voice": [
+    "La más difícil del día. ¿Cómo dirías «no tiene pelos en la lengua»?",
+    "¿[[She has no hair on the tongue]], [[She doesn't mince her words]] o [[She has a clean tongue]]?",
+    "¡La B! [[She doesn't mince her words]]. [[Mince]] es picar, como la carne.",
+    "Más fácil: [[She's very outspoken]] o [[She tells it like it is]].",
+    "Y para pedir franqueza: [[Don't sugarcoat it]], «no lo endulces».",
+    "¿Conoces a alguien así? Descríbelo en inglés abajo."
+  ],
+  "challenge": {
+    "prompt": "«Mi abuela no tiene pelos en la lengua»",
+    "answer": "My grandma doesn't mince her words."
+  },
+  "caption": "«No tener pelos en la lengua» es «not mince your words» o «be outspoken». Reto de idioms.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 74
+}

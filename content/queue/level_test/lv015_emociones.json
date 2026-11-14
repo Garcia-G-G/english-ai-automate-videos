@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "¿Sabes nombrar tus EMOCIONES en inglés? 😊",
+  "video_description": "Pon a prueba tu vocabulario de emociones y descubre tu nivel real de inglés. 😊",
+  "title": "¿Qué nivel tienes?",
+  "theme": "las emociones",
+  "intro": "[excited] Vamos con diez palabras de emociones. Dime su significado en español antes de que aparezca.",
+  "items": [
+    {
+      "english": "happy",
+      "spanish": "Feliz",
+      "cefr": "A1"
+    },
+    {
+      "english": "sad",
+      "spanish": "Triste",
+      "cefr": "A1"
+    },
+    {
+      "english": "angry",
+      "spanish": "Enfadado / enojado",
+      "cefr": "A2"
+    },
+    {
+      "english": "scared",
+      "spanish": "Asustado",
+      "cefr": "A2"
+    },
+    {
+      "english": "worried",
+      "spanish": "Preocupado",
+      "cefr": "B1"
+    },
+    {
+      "english": "proud",
+      "spanish": "Orgulloso",
+      "cefr": "B1"
+    },
+    {
+      "english": "embarrassed",
+      "spanish": "Avergonzado",
+      "cefr": "B1"
+    },
+    {
+      "english": "overwhelmed",
+      "spanish": "Agobiado / abrumado",
+      "cefr": "B2"
+    },
+    {
+      "english": "resentful",
+      "spanish": "Resentido",
+      "cefr": "C1"
+    },
+    {
+      "english": "bittersweet",
+      "spanish": "Agridulce",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te paraste en la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, eres experto.",
+  "outro": "[happy] Escribe en los comentarios hasta qué número llegaste.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#ClasesDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv015",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "happy": "Feliz",
+    "sad": "Triste",
+    "angry": "Enfadado / enojado",
+    "scared": "Asustado",
+    "worried": "Preocupado",
+    "proud": "Orgulloso",
+    "embarrassed": "Avergonzado",
+    "overwhelmed": "Agobiado / abrumado",
+    "resentful": "Resentido",
+    "bittersweet": "Agridulce"
+  },
+  "english_phrases": [
+    "happy",
+    "sad",
+    "angry",
+    "scared",
+    "worried",
+    "proud",
+    "embarrassed",
+    "overwhelmed",
+    "resentful",
+    "bittersweet"
+  ],
+  "full_script": "[excited] Vamos con diez palabras de emociones. Dime su significado en español antes de que aparezca. happy Feliz sad Triste angry Enfadado / enojado Ahora, nivel intermedio. scared Asustado worried Preocupado proud Orgulloso embarrassed Avergonzado Y ahora, nivel experto. overwhelmed Agobiado / abrumado resentful Resentido bittersweet Agridulce Si te paraste en la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, eres experto. [happy] Escribe en los comentarios hasta qué número llegaste."
+}

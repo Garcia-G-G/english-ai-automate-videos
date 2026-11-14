@@ -1,0 +1,52 @@
+{
+  "type": "minimal_pairs",
+  "video_title": "FIFTEEN o FIFTY: 15 o 50 🔢",
+  "video_description": "Escucha dónde cae la fuerza. 👂",
+  "level": "A2",
+  "intro": "[curious] Dos palabras que para ti suenan igual. Para un nativo, no.",
+  "pair": [
+    {
+      "word": "fifteen",
+      "phonetic": "fif-TIIIN",
+      "meaning": "quince",
+      "emoji": "🕒"
+    },
+    {
+      "word": "fifty",
+      "phonetic": "FIF-ti",
+      "meaning": "cincuenta",
+      "emoji": "💵"
+    }
+  ],
+  "sound_tip": "Fifteen pega fuerte al final. Fifty pega fuerte al principio y termina corta.",
+  "test": [
+    1,
+    0,
+    1,
+    0
+  ],
+  "sentence": {
+    "en": "The bus leaves at four fifteen, not four fifty.",
+    "es": "El autobús sale a las cuatro y cuarto, no a las cinco menos diez."
+  },
+  "outro": "[excited] ¿Cuántas acertaste de cuatro? Dímelo en los comentarios.",
+  "translations": {
+    "fifteen": "quince",
+    "fifty": "cincuenta",
+    "The bus leaves at four fifteen, not four fifty.": "El autobús sale a las cuatro y cuarto, no a las cinco menos diez."
+  },
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#ParesMínimos"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr038",
+    "video_type": "minimal_pairs",
+    "model": "manual",
+    "draft": true
+  }
+}

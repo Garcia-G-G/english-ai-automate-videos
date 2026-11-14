@@ -1,0 +1,105 @@
+{
+  "type": "say_it_level",
+  "video_title": "¡Perdiste el VUELO! ¿Sabes resolverlo en inglés? ✈️",
+  "video_description": "Diez frases para cuando pierdes el avión y tienes que arreglarlo en inglés. ✈️",
+  "title": "Dilo en inglés",
+  "theme": "perdiste el vuelo",
+  "intro": "[surprised] ¡Has perdido el vuelo! Lee cada frase y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Necesito ayuda, por favor.",
+      "english": "I need help, please.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Llego tarde.",
+      "english": "I'm late.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Hay otro vuelo hoy?",
+      "english": "Is there another flight today?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Había un tráfico horrible.",
+      "english": "The traffic was terrible.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Cuánto cuesta cambiar el billete?",
+      "english": "How much is it to change my ticket?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Me ponen en el siguiente vuelo?",
+      "english": "Can you put me on the next flight?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Tendré que dormir en el aeropuerto.",
+      "english": "I'll have to sleep at the airport.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Perdí el vuelo de las seis.",
+      "english": "I missed the six o'clock flight.",
+      "cefr": "B2",
+      "tip": "Un vuelo o un tren se miss, no se «lose»"
+    },
+    {
+      "spanish": "Estoy en lista de espera.",
+      "english": "I'm on standby.",
+      "cefr": "B2",
+      "alt": "I'm on the standby list.",
+      "tip": "La lista de espera de un vuelo es standby"
+    },
+    {
+      "spanish": "Lo perdí por cinco minutos.",
+      "english": "I missed it by five minutes.",
+      "cefr": "C1",
+      "tip": "«Por cinco minutos» es by five minutes, no «for»"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Diez de diez: tú no pierdes ni un vuelo.",
+  "outro": "[warm] ¿Hasta qué frase llegaste? Y cuéntame: ¿alguna vez perdiste un vuelo?",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésEnElAeropuerto",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy062",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I need help, please.": "Necesito ayuda, por favor.",
+    "I'm late.": "Llego tarde.",
+    "Is there another flight today?": "¿Hay otro vuelo hoy?",
+    "The traffic was terrible.": "Había un tráfico horrible.",
+    "How much is it to change my ticket?": "¿Cuánto cuesta cambiar el billete?",
+    "Can you put me on the next flight?": "¿Me ponen en el siguiente vuelo?",
+    "I'll have to sleep at the airport.": "Tendré que dormir en el aeropuerto.",
+    "I missed the six o'clock flight.": "Perdí el vuelo de las seis.",
+    "I'm on standby.": "Estoy en lista de espera.",
+    "I missed it by five minutes.": "Lo perdí por cinco minutos."
+  },
+  "english_phrases": [
+    "I need help, please.",
+    "I'm late.",
+    "Is there another flight today?",
+    "The traffic was terrible.",
+    "How much is it to change my ticket?",
+    "Can you put me on the next flight?",
+    "I'll have to sleep at the airport.",
+    "I missed the six o'clock flight.",
+    "I'm on standby.",
+    "I missed it by five minutes.",
+    "I'm on the standby list."
+  ],
+  "full_script": "[surprised] ¡Has perdido el vuelo! Lee cada frase y dila en inglés antes que yo. I need help, please. I'm late. Is there another flight today? Ahora, nivel intermedio. The traffic was terrible. How much is it to change my ticket? Can you put me on the next flight? I'll have to sleep at the airport. Y ahora, nivel experto. I missed the six o'clock flight. I'm on standby. I missed it by five minutes. Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Diez de diez: tú no pierdes ni un vuelo. [warm] ¿Hasta qué frase llegaste? Y cuéntame: ¿alguna vez perdiste un vuelo?"
+}

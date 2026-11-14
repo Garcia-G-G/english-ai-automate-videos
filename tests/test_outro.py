@@ -184,3 +184,103 @@ def test_a_rejected_video_gets_no_outro(monkeypatch, tmp_path):
 
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-v"]))
+
+
+# ── STEP 62 §4: the card on brand ────────────────────────────────────
+
+def test_the_card_is_sand_paper_and_the_url_is_english_blue():
+    import numpy as np
+    variant = O.load_variants()["variants"][0]
+    img = np.array(O.outro_still(variant))
+    assert tuple(img[40, 40]) == O._sand()                         # the background
+    blue = np.array(O._brand_colour("english_blue"))
+    assert (np.abs(img.reshape(-1, 3).astype(int) - blue).sum(axis=1) < 6).sum() > 5000
+
+
+def test_the_site_line_is_a_field_of_outro_json_and_the_spoken_text_is_unchanged():
+    cfg = O.load_variants()
+    assert cfg["line_3"] == "Rutas para aprender lo que quieras"
+    assert [v["spoken"] for v in cfg["variants"]] == [
+        "Aprende inglés en learningroutes.com", "Sigue aprendiendo en learningroutes.com",
+        "Más lecciones en learningroutes.com"]
+
+
+def test_a_forced_redraw_keeps_the_voice_and_costs_nothing(tmp_path, monkeypatch):
+    """force=True on an existing clip reuses its audio track: no TTS."""
+    clips = _existing()
+    if not clips:
+        pytest.skip("no rendered outro yet")
+    import shutil
+    monkeypatch.setattr(O, "OUTRO_DIR", tmp_path)
+    shutil.copy(clips[0], tmp_path / clips[0].name)
+    monkeypatch.setattr(O, "_synthesize", lambda *a, **k: pytest.fail("a redraw asked the TTS"))
+    variant = next(v for v in O.load_variants()["variants"] if v["id"] == clips[0].stem)
+    out = O.ensure_outro(variant, force=True)
+    probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries",
+                            "stream=codec_name", "-of", "csv=p=0", str(out)], capture_output=True, text=True)
+    assert probe.stdout.strip() == "aac"
+
+
+# ── STEP 71 §1: Bubi on the card (brand v3) ──────────────────────────
+
+def _audio_md5(path):
+    return subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-map", "0:a", "-c", "copy", "-f", "md5", "-"],
+                          capture_output=True, text=True, check=True).stdout.strip()
+
+
+def test_bubi_is_440px_wide_and_stands_on_the_cards_top_edge():
+    import numpy as np
+    from PIL import Image
+    img = np.array(O.outro_still(O.load_variants()["variants"][0])).astype(int)
+    sand = np.array(O._sand())
+    y_card = (O.VIDEO_HEIGHT - O.CARD_H) // 2 + O.CARD_DY
+    assert y_card + O.CARD_H // 2 == O.VIDEO_HEIGHT // 2 + 60
+    band_top = 530                                          # STEP 80 §6: wordmark and «Mañana» end above this
+    above = np.abs(img[band_top:y_card - 10] - sand).sum(axis=2) > 30   # Bubi, above the card
+    ys, xs = np.nonzero(above)
+    ys = ys + band_top
+    assert abs((xs.max() - xs.min() + 1) - 440) <= 10      # his arm stays on screen (faint AA edge aside)
+    assert abs((xs.min() + xs.max()) / 2 - O.VIDEO_WIDTH / 2) <= 4
+    sym = Image.open(O.SYMBOL).convert("RGBA")
+    box = sym.getchannel("A").getbbox()
+    drawn_h = round((box[3] - box[1]) * 440 / (box[2] - box[0]))
+    assert abs(ys.min() - (y_card + O.SYMBOL_OVERLAP - drawn_h)) <= 3 and O.SYMBOL_OVERLAP == 70
+
+
+def test_a_redraw_never_calls_the_tts_and_brings_the_voice_to_minus_14_lufs(tmp_path, monkeypatch):
+    """STEP 71 kept the audio byte for byte; STEP 75 §5 normalises it to the narration's
+    target on a redraw. Still no TTS, still the same length."""
+    clips = _existing()
+    if not clips:
+        pytest.skip("no rendered outro yet")
+    import shutil
+    import loudness
+    import tts_elevenlabs
+    monkeypatch.setattr(O, "OUTRO_DIR", tmp_path)
+    shutil.copy(clips[0], tmp_path / clips[0].name)
+    monkeypatch.setattr(tts_elevenlabs, "generate_segment_audio",
+                        lambda *a, **k: pytest.fail("a redraw called generate_segment_audio"))
+    variant = next(v for v in O.load_variants()["variants"] if v["id"] == clips[0].stem)
+    out = O.ensure_outro(variant, force=True)
+    m = loudness.measure(out)
+    assert abs(m["I"] - loudness.TARGET_I) <= 1.0 and m["TP"] <= -1.0
+    assert O._probe_params(str(out)) == O._probe_params(str(clips[0]))
+
+
+# ── STEP 73 §0: a cut render never becomes a cached clip ─────────────
+
+def test_a_render_that_dies_halfway_leaves_no_cached_clip(tmp_path, monkeypatch):
+    outro_dir = tmp_path / "outro"
+    monkeypatch.setattr(O, "OUTRO_DIR", outro_dir)
+    monkeypatch.setattr(O, "_synthesize", lambda variant, out: subprocess.run(
+        ["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi", "-i", "anullsrc=r=44100:cl=mono",
+         "-t", "1", str(out)], check=True))
+
+    def cut(output_path, **kwargs):
+        Path(output_path).write_bytes(b"half a clip")
+        raise RuntimeError("render cut")
+    monkeypatch.setattr(O, "render_video_ffmpeg", cut)
+    variant = O.load_variants()["variants"][0]
+    with pytest.raises(RuntimeError, match="render cut"):
+        O.ensure_outro(variant)
+    assert list(outro_dir.iterdir()) == []

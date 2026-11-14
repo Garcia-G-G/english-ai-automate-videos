@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "En el HOTEL: 10 palabras que deberías pronunciar bien 🛎️",
+  "video_description": "Key, suitcase, concierge: diez palabras para no fallar al llegar a tu hotel. 🧳",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el hotel",
+  "intro": "[cheerful] Llegas al hotel. Pronuncia cada palabra en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "key",
+      "respelling": "KII",
+      "ipa": "ˈkiː",
+      "trap": "EY suena «ii»: KII"
+    },
+    {
+      "english": "room",
+      "respelling": "RUUM",
+      "ipa": "ˈruːm",
+      "trap": "OO larga: RUUM"
+    },
+    {
+      "english": "towel",
+      "respelling": "TAU-el",
+      "ipa": "ˈtaʊəl",
+      "trap": "OW suena «au»: TAU-el"
+    },
+    {
+      "english": "pillow",
+      "respelling": "PI-lou",
+      "ipa": "ˈpɪloʊ",
+      "trap": "LL suena «l» y OW, «ou»"
+    },
+    {
+      "english": "suitcase",
+      "respelling": "SUUT-keis",
+      "ipa": "ˈsuːtkeɪs",
+      "trap": "UI suena «uu»: SUUT-keis"
+    },
+    {
+      "english": "elevator",
+      "respelling": "E-le-vei-ter",
+      "ipa": "ˈɛləveɪtɚ",
+      "trap": "Acento en E- y la A suena «ei»"
+    },
+    {
+      "english": "receptionist",
+      "respelling": "ri-SEP-sha-nist",
+      "ipa": "rɪˈsɛpʃənɪst",
+      "trap": "TI suena «sh»: ri-SEP-sha-nist"
+    },
+    {
+      "english": "suite",
+      "respelling": "SUIIT",
+      "ipa": "ˈswiːt",
+      "trap": "Suena igual que «sweet»"
+    },
+    {
+      "english": "amenities",
+      "respelling": "a-ME-na-tiz",
+      "ipa": "əˈmɛnətiz",
+      "trap": "Acento en ME: a-ME-na-tiz"
+    },
+    {
+      "english": "concierge",
+      "respelling": "kan-si-ERZH",
+      "ipa": "kɑnsiˈɛrʒ",
+      "trap": "Final «erzh»: la G suena «zh»"
+    }
+  ],
+  "verdict": "Tres bien: básico. Siete bien: intermedio. Diez bien: nivel experto, con vistas al mar.",
+  "outro": "[cheerful] ¿Cuál te costó más? Escríbelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésDeViaje",
+    "#AprenderInglés",
+    "#InglésParaHispanohablantes",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl092",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

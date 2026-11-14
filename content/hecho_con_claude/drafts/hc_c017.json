@@ -1,0 +1,47 @@
+{
+  "id": "hc_c017",
+  "style": "comic",
+  "level": "medio",
+  "angle": "reto",
+  "title": "RETO: «tardo veinte minutos»",
+  "hook_text": "El verbo que no imaginas",
+  "quiz": {
+    "prompt": "¿Cómo dirías «tardo veinte minutos en llegar»?",
+    "options": [
+      "I delay twenty minutes",
+      "It takes me twenty minutes",
+      "I late twenty minutes"
+    ],
+    "answer": 1,
+    "after": "Tardar = it takes (me) + tiempo."
+  },
+  "correction": {
+    "wrong": "I late twenty minutes",
+    "right": "It takes me twenty minutes",
+    "rule": "It takes + persona + tiempo"
+  },
+  "voice": [
+    "El verbo que no imaginas. ¿Cómo dirías «tardo veinte minutos en llegar»?",
+    "¿[[I delay twenty minutes]], [[It takes me twenty minutes]] o [[I late twenty minutes]]?",
+    "¡La B! [[It takes me twenty minutes to get there]].",
+    "Para preguntar: [[How long does it take?]], «¿cuánto se tarda?».",
+    "Y para no tardar: [[I won't be long]], «no tardo».",
+    "Reto extra: ¿cuánto tardas en llegar al trabajo? Contesta en inglés."
+  ],
+  "challenge": {
+    "prompt": "Di cuánto tardas en llegar al trabajo",
+    "answer": "It takes me … minutes to get to work."
+  },
+  "caption": "«Tardar» en inglés es «it takes me + tiempo». Reto de inglés de nivel medio.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 67
+}

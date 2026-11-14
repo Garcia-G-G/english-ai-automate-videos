@@ -1,0 +1,93 @@
+{
+  "type": "true_false_level",
+  "video_title": "10 frases sobre REUNIONES: ¿V o F? 📊",
+  "video_description": "Frases de reuniones en inglés: ¿verdadero o falso? 📊",
+  "title": "¿Verdadero o falso?",
+  "theme": "inglés de reuniones",
+  "intro": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total.",
+  "items": [
+    {
+      "statement": "«Agenda» es el orden del día.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Let's get started» es empecemos.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Any questions?» es ¿alguna respuesta?",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es ¿alguna pregunta?"
+    },
+    {
+      "statement": "«I agree» es estoy de acuerdo.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Follow up» es hacer seguimiento.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«ASAP» significa sin prisa.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es lo antes posible"
+    },
+    {
+      "statement": "«Let's take this offline» es apagar internet.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es hablarlo después, aparte"
+    },
+    {
+      "statement": "«Circle back» es volver sobre un tema más tarde.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Bottom line» es la línea de abajo de la tabla.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es lo esencial, la conclusión"
+    },
+    {
+      "statement": "«On the same page» es estar de acuerdo.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf039",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Agenda",
+    "Let's get started",
+    "Any questions?",
+    "I agree",
+    "Follow up",
+    "ASAP",
+    "Let's take this offline",
+    "Circle back",
+    "Bottom line",
+    "On the same page"
+  ],
+  "full_script": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total. Verdadero. Verdadero. Falso: es ¿alguna pregunta?. Ahora, nivel intermedio. Verdadero. Verdadero. Falso: es lo antes posible. Falso: es hablarlo después, aparte. Y ahora, nivel experto. Verdadero. Falso: es lo esencial, la conclusión. Verdadero. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

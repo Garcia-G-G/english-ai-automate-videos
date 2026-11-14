@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los ANIMALES en inglés? 🐶",
+  "video_description": "Diez animales que todo el mundo debería saber decir. 🐾",
+  "title": "¿Cómo se dice…?",
+  "theme": "los animales",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🐶",
+      "spanish": "Perro",
+      "english": "dog"
+    },
+    {
+      "emoji": "🐱",
+      "spanish": "Gato",
+      "english": "cat"
+    },
+    {
+      "emoji": "🐴",
+      "spanish": "Caballo",
+      "english": "horse"
+    },
+    {
+      "emoji": "🐮",
+      "spanish": "Vaca",
+      "english": "cow"
+    },
+    {
+      "emoji": "🐷",
+      "spanish": "Cerdo",
+      "english": "pig"
+    },
+    {
+      "emoji": "🐦",
+      "spanish": "Pájaro",
+      "english": "bird"
+    },
+    {
+      "emoji": "🐟",
+      "spanish": "Pez",
+      "english": "fish"
+    },
+    {
+      "emoji": "🐭",
+      "spanish": "Ratón",
+      "english": "mouse"
+    },
+    {
+      "emoji": "🐰",
+      "spanish": "Conejo",
+      "english": "rabbit"
+    },
+    {
+      "emoji": "🐑",
+      "spanish": "Oveja",
+      "english": "sheep"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: dog, cat, horse, cow, pig, bird, fish, mouse, rabbit, sheep.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "dog": "Perro",
+    "cat": "Gato",
+    "horse": "Caballo",
+    "cow": "Vaca",
+    "pig": "Cerdo",
+    "bird": "Pájaro",
+    "fish": "Pez",
+    "mouse": "Ratón",
+    "rabbit": "Conejo",
+    "sheep": "Oveja"
+  },
+  "english_phrases": [
+    "dog",
+    "cat",
+    "horse",
+    "cow",
+    "pig",
+    "bird",
+    "fish",
+    "mouse",
+    "rabbit",
+    "sheep"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv008",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Perro... dog. dog. Gato... cat. cat. Caballo... horse. horse. Vaca... cow. cow. Cerdo... pig. pig. Pájaro... bird. bird. Pez... fish. fish. Ratón... mouse. mouse. Conejo... rabbit. rabbit. Oveja... sheep. sheep. Ahora, todas conmigo: dog, cat, horse, cow, pig, bird, fish, mouse, rabbit, sheep. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

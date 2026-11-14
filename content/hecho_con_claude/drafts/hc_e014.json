@@ -1,0 +1,43 @@
+{
+  "id": "hc_e014",
+  "style": "escena",
+  "level": "medio",
+  "angle": "historia",
+  "title": "«I lost the plane»: el avión no se perdió",
+  "hook_text": "ESCENA — PUERTA DE EMBARQUE, AEROPUERTO DE MADRID",
+  "scene": {
+    "location": "Puerta de embarque, aeropuerto de Madrid",
+    "take1": "Oh no, I lost the plane!",
+    "take2": "Oh no, I missed my flight!",
+    "note": "Perder un transporte = miss."
+  },
+  "correction": {
+    "wrong": "lose the plane",
+    "right": "miss the flight",
+    "rule": "Perder un vuelo, tren o bus = miss"
+  },
+  "voice": [
+    "Escena: llegas corriendo a la puerta de embarque. Toma uno: [[Oh no, I lost the plane!]]",
+    "¡Corten! Suena a que el avión se te extravió, como si fuera tus llaves.",
+    "Perder un transporte es [[miss]]: [[I missed my flight]], [[I missed the bus]].",
+    "[[Lose]] es para cosas que ya no encuentras: [[I lost my passport]].",
+    "Y para un partido: [[We lost the game]], «perdimos el partido».",
+    "Reto: ¿cómo dirías «casi pierdo el tren»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Casi pierdo el tren»",
+    "answer": "I almost missed the train."
+  },
+  "caption": "Perder un vuelo en inglés es «miss a flight», no «lose the plane». Miss vs lose, en el aeropuerto.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 76
+}

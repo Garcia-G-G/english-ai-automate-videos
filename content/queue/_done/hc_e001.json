@@ -1,0 +1,42 @@
+{
+  "id": "hc_e001",
+  "style": "escena",
+  "angle": "historia",
+  "title": "Pedí la cuenta en Nueva York y el camarero no entendió nada",
+  "hook_text": "ESCENA 01 — RESTAURANTE EN NUEVA YORK",
+  "scene": {
+    "location": "Restaurante en Nueva York",
+    "take1": "Give me the account, please.",
+    "take2": "Could we get the check, please?",
+    "note": "En EE. UU. «the check»; en Reino Unido «the bill». «Account» es una cuenta de banco."
+  },
+  "correction": {
+    "wrong": "Give me the account",
+    "right": "Could we get the check, please?",
+    "rule": "La cuenta del restaurante es «the check» o «the bill»"
+  },
+  "voice": [
+    "Escena uno. Restaurante en Nueva York. Toma uno: [[Give me the account, please]].",
+    "¡Corten! [[Account]] es una cuenta de banco o de Instagram, no la del restaurante.",
+    "Toma dos: [[Could we get the check, please?]] En Estados Unidos se dice [[the check]]. En Reino Unido, [[the bill]].",
+    "Y fíjate en [[Could we get]]: es mucho más amable que [[Give me]], que suena a orden.",
+    "Reto: ¿cómo pedirías «otra servilleta, por favor»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«¿Me trae otra servilleta, por favor?»",
+    "answer": "Could I get another napkin, please?"
+  },
+  "caption": "Cómo pedir la cuenta en inglés como un nativo: «Could we get the check, please?». Nunca «give me the account».",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "principiante",
+  "level_label": "Principiante · A1–A2",
+  "voice_words": 74
+}

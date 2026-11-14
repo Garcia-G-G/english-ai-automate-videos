@@ -1,0 +1,43 @@
+{
+  "type": "expression_of_day",
+  "video_title": "CALL IT A DAY: la frase de las seis de la tarde 🕕",
+  "video_description": "Cómo decir que se acabó por hoy, en inglés. 💼",
+  "level": "B1",
+  "intro": "[cheerful] La expresión de hoy la vas a oír esta misma semana.",
+  "expression": "call it a day",
+  "literal": "llamarlo un día",
+  "meaning": "dejarlo por hoy",
+  "register": "informal",
+  "examples": [
+    {
+      "en": "I'm exhausted. Let's call it a day.",
+      "es": "Estoy agotado. Dejémoslo por hoy."
+    },
+    {
+      "en": "We called it a day at seven.",
+      "es": "Lo dejamos a las siete."
+    }
+  ],
+  "equivalent_es": "dejarlo por hoy",
+  "tip": "Casi siempre va con let's: let's call it a day. Sirve en el trabajo y entre amigos.",
+  "outro": "[excited] Úsala hoy en una frase. Escríbela en los comentarios.",
+  "translations": {
+    "call it a day": "dejarlo por hoy",
+    "I'm exhausted. Let's call it a day.": "Estoy agotado. Dejémoslo por hoy.",
+    "We called it a day at seven.": "Lo dejamos a las siete."
+  },
+  "hashtags": [
+    "#ExpresiónDelDía",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Idioms"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id053",
+    "video_type": "expression_of_day",
+    "model": "manual",
+    "draft": true
+  }
+}

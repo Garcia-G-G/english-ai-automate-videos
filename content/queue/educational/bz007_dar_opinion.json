@@ -1,0 +1,38 @@
+{
+  "type": "educational",
+  "video_title": "Cómo dar tu opinión en una reunión en inglés 💼",
+  "video_description": "Tres frases que suenan a alguien con experiencia. 🎯",
+  "hook": "En la reunión te preguntan qué piensas y solo te sale I think.",
+  "full_script": "[excited] Te preguntan en la reunión: what do you think? Y sale un I think, I think, I think. Funciona, pero suena a examen. Hay tres formas de dar tu opinión que suenan a alguien con tablas. La primera, para abrir con calma. From my point of view. Desde mi punto de vista. Perfecta para empezar una idea larga. La segunda, más suave y muy británica. I'd say that. Yo diría que. Das tu opinión sin sonar tajante. Y la tercera, para discrepar sin crear tensión. I'm not so sure about that. No lo tengo tan claro. Nadie se ofende, y aun así queda claro que no estás de acuerdo. Un último detalle. In my opinion está bien una vez. Repetido en cada frase, suena a redacción del colegio.",
+  "english_phrases": [
+    "what do you think?",
+    "I think",
+    "From my point of view",
+    "I'd say that",
+    "I'm not so sure about that",
+    "In my opinion"
+  ],
+  "translations": {
+    "what do you think?": "¿qué opinas?",
+    "I think": "creo",
+    "From my point of view": "desde mi punto de vista",
+    "I'd say that": "yo diría que",
+    "I'm not so sure about that": "no lo tengo tan claro",
+    "In my opinion": "en mi opinión"
+  },
+  "tip": "In my opinion, una vez. En cada frase suena a redacción del colegio.",
+  "cta": "¿Cuál vas a usar en tu próxima reunión?",
+  "hashtags": [
+    "#InglésDeNegocios",
+    "#BusinessEnglish",
+    "#AprenderInglés",
+    "#Trabajo",
+    "#EnglishTips"
+  ],
+  "_meta": {
+    "category": "business",
+    "topic_id": "bz007",
+    "video_type": "educational",
+    "model": "manual"
+  }
+}

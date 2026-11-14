@@ -1,0 +1,107 @@
+{
+ "type": "how_do_you_say",
+ "video_title": "¿Cómo se dicen MÁS VERDURAS en inglés? 🥬",
+ "video_description": "Segunda parte: diez verduras más en inglés. Dilas antes que yo. ¿Cuántas palabras sabías? 🍄",
+ "title": "¿Cómo se dice…?",
+ "theme": "más verduras",
+ "level": "A1",
+ "intro": "[warm] Segunda parte: diez verduras más. Tú primero, luego yo.",
+ "items": [
+  {
+   "emoji": "🥬",
+   "spanish": "Espinaca",
+   "english": "spinach"
+  },
+  {
+   "emoji": "🍄",
+   "spanish": "Champiñón",
+   "english": "mushroom"
+  },
+  {
+   "emoji": "🍆",
+   "spanish": "Berenjena",
+   "english": "eggplant"
+  },
+  {
+   "emoji": "🎃",
+   "spanish": "Calabaza",
+   "english": "pumpkin"
+  },
+  {
+   "emoji": "🥑",
+   "spanish": "Aguacate",
+   "english": "avocado"
+  },
+  {
+   "emoji": "🫘",
+   "spanish": "Frijoles",
+   "english": "beans"
+  },
+  {
+   "emoji": "🫛",
+   "spanish": "Chícharos",
+   "english": "peas"
+  },
+  {
+   "emoji": "🌿",
+   "spanish": "Apio",
+   "english": "celery"
+  },
+  {
+   "emoji": "🍠",
+   "spanish": "Camote",
+   "english": "sweet potato"
+  },
+  {
+   "emoji": "🫚",
+   "spanish": "Jengibre",
+   "english": "ginger"
+  }
+ ],
+ "recap": "Ahora todas en inglés, conmigo: spinach, mushroom, eggplant, pumpkin, avocado, beans, peas, celery, sweet potato, ginger.",
+ "outro": "[excited] Si sabías las diez, escribe DIEZ en los comentarios.",
+ "translations": {
+  "spinach": "Espinaca",
+  "mushroom": "Champiñón",
+  "eggplant": "Berenjena",
+  "pumpkin": "Calabaza",
+  "avocado": "Aguacate",
+  "beans": "Frijoles",
+  "peas": "Chícharos",
+  "celery": "Apio",
+  "sweet potato": "Camote",
+  "ginger": "Jengibre"
+ },
+ "english_phrases": [
+  "spinach",
+  "mushroom",
+  "eggplant",
+  "pumpkin",
+  "avocado",
+  "beans",
+  "peas",
+  "celery",
+  "sweet potato",
+  "ginger"
+ ],
+ "hashtags": [
+  "#InglésParaPrincipiantes",
+  "#VocabularioEnInglés",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#HowDoYouSay",
+  "#VerdurasEnInglés",
+  "#Shorts",
+  "#LearnEnglish",
+  "#AprendeIngles"
+ ],
+ "_meta": {
+  "category": "basic_vocab",
+  "topic_id": "bv106",
+  "video_type": "how_do_you_say",
+  "model": "manual",
+  "sequel_of": "verduras",
+  "why": "sequel of a ≥1K-view topic (research 2026-11-12)"
+ },
+ "full_script": "[warm] Segunda parte: diez verduras más. Tú primero, luego yo. Espinaca... spinach. spinach. Champiñón... mushroom. mushroom. Berenjena... eggplant. eggplant. Calabaza... pumpkin. pumpkin. Aguacate... avocado. avocado. Frijoles... beans. beans. Chícharos... peas. peas. Apio... celery. celery. Camote... sweet potato. sweet potato. Jengibre... ginger. ginger. Ahora todas en inglés, conmigo: spinach, mushroom, eggplant, pumpkin, avocado, beans, peas, celery, sweet potato, ginger. [excited] Si sabías las diez, escribe DIEZ en los comentarios."
+}

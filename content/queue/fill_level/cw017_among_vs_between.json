@@ -1,0 +1,87 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: AMONG o BETWEEN 🤔",
+  "video_description": "¿Usas between para todo? Pon a prueba tu nivel con 10 frases, de fácil a experto. ¿Hasta cuál llegas? 🎯",
+  "title": "Completa la frase",
+  "theme": "among vs between",
+  "intro": "[curious] ¿Dices between para todo? Entre dos cosas es between, entre muchas es among. ¿Hasta qué número llegas?",
+  "items": [
+    {
+      "sentence": "Sit ____ Ana and me.",
+      "answer": "between",
+      "translation": "Siéntate entre Ana y yo.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The cat is ____ the trees.",
+      "answer": "among",
+      "translation": "El gato está entre los árboles.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Come ____ 5 and 6 p.m.",
+      "answer": "between",
+      "translation": "Ven entre las 5 y las 6 p. m.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Share it ____ your friends.",
+      "answer": "among",
+      "translation": "Compártelo entre tus amigos.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Choose ____ red and blue.",
+      "answer": "between",
+      "translation": "Elige entre rojo y azul.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She's popular ____ teens.",
+      "answer": "among",
+      "translation": "Es popular entre los adolescentes.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Keep this ____ you and me.",
+      "answer": "between",
+      "translation": "Que quede entre tú y yo.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "A treaty ____ two nations.",
+      "answer": "between",
+      "translation": "Un tratado entre dos naciones.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He was ____ the first to leave.",
+      "answer": "among",
+      "translation": "Estuvo entre los primeros en irse.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ other things, I cook.",
+      "answer": "Among",
+      "translation": "Entre otras cosas, cocino.",
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Dices between para todo? Entre dos cosas es between, entre muchas es among. ¿Hasta qué número llegas? Sit between Ana and me. The cat is among the trees. Come between 5 and 6 p. m. Share it among your friends. Choose between red and blue. She's popular among teens. Keep this between you and me. A treaty between two nations. He was among the first to leave. Among other things, I cook. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#InglesParaLatinos",
+    "#AmongVsBetween",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw017",
+    "video_type": "fill_level",
+    "generated_at": "2026-11-02T11:02:52.393650",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

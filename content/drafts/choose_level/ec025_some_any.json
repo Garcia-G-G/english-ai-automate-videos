@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "¿Sabes cuándo usar SOME o ANY? 🍪",
+  "video_description": "Some y any en preguntas, negativas y ofertas: diez frases. 🍪",
+  "title": "Elige la correcta",
+  "theme": "some o any",
+  "intro": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto.",
+  "items": [
+    {
+      "sentence": "I have ____ cookies.",
+      "options": [
+        "some",
+        "any"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Do you have ____ questions?",
+      "options": [
+        "some",
+        "any"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "There isn't ____ milk.",
+      "options": [
+        "some",
+        "any"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Would you like ____ tea?",
+      "options": [
+        "some",
+        "any"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I don't have ____ money.",
+      "options": [
+        "some",
+        "any"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Can I have ____ water, please?",
+      "options": [
+        "some",
+        "any"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "You can call me ____ time.",
+      "options": [
+        "any",
+        "some"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ one called for you.",
+      "options": [
+        "Anyone",
+        "Someone"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Is there ____ chance you could help?",
+      "options": [
+        "any",
+        "some"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Don't worry, ____ day you'll understand.",
+      "options": [
+        "any",
+        "some"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#SomeVsAny",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec025",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

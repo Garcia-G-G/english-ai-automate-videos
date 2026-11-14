@@ -1,0 +1,36 @@
+{
+  "type": "educational",
+  "video_title": "Tu rutina de la mañana en inglés, paso a paso ⏰",
+  "video_description": "Cinco phrasal verbs que usas todos los días sin darte cuenta. ☀️",
+  "hook": "Cinco phrasal verbs que ya haces cada mañana sin saber decirlos.",
+  "full_script": "[cheerful] Suena el despertador. Abres los ojos. I wake up at six. Pero seguir en la cama mirando el techo no es levantarse. Salir de la cama es otro verbo. 'I get up and take a shower'. Wake up es abrir los ojos. Get up es poner los pies en el suelo. En español lo distinguimos igual y no lo pensamos. Te vistes. 'I get dressed in five minutes'. Enciendes la cafetera. 'I turn on the coffee machine'. Y al salir apagas las luces. Turn off the lights before you leave. Fíjate en el par. On enciende, off apaga. Es literalmente el interruptor de tu pared. Cuenta tu mañana en voz alta y verás cuántos te salen solos.",
+  "english_phrases": [
+    "I wake up at six every day",
+    "I get up and take a shower",
+    "I get dressed in five minutes",
+    "I turn on the coffee machine",
+    "turn off the lights before you leave"
+  ],
+  "translations": {
+    "I wake up at six every day": "me despierto a las seis todos los días",
+    "I get up and take a shower": "me levanto y me ducho",
+    "I get dressed in five minutes": "me visto en cinco minutos",
+    "I turn on the coffee machine": "enciendo la cafetera",
+    "turn off the lights before you leave": "apaga las luces antes de salir"
+  },
+  "tip": "Wake up es abrir los ojos. Get up es salir de la cama. No son sinónimos.",
+  "cta": "¿A qué hora haces wake up tú? ¡Escríbelo abajo!",
+  "hashtags": [
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#Rutina",
+    "#EnglishTips",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "phrasal_verbs",
+    "topic_id": "pv011",
+    "video_type": "educational",
+    "model": "manual"
+  }
+}

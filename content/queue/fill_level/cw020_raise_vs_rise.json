@@ -1,0 +1,87 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: ¿RAISE o RISE? 📈",
+  "video_description": "¿Raise o rise? Completa 10 frases de fácil a experto y descubre tu nivel de inglés 🔥",
+  "title": "Completa la frase",
+  "theme": "raise vs rise",
+  "intro": "[curious] ¿Sabes cuándo se dice RAISE y cuándo RISE? Completa las diez frases y descubre tu nivel.",
+  "items": [
+    {
+      "sentence": "The sun ____ in the east.",
+      "answer": "rises",
+      "translation": "El sol sale por el este.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ your hand, please.",
+      "answer": "Raise",
+      "translation": "Levanta la mano, por favor.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Prices ____ every year.",
+      "answer": "rise",
+      "translation": "Los precios suben cada año.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "They ____ my rent last month.",
+      "answer": "raised",
+      "translation": "Subieron mi renta el mes pasado.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "The river ____ after the rain.",
+      "answer": "rose",
+      "translation": "El río creció tras la lluvia.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Don't ____ your voice at me.",
+      "answer": "raise",
+      "translation": "No me levantes la voz.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Sales have ____ by ten percent.",
+      "answer": "risen",
+      "translation": "Las ventas han subido un 10 %.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She ____ three kids on her own.",
+      "answer": "raised",
+      "translation": "Crió sola a tres hijos.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Let the dough ____ for an hour.",
+      "answer": "rise",
+      "translation": "Deja que la masa suba una hora.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She ____ to the challenge.",
+      "answer": "rose",
+      "translation": "Estuvo a la altura del reto.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Sabes cuándo se dice RAISE y cuándo RISE? Completa las diez frases y descubre tu nivel. The sun rises in the east. Raise your hand, please. Prices rise every year. They raised my rent last month. The river rose after the rain. Don't raise your voice at me. Sales have risen by ten percent. She raised three kids on her own. Let the dough rise for an hour. She rose to the challenge. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#InglesParaLatinos",
+    "#VocabularioEnIngles",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw020",
+    "video_type": "fill_level",
+    "generated_at": "2026-11-02T11:04:52.046014",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "THAN o THEN: ¿cuál va en cada frase? ⚖️",
+  "video_description": "Than para comparar, then para el tiempo. Diez frases. ⚖️",
+  "title": "Elige la correcta",
+  "theme": "than o then",
+  "intro": "[cheerful] Diez frases, dos opciones. Di la correcta antes que yo.",
+  "items": [
+    {
+      "sentence": "She's taller ____ me.",
+      "options": [
+        "than",
+        "then"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "First breakfast, ____ work.",
+      "options": [
+        "than",
+        "then"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "It's better ____ nothing.",
+      "options": [
+        "then",
+        "than"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We had dinner and ____ we watched a film.",
+      "options": [
+        "then",
+        "than"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'd rather walk ____ drive.",
+      "options": [
+        "then",
+        "than"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "If you're tired, ____ go to bed.",
+      "options": [
+        "then",
+        "than"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It costs more ____ I expected.",
+      "options": [
+        "than",
+        "then"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Back ____, things were different.",
+      "options": [
+        "than",
+        "then"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "No sooner had I arrived ____ it started raining.",
+      "options": [
+        "than",
+        "then"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Easier said ____ done.",
+      "options": [
+        "then",
+        "than"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#ThanVsThen",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec028",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "She's taller than me.",
+    "First breakfast, then work.",
+    "It's better than nothing.",
+    "We had dinner and then we watched a film.",
+    "I'd rather walk than drive.",
+    "If you're tired, then go to bed.",
+    "It costs more than I expected.",
+    "Back then, things were different.",
+    "No sooner had I arrived than it started raining.",
+    "Easier said than done."
+  ],
+  "full_script": "[cheerful] Diez frases, dos opciones. Di la correcta antes que yo. She's taller than me. First breakfast, then work. It's better than nothing. Ahora, nivel intermedio. We had dinner and then we watched a film. I'd rather walk than drive. If you're tired, then go to bed. It costs more than I expected. Y ahora, nivel experto. Back then, things were different. No sooner had I arrived than it started raining. Easier said than done. Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto. [happy] ¿Cuántas acertaste? Déjame tu número abajo."
+}

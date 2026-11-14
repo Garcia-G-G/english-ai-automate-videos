@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el HOTEL en inglés? 🏨",
+  "video_description": "Diez palabras para tu próximo hotel, del check-in a la piscina. 🛎️",
+  "title": "¿Cómo se dice…?",
+  "theme": "el hotel",
+  "level": "A2",
+  "intro": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo.",
+  "items": [
+    {
+      "emoji": "🛏️",
+      "spanish": "Habitación",
+      "english": "room"
+    },
+    {
+      "emoji": "🛎️",
+      "spanish": "Recepción",
+      "english": "front desk"
+    },
+    {
+      "emoji": "🛗",
+      "spanish": "Ascensor",
+      "english": "elevator"
+    },
+    {
+      "emoji": "🪜",
+      "spanish": "Escaleras",
+      "english": "stairs"
+    },
+    {
+      "emoji": "🏊",
+      "spanish": "Piscina",
+      "english": "pool"
+    },
+    {
+      "emoji": "🧳",
+      "spanish": "Huésped",
+      "english": "guest"
+    },
+    {
+      "emoji": "🧺",
+      "spanish": "Toalla",
+      "english": "towel"
+    },
+    {
+      "emoji": "🏞️",
+      "spanish": "Vista",
+      "english": "view"
+    },
+    {
+      "emoji": "📅",
+      "spanish": "Reserva",
+      "english": "reservation"
+    },
+    {
+      "emoji": "🏋️",
+      "spanish": "Gimnasio",
+      "english": "gym"
+    }
+  ],
+  "recap": "Repite conmigo las diez: room, front desk, elevator, stairs, pool, guest, towel, view, reservation, gym.",
+  "outro": "[excited] ¿Las diez? Demuéstralo en los comentarios.",
+  "translations": {
+    "room": "Habitación",
+    "front desk": "Recepción",
+    "elevator": "Ascensor",
+    "stairs": "Escaleras",
+    "pool": "Piscina",
+    "guest": "Huésped",
+    "towel": "Toalla",
+    "view": "Vista",
+    "reservation": "Reserva",
+    "gym": "Gimnasio"
+  },
+  "english_phrases": [
+    "room",
+    "front desk",
+    "elevator",
+    "stairs",
+    "pool",
+    "guest",
+    "towel",
+    "view",
+    "reservation",
+    "gym"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv031",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] ¿Cuántas sabes ya? Intenta decirlas antes que yo. Habitación... room. room. Recepción... front desk. front desk. Ascensor... elevator. elevator. Escaleras... stairs. stairs. Piscina... pool. pool. Huésped... guest. guest. Toalla... towel. towel. Vista... view. view. Reserva... reservation. reservation. Gimnasio... gym. gym. Repite conmigo las diez: room, front desk, elevator, stairs, pool, guest, towel, view, reservation, gym. [excited] ¿Las diez? Demuéstralo en los comentarios."
+}

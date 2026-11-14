@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "OO en inglés: ¿«u» larga, corta o… «a»? 🌙",
+  "video_description": "Book, food, blood: la misma OO, tres sonidos distintos. ¿Los dominas? 📖",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con OO",
+  "intro": "[happy] La doble O tiene trampa. Pronuncia cada palabra antes de que yo la diga.",
+  "items": [
+    {
+      "english": "book",
+      "respelling": "BUK",
+      "ipa": "ˈbʊk",
+      "trap": "OO corta: BUK, no BUUK"
+    },
+    {
+      "english": "food",
+      "respelling": "FUUD",
+      "ipa": "ˈfuːd",
+      "trap": "OO larga: FUUD"
+    },
+    {
+      "english": "moon",
+      "respelling": "MUUN",
+      "ipa": "ˈmuːn",
+      "trap": "OO es una «u» larga"
+    },
+    {
+      "english": "foot",
+      "respelling": "FUT",
+      "ipa": "ˈfʊt",
+      "trap": "OO corta: FUT, no FUUT"
+    },
+    {
+      "english": "door",
+      "respelling": "DOR",
+      "ipa": "ˈdɔr",
+      "trap": "OO suena «o»: DOR"
+    },
+    {
+      "english": "blood",
+      "respelling": "BLAD",
+      "ipa": "ˈblʌd",
+      "trap": "Aquí OO suena «a»: BLAD"
+    },
+    {
+      "english": "childhood",
+      "respelling": "CHAILD-jud",
+      "ipa": "ˈtʃaɪldhʊd",
+      "trap": "La I suena «ai» y la OO es corta"
+    },
+    {
+      "english": "loose",
+      "respelling": "LUUS",
+      "ipa": "ˈluːs",
+      "trap": "S sorda; «lose» lleva «z»"
+    },
+    {
+      "english": "brooch",
+      "respelling": "BROUCH",
+      "ipa": "ˈbroʊtʃ",
+      "trap": "OO suena «ou»: BROUCH"
+    },
+    {
+      "english": "zoology",
+      "respelling": "zou-A-la-yi",
+      "ipa": "zoʊˈɑlədʒi",
+      "trap": "Las dos O se separan: zou-A-"
+    }
+  ],
+  "verdict": "Tres palabras bien: básico. Siete: intermedio. Las diez: eres experto en pronunciación.",
+  "outro": "[happy] ¿Llegaste a la diez? Comenta tu número.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésParaHispanohablantes",
+    "#VocalesEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl057",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

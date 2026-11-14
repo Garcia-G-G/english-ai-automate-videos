@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras con TH: ¿sacas la lengua o no? 👅",
+  "video_description": "El sonido TH en diez palabras, de fácil a imposible. 😛",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con TH",
+  "intro": "[cheerful] Prepara la lengua: diez palabras con TH. Léelas en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "thanks",
+      "respelling": "THANKS",
+      "ipa": "ˈθæŋks",
+      "trap": "TH con la lengua entre los dientes"
+    },
+    {
+      "english": "this",
+      "respelling": "DHIS",
+      "ipa": "ˈðɪs",
+      "trap": "TH suave, como la «d» de «nada»"
+    },
+    {
+      "english": "other",
+      "respelling": "A-dher",
+      "ipa": "ˈʌðɚ",
+      "trap": "TH suave y la O suena «a»"
+    },
+    {
+      "english": "birthday",
+      "respelling": "BERTH-dei",
+      "ipa": "ˈbɝθdeɪ",
+      "trap": "TH y luego D: BERTH-dei"
+    },
+    {
+      "english": "together",
+      "respelling": "te-GE-dher",
+      "ipa": "təˈgɛðɚ",
+      "trap": "TH suave y acento en GE"
+    },
+    {
+      "english": "breathe",
+      "respelling": "BRIIDH",
+      "ipa": "ˈbriːð",
+      "trap": "Verbo: TH suave al final"
+    },
+    {
+      "english": "healthy",
+      "respelling": "JEL-thi",
+      "ipa": "ˈhɛlθi",
+      "trap": "L y TH seguidas: JEL-thi"
+    },
+    {
+      "english": "athlete",
+      "respelling": "ATH-liit",
+      "ipa": "ˈæθliːt",
+      "trap": "Dos sílabas: ATH-liit"
+    },
+    {
+      "english": "months",
+      "respelling": "MANTHS",
+      "ipa": "ˈmʌnθs",
+      "trap": "NTHS: TH y S juntas al final"
+    },
+    {
+      "english": "thirtieth",
+      "respelling": "THER-di-eth",
+      "ipa": "ˈθɝɾiəθ",
+      "trap": "TH al principio y al final"
+    }
+  ],
+  "verdict": "Si pronunciaste bien hasta la tres, nivel básico. Hasta la siete, intermedio. Las diez, nivel experto.",
+  "outro": "[cheerful] ¿Hasta dónde llegaste? Déjalo en un comentario.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#SonidoTH",
+    "#AprenderInglés",
+    "#InglésOnline",
+    "#InglésAmericano"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl024",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

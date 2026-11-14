@@ -1,0 +1,90 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa 10 frases con PREPOSICIONES en inglés 🎯",
+  "video_description": "¿IN, ON, AT o TO? Completa las 10 frases y descubre tu nivel real de inglés 🎯",
+  "title": "Completa la frase",
+  "theme": "Preposiciones en inglés",
+  "intro": "[curious] ¿Sabes cuándo se dice IN, ON, AT o TO? Completa las diez y mira hasta dónde llegas.",
+  "items": [
+    {
+      "sentence": "I live ____ Mexico.",
+      "answer": "in",
+      "translation": "Vivo en México.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The cat is ____ the table.",
+      "answer": "on",
+      "translation": "El gato está sobre la mesa.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "See you ____ Monday.",
+      "answer": "on",
+      "translation": "Nos vemos el lunes.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'm good ____ math.",
+      "answer": "at",
+      "translation": "Soy bueno en matemáticas.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "It depends ____ you.",
+      "answer": "on",
+      "translation": "Depende de ti.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She's married ____ a doctor.",
+      "answer": "to",
+      "translation": "Está casada con un médico.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'm looking forward ____ it.",
+      "answer": "to",
+      "translation": "Tengo muchas ganas de eso.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He's ____ charge of the team.",
+      "answer": "in",
+      "translation": "Él está a cargo del equipo.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It's ____ the tip of my tongue.",
+      "answer": "on",
+      "translation": "Lo tengo en la punta de la lengua.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She's ____ her wits' end.",
+      "answer": "at",
+      "translation": "Ya no sabe qué hacer.",
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Sabes cuándo se dice IN, ON, AT o TO? Completa las diez y mira hasta dónde llegas. I live in Mexico. The cat is on the table. See you on Monday. I'm good at math. It depends on you. She's married to a doctor. I'm looking forward to it. He's in charge of the team. It's on the tip of my tongue. She's at her wits end. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#PreposicionesEnIngles",
+    "#InglesParaLatinos",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm026",
+    "video_type": "fill_level",
+    "generated_at": "2026-11-02T11:05:31.059382",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Unbalanced single quotes (1)"
+  ]
+}

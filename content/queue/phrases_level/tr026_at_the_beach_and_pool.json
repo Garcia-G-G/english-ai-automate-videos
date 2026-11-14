@@ -1,0 +1,69 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «NO SÉ NADAR» en inglés? 🌊",
+  "video_description": "Frases en inglés para la playa y la piscina: bloqueador, salvavidas, sombrillas y más. ¿Cuántas sabías? 🏖️",
+  "title": "¿Cómo se dice?",
+  "theme": "En la playa y piscina",
+  "intro": "[curious] ¿Te vas a la playa? Intenta decir estas frases en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "No sé nadar.",
+      "english": "I can't swim."
+    },
+    {
+      "spanish": "¿Me pasas el bloqueador?",
+      "english": "Can you pass me the sunscreen?"
+    },
+    {
+      "spanish": "¡El agua está helada!",
+      "english": "The water is freezing!"
+    },
+    {
+      "spanish": "Me quemé con el sol.",
+      "english": "I got sunburned."
+    },
+    {
+      "spanish": "¿Hay salvavidas aquí?",
+      "english": "Is there a lifeguard here?"
+    },
+    {
+      "spanish": "¡Vamos a tirarnos al agua!",
+      "english": "Let's jump in!"
+    },
+    {
+      "spanish": "¿Me cuidas mis cosas?",
+      "english": "Can you watch my stuff?"
+    },
+    {
+      "spanish": "Cuidado, ahí está hondo.",
+      "english": "Careful, it's deep there."
+    },
+    {
+      "spanish": "¿Dónde rentan sombrillas?",
+      "english": "Where can I rent an umbrella?"
+    },
+    {
+      "spanish": "Voy a broncearme un rato.",
+      "english": "I'm going to work on my tan."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas te salieron? Escríbelo en los comentarios y nos vemos en el agua.",
+  "full_script": "[curious] ¿Te vas a la playa? Intenta decir estas frases en inglés antes que yo. I can't swim. ¿Can you pass me the sunscreen? ¡The water is freezing! I got sunburned. ¿Is there a lifeguard here? ¡Let's jump in! ¿Can you watch my stuff? Careful, it's deep there. ¿Where can I rent an umbrella? I'm going to work on my tan. [excited] ¿Cuántas te salieron? Escríbelo en los comentarios y nos vemos en el agua.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#Playa",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr026",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:54:08.530740",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 6 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

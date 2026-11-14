@@ -1,0 +1,46 @@
+{
+  "id": "hc_p009",
+  "style": "poster",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«Library» no es librería",
+  "hook_text": "¿Tú también dices «LIBRARY = LIBRERÍA»?",
+  "poster": {
+    "error_no": "024",
+    "big_wrong": "LIBRARY = LIBRERÍA",
+    "big_right": "LIBRARY = BIBLIOTECA",
+    "examples": [
+      "I study at the library. — Estudio en la biblioteca.",
+      "I bought it at a bookstore. — Lo compré en una librería."
+    ]
+  },
+  "correction": {
+    "wrong": "LIBRARY = LIBRERÍA",
+    "right": "LIBRARY = BIBLIOTECA",
+    "rule": "Falso amigo"
+  },
+  "voice": [
+    "[[Library]] parece «librería», pero es la biblioteca, donde se prestan libros.",
+    "La librería, donde se compran, es [[bookstore]] en Estados Unidos o [[bookshop]] en Reino Unido.",
+    "Así: [[I study at the library]] y [[I bought it at a bookstore]].",
+    "Y el bibliotecario es [[librarian]].",
+    "Truco: si no pagas, es [[library]].",
+    "Reto: ¿cómo dirías «¿hay una librería cerca?»? Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«¿Hay una librería cerca?»",
+    "answer": "Is there a bookstore nearby?"
+  },
+  "caption": "Library no es librería, es biblioteca. La librería es «bookstore». Falso amigo explicado.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 61
+}

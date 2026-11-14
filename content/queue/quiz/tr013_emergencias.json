@@ -1,0 +1,68 @@
+{
+  "type": "quiz",
+  "video_title": "Inglés para una emergencia en el extranjero 🚑",
+  "video_description": "Las frases que esperas no usar nunca, y que tienes que saber. 🆘",
+  "question": "[curious] En urgencias te preguntan 'are you allergic to anything?'. Quieren saber...",
+  "options": {
+    "A": "si tienes alergias",
+    "B": "si tienes seguro",
+    "C": "si vienes solo",
+    "D": "si te duele algo"
+  },
+  "correct": "A",
+  "explanation": "[excited] Allergic to anything es alérgico a algo. Si no, contesta no, I'm not.",
+  "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. [curious] En urgencias te preguntan 'are you allergic to anything?'. Quieren saber... A, 'si tienes alergias'.... B, 'si tienes seguro'.... C, 'si vienes solo'.... D, 'si te duele algo'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A! Allergic to anything es alérgico a algo. Si no, contesta no, I'm not. Pregunta número dos. [curious] Llamas pidiendo ayuda. La frase correcta es... A, 'I need an ambulance'.... B, 'I need a ambulance'.... C, 'I want ambulance'.... D, 'I search an ambulance'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A! An, porque ambulance empieza por vocal. Y need, no want.",
+  "translations": {
+    "are you allergic to anything?": "¿es alérgico a algo?",
+    "I need an ambulance": "necesito una ambulancia",
+    "it hurts here": "me duele aquí"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Test"
+  ],
+  "_meta": {
+    "category": "travel",
+    "topic_id": "tr013",
+    "video_type": "quiz",
+    "model": "manual"
+  },
+  "questions": [
+    {
+      "question": "[curious] En urgencias te preguntan 'are you allergic to anything?'. Quieren saber...",
+      "options": {
+        "A": "si tienes alergias",
+        "B": "si tienes seguro",
+        "C": "si vienes solo",
+        "D": "si te duele algo"
+      },
+      "correct": "A",
+      "explanation": "[excited] Allergic to anything es alérgico a algo. Si no, contesta no, I'm not."
+    },
+    {
+      "question": "[curious] Llamas pidiendo ayuda. La frase correcta es...",
+      "options": {
+        "A": "I need an ambulance",
+        "B": "I need a ambulance",
+        "C": "I want ambulance",
+        "D": "I search an ambulance"
+      },
+      "correct": "A",
+      "explanation": "[excited] An, porque ambulance empieza por vocal. Y need, no want."
+    },
+    {
+      "question": "[curious] 'It hurts here' significa...",
+      "options": {
+        "A": "me duele aquí",
+        "B": "me pica aquí",
+        "C": "hace calor aquí",
+        "D": "estoy herido aquí"
+      },
+      "correct": "A",
+      "explanation": "[excited] It hurts here es me duele aquí. Señalas y te entienden en cualquier sitio."
+    }
+  ]
+}

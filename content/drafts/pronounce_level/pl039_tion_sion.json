@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras en -TION y -SION: ¿cómo suenan? 📺",
+  "video_description": "Terminaciones -TION y -SION: así suenan de verdad. 🗣️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras en -TION y -SION",
+  "intro": "[thoughtful] Palabras en -TION y -SION, de fácil a experto. Dilas antes que yo.",
+  "items": [
+    {
+      "english": "action",
+      "respelling": "AK-shen",
+      "ipa": "ˈækʃən",
+      "trap": "-TION suena «shen»"
+    },
+    {
+      "english": "station",
+      "respelling": "STEI-shen",
+      "ipa": "ˈsteɪʃən",
+      "trap": "Sin «es-» y -TION = «shen»"
+    },
+    {
+      "english": "vacation",
+      "respelling": "vei-KEI-shen",
+      "ipa": "veɪˈkeɪʃən",
+      "trap": "Acento en KEI: vei-KEI-shen"
+    },
+    {
+      "english": "television",
+      "respelling": "TE-le-vi-zhen",
+      "ipa": "ˈtɛləvɪʒən",
+      "trap": "-SION = «zhen» y acento en TE"
+    },
+    {
+      "english": "decision",
+      "respelling": "di-SI-zhen",
+      "ipa": "dɪˈsɪʒən",
+      "trap": "-SION suena «zhen»"
+    },
+    {
+      "english": "confusion",
+      "respelling": "ken-FIUU-zhen",
+      "ipa": "kənˈfjuːʒən",
+      "trap": "Acento en FIUU y -SION = «zhen»"
+    },
+    {
+      "english": "explanation",
+      "respelling": "eks-ple-NEI-shen",
+      "ipa": "ɛkspləˈneɪʃən",
+      "trap": "Acento en NEI"
+    },
+    {
+      "english": "occasion",
+      "respelling": "e-KEI-zhen",
+      "ipa": "əˈkeɪʒən",
+      "trap": "-SION suena «zhen»: e-KEI-zhen"
+    },
+    {
+      "english": "suggestion",
+      "respelling": "seg-YES-chen",
+      "ipa": "səgˈdʒɛstʃən",
+      "trap": "-STION suena «schen»"
+    },
+    {
+      "english": "negotiation",
+      "respelling": "ni-gou-shi-EI-shen",
+      "ipa": "nɪgoʊʃiˈeɪʃən",
+      "trap": "La primera TI ya suena «sh»"
+    }
+  ],
+  "verdict": "Tres bien dichas: nivel básico. Siete: intermedio. Las diez sin fallar: eres experto.",
+  "outro": "[excited] Pon tu número en los comentarios y pásaselo a un amigo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#TerminacionesEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl039",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

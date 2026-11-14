@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los NÚMEROS del 11 al 20 en inglés? 🔢",
+  "video_description": "🔢 Del 11 al 20 en inglés en menos de un minuto. ¡Cuidado con thirteen y thirty! ¿Cuántos sabías?",
+  "title": "¿Cómo se dice…?",
+  "theme": "los números del 11 al 20",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes contar del 11 al 20 en inglés? Ojo: thirteen no es thirty. Responde antes que yo.",
+  "items": [
+    {
+      "emoji": "⚽",
+      "spanish": "Once",
+      "english": "eleven"
+    },
+    {
+      "emoji": "🥚",
+      "spanish": "Doce",
+      "english": "twelve"
+    },
+    {
+      "emoji": "👻",
+      "spanish": "Trece",
+      "english": "thirteen"
+    },
+    {
+      "emoji": "💘",
+      "spanish": "Catorce",
+      "english": "fourteen"
+    },
+    {
+      "emoji": "🎂",
+      "spanish": "Quince",
+      "english": "fifteen"
+    },
+    {
+      "emoji": "🚗",
+      "spanish": "Dieciséis",
+      "english": "sixteen"
+    },
+    {
+      "emoji": "🍀",
+      "spanish": "Diecisiete",
+      "english": "seventeen"
+    },
+    {
+      "emoji": "🎓",
+      "spanish": "Dieciocho",
+      "english": "eighteen"
+    },
+    {
+      "emoji": "🦠",
+      "spanish": "Diecinueve",
+      "english": "nineteen"
+    },
+    {
+      "emoji": "💵",
+      "spanish": "Veinte",
+      "english": "twenty"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen, eighteen, nineteen, twenty",
+  "outro": "[excited] ¿Cuántos sabías de los diez? Escribe tu número en los comentarios, ¡en inglés!",
+  "full_script": "[cheerful] ¿Sabes contar del 11 al 20 en inglés? Ojo: thirteen no es thirty. Responde antes que yo. Once... eleven. eleven. Doce... twelve. twelve. Trece... thirteen. thirteen. Catorce... fourteen. fourteen. Quince... fifteen. fifteen. Dieciséis... sixteen. sixteen. Diecisiete... seventeen. seventeen. Dieciocho... eighteen. eighteen. Diecinueve... nineteen. nineteen. Veinte... twenty. twenty. Ahora todas en inglés, conmigo: eleven, twelve, thirteen, fourteen, fifteen, sixteen, seventeen, eighteen, nineteen, twenty. [excited] ¿Cuántos sabías de los diez? Escribe tu número en los comentarios, ¡en inglés!",
+  "translations": {
+    "eleven": "Once",
+    "twelve": "Doce",
+    "thirteen": "Trece",
+    "fourteen": "Catorce",
+    "fifteen": "Quince",
+    "sixteen": "Dieciséis",
+    "seventeen": "Diecisiete",
+    "eighteen": "Dieciocho",
+    "nineteen": "Diecinueve",
+    "twenty": "Veinte"
+  },
+  "english_phrases": [
+    "eleven",
+    "twelve",
+    "thirteen",
+    "fourteen",
+    "fifteen",
+    "sixteen",
+    "seventeen",
+    "eighteen",
+    "nineteen",
+    "twenty"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#NúmerosEnInglés",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv064",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:41:34.075957",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

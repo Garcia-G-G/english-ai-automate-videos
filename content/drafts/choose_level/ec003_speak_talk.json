@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "SPEAK o TALK: ¿cuál va en cada frase? 💬",
+  "video_description": "Speak y talk parecen iguales, pero no lo son. ¿Cuántas aciertas? 💬",
+  "title": "Elige la correcta",
+  "theme": "speak o talk",
+  "intro": "[cheerful] Diez frases, dos opciones. Di la correcta antes que yo.",
+  "items": [
+    {
+      "sentence": "Do you ____ English?",
+      "options": [
+        "speak",
+        "talk"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We need to ____.",
+      "options": [
+        "speak",
+        "talk"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ three languages.",
+      "options": [
+        "talks",
+        "speaks"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He ____ too much in class.",
+      "options": [
+        "talks",
+        "speaks"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Hello, who's ____?",
+      "options": [
+        "talking",
+        "speaking"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She gave a ____ at the conference.",
+      "options": [
+        "talk",
+        "speak"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Actions ____ louder than words.",
+      "options": [
+        "speak",
+        "talk"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Generally ____, it's cheaper.",
+      "options": [
+        "talking",
+        "speaking"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ of the devil, here she is!",
+      "options": [
+        "Speak",
+        "Talk"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Ignore him, that's the wine ____.",
+      "options": [
+        "speaking",
+        "talking"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#SpeakVsTalk",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec003",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

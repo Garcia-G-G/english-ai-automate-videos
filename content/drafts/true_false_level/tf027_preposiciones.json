@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Verdadero o falso? PREPOSICIONES 📍",
+  "video_description": "Preposiciones en inglés: ¿verdadero o falso? 📍",
+  "title": "¿Verdadero o falso?",
+  "theme": "las preposiciones",
+  "intro": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta.",
+  "items": [
+    {
+      "statement": "Se dice «in Monday».",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es on Monday"
+    },
+    {
+      "statement": "Se dice «at night».",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "Se dice «in 2024».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "Se dice «married with someone».",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es married to"
+    },
+    {
+      "statement": "Se dice «good at math».",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "Se dice «depend of».",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es depend on"
+    },
+    {
+      "statement": "Se dice «on the bus».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "Se dice «arrive to London».",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es arrive in London"
+    },
+    {
+      "statement": "Se dice «on purpose».",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "Se dice «interested in».",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#Preposiciones",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf027",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

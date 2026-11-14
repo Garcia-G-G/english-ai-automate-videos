@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "Rellena el hueco: PHRASAL VERBS con LOOK 🔎",
+  "video_description": "Look for, look after, look up to: diez phrasal verbs con look. 🔎",
+  "title": "Completa la frase",
+  "theme": "phrasal verbs con LOOK",
+  "intro": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "sentence": "I'm looking ____ my glasses.",
+      "answer": "for",
+      "translation": "Estoy buscando mis gafas.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Look ____! A car!",
+      "answer": "out",
+      "translation": "¡Cuidado! ¡Un coche!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Can you look ____ my cat this weekend?",
+      "answer": "after",
+      "translation": "¿Puedes cuidar a mi gato este finde?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Look it ____ in the dictionary.",
+      "answer": "up",
+      "translation": "Búscalo en el diccionario.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I'm looking ____ to the holidays.",
+      "answer": "forward",
+      "translation": "Tengo ganas de que lleguen las vacaciones.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The police are looking ____ the case.",
+      "answer": "into",
+      "translation": "La policía está investigando el caso.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Can you look ____ my essay?",
+      "answer": "over",
+      "translation": "¿Puedes revisar mi redacción?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I've always looked ____ to my dad.",
+      "answer": "up",
+      "translation": "Siempre he admirado a mi padre.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Don't look ____ on people with less money.",
+      "answer": "down",
+      "translation": "No menosprecies a la gente con menos dinero.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Things are looking ____ for us.",
+      "answer": "up",
+      "translation": "Las cosas nos empiezan a ir mejor.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc006",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

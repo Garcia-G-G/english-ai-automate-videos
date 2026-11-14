@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes cuáles son verdad? TECNOLOGÍA 💻",
+  "video_description": "Inglés de tecnología: ¿verdadero o falso? 💻",
+  "title": "¿Verdadero o falso?",
+  "theme": "la tecnología",
+  "intro": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad?",
+  "items": [
+    {
+      "statement": "«Laptop» es portátil.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Password» es contraseña.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Screen» es teclado.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es pantalla"
+    },
+    {
+      "statement": "«Download» es descargar.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Charger» es cargador.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Update» es borrar.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es actualizar"
+    },
+    {
+      "statement": "«Bug» puede ser un error de programa.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Cloud» en tecnología es una nube de verdad.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es almacenamiento en internet"
+    },
+    {
+      "statement": "«Bandwidth» puede significar tiempo o capacidad disponible.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Glitch» es un fallo pequeño o raro.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf025",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Laptop",
+    "Password",
+    "Screen",
+    "Download",
+    "Charger",
+    "Update",
+    "Bug",
+    "Cloud",
+    "Bandwidth",
+    "Glitch"
+  ],
+  "full_script": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad? Verdadero. Verdadero. Falso: es pantalla. Ahora, nivel intermedio. Verdadero. Verdadero. Falso: es actualizar. Verdadero. Y ahora, nivel experto. Falso: es almacenamiento en internet. Verdadero. Verdadero. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [happy] ¿Cuántas acertaste? Déjame tu número abajo."
+}

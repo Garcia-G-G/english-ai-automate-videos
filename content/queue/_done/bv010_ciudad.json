@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los sitios de la CIUDAD en inglés? 🏙️",
+  "video_description": "Diez lugares para orientarte en cualquier ciudad. 🗺️",
+  "title": "¿Cómo se dice…?",
+  "theme": "la ciudad",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "🏦",
+      "spanish": "Banco",
+      "english": "bank"
+    },
+    {
+      "emoji": "🏪",
+      "spanish": "Tienda",
+      "english": "shop"
+    },
+    {
+      "emoji": "⛪",
+      "spanish": "Iglesia",
+      "english": "church"
+    },
+    {
+      "emoji": "🏞️",
+      "spanish": "Parque",
+      "english": "park"
+    },
+    {
+      "emoji": "🌉",
+      "spanish": "Puente",
+      "english": "bridge"
+    },
+    {
+      "emoji": "🚉",
+      "spanish": "Estación",
+      "english": "station"
+    },
+    {
+      "emoji": "💊",
+      "spanish": "Farmacia",
+      "english": "pharmacy"
+    },
+    {
+      "emoji": "🏢",
+      "spanish": "Edificio",
+      "english": "building"
+    },
+    {
+      "emoji": "🏛️",
+      "spanish": "Museo",
+      "english": "museum"
+    },
+    {
+      "emoji": "🚦",
+      "spanish": "Semáforo",
+      "english": "traffic light"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: bank, shop, church, park, bridge, station, pharmacy, building, museum, traffic light.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "bank": "Banco",
+    "shop": "Tienda",
+    "church": "Iglesia",
+    "park": "Parque",
+    "bridge": "Puente",
+    "station": "Estación",
+    "pharmacy": "Farmacia",
+    "building": "Edificio",
+    "museum": "Museo",
+    "traffic light": "Semáforo"
+  },
+  "english_phrases": [
+    "bank",
+    "shop",
+    "church",
+    "park",
+    "bridge",
+    "station",
+    "pharmacy",
+    "building",
+    "museum",
+    "traffic light"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv010",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Banco... bank. bank. Tienda... shop. shop. Iglesia... church. church. Parque... park. park. Puente... bridge. bridge. Estación... station. station. Farmacia... pharmacy. pharmacy. Edificio... building. building. Museo... museum. museum. Semáforo... traffic light. traffic light. Ahora, todas conmigo: bank, shop, church, park, bridge, station, pharmacy, building, museum, traffic light. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Vocabulario de MODA en inglés: ¿básico o experto? 👗",
+  "video_description": "De «outfit» a «flattering»: ¿cuánto sabes de moda en inglés? Test de 10 palabras 👠",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la moda",
+  "intro": "[excited] Diez palabras de moda en inglés, de fácil a experto. ¿Las sabes antes que yo?",
+  "items": [
+    {
+      "english": "fashion",
+      "spanish": "Moda",
+      "cefr": "A2"
+    },
+    {
+      "english": "style",
+      "spanish": "Estilo",
+      "cefr": "A2"
+    },
+    {
+      "english": "brand",
+      "spanish": "Marca",
+      "cefr": "A2"
+    },
+    {
+      "english": "fit",
+      "spanish": "Quedar bien de talla",
+      "cefr": "B1"
+    },
+    {
+      "english": "outfit",
+      "spanish": "Conjunto / modelito",
+      "cefr": "B1"
+    },
+    {
+      "english": "trendy",
+      "spanish": "A la moda",
+      "cefr": "B1"
+    },
+    {
+      "english": "catwalk",
+      "spanish": "Pasarela",
+      "cefr": "B2"
+    },
+    {
+      "english": "old-fashioned",
+      "spanish": "Pasado de moda",
+      "cefr": "B2"
+    },
+    {
+      "english": "hand-me-downs",
+      "spanish": "Ropa heredada",
+      "cefr": "C1"
+    },
+    {
+      "english": "flattering",
+      "spanish": "Favorecedor",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos: nivel básico. Siete: intermedio. Diez: experto y con mucho estilo.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Comenta tu resultado.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#ModaEnInglés",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv067",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "fashion": "Moda",
+    "style": "Estilo",
+    "brand": "Marca",
+    "fit": "Quedar bien de talla",
+    "outfit": "Conjunto / modelito",
+    "trendy": "A la moda",
+    "catwalk": "Pasarela",
+    "old-fashioned": "Pasado de moda",
+    "hand-me-downs": "Ropa heredada",
+    "flattering": "Favorecedor"
+  },
+  "english_phrases": [
+    "fashion",
+    "style",
+    "brand",
+    "fit",
+    "outfit",
+    "trendy",
+    "catwalk",
+    "old-fashioned",
+    "hand-me-downs",
+    "flattering"
+  ],
+  "full_script": "[excited] Diez palabras de moda en inglés, de fácil a experto. ¿Las sabes antes que yo? fashion Moda style Estilo brand Marca Ahora, nivel intermedio. fit Quedar bien de talla outfit Conjunto / modelito trendy A la moda catwalk Pasarela Y ahora, nivel experto. old-fashioned Pasado de moda hand-me-downs Ropa heredada flattering Favorecedor Tres aciertos: nivel básico. Siete: intermedio. Diez: experto y con mucho estilo. [cheerful] ¿Hasta qué número llegaste? Comenta tu resultado."
+}

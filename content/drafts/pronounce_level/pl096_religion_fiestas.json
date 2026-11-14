@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Religión y FIESTAS en inglés: ¿cómo se pronuncian? 🎃",
+  "video_description": "Church, angel, psalm: palabras de fiestas y religión con trampa. 🕯️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la religión y las fiestas",
+  "intro": "[warm] Fiestas y religión en diez palabras. Dilas en voz alta y luego compara.",
+  "items": [
+    {
+      "english": "church",
+      "respelling": "CHERCH",
+      "ipa": "ˈtʃɝtʃ",
+      "trap": "UR suena «er»: CHERCH"
+    },
+    {
+      "english": "pray",
+      "respelling": "PREI",
+      "ipa": "ˈpreɪ",
+      "trap": "AY suena «ei»: PREI"
+    },
+    {
+      "english": "holiday",
+      "respelling": "JA-la-dei",
+      "ipa": "ˈhɑlədeɪ",
+      "trap": "Acento en JA-: JA-la-dei"
+    },
+    {
+      "english": "Easter",
+      "respelling": "IIS-ter",
+      "ipa": "ˈiːstɚ",
+      "trap": "EA suena «ii»: IIS-ter"
+    },
+    {
+      "english": "angel",
+      "respelling": "EIN-yel",
+      "ipa": "ˈeɪndʒəl",
+      "trap": "Suena EIN-yel, no AN-jel"
+    },
+    {
+      "english": "Halloween",
+      "respelling": "ja-lou-IIN",
+      "ipa": "hæloʊˈiːn",
+      "trap": "Acento al final: ja-lou-IIN"
+    },
+    {
+      "english": "ceremony",
+      "respelling": "SE-ra-mou-ni",
+      "ipa": "ˈsɛrəmoʊni",
+      "trap": "Acento en SE-: SE-ra-mou-ni"
+    },
+    {
+      "english": "pilgrimage",
+      "respelling": "PIL-gra-midch",
+      "ipa": "ˈpɪlɡrəmɪdʒ",
+      "trap": "Acento en PIL y final «midch»"
+    },
+    {
+      "english": "Christianity",
+      "respelling": "kris-chi-A-na-ti",
+      "ipa": "krɪstʃiˈænəti",
+      "trap": "TI suena «chi» y acento en A"
+    },
+    {
+      "english": "psalm",
+      "respelling": "SAM",
+      "ipa": "ˈsɑm",
+      "trap": "Ni la P ni la L suenan: SAM"
+    }
+  ],
+  "verdict": "Tres correctas, nivel básico. Hasta la siete, intermedio. Las diez, experto.",
+  "outro": "[warm] ¿Qué palabra te sorprendió? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#FiestasEnInglés",
+    "#InglésFácil",
+    "#Cultura"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl096",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

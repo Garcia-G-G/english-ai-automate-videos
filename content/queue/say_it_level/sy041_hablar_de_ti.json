@@ -1,0 +1,103 @@
+{
+  "type": "say_it_level",
+  "video_title": "HABLAR DE TI en inglés: ¿pasas del nivel básico? 🙂",
+  "video_description": "Tus costumbres, tu carácter y lo que se te da bien: diez frases para hablar de ti en inglés. 🙂",
+  "title": "Dilo en inglés",
+  "theme": "hablar de ti",
+  "intro": "[warm] Hoy el tema eres tú. Escucha cada frase y dila en inglés como si hablaras de ti.",
+  "items": [
+    {
+      "spanish": "Soy muy tímido.",
+      "english": "I'm very shy.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Me levanto temprano.",
+      "english": "I get up early.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "No bebo café.",
+      "english": "I don't drink coffee.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Estudié Derecho.",
+      "english": "I studied law.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Nunca he estado en Asia.",
+      "english": "I've never been to Asia.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Quiero aprender a tocar el piano.",
+      "english": "I want to learn to play the piano.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me cuesta decir que no.",
+      "english": "I find it hard to say no.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Suelo acostarme tarde.",
+      "english": "I usually go to bed late.",
+      "cefr": "B1",
+      "tip": "«Soler» en presente es usually, no «I use to»"
+    },
+    {
+      "spanish": "Estoy acostumbrado a la noche.",
+      "english": "I'm used to working at night.",
+      "cefr": "B2",
+      "tip": "«Estar acostumbrado a» es be used to + -ing"
+    },
+    {
+      "spanish": "Se me dan bien los idiomas.",
+      "english": "I'm good at languages.",
+      "cefr": "B2",
+      "tip": "«Se me da bien» algo es be good at"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, experto.",
+  "outro": "[curious] Ahora te toca a ti: cuéntame algo de ti y tu número en comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésBásico",
+    "#FrasesEnInglés",
+    "#HablaInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy041",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm very shy.": "Soy muy tímido.",
+    "I get up early.": "Me levanto temprano.",
+    "I don't drink coffee.": "No bebo café.",
+    "I studied law.": "Estudié Derecho.",
+    "I've never been to Asia.": "Nunca he estado en Asia.",
+    "I want to learn to play the piano.": "Quiero aprender a tocar el piano.",
+    "I find it hard to say no.": "Me cuesta decir que no.",
+    "I usually go to bed late.": "Suelo acostarme tarde.",
+    "I'm used to working at night.": "Estoy acostumbrado a la noche.",
+    "I'm good at languages.": "Se me dan bien los idiomas."
+  },
+  "english_phrases": [
+    "I'm very shy.",
+    "I get up early.",
+    "I don't drink coffee.",
+    "I studied law.",
+    "I've never been to Asia.",
+    "I want to learn to play the piano.",
+    "I find it hard to say no.",
+    "I usually go to bed late.",
+    "I'm used to working at night.",
+    "I'm good at languages."
+  ],
+  "full_script": "[warm] Hoy el tema eres tú. Escucha cada frase y dila en inglés como si hablaras de ti. I'm very shy. I get up early. I don't drink coffee. Ahora, nivel intermedio. I studied law. I've never been to Asia. I want to learn to play the piano. I find it hard to say no. Y ahora, nivel experto. I usually go to bed late. I'm used to working at night. I'm good at languages. Si llegaste a la tres, eres básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, experto. [curious] Ahora te toca a ti: cuéntame algo de ti y tu número en comentarios."
+}

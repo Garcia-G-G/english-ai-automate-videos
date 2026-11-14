@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: 10 PREPOSICIONES que fallan todos 📝",
+  "video_description": "In, on, at, to, with: diez frases de fácil a experto. ¿Cuántas completas? ✍️",
+  "title": "Completa la frase",
+  "theme": "preposiciones",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "I live ____ Madrid.",
+      "answer": "in",
+      "translation": "Vivo en Madrid.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "See you ____ Monday.",
+      "answer": "on",
+      "translation": "Nos vemos el lunes.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The class starts ____ 9.",
+      "answer": "at",
+      "translation": "La clase empieza a las 9.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'm good ____ cooking.",
+      "answer": "at",
+      "translation": "Se me da bien cocinar.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "It depends ____ the weather.",
+      "answer": "on",
+      "translation": "Depende del tiempo.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She's married ____ a doctor.",
+      "answer": "to",
+      "translation": "Está casada con un médico.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'm interested ____ art.",
+      "answer": "in",
+      "translation": "Me interesa el arte.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "We arrived ____ the airport.",
+      "answer": "at",
+      "translation": "Llegamos al aeropuerto.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'm fed up ____ this job.",
+      "answer": "with",
+      "translation": "Estoy harto de este trabajo.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It's up ____ you.",
+      "answer": "to",
+      "translation": "Depende de ti.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y las diez, experto.",
+  "outro": "[excited] ¿Cuántas completaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PreposicionesEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc001",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I live in Madrid.": "Vivo en Madrid.",
+    "See you on Monday.": "Nos vemos el lunes.",
+    "The class starts at 9.": "La clase empieza a las 9.",
+    "I'm good at cooking.": "Se me da bien cocinar.",
+    "It depends on the weather.": "Depende del tiempo.",
+    "She's married to a doctor.": "Está casada con un médico.",
+    "I'm interested in art.": "Me interesa el arte.",
+    "We arrived at the airport.": "Llegamos al aeropuerto.",
+    "I'm fed up with this job.": "Estoy harto de este trabajo.",
+    "It's up to you.": "Depende de ti."
+  },
+  "english_phrases": [
+    "I live in Madrid.",
+    "See you on Monday.",
+    "The class starts at 9.",
+    "I'm good at cooking.",
+    "It depends on the weather.",
+    "She's married to a doctor.",
+    "I'm interested in art.",
+    "We arrived at the airport.",
+    "I'm fed up with this job.",
+    "It's up to you."
+  ],
+  "full_script": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare. I live in Madrid. See you on Monday. The class starts at 9. Ahora, nivel intermedio. I'm good at cooking. It depends on the weather. She's married to a doctor. I'm interested in art. Y ahora, nivel experto. We arrived at the airport. I'm fed up with this job. It's up to you. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y las diez, experto. [excited] ¿Cuántas completaste? Cuéntamelo en los comentarios."
+}

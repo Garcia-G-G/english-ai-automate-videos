@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "¿Sabes cuándo usar DURING o FOR? 🎬",
+  "video_description": "¿Durante qué? During o for: diez frases para no dudar. 🎬",
+  "title": "Elige la correcta",
+  "theme": "during o for",
+  "intro": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto.",
+  "items": [
+    {
+      "sentence": "I slept ____ the movie.",
+      "options": [
+        "during",
+        "for"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I slept ____ two hours.",
+      "options": [
+        "during",
+        "for"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Don't use your phone ____ class.",
+      "options": [
+        "for",
+        "during"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We stayed there ____ a week.",
+      "options": [
+        "for",
+        "during"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "It rained ____ the night.",
+      "options": [
+        "for",
+        "during"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I've waited ____ ages.",
+      "options": [
+        "for",
+        "during"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "____ the war, many people left.",
+      "options": [
+        "During",
+        "For"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She was silent ____ a moment.",
+      "options": [
+        "during",
+        "for"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Prices rose ____ the crisis.",
+      "options": [
+        "during",
+        "for"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I haven't seen him ____ years.",
+      "options": [
+        "during",
+        "for"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#DuringVsFor",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec030",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "I slept during the movie.",
+    "I slept for two hours.",
+    "Don't use your phone during class.",
+    "We stayed there for a week.",
+    "It rained during the night.",
+    "I've waited for ages.",
+    "During the war, many people left.",
+    "She was silent for a moment.",
+    "Prices rose during the crisis.",
+    "I haven't seen him for years."
+  ],
+  "full_script": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto. I slept during the movie. I slept for two hours. Don't use your phone during class. Ahora, nivel intermedio. We stayed there for a week. It rained during the night. I've waited for ages. During the war, many people left. Y ahora, nivel experto. She was silent for a moment. Prices rose during the crisis. I haven't seen him for years. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

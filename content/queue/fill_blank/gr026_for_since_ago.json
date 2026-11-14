@@ -1,0 +1,67 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa: FOR, SINCE o AGO ⏳",
+  "video_description": "Tres palabras para el tiempo que en español son hace y desde. 🕰️",
+  "sentence": "I've lived in Madrid ___ five years.",
+  "options": [
+    "for",
+    "since",
+    "ago",
+    "during"
+  ],
+  "correct": "for",
+  "translation": "Llevo cinco años viviendo en Madrid.",
+  "explanation": "[excited] For mide cuánto tiempo: for five years. Since marca el punto de inicio.",
+  "full_script": "[excited] ¡Completa la frase! Número uno. I've lived in Madrid ___ five years. Las opciones son: A, for. B, since. C, ago. D, during. [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, for! For mide cuánto tiempo: for five years. Since marca el punto de inicio. Número dos. I've worked here ___ 2019. Las opciones son: A, since. B, for. C, ago. D, from. [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, since! Since va con el momento en que empezó: since 2019, since Monday, since I was a kid.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr026",
+    "video_type": "fill_blank",
+    "model": "manual"
+  },
+  "sentences": [
+    {
+      "sentence": "I've lived in Madrid ___ five years.",
+      "options": [
+        "for",
+        "since",
+        "ago",
+        "during"
+      ],
+      "correct": "for",
+      "translation": "Llevo cinco años viviendo en Madrid.",
+      "explanation": "[excited] For mide cuánto tiempo: for five years. Since marca el punto de inicio."
+    },
+    {
+      "sentence": "I've worked here ___ 2019.",
+      "options": [
+        "since",
+        "for",
+        "ago",
+        "from"
+      ],
+      "correct": "since",
+      "translation": "Trabajo aquí desde 2019.",
+      "explanation": "[excited] Since va con el momento en que empezó: since 2019, since Monday, since I was a kid."
+    },
+    {
+      "sentence": "We met three years ___.",
+      "options": [
+        "ago",
+        "since",
+        "for",
+        "during"
+      ],
+      "correct": "ago",
+      "translation": "Nos conocimos hace tres años.",
+      "explanation": "[excited] Ago es hace, y va detrás: three years ago. Con pasado simple, no con have."
+    }
+  ]
+}

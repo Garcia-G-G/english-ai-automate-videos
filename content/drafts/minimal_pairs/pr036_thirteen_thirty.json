@@ -1,0 +1,52 @@
+{
+  "type": "minimal_pairs",
+  "video_title": "THIRTEEN o THIRTY: 13 o 30 🔢",
+  "video_description": "El error que te cobra de más en una tienda. 💸",
+  "level": "A2",
+  "intro": "[curious] Dos palabras que para ti suenan igual. Para un nativo, no.",
+  "pair": [
+    {
+      "word": "thirteen",
+      "phonetic": "thir-TIIIN",
+      "meaning": "trece",
+      "emoji": "🔢"
+    },
+    {
+      "word": "thirty",
+      "phonetic": "THIR-ti",
+      "meaning": "treinta",
+      "emoji": "💶"
+    }
+  ],
+  "sound_tip": "Trece carga la fuerza al final y alarga la i: thir-TEEN. Treinta la carga al principio: THIR-ty.",
+  "test": [
+    0,
+    1,
+    0,
+    0
+  ],
+  "sentence": {
+    "en": "It costs thirteen, not thirty.",
+    "es": "Cuesta trece, no treinta."
+  },
+  "outro": "[excited] ¿Cuántas acertaste de cuatro? Dímelo en los comentarios.",
+  "translations": {
+    "thirteen": "trece",
+    "thirty": "treinta",
+    "It costs thirteen, not thirty.": "Cuesta trece, no treinta."
+  },
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#ParesMínimos"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr036",
+    "video_type": "minimal_pairs",
+    "model": "manual",
+    "draft": true
+  }
+}

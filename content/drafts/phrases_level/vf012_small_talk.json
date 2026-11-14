@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿QUÉ TAL EL FINDE?» en inglés? ☕",
+  "video_description": "Diez frases para charlar de cualquier cosa. ☕",
+  "title": "¿Cómo se dice?",
+  "theme": "para hablar de todo un poco",
+  "intro": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Qué tal el finde?",
+      "english": "How was your weekend?"
+    },
+    {
+      "spanish": "¿A qué te dedicas?",
+      "english": "What do you do?"
+    },
+    {
+      "spanish": "¿De dónde eres?",
+      "english": "Where are you from?"
+    },
+    {
+      "spanish": "¿Llevas mucho aquí?",
+      "english": "Have you been here long?"
+    },
+    {
+      "spanish": "¿Cómo conoces a Ana?",
+      "english": "How do you know Ana?"
+    },
+    {
+      "spanish": "Qué calor hace hoy.",
+      "english": "It's so hot today."
+    },
+    {
+      "spanish": "¿Tienes planes para el verano?",
+      "english": "Any plans for the summer?"
+    },
+    {
+      "spanish": "¿Has visto algo bueno últimamente?",
+      "english": "Have you watched anything good lately?"
+    },
+    {
+      "spanish": "Me suena tu cara.",
+      "english": "You look familiar."
+    },
+    {
+      "spanish": "Bueno, te dejo.",
+      "english": "Well, I'll let you go."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#ConversaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf012",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

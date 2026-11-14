@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "Rellena el hueco: expresiones con HAVE ☕",
+  "video_description": "Have breakfast, have fun, have a look: expresiones con have. ☕",
+  "title": "Completa la frase",
+  "theme": "expresiones con HAVE",
+  "intro": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "sentence": "I have ____ at eight.",
+      "answer": "breakfast",
+      "translation": "Desayuno a las ocho.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Have ____ at the party!",
+      "answer": "fun",
+      "translation": "¡Pásalo bien en la fiesta!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Let's have a ____ of coffee.",
+      "answer": "cup",
+      "translation": "Vamos a tomarnos un café.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Can I have a ____ at your notes?",
+      "answer": "look",
+      "translation": "¿Puedo echarle un vistazo a tus apuntes?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We had a great ____ in Mexico.",
+      "answer": "time",
+      "translation": "Lo pasamos genial en México.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I have a ____. Can we talk later?",
+      "answer": "headache",
+      "translation": "Me duele la cabeza. ¿Hablamos luego?",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Let's have a ____ before the meeting.",
+      "answer": "chat",
+      "translation": "Charlemos un poco antes de la reunión.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I have no ____ what you mean.",
+      "answer": "idea",
+      "translation": "No tengo ni idea de lo que dices.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "You have a ____, I hadn't thought of that.",
+      "answer": "point",
+      "translation": "Tienes razón, no lo había pensado.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I have a lot on my ____ right now.",
+      "answer": "plate",
+      "translation": "Ahora mismo tengo muchísimo lío.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Collocations",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc021",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

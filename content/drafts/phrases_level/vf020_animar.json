@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases animar a alguien en inglés 💪",
+  "video_description": "Diez frases para animar a alguien en inglés. 💪",
+  "title": "¿Cómo se dice?",
+  "theme": "animar a alguien",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "¡Tú puedes!",
+      "english": "You can do it!"
+    },
+    {
+      "spanish": "¡Ánimo!",
+      "english": "Hang in there!"
+    },
+    {
+      "spanish": "No te rindas.",
+      "english": "Don't give up."
+    },
+    {
+      "spanish": "Todo va a salir bien.",
+      "english": "Everything's going to be OK."
+    },
+    {
+      "spanish": "Estoy orgulloso de ti.",
+      "english": "I'm proud of you."
+    },
+    {
+      "spanish": "Lo hiciste genial.",
+      "english": "You did great."
+    },
+    {
+      "spanish": "No te preocupes.",
+      "english": "Don't worry about it."
+    },
+    {
+      "spanish": "Aquí estoy para lo que necesites.",
+      "english": "I'm here if you need anything."
+    },
+    {
+      "spanish": "Sigue así.",
+      "english": "Keep it up."
+    },
+    {
+      "spanish": "Lo peor ya pasó.",
+      "english": "The worst is over."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf020",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

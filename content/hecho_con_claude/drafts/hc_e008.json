@@ -1,0 +1,43 @@
+{
+  "id": "hc_e008",
+  "style": "escena",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "En el médico: «I have pain in my head»",
+  "hook_text": "ESCENA — CONSULTA MÉDICA EN TORONTO",
+  "scene": {
+    "location": "Consulta médica en Toronto",
+    "take1": "Doctor, I have pain in my head.",
+    "take2": "I have a headache.",
+    "note": "Dolor de cabeza, de estómago, de muelas: una sola palabra con -ache."
+  },
+  "correction": {
+    "wrong": "I have pain in my head",
+    "right": "I have a headache",
+    "rule": "headache, stomachache, toothache, backache"
+  },
+  "voice": [
+    "Escena: consulta médica. Toma uno: [[Doctor, I have pain in my head]].",
+    "¡Corten! El médico te entiende, pero en inglés hay una palabra para eso.",
+    "Toma dos: [[I have a headache]]. Dolor de cabeza en una sola palabra.",
+    "Igual con otros: [[a stomachache]], [[a toothache]], [[a backache]].",
+    "Y para otras partes del cuerpo: [[My knee hurts]], «me duele la rodilla».",
+    "Reto: ¿cómo dirías «me duele la espalda»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Me duele la espalda»",
+    "answer": "I have a backache. / My back hurts."
+  },
+  "caption": "«Tengo dolor de cabeza» es «I have a headache». Cómo hablar de dolores en inglés en el médico.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 69
+}

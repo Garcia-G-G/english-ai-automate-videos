@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras con EA: ¿suena «ii», «e» o «ei»? 🧐",
+  "video_description": "La combinación EA tiene varios sonidos: pon a prueba tu oído y tu boca. 👂",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con EA",
+  "intro": "[curious] Todas llevan EA, pero no suenan igual. Di cada una antes que yo.",
+  "items": [
+    {
+      "english": "eat",
+      "respelling": "IIT",
+      "ipa": "ˈiːt",
+      "trap": "EA es una «i» larga: IIT"
+    },
+    {
+      "english": "please",
+      "respelling": "PLIIZ",
+      "ipa": "ˈpliːz",
+      "trap": "EA es «ii» y la S suena «z»"
+    },
+    {
+      "english": "head",
+      "respelling": "JED",
+      "ipa": "ˈhɛd",
+      "trap": "Aquí EA suena «e»: JED"
+    },
+    {
+      "english": "bread",
+      "respelling": "BRED",
+      "ipa": "ˈbrɛd",
+      "trap": "EA suena «e» corta, no «ii»"
+    },
+    {
+      "english": "great",
+      "respelling": "GREIT",
+      "ipa": "ˈɡreɪt",
+      "trap": "Aquí EA suena «ei»: GREIT"
+    },
+    {
+      "english": "heart",
+      "respelling": "JART",
+      "ipa": "ˈhɑrt",
+      "trap": "EA suena «a»: JART"
+    },
+    {
+      "english": "learn",
+      "respelling": "LERN",
+      "ipa": "ˈlɝn",
+      "trap": "EAR suena «er»: LERN"
+    },
+    {
+      "english": "measure",
+      "respelling": "ME-zher",
+      "ipa": "ˈmɛʒɚ",
+      "trap": "EA suena «e» y la S, «zh»"
+    },
+    {
+      "english": "theater",
+      "respelling": "THII-a-ter",
+      "ipa": "ˈθiːətɚ",
+      "trap": "EA son dos sílabas: THII-a-ter"
+    },
+    {
+      "english": "area",
+      "respelling": "E-ri-a",
+      "ipa": "ˈɛriə",
+      "trap": "Acento en la primera: E-ri-a"
+    }
+  ],
+  "verdict": "Básico si llegaste a la tres, intermedio si llegaste a la siete, y experto si te salieron las diez.",
+  "outro": "[warm] ¿Qué palabra te sorprendió más? Cuéntamelo abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#VocalesEnInglés",
+    "#InglésFácil",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl056",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

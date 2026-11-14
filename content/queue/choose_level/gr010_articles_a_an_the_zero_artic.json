@@ -1,0 +1,117 @@
+{
+  "type": "choose_level",
+  "video_title": "¿A, AN o THE? ARTÍCULOS en inglés: elige la correcta en 10 frases ✅",
+  "video_description": "Pon a prueba tus ARTÍCULOS en inglés: a, an, the o nada. ¿Hasta qué número llegas sin fallar? 🧠",
+  "title": "Elige la correcta",
+  "theme": "Articles (A, An, The, Zero Article)",
+  "intro": "[curious] ¿Tú dices «a apple» o «an apple»? Diez frases con artículos. ¿Hasta cuál llegas sin fallar?",
+  "items": [
+    {
+      "sentence": "I have ____ dog.",
+      "options": [
+        "a",
+        "an"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She eats ____ apple.",
+      "options": [
+        "a",
+        "an"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ sun is very hot today.",
+      "options": [
+        "A",
+        "The"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "My dad is ____ engineer.",
+      "options": [
+        "a",
+        "an"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Kids go to ____ at eight.",
+      "options": [
+        "school",
+        "the school"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She plays ____ piano.",
+      "options": [
+        "the",
+        "a"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It's ____ honor to meet you.",
+      "options": [
+        "a",
+        "an"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She works at ____ university.",
+      "options": [
+        "a",
+        "an"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ don't always help.",
+      "options": [
+        "Rich",
+        "The rich"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She's ____ Einstein of her class.",
+      "options": [
+        "an",
+        "the"
+      ],
+      "answer": 1,
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Tú dices «a apple» o «an apple»? Diez frases con artículos. ¿Hasta cuál llegas sin fallar? I have a dog. She eats an apple. The sun is very hot today. My dad is an engineer. Kids go to school at eight. She plays the piano. It's an honor to meet you. She works at a university. The rich don't always help. She's the Einstein of her class. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AprenderIngles",
+    "#ArticulosEnIngles",
+    "#GramaticaInglesa",
+    "#EnglishQuiz"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr010",
+    "video_type": "choose_level",
+    "generated_at": "2026-11-02T11:07:50.351480",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las TIENDAS en inglés? 🏪",
+  "video_description": "Diez tiendas de tu barrio, y una es un falso amigo. 📚",
+  "title": "¿Cómo se dice…?",
+  "theme": "las tiendas",
+  "level": "A2",
+  "intro": "[excited] Te enseño diez palabras. Dilas tú antes que yo.",
+  "items": [
+    {
+      "emoji": "🥖",
+      "spanish": "Panadería",
+      "english": "bakery"
+    },
+    {
+      "emoji": "🥩",
+      "spanish": "Carnicería",
+      "english": "butcher shop"
+    },
+    {
+      "emoji": "📚",
+      "spanish": "Librería",
+      "english": "bookstore"
+    },
+    {
+      "emoji": "💈",
+      "spanish": "Peluquería",
+      "english": "hair salon"
+    },
+    {
+      "emoji": "🔨",
+      "spanish": "Ferretería",
+      "english": "hardware store"
+    },
+    {
+      "emoji": "🧸",
+      "spanish": "Juguetería",
+      "english": "toy store"
+    },
+    {
+      "emoji": "💐",
+      "spanish": "Floristería",
+      "english": "flower shop"
+    },
+    {
+      "emoji": "👟",
+      "spanish": "Zapatería",
+      "english": "shoe store"
+    },
+    {
+      "emoji": "💍",
+      "spanish": "Joyería",
+      "english": "jewelry store"
+    },
+    {
+      "emoji": "🍦",
+      "spanish": "Heladería",
+      "english": "ice cream shop"
+    }
+  ],
+  "recap": "Repite conmigo las diez: bakery, butcher shop, bookstore, hair salon, hardware store, toy store, flower shop, shoe store, jewelry store, ice cream shop.",
+  "outro": "[cheerful] Escribe en los comentarios cuántas acertaste.",
+  "translations": {
+    "bakery": "Panadería",
+    "butcher shop": "Carnicería",
+    "bookstore": "Librería",
+    "hair salon": "Peluquería",
+    "hardware store": "Ferretería",
+    "toy store": "Juguetería",
+    "flower shop": "Floristería",
+    "shoe store": "Zapatería",
+    "jewelry store": "Joyería",
+    "ice cream shop": "Heladería"
+  },
+  "english_phrases": [
+    "bakery",
+    "butcher shop",
+    "bookstore",
+    "hair salon",
+    "hardware store",
+    "toy store",
+    "flower shop",
+    "shoe store",
+    "jewelry store",
+    "ice cream shop"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv046",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[excited] Te enseño diez palabras. Dilas tú antes que yo. Panadería... bakery. bakery. Carnicería... butcher shop. butcher shop. Librería... bookstore. bookstore. Peluquería... hair salon. hair salon. Ferretería... hardware store. hardware store. Juguetería... toy store. toy store. Floristería... flower shop. flower shop. Zapatería... shoe store. shoe store. Joyería... jewelry store. jewelry store. Heladería... ice cream shop. ice cream shop. Repite conmigo las diez: bakery, butcher shop, bookstore, hair salon, hardware store, toy store, flower shop, shoe store, jewelry store, ice cream shop. [cheerful] Escribe en los comentarios cuántas acertaste."
+}

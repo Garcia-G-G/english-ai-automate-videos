@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "«SOLO ESTOY MIRANDO» y 9 frases más en inglés 🛍️",
+  "video_description": "Diez frases para ir de compras en inglés. 🛍️",
+  "title": "¿Cómo se dice?",
+  "theme": "de compras",
+  "intro": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo?",
+  "items": [
+    {
+      "spanish": "Solo estoy mirando.",
+      "english": "I'm just looking."
+    },
+    {
+      "spanish": "¿Cuánto cuesta?",
+      "english": "How much is it?"
+    },
+    {
+      "spanish": "¿Lo tiene en otra talla?",
+      "english": "Do you have it in another size?"
+    },
+    {
+      "spanish": "¿Me lo puedo probar?",
+      "english": "Can I try it on?"
+    },
+    {
+      "spanish": "¿Dónde están los probadores?",
+      "english": "Where are the fitting rooms?"
+    },
+    {
+      "spanish": "Me queda pequeño.",
+      "english": "It's too small."
+    },
+    {
+      "spanish": "Me lo llevo.",
+      "english": "I'll take it."
+    },
+    {
+      "spanish": "¿Está rebajado?",
+      "english": "Is it on sale?"
+    },
+    {
+      "spanish": "¿Puedo devolverlo?",
+      "english": "Can I return it?"
+    },
+    {
+      "spanish": "¿Me da el tique?",
+      "english": "Can I have the receipt?"
+    }
+  ],
+  "outro": "[happy] Guarda el vídeo y repítelas mañana.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf008",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm just looking.": "Solo estoy mirando.",
+    "How much is it?": "¿Cuánto cuesta?",
+    "Do you have it in another size?": "¿Lo tiene en otra talla?",
+    "Can I try it on?": "¿Me lo puedo probar?",
+    "Where are the fitting rooms?": "¿Dónde están los probadores?",
+    "It's too small.": "Me queda pequeño.",
+    "I'll take it.": "Me lo llevo.",
+    "Is it on sale?": "¿Está rebajado?",
+    "Can I return it?": "¿Puedo devolverlo?",
+    "Can I have the receipt?": "¿Me da el tique?"
+  },
+  "english_phrases": [
+    "I'm just looking.",
+    "How much is it?",
+    "Do you have it in another size?",
+    "Can I try it on?",
+    "Where are the fitting rooms?",
+    "It's too small.",
+    "I'll take it.",
+    "Is it on sale?",
+    "Can I return it?",
+    "Can I have the receipt?"
+  ],
+  "full_script": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo? I'm just looking. How much is it? Do you have it in another size? Can I try it on? Where are the fitting rooms? It's too small. I'll take it. Is it on sale? Can I return it? Can I have the receipt? [happy] Guarda el vídeo y repítelas mañana."
+}

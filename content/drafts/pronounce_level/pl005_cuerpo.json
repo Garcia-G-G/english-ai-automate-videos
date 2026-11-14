@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Test de pronunciación: el CUERPO en inglés 💪",
+  "video_description": "Diez partes del cuerpo en inglés para comprobar tu pronunciación. 🦵",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el cuerpo",
+  "intro": "[curious] Partes del cuerpo en inglés. Pronuncia cada palabra antes de que suene la mía.",
+  "items": [
+    {
+      "english": "hand",
+      "respelling": "JAND",
+      "ipa": "ˈhænd",
+      "trap": "La H suena como una «j» suave"
+    },
+    {
+      "english": "leg",
+      "respelling": "LEG",
+      "ipa": "ˈlɛg",
+      "trap": "La G final se tiene que oír"
+    },
+    {
+      "english": "arm",
+      "respelling": "ARM",
+      "ipa": "ˈɑrm",
+      "trap": "R suave, sin vibrar: ARM"
+    },
+    {
+      "english": "shoulder",
+      "respelling": "SHOUL-der",
+      "ipa": "ˈʃoʊldɚ",
+      "trap": "OU suena «ou» y empieza con SH"
+    },
+    {
+      "english": "elbow",
+      "respelling": "EL-bou",
+      "ipa": "ˈɛlboʊ",
+      "trap": "La OW final suena «ou»"
+    },
+    {
+      "english": "biceps",
+      "respelling": "BAI-seps",
+      "ipa": "ˈbaɪsɛps",
+      "trap": "La I suena «ai»: BAI-seps"
+    },
+    {
+      "english": "muscle",
+      "respelling": "MA-sel",
+      "ipa": "ˈmʌsəl",
+      "trap": "La C no suena: MA-sel"
+    },
+    {
+      "english": "throat",
+      "respelling": "THROUT",
+      "ipa": "ˈθroʊt",
+      "trap": "TH con la lengua entre los dientes"
+    },
+    {
+      "english": "thigh",
+      "respelling": "THAI",
+      "ipa": "ˈθaɪ",
+      "trap": "GH muda: THAI"
+    },
+    {
+      "english": "diaphragm",
+      "respelling": "DAI-e-fram",
+      "ipa": "ˈdaɪəfræm",
+      "trap": "PH suena F y la G no suena"
+    }
+  ],
+  "verdict": "Tres bien dichas: nivel básico. Siete: intermedio. Las diez sin fallar: eres experto.",
+  "outro": "[excited] Pon tu número en los comentarios y pásaselo a un amigo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#ElCuerpoEnInglés",
+    "#AprenderInglés",
+    "#HablarInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl005",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

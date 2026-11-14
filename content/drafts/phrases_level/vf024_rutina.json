@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «ME VOY A LA CAMA» en inglés? 🏠",
+  "video_description": "Diez frases de la rutina de cada día en casa. 🏠",
+  "title": "¿Cómo se dice?",
+  "theme": "en casa, cada día",
+  "intro": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan.",
+  "items": [
+    {
+      "spanish": "Me levanto a las siete.",
+      "english": "I get up at seven."
+    },
+    {
+      "spanish": "Voy a ducharme.",
+      "english": "I'm going to take a shower."
+    },
+    {
+      "spanish": "¿Qué hay de cenar?",
+      "english": "What's for dinner?"
+    },
+    {
+      "spanish": "Pon la mesa.",
+      "english": "Set the table."
+    },
+    {
+      "spanish": "Me toca fregar.",
+      "english": "It's my turn to do the dishes."
+    },
+    {
+      "spanish": "Saca la basura.",
+      "english": "Take out the trash."
+    },
+    {
+      "spanish": "Apaga la luz.",
+      "english": "Turn off the light."
+    },
+    {
+      "spanish": "Estoy viendo una serie.",
+      "english": "I'm watching a show."
+    },
+    {
+      "spanish": "Me voy a la cama.",
+      "english": "I'm going to bed."
+    },
+    {
+      "spanish": "Pon la alarma.",
+      "english": "Set the alarm."
+    }
+  ],
+  "outro": "[curious] ¿Cuál no conocías? Cuéntamelo abajo.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf024",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "type": "educational",
+  "video_title": "¡No digas MISERY para decir pobreza! 😱 #FalseFriends",
+  "video_description": "😱 ¿Crees que 'misery' significa miseria de pobreza? ¡Error típico! Aprende cuándo usar 'misery' y cuándo 'poverty' 💡\n👉 Comenta tu false friend favorito y sígueme para más English tips 🇺🇸",
+  "hook": "¿Dices 'misery' cuando hablas de pobreza?",
+  "full_script": "¿Dices [[misery]] cuando hablas de pobreza? ¡Cuidado, es un falso amigo! En inglés, [[misery]] no es falta de dinero. Significa desgracia, sufrimiento, una tristeza enorme. Mira este ejemplo: [[After the breakup, he lived in misery]]. Después de la ruptura, vivía en la tristeza total. Otro: [[This cold is pure misery]]. Este resfriado es una tortura. Y uno muy común: [[Put me out of my misery, just tell me!]] ¡Deja de torturarme y dímelo ya! Entonces, ¿cómo dices miseria en el sentido de pobreza? Con [[poverty]]: [[Many families live in poverty]]. Y para pobreza extrema, [[destitution]]. Tip para recordarlo: [[misery]] está en el corazón, [[poverty]] está en la cartera. Repite conmigo: [[Many families live in poverty]]. Otra vez: [[I was in misery all week]]. ¡Muy bien! Ahora dime en los comentarios: ¿qué falso amigo te hizo pasar vergüenza? ¡Sígueme para más!",
+  "english_phrases": [
+    "misery",
+    "After the breakup, he lived in misery",
+    "This cold is pure misery",
+    "Put me out of my misery, just tell me!",
+    "poverty",
+    "Many families live in poverty",
+    "destitution",
+    "I was in misery all week"
+  ],
+  "translations": {
+    "misery": "desgracia, tristeza extrema, sufrimiento",
+    "After the breakup, he lived in misery": "Después de la ruptura, vivía en la tristeza total",
+    "This cold is pure misery": "Este resfriado es una tortura",
+    "Put me out of my misery, just tell me!": "¡Deja de torturarme y dímelo ya!",
+    "poverty": "pobreza, miseria",
+    "Many families live in poverty": "Muchas familias viven en la pobreza",
+    "destitution": "pobreza extrema, indigencia",
+    "I was in misery all week": "Estuve sufriendo toda la semana"
+  },
+  "tip": "'Misery' está en el corazón; 'poverty' está en la cartera.",
+  "cta": "¿Qué falso amigo te hizo pasar vergüenza? ¡Sígueme para más!",
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#EnglishTips",
+    "#FalseFriends",
+    "#FalsosAmigos",
+    "#ErroresEnIngles",
+    "#InglesParaHispanohablantes",
+    "#EstudiaIngles",
+    "#VocabularioEnIngles",
+    "#InglesFacil",
+    "#ClasesDeIngles",
+    "#SpanishSpeakers",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff054",
+    "video_type": "educational",
+    "generated_at": "2026-11-02T11:13:20.268055",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Inglés para REUNIONES DE TRABAJO: del nivel básico al experto 📊",
+  "video_description": "Vocabulario de reuniones de trabajo en inglés de menos a más: ¿hasta dónde llegas? 📊",
+  "title": "¿Qué nivel tienes?",
+  "theme": "las reuniones de trabajo",
+  "intro": "[excited] Vamos con diez palabras de reuniones de trabajo. Dime su significado en español antes de que aparezca.",
+  "items": [
+    {
+      "english": "team",
+      "spanish": "Equipo",
+      "cefr": "A1"
+    },
+    {
+      "english": "present",
+      "spanish": "Presentar",
+      "cefr": "A2"
+    },
+    {
+      "english": "topic",
+      "spanish": "Tema",
+      "cefr": "A2"
+    },
+    {
+      "english": "agenda",
+      "spanish": "Orden del día",
+      "cefr": "B1"
+    },
+    {
+      "english": "reschedule",
+      "spanish": "Cambiar de fecha",
+      "cefr": "B1"
+    },
+    {
+      "english": "brainstorm",
+      "spanish": "Lluvia de ideas",
+      "cefr": "B2"
+    },
+    {
+      "english": "follow up",
+      "spanish": "Hacer seguimiento",
+      "cefr": "B2"
+    },
+    {
+      "english": "wrap up",
+      "spanish": "Concluir / cerrar",
+      "cefr": "B2"
+    },
+    {
+      "english": "minutes",
+      "spanish": "Acta de la reunión",
+      "cefr": "C1"
+    },
+    {
+      "english": "action items",
+      "spanish": "Tareas pendientes",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te paraste en la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, eres experto.",
+  "outro": "[happy] Escribe en los comentarios hasta qué número llegaste.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#TestDeInglés",
+    "#InglésFácil",
+    "#InglésOnline",
+    "#InglésParaHispanos"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv027",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "team": "Equipo",
+    "present": "Presentar",
+    "topic": "Tema",
+    "agenda": "Orden del día",
+    "reschedule": "Cambiar de fecha",
+    "brainstorm": "Lluvia de ideas",
+    "follow up": "Hacer seguimiento",
+    "wrap up": "Concluir / cerrar",
+    "minutes": "Acta de la reunión",
+    "action items": "Tareas pendientes"
+  },
+  "english_phrases": [
+    "team",
+    "present",
+    "topic",
+    "agenda",
+    "reschedule",
+    "brainstorm",
+    "follow up",
+    "wrap up",
+    "minutes",
+    "action items"
+  ],
+  "full_script": "[excited] Vamos con diez palabras de reuniones de trabajo. Dime su significado en español antes de que aparezca. team Equipo present Presentar topic Tema Ahora, nivel intermedio. agenda Orden del día reschedule Cambiar de fecha brainstorm Lluvia de ideas follow up Hacer seguimiento Y ahora, nivel experto. wrap up Concluir / cerrar minutes Acta de la reunión action items Tareas pendientes Si te paraste en la tres, básico. Si llegaste a la siete, intermedio. Y con las diez, eres experto. [happy] Escribe en los comentarios hasta qué número llegaste."
+}

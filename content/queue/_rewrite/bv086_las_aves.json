@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las AVES en inglés? 🦜",
+  "video_description": "🦉 ¿Sabes decir búho, pato o loro en inglés? Aprende 10 aves fáciles en menos de un minuto. 🐧",
+  "title": "¿Cómo se dice…?",
+  "theme": "las aves",
+  "level": "A1",
+  "intro": "[cheerful] ¿Sabes decir pato o búho en inglés? Di cada palabra antes que yo.",
+  "items": [
+    {
+      "emoji": "🐦",
+      "spanish": "Pájaro",
+      "english": "bird"
+    },
+    {
+      "emoji": "🐔",
+      "spanish": "Gallina",
+      "english": "chicken"
+    },
+    {
+      "emoji": "🐤",
+      "spanish": "Pollito",
+      "english": "chick"
+    },
+    {
+      "emoji": "🦆",
+      "spanish": "Pato",
+      "english": "duck"
+    },
+    {
+      "emoji": "🦉",
+      "spanish": "Búho",
+      "english": "owl"
+    },
+    {
+      "emoji": "🦅",
+      "spanish": "Águila",
+      "english": "eagle"
+    },
+    {
+      "emoji": "🦜",
+      "spanish": "Loro",
+      "english": "parrot"
+    },
+    {
+      "emoji": "🐧",
+      "spanish": "Pingüino",
+      "english": "penguin"
+    },
+    {
+      "emoji": "🦃",
+      "spanish": "Pavo",
+      "english": "turkey"
+    },
+    {
+      "emoji": "🦢",
+      "spanish": "Cisne",
+      "english": "swan"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: bird, chicken, chick, duck, owl, eagle, parrot, penguin, turkey, swan.",
+  "outro": "[excited] ¿Cuántas sabías? ¿El búho te sorprendió? Escríbelo en los comentarios.",
+  "full_script": "[cheerful] ¿Sabes decir pato o búho en inglés? Di cada palabra antes que yo. Pájaro... bird. bird. Gallina... chicken. chicken. Pollito... chick. chick. Pato... duck. duck. Búho... owl. owl. Águila... eagle. eagle. Loro... parrot. parrot. Pingüino... penguin. penguin. Pavo... turkey. turkey. Cisne... swan. swan. Ahora todas en inglés, conmigo: bird, chicken, chick, duck, owl, eagle, parrot, penguin, turkey, swan. [excited] ¿Cuántas sabías? ¿El búho te sorprendió? Escríbelo en los comentarios.",
+  "translations": {
+    "bird": "Pájaro",
+    "chicken": "Gallina",
+    "chick": "Pollito",
+    "duck": "Pato",
+    "owl": "Búho",
+    "eagle": "Águila",
+    "parrot": "Loro",
+    "penguin": "Pingüino",
+    "turkey": "Pavo",
+    "swan": "Cisne"
+  },
+  "english_phrases": [
+    "bird",
+    "chicken",
+    "chick",
+    "duck",
+    "owl",
+    "eagle",
+    "parrot",
+    "penguin",
+    "turkey",
+    "swan"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#AvesEnInglés",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv086",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:51:37.889284",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

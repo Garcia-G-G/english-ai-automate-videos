@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "Dilo en inglés: 10 frases para el RESTAURANTE 🍽️",
+  "video_description": "Diez frases de restaurante en inglés, de pedir mesa a la trampa final. 🍽️",
+  "title": "Dilo en inglés",
+  "theme": "en el restaurante",
+  "intro": "[cheerful] Te digo la frase en español y tú la dices en inglés. Diez frases, de fácil a experto.",
+  "items": [
+    {
+      "spanish": "Una mesa para dos, por favor.",
+      "english": "A table for two, please.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "La carta, por favor.",
+      "english": "The menu, please.",
+      "cefr": "A1",
+      "alt": "Can I see the menu, please?"
+    },
+    {
+      "spanish": "Para mí, el pollo.",
+      "english": "I'll have the chicken.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Qué nos recomienda?",
+      "english": "What do you recommend?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Tenemos una reserva a nombre de Ana.",
+      "english": "We have a reservation under Ana.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Nos podría traer más pan?",
+      "english": "Could you bring us some more bread?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Podemos pagar por separado?",
+      "english": "Can we pay separately?",
+      "cefr": "B1",
+      "alt": "Can we get separate checks?"
+    },
+    {
+      "spanish": "¡Está muy rico!",
+      "english": "It's delicious!",
+      "cefr": "B1",
+      "alt": "It's really good!",
+      "tip": "«Rico» aquí no es rich: se dice delicious o really good"
+    },
+    {
+      "spanish": "¿Nos trae la cuenta, por favor?",
+      "english": "Can we get the check, please?",
+      "cefr": "B2",
+      "alt": "Could we have the bill, please?",
+      "tip": "«La cuenta» es check (EE. UU.) o bill, nunca account"
+    },
+    {
+      "spanish": "Me ha sentado mal la cena.",
+      "english": "Dinner didn't agree with me.",
+      "cefr": "C1",
+      "tip": "Si la comida te «sienta mal»: it didn't agree with me"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésParaViajar",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy001",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "A table for two, please.": "Una mesa para dos, por favor.",
+    "The menu, please.": "La carta, por favor.",
+    "I'll have the chicken.": "Para mí, el pollo.",
+    "What do you recommend?": "¿Qué nos recomienda?",
+    "We have a reservation under Ana.": "Tenemos una reserva a nombre de Ana.",
+    "Could you bring us some more bread?": "¿Nos podría traer más pan?",
+    "Can we pay separately?": "¿Podemos pagar por separado?",
+    "It's delicious!": "¡Está muy rico!",
+    "Can we get the check, please?": "¿Nos trae la cuenta, por favor?",
+    "Dinner didn't agree with me.": "Me ha sentado mal la cena."
+  },
+  "english_phrases": [
+    "A table for two, please.",
+    "The menu, please.",
+    "I'll have the chicken.",
+    "What do you recommend?",
+    "We have a reservation under Ana.",
+    "Could you bring us some more bread?",
+    "Can we pay separately?",
+    "It's delicious!",
+    "Can we get the check, please?",
+    "Dinner didn't agree with me.",
+    "Can I see the menu, please?",
+    "Can we get separate checks?",
+    "It's really good!",
+    "Could we have the bill, please?"
+  ],
+  "full_script": "[cheerful] Te digo la frase en español y tú la dices en inglés. Diez frases, de fácil a experto. A table for two, please. The menu, please. I'll have the chicken. Ahora, nivel intermedio. What do you recommend? We have a reservation under Ana. Could you bring us some more bread? Can we pay separately? Y ahora, nivel experto. It's delicious! Can we get the check, please? Dinner didn't agree with me. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios."
+}

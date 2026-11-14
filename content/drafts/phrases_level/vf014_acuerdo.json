@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «¡TOTALMENTE!» en inglés? 🤝",
+  "video_description": "Diez frases para estar de acuerdo, o no. 🤝",
+  "title": "¿Cómo se dice?",
+  "theme": "estar de acuerdo o no",
+  "intro": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan.",
+  "items": [
+    {
+      "spanish": "Estoy de acuerdo.",
+      "english": "I agree."
+    },
+    {
+      "spanish": "¡Totalmente!",
+      "english": "Absolutely!"
+    },
+    {
+      "spanish": "Yo también.",
+      "english": "Me too."
+    },
+    {
+      "spanish": "Yo tampoco.",
+      "english": "Me neither."
+    },
+    {
+      "spanish": "No estoy de acuerdo.",
+      "english": "I disagree."
+    },
+    {
+      "spanish": "Tienes razón.",
+      "english": "You're right."
+    },
+    {
+      "spanish": "Ni de broma.",
+      "english": "No way."
+    },
+    {
+      "spanish": "Eso es justo lo que pienso.",
+      "english": "That's exactly what I think."
+    },
+    {
+      "spanish": "Visto así, sí.",
+      "english": "When you put it that way, yes."
+    },
+    {
+      "spanish": "Estamos de acuerdo en no estar de acuerdo.",
+      "english": "Let's agree to disagree."
+    }
+  ],
+  "outro": "[curious] ¿Cuál no conocías? Cuéntamelo abajo.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#ConversaciónEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf014",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

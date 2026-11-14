@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "¿LIE o LAY? Elige la correcta en 10 frases 🛋️",
+  "video_description": "Tumbarse o poner algo: lie y lay, el reto avanzado. 🛋️",
+  "title": "Elige la correcta",
+  "theme": "lie o lay",
+  "intro": "[curious] Dos opciones en cada frase. Elige antes de que yo la diga.",
+  "items": [
+    {
+      "sentence": "I want to ____ down for a bit.",
+      "options": [
+        "lie",
+        "lay"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Please ____ the book on the table.",
+      "options": [
+        "lie",
+        "lay"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Don't ____ to me!",
+      "options": [
+        "lay",
+        "lie"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "The cat is ____ in the sun.",
+      "options": [
+        "lying",
+        "laying"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Hens ____ eggs.",
+      "options": [
+        "lie",
+        "lay"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He ____ to his parents yesterday.",
+      "options": [
+        "lied",
+        "laid"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She ____ the baby in the crib.",
+      "options": [
+        "laid",
+        "lay"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Yesterday I ____ on the beach all day.",
+      "options": [
+        "laid",
+        "lay"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The truth ____ somewhere in between.",
+      "options": [
+        "lies",
+        "lays"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Let's ____ our cards on the table.",
+      "options": [
+        "lie",
+        "lay"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#LieVsLay",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec037",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

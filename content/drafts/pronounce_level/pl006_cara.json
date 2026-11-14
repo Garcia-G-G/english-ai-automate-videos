@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Partes de la CARA en inglés: ¿las dices bien? 👃",
+  "video_description": "Nariz, lengua, mandíbula: ¿pronuncias bien la cara en inglés? 😮",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la cara",
+  "intro": "[cheerful] Diez palabras de la cara. Dilas en voz alta, sin miedo, y luego compara.",
+  "items": [
+    {
+      "english": "nose",
+      "respelling": "NOUZ",
+      "ipa": "ˈnoʊz",
+      "trap": "La S suena Z y la E es muda"
+    },
+    {
+      "english": "lips",
+      "respelling": "LIPS",
+      "ipa": "ˈlɪps",
+      "trap": "I corta, entre «i» y «e»"
+    },
+    {
+      "english": "mouth",
+      "respelling": "MAUTH",
+      "ipa": "ˈmaʊθ",
+      "trap": "TH final con la lengua fuera"
+    },
+    {
+      "english": "eyes",
+      "respelling": "AIZ",
+      "ipa": "ˈaɪz",
+      "trap": "EYE suena «ai» y la S suena Z"
+    },
+    {
+      "english": "cheek",
+      "respelling": "CHIIK",
+      "ipa": "ˈtʃiːk",
+      "trap": "EE larga: CHIIK"
+    },
+    {
+      "english": "eyebrow",
+      "respelling": "AI-brau",
+      "ipa": "ˈaɪbraʊ",
+      "trap": "EYE = «ai» y OW = «au»"
+    },
+    {
+      "english": "tongue",
+      "respelling": "TANG",
+      "ipa": "ˈtʌŋ",
+      "trap": "La UE final no suena: TANG"
+    },
+    {
+      "english": "jaw",
+      "respelling": "YO",
+      "ipa": "ˈdʒɔ",
+      "trap": "J fuerte y AW suena «o»"
+    },
+    {
+      "english": "nostril",
+      "respelling": "NAS-trel",
+      "ipa": "ˈnɑstrəl",
+      "trap": "La O suena «a»: NAS-trel"
+    },
+    {
+      "english": "complexion",
+      "respelling": "kem-PLEK-shen",
+      "ipa": "kəmˈplɛkʃən",
+      "trap": "-XION suena «kshen»"
+    }
+  ],
+  "verdict": "Con tres eres nivel básico, con siete intermedio, y si te salieron las diez, eres experto.",
+  "outro": "[happy] Dime en los comentarios en qué palabra te trabaste.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LaCaraEnInglés",
+    "#AprenderInglés",
+    "#InglésAmericano",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl006",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

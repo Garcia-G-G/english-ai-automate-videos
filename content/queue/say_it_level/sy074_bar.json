@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Te defiendes EN UN BAR en inglés? 10 frases 🍻",
+  "video_description": "Pedir, invitar y pagar a medias: diez frases para salir de bares en inglés. 🍻",
+  "title": "Dilo en inglés",
+  "theme": "en un bar",
+  "intro": "[cheerful] Estamos en un bar. Lee cada frase y dila en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Una cerveza, por favor.",
+      "english": "A beer, please.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Dos más, por favor.",
+      "english": "Two more, please.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Tienen algo sin alcohol?",
+      "english": "Do you have anything non-alcoholic?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿A qué hora cierran?",
+      "english": "What time do you close?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Nos sentamos en la terraza?",
+      "english": "Shall we sit outside?",
+      "cefr": "B1",
+      "alt": "Should we sit on the patio?"
+    },
+    {
+      "spanish": "Aquí hay mucho ruido.",
+      "english": "It's really loud in here.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Otra igual, por favor.",
+      "english": "Another one of these, please.",
+      "cefr": "B2",
+      "alt": "Same again, please."
+    },
+    {
+      "spanish": "Esta ronda la pago yo.",
+      "english": "This round's on me.",
+      "cefr": "B2",
+      "alt": "This one's on me.",
+      "tip": "«La pago yo» es It's on me, no «I pay it»"
+    },
+    {
+      "spanish": "¿Pagamos a medias?",
+      "english": "Shall we split it?",
+      "cefr": "B2",
+      "alt": "Should we split the check?",
+      "tip": "«Pagar a medias» es split, no «pay to half»"
+    },
+    {
+      "spanish": "Ya estoy un poco achispado.",
+      "english": "I'm already a bit tipsy.",
+      "cefr": "C1",
+      "tip": "«Achispado», el puntito antes de borracho, es tipsy"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Diez de diez: esta ronda la pagas tú, experto.",
+  "outro": "[happy] ¿Hasta qué frase llegaste? ¡Salud y cuéntamelo abajo!",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#InglésCotidiano"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy074",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "A beer, please.": "Una cerveza, por favor.",
+    "Two more, please.": "Dos más, por favor.",
+    "Do you have anything non-alcoholic?": "¿Tienen algo sin alcohol?",
+    "What time do you close?": "¿A qué hora cierran?",
+    "Shall we sit outside?": "¿Nos sentamos en la terraza?",
+    "It's really loud in here.": "Aquí hay mucho ruido.",
+    "Another one of these, please.": "Otra igual, por favor.",
+    "This round's on me.": "Esta ronda la pago yo.",
+    "Shall we split it?": "¿Pagamos a medias?",
+    "I'm already a bit tipsy.": "Ya estoy un poco achispado."
+  },
+  "english_phrases": [
+    "A beer, please.",
+    "Two more, please.",
+    "Do you have anything non-alcoholic?",
+    "What time do you close?",
+    "Shall we sit outside?",
+    "It's really loud in here.",
+    "Another one of these, please.",
+    "This round's on me.",
+    "Shall we split it?",
+    "I'm already a bit tipsy.",
+    "Should we sit on the patio?",
+    "Same again, please.",
+    "This one's on me.",
+    "Should we split the check?"
+  ],
+  "full_script": "[cheerful] Estamos en un bar. Lee cada frase y dila en inglés antes que yo. A beer, please. Two more, please. Do you have anything non-alcoholic? Ahora, nivel intermedio. What time do you close? Shall we sit outside? It's really loud in here. Another one of these, please. Y ahora, nivel experto. This round's on me. Shall we split it? I'm already a bit tipsy. Si llegaste a la tres, básico. Si llegaste a la siete, intermedio. Diez de diez: esta ronda la pagas tú, experto. [happy] ¿Hasta qué frase llegaste? ¡Salud y cuéntamelo abajo!"
+}

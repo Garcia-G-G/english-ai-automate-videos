@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "¿Sabes cuándo usar BORED o BORING? 🥱",
+  "video_description": "Bored o boring: cómo te sientes o cómo es algo. Diez frases. 🥱",
+  "title": "Elige la correcta",
+  "theme": "bored o boring",
+  "intro": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto.",
+  "items": [
+    {
+      "sentence": "I'm so ____. Let's go out.",
+      "options": [
+        "bored",
+        "boring"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "This movie is ____.",
+      "options": [
+        "bored",
+        "boring"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The class was really ____.",
+      "options": [
+        "bored",
+        "boring"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I was ____ during the meeting.",
+      "options": [
+        "bored",
+        "boring"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She gets ____ easily.",
+      "options": [
+        "boring",
+        "bored"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "His speech was long and ____.",
+      "options": [
+        "boring",
+        "bored"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I was ____ to death.",
+      "options": [
+        "bored",
+        "boring"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Are you ____ of your job?",
+      "options": [
+        "boring",
+        "bored"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It's a ____ but necessary task.",
+      "options": [
+        "boring",
+        "bored"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I'm ____ stiff, nothing happens here.",
+      "options": [
+        "boring",
+        "bored"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#BoredVsBoring",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec015",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "I'm so bored. Let's go out.",
+    "This movie is boring.",
+    "The class was really boring.",
+    "I was bored during the meeting.",
+    "She gets bored easily.",
+    "His speech was long and boring.",
+    "I was bored to death.",
+    "Are you bored of your job?",
+    "It's a boring but necessary task.",
+    "I'm bored stiff, nothing happens here."
+  ],
+  "full_script": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto. I'm so bored. Let's go out. This movie is boring. The class was really boring. Ahora, nivel intermedio. I was bored during the meeting. She gets bored easily. His speech was long and boring. I was bored to death. Y ahora, nivel experto. Are you bored of your job? It's a boring but necessary task. I'm bored stiff, nothing happens here. Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto. [cheerful] Escribe tu puntuación abajo y reta a un amigo."
+}

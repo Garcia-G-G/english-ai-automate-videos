@@ -1,0 +1,5 @@
+:root { --sand:#F5F1EA; --sand2:#EFE8DC; --side:#FFFFFF; --card:#FFFFFF; --ink:#191720; --muted:#6B6672; --line:#E3DCCF;
+  --blue:#1F6FD1; --blue-soft:#E1ECFB; --blue-ink:#164C93; --yellow:#F6D35B; --yellow-soft:#FCF0C4; --yellow-ink:#6E5300;
+  --coral:#FF6F4F; --coral-soft:#FFE1D8; --coral-ink:#A0391F; --badge:#C9401F;
+  --green:#12854F; --green-soft:#DAF1E4; --green-ink:#1F6B42; --red:#D2433A; --red-soft:#FADCD8; --red-ink:#8E2B22; }
+.nav .badge:not(.soft) { background: var(--badge); }

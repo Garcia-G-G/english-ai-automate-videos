@@ -1,0 +1,55 @@
+{
+  "id": "hc_m027",
+  "style": "mensajes",
+  "level": "dificil",
+  "angle": "errores",
+  "title": "«Remember me to call mom»: remember o remind",
+  "hook_text": "Le pedí a mi pareja que me avisara…",
+  "chat": {
+    "contact": "Jacob · Denver",
+    "messages": [
+      [
+        "me",
+        "Remember me to call mom tomorrow 📞",
+        "error"
+      ],
+      [
+        "them",
+        "how could I forget you? 😂"
+      ],
+      [
+        "them",
+        "oh, REMIND you!"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "Remember me to…",
+    "right": "Remind me to…",
+    "rule": "Remember = recordar tú · Remind = recordarle a alguien"
+  },
+  "voice": [
+    "Le pedí a mi pareja [[Remember me to call mom tomorrow]]. Y me contestó que cómo me iba a olvidar.",
+    "Porque [[remember]] es recordar tú mismo. [[Remember me]] es «acuérdate de mí».",
+    "Para que otra persona te recuerde algo se usa [[remind]]: [[Remind me to call mom]].",
+    "Y para decir que algo te recuerda a otra cosa: [[This song reminds me of you]].",
+    "Truco: si hay alguien que te avisa, es [[remind]].",
+    "Reto: ¿cómo dirías «recuérdame comprar pan»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Recuérdame comprar pan»",
+    "answer": "Remind me to buy bread."
+  },
+  "caption": "Remember vs remind: «Remind me to call», no «Remember me to call». El error que cambia todo el mensaje.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 81
+}

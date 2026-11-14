@@ -1,0 +1,69 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «QUÉ INCÓMODO» en inglés? 😅",
+  "video_description": "Frases reales para salir de momentos incómodos en una plática casual en inglés. ¿Cuántas sabías? 🙂",
+  "title": "¿Cómo se dice?",
+  "theme": "Manejar la incomodidad en charla casual",
+  "intro": "[curious] ¿Se te olvidó un nombre en plena plática? Así sales del apuro en inglés.",
+  "items": [
+    {
+      "spanish": "Bueno, qué incómodo.",
+      "english": "Well, this is awkward."
+    },
+    {
+      "spanish": "Perdón, se me olvidó tu nombre.",
+      "english": "Sorry, I forgot your name."
+    },
+    {
+      "spanish": "Perdón, te interrumpí.",
+      "english": "Sorry, I cut you off."
+    },
+    {
+      "spanish": "No, tú primero.",
+      "english": "No, you go ahead."
+    },
+    {
+      "spanish": "¿Qué estaba diciendo?",
+      "english": "Where was I?"
+    },
+    {
+      "spanish": "Se me fue la idea.",
+      "english": "I lost my train of thought."
+    },
+    {
+      "spanish": "¡Ups! Me confundí de persona.",
+      "english": "Oops, wrong person!"
+    },
+    {
+      "spanish": "Olvídalo, no es importante.",
+      "english": "Never mind, it's not important."
+    },
+    {
+      "spanish": "Ya me tengo que ir.",
+      "english": "I should get going."
+    },
+    {
+      "spanish": "Fue un gusto platicar contigo.",
+      "english": "It was great chatting with you."
+    }
+  ],
+  "outro": "[warm] ¿Cuál te salvaría más seguido? Cuéntame en los comentarios.",
+  "full_script": "[curious] ¿Se te olvidó un nombre en plena plática? Así sales del apuro en inglés. Well, this is awkward. Sorry, I forgot your name. Sorry, I cut you off. No, you go ahead. ¿Where was I? I lost my train of thought. ¡Oops, wrong person! Never mind, it's not important. I should get going. It was great chatting with you. [warm] ¿Cuál te salvaría más seguido? Cuéntame en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésFácil",
+    "#AprenderInglés",
+    "#FrasesEnInglés",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "social",
+    "topic_id": "so030",
+    "video_type": "phrases_level",
+    "generated_at": "2026-11-02T10:57:46.897452",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Added 2 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

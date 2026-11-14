@@ -1,0 +1,47 @@
+{
+  "id": "hc_c022",
+  "style": "comic",
+  "level": "dificil",
+  "angle": "reto",
+  "title": "RETO: «meter la pata»",
+  "hook_text": "Nada de patas",
+  "quiz": {
+    "prompt": "¿Cómo dirías «metí la pata»?",
+    "options": [
+      "I put the leg",
+      "I messed up",
+      "I put my paw"
+    ],
+    "answer": 1,
+    "after": "Meter la pata = mess up / put your foot in it."
+  },
+  "correction": {
+    "wrong": "I put my paw",
+    "right": "I messed up",
+    "rule": "Mess up / put your foot in it"
+  },
+  "voice": [
+    "Nada de patas. ¿Cómo dirías «metí la pata»?",
+    "¿[[I put the leg]], [[I messed up]] o [[I put my paw]]?",
+    "¡La B! [[I messed up]]. La más común.",
+    "Si fue por decir algo inoportuno: [[I put my foot in it]], con el pie.",
+    "Más fuerte e informal: [[I screwed up]].",
+    "¿Cuándo metiste la pata en inglés? Cuéntalo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Metí la pata con mi jefe»",
+    "answer": "I messed up with my boss. / I put my foot in it with my boss."
+  },
+  "caption": "«Meter la pata» es «mess up» o «put your foot in it». Idioms en inglés en un reto.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 58
+}

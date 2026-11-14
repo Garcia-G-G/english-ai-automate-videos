@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Ayer, pronto, a menudo: EL TIEMPO en inglés, de fácil a experto ⌛",
+  "video_description": "De «yesterday» a «once in a blue moon»: palabras de tiempo en inglés para medir tu nivel ⏳",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el tiempo (ayer, pronto, a menudo…)",
+  "intro": "[curious] Diez palabras y expresiones de tiempo, de fácil a experto. Di qué significan antes que yo.",
+  "items": [
+    {
+      "english": "yesterday",
+      "spanish": "Ayer",
+      "cefr": "A1"
+    },
+    {
+      "english": "tomorrow",
+      "spanish": "Mañana",
+      "cefr": "A1"
+    },
+    {
+      "english": "soon",
+      "spanish": "Pronto",
+      "cefr": "A2"
+    },
+    {
+      "english": "often",
+      "spanish": "A menudo",
+      "cefr": "A2"
+    },
+    {
+      "english": "lately",
+      "spanish": "Últimamente",
+      "cefr": "B1"
+    },
+    {
+      "english": "eventually",
+      "spanish": "Al final, con el tiempo",
+      "cefr": "B1"
+    },
+    {
+      "english": "at once",
+      "spanish": "Enseguida",
+      "cefr": "B2"
+    },
+    {
+      "english": "every other day",
+      "spanish": "Cada dos días",
+      "cefr": "B2"
+    },
+    {
+      "english": "in the long run",
+      "spanish": "A la larga",
+      "cefr": "C1"
+    },
+    {
+      "english": "once in a blue moon",
+      "spanish": "Muy de vez en cuando",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres, nivel básico. Siete, intermedio. Y si las sabías todas, hasta la diez, eres experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Dímelo enseguida en comentarios.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésDiario",
+    "#InglésOnline"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv098",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "yesterday": "Ayer",
+    "tomorrow": "Mañana",
+    "soon": "Pronto",
+    "often": "A menudo",
+    "lately": "Últimamente",
+    "eventually": "Al final, con el tiempo",
+    "at once": "Enseguida",
+    "every other day": "Cada dos días",
+    "in the long run": "A la larga",
+    "once in a blue moon": "Muy de vez en cuando"
+  },
+  "english_phrases": [
+    "yesterday",
+    "tomorrow",
+    "soon",
+    "often",
+    "lately",
+    "eventually",
+    "at once",
+    "every other day",
+    "in the long run",
+    "once in a blue moon"
+  ],
+  "full_script": "[curious] Diez palabras y expresiones de tiempo, de fácil a experto. Di qué significan antes que yo. yesterday Ayer tomorrow Mañana soon Pronto Ahora, nivel intermedio. often A menudo lately Últimamente eventually Al final, con el tiempo at once Enseguida Y ahora, nivel experto. every other day Cada dos días in the long run A la larga once in a blue moon Muy de vez en cuando Tres, nivel básico. Siete, intermedio. Y si las sabías todas, hasta la diez, eres experto. [cheerful] ¿Hasta qué número llegaste? Dímelo enseguida en comentarios."
+}

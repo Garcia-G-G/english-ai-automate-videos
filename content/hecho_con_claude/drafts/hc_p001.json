@@ -1,0 +1,46 @@
+{
+  "id": "hc_p001",
+  "style": "poster",
+  "angle": "errores",
+  "title": "«Actually» no significa «actualmente»",
+  "hook_text": "ACTUALLY ≠ ACTUALMENTE",
+  "poster": {
+    "error_no": "015",
+    "big_wrong": "ACTUALLY = ACTUALMENTE",
+    "big_right": "ACTUALLY = EN REALIDAD",
+    "examples": [
+      "Actually, I'm from Chile. — En realidad soy de Chile.",
+      "Currently, I live in Madrid. — Actualmente vivo en Madrid."
+    ]
+  },
+  "correction": {
+    "wrong": "Actually = actualmente",
+    "right": "Actually = en realidad · Actualmente = currently",
+    "rule": "Falso amigo"
+  },
+  "voice": [
+    "[[Actually]] no significa «actualmente». Es uno de los falsos amigos más traicioneros.",
+    "[[Actually]] significa «en realidad» o «de hecho». Por ejemplo: [[Actually, I'm from Chile]], «en realidad soy de Chile».",
+    "Y «actualmente», en inglés, es [[currently]] o [[nowadays]]: [[Currently, I live in Madrid]].",
+    "Truco: si en español puedes decir «de hecho», en inglés va [[actually]].",
+    "Y otro primo traicionero: [[eventually]] no es «eventualmente», es «al final».",
+    "Reto: traduce «actualmente trabajo desde casa». Te leo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Actualmente trabajo desde casa»",
+    "answer": "I currently work from home. / Currently, I work from home."
+  },
+  "caption": "Actually ≠ actualmente. «Actually» es «en realidad»; «actualmente» es «currently». Falsos amigos del inglés que te delatan.",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "medio",
+  "level_label": "Medio · B1–B2",
+  "voice_words": 76
+}

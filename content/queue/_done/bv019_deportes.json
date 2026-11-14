@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los DEPORTES en inglés? ⚽",
+  "video_description": "Diez deportes, y uno que cambia según el país. 🏀",
+  "title": "¿Cómo se dice…?",
+  "theme": "los deportes",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "⚽",
+      "spanish": "Fútbol",
+      "english": "football"
+    },
+    {
+      "emoji": "🏀",
+      "spanish": "Baloncesto",
+      "english": "basketball"
+    },
+    {
+      "emoji": "🎾",
+      "spanish": "Tenis",
+      "english": "tennis"
+    },
+    {
+      "emoji": "🏊",
+      "spanish": "Natación",
+      "english": "swimming"
+    },
+    {
+      "emoji": "🚴",
+      "spanish": "Ciclismo",
+      "english": "cycling"
+    },
+    {
+      "emoji": "⚾",
+      "spanish": "Béisbol",
+      "english": "baseball"
+    },
+    {
+      "emoji": "🥊",
+      "spanish": "Boxeo",
+      "english": "boxing"
+    },
+    {
+      "emoji": "⛷️",
+      "spanish": "Esquí",
+      "english": "skiing"
+    },
+    {
+      "emoji": "🏃",
+      "spanish": "Correr",
+      "english": "running"
+    },
+    {
+      "emoji": "⛳",
+      "spanish": "Golf",
+      "english": "golf"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: football, basketball, tennis, swimming, cycling, baseball, boxing, skiing, running, golf.",
+  "outro": "[excited] Ojo: en Estados Unidos el fútbol es soccer. ¿Cuántas sabías?",
+  "translations": {
+    "football": "Fútbol",
+    "basketball": "Baloncesto",
+    "tennis": "Tenis",
+    "swimming": "Natación",
+    "cycling": "Ciclismo",
+    "baseball": "Béisbol",
+    "boxing": "Boxeo",
+    "skiing": "Esquí",
+    "running": "Correr",
+    "golf": "Golf"
+  },
+  "english_phrases": [
+    "football",
+    "basketball",
+    "tennis",
+    "swimming",
+    "cycling",
+    "baseball",
+    "boxing",
+    "skiing",
+    "running",
+    "golf"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv019",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Fútbol... football. football. Baloncesto... basketball. basketball. Tenis... tennis. tennis. Natación... swimming. swimming. Ciclismo... cycling. cycling. Béisbol... baseball. baseball. Boxeo... boxing. boxing. Esquí... skiing. skiing. Correr... running. running. Golf... golf. golf. Ahora, todas conmigo: football, basketball, tennis, swimming, cycling, baseball, boxing, skiing, running, golf. [excited] Ojo: en Estados Unidos el fútbol es soccer. ¿Cuántas sabías?"
+}

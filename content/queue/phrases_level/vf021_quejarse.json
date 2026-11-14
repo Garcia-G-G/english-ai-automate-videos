@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «ESTO NO FUNCIONA»? 10 frases 🧾",
+  "video_description": "Diez frases para quejarte sin perder la educación. 🧾",
+  "title": "¿Cómo se dice?",
+  "theme": "quejarse con educación",
+  "intro": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo.",
+  "items": [
+    {
+      "spanish": "Esto no funciona.",
+      "english": "This doesn't work."
+    },
+    {
+      "spanish": "Hay un error en la factura.",
+      "english": "There's a mistake on the bill."
+    },
+    {
+      "spanish": "Llevo media hora esperando.",
+      "english": "I've been waiting for half an hour."
+    },
+    {
+      "spanish": "Quiero hablar con el encargado.",
+      "english": "I'd like to speak to the manager."
+    },
+    {
+      "spanish": "Esto está frío.",
+      "english": "This is cold."
+    },
+    {
+      "spanish": "Me han cobrado dos veces.",
+      "english": "I've been charged twice."
+    },
+    {
+      "spanish": "No es lo que ponía en la web.",
+      "english": "It's not what the website said."
+    },
+    {
+      "spanish": "¿Me pueden devolver el dinero?",
+      "english": "Can I get a refund?"
+    },
+    {
+      "spanish": "No estoy contento con el servicio.",
+      "english": "I'm not happy with the service."
+    },
+    {
+      "spanish": "Espero que lo puedan solucionar.",
+      "english": "I hope you can sort it out."
+    }
+  ],
+  "outro": "[excited] Compártelo con alguien que las necesite.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#FrasesÚtiles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf021",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "This doesn't work.": "Esto no funciona.",
+    "There's a mistake on the bill.": "Hay un error en la factura.",
+    "I've been waiting for half an hour.": "Llevo media hora esperando.",
+    "I'd like to speak to the manager.": "Quiero hablar con el encargado.",
+    "This is cold.": "Esto está frío.",
+    "I've been charged twice.": "Me han cobrado dos veces.",
+    "It's not what the website said.": "No es lo que ponía en la web.",
+    "Can I get a refund?": "¿Me pueden devolver el dinero?",
+    "I'm not happy with the service.": "No estoy contento con el servicio.",
+    "I hope you can sort it out.": "Espero que lo puedan solucionar."
+  },
+  "english_phrases": [
+    "This doesn't work.",
+    "There's a mistake on the bill.",
+    "I've been waiting for half an hour.",
+    "I'd like to speak to the manager.",
+    "This is cold.",
+    "I've been charged twice.",
+    "It's not what the website said.",
+    "Can I get a refund?",
+    "I'm not happy with the service.",
+    "I hope you can sort it out."
+  ],
+  "full_script": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo. This doesn't work. There's a mistake on the bill. I've been waiting for half an hour. I'd like to speak to the manager. This is cold. I've been charged twice. It's not what the website said. Can I get a refund? I'm not happy with the service. I hope you can sort it out. [excited] Compártelo con alguien que las necesite."
+}

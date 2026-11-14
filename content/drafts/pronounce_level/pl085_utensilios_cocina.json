@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Utensilios de COCINA en inglés: ¿cómo se pronuncian? 🍳",
+  "video_description": "Bowl, oven, colander: utensilios de cocina con trampas de pronunciación. 🥄",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la cocina (utensilios)",
+  "intro": "[happy] Entramos en la cocina. Di el nombre de cada utensilio antes que yo.",
+  "items": [
+    {
+      "english": "cup",
+      "respelling": "KAP",
+      "ipa": "ˈkʌp",
+      "trap": "La U suena «a»: KAP"
+    },
+    {
+      "english": "fork",
+      "respelling": "FORK",
+      "ipa": "ˈfɔrk",
+      "trap": "OR con R suave, sin vibrar"
+    },
+    {
+      "english": "plate",
+      "respelling": "PLEIT",
+      "ipa": "ˈpleɪt",
+      "trap": "La A suena «ei» y la E no suena"
+    },
+    {
+      "english": "bowl",
+      "respelling": "BOUL",
+      "ipa": "ˈboʊl",
+      "trap": "OW suena «ou», no «au»"
+    },
+    {
+      "english": "oven",
+      "respelling": "A-ven",
+      "ipa": "ˈʌvən",
+      "trap": "La O suena «a»: A-ven"
+    },
+    {
+      "english": "kettle",
+      "respelling": "KE-tal",
+      "ipa": "ˈkɛtəl",
+      "trap": "La TT suena casi como una «r» suave"
+    },
+    {
+      "english": "microwave",
+      "respelling": "MAI-kra-ueiv",
+      "ipa": "ˈmaɪkrəweɪv",
+      "trap": "La I suena «ai»: MAI-kra-ueiv"
+    },
+    {
+      "english": "spatula",
+      "respelling": "SPA-cha-la",
+      "ipa": "ˈspætʃələ",
+      "trap": "Acento en SPA y la T suena «ch»"
+    },
+    {
+      "english": "colander",
+      "respelling": "KA-lan-der",
+      "ipa": "ˈkɑləndɚ",
+      "trap": "Acento en KA-: KA-lan-der"
+    },
+    {
+      "english": "sieve",
+      "respelling": "SIV",
+      "ipa": "ˈsɪv",
+      "trap": "IE suena «i» corta: SIV"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico; si llegaste a la siete, intermedio; y si te salieron las diez, experto.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Te leo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#InglésEnLaCocina",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl085",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

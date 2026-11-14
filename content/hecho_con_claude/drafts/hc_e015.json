@@ -1,0 +1,43 @@
+{
+  "id": "hc_e015",
+  "style": "escena",
+  "level": "medio",
+  "angle": "historia",
+  "title": "En la farmacia: «preservatives» no es lo que crees",
+  "hook_text": "ESCENA — FARMACIA EN LOS ÁNGELES",
+  "scene": {
+    "location": "Farmacia en Los Ángeles",
+    "take1": "Excuse me, do you have preservatives?",
+    "take2": "Excuse me, where can I find condoms?",
+    "note": "Preservatives = conservantes (comida). Preservativo = condom."
+  },
+  "correction": {
+    "wrong": "preservatives = preservativos",
+    "right": "condoms",
+    "rule": "Falso amigo"
+  },
+  "voice": [
+    "Escena: farmacia en Los Ángeles. Toma uno: [[Excuse me, do you have preservatives?]]",
+    "¡Corten! El dependiente te va a mandar a la sección de comida.",
+    "Porque [[preservatives]] son los conservantes: [[This bread has no preservatives]].",
+    "Lo que buscabas es [[condoms]]: [[Where can I find condoms?]]",
+    "Otro falso amigo de farmacia: [[drugs]] puede ser medicamento o droga; mejor [[medicine]].",
+    "Reto: ¿cómo dirías «este zumo no tiene conservantes»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Este zumo no tiene conservantes»",
+    "answer": "This juice has no preservatives."
+  },
+  "caption": "Preservatives no son preservativos: son conservantes. Un falso amigo que da mucha vergüenza en la farmacia.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 69
+}

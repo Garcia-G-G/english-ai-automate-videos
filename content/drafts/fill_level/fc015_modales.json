@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "¿Completas las 10? CAN, SHOULD, MUST 🧭",
+  "video_description": "Poder, deber, tener que: los verbos modales en diez frases. 🧭",
+  "title": "Completa la frase",
+  "theme": "can, could, should y must",
+  "intro": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo.",
+  "items": [
+    {
+      "sentence": "I ____ swim very well.",
+      "answer": "can",
+      "translation": "Sé nadar muy bien.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "You ____ see a doctor.",
+      "answer": "should",
+      "translation": "Deberías ir al médico.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ you help me, please?",
+      "answer": "Could",
+      "translation": "¿Podrías ayudarme, por favor?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "When I was five, I ____ read.",
+      "answer": "could",
+      "translation": "Con cinco años ya sabía leer.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "You ____ be tired after that trip.",
+      "answer": "must",
+      "translation": "Debes de estar cansado después de ese viaje.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "You don't ____ to come if you don't want to.",
+      "answer": "have",
+      "translation": "No tienes que venir si no quieres.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "You ____ smoke here. It's forbidden.",
+      "answer": "mustn't",
+      "translation": "No puedes fumar aquí. Está prohibido.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She can't ____ been at home, I called.",
+      "answer": "have",
+      "translation": "No pudo haber estado en casa, la llamé.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "You'd ____ hurry up.",
+      "answer": "better",
+      "translation": "Más te vale darte prisa.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "You ____ to see a doctor about that cough.",
+      "answer": "ought",
+      "translation": "Deberías ir al médico por esa tos.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#ModalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc015",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

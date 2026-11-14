@@ -1,0 +1,44 @@
+{
+  "type": "true_false",
+  "video_title": "'GHOST' 👻 ¿Verdadero o falso?",
+  "video_description": "Te dejaron de contestar y en inglés tiene nombre. 📵",
+  "statement": "'To ghost someone' es dejar de contestarle sin dar explicaciones.",
+  "correct": true,
+  "explanation": "[excited] Verdadero. Desapareces sin decir nada, como un fantasma. He ghosted me after two dates.",
+  "full_script": "[excited] ¡Verdadero o falso! Afirmación número uno. 'To ghost someone' es dejar de contestarle sin dar explicaciones..... [thoughtful] Piensa bien... Tres... dos... uno... [excited] Verdadero. Desapareces sin decir nada, como un fantasma. He ghosted me after two dates. Afirmación número dos. Ghosting solo se usa en citas y relaciones..... [thoughtful] Piensa bien... Tres... dos... uno... [excited] Falso. También pasa en el trabajo. A company can ghost you after an interview.",
+  "translations": {
+    "to ghost someone": "dejar de contestar a alguien",
+    "he ghosted me after two dates": "dejó de contestarme tras dos citas",
+    "I got ghosted": "me hicieron ghosting"
+  },
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Quiz"
+  ],
+  "_meta": {
+    "category": "technology",
+    "topic_id": "tech006",
+    "video_type": "true_false",
+    "model": "manual"
+  },
+  "statements": [
+    {
+      "statement": "'To ghost someone' es dejar de contestarle sin dar explicaciones.",
+      "correct": true,
+      "explanation": "[excited] Verdadero. Desapareces sin decir nada, como un fantasma. He ghosted me after two dates."
+    },
+    {
+      "statement": "Ghosting solo se usa en citas y relaciones.",
+      "correct": false,
+      "explanation": "[excited] Falso. También pasa en el trabajo. A company can ghost you after an interview."
+    },
+    {
+      "statement": "'I got ghosted' significa que vi un fantasma.",
+      "correct": false,
+      "explanation": "[excited] Falso. Significa que me dejaron de contestar. Got ghosted es la forma pasiva."
+    }
+  ]
+}

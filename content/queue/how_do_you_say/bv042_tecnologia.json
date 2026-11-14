@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la TECNOLOGÍA en inglés? 💻",
+  "video_description": "Diez palabras de tecnología que usas sin darte cuenta. 📱",
+  "title": "¿Cómo se dice…?",
+  "theme": "la tecnología",
+  "level": "A1",
+  "intro": "[curious] Lee cada palabra y piensa cómo se dice en inglés.",
+  "items": [
+    {
+      "emoji": "💻",
+      "spanish": "Portátil",
+      "english": "laptop"
+    },
+    {
+      "emoji": "📱",
+      "spanish": "Celular",
+      "english": "cell phone"
+    },
+    {
+      "emoji": "🖥️",
+      "spanish": "Pantalla",
+      "english": "screen"
+    },
+    {
+      "emoji": "⌨️",
+      "spanish": "Teclado",
+      "english": "keyboard"
+    },
+    {
+      "emoji": "🔌",
+      "spanish": "Cargador",
+      "english": "charger"
+    },
+    {
+      "emoji": "🎧",
+      "spanish": "Auriculares",
+      "english": "headphones"
+    },
+    {
+      "emoji": "🔑",
+      "spanish": "Contraseña",
+      "english": "password"
+    },
+    {
+      "emoji": "📷",
+      "spanish": "Cámara",
+      "english": "camera"
+    },
+    {
+      "emoji": "🔋",
+      "spanish": "Batería",
+      "english": "battery"
+    },
+    {
+      "emoji": "📲",
+      "spanish": "Aplicación",
+      "english": "app"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: laptop, cell phone, screen, keyboard, charger, headphones, password, camera, battery, app.",
+  "outro": "[happy] Guárdalo para repasar y dime cuántas sabías.",
+  "translations": {
+    "laptop": "Portátil",
+    "cell phone": "Celular",
+    "screen": "Pantalla",
+    "keyboard": "Teclado",
+    "charger": "Cargador",
+    "headphones": "Auriculares",
+    "password": "Contraseña",
+    "camera": "Cámara",
+    "battery": "Batería",
+    "app": "Aplicación"
+  },
+  "english_phrases": [
+    "laptop",
+    "cell phone",
+    "screen",
+    "keyboard",
+    "charger",
+    "headphones",
+    "password",
+    "camera",
+    "battery",
+    "app"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv042",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] Lee cada palabra y piensa cómo se dice en inglés. Portátil... laptop. laptop. Celular... cell phone. cell phone. Pantalla... screen. screen. Teclado... keyboard. keyboard. Cargador... charger. charger. Auriculares... headphones. headphones. Contraseña... password. password. Cámara... camera. camera. Batería... battery. battery. Aplicación... app. app. Ahora, todas conmigo: laptop, cell phone, screen, keyboard, charger, headphones, password, camera, battery, app. [happy] Guárdalo para repasar y dime cuántas sabías."
+}

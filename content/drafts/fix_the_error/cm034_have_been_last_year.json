@@ -1,0 +1,53 @@
+{
+  "type": "fix_the_error",
+  "video_title": "Corrige el error: I have been… last year 📆",
+  "video_description": "Un tiempo verbal que choca con una fecha. ⏳",
+  "level": "B1",
+  "intro": "[curious] Esta frase tiene un error. ¿Lo encuentras antes que yo?",
+  "items": [
+    {
+      "wrong": "I have been to Paris last year.",
+      "error": "have been",
+      "right": "I went to Paris last year.",
+      "fix": "went",
+      "translation": "Fui a París el año pasado.",
+      "explanation": "[excited] Con last year el momento está cerrado. Pasado simple: I went."
+    },
+    {
+      "wrong": "I have seen him yesterday.",
+      "error": "have seen",
+      "right": "I saw him yesterday.",
+      "fix": "saw",
+      "translation": "Lo vi ayer.",
+      "explanation": "[excited] Yesterday es un momento terminado. Por eso saw, no have seen."
+    },
+    {
+      "wrong": "We have finished it two days ago.",
+      "error": "have finished",
+      "right": "We finished it two days ago.",
+      "fix": "finished",
+      "translation": "Lo terminamos hace dos días.",
+      "explanation": "[excited] Ago siempre pide pasado simple. Nunca con have."
+    }
+  ],
+  "outro": "[excited] ¿Lo pillaste a la primera? Dímelo en los comentarios.",
+  "translations": {
+    "I went to Paris last year.": "Fui a París el año pasado.",
+    "I saw him yesterday.": "Lo vi ayer.",
+    "We finished it two days ago.": "Lo terminamos hace dos días."
+  },
+  "hashtags": [
+    "#CorrigeElError",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#ErroresComunes",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm034",
+    "video_type": "fix_the_error",
+    "model": "manual",
+    "draft": true
+  }
+}

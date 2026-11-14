@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen MÁS FRUTAS en inglés? 🥭",
+  "video_description": "🍍 ¿Mango, piña, coco… cómo se dicen en inglés? Responde antes que yo y cuenta cuántas sabías 🥥",
+  "title": "¿Cómo se dice…?",
+  "theme": "más frutas",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes decir estas 10 frutas tropicales en inglés? Responde antes que yo.",
+  "items": [
+    {
+      "emoji": "🥭",
+      "spanish": "Mango",
+      "english": "mango"
+    },
+    {
+      "emoji": "🍍",
+      "spanish": "Piña",
+      "english": "pineapple"
+    },
+    {
+      "emoji": "🍌",
+      "spanish": "Plátano",
+      "english": "banana"
+    },
+    {
+      "emoji": "🥥",
+      "spanish": "Coco",
+      "english": "coconut"
+    },
+    {
+      "emoji": "🍉",
+      "spanish": "Sandía",
+      "english": "watermelon"
+    },
+    {
+      "emoji": "🥑",
+      "spanish": "Aguacate",
+      "english": "avocado"
+    },
+    {
+      "emoji": "🥝",
+      "spanish": "Kiwi",
+      "english": "kiwi"
+    },
+    {
+      "emoji": "🍊",
+      "spanish": "Naranja",
+      "english": "orange"
+    },
+    {
+      "emoji": "🍋",
+      "spanish": "Limón",
+      "english": "lemon"
+    },
+    {
+      "emoji": "🍈",
+      "spanish": "Melón",
+      "english": "melon"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: mango, pineapple, banana, coconut, watermelon, avocado, kiwi, orange, lemon, melon.",
+  "outro": "[cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[excited] ¿Sabes decir estas 10 frutas tropicales en inglés? Responde antes que yo. Mango... mango. mango. Piña... pineapple. pineapple. Plátano... banana. banana. Coco... coconut. coconut. Sandía... watermelon. watermelon. Aguacate... avocado. avocado. Kiwi... kiwi. kiwi. Naranja... orange. orange. Limón... lemon. lemon. Melón... melon. melon. Ahora todas en inglés, conmigo: mango, pineapple, banana, coconut, watermelon, avocado, kiwi, orange, lemon, melon. [cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "mango": "Mango",
+    "pineapple": "Piña",
+    "banana": "Plátano",
+    "coconut": "Coco",
+    "watermelon": "Sandía",
+    "avocado": "Aguacate",
+    "kiwi": "Kiwi",
+    "orange": "Naranja",
+    "lemon": "Limón",
+    "melon": "Melón"
+  },
+  "english_phrases": [
+    "mango",
+    "pineapple",
+    "banana",
+    "coconut",
+    "watermelon",
+    "avocado",
+    "kiwi",
+    "orange",
+    "lemon",
+    "melon"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#FrutasEnInglés",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv074",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:47:30.370543",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

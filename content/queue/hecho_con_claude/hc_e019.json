@@ -1,0 +1,43 @@
+{
+  "id": "hc_e019",
+  "style": "escena",
+  "level": "medio",
+  "angle": "calle",
+  "title": "En el taxi: «can you leave me here?»",
+  "hook_text": "ESCENA — TAXI EN NUEVA YORK",
+  "scene": {
+    "location": "Taxi en Nueva York",
+    "take1": "Can you leave me here?",
+    "take2": "Could you drop me off here?",
+    "note": "Dejar a alguien en un sitio = drop someone off."
+  },
+  "correction": {
+    "wrong": "leave me here",
+    "right": "drop me off here",
+    "rule": "Phrasal verb: drop off / pick up"
+  },
+  "voice": [
+    "Escena: taxi en Nueva York. Toma uno: [[Can you leave me here?]]",
+    "¡Corten! [[Leave me here]] suena a que te abandonen, como en una película.",
+    "Toma dos: [[Could you drop me off here?]] Dejar a alguien es [[drop off]].",
+    "Y recoger a alguien es [[pick up]]: [[I'll pick you up at eight]].",
+    "En un taxi también oirás: [[Here's fine, thanks]], «aquí está bien».",
+    "Reto: ¿cómo dirías «¿me recoges en el aeropuerto?»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«¿Me recoges en el aeropuerto?»",
+    "answer": "Can you pick me up at the airport?"
+  },
+  "caption": "«Drop me off» es dejarte y «pick me up» es recogerte. Inglés de taxi y de calle, en una escena.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 74
+}

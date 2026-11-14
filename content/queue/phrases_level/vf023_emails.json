@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "«QUEDO A LA ESPERA» y 9 frases más en inglés 📧",
+  "video_description": "Diez frases de email que quedan profesionales. 📧",
+  "title": "¿Cómo se dice?",
+  "theme": "en un email de trabajo",
+  "intro": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo?",
+  "items": [
+    {
+      "spanish": "Espero que estés bien.",
+      "english": "I hope you're well."
+    },
+    {
+      "spanish": "Te escribo por...",
+      "english": "I'm writing about..."
+    },
+    {
+      "spanish": "Adjunto el informe.",
+      "english": "Please find the report attached."
+    },
+    {
+      "spanish": "Gracias por tu respuesta.",
+      "english": "Thanks for getting back to me."
+    },
+    {
+      "spanish": "Perdona la demora.",
+      "english": "Sorry for the delay."
+    },
+    {
+      "spanish": "Te confirmo la reunión.",
+      "english": "I'm confirming our meeting."
+    },
+    {
+      "spanish": "Cualquier duda, me dices.",
+      "english": "Let me know if you have any questions."
+    },
+    {
+      "spanish": "Quedo a la espera.",
+      "english": "I look forward to hearing from you."
+    },
+    {
+      "spanish": "Un saludo.",
+      "english": "Best regards."
+    },
+    {
+      "spanish": "Te pongo en copia a Marta.",
+      "english": "I'm copying Marta."
+    }
+  ],
+  "outro": "[happy] Guarda el vídeo y repítelas mañana.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf023",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I hope you're well.": "Espero que estés bien.",
+    "I'm writing about...": "Te escribo por...",
+    "Please find the report attached.": "Adjunto el informe.",
+    "Thanks for getting back to me.": "Gracias por tu respuesta.",
+    "Sorry for the delay.": "Perdona la demora.",
+    "I'm confirming our meeting.": "Te confirmo la reunión.",
+    "Let me know if you have any questions.": "Cualquier duda, me dices.",
+    "I look forward to hearing from you.": "Quedo a la espera.",
+    "Best regards.": "Un saludo.",
+    "I'm copying Marta.": "Te pongo en copia a Marta."
+  },
+  "english_phrases": [
+    "I hope you're well.",
+    "I'm writing about...",
+    "Please find the report attached.",
+    "Thanks for getting back to me.",
+    "Sorry for the delay.",
+    "I'm confirming our meeting.",
+    "Let me know if you have any questions.",
+    "I look forward to hearing from you.",
+    "Best regards.",
+    "I'm copying Marta."
+  ],
+  "full_script": "[curious] Te digo la frase en español y tú la dices en inglés. ¿Lista? ¿Listo? I hope you're well. I'm writing about... Please find the report attached. Thanks for getting back to me. Sorry for the delay. I'm confirming our meeting. Let me know if you have any questions. I look forward to hearing from you. Best regards. I'm copying Marta. [happy] Guarda el vídeo y repítelas mañana."
+}

@@ -1,0 +1,115 @@
+{
+  "type": "say_it_level",
+  "video_title": "En el MÉDICO: 10 frases en inglés de fácil a experto 🩺",
+  "video_description": "Explica qué te pasa en inglés: dolores, alergias y las trampas que fallan casi todos. 🩺",
+  "title": "Dilo en inglés",
+  "theme": "en el médico",
+  "intro": "[calm] Estás en la consulta. Lee cómo te encuentras y dilo en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Me duele aquí.",
+      "english": "It hurts here.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Tengo fiebre.",
+      "english": "I have a fever.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Me duele la garganta.",
+      "english": "I have a sore throat.",
+      "cefr": "A2",
+      "alt": "My throat hurts."
+    },
+    {
+      "spanish": "No me encuentro bien.",
+      "english": "I don't feel well.",
+      "cefr": "A2",
+      "alt": "I'm not feeling well."
+    },
+    {
+      "spanish": "Me he tomado un ibuprofeno.",
+      "english": "I've taken some ibuprofen.",
+      "cefr": "B1",
+      "alt": "I took some ibuprofen."
+    },
+    {
+      "spanish": "¿Vuelvo la semana que viene?",
+      "english": "Do I need to come back next week?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Soy alérgico a la penicilina.",
+      "english": "I'm allergic to penicillin.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Llevo tres días así.",
+      "english": "I've been like this for three days.",
+      "cefr": "B2",
+      "alt": "I've felt like this for three days.",
+      "tip": "«Llevo + tiempo» se dice I've been... for"
+    },
+    {
+      "spanish": "Me he torcido el tobillo.",
+      "english": "I've sprained my ankle.",
+      "cefr": "B2",
+      "alt": "I twisted my ankle.",
+      "tip": "Con partes del cuerpo va my, no the: my ankle"
+    },
+    {
+      "spanish": "Me cuesta respirar.",
+      "english": "I'm having trouble breathing.",
+      "cefr": "B2",
+      "alt": "It's hard for me to breathe.",
+      "tip": "«Me cuesta» + verbo: I have trouble + -ing"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, experto.",
+  "outro": "[warm] ¿Qué número te ha salido en la consulta? Cuéntamelo abajo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésMédico",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy011",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "It hurts here.": "Me duele aquí.",
+    "I have a fever.": "Tengo fiebre.",
+    "I have a sore throat.": "Me duele la garganta.",
+    "I don't feel well.": "No me encuentro bien.",
+    "I've taken some ibuprofen.": "Me he tomado un ibuprofeno.",
+    "Do I need to come back next week?": "¿Vuelvo la semana que viene?",
+    "I'm allergic to penicillin.": "Soy alérgico a la penicilina.",
+    "I've been like this for three days.": "Llevo tres días así.",
+    "I've sprained my ankle.": "Me he torcido el tobillo.",
+    "I'm having trouble breathing.": "Me cuesta respirar."
+  },
+  "english_phrases": [
+    "It hurts here.",
+    "I have a fever.",
+    "I have a sore throat.",
+    "I don't feel well.",
+    "I've taken some ibuprofen.",
+    "Do I need to come back next week?",
+    "I'm allergic to penicillin.",
+    "I've been like this for three days.",
+    "I've sprained my ankle.",
+    "I'm having trouble breathing.",
+    "My throat hurts.",
+    "I'm not feeling well.",
+    "I took some ibuprofen.",
+    "I've felt like this for three days.",
+    "I twisted my ankle.",
+    "It's hard for me to breathe."
+  ],
+  "full_script": "[calm] Estás en la consulta. Lee cómo te encuentras y dilo en inglés antes que yo. It hurts here. I have a fever. I have a sore throat. Ahora, nivel intermedio. I don't feel well. I've taken some ibuprofen. Do I need to come back next week? I'm allergic to penicillin. Y ahora, nivel experto. I've been like this for three days. I've sprained my ankle. I'm having trouble breathing. Si te quedaste en la tres, básico. Si llegaste a la siete, intermedio. Y si dijiste las diez, experto. [warm] ¿Qué número te ha salido en la consulta? Cuéntamelo abajo."
+}

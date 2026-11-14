@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: VERBOS + PREPOSICIÓN 🔗",
+  "video_description": "Depend on, listen to, wait for: verbos con su preposición. 🔗",
+  "title": "Completa la frase",
+  "theme": "verbos con preposición",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "Listen ____ me!",
+      "answer": "to",
+      "translation": "¡Escúchame!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'm waiting ____ the bus.",
+      "answer": "for",
+      "translation": "Estoy esperando el autobús.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "It depends ____ the weather.",
+      "answer": "on",
+      "translation": "Depende del tiempo.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I agree ____ you.",
+      "answer": "with",
+      "translation": "Estoy de acuerdo contigo.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She's thinking ____ moving abroad.",
+      "answer": "about",
+      "translation": "Está pensando en irse al extranjero.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Don't laugh ____ me!",
+      "answer": "at",
+      "translation": "¡No te rías de mí!",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I apologized ____ being late.",
+      "answer": "for",
+      "translation": "Pedí perdón por llegar tarde.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He insisted ____ paying.",
+      "answer": "on",
+      "translation": "Insistió en pagar.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She suffers ____ headaches.",
+      "answer": "from",
+      "translation": "Sufre dolores de cabeza.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I can't cope ____ so much stress.",
+      "answer": "with",
+      "translation": "No puedo con tanto estrés.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Preposiciones",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc017",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Listen to me!": "¡Escúchame!",
+    "I'm waiting for the bus.": "Estoy esperando el autobús.",
+    "It depends on the weather.": "Depende del tiempo.",
+    "I agree with you.": "Estoy de acuerdo contigo.",
+    "She's thinking about moving abroad.": "Está pensando en irse al extranjero.",
+    "Don't laugh at me!": "¡No te rías de mí!",
+    "I apologized for being late.": "Pedí perdón por llegar tarde.",
+    "He insisted on paying.": "Insistió en pagar.",
+    "She suffers from headaches.": "Sufre dolores de cabeza.",
+    "I can't cope with so much stress.": "No puedo con tanto estrés."
+  },
+  "english_phrases": [
+    "Listen to me!",
+    "I'm waiting for the bus.",
+    "It depends on the weather.",
+    "I agree with you.",
+    "She's thinking about moving abroad.",
+    "Don't laugh at me!",
+    "I apologized for being late.",
+    "He insisted on paying.",
+    "She suffers from headaches.",
+    "I can't cope with so much stress."
+  ],
+  "full_script": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare. Listen to me! I'm waiting for the bus. It depends on the weather. Ahora, nivel intermedio. I agree with you. She's thinking about moving abroad. Don't laugh at me! I apologized for being late. Y ahora, nivel experto. He insisted on paying. She suffers from headaches. I can't cope with so much stress. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

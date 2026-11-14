@@ -1,0 +1,55 @@
+{
+  "id": "hc_m012",
+  "style": "mensajes",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«I assisted the meeting» y nadie lo entendió",
+  "hook_text": "Le conté mi día a mi jefe…",
+  "chat": {
+    "contact": "Daniel · Toronto",
+    "messages": [
+      [
+        "them",
+        "Were you at the client meeting?"
+      ],
+      [
+        "me",
+        "Yes, I assisted the meeting",
+        "error"
+      ],
+      [
+        "them",
+        "you helped it? 🤔"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "assist = asistir",
+    "right": "attend",
+    "rule": "Asistir a algo = attend · Assist = ayudar"
+  },
+  "voice": [
+    "Le dije a mi jefe [[I assisted the meeting]] para decir que fui a la reunión. Y me preguntó en qué ayudé.",
+    "Porque [[assist]] significa ayudar, como un asistente.",
+    "Ir a una reunión, a clase o a un evento es [[attend]]: [[I attended the meeting]].",
+    "También puedes decir simplemente [[I was at the meeting]] o [[I went to the meeting]].",
+    "Y si ayudaste de verdad: [[I assisted the manager with the meeting]].",
+    "Reto: ¿cómo dirías «no pude asistir a la boda»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«No pude asistir a la boda»",
+    "answer": "I couldn't attend the wedding. / I couldn't make it to the wedding."
+  },
+  "caption": "Asistir es «attend», no «assist». El falso amigo que más se oye en el trabajo, en un chat real.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 84
+}

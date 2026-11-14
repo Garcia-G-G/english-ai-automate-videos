@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Sabes decir «TENGO UNA RESERVA» en inglés? 🏨",
+  "video_description": "Diez frases para el hotel: de la llegada a la salida. 🛎️",
+  "title": "¿Cómo se dice?",
+  "theme": "en el hotel",
+  "intro": "[happy] Diez frases muy útiles. Intenta decirlas en inglés antes de que aparezcan.",
+  "items": [
+    {
+      "spanish": "Tengo una reserva.",
+      "english": "I have a reservation."
+    },
+    {
+      "spanish": "¿A qué hora es el desayuno?",
+      "english": "What time is breakfast?"
+    },
+    {
+      "spanish": "¿Cuál es la clave del wifi?",
+      "english": "What's the wifi password?"
+    },
+    {
+      "spanish": "La habitación está muy fría.",
+      "english": "The room is really cold."
+    },
+    {
+      "spanish": "¿Me pueden despertar a las siete?",
+      "english": "Could I get a wake-up call at seven?"
+    },
+    {
+      "spanish": "No funciona la ducha.",
+      "english": "The shower doesn't work."
+    },
+    {
+      "spanish": "¿Puedo dejar aquí la maleta?",
+      "english": "Can I leave my bag here?"
+    },
+    {
+      "spanish": "¿Me pueden pedir un taxi?",
+      "english": "Could you call me a taxi?"
+    },
+    {
+      "spanish": "¿A qué hora hay que dejar la habitación?",
+      "english": "What time is checkout?"
+    },
+    {
+      "spanish": "Quiero quedarme una noche más.",
+      "english": "I'd like to stay one more night."
+    }
+  ],
+  "outro": "[curious] ¿Cuál no conocías? Cuéntamelo abajo.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf004",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

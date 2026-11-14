@@ -1,0 +1,43 @@
+{
+  "id": "hc_e018",
+  "style": "escena",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«I realized the project»: no es lo que quieres decir",
+  "hook_text": "ESCENA — PRESENTACIÓN DE RESULTADOS",
+  "scene": {
+    "location": "Presentación de resultados",
+    "take1": "Last month I realized the project.",
+    "take2": "Last month I carried out the project.",
+    "note": "Realize = darse cuenta. Realizar = carry out, do."
+  },
+  "correction": {
+    "wrong": "realize = realizar",
+    "right": "carry out / do / complete",
+    "rule": "Falso amigo"
+  },
+  "voice": [
+    "Escena: presentación en el trabajo. Toma uno: [[Last month I realized the project]].",
+    "¡Corten! Acabas de decir que el mes pasado te diste cuenta del proyecto.",
+    "Porque [[realize]] significa «darse cuenta»: [[I realized I was wrong]].",
+    "Realizar un proyecto es [[carry out]] o simplemente [[do]] o [[complete]]: [[I carried out the project]].",
+    "Y realizar un sueño: [[make a dream come true]].",
+    "Reto: ¿cómo dirías «me di cuenta tarde»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Me di cuenta tarde»",
+    "answer": "I realized too late."
+  },
+  "caption": "Realize no es realizar, es darse cuenta. Realizar un proyecto es «carry out». Falso amigo de oficina.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 70
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La Y en inglés: ¿«i», «ai» o «y»? 10 palabras ⛵",
+  "video_description": "Yes, type, yacht: la Y cambia de sonido y te puede engañar. 🌀",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con Y",
+  "intro": "[cheerful] La Y tiene varios sonidos. Lee cada palabra en voz alta antes de que yo la diga.",
+  "items": [
+    {
+      "english": "yes",
+      "respelling": "IES",
+      "ipa": "ˈjɛs",
+      "trap": "La Y suena «i», no «ye» fuerte"
+    },
+    {
+      "english": "my",
+      "respelling": "MAI",
+      "ipa": "ˈmaɪ",
+      "trap": "La Y final suena «ai»"
+    },
+    {
+      "english": "type",
+      "respelling": "TAIP",
+      "ipa": "ˈtaɪp",
+      "trap": "La Y suena «ai»: TAIP"
+    },
+    {
+      "english": "typical",
+      "respelling": "TI-pi-kal",
+      "ipa": "ˈtɪpɪkəl",
+      "trap": "Aquí la Y es una «i» corta"
+    },
+    {
+      "english": "lyrics",
+      "respelling": "LI-riks",
+      "ipa": "ˈlɪrɪks",
+      "trap": "La Y suena «i» corta: LI-riks"
+    },
+    {
+      "english": "analyze",
+      "respelling": "A-na-laiz",
+      "ipa": "ˈænəlaɪz",
+      "trap": "Acento en A- y la Y suena «ai»"
+    },
+    {
+      "english": "dynasty",
+      "respelling": "DAI-nas-ti",
+      "ipa": "ˈdaɪnəsti",
+      "trap": "La Y suena «ai»: DAI-nas-ti"
+    },
+    {
+      "english": "yearn",
+      "respelling": "IERN",
+      "ipa": "ˈjɝn",
+      "trap": "La Y suena: no digas «earn»"
+    },
+    {
+      "english": "yacht",
+      "respelling": "IAT",
+      "ipa": "ˈjɑt",
+      "trap": "La CH no suena: IAT"
+    },
+    {
+      "english": "yolk",
+      "respelling": "IOUK",
+      "ipa": "ˈjoʊk",
+      "trap": "La L no suena: IOUK"
+    }
+  ],
+  "verdict": "Tres correctas, nivel básico. Siete, intermedio. Y diez de diez, nivel experto.",
+  "outro": "[curious] ¿Cuántas acertaste? Deja tu número en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Ortografía",
+    "#InglésOnline",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl084",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

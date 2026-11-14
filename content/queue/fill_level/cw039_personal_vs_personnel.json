@@ -1,0 +1,87 @@
+{
+  "type": "fill_level",
+  "video_title": "¿PERSONAL o PERSONNEL? Completa la frase en inglés 🤔",
+  "video_description": "Personal es tuyo. Personnel es el equipo de trabajo. ¿Hasta qué número llegas sin equivocarte? 🧠",
+  "title": "Completa la frase",
+  "theme": "personal vs personnel",
+  "intro": "[curious] ¿Personal o personnel? Una lleva doble N y significa otra cosa. ¿Hasta cuál llegas?",
+  "items": [
+    {
+      "sentence": "This is my ____ phone.",
+      "answer": "personal",
+      "translation": "Este es mi teléfono personal.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Don't ask ____ questions.",
+      "answer": "personal",
+      "translation": "No hagas preguntas personales.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She has a ____ trainer.",
+      "answer": "personal",
+      "translation": "Ella tiene un entrenador personal.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "All ____ must wear a badge.",
+      "answer": "personnel",
+      "translation": "Todo el personal debe usar gafete.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It's my ____ opinion.",
+      "answer": "personal",
+      "translation": "Es mi opinión personal.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Medical ____ only.",
+      "answer": "personnel",
+      "translation": "Solo personal médico.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It's nothing ____.",
+      "answer": "personal",
+      "translation": "No es nada personal.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Military ____ entered the base.",
+      "answer": "personnel",
+      "translation": "Personal militar entró a la base.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Contact the ____ office.",
+      "answer": "personnel",
+      "translation": "Contacta a la oficina de personal.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "We cut ____ costs this year.",
+      "answer": "personnel",
+      "translation": "Recortamos costos de personal.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Personal o personnel? Una lleva doble N y significa otra cosa. ¿Hasta cuál llegas? This is my personal phone. Don't ask personal questions. She has a personal trainer. All personnel must wear a badge. It's my personal opinion. Medical personnel only. It's nothing personal. Military personnel entered the base. Contact the personnel office. We cut personnel costs this year. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#InglesParaLatinos",
+    "#VocabularioEnIngles",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "confusing_words",
+    "topic_id": "cw039",
+    "video_type": "fill_level",
+    "generated_at": "2026-11-02T11:04:28.448572",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

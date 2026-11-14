@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "AGO o BEFORE: el test de 10 frases 🕰️",
+  "video_description": "Hace tiempo en inglés: ago, before y compañía. Diez frases. 🕰️",
+  "title": "Elige la correcta",
+  "theme": "ago o before",
+  "intro": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo.",
+  "items": [
+    {
+      "sentence": "I met her two years ____.",
+      "options": [
+        "ago",
+        "before"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I've seen this film ____.",
+      "options": [
+        "ago",
+        "before"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "He left ten minutes ____.",
+      "options": [
+        "before",
+        "ago"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Wash your hands ____ you eat.",
+      "options": [
+        "before",
+        "ago"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Long ____, people lived without phones.",
+      "options": [
+        "before",
+        "ago"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Have we met ____?",
+      "options": [
+        "before",
+        "ago"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She had left two days ____.",
+      "options": [
+        "before",
+        "ago"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Not long ____, this was a park.",
+      "options": [
+        "before",
+        "ago"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'd never been abroad ____ that trip.",
+      "options": [
+        "before",
+        "ago"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "It was a while ____ I realized.",
+      "options": [
+        "ago",
+        "before"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AgoVsBefore",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec021",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "I met her two years ago.",
+    "I've seen this film before.",
+    "He left ten minutes ago.",
+    "Wash your hands before you eat.",
+    "Long ago, people lived without phones.",
+    "Have we met before?",
+    "She had left two days before.",
+    "Not long ago, this was a park.",
+    "I'd never been abroad before that trip.",
+    "It was a while before I realized."
+  ],
+  "full_script": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo. I met her two years ago. I've seen this film before. He left ten minutes ago. Ahora, nivel intermedio. Wash your hands before you eat. Long ago, people lived without phones. Have we met before? She had left two days before. Y ahora, nivel experto. Not long ago, this was a park. I'd never been abroad before that trip. It was a while before I realized. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "¿Cuántos VERBOS DE MIRAR conoces en inglés? 👁️",
+  "video_description": "Watch, stare, glance, squint: no todo es «look». Test de inglés con verbos de mirar 🔍",
+  "title": "¿Qué nivel tienes?",
+  "theme": "verbos de mirar",
+  "intro": "[curious] En inglés hay muchas formas de mirar. Diez verbos, de fácil a experto: ¿qué significan?",
+  "items": [
+    {
+      "english": "watch",
+      "spanish": "Ver (la tele)",
+      "cefr": "A1"
+    },
+    {
+      "english": "look",
+      "spanish": "Mirar",
+      "cefr": "A1"
+    },
+    {
+      "english": "look around",
+      "spanish": "Mirar alrededor",
+      "cefr": "A2"
+    },
+    {
+      "english": "notice",
+      "spanish": "Darse cuenta",
+      "cefr": "B1"
+    },
+    {
+      "english": "stare",
+      "spanish": "Mirar fijamente",
+      "cefr": "B1"
+    },
+    {
+      "english": "glance",
+      "spanish": "Echar un vistazo",
+      "cefr": "B2"
+    },
+    {
+      "english": "spot",
+      "spanish": "Detectar, divisar",
+      "cefr": "B2"
+    },
+    {
+      "english": "peek",
+      "spanish": "Mirar a escondidas",
+      "cefr": "B2"
+    },
+    {
+      "english": "glare",
+      "spanish": "Fulminar con la mirada",
+      "cefr": "C1"
+    },
+    {
+      "english": "squint",
+      "spanish": "Entrecerrar los ojos",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si viste venir las diez, experto.",
+  "outro": "[happy] ¿Hasta qué número llegaste? Échale un vistazo a los comentarios y deja el tuyo.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VerbosEnInglés",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésAvanzado"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv091",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "watch": "Ver (la tele)",
+    "look": "Mirar",
+    "look around": "Mirar alrededor",
+    "notice": "Darse cuenta",
+    "stare": "Mirar fijamente",
+    "glance": "Echar un vistazo",
+    "spot": "Detectar, divisar",
+    "peek": "Mirar a escondidas",
+    "glare": "Fulminar con la mirada",
+    "squint": "Entrecerrar los ojos"
+  },
+  "english_phrases": [
+    "watch",
+    "look",
+    "look around",
+    "notice",
+    "stare",
+    "glance",
+    "spot",
+    "peek",
+    "glare",
+    "squint"
+  ],
+  "full_script": "[curious] En inglés hay muchas formas de mirar. Diez verbos, de fácil a experto: ¿qué significan? watch Ver (la tele) look Mirar look around Mirar alrededor Ahora, nivel intermedio. notice Darse cuenta stare Mirar fijamente glance Echar un vistazo spot Detectar, divisar Y ahora, nivel experto. peek Mirar a escondidas glare Fulminar con la mirada squint Entrecerrar los ojos Si llegaste a la tres, básico. A la siete, intermedio. Y si viste venir las diez, experto. [happy] ¿Hasta qué número llegaste? Échale un vistazo a los comentarios y deja el tuyo."
+}

@@ -1,0 +1,55 @@
+{
+  "id": "hc_m016",
+  "style": "mensajes",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«Looking forward to see you»: el error elegante",
+  "hook_text": "Mi mensaje más formal… con un fallo",
+  "chat": {
+    "contact": "Ms. Carter · Trabajo",
+    "messages": [
+      [
+        "them",
+        "See you at the interview on Monday."
+      ],
+      [
+        "me",
+        "Thank you! I'm looking forward to see you",
+        "error"
+      ],
+      [
+        "them",
+        "👍"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "looking forward to see you",
+    "right": "looking forward to seeing you",
+    "rule": "Look forward to + verbo en -ing"
+  },
+  "voice": [
+    "Contesté un correo de trabajo con [[I'm looking forward to see you]]. Suena profesional… pero tiene un error.",
+    "En [[look forward to]] el [[to]] es una preposición, no parte del infinitivo.",
+    "Por eso el verbo va en -ing: [[I'm looking forward to seeing you]].",
+    "Y con un sustantivo: [[I'm looking forward to the interview]].",
+    "Pasa igual con [[I'm used to]]: [[I'm used to working late]].",
+    "Reto: ¿cómo dirías «tengo ganas de trabajar con ustedes»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Tengo ganas de trabajar con ustedes»",
+    "answer": "I'm looking forward to working with you."
+  },
+  "caption": "Se dice «looking forward to seeing you», con -ing. El error que más se repite en correos de trabajo.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 76
+}

@@ -1,0 +1,43 @@
+{
+  "id": "hc_e013",
+  "style": "escena",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«Let's discuss about the budget»: el «about» que sobra",
+  "hook_text": "ESCENA — SALA DE REUNIONES",
+  "scene": {
+    "location": "Sala de reuniones",
+    "take1": "Let's discuss about the budget.",
+    "take2": "Let's discuss the budget.",
+    "note": "Discuss no lleva preposición. Talk about sí."
+  },
+  "correction": {
+    "wrong": "discuss about",
+    "right": "discuss / talk about",
+    "rule": "Discuss + cosa, directo"
+  },
+  "voice": [
+    "Escena: reunión de trabajo. Toma uno: [[Let's discuss about the budget]].",
+    "¡Corten! [[Discuss]] ya incluye el «sobre». No lleva [[about]].",
+    "Toma dos: [[Let's discuss the budget]].",
+    "Si quieres usar [[about]], cambia el verbo: [[Let's talk about the budget]].",
+    "Lo mismo con [[mention]]: [[He mentioned the problem]], sin [[about]].",
+    "Reto: ¿cómo dirías «tenemos que hablar del plan»? Te leo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Tenemos que hablar del plan»",
+    "answer": "We need to discuss the plan. / We need to talk about the plan."
+  },
+  "caption": "Se dice «discuss the budget», sin «about». O «talk about». El error de reunión que más se repite.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 59
+}

@@ -1,0 +1,43 @@
+{
+  "type": "expression_of_day",
+  "video_title": "A PIECE OF CAKE: más fácil que comer pastel 🍰",
+  "video_description": "El pan comido de los ingleses. ✅",
+  "level": "B1",
+  "intro": "[cheerful] La expresión de hoy la vas a oír esta misma semana.",
+  "expression": "a piece of cake",
+  "literal": "un trozo de pastel",
+  "meaning": "pan comido, facilísimo",
+  "register": "informal",
+  "examples": [
+    {
+      "en": "The exam was a piece of cake.",
+      "es": "El examen fue pan comido."
+    },
+    {
+      "en": "Don't worry, it's a piece of cake.",
+      "es": "Tranquilo, está chupado."
+    }
+  ],
+  "equivalent_es": "ser pan comido",
+  "tip": "Lleva siempre el artículo: a piece of cake. Sin el a, suena a que hablas de verdad de un pastel.",
+  "outro": "[excited] Úsala hoy en una frase. Escríbela en los comentarios.",
+  "translations": {
+    "a piece of cake": "pan comido, facilísimo",
+    "The exam was a piece of cake.": "El examen fue pan comido.",
+    "Don't worry, it's a piece of cake.": "Tranquilo, está chupado."
+  },
+  "hashtags": [
+    "#ExpresiónDelDía",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Idioms"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "exp023",
+    "video_type": "expression_of_day",
+    "model": "manual",
+    "draft": true
+  }
+}

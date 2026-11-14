@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los COLORES en inglés? 🎨",
+  "video_description": "Diez colores que usas cada día, con su pronunciación. 🌈",
+  "title": "¿Cómo se dice…?",
+  "theme": "los colores",
+  "level": "A1",
+  "intro": "[cheerful] Diez palabras. Piensa antes de que yo lo diga.",
+  "items": [
+    {
+      "emoji": "❤️",
+      "spanish": "Rojo",
+      "english": "red"
+    },
+    {
+      "emoji": "💙",
+      "spanish": "Azul",
+      "english": "blue"
+    },
+    {
+      "emoji": "💚",
+      "spanish": "Verde",
+      "english": "green"
+    },
+    {
+      "emoji": "💛",
+      "spanish": "Amarillo",
+      "english": "yellow"
+    },
+    {
+      "emoji": "🖤",
+      "spanish": "Negro",
+      "english": "black"
+    },
+    {
+      "emoji": "🤍",
+      "spanish": "Blanco",
+      "english": "white"
+    },
+    {
+      "emoji": "🧡",
+      "spanish": "Naranja",
+      "english": "orange"
+    },
+    {
+      "emoji": "💜",
+      "spanish": "Morado",
+      "english": "purple"
+    },
+    {
+      "emoji": "🤎",
+      "spanish": "Marrón",
+      "english": "brown"
+    },
+    {
+      "emoji": "🌸",
+      "spanish": "Rosa",
+      "english": "pink"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: red, blue, green, yellow, black, white, orange, purple, brown, pink.",
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "translations": {
+    "red": "Rojo",
+    "blue": "Azul",
+    "green": "Verde",
+    "yellow": "Amarillo",
+    "black": "Negro",
+    "white": "Blanco",
+    "orange": "Naranja",
+    "purple": "Morado",
+    "brown": "Marrón",
+    "pink": "Rosa"
+  },
+  "english_phrases": [
+    "red",
+    "blue",
+    "green",
+    "yellow",
+    "black",
+    "white",
+    "orange",
+    "purple",
+    "brown",
+    "pink"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv004",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Diez palabras. Piensa antes de que yo lo diga. Rojo... red. red. Azul... blue. blue. Verde... green. green. Amarillo... yellow. yellow. Negro... black. black. Blanco... white. white. Naranja... orange. orange. Morado... purple. purple. Marrón... brown. brown. Rosa... pink. pink. Ahora, todas conmigo: red, blue, green, yellow, black, white, orange, purple, brown, pink. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

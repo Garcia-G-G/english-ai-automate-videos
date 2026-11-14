@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Grupos de CONSONANTES difíciles: ¿puedes con ellos? 😤",
+  "video_description": "Strengths, texts, fifths: consonantes en fila sin una sola vocal de ayuda. 💪",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "grupos de consonantes difíciles",
+  "intro": "[serious] Consonantes en fila, sin vocales de ayuda. Pronuncia cada palabra antes de escucharme.",
+  "items": [
+    {
+      "english": "plant",
+      "respelling": "PLANT",
+      "ipa": "ˈplænt",
+      "trap": "PL y NT sin vocales extra"
+    },
+    {
+      "english": "street",
+      "respelling": "STRIIT",
+      "ipa": "ˈstriːt",
+      "trap": "STR sin «e» delante"
+    },
+    {
+      "english": "spring",
+      "respelling": "SPRING",
+      "ipa": "ˈsprɪŋ",
+      "trap": "SPR juntas: sin «es-»"
+    },
+    {
+      "english": "throw",
+      "respelling": "THROU",
+      "ipa": "ˈθroʊ",
+      "trap": "TH + R juntas: THROU"
+    },
+    {
+      "english": "desks",
+      "respelling": "DESKS",
+      "ipa": "ˈdɛsks",
+      "trap": "«sks» al final: no añadas vocal"
+    },
+    {
+      "english": "world",
+      "respelling": "UERLD",
+      "ipa": "ˈwɝld",
+      "trap": "RLD al final: UERLD"
+    },
+    {
+      "english": "sculpt",
+      "respelling": "SKALPT",
+      "ipa": "ˈskʌlpt",
+      "trap": "La P sí suena: SKALPT"
+    },
+    {
+      "english": "texts",
+      "respelling": "TEKSTS",
+      "ipa": "ˈtɛksts",
+      "trap": "Cuatro consonantes al final: -KSTS"
+    },
+    {
+      "english": "fifths",
+      "respelling": "FIFTHS",
+      "ipa": "ˈfɪfθs",
+      "trap": "F + TH + S al final"
+    },
+    {
+      "english": "strengths",
+      "respelling": "STRENGKTHS",
+      "ipa": "ˈstrɛŋkθs",
+      "trap": "Tres consonantes delante y cuatro detrás"
+    }
+  ],
+  "verdict": "Hasta la tres eres básico. Hasta la siete, intermedio. Si superaste las diez, eres experto de verdad.",
+  "outro": "[excited] ¿Te salió «strengths»? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#RetoDeInglés",
+    "#InglésOnline",
+    "#Pronunciación"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl082",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

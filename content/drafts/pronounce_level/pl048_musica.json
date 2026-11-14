@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "MÚSICA en inglés: 10 palabras de fácil a experto 🎵",
+  "video_description": "Diez palabras de música, de la canción a la orquesta. 🎸",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la música",
+  "intro": "[cheerful] Diez palabras de música. Pronúncialas tú primero y luego escucha.",
+  "items": [
+    {
+      "english": "song",
+      "respelling": "SONG",
+      "ipa": "ˈsɔŋ",
+      "trap": "NG final: la G casi no suena"
+    },
+    {
+      "english": "piano",
+      "respelling": "pi-A-nou",
+      "ipa": "piˈænoʊ",
+      "trap": "Acento en A y O final «ou»"
+    },
+    {
+      "english": "guitar",
+      "respelling": "gi-TAR",
+      "ipa": "gɪˈtɑr",
+      "trap": "La U no suena: gi-TAR"
+    },
+    {
+      "english": "drums",
+      "respelling": "DRAMZ",
+      "ipa": "ˈdrʌmz",
+      "trap": "U suena «a» y la S = Z"
+    },
+    {
+      "english": "violin",
+      "respelling": "vai-e-LIN",
+      "ipa": "vaɪəˈlɪn",
+      "trap": "Empieza «vai»: vai-e-LIN"
+    },
+    {
+      "english": "saxophone",
+      "respelling": "SAK-se-foun",
+      "ipa": "ˈsæksəfoʊn",
+      "trap": "Acento en SAK y PH = F"
+    },
+    {
+      "english": "symphony",
+      "respelling": "SIM-fe-ni",
+      "ipa": "ˈsɪmfəni",
+      "trap": "PH suena F y la Y es «i»"
+    },
+    {
+      "english": "chorus",
+      "respelling": "KO-res",
+      "ipa": "ˈkɔrəs",
+      "trap": "CH suena K: KO-res"
+    },
+    {
+      "english": "orchestra",
+      "respelling": "OR-kes-tra",
+      "ipa": "ˈɔrkəstrə",
+      "trap": "CH suena K y acento en OR"
+    },
+    {
+      "english": "concerto",
+      "respelling": "ken-CHER-tou",
+      "ipa": "kənˈtʃɛrtoʊ",
+      "trap": "CER suena «cher»: ken-CHER-tou"
+    }
+  ],
+  "verdict": "La tres marca el nivel básico, la siete el intermedio y las diez el experto. ¿Dónde te quedaste?",
+  "outro": "[curious] ¿Qué palabra te sorprendió más? Te leo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#MúsicaEnInglés",
+    "#AprenderInglés",
+    "#InglésAmericano",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl048",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

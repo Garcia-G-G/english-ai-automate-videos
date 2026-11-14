@@ -1,0 +1,83 @@
+{
+  "type": "quiz",
+  "video_title": "¿Puedes acertar las 3? ⏰ IN THE NICK OF TIME Quiz",
+  "video_description": "⏰ ¿Llegas justo a tiempo… en inglés? Pon a prueba tu English con 3 preguntas sobre 'in the nick of time' 🧠\n👇 Comenta cuántas acertaste y sígueme para más idioms. Let's go! 🚀",
+  "question": "¿Qué significa 'in the nick of time'?",
+  "options": {
+    "A": "justo a tiempo",
+    "B": "muy tarde",
+    "C": "con calma",
+    "D": "en un rato"
+  },
+  "correct": "A",
+  "explanation": "Justo a tiempo, nunca tarde: llegó in the nick of time.",
+  "questions": [
+    {
+      "question": "¿Qué significa 'in the nick of time'?",
+      "options": {
+        "A": "justo a tiempo",
+        "B": "muy tarde",
+        "C": "con calma",
+        "D": "en un rato"
+      },
+      "correct": "A",
+      "explanation": "Justo a tiempo, nunca tarde: llegó in the nick of time."
+    },
+    {
+      "question": "¿Cómo completas 'llegué justo a tiempo'? I arrived ___ of time.",
+      "options": {
+        "A": "on the nick",
+        "B": "in the nick",
+        "C": "in the neck",
+        "D": "at the nick"
+      },
+      "correct": "B",
+      "explanation": "Siempre 'in', nunca 'on': 'nick' es muesca, no 'neck'."
+    },
+    {
+      "question": "¿Cuál significa lo mismo que 'in the nick of time'?",
+      "options": {
+        "A": "just in time",
+        "B": "on time",
+        "C": "in no time",
+        "D": "ahead of time"
+      },
+      "correct": "A",
+      "explanation": "'Just in time' es al último momento; 'on time' es puntual."
+    }
+  ],
+  "full_script": "¿Llegas justo a tiempo en inglés? Pregunta uno. ¿Qué significa 'in the nick of time'?... A, justo a tiempo.... B, muy tarde.... C, con calma.... D, en un rato.... Piensa bien... Tres... dos... uno... ¡Es la A! Justo a tiempo, nunca tarde: llegó in the nick of time.... Pregunta dos. ¿Cómo completas 'I arrived ___ of time'?... A, on the nick.... B, in the nick.... C, in the neck.... D, at the nick.... Piensa bien... Tres... dos... uno... ¡Es la B! Siempre 'in', nunca 'on': 'nick' es muesca, no 'neck'.... Pregunta tres. ¿Cuál significa lo mismo?... A, just in time.... B, on time.... C, in no time.... D, ahead of time.... Piensa bien... Tres... dos... uno... ¡Es la A! 'Just in time' es al último momento; 'on time' es puntual. ¿Cuántas acertaste?",
+  "translations": {
+    "in the nick of time": "justo a tiempo",
+    "nick": "muesca",
+    "neck": "cuello",
+    "just in time": "justo a tiempo",
+    "on time": "puntual",
+    "in no time": "en un instante",
+    "ahead of time": "con anticipación",
+    "I arrived": "llegué"
+  },
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#Ingles",
+    "#EnglishQuiz",
+    "#QuizDeIngles",
+    "#TestDeIngles",
+    "#EnglishIdioms",
+    "#IdiomsEnIngles",
+    "#InglesParaHispanohablantes",
+    "#EstudiaIngles",
+    "#InglesFacil",
+    "#FrasesEnIngles",
+    "#VocabularioEnIngles",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "idioms",
+    "topic_id": "id051",
+    "video_type": "quiz",
+    "generated_at": "2026-11-02T11:15:29.225790",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

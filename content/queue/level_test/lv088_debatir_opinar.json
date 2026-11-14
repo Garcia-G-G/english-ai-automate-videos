@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Vocabulario para DEBATIR Y OPINAR en inglés: test de nivel 🎙️",
+  "video_description": "De «I think» a «a moot point»: 10 palabras para debatir y opinar en inglés 💭",
+  "title": "¿Qué nivel tienes?",
+  "theme": "palabras para debatir y opinar",
+  "intro": "[thoughtful] Diez palabras para debatir y dar tu opinión, de fácil a experto. ¿Qué significan?",
+  "items": [
+    {
+      "english": "I think",
+      "spanish": "Creo que",
+      "cefr": "A1"
+    },
+    {
+      "english": "agree",
+      "spanish": "Estar de acuerdo",
+      "cefr": "A2"
+    },
+    {
+      "english": "disagree",
+      "spanish": "No estar de acuerdo",
+      "cefr": "A2"
+    },
+    {
+      "english": "point of view",
+      "spanish": "Punto de vista",
+      "cefr": "B1"
+    },
+    {
+      "english": "argue",
+      "spanish": "Discutir",
+      "cefr": "B1"
+    },
+    {
+      "english": "on the other hand",
+      "spanish": "Por otro lado",
+      "cefr": "B1"
+    },
+    {
+      "english": "to be fair",
+      "spanish": "Para ser justos",
+      "cefr": "B2"
+    },
+    {
+      "english": "that said",
+      "spanish": "Dicho esto",
+      "cefr": "B2"
+    },
+    {
+      "english": "I beg to differ",
+      "spanish": "Me permito discrepar",
+      "cefr": "C1"
+    },
+    {
+      "english": "a moot point",
+      "spanish": "Un tema discutible",
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Mi argumento: con tres eres básico, con siete intermedio y con las diez, experto.",
+  "outro": "[curious] ¿Hasta qué número llegaste? ¿Estás de acuerdo con tu nivel? Debate abajo.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#VocabularioEnInglés",
+    "#InglésAvanzado",
+    "#AprenderInglés",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv088",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "I think": "Creo que",
+    "agree": "Estar de acuerdo",
+    "disagree": "No estar de acuerdo",
+    "point of view": "Punto de vista",
+    "argue": "Discutir",
+    "on the other hand": "Por otro lado",
+    "to be fair": "Para ser justos",
+    "that said": "Dicho esto",
+    "I beg to differ": "Me permito discrepar",
+    "a moot point": "Un tema discutible"
+  },
+  "english_phrases": [
+    "I think",
+    "agree",
+    "disagree",
+    "point of view",
+    "argue",
+    "on the other hand",
+    "to be fair",
+    "that said",
+    "I beg to differ",
+    "a moot point"
+  ],
+  "full_script": "[thoughtful] Diez palabras para debatir y dar tu opinión, de fácil a experto. ¿Qué significan? I think Creo que agree Estar de acuerdo disagree No estar de acuerdo Ahora, nivel intermedio. point of view Punto de vista argue Discutir on the other hand Por otro lado to be fair Para ser justos Y ahora, nivel experto. that said Dicho esto I beg to differ Me permito discrepar a moot point Un tema discutible Mi argumento: con tres eres básico, con siete intermedio y con las diez, experto. [curious] ¿Hasta qué número llegaste? ¿Estás de acuerdo con tu nivel? Debate abajo."
+}

@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "SLANG DE INTERNET en inglés: ¿hasta qué número llegas? 😂",
+  "video_description": "LOL, FOMO, rizz, no cap: ¿entiendes el slang de internet en inglés? 📲",
+  "title": "¿Qué nivel tienes?",
+  "theme": "slang de internet",
+  "intro": "[excited] Diez palabras del slang de internet, de fácil a experto. ¿Sabes qué significan?",
+  "items": [
+    {
+      "english": "LOL",
+      "spanish": "Me muero de risa",
+      "cefr": "A2"
+    },
+    {
+      "english": "BTW",
+      "spanish": "Por cierto",
+      "cefr": "A2"
+    },
+    {
+      "english": "OMG",
+      "spanish": "¡Dios mío!",
+      "cefr": "A2"
+    },
+    {
+      "english": "DM",
+      "spanish": "Mensaje privado",
+      "cefr": "B1"
+    },
+    {
+      "english": "FOMO",
+      "spanish": "Miedo a perderse algo",
+      "cefr": "B1"
+    },
+    {
+      "english": "ghost",
+      "spanish": "Desaparecer sin avisar",
+      "cefr": "B2"
+    },
+    {
+      "english": "salty",
+      "spanish": "Picado, molesto",
+      "cefr": "B2"
+    },
+    {
+      "english": "no cap",
+      "spanish": "En serio, sin mentir",
+      "cefr": "B2"
+    },
+    {
+      "english": "rizz",
+      "spanish": "Labia para ligar",
+      "cefr": "C1"
+    },
+    {
+      "english": "touch grass",
+      "spanish": "Sal a que te dé el aire",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y con las diez, experto en internet, no cap.",
+  "outro": "[cheerful] ¿Hasta qué número llegaste? Comenta y no me hagas ghosting.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#SlangEnInglés",
+    "#InglésDeInternet",
+    "#VocabularioEnInglés",
+    "#AprenderInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv086",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "LOL": "Me muero de risa",
+    "BTW": "Por cierto",
+    "OMG": "¡Dios mío!",
+    "DM": "Mensaje privado",
+    "FOMO": "Miedo a perderse algo",
+    "ghost": "Desaparecer sin avisar",
+    "salty": "Picado, molesto",
+    "no cap": "En serio, sin mentir",
+    "rizz": "Labia para ligar",
+    "touch grass": "Sal a que te dé el aire"
+  },
+  "english_phrases": [
+    "LOL",
+    "BTW",
+    "OMG",
+    "DM",
+    "FOMO",
+    "ghost",
+    "salty",
+    "no cap",
+    "rizz",
+    "touch grass"
+  ],
+  "full_script": "[excited] Diez palabras del slang de internet, de fácil a experto. ¿Sabes qué significan? LOL Me muero de risa BTW Por cierto OMG ¡Dios mío! Ahora, nivel intermedio. DM Mensaje privado FOMO Miedo a perderse algo ghost Desaparecer sin avisar salty Picado, molesto Y ahora, nivel experto. no cap En serio, sin mentir rizz Labia para ligar touch grass Sal a que te dé el aire Si llegaste a la tres, básico. A la siete, intermedio. Y con las diez, experto en internet, no cap. [cheerful] ¿Hasta qué número llegaste? Comenta y no me hagas ghosting."
+}

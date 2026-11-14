@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: POSESIVOS 👜",
+  "video_description": "My, your, his, her, their y compañía en diez frases. 👜",
+  "title": "Completa la frase",
+  "theme": "los posesivos",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "This is ____ book. I bought it.",
+      "answer": "my",
+      "translation": "Este es mi libro. Lo compré yo.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She lost ____ keys.",
+      "answer": "her",
+      "translation": "Ella perdió sus llaves.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Is this pen ____? — Yes, it's mine.",
+      "answer": "yours",
+      "translation": "¿Es tuyo este boli? — Sí, es mío.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "The dog hurt ____ leg.",
+      "answer": "its",
+      "translation": "El perro se hizo daño en la pata.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "They sold ____ house.",
+      "answer": "their",
+      "translation": "Vendieron su casa.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "That car is ____. We bought it last year.",
+      "answer": "ours",
+      "translation": "Ese coche es nuestro. Lo compramos el año pasado.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He's a friend of ____.",
+      "answer": "mine",
+      "translation": "Es un amigo mío.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Everyone has ____ own style.",
+      "answer": "their",
+      "translation": "Cada uno tiene su propio estilo.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I did it on my ____.",
+      "answer": "own",
+      "translation": "Lo hice yo solo.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ house is that? — It's John's.",
+      "answer": "Whose",
+      "translation": "¿De quién es esa casa? — Es de John.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Posesivos",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc012",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "This is my book. I bought it.": "Este es mi libro. Lo compré yo.",
+    "She lost her keys.": "Ella perdió sus llaves.",
+    "Is this pen yours? — Yes, it's mine.": "¿Es tuyo este boli? — Sí, es mío.",
+    "The dog hurt its leg.": "El perro se hizo daño en la pata.",
+    "They sold their house.": "Vendieron su casa.",
+    "That car is ours. We bought it last year.": "Ese coche es nuestro. Lo compramos el año pasado.",
+    "He's a friend of mine.": "Es un amigo mío.",
+    "Everyone has their own style.": "Cada uno tiene su propio estilo.",
+    "I did it on my own.": "Lo hice yo solo.",
+    "Whose house is that? — It's John's.": "¿De quién es esa casa? — Es de John."
+  },
+  "english_phrases": [
+    "This is my book. I bought it.",
+    "She lost her keys.",
+    "Is this pen yours? — Yes, it's mine.",
+    "The dog hurt its leg.",
+    "They sold their house.",
+    "That car is ours. We bought it last year.",
+    "He's a friend of mine.",
+    "Everyone has their own style.",
+    "I did it on my own.",
+    "Whose house is that? — It's John's."
+  ],
+  "full_script": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare. This is my book. I bought it. She lost her keys. Is this pen yours? — Yes, it's mine. Ahora, nivel intermedio. The dog hurt its leg. They sold their house. That car is ours. We bought it last year. He's a friend of mine. Y ahora, nivel experto. Everyone has their own style. I did it on my own. Whose house is that? — It's John's. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

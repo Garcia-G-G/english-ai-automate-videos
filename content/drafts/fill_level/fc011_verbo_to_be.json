@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "Rellena el hueco: el verbo TO BE 🙋",
+  "video_description": "Am, is, are, was, were: el verbo to be en diez frases. 🙋",
+  "title": "Completa la frase",
+  "theme": "el verbo to be",
+  "intro": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "sentence": "I ____ from Colombia.",
+      "answer": "am",
+      "translation": "Soy de Colombia.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "They ____ my friends.",
+      "answer": "are",
+      "translation": "Son mis amigos.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "It ____ cold yesterday.",
+      "answer": "was",
+      "translation": "Ayer hacía frío.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We ____ at home last night.",
+      "answer": "were",
+      "translation": "Anoche estábamos en casa.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "____ you hungry?",
+      "answer": "Are",
+      "translation": "¿Tienes hambre?",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I ____ 30 next month.",
+      "answer": "will be",
+      "translation": "Cumplo 30 el mes que viene.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The keys ____ been found.",
+      "answer": "have",
+      "translation": "Han encontrado las llaves.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "If I ____ you, I'd go.",
+      "answer": "were",
+      "translation": "Yo que tú, iría.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The meeting is ____ held on Friday.",
+      "answer": "being",
+      "translation": "La reunión se celebrará el viernes.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "You are ____ to arrive on time.",
+      "answer": "to",
+      "translation": "Debes llegar puntual.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#VerboToBe",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc011",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

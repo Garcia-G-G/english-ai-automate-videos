@@ -1,0 +1,43 @@
+{
+  "id": "hc_e016",
+  "style": "escena",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«For to lose weight»: el «for» que sobra",
+  "hook_text": "ESCENA — GIMNASIO, PRIMER DÍA",
+  "scene": {
+    "location": "Gimnasio, primer día",
+    "take1": "I'm doing exercise for to lose weight.",
+    "take2": "I'm working out to lose weight.",
+    "note": "Para + verbo = to + verbo (sin for)."
+  },
+  "correction": {
+    "wrong": "for to lose weight",
+    "right": "to lose weight",
+    "rule": "Finalidad: to + verbo"
+  },
+  "voice": [
+    "Escena: primer día en el gimnasio. Toma uno: [[I'm doing exercise for to lose weight]].",
+    "¡Corten! Para expresar finalidad con un verbo, el inglés usa solo [[to]].",
+    "Toma dos: [[I'm working out to lose weight]]. Y [[work out]] es entrenar.",
+    "[[For]] va con sustantivos: [[I'm here for the class]].",
+    "Y adelgazar es [[lose weight]]; engordar, [[put on weight]].",
+    "Reto: ¿cómo dirías «estudio inglés para viajar»? Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Estudio inglés para viajar»",
+    "answer": "I study English to travel."
+  },
+  "caption": "«Para + verbo» en inglés es «to + verbo», sin «for». Y «work out» es entrenar. Escena en el gimnasio.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 68
+}

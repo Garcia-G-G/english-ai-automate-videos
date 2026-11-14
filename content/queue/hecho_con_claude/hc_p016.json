@@ -1,0 +1,46 @@
+{
+  "id": "hc_p016",
+  "style": "poster",
+  "level": "medio",
+  "angle": "historia",
+  "title": "«Don't molest me»: cuidado con este",
+  "hook_text": "Casi todos lo dicen mal: «MOLEST = MOLESTAR»",
+  "poster": {
+    "error_no": "031",
+    "big_wrong": "MOLEST = MOLESTAR",
+    "big_right": "BOTHER = MOLESTAR",
+    "examples": [
+      "Sorry to bother you. — Perdona que te moleste.",
+      "Does the music bother you? — ¿Te molesta la música?"
+    ]
+  },
+  "correction": {
+    "wrong": "MOLEST = MOLESTAR",
+    "right": "BOTHER = MOLESTAR",
+    "rule": "Falso amigo grave"
+  },
+  "voice": [
+    "Este falso amigo es serio. [[Molest]] no es molestar: es abusar de alguien.",
+    "Molestar, en sentido normal, es [[bother]] o [[annoy]].",
+    "[[Sorry to bother you]], «perdona que te moleste».",
+    "[[Stop annoying me]], «deja de molestarme».",
+    "Y [[Does the music bother you?]], «¿te molesta la música?».",
+    "Reto: di «no quiero molestar». Escríbelo en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«No quiero molestar»",
+    "answer": "I don't want to bother you."
+  },
+  "caption": "Molest no es molestar, y conviene saberlo. Molestar es «bother» o «annoy». Falso amigo importante.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#inglesconhistorias",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 53
+}

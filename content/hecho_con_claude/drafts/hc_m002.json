@@ -1,0 +1,59 @@
+{
+  "id": "hc_m002",
+  "style": "mensajes",
+  "angle": "calle",
+  "title": "Mi amigo me dijo «I'm down» y pensé que estaba triste",
+  "hook_text": "¿Está triste o qué le pasa?",
+  "chat": {
+    "contact": "Mia · Londres",
+    "messages": [
+      [
+        "me",
+        "Tacos tonight?"
+      ],
+      [
+        "them",
+        "I'm down!"
+      ],
+      [
+        "me",
+        "Oh no 😢 what happened? Are you ok?",
+        "error"
+      ],
+      [
+        "them",
+        "lol no, I mean YES, let's go 🌮"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "I'm down = estoy deprimido",
+    "right": "I'm down = me apunto",
+    "rule": "«Down» triste es «I'm feeling down»; «I'm down» solo es «me apunto»"
+  },
+  "voice": [
+    "Le propuse tacos a mi amiga y me contestó [[I'm down]]. Yo pensé que estaba triste.",
+    "Error. [[I'm down]], así, solito, significa «me apunto», «cuenta conmigo».",
+    "Si alguien está triste dice [[I'm feeling down]] o [[I'm a bit down today]].",
+    "Y si quieres sonar todavía más nativo: [[I'm down for that]], «me apunto a eso».",
+    "Y si no te apetece, lo amable es [[I'll pass this time]], «esta vez paso».",
+    "Reto: ¿qué contestarías si te invitan al cine y quieres ir? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "Te invitan al cine y quieres ir",
+    "answer": "I'm down! / I'm down for that."
+  },
+  "caption": "«I'm down» no significa que estés triste: significa «me apunto». Inglés de la calle que oirás en series y chats.",
+  "series": "hecho_con_claude",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "level": "medio",
+  "level_label": "Medio · B1–B2",
+  "voice_words": 83
+}

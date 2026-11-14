@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa la frase: A, AN o THE 🍎",
+  "video_description": "A, an, the o nada: los artículos en inglés en diez frases. 🍎",
+  "title": "Completa la frase",
+  "theme": "los artículos a, an y the",
+  "intro": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare.",
+  "items": [
+    {
+      "sentence": "I want ____ apple.",
+      "answer": "an",
+      "translation": "Quiero una manzana.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She's ____ doctor.",
+      "answer": "a",
+      "translation": "Es médica.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ sun is very hot today.",
+      "answer": "The",
+      "translation": "El sol calienta mucho hoy.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "It's ____ honor to meet you.",
+      "answer": "an",
+      "translation": "Es un honor conocerte.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I play ____ guitar in a band.",
+      "answer": "the",
+      "translation": "Toco la guitarra en un grupo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She goes to ____ university in Boston.",
+      "answer": "a",
+      "translation": "Va a una universidad en Boston.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He's ____ best player on the team.",
+      "answer": "the",
+      "translation": "Es el mejor jugador del equipo.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Twice ____ week, I go swimming.",
+      "answer": "a",
+      "translation": "Dos veces por semana voy a nadar.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ rich should pay more taxes.",
+      "answer": "The",
+      "translation": "Los ricos deberían pagar más impuestos.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I'll be there in half ____ hour.",
+      "answer": "an",
+      "translation": "Estaré allí en media hora.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#ArticulosEnIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc007",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I want an apple.": "Quiero una manzana.",
+    "She's a doctor.": "Es médica.",
+    "The sun is very hot today.": "El sol calienta mucho hoy.",
+    "It's an honor to meet you.": "Es un honor conocerte.",
+    "I play the guitar in a band.": "Toco la guitarra en un grupo.",
+    "She goes to a university in Boston.": "Va a una universidad en Boston.",
+    "He's the best player on the team.": "Es el mejor jugador del equipo.",
+    "Twice a week, I go swimming.": "Dos veces por semana voy a nadar.",
+    "The rich should pay more taxes.": "Los ricos deberían pagar más impuestos.",
+    "I'll be there in half an hour.": "Estaré allí en media hora."
+  },
+  "english_phrases": [
+    "I want an apple.",
+    "She's a doctor.",
+    "The sun is very hot today.",
+    "It's an honor to meet you.",
+    "I play the guitar in a band.",
+    "She goes to a university in Boston.",
+    "He's the best player on the team.",
+    "Twice a week, I go swimming.",
+    "The rich should pay more taxes.",
+    "I'll be there in half an hour."
+  ],
+  "full_script": "[cheerful] Diez frases con un hueco. Dilo antes de que se aclare. I want an apple. She's a doctor. The sun is very hot today. Ahora, nivel intermedio. It's an honor to meet you. I play the guitar in a band. She goes to a university in Boston. He's the best player on the team. Y ahora, nivel experto. Twice a week, I go swimming. The rich should pay more taxes. I'll be there in half an hour. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

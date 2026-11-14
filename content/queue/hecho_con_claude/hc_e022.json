@@ -1,0 +1,43 @@
+{
+  "id": "hc_e022",
+  "style": "escena",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«I'm on the fence»: cuando no lo tienes claro",
+  "hook_text": "ESCENA — CONCESIONARIO DE COCHES",
+  "scene": {
+    "location": "Concesionario de coches",
+    "take1": "I don't know, I have doubts.",
+    "take2": "Honestly, I'm on the fence.",
+    "note": "Be on the fence = estar indeciso."
+  },
+  "correction": {
+    "wrong": "I have doubts (literal)",
+    "right": "I'm on the fence",
+    "rule": "Idiom de indecisión"
+  },
+  "voice": [
+    "Escena: concesionario. El vendedor insiste. Toma uno: [[I don't know, I have doubts]].",
+    "¡Corten! Correcto, pero un nativo usaría una imagen muy gráfica.",
+    "Toma dos: [[Honestly, I'm on the fence]]. Literalmente, «estoy sobre la valla», sin elegir lado.",
+    "Si ya te decidiste: [[I've made up my mind]].",
+    "Y para pedir tiempo: [[Let me sleep on it]], «déjame consultarlo con la almohada».",
+    "Reto: ¿cómo dirías «todavía no me decido»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Todavía no me decido»",
+    "answer": "I'm still on the fence."
+  },
+  "caption": "«On the fence» = indeciso; «sleep on it» = consultarlo con la almohada. Idioms en inglés en una escena.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 70
+}

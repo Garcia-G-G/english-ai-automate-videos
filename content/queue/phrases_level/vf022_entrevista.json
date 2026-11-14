@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «HÁBLAME DE TI» en inglés? 👔",
+  "video_description": "Diez frases para una entrevista de trabajo en inglés. 👔",
+  "title": "¿Cómo se dice?",
+  "theme": "en una entrevista de trabajo",
+  "intro": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Encantado de conocerle.",
+      "english": "Pleased to meet you."
+    },
+    {
+      "spanish": "Háblame de ti.",
+      "english": "Tell me about yourself."
+    },
+    {
+      "spanish": "Tengo cinco años de experiencia.",
+      "english": "I have five years of experience."
+    },
+    {
+      "spanish": "Trabajo bien en equipo.",
+      "english": "I work well in a team."
+    },
+    {
+      "spanish": "Aprendo rápido.",
+      "english": "I'm a fast learner."
+    },
+    {
+      "spanish": "Mi punto fuerte es la organización.",
+      "english": "My main strength is organization."
+    },
+    {
+      "spanish": "¿Por qué quieres este puesto?",
+      "english": "Why do you want this job?"
+    },
+    {
+      "spanish": "Busco un nuevo reto.",
+      "english": "I'm looking for a new challenge."
+    },
+    {
+      "spanish": "¿Tiene alguna pregunta?",
+      "english": "Do you have any questions?"
+    },
+    {
+      "spanish": "¿Cuáles son los siguientes pasos?",
+      "english": "What are the next steps?"
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf022",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Pleased to meet you.": "Encantado de conocerle.",
+    "Tell me about yourself.": "Háblame de ti.",
+    "I have five years of experience.": "Tengo cinco años de experiencia.",
+    "I work well in a team.": "Trabajo bien en equipo.",
+    "I'm a fast learner.": "Aprendo rápido.",
+    "My main strength is organization.": "Mi punto fuerte es la organización.",
+    "Why do you want this job?": "¿Por qué quieres este puesto?",
+    "I'm looking for a new challenge.": "Busco un nuevo reto.",
+    "Do you have any questions?": "¿Tiene alguna pregunta?",
+    "What are the next steps?": "¿Cuáles son los siguientes pasos?"
+  },
+  "english_phrases": [
+    "Pleased to meet you.",
+    "Tell me about yourself.",
+    "I have five years of experience.",
+    "I work well in a team.",
+    "I'm a fast learner.",
+    "My main strength is organization.",
+    "Why do you want this job?",
+    "I'm looking for a new challenge.",
+    "Do you have any questions?",
+    "What are the next steps?"
+  ],
+  "full_script": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo. Pleased to meet you. Tell me about yourself. I have five years of experience. I work well in a team. I'm a fast learner. My main strength is organization. Why do you want this job? I'm looking for a new challenge. Do you have any questions? What are the next steps? [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

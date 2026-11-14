@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "TIEMPO LIBRE en inglés: 10 palabras con trampa 🎤",
+  "video_description": "Hobby, museum, karaoke: el ocio también tiene trampas de pronunciación. 🎲",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "el tiempo libre",
+  "intro": "[happy] Planes para el tiempo libre, en inglés. Pronuncia cada palabra antes de escucharme.",
+  "items": [
+    {
+      "english": "hobby",
+      "respelling": "JA-bi",
+      "ipa": "ˈhɑbi",
+      "trap": "La H suena y la O es «a»"
+    },
+    {
+      "english": "movie",
+      "respelling": "MUU-vi",
+      "ipa": "ˈmuːvi",
+      "trap": "La O suena «uu»: MUU-vi"
+    },
+    {
+      "english": "dance",
+      "respelling": "DANS",
+      "ipa": "ˈdæns",
+      "trap": "La E final no suena"
+    },
+    {
+      "english": "hiking",
+      "respelling": "JAI-king",
+      "ipa": "ˈhaɪkɪŋ",
+      "trap": "La I suena «ai»: JAI-king"
+    },
+    {
+      "english": "puzzle",
+      "respelling": "PA-zal",
+      "ipa": "ˈpʌzəl",
+      "trap": "ZZ suena «z» y la U, «a»"
+    },
+    {
+      "english": "yoga",
+      "respelling": "IOU-ga",
+      "ipa": "ˈjoʊɡə",
+      "trap": "La Y suena «i» y la O es «ou»"
+    },
+    {
+      "english": "museum",
+      "respelling": "miu-ZII-am",
+      "ipa": "mjuˈziːəm",
+      "trap": "Acento en ZII: miu-ZII-am"
+    },
+    {
+      "english": "barbecue",
+      "respelling": "BAR-bi-kiuu",
+      "ipa": "ˈbɑrbɪkjuː",
+      "trap": "Acento en BAR y final «kiuu»"
+    },
+    {
+      "english": "karaoke",
+      "respelling": "ke-ri-OU-ki",
+      "ipa": "kɛriˈoʊki",
+      "trap": "En inglés suena ke-ri-OU-ki"
+    },
+    {
+      "english": "crochet",
+      "respelling": "krou-SHEI",
+      "ipa": "kroʊˈʃeɪ",
+      "trap": "CH suena «sh» y la T no suena"
+    }
+  ],
+  "verdict": "Tres bien, básico. Siete bien, intermedio. Y si te salieron las diez, experto.",
+  "outro": "[cheerful] ¿Cuál te costó más? Déjamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Ocio",
+    "#InglésOnline",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl090",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Los COLORES en inglés: del fácil al imposible 🎨",
+  "video_description": "Del «red» al «fuchsia»: diez colores para decir en voz alta sin miedo. 🌈",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los colores",
+  "intro": "[happy] Diez colores en inglés, de fácil a experto. Tú los dices primero.",
+  "items": [
+    {
+      "english": "red",
+      "respelling": "RED",
+      "ipa": "ˈrɛd",
+      "trap": "La R inglesa no vibra"
+    },
+    {
+      "english": "blue",
+      "respelling": "BLUU",
+      "ipa": "ˈbluː",
+      "trap": "UE suena «uu»: BLUU"
+    },
+    {
+      "english": "green",
+      "respelling": "GRIIN",
+      "ipa": "ˈɡriːn",
+      "trap": "EE es una «i» larga"
+    },
+    {
+      "english": "yellow",
+      "respelling": "IE-lou",
+      "ipa": "ˈjɛloʊ",
+      "trap": "La Y suena «i»: IE-lou"
+    },
+    {
+      "english": "purple",
+      "respelling": "PER-pal",
+      "ipa": "ˈpɝpəl",
+      "trap": "UR suena «er»: PER-pal"
+    },
+    {
+      "english": "magenta",
+      "respelling": "ma-YEN-ta",
+      "ipa": "məˈdʒɛntə",
+      "trap": "La G suena «y»: ma-YEN-ta"
+    },
+    {
+      "english": "beige",
+      "respelling": "BEIZH",
+      "ipa": "ˈbeɪʒ",
+      "trap": "Termina en «zh»: BEIZH"
+    },
+    {
+      "english": "crimson",
+      "respelling": "KRIM-zen",
+      "ipa": "ˈkrɪmzən",
+      "trap": "La S suena «z»: KRIM-zen"
+    },
+    {
+      "english": "turquoise",
+      "respelling": "TER-koiz",
+      "ipa": "ˈtɝkɔɪz",
+      "trap": "Termina en «koiz»: TER-koiz"
+    },
+    {
+      "english": "fuchsia",
+      "respelling": "FIUU-sha",
+      "ipa": "ˈfjuːʃə",
+      "trap": "Suena FIUU-sha: la CH no se oye"
+    }
+  ],
+  "verdict": "¿Tres colores bien? Básico. ¿Siete? Intermedio. ¿Los diez? Eres experto.",
+  "outro": "[excited] ¿Sabías decir «fuchsia»? Dime tu número abajo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#ColoresEnInglés",
+    "#AprenderInglés",
+    "#InglésParaHispanohablantes",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl073",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

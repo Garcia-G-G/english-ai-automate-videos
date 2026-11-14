@@ -1,0 +1,47 @@
+{
+  "id": "hc_c019",
+  "style": "comic",
+  "level": "dificil",
+  "angle": "reto",
+  "title": "RETO: «estar en las nubes»",
+  "hook_text": "Expresión nivel avanzado",
+  "quiz": {
+    "prompt": "¿Cómo dirías «estás en las nubes»?",
+    "options": [
+      "You're in the clouds",
+      "You have your head in the clouds",
+      "You're on the sky"
+    ],
+    "answer": 1,
+    "after": "Have your head in the clouds = estar distraído."
+  },
+  "correction": {
+    "wrong": "You're on the sky",
+    "right": "You have your head in the clouds",
+    "rule": "Idiom"
+  },
+  "voice": [
+    "Nivel avanzado. ¿Cómo dirías «estás en las nubes»?",
+    "¿[[You're in the clouds]], [[You have your head in the clouds]] o [[You're on the sky]]?",
+    "¡La B! [[You have your head in the clouds]].",
+    "Más coloquial: [[You're miles away]] o [[You're spacing out]].",
+    "Y para volver a la tierra: [[Earth to Ana!]]",
+    "¿Cuál usarías con un amigo? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Perdona, estaba en las nubes»",
+    "answer": "Sorry, I was miles away."
+  },
+  "caption": "«Estar en las nubes» es «have your head in the clouds» o «be miles away». Idioms en un reto.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 58
+}

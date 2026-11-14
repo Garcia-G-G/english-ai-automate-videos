@@ -1,0 +1,92 @@
+{
+  "type": "true_false_level",
+  "video_title": "CULTURA: ¿verdadero o falso? 🎓",
+  "video_description": "Costumbres de los países de habla inglesa: ¿verdadero o falso? 🎓",
+  "title": "¿Verdadero o falso?",
+  "theme": "cultura de los países de habla inglesa",
+  "intro": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto.",
+  "items": [
+    {
+      "statement": "En EE. UU. dejar «tip» (propina) es lo normal en restaurantes.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "En Reino Unido se conduce «on the right».",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "se conduce on the left"
+    },
+    {
+      "statement": "«Thanksgiving» se celebra en EE. UU.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "En EE. UU. la temperatura se da en «Fahrenheit».",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Bank holiday» en Reino Unido es un día festivo.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "En EE. UU. el «first floor» suele ser la planta baja.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "Los australianos llaman «arvo» a la tarde.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "En Reino Unido se dice «Cheers» solo para brindar.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "también es gracias"
+    },
+    {
+      "statement": "«Boxing Day» es el día del boxeo.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es el 26 de diciembre"
+    },
+    {
+      "statement": "En Irlanda «craic» significa diversión.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#CulturaInglesa",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf038",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "tip",
+    "on the right",
+    "Thanksgiving",
+    "Fahrenheit",
+    "Bank holiday",
+    "first floor",
+    "arvo",
+    "Cheers",
+    "Boxing Day",
+    "craic"
+  ],
+  "full_script": "[cheerful] ¿Verdadero o falso? Decide rápido, de fácil a experto. Verdadero. Falso: se conduce on the left. Verdadero. Ahora, nivel intermedio. Verdadero. Verdadero. Verdadero. Verdadero. Y ahora, nivel experto. Falso: también es gracias. Falso: es el 26 de diciembre. Verdadero. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

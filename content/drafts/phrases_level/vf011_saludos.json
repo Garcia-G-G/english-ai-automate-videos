@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿QUÉ TAL?»? 10 frases 👋",
+  "video_description": "Diez saludos y despedidas que sí se usan. 👋",
+  "title": "¿Cómo se dice?",
+  "theme": "saludar y despedirse",
+  "intro": "[thoughtful] Frases reales, de las que se usan de verdad. Dilas antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Qué tal?",
+      "english": "How's it going?"
+    },
+    {
+      "spanish": "Cuánto tiempo.",
+      "english": "Long time no see."
+    },
+    {
+      "spanish": "¿Qué hay de nuevo?",
+      "english": "What's new?"
+    },
+    {
+      "spanish": "Todo bien, ¿y tú?",
+      "english": "All good, you?"
+    },
+    {
+      "spanish": "Encantado de conocerte.",
+      "english": "Nice to meet you."
+    },
+    {
+      "spanish": "Me alegro de verte.",
+      "english": "Good to see you."
+    },
+    {
+      "spanish": "Nos vemos.",
+      "english": "See you."
+    },
+    {
+      "spanish": "Hasta luego.",
+      "english": "See you later."
+    },
+    {
+      "spanish": "Cuídate.",
+      "english": "Take care."
+    },
+    {
+      "spanish": "Que tengas buen día.",
+      "english": "Have a good one."
+    }
+  ],
+  "outro": "[excited] Compártelo con alguien que las necesite.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#SaludosEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf011",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

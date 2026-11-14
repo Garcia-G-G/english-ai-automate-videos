@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las palabras del MÉDICO en inglés? 🩺",
+  "video_description": "Diez palabras para explicar qué te pasa en la consulta. 💊",
+  "title": "¿Cómo se dice…?",
+  "theme": "el médico",
+  "level": "A2",
+  "intro": "[warm] Vamos con diez palabras. Tú primero, luego yo.",
+  "items": [
+    {
+      "emoji": "🩺",
+      "spanish": "Médico",
+      "english": "doctor"
+    },
+    {
+      "emoji": "🏥",
+      "spanish": "Enfermera",
+      "english": "nurse"
+    },
+    {
+      "emoji": "📝",
+      "spanish": "Receta",
+      "english": "prescription"
+    },
+    {
+      "emoji": "💊",
+      "spanish": "Pastilla",
+      "english": "pill"
+    },
+    {
+      "emoji": "🤒",
+      "spanish": "Fiebre",
+      "english": "fever"
+    },
+    {
+      "emoji": "😷",
+      "spanish": "Tos",
+      "english": "cough"
+    },
+    {
+      "emoji": "🤕",
+      "spanish": "Dolor",
+      "english": "pain"
+    },
+    {
+      "emoji": "🩹",
+      "spanish": "Herida",
+      "english": "wound"
+    },
+    {
+      "emoji": "📅",
+      "spanish": "Cita",
+      "english": "appointment"
+    },
+    {
+      "emoji": "💉",
+      "spanish": "Vacuna",
+      "english": "vaccine"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: doctor, nurse, prescription, pill, fever, cough, pain, wound, appointment, vaccine.",
+  "outro": "[happy] Guárdalo para repasar y dime cuántas sabías.",
+  "translations": {
+    "doctor": "Médico",
+    "nurse": "Enfermera",
+    "prescription": "Receta",
+    "pill": "Pastilla",
+    "fever": "Fiebre",
+    "cough": "Tos",
+    "pain": "Dolor",
+    "wound": "Herida",
+    "appointment": "Cita",
+    "vaccine": "Vacuna"
+  },
+  "english_phrases": [
+    "doctor",
+    "nurse",
+    "prescription",
+    "pill",
+    "fever",
+    "cough",
+    "pain",
+    "wound",
+    "appointment",
+    "vaccine"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv036",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[warm] Vamos con diez palabras. Tú primero, luego yo. Médico... doctor. doctor. Enfermera... nurse. nurse. Receta... prescription. prescription. Pastilla... pill. pill. Fiebre... fever. fever. Tos... cough. cough. Dolor... pain. pain. Herida... wound. wound. Cita... appointment. appointment. Vacuna... vaccine. vaccine. Ahora, todas conmigo: doctor, nurse, prescription, pill, fever, cough, pain, wound, appointment, vaccine. [happy] Guárdalo para repasar y dime cuántas sabías."
+}

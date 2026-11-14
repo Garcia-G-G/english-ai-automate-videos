@@ -1,0 +1,89 @@
+{
+  "type": "phrases_level",
+  "video_title": "¿Cómo se dice «¿DE PARTE DE QUIÉN?» en inglés? 📞",
+  "video_description": "Diez frases para hablar por teléfono en inglés. 📞",
+  "title": "¿Cómo se dice?",
+  "theme": "al teléfono",
+  "intro": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "¿Diga?",
+      "english": "Hello?"
+    },
+    {
+      "spanish": "¿Quién es?",
+      "english": "Who's this?"
+    },
+    {
+      "spanish": "¿De parte de quién?",
+      "english": "Who's calling?"
+    },
+    {
+      "spanish": "Un momento, por favor.",
+      "english": "Hold on, please."
+    },
+    {
+      "spanish": "Ahora te paso.",
+      "english": "I'll put you through."
+    },
+    {
+      "spanish": "No está ahora mismo.",
+      "english": "She's not here right now."
+    },
+    {
+      "spanish": "¿Quieres dejar un mensaje?",
+      "english": "Would you like to leave a message?"
+    },
+    {
+      "spanish": "Te llamo luego.",
+      "english": "I'll call you back."
+    },
+    {
+      "spanish": "Te has equivocado de número.",
+      "english": "You've got the wrong number."
+    },
+    {
+      "spanish": "Se me va a acabar la batería.",
+      "english": "My battery's about to die."
+    }
+  ],
+  "outro": "[excited] ¿Cuántas sabías? Dímelo en los comentarios.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésDeNegocios",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf017",
+    "video_type": "phrases_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Hello?": "¿Diga?",
+    "Who's this?": "¿Quién es?",
+    "Who's calling?": "¿De parte de quién?",
+    "Hold on, please.": "Un momento, por favor.",
+    "I'll put you through.": "Ahora te paso.",
+    "She's not here right now.": "No está ahora mismo.",
+    "Would you like to leave a message?": "¿Quieres dejar un mensaje?",
+    "I'll call you back.": "Te llamo luego.",
+    "You've got the wrong number.": "Te has equivocado de número.",
+    "My battery's about to die.": "Se me va a acabar la batería."
+  },
+  "english_phrases": [
+    "Hello?",
+    "Who's this?",
+    "Who's calling?",
+    "Hold on, please.",
+    "I'll put you through.",
+    "She's not here right now.",
+    "Would you like to leave a message?",
+    "I'll call you back.",
+    "You've got the wrong number.",
+    "My battery's about to die."
+  ],
+  "full_script": "[cheerful] Diez frases que usas cada día. Dilas en inglés antes que yo. Hello? Who's this? Who's calling? Hold on, please. I'll put you through. She's not here right now. Would you like to leave a message? I'll call you back. You've got the wrong number. My battery's about to die. [excited] ¿Cuántas sabías? Dímelo en los comentarios."
+}

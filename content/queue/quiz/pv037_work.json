@@ -1,0 +1,84 @@
+{
+  "type": "quiz",
+  "video_title": "¿Puedes acertar las 3? 🧠 CARRY OUT English Quiz",
+  "video_description": "¿Dices 'realize the project'? 😱 ¡Error típico! Aprende a usar CARRY OUT como un nativo 🚀\n¿Cuántas acertaste? Comenta 1, 2 o 3 👇 Follow para más English tips 🇺🇸",
+  "question": "¿Cómo se dice 'llevar a cabo' en inglés?",
+  "options": {
+    "A": "carry on",
+    "B": "carry out",
+    "C": "take out",
+    "D": "put out"
+  },
+  "correct": "B",
+  "explanation": "'Carry out' es ejecutar; 'carry on' es seguir. Carry out tasks.",
+  "questions": [
+    {
+      "question": "¿Cómo se dice 'llevar a cabo' en inglés?",
+      "options": {
+        "A": "carry on",
+        "B": "carry out",
+        "C": "take out",
+        "D": "put out"
+      },
+      "correct": "B",
+      "explanation": "'Carry out' es ejecutar; 'carry on' es seguir. Carry out tasks."
+    },
+    {
+      "question": "¿Qué significa 'I carried out the instructions'?",
+      "options": {
+        "A": "Seguí las instrucciones",
+        "B": "Saqué las instrucciones",
+        "C": "Cargué las instrucciones",
+        "D": "Ignoré las instrucciones"
+      },
+      "correct": "A",
+      "explanation": "Carried out es pasado: cumplí. 'Carry' solo significa cargar, ojo."
+    },
+    {
+      "question": "¿Cómo dices 'Realizamos el proyecto' en inglés?",
+      "options": {
+        "A": "We realize the project",
+        "B": "We make out the project",
+        "C": "We carry out the project",
+        "D": "We take out the project"
+      },
+      "correct": "C",
+      "explanation": "Realize es darse cuenta, no realizar. Usa carry out para proyectos."
+    }
+  ],
+  "full_script": "¿Puedes acertar las 3? Pregunta uno. ¿Cómo se dice 'llevar a cabo'? A, carry on. B, carry out. C, take out. D, put out. Piensa bien... Tres... dos... uno... ¡Es B! 'Carry out' es ejecutar; 'carry on' es seguir. Carry out tasks. Pregunta dos. ¿Qué significa 'I carried out the instructions'? A, seguí. B, saqué. C, cargué. D, ignoré. Piensa bien... Tres... dos... uno... ¡Es A! Carried out es pasado: cumplí. 'Carry' solo significa cargar, ojo. Pregunta tres. ¿Cómo dices 'Realizamos el proyecto'? A, we realize. B, we make out. C, we carry out. D, we take out. Piensa bien... Tres... dos... uno... ¡Es C! Realize es darse cuenta, no realizar. Usa carry out para proyectos. ¿Cuántas acertaste?",
+  "translations": {
+    "carry out": "llevar a cabo / ejecutar",
+    "carry on": "continuar / seguir",
+    "take out": "sacar",
+    "put out": "apagar",
+    "make out": "distinguir / entender",
+    "realize": "darse cuenta",
+    "carried out": "llevó a cabo / cumplí",
+    "instructions": "instrucciones",
+    "project": "proyecto"
+  },
+  "hashtags": [
+    "#LearnEnglish",
+    "#AprendeIngles",
+    "#InglesFacil",
+    "#EnglishQuiz",
+    "#QuizIngles",
+    "#TestDeIngles",
+    "#PhrasalVerbs",
+    "#CarryOut",
+    "#InglesParaHispanohablantes",
+    "#EstudiaIngles",
+    "#VocabularioEnIngles",
+    "#ErroresEnIngles",
+    "#InglesBasico",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "phrasal_verbs",
+    "topic_id": "pv037",
+    "video_type": "quiz",
+    "generated_at": "2026-11-02T11:16:21.998327",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

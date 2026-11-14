@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "¿Sabes cuándo usar ALREADY, YET o STILL? ⏰",
+  "video_description": "Ya, todavía y aún en inglés: diez frases para dominarlos. ⏰",
+  "title": "Elige la correcta",
+  "theme": "already, yet o still",
+  "intro": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto.",
+  "items": [
+    {
+      "sentence": "I've ____ eaten, thanks.",
+      "options": [
+        "already",
+        "yet"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Have you finished ____?",
+      "options": [
+        "already",
+        "yet"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She's ____ sleeping.",
+      "options": [
+        "yet",
+        "still"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I haven't seen it ____.",
+      "options": [
+        "yet",
+        "still"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Are you ____ here? I thought you left.",
+      "options": [
+        "yet",
+        "still"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He's ____ left, you just missed him.",
+      "options": [
+        "already",
+        "yet"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I ____ don't understand.",
+      "options": [
+        "still",
+        "yet"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Is it 10 ____? Time flies!",
+      "options": [
+        "yet",
+        "already"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "The best is ____ to come.",
+      "options": [
+        "yet",
+        "still"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____, I can't complain.",
+      "options": [
+        "Yet",
+        "Still"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#AlreadyYetStill",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec020",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "type": "minimal_pairs",
+  "video_title": "SHIP o SHEEP: ¿barco u oveja? 🚢🐑",
+  "video_description": "El test de oído que casi todos fallan. 👂",
+  "level": "A2",
+  "intro": "[curious] Dos palabras que para ti suenan igual. Para un nativo, no.",
+  "pair": [
+    {
+      "word": "ship",
+      "phonetic": "SHIP",
+      "meaning": "barco",
+      "emoji": "🚢"
+    },
+    {
+      "word": "sheep",
+      "phonetic": "SHIIIP",
+      "meaning": "oveja",
+      "emoji": "🐑"
+    }
+  ],
+  "sound_tip": "Ship es corta y relajada, casi una e. Sheep es una i larga, con los labios estirados.",
+  "test": [
+    1,
+    0,
+    0,
+    1
+  ],
+  "sentence": {
+    "en": "There's a sheep on the ship.",
+    "es": "Hay una oveja en el barco."
+  },
+  "outro": "[excited] ¿Cuántas acertaste de cuatro? Dímelo en los comentarios.",
+  "translations": {
+    "ship": "barco",
+    "sheep": "oveja",
+    "There's a sheep on the ship.": "Hay una oveja en el barco."
+  },
+  "hashtags": [
+    "#Pronunciación",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#ParesMínimos"
+  ],
+  "_meta": {
+    "category": "pronunciation",
+    "topic_id": "pr052",
+    "video_type": "minimal_pairs",
+    "model": "manual",
+    "draft": true
+  }
+}

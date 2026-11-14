@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los NÚMEROS en inglés? 🔢",
+  "video_description": "Del uno al diez, para contar sin pensarlo. 🔢",
+  "title": "¿Cómo se dice…?",
+  "theme": "los números",
+  "level": "A1",
+  "intro": "[curious] ¿Sabes contar hasta diez? Tú primero, luego yo.",
+  "items": [
+    {
+      "emoji": "☝",
+      "spanish": "Uno",
+      "english": "one"
+    },
+    {
+      "emoji": "✌",
+      "spanish": "Dos",
+      "english": "two"
+    },
+    {
+      "emoji": "🥉",
+      "spanish": "Tres",
+      "english": "three"
+    },
+    {
+      "emoji": "🍀",
+      "spanish": "Cuatro",
+      "english": "four"
+    },
+    {
+      "emoji": "🖐",
+      "spanish": "Cinco",
+      "english": "five"
+    },
+    {
+      "emoji": "🎲",
+      "spanish": "Seis",
+      "english": "six"
+    },
+    {
+      "emoji": "🌈",
+      "spanish": "Siete",
+      "english": "seven"
+    },
+    {
+      "emoji": "🎱",
+      "spanish": "Ocho",
+      "english": "eight"
+    },
+    {
+      "emoji": "⚾",
+      "spanish": "Nueve",
+      "english": "nine"
+    },
+    {
+      "emoji": "🔟",
+      "spanish": "Diez",
+      "english": "ten"
+    }
+  ],
+  "recap": "Ahora, todas conmigo: one, two, three, four, five, six, seven, eight, nine, ten.",
+  "outro": "[happy] Guárdalo y dime hasta cuál llegaste sin ayuda.",
+  "translations": {
+    "one": "Uno",
+    "two": "Dos",
+    "three": "Tres",
+    "four": "Cuatro",
+    "five": "Cinco",
+    "six": "Seis",
+    "seven": "Siete",
+    "eight": "Ocho",
+    "nine": "Nueve",
+    "ten": "Diez"
+  },
+  "english_phrases": [
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+    "ten"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv062",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] ¿Sabes contar hasta diez? Tú primero, luego yo. Uno... one. one. Dos... two. two. Tres... three. three. Cuatro... four. four. Cinco... five. five. Seis... six. six. Siete... seven. seven. Ocho... eight. eight. Nueve... nine. nine. Diez... ten. ten. Ahora, todas conmigo: one, two, three, four, five, six, seven, eight, nine, ten. [happy] Guárdalo y dime hasta cuál llegaste sin ayuda."
+}

@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "La MÚSICA en inglés: ¿cuántas palabras conoces? 🎵",
+  "video_description": "De fácil a experto: ¿cuántas palabras de música conoces en inglés? 🎵",
+  "title": "¿Qué nivel tienes?",
+  "theme": "la música",
+  "intro": "[happy] Aquí tienes diez palabras de música. Tu misión: decir qué significan antes que yo.",
+  "items": [
+    {
+      "english": "song",
+      "spanish": "Canción",
+      "cefr": "A1"
+    },
+    {
+      "english": "sing",
+      "spanish": "Cantar",
+      "cefr": "A1"
+    },
+    {
+      "english": "drums",
+      "spanish": "Batería",
+      "cefr": "A2"
+    },
+    {
+      "english": "band",
+      "spanish": "Grupo / banda",
+      "cefr": "A2"
+    },
+    {
+      "english": "lyrics",
+      "spanish": "Letra de una canción",
+      "cefr": "B1"
+    },
+    {
+      "english": "chorus",
+      "spanish": "Estribillo",
+      "cefr": "B2"
+    },
+    {
+      "english": "gig",
+      "spanish": "Concierto pequeño",
+      "cefr": "B2"
+    },
+    {
+      "english": "catchy",
+      "spanish": "Pegadizo",
+      "cefr": "B2"
+    },
+    {
+      "english": "out of tune",
+      "spanish": "Desafinado",
+      "cefr": "C1"
+    },
+    {
+      "english": "encore",
+      "spanish": "Bis",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste?",
+  "outro": "[happy] Deja tu puntuación en los comentarios y nos vemos en el próximo test.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#AprenderInglés",
+    "#VocabularioEnInglés",
+    "#TestDeInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv033",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "song": "Canción",
+    "sing": "Cantar",
+    "drums": "Batería",
+    "band": "Grupo / banda",
+    "lyrics": "Letra de una canción",
+    "chorus": "Estribillo",
+    "gig": "Concierto pequeño",
+    "catchy": "Pegadizo",
+    "out of tune": "Desafinado",
+    "encore": "Bis"
+  },
+  "english_phrases": [
+    "song",
+    "sing",
+    "drums",
+    "band",
+    "lyrics",
+    "chorus",
+    "gig",
+    "catchy",
+    "out of tune",
+    "encore"
+  ],
+  "full_script": "[happy] Aquí tienes diez palabras de música. Tu misión: decir qué significan antes que yo. song Canción sing Cantar drums Batería Ahora, nivel intermedio. band Grupo / banda lyrics Letra de una canción chorus Estribillo gig Concierto pequeño Y ahora, nivel experto. catchy Pegadizo out of tune Desafinado encore Bis La tres marca el nivel básico, la siete el intermedio y la diez el experto. ¿Dónde te quedaste? [happy] Deja tu puntuación en los comentarios y nos vemos en el próximo test."
+}

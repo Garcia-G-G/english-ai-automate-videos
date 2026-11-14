@@ -1,0 +1,47 @@
+{
+  "id": "hc_c008",
+  "style": "comic",
+  "level": "principiante",
+  "angle": "reto",
+  "title": "RETO: «me llamo…» en inglés",
+  "hook_text": "Parece fácil… ¿o no?",
+  "quiz": {
+    "prompt": "¿Cómo dirías «me llamo Ana»?",
+    "options": [
+      "I call me Ana",
+      "My name is Ana",
+      "Me name Ana"
+    ],
+    "answer": 1,
+    "after": "Me llamo = My name is / I'm."
+  },
+  "correction": {
+    "wrong": "Me name Ana",
+    "right": "My name is Ana",
+    "rule": "My name is / I'm"
+  },
+  "voice": [
+    "Parece fácil. ¿Cómo dirías «me llamo Ana»?",
+    "¿[[I call me Ana]], [[My name is Ana]] o [[Me name Ana]]?",
+    "¡La B! [[My name is Ana]]. O más corto y natural: [[I'm Ana]].",
+    "[[I call me]] no existe: suena a «me llamo a mí misma por teléfono».",
+    "Para preguntar: [[What's your name?]]",
+    "Preséntate en inglés en los comentarios."
+  ],
+  "challenge": {
+    "prompt": "Preséntate en inglés en una frase",
+    "answer": "Hi, I'm … / My name is …"
+  },
+  "caption": "«Me llamo» es «My name is» o «I'm», nunca «I call me». Reto rápido de inglés básico.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 57
+}

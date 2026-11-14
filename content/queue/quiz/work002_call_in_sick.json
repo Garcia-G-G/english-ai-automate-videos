@@ -1,0 +1,68 @@
+{
+  "type": "quiz",
+  "video_title": "Avisar de que estás malo, en inglés 🤒",
+  "video_description": "Hoy no puedes ir a trabajar y tu jefe solo habla inglés. ¿Qué le dices? 📱",
+  "question": "[curious] Hoy estás malo y no vas a trabajar. Vas a...",
+  "options": {
+    "A": "call in sick",
+    "B": "call sick",
+    "C": "be sick in",
+    "D": "make sick"
+  },
+  "correct": "A",
+  "explanation": "[excited] Call in sick es avisar de que faltas por estar malo.",
+  "full_script": "[cheerful] ¡Quiz time! Pregunta número uno. [curious] Hoy estás malo y no vas a trabajar. Vas a... A, 'call in sick'.... B, 'call sick'.... C, 'be sick in'.... D, 'make sick'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A! Call in sick es avisar de que faltas por estar malo. Pregunta número dos. [curious] Tu jefe contesta 'take the day off'. Te dice... A, 'tómate el día libre'.... B, 'trabaja desde casa'.... C, 'recupera el día'.... D, 'ven más tarde'.... [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A! Take the day off es tomarte el día libre. Respuesta perfecta de jefe.",
+  "translations": {
+    "call in sick": "avisar de que estás enfermo",
+    "take the day off": "tomarse el día libre",
+    "I have a fever": "tengo fiebre"
+  },
+  "hashtags": [
+    "#Quiz",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#InglésReal",
+    "#Test"
+  ],
+  "_meta": {
+    "category": "work_office",
+    "topic_id": "work002",
+    "video_type": "quiz",
+    "model": "manual"
+  },
+  "questions": [
+    {
+      "question": "[curious] Hoy estás malo y no vas a trabajar. Vas a...",
+      "options": {
+        "A": "call in sick",
+        "B": "call sick",
+        "C": "be sick in",
+        "D": "make sick"
+      },
+      "correct": "A",
+      "explanation": "[excited] Call in sick es avisar de que faltas por estar malo."
+    },
+    {
+      "question": "[curious] Tu jefe contesta 'take the day off'. Te dice...",
+      "options": {
+        "A": "tómate el día libre",
+        "B": "trabaja desde casa",
+        "C": "recupera el día",
+        "D": "ven más tarde"
+      },
+      "correct": "A",
+      "explanation": "[excited] Take the day off es tomarte el día libre. Respuesta perfecta de jefe."
+    },
+    {
+      "question": "[curious] Para decir que tienes fiebre, lo natural es...",
+      "options": {
+        "A": "I have a fever",
+        "B": "I have fever",
+        "C": "I am fever",
+        "D": "I have hot"
+      },
+      "correct": "A",
+      "explanation": "[excited] Fever lleva artículo: a fever. Igual que a headache o a cold."
+    }
+  ]
+}

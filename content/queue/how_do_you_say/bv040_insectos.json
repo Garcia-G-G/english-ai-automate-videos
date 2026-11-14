@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los INSECTOS en inglés? 🐝",
+  "video_description": "Diez bichos que seguro has visto hoy. 🐜",
+  "title": "¿Cómo se dice…?",
+  "theme": "los insectos",
+  "level": "A1",
+  "intro": "[cheerful] Mira la lista y adivina antes de que salga la respuesta.",
+  "items": [
+    {
+      "emoji": "🐝",
+      "spanish": "Abeja",
+      "english": "bee"
+    },
+    {
+      "emoji": "🐜",
+      "spanish": "Hormiga",
+      "english": "ant"
+    },
+    {
+      "emoji": "🪰",
+      "spanish": "Mosca",
+      "english": "fly"
+    },
+    {
+      "emoji": "🦟",
+      "spanish": "Mosquito",
+      "english": "mosquito"
+    },
+    {
+      "emoji": "🦋",
+      "spanish": "Mariposa",
+      "english": "butterfly"
+    },
+    {
+      "emoji": "🕷️",
+      "spanish": "Araña",
+      "english": "spider"
+    },
+    {
+      "emoji": "🪳",
+      "spanish": "Cucaracha",
+      "english": "cockroach"
+    },
+    {
+      "emoji": "🐌",
+      "spanish": "Caracol",
+      "english": "snail"
+    },
+    {
+      "emoji": "🪱",
+      "spanish": "Gusano",
+      "english": "worm"
+    },
+    {
+      "emoji": "🐞",
+      "spanish": "Mariquita",
+      "english": "ladybug"
+    }
+  ],
+  "recap": "Repite conmigo las diez: bee, ant, fly, mosquito, butterfly, spider, cockroach, snail, worm, ladybug.",
+  "outro": "[cheerful] Escribe en los comentarios cuántas acertaste.",
+  "translations": {
+    "bee": "Abeja",
+    "ant": "Hormiga",
+    "fly": "Mosca",
+    "mosquito": "Mosquito",
+    "butterfly": "Mariposa",
+    "spider": "Araña",
+    "cockroach": "Cucaracha",
+    "snail": "Caracol",
+    "worm": "Gusano",
+    "ladybug": "Mariquita"
+  },
+  "english_phrases": [
+    "bee",
+    "ant",
+    "fly",
+    "mosquito",
+    "butterfly",
+    "spider",
+    "cockroach",
+    "snail",
+    "worm",
+    "ladybug"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv040",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Mira la lista y adivina antes de que salga la respuesta. Abeja... bee. bee. Hormiga... ant. ant. Mosca... fly. fly. Mosquito... mosquito. mosquito. Mariposa... butterfly. butterfly. Araña... spider. spider. Cucaracha... cockroach. cockroach. Caracol... snail. snail. Gusano... worm. worm. Mariquita... ladybug. ladybug. Repite conmigo las diez: bee, ant, fly, mosquito, butterfly, spider, cockroach, snail, worm, ladybug. [cheerful] Escribe en los comentarios cuántas acertaste."
+}

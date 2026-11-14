@@ -1,0 +1,107 @@
+{
+ "type": "how_do_you_say",
+ "video_title": "¿Cómo se dicen MÁS PALABRAS DEL CLIMA en inglés? ⚡",
+ "video_description": "Segunda parte: diez palabras del clima más en inglés. Dilas antes que yo. ¿Cuántas palabras sabías? 🌩️",
+ "title": "¿Cómo se dice…?",
+ "theme": "más palabras del clima",
+ "level": "A1",
+ "intro": "[excited] Diez palabras del clima más en inglés. Dilo tú primero, antes que yo.",
+ "items": [
+  {
+   "emoji": "⚡",
+   "spanish": "Relámpago",
+   "english": "lightning"
+  },
+  {
+   "emoji": "🌩️",
+   "spanish": "Trueno",
+   "english": "thunder"
+  },
+  {
+   "emoji": "🧊",
+   "spanish": "Granizo",
+   "english": "hail"
+  },
+  {
+   "emoji": "🌀",
+   "spanish": "Huracán",
+   "english": "hurricane"
+  },
+  {
+   "emoji": "🌪️",
+   "spanish": "Tornado",
+   "english": "tornado"
+  },
+  {
+   "emoji": "💧",
+   "spanish": "Humedad",
+   "english": "humidity"
+  },
+  {
+   "emoji": "🌡️",
+   "spanish": "Temperatura",
+   "english": "temperature"
+  },
+  {
+   "emoji": "☔",
+   "spanish": "Paraguas",
+   "english": "umbrella"
+  },
+  {
+   "emoji": "⛅",
+   "spanish": "Nublado",
+   "english": "cloudy"
+  },
+  {
+   "emoji": "🌞",
+   "spanish": "Soleado",
+   "english": "sunny"
+  }
+ ],
+ "recap": "Ahora todas en inglés, conmigo: lightning, thunder, hail, hurricane, tornado, humidity, temperature, umbrella, cloudy, sunny.",
+ "outro": "[happy] ¿Cuál no sabías? Escríbela en los comentarios.",
+ "translations": {
+  "lightning": "Relámpago",
+  "thunder": "Trueno",
+  "hail": "Granizo",
+  "hurricane": "Huracán",
+  "tornado": "Tornado",
+  "humidity": "Humedad",
+  "temperature": "Temperatura",
+  "umbrella": "Paraguas",
+  "cloudy": "Nublado",
+  "sunny": "Soleado"
+ },
+ "english_phrases": [
+  "lightning",
+  "thunder",
+  "hail",
+  "hurricane",
+  "tornado",
+  "humidity",
+  "temperature",
+  "umbrella",
+  "cloudy",
+  "sunny"
+ ],
+ "hashtags": [
+  "#InglésParaPrincipiantes",
+  "#VocabularioEnInglés",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#HowDoYouSay",
+  "#ClimaEnInglés",
+  "#Shorts",
+  "#LearnEnglish",
+  "#AprendeIngles"
+ ],
+ "_meta": {
+  "category": "basic_vocab",
+  "topic_id": "bv111",
+  "video_type": "how_do_you_say",
+  "model": "manual",
+  "sequel_of": "palabras del clima",
+  "why": "sequel of a ≥1K-view topic (research 2026-11-12)"
+ },
+ "full_script": "[excited] Diez palabras del clima más en inglés. Dilo tú primero, antes que yo. Relámpago... lightning. lightning. Trueno... thunder. thunder. Granizo... hail. hail. Huracán... hurricane. hurricane. Tornado... tornado. tornado. Humedad... humidity. humidity. Temperatura... temperature. temperature. Paraguas... umbrella. umbrella. Nublado... cloudy. cloudy. Soleado... sunny. sunny. Ahora todas en inglés, conmigo: lightning, thunder, hail, hurricane, tornado, humidity, temperature, umbrella, cloudy, sunny. [happy] ¿Cuál no sabías? Escríbela en los comentarios."
+}

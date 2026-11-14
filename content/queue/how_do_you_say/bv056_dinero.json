@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice el DINERO en inglés? 💰",
+  "video_description": "Diez palabras de dinero para la vida real. 💳",
+  "title": "¿Cómo se dice…?",
+  "theme": "el dinero",
+  "level": "A2",
+  "intro": "[cheerful] Mira la lista y adivina antes de que salga la respuesta.",
+  "items": [
+    {
+      "emoji": "💰",
+      "spanish": "Dinero",
+      "english": "money"
+    },
+    {
+      "emoji": "🪙",
+      "spanish": "Moneda",
+      "english": "coin"
+    },
+    {
+      "emoji": "💵",
+      "spanish": "Billete",
+      "english": "bill"
+    },
+    {
+      "emoji": "💳",
+      "spanish": "Tarjeta",
+      "english": "card"
+    },
+    {
+      "emoji": "👛",
+      "spanish": "Cartera",
+      "english": "wallet"
+    },
+    {
+      "emoji": "🐷",
+      "spanish": "Ahorros",
+      "english": "savings"
+    },
+    {
+      "emoji": "📉",
+      "spanish": "Deuda",
+      "english": "debt"
+    },
+    {
+      "emoji": "🔁",
+      "spanish": "Cambio",
+      "english": "change"
+    },
+    {
+      "emoji": "🧾",
+      "spanish": "Impuestos",
+      "english": "taxes"
+    },
+    {
+      "emoji": "💶",
+      "spanish": "Efectivo",
+      "english": "cash"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: money, coin, bill, card, wallet, savings, debt, change, taxes, cash.",
+  "outro": "[cheerful] Comenta tu número del uno al diez. Sin trampas.",
+  "translations": {
+    "money": "Dinero",
+    "coin": "Moneda",
+    "bill": "Billete",
+    "card": "Tarjeta",
+    "wallet": "Cartera",
+    "savings": "Ahorros",
+    "debt": "Deuda",
+    "change": "Cambio",
+    "taxes": "Impuestos",
+    "cash": "Efectivo"
+  },
+  "english_phrases": [
+    "money",
+    "coin",
+    "bill",
+    "card",
+    "wallet",
+    "savings",
+    "debt",
+    "change",
+    "taxes",
+    "cash"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv056",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[cheerful] Mira la lista y adivina antes de que salga la respuesta. Dinero... money. money. Moneda... coin. coin. Billete... bill. bill. Tarjeta... card. card. Cartera... wallet. wallet. Ahorros... savings. savings. Deuda... debt. debt. Cambio... change. change. Impuestos... taxes. taxes. Efectivo... cash. cash. Otra vez, todas seguidas: money, coin, bill, card, wallet, savings, debt, change, taxes, cash. [cheerful] Comenta tu número del uno al diez. Sin trampas."
+}

@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "OFRECER AYUDA en inglés: ¿cuántas frases sabes? 🙌",
+  "video_description": "Diez frases para ofrecer ayuda en inglés, de «¿necesitas algo?» a «cuenta conmigo». 🙌",
+  "title": "Dilo en inglés",
+  "theme": "ofrecer ayuda",
+  "intro": "[cheerful] Hoy eres tú quien ayuda. Di cada frase en inglés y luego comprueba si acertaste.",
+  "items": [
+    {
+      "spanish": "¿Necesitas ayuda?",
+      "english": "Do you need any help?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Déjame a mí.",
+      "english": "Let me do it.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Yo te llevo la bolsa.",
+      "english": "I'll carry your bag.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Ya te abro yo la puerta.",
+      "english": "Let me get the door for you.",
+      "cefr": "A2",
+      "alt": "I'll get the door."
+    },
+    {
+      "spanish": "Si necesitas algo, dímelo.",
+      "english": "If you need anything, just let me know.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Puedo quedarme hasta tarde si quieres.",
+      "english": "I can stay late if you want.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Ya lo hago yo, no te preocupes.",
+      "english": "I'll do it, don't worry.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿Quieres que te ayude?",
+      "english": "Do you want me to help you?",
+      "cefr": "B1",
+      "alt": "Would you like me to help?",
+      "tip": "Querer que alguien haga algo: want + persona + to"
+    },
+    {
+      "spanish": "Te llevo a casa.",
+      "english": "I'll give you a ride home.",
+      "cefr": "B2",
+      "alt": "I'll drive you home.",
+      "tip": "«Llevar» a alguien en coche: give a ride o drive"
+    },
+    {
+      "spanish": "Cuenta conmigo.",
+      "english": "You can count on me.",
+      "cefr": "B2",
+      "tip": "«Contar con» alguien es count on, no count with"
+    }
+  ],
+  "verdict": "Hasta la tres, básico. Hasta la siete, intermedio. Hasta la diez, experto y gran persona.",
+  "outro": "[warm] ¿A quién ayudarías hoy? Cuéntame en comentarios hasta qué número llegaste.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#FrasesEnInglés",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy027",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Do you need any help?": "¿Necesitas ayuda?",
+    "Let me do it.": "Déjame a mí.",
+    "I'll carry your bag.": "Yo te llevo la bolsa.",
+    "Let me get the door for you.": "Ya te abro yo la puerta.",
+    "If you need anything, just let me know.": "Si necesitas algo, dímelo.",
+    "I can stay late if you want.": "Puedo quedarme hasta tarde si quieres.",
+    "I'll do it, don't worry.": "Ya lo hago yo, no te preocupes.",
+    "Do you want me to help you?": "¿Quieres que te ayude?",
+    "I'll give you a ride home.": "Te llevo a casa.",
+    "You can count on me.": "Cuenta conmigo."
+  },
+  "english_phrases": [
+    "Do you need any help?",
+    "Let me do it.",
+    "I'll carry your bag.",
+    "Let me get the door for you.",
+    "If you need anything, just let me know.",
+    "I can stay late if you want.",
+    "I'll do it, don't worry.",
+    "Do you want me to help you?",
+    "I'll give you a ride home.",
+    "You can count on me.",
+    "I'll get the door.",
+    "Would you like me to help?",
+    "I'll drive you home."
+  ],
+  "full_script": "[cheerful] Hoy eres tú quien ayuda. Di cada frase en inglés y luego comprueba si acertaste. Do you need any help? Let me do it. I'll carry your bag. Ahora, nivel intermedio. Let me get the door for you. If you need anything, just let me know. I can stay late if you want. I'll do it, don't worry. Y ahora, nivel experto. Do you want me to help you? I'll give you a ride home. You can count on me. Hasta la tres, básico. Hasta la siete, intermedio. Hasta la diez, experto y gran persona. [warm] ¿A quién ayudarías hoy? Cuéntame en comentarios hasta qué número llegaste."
+}

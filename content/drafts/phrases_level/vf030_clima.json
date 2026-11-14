@@ -1,0 +1,65 @@
+{
+  "type": "phrases_level",
+  "video_title": "10 frases hablar del tiempo en inglés 🌦️",
+  "video_description": "Diez frases para hablar del tiempo como un nativo. 🌦️",
+  "title": "¿Cómo se dice?",
+  "theme": "hablar del tiempo",
+  "intro": "[cheerful] Lee la frase en español y dila en inglés en voz alta.",
+  "items": [
+    {
+      "spanish": "Hace frío.",
+      "english": "It's cold."
+    },
+    {
+      "spanish": "Hace mucho calor.",
+      "english": "It's really hot."
+    },
+    {
+      "spanish": "Está lloviendo.",
+      "english": "It's raining."
+    },
+    {
+      "spanish": "Hace un día precioso.",
+      "english": "It's a beautiful day."
+    },
+    {
+      "spanish": "Va a llover.",
+      "english": "It's going to rain."
+    },
+    {
+      "spanish": "Hace un frío que pela.",
+      "english": "It's freezing."
+    },
+    {
+      "spanish": "Estoy empapado.",
+      "english": "I'm soaked."
+    },
+    {
+      "spanish": "Hace bochorno.",
+      "english": "It's muggy."
+    },
+    {
+      "spanish": "Está despejando.",
+      "english": "It's clearing up."
+    },
+    {
+      "spanish": "Llueve a cántaros.",
+      "english": "It's pouring."
+    }
+  ],
+  "outro": "[cheerful] Escribe en los comentarios la que más te gustó.",
+  "hashtags": [
+    "#CómoSeDice",
+    "#InglésCotidiano",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "everyday_expressions",
+    "topic_id": "vf030",
+    "video_type": "phrases_level",
+    "model": "manual",
+    "draft": true
+  }
+}

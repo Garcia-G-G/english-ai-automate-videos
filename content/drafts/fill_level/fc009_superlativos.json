@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "10 frases con hueco: SUPERLATIVOS 🏆",
+  "video_description": "The best, the biggest, the most: los superlativos en diez frases. 🏆",
+  "title": "Completa la frase",
+  "theme": "los superlativos",
+  "intro": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido.",
+  "items": [
+    {
+      "sentence": "It's the ____ day of my life!",
+      "answer": "best",
+      "translation": "¡Es el mejor día de mi vida!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She's the ____ girl in the class.",
+      "answer": "tallest",
+      "translation": "Es la chica más alta de la clase.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "This is the ____ hotel in town.",
+      "answer": "cheapest",
+      "translation": "Es el hotel más barato de la ciudad.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "That was the ____ movie I've ever seen.",
+      "answer": "worst",
+      "translation": "Fue la peor película que he visto.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Everest is the ____ mountain in the world.",
+      "answer": "highest",
+      "translation": "El Everest es la montaña más alta del mundo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "It's the most ____ city in Europe.",
+      "answer": "beautiful",
+      "translation": "Es la ciudad más bonita de Europa.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Who lives the ____ from here?",
+      "answer": "farthest",
+      "translation": "¿Quién vive más lejos de aquí?",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "At ____, it'll take two hours.",
+      "answer": "least",
+      "translation": "Como mínimo, tardará dos horas.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'll call you at the ____.",
+      "answer": "latest",
+      "translation": "Te llamo como muy tarde.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "Make the ____ of your time here.",
+      "answer": "most",
+      "translation": "Aprovecha al máximo tu tiempo aquí.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Superlativos",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc009",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "Verdadero o falso: COMIDA en inglés 🍔",
+  "video_description": "Diez palabras de comida: ¿verdadero o falso? 🍔",
+  "title": "¿Verdadero o falso?",
+  "theme": "vocabulario de comida",
+  "intro": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo.",
+  "items": [
+    {
+      "statement": "«Apple» es manzana.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Butter» es mantequilla.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Corn» es carne.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es maíz"
+    },
+    {
+      "statement": "«Grape» es pomelo.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es uva"
+    },
+    {
+      "statement": "«Pepper» puede ser pimienta o pimiento.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Lemon» siempre es limón amarillo y «lime» es lima.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Eggplant» es una planta de huevos.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es berenjena"
+    },
+    {
+      "statement": "«Squid» es calamar.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Leek» es lechuga.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es puerro"
+    },
+    {
+      "statement": "«Cutlery» son los cubiertos.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf006",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

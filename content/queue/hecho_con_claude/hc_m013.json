@@ -1,0 +1,51 @@
+{
+  "id": "hc_m013",
+  "style": "mensajes",
+  "level": "medio",
+  "angle": "errores",
+  "title": "«My sister is very sensible»: el halago que no era",
+  "hook_text": "Hablaba de mi hermana…",
+  "chat": {
+    "contact": "Olivia · Melbourne",
+    "messages": [
+      [
+        "me",
+        "My sister cried at the movie, she's very sensible",
+        "error"
+      ],
+      [
+        "them",
+        "sensible?? she sounds emotional 😂"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "sensible = sensible",
+    "right": "sensitive",
+    "rule": "Sensible = sensato · Sensitive = sensible"
+  },
+  "voice": [
+    "Le conté a una amiga que mi hermana lloró en el cine y le dije [[she's very sensible]].",
+    "Pero [[sensible]] en inglés significa sensato, prudente, que toma buenas decisiones.",
+    "Sensible, de emociones, es [[sensitive]]: [[She's very sensitive]].",
+    "Ejemplo de [[sensible]]: [[That's a sensible decision]], «es una decisión sensata».",
+    "Y piel sensible también es [[sensitive skin]].",
+    "Reto: ¿cómo dirías «es un chico muy sensato»? Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«Es un chico muy sensato»",
+    "answer": "He's a very sensible guy."
+  },
+  "caption": "Sensible no es sensible: «sensible» es sensato y «sensitive» es sensible. Falso amigo explicado.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 65
+}

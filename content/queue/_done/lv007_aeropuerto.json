@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "¿Te defiendes en el AEROPUERTO en inglés? Haz el test 🛫",
+  "video_description": "Pon a prueba tu vocabulario del aeropuerto y descubre tu nivel real de inglés. 🛫",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el aeropuerto",
+  "intro": "[excited] Empezamos fácil y terminamos difícil: diez palabras del aeropuerto. Tradúcelas en voz alta.",
+  "items": [
+    {
+      "english": "plane",
+      "spanish": "Avión",
+      "cefr": "A1"
+    },
+    {
+      "english": "passport",
+      "spanish": "Pasaporte",
+      "cefr": "A1"
+    },
+    {
+      "english": "flight",
+      "spanish": "Vuelo",
+      "cefr": "A2"
+    },
+    {
+      "english": "gate",
+      "spanish": "Puerta de embarque",
+      "cefr": "A2"
+    },
+    {
+      "english": "boarding pass",
+      "spanish": "Tarjeta de embarque",
+      "cefr": "B1"
+    },
+    {
+      "english": "customs",
+      "spanish": "Aduana",
+      "cefr": "B1"
+    },
+    {
+      "english": "carry-on",
+      "spanish": "Equipaje de mano",
+      "cefr": "B2"
+    },
+    {
+      "english": "layover",
+      "spanish": "Escala",
+      "cefr": "C1"
+    },
+    {
+      "english": "overbooked",
+      "spanish": "Con exceso de reservas",
+      "cefr": "C1"
+    },
+    {
+      "english": "red-eye flight",
+      "spanish": "Vuelo nocturno",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Resultado: hasta la tres, básico; hasta la siete, intermedio; las diez, experto. ¿Cuál es el tuyo?",
+  "outro": "[excited] Pon tu número en los comentarios. ¿Quién llega a la diez?",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#ClasesDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv007",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "plane": "Avión",
+    "passport": "Pasaporte",
+    "flight": "Vuelo",
+    "gate": "Puerta de embarque",
+    "boarding pass": "Tarjeta de embarque",
+    "customs": "Aduana",
+    "carry-on": "Equipaje de mano",
+    "layover": "Escala",
+    "overbooked": "Con exceso de reservas",
+    "red-eye flight": "Vuelo nocturno"
+  },
+  "english_phrases": [
+    "plane",
+    "passport",
+    "flight",
+    "gate",
+    "boarding pass",
+    "customs",
+    "carry-on",
+    "layover",
+    "overbooked",
+    "red-eye flight"
+  ],
+  "full_script": "[excited] Empezamos fácil y terminamos difícil: diez palabras del aeropuerto. Tradúcelas en voz alta. plane Avión passport Pasaporte flight Vuelo Ahora, nivel intermedio. gate Puerta de embarque boarding pass Tarjeta de embarque customs Aduana carry-on Equipaje de mano Y ahora, nivel experto. layover Escala overbooked Con exceso de reservas red-eye flight Vuelo nocturno Resultado: hasta la tres, básico; hasta la siete, intermedio; las diez, experto. ¿Cuál es el tuyo? [excited] Pon tu número en los comentarios. ¿Quién llega a la diez?"
+}

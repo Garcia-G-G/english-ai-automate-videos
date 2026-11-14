@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "SH y CH en inglés: ¿hasta qué número llegas? 🧀",
+  "video_description": "SH y CH en diez palabras: ¿las distingues al hablar? 🚿",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "SH y CH",
+  "intro": "[curious] SH o CH: diez palabras para no confundirlas. Tú primero.",
+  "items": [
+    {
+      "english": "shoe",
+      "respelling": "SHUU",
+      "ipa": "ˈʃuː",
+      "trap": "SH suave, como pidiendo silencio"
+    },
+    {
+      "english": "cheese",
+      "respelling": "CHIIZ",
+      "ipa": "ˈtʃiːz",
+      "trap": "CH como en español y S = Z"
+    },
+    {
+      "english": "fish",
+      "respelling": "FISH",
+      "ipa": "ˈfɪʃ",
+      "trap": "SH final: FISH"
+    },
+    {
+      "english": "chicken",
+      "respelling": "CHI-ken",
+      "ipa": "ˈtʃɪkən",
+      "trap": "CH fuerte: CHI-ken"
+    },
+    {
+      "english": "shower",
+      "respelling": "SHAU-er",
+      "ipa": "ˈʃaʊɚ",
+      "trap": "SH inicial y OW = «au»"
+    },
+    {
+      "english": "shampoo",
+      "respelling": "sham-PUU",
+      "ipa": "ʃæmˈpuː",
+      "trap": "SH inicial y acento al final"
+    },
+    {
+      "english": "ocean",
+      "respelling": "OU-shen",
+      "ipa": "ˈoʊʃən",
+      "trap": "La C suena SH: OU-shen"
+    },
+    {
+      "english": "sugar",
+      "respelling": "SHU-ger",
+      "ipa": "ˈʃʊgɚ",
+      "trap": "La S suena SH: SHU-ger"
+    },
+    {
+      "english": "brochure",
+      "respelling": "brou-SHUR",
+      "ipa": "broʊˈʃʊr",
+      "trap": "CH suena SH y acento al final"
+    },
+    {
+      "english": "parachute",
+      "respelling": "PA-re-shuut",
+      "ipa": "ˈpærəʃuːt",
+      "trap": "CH suena SH: PA-re-shuut"
+    }
+  ],
+  "verdict": "¿Te quedaste en la tres? Básico. ¿En la siete? Intermedio. Si pronunciaste las diez, nivel experto.",
+  "outro": "[curious] ¿Cuál dijiste mal al principio? Confiésalo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#SHyCH",
+    "#AprenderInglés",
+    "#ClasesDeInglés",
+    "#HablarInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl037",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

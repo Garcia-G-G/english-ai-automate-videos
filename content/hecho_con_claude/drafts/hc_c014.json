@@ -1,0 +1,47 @@
+{
+  "id": "hc_c014",
+  "style": "comic",
+  "level": "medio",
+  "angle": "reto",
+  "title": "RETO: «me pongo nervioso»",
+  "hook_text": "¿Put, get o become?",
+  "quiz": {
+    "prompt": "¿Cómo dirías «me pongo nervioso en las entrevistas»?",
+    "options": [
+      "I put myself nervous",
+      "I get nervous",
+      "I stay nervous"
+    ],
+    "answer": 1,
+    "after": "Ponerse + estado = get + adjetivo."
+  },
+  "correction": {
+    "wrong": "I stay nervous",
+    "right": "I get nervous",
+    "rule": "Get + adjetivo"
+  },
+  "voice": [
+    "¿Put, get o become? ¿Cómo dirías «me pongo nervioso en las entrevistas»?",
+    "¿[[I put myself nervous]], [[I get nervous]] o [[I stay nervous]]?",
+    "¡La B! [[I get nervous in interviews]].",
+    "Con [[get]] + adjetivo dices que cambias de estado: [[get angry]], [[get tired]], [[get bored]].",
+    "Y ponerse rojo: [[go red]] o [[blush]].",
+    "Reto extra: «me enfado cuando…» y termínala en inglés."
+  ],
+  "challenge": {
+    "prompt": "«Me enfado cuando llegas tarde»",
+    "answer": "I get angry when you're late."
+  },
+  "caption": "«Me pongo nervioso» es «I get nervous». Get + adjetivo para cambiar de estado, en un reto.",
+  "series": "hecho_con_claude",
+  "level_label": "Medio · B1–B2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesintermedio",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 61
+}

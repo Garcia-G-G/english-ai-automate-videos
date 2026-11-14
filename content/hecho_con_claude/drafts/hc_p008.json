@@ -1,0 +1,46 @@
+{
+  "id": "hc_p008",
+  "style": "poster",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«I like very much football»: el orden que delata",
+  "hook_text": "Casi todos lo dicen mal: «I LIKE VERY MUCH FOOTBALL»",
+  "poster": {
+    "error_no": "023",
+    "big_wrong": "I LIKE VERY MUCH FOOTBALL",
+    "big_right": "I LIKE FOOTBALL A LOT",
+    "examples": [
+      "I like football a lot. — Me gusta mucho el fútbol.",
+      "I really like football. — Me encanta el fútbol."
+    ]
+  },
+  "correction": {
+    "wrong": "I LIKE VERY MUCH FOOTBALL",
+    "right": "I LIKE FOOTBALL A LOT",
+    "rule": "Verbo + objeto juntos; very much al final"
+  },
+  "voice": [
+    "Traducimos «me gusta mucho el fútbol» palabra por palabra: [[I like very much football]].",
+    "En inglés el verbo y lo que te gusta van pegados. [[Very much]] va al final.",
+    "Correcto: [[I like football very much]] o, más natural, [[I like football a lot]].",
+    "Otra muy común: [[I really like football]].",
+    "Y si te encanta: [[I love football]].",
+    "Reto: ordena: «I / very much / pizza / like». Escríbela bien abajo."
+  ],
+  "challenge": {
+    "prompt": "Ordena: I / very much / pizza / like",
+    "answer": "I like pizza very much."
+  },
+  "caption": "Se dice «I like football a lot», no «I like very much football». El orden de las palabras en inglés.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 71
+}

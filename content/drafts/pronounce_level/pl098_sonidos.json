@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "SONIDOS de la naturaleza y del hogar: ¿los pronuncias? 🐝",
+  "video_description": "Buzz, whisper, rustle: los sonidos también tienen trampas de pronunciación. 🔉",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los sonidos de la naturaleza y del hogar",
+  "intro": "[cheerful] Escucha bien: diez palabras de sonidos. Pronúncialas antes de que yo lo haga.",
+  "items": [
+    {
+      "english": "ring",
+      "respelling": "RING",
+      "ipa": "ˈrɪŋ",
+      "trap": "R inglesa, sin vibrar"
+    },
+    {
+      "english": "buzz",
+      "respelling": "BAZ",
+      "ipa": "ˈbʌz",
+      "trap": "La U suena «a» y la ZZ zumba"
+    },
+    {
+      "english": "bark",
+      "respelling": "BARK",
+      "ipa": "ˈbɑrk",
+      "trap": "AR con R suave: BARK"
+    },
+    {
+      "english": "howl",
+      "respelling": "JAUL",
+      "ipa": "ˈhaʊl",
+      "trap": "OW suena «au»: JAUL"
+    },
+    {
+      "english": "roar",
+      "respelling": "ROR",
+      "ipa": "ˈrɔr",
+      "trap": "Dos R inglesas: ROR"
+    },
+    {
+      "english": "sizzle",
+      "respelling": "SI-zal",
+      "ipa": "ˈsɪzəl",
+      "trap": "ZZ suena «z»: SI-zal"
+    },
+    {
+      "english": "whisper",
+      "respelling": "UIS-per",
+      "ipa": "ˈwɪspɚ",
+      "trap": "WH suena «u»: UIS-per"
+    },
+    {
+      "english": "squeak",
+      "respelling": "SKUIIK",
+      "ipa": "ˈskwiːk",
+      "trap": "SQU suena «skui», sin «e»"
+    },
+    {
+      "english": "murmur",
+      "respelling": "MER-mer",
+      "ipa": "ˈmɝmɚ",
+      "trap": "UR suena «er» dos veces"
+    },
+    {
+      "english": "rustle",
+      "respelling": "RA-sal",
+      "ipa": "ˈrʌsəl",
+      "trap": "La T no suena: RA-sal"
+    }
+  ],
+  "verdict": "¿Llegaste a la tres? Básico. ¿A la siete? Intermedio. ¿A la diez? Experto en sonidos.",
+  "outro": "[excited] ¿Te salió «rustle»? Escribe tu número en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Onomatopeyas",
+    "#InglésFácil",
+    "#Speaking"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl098",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

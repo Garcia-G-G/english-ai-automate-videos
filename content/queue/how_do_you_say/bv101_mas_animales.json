@@ -1,0 +1,107 @@
+{
+ "type": "how_do_you_say",
+ "video_title": "¿Cómo se dicen MÁS ANIMALES en inglés? 🦘",
+ "video_description": "Segunda parte: diez animales más en inglés. Dilas antes que yo. ¿Cuántas palabras sabías? 🐫",
+ "title": "¿Cómo se dice…?",
+ "theme": "más animales",
+ "level": "A1",
+ "intro": "[excited] Diez animales más en inglés. Dilo tú primero, antes que yo.",
+ "items": [
+  {
+   "emoji": "🦘",
+   "spanish": "Canguro",
+   "english": "kangaroo"
+  },
+  {
+   "emoji": "🐫",
+   "spanish": "Camello",
+   "english": "camel"
+  },
+  {
+   "emoji": "🐊",
+   "spanish": "Cocodrilo",
+   "english": "crocodile"
+  },
+  {
+   "emoji": "🦛",
+   "spanish": "Hipopótamo",
+   "english": "hippo"
+  },
+  {
+   "emoji": "🐸",
+   "spanish": "Rana",
+   "english": "frog"
+  },
+  {
+   "emoji": "🦇",
+   "spanish": "Murciélago",
+   "english": "bat"
+  },
+  {
+   "emoji": "🦍",
+   "spanish": "Gorila",
+   "english": "gorilla"
+  },
+  {
+   "emoji": "🦏",
+   "spanish": "Rinoceronte",
+   "english": "rhino"
+  },
+  {
+   "emoji": "🦝",
+   "spanish": "Mapache",
+   "english": "raccoon"
+  },
+  {
+   "emoji": "🦔",
+   "spanish": "Erizo",
+   "english": "hedgehog"
+  }
+ ],
+ "recap": "Ahora todas en inglés, conmigo: kangaroo, camel, crocodile, hippo, frog, bat, gorilla, rhino, raccoon, hedgehog.",
+ "outro": "[cheerful] ¿Cuántos sabías? Escribe tu número en los comentarios.",
+ "translations": {
+  "kangaroo": "Canguro",
+  "camel": "Camello",
+  "crocodile": "Cocodrilo",
+  "hippo": "Hipopótamo",
+  "frog": "Rana",
+  "bat": "Murciélago",
+  "gorilla": "Gorila",
+  "rhino": "Rinoceronte",
+  "raccoon": "Mapache",
+  "hedgehog": "Erizo"
+ },
+ "english_phrases": [
+  "kangaroo",
+  "camel",
+  "crocodile",
+  "hippo",
+  "frog",
+  "bat",
+  "gorilla",
+  "rhino",
+  "raccoon",
+  "hedgehog"
+ ],
+ "hashtags": [
+  "#InglésParaPrincipiantes",
+  "#VocabularioEnInglés",
+  "#AprenderInglés",
+  "#InglésFácil",
+  "#HowDoYouSay",
+  "#AnimalesEnInglés",
+  "#Shorts",
+  "#LearnEnglish",
+  "#AprendeIngles"
+ ],
+ "_meta": {
+  "category": "basic_vocab",
+  "topic_id": "bv101",
+  "video_type": "how_do_you_say",
+  "model": "manual",
+  "sequel_of": "animales",
+  "why": "sequel of a ≥1K-view topic (research 2026-11-12)"
+ },
+ "full_script": "[excited] Diez animales más en inglés. Dilo tú primero, antes que yo. Canguro... kangaroo. kangaroo. Camello... camel. camel. Cocodrilo... crocodile. crocodile. Hipopótamo... hippo. hippo. Rana... frog. frog. Murciélago... bat. bat. Gorila... gorilla. gorilla. Rinoceronte... rhino. rhino. Mapache... raccoon. raccoon. Erizo... hedgehog. hedgehog. Ahora todas en inglés, conmigo: kangaroo, camel, crocodile, hippo, frog, bat, gorilla, rhino, raccoon, hedgehog. [cheerful] ¿Cuántos sabías? Escribe tu número en los comentarios."
+}

@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "Trampas con QUEDAR: el verbo que no existe en inglés 😵",
+  "video_description": "Quedar con amigos, quedarse en blanco, no queda leche: diez trampas con quedar. 😵",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «quedar»",
+  "intro": "[thoughtful] «Quedar» no tiene una sola traducción. Di cada frase en inglés antes que yo.",
+  "items": [
+    {
+      "spanish": "Quédate aquí.",
+      "english": "Stay here.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Hoy me quedo en casa.",
+      "english": "I'm staying home today.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿A qué hora quedamos?",
+      "english": "What time should we meet?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Cuánto queda para llegar?",
+      "english": "How much longer until we get there?",
+      "cefr": "B1",
+      "alt": "Are we almost there?"
+    },
+    {
+      "spanish": "No queda leche.",
+      "english": "We're out of milk.",
+      "cefr": "B1",
+      "alt": "There's no milk left."
+    },
+    {
+      "spanish": "Quedamos en vernos el viernes.",
+      "english": "We agreed to meet on Friday.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Ese color te queda muy bien.",
+      "english": "That color really suits you.",
+      "cefr": "B2",
+      "alt": "That color looks great on you."
+    },
+    {
+      "spanish": "Me quedé dormido en el sofá.",
+      "english": "I fell asleep on the couch.",
+      "cefr": "B2",
+      "tip": "«Quedarse dormido» es fall asleep, no «stay asleep»"
+    },
+    {
+      "spanish": "Me quedé en blanco.",
+      "english": "My mind went blank.",
+      "cefr": "B2",
+      "tip": "En inglés se queda en blanco la mente: My mind went blank"
+    },
+    {
+      "spanish": "Me quedé de piedra.",
+      "english": "I was stunned.",
+      "cefr": "C1",
+      "alt": "I was speechless.",
+      "tip": "«Quedarse de piedra» es be stunned, no «stay of stone»"
+    }
+  ],
+  "verdict": "Tres aciertos: básico. Siete: intermedio. Las diez: te quedaste con todo, nivel experto.",
+  "outro": "[happy] ¿Hasta qué frase llegaste? Quedamos en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#TrucosDeInglés",
+    "#InglésConversacional"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy082",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Stay here.": "Quédate aquí.",
+    "I'm staying home today.": "Hoy me quedo en casa.",
+    "What time should we meet?": "¿A qué hora quedamos?",
+    "How much longer until we get there?": "¿Cuánto queda para llegar?",
+    "We're out of milk.": "No queda leche.",
+    "We agreed to meet on Friday.": "Quedamos en vernos el viernes.",
+    "That color really suits you.": "Ese color te queda muy bien.",
+    "I fell asleep on the couch.": "Me quedé dormido en el sofá.",
+    "My mind went blank.": "Me quedé en blanco.",
+    "I was stunned.": "Me quedé de piedra."
+  },
+  "english_phrases": [
+    "Stay here.",
+    "I'm staying home today.",
+    "What time should we meet?",
+    "How much longer until we get there?",
+    "We're out of milk.",
+    "We agreed to meet on Friday.",
+    "That color really suits you.",
+    "I fell asleep on the couch.",
+    "My mind went blank.",
+    "I was stunned.",
+    "Are we almost there?",
+    "There's no milk left.",
+    "That color looks great on you.",
+    "I was speechless."
+  ],
+  "full_script": "[thoughtful] «Quedar» no tiene una sola traducción. Di cada frase en inglés antes que yo. Stay here. I'm staying home today. What time should we meet? Ahora, nivel intermedio. How much longer until we get there? We're out of milk. We agreed to meet on Friday. That color really suits you. Y ahora, nivel experto. I fell asleep on the couch. My mind went blank. I was stunned. Tres aciertos: básico. Siete: intermedio. Las diez: te quedaste con todo, nivel experto. [happy] ¿Hasta qué frase llegaste? Quedamos en los comentarios."
+}

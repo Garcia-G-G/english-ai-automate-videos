@@ -1,0 +1,94 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes cuáles son verdad? IDIOMS 🎲",
+  "video_description": "¿Qué significan de verdad estas expresiones en inglés? 🎲",
+  "title": "¿Verdadero o falso?",
+  "theme": "expresiones idiomáticas",
+  "intro": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad?",
+  "items": [
+    {
+      "statement": "«A piece of cake» significa algo muy fácil.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Break a leg» es desear mala suerte.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es desear suerte"
+    },
+    {
+      "statement": "«Under the weather» significa estar un poco enfermo.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Hit the books» significa pegar a los libros.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es ponerse a estudiar"
+    },
+    {
+      "statement": "«Spill the beans» significa contar un secreto.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Cost an arm and a leg» significa ser barato.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es carísimo"
+    },
+    {
+      "statement": "«Call it a day» significa dejarlo por hoy.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Once in a blue moon» significa muy a menudo.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es casi nunca"
+    },
+    {
+      "statement": "«Bite the bullet» significa hacer algo difícil sin quejarse.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Pull someone's leg» significa hacerle daño.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es tomarle el pelo"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#Idioms",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf005",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "A piece of cake",
+    "Break a leg",
+    "Under the weather",
+    "Hit the books",
+    "Spill the beans",
+    "Cost an arm and a leg",
+    "Call it a day",
+    "Once in a blue moon",
+    "Bite the bullet",
+    "Pull someone's leg"
+  ],
+  "full_script": "[happy] Diez afirmaciones sobre el inglés. ¿Cuáles son verdad? Verdadero. Falso: es desear suerte. Verdadero. Ahora, nivel intermedio. Falso: es ponerse a estudiar. Verdadero. Falso: es carísimo. Verdadero. Y ahora, nivel experto. Falso: es casi nunca. Verdadero. Falso: es tomarle el pelo. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [happy] ¿Cuántas acertaste? Déjame tu número abajo."
+}

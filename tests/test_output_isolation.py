@@ -21,8 +21,10 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tools"))
 
-from output_guard import REAL_OUTPUT, OutputTreeWriteRefused  # noqa: E402
+from output_guard import (REAL_LOGS, REAL_OUTPUT, REAL_QUEUE,  # noqa: E402
+                          OutputTreeWriteRefused)
 
 TARGET = REAL_OUTPUT / "uploaded" / "POISON_from_a_test.mp4"
 
@@ -164,10 +166,9 @@ def test_creating_a_new_directory_is_refused():
             d.mkdir(parents=True)
         assert not d.exists()
     finally:
-        try:
+        # Only if the refusal failed: on Python 3.12 Path.rmdir goes through the guarded os.rmdir.
+        if d.exists():
             d.rmdir()
-        except OSError:
-            pass
 
 
 # ── what must still work ─────────────────────────────────────────────
@@ -223,6 +224,121 @@ def test_the_guard_is_inert_outside_pytest():
     import output_guard
     assert not hasattr(output_guard, "_ALWAYS_ON")
     assert callable(output_guard.install)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# THIRD LEAK, SAME CLASS, ONE DIRECTORY OVER.
+#
+# The two leaks above were both inside output/, which is regenerable. This
+# one was not. `run_pipeline_with_tracking` takes `use_queue=True` by
+# default, so every test that called it claimed a real script out of
+# content/queue/ and — on success — shelved it into content/queue/_done/.
+# The scripts are hand-written by the owner and are the only copy.
+#
+# Six of them were consumed that way before anyone noticed, and NONE of the
+# six produced a video: the recorder fixture in test_dashboard_doors.py
+# stubs the renderer, so the run "succeeded", shelved the script, and left
+# no artifact. `git status` showed them as deleted and the reason was not
+# obvious from the diff.
+#
+# run_log/ was the same oversight with a smaller blast radius: LOG_DIR is a
+# module global pointing at the repo, so a test run opened real rotating log
+# files under logs/. 13 of them in one afternoon, 752 accumulated.
+# ═══════════════════════════════════════════════════════════════════════
+
+QUEUE_TARGET = REAL_QUEUE / "POISON_from_a_test.json"
+LOG_TARGET = REAL_LOGS / "POISON_from_a_test.log"
+
+
+def _clean_path(target):
+    try:
+        if target.exists():
+            os.remove(str(target))
+    except OSError:
+        pass
+
+
+# ── layer 1: the globals a test sees point somewhere disposable ──────
+
+def test_the_queue_a_test_sees_is_not_the_owners_queue():
+    """THE PIN. queue_guard reads QUEUE_DIR at call time and shelves through
+    DONE_DIR, so redirecting both is what stops the shelve reaching a real
+    script — and topic_history must agree with it about where the queue is."""
+    import queue_guard
+    import topic_history
+
+    for value in (queue_guard.QUEUE_DIR, queue_guard.DONE_DIR,
+                  topic_history.QUEUE_DIR):
+        resolved = Path(value).resolve()
+        assert resolved != REAL_QUEUE and REAL_QUEUE not in resolved.parents, (
+            f"{value} still points into the owner's queue")
+
+
+def test_the_run_log_writes_somewhere_disposable():
+    import run_log
+
+    resolved = Path(run_log.LOG_DIR).resolve()
+    assert resolved != REAL_LOGS and REAL_LOGS not in resolved.parents, (
+        f"{run_log.LOG_DIR} still points at the real logs/")
+
+
+# ── layer 2: aiming at the real tree anyway is refused ───────────────
+
+def test_shelving_a_script_into_the_real_queue_is_refused(tmp_path):
+    """THE ACTUAL ESCAPE. queue_guard.main(["--done", ...]) is a shutil.move
+    into content/queue/_done/, and that is how the six were lost."""
+    src = tmp_path / "cu001_saludos.json"
+    src.write_text("{}", encoding="utf-8")
+    target = REAL_QUEUE / "_done" / "POISON_from_a_test.json"
+    try:
+        with pytest.raises(OutputTreeWriteRefused) as exc:
+            shutil.move(str(src), str(target))
+
+        assert "REFUSING" in str(exc.value)
+        assert not target.exists()
+    finally:
+        _clean_path(target)
+
+
+def test_writing_a_file_into_the_real_queue_is_refused():
+    try:
+        with pytest.raises(OutputTreeWriteRefused):
+            with open(QUEUE_TARGET, "w") as fh:
+                fh.write("poison")
+        assert not QUEUE_TARGET.exists()
+    finally:
+        _clean_path(QUEUE_TARGET)
+
+
+def test_deleting_a_real_queued_script_is_refused():
+    """A queued script is the only copy. Removal must be refused as loudly
+    as creation — the damage from this class was deletion, not litter."""
+    with pytest.raises(OutputTreeWriteRefused):
+        os.remove(str(next((REAL_QUEUE / "vocabulary").glob("*.json"))))
+
+
+def test_writing_a_real_log_file_is_refused():
+    try:
+        with pytest.raises(OutputTreeWriteRefused):
+            with open(LOG_TARGET, "w") as fh:
+                fh.write("poison")
+        assert not LOG_TARGET.exists()
+    finally:
+        _clean_path(LOG_TARGET)
+
+
+def test_reading_the_real_queue_is_still_allowed():
+    """Reads stay untouched, as they are for output/. queue_guard's audit
+    reads every queued script and several tests read real fixtures; blocking
+    that would gut the suite for no safety gain."""
+    assert REAL_QUEUE.exists()
+    names = sorted(p.name for p in REAL_QUEUE.rglob("*.json"))
+    assert names, "the real queue should be readable from a test"
+
+
+def test_the_real_queue_and_log_paths_are_captured_before_redirection():
+    assert REAL_QUEUE == (ROOT / "content" / "queue").resolve()
+    assert REAL_LOGS == (ROOT / "logs").resolve()
 
 
 if __name__ == "__main__":

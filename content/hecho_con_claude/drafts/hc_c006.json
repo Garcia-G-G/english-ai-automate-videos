@@ -1,0 +1,47 @@
+{
+  "id": "hc_c006",
+  "style": "comic",
+  "level": "principiante",
+  "angle": "reto",
+  "title": "RETO: «hay mucha gente»",
+  "hook_text": "Casi todos dudan aquí",
+  "quiz": {
+    "prompt": "¿Cómo dirías «hay mucha gente»?",
+    "options": [
+      "There is many people",
+      "There are a lot of people",
+      "Has a lot of people"
+    ],
+    "answer": 1,
+    "after": "People es plural: there are."
+  },
+  "correction": {
+    "wrong": "Has a lot of people",
+    "right": "There are a lot of people",
+    "rule": "There are + plural"
+  },
+  "voice": [
+    "Casi todos dudan aquí. ¿Cómo dirías «hay mucha gente»?",
+    "¿[[There is many people]], [[There are a lot of people]] o [[Has a lot of people]]?",
+    "¡La B! [[There are a lot of people]]. [[People]] es plural, así que va [[there are]].",
+    "Y nunca [[has]] para «hay»: «hay» es [[there is]] o [[there are]].",
+    "Para algo incontable: [[There's a lot of traffic]].",
+    "¿Acertaste? Pon un sí o un no en comentarios."
+  ],
+  "challenge": {
+    "prompt": "«Había mucha gente en la fiesta»",
+    "answer": "There were a lot of people at the party."
+  },
+  "caption": "«Hay mucha gente» es «There are a lot of people». There is vs there are en un reto.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#retodeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 70
+}

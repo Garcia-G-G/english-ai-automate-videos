@@ -1,0 +1,105 @@
+{
+  "type": "say_it_level",
+  "video_title": "HACER UNA PRESENTACIÓN en inglés: 10 frases clave 📊",
+  "video_description": "Abre, explica y cierra tu presentación en inglés con estas diez frases. 📊",
+  "title": "Dilo en inglés",
+  "theme": "hacer una presentación",
+  "intro": "[calm] Hoy presentas en inglés. Lee la frase y dila antes que yo.",
+  "items": [
+    {
+      "spanish": "Gracias a todos por estar aquí.",
+      "english": "Thank you all for being here.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Me llamo Ana y soy diseñadora.",
+      "english": "I'm Ana, and I'm a designer.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Hoy voy a hablar de ventas.",
+      "english": "Today I'm going to talk about sales.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Primero, veamos los números.",
+      "english": "First, let's look at the numbers.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Las ventas han subido un 20 %.",
+      "english": "Sales have gone up by 20%.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Las preguntas, al final, por favor.",
+      "english": "Save your questions for the end.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Para terminar, un resumen rápido.",
+      "english": "To wrap up, here's a quick summary.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Paso a la siguiente diapositiva.",
+      "english": "Let's move on to the next slide.",
+      "cefr": "B2",
+      "tip": "«Pasar a» lo siguiente es move on to, no «pass to»"
+    },
+    {
+      "spanish": "¿Me explico?",
+      "english": "Does that make sense?",
+      "cefr": "B2",
+      "tip": "«¿Me explico?» no es «Do I explain me?»"
+    },
+    {
+      "spanish": "Ahora le cedo la palabra a Marta.",
+      "english": "Now I'll hand over to Marta.",
+      "cefr": "C1",
+      "alt": "Over to you, Marta.",
+      "tip": "«Ceder la palabra» es hand over to alguien"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, nivel básico. A la siete, intermedio. Y si clavaste las diez, aplausos: experto.",
+  "outro": "[cheerful] ¿Hasta qué diapositiva llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaElTrabajo",
+    "#AprenderInglés",
+    "#InglésDeNegocios",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy077",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Thank you all for being here.": "Gracias a todos por estar aquí.",
+    "I'm Ana, and I'm a designer.": "Me llamo Ana y soy diseñadora.",
+    "Today I'm going to talk about sales.": "Hoy voy a hablar de ventas.",
+    "First, let's look at the numbers.": "Primero, veamos los números.",
+    "Sales have gone up by 20%.": "Las ventas han subido un 20 %.",
+    "Save your questions for the end.": "Las preguntas, al final, por favor.",
+    "To wrap up, here's a quick summary.": "Para terminar, un resumen rápido.",
+    "Let's move on to the next slide.": "Paso a la siguiente diapositiva.",
+    "Does that make sense?": "¿Me explico?",
+    "Now I'll hand over to Marta.": "Ahora le cedo la palabra a Marta."
+  },
+  "english_phrases": [
+    "Thank you all for being here.",
+    "I'm Ana, and I'm a designer.",
+    "Today I'm going to talk about sales.",
+    "First, let's look at the numbers.",
+    "Sales have gone up by 20%.",
+    "Save your questions for the end.",
+    "To wrap up, here's a quick summary.",
+    "Let's move on to the next slide.",
+    "Does that make sense?",
+    "Now I'll hand over to Marta.",
+    "Over to you, Marta."
+  ],
+  "full_script": "[calm] Hoy presentas en inglés. Lee la frase y dila antes que yo. Thank you all for being here. I'm Ana, and I'm a designer. Today I'm going to talk about sales. Ahora, nivel intermedio. First, let's look at the numbers. Sales have gone up by 20%. Save your questions for the end. To wrap up, here's a quick summary. Y ahora, nivel experto. Let's move on to the next slide. Does that make sense? Now I'll hand over to Marta. Si llegaste a la tres, nivel básico. A la siete, intermedio. Y si clavaste las diez, aplausos: experto. [cheerful] ¿Hasta qué diapositiva llegaste? Cuéntamelo en los comentarios."
+}

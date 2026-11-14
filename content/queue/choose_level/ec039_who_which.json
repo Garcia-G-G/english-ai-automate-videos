@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "10 frases con WHO, WHICH o WHOSE. ¿Aciertas todas? 🔗",
+  "video_description": "Who, which y whose: el pronombre que conecta, en diez frases. 🔗",
+  "title": "Elige la correcta",
+  "theme": "who, which o whose",
+  "intro": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos.",
+  "items": [
+    {
+      "sentence": "The man ____ lives next door is nice.",
+      "options": [
+        "who",
+        "which"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The book ____ I read was great.",
+      "options": [
+        "who",
+        "which"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ phone is this?",
+      "options": [
+        "Who's",
+        "Whose"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I have a friend ____ speaks five languages.",
+      "options": [
+        "who",
+        "which"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "This is the car ____ I want.",
+      "options": [
+        "who",
+        "that"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "The girl ____ dog is barking is new here.",
+      "options": [
+        "whose",
+        "who's"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "He's late again, ____ is annoying.",
+      "options": [
+        "which",
+        "that"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "To ____ it may concern.",
+      "options": [
+        "who",
+        "whom"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ coming to the party?",
+      "options": [
+        "Who's",
+        "Whose"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "The people with ____ I work are great.",
+      "options": [
+        "who",
+        "whom"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#RelativePronouns",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec039",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "The man who lives next door is nice.",
+    "The book which I read was great.",
+    "Whose phone is this?",
+    "I have a friend who speaks five languages.",
+    "This is the car that I want.",
+    "The girl whose dog is barking is new here.",
+    "He's late again, which is annoying.",
+    "To whom it may concern.",
+    "Who's coming to the party?",
+    "The people with whom I work are great."
+  ],
+  "full_script": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos. The man who lives next door is nice. The book which I read was great. Whose phone is this? Ahora, nivel intermedio. I have a friend who speaks five languages. This is the car that I want. The girl whose dog is barking is new here. He's late again, which is annoying. Y ahora, nivel experto. To whom it may concern. Who's coming to the party? The people with whom I work are great. Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

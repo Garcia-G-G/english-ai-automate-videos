@@ -1,0 +1,105 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los PAÍSES en inglés? 🌍",
+  "video_description": "🌍 ¿Sabes cómo se dice Alemania en inglés? 10 países que tienes que saber. ¡Responde antes que yo! 🧠",
+  "title": "¿Cómo se dice…?",
+  "theme": "los países",
+  "level": "A1",
+  "intro": "[excited] ¿Sabes cómo se dice Alemania en inglés? Spoiler: no se parece nada. Di cada país antes que yo.",
+  "items": [
+    {
+      "emoji": "💃",
+      "spanish": "España",
+      "english": "Spain"
+    },
+    {
+      "emoji": "🌮",
+      "spanish": "México",
+      "english": "Mexico"
+    },
+    {
+      "emoji": "🥨",
+      "spanish": "Alemania",
+      "english": "Germany"
+    },
+    {
+      "emoji": "🗾",
+      "spanish": "Japón",
+      "english": "Japan"
+    },
+    {
+      "emoji": "⚽",
+      "spanish": "Brasil",
+      "english": "Brazil"
+    },
+    {
+      "emoji": "🍕",
+      "spanish": "Italia",
+      "english": "Italy"
+    },
+    {
+      "emoji": "🥐",
+      "spanish": "Francia",
+      "english": "France"
+    },
+    {
+      "emoji": "🪆",
+      "spanish": "Rusia",
+      "english": "Russia"
+    },
+    {
+      "emoji": "🍁",
+      "spanish": "Canadá",
+      "english": "Canada"
+    },
+    {
+      "emoji": "🐼",
+      "spanish": "China",
+      "english": "China"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: Spain, Mexico, Germany, Japan, Brazil, Italy, France, Russia, Canada, China.",
+  "outro": "[cheerful] ¿Cuántas sabías? ¿Te sorprendió Germany? Dímelo en los comentarios.",
+  "full_script": "[excited] ¿Sabes cómo se dice Alemania en inglés? Spoiler: no se parece nada. Di cada país antes que yo. España... Spain. Spain. México... Mexico. Mexico. Alemania... Germany. Germany. Japón... Japan. Japan. Brasil... Brazil. Brazil. Italia... Italy. Italy. Francia... France. France. Rusia... Russia. Russia. Canadá... Canada. Canada. China... China. China. Ahora todas en inglés, conmigo: Spain, Mexico, Germany, Japan, Brazil, Italy, France, Russia, Canada, China. [cheerful] ¿Cuántas sabías? ¿Te sorprendió Germany? Dímelo en los comentarios.",
+  "translations": {
+    "Spain": "España",
+    "Mexico": "México",
+    "Germany": "Alemania",
+    "Japan": "Japón",
+    "Brazil": "Brasil",
+    "Italy": "Italia",
+    "France": "Francia",
+    "Russia": "Rusia",
+    "Canada": "Canadá",
+    "China": "China"
+  },
+  "english_phrases": [
+    "Spain",
+    "Mexico",
+    "Germany",
+    "Japan",
+    "Brazil",
+    "Italy",
+    "France",
+    "Russia",
+    "Canada",
+    "China"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#PaísesEnInglés",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv082",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:50:14.495652",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

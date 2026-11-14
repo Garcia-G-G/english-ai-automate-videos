@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Palabras del COCHE en inglés que pocos conocen 🚗",
+  "video_description": "Pon a prueba tu vocabulario del coche y descubre tu nivel real de inglés. 🚗",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el coche",
+  "intro": "[cheerful] Reto de vocabulario del coche: di en español qué significa cada palabra. ¡Vamos!",
+  "items": [
+    {
+      "english": "wheel",
+      "spanish": "Rueda",
+      "cefr": "A1"
+    },
+    {
+      "english": "drive",
+      "spanish": "Conducir / manejar",
+      "cefr": "A1"
+    },
+    {
+      "english": "gas",
+      "spanish": "Gasolina",
+      "cefr": "A2"
+    },
+    {
+      "english": "seat belt",
+      "spanish": "Cinturón de seguridad",
+      "cefr": "A2"
+    },
+    {
+      "english": "trunk",
+      "spanish": "Maletero / cajuela",
+      "cefr": "B1"
+    },
+    {
+      "english": "steering wheel",
+      "spanish": "Volante",
+      "cefr": "B1"
+    },
+    {
+      "english": "flat tire",
+      "spanish": "Pinchazo / ponchadura",
+      "cefr": "B2"
+    },
+    {
+      "english": "windshield",
+      "spanish": "Parabrisas",
+      "cefr": "B2"
+    },
+    {
+      "english": "speed bump",
+      "spanish": "Reductor de velocidad",
+      "cefr": "C1"
+    },
+    {
+      "english": "tailgate",
+      "spanish": "Ir pegado a otro coche",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] Comenta tu número y reta a un amigo a superarlo.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#ClasesDeInglés",
+    "#InglésDiario",
+    "#AprenderInglés",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv023",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "wheel": "Rueda",
+    "drive": "Conducir / manejar",
+    "gas": "Gasolina",
+    "seat belt": "Cinturón de seguridad",
+    "trunk": "Maletero / cajuela",
+    "steering wheel": "Volante",
+    "flat tire": "Pinchazo / ponchadura",
+    "windshield": "Parabrisas",
+    "speed bump": "Reductor de velocidad",
+    "tailgate": "Ir pegado a otro coche"
+  },
+  "english_phrases": [
+    "wheel",
+    "drive",
+    "gas",
+    "seat belt",
+    "trunk",
+    "steering wheel",
+    "flat tire",
+    "windshield",
+    "speed bump",
+    "tailgate"
+  ],
+  "full_script": "[cheerful] Reto de vocabulario del coche: di en español qué significa cada palabra. ¡Vamos! wheel Rueda drive Conducir / manejar gas Gasolina Ahora, nivel intermedio. seat belt Cinturón de seguridad trunk Maletero / cajuela steering wheel Volante flat tire Pinchazo / ponchadura Y ahora, nivel experto. windshield Parabrisas speed bump Reductor de velocidad tailgate Ir pegado a otro coche Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] Comenta tu número y reta a un amigo a superarlo."
+}

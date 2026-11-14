@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "10 frases con MUSTN'T o DON'T HAVE TO. ¿Aciertas todas? ⚠️",
+  "video_description": "Prohibido o no necesario: mustn't y don't have to no son iguales. ⚠️",
+  "title": "Elige la correcta",
+  "theme": "mustn't o don't have to",
+  "intro": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos.",
+  "items": [
+    {
+      "sentence": "You ____ smoke here. It's forbidden.",
+      "options": [
+        "mustn't",
+        "don't have to"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "It's Sunday, I ____ work.",
+      "options": [
+        "mustn't",
+        "don't have to"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "You ____ wear a seatbelt. It's the law.",
+      "options": [
+        "don't have to",
+        "have to"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We ____ hurry. We have time.",
+      "options": [
+        "don't have to",
+        "mustn't"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "You ____ tell anyone. It's a secret!",
+      "options": [
+        "don't have to",
+        "mustn't"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She ____ wear a uniform at school.",
+      "options": [
+        "has to",
+        "must to"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "You ____ come if you don't want to.",
+      "options": [
+        "don't have to",
+        "mustn't"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I ____ remember to call her.",
+      "options": [
+        "have",
+        "must"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Visitors ____ feed the animals.",
+      "options": [
+        "must not",
+        "don't have to"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "You ____ be joking!",
+      "options": [
+        "have to",
+        "must"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#ModalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec024",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "You mustn't smoke here. It's forbidden.",
+    "It's Sunday, I don't have to work.",
+    "You have to wear a seatbelt. It's the law.",
+    "We don't have to hurry. We have time.",
+    "You mustn't tell anyone. It's a secret!",
+    "She has to wear a uniform at school.",
+    "You don't have to come if you don't want to.",
+    "I must remember to call her.",
+    "Visitors must not feed the animals.",
+    "You must be joking!"
+  ],
+  "full_script": "[curious] Elige la palabra que va en el hueco. Tienes unos segundos. You mustn't smoke here. It's forbidden. It's Sunday, I don't have to work. You have to wear a seatbelt. It's the law. Ahora, nivel intermedio. We don't have to hurry. We have time. You mustn't tell anyone. It's a secret! She has to wear a uniform at school. You don't have to come if you don't want to. Y ahora, nivel experto. I must remember to call her. Visitors must not feed the animals. You must be joking! Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

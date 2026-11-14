@@ -1,0 +1,1402 @@
+[
+  {
+    "id": "sy001",
+    "topic": "restaurante",
+    "spanish": "en el restaurante",
+    "theme": "en el restaurante",
+    "meaning": "Ten Spanish sentences for en el restaurante, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy002",
+    "topic": "cafeteria",
+    "spanish": "pedir en una cafetería",
+    "theme": "pedir en una cafetería",
+    "meaning": "Ten Spanish sentences for pedir en una cafetería, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy003",
+    "topic": "aeropuerto",
+    "spanish": "en el aeropuerto",
+    "theme": "en el aeropuerto",
+    "meaning": "Ten Spanish sentences for en el aeropuerto, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy004",
+    "topic": "avion",
+    "spanish": "en el avión",
+    "theme": "en el avión",
+    "meaning": "Ten Spanish sentences for en el avión, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy005",
+    "topic": "hotel",
+    "spanish": "en el hotel",
+    "theme": "en el hotel",
+    "meaning": "Ten Spanish sentences for en el hotel, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy006",
+    "topic": "direcciones",
+    "spanish": "pedir direcciones",
+    "theme": "pedir direcciones",
+    "meaning": "Ten Spanish sentences for pedir direcciones, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy007",
+    "topic": "taxi",
+    "spanish": "en un taxi",
+    "theme": "en un taxi",
+    "meaning": "Ten Spanish sentences for en un taxi, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy008",
+    "topic": "tren_metro",
+    "spanish": "en el tren y el metro",
+    "theme": "en el tren y el metro",
+    "meaning": "Ten Spanish sentences for en el tren y el metro, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy009",
+    "topic": "ropa",
+    "spanish": "comprar ropa",
+    "theme": "comprar ropa",
+    "meaning": "Ten Spanish sentences for comprar ropa, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy010",
+    "topic": "farmacia",
+    "spanish": "en la farmacia",
+    "theme": "en la farmacia",
+    "meaning": "Ten Spanish sentences for en la farmacia, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy011",
+    "topic": "medico",
+    "spanish": "en el médico",
+    "theme": "en el médico",
+    "meaning": "Ten Spanish sentences for en el médico, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy012",
+    "topic": "dentista",
+    "spanish": "en el dentista",
+    "theme": "en el dentista",
+    "meaning": "Ten Spanish sentences for en el dentista, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy013",
+    "topic": "banco",
+    "spanish": "en el banco",
+    "theme": "en el banco",
+    "meaning": "Ten Spanish sentences for en el banco, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy014",
+    "topic": "entrevista_trabajo",
+    "spanish": "en una entrevista de trabajo",
+    "theme": "en una entrevista de trabajo",
+    "meaning": "Ten Spanish sentences for en una entrevista de trabajo, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy015",
+    "topic": "primer_dia_trabajo",
+    "spanish": "el primer día de trabajo",
+    "theme": "el primer día de trabajo",
+    "meaning": "Ten Spanish sentences for el primer día de trabajo, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy016",
+    "topic": "reunion",
+    "spanish": "en una reunión",
+    "theme": "en una reunión",
+    "meaning": "Ten Spanish sentences for en una reunión, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy017",
+    "topic": "llamar_telefono",
+    "spanish": "llamar por teléfono",
+    "theme": "llamar por teléfono",
+    "meaning": "Ten Spanish sentences for llamar por teléfono, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy018",
+    "topic": "presentarte",
+    "spanish": "presentarte",
+    "theme": "presentarte",
+    "meaning": "Ten Spanish sentences for presentarte, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy019",
+    "topic": "small_talk",
+    "spanish": "conversación de ascensor (small talk)",
+    "theme": "conversación de ascensor (small talk)",
+    "meaning": "Ten Spanish sentences for conversación de ascensor (small talk), say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy020",
+    "topic": "tiempo_clima",
+    "spanish": "hablar del tiempo",
+    "theme": "hablar del tiempo",
+    "meaning": "Ten Spanish sentences for hablar del tiempo, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy021",
+    "topic": "quedar_amigos",
+    "spanish": "quedar con amigos",
+    "theme": "quedar con amigos",
+    "meaning": "Ten Spanish sentences for quedar con amigos, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy022",
+    "topic": "cancelar_planes",
+    "spanish": "cancelar planes",
+    "theme": "cancelar planes",
+    "meaning": "Ten Spanish sentences for cancelar planes, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy023",
+    "topic": "pedir_perdon",
+    "spanish": "pedir perdón",
+    "theme": "pedir perdón",
+    "meaning": "Ten Spanish sentences for pedir perdón, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy024",
+    "topic": "dar_gracias",
+    "spanish": "dar las gracias",
+    "theme": "dar las gracias",
+    "meaning": "Ten Spanish sentences for dar las gracias, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy025",
+    "topic": "quejarte",
+    "spanish": "quejarte",
+    "theme": "quejarte",
+    "meaning": "Ten Spanish sentences for quejarte, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy026",
+    "topic": "pedir_favor",
+    "spanish": "pedir un favor",
+    "theme": "pedir un favor",
+    "meaning": "Ten Spanish sentences for pedir un favor, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy027",
+    "topic": "ofrecer_ayuda",
+    "spanish": "ofrecer ayuda",
+    "theme": "ofrecer ayuda",
+    "meaning": "Ten Spanish sentences for ofrecer ayuda, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy028",
+    "topic": "primera_cita",
+    "spanish": "en una primera cita",
+    "theme": "en una primera cita",
+    "meaning": "Ten Spanish sentences for en una primera cita, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy029",
+    "topic": "fiesta",
+    "spanish": "en una fiesta",
+    "theme": "en una fiesta",
+    "meaning": "Ten Spanish sentences for en una fiesta, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy030",
+    "topic": "felicitar",
+    "spanish": "felicitar a alguien",
+    "theme": "felicitar a alguien",
+    "meaning": "Ten Spanish sentences for felicitar a alguien, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy031",
+    "topic": "supermercado",
+    "spanish": "en el supermercado",
+    "theme": "en el supermercado",
+    "meaning": "Ten Spanish sentences for en el supermercado, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy032",
+    "topic": "cocinar_casa",
+    "spanish": "cocinar en casa",
+    "theme": "cocinar en casa",
+    "meaning": "Ten Spanish sentences for cocinar en casa, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy033",
+    "topic": "gimnasio",
+    "spanish": "en el gimnasio",
+    "theme": "en el gimnasio",
+    "meaning": "Ten Spanish sentences for en el gimnasio, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy034",
+    "topic": "alquilar_piso",
+    "spanish": "alquilar un piso",
+    "theme": "alquilar un piso",
+    "meaning": "Ten Spanish sentences for alquilar un piso, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy035",
+    "topic": "vecinos",
+    "spanish": "con los vecinos",
+    "theme": "con los vecinos",
+    "meaning": "Ten Spanish sentences for con los vecinos, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy036",
+    "topic": "peluqueria",
+    "spanish": "en la peluquería",
+    "theme": "en la peluquería",
+    "meaning": "Ten Spanish sentences for en la peluquería, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy037",
+    "topic": "taller_coche",
+    "spanish": "en el taller del coche",
+    "theme": "en el taller del coche",
+    "meaning": "Ten Spanish sentences for en el taller del coche, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy038",
+    "topic": "comisaria",
+    "spanish": "perdiste algo (en la comisaría)",
+    "theme": "perdiste algo (en la comisaría)",
+    "meaning": "Ten Spanish sentences for perdiste algo (en la comisaría), say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy039",
+    "topic": "emergencia",
+    "spanish": "una emergencia",
+    "theme": "una emergencia",
+    "meaning": "Ten Spanish sentences for una emergencia, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy040",
+    "topic": "familia",
+    "spanish": "hablar de tu familia",
+    "theme": "hablar de tu familia",
+    "meaning": "Ten Spanish sentences for hablar de tu familia, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy041",
+    "topic": "hablar_de_ti",
+    "spanish": "hablar de ti",
+    "theme": "hablar de ti",
+    "meaning": "Ten Spanish sentences for hablar de ti, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy042",
+    "topic": "gustos",
+    "spanish": "tus gustos",
+    "theme": "tus gustos",
+    "meaning": "Ten Spanish sentences for tus gustos, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy043",
+    "topic": "opinion",
+    "spanish": "dar tu opinión",
+    "theme": "dar tu opinión",
+    "meaning": "Ten Spanish sentences for dar tu opinión, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy044",
+    "topic": "acuerdo_desacuerdo",
+    "spanish": "estar de acuerdo y en desacuerdo",
+    "theme": "estar de acuerdo y en desacuerdo",
+    "meaning": "Ten Spanish sentences for estar de acuerdo y en desacuerdo, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy045",
+    "topic": "enfadado",
+    "spanish": "cuando estás enfadado",
+    "theme": "cuando estás enfadado",
+    "meaning": "Ten Spanish sentences for cuando estás enfadado, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy046",
+    "topic": "cansado_estresado",
+    "spanish": "cuando estás cansado o estresado",
+    "theme": "cuando estás cansado o estresado",
+    "meaning": "Ten Spanish sentences for cuando estás cansado o estresado, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy047",
+    "topic": "cine",
+    "spanish": "en el cine",
+    "theme": "en el cine",
+    "meaning": "Ten Spanish sentences for en el cine, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy048",
+    "topic": "concierto",
+    "spanish": "en un concierto",
+    "theme": "en un concierto",
+    "meaning": "Ten Spanish sentences for en un concierto, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy049",
+    "topic": "museo",
+    "spanish": "en un museo",
+    "theme": "en un museo",
+    "meaning": "Ten Spanish sentences for en un museo, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy050",
+    "topic": "playa",
+    "spanish": "de vacaciones en la playa",
+    "theme": "de vacaciones en la playa",
+    "meaning": "Ten Spanish sentences for de vacaciones en la playa, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy051",
+    "topic": "montana_camping",
+    "spanish": "en la montaña y de camping",
+    "theme": "en la montaña y de camping",
+    "meaning": "Ten Spanish sentences for en la montaña y de camping, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy052",
+    "topic": "tienda_electronica",
+    "spanish": "en una tienda de electrónica",
+    "theme": "en una tienda de electrónica",
+    "meaning": "Ten Spanish sentences for en una tienda de electrónica, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy053",
+    "topic": "soporte_tecnico",
+    "spanish": "hablar con soporte técnico",
+    "theme": "hablar con soporte técnico",
+    "meaning": "Ten Spanish sentences for hablar con soporte técnico, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy054",
+    "topic": "internet_contrasenas",
+    "spanish": "internet y contraseñas",
+    "theme": "internet y contraseñas",
+    "meaning": "Ten Spanish sentences for internet y contraseñas, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy055",
+    "topic": "videollamada",
+    "spanish": "en una videollamada",
+    "theme": "en una videollamada",
+    "meaning": "Ten Spanish sentences for en una videollamada, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy056",
+    "topic": "trabajar_desde_casa",
+    "spanish": "trabajar desde casa",
+    "theme": "trabajar desde casa",
+    "meaning": "Ten Spanish sentences for trabajar desde casa, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy057",
+    "topic": "pedir_aumento",
+    "spanish": "pedir un aumento",
+    "theme": "pedir un aumento",
+    "meaning": "Ten Spanish sentences for pedir un aumento, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy058",
+    "topic": "regatear",
+    "spanish": "regatear un precio",
+    "theme": "regatear un precio",
+    "meaning": "Ten Spanish sentences for regatear un precio, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy059",
+    "topic": "devolver_producto",
+    "spanish": "devolver un producto",
+    "theme": "devolver un producto",
+    "meaning": "Ten Spanish sentences for devolver un producto, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy060",
+    "topic": "correos",
+    "spanish": "en correos (enviar un paquete)",
+    "theme": "en correos (enviar un paquete)",
+    "meaning": "Ten Spanish sentences for en correos (enviar un paquete), say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy061",
+    "topic": "aduana",
+    "spanish": "en la aduana",
+    "theme": "en la aduana",
+    "meaning": "Ten Spanish sentences for en la aduana, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy062",
+    "topic": "perder_vuelo",
+    "spanish": "perdiste el vuelo",
+    "theme": "perdiste el vuelo",
+    "meaning": "Ten Spanish sentences for perdiste el vuelo, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy063",
+    "topic": "la_hora",
+    "spanish": "preguntar y decir la hora",
+    "theme": "preguntar y decir la hora",
+    "meaning": "Ten Spanish sentences for preguntar y decir la hora, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy064",
+    "topic": "pedir_cita",
+    "spanish": "pedir cita",
+    "theme": "pedir cita",
+    "meaning": "Ten Spanish sentences for pedir cita, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy065",
+    "topic": "en_clase",
+    "spanish": "en clase",
+    "theme": "en clase",
+    "meaning": "Ten Spanish sentences for en clase, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy066",
+    "topic": "no_entiendes",
+    "spanish": "cuando no entiendes algo",
+    "theme": "cuando no entiendes algo",
+    "meaning": "Ten Spanish sentences for cuando no entiendes algo, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy067",
+    "topic": "manana_en_casa",
+    "spanish": "por la mañana en casa",
+    "theme": "por la mañana en casa",
+    "meaning": "Ten Spanish sentences for por la mañana en casa, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy068",
+    "topic": "tareas_casa",
+    "spanish": "las tareas de casa",
+    "theme": "las tareas de casa",
+    "meaning": "Ten Spanish sentences for las tareas de casa, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy069",
+    "topic": "pareja",
+    "spanish": "con tu pareja",
+    "theme": "con tu pareja",
+    "meaning": "Ten Spanish sentences for con tu pareja, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy070",
+    "topic": "consolar",
+    "spanish": "consolar a alguien",
+    "theme": "consolar a alguien",
+    "meaning": "Ten Spanish sentences for consolar a alguien, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy071",
+    "topic": "animar",
+    "spanish": "animar a alguien",
+    "theme": "animar a alguien",
+    "meaning": "Ten Spanish sentences for animar a alguien, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy072",
+    "topic": "consejos",
+    "spanish": "dar consejos",
+    "theme": "dar consejos",
+    "meaning": "Ten Spanish sentences for dar consejos, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy073",
+    "topic": "fin_de_semana",
+    "spanish": "planes para el fin de semana",
+    "theme": "planes para el fin de semana",
+    "meaning": "Ten Spanish sentences for planes para el fin de semana, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy074",
+    "topic": "bar",
+    "spanish": "en un bar",
+    "theme": "en un bar",
+    "meaning": "Ten Spanish sentences for en un bar, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy075",
+    "topic": "boda",
+    "spanish": "en una boda",
+    "theme": "en una boda",
+    "meaning": "Ten Spanish sentences for en una boda, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy076",
+    "topic": "viaje_negocios",
+    "spanish": "un viaje de negocios",
+    "theme": "un viaje de negocios",
+    "meaning": "Ten Spanish sentences for un viaje de negocios, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy077",
+    "topic": "presentacion",
+    "spanish": "hacer una presentación",
+    "theme": "hacer una presentación",
+    "meaning": "Ten Spanish sentences for hacer una presentación, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy078",
+    "topic": "despedirte",
+    "spanish": "despedirte",
+    "theme": "despedirte",
+    "meaning": "Ten Spanish sentences for despedirte, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy079",
+    "topic": "trampas_tener",
+    "spanish": "trampas con «tener»",
+    "theme": "trampas con «tener»",
+    "meaning": "Ten Spanish sentences for trampas con «tener», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy080",
+    "topic": "trampas_hacer",
+    "spanish": "trampas con «hacer»",
+    "theme": "trampas con «hacer»",
+    "meaning": "Ten Spanish sentences for trampas con «hacer», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy081",
+    "topic": "trampas_llevar",
+    "spanish": "trampas con «llevar»",
+    "theme": "trampas con «llevar»",
+    "meaning": "Ten Spanish sentences for trampas con «llevar», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy082",
+    "topic": "trampas_quedar",
+    "spanish": "trampas con «quedar»",
+    "theme": "trampas con «quedar»",
+    "meaning": "Ten Spanish sentences for trampas con «quedar», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy083",
+    "topic": "trampas_echar",
+    "spanish": "trampas con «echar»",
+    "theme": "trampas con «echar»",
+    "meaning": "Ten Spanish sentences for trampas con «echar», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy084",
+    "topic": "trampas_dar",
+    "spanish": "trampas con «dar»",
+    "theme": "trampas con «dar»",
+    "meaning": "Ten Spanish sentences for trampas con «dar», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy085",
+    "topic": "trampas_poner",
+    "spanish": "trampas con «poner» y «ponerse»",
+    "theme": "trampas con «poner» y «ponerse»",
+    "meaning": "Ten Spanish sentences for trampas con «poner» y «ponerse», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy086",
+    "topic": "trampas_pasar",
+    "spanish": "trampas con «pasar»",
+    "theme": "trampas con «pasar»",
+    "meaning": "Ten Spanish sentences for trampas con «pasar», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy087",
+    "topic": "trampas_gustar",
+    "spanish": "trampas con «gustar» y «encantar»",
+    "theme": "trampas con «gustar» y «encantar»",
+    "meaning": "Ten Spanish sentences for trampas con «gustar» y «encantar», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy088",
+    "topic": "trampas_hace",
+    "spanish": "trampas con «hace» (tiempo)",
+    "theme": "trampas con «hace» (tiempo)",
+    "meaning": "Ten Spanish sentences for trampas con «hace» (tiempo), say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy089",
+    "topic": "trampas_ya_todavia",
+    "spanish": "trampas con «ya», «todavía» y «aún»",
+    "theme": "trampas con «ya», «todavía» y «aún»",
+    "meaning": "Ten Spanish sentences for trampas con «ya», «todavía» y «aún», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy090",
+    "topic": "trampas_se_me",
+    "spanish": "trampas con «se me…» (se me olvidó, se me cayó)",
+    "theme": "trampas con «se me…» (se me olvidó, se me cayó)",
+    "meaning": "Ten Spanish sentences for trampas con «se me…» (se me olvidó, se me cayó), say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy091",
+    "topic": "trampas_soler",
+    "spanish": "trampas con «soler»",
+    "theme": "trampas con «soler»",
+    "meaning": "Ten Spanish sentences for trampas con «soler», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy092",
+    "topic": "trampas_acabar_de",
+    "spanish": "trampas con «acabar de»",
+    "theme": "trampas con «acabar de»",
+    "meaning": "Ten Spanish sentences for trampas con «acabar de», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy093",
+    "topic": "trampas_ir_a",
+    "spanish": "trampas con «ir a» y planes",
+    "theme": "trampas con «ir a» y planes",
+    "meaning": "Ten Spanish sentences for trampas con «ir a» y planes, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy094",
+    "topic": "trampas_ojala",
+    "spanish": "trampas con «ojalá» y deseos",
+    "theme": "trampas con «ojalá» y deseos",
+    "meaning": "Ten Spanish sentences for trampas con «ojalá» y deseos, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy095",
+    "topic": "trampas_preguntas",
+    "spanish": "trampas con preguntas (¿verdad?, ¿no?)",
+    "theme": "trampas con preguntas (¿verdad?, ¿no?)",
+    "meaning": "Ten Spanish sentences for trampas con preguntas (¿verdad?, ¿no?), say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy096",
+    "topic": "trampas_mismo_propio",
+    "spanish": "trampas con «mismo» y «propio»",
+    "theme": "trampas con «mismo» y «propio»",
+    "meaning": "Ten Spanish sentences for trampas con «mismo» y «propio», say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy097",
+    "topic": "con_ninos",
+    "spanish": "con niños",
+    "theme": "con niños",
+    "meaning": "Ten Spanish sentences for con niños, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy098",
+    "topic": "escuela_padres_profesores",
+    "spanish": "en la escuela (padres y profesores)",
+    "theme": "en la escuela (padres y profesores)",
+    "meaning": "Ten Spanish sentences for en la escuela (padres y profesores), say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy099",
+    "topic": "veterinario",
+    "spanish": "en el veterinario",
+    "theme": "en el veterinario",
+    "meaning": "Ten Spanish sentences for en el veterinario, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  },
+  {
+    "id": "sy100",
+    "topic": "mudanza",
+    "spanish": "de mudanza",
+    "theme": "de mudanza",
+    "meaning": "Ten Spanish sentences for de mudanza, say them in English: easy to expert, 8-10 are traps",
+    "category": "say_it",
+    "difficulty": "mixed",
+    "level": "A1-C1",
+    "tags": [
+      "say_it_level",
+      "level_family"
+    ]
+  }
+]

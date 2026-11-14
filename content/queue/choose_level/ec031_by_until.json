@@ -1,0 +1,129 @@
+{
+  "type": "choose_level",
+  "video_title": "BY o UNTIL: el test de 10 frases 📆",
+  "video_description": "Para cuándo o hasta cuándo: by y until en diez frases. 📆",
+  "title": "Elige la correcta",
+  "theme": "by o until",
+  "intro": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo.",
+  "items": [
+    {
+      "sentence": "I'll wait ____ six.",
+      "options": [
+        "until",
+        "by"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Please send it ____ Friday.",
+      "options": [
+        "until",
+        "by"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The shop is open ____ 8 p.m.",
+      "options": [
+        "by",
+        "until"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I need it ____ tomorrow morning.",
+      "options": [
+        "by",
+        "until"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We stayed ____ the end.",
+      "options": [
+        "by",
+        "until"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "____ the time we arrived, it was over.",
+      "options": [
+        "By",
+        "Until"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Don't open it ____ your birthday.",
+      "options": [
+        "until",
+        "by"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She'll be back ____ lunchtime.",
+      "options": [
+        "until",
+        "by"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It wasn't ____ later that I understood.",
+      "options": [
+        "until",
+        "by"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "____ then, we'll have finished.",
+      "options": [
+        "Until",
+        "By"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#ByVsUntil",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec031",
+    "video_type": "choose_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "I'll wait until six.",
+    "Please send it by Friday.",
+    "The shop is open until 8 p.m.",
+    "I need it by tomorrow morning.",
+    "We stayed until the end.",
+    "By the time we arrived, it was over.",
+    "Don't open it until your birthday.",
+    "She'll be back by lunchtime.",
+    "It wasn't until later that I understood.",
+    "By then, we'll have finished."
+  ],
+  "full_script": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo. I'll wait until six. Please send it by Friday. The shop is open until 8 p.m. Ahora, nivel intermedio. I need it by tomorrow morning. We stayed until the end. By the time we arrived, it was over. Don't open it until your birthday. Y ahora, nivel experto. She'll be back by lunchtime. It wasn't until later that I understood. By then, we'll have finished. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

@@ -5,23 +5,7 @@ import random
 
 import numpy as np
 
-from .constants import VIDEO_WIDTH, VIDEO_HEIGHT, GRADIENT_COLORS
-
-# Import background system
-try:
-    from backgrounds import (
-        BackgroundGenerator, BACKGROUND_PRESETS, get_recommended_preset,
-        resolve_enabled,
-    )
-    BACKGROUNDS_AVAILABLE = True
-except ImportError:
-    BACKGROUNDS_AVAILABLE = False
-
-import logging
-import os
-import yaml
-
-logger = logging.getLogger(__name__)
+from .constants import GRADIENT_COLORS
 
 # Global background settings
 CURRENT_BACKGROUND = {
@@ -31,58 +15,9 @@ CURRENT_BACKGROUND = {
     "duration": 30.0
 }
 
-# Background generator instance (lazy initialized)
-_bg_generator = None
-
 # Clip-library background instance (lazy initialized, keyed by dir/duration/size)
 _clip_bg = None
 _clip_bg_key = None
-
-# Config file path — resolve to absolute path so it works regardless of cwd
-CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "config.yaml")
-
-
-def load_config() -> dict:
-    """Load configuration from config.yaml."""
-    if os.path.exists(CONFIG_PATH):
-        with open(CONFIG_PATH, 'r') as f:
-            return yaml.safe_load(f) or {}
-    return {}
-
-
-def get_default_background() -> str:
-    """Get a background based on config."""
-    config = load_config()
-    video_config = config.get("video", {})
-
-    mode = video_config.get("background_mode", "random")
-
-    if mode == "random" and BACKGROUNDS_AVAILABLE:
-        enabled = resolve_enabled(video_config.get("enabled_backgrounds", []))
-        if enabled:
-            valid = [bg for bg in enabled if bg in BACKGROUND_PRESETS]
-            if valid:
-                import random as _rand
-                # Use SystemRandom to avoid being affected by global seed
-                _sysrand = _rand.SystemRandom()
-                choice = _sysrand.choice(valid)
-                return choice
-        mode = "fixed"
-
-    if BACKGROUNDS_AVAILABLE:
-        default_bg = video_config.get("default_background")
-        if default_bg and default_bg in BACKGROUND_PRESETS:
-            return default_bg
-        return get_recommended_preset()
-    return None
-
-
-def get_background_generator():
-    """Get or create the background generator instance."""
-    global _bg_generator
-    if _bg_generator is None and BACKGROUNDS_AVAILABLE:
-        _bg_generator = BackgroundGenerator(VIDEO_WIDTH, VIDEO_HEIGHT)
-    return _bg_generator
 
 
 def set_background(preset: str = None, bg_type: str = None, options: dict = None, duration: float = 30.0):
@@ -101,19 +36,20 @@ def reset_background():
     CURRENT_BACKGROUND["duration"] = 30.0
 
 
-# Bokeh particle system
-random.seed(42)
+# Bokeh particle system. Its own Random: a global random.seed(42) here reset the whole panel's
+# RNG on import, so the topic draw and the outro A/B repeated the same sequence every session.
+_rng = random.Random(42)
 BOKEH_PARTICLES = []
 for i in range(20):
     BOKEH_PARTICLES.append({
-        'x': random.random(),
-        'y': random.random(),
-        'size': random.randint(40, 120),
-        'speed_x': (random.random() - 0.5) * 0.012,
-        'speed_y': (random.random() - 0.5) * 0.006 - 0.002,
-        'alpha': random.random() * 0.2 + 0.1,
-        'color_shift': random.random() * 2 * math.pi,
-        'pulse_speed': random.random() * 0.4 + 0.2,
+        'x': _rng.random(),
+        'y': _rng.random(),
+        'size': _rng.randint(40, 120),
+        'speed_x': (_rng.random() - 0.5) * 0.012,
+        'speed_y': (_rng.random() - 0.5) * 0.006 - 0.002,
+        'alpha': _rng.random() * 0.2 + 0.1,
+        'color_shift': _rng.random() * 2 * math.pi,
+        'pulse_speed': _rng.random() * 0.4 + 0.2,
     })
 
 
@@ -127,7 +63,12 @@ def _get_clip_background(w: int, h: int):
     if not clips_dir:
         raise ValueError("Background type 'clips' requires options={'dir': <clips directory>}")
 
-    key = (clips_dir, CURRENT_BACKGROUND["duration"], w, h)
+    # video_type is part of the key: it selects which rows the readability
+    # band covers, so two types sharing a clips directory must not share a
+    # cached background sized for the other one's layout.
+    video_type = options.get("video_type")
+    key = (clips_dir, CURRENT_BACKGROUND["duration"], w, h, video_type,
+           options.get("dim"), options.get("scrim"))
     if _clip_bg is None or _clip_bg_key != key:
         if _clip_bg is not None:
             _clip_bg.close()
@@ -135,54 +76,32 @@ def _get_clip_background(w: int, h: int):
             clips_dir, w, h,
             duration=CURRENT_BACKGROUND["duration"],
             seed=options.get("seed"),
-            dim=options.get("dim", 0.35),
+            # DEFAULT 0.0, not 0.35. The flat dim made dark footage black
+            # and still left bright footage unreadable; the measured band
+            # inside ClipLibraryBackground replaces it. A caller may still
+            # pin one explicitly.
+            dim=options.get("dim", 0.0),
+            video_type=video_type,
+            scrim=options.get("scrim"),
         )
         _clip_bg_key = key
     return _clip_bg
 
 
-def gradient(w: int, h: int, t: float) -> np.ndarray:
-    """Create animated background.
+def before_fork() -> None:
+    """Release what a forked process must not share (STEP 77 §2): an open VideoCapture's file
+    descriptor and decoder would be read by every child at once. The clip library itself —
+    softened copies, measured scrims — is kept, so the children inherit it instead of each
+    building its own; each opens its own capture on its first frame."""
+    if _clip_bg is not None:
+        _clip_bg.release_captures()
 
-    Uses cached frames for speed if available, otherwise generates on-the-fly.
-    """
+
+def gradient(w: int, h: int, t: float) -> np.ndarray:
+    """Create animated background: the clip library if set, else the legacy gradient."""
     # Clip-library background (real video clips)
     if CURRENT_BACKGROUND["type"] == "clips":
         return _get_clip_background(w, h).get_frame(t)
-
-    # Check if custom background is configured
-    if BACKGROUNDS_AVAILABLE and (CURRENT_BACKGROUND["preset"] or CURRENT_BACKGROUND["type"]):
-        bg = get_background_generator()
-        if bg:
-            static = bg.get_static_frame()
-            if static is not None:
-                return static
-
-            if bg.has_cache():
-                return bg.get_cached_frame(t)
-
-            # Auto-cache static_gradient type (same every frame)
-            bg_type = CURRENT_BACKGROUND.get("type")
-            if CURRENT_BACKGROUND["preset"]:
-                preset_info = BACKGROUND_PRESETS.get(CURRENT_BACKGROUND["preset"], {})
-                bg_type = preset_info.get("type", bg_type)
-
-            if bg_type == "static_gradient" and CURRENT_BACKGROUND["preset"]:
-                return bg.render_static_once(CURRENT_BACKGROUND["preset"])
-
-            if CURRENT_BACKGROUND["preset"]:
-                return bg.render_from_preset(
-                    t,
-                    CURRENT_BACKGROUND["preset"],
-                    duration=CURRENT_BACKGROUND["duration"]
-                )
-            elif CURRENT_BACKGROUND["type"]:
-                return bg.render_frame(
-                    t,
-                    bg_type=CURRENT_BACKGROUND["type"],
-                    options=CURRENT_BACKGROUND["options"],
-                    duration=CURRENT_BACKGROUND["duration"]
-                )
 
     # ===== LEGACY VIBRANT GRADIENT =====
     idx = int(t / 5) % len(GRADIENT_COLORS)
@@ -211,7 +130,9 @@ def gradient(w: int, h: int, t: float) -> np.ndarray:
         40 * np.sin(y_coords * 0.005 + t * 0.3 + 3.0)
     ) / h * 0.08
 
-    ratio = ((y_coords / h) + wave + wave2 * (x_coords / w) + aurora) % 1.0
+    # Folded, not wrapped (STEP 77 §3): `% 1.0` jumped from the last colour back to the first,
+    # a hard diagonal seam; the fold runs 0→1→0 so the gradient stays continuous.
+    ratio = 1.0 - np.abs(((y_coords / h) + wave + wave2 * (x_coords / w) + aurora) % 2.0 - 1.0)
 
     img = np.zeros((h, w, 3), dtype=np.float32)
 

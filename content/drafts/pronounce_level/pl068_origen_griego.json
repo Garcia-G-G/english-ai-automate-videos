@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras de origen GRIEGO en inglés: ¿las dices bien? 🏛️",
+  "video_description": "Problem, crisis, epitome: palabras griegas que en inglés suenan muy distinto. 📜",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras de origen griego",
+  "intro": "[thoughtful] Diez palabras que vienen del griego. Léelas en voz alta antes que yo.",
+  "items": [
+    {
+      "english": "problem",
+      "respelling": "PRA-blem",
+      "ipa": "ˈprɑbləm",
+      "trap": "La O suena «a»: PRA-blem"
+    },
+    {
+      "english": "system",
+      "respelling": "SIS-tem",
+      "ipa": "ˈsɪstəm",
+      "trap": "La Y suena «i» corta"
+    },
+    {
+      "english": "idea",
+      "respelling": "ai-DII-a",
+      "ipa": "aɪˈdiːə",
+      "trap": "Acento en DII: ai-DII-a"
+    },
+    {
+      "english": "crisis",
+      "respelling": "KRAI-sis",
+      "ipa": "ˈkraɪsɪs",
+      "trap": "La primera I suena «ai»"
+    },
+    {
+      "english": "biology",
+      "respelling": "bai-A-la-yi",
+      "ipa": "baɪˈɑlədʒi",
+      "trap": "Acento en A: bai-A-la-yi"
+    },
+    {
+      "english": "analysis",
+      "respelling": "a-NA-la-sis",
+      "ipa": "əˈnæləsɪs",
+      "trap": "Acento en NA: a-NA-la-sis"
+    },
+    {
+      "english": "hierarchy",
+      "respelling": "JAI-rar-ki",
+      "ipa": "ˈhaɪrɑrki",
+      "trap": "Tres sílabas: JAI-rar-ki"
+    },
+    {
+      "english": "catastrophe",
+      "respelling": "ka-TAS-tra-fi",
+      "ipa": "kəˈtæstrəfi",
+      "trap": "La E final suena «i»: -tra-fi"
+    },
+    {
+      "english": "hyperbole",
+      "respelling": "jai-PER-ba-li",
+      "ipa": "haɪˈpɝbəli",
+      "trap": "Cuatro sílabas: jai-PER-ba-li"
+    },
+    {
+      "english": "epitome",
+      "respelling": "i-PI-ta-mi",
+      "ipa": "ɪˈpɪtəmi",
+      "trap": "Acento en PI y la E final suena"
+    }
+  ],
+  "verdict": "Hasta la palabra tres eres básico, hasta la siete intermedio y, si llegaste a la diez, experto.",
+  "outro": "[thoughtful] ¿Qué palabra te costó más? Déjala en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Etimología",
+    "#InglésOnline",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl068",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

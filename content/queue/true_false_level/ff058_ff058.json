@@ -1,0 +1,81 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes la COMIDA en inglés? Verdadero o falso 🍎",
+  "video_description": "10 palabras de COMIDA en inglés, de fácil a experto. ¿Caes en la trampa de «mussels»? 🍞",
+  "title": "¿Verdadero o falso?",
+  "theme": "COMIDA",
+  "intro": "[curious] ¿Cuántas palabras de COMIDA en inglés sabes de verdad? Responde antes de que se aclare.",
+  "items": [
+    {
+      "statement": "«Apple» significa manzana.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Bread» significa pan.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Butter» significa botella.",
+      "truth": false,
+      "correction": "es mantequilla",
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Grapes» significa uvas.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Pie» significa pie.",
+      "truth": false,
+      "correction": "es pastel o pastel",
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Plum» significa ciruela.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Leek» significa puerro.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Squash» significa calabaza.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Mussels» significa músculos.",
+      "truth": false,
+      "correction": "son mejillones",
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Sprouts» significa espárragos.",
+      "truth": false,
+      "correction": "son brotes",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Cuántas palabras de COMIDA en inglés sabes de verdad? Responde antes de que se aclare. Verdadero. Verdadero. Falso: es mantequilla. Verdadero. Falso: es pastel o pastel. Verdadero. Verdadero. Verdadero. Falso: son mejillones. Falso: son brotes. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#InglésFácil",
+    "#ComidaEnInglés",
+    "#AprenderInglés",
+    "#VocabularioInglés"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff058",
+    "video_type": "true_false_level",
+    "generated_at": "2026-11-02T11:01:13.087561",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

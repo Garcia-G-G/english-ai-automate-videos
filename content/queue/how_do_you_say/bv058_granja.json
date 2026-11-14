@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dice la GRANJA en inglés? 🚜",
+  "video_description": "Diez palabras de la granja, del tractor al burro. 🐓",
+  "title": "¿Cómo se dice…?",
+  "theme": "la granja",
+  "level": "A1",
+  "intro": "[curious] Lee cada palabra y piensa cómo se dice en inglés.",
+  "items": [
+    {
+      "emoji": "🏡",
+      "spanish": "Granja",
+      "english": "farm"
+    },
+    {
+      "emoji": "🛖",
+      "spanish": "Establo",
+      "english": "barn"
+    },
+    {
+      "emoji": "🚜",
+      "spanish": "Tractor",
+      "english": "tractor"
+    },
+    {
+      "emoji": "🌾",
+      "spanish": "Campo",
+      "english": "field"
+    },
+    {
+      "emoji": "🐔",
+      "spanish": "Gallina",
+      "english": "hen"
+    },
+    {
+      "emoji": "🐓",
+      "spanish": "Gallo",
+      "english": "rooster"
+    },
+    {
+      "emoji": "🦆",
+      "spanish": "Pato",
+      "english": "duck"
+    },
+    {
+      "emoji": "🐐",
+      "spanish": "Cabra",
+      "english": "goat"
+    },
+    {
+      "emoji": "🫏",
+      "spanish": "Burro",
+      "english": "donkey"
+    },
+    {
+      "emoji": "👨",
+      "spanish": "Granjero",
+      "english": "farmer"
+    }
+  ],
+  "recap": "Repite conmigo las diez: farm, barn, tractor, field, hen, rooster, duck, goat, donkey, farmer.",
+  "outro": "[cheerful] Escribe en los comentarios cuántas acertaste.",
+  "translations": {
+    "farm": "Granja",
+    "barn": "Establo",
+    "tractor": "Tractor",
+    "field": "Campo",
+    "hen": "Gallina",
+    "rooster": "Gallo",
+    "duck": "Pato",
+    "goat": "Cabra",
+    "donkey": "Burro",
+    "farmer": "Granjero"
+  },
+  "english_phrases": [
+    "farm",
+    "barn",
+    "tractor",
+    "field",
+    "hen",
+    "rooster",
+    "duck",
+    "goat",
+    "donkey",
+    "farmer"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv058",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[curious] Lee cada palabra y piensa cómo se dice en inglés. Granja... farm. farm. Establo... barn. barn. Tractor... tractor. tractor. Campo... field. field. Gallina... hen. hen. Gallo... rooster. rooster. Pato... duck. duck. Cabra... goat. goat. Burro... donkey. donkey. Granjero... farmer. farmer. Repite conmigo las diez: farm, barn, tractor, field, hen, rooster, duck, goat, donkey, farmer. [cheerful] Escribe en los comentarios cuántas acertaste."
+}

@@ -1,0 +1,94 @@
+{
+  "type": "true_false_level",
+  "video_title": "Verdadero o falso: ¿EXISTE esta palabra? ❌",
+  "video_description": "¿Existe esta palabra en inglés? Diez trampas. ❌",
+  "title": "¿Verdadero o falso?",
+  "theme": "palabras que existen o no",
+  "intro": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo.",
+  "items": [
+    {
+      "statement": "«Advices» es correcto.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es advice, sin -s"
+    },
+    {
+      "statement": "«Happiness» existe.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Irregardless» es el inglés estándar.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "se dice regardless"
+    },
+    {
+      "statement": "«Childs» existe como plural.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es children"
+    },
+    {
+      "statement": "«Teenager» existe.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Informations» existe.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es information"
+    },
+    {
+      "statement": "«Wanna» es una forma coloquial de «want to».",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Selfie» está en los diccionarios.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Staffs» es lo normal para «empleados».",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "normalmente es staff"
+    },
+    {
+      "statement": "«Hangry» (hambre + enfado) se usa en inglés coloquial.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[curious] ¿En cuál fallaste? Dímelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#ErroresDeIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf031",
+    "video_type": "true_false_level",
+    "model": "manual"
+  },
+  "translations": {},
+  "english_phrases": [
+    "Advices",
+    "Happiness",
+    "Irregardless",
+    "Childs",
+    "Teenager",
+    "Informations",
+    "Wanna",
+    "Selfie",
+    "Staffs",
+    "Hangry"
+  ],
+  "full_script": "[thoughtful] Algunas son trampa. Di verdadero o falso antes que yo. Falso: es advice, sin -s. Verdadero. Falso: se dice regardless. Ahora, nivel intermedio. Falso: es children. Verdadero. Falso: es information. Verdadero. Y ahora, nivel experto. Verdadero. Falso: normalmente es staff. Verdadero. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [curious] ¿En cuál fallaste? Dímelo en los comentarios."
+}

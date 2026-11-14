@@ -1,0 +1,100 @@
+{
+  "type": "level_test",
+  "video_title": "Inglés para el TRABAJO: ¿básico, intermedio o experto? 💼",
+  "video_description": "Diez palabras de trabajo para saber hasta dónde llega tu inglés. 💼",
+  "title": "¿Qué nivel tienes?",
+  "theme": "el trabajo",
+  "intro": "[warm] Diez palabras de trabajo, cada una más difícil. Tradúcela antes de que te la diga yo.",
+  "items": [
+    {
+      "english": "boss",
+      "spanish": "Jefe",
+      "cefr": "A1"
+    },
+    {
+      "english": "job",
+      "spanish": "Trabajo / empleo",
+      "cefr": "A1"
+    },
+    {
+      "english": "salary",
+      "spanish": "Sueldo / salario",
+      "cefr": "A2"
+    },
+    {
+      "english": "hire",
+      "spanish": "Contratar",
+      "cefr": "B1"
+    },
+    {
+      "english": "shift",
+      "spanish": "Turno",
+      "cefr": "B1"
+    },
+    {
+      "english": "overtime",
+      "spanish": "Horas extra",
+      "cefr": "B1"
+    },
+    {
+      "english": "get fired",
+      "spanish": "Ser despedido",
+      "cefr": "B1"
+    },
+    {
+      "english": "self-employed",
+      "spanish": "Autónomo / independiente",
+      "cefr": "B2"
+    },
+    {
+      "english": "severance pay",
+      "spanish": "Indemnización por despido",
+      "cefr": "C1"
+    },
+    {
+      "english": "layoff",
+      "spanish": "Despido por recortes",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico. A la siete, intermedio. Y acertar las diez es de experto.",
+  "outro": "[curious] Cuéntame en los comentarios en qué número te paraste.",
+  "hashtags": [
+    "#NivelDeInglés",
+    "#InglésOnline",
+    "#InglésParaHispanos",
+    "#ClasesDeInglés",
+    "#InglésDiario"
+  ],
+  "_meta": {
+    "category": "level_vocab",
+    "topic_id": "lv005",
+    "video_type": "level_test",
+    "model": "manual"
+  },
+  "translations": {
+    "boss": "Jefe",
+    "job": "Trabajo / empleo",
+    "salary": "Sueldo / salario",
+    "hire": "Contratar",
+    "shift": "Turno",
+    "overtime": "Horas extra",
+    "get fired": "Ser despedido",
+    "self-employed": "Autónomo / independiente",
+    "severance pay": "Indemnización por despido",
+    "layoff": "Despido por recortes"
+  },
+  "english_phrases": [
+    "boss",
+    "job",
+    "salary",
+    "hire",
+    "shift",
+    "overtime",
+    "get fired",
+    "self-employed",
+    "severance pay",
+    "layoff"
+  ],
+  "full_script": "[warm] Diez palabras de trabajo, cada una más difícil. Tradúcela antes de que te la diga yo. boss Jefe job Trabajo / empleo salary Sueldo / salario Ahora, nivel intermedio. hire Contratar shift Turno overtime Horas extra get fired Ser despedido Y ahora, nivel experto. self-employed Autónomo / independiente severance pay Indemnización por despido layoff Despido por recortes Llegar a la tres es nivel básico. A la siete, intermedio. Y acertar las diez es de experto. [curious] Cuéntame en los comentarios en qué número te paraste."
+}

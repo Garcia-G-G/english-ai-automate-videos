@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "DÍAS y MESES en inglés: ¿los pronuncias bien? 📅",
+  "video_description": "Días de la semana y meses del año: ¿los dices bien en inglés? 🗓️",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "los días y los meses",
+  "intro": "[happy] Días y meses en inglés. Parecen fáciles... hasta que llegas al final.",
+  "items": [
+    {
+      "english": "Monday",
+      "respelling": "MAN-dei",
+      "ipa": "ˈmʌndeɪ",
+      "trap": "La O suena «a»: MAN-dei"
+    },
+    {
+      "english": "Friday",
+      "respelling": "FRAI-dei",
+      "ipa": "ˈfraɪdeɪ",
+      "trap": "La I suena «ai»: FRAI-dei"
+    },
+    {
+      "english": "May",
+      "respelling": "MEI",
+      "ipa": "ˈmeɪ",
+      "trap": "AY suena «ei»: MEI"
+    },
+    {
+      "english": "June",
+      "respelling": "YUUN",
+      "ipa": "ˈdʒuːn",
+      "trap": "J fuerte, como una «y» con fuerza"
+    },
+    {
+      "english": "August",
+      "respelling": "O-gest",
+      "ipa": "ˈɔgəst",
+      "trap": "AU suena «o»: O-gest"
+    },
+    {
+      "english": "Thursday",
+      "respelling": "THERZ-dei",
+      "ipa": "ˈθɝzdeɪ",
+      "trap": "TH inicial y la S suena Z"
+    },
+    {
+      "english": "Tuesday",
+      "respelling": "TUUZ-dei",
+      "ipa": "ˈtuːzdeɪ",
+      "trap": "UE suena «uu» y la S suena Z"
+    },
+    {
+      "english": "January",
+      "respelling": "YAN-iu-e-ri",
+      "ipa": "ˈdʒænjuɛri",
+      "trap": "J fuerte y cuatro sílabas"
+    },
+    {
+      "english": "Wednesday",
+      "respelling": "UENZ-dei",
+      "ipa": "ˈwɛnzdeɪ",
+      "trap": "La D no suena: UENZ-dei"
+    },
+    {
+      "english": "February",
+      "respelling": "FEB-iu-e-ri",
+      "ipa": "ˈfɛbjuɛri",
+      "trap": "La primera R casi nunca suena"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Si dijiste bien las diez, tu pronunciación es de experto.",
+  "outro": "[cheerful] Deja tu número en los comentarios y reta a un amigo.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#DíasYMeses",
+    "#AprenderInglés",
+    "#ClasesDeInglés",
+    "#HablarInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl016",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

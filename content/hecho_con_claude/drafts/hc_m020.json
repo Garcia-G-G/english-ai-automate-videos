@@ -1,0 +1,55 @@
+{
+  "id": "hc_m020",
+  "style": "mensajes",
+  "level": "dificil",
+  "angle": "calle",
+  "title": "«Lowkey»: la palabra que no entiendes en los comentarios",
+  "hook_text": "¿Qué significa «lowkey»?",
+  "chat": {
+    "contact": "Zoe · Los Ángeles",
+    "messages": [
+      [
+        "them",
+        "lowkey obsessed with this song 🎧"
+      ],
+      [
+        "me",
+        "low… key? like a small key? 🔑",
+        "error"
+      ],
+      [
+        "them",
+        "lol it means a little / kinda"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "lowkey = llave pequeña",
+    "right": "lowkey = un poco, en secreto",
+    "rule": "Lowkey / highkey, argot"
+  },
+  "voice": [
+    "Mi amiga escribió [[I'm lowkey obsessed with this song]]. Y yo pensé en una llave pequeña.",
+    "[[Lowkey]] es argot: significa «un poco», «discretamente», «sin que se note mucho».",
+    "Así que es «estoy medio obsesionada con esta canción, no lo digo en voz alta».",
+    "Su contrario es [[highkey]]: «totalmente, y que se sepa». [[I'm highkey tired]].",
+    "Y como adjetivo, [[a lowkey party]] es una fiesta tranquila, sin mucho ruido.",
+    "Reto: ¿cómo dirías «la verdad, me encanta un poco este sitio»? Usa [[lowkey]]."
+  ],
+  "challenge": {
+    "prompt": "«En secreto, me encanta este sitio»",
+    "answer": "I lowkey love this place."
+  },
+  "caption": "«Lowkey» significa «un poco» o «en secreto». Argot en inglés que ves en comentarios y TikTok.",
+  "series": "hecho_con_claude",
+  "level_label": "Difícil · C1",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesavanzado",
+    "#inglesparahispanohablantes",
+    "#inglesdelacalle",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 81
+}

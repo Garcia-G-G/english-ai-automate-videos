@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "¿Completas las 10? PHRASAL VERBS con TAKE ✈️",
+  "video_description": "Take off, take after, take up: diez phrasal verbs con take. ✈️",
+  "title": "Completa la frase",
+  "theme": "phrasal verbs con TAKE",
+  "intro": "[cheerful] Lee la frase, piensa la palabra y dila antes que yo.",
+  "items": [
+    {
+      "sentence": "Take ____ your shoes, please.",
+      "answer": "off",
+      "translation": "Quítate los zapatos, por favor.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The plane takes ____ at noon.",
+      "answer": "off",
+      "translation": "El avión despega al mediodía.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Can you take ____ the trash?",
+      "answer": "out",
+      "translation": "¿Puedes sacar la basura?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "She takes ____ her mother.",
+      "answer": "after",
+      "translation": "Se parece a su madre.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I've taken ____ yoga.",
+      "answer": "up",
+      "translation": "Me he aficionado al yoga.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Who will take ____ when she leaves?",
+      "answer": "over",
+      "translation": "¿Quién la sustituirá cuando se vaya?",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I take ____ what I said. Sorry.",
+      "answer": "back",
+      "translation": "Retiro lo que dije. Perdón.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He was completely taken ____ by the scam.",
+      "answer": "in",
+      "translation": "Lo engañaron por completo con la estafa.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Her career really took ____ last year.",
+      "answer": "off",
+      "translation": "Su carrera despegó el año pasado.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "This table takes ____ too much space.",
+      "answer": "up",
+      "translation": "Esta mesa ocupa demasiado espacio.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc005",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

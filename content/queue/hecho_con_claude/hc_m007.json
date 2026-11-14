@@ -1,0 +1,55 @@
+{
+  "id": "hc_m007",
+  "style": "mensajes",
+  "level": "principiante",
+  "angle": "errores",
+  "title": "«How do you call this?»: el error de todos",
+  "hook_text": "Le pregunté el nombre de una cosa…",
+  "chat": {
+    "contact": "Ava · Chicago",
+    "messages": [
+      [
+        "me",
+        "How do you call this in English? 📷",
+        "error"
+      ],
+      [
+        "them",
+        "I call it… on the phone? 🤔"
+      ],
+      [
+        "them",
+        "oh you mean WHAT do you call it!"
+      ]
+    ]
+  },
+  "correction": {
+    "wrong": "How do you call this?",
+    "right": "What do you call this?",
+    "rule": "Para el nombre de algo: «What do you call…?»"
+  },
+  "voice": [
+    "Le mandé una foto a mi amiga y le pregunté: [[How do you call this in English?]]",
+    "En español decimos «cómo se llama». Pero en inglés [[how do you call]] suena a «¿de qué forma lo llamas?», como por teléfono.",
+    "Para preguntar el nombre se usa [[what]]: [[What do you call this in English?]]",
+    "O más fácil todavía: [[What's this called?]]",
+    "Y para preguntar cómo se dice una palabra: [[How do you say «cuchara» in English?]]",
+    "Reto: pregunta en inglés «¿cómo se llama esto?». Escríbelo abajo."
+  ],
+  "challenge": {
+    "prompt": "«¿Cómo se llama esto?»",
+    "answer": "What's this called? / What do you call this?"
+  },
+  "caption": "Se dice «What do you call this?», no «How do you call this?». Cómo preguntar el nombre de algo en inglés.",
+  "series": "hecho_con_claude",
+  "level_label": "Principiante · A1–A2",
+  "hashtags": [
+    "#aprenderingles",
+    "#inglesbasico",
+    "#inglesparahispanohablantes",
+    "#erroresdeingles",
+    "#englishunlimited"
+  ],
+  "duration_target_s": 42,
+  "voice_words": 86
+}

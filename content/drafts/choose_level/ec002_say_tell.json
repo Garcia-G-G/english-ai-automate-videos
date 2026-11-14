@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "¿SAY o TELL? Elige la correcta en 10 frases 🗣️",
+  "video_description": "Say y tell no son lo mismo: diez frases para no fallar nunca más. 🗣️",
+  "title": "Elige la correcta",
+  "theme": "say o tell",
+  "intro": "[curious] Dos opciones en cada frase. Elige antes de que yo la diga.",
+  "items": [
+    {
+      "sentence": "Can you ____ me your name?",
+      "options": [
+        "tell",
+        "say"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ hello to everyone.",
+      "options": [
+        "told",
+        "said"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Please ____ the truth.",
+      "options": [
+        "say",
+        "tell"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He ____ me he was tired.",
+      "options": [
+        "told",
+        "said"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "What did she ____ about the plan?",
+      "options": [
+        "tell",
+        "say"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Don't ____ anyone, it's a secret.",
+      "options": [
+        "tell",
+        "say"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I ____ to him that I was busy.",
+      "options": [
+        "said",
+        "told"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Can you ____ the difference between them?",
+      "options": [
+        "say",
+        "tell"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "It goes without ____.",
+      "options": [
+        "saying",
+        "telling"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I can't ____ you how happy I am.",
+      "options": [
+        "say",
+        "tell"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#SayVsTell",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec002",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "SOLER en inglés: ¿usually o used to? 10 trampas 🔁",
+  "video_description": "En presente no existe «I use to». Pon a prueba tu nivel con diez frases con soler. 🔁",
+  "title": "Dilo en inglés",
+  "theme": "trampas con «soler»",
+  "intro": "[serious] Diez frases con «soler». Ojo con used to. Dilas en inglés antes de que salgan.",
+  "items": [
+    {
+      "spanish": "Siempre llego tarde.",
+      "english": "I'm always late.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Nunca veo la tele.",
+      "english": "I never watch TV.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Sueles cocinar?",
+      "english": "Do you usually cook?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "No suelo salir entre semana.",
+      "english": "I don't usually go out on weeknights.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Solía jugar al fútbol.",
+      "english": "I used to play soccer.",
+      "cefr": "B1",
+      "alt": "I used to play football."
+    },
+    {
+      "spanish": "Suele llover mucho en abril.",
+      "english": "It tends to rain a lot in April.",
+      "cefr": "B1",
+      "alt": "It usually rains a lot in April."
+    },
+    {
+      "spanish": "Solíamos veranear en la costa.",
+      "english": "We used to vacation on the coast.",
+      "cefr": "B2"
+    },
+    {
+      "spanish": "Lo de siempre, por favor.",
+      "english": "The usual, please.",
+      "cefr": "B2",
+      "tip": "«Lo de siempre» es The usual, sin always"
+    },
+    {
+      "spanish": "Suelo ir al gimnasio por la mañana.",
+      "english": "I usually go to the gym in the morning.",
+      "cefr": "B2",
+      "tip": "En presente no existe «I use to»: se dice I usually"
+    },
+    {
+      "spanish": "Antes no me gustaba el café.",
+      "english": "I didn't use to like coffee.",
+      "cefr": "C1",
+      "alt": "I never used to like coffee.",
+      "tip": "En negativa va sin d: didn't use to"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico. A la siete, intermedio. Y si sueles acertarlas todas, las diez: experto.",
+  "outro": "[curious] ¿Hasta qué número llegaste? Lo de siempre: cuéntamelo abajo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#ErroresEnInglés",
+    "#AprenderInglés",
+    "#GramáticaInglesa",
+    "#UsedTo"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy091",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I'm always late.": "Siempre llego tarde.",
+    "I never watch TV.": "Nunca veo la tele.",
+    "Do you usually cook?": "¿Sueles cocinar?",
+    "I don't usually go out on weeknights.": "No suelo salir entre semana.",
+    "I used to play soccer.": "Solía jugar al fútbol.",
+    "It tends to rain a lot in April.": "Suele llover mucho en abril.",
+    "We used to vacation on the coast.": "Solíamos veranear en la costa.",
+    "The usual, please.": "Lo de siempre, por favor.",
+    "I usually go to the gym in the morning.": "Suelo ir al gimnasio por la mañana.",
+    "I didn't use to like coffee.": "Antes no me gustaba el café."
+  },
+  "english_phrases": [
+    "I'm always late.",
+    "I never watch TV.",
+    "Do you usually cook?",
+    "I don't usually go out on weeknights.",
+    "I used to play soccer.",
+    "It tends to rain a lot in April.",
+    "We used to vacation on the coast.",
+    "The usual, please.",
+    "I usually go to the gym in the morning.",
+    "I didn't use to like coffee.",
+    "I used to play football.",
+    "It usually rains a lot in April.",
+    "I never used to like coffee."
+  ],
+  "full_script": "[serious] Diez frases con «soler». Ojo con used to. Dilas en inglés antes de que salgan. I'm always late. I never watch TV. Do you usually cook? Ahora, nivel intermedio. I don't usually go out on weeknights. I used to play soccer. It tends to rain a lot in April. We used to vacation on the coast. Y ahora, nivel experto. The usual, please. I usually go to the gym in the morning. I didn't use to like coffee. Si llegaste a la tres, básico. A la siete, intermedio. Y si sueles acertarlas todas, las diez: experto. [curious] ¿Hasta qué número llegaste? Lo de siempre: cuéntamelo abajo."
+}

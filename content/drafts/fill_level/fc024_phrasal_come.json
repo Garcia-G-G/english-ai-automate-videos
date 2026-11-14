@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "10 frases con hueco: PHRASAL VERBS con COME 🚪",
+  "video_description": "Come in, come back, come up with: phrasal verbs con come. 🚪",
+  "title": "Completa la frase",
+  "theme": "phrasal verbs con COME",
+  "intro": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido.",
+  "items": [
+    {
+      "sentence": "Come ____, the door is open.",
+      "answer": "in",
+      "translation": "Pasa, la puerta está abierta.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "When will you come ____?",
+      "answer": "back",
+      "translation": "¿Cuándo vas a volver?",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Come ____! You can do it!",
+      "answer": "on",
+      "translation": "¡Vamos! ¡Tú puedes!",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "How did the photos come ____?",
+      "answer": "out",
+      "translation": "¿Qué tal han salido las fotos?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I came ____ an old letter.",
+      "answer": "across",
+      "translation": "Me encontré una carta antigua.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Something has come ____, I can't go.",
+      "answer": "up",
+      "translation": "Me ha surgido algo, no puedo ir.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She came ____ with a great idea.",
+      "answer": "up",
+      "translation": "Se le ocurrió una idea genial.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I think I'm coming ____ with a cold.",
+      "answer": "down",
+      "translation": "Creo que me estoy resfriando.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He finally came ____ to my point of view.",
+      "answer": "round",
+      "translation": "Al final se convenció de lo que yo decía.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "How much does it come ____?",
+      "answer": "to",
+      "translation": "¿Cuánto sale en total?",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc024",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

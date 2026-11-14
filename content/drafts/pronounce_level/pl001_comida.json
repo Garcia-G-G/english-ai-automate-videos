@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "¿Sabes pronunciar 10 palabras de COMIDA en inglés? 🍔",
+  "video_description": "Diez comidas en inglés, de fácil a experto: ¿cuántas pronuncias bien? 🍕",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la comida",
+  "intro": "[curious] Lee cada palabra en voz alta antes de que yo la diga. Diez comidas, de fácil a experto.",
+  "items": [
+    {
+      "english": "rice",
+      "respelling": "RAIS",
+      "ipa": "ˈraɪs",
+      "trap": "La I suena «ai», como en «hay»"
+    },
+    {
+      "english": "bacon",
+      "respelling": "BEI-ken",
+      "ipa": "ˈbeɪkən",
+      "trap": "La A suena «ei»: BEI-ken"
+    },
+    {
+      "english": "sandwich",
+      "respelling": "SAN-uich",
+      "ipa": "ˈsænwɪtʃ",
+      "trap": "La D no se pronuncia: SAN-uich"
+    },
+    {
+      "english": "steak",
+      "respelling": "STEIK",
+      "ipa": "ˈsteɪk",
+      "trap": "EA suena «ei», no «ii»"
+    },
+    {
+      "english": "sausage",
+      "respelling": "SO-sidch",
+      "ipa": "ˈsɔsɪdʒ",
+      "trap": "AU suena «o» y -AGE suena «idch»"
+    },
+    {
+      "english": "omelet",
+      "respelling": "AM-let",
+      "ipa": "ˈɑmlət",
+      "trap": "Solo dos sílabas: AM-let"
+    },
+    {
+      "english": "yogurt",
+      "respelling": "IOU-gert",
+      "ipa": "ˈjoʊgɚt",
+      "trap": "Acento en la primera: IOU-gert"
+    },
+    {
+      "english": "quinoa",
+      "respelling": "KIIN-ua",
+      "ipa": "ˈkiːnwɑ",
+      "trap": "No es «ki-no-a»: KIIN-ua"
+    },
+    {
+      "english": "turmeric",
+      "respelling": "TER-mer-ik",
+      "ipa": "ˈtɝmɚɪk",
+      "trap": "TUR suena «ter» y acento delante"
+    },
+    {
+      "english": "charcuterie",
+      "respelling": "shar-KUU-ter-i",
+      "ipa": "ʃɑrˈkuːtɚi",
+      "trap": "CH suena SH y acento en KUU"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si dijiste bien las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#ComidaEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl001",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

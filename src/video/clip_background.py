@@ -6,7 +6,10 @@ Optimized for sequential reads (one open cv2.VideoCapture at a time).
 """
 
 import logging
+import math
 import random
+import shutil
+import tempfile
 from pathlib import Path
 
 import cv2
@@ -24,16 +27,58 @@ class ClipLibraryBackground:
         height: Output frame height.
         duration: Total video duration to cover (seconds).
         seed: Optional shuffle seed for reproducible playlists.
-        dim: Black-overlay strength (0-1) so overlaid text stays readable.
+        video_type: Which layout's text zone the readability band covers.
+        dim: FLAT darkening of every pixel. Defaults to 0.0 now — see below.
+        scrim: Band strength, or None to measure the clips and derive it.
+
+    READABILITY: A MEASURED BAND, NOT A FLAT DIM.
+
+    `dim` used to default to 0.35 and darken every pixel of every frame. The
+    P1 contact sheet showed that failing in both directions at once:
+
+      · technology videos rendered BLACK. Night city, a server room and
+        fibre optic cables are already dark, and 35% off the whole frame
+        left nothing to see — the same black-frame outcome F3 hit with
+        generated images, reached by a different route.
+      · the faded quiz option cards died over BRIGHT footage — tomatoes
+        under a spray, a kitten on a pale floor — where 35% was nowhere
+        near enough.
+
+    One constant cannot fix both, because the two failures pull in opposite
+    directions. What works is what F3 already established: darken only the
+    rows that carry text and leave the picture alone. Brightness outside the
+    text zone is not a readability problem — it is the footage we went and
+    fetched.
+
+    So the flat dim defaults to zero, and the band is the raised cosine from
+    clip_contrast.scrim_profile — the SAME function topic_background uses on
+    stills, imported rather than reimplemented. Its strength is solved from
+    a measurement of these actual clips (clip_contrast.treatment_for_dir),
+    sampled across each clip's duration and sized for the worst moment any
+    of them reaches, so a cut to a brighter clip cannot surprise it.
+
+    TWO TREATMENTS, BECAUSE THE BAND CANNOT REACH THE BRAND MARK.
+
+    The watermark is white text at rows 1555..1609. The band ends at 1450 on
+    quiz and at 1060 on educational, so on three of six types the mark is
+    outside the band AND its feather. Widening the band to cover it would
+    darken the bottom of every video — the flat dim's mistake again.
+
+    So there is a second, LOCAL scrim over the mark's own box, solved the
+    same way from the same samples but against white. It multiplies a
+    507x214 rectangle rather than the frame, and on footage dark enough to
+    carry the mark already it solves to zero and touches nothing.
     """
 
     def __init__(self, clips_dir: str, width: int, height: int,
-                 duration: float, seed: int = None, dim: float = 0.35):
+                 duration: float, seed: int = None, dim: float = 0.0,
+                 video_type: str = None, scrim: float = None):
         self.clips_dir = Path(clips_dir)
         self.width = width
         self.height = height
         self.duration = duration
         self.dim = dim
+        self.video_type = video_type
 
         clip_paths = sorted(self.clips_dir.rglob("*.mp4"))
         if not clip_paths:
@@ -41,6 +86,19 @@ class ClipLibraryBackground:
                 f"No .mp4 clips found in '{self.clips_dir}' (searched recursively). "
                 "Add clips or point the 'clips' background to another directory."
             )
+
+        # STEP 75 §6: behind an opaque page the footage is only atmosphere. Softened once
+        # per clip (quarter-res blur, warm grade, vignette) instead of measured for a band
+        # that would only darken pixels the page hides. Smaller clips also decode faster.
+        from video_types import OPAQUE_PAGE_TYPES
+        self.softened = video_type in OPAQUE_PAGE_TYPES and scrim is None
+        self._soft_dir = tempfile.mkdtemp(prefix="soft_clips_") if self.softened else None
+        if self.softened:
+            # One ffmpeg per clip, 4 at a time (serial cost 4-25 s per render, 2026-10-27 profile).
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=4) as pool:
+                clip_paths = list(pool.map(lambda p: soften_clip(p, Path(self._soft_dir), width, height),
+                                           clip_paths))
 
         # Probe real duration/fps of each clip once
         self._clips = []  # list of dicts: path, duration, fps, frames
@@ -75,14 +133,103 @@ class ClipLibraryBackground:
                 if t >= duration:
                     break
 
+        # STEP 80 §5: one clip looping on itself (the AI background) crossfades slowly
+        self._xfade = LOOP_CROSSFADE if len(self._clips) == 1 else CROSSFADE
         logger.info("Clip background: %d clips, playlist of %d entries covering %.1fs",
                     len(self._clips), len(self._playlist), t)
 
+        # ── the readability band ──
+        # Measurement is one decode pass over each clip at 0.5s and happens
+        # once per video, not per frame. Both zones come off the same
+        # decoded frames, so measuring the mark as well is free.
+        from clip_contrast import (VIDEO_HEIGHT, VIDEO_WIDTH, mark_profile,
+                                   mark_rect, scrim_profile, text_zone,
+                                   treatment_for_dir)
+
+        self.zone = text_zone(video_type)
+        # Measured even when the caller pins the band, because `scrim=` pins
+        # the BAND — the mark is a different zone measured against a
+        # different colour, and letting a pinned band switch it off silently
+        # is how it shipped illegible in the first place.
+        plan = (self._soft_plan() if self.softened
+                else treatment_for_dir(self.clips_dir, video_type, band_strength=scrim))
+        self.contrast_report = plan
+        self.scrim = plan["strength"]
+        self.mark_scrim = plan["mark_strength"]
+        logger.info(
+            "Clip background: band %.3f for %s (worst %.2f:1 untreated "
+            "on %s at t=%.1fs, %d clips sampled every %.1fs)",
+            self.scrim, video_type or "unknown",
+            plan["worst_contrast"] or 0.0,
+            Path(plan.get("worst_clip") or "-").name,
+            plan.get("worst_at") or 0.0, len(plan["clips"]), plan["interval"])
+        logger.info(
+            "Clip background: watermark scrim %.3f over %s (worst %.2f:1 "
+            "untreated, %.2f:1 treated, band already credited %.3f)",
+            self.mark_scrim, plan.get("mark_rect"),
+            plan.get("mark_worst_contrast") or 0.0,
+            plan.get("mark_treated_contrast") or 0.0,
+            plan.get("mark_band_credit") or 1.0)
+        if not plan.get("mark_meets_floor", True):
+            logger.warning(
+                "Clip background: the watermark still reads %.2f:1 after "
+                "treatment — below the %.1f floor",
+                plan.get("mark_treated_contrast") or 0.0, 3.0)
+
+        # Precomputed once. Per-frame this is one broadcast multiply.
+        self._scrim = (scrim_profile(self.height, self.zone,
+                                     strength=self.scrim)
+                       if self.scrim > 0 else None)
+
+        # The mark's patch is LOCAL, so it is stored as its own rectangle and
+        # multiplied into that slice only — 507x214 pixels rather than the
+        # 1080x1920 the band has to touch.
+        #
+        # Only on the canonical canvas. mark_rect() is in absolute 1920-row
+        # coordinates because the mark itself is — brand.py positions it off
+        # SAFE_AREA_BOTTOM, not off a fraction of the frame — so on any other
+        # size the rows to darken are not where the mark is drawn anyway. The
+        # band scales (scrim_profile takes a height) and this deliberately
+        # does not; skipping is honest, and slicing would be a shape mismatch
+        # in the middle of a render.
+        canonical = (self.width, self.height) == (VIDEO_WIDTH, VIDEO_HEIGHT)
+        if self.mark_scrim > 0 and not canonical:
+            logger.warning(
+                "Clip background: watermark scrim %.3f NOT applied — canvas "
+                "is %dx%d, and the mark's box is fixed to %dx%d",
+                self.mark_scrim, self.width, self.height,
+                VIDEO_WIDTH, VIDEO_HEIGHT)
+        apply_mark = self.mark_scrim > 0 and canonical
+        self._mark_rect = mark_rect() if apply_mark else None
+        self._mark = mark_profile(strength=self.mark_scrim) if apply_mark else None
+
         # Sequential-read state
-        self._cap = None
-        self._cap_path = None
-        self._cap_frame_idx = -1  # index of the NEXT frame cap.read() returns
-        self._last_frame = None
+        # One decoder per clip in use: a crossfade reads two at once (STEP 77 §6).
+        # path -> [capture, index of the NEXT frame read() returns, last frame]
+        self._caps = {}
+        # STEP 77 §6: one grade for the whole set. Behind the page each softened clip is pulled
+        # toward the set's median colour, so a cut does not jump in brightness or tint.
+        if self.softened:
+            self._grade_clips()
+
+    def _soft_plan(self) -> dict:
+        """No band behind an opaque page, and no watermark scrim either: since STEP 77 §4 the
+        opaque-page (notebook) types draw no watermark on the frame — the brand is on the
+        page's footer — so there is nothing down there for a scrim to make readable."""
+        return {"strength": 0.0, "mark_strength": 0.0,
+                "worst_contrast": None, "worst_clip": None, "worst_at": None,
+                "clips": [c["path"] for c in self._clips], "interval": 0.5,
+                "mark_rect": None, "mark_worst_contrast": None, "mark_treated_contrast": None,
+                "mark_band_credit": 1.0, "mark_meets_floor": True,
+                "skipped": "opaque page: softened, no band, no watermark (STEP 77 §4)"}
+
+    def _cut_near(self, t: float):
+        """(cut time, entry before, entry after) when t is within CROSSFADE/2 of a cut."""
+        for k in range(1, len(self._playlist)):
+            start = self._playlist[k]["start"]
+            if abs(t - start) < self._xfade / 2:
+                return start, self._playlist[k - 1], self._playlist[k]
+        return None
 
     def _entry_for(self, t: float):
         """Find playlist entry and local time for global time t."""
@@ -93,42 +240,73 @@ class ClipLibraryBackground:
                 return entry["clip"], local_t
         return self._playlist[0]["clip"], 0.0
 
-    def _read_frame(self, clip: dict, frame_idx: int) -> np.ndarray:
-        """Read a frame, keeping the capture open for sequential access."""
-        frame_idx = max(0, min(frame_idx, clip["frames"] - 1))
+    def _grade_clips(self) -> None:
+        """clip["gain"]: per-channel gains (BGR) that bring the clip's mean colour to the set's
+        median, within GRADE_LIMITS. Measured on a few frames of the quarter-res copies."""
+        means = []
+        for clip in self._clips:
+            cap = cv2.VideoCapture(clip["path"])
+            got = []
+            for k in range(GRADE_SAMPLES):
+                cap.set(cv2.CAP_PROP_POS_FRAMES, int(clip["frames"] * (k + 0.5) / GRADE_SAMPLES))
+                ok, frame = cap.read()
+                if ok:
+                    got.append(frame.reshape(-1, 3).mean(axis=0))
+            cap.release()
+            means.append(np.mean(got, axis=0) if got else None)
+        known = [m for m in means if m is not None]
+        if not known:
+            return
+        target = np.median(known, axis=0)
+        for clip, m in zip(self._clips, means):
+            if m is not None:
+                clip["gain"] = np.clip(target / np.maximum(m, 1.0), *GRADE_LIMITS).astype(np.float32)
 
-        if self._cap_path != clip["path"]:
-            if self._cap is not None:
-                self._cap.release()
-            self._cap = cv2.VideoCapture(clip["path"])
-            self._cap_path = clip["path"]
-            self._cap_frame_idx = 0
+    def _read_frame(self, clip: dict, frame_idx: int) -> np.ndarray:
+        """Read a frame, keeping one capture per clip open for sequential access."""
+        frame_idx = max(0, min(frame_idx, clip["frames"] - 1))
+        state = self._caps.get(clip["path"])
+        if state is None:
+            if len(self._caps) >= 2:                     # the outgoing clip of an old crossfade
+                old = next(iter(self._caps))
+                self._caps.pop(old)[0].release()
+            state = self._caps[clip["path"]] = [cv2.VideoCapture(clip["path"]), 0, None]
+        cap, next_idx, last = state
 
         # Same frame as last time — reuse it
-        if frame_idx == self._cap_frame_idx - 1 and self._last_frame is not None:
-            return self._last_frame
+        if frame_idx == next_idx - 1 and last is not None:
+            return last
 
         # Backwards or a large forward jump — seek directly
-        if frame_idx < self._cap_frame_idx or frame_idx - self._cap_frame_idx > 10:
-            self._cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
-            self._cap_frame_idx = frame_idx
+        if frame_idx < next_idx or frame_idx - next_idx > 10:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
+            next_idx = frame_idx
 
         # Advance sequentially to the target frame
         frame = None
-        while self._cap_frame_idx <= frame_idx:
-            ok, frame = self._cap.read()
+        while next_idx <= frame_idx:
+            ok, frame = cap.read()
             if not ok:
                 break
-            self._cap_frame_idx += 1
+            next_idx += 1
+        state[1] = next_idx
 
         if frame is None:
             # Decode hiccup — fall back to last good frame or black
-            if self._last_frame is not None:
-                return self._last_frame
+            if last is not None:
+                return last
             return np.zeros((self.height, self.width, 3), dtype=np.uint8)
 
-        self._last_frame = frame
+        if "gain" in clip:                               # on the quarter-res frame: cheap
+            frame = np.clip(frame.astype(np.float32) * clip["gain"], 0, 255).astype(np.uint8)
+        state[2] = frame
         return frame
+
+    def release_captures(self) -> None:
+        """Close every decoder (before a fork: a child must open its own)."""
+        for cap, _i, _f in self._caps.values():
+            cap.release()
+        self._caps = {}
 
     def _fit(self, frame: np.ndarray) -> np.ndarray:
         """Scale + center-crop a BGR frame to (width, height), keeping aspect."""
@@ -136,27 +314,104 @@ class ClipLibraryBackground:
         if (fw, fh) != (self.width, self.height):
             scale = max(self.width / fw, self.height / fh)
             new_w, new_h = int(round(fw * scale)), int(round(fh * scale))
-            frame = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
+            frame = cv2.resize(frame, (new_w, new_h),
+                               interpolation=cv2.INTER_AREA if scale < 1 else cv2.INTER_LINEAR)
             x0 = (new_w - self.width) // 2
             y0 = (new_h - self.height) // 2
             frame = frame[y0:y0 + self.height, x0:x0 + self.width]
         return frame
 
+    def _clip_frame(self, clip: dict, local_t: float) -> np.ndarray:
+        return self._read_frame(clip, frame_index(local_t, clip["fps"]))
+
     def get_frame(self, t: float) -> np.ndarray:
-        """Return the RGB uint8 background frame (height, width, 3) at time t."""
+        """Return the RGB uint8 background frame (height, width, 3) at time t. Across a cut the
+        two clips crossfade over CROSSFADE seconds centred on it (STEP 77 §6)."""
         clip, local_t = self._entry_for(t)
-        frame_idx = int(local_t * clip["fps"])
-        frame = self._read_frame(clip, frame_idx)
+        frame = self._clip_frame(clip, local_t)
+        cut = self._cut_near(t)
+        if cut is not None:
+            start, before, after = cut
+            w = (t - (start - self._xfade / 2)) / self._xfade  # 0 → 1 across the window
+            a = self._clip_frame(before["clip"], min(t - before["start"], before["clip"]["duration"] - 1e-3))
+            b = self._clip_frame(after["clip"], max(0.0, t - start))
+            if a.shape != b.shape:
+                a, b = self._fit(a), self._fit(b)
+            frame = cv2.addWeighted(a, 1.0 - w, b, w, 0.0)
         frame = self._fit(frame)
 
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if self.dim <= 0 and self._scrim is None and self._mark is None:
+            return rgb
+        if self.dim <= 0 and self._scrim is None:
+            # Only the mark's rectangle is treated: work on that slice, not a float copy of the
+            # whole frame (14 of a notebook frame's 52 ms, STEP 77 §2). Same arithmetic.
+            x0, y0, x1, y1 = self._mark_rect
+            patch = rgb[y0:y1, x0:x1].astype(np.float32) * self._mark
+            rgb[y0:y1, x0:x1] = np.clip(patch, 0, 255).astype(np.uint8)
+            return rgb
+
+        out = rgb.astype(np.float32)
         if self.dim > 0:
-            rgb = (rgb.astype(np.float32) * (1.0 - self.dim)).astype(np.uint8)
-        return rgb
+            # Still honoured when a caller asks for it explicitly, so
+            # "clips" with background_options can pin a flat dim. Nothing
+            # sets it by default any more.
+            out *= (1.0 - self.dim)
+        if self._scrim is not None:
+            out *= self._scrim
+        if self._mark is not None:
+            # In place, on the mark's rectangle only. The band's contribution
+            # over these rows was already credited when mark_scrim was
+            # solved, so the two multiply to the solved total rather than
+            # stacking past it.
+            x0, y0, x1, y1 = self._mark_rect
+            out[y0:y1, x0:x1] *= self._mark
+        return np.clip(out, 0, 255).astype(np.uint8)
 
     def close(self):
-        """Release the open video capture."""
-        if self._cap is not None:
-            self._cap.release()
-            self._cap = None
-            self._cap_path = None
+        """Release the open video capture and the softened copies."""
+        self.release_captures()
+        if self._soft_dir:
+            shutil.rmtree(self._soft_dir, ignore_errors=True)
+            self._soft_dir = None
+
+
+#: STEP 77 §6: cuts between clips crossfade over this many seconds.
+CROSSFADE = 0.5
+#: STEP 80 §5: a single clip looping on itself (a 4 s AI clip) crossfades into its own start this slowly.
+LOOP_CROSSFADE = 1.2
+#: One grade: samples per clip, and how far a clip's colour may be pulled.
+GRADE_SAMPLES = 5
+GRADE_LIMITS = (0.8, 1.25)
+
+
+def frame_index(local_t: float, fps: float) -> int:
+    """The source frame on screen at local_t: floor of the timestamp, with a hair of slack.
+    int(t * fps) took 0.1 * 30 = 2.9999… as frame 2 and showed it twice (STEP 77 §6), and
+    29.97 / 59.94 clips need their real rate, not a rounded one."""
+    return int(math.floor(local_t * fps + 1e-6))
+
+
+#: Quarter resolution: the blur happens there and the upscale softens it further.
+SOFT_SCALE = 4
+#: Warm grade toward the sand paper (#F3EEE4) and a gentle vignette.
+SOFT_FILTER = ("gblur=sigma=3,eq=saturation=0.85:brightness=0.01,"
+               "colorbalance=rm=0.05:gm=0.02:bm=-0.06:rh=0.03:bh=-0.04,vignette=angle=PI/5")
+
+
+def soften_clip(path: Path, out_dir: Path, width: int, height: int) -> Path:
+    """A quarter-res, blurred, warm, vignetted copy of `path` (no audio), or `path` itself
+    if ffmpeg fails: a background problem costs the look, never the video."""
+    import proc
+    w, h = max(2, width // SOFT_SCALE // 2 * 2), max(2, height // SOFT_SCALE // 2 * 2)
+    out = out_dir / f"{Path(path).stem}.soft.mp4"
+    try:
+        proc.run(["ffmpeg", "-v", "error", "-y", "-i", str(path), "-an", "-vf",
+                  f"scale={w}:{h}:force_original_aspect_ratio=increase:flags=area,crop={w}:{h},{SOFT_FILTER}",
+                  "-c:v", "libx264", "-preset", "veryfast", "-crf", "16", "-pix_fmt", "yuv420p", str(out)],
+                 check=True, capture_output=True, timeout=proc.FFMPEG)
+        return out
+    except Exception:                                   # noqa: BLE001
+        logger.exception("Clip background: could not soften %s; using it as it is", path)
+        return Path(path)
+

@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "tu RUTINA en inglés: ¿sabes completar estas 10 frases? 🌅",
+  "video_description": "Levantarse, ducharse, ir al trabajo: tu rutina en inglés. 🌅",
+  "title": "Completa la frase",
+  "theme": "la rutina diaria",
+  "intro": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto.",
+  "items": [
+    {
+      "sentence": "I wake ____ at seven.",
+      "answer": "up",
+      "translation": "Me despierto a las siete.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I take a ____ every morning.",
+      "answer": "shower",
+      "translation": "Me ducho cada mañana.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I brush my ____ after breakfast.",
+      "answer": "teeth",
+      "translation": "Me lavo los dientes después de desayunar.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I go to work ____ bus.",
+      "answer": "by",
+      "translation": "Voy al trabajo en autobús.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I have lunch ____ one o'clock.",
+      "answer": "at",
+      "translation": "Como a la una.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I get ____ from work at six.",
+      "answer": "home",
+      "translation": "Llego a casa del trabajo a las seis.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I do the ____ after dinner.",
+      "answer": "dishes",
+      "translation": "Friego los platos después de cenar.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I usually ____ in on Sundays.",
+      "answer": "sleep",
+      "translation": "Los domingos suelo dormir hasta tarde.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I try to ____ out three times a week.",
+      "answer": "work",
+      "translation": "Intento entrenar tres veces por semana.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I like to wind ____ with a book.",
+      "answer": "down",
+      "translation": "Me gusta relajarme con un libro.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#RutinaEnIngles",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc033",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

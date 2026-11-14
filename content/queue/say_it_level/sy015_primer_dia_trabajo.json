@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "Tu PRIMER DÍA DE TRABAJO en inglés: 10 frases 🏢",
+  "video_description": "Sobrevive a tu primer día en un trabajo en inglés: preguntas básicas y trampas de oficina. 🏢",
+  "title": "Dilo en inglés",
+  "theme": "el primer día de trabajo",
+  "intro": "[warm] Es tu primer día en la oficina. Escucha la frase y dila en inglés antes de que la diga yo.",
+  "items": [
+    {
+      "spanish": "Hola, soy nuevo aquí.",
+      "english": "Hi, I'm new here.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "¿Dónde me siento?",
+      "english": "Where do I sit?",
+      "cefr": "A1",
+      "alt": "Where should I sit?"
+    },
+    {
+      "spanish": "¿A qué hora es la comida?",
+      "english": "What time is lunch?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Me enseñas cómo funciona esto?",
+      "english": "Can you show me how this works?",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Todavía no tengo acceso al sistema.",
+      "english": "I don't have access to the system yet.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "¿A quién le tengo que preguntar?",
+      "english": "Who should I ask?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Ya conozco a casi todo el equipo.",
+      "english": "I've already met most of the team.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Todavía me estoy adaptando.",
+      "english": "I'm still getting used to it.",
+      "cefr": "B2",
+      "alt": "I'm still settling in.",
+      "tip": "«Adaptarse a algo» suele decirse get used to it"
+    },
+    {
+      "spanish": "¿Me pasas el informe?",
+      "english": "Can you send me the report?",
+      "cefr": "B2",
+      "alt": "Can you forward me the report?",
+      "tip": "Si es por correo, «pasar» es send o forward, no pass"
+    },
+    {
+      "spanish": "¿Quién lleva este proyecto?",
+      "english": "Who's running this project?",
+      "cefr": "B2",
+      "alt": "Who's managing this project?",
+      "tip": "«Llevar» un proyecto es run o manage, no carry"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, básico; a la siete, intermedio; a la diez, experto desde el primer día.",
+  "outro": "[cheerful] ¿Qué tal tu primer día? Escríbeme tu número en los comentarios.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaElTrabajo",
+    "#AprenderInglés",
+    "#InglésDeOficina",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy015",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Hi, I'm new here.": "Hola, soy nuevo aquí.",
+    "Where do I sit?": "¿Dónde me siento?",
+    "What time is lunch?": "¿A qué hora es la comida?",
+    "Can you show me how this works?": "¿Me enseñas cómo funciona esto?",
+    "I don't have access to the system yet.": "Todavía no tengo acceso al sistema.",
+    "Who should I ask?": "¿A quién le tengo que preguntar?",
+    "I've already met most of the team.": "Ya conozco a casi todo el equipo.",
+    "I'm still getting used to it.": "Todavía me estoy adaptando.",
+    "Can you send me the report?": "¿Me pasas el informe?",
+    "Who's running this project?": "¿Quién lleva este proyecto?"
+  },
+  "english_phrases": [
+    "Hi, I'm new here.",
+    "Where do I sit?",
+    "What time is lunch?",
+    "Can you show me how this works?",
+    "I don't have access to the system yet.",
+    "Who should I ask?",
+    "I've already met most of the team.",
+    "I'm still getting used to it.",
+    "Can you send me the report?",
+    "Who's running this project?",
+    "Where should I sit?",
+    "I'm still settling in.",
+    "Can you forward me the report?",
+    "Who's managing this project?"
+  ],
+  "full_script": "[warm] Es tu primer día en la oficina. Escucha la frase y dila en inglés antes de que la diga yo. Hi, I'm new here. Where do I sit? What time is lunch? Ahora, nivel intermedio. Can you show me how this works? I don't have access to the system yet. Who should I ask? I've already met most of the team. Y ahora, nivel experto. I'm still getting used to it. Can you send me the report? Who's running this project? Si llegaste a la tres, básico; a la siete, intermedio; a la diez, experto desde el primer día. [cheerful] ¿Qué tal tu primer día? Escríbeme tu número en los comentarios."
+}

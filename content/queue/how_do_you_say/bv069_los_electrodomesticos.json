@@ -1,0 +1,104 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen los APARATOS de casa en inglés? 📺",
+  "video_description": "📺 10 aparatos que usas todos los días, ¡ahora en inglés! ¿Cuántos sabes sin ayuda? 🔌",
+  "title": "¿Cómo se dice…?",
+  "theme": "los aparatos",
+  "level": "A1",
+  "intro": "[excited] ¿Usas estos aparatos todos los días pero no sabes cómo se llaman en inglés? Dilo tú primero.",
+  "items": [
+    {
+      "emoji": "📺",
+      "spanish": "Televisor",
+      "english": "television"
+    },
+    {
+      "emoji": "📻",
+      "spanish": "Radio",
+      "english": "radio"
+    },
+    {
+      "emoji": "💻",
+      "spanish": "Computadora",
+      "english": "computer"
+    },
+    {
+      "emoji": "📱",
+      "spanish": "Celular",
+      "english": "cell phone"
+    },
+    {
+      "emoji": "💡",
+      "spanish": "Foco",
+      "english": "light bulb"
+    },
+    {
+      "emoji": "⏰",
+      "spanish": "Despertador",
+      "english": "alarm clock"
+    },
+    {
+      "emoji": "📷",
+      "spanish": "Cámara",
+      "english": "camera"
+    },
+    {
+      "emoji": "🔦",
+      "spanish": "Linterna",
+      "english": "flashlight"
+    },
+    {
+      "emoji": "🔌",
+      "spanish": "Enchufe",
+      "english": "plug"
+    },
+    {
+      "emoji": "🔋",
+      "spanish": "Batería",
+      "english": "battery"
+    }
+  ],
+  "recap": "Ahora todas en inglés, conmigo: television, radio, computer, cell phone, light bulb, alarm clock, camera, flashlight, plug, battery.",
+  "outro": "[cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "full_script": "[excited] ¿Usas estos aparatos todos los días pero no sabes cómo se llaman en inglés? Dilo tú primero. Televisor... television. television. Radio... radio. radio. Computadora... computer. computer. Celular... cell phone. cell phone. Foco... light bulb. light bulb. Despertador... alarm clock. alarm clock. Cámara... camera. camera. Linterna... flashlight. flashlight. Enchufe... plug. plug. Batería... battery. battery. Ahora todas en inglés, conmigo: television, radio, computer, cell phone, light bulb, alarm clock, camera, flashlight, plug, battery. [cheerful] ¿Cuántas sabías? Escribe tu número en los comentarios.",
+  "translations": {
+    "television": "Televisor",
+    "radio": "Radio",
+    "computer": "Computadora",
+    "cell phone": "Celular",
+    "light bulb": "Foco",
+    "alarm clock": "Despertador",
+    "camera": "Cámara",
+    "flashlight": "Linterna",
+    "plug": "Enchufe",
+    "battery": "Batería"
+  },
+  "english_phrases": [
+    "television",
+    "radio",
+    "computer",
+    "cell phone",
+    "light bulb",
+    "alarm clock",
+    "camera",
+    "flashlight",
+    "plug",
+    "battery"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay",
+    "#LearnEnglish",
+    "#AprendeIngles"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv069",
+    "video_type": "how_do_you_say",
+    "generated_at": "2026-11-02T10:45:44.104252",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

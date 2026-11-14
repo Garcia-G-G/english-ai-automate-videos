@@ -1,0 +1,82 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Sabes COMIDA en inglés? Verdadero o falso 🍎",
+  "video_description": "Diez palabras de comida en inglés, de fácil a experto. ¿Hasta cuál llegas tú? 🍞",
+  "title": "¿Verdadero o falso?",
+  "theme": "COMIDA",
+  "intro": "[curious] ¿Cuántas palabras de COMIDA sabes en inglés? Responde antes de que se aclare.",
+  "items": [
+    {
+      "statement": "«Apple» significa manzana.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Butter» significa botella.",
+      "truth": false,
+      "correction": "es mantequilla",
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Chicken» significa pollo.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Grapes» significa granadas.",
+      "truth": false,
+      "correction": "son uvas",
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Pie» significa pie.",
+      "truth": false,
+      "correction": "es pastel",
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Flour» significa flor.",
+      "truth": false,
+      "correction": "es harina",
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Leftovers» significa sobras.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Yolk» significa yema.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Stale» significa crujiente.",
+      "truth": false,
+      "correction": "es duro, pasado",
+      "cefr": "C1"
+    },
+    {
+      "statement": "«Zest» significa ralladura.",
+      "truth": true,
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres básico. Hasta la siete, intermedio. Y si acertaste las diez, eres experto en comida.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Escríbelo en los comentarios.",
+  "full_script": "¿Cuántas palabras de COMIDA sabes en inglés? Responde antes de que se aclare. Verdadero. Falso: es mantequilla. Verdadero. Falso: son uvas. Falso: es pastel. Falso: es harina. Verdadero. Verdadero. Falso: es duro, pasado. Verdadero. Si llegaste a la tres, eres básico. Hasta la siete, intermedio. Y si acertaste las diez, eres experto en comida. ¿Hasta qué número llegaste? Escríbelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#InglesFacil",
+    "#ComidaEnIngles",
+    "#AprendeIngles",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "false_friends",
+    "topic_id": "ff050",
+    "video_type": "true_false_level",
+    "generated_at": "2026-11-02T10:59:52.841868",
+    "model": "anthropic/claude-opus-5.5"
+  }
+}

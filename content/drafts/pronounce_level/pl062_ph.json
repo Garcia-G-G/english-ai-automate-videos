@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Palabras con PH: ¿las pronuncias como un nativo? 📱",
+  "video_description": "La PH casi siempre suena «f»… casi. Diez palabras de fácil a experto. 📸",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras con PH",
+  "intro": "[cheerful] Diez palabras con PH. Pronúncialas tú primero y luego compara conmigo.",
+  "items": [
+    {
+      "english": "phone",
+      "respelling": "FOUN",
+      "ipa": "ˈfoʊn",
+      "trap": "PH suena «f»: FOUN"
+    },
+    {
+      "english": "photo",
+      "respelling": "FOU-tou",
+      "ipa": "ˈfoʊtoʊ",
+      "trap": "Las dos O suenan «ou»"
+    },
+    {
+      "english": "alphabet",
+      "respelling": "AL-fa-bet",
+      "ipa": "ˈælfəbɛt",
+      "trap": "Acento en AL-: AL-fa-bet"
+    },
+    {
+      "english": "physical",
+      "respelling": "FI-zi-kal",
+      "ipa": "ˈfɪzɪkəl",
+      "trap": "PH es «f» y la S suena «z»"
+    },
+    {
+      "english": "nephew",
+      "respelling": "NEF-iuu",
+      "ipa": "ˈnɛfjuː",
+      "trap": "PH suena «f»: NEF-iuu"
+    },
+    {
+      "english": "phrase",
+      "respelling": "FREIZ",
+      "ipa": "ˈfreɪz",
+      "trap": "Una sílaba y la S suena «z»"
+    },
+    {
+      "english": "sphere",
+      "respelling": "SFIR",
+      "ipa": "ˈsfɪr",
+      "trap": "Empieza con «sf», sin «e» delante"
+    },
+    {
+      "english": "philosophy",
+      "respelling": "fe-LA-sa-fi",
+      "ipa": "fəˈlɑsəfi",
+      "trap": "Acento en LA: fe-LA-sa-fi"
+    },
+    {
+      "english": "shepherd",
+      "respelling": "SHE-perd",
+      "ipa": "ˈʃɛpɚd",
+      "trap": "Aquí PH no suena «f»: SHE-perd"
+    },
+    {
+      "english": "phenomenon",
+      "respelling": "fe-NA-me-nan",
+      "ipa": "fəˈnɑmənɑn",
+      "trap": "Acento en NA: fe-NA-me-nan"
+    }
+  ],
+  "verdict": "Con tres correctas eres básico, con siete intermedio y con las diez, experto de verdad.",
+  "outro": "[happy] ¿En qué número te quedaste? Escríbelo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#AprenderInglés",
+    "#Ortografía",
+    "#InglésParaHispanohablantes",
+    "#ClasesDeInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl062",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

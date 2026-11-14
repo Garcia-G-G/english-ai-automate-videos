@@ -1,0 +1,67 @@
+{
+  "type": "fill_blank",
+  "video_title": "Completa: ¿SAY o TELL? 🗣️",
+  "video_description": "Los dos son decir, y no se pueden cambiar. 🤔",
+  "sentence": "Can you ___ me the time, please?",
+  "options": [
+    "tell",
+    "say",
+    "speak",
+    "talk"
+  ],
+  "correct": "tell",
+  "translation": "¿Me puedes decir la hora, por favor?",
+  "explanation": "[excited] Tell lleva a la persona detrás: tell me. Say me no existe.",
+  "full_script": "[excited] ¡Completa la frase! Número uno. Can you ___ me the time, please? Las opciones son: A, tell. B, say. C, speak. D, talk. [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, tell! Tell lleva a la persona detrás: tell me. Say me no existe. Número dos. She ___ that she was tired. Las opciones son: A, said. B, told. C, spoke. D, talked. [thoughtful] Piensa bien... Tres... dos... uno... [excited] ¡La respuesta es A, said! Sin persona detrás, say. She said that... Si añades a quién, she told me that.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "gr019",
+    "video_type": "fill_blank",
+    "model": "manual"
+  },
+  "sentences": [
+    {
+      "sentence": "Can you ___ me the time, please?",
+      "options": [
+        "tell",
+        "say",
+        "speak",
+        "talk"
+      ],
+      "correct": "tell",
+      "translation": "¿Me puedes decir la hora, por favor?",
+      "explanation": "[excited] Tell lleva a la persona detrás: tell me. Say me no existe."
+    },
+    {
+      "sentence": "She ___ that she was tired.",
+      "options": [
+        "said",
+        "told",
+        "spoke",
+        "talked"
+      ],
+      "correct": "said",
+      "translation": "Dijo que estaba cansada.",
+      "explanation": "[excited] Sin persona detrás, say. She said that... Si añades a quién, she told me that."
+    },
+    {
+      "sentence": "He ___ me a really funny story.",
+      "options": [
+        "told",
+        "said",
+        "spoke",
+        "explained"
+      ],
+      "correct": "told",
+      "translation": "Me contó una historia muy graciosa.",
+      "explanation": "[excited] Historias, chistes y mentiras van con tell: tell a story, tell a joke, tell a lie."
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "¿Verdadero o falso? el CLIMA 🌦️",
+  "video_description": "El tiempo en inglés: ¿verdadero o falso? 🌦️",
+  "title": "¿Verdadero o falso?",
+  "theme": "el tiempo y el clima",
+  "intro": "[curious] Diez frases. Di si es verdadero o falso antes de que se aclare la respuesta.",
+  "items": [
+    {
+      "statement": "«Rain» es lluvia.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Sunny» significa soleado.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Snow» es niebla.",
+      "truth": false,
+      "cefr": "A2",
+      "correction": "es nieve"
+    },
+    {
+      "statement": "«Cloudy» significa nublado.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Fog» es niebla.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Breeze» es una tormenta fuerte.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es una brisa"
+    },
+    {
+      "statement": "«Hail» es granizo.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Drizzle» es lluvia torrencial.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es llovizna"
+    },
+    {
+      "statement": "«Heatwave» es una ola de calor.",
+      "truth": true,
+      "cefr": "C1"
+    },
+    {
+      "statement": "«It's chilly» significa que hace mucho calor.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es que hace fresquito"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf022",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

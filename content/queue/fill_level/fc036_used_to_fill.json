@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "Rellena el hueco: USED TO 📼",
+  "video_description": "Lo que solías hacer: used to y would en diez frases. 📼",
+  "title": "Completa la frase",
+  "theme": "used to y would",
+  "intro": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas?",
+  "items": [
+    {
+      "sentence": "I ____ to live in Lima.",
+      "answer": "used",
+      "translation": "Antes vivía en Lima.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Did you use ____ play sports?",
+      "answer": "to",
+      "translation": "¿Hacías deporte antes?",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She ____ have long hair.",
+      "answer": "used to",
+      "translation": "Antes tenía el pelo largo.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I didn't use to ____ coffee.",
+      "answer": "like",
+      "translation": "Antes no me gustaba el café.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We ____ go fishing every summer.",
+      "answer": "would",
+      "translation": "Íbamos a pescar todos los veranos.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'm used to ____ alone.",
+      "answer": "living",
+      "translation": "Estoy acostumbrado a vivir solo.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "You'll get used to ____ early.",
+      "answer": "waking",
+      "translation": "Te acostumbrarás a madrugar.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "There ____ to be a park here.",
+      "answer": "used",
+      "translation": "Aquí antes había un parque.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I can't get used ____ the noise.",
+      "answer": "to",
+      "translation": "No me acostumbro al ruido.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "He's not what he ____ to be.",
+      "answer": "used",
+      "translation": "Ya no es lo que era.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#UsedTo",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc036",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "I used to live in Lima.": "Antes vivía en Lima.",
+    "Did you use to play sports?": "¿Hacías deporte antes?",
+    "She used to have long hair.": "Antes tenía el pelo largo.",
+    "I didn't use to like coffee.": "Antes no me gustaba el café.",
+    "We would go fishing every summer.": "Íbamos a pescar todos los veranos.",
+    "I'm used to living alone.": "Estoy acostumbrado a vivir solo.",
+    "You'll get used to waking early.": "Te acostumbrarás a madrugar.",
+    "There used to be a park here.": "Aquí antes había un parque.",
+    "I can't get used to the noise.": "No me acostumbro al ruido.",
+    "He's not what he used to be.": "Ya no es lo que era."
+  },
+  "english_phrases": [
+    "I used to live in Lima.",
+    "Did you use to play sports?",
+    "She used to have long hair.",
+    "I didn't use to like coffee.",
+    "We would go fishing every summer.",
+    "I'm used to living alone.",
+    "You'll get used to waking early.",
+    "There used to be a park here.",
+    "I can't get used to the noise.",
+    "He's not what he used to be."
+  ],
+  "full_script": "[thoughtful] Diez huecos, diez palabras. ¿Hasta dónde llegas? I used to live in Lima. Did you use to play sports? She used to have long hair. Ahora, nivel intermedio. I didn't use to like coffee. We would go fishing every summer. I'm used to living alone. You'll get used to waking early. Y ahora, nivel experto. There used to be a park here. I can't get used to the noise. He's not what he used to be. Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto. [happy] ¿Cuántas acertaste? Déjame tu número abajo."
+}

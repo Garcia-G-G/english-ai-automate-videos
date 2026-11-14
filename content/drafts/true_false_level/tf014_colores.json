@@ -1,0 +1,80 @@
+{
+  "type": "true_false_level",
+  "video_title": "10 frases sobre COLORES: ¿V o F? 🎨",
+  "video_description": "Colores en expresiones inglesas: ¿verdadero o falso? 🎨",
+  "title": "¿Verdadero o falso?",
+  "theme": "colores en expresiones",
+  "intro": "[curious] Te leo una frase y tú dices verdadero o falso. Diez en total.",
+  "items": [
+    {
+      "statement": "«Red» es rojo.",
+      "truth": true,
+      "cefr": "A1"
+    },
+    {
+      "statement": "«Purple» es rosa.",
+      "truth": false,
+      "cefr": "A1",
+      "correction": "es morado"
+    },
+    {
+      "statement": "«Grey» y «gray» son el mismo color.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Feeling blue» significa sentirse triste.",
+      "truth": true,
+      "cefr": "A2"
+    },
+    {
+      "statement": "«Green with envy» significa estar enfermo.",
+      "truth": false,
+      "cefr": "B1",
+      "correction": "es morirse de envidia"
+    },
+    {
+      "statement": "«Out of the blue» significa de repente.",
+      "truth": true,
+      "cefr": "B1"
+    },
+    {
+      "statement": "«Red tape» es una cinta de regalo.",
+      "truth": false,
+      "cefr": "B2",
+      "correction": "es burocracia"
+    },
+    {
+      "statement": "«A white lie» es una mentira piadosa.",
+      "truth": true,
+      "cefr": "B2"
+    },
+    {
+      "statement": "«Golden handshake» es un saludo de bienvenida.",
+      "truth": false,
+      "cefr": "C1",
+      "correction": "es una indemnización generosa al irse"
+    },
+    {
+      "statement": "«Black sheep» es la oveja negra.",
+      "truth": true,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#VerdaderoOFalso",
+    "#Idioms",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#VocabularioEnInglés"
+  ],
+  "_meta": {
+    "category": "quiz_facts",
+    "topic_id": "tf014",
+    "video_type": "true_false_level",
+    "model": "manual",
+    "draft": true
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "OTHER o ANOTHER: ¿cuál va en cada frase? 🔁",
+  "video_description": "Other, another y the other: diez frases para no dudar. 🔁",
+  "title": "Elige la correcta",
+  "theme": "other o another",
+  "intro": "[cheerful] Diez frases, dos opciones. Di la correcta antes que yo.",
+  "items": [
+    {
+      "sentence": "Can I have ____ coffee, please?",
+      "options": [
+        "another",
+        "other"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Where are the ____ students?",
+      "options": [
+        "another",
+        "other"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I have ____ idea.",
+      "options": [
+        "other",
+        "another"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Some people like it, ____ people don't.",
+      "options": [
+        "other",
+        "another"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Let's try ____ way.",
+      "options": [
+        "other",
+        "another"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "One shoe is here, where's the ____ one?",
+      "options": [
+        "other",
+        "another"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "They help each ____.",
+      "options": [
+        "other",
+        "another"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "That's ____ story.",
+      "options": [
+        "other",
+        "another"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Every ____ day I go running.",
+      "options": [
+        "other",
+        "another"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "On the ____ hand, it's expensive.",
+      "options": [
+        "another",
+        "other"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[happy] ¿Cuántas acertaste? Déjame tu número abajo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#OtherVsAnother",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec013",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

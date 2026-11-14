@@ -51,9 +51,29 @@ WATERMARK_WEIGHT = "SemiBold"
 #: Measured against the REAL backdrop rather than a synthetic swatch — the
 #: watermark region of a rendered quiz has mean luminance 0.137 with
 #: highlights to 1.0, so the shadow has to survive bright patches inside an
-#: otherwise dark frame. Stock footage in 4b will be brighter on average,
-#: which is why the shadow is tuned for the bright case even though today's
-#: backdrop rarely needs it.
+#: otherwise dark frame.
+#:
+#: THESE TWO NUMBERS DO NOT SURVIVE BRIGHT FOOTAGE, AND NO OTHER TWO WOULD.
+#: This comment used to claim the shadow was "tuned for the bright case even
+#: though today's backdrop rarely needs it". It never was — it was chosen by
+#: eye against a dark backdrop, and when the background standard made the
+#: bottom third bright by design the mark went to 1.24:1 white-against-
+#: background on the median clip, against a floor of 3.0.
+#:
+#: Swept rather than assumed, glyph ink against its own halo at p95 0.797:
+#:
+#:     alpha 160 blur  4 -> 1.63     alpha 255 blur  4 -> 1.82  (best)
+#:     alpha 200 blur  4 -> 1.70     alpha 255 blur  8 -> 1.63
+#:                                   alpha 255 blur 12 -> 1.55
+#:
+#: The best pair reaches 1.82, and blurring MORE makes it worse because the
+#: halo spreads and lightens. So do not spend a pass here: the floor comes
+#: from clip_contrast's solved local scrim, which measures the pixels under
+#: the mark per clip and darkens only its own box.
+#:
+#: The shadow STAYS. Below roughly p95 0.25 it carries the mark on its own —
+#: 10.9:1 on night footage — and the scrim correctly solves to zero there, so
+#: the shadow is the only thing working and it costs nothing.
 SHADOW_ALPHA = 160
 SHADOW_BLUR = 4
 SHADOW_OFFSET = (0, 2)
@@ -135,3 +155,39 @@ def watermark_bounds() -> Tuple[int, int, int, int]:
     if overlay is None:
         raise RuntimeError("watermark overlay unavailable")
     return overlay.getbbox()
+
+
+#: Alpha above which a pixel counts as part of the drawn mark. getbbox() is
+#: not usable for this: a Gaussian blur leaves a tail of near-zero alpha that
+#: reaches hundreds of pixels up the canvas, so its box describes the blur's
+#: mathematical support rather than anything a viewer can see.
+_INK_ALPHA = 8
+
+
+def watermark_top() -> int:
+    """Topmost row the watermark occupies, shadow included.
+
+    For any element that would otherwise size itself against
+    SAFE_AREA_BOTTOM. The mark sits just inside that floor, so a card
+    budgeted to the floor and the mark budgeted to the floor land on top of
+    each other — which is exactly what happened to the quiz explanation card.
+
+    Measured off the rendered overlay rather than recomputed from
+    WATERMARK_BOTTOM_GAP and a text height, so it stays correct if the mark's
+    size, weight, blur or gap changes. There is no ordering problem in asking
+    this before a card is laid out: the watermark's position depends only on
+    SAFE_AREA_BOTTOM, its own gap and its own measured text — never on the
+    content it has to stay clear of.
+    """
+    from .constants import VIDEO_WIDTH, VIDEO_HEIGHT
+    overlay = get_watermark_overlay((VIDEO_WIDTH, VIDEO_HEIGHT))
+    if overlay is None:
+        # No mark to avoid; the safe-area floor is the only constraint.
+        from .constants import SAFE_AREA_BOTTOM
+        return SAFE_AREA_BOTTOM
+    import numpy as _np
+    rows = _np.where((_np.asarray(overlay)[:, :, 3] > _INK_ALPHA).any(axis=1))[0]
+    if not len(rows):
+        from .constants import SAFE_AREA_BOTTOM
+        return SAFE_AREA_BOTTOM
+    return int(rows.min())

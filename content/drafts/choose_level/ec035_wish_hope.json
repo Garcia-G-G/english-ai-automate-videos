@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "¿Sabes cuándo usar WISH o HOPE? 🌠",
+  "video_description": "Ojalá en inglés: wish o hope. Diez frases para elegir bien. 🌠",
+  "title": "Elige la correcta",
+  "theme": "wish o hope",
+  "intro": "[happy] Lee la frase y elige rápido. Diez, de fácil a experto.",
+  "items": [
+    {
+      "sentence": "I ____ you have a great day!",
+      "options": [
+        "hope",
+        "wish"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I ____ I was taller.",
+      "options": [
+        "hope",
+        "wish"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "We ____ to see you soon.",
+      "options": [
+        "wish",
+        "hope"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I ____ I could fly.",
+      "options": [
+        "wish",
+        "hope"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I ____ it doesn't rain tomorrow.",
+      "options": [
+        "wish",
+        "hope"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I ____ I had more time.",
+      "options": [
+        "wish",
+        "hope"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "We ____ you a Merry Christmas.",
+      "options": [
+        "wish",
+        "hope"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I ____ you'd stop shouting.",
+      "options": [
+        "hope",
+        "wish"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "Let's ____ for the best.",
+      "options": [
+        "hope",
+        "wish"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I ____ I'd known earlier.",
+      "options": [
+        "hope",
+        "wish"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Si te quedaste en la tres, básico. En la siete, intermedio. Y con las diez, experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#WishVsHope",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec035",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

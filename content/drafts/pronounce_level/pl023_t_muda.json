@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "La T MUDA: 10 palabras de fácil a experto 🏰",
+  "video_description": "«Listen», «castle», «mustn't»: la T muda en diez palabras. 🎶",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "la T muda",
+  "intro": "[curious] Diez palabras con una T que nadie pronuncia. Dilas tú primero.",
+  "items": [
+    {
+      "english": "listen",
+      "respelling": "LI-sen",
+      "ipa": "ˈlɪsən",
+      "trap": "La T no suena: LI-sen"
+    },
+    {
+      "english": "often",
+      "respelling": "O-fen",
+      "ipa": "ˈɔfən",
+      "trap": "La T casi siempre es muda"
+    },
+    {
+      "english": "castle",
+      "respelling": "KA-sel",
+      "ipa": "ˈkæsəl",
+      "trap": "La T no suena: KA-sel"
+    },
+    {
+      "english": "fasten",
+      "respelling": "FA-sen",
+      "ipa": "ˈfæsən",
+      "trap": "La T no suena: FA-sen"
+    },
+    {
+      "english": "whistle",
+      "respelling": "UI-sel",
+      "ipa": "ˈwɪsəl",
+      "trap": "T muda: UI-sel"
+    },
+    {
+      "english": "hustle",
+      "respelling": "JA-sel",
+      "ipa": "ˈhʌsəl",
+      "trap": "T muda y la U suena «a»"
+    },
+    {
+      "english": "chestnut",
+      "respelling": "CHES-nat",
+      "ipa": "ˈtʃɛsnʌt",
+      "trap": "La T de «chest» no suena"
+    },
+    {
+      "english": "ballet",
+      "respelling": "ba-LEI",
+      "ipa": "bæˈleɪ",
+      "trap": "T muda y acento al final"
+    },
+    {
+      "english": "mustn't",
+      "respelling": "MA-sent",
+      "ipa": "ˈmʌsənt",
+      "trap": "La primera T no suena: MA-sent"
+    },
+    {
+      "english": "depot",
+      "respelling": "DII-pou",
+      "ipa": "ˈdiːpoʊ",
+      "trap": "T muda y la E suena «ii»"
+    }
+  ],
+  "verdict": "Con tres eres nivel básico, con siete intermedio, y si te salieron las diez, eres experto.",
+  "outro": "[happy] Dime en los comentarios en qué palabra te trabaste.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#LetrasMudas",
+    "#AprenderInglés",
+    "#ClasesDeInglés",
+    "#HablarInglés"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl023",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}

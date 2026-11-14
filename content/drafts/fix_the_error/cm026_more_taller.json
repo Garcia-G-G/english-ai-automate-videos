@@ -1,0 +1,53 @@
+{
+  "type": "fix_the_error",
+  "video_title": "Corrige el error: more taller 📏",
+  "video_description": "Cuando el más ya va dentro de la palabra. ➕",
+  "level": "A2",
+  "intro": "[curious] Esta frase tiene un error. ¿Lo encuentras antes que yo?",
+  "items": [
+    {
+      "wrong": "My brother is more taller than me.",
+      "error": "more taller",
+      "right": "My brother is taller than me.",
+      "fix": "taller",
+      "translation": "Mi hermano es más alto que yo.",
+      "explanation": "[excited] Taller ya significa más alto. More sobra."
+    },
+    {
+      "wrong": "This film is more better.",
+      "error": "more better",
+      "right": "This film is better.",
+      "fix": "better",
+      "translation": "Esta película es mejor.",
+      "explanation": "[excited] Better ya es mejor. More better es decirlo dos veces."
+    },
+    {
+      "wrong": "It's the most cheapest hotel.",
+      "error": "most cheapest",
+      "right": "It's the cheapest hotel.",
+      "fix": "cheapest",
+      "translation": "Es el hotel más barato.",
+      "explanation": "[excited] Cheapest ya es el más barato. Most sobra."
+    }
+  ],
+  "outro": "[excited] ¿Lo pillaste a la primera? Dímelo en los comentarios.",
+  "translations": {
+    "My brother is taller than me.": "Mi hermano es más alto que yo.",
+    "This film is better.": "Esta película es mejor.",
+    "It's the cheapest hotel.": "Es el hotel más barato."
+  },
+  "hashtags": [
+    "#CorrigeElError",
+    "#AprenderInglés",
+    "#EnglishTips",
+    "#ErroresComunes",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm026",
+    "video_type": "fix_the_error",
+    "model": "manual",
+    "draft": true
+  }
+}

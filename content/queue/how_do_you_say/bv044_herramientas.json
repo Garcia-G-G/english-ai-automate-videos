@@ -1,0 +1,101 @@
+{
+  "type": "how_do_you_say",
+  "video_title": "¿Cómo se dicen las HERRAMIENTAS en inglés? 🔨",
+  "video_description": "Diez herramientas para arreglar cualquier cosa. 🔧",
+  "title": "¿Cómo se dice…?",
+  "theme": "las herramientas",
+  "level": "A2",
+  "intro": "[warm] Vamos con diez palabras. Tú primero, luego yo.",
+  "items": [
+    {
+      "emoji": "🔨",
+      "spanish": "Martillo",
+      "english": "hammer"
+    },
+    {
+      "emoji": "📌",
+      "spanish": "Clavo",
+      "english": "nail"
+    },
+    {
+      "emoji": "🔩",
+      "spanish": "Tornillo",
+      "english": "screw"
+    },
+    {
+      "emoji": "🪛",
+      "spanish": "Destornillador",
+      "english": "screwdriver"
+    },
+    {
+      "emoji": "🔧",
+      "spanish": "Llave inglesa",
+      "english": "wrench"
+    },
+    {
+      "emoji": "🪚",
+      "spanish": "Sierra",
+      "english": "saw"
+    },
+    {
+      "emoji": "🛠️",
+      "spanish": "Taladro",
+      "english": "drill"
+    },
+    {
+      "emoji": "📏",
+      "spanish": "Cinta métrica",
+      "english": "tape measure"
+    },
+    {
+      "emoji": "🪜",
+      "spanish": "Escalera",
+      "english": "ladder"
+    },
+    {
+      "emoji": "🧴",
+      "spanish": "Pegamento",
+      "english": "glue"
+    }
+  ],
+  "recap": "Otra vez, todas seguidas: hammer, nail, screw, screwdriver, wrench, saw, drill, tape measure, ladder, glue.",
+  "outro": "[cheerful] Comenta tu número del uno al diez. Sin trampas.",
+  "translations": {
+    "hammer": "Martillo",
+    "nail": "Clavo",
+    "screw": "Tornillo",
+    "screwdriver": "Destornillador",
+    "wrench": "Llave inglesa",
+    "saw": "Sierra",
+    "drill": "Taladro",
+    "tape measure": "Cinta métrica",
+    "ladder": "Escalera",
+    "glue": "Pegamento"
+  },
+  "english_phrases": [
+    "hammer",
+    "nail",
+    "screw",
+    "screwdriver",
+    "wrench",
+    "saw",
+    "drill",
+    "tape measure",
+    "ladder",
+    "glue"
+  ],
+  "hashtags": [
+    "#InglésParaPrincipiantes",
+    "#VocabularioEnInglés",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#HowDoYouSay"
+  ],
+  "_meta": {
+    "category": "basic_vocab",
+    "topic_id": "bv044",
+    "video_type": "how_do_you_say",
+    "model": "manual"
+  },
+  "full_script": "[warm] Vamos con diez palabras. Tú primero, luego yo. Martillo... hammer. hammer. Clavo... nail. nail. Tornillo... screw. screw. Destornillador... screwdriver. screwdriver. Llave inglesa... wrench. wrench. Sierra... saw. saw. Taladro... drill. drill. Cinta métrica... tape measure. tape measure. Escalera... ladder. ladder. Pegamento... glue. glue. Otra vez, todas seguidas: hammer, nail, screw, screwdriver, wrench, saw, drill, tape measure, ladder, glue. [cheerful] Comenta tu número del uno al diez. Sin trampas."
+}

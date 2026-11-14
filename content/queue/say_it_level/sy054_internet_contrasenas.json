@@ -1,0 +1,109 @@
+{
+  "type": "say_it_level",
+  "video_title": "¿Qué nivel tienes? Frases de INTERNET y CONTRASEÑAS 🔐",
+  "video_description": "Wifi, cuentas y contraseñas: diez frases en inglés que vas a usar seguro. 🔐",
+  "title": "Dilo en inglés",
+  "theme": "internet y contraseñas",
+  "intro": "[curious] Hoy hablamos de internet y contraseñas. Di cada frase en inglés antes de que aparezca.",
+  "items": [
+    {
+      "spanish": "¿Cuál es la contraseña del wifi?",
+      "english": "What's the Wi-Fi password?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Olvidé mi contraseña.",
+      "english": "I forgot my password.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "La conexión va muy lenta.",
+      "english": "The connection is really slow.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "Tienes que cambiar tu contraseña.",
+      "english": "You need to change your password.",
+      "cefr": "A2"
+    },
+    {
+      "spanish": "¿Usas la verificación en dos pasos?",
+      "english": "Do you use two-factor authentication?",
+      "cefr": "B1",
+      "alt": "Do you use two-step verification?"
+    },
+    {
+      "spanish": "No le des tu contraseña a nadie.",
+      "english": "Never share your password.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Usa una contraseña más segura.",
+      "english": "You should use a stronger password.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Me han hackeado la cuenta.",
+      "english": "My account got hacked.",
+      "cefr": "B2",
+      "alt": "My account has been hacked.",
+      "tip": "En inglés el sujeto es la cuenta: My account got hacked"
+    },
+    {
+      "spanish": "Pon tu correo y dale a enviar.",
+      "english": "Enter your email and hit send.",
+      "cefr": "B2",
+      "alt": "Type in your email and click send.",
+      "tip": "«Darle a» un botón es hit o click, no «give to»"
+    },
+    {
+      "spanish": "No me llega el correo de confirmación.",
+      "english": "I'm not getting the confirmation email.",
+      "cefr": "C1",
+      "tip": "«No me llega» es I'm not getting, no «doesn't arrive me»"
+    }
+  ],
+  "verdict": "Tres frases: nivel básico. Siete: intermedio. Las diez: tu inglés tiene contraseña de experto.",
+  "outro": "[excited] ¿Cuál es tu número? Déjalo en los comentarios y comparte el vídeo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésOnline",
+    "#AprenderInglés",
+    "#InglésCotidiano",
+    "#TestDeInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy054",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "What's the Wi-Fi password?": "¿Cuál es la contraseña del wifi?",
+    "I forgot my password.": "Olvidé mi contraseña.",
+    "The connection is really slow.": "La conexión va muy lenta.",
+    "You need to change your password.": "Tienes que cambiar tu contraseña.",
+    "Do you use two-factor authentication?": "¿Usas la verificación en dos pasos?",
+    "Never share your password.": "No le des tu contraseña a nadie.",
+    "You should use a stronger password.": "Usa una contraseña más segura.",
+    "My account got hacked.": "Me han hackeado la cuenta.",
+    "Enter your email and hit send.": "Pon tu correo y dale a enviar.",
+    "I'm not getting the confirmation email.": "No me llega el correo de confirmación."
+  },
+  "english_phrases": [
+    "What's the Wi-Fi password?",
+    "I forgot my password.",
+    "The connection is really slow.",
+    "You need to change your password.",
+    "Do you use two-factor authentication?",
+    "Never share your password.",
+    "You should use a stronger password.",
+    "My account got hacked.",
+    "Enter your email and hit send.",
+    "I'm not getting the confirmation email.",
+    "Do you use two-step verification?",
+    "My account has been hacked.",
+    "Type in your email and click send."
+  ],
+  "full_script": "[curious] Hoy hablamos de internet y contraseñas. Di cada frase en inglés antes de que aparezca. What's the Wi-Fi password? I forgot my password. The connection is really slow. Ahora, nivel intermedio. You need to change your password. Do you use two-factor authentication? Never share your password. You should use a stronger password. Y ahora, nivel experto. My account got hacked. Enter your email and hit send. I'm not getting the confirmation email. Tres frases: nivel básico. Siete: intermedio. Las diez: tu inglés tiene contraseña de experto. [excited] ¿Cuál es tu número? Déjalo en los comentarios y comparte el vídeo."
+}

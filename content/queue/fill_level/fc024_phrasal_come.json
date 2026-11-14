@@ -1,0 +1,110 @@
+{
+  "type": "fill_level",
+  "video_title": "10 frases con hueco: PHRASAL VERBS con COME 🚪",
+  "video_description": "Come in, come back, come up with: phrasal verbs con come. 🚪",
+  "title": "Completa la frase",
+  "theme": "phrasal verbs con COME",
+  "intro": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido.",
+  "items": [
+    {
+      "sentence": "Come ____, the door is open.",
+      "answer": "in",
+      "translation": "Pasa, la puerta está abierta.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "When will you come ____?",
+      "answer": "back",
+      "translation": "¿Cuándo vas a volver?",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "Come ____! You can do it!",
+      "answer": "on",
+      "translation": "¡Vamos! ¡Tú puedes!",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "How did the photos come ____?",
+      "answer": "out",
+      "translation": "¿Qué tal han salido las fotos?",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "I came ____ an old letter.",
+      "answer": "across",
+      "translation": "Me encontré una carta antigua.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "Something has come ____, I can't go.",
+      "answer": "up",
+      "translation": "Me ha surgido algo, no puedo ir.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She came ____ with a great idea.",
+      "answer": "up",
+      "translation": "Se le ocurrió una idea genial.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I think I'm coming ____ with a cold.",
+      "answer": "down",
+      "translation": "Creo que me estoy resfriando.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He finally came ____ to my point of view.",
+      "answer": "round",
+      "translation": "Al final se convenció de lo que yo decía.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "How much does it come ____?",
+      "answer": "to",
+      "translation": "¿Cuánto sale en total?",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#PhrasalVerbs",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc024",
+    "video_type": "fill_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Come in, the door is open.": "Pasa, la puerta está abierta.",
+    "When will you come back?": "¿Cuándo vas a volver?",
+    "Come on! You can do it!": "¡Vamos! ¡Tú puedes!",
+    "How did the photos come out?": "¿Qué tal han salido las fotos?",
+    "I came across an old letter.": "Me encontré una carta antigua.",
+    "Something has come up, I can't go.": "Me ha surgido algo, no puedo ir.",
+    "She came up with a great idea.": "Se le ocurrió una idea genial.",
+    "I think I'm coming down with a cold.": "Creo que me estoy resfriando.",
+    "He finally came round to my point of view.": "Al final se convenció de lo que yo decía.",
+    "How much does it come to?": "¿Cuánto sale en total?"
+  },
+  "english_phrases": [
+    "Come in, the door is open.",
+    "When will you come back?",
+    "Come on! You can do it!",
+    "How did the photos come out?",
+    "I came across an old letter.",
+    "Something has come up, I can't go.",
+    "She came up with a great idea.",
+    "I think I'm coming down with a cold.",
+    "He finally came round to my point of view.",
+    "How much does it come to?"
+  ],
+  "full_script": "[happy] Falta una palabra en cada frase. ¿Cuál es? Dila rápido. Come in, the door is open. When will you come back? Come on! You can do it! Ahora, nivel intermedio. How did the photos come out? I came across an old letter. Something has come up, I can't go. She came up with a great idea. Y ahora, nivel experto. I think I'm coming down with a cold. He finally came round to my point of view. How much does it come to? Tres aciertos, nivel básico. Siete, intermedio. Diez, experto de verdad. [excited] ¿Llegaste a la diez? Te leo en los comentarios."
+}

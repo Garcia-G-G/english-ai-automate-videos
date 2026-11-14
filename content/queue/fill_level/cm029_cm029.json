@@ -1,0 +1,91 @@
+{
+  "type": "fill_level",
+  "video_title": "Completa 10 frases con PREPOSICIONES en inglés 🎯",
+  "video_description": "¿IN, ON o AT? Completa las 10 frases con la preposición correcta y descubre tu nivel de inglés 📚",
+  "title": "Completa la frase",
+  "theme": "Preposiciones",
+  "intro": "[curious] ¿Sabes cuándo va in, on o at? Completa las diez frases y descubre hasta dónde llegas.",
+  "items": [
+    {
+      "sentence": "See you ____ Monday!",
+      "answer": "on",
+      "translation": "¡Nos vemos el lunes!",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "The class starts ____ nine.",
+      "answer": "at",
+      "translation": "La clase empieza a las nueve.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "My keys are ____ the table.",
+      "answer": "on",
+      "translation": "Mis llaves están en la mesa.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "It depends ____ the price.",
+      "answer": "on",
+      "translation": "Depende del precio.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'm good ____ math.",
+      "answer": "at",
+      "translation": "Soy bueno en matemáticas.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She's married ____ a doctor.",
+      "answer": "to",
+      "translation": "Está casada con un médico.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I look forward ____ it.",
+      "answer": "to",
+      "translation": "Tengo muchas ganas de que llegue.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "She did it ____ purpose.",
+      "answer": "on",
+      "translation": "Lo hizo a propósito.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'm feeling ____ the weather.",
+      "answer": "under",
+      "translation": "Me siento un poco enfermo.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I'm ____ my wits' end.",
+      "answer": "at",
+      "translation": "Ya no sé qué más hacer.",
+      "cefr": "C2"
+    }
+  ],
+  "verdict": "Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto.",
+  "outro": "[excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "full_script": "[curious] ¿Sabes cuándo va in, on o at? Completa las diez frases y descubre hasta dónde llegas. ¡See you on Monday! The class starts at nine. My keys are on the table. It depends on the price. I'm good at math. She's married to a doctor. I look forward to it. She did it on purpose. I'm feeling under the weather. I'm at my wits end. Si llegaste a la tres, eres nivel básico. Hasta la siete, intermedio. Y si sabías las diez, eres experto. [excited] ¿Hasta qué número llegaste? Cuéntamelo en los comentarios.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#AprenderIngles",
+    "#PreposicionesEnIngles",
+    "#InglesParaLatinos",
+    "#Shorts"
+  ],
+  "_meta": {
+    "category": "common_mistakes",
+    "topic_id": "cm029",
+    "video_type": "fill_level",
+    "generated_at": "2026-11-02T11:03:15.115368",
+    "model": "anthropic/claude-opus-5.5"
+  },
+  "_validation_warnings": [
+    "Unbalanced single quotes (1)",
+    "Added 1 missing Spanish opening mark(s) (¿ / ¡)"
+  ]
+}

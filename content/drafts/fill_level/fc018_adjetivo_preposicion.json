@@ -1,0 +1,86 @@
+{
+  "type": "fill_level",
+  "video_title": "ADJETIVOS + PREPOSICIÓN: ¿sabes completar estas 10 frases? 🎨",
+  "video_description": "Good at, afraid of, proud of: adjetivos con su preposición. 🎨",
+  "title": "Completa la frase",
+  "theme": "adjetivos con preposición",
+  "intro": "[curious] Completa cada frase en voz alta antes que yo. De fácil a experto.",
+  "items": [
+    {
+      "sentence": "I'm afraid ____ spiders.",
+      "answer": "of",
+      "translation": "Me dan miedo las arañas.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "She's good ____ math.",
+      "answer": "at",
+      "translation": "Se le dan bien las matemáticas.",
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I'm interested ____ art.",
+      "answer": "in",
+      "translation": "Me interesa el arte.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We're proud ____ you.",
+      "answer": "of",
+      "translation": "Estamos orgullosos de ti.",
+      "cefr": "A2"
+    },
+    {
+      "sentence": "He's married ____ a doctor.",
+      "answer": "to",
+      "translation": "Está casado con una médica.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'm tired ____ waiting.",
+      "answer": "of",
+      "translation": "Estoy harto de esperar.",
+      "cefr": "B1"
+    },
+    {
+      "sentence": "She's very different ____ her sister.",
+      "answer": "from",
+      "translation": "Es muy diferente de su hermana.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I'm not familiar ____ this software.",
+      "answer": "with",
+      "translation": "No conozco bien este programa.",
+      "cefr": "B2"
+    },
+    {
+      "sentence": "He's responsible ____ the project.",
+      "answer": "for",
+      "translation": "Es el responsable del proyecto.",
+      "cefr": "C1"
+    },
+    {
+      "sentence": "She's keen ____ learning Chinese.",
+      "answer": "on",
+      "translation": "Tiene muchas ganas de aprender chino.",
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Hasta la tres: básico. Hasta la siete: intermedio. Las diez: nivel experto.",
+  "outro": "[cheerful] Escribe tu puntuación abajo y reta a un amigo.",
+  "hashtags": [
+    "#CompletaLaFrase",
+    "#Preposiciones",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "fc018",
+    "video_type": "fill_level",
+    "model": "manual",
+    "draft": true
+  }
+}

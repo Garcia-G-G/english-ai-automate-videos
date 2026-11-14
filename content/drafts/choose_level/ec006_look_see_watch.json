@@ -1,0 +1,116 @@
+{
+  "type": "choose_level",
+  "video_title": "LOOK, SEE o WATCH: el test de 10 frases 👀",
+  "video_description": "Look, see y watch, sin confusiones: diez frases de fácil a experto. 👀",
+  "title": "Elige la correcta",
+  "theme": "look, see o watch",
+  "intro": "[thoughtful] Una de las dos suena natural. ¿Cuál? Elige antes que yo.",
+  "items": [
+    {
+      "sentence": "I ____ TV every night.",
+      "options": [
+        "watch",
+        "see"
+      ],
+      "answer": 0,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "____ at this photo!",
+      "options": [
+        "See",
+        "Look"
+      ],
+      "answer": 1,
+      "cefr": "A1"
+    },
+    {
+      "sentence": "I can't ____ anything without my glasses.",
+      "options": [
+        "watch",
+        "see"
+      ],
+      "answer": 1,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "We ____ a great movie at the cinema yesterday.",
+      "options": [
+        "saw",
+        "looked"
+      ],
+      "answer": 0,
+      "cefr": "A2"
+    },
+    {
+      "sentence": "Can you ____ my bag for a moment?",
+      "options": [
+        "look",
+        "watch"
+      ],
+      "answer": 1,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "You ____ tired. Are you OK?",
+      "options": [
+        "look",
+        "see"
+      ],
+      "answer": 0,
+      "cefr": "B1"
+    },
+    {
+      "sentence": "I'll ____ into the problem tomorrow.",
+      "options": [
+        "look",
+        "see"
+      ],
+      "answer": 0,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "I ____ what you mean.",
+      "options": [
+        "watch",
+        "see"
+      ],
+      "answer": 1,
+      "cefr": "B2"
+    },
+    {
+      "sentence": "____ your step, the floor is wet.",
+      "options": [
+        "Watch",
+        "See"
+      ],
+      "answer": 0,
+      "cefr": "C1"
+    },
+    {
+      "sentence": "I don't ____ eye to eye with my boss.",
+      "options": [
+        "look",
+        "see"
+      ],
+      "answer": 1,
+      "cefr": "C1"
+    }
+  ],
+  "verdict": "Llegar a la tres es nivel básico; a la siete, intermedio; y a la diez, experto.",
+  "outro": "[excited] ¿Llegaste a la diez? Te leo en los comentarios.",
+  "hashtags": [
+    "#ElegirLaCorrecta",
+    "#LookSeeWatch",
+    "#AprenderInglés",
+    "#InglésFácil",
+    "#GramáticaInglesa"
+  ],
+  "_meta": {
+    "category": "grammar",
+    "topic_id": "ec006",
+    "video_type": "choose_level",
+    "model": "manual",
+    "draft": true
+  }
+}

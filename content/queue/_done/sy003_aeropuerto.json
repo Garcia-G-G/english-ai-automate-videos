@@ -1,0 +1,111 @@
+{
+  "type": "say_it_level",
+  "video_title": "Frases de AEROPUERTO en inglés: ¿hasta cuál llegas? ✈️",
+  "video_description": "Facturar, embarcar y no perder el vuelo: diez frases de aeropuerto en inglés. ✈️",
+  "title": "Dilo en inglés",
+  "theme": "en el aeropuerto",
+  "intro": "[curious] Diez frases que vas a necesitar en el aeropuerto. Dilas en inglés antes de que yo lo haga.",
+  "items": [
+    {
+      "spanish": "¿Dónde está la puerta doce?",
+      "english": "Where's gate 12?",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Aquí tiene mi tarjeta de embarque.",
+      "english": "Here's my boarding pass.",
+      "cefr": "A1"
+    },
+    {
+      "spanish": "Solo llevo una maleta.",
+      "english": "I only have one suitcase.",
+      "cefr": "A2",
+      "alt": "I just have one suitcase."
+    },
+    {
+      "spanish": "¿Puedo llevar esto en cabina?",
+      "english": "Can I take this on board?",
+      "cefr": "A2",
+      "alt": "Can I bring this as a carry-on?"
+    },
+    {
+      "spanish": "Quiero facturar esta maleta.",
+      "english": "I'd like to check this bag.",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Mi vuelo se ha retrasado.",
+      "english": "My flight has been delayed.",
+      "cefr": "B1",
+      "alt": "My flight is delayed."
+    },
+    {
+      "spanish": "¿A qué hora empieza el embarque?",
+      "english": "What time does boarding start?",
+      "cefr": "B1"
+    },
+    {
+      "spanish": "Casi pierdo el vuelo.",
+      "english": "I almost missed my flight.",
+      "cefr": "B1",
+      "tip": "Perder un vuelo es miss, y «casi pierdo» va en pasado"
+    },
+    {
+      "spanish": "Tengo una escala en Miami.",
+      "english": "I have a layover in Miami.",
+      "cefr": "B2",
+      "alt": "I have a stopover in Miami.",
+      "tip": "«Escala» es layover o stopover, nunca scale"
+    },
+    {
+      "spanish": "¿Cuánto se tarda en llegar al centro?",
+      "english": "How long to get downtown?",
+      "cefr": "B2",
+      "tip": "«Tardar» se dice con take: How long does it take...?"
+    }
+  ],
+  "verdict": "Hasta la tres, nivel básico. Hasta la siete, nivel intermedio. Y las diez, nivel experto. ¿Dónde aterrizaste?",
+  "outro": "[happy] Comenta tu número y comparte el vídeo con quien viaja contigo.",
+  "hashtags": [
+    "#DiloEnInglés",
+    "#InglésParaViajar",
+    "#AprenderInglés",
+    "#InglésEnElAeropuerto",
+    "#FrasesEnInglés"
+  ],
+  "_meta": {
+    "category": "say_it",
+    "topic_id": "sy003",
+    "video_type": "say_it_level",
+    "model": "manual"
+  },
+  "translations": {
+    "Where's gate 12?": "¿Dónde está la puerta doce?",
+    "Here's my boarding pass.": "Aquí tiene mi tarjeta de embarque.",
+    "I only have one suitcase.": "Solo llevo una maleta.",
+    "Can I take this on board?": "¿Puedo llevar esto en cabina?",
+    "I'd like to check this bag.": "Quiero facturar esta maleta.",
+    "My flight has been delayed.": "Mi vuelo se ha retrasado.",
+    "What time does boarding start?": "¿A qué hora empieza el embarque?",
+    "I almost missed my flight.": "Casi pierdo el vuelo.",
+    "I have a layover in Miami.": "Tengo una escala en Miami.",
+    "How long to get downtown?": "¿Cuánto se tarda en llegar al centro?"
+  },
+  "english_phrases": [
+    "Where's gate 12?",
+    "Here's my boarding pass.",
+    "I only have one suitcase.",
+    "Can I take this on board?",
+    "I'd like to check this bag.",
+    "My flight has been delayed.",
+    "What time does boarding start?",
+    "I almost missed my flight.",
+    "I have a layover in Miami.",
+    "How long to get downtown?",
+    "I just have one suitcase.",
+    "Can I bring this as a carry-on?",
+    "My flight is delayed.",
+    "I have a stopover in Miami."
+  ],
+  "full_script": "[curious] Diez frases que vas a necesitar en el aeropuerto. Dilas en inglés antes de que yo lo haga. Where's gate 12? Here's my boarding pass. I only have one suitcase. Ahora, nivel intermedio. Can I take this on board? I'd like to check this bag. My flight has been delayed. What time does boarding start? Y ahora, nivel experto. I almost missed my flight. I have a layover in Miami. How long to get downtown? Hasta la tres, nivel básico. Hasta la siete, nivel intermedio. Y las diez, nivel experto. ¿Dónde aterrizaste? [happy] Comenta tu número y comparte el vídeo con quien viaja contigo."
+}

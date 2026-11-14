@@ -1,0 +1,81 @@
+{
+  "type": "conjugation_map",
+  "video_title": "El verbo CAN en 1 minuto 🟣",
+  "video_description": "Poder y saber en inglés: el verbo que nunca cambia. 🗺️",
+  "level": "A1",
+  "verb": "can",
+  "verb_es": "poder o saber",
+  "tense": "presente",
+  "intro": "[cheerful] El verbo can, poder o saber, en un solo mapa. Repite conmigo.",
+  "rows": [
+    {
+      "pronoun": "I",
+      "form": "can"
+    },
+    {
+      "pronoun": "You",
+      "form": "can"
+    },
+    {
+      "pronoun": "He",
+      "form": "can"
+    },
+    {
+      "pronoun": "She",
+      "form": "can"
+    },
+    {
+      "pronoun": "It",
+      "form": "can"
+    },
+    {
+      "pronoun": "We",
+      "form": "can"
+    },
+    {
+      "pronoun": "They",
+      "form": "can"
+    }
+  ],
+  "highlight": [],
+  "examples": [
+    {
+      "en": "I can swim.",
+      "es": "Sé nadar."
+    },
+    {
+      "en": "She can speak three languages.",
+      "es": "Habla tres idiomas."
+    }
+  ],
+  "negative": {
+    "en": "I can't come today.",
+    "es": "Hoy no puedo venir."
+  },
+  "question": {
+    "en": "Can you help me?",
+    "es": "¿Me ayudas?"
+  },
+  "tip": "Can no cambia nunca: she can, no she cans. Y nunca lleva to detrás.",
+  "outro": "[excited] Guárdalo y repásalo mañana. Dos minutos y ya es tuyo.",
+  "translations": {
+    "I can swim.": "Sé nadar.",
+    "She can speak three languages.": "Habla tres idiomas.",
+    "I can't come today.": "Hoy no puedo venir.",
+    "Can you help me?": "¿Me ayudas?"
+  },
+  "hashtags": [
+    "#VerbosEnInglés",
+    "#InglésParaPrincipiantes",
+    "#AprenderInglés",
+    "#Gramática",
+    "#InglésFácil"
+  ],
+  "_meta": {
+    "category": "verb_maps",
+    "topic_id": "vm005",
+    "video_type": "conjugation_map",
+    "model": "manual",
+    "draft": true
+  }
+}

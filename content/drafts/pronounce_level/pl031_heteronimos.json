@@ -1,0 +1,86 @@
+{
+  "type": "pronounce_level",
+  "video_title": "Se escriben IGUAL y suenan DISTINTO: test de inglés 🔀",
+  "video_description": "Palabras idénticas por escrito que se pronuncian distinto. 🎀",
+  "title": "¿Cómo se pronuncia?",
+  "theme": "palabras que se escriben igual y suenan distinto",
+  "intro": "[surprised] Mismas letras, distinto sonido. Fíjate en la pista y dilo en voz alta.",
+  "items": [
+    {
+      "english": "to use",
+      "respelling": "IUUZ",
+      "ipa": "ˈjuːz",
+      "trap": "Verbo: la S suena Z"
+    },
+    {
+      "english": "the use",
+      "respelling": "IUUS",
+      "ipa": "ˈjuːs",
+      "trap": "Sustantivo: la S suena S"
+    },
+    {
+      "english": "a tear",
+      "respelling": "TIR",
+      "ipa": "ˈtɪr",
+      "trap": "Lágrima: suena «tir»"
+    },
+    {
+      "english": "to tear",
+      "respelling": "TER",
+      "ipa": "ˈtɛr",
+      "trap": "Rasgar: suena «ter»"
+    },
+    {
+      "english": "the wind",
+      "respelling": "UIND",
+      "ipa": "ˈwɪnd",
+      "trap": "Viento: I corta, UIND"
+    },
+    {
+      "english": "to wind",
+      "respelling": "UAIND",
+      "ipa": "ˈwaɪnd",
+      "trap": "Enrollar: la I suena «ai»"
+    },
+    {
+      "english": "a bow",
+      "respelling": "BOU",
+      "ipa": "ˈboʊ",
+      "trap": "Lazo o arco: rima con «go»"
+    },
+    {
+      "english": "to bow",
+      "respelling": "BAU",
+      "ipa": "ˈbaʊ",
+      "trap": "Hacer una reverencia: BAU"
+    },
+    {
+      "english": "a minute",
+      "respelling": "MI-nit",
+      "ipa": "ˈmɪnɪt",
+      "trap": "Un minuto: MI-nit, acento delante"
+    },
+    {
+      "english": "a dove",
+      "respelling": "DAV",
+      "ipa": "ˈdʌv",
+      "trap": "Paloma: DAV, rima con «love»"
+    }
+  ],
+  "verdict": "La tres marca el nivel básico, la siete el intermedio y las diez el experto. ¿Dónde te quedaste?",
+  "outro": "[curious] ¿Qué palabra te sorprendió más? Te leo en los comentarios.",
+  "hashtags": [
+    "#PronunciaciónEnInglés",
+    "#Heterónimos",
+    "#AprenderInglés",
+    "#InglésOnline",
+    "#InglésAmericano"
+  ],
+  "_meta": {
+    "category": "pron_level",
+    "topic_id": "pl031",
+    "video_type": "pronounce_level",
+    "model": "manual",
+    "draft": true
+  }
+}
