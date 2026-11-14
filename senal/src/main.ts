@@ -30,7 +30,8 @@ async function load(): Promise<void> {
     draw(parsed.data, DEFAULT_LOOK);
   } catch (e) {
     stop();
-    fail(e instanceof Error ? e.message : String(e));
+    // fetch rejects with the browser's own (English) text; keep the sentence Spanish
+    fail(e instanceof Error && e.message.startsWith("el servidor") ? e.message : "no se pudo descargar el archivo");
   }
 }
 
