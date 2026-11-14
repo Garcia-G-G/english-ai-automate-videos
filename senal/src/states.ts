@@ -28,3 +28,13 @@ export function showError(root: HTMLElement, message: string): void {
   box.textContent = message; // textContent: the reason may carry server text
   root.replaceChildren(box);
 }
+
+/** One quiet line over the empty landscape when the chosen platform and period hold no videos. */
+export function showEmpty(root: HTMLElement, message: string | null): void {
+  root.querySelector("#senal-empty")?.remove();
+  if (!message) return;
+  const box = Object.assign(document.createElement("div"), { id: "senal-empty", textContent: message });
+  box.setAttribute("role", "status");
+  box.style.cssText = "position:fixed;inset:0;display:grid;place-items:center;padding:0 16px;text-align:center;pointer-events:none;opacity:.8";
+  root.append(box);
+}

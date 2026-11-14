@@ -1,3 +1,4 @@
+import { Color } from "three";
 // The owner's look: warm dusk, low camera, heavy grain, firm vignette.
 export interface Look {
   view: { elevation: number; azimuth: number; fov: number }; // degrees; camera is fitted to the drawn ridges
@@ -32,3 +33,15 @@ export const DEFAULT_LOOK: Look = {
   vignette: 0.9,
   background: { top: "#06060c", horizon: "#2a1922", bottom: "#05070f", at: 0.68 },
 };
+
+const grey = (hex: string, keep: number): string => {
+  const c = new Color(hex);
+  const hsl = c.getHSL({ h: 0, s: 0, l: 0 });
+  return `#${c.setHSL(hsl.h, hsl.s * keep, hsl.l).getHexString()}`;
+};
+
+/** Stale data (spec §8): fog and horizon lose most of their colour; the ridges themselves are untouched. */
+export function muted(look: Look, keep = 0.15): Look {
+  const { top, horizon, bottom } = look.background;
+  return { ...look, fogColor: grey(look.fogColor, keep), background: { ...look.background, top: grey(top, keep), horizon: grey(horizon, keep), bottom: grey(bottom, keep) } };
+}

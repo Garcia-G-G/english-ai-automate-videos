@@ -1,6 +1,6 @@
-import { Box3, type Material, type Object3D } from "three";
+import { Box3, Group, type Material, type Object3D } from "three";
 import { expect, test } from "vitest";
-import { applyLook, buildRidge, dayX, heightOf, ridgeZ } from "./ridges";
+import { applyLook, buildRidge, dayX, disposeRidge, heightOf, ridgeZ, softDot } from "./ridges";
 import { fixture } from "./fixture";
 import { DEFAULT_LOOK } from "./looks";
 
@@ -98,4 +98,29 @@ test("an older video has no live edge and its ghost stops where its data stops",
   const r = buildRidge(fixture.videos[0], fixture.channel.typical_daily.all, 520, 0);
   expect(withRole(r, "edge")).toHaveLength(0);
   expect(new Box3().setFromObject(withRole(r, "ghost")[0]).max.x).toBeCloseTo(dayX(6));
+});
+
+test("disposing a ridge frees its geometries and materials and leaves the shared soft-dot texture alone", () => {
+  const v = { ...fixture.videos[0], age_days: 2, daily: [100, 300, 200], est_from: 1 }; // young: has the live edge too
+  const r = buildRidge(v, fixture.channel.typical_daily.all, 520, 0);
+  const scene = new Group();
+  scene.add(r.group);
+  const freed = new Set<string>();
+  let total = 0;
+  const watch = (x: { addEventListener(t: "dispose", f: () => void): void }, name: string) => {
+    total++;
+    x.addEventListener("dispose", () => freed.add(name));
+  };
+  r.group.traverse((o) => {
+    const g = o as { geometry?: Parameters<typeof watch>[0]; material?: Parameters<typeof watch>[0]; isSprite?: boolean };
+    if (g.geometry && !g.isSprite) watch(g.geometry, `geo${total}`);
+    if (g.material) watch(g.material, `mat${total}`);
+  });
+  let texture = false;
+  softDot().addEventListener("dispose", () => (texture = true));
+  disposeRidge(r);
+  expect(total).toBeGreaterThan(8);
+  expect(freed.size).toBe(total);
+  expect(scene.children).toHaveLength(0);
+  expect(texture).toBe(false);
 });

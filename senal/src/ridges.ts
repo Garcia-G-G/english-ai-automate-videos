@@ -1,4 +1,4 @@
-import { CatmullRomCurve3, Color, DataTexture, Group, LinearFilter, Sprite, SpriteMaterial, Vector3 } from "three";
+import { type BufferGeometry, CatmullRomCurve3, Color, type Material, DataTexture, Group, LinearFilter, Sprite, SpriteMaterial, Vector3 } from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
@@ -96,7 +96,7 @@ export function buildRidge(v: Video, typicalDaily: number[], maxDaily: number, z
   const young = v.age_days <= YOUNG_DAYS;
   // A young video's ghost runs the whole 0..DAYS path, quieter, to show where a typical video goes.
   const ghostMat = material("ghost", young ? 0.2 : 0.35, { dashed: true, dashSize: 0.25, gapSize: 0.2 });
-  const floorMat = material("floor", 0.05); // zero baseline; applyLook scales it with the curtain gain, so it stays under the curtain
+  const floorMat = material("floor", 0.05); // faint zero baseline, scaled with the curtain gain; the curtain falls below it at about 9 % retention, so a near-zero video keeps only this line on the ground
   const mats: (LineMaterial | SpriteMaterial)[] = [crestMat, estMat, curtainMat, estCurtainMat, ghostMat, floorMat];
 
   const ghost = crestLine(smooth(typicalDaily.slice(0, young ? DAYS + 1 : v.daily.length), maxDaily, z - GHOST_BACK), 0.8, ghostMat);
@@ -188,5 +188,14 @@ export function applyLook(group: Group, look: Look): void {
     m.linewidth = width[role];
     m.userData.base *= gain[role]; // keeps setDim consistent with the look
     m.opacity *= gain[role];
+  });
+}
+
+/** Frees a ridge's GPU buffers and removes it from its scene. The live edge's quad and the shared soft-dot texture outlive it. */
+export function disposeRidge(r: RidgeObject): void {
+  r.group.removeFromParent();
+  r.group.traverse((o) => {
+    if (!(o as Sprite).isSprite) (o as { geometry?: BufferGeometry }).geometry?.dispose();
+    (o as { material?: Material }).material?.dispose();
   });
 }

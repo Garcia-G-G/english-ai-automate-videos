@@ -71,6 +71,8 @@ export interface Why {
   show(v: Video, crest: Vector3[], emphasis: string | null): void;
   hide(): void;
   update(dt: number): void;
+  /** The video that gets the ground ring; changes with the platform shown. */
+  setStar(id: string | null): void;
 }
 
 /** Proportional counts plus a legibility floor of MIN_LANE for every source that carries views. */
@@ -382,6 +384,9 @@ export function createWhy(stage: Stage, look: Look, starId: string | null = null
       target = 1;
       setVisible(true);
       this.update(0);
+    },
+    setStar(id) {
+      starId = id;
     },
     hide() {
       target = 0;
