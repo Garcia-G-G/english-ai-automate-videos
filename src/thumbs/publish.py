@@ -6,6 +6,7 @@ output/state/capabilities.json so the call is not repeated for nothing: «no» i
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import time
 from datetime import date, datetime, timedelta
@@ -185,6 +186,8 @@ def after_facebook_upload(artifact: str, video_id: str, jpg: Path, token: Option
                 outcome = facebook(video_id, tmp, tok, post or requests.post)
         except Exception as exc:                            # noqa: BLE001
             outcome = {"result": "error", "message": str(exc)[:200].replace(token or "\0", "***")}
+        if outcome.get("result") == "ok":                  # what the platform shows now: lets §6 see what changed
+            outcome["sha"] = hashlib.sha256(blob).hexdigest()[:16]
         return _log_and_record(artifact, "facebook", video_id, outcome, log)
 
     if not background:
@@ -219,6 +222,8 @@ def after_youtube_upload(artifact: str, video_id: str, jpg: Path, vertical: bool
             outcome = youtube(video_id, tmp, vertical, tok, get or requests.get, post or requests.post, memo=memo)
         except Exception as exc:                            # noqa: BLE001 — a thumbnail never touches the upload
             outcome = {"result": "error", "message": str(exc)[:200]}
+        if outcome.get("result") == "ok":                  # what the platform shows now: lets §6 see what changed
+            outcome["sha"] = hashlib.sha256(blob).hexdigest()[:16]
         return _log_and_record(artifact, "youtube", video_id, outcome, log)
 
     if not background:

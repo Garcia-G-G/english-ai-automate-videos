@@ -1637,6 +1637,12 @@ if page == "Dashboard":
         import thumbnails
         from thumbnails import ensure_thumbnail
 
+        try:                                                # STEP 85b §6: only on Garcia's ticks and «Aplicar»
+            from panel import miniaturas as _mm
+            _mm.render(st, get_ledger_rows())
+        except Exception:                                   # noqa: BLE001 — never blanks Inicio
+            logger.exception("miniaturas mejores failed")
+
         batch = get_library_videos()
         pending = get_pending_videos()
         approved = get_approved_videos()
