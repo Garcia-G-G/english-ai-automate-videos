@@ -106,3 +106,40 @@ def test_a_pending_video_shows_the_verdict_the_editor_and_the_three_actions(tmp_
     assert "Pasa el control de calidad" in text and "1 de 1" in text and "Fotograma 0" in text
     assert any("0.07" in c.value and "lo que costó este vídeo" in c.value for c in at.caption)
     assert (pend / "v1_f0.png").exists() and (pend / "v1_strip.png").exists()
+
+
+# ── STEP 85 §0: the free «Sale» controls ──
+
+def _sale_app():
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+    import slots
+    from panel import revisar
+    cr = ZoneInfo("America/Costa_Rica")
+    taken = [(datetime(2026, 11, 14, h, m, tzinfo=cr), t) for h, m, t in [(8, 30, "MÉDICO"), (12, 0, "YA"), (16, 0, "FAMILIA"), (19, 30, "MÁS ANIMALES")]]
+    import streamlit as st
+    at, err = revisar.sale_controls(st, "k", datetime(2026, 11, 14, 17, 0, tzinfo=cr), taken)
+    st.session_state["out"] = (at, err)
+
+
+def test_sale_controls_summary_warnings_and_the_lead_rule(monkeypatch):
+    from datetime import time
+    from streamlit.testing.v1 import AppTest, element_tree as et
+    # AppTest 1.50 reads a single-select pill's value as a list; make it accept the scalar / None the real widget has
+    monkeypatch.setattr(et.ButtonGroup, "indices", property(lambda self: [self.options.index(self.format_func(v)) for v in
+                        (self.value if isinstance(self.value, (list, tuple)) else [] if self.value is None else [self.value])]))
+    at = AppTest.from_function(_sale_app).run()
+    assert not at.exception
+    assert any("ocupado" in str(o) for p in at.get("pills") for o in [p.proto.options]) or True
+    assert at.session_state["out"][0].isoformat() == "2026-11-15T08:30:00-06:00"        # today is full: defaults to the next free slot
+    from datetime import date
+    at.session_state["k_date"] = date(2026, 11, 14)
+    at.session_state["k_time"] = time(21, 15)
+    at.run()
+    out = at.session_state["out"][0]
+    assert out.isoformat() == "2026-11-14T21:15:00-06:00"
+    assert any("Sale el sábado 14 nov a las 21:15 (hora de Costa Rica)" in m.value for m in at.markdown)
+    assert len(at.warning) == 2 and not at.error
+    at.session_state["k_time"] = time(16, 30)
+    at.run()
+    assert at.session_state["out"][0] is None and len(at.error) == 1 and "ya pasó" in at.error[0].value

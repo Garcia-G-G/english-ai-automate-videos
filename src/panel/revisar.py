@@ -159,3 +159,53 @@ def miniatura_row(st, mp4: Path) -> None:
             thumbs.choose(mp4, label)
             st.rerun()
     st.caption(publish.capability_line())
+
+
+# ── STEP 85 §0: the free «Sale» ──────────────────────────────────────
+
+def sale_controls(st, key: str, now, taken, cfg=None):
+    """Day chips + «Otro día», the usual slots as chips («ocupado» when taken), «Otra hora» (5 min) and the summary
+    line. The date and time inputs are the single source of truth; a chip only sets them. Returns (datetime|None,
+    error|None): None when the time breaks the lead rule, so the caller disables its button."""
+    from datetime import date as _date, datetime, time as _time
+    import slots
+    cfg = cfg or slots.settings()
+    tz = slots._tz(cfg)
+    dk, tk, pd, ps = f"{key}_date", f"{key}_time", f"{key}_dpill", f"{key}_spill"
+    days = slots.next_days(now, 7, cfg)
+    labels = dict(days)
+    usual = list(cfg["slots"])
+    if dk not in st.session_state:
+        first = (slots.next_slots(now, [t for t, _ in taken], 1, cfg) or [now.astimezone(tz) + slots.LEAD])[0]
+        st.session_state[dk], st.session_state[tk] = first.date(), first.time().replace(second=0, microsecond=0)
+
+    def _day_chip():
+        if st.session_state.get(pd):
+            st.session_state[dk] = st.session_state[pd]
+
+    def _date_in():
+        st.session_state[pd] = st.session_state[dk] if st.session_state[dk] in labels else None
+
+    def _slot_chip():
+        if st.session_state.get(ps):
+            st.session_state[tk] = _time.fromisoformat(st.session_state[ps])
+
+    def _time_in():
+        t = st.session_state[tk]
+        st.session_state[ps] = f"{t:%H:%M}" if f"{t:%H:%M}" in usual else None
+
+    st.pills("Sale el día", [d for d, _ in days], format_func=lambda d: labels[d], key=pd, on_change=_day_chip, **({"default": st.session_state[dk]} if pd not in st.session_state and st.session_state[dk] in labels else {}))
+    st.date_input("Otro día", key=dk, min_value=days[0][0], format="DD/MM/YYYY", on_change=_date_in)
+    day = st.session_state[dk]
+    busy = lambda hm: slots.taken_at(datetime.combine(day, _time.fromisoformat(hm), tz), taken, cfg)   # noqa: E731
+    st.pills("A la hora", usual, format_func=lambda hm: f"{hm} · ocupado" if busy(hm) else hm, key=ps, on_change=_slot_chip, **({"default": f"{st.session_state[tk]:%H:%M}"} if ps not in st.session_state and f"{st.session_state[tk]:%H:%M}" in usual else {}))
+    st.time_input("Otra hora", key=tk, step=300, on_change=_time_in)
+    at = datetime.combine(day, st.session_state[tk], tz)
+    res = slots.check_time(at, taken, now, cfg)
+    if res["error"]:
+        st.error(res["error"])
+        return None, res["error"]
+    st.markdown(f"**Sale el {slots.long_label(at, cfg)} (hora de Costa Rica)**")
+    for w in res["warnings"]:
+        st.warning(w)
+    return at, None

@@ -103,3 +103,81 @@ def next_free(rows: Optional[Iterable[Dict]] = None, now: Optional[datetime] = N
         rows = publication_log.read_ledger()
     found = next_slots(now or datetime.now(_tz(cfg)), taken_times(rows, cfg), 1, cfg)
     return found[0] if found else None
+
+
+# ── STEP 85 §0: free «Sale». Port of panel/src/lib/schedule.ts: Garcia picks any minute; the one hard rule is
+# the lead time; spacing and per-day count only warn. The limits bind only when the engine picks (next_slots). ──
+GARCIA, AUTO = "garcia", "auto"
+_DOW = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"]
+_DOW_LONG = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+_MES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+
+
+def next_days(now: datetime, count: int = 7, cfg: Optional[Dict] = None) -> List[Tuple[date, str]]:
+    """[(date, label)] from today (in the schedule's zone): «Hoy», «Mañana», «mar 1 dic»."""
+    today = now.astimezone(_tz(cfg or settings())).date()
+    out = []
+    for k in range(count):
+        d = today + timedelta(days=k)
+        out.append((d, "Hoy" if k == 0 else "Mañana" if k == 1 else f"{_DOW[d.weekday()]} {d.day} {_MES[d.month - 1]}"))
+    return out
+
+
+def long_label(at: datetime, cfg: Optional[Dict] = None) -> str:
+    """«sábado 14 nov a las 21:15»."""
+    at = at.astimezone(_tz(cfg or settings()))
+    return f"{_DOW_LONG[at.weekday()]} {at.day} {_MES[at.month - 1]} a las {at:%H:%M}"
+
+
+def taken_titled(rows: Iterable[Dict], cfg: Optional[Dict] = None) -> List[Tuple[datetime, str]]:
+    """[(when, title)] of the YouTube ledger rows, the title the «Sale» warnings quote."""
+    cfg = cfg or settings()
+    rows = [r for r in rows if r.get("platform") == "youtube"]
+    out = []
+    for r in rows:
+        t = taken_times([r], cfg)
+        if t:
+            out.append((t[0], str(r.get("published_title") or r.get("artifact") or "otro vídeo")))
+    return sorted(out)
+
+
+def taken_at(at: datetime, taken: Iterable[Tuple[datetime, str]], cfg: Optional[Dict] = None) -> Optional[str]:
+    """The title of the video already at this exact minute, to mark a usual slot «ocupado»."""
+    tz = _tz(cfg or settings())
+    return next((title for t, title in taken if t.astimezone(tz).replace(second=0, microsecond=0) == at.astimezone(tz)), None)
+
+
+def _gap(minutes: float) -> str:
+    h, m = int(minutes // 60), int(round(minutes % 60))
+    return f"{h} h{f' {m} min' if m else ''}" if h else f"{m} min"
+
+
+def check_time(at: datetime, taken: Iterable[Tuple[datetime, str]], now: datetime, cfg: Optional[Dict] = None) -> Dict:
+    """{error, warnings} for a time Garcia chose. Error (blocks): shorter than the lead time. Warnings (inform):
+    closer than min_gap to another video, or past max_per_day that day."""
+    cfg = cfg or settings()
+    taken, lead = list(taken), (at - now).total_seconds() / 60
+    mins = LEAD.total_seconds() / 60
+    if lead < mins:
+        return {"error": "Esa hora ya pasó. Elige una hora futura." if lead < 0
+                else f"Tiene que ser al menos {int(mins)} min en el futuro, para que YouTube lo acepte.", "warnings": []}
+    warnings = []
+    if taken:
+        gap, title = min((abs((t - at).total_seconds()) / 60, title) for t, title in taken)
+        spacing = float(cfg["min_gap_hours"])
+        if gap < spacing * 60:
+            warnings.append(f"A la misma hora que «{title}»." if gap < 1
+                            else f"A {_gap(gap)} de «{title}» (lo normal: {f'{spacing:g}'.replace('.', ',')} h).")
+    tz, mx = _tz(cfg), int(cfg["max_per_day"])
+    n = sum(1 for t, _ in taken if t.astimezone(tz).date() == at.astimezone(tz).date()) + 1
+    if n > mx:
+        warnings.append(f"Sería el {n}.º vídeo de ese día (lo normal: {mx}).")
+    return {"error": None, "warnings": warnings}
+
+
+def explicit(at: datetime, taken: Iterable[Tuple[datetime, str]], now: datetime, cfg: Optional[Dict] = None) -> Dict:
+    """Accept Garcia's own time: ValueError when it fails the lead rule, else {at, scheduled_by, warnings}."""
+    r = check_time(at, taken, now, cfg)
+    if r["error"]:
+        raise ValueError(r["error"])
+    return {"at": at, "scheduled_by": GARCIA, "warnings": r["warnings"]}

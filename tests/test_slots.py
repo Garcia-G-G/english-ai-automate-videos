@@ -102,3 +102,81 @@ def test_the_panels_guarded_upload_schedules_youtube_and_only_youtube(monkeypatc
     fb = admin._guarded_upload_unlocked(M(), "a", "facebook", "/nope.mp4", title="t")
     assert seen[0][1]["publish_at"] == "2026-12-01T18:00:00.000Z" and yt["scheduled_for"] == slot.isoformat()
     assert "publish_at" not in seen[1][1] and "scheduled_for" not in fb
+
+
+# ── STEP 85 §0: free «Sale». Cases ported from panel/src/lib/schedule.test.ts ──
+
+_TAKEN = [(_at(14, 8, 30), "MÉDICO"), (_at(14, 12, 0), "YA LO RESOLVÍ"), (_at(14, 16, 0), "Test FAMILIA"), (_at(14, 19, 30), "MÁS ANIMALES")]
+_NOW = _at(14, 17, 0)
+
+
+def test_free_time_labels_and_days_match_the_front_end():
+    assert S.long_label(_at(14, 21, 15)) == "sábado 14 nov a las 21:15"
+    d = S.next_days(datetime(2026, 11, 29, 22, 0, tzinfo=CR), 4)
+    assert [x[1] for x in d] == ["Hoy", "Mañana", "mar 1 dic", "mié 2 dic"] and d[2][0].isoformat() == "2026-12-01"
+    assert S.next_days(datetime(2026, 11, 15, 3, 0, tzinfo=ZoneInfo("UTC")), 1)[0][0].isoformat() == "2026-11-14"
+
+
+def test_free_time_blocks_only_the_past_or_too_soon():
+    assert "ya pasó" in S.check_time(_at(14, 16, 30), _TAKEN, _NOW)["error"]
+    assert "15 min" in S.check_time(_at(14, 17, 10), _TAKEN, _NOW)["error"]
+    assert S.check_time(datetime(2026, 11, 16, 10, 0, tzinfo=CR), _TAKEN, _NOW) == {"error": None, "warnings": []}
+
+
+def test_free_time_warns_without_blocking_about_spacing_and_a_fifth_video():
+    r = S.check_time(_at(14, 21, 15), _TAKEN, _NOW)
+    assert r["error"] is None
+    assert r["warnings"] == ["A 1 h 45 min de «MÁS ANIMALES» (lo normal: 2,5 h).", "Sería el 5.º vídeo de ese día (lo normal: 4)."]
+    assert S.check_time(_at(14, 19, 30), _TAKEN, _NOW)["warnings"][0] == "A la misma hora que «MÁS ANIMALES»."
+
+
+def test_which_usual_slots_are_taken():
+    assert S.taken_at(_at(14, 16, 0), _TAKEN) == "Test FAMILIA" and S.taken_at(_at(15, 16, 0), _TAKEN) is None
+
+
+def test_garcias_time_is_accepted_with_warnings_and_marked_garcia():
+    got = S.explicit(_at(14, 21, 15), _TAKEN, _NOW)
+    assert got["scheduled_by"] == "garcia" and len(got["warnings"]) == 2
+
+
+def test_garcias_time_in_the_past_is_refused():
+    import pytest
+    with pytest.raises(ValueError, match="ya pasó"):
+        S.explicit(_at(14, 16, 30), _TAKEN, _NOW)
+
+
+def test_auto_fill_still_respects_the_limits_and_is_marked_auto():
+    cfg = S.settings()
+    got = S.next_slots(_NOW, [t for t, _ in _TAKEN], 1, cfg)[0]
+    assert got.day == 15 and (got.hour, got.minute) == (8, 30)           # the 4-a-day day is skipped
+    assert S.AUTO == "auto"
+
+
+def test_the_guarded_upload_records_who_chose_the_time(monkeypatch):
+    import admin
+    import upload_limits
+    import publication_log
+    seen = []
+
+    class M:
+        def upload(self, platform, path, on_session=None, **kw):
+            seen.append(kw)
+            return {"success": True, "upload_id": "x", "url": "u"}
+    monkeypatch.setattr(upload_limits, "claim", lambda *a: True)
+    monkeypatch.setattr(upload_limits, "release", lambda *a: None)
+    monkeypatch.setattr(publication_log, "record_attempt", lambda **k: None)
+    auto = datetime(2026, 12, 1, 12, 0, tzinfo=CR)
+    monkeypatch.setattr(S, "next_free", lambda *a, **k: auto)
+    r1 = admin._guarded_upload_unlocked(M(), "a", "youtube", __file__, title="t")
+    assert r1["scheduled_by"] == "auto"
+    r2 = admin._guarded_upload_unlocked(M(), "b", "youtube", __file__, title="t", scheduled_for=_at(14, 21, 15))
+    assert r2["scheduled_by"] == "garcia" and "scheduled_by" not in seen[1]
+
+
+def test_scheduling_a_past_time_from_revisar_is_refused_before_any_upload(monkeypatch):
+    import admin
+    import uploader
+    monkeypatch.setattr(uploader, "get_upload_manager", lambda: (_ for _ in ()).throw(AssertionError("must not upload")))
+    past = datetime.now(CR) - timedelta(minutes=5)
+    failed = admin._schedule_approved({"name": "a", "path": Path("/nope.mp4")}, {}, ["youtube"], past)
+    assert "ya pasó" in failed["youtube"]

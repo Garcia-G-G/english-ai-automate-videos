@@ -567,6 +567,14 @@ def _schedule_approved(video: dict, script: dict, platforms: list, slot) -> dict
     that failed; empty when all went. On full success the video moves to «subidos»."""
     from uploader import get_upload_manager
     failed, done = {}, []
+    if slot is not None and "youtube" in platforms:           # STEP 85 §0: the lead rule is the one limit that binds Garcia
+        import slots as _s
+        _err = _s.check_time(slot, [], datetime.now(slot.tzinfo))["error"]
+        if _err:
+            failed["youtube"] = _err
+            platforms = [p for p in platforms if p != "youtube"]
+            if not platforms:
+                return failed
     manager = get_upload_manager()
     resolved = resolve_upload_metadata(video["name"], script, "", video.get("type", "educational"),
                                        (script.get("_meta") or {}).get("category", ""), st.session_state,
@@ -591,7 +599,8 @@ def _schedule_approved(video: dict, script: dict, platforms: list, slot) -> dict
             err = result.get("error") if isinstance(result, dict) else getattr(result, "error", "")
             failed[platform] = str(err or "error")[:120]
     if done and not failed and video["path"].exists():
-        move_to_uploaded(video["path"], {"platforms": done, "uploaded_at": datetime.now().isoformat(), "title": title})
+        move_to_uploaded(video["path"], {"platforms": done, "uploaded_at": datetime.now().isoformat(), "title": title,
+                                         **({"scheduled_by": "garcia"} if slot is not None else {"scheduled_by": "auto"})})
     return failed
 
 
@@ -728,6 +737,7 @@ def _guarded_upload_unlocked(manager, artifact: str, platform: str, video_path: 
     # STEP 81 §2 / STEP 83 §3: YouTube goes up private and publishes itself at a free slot (the one Revisar
     # shows, else the next one); every other platform is untouched.
     scheduled_for = kwargs.pop("scheduled_for", None)
+    scheduled_by = "garcia" if scheduled_for is not None else "auto"       # STEP 85 §0: his own time skips the limits
     if platform == "youtube" and "publish_at" not in kwargs:
         import slots as _slots
         scheduled_for = scheduled_for or _slots.next_free()
@@ -742,6 +752,10 @@ def _guarded_upload_unlocked(manager, artifact: str, platform: str, video_path: 
             result["scheduled_for"] = scheduled_for.isoformat()
         except TypeError:
             setattr(result, "scheduled_for", scheduled_for.isoformat())
+        try:
+            result["scheduled_by"] = scheduled_by
+        except TypeError:
+            setattr(result, "scheduled_by", scheduled_by)
 
     ok = (result.get("success") if isinstance(result, dict)
           else getattr(result, "success", False))
@@ -818,8 +832,10 @@ def _record_upload(st_module, video: dict, platform: str, result,
             sent_title=sent_title,
             sent_description=sent_description,
             sent_hashtags=sent_hashtags,
-            extra=({"scheduled_for": _sf} if (_sf := (result.get("scheduled_for") if isinstance(result, dict)
-                                                       else getattr(result, "scheduled_for", None))) else None),
+            extra=({"scheduled_for": _sf, "scheduled_by": (result.get("scheduled_by") if isinstance(result, dict)
+                                                           else getattr(result, "scheduled_by", None))}
+                   if (_sf := (result.get("scheduled_for") if isinstance(result, dict)
+                               else getattr(result, "scheduled_for", None))) else None),
         )
         # Only now is the attempt closed: the video is live AND named.
         record_attempt(artifact=video["name"], platform=platform,
@@ -2405,23 +2421,29 @@ elif page == "Review":
                 use_fb = _plats[1].toggle("Facebook", value=True, key=f"rv_fb_{video['name']}")
                 _plats[2].toggle("TikTok (a mano)", value=False, key=f"rv_tt_{video['name']}", disabled=True)
                 _sc = _slots_mod.settings()
-                _taken = _slots_mod.taken_times(_pl.read_ledger(), _sc)
-                _free = _slots_mod.next_slots(datetime.now(_slots_mod._tz(_sc)), _taken, 6, _sc)
-                _opts = {f"{s:%a %d %b %H:%M}": s for s in _free}
-                _pick = st.selectbox("Sale", list(_opts) or ["sin huecos"], key=f"rv_slot_{video['name']}") if _opts else None
+                _slot, _slot_err = _rv.sale_controls(st, f"rv_sale_{video['name']}", datetime.now(_slots_mod._tz(_sc)),
+                                                     _slots_mod.taken_titled(_pl.read_ledger(), _sc), _sc)
                 st.caption("YouTube lo sube en privado y se publica solo a esa hora (Costa Rica).")
             _cost = _rv.cost_of(meta)
-            a1, a2, a3 = st.columns(3)
+            a1, a1b, a2, a3 = st.columns(4)
             with a1:
                 with st.container(key="btn-green-approve"):
-                    go = st.button("✓ Aprobar y programar", key=f"rv_ok_{video['name']}", disabled=bool(video.get("damaged")))
+                    go = st.button("✓ Aprobar y programar", key=f"rv_ok_{video['name']}",
+                                   disabled=bool(video.get("damaged")) or (use_yt and _slot is None))
+            with a1b:
+                plain_ok = st.button("✓ Aprobar", key=f"rv_plain_{video['name']}", disabled=bool(video.get("damaged")),
+                                     help="Lo deja en «Por subir», sin hora. No sube nada.")
             with a2:
                 reject_open = st.button("✕ Rechazar", key=f"rv_no_{video['name']}")
             with a3:
                 rerender_open = st.button("↻ Volver a renderizar", key=f"rv_re_{video['name']}")
             st.caption("sin dato" if _cost is None else f"\\${_cost:.2f} — lo que costó este vídeo")
+            if plain_ok:
+                approve_video(video["path"])
+                st.success("Aprobado. Está en «Por subir», sin hora.")
+                st.session_state.review_idx = max(0, idx - 1)
+                st.rerun()
             if go:
-                _slot = _opts.get(_pick) if _pick else None
                 approve_video(video["path"])
                 _new = {**video, "path": APPROVED_DIR / video["type"] / video["path"].name, "stage": "approved"}
                 _platforms = [p for p, on in (("youtube", use_yt), ("facebook", use_fb)) if on]
