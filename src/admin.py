@@ -921,7 +921,7 @@ def _record_upload(st_module, video: dict, platform: str, result,
                        session_uri=uri, upload_id=vid,
                        detail=f"published but record failed: {exc}")
         st_module.error(
-            f"⚠️ Uploaded to {platform} but FAILED TO RECORD it: {exc}. "
+            f"⚠️ Subido a {platform} pero NO SE PUDO REGISTRAR: {exc}. "
             f"The video is live and this repo cannot name it — note the id now."
         )
 
@@ -1448,6 +1448,11 @@ NAV_LABELS = {
     "Settings": ("Ajustes", ":material/settings:"),
     "Logs": ("Registros", ":material/receipt_long:"),
 }
+
+
+def _page_header(title: str, sentence: str) -> None:
+    """STEP 83 §4: every page opens the same way, an h1 and one sentence of what the page is for."""
+    st.markdown(f"<h1>{title}</h1><div class='sub'>{sentence}</div>", unsafe_allow_html=True)
 
 
 def _cost_tracker_stats() -> dict:
@@ -2158,7 +2163,7 @@ if page == "Dashboard":
 
 
 elif page == "Generate":
-    st.markdown("## Crear video")
+    _page_header("Crear", "Elige un tipo y produce un vídeo nuevo; sale con voz y se queda esperando tu revisión.")
 
     col1, col2 = st.columns([1, 1])
 
@@ -2305,7 +2310,7 @@ elif page == "Generate":
 
 # ============== QUEUE PAGE ==============
 elif page == "Queue":
-    st.markdown("## Cola")
+    _page_header("Cola", "Los guiones que esperan turno, en el orden en que se producirán.")
 
     col1, col2 = st.columns([1, 1])
 
@@ -2534,7 +2539,7 @@ elif page == "Review":
 
 # ============== UPLOAD PAGE ==============
 elif page == "Upload":
-    st.markdown("## Subir")
+    _page_header("Subir", "Los vídeos aprobados que aún no están en sus plataformas.")
 
     approved = get_approved_videos()
 
@@ -2625,7 +2630,7 @@ elif page == "Upload":
 
     # Upload section
     if not approved:
-        st.warning("No approved videos ready for upload. Approve some videos in the Review tab first.")
+        st.warning("No hay vídeos aprobados para subir. Aprueba alguno en «Revisar».")
     else:
         st.markdown(f'<div class="section-header">📹 Ready for Upload ({len(approved)} videos)</div>', unsafe_allow_html=True)
 
@@ -2811,7 +2816,7 @@ elif page == "Upload":
                                             }
                                             st.rerun()
                                     except Exception as e:
-                                        st.error(f"Regeneration failed: {e}")
+                                        st.error(f"No se pudo regenerar: {e}")
 
                 # Upload button. STEP 65: the guard is asked BEFORE the click
                 # too, so a refusal is on screen and the button stays grey.
@@ -2881,7 +2886,7 @@ elif page == "Upload":
                                     else:
                                         upload_missing = True
                                     continue
-                                with st.spinner(f"Uploading to {platform_name}..."):
+                                with st.spinner(f"Subiendo a {platform_name}…"):
                                     result = _guarded_upload(
                                         manager,
                                         video["name"],
@@ -2894,7 +2899,7 @@ elif page == "Upload":
                                     success = (isinstance(result, dict) and result.get("success")) or (hasattr(result, 'success') and result.success)
                                     upload_missing = upload_missing or not success
                                     if success:
-                                        st.success(f"Uploaded to {platform_name}!")
+                                        st.success(f"Subido a {platform_name}.")
                                         upload_success = True
                                         upload_platforms.append(platform_name)
                                         _record_upload(
@@ -2913,7 +2918,7 @@ elif page == "Upload":
                                     elif not (isinstance(result, dict) and result.get("in_flight")):
                                         from upload_limits import spanish as _spanish
                                         err = result.get("error", "Unknown") if isinstance(result, dict) else getattr(result, 'error', 'Unknown')
-                                        st.error(f"Failed: {_spanish(err, _read_attempts(), datetime.now())}")
+                                        st.error(f"Falló: {_spanish(err, _read_attempts(), datetime.now())}")
 
                             # Only when every platform has it: the guard skips the done ones on the next press,
                             # and from «Subidos» the missing one could never be retried.
@@ -2927,7 +2932,7 @@ elif page == "Upload":
                                 })
                                 st.rerun()
                         except ImportError:
-                            st.error("Upload module not available.")
+                            st.error("El módulo de subida no está disponible.")
                         except Exception as e:
                             st.error(f"Upload error: {str(e)}")
                 else:
@@ -3116,7 +3121,7 @@ elif page == "Upload":
                     upload_info = video.get("upload_info", {})
                     platforms_str = ", ".join(upload_info.get("platforms", ["Unknown"]))
                     uploaded_at = upload_info.get("uploaded_at", "")[:16]
-                    st.caption(f"{video['type']} | Uploaded to: {platforms_str} | {uploaded_at}")
+                    st.caption(f"{video['type']} | Subido a: {platforms_str} | {uploaded_at}")
 
                     if video["path"].exists():
                         lazy_video(video["path"], f"upload_{video['path'].name}")
@@ -3140,7 +3145,7 @@ elif page == "Upload":
 
 # ============== LIBRARY PAGE ==============
 elif page == "Library":
-    st.markdown("## Biblioteca")
+    _page_header("Biblioteca", "Todo lo que se ha producido, para volver a verlo.")
 
     library = get_library_videos()
     pending = get_pending_videos()
@@ -3229,7 +3234,7 @@ elif page == "Library":
 
 # ============== SCHEDULER PAGE ==============
 elif page == "Scheduler":
-    st.markdown("## Programar")
+    _page_header("Programar", "Producción por lotes y horarios.")
 
     col1, col2 = st.columns([1, 1])
 
@@ -3291,7 +3296,7 @@ elif page == "Scheduler":
 # Every number here is COMPUTED at draw time. None is typed into a caption,
 # because a hardcoded 22% is wrong the day after it is written.
 elif page == "Topics":
-    st.markdown("## Temas")
+    _page_header("Temas", "Los temas de los que salen los guiones.")
     st.caption("Which topics have been used, and which keep coming back. "
                "Counted from the scripts on disk, not from a stored tally.")
 
@@ -3335,7 +3340,7 @@ elif page == "Topics":
 
 # ============== SETTINGS PAGE ==============
 elif page == "Settings":
-    st.markdown("## Ajustes")
+    _page_header("Ajustes", "Claves, plataformas y límites de gasto.")
 
     tab1, tab2, tab3 = st.tabs(["🔑 API Keys & Security", "🎬 Video Config", "🔊 Audio Config"])
 
@@ -3502,6 +3507,7 @@ elif page == "Settings":
 # ============== MANIM STUDIO ==============
 # Everything lives in src/manim_studio.py; this file only routes to it.
 elif page == "Manim":
+    _page_header("Lecciones", "Lecciones largas con animación, voz y subtítulos.")
     import manim_studio
     manim_studio.render()
 
@@ -3509,8 +3515,7 @@ elif page == "Manim":
 # ============== LOGS PAGE ==============
 elif page == "Comments":
     # STEP 81 §3.2: read the channel's comments, draft replies, post ONLY on Garcia's click
-    st.markdown("## Comentarios")
-    st.caption("Lo nuevo del canal, con una respuesta sugerida. No se publica nada hasta que pulses «Responder».")
+    _page_header("Comentarios", "Lo nuevo del canal, con una respuesta sugerida. No se publica nada hasta que pulses «Responder».")
     import comments as _cm
     if st.button("Cargar comentarios", key="comments_load"):
         try:
@@ -3552,7 +3557,7 @@ elif page == "Comments":
 
 
 elif page == "Performance":
-    st.markdown("## Rendimiento")
+    _page_header("Rendimiento", "Cómo le va al canal, por formato y por tema.")
     st.caption("Lo que hicieron los vídeos publicados en YouTube (lectura gratuita con el token del canal). "
                "Un vídeo de menos de 3 días todavía no se juzga.")
     import channel_stats
@@ -3633,7 +3638,7 @@ elif page == "Performance":
         st.caption(f"Prioridad no disponible: {e}")
 
 elif page == "Logs":
-    st.markdown("## Registros")
+    _page_header("Registros", "Lo que ha pasado en cada trabajo, para leerlo cuando algo falla.")
 
     jobs = load_jobs()
     all_jobs = jobs.get("active", []) + jobs.get("history", [])
