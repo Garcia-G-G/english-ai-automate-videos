@@ -116,6 +116,9 @@ def _isolate_output_tree(tmp_path, monkeypatch):
     monkeypatch.setattr(ai_background, "LIBRARY", out / "ai_backgrounds")
     import length_ab
     monkeypatch.setattr(length_ab, "AB_LOG", out / "stats" / "length_ab.jsonl")
+    from thumbs import publish as thumbs_publish
+    monkeypatch.setattr(thumbs_publish, "STATE", out / "state" / "capabilities.json")
+    monkeypatch.setattr(thumbs_publish, "LOG", out / "state" / "thumb_results.jsonl")
     import design_ab
     monkeypatch.setattr(design_ab, "AB_LOG", out / "stats" / "design_ab.jsonl")
     import senal
