@@ -195,14 +195,7 @@ def move_uploaded_artifact(video_path: Path, outcome: dict) -> Path:
 
 def next_youtube_slot():
     """The next free YouTube slot (STEP 81 §2), or None when scheduling is off. Reads the ledger."""
-    import publication_log
-    import slots
-    cfg = slots.settings()
-    if not cfg["enabled"]:
-        return None
-    taken = slots.taken_times(publication_log.read_ledger(), cfg)
-    found = slots.next_slots(datetime.now(slots._tz(cfg)), taken, 1, cfg)
-    return found[0] if found else None
+    return slots.next_free()
 
 
 def upload_video(video_path: Path, video_type: str, script_data: dict = None,

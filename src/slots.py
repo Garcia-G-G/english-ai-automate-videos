@@ -91,3 +91,15 @@ def fill_plan(slots: List[datetime], ranked: List[Tuple[object, dict]], types_to
             todays.append(pick[1].get("type") or "")
         out.append((at, (plan["types"] or ["—"])[0], pick[0] if pick else None))
     return out
+
+
+def next_free(rows: Optional[Iterable[Dict]] = None, now: Optional[datetime] = None, cfg: Optional[Dict] = None) -> Optional[datetime]:
+    """The next free YouTube slot from the ledger, or None when scheduling is off (config youtube_schedule.enabled)."""
+    cfg = cfg or settings()
+    if not cfg["enabled"]:
+        return None
+    if rows is None:
+        import publication_log
+        rows = publication_log.read_ledger()
+    found = next_slots(now or datetime.now(_tz(cfg)), taken_times(rows, cfg), 1, cfg)
+    return found[0] if found else None

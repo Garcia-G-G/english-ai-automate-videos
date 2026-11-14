@@ -796,10 +796,23 @@ def _guarded_upload_unlocked(manager, artifact: str, platform: str, video_path: 
                        session_uri=uri, file_size=sz,
                        detail=str(kwargs.get("title", ""))[:120])
 
+    # STEP 81 §2 / STEP 83 §3: YouTube goes up private and publishes itself at a free slot (the one Revisar
+    # shows, else the next one); every other platform is untouched.
+    scheduled_for = kwargs.pop("scheduled_for", None)
+    if platform == "youtube" and "publish_at" not in kwargs:
+        import slots as _slots
+        scheduled_for = scheduled_for or _slots.next_free()
+        if scheduled_for is not None:
+            kwargs["publish_at"] = _slots.publish_at(scheduled_for)
     try:
         result = manager.upload(platform, video_path, on_session=_session, **kwargs)
     finally:
         release(artifact, platform)
+    if scheduled_for is not None and platform == "youtube":
+        try:
+            result["scheduled_for"] = scheduled_for.isoformat()
+        except TypeError:
+            setattr(result, "scheduled_for", scheduled_for.isoformat())
 
     ok = (result.get("success") if isinstance(result, dict)
           else getattr(result, "success", False))
@@ -858,6 +871,8 @@ def _record_upload(st_module, video: dict, platform: str, result,
             sent_title=sent_title,
             sent_description=sent_description,
             sent_hashtags=sent_hashtags,
+            extra=({"scheduled_for": _sf} if (_sf := (result.get("scheduled_for") if isinstance(result, dict)
+                                                       else getattr(result, "scheduled_for", None))) else None),
         )
         # Only now is the attempt closed: the video is live AND named.
         record_attempt(artifact=video["name"], platform=platform,

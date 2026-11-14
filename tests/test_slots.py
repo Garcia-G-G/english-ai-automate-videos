@@ -81,3 +81,24 @@ def test_main_upload_hands_youtube_a_publish_at_and_the_ledger_remembers_the_slo
     import main
     monkeypatch.setattr(main, "next_youtube_slot", lambda: _at(30, 12, 0))
     assert main.slots.publish_at(main.next_youtube_slot()) == "2026-11-30T18:00:00.000Z"
+
+
+def test_the_panels_guarded_upload_schedules_youtube_and_only_youtube(monkeypatch):
+    import admin
+    seen = []
+
+    class M:
+        def upload(self, platform, path, on_session=None, **kw):
+            seen.append((platform, kw))
+            return {"success": True, "upload_id": "x", "url": "u"}
+    slot = datetime(2026, 12, 1, 12, 0, tzinfo=CR)
+    monkeypatch.setattr(S, "next_free", lambda *a, **k: slot)
+    import upload_limits
+    monkeypatch.setattr(upload_limits, "claim", lambda *a: True)
+    monkeypatch.setattr(upload_limits, "release", lambda *a: None)
+    import publication_log
+    monkeypatch.setattr(publication_log, "record_attempt", lambda **k: None)
+    yt = admin._guarded_upload_unlocked(M(), "a", "youtube", "/nope.mp4", title="t")
+    fb = admin._guarded_upload_unlocked(M(), "a", "facebook", "/nope.mp4", title="t")
+    assert seen[0][1]["publish_at"] == "2026-12-01T18:00:00.000Z" and yt["scheduled_for"] == slot.isoformat()
+    assert "publish_at" not in seen[1][1] and "scheduled_for" not in fb
