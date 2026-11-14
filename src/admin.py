@@ -3474,6 +3474,17 @@ elif page == "Performance":
             st.success(f"Guardado en {path.relative_to(ROOT)}")
         except Exception as e:                              # noqa: BLE001 — shown, not raised
             st.error(f"No se pudieron leer las estadísticas: {e}")
+    if st.button("🛰️ Abrir Señal"):
+        import senal, senal_server, webbrowser
+        if not (senal_server.DIST / "index.html").is_file():
+            st.error("Señal no está construida: corre «cd senal && npm run build».")
+        else:
+            try:
+                with st.spinner("Actualizando Señal…"):
+                    senal.refresh_if_stale()
+            except Exception as e:                          # noqa: BLE001 — the page opens with the previous data
+                st.error(f"No se pudo actualizar Señal: {e}")
+            webbrowser.open(senal_server.ensure_running())
     snap = channel_stats.latest()
     if not snap:
         st.info("Todavía no hay estadísticas: pulsa «Actualizar estadísticas».")
