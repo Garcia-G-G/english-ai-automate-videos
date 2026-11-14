@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><link rel="stylesheet" href="theme-papel.css">
+<style>
+.pager { display: flex; gap: 8px; align-items: center; }
+.pager .chip b { font-family: Fredoka; font-weight: 700; }
+.rv { display: grid; grid-template-columns: 360px 1fr; gap: 30px; align-items: start; }
+.player { padding: 18px; }
+.player .phone { width: 100%; position: relative; }
+.player .ctrl { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+.player .pp { font-family: 'DejaVu Sans'; font-variant-emoji: text; width: 42px; height: 42px; border-radius: 99px; background: var(--ink); color: #fff; display: grid; place-items: center; font-size: 15px; flex: none; }
+.player .scrub { flex: 1; height: 8px; background: var(--sand2); border-radius: 99px; position: relative; }
+.player .scrub div { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: var(--blue); border-radius: 99px; }
+.player .scrub i { position: absolute; top: -5px; width: 2px; height: 18px; background: var(--ink); opacity: .35; }
+.player .time { font-size: 12.5px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.badge0 { position: absolute; left: 10px; top: 10px; background: var(--ink); color: #fff; font-size: 11.5px; font-weight: 800; border-radius: 8px; padding: 4px 8px; }
+.strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 14px; }
+.strip div { border-radius: 7px; overflow: hidden; border: 1.5px solid var(--line); position: relative; }
+.strip div.on { border: 2px solid var(--stroke); }
+.strip img { width: 100%; display: block; }
+.strip span { position: absolute; bottom: 2px; left: 0; right: 0; text-align: center; font-size: 9.5px; font-weight: 800; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+
+.col { display: flex; flex-direction: column; gap: 20px; }
+.verdict { display: flex; align-items: center; gap: 16px; padding: 18px 22px; }
+.verdict .big { width: 54px; height: 54px; border-radius: 16px; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 28px; font-weight: 800; border: 2.5px solid var(--stroke); flex: none; }
+.verdict h2 { font-size: 22px; }
+.verdict p { color: var(--muted); font-weight: 600; font-size: 13.5px; }
+.checks { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 14px; margin-top: 16px; }
+.checks > div { display: flex; gap: 9px; align-items: flex-start; font-size: 13px; font-weight: 650; }
+.checks > div > i { font-style: normal; width: 20px; height: 20px; border-radius: 99px; background: var(--green-soft); color: var(--green); display: grid; place-items: center; font-size: 12px; font-weight: 900; flex: none; margin-top: 1px; }
+.checks > div small { display: block; color: var(--muted); font-weight: 600; font-size: 12px; }
+
+.field { margin-bottom: 14px; }
+.field label { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+.field label span { text-transform: none; letter-spacing: 0; font-weight: 650; }
+.input { border: 1.5px solid var(--line); border-radius: 12px; padding: 11px 13px; font-size: 15px; font-weight: 650; background: var(--field); }
+.input.area { font-size: 13.5px; font-weight: 500; line-height: 1.5; color: #3A342B; }
+.hash { display: flex; gap: 6px; flex-wrap: wrap; }
+.hash span { background: var(--blue-soft); color: var(--blue-ink); font-weight: 700; font-size: 12.5px; border-radius: 8px; padding: 4px 9px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.plat { display: flex; flex-direction: column; gap: 8px; }
+.plat div { display: flex; align-items: center; gap: 10px; border: 1.5px solid var(--line); border-radius: 12px; padding: 9px 12px; font-weight: 700; font-size: 13.5px; }
+.plat div small { margin-left: auto; color: var(--muted); font-weight: 650; font-size: 12px; }
+.tog { width: 34px; height: 20px; border-radius: 99px; background: var(--green); position: relative; flex: none; }
+.tog::after { content: ""; position: absolute; right: 3px; top: 3px; width: 14px; height: 14px; border-radius: 99px; background: #fff; }
+.tog.off { background: #CFC6B6; } .tog.off::after { right: auto; left: 3px; }
+.when { border: 2px solid var(--stroke); border-radius: 14px; padding: 12px 14px; background: var(--yellow-soft); }
+.when b { font-family: Fredoka; font-weight: 700; font-size: 20px; display: block; }
+.when small { color: var(--yellow-ink); font-weight: 650; font-size: 12.5px; }
+
+.decide { display: flex; gap: 12px; align-items: center; position: sticky; bottom: 0; }
+.decide .btn.green { font-size: 17px; padding: 15px 26px; }
+.decide .btn.no { color: var(--red); border-color: var(--red); box-shadow: 3px 3px 0 var(--red); }
+.decide .cost { margin-left: auto; text-align: right; font-size: 12.5px; color: var(--muted); font-weight: 650; }
+.decide .cost b { color: var(--ink); font-family: Fredoka; font-size: 18px; font-weight: 500; display: block; }
+.nextup { display: flex; gap: 12px; align-items: center; font-size: 13px; }
+.nextup img { width: 34px; border-radius: 6px; border: 1.5px solid var(--stroke); }
+</style></head>
+<body><div class="app">
+
+<aside class="side">
+  <div class="brand"><img src="img/simbolo_512_s.png"><div><b>English <mark>Unlimited</mark></b><small>Estudio de vídeos</small></div></div>
+  <div class="navlabel">PRODUCIR</div>
+  <div class="nav"><i>⌂</i>Inicio</div>
+  <div class="nav"><i>＋</i>Crear</div>
+  <div class="nav"><i>☰</i>Cola<span class="badge soft">41</span></div>
+  <div class="nav on"><i>◉</i>Revisar<span class="badge">2</span></div>
+  <div class="nav"><i>↑</i>Subir</div>
+  <div class="navlabel">CANAL</div>
+  <div class="nav"><i>↗</i>Rendimiento</div>
+  <div class="nav"><i>✎</i>Comentarios<span class="badge">5</span></div>
+  <div class="nav"><i>▤</i>Biblioteca</div>
+  <div class="navlabel">AJUSTES</div>
+  <div class="nav"><i>#</i>Temas</div>
+  <div class="nav"><i>◷</i>Programar</div>
+  <div class="nav"><i>⚙</i>Ajustes</div>
+  <div class="nav"><i>≡</i>Registros</div>
+  <div class="spacer"></div>
+  <div class="meter">
+    <div class="row"><span>OpenRouter</span><span>$6.58 de $15</span></div>
+    <div class="bar"><div style="width:44%"></div></div>
+    <div class="row"><span>Por vídeo</span><span>$0.11 · tope $0.25</span></div>
+  </div>
+  <div class="ver">versión 050b4a5 · abierto 20:21</div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <div>
+      <h1>Revisar</h1>
+      <div class="sub"><b>2 vídeos esperan tu visto bueno.</b> Al aprobar, se programan solos en el siguiente hueco.</div>
+    </div>
+    <div class="pager"><span class="chip">‹</span><span class="chip"><b>1</b>&nbsp;de 2</span><span class="chip">›</span></div>
+  </div>
+
+  <div class="rv">
+    <section class="card player">
+      <div class="phone"><img src="img/mas_familia_frame0_s.jpg"><span class="badge0">Fotograma 0 · lo que se ve en el feed</span></div>
+      <div class="ctrl"><div class="pp">▶&#xFE0E;</div><div class="scrub"><div></div><i style="left:18%"></i><i style="left:34%"></i><i style="left:50%"></i><i style="left:66%"></i><i style="left:82%"></i></div><span class="time">0:00 / 0:31</span></div>
+      <div class="strip">
+        <div class="on"><img src="img/fr0.jpg"><span>0%</span></div>
+        <div><img src="img/fr1.jpg"><span>25%</span></div>
+        <div><img src="img/fr2.jpg"><span>50%</span></div>
+        <div><img src="img/fr3.jpg"><span>75%</span></div>
+        <div><img src="img/fr4.jpg"><span>final</span></div>
+        <div><img src="img/fr5.jpg"><span>fin</span></div>
+      </div>
+    </section>
+
+    <div class="col">
+      <section class="sticker verdict" style="display:block">
+        <div style="display:flex;gap:16px;align-items:center">
+          <div class="big">✓</div>
+          <div><div class="eyebrow">Cómo se dice · Tablero · 5 palabras</div><h2>¿Cómo se dice MÁS FAMILIA en inglés? 👵</h2><p>Pasa el control de calidad: 6 de 6. Solo falta tu ojo.</p></div>
+        </div>
+        <div class="checks">
+          <div><i>✓</i><div>Volumen<small>−14.1 LUFS</small></div></div>
+          <div><i>✓</i><div>Voz y texto sincronizados<small>desfase máx. 40 ms</small></div></div>
+          <div><i>✓</i><div>Vocales del español<small>ninguna «e» suena «i»</small></div></div>
+          <div><i>✓</i><div>Siempre hay movimiento<small>quietud máx. 2.1 s</small></div></div>
+          <div><i>✓</i><div>Palabras nuevas<small>0 repetidas del canal</small></div></div>
+          <div><i>✓</i><div>Título y texto limpios<small>sin comillas vacías</small></div></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="field"><label>Título <span>58 de 100</span></label><div class="input">¿Cómo se dice MÁS FAMILIA en inglés? 👵 #Shorts</div></div>
+        <div class="field"><label>Descripción <span>generada · puedes editarla</span></label><div class="input area">Abuelo, abuela, bebé, niño y niña: ¿cuántas sabías en inglés? Dilo antes que yo 👀 Bonus: ¿cómo se dice «primo»? Escríbelo en los comentarios 👇<br>Más rutas para aprender en learningroutes.com</div></div>
+        <div class="field" style="margin-bottom:20px"><label>Hashtags</label><div class="hash"><span>#AprendeInglés</span><span>#InglésFácil</span><span>#Familia</span><span>#VocabularioEnInglés</span><span>#Shorts</span></div></div>
+        <div class="two">
+          <div class="plat">
+            <div><span class="tog"></span>YouTube<small>privado → público</small></div>
+            <div><span class="tog"></span>Facebook<small>Reel programado</small></div>
+            <div><span class="tog off"></span>TikTok<small>a mano</small></div>
+          </div>
+          <div class="when"><small>SALE</small><b>Hoy · 19:30</b><small>el siguiente hueco libre · <u>cambiar</u></small></div>
+        </div>
+      </section>
+
+      <div class="decide">
+        <span class="btn green">✓ Aprobar y programar</span>
+        <span class="btn no">✕ Rechazar</span>
+        <span class="btn ghost">↻ Volver a renderizar</span>
+        <div class="cost"><b>$0.09</b>lo que costó este vídeo</div>
+      </div>
+
+      <section class="card nextup" style="padding:12px 16px"><img src="img/bv002_frame0_s.jpg"><div><b>Después:</b> ¿Cómo se dice CASA en inglés? 🏠 <span class="muted">· pasa 6 de 6</span></div><span class="tag yellow" style="margin-left:auto">2 de 2</span></section>
+    </div>
+  </div>
+  <div class="note">Maqueta · Revisar. Fotogramas reales de la prueba de Tablero (MÁS FAMILIA, 12 nov); textos y números de control ilustrativos.</div>
+</main>
+</div></body></html>

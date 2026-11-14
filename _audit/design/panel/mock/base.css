@@ -1,0 +1,70 @@
+@font-face { font-family: Fredoka; src: url(../../../../assets/fonts/Fredoka-Medium.ttf); font-weight: 500; }
+@font-face { font-family: Fredoka; src: url(../../../../assets/fonts/Fredoka-Bold.ttf); font-weight: 700; }
+@font-face { font-family: Emo; src: url(../../../../assets/fonts/NotoColorEmoji.ttf); }
+@font-face { font-family: Manrope; src: url("../../../../assets/fonts/Manrope[wght].ttf"); font-weight: 200 800; }
+
+:root {
+  --sand: #F3EEE4; --sand2: #EAE3D6; --card: #FFFFFF; --ink: #1C1812; --muted: #6D665B;
+  --line: #DDD4C4; --blue: #1B6FA8; --blue-soft: #DCEAF4; --yellow: #F2D66B; --yellow-soft: #FBF1C9;
+  --coral: #FF7A59; --coral-soft: #FFE3DA; --green: #2F8F5B; --green-soft: #DDEFE3;
+  --red: #C0453A; --red-soft: #F6DEDB; --violet: #7A5CC7;
+  --stroke: var(--ink); --shadow: var(--stroke); --side: var(--sand2); --side-text: var(--ink); --side-muted: var(--muted);
+  --on-bg: var(--ink); --on-text: #fff; --on-shadow: var(--blue); --primary-text: #fff;
+  --blue-ink: #134F78; --green-ink: #1F6B42; --yellow-ink: #6E5300; --coral-ink: #A0391F; --red-ink: #8E2B22; --field: #FFFDF9; --bar: var(--blue);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { width: 1440px; background: var(--sand); color: var(--ink); font-family: Manrope, Emo, sans-serif; font-size: 14px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+.app { display: grid; grid-template-columns: 252px 1fr; min-height: 100vh; }
+
+/* ── Sidebar ───────────────────────────── */
+.side { background: var(--side); border-right: 1px solid var(--line); padding: 22px 16px; display: flex; flex-direction: column; gap: 4px; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 6px 18px; }
+.brand img { width: 44px; height: 44px; }
+.brand { color: var(--side-text); } .brand small { color: var(--side-muted) !important; }
+.brand b { font-family: Fredoka; font-weight: 700; font-size: 18px; line-height: 1.05; display: block; }
+.brand b mark { background: linear-gradient(transparent 55%, var(--yellow) 55%, var(--yellow) 92%, transparent 92%); color: inherit; }
+.brand small { color: var(--muted); font-size: 11.5px; }
+.navlabel { font-size: 10.5px; font-weight: 800; letter-spacing: .12em; color: var(--side-muted); padding: 14px 10px 6px; }
+.nav { display: flex; align-items: center; gap: 11px; padding: 8px 10px; border-radius: 11px; font-weight: 650; font-size: 14px; color: var(--side-text); }
+.nav i { font-family: 'DejaVu Sans', sans-serif; font-variant-emoji: text; font-style: normal; width: 20px; text-align: center; font-size: 15px; }
+.nav.on { background: var(--on-bg); color: var(--on-text); box-shadow: 3px 3px 0 var(--on-shadow); }
+.nav .badge { margin-left: auto; background: var(--coral); color: #fff; font-size: 11px; font-weight: 800; border-radius: 99px; padding: 1px 8px; }
+.nav .badge.soft { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+.side .spacer { flex: 1; }
+.meter { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-top: 10px; }
+.meter .row { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 700; }
+.meter .row span:last-child { color: var(--muted); font-weight: 600; }
+.bar { height: 8px; background: var(--sand2); border-radius: 99px; margin: 7px 0 10px; overflow: hidden; }
+.bar > div { height: 100%; border-radius: 99px; background: var(--blue); }
+.ver { font-size: 11px; color: var(--side-muted); padding: 10px 6px 0; }
+
+/* ── Main ─────────────────────────────── */
+.main { padding: 30px 40px 48px; }
+.top { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 22px; }
+h1 { font-family: Fredoka, Emo; font-weight: 700; font-size: 38px; line-height: 1.05; letter-spacing: -.01em; }
+h1 mark { background: linear-gradient(transparent 58%, var(--yellow) 58%, var(--yellow) 90%, transparent 90%); color: inherit; padding: 0 4px; }
+.sub { color: var(--muted); font-size: 15px; margin-top: 6px; }
+.sub b { color: var(--ink); }
+.chip { display: inline-flex; align-items: center; gap: 7px; background: var(--card); border: 1px solid var(--line); border-radius: 99px; padding: 6px 12px; font-size: 12.5px; font-weight: 650; }
+.dot { width: 8px; height: 8px; border-radius: 99px; background: var(--green); display: inline-block; }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+.sticker { background: var(--card); border: 2.5px solid var(--stroke); border-radius: 22px; box-shadow: 7px 7px 0 var(--shadow); }
+.eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .13em; color: var(--muted); text-transform: uppercase; }
+h2 { font-family: Fredoka, Emo; font-weight: 500; font-size: 21px; }
+h3 { font-family: Fredoka, Emo; font-weight: 500; font-size: 17px; }
+.muted { color: var(--muted); }
+.btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 9px; font-weight: 800; font-size: 15px; border-radius: 14px; padding: 13px 22px; border: 2.5px solid var(--stroke); background: var(--card); color: var(--ink); box-shadow: 4px 4px 0 var(--shadow); }
+.btn.primary { background: var(--blue); color: var(--primary-text); font-size: 17px; padding: 15px 26px; }
+.btn.green { background: var(--green); color: #fff; }
+.btn.ghost { box-shadow: none; border: 1.5px solid var(--line); font-weight: 700; font-size: 14px; padding: 11px 16px; }
+.btn.sm { font-size: 13px; padding: 7px 12px; border-radius: 10px; box-shadow: 2px 2px 0 var(--shadow); border-width: 2px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 750; border-radius: 9px; padding: 4px 9px; background: var(--sand); }
+.tag.blue { background: var(--blue-soft); color: var(--blue-ink); }
+.tag.green { background: var(--green-soft); color: var(--green-ink); }
+.tag.yellow { background: var(--yellow-soft); color: var(--yellow-ink); }
+.tag.coral { background: var(--coral-soft); color: var(--coral-ink); }
+.tag.red { background: var(--red-soft); color: var(--red-ink); }
+.phone { border-radius: 16px; overflow: hidden; border: 2.5px solid var(--stroke); background: #000; }
+.phone img { display: block; width: 100%; }
+.note { font-size: 11.5px; color: var(--muted); margin-top: 26px; }

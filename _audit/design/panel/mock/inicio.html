@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><link rel="stylesheet" href="theme-papel.css">
+<style>
+.flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-bottom: 22px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.flow > div { padding: 14px 20px; display: flex; align-items: center; gap: 14px; position: relative; }
+.flow > div + div { border-left: 1px solid var(--line); }
+.flow .n { font-family: Fredoka; font-weight: 700; font-size: 30px; line-height: 1; min-width: 34px; }
+.flow .l { font-weight: 750; font-size: 13.5px; }
+.flow .l small { display: block; color: var(--muted); font-weight: 600; font-size: 12px; }
+.flow .now { background: var(--yellow-soft); }
+.flow .now .n { color: var(--ink); }
+
+.grid { display: grid; grid-template-columns: 1fr 372px; gap: 26px; align-items: start; }
+
+/* hero */
+.hero { padding: 26px; display: grid; grid-template-columns: 196px 1fr; gap: 28px; position: relative; }
+.mini { color: #1C1812; width: 196px; aspect-ratio: 9/16; border-radius: 16px; border: 2.5px solid #1C1812; overflow: hidden; position: relative;
+  background: linear-gradient(180deg, #2BB3A3 0%, #127567 100%); }
+.mini::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.13) 1.2px, transparent 1.3px); background-size: 10px 10px; }
+.mini .hd { position: relative; text-align: center; margin-top: 16px; }
+.mini .hd span { font-family: Fredoka; font-weight: 700; font-size: 14px; background: #F2D66B; padding: 1px 6px; display: inline-block; transform: rotate(-1.5deg); }
+.mini .topic { font-family: Fredoka, Emo !important; position: relative; margin: 8px auto 0; width: max-content; background: #fff; border: 1.5px solid #1C1812; box-shadow: 2px 2px 0 #1C1812; border-radius: 6px; font-family: Fredoka; font-weight: 700; font-size: 10.5px; padding: 2px 7px; transform: rotate(2deg); }
+.mini .tiles { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 12px 8px 0; }
+.mini .t { background: #fff; border: 1.5px solid #1C1812; box-shadow: 2px 2px 0 #1C1812; border-radius: 7px; height: 33px; display: flex; align-items: center; gap: 4px; padding: 0 4px; font-family: Fredoka; font-weight: 700; font-size: 8.3px; line-height: 1.05; }
+.mini .t em { font-family: Emo; font-style: normal; width: 19px; height: 19px; background: #fff; border: 1px solid #1C1812; border-radius: 99px; display: grid; place-items: center; font-size: 10.5px; flex: none; }
+.mini .t.a { background: #F2D66B; transform: rotate(-1.5deg) scale(1.05); }
+.mini .t.d { background: #1B6FA8; color: #fff; }
+.mini .t.d b { color: #F2D66B; display: block; font-size: 8.5px; }
+.mini .bubi { position: absolute; right: 6px; bottom: 8px; width: 48px; }
+.mini .count { position: absolute; left: 9px; bottom: 14px; background: #1C1812; color: #fff; font-family: Fredoka; font-weight: 700; font-size: 10px; border-radius: 99px; padding: 2px 8px; }
+.mini .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 46px; height: 46px; border-radius: 99px; background: rgba(28,24,18,.72); display: grid; place-items: center; color: #fff; font-size: 17px; }
+
+.hero h2 { font-weight: 700; font-size: 30px; line-height: 1.12; margin: 8px 0 14px; letter-spacing: -.005em; }
+.hero h2 mark { background: linear-gradient(transparent 60%, var(--yellow) 60%, var(--yellow) 92%, transparent 92%); color: inherit; padding: 0 3px; }
+.why { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.words { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+.words span { font-size: 12.5px; font-weight: 650; border: 1px solid var(--line); border-radius: 8px; padding: 3px 8px; background: var(--sand); }
+.facts { display: flex; gap: 22px; margin-bottom: 22px; font-size: 13px; }
+.facts div b { display: block; font-family: Fredoka; font-weight: 700; font-size: 18px; }
+.facts div span { color: var(--muted); font-weight: 600; }
+.actions { display: flex; gap: 12px; align-items: center; }
+.hero .stamp { position: absolute; right: 22px; top: 20px; }
+
+/* agenda */
+.agenda h3 { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; }
+.agenda h3 small { font-family: Manrope; font-weight: 650; font-size: 12px; color: var(--muted); }
+.slot { display: grid; grid-template-columns: 52px 16px 1fr; gap: 10px; align-items: start; }
+.slot .h { font-family: Fredoka; font-weight: 700; font-size: 15px; padding-top: 9px; }
+.slot .rail { position: relative; height: 100%; }
+.slot .rail::before { content: ""; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.slot:first-of-type .rail::before { top: 14px; }
+.slot:last-of-type .rail::before { bottom: calc(100% - 14px); }
+.slot .rail i { position: absolute; left: 1px; top: 12px; width: 14px; height: 14px; border-radius: 99px; border: 2.5px solid var(--stroke); background: var(--card); }
+.slot.done .rail i { background: var(--green); border-color: var(--green); }
+.slot.next .rail i { background: var(--yellow); }
+.slot .box { border: 1px solid var(--line); border-radius: 14px; padding: 9px 12px; margin-bottom: 10px; display: flex; gap: 10px; align-items: center; }
+.slot .box .th { width: 30px; height: 52px; border-radius: 6px; border: 1.5px solid var(--stroke); flex: none; display: grid; place-items: center; font-size: 15px; }
+.slot .box b { font-size: 13px; display: block; line-height: 1.25; }
+.slot .box small { font-size: 12px; color: var(--muted); font-weight: 600; }
+.slot.free .box { border: 2px dashed #C9BFAE; background: var(--sand); }
+.slot.next .box { border: 2px solid var(--stroke); box-shadow: 3px 3px 0 var(--shadow); }
+
+/* channel */
+.row2 { display: grid; grid-template-columns: 1fr 372px; gap: 26px; margin-top: 26px; align-items: start; }
+.chead { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+.kpis { display: flex; gap: 30px; }
+.kpis div b { font-family: Fredoka; font-weight: 500; font-size: 28px; display: block; line-height: 1.05; }
+.kpis div span { color: var(--muted); font-size: 12px; font-weight: 650; }
+.vs { display: grid; grid-template-columns: 34px 1fr 250px 104px; gap: 12px; align-items: center; padding: 8px 0; border-top: 1px solid #EFE9DD; }
+.vs .th { width: 34px; height: 60px; border-radius: 7px; border: 1.5px solid var(--stroke); display: grid; place-items: center; font-size: 15px; }
+.vs .ti b { font-size: 13.5px; display: block; line-height: 1.25; }
+.vs .ti small { color: var(--muted); font-size: 12px; font-weight: 600; }
+.track { position: relative; height: 18px; background: var(--sand); border-radius: 6px; }
+.track .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; }
+.track .norm { position: absolute; top: -4px; bottom: -4px; width: 0; border-left: 2px dashed var(--stroke); left: 50%; }
+.vs .v { text-align: right; font-family: Fredoka; font-weight: 700; font-size: 16px; line-height: 1.1; }
+.vs .v small { display: block; font-family: Manrope; font-size: 11.5px; font-weight: 750; }
+.up { color: var(--green); } .down { color: var(--red); } .flat { color: var(--muted); }
+.legend { display: flex; gap: 16px; font-size: 12px; color: var(--muted); font-weight: 650; margin-top: 12px; align-items: center; }
+.legend i { display: inline-block; width: 14px; border-top: 2px dashed var(--stroke); vertical-align: middle; margin-right: 5px; }
+
+.ideas .idea { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #EFE9DD; }
+.ideas .idea:first-of-type { border-top: 0; }
+.ideas .idea .em { width: 40px; height: 40px; border-radius: 12px; background: var(--sand); display: grid; place-items: center; font-size: 20px; flex: none; }
+.ideas .idea b { display: block; font-size: 13.5px; }
+.ideas .idea small { color: var(--muted); font-size: 12px; font-weight: 600; }
+.ideas .idea .btn { margin-left: auto; }
+.postit { color: #1C1812; background: var(--yellow); border: 2px solid var(--stroke); border-radius: 4px 4px 18px 4px; padding: 14px 16px 14px 16px; margin-top: 18px; transform: rotate(-.8deg); box-shadow: 4px 4px 0 var(--shadow); position: relative; }
+.postit b { font-family: Fredoka; font-size: 15px; display: block; margin-bottom: 4px; }
+.postit p { font-size: 13px; font-weight: 600; line-height: 1.4; }
+.postit img { position: absolute; right: -18px; bottom: -26px; width: 66px; transform: rotate(6deg); }
+.postit p { padding-right: 34px; }
+</style></head>
+<body><div class="app">
+
+<aside class="side">
+  <div class="brand"><img src="img/simbolo_512_s.png"><div><b>English <mark>Unlimited</mark></b><small>Estudio de vídeos</small></div></div>
+  <div class="navlabel">PRODUCIR</div>
+  <div class="nav on"><i>⌂</i>Inicio</div>
+  <div class="nav"><i>＋</i>Crear</div>
+  <div class="nav"><i>☰</i>Cola<span class="badge soft">41</span></div>
+  <div class="nav"><i>◉</i>Revisar<span class="badge">2</span></div>
+  <div class="nav"><i>↑</i>Subir</div>
+  <div class="navlabel">CANAL</div>
+  <div class="nav"><i>↗</i>Rendimiento</div>
+  <div class="nav"><i>✎</i>Comentarios<span class="badge">5</span></div>
+  <div class="nav"><i>▤</i>Biblioteca</div>
+  <div class="navlabel">AJUSTES</div>
+  <div class="nav"><i>#</i>Temas</div>
+  <div class="nav"><i>◷</i>Programar</div>
+  <div class="nav"><i>⚙</i>Ajustes</div>
+  <div class="nav"><i>≡</i>Registros</div>
+  <div class="spacer"></div>
+  <div class="meter">
+    <div class="row"><span>OpenRouter</span><span>$6.58 de $15</span></div>
+    <div class="bar"><div style="width:44%"></div></div>
+    <div class="row"><span>Por vídeo</span><span>$0.11 · tope $0.25</span></div>
+  </div>
+  <div class="ver">versión 050b4a5 · abierto 20:21</div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <div>
+      <h1>Buenas noches, <mark>Garcia</mark></h1>
+      <div class="sub">Viernes 14 nov · <b>Hoy salen 4 vídeos y ya hay 3 en su sitio.</b> Falta uno para las 19:30.</div>
+    </div>
+    <span class="chip"><span class="dot"></span>Estadísticas al día · hace 2 h</span>
+  </div>
+
+  <div class="flow">
+    <div class="now"><span class="n">1</span><span class="l">Producir<small>el hueco de las 19:30</small></span></div>
+    <div><span class="n">2</span><span class="l">Por revisar<small>aprobar o rechazar</small></span></div>
+    <div><span class="n">0</span><span class="l">Por subir<small>todo programado</small></span></div>
+    <div><span class="n">41</span><span class="l">Guiones en cola<small>para 10 días</small></span></div>
+  </div>
+
+  <div class="grid">
+    <section class="sticker hero">
+      <div class="mini">
+        <div class="hd"><span>¿CÓMO SE DICE?</span></div>
+        <div class="topic">🦒 MÁS ANIMALES</div>
+        <div class="tiles">
+          <div class="t d"><em>🦘</em><div>canguro<b>kangaroo</b></div></div>
+          <div class="t a"><em>🐫</em>camello</div>
+          <div class="t"><em>🐊</em>cocodrilo</div>
+          <div class="t"><em>🦛</em>hipopótamo</div>
+          <div class="t"><em>🐸</em>rana</div>
+          <div class="t"><em>🦇</em>murciélago</div>
+          <div class="t"><em>🦍</em>gorila</div>
+          <div class="t"><em>🦏</em>rinoceronte</div>
+          <div class="t"><em>🦝</em>mapache</div>
+          <div class="t"><em>🦔</em>erizo</div>
+        </div>
+        <div class="count">1/10</div>
+        <img class="bubi" src="img/wow_s.png">
+        
+      </div>
+      <div>
+        <div class="eyebrow">Siguiente vídeo · sale hoy a las 19:30</div>
+        <h2>¿Cómo se dicen <mark>MÁS ANIMALES</mark> en inglés? 🦒</h2>
+        <div class="why">
+          <span class="tag green">★ Secuela de ANIMALES · 1,336 vistas</span>
+          <span class="tag blue">Cómo se dice · el formato que más rinde</span>
+          <span class="tag">Tema básico (A)</span>
+        </div>
+        <div class="words">
+          <span>kangaroo</span><span>camel</span><span>crocodile</span><span>hippo</span><span>frog</span><span>bat</span><span>gorilla</span><span>rhino</span><span>raccoon</span><span>hedgehog</span>
+        </div>
+        <div class="facts">
+          <div><b>~42 s</b><span>duración</span></div>
+          <div><b>~$0.11</b><span>costo estimado</span></div>
+          <div><b>~2 min</b><span>en renderizar</span></div>
+          <div><b>0 de 10</b><span>palabras repetidas</span></div>
+        </div>
+        <div class="actions">
+          <span class="btn primary">▶&#xFE0E; Producir ahora</span>
+          <span class="btn ghost">Elegir otro de la cola</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card agenda">
+      <h3>Agenda de hoy <small>hora de Costa Rica</small></h3>
+      <div class="slot done"><div class="h">08:30</div><div class="rail"><i></i></div>
+        <div class="box"><div class="th" style="background:#E9F2F8">🩺</div><div><b>¿Cómo se dice MÉDICO?</b><small>Publicado · 661 vistas</small></div></div></div>
+      <div class="slot done"><div class="h">12:00</div><div class="rail"><i></i></div>
+        <div class="box"><div class="th" style="background:#EEE8F8">🧩</div><div><b>«YA LO RESOLVÍ»</b><small>Publicado · 496 vistas</small></div></div></div>
+      <div class="slot"><div class="h">16:00</div><div class="rail"><i></i></div>
+        <div class="box"><div class="th" style="background:#FFE3DA">👪</div><div><b>Test: LA FAMILIA</b><small>Programado en YouTube y Facebook</small></div></div></div>
+      <div class="slot next free"><div class="h">19:30</div><div class="rail"><i></i></div>
+        <div class="box"><div class="th" style="background:var(--card);border-style:dashed">＋</div><div><b>Hueco libre</b><small>Lo llena: MÁS ANIMALES</small></div></div></div>
+      <div class="muted" style="font-size:12px;font-weight:600;margin-top:2px">Mañana: 4 huecos · ya hay guion para los 4</div>
+    </section>
+  </div>
+
+  <div class="row2">
+    <section class="card">
+      <div class="chead">
+        <div><div class="eyebrow">El canal · últimos 7 días</div><h2 style="margin-top:4px">Cómo van tus últimos vídeos</h2></div>
+        <div class="kpis">
+          <div><b>13,549</b><span>vistas</span></div>
+          <div><b>28</b><span>vídeos</span></div>
+          <div><b>484</b><span>vistas de media</span></div>
+        </div>
+      </div>
+      <div class="vs"><div class="th" style="background:#EEE8F8">🧩</div><div class="ti"><b>¿Sabes decir «YA LO RESOLVÍ»?</b><small>Frases · hace 1 día</small></div>
+        <div class="track"><div class="fill" style="width:100%;background:var(--green)"></div><div class="norm" style="left:43%"></div></div><div class="v">496<small class="up">2.3× lo normal</small></div></div>
+      <div class="vs"><div class="th" style="background:#E9F2F8">🩺</div><div class="ti"><b>¿Cómo se dice MÉDICO?</b><small>Cómo se dice · hoy</small></div>
+        <div class="track"><div class="fill" style="width:39%;background:var(--bar)"></div><div class="norm" style="left:50%"></div></div><div class="v">661<small class="flat">78% · día 1</small></div></div>
+      <div class="vs"><div class="th" style="background:#FFE3DA">👪</div><div class="ti"><b>La FAMILIA: ¿sabes las 10 palabras?</b><small>Test de nivel · hace 1 día</small></div>
+        <div class="track"><div class="fill" style="width:37%;background:var(--bar)"></div><div class="norm" style="left:50%"></div></div><div class="v">368<small class="flat">73% · día 2</small></div></div>
+      <div class="vs"><div class="th" style="background:#FBF1C9">🏫</div><div class="ti"><b>EN LA ESCUELA: frases para padres</b><small>Dilo en inglés · hoy</small></div>
+        <div class="track"><div class="fill" style="width:48%;background:var(--bar)"></div><div class="norm" style="left:50%"></div></div><div class="v">263<small class="flat">96% · día 1</small></div></div>
+      <div class="vs"><div class="th" style="background:#DFF1EC">📱</div><div class="ti"><b>¿Cómo se dice TECNOLOGÍA?</b><small>Cómo se dice · hace horas</small></div>
+        <div class="track"><div class="fill" style="width:2%;background:var(--red)"></div><div class="norm" style="left:50%"></div></div><div class="v">18<small class="down">tema C · bajo</small></div></div>
+      <div class="legend"><span><i></i>lo normal de su formato</span><span>Verde: por encima · Rojo: por debajo después del día 1</span><span style="margin-left:auto;color:var(--blue);font-weight:800">Ver todo en Rendimiento →</span></div>
+    </section>
+
+    <section class="card ideas">
+      <div class="eyebrow">Lo que está funcionando</div>
+      <h2 style="margin:4px 0 8px">Secuelas por escribir</h2>
+      <div class="idea"><div class="em">🏠</div><div><b>MÁS CASA</b><small>CASA: 1,601 vistas</small></div><span class="btn sm">Escribir</span></div>
+      <div class="idea"><div class="em">🍎</div><div><b>MÁS COMIDA</b><small>COMIDA: 1,388 vistas</small></div><span class="btn sm">Escribir</span></div>
+      <div class="idea"><div class="em">🙂</div><div><b>MÁS CARA</b><small>CARA: 1,311 vistas</small></div><span class="btn sm">Escribir</span></div>
+      <div class="postit"><img src="img/bien_hecho_s.png"><b>Ojo con los temas raros</b><p>INSECTOS, NATURALEZA y TECNOLOGÍA llevan menos de 20 vistas. Los temas básicos (casa, comida, cuerpo) rinden 3× más.</p></div>
+    </section>
+  </div>
+  <div class="note">Maqueta · Inicio del panel. Vistas reales del 13 nov; la agenda y los contadores son ilustrativos.</div>
+</main>
+</div></body></html>
