@@ -31,3 +31,9 @@ requests>=2.31.0
 
 # Optional: Video Analysis
 opencv-python>=4.8.0
+
+# Panel 2.0 local API (STEP 85 §2): 127.0.0.1 only. httpx (already installed) is TestClient's transport.
+fastapi==0.162.7
+starlette==1.10.0
+uvicorn==0.54.0
+httpx==0.28.1
