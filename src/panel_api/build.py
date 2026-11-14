@@ -32,10 +32,10 @@ STRIP_LABELS = ["0 %", "25 %", "50 %", "75 %", "final", "fin"]
 _CACHE: Dict[str, tuple] = {}
 
 
-def cached(key: str, fingerprint: Callable[[], tuple], build: Callable[[], dict]) -> dict:
+def cached(key: str, fingerprint: Callable[[], tuple], build: Callable[[], dict], force: bool = False) -> dict:
     fp = fingerprint()
     hit = _CACHE.get(key)
-    if hit and hit[0] == fp:
+    if hit and hit[0] == fp and not force:
         return hit[1]
     value = build()
     _CACHE[key] = (fp, value)
@@ -273,11 +273,19 @@ def _formats(vids: List[Dict]) -> tuple:
 def _home_fp() -> tuple:
     import publication_log
     import senal
-    return _meta_fp() + (_mt(senal.SENAL_DIR / "senal.json"), _mt(jobs.JOBS_FILE), int(time.time() // 60))
+    return _meta_fp() + (_mt(senal.SENAL_DIR / "senal.json"), _mt(jobs.JOBS_FILE))      # the clock is the refresher's job (refresh_all)
 
 
 def home() -> dict:
     return cached("home", _home_fp, _home)
+
+
+def refresh_all() -> None:
+    """Rebuild meta, home and review now and swap them in, so a request never pays for a rebuild. The server calls this at
+    start and every minute (the agenda and «hoy» depend on the clock, the rest on file mtimes)."""
+    cached("meta", _meta_fp, _meta, force=True)
+    cached("home", _home_fp, _home, force=True)
+    cached("review", _review_fp, _review, force=True)
 
 
 def _home(now: Optional[datetime] = None) -> dict:

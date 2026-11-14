@@ -1,6 +1,9 @@
 """STEP 85 §2-§3: the FastAPI app. Reads are open; POSTs pass the gate (gate.py). §4 swaps the engine stubs for real ones."""
 from __future__ import annotations
 
+import asyncio
+import logging
+import threading
 from contextlib import asynccontextmanager
 from typing import Dict, Optional
 
@@ -13,7 +16,22 @@ from . import build, engine as engine_mod, events, gate, media
 HOST, PORT = "127.0.0.1", 8501          # bind this host only; nothing in this package listens on its own
 
 
-def create_app(engine: Optional[Dict[str, object]] = None, heartbeat_s: float = events.HEARTBEAT_S) -> FastAPI:
+def _warm_once() -> None:
+    """Fill the caches (imports, the queue audit, fonts); never raises: a failure only means a slower first request."""
+    try:
+        build.refresh_all()
+        game.snapshot()
+    except Exception:                                     # noqa: BLE001
+        logging.getLogger(__name__).exception("panel warm-up failed")
+
+
+def _keep_warm(stop: threading.Event, every_s: float = 60.0) -> None:
+    """Refresh the caches every minute (the agenda depends on the clock), so a request never pays for a rebuild."""
+    while not stop.wait(every_s):
+        _warm_once()
+
+
+def create_app(engine: Optional[Dict[str, object]] = None, heartbeat_s: float = events.HEARTBEAT_S, warm: bool = False) -> FastAPI:
     """`engine` overrides produce / rerender (`f(...) -> (job_id, eta_s, runner)`) and approve / reject (`f(id, body) -> dict`);
     the defaults are the real handlers in engine.py. Tests pass mocks."""
     eng = {**engine_mod.REAL, **(engine or {})}
@@ -23,9 +41,14 @@ def create_app(engine: Optional[Dict[str, object]] = None, heartbeat_s: float = 
     @asynccontextmanager
     async def lifespan(_app):
         feed.start()                                      # job steps, done/failed and stats.refreshed reach the bus
+        stop = threading.Event()
+        if warm:                                          # the real server: warm BEFORE the first request, and stay warm
+            await asyncio.to_thread(_warm_once)
+            threading.Thread(target=_keep_warm, args=(stop,), name="panel-warm", daemon=True).start()
         try:
             yield
         finally:
+            stop.set()
             feed.stop()
             bus.close()
 
@@ -94,7 +117,14 @@ def create_app(engine: Optional[Dict[str, object]] = None, heartbeat_s: float = 
         return got
 
     app.include_router(media.router)
+
+    @app.get("/{path:path}", include_in_schema=False)
+    def spa(path: str):
+        if path == "api" or path.startswith("api/") or path == "media" or path.startswith("media/"):
+            return JSONResponse({"error": "No existe esa ruta."}, status_code=404)
+        return gate.static_or_index(path)
+
     return app
 
 
-app = create_app()
+app = create_app(warm=True)

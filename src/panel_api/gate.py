@@ -101,9 +101,26 @@ Engine = Callable[..., Tuple[Optional[str], Optional[int], Runner]]
 
 
 def inject_token(html: str) -> str:
-    """index.html with `<meta name="eu-session" content="…">` just before </head> (the only place the token is served)."""
+    """index.html with the token in `<meta name="eu-session" content="…">`: the front end's empty placeholder is filled in
+    (querySelector takes the first one, so a second tag would be ignored); with none, one goes just before </head>."""
+    import re
     meta = f'<meta name="eu-session" content="{TOKEN}">'
+    filled, n = re.subn(r'<meta\s+name="eu-session"\s+content="[^"]*"\s*/?>', lambda _m: meta, html, count=1)
+    if n:
+        return filled
     return html.replace("</head>", meta + "</head>", 1) if "</head>" in html else meta + html
+
+
+def static_or_index(path: str):
+    """The built app: a real file under panel/dist (hashed assets cached for a year), else the token-injected index.html
+    (the SPA fallback). Never anything outside DIST."""
+    from fastapi.responses import FileResponse
+    root = DIST.resolve()
+    target = (root / path).resolve() if path and "\0" not in path else None
+    if target is not None and root in target.parents and target.is_file() and target.name != "index.html":
+        cache = "public, max-age=31536000, immutable" if "assets" in target.relative_to(root).parts else "no-cache"
+        return FileResponse(target, headers={"Cache-Control": cache})
+    return index_response()
 
 
 def index_response() -> HTMLResponse:

@@ -133,7 +133,7 @@ def test_the_token_appears_only_in_the_served_index_meta(rig, tmp_path, monkeypa
     assert f'<meta name="eu-session" content="{gate.TOKEN}">' in idx.text and idx.headers["cache-control"] == "no-store"
     assert client.get("/index.html").text == idx.text
     leaks = []
-    probes = [client.get(u) for u in ("/api/meta", "/api/home", "/api/review", "/api/jobs/nope", "/media/nope", "/openapi.json", "/docs")]
+    probes = [client.get(u) for u in ("/api/meta", "/api/home", "/api/review", "/api/jobs/nope", "/media/nope", "/api/nope")]
     probes += [_post(client, "/api/produce", h, b) for h, b in (({}, {}), ({"Origin": GOOD["Origin"]}, {}), (GOOD, {}), (GOOD, None))]
     probes += [_post(client, "/api/review/x/approve", {"Origin": "http://evil.example"}, {})]
     for r in probes:
@@ -142,6 +142,40 @@ def test_the_token_appears_only_in_the_served_index_meta(rig, tmp_path, monkeypa
             leaks.append(r.request.url.path)
     assert leaks == []
     assert gate.TOKEN not in json.dumps([r.json() for r in probes if r.headers.get("content-type", "").startswith("application/json")])
+
+
+def test_the_spa_fallback_serves_the_injected_index_and_assets_but_never_leaves_dist(rig, tmp_path, monkeypatch):
+    client, *_ = rig
+    dist = tmp_path / "dist"
+    (dist / "assets").mkdir(parents=True)
+    (dist / "index.html").write_text("<html><head></head><body>app</body></html>")
+    (dist / "assets" / "app-abc.js").write_text("console.log(1)")
+    (tmp_path / "secret.txt").write_text("no")
+    monkeypatch.setattr(gate, "DIST", dist)
+    assert gate.TOKEN in client.get("/revisar").text and gate.TOKEN in client.get("/openapi.json").text   # a client route: the app
+    js = client.get("/assets/app-abc.js")
+    assert js.status_code == 200 and js.text == "console.log(1)" and gate.TOKEN not in js.text
+    assert js.headers["cache-control"] == "public, max-age=31536000, immutable"
+    for bad in ("../secret.txt", "..%2Fsecret.txt", "assets/../../secret.txt"):
+        assert "no" != client.get(f"/{bad}").text and gate.TOKEN in client.get(f"/{bad}").text, bad   # falls back to the index, never the file
+    r = client.get("/api/nope")
+    assert r.status_code == 404 and r.json() == {"error": "No existe esa ruta."} and gate.TOKEN not in r.text
+    assert client.get("/media/nope.png").status_code == 404
+
+
+def test_the_front_ends_empty_placeholder_is_filled_not_duplicated():
+    html = '<head><meta name="eu-session" content="" /><title>x</title></head>'
+    out = gate.inject_token(html)
+    assert out.count('name="eu-session"') == 1 and f'content="{gate.TOKEN}"' in out
+    assert gate.inject_token('<head></head>').count('name="eu-session"') == 1
+
+
+def test_the_real_built_index_gets_exactly_one_filled_token_tag():
+    built = ROOT / "panel" / "dist" / "index.html"
+    if not built.exists():
+        pytest.skip("panel/dist is not built")
+    out = gate.inject_token(built.read_text(encoding="utf-8"))
+    assert out.count('name="eu-session"') == 1 and f'content="{gate.TOKEN}"' in out
 
 
 def test_without_a_built_panel_the_index_is_a_404_not_a_crash(rig, tmp_path, monkeypatch):

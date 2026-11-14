@@ -113,3 +113,8 @@ config.yaml.bak-*
 .superpowers/
 senal/node_modules/
 senal/dist/
+
+# Panel 2.0 (STEP 85): front-end dependencies and build output
+panel/node_modules/
+panel/dist/
+panel/dist-demo/
