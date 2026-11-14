@@ -1,0 +1,39 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.11, pytest-8.4.2, pluggy-1.6.0 -- /Users/go/Downloads/english-ai-videos/.venv/bin/python
+rootdir: /Users/go/Downloads/english-ai-videos
+configfile: pytest.ini
+plugins: anyio-4.12.1
+collecting ... collected 30 items
+
+tests/test_panel_gate.py::test_no_token_is_403 PASSED                    [  3%]
+tests/test_panel_gate.py::test_a_wrong_token_is_403 PASSED               [  6%]
+tests/test_panel_gate.py::test_a_foreign_or_missing_origin_is_403_even_with_the_token PASSED [ 10%]
+tests/test_panel_gate.py::test_no_confirm_is_400 PASSED                  [ 13%]
+tests/test_panel_gate.py::test_a_valid_produce_runs_the_engine_with_the_voice_grant_open_then_closed PASSED [ 16%]
+tests/test_panel_gate.py::test_the_grant_closes_even_when_the_job_fails PASSED [ 20%]
+tests/test_panel_gate.py::test_rerender_is_paid_too PASSED               [ 23%]
+tests/test_panel_gate.py::test_free_posts_need_the_origin_but_no_token PASSED [ 26%]
+tests/test_panel_gate.py::test_the_dev_origin_is_allowed_only_with_the_dev_flag PASSED [ 30%]
+tests/test_panel_gate.py::test_the_token_appears_only_in_the_served_index_meta PASSED [ 33%]
+tests/test_panel_gate.py::test_the_spa_fallback_serves_the_injected_index_and_assets_but_never_leaves_dist PASSED [ 36%]
+tests/test_panel_gate.py::test_the_front_ends_empty_placeholder_is_filled_not_duplicated PASSED [ 40%]
+tests/test_panel_gate.py::test_the_real_built_index_gets_exactly_one_filled_token_tag PASSED [ 43%]
+tests/test_panel_gate.py::test_without_a_built_panel_the_index_is_a_404_not_a_crash PASSED [ 46%]
+tests/test_panel_gate.py::test_the_token_is_random_per_process_and_long PASSED [ 50%]
+tests/test_panel_gate.py::test_voice_stays_locked_under_pytest_outside_a_request PASSED [ 53%]
+tests/test_panel_write.py::test_approve_without_a_time_moves_to_por_subir_saves_the_edit_and_uploads_nothing PASSED [ 56%]
+tests/test_panel_write.py::test_approve_with_a_time_schedules_at_that_exact_minute_with_warnings_and_scheduled_by_garcia PASSED [ 60%]
+tests/test_panel_write.py::test_a_failing_platform_leaves_the_video_in_por_subir_and_says_why PASSED [ 63%]
+tests/test_panel_write.py::test_a_time_under_the_lead_rule_is_refused_and_nothing_moves PASSED [ 66%]
+tests/test_panel_write.py::test_a_title_with_leftovers_is_not_saved PASSED [ 70%]
+tests/test_panel_write.py::test_reject_writes_the_reason_into_the_sidecar_and_moves_the_video PASSED [ 73%]
+tests/test_panel_write.py::test_reject_with_an_unknown_reason_is_400 PASSED [ 76%]
+tests/test_panel_write.py::test_produce_creates_the_job_row_first_and_runs_the_pipeline_under_a_grant PASSED [ 80%]
+tests/test_panel_write.py::test_produce_with_an_empty_queue_is_409_in_spanish PASSED [ 83%]
+tests/test_panel_write.py::test_produce_refuses_a_script_that_is_not_the_next_of_its_type PASSED [ 86%]
+tests/test_panel_write.py::test_a_video_already_rendering_is_409_in_spanish PASSED [ 90%]
+tests/test_panel_write.py::test_rerender_is_paid_rejects_the_old_video_and_makes_it_again PASSED [ 93%]
+tests/test_panel_write.py::test_rerender_of_a_script_already_rendering_is_409_and_the_video_stays PASSED [ 96%]
+tests/test_panel_write.py::test_streamlit_and_the_api_share_one_start_path PASSED [100%]
+
+============================== 30 passed in 1.02s ==============================

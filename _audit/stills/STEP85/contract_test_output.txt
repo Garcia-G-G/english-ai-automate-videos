@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.11, pytest-8.4.2, pluggy-1.6.0 -- /Users/go/Downloads/english-ai-videos/.venv/bin/python
+rootdir: /Users/go/Downloads/english-ai-videos
+configfile: pytest.ini
+plugins: anyio-4.12.1
+collecting ... collected 14 items
+
+tests/test_panel_api.py::test_the_shape_comparer_catches_what_it_should PASSED [  7%]
+tests/test_panel_api.py::test_each_get_matches_its_contract_fixture[meta-/api/meta] PASSED [ 14%]
+tests/test_panel_api.py::test_each_get_matches_its_contract_fixture[home-/api/home] PASSED [ 21%]
+tests/test_panel_api.py::test_each_get_matches_its_contract_fixture[review-/api/review] PASSED [ 28%]
+tests/test_panel_api.py::test_each_get_matches_its_contract_fixture[game-/api/game] PASSED [ 35%]
+tests/test_panel_api.py::test_meta_counts_equal_the_sidebars PASSED      [ 42%]
+tests/test_panel_api.py::test_review_item_reads_the_sidecar_and_never_ticks_what_it_does_not_know PASSED [ 50%]
+tests/test_panel_api.py::test_home_next_views_and_agenda_come_from_the_engine PASSED [ 57%]
+tests/test_panel_api.py::test_a_missing_senal_file_is_null_not_a_guess PASSED [ 64%]
+tests/test_panel_api.py::test_the_job_endpoint_returns_steps_and_404s_an_unknown_id PASSED [ 71%]
+tests/test_panel_api.py::test_the_result_is_cached_on_mtimes_until_a_file_changes PASSED [ 78%]
+tests/test_panel_api.py::test_media_serves_only_files_under_output_and_answers_range PASSED [ 85%]
+tests/test_panel_api.py::test_thumbnails_get_long_cache_headers PASSED   [ 92%]
+tests/test_panel_api.py::test_the_api_package_never_imports_streamlit_and_binds_localhost PASSED [100%]
+
+============================== 14 passed in 2.53s ==============================
